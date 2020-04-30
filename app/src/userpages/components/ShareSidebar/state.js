@@ -149,7 +149,21 @@ export function findPermissionGroupName(resourceType, userPermissions = {}) {
 // CRUD Operations
 //
 
+function isValidUserId(userId) {
+    if (!userId || typeof userId !== 'string') { return false }
+    if (!userId.trim()) { return false }
+    return true
+}
+
+function validateUserId(userId) {
+    if (!isValidUserId(userId)) {
+        throw new Error(`Invalid userId: ${userId}`)
+    }
+    return userId.trim()
+}
+
 export function addUser(users, userId, permissions = {}) {
+    userId = validateUserId(userId)
     if (users[userId]) { return users } // already added
     return {
         ...users,
@@ -158,6 +172,7 @@ export function addUser(users, userId, permissions = {}) {
 }
 
 export function removeUser(users, userId) {
+    userId = validateUserId(userId)
     if (!(userId in users)) { return users } // no user
     const nextUsers = Object.assign({}, users)
     delete nextUsers[userId]
@@ -165,6 +180,7 @@ export function removeUser(users, userId) {
 }
 
 export function updatePermission(users, userId, permissions = {}) {
+    userId = validateUserId(userId)
     return {
         ...users,
         [userId]: {
@@ -201,6 +217,7 @@ export function usersFromPermissions(resourceType, permissions) {
  */
 
 export function userToPermissions(resourceType, userId, userPermissions) {
+    userId = validateUserId(userId)
     return Object.entries(userPermissions).map(([operation, value]) => {
         if (!value) { return undefined }
         const operationValue = PERMISSIONS[resourceType][operation]
@@ -213,7 +230,7 @@ export function userToPermissions(resourceType, userId, userPermissions) {
 
 export function permissionsFromUsers(resourceType, users) {
     return Object.entries(users).map(([userId, userPermissions]) => (
-        userToPermissions(resourceType, userId, userPermissions)
+        userToPermissions(resourceType, validateUserId(userId), userPermissions)
     )).flat()
 }
 
@@ -313,7 +330,5 @@ export function toAnonymousPermission(permission) {
  */
 
 export function canShareToUser({ currentUser, userId }) {
-    if (!userId || typeof userId !== 'string') { return false }
-    if (!userId.trim()) { return false }
-    return userId !== 'anonymous' && userId !== currentUser
+    return isValidUserId(userId) && userId !== 'anonymous' && userId !== currentUser
 }

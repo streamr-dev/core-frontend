@@ -60,6 +60,26 @@ describe('ShareSidebar Permission Handling', () => {
         expect(users[user.username]).toBeTruthy() // original user still around
     })
 
+    it('errors with bad userId', () => {
+        const users = State.usersFromPermissions(resourceType, permissions)
+        const badUserIds = [
+            null,
+            undefined,
+            {},
+            2,
+            0,
+            /asdasd/,
+            false,
+            true,
+        ]
+
+        badUserIds.forEach((badUserId) => {
+            expect(() => State.addUser(users, badUserId)).toThrow(/Invalid/g)
+            expect(() => State.removeUser(users, badUserId)).toThrow(/Invalid/g)
+            expect(() => State.updatePermission(users, badUserId, { get: false })).toThrow(/Invalid/g)
+        })
+    })
+
     describe('diff/hasPermissionsChanges', () => {
         const newUserId = 'test@test.com'
 
