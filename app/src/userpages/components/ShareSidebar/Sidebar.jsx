@@ -213,7 +213,7 @@ function UserPermissions({
         >
             <div className={styles.permissionsHeader}>
                 <div className={styles.permissionsHeaderTitle}>
-                    <h4>{userId}</h4>
+                    <h4 title={userId}>{userId}</h4>
                     <div className={styles.selectedGroup}>{startCase(selectedGroupName)}</div>
                 </div>
                 <Button
