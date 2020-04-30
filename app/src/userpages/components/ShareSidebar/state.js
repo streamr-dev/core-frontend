@@ -307,3 +307,13 @@ export function toAnonymousPermission(permission) {
     anonymousPermission.anonymous = true
     return anonymousPermission
 }
+
+/**
+ * True for non-empty userIds other than currentUser and anonymous
+ */
+
+export function canShareToUser({ currentUser, userId }) {
+    if (!userId || typeof userId !== 'string') { return false }
+    if (!userId.trim()) { return false }
+    return userId !== 'anonymous' && userId !== currentUser
+}

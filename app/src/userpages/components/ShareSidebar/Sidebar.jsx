@@ -142,7 +142,7 @@ function useSlideIn({ isVisible } = {}) {
  * Input for adding new users.
  */
 
-function InputNewShare({ onChange }) {
+function InputNewShare({ onChange, canShareToUser }) {
     const [value, setValue] = useState('')
     const onChangeValue = useCallback((e) => {
         setValue(e.target.value)
@@ -167,7 +167,7 @@ function InputNewShare({ onChange }) {
             <Button
                 kind="secondary"
                 onClick={onAdd}
-                disabled={!value}
+                disabled={!canShareToUser(value)}
                 className={styles.button}
             >
                 <SvgIcon name="plus" className={styles.plusIcon} />
@@ -335,21 +335,29 @@ const ShareSidebar = connect(({ user }) => ({
     const [newUserIdList, setNewUserIdList] = useState([]) // users added since last save
     const [selectedUserId, setSelectedUserId] = useState() // currently selected user
 
+    const canShareToUser = useCallback((userId) => (
+        // don't interfere with anonymous/current user
+        State.canShareToUser({
+            currentUser,
+            userId,
+        })
+    ), [currentUser])
+
     const addUser = useCallback((userId) => {
-        if (userId === 'anonymous') { return } // don't interfere with anonymous user
+        if (!canShareToUser(userId)) { return }
         setSelectedUserId(userId) // select new user on add
         setCurrentUsers((prevUsers) => (
             State.addUser(prevUsers, userId, State.getPermissionsForGroupName(resourceType, 'default'))
         ))
         // add/move user to start of new users. Remove before adding to start if already in array
         setNewUserIdList((ids) => [userId, ...ids.filter((id) => id !== userId)])
-    }, [setCurrentUsers, resourceType])
+    }, [setCurrentUsers, canShareToUser, resourceType])
 
     const removeUser = useCallback((userId) => {
-        if (userId === 'anonymous') { return } // don't interfere with anonymous user
+        if (!canShareToUser(userId)) { return }
         setNewUserIdList((ids) => ids.filter((id) => id !== userId)) // remove user from new users list
         setCurrentUsers((prevUsers) => State.removeUser(prevUsers, userId))
-    }, [setCurrentUsers])
+    }, [setCurrentUsers, canShareToUser])
 
     const updatePermission = useCallback((userId, permissions) => {
         setCurrentUsers((prevUsers) => State.updatePermission(prevUsers, userId, permissions))
@@ -524,7 +532,7 @@ const ShareSidebar = connect(({ user }) => ({
                 />
             </div>
             <div className={cx(styles.row, styles.cell, styles.addUserInput)}>
-                <InputNewShare onChange={addUser} />
+                <InputNewShare onChange={addUser} canShareToUser={canShareToUser} />
             </div>
             <div className={cx(styles.row, styles.userList)}>
                 {userEntries.map(([userId, userPermissions]) => (
