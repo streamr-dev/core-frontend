@@ -164,7 +164,7 @@ export class StreamShowView extends Component<Props, State> {
             isFetching,
             isNewStream,
         } = this.props
-        const hasWritePermission = (permissions && permissions.some((p) => p === 'stream_write')) || false
+        const hasWritePermission = (permissions && permissions.some((p) => p === 'stream_edit')) || false
         const hasSharePermission = (permissions && permissions.some((p) => p === 'stream_share')) || false
         const isLoading = !!(!editedStream || isFetching)
         const disabled = !!(isLoading || !hasWritePermission)
