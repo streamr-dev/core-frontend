@@ -26,8 +26,9 @@ type Variables = {
  */
 export const define = (pathstr: string, getVariables: () => Variables) => (params: ?Object, hash?: ?string): string => {
     const route = Object.entries(getVariables()).reduce((acc, [name, value]) => {
-        const val: any = value
-        return pathstr.replace(new RegExp(`<${name}>`, 'g'), val)
+        const val: any = value || ''
+        const strippedValue: string = val.length > 1 ? val.replace(/\/$/, '') : val
+        return acc.replace(new RegExp(`<${name}>`, 'g'), strippedValue)
     }, pathstr)
 
     const unsetVariableNames = (route.match(/<[^>]+>/g) || []).map((s) => s.replace(/[<>]/g, ''))
