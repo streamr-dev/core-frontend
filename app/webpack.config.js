@@ -248,9 +248,6 @@ module.exports = {
                     // skip sketch files
                     '**/*.sketch',
                     'src/docs/scripts/*.*',
-                    // upcoming docs
-                    'src/docs/components/DocsPages/RunningNode/index.jsx',
-                    'src/docs/components/DocsPages/Marketplace/CommunityProducts/index.jsx',
                     // deprecated components
                     'src/marketplace/components/deprecated/**/*.*',
                 ],

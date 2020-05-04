@@ -9,56 +9,56 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 
 // Docs Pages
-import Introduction from '$docs/components/DocsPages/Introduction'
+import Introduction from '$docs/components/Pages/Introduction'
 // Getting Started Docs
-import GettingStarted from '$docs/components/DocsPages/GettingStarted'
+import GettingStarted from '$docs/components/Pages/GettingStarted'
 // Streams Docs
-import IntroToStreams from '$docs/components/DocsPages/Streams/IntroToStreams'
-import UsingStreamsInCore from '$docs/components/DocsPages/Streams/UsingStreamsInCore'
-import UsingStreamsViaApi from '$docs/components/DocsPages/Streams/UsingStreamsViaApi'
-import UsingStreamsViaSdk from '$docs/components/DocsPages/Streams/UsingStreamsViaSdk'
-import Partitioning from '$docs/components/DocsPages/Streams/Partitioning'
-import IntegrationPatterns from '$docs/components/DocsPages/Streams/IntegrationPatterns'
-import EndToEndEncryption from '$docs/components/DocsPages/Streams/EndToEndEncryption'
-import DataSigningAndVerification from '$docs/components/DocsPages/Streams/DataSigningAndVerification'
+import IntroToStreams from '$docs/components/Pages/Streams/IntroToStreams'
+import UsingStreamsInCore from '$docs/components/Pages/Streams/UsingStreamsInCore'
+import UsingStreamsViaApi from '$docs/components/Pages/Streams/UsingStreamsViaApi'
+import UsingStreamsViaSdk from '$docs/components/Pages/Streams/UsingStreamsViaSdk'
+import Partitioning from '$docs/components/Pages/Streams/Partitioning'
+import IntegrationPatterns from '$docs/components/Pages/Streams/IntegrationPatterns'
+import EndToEndEncryption from '$docs/components/Pages/Streams/EndToEndEncryption'
+import DataSigningAndVerification from '$docs/components/Pages/Streams/DataSigningAndVerification'
 // Canvases Docs
-import IntroToCanvases from '$docs/components/DocsPages/Canvases/IntroToCanvases'
-import ModulesBasics from '$docs/components/DocsPages/Canvases/ModulesBasics'
-import ModulesAdvanced from '$docs/components/DocsPages/Canvases/ModulesAdvanced'
+import IntroToCanvases from '$docs/components/Pages/Canvases/IntroToCanvases'
+import ModulesBasics from '$docs/components/Pages/Canvases/ModulesBasics'
+import ModulesAdvanced from '$docs/components/Pages/Canvases/ModulesAdvanced'
 // Module Reference Docs
-import ModuleReferenceHelp from '$docs/components/DocsPages/ModuleReference/HelpModules'
+import ModuleReferenceHelp from '$docs/components/Pages/ModuleReference/HelpModules'
 // Dashboard Docs
-import Dashboards from '$docs/components/DocsPages/Dashboards'
+import Dashboards from '$docs/components/Pages/Dashboards'
 // Products Docs
-import IntroToProducts from '$docs/components/DocsPages/Products/IntroToProducts'
-import DataUnions from '$docs/components/DocsPages/Products/DataUnions'
+import IntroToProducts from '$docs/components/Pages/Products/IntroToProducts'
+import DataUnions from '$docs/components/Pages/Products/DataUnions'
 // Data Unions Docs
-import IntroToDataUnions from '$docs/components/DocsPages/DataUnions/IntroToDataUnions'
-import DataUnionsInCore from '$docs/components/DocsPages/DataUnions/DataUnionsInCore'
-import DataUnionsIntegration from '$docs/components/DocsPages/DataUnions/DataUnionsIntegration'
-import DataUnionsInSdk from '$docs/components/DocsPages/DataUnions/DataUnionsInSdk'
+import IntroToDataUnions from '$docs/components/Pages/DataUnions/IntroToDataUnions'
+import DataUnionsInCore from '$docs/components/Pages/DataUnions/DataUnionsInCore'
+import DataUnionsIntegration from '$docs/components/Pages/DataUnions/DataUnionsIntegration'
+import DataUnionsInSdk from '$docs/components/Pages/DataUnions/DataUnionsInSdk'
 // Tutorials Docs
-import BuildingPubSub from '$docs/components/DocsPages/Tutorials/BuildingPubSub'
-import BuildingCustomModule from '$docs/components/DocsPages/Tutorials/BuildingCustomModule'
+import BuildingPubSub from '$docs/components/Pages/Tutorials/BuildingPubSub'
+import BuildingCustomModule from '$docs/components/Pages/Tutorials/BuildingCustomModule'
 // DATA Token Docs
-import DataToken from '$docs/components/DocsPages/DataToken'
+import DataToken from '$docs/components/Pages/DataToken'
 // Core Docs
-import IntroToCore from '$docs/components/DocsPages/Core/IntroToCore'
-import UsingCanvasesInCore from '$docs/components/DocsPages/Core/UsingCanvasesInCore'
+import IntroToCore from '$docs/components/Pages/Core/IntroToCore'
+import UsingCanvasesInCore from '$docs/components/Pages/Core/UsingCanvasesInCore'
 // Marketplace Docs
-import IntroToMarketplace from '$docs/components/DocsPages/Marketplace/IntroToMarketplace'
+import IntroToMarketplace from '$docs/components/Pages/Marketplace/IntroToMarketplace'
 // SDK Docs
-import Sdk from '$docs/components/DocsPages/Sdk/Overview'
-import JavascriptSdk from '$docs/components/DocsPages/Sdk/Javascript'
-import JavaSdk from '$docs/components/DocsPages/Sdk/Java'
-import PythonSdk from '$docs/components/DocsPages/Sdk/Python'
+import Sdk from '$docs/components/Pages/Sdk/Overview'
+import JavascriptSdk from '$docs/components/Pages/Sdk/Javascript'
+import JavaSdk from '$docs/components/Pages/Sdk/Java'
+import PythonSdk from '$docs/components/Pages/Sdk/Python'
 // ****
 // API Docs
-import ApiOverview from '$docs/components/DocsPages/Api/Overview'
-import Authentication from '$docs/components/DocsPages/Api/Authentication'
-import ApiExplorer from '$docs/components/DocsPages/ApiExplorer'
+import ApiOverview from '$docs/components/Pages/Api/Overview'
+import Authentication from '$docs/components/Pages/Api/Authentication'
+import ApiExplorer from '$docs/components/Pages/ApiExplorer'
 // Technical Notes Docs
-import TechnicalNotes from '$docs/components/DocsPages/TechnicalNotes'
+import TechnicalNotes from '$docs/components/Pages/TechnicalNotes'
 
 const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 
