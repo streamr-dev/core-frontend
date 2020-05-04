@@ -22,7 +22,7 @@ import routes from '$routes'
 import styles from './infoView.pcss'
 
 type Props = {
-    disabled: boolean,
+    disabled?: boolean,
 }
 
 const MIN_PARTITIONS = 1

@@ -15,7 +15,7 @@ import {
     SecurityIcon,
     getSecurityLevel,
     getSecurityLevelTitle,
-} from '$userpages/components/StreamPage/Show/SecurityView'
+} from '$userpages/components/StreamPage/Edit/SecurityView'
 
 import links from '$shared/../links'
 import {
