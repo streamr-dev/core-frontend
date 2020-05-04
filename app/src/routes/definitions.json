@@ -52,7 +52,6 @@
     "register": "/register",
     "resetPassword": "/resetPassword",
     "root": "/",
-    "platform": "<platform>",
     "signUp": "/signup",
     "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
     "streams": "/core/streams",

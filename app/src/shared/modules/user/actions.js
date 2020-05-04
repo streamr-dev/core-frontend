@@ -40,7 +40,7 @@ export const resetUserData: ReduxActionCreator = createAction(RESET_USER_DATA)
 export const logout = () => (dispatch: Function) => {
     clearStorage()
     dispatch(resetUserData())
-    dispatch(push(routes.platform()))
+    dispatch(push(routes.root()))
 }
 
 // Fetching user data

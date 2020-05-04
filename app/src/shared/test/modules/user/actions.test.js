@@ -111,7 +111,7 @@ describe('user - actions', () => {
                     payload: {
                         method: 'push',
                         args: [
-                            `${process.env.PLATFORM_ORIGIN_URL}`,
+                            '/',
                         ],
                     },
                 },
