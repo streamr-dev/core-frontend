@@ -12,7 +12,6 @@ import Errors from '$ui/Errors'
 import usePending from '$shared/hooks/usePending'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
-import routes from '$routes'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import { docsLinks } from '$shared/../links'
 
