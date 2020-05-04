@@ -111,7 +111,7 @@ describe('user - actions', () => {
                     payload: {
                         method: 'push',
                         args: [
-                            `${process.env.STREAMR_API_URL}/logout`,
+                            `${process.env.PLATFORM_ORIGIN_URL}`,
                         ],
                     },
                 },
