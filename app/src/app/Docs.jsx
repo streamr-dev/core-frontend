@@ -34,9 +34,9 @@ import IntroToProducts from '$docs/components/Pages/Products/IntroToProducts'
 import DataUnions from '$docs/components/Pages/Products/DataUnions'
 // Data Unions Docs
 import IntroToDataUnions from '$docs/components/Pages/DataUnions/IntroToDataUnions'
-import DataUnionsInCore from '$docs/components/Pages/DataUnions/DataUnionsInCore'
+import DataUnionsInCore from '$docs/components/Pages/DataUnions/DataUnionsCore'
 import DataUnionsIntegration from '$docs/components/Pages/DataUnions/DataUnionsIntegration'
-import DataUnionsInSdk from '$docs/components/Pages/DataUnions/DataUnionsInSdk'
+import DataUnionsInSdk from '$docs/components/Pages/DataUnions/DataUnionsSdk'
 // Tutorials Docs
 import BuildingPubSub from '$docs/components/Pages/Tutorials/BuildingPubSub'
 import BuildingCustomModule from '$docs/components/Pages/Tutorials/BuildingCustomModule'
