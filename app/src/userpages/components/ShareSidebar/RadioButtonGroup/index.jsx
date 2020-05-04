@@ -13,7 +13,7 @@ type Props = {
     className?: string,
     onChange?: (string, SyntheticEvent<>) => void,
     disabled?: boolean,
-    onlyShowSelectedOption?: boolean,
+    isCustom?: boolean,
 }
 
 const RadioButtonGroup = ({
@@ -23,6 +23,7 @@ const RadioButtonGroup = ({
     className,
     onChange,
     disabled = false,
+    isCustom,
 }: Props) => {
     const [selection, setSelection] = useState(selectedOption)
 
@@ -32,7 +33,7 @@ const RadioButtonGroup = ({
     }, [selectedOption, setSelection])
 
     const onCheck = useCallback((option: string, event) => {
-        if (disabled || selection === option) {
+        if (disabled) {
             return
         }
         setSelection(option)
@@ -40,7 +41,7 @@ const RadioButtonGroup = ({
         if (onChange) {
             onChange(option, event)
         }
-    }, [disabled, selection, onChange])
+    }, [disabled, onChange])
 
     return (
         <div className={cx(styles.root, className)}>
@@ -51,6 +52,7 @@ const RadioButtonGroup = ({
                             key={option}
                             className={cx(styles.option, {
                                 [styles.selected]: selection === option,
+                                [styles.isCustom]: selection === option && isCustom,
                             })}
                         >
                             <input
@@ -59,7 +61,13 @@ const RadioButtonGroup = ({
                                 name={name}
                                 value={option}
                                 className={styles.radio}
-                                onChange={(event) => onCheck(option, event)}
+                                onChange={() => {
+                                    /* noop, use mousedown so can reset custom when click existing selection */
+                                    /* have to supply onChange otherwise React makes input readOnly, thus mouse handlers don't work */
+                                }}
+                                onClick={(event) => {
+                                    onCheck(option, event)
+                                }}
                                 checked={selection === option}
                                 disabled={disabled}
                             />

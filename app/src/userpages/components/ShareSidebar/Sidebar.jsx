@@ -191,13 +191,12 @@ function UserPermissions({
     isSelected,
     error,
 }) {
-    const detectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
+    const selectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
     // custom handling:
     // if user edits permissions after clicking a preset, preset will be set to custom (if config doesn't match another preset)
     // when user actively clicks the custom tab, it will use whatever permissions were currently set
 
-    const [isCustom, setIsCustom] = useState(detectedGroupName === 'custom')
-    const selectedGroupName = (isCustom && detectedGroupName !== 'custom') ? 'custom' : detectedGroupName
+    const isCustom = State.isCustom(resourceType, selectedGroupName, userPermissions)
 
     const [bind, permissionControlsStyle] = useSlideIn({ isVisible: isSelected })
 
@@ -214,7 +213,13 @@ function UserPermissions({
             <div className={styles.permissionsHeader}>
                 <div className={styles.permissionsHeaderTitle}>
                     <h4 title={userId}>{userId}</h4>
-                    <div className={styles.selectedGroup}>{startCase(selectedGroupName)}</div>
+                    <div
+                        className={cx(styles.selectedGroup, {
+                            [styles.isCustom]: isCustom,
+                        })}
+                    >
+                        {startCase(selectedGroupName)}
+                    </div>
                 </div>
                 <Button
                     kind="secondary"
@@ -233,14 +238,10 @@ function UserPermissions({
                         })}
                         options={permissionGroupOptions}
                         onChange={(name) => {
-                            if (name !== 'custom') {
-                                updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
-                                setIsCustom(false)
-                            } else {
-                                setIsCustom(true)
-                            }
+                            updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))
                         }}
                         selectedOption={selectedGroupName}
+                        isCustom={isCustom}
                     />
                     <div className={styles.permissionsCheckboxes}>
                         {Object.entries(userPermissions).map(([permission, value]) => (
@@ -435,8 +436,8 @@ const ShareSidebar = connect(({ user }) => ({
                 setUserUpdateError(userId, error)
             })))
 
+            if (!isMounted()) { return }
             if (!hasError) {
-                if (!isMounted()) { return }
                 resetUserUpdateError(userId)
             }
         }))
@@ -539,7 +540,6 @@ const ShareSidebar = connect(({ user }) => ({
                     <UserPermissions
                         key={userId}
                         userId={userId}
-                        className={styles.cell}
                         userPermissions={userPermissions}
                         resourceType={resourceType}
                         removeUser={removeUser}

@@ -77,7 +77,6 @@ const PERMISSION_GROUPS = {
             startstop: true,
         },
         owner: getFullPermissions('CANVAS'),
-        custom: {},
     },
     STREAM: {
         default: 'subscriber',
@@ -96,7 +95,6 @@ const PERMISSION_GROUPS = {
             publish: true,
         },
         owner: getFullPermissions('STREAM'),
-        custom: {},
     },
     DASHBOARD: {
         default: 'user',
@@ -110,7 +108,6 @@ const PERMISSION_GROUPS = {
             interact: true,
         },
         owner: getFullPermissions('DASHBOARD'),
-        custom: {},
     },
     PRODUCT: {
         default: 'viewer',
@@ -118,8 +115,11 @@ const PERMISSION_GROUPS = {
             get: true,
         },
         owner: getFullPermissions('PRODUCT'),
-        custom: {},
     },
+}
+
+export function getResourceTypes() {
+    return Object.keys(PERMISSION_GROUPS)
 }
 
 export function getPermissionGroups(resourceType) {
@@ -138,11 +138,27 @@ export function getPermissionsForGroupName(resourceType, groupName = 'default') 
     }
 }
 
+function countMatching(userPermissions1 = {}, userPermissions2 = {}) {
+    return [...new Set(Object.keys(userPermissions1), Object.keys(userPermissions2))].reduce((count, key) => (
+        count + (userPermissions1[key] === userPermissions2[key] ? 1 : 0)
+    ), 0)
+}
+
+export function isCustom(resourceType, groupName, userPermissions = {}) {
+    return !isEqual(userPermissions, getPermissionsForGroupName(resourceType, groupName))
+}
+
 export function findPermissionGroupName(resourceType, userPermissions = {}) {
     const groups = getPermissionGroups(resourceType)
-    return Object.keys(groups).filter((name) => name !== 'default').find((groupName) => (
-        isEqual(userPermissions, getPermissionsForGroupName(resourceType, groupName))
-    )) || 'custom'
+    let maxMatching = -Infinity
+    return Object.keys(groups).filter((name) => name !== 'default').reduce((selectedGroup, groupName) => {
+        const matching = countMatching(userPermissions, getPermissionsForGroupName(resourceType, groupName))
+        if (matching > maxMatching) {
+            maxMatching = matching
+            return groupName
+        }
+        return selectedGroup
+    }, '')
 }
 
 //

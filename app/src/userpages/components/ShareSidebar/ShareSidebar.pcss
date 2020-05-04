@@ -74,7 +74,7 @@
 }
 
 .userPermissions {
-  padding: 1.4um 2um;
+  padding: 1.4um 0;
 
   &:not(:last-child) {
     border-bottom: 1px solid #EFEFEF;
@@ -89,6 +89,7 @@
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
+    padding: 0 2um;
 
     .permissionsHeaderTitle {
       display: flex;
@@ -136,8 +137,9 @@
     opacity: 0;
     transition: opacity 300ms;
     overflow: hidden;
-    will-change: height;
+    will-change: height, opacity;
     background: #FDFDFD;
+    padding: 0 2um;
   }
 
   .selectedGroup {
@@ -149,11 +151,29 @@
     display: inline-block;
     line-height: normal;
     opacity: 1;
+    will-change: opacity, padding, height;
+    height: auto;
+    position: relative;
+
+    &.isCustom::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 0.5um;
+      height: 0.5um;
+      background: #EFEFEF;
+      border-radius: 100%;
+      border: 2px solid white;
+      transform: translate(50%, -50%);
+    }
   }
 
   &.isSelected {
     .selectedGroup {
       opacity: 0;
+      height: 0;
+      padding: 0 4px;
     }
 
     .permissionControls {

@@ -11,6 +11,7 @@
 }
 
 .buttonGrid {
+  padding-top: 0.5um;
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -29,7 +30,6 @@
 }
 
 .option {
-  flex: 1;
   display: flex;
   align-items: center;
 }
@@ -45,11 +45,26 @@
   padding: 2px 0.5um;
   border-radius: 4px;
   max-width: fit-content;
+  position: relative;
+  overflow: visible;
 
   &:not(:disabled):hover {
     color: #323232;
     background: #F2F1F1;
   }
+}
+
+.isCustom .radio:checked + .label::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1um;
+  height: 1um;
+  background: var(--streamrBlue);
+  border-radius: 100%;
+  border: 4px solid white;
+  transform: translate(50%, -50%);
 }
 
 .radio:checked + .label {

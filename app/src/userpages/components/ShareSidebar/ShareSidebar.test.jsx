@@ -187,4 +187,45 @@ describe('ShareSidebar Permission Handling', () => {
             })).toBeTruthy()
         })
     })
+
+    describe('permission group name detection', () => {
+        State.getResourceTypes().slice(0, 1).forEach((resourceType) => {
+            describe(`using ${resourceType}`, () => {
+                it('defaults to default', () => {
+                    const groups = State.getPermissionGroups(resourceType)
+                    const p = State.getPermissionsForGroupName(resourceType, 'default')
+                    const p1 = State.getPermissionsForGroupName(resourceType)
+                    const p2 = State.getPermissionsForGroupName(resourceType, groups.default)
+                    expect(p).toEqual(p1)
+                    expect(p).toEqual(p2)
+                })
+
+                it('detects correct name from exact matching permissions', () => {
+                    const groups = State.getPermissionGroups(resourceType)
+                    Object.keys(groups).filter((name) => name !== 'default').forEach((expectedGroupName) => {
+                        const p = State.getPermissionsForGroupName(resourceType, expectedGroupName)
+                        expect(State.findPermissionGroupName(resourceType, p)).toEqual(expectedGroupName)
+                    })
+                })
+
+                it('detects default group name correctly', () => {
+                    const groups = State.getPermissionGroups(resourceType)
+                    const defaultPermissions = State.getPermissionsForGroupName(resourceType, 'default')
+                    expect(State.findPermissionGroupName(resourceType, defaultPermissions)).toEqual(groups.default) // i.e. not default
+                })
+            })
+        })
+
+        it('detects correct name + isCustom from similar matching permissions', () => {
+            // for CANVAS, user/editor are dissimilar
+            const GROUP_NAME = 'user'
+            const p = State.getPermissionsForGroupName(resourceType, GROUP_NAME)
+            expect(State.isCustom(resourceType, GROUP_NAME, p)).toBeFalsy()
+            const newPermissions = Object.assign({}, p, {
+                edit: true,
+            })
+            expect(State.findPermissionGroupName(resourceType, newPermissions)).toEqual(GROUP_NAME)
+            expect(State.isCustom(resourceType, GROUP_NAME, newPermissions)).toBeTruthy()
+        })
+    })
 })
