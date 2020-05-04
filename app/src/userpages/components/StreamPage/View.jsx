@@ -266,7 +266,14 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.history.storedEvents')}>
                             <Text
-                                value="No stored data. Drop a CSV file here to load some"
+                                value={range.beginDate && range.endDate ? (
+                                    I18n.t('userpages.streams.edit.history.events', {
+                                        start: new Date(range.beginDate).toLocaleDateString(),
+                                        end: new Date(range.endDate).toLocaleDateString(),
+                                    })
+                                ) : (
+                                    I18n.t('userpages.streams.edit.history.noEvents')
+                                )}
                                 readOnly
                                 disabled
                             />
@@ -276,14 +283,7 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.history.deleteEvents')}>
                             <Text
-                                value={range.beginDate && range.endDate ? (
-                                    I18n.t('userpages.streams.edit.history.events', {
-                                        start: new Date(range.beginDate).toLocaleDateString(),
-                                        end: new Date(range.endDate).toLocaleDateString(),
-                                    })
-                                ) : (
-                                    I18n.t('userpages.streams.edit.history.noEvents')
-                                )}
+                                value="Select date"
                                 readOnly
                                 disabled
                             />
