@@ -214,22 +214,24 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                         <Translate value={longDescription} />
                     </p>
                 </TOCSection>
-                <TOCSection id="fields" title="Fields">
-                    {stream.config.fields.map(({ name, type }) => (
-                        <FieldGroup key={name}>
-                            <Field label="Field name">
-                                <Text disabled value={name} readOnly />
-                            </Field>
-                            <Field label="Data type" narrow>
-                                <Text
-                                    disabled
-                                    value={I18n.t(`userpages.streams.fieldTypes.${type}`)}
-                                    readOnly
-                                />
-                            </Field>
-                        </FieldGroup>
-                    ))}
-                </TOCSection>
+                {!!stream.config.fields.length && (
+                    <TOCSection id="fields" title="Fields">
+                        {stream.config.fields.map(({ name, type }) => (
+                            <FieldGroup key={name}>
+                                <Field label="Field name">
+                                    <Text disabled value={name} readOnly />
+                                </Field>
+                                <Field label="Data type" narrow>
+                                    <Text
+                                        disabled
+                                        value={I18n.t(`userpages.streams.fieldTypes.${type}`)}
+                                        readOnly
+                                    />
+                                </Field>
+                            </FieldGroup>
+                        ))}
+                    </TOCSection>
+                )}
                 <TOCSection id="historicalData" title="Historical Data">
                     <FormGroup>
                         <Field label="Stored data">
