@@ -1104,6 +1104,18 @@ msgstr "Ethereum Address"
 msgid "modal##whitelistAdd##addressPlaceholder"
 msgstr "0x..."
 
+msgid "modal##whitelistRemove##title"
+msgstr "Remove from whitelist?"
+
+msgid "modal##whitelistRemove##message"
+msgstr ""
+"If you remove this buyer from your whitelist they will "
+"<br />"
+"not be able to resubscribe. Do you want to continue?"
+
+msgid "modal##whitelistRemove##remove"
+msgstr "Remove"
+
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
 

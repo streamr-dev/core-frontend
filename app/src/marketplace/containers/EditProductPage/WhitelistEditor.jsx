@@ -9,6 +9,7 @@ import Toggle from '$shared/components/Toggle'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import useModal from '$shared/hooks/useModal'
+import useCopy from '$shared/hooks/useCopy'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 
 import useWhitelist from './useWhitelist'
@@ -18,6 +19,11 @@ const Container = styled.div`
     border-radius: 4px;
     border: 1px solid #ebebeb;
     font-size: 14px;
+`
+
+const Rows = styled.div`
+    height: 279px;
+    overflow: auto;
 `
 
 const TableRow = styled.span`
@@ -44,10 +50,11 @@ const TableColumnBase = styled.span`
 const TableHeader = styled(TableColumnBase)`
     font-weight: 500;
     letter-spacing: 0px;
+    border-bottom: 1px solid #ebebeb;
 `
 
 const TableColumn = styled(TableColumnBase)`
-    border-top: 1px solid #ebebeb;
+    border-bottom: 1px solid #ebebeb;
 
     ${TableRow}:hover & {
         background-color: #f8f8f8;
@@ -134,7 +141,8 @@ type Props = {
     items: Array<WhitelistItem>,
     onEnableChanged: (boolean) => void,
     addDialog: any,
-    removeAddress: (string) => any,
+    removeDialog: any,
+    copy: (string) => void,
 }
 
 export const WhitelistEditorComponent = ({
@@ -143,7 +151,8 @@ export const WhitelistEditorComponent = ({
     items,
     onEnableChanged,
     addDialog,
-    removeAddress,
+    removeDialog,
+    copy,
 }: Props) => (
     <Container className={className}>
         <TableRow>
@@ -151,35 +160,42 @@ export const WhitelistEditorComponent = ({
             <TableHeader>{I18n.t('editProductPage.whitelist.header.status')}</TableHeader>
             <TableHeader />
         </TableRow>
-        {items.map((item, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <TableRow key={index}>
-                <TableColumn disabled={!enabled}>
-                    <span>{item.address}</span>
-                </TableColumn>
-                <TableColumn disabled={!enabled} center>
-                    <Status
-                        status={item.status}
-                        disabled={!enabled}
-                        data-tooltip={I18n.t(`editProductPage.whitelist.status.${item.status}`)}
-                    />
-                </TableColumn>
-                <TableColumn disabled={!enabled} center>
-                    <StyledDropdownActions
-                        title={<Meatball alt="Select" />}
-                        noCaret
-                        disabled={!enabled}
-                    >
-                        <DropdownActions.Item onClick={() => console.log('copy')}>
-                            {I18n.t('editProductPage.whitelist.copy')}
-                        </DropdownActions.Item>
-                        <DropdownActions.Item onClick={() => removeAddress(item.address)}>
-                            {I18n.t('editProductPage.whitelist.remove')}
-                        </DropdownActions.Item>
-                    </StyledDropdownActions>
-                </TableColumn>
-            </TableRow>
-        ))}
+        <Rows>
+            {items.map((item, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <TableRow key={index}>
+                    <TableColumn disabled={!enabled}>
+                        <span>{item.address}</span>
+                    </TableColumn>
+                    <TableColumn disabled={!enabled} center>
+                        <Status
+                            status={item.status}
+                            disabled={!enabled}
+                            data-tooltip={I18n.t(`editProductPage.whitelist.status.${item.status}`)}
+                        />
+                    </TableColumn>
+                    <TableColumn disabled={!enabled} center>
+                        <StyledDropdownActions
+                            title={<Meatball alt="Select" />}
+                            noCaret
+                            disabled={!enabled}
+                        >
+                            <DropdownActions.Item onClick={() => copy(item.address)}>
+                                {I18n.t('editProductPage.whitelist.copy')}
+                            </DropdownActions.Item>
+                            {item.status !== 'removed' && (
+                                <DropdownActions.Item onClick={() => removeDialog.open({
+                                    address: item.address,
+                                })}
+                                >
+                                    {I18n.t('editProductPage.whitelist.remove')}
+                                </DropdownActions.Item>
+                            )}
+                        </StyledDropdownActions>
+                    </TableColumn>
+                </TableRow>
+            ))}
+        </Rows>
         <Controls>
             <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
             <StyledToggle
@@ -204,8 +220,10 @@ export const WhitelistEditorComponent = ({
 )
 
 export const WhitelistEditor = () => {
-    const { isEnabled, setEnabled, items, reject } = useWhitelist()
+    const { isEnabled, setEnabled, items } = useWhitelist()
     const { api: addDialog } = useModal('addWhitelistAddress')
+    const { api: removeDialog } = useModal('removeWhitelistAddress')
+    const { copy } = useCopy()
 
     // TODO: Email address must be provided when we enable whitelist
 
@@ -215,7 +233,8 @@ export const WhitelistEditor = () => {
             enabled={isEnabled}
             onEnableChanged={(value) => setEnabled(value)}
             addDialog={addDialog}
-            removeAddress={reject}
+            removeDialog={removeDialog}
+            copy={copy}
         />
     )
 }

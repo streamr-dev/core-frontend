@@ -25,12 +25,12 @@ const StyledLabel = styled(Label)`
     align-self: start;
 `
 
-export type Props = {
+export type AddModalProps = {
     onClose: () => void,
     onSave: (string) => void,
 }
 
-const WhitelistAddAddressModal = ({ onClose, onSave }: Props) => {
+const WhitelistAddAddressModal = ({ onClose, onSave }: AddModalProps) => {
     const [address, setAddress] = useState('')
 
     return (
@@ -70,7 +70,7 @@ const WhitelistAddAddressModal = ({ onClose, onSave }: Props) => {
     )
 }
 
-export const WhitelistAddAddressModalWithWeb3 = withWeb3(WhitelistAddAddressModal)
+const WhitelistAddAddressModalWithWeb3 = withWeb3(WhitelistAddAddressModal)
 
 export const WhitelistAddModal = () => {
     const { api, isOpen } = useModal('addWhitelistAddress')
@@ -93,6 +93,72 @@ export const WhitelistAddModal = () => {
                 save: false,
                 redirect: false,
             })}
+        />
+    )
+}
+
+export type RemoveModalProps = {
+    onClose: () => void,
+    onSave: (string) => void,
+    address: string,
+}
+
+const WhitelistRemoveAddressModal = ({ onClose, onSave, address }: RemoveModalProps) => (
+    <ModalPortal>
+        <Dialog
+            title={I18n.t('modal.whitelistRemove.title')}
+            onClose={onClose}
+            renderActions={() => (
+                <Footer>
+                    <Buttons
+                        actions={{
+                            cancel: {
+                                title: I18n.t('modal.common.cancel'),
+                                onClick: onClose,
+                                kind: 'link',
+                            },
+                            remove: {
+                                title: I18n.t('modal.whitelistRemove.remove'),
+                                kind: 'destructive',
+                                onClick: () => onSave(address),
+                                disabled: !isEthereumAddress(address),
+                            },
+                        }}
+                    />
+                </Footer>
+            )}
+        >
+            <Translate value="modal.whitelistRemove.message" dangerousHTML />
+        </Dialog>
+    </ModalPortal>
+)
+
+const WhitelistRemoveAddressModalWithWeb3 = withWeb3(WhitelistRemoveAddressModal)
+
+export const WhitelistRemoveModal = () => {
+    const { api, isOpen, value } = useModal('removeWhitelistAddress')
+    const { reject } = useWhitelist()
+
+    if (!isOpen) {
+        return null
+    }
+
+    const { address } = value || {}
+
+    return (
+        <WhitelistRemoveAddressModalWithWeb3
+            onSave={(result) => {
+                reject(result)
+                api.close({
+                    save: true,
+                    redirect: true,
+                })
+            }}
+            onClose={() => api.close({
+                save: false,
+                redirect: false,
+            })}
+            address={address}
         />
     )
 }
