@@ -23,7 +23,7 @@ import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
-import styles from './streamShowView.pcss'
+import styles from './edit.pcss'
 
 const { lg } = breakpoints
 
