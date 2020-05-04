@@ -153,7 +153,7 @@ jest.mock('$docs/components/Pages/DataUnions/IntroToDataUnions', () => ({
         </div>
     ),
 }))
-jest.mock('$docs/components/Pages/DataUnions/DataUnionsInCore', () => ({
+jest.mock('$docs/components/Pages/DataUnions/DataUnionsCore', () => ({
     __esModule: true,
     default: () => (
         <div>/docs/data-unions/build-data-unions-in-core</div>
@@ -165,7 +165,7 @@ jest.mock('$docs/components/Pages/DataUnions/DataUnionsIntegration', () => ({
         <div>/docs/data-unions/integrate-data-unions-into-your-app</div>
     ),
 }))
-jest.mock('$docs/components/Pages/DataUnions/DataUnionsInSdk', () => ({
+jest.mock('$docs/components/Pages/DataUnions/DataUnionsSdk', () => ({
     __esModule: true,
     default: () => (
         <div>/docs/data-unions/build-data-unions-with-sdk</div>
