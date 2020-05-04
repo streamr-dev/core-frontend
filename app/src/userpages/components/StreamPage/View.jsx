@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Children, useCallback } from 'react'
+import React, { Children, useCallback, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
@@ -13,6 +13,9 @@ import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
+import { getRange } from '$userpages/modules/userPageStreams/actions'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import useOnMount from '$shared/hooks/useOnMount'
 import Preview, { Controls } from './Edit/PreviewView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
 import { convertFromStorageDays } from './Edit/HistoryView'
@@ -173,6 +176,18 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
         dispatch(push(routes.streams()))
     }, [dispatch])
 
+    const [range, setRange] = useState({})
+
+    const isMounted = useIsMounted()
+
+    useOnMount(async () => {
+        const r = await dispatch(getRange(stream.id))
+
+        if (isMounted() && r) {
+            setRange(r)
+        }
+    })
+
     return (
         <Layout
             {...props}
@@ -187,27 +202,36 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
             )}
         >
             <TOCPage title={stream.name}>
-                <TOCSection id="details" linkTitle="Details">
+                <TOCSection
+                    id="details"
+                    linkTitle={I18n.t('userpages.streams.edit.details.nav.details')}
+                >
                     {!!stream.description && (
                         <Details>
-                            <Detail title="Description">
+                            <Detail title={I18n.t('userpages.streams.edit.details.description')}>
                                 {stream.description}
                             </Detail>
                         </Details>
                     )}
                     <Details>
-                        <Detail title="Stream ID">
+                        <Detail title={I18n.t('userpages.streams.edit.details.streamId')}>
                             {stream.id}
                         </Detail>
-                        <Detail title="Partitions">
+                        <Detail title={I18n.t('userpages.streams.partitionsLabel')}>
                             {stream.partitions}
                         </Detail>
                     </Details>
                 </TOCSection>
-                <TOCSection id="preview" title="Preview">
+                <TOCSection
+                    id="preview"
+                    title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                >
                     <Preview currentUser={currentUser} stream={stream} />
                 </TOCSection>
-                <TOCSection id="security" title="Security">
+                <TOCSection
+                    id="security"
+                    title={I18n.t('userpages.streams.edit.details.nav.security')}
+                >
                     <p>
                         <Translate value={shortDescription} tag="strong" />
                         {' '}
@@ -215,13 +239,16 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                     </p>
                 </TOCSection>
                 {!!stream.config.fields.length && (
-                    <TOCSection id="fields" title="Fields">
+                    <TOCSection
+                        id="fields"
+                        title={I18n.t('userpages.streams.edit.details.nav.fields')}
+                    >
                         {stream.config.fields.map(({ name, type }) => (
                             <FieldGroup key={name}>
-                                <Field label="Field name">
+                                <Field label={I18n.t('userpages.streams.edit.configure.fieldName')}>
                                     <Text disabled value={name} readOnly />
                                 </Field>
-                                <Field label="Data type" narrow>
+                                <Field label={I18n.t('userpages.streams.edit.configure.dataType')} narrow>
                                     <Text
                                         disabled
                                         value={I18n.t(`userpages.streams.fieldTypes.${type}`)}
@@ -232,9 +259,12 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                         ))}
                     </TOCSection>
                 )}
-                <TOCSection id="historicalData" title="Historical Data">
+                <TOCSection
+                    id="historicalData"
+                    title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                >
                     <FormGroup>
-                        <Field label="Stored data">
+                        <Field label={I18n.t('userpages.streams.edit.history.storedEvents')}>
                             <Text
                                 value="No stored data. Drop a CSV file here to load some"
                                 readOnly
@@ -244,13 +274,24 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                         <Field narrow desktopOnly />
                     </FormGroup>
                     <FormGroup>
-                        <Field label="Delete data up to and including">
-                            <Text value="Select date" readOnly disabled />
+                        <Field label={I18n.t('userpages.streams.edit.history.deleteEvents')}>
+                            <Text
+                                value={range.beginDate && range.endDate ? (
+                                    I18n.t('userpages.streams.edit.history.events', {
+                                        start: new Date(range.beginDate).toLocaleDateString(),
+                                        end: new Date(range.endDate).toLocaleDateString(),
+                                    })
+                                ) : (
+                                    I18n.t('userpages.streams.edit.history.noEvents')
+                                )}
+                                readOnly
+                                disabled
+                            />
                         </Field>
                         <Field narrow desktopOnly />
                     </FormGroup>
                     <FormGroup>
-                        <Field label="Period to retain historical data until auto-removal">
+                        <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>
                             <Text
                                 value={storagePeriod}
                                 readOnly
