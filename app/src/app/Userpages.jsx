@@ -14,7 +14,7 @@ import ErrorPage from '$shared/components/ErrorPage'
 // Userpages
 import DashboardList from '$userpages/components/DashboardPage/List'
 import CanvasList from '$userpages/components/CanvasPage/List'
-import StreamShowView from '$userpages/components/StreamPage/Show'
+import StreamShowView from '$userpages/components/StreamPage/Edit'
 import StreamListView from '$userpages/components/StreamPage/List'
 import StreamLivePreview from '$userpages/components/StreamLivePreview'
 import TransactionList from '$userpages/components/TransactionPage/List'

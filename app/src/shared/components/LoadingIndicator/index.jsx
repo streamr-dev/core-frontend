@@ -12,9 +12,9 @@ type Props = {
     className?: ?string
 }
 
-const LoadingIndicator = ({ loading, className }: Props) => {
-    loading = !!loading
-    const [loadingState, setLoadingState] = useState(loading)
+const LoadingIndicator = ({ loading: loadingProp, className }: Props) => {
+    const isLoading = !!loadingProp
+    const [loadingState, setLoadingState] = useState(isLoading)
 
     // debounce loading flag changes to avoid flickering loading indicator
     const updateLoading = useDebounced(useCallback((value) => {
@@ -22,8 +22,8 @@ const LoadingIndicator = ({ loading, className }: Props) => {
     }, []), 1000)
 
     useEffect(() => {
-        updateLoading(loading)
-    }, [loading, setLoadingState, updateLoading])
+        updateLoading(isLoading)
+    }, [isLoading, setLoadingState, updateLoading])
 
     const transitions = useTransition(loadingState, null, {
         config: {

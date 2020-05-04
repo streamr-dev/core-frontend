@@ -4,7 +4,7 @@ import React, { type Node } from 'react'
 import cx from 'classnames'
 
 import Layout from '$shared/components/Layout'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 
 import styles from './core.pcss'
 

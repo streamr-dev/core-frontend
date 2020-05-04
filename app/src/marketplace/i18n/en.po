@@ -708,7 +708,9 @@ msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"
 
 msgid "modal##readyToPublish##terms"
-msgstr "I have the right to publish this<br />data as specified in the <a href=%{publisherTermsLink}>Terms</a>."
+msgstr ""
+"I have the right to publish this<br />data as specified in the "
+"<a href=%{publisherTermsLink} target=\"_blank\" rel=\"noopener noreferrer\">Terms</a>."
 
 msgid "modal##readyToUnpublish##message"
 msgstr "Do you want to unpublish this product?"

@@ -17,6 +17,7 @@ export type UserPageStreamsState = {
         id: ?StreamId,
     },
     fetching: boolean,
+    updating: boolean,
     error?: ?ErrorInUi,
     savingStreamFields: boolean,
     csvUpload: ?CsvUploadState,

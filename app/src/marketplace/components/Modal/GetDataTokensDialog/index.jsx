@@ -9,9 +9,8 @@ import NoDataPng2x from '$shared/assets/images/wallet_no_data@2x.png'
 import Dialog from '$shared/components/Dialog'
 import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
-import { isMobile } from '$shared/utils/platform'
 
-import styles from './getDataTokensDialog.pcss'
+import styles from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/web3NotDetectedDialog.pcss'
 
 export type Props = {
     onCancel: () => void,
@@ -22,43 +21,38 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
         <Dialog
             title={I18n.t('modal.getDataTokensDialog.title')}
             onClose={onCancel}
+            renderActions={() => (
+                <div className={styles.buttonContainer}>
+                    <Button
+                        kind="secondary"
+                        tag={Link}
+                        href="https://uniswap.io"
+                        target="_blank"
+                    >
+                        <Translate value="modal.getCryptoDialog.link.uniswap" />
+                    </Button>
+                    <Button
+                        kind="secondary"
+                        tag={Link}
+                        href="https://www.bancor.network/"
+                        target="_blank"
+                    >
+                        <Translate value="modal.getDataTokensDialog.link.bancor" />
+                    </Button>
+                    <Button
+                        kind="secondary"
+                        tag={Link}
+                        href="https://binance.com"
+                        target="_blank"
+                    >
+                        <Translate value="modal.getCryptoDialog.link.binance" />
+                    </Button>
+                </div>
+            )}
         >
             <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt={I18n.t('error.wallet')} />
-            <Translate
-                value={`modal.getDataTokensDialog.${isMobile() ? 'mobileMessage' : 'message'}`}
-                className={styles.message}
-                tag="p"
-                dangerousHTML
-            />
-            <div className={styles.buttonContainer}>
-                <Button
-                    className={styles.externalButton}
-                    kind="secondary"
-                    tag={Link}
-                    href="https://uniswap.io"
-                    target="_blank"
-                >
-                    <Translate value="modal.getCryptoDialog.link.uniswap" />
-                </Button>
-                <Button
-                    className={styles.externalButton}
-                    kind="secondary"
-                    tag={Link}
-                    href="https://www.bancor.network/"
-                    target="_blank"
-                >
-                    <Translate value="modal.getDataTokensDialog.link.bancor" />
-                </Button>
-                <Button
-                    className={styles.externalButton}
-                    kind="secondary"
-                    tag={Link}
-                    href="https://binance.com"
-                    target="_blank"
-                >
-                    <Translate value="modal.getCryptoDialog.link.binance" />
-                </Button>
-            </div>
+            <Translate value="modal.getDataTokensDialog.message" tag="p" dangerousHTML className={styles.message} />
+            <Translate value="modal.getDataTokensDialog.mobileMessage" tag="p" dangerousHTML className={styles.mobileMessage} />
         </Dialog>
     </ModalPortal>
 )

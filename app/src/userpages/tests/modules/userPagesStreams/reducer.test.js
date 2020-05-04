@@ -9,6 +9,7 @@ const initialState = {
     },
     savingStreamFields: false,
     fetching: false,
+    updating: false,
     deleting: false,
     error: null,
     csvUpload: null,
@@ -45,6 +46,16 @@ describe('Stream reducer', () => {
         })
     })
 
+    describe(actions.UPDATE_STREAM_REQUEST, () => {
+        it('raises the `updating` flag', () => {
+            assert.ok(reducer({
+                updating: false,
+            }, {
+                type: actions.UPDATE_STREAM_REQUEST,
+            }).updating, actions.UPDATE_STREAM_REQUEST)
+        })
+    })
+
     describe('SUCCESS actions', () => {
         describe('adding the stream on GET_STREAM_SUCCESS, CREATE_STREAM_SUCCESS', () => {
             it('must add the stream if it does not exist', () => {
@@ -52,7 +63,6 @@ describe('Stream reducer', () => {
                     actions.CREATE_STREAM_SUCCESS,
                     actions.GET_STREAM_SUCCESS,
                     actions.SAVE_STREAM_FIELDS_SUCCESS,
-                    actions.UPDATE_STREAM_SUCCESS,
                     actions.CREATE_STREAM_SUCCESS,
                     actions.GET_STREAM_SUCCESS,
                 ].forEach((action) => {
@@ -70,6 +80,25 @@ describe('Stream reducer', () => {
                         fetching: false,
                         error: null,
                     })
+                })
+            })
+
+            it('must add the stream if it does not exist - UPDATE_STREAM_SUCCESS', () => {
+                const stream = {
+                    id: 'moi',
+                    field: 'hei',
+                }
+
+                assert.deepStrictEqual(reducer({
+                    ids: [],
+                }, {
+                    type: actions.UPDATE_STREAM_SUCCESS,
+                    stream: stream.id,
+                }), {
+                    ids: [],
+                    fetching: false,
+                    updating: false,
+                    error: null,
                 })
             })
 
@@ -116,6 +145,16 @@ describe('Stream reducer', () => {
                 })
 
                 assert.deepStrictEqual(reducerState, expectedState)
+            })
+        })
+
+        describe(actions.UPDATE_STREAM_SUCCESS, () => {
+            it('lowers the `updating` flag', () => {
+                assert.ok(!reducer({
+                    updating: true,
+                }, {
+                    type: actions.UPDATE_STREAM_SUCCESS,
+                }).updating, actions.UPDATE_STREAM_SUCCESS)
             })
         })
 
@@ -167,6 +206,16 @@ describe('Stream reducer', () => {
 
                 assert.ok(!result.fetching)
                 assert.deepEqual(error, result.error)
+            })
+        })
+
+        describe(actions.UPDATE_STREAM_FAILURE, () => {
+            it('lowers the `updating` flag', () => {
+                assert.ok(!reducer({
+                    updating: true,
+                }, {
+                    type: actions.UPDATE_STREAM_FAILURE,
+                }).updating, actions.UPDATE_STREAM_FAILURE)
             })
         })
     })
