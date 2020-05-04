@@ -1,17 +1,22 @@
 // @flow
 
-import React, { Children } from 'react'
+import React, { Children, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
+import { push } from 'connected-react-router'
+import { useDispatch } from 'react-redux'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
 import { SM, MD, LG, XL, MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
+import BackButton from '$shared/components/BackButton'
+import Toolbar from '$shared/components/Toolbar'
 import Preview, { Controls } from './Edit/PreviewView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
 import { convertFromStorageDays } from './Edit/HistoryView'
+import routes from '$routes'
 
 const Details = styled.div`
     border: solid #e7e7e7;
@@ -162,8 +167,25 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
 
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
 
+    const dispatch = useDispatch()
+
+    const onBack = useCallback(() => {
+        dispatch(push(routes.streams()))
+    }, [dispatch])
+
     return (
-        <Layout {...props}>
+        <Layout
+            {...props}
+            hideNavOnDesktop
+            navComponent={(
+                <Toolbar
+                    altMobileLayout
+                    left={(
+                        <BackButton onBack={onBack} />
+                    )}
+                />
+            )}
+        >
             <TOCPage title={stream.name}>
                 <TOCSection id="details" linkTitle="Details">
                     <Details>
