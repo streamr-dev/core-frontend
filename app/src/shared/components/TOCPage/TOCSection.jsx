@@ -7,7 +7,7 @@ import TOCBusStop from './TOCBusStop'
 
 type Props = {
     id: string,
-    title: string | Element<any>,
+    title?: string | Element<any>,
     children?: Node,
     onlyDesktop?: boolean,
 }
@@ -37,10 +37,14 @@ const Title = styled.h3`
 
 export const TOCSection = ({ id, title, children, onlyDesktop }: Props) => (
     <Section onlyDesktop={onlyDesktop}>
-        <Title>
+        {title ? (
+            <Title>
+                <TOCBusStop name={id} />
+                {title}
+            </Title>
+        ) : (
             <TOCBusStop name={id} />
-            {title}
-        </Title>
+        )}
         {children}
     </Section>
 )
