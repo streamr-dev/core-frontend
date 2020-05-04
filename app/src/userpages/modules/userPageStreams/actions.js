@@ -386,7 +386,7 @@ export const createStream = (options: { name: string, description: ?string }) =>
         services.postStream(options)
             .then((data: Stream) => {
                 Notification.push({
-                    title: `Stream ${data.name} created successfully!`,
+                    title: 'Stream created successfully!',
                     icon: NotificationIcon.CHECKMARK,
                 })
                 return data
