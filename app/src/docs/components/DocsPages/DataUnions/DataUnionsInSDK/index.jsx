@@ -3,7 +3,7 @@
 import React from 'react'
 import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import DataUnionsContent from '$docs/content/dataUnions/dataUnionsInSDK.mdx'
+import DataUnionsContent from '$docs/content/dataUnions/dataUnionsInSdk.mdx'
 
 const DataUnions = () => (
     <DocsLayout>

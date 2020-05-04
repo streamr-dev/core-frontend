@@ -49,10 +49,10 @@ jest.mock('$docs/components/DocsPages/Streams/UsingStreamsViaApi', () => ({
         </div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/Streams/UsingStreamsViaSDK', () => ({
+jest.mock('$docs/components/DocsPages/Streams/UsingStreamsViaSdk', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/streams/using-streams-via-sdks</div>
+        <div>/docs/streams/using-streams-via-sdk</div>
     ),
 }))
 jest.mock('$docs/components/DocsPages/Streams/Partitioning', () => ({
@@ -165,7 +165,7 @@ jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsIntegration', () => (
         <div>/docs/data-unions/integrate-data-unions-into-your-app</div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsInSDK', () => ({
+jest.mock('$docs/components/DocsPages/DataUnions/DataUnionsInSdk', () => ({
     __esModule: true,
     default: () => (
         <div>/docs/data-unions/build-data-unions-with-sdk</div>
@@ -216,40 +216,40 @@ jest.mock('$docs/components/DocsPages/Marketplace/IntroToMarketplace', () => ({
         </div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/Sdks/SdkOverview', () => ({
+jest.mock('$docs/components/DocsPages/Sdk/Overview', () => ({
     __esModule: true,
     default: () => (
         <div>
-            /docs/sdks
-            /docs/sdks/overview
+            /docs/sdk
+            /docs/sdk/overview
         </div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/Sdks/JavascriptSdk', () => ({
+jest.mock('$docs/components/DocsPages/Sdk/Javascript', () => ({
     __esModule: true,
     default: () => (
         <div>
-            /docs/sdks/javascript-sdk
+            /docs/sdk/javascript-sdk
         </div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/Sdks/JavaSdk', () => ({
+jest.mock('$docs/components/DocsPages/Sdk/Java', () => ({
     __esModule: true,
     default: () => (
         <div>
-            /docs/sdks/java-sdk
+            /docs/sdk/java-sdk
         </div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/Sdks/PythonSdk', () => ({
+jest.mock('$docs/components/DocsPages/Sdk/Python', () => ({
     __esModule: true,
     default: () => (
         <div>
-            /docs/sdks/python-sdk
+            /docs/sdk/python-sdk
         </div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/API/ApiOverview', () => ({
+jest.mock('$docs/components/DocsPages/Api/Overview', () => ({
     __esModule: true,
     default: () => (
         <div>
@@ -258,7 +258,7 @@ jest.mock('$docs/components/DocsPages/API/ApiOverview', () => ({
         </div>
     ),
 }))
-jest.mock('$docs/components/DocsPages/API/Authentication', () => ({
+jest.mock('$docs/components/DocsPages/Api/Authentication', () => ({
     __esModule: true,
     default: () => (
         <div>/docs/api/authentication</div>

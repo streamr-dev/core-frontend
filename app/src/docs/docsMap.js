@@ -285,28 +285,28 @@ export const generateMap = ({ dataUnions: includeDataUnions = !!process.env.DATA
     },
     SDKs: {
         root: {
-            path: docsLinks.sdks,
+            path: docsLinks.sdk,
             section: 'SDKs',
             title: 'SDKs',
-            filePath: 'Sdks/SdkOverview/sdksOverview.mdx',
+            filePath: 'sdk/overview.mdx',
         },
         'JavaScript SDK': {
             path: docsLinks.javascriptSdk,
             section: 'SDKs',
             title: 'JavaScript SDK',
-            filePath: 'Sdks/JavaScriptSdk/javascriptSdk.mdx',
+            filePath: 'sdk/javascript.mdx',
         },
         'Java SDK': {
             path: docsLinks.javaSdk,
             section: 'SDKs',
             title: 'Java SDK',
-            filePath: 'Sdks/JavaSdk/java.mdx',
+            filePath: 'sdk/java.mdx',
         },
         'Python SDK': {
             path: docsLinks.pythonSdk,
             section: 'SDKs',
             title: 'Python SDK',
-            filePath: 'Sdks/PythonSdk/python.mdx',
+            filePath: 'sdk/python.mdx',
         },
     },
     API: {
@@ -314,13 +314,13 @@ export const generateMap = ({ dataUnions: includeDataUnions = !!process.env.DATA
             path: docsLinks.api,
             section: 'API',
             title: 'API overview',
-            filePath: 'api/apiOverview.mdx',
+            filePath: 'api/overview.mdx',
         },
         'API overview': {
             path: docsLinks.apiOverview,
             section: 'API',
             title: 'API overview',
-            filePath: 'api/apiOverview.mdx',
+            filePath: 'api/overview.mdx',
         },
         Authentication: {
             path: docsLinks.authentication,

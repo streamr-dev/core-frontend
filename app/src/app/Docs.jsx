@@ -16,7 +16,7 @@ import GettingStarted from '$docs/components/DocsPages/GettingStarted'
 import IntroToStreams from '$docs/components/DocsPages/Streams/IntroToStreams'
 import UsingStreamsInCore from '$docs/components/DocsPages/Streams/UsingStreamsInCore'
 import UsingStreamsViaApi from '$docs/components/DocsPages/Streams/UsingStreamsViaApi'
-import UsingStreamsViaSDK from '$docs/components/DocsPages/Streams/UsingStreamsViaSDK'
+import UsingStreamsViaSdk from '$docs/components/DocsPages/Streams/UsingStreamsViaSdk'
 import Partitioning from '$docs/components/DocsPages/Streams/Partitioning'
 import IntegrationPatterns from '$docs/components/DocsPages/Streams/IntegrationPatterns'
 import EndToEndEncryption from '$docs/components/DocsPages/Streams/EndToEndEncryption'
@@ -36,7 +36,7 @@ import DataUnions from '$docs/components/DocsPages/Products/DataUnions'
 import IntroToDataUnions from '$docs/components/DocsPages/DataUnions/IntroToDataUnions'
 import DataUnionsInCore from '$docs/components/DocsPages/DataUnions/DataUnionsInCore'
 import DataUnionsIntegration from '$docs/components/DocsPages/DataUnions/DataUnionsIntegration'
-import DataUnionsInSDK from '$docs/components/DocsPages/DataUnions/DataUnionsInSDK'
+import DataUnionsInSdk from '$docs/components/DocsPages/DataUnions/DataUnionsInSdk'
 // Tutorials Docs
 import BuildingPubSub from '$docs/components/DocsPages/Tutorials/BuildingPubSub'
 import BuildingCustomModule from '$docs/components/DocsPages/Tutorials/BuildingCustomModule'
@@ -48,14 +48,14 @@ import UsingCanvasesInCore from '$docs/components/DocsPages/Core/UsingCanvasesIn
 // Marketplace Docs
 import IntroToMarketplace from '$docs/components/DocsPages/Marketplace/IntroToMarketplace'
 // SDK Docs
-import SDKs from '$docs/components/DocsPages/Sdks/SdkOverview'
-import JavascriptSDK from '$docs/components/DocsPages/Sdks/JavascriptSdk'
-import JavaSDK from '$docs/components/DocsPages/Sdks/JavaSdk'
-import PythonSDK from '$docs/components/DocsPages/Sdks/PythonSdk'
+import Sdk from '$docs/components/DocsPages/Sdk/Overview'
+import JavascriptSdk from '$docs/components/DocsPages/Sdk/Javascript'
+import JavaSdk from '$docs/components/DocsPages/Sdk/Java'
+import PythonSdk from '$docs/components/DocsPages/Sdk/Python'
 // ****
 // API Docs
-import ApiOverview from '$docs/components/DocsPages/API/ApiOverview'
-import Authentication from '$docs/components/DocsPages/API/Authentication'
+import ApiOverview from '$docs/components/DocsPages/Api/Overview'
+import Authentication from '$docs/components/DocsPages/Api/Authentication'
 import ApiExplorer from '$docs/components/DocsPages/ApiExplorer'
 // Technical Notes Docs
 import TechnicalNotes from '$docs/components/DocsPages/TechnicalNotes'
@@ -72,7 +72,7 @@ const DocsRouter = () => ([
     <Redirect exact from={links.streams} to={links.introToStreams} key="StreamsRoot" />,
     <Route exact path={links.streamsInCore} component={UsingStreamsInCore} key="UsingStreamsInCore" />,
     <Route exact path={links.streamsViaApi} component={UsingStreamsViaApi} key="UsingStreamsViaApi" />,
-    <Route exact path={links.streamsViaSdk} component={UsingStreamsViaSDK} key="UsingStreamsViaSDK" />,
+    <Route exact path={links.streamsViaSdk} component={UsingStreamsViaSdk} key="UsingStreamsViaSdk" />,
     <Route exact path={links.partitioning} component={Partitioning} key="Partitioning" />,
     <Route exact path={links.integrationPatterns} component={IntegrationPatterns} key="IntegrationPatterns" />,
     <Route exact path={links.endToEndEncryption} component={EndToEndEncryption} key="EndToEndEncryption" />,
@@ -95,7 +95,7 @@ const DocsRouter = () => ([
         <Redirect exact from={links.dataUnions} to={links.introToDataUnions} key="DataUnionsRoot" />,
         <Route exact path={links.dataUnionsInCore} component={DataUnionsInCore} key="DataUnionsInCore" />,
         <Route exact path={links.integrateDataUnions} component={DataUnionsIntegration} key="DataUnionsIntegration" />,
-        <Route exact path={links.dataUnionsWithSdk} component={DataUnionsInSDK} key="DataUnionsInSDK" />,
+        <Route exact path={links.dataUnionsWithSdk} component={DataUnionsInSdk} key="DataUnionsInSdk" />,
     ] : []),
     // Module Reference routes
     <Route
@@ -184,12 +184,12 @@ const DocsRouter = () => ([
     <Route exact path={links.introToMarketplace} component={IntroToMarketplace} key="IntroToMarketplace" />,
     <Redirect exact from={links.marketplace} to={links.introToMarketplace} key="MarketplaceRoot" />,
     <Route exact path={links.marketplaceDataunions} component={DataUnions} key="DataUnions" />,
-    // SDKs Routes
-    <Route exact path={links.sdksOverview} component={SDKs} key="SDKsOverviewPage" />,
-    <Redirect exact from={links.sdks} to={links.sdksOverview} key="SdkRoot" />,
-    <Route exact path={links.javascriptSdk} component={JavascriptSDK} key="JavascriptSDKPage" />,
-    <Route exact path={links.javaSdk} component={JavaSDK} key="JavaSDKPage" />,
-    <Route exact path={links.pythonSdk} component={PythonSDK} key="PythonSDK" />,
+    // SDK Routes
+    <Route exact path={links.sdkOverview} component={Sdk} key="SdkOverviewPage" />,
+    <Redirect exact from={links.sdk} to={links.sdkOverview} key="SdkRoot" />,
+    <Route exact path={links.javascriptSdk} component={JavascriptSdk} key="JavascriptSdkPage" />,
+    <Route exact path={links.javaSdk} component={JavaSdk} key="JavaSdkPage" />,
+    <Route exact path={links.pythonSdk} component={PythonSdk} key="PythonSdk" />,
     // API routes
     <Route exact path={links.apiOverview} component={ApiOverview} key="ApiOverview" />,
     <Redirect exact from={links.api} to={links.apiOverview} key="ApiOverview" />,
@@ -199,7 +199,7 @@ const DocsRouter = () => ([
     // Technical Notes routes
     <Route exact path={links.technicalNotes} component={TechnicalNotes} key="technicalNotes" />,
     // Docs Root
-    <Redirect exact from="/docs" to={links.introduction} key="DocsRoot" />,
+    <Redirect exact from={links.docs} to={links.introduction} key="DocsRoot" />,
 ])
 
 export default DocsRouter
