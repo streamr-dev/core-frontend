@@ -188,11 +188,13 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
         >
             <TOCPage title={stream.name}>
                 <TOCSection id="details" linkTitle="Details">
-                    <Details>
-                        <Detail title="Description">
-                            {stream.description}
-                        </Detail>
-                    </Details>
+                    {!!stream.description && (
+                        <Details>
+                            <Detail title="Description">
+                                {stream.description}
+                            </Detail>
+                        </Details>
+                    )}
                     <Details>
                         <Detail title="Stream ID">
                             {stream.id}
