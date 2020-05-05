@@ -218,7 +218,7 @@ function UserPermissions({
                             [styles.isCustom]: isCustom,
                         })}
                     >
-                        {startCase(selectedGroupName)}
+                        {isCustom ? 'Custom' : startCase(selectedGroupName)}
                     </div>
                 </div>
                 <Button
