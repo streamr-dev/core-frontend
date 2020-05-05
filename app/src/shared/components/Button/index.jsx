@@ -9,7 +9,7 @@ import styles from './newButton.pcss'
 
 export type Size = 'mini' | 'normal' | 'big'
 export type Kind = 'primary' | 'secondary' | 'destructive' | 'link' | 'special'
-export type Variant = 'dark'
+export type Variant = 'dark' | 'light'
 
 type Props = {
     className?: string,

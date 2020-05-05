@@ -7,7 +7,7 @@ import MediaQuery from 'react-responsive'
 import cx from 'classnames'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
-import { selectStreams } from '$mp/modules/streams/selectors'
+import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
@@ -196,15 +196,17 @@ const DataUnionStats = () => {
 const Streams = () => {
     const product = useEditableProduct()
     const streamIds = product.streams
-    const streams = useSelector(selectStreams) // todo: safe to assume streams are fetched?
-    const selectedStreams = useMemo(() => streams.filter((s) => streamIds.includes(s.id)), [streamIds, streams])
+    const streamIdSet = useMemo(() => new Set(streamIds), [streamIds])
+    const streams = useSelector(selectStreams)
+    const selectedStreams = useMemo(() => streams.filter(({ id }) => streamIdSet.has(id)), [streamIdSet, streams])
     const isProductFree = !!(product && !isPaidProduct(product))
+    const fetchingAllStreams = useSelector(selectFetchingStreams)
 
     return (
         <StreamListing
             product={product}
             streams={selectedStreams}
-            fetchingStreams={false}
+            fetchingStreams={fetchingAllStreams}
             showStreamActions={false}
             isLoggedIn={false}
             isProductSubscriptionValid={false}

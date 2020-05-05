@@ -8,6 +8,7 @@ import {
     GET_STREAMS_REQUEST,
     GET_STREAMS_SUCCESS,
     GET_STREAMS_FAILURE,
+    CLEAR_STREAM_LIST,
 } from './constants'
 import type {
     StreamsAction,
@@ -18,6 +19,7 @@ export const initialState: StreamsState = {
     ids: [],
     fetching: false,
     error: null,
+    hasMoreResults: false,
 }
 
 const reducer: (StreamsState) => StreamsState = handleActions({
@@ -26,16 +28,33 @@ const reducer: (StreamsState) => StreamsState = handleActions({
         fetching: true,
     }),
 
-    [GET_STREAMS_SUCCESS]: (state: StreamsState, action: StreamsAction) => ({
-        ids: action.payload.streams,
-        fetching: false,
-        error: null,
-    }),
+    [GET_STREAMS_SUCCESS]: (state: StreamsState, action: StreamsAction) => {
+        const ids = [
+            ...new Set(( // ensure no duplicates in ids list
+                state.ids
+                    .concat(action.payload.streams)
+                    .reverse() // reverse before new Set to remove earlier id
+            )),
+        ].reverse() // then re-reverse results to restore original ordering
+
+        return {
+            ids,
+            hasMoreResults: action.payload.hasMoreResults,
+            fetching: false,
+            error: null,
+        }
+    },
 
     [GET_STREAMS_FAILURE]: (state: StreamsState, action: StreamsErrorAction) => ({
         ...state,
         fetching: false,
         error: action.payload.error,
+    }),
+
+    [CLEAR_STREAM_LIST]: (state: StreamsState) => ({
+        ...state,
+        ids: [],
+        hasMoreResults: false,
     }),
 }, initialState)
 

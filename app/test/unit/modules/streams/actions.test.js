@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 import sinon from 'sinon'
 
@@ -53,7 +52,10 @@ describe('streams - actions', () => {
 
             const { result, entities } = normalize(streams, streamsSchema)
 
-            sandbox.stub(services, 'getStreams').callsFake(() => Promise.resolve(streams))
+            const getStreamsStub = sandbox.stub(services, 'getStreams').callsFake(() => Promise.resolve({
+                streams,
+                hasMoreResults: false,
+            }))
 
             const store = mockStore()
             await store.dispatch(actions.getStreams())
@@ -72,11 +74,13 @@ describe('streams - actions', () => {
                     type: constants.GET_STREAMS_SUCCESS,
                     payload: {
                         streams: result,
+                        hasMoreResults: false,
                     },
                 },
             ]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
+            expect(getStreamsStub.calledWith({})).toBe(true)
         })
 
         it('responds to errors', async () => {
@@ -96,7 +100,21 @@ describe('streams - actions', () => {
                     payload: error,
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
+        })
+    })
+
+    describe('clearStreamList', () => {
+        it('clears the stream list', async () => {
+            const store = mockStore()
+            await store.dispatch(actions.clearStreamList())
+
+            const expectedActions = [
+                {
+                    type: constants.CLEAR_STREAM_LIST,
+                },
+            ]
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 })

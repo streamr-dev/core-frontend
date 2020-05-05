@@ -41,7 +41,7 @@ export const StreamSelector = (props: Props) => {
         onEdit,
         availableStreams,
         fetchingStreams = false,
-        disabled,
+        disabled: disabledProp,
         ...rest
     } = props
     const [sort, setSort] = useState(SORT_BY_NAME)
@@ -99,7 +99,7 @@ export const StreamSelector = (props: Props) => {
 
     const { hasError, error } = useLastError(rest)
 
-    const isDisabled = disabled || fetchingStreams
+    const isDisabled = disabledProp || fetchingStreams
 
     return (
         <React.Fragment>
@@ -112,13 +112,23 @@ export const StreamSelector = (props: Props) => {
                 >
                     <div className={styles.inputContainer}>
                         <SvgIcon name="search" className={styles.SearchIcon} />
-                        <Input
-                            className={styles.input}
-                            onChange={onSearchChange}
-                            value={search}
-                            placeholder={I18n.t('streamSelector.typeToSearch')}
-                            disabled={!!isDisabled}
-                        />
+                        <div className={styles.inputWrapper}>
+                            <Input
+                                className={styles.input}
+                                onChange={onSearchChange}
+                                value={search}
+                                placeholder={I18n.t('streamSelector.typeToSearch')}
+                                disabled={!!isDisabled}
+                            />
+                            <button
+                                type="button"
+                                className={styles.clearButton}
+                                onClick={() => setSearch('')}
+                                hidden={!search}
+                            >
+                                <SvgIcon name="cross" />
+                            </button>
+                        </div>
                         <DropdownActions
                             className={classNames(styles.sortDropdown, styles.dropdown)}
                             title={
@@ -141,13 +151,23 @@ export const StreamSelector = (props: Props) => {
                             </DropdownActions.Item>
                         </DropdownActions>
                     </div>
-                    <div className={styles.streams}>
-                        {!fetchingStreams && !availableStreams.length && (
+                    <div className={classNames(styles.streams, {
+                        [styles.darkBgStreams]: !fetchingStreams && !sortedStreams.length,
+                    })}
+                    >
+                        {!fetchingStreams && !sortedStreams.length && (
                             <div className={styles.noAvailableStreams}>
-                                <p><Translate value="streamSelector.noStreams" /></p>
-                                <a href={links.userpages.streamCreate} className={styles.streamCreateButton}>
-                                    <Translate value="streamSelector.create" />
-                                </a>
+                                <Translate value={`streamSelector.${search ? 'noStreamResults' : 'noStreams'}`} tag="p" />
+                                {!search && (
+                                    <Button
+                                        tag="a"
+                                        href={links.userpages.streamCreate}
+                                        kind="special"
+                                        variant="light"
+                                    >
+                                        <Translate value="streamSelector.create" />
+                                    </Button>
+                                )}
                             </div>
                         )}
                         {sortedStreams.map((stream: Stream) => (
@@ -170,7 +190,9 @@ export const StreamSelector = (props: Props) => {
                                 </button>
                             </div>
                         ))}
-                        <LoadingIndicator className={styles.loadingIndicator} loading={!!fetchingStreams} />
+                        {!!fetchingStreams && (
+                            <LoadingIndicator className={styles.loadingIndicator} loading />
+                        )}
                     </div>
                     <div className={styles.footer}>
                         <div className={styles.selectedCount}>
