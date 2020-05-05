@@ -51,7 +51,7 @@ export const Buttons = ({ actions, className }: Props) => (
                     kind={kind}
                     outline={outline}
                     waiting={spinner}
-                    className={cn}
+                    className={classNames(styles[kind], cn)}
                 >
                     {title}
                 </Button>

@@ -11,9 +11,9 @@ export default function useLoadStreamsCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('streams.LOAD')
 
-    return useCallback(async () => (
+    return useCallback(async (params: Object = {}) => (
         wrap(async () => {
-            await dispatch(getStreams())
+            await dispatch(getStreams(params))
         })
     ), [wrap, dispatch])
 }

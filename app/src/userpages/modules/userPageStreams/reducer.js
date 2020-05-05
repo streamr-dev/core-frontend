@@ -55,6 +55,7 @@ const initialState = {
     },
     savingStreamFields: false,
     fetching: false,
+    updating: false,
     deleting: false,
     error: null,
     csvUpload: null,
@@ -72,12 +73,18 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case GET_STREAM_REQUEST:
         case GET_STREAMS_REQUEST:
         case CREATE_STREAM_REQUEST:
-        case UPDATE_STREAM_REQUEST:
         case GET_MY_STREAM_PERMISSIONS_REQUEST:
         case DELETE_STREAM_REQUEST:
             return {
                 ...state,
                 fetching: true,
+            }
+
+        case UPDATE_STREAM_REQUEST:
+            return {
+                ...state,
+                fetching: true,
+                updating: true,
             }
 
         case SAVE_STREAM_FIELDS_REQUEST:
@@ -166,6 +173,7 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             return {
                 ...state,
                 fetching: false,
+                updating: false,
                 error: null,
             }
 
@@ -221,12 +229,19 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case GET_STREAM_FAILURE:
         case GET_STREAMS_FAILURE:
         case CREATE_STREAM_FAILURE:
-        case UPDATE_STREAM_FAILURE:
         case GET_MY_STREAM_PERMISSIONS_FAILURE:
         case DELETE_STREAM_FAILURE:
             return {
                 ...state,
                 fetching: false,
+                error: action.error,
+            }
+
+        case UPDATE_STREAM_FAILURE:
+            return {
+                ...state,
+                fetching: false,
+                updating: false,
                 error: action.error,
             }
 
@@ -265,9 +280,9 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case UPDATE_EDIT_STREAM:
             return {
                 ...state,
-                editedStream: {
+                editedStream: action.stream ? {
                     ...action.stream,
-                },
+                } : null,
             }
 
         case UPDATE_EDIT_STREAM_FIELD: {

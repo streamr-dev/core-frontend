@@ -6,7 +6,7 @@ import classNames from 'classnames'
 import Buttons, { type Props as ButtonsProps, type ButtonActions } from '$shared/components/Buttons'
 import ModalDialog, { type Props as ModalDialogProps } from '$shared/components/ModalDialog'
 import { dialogAutoCloseTimeout } from '$shared/utils/constants'
-import Spinner from '$shared/components/Spinner'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 
 import Container from './Container'
 import TitleBar from './TitleBar'
@@ -135,10 +135,11 @@ class Dialog extends Component<Props, State> {
                             <HelpToggle active={isHelpOpen} onToggle={this.onHelpToggle} />
                         )}
                     </TitleBar>
+                    {(!helpText || !isHelpOpen) && !!waiting && (
+                        <LoadingIndicator loading />
+                    )}
                     <ContentArea className={classNames(styles.content, contentClassName)}>
-                        {(!helpText || !isHelpOpen) && (!waiting ? children : (
-                            <Spinner size="large" className={styles.spinner} />
-                        ))}
+                        {(!helpText || !isHelpOpen) && !waiting && children}
                         {(!!helpText && isHelpOpen) && helpText}
                     </ContentArea>
                     {!waiting && (!helpText || !this.state.isHelpOpen) && !renderActions && (

@@ -1,94 +1,70 @@
 // @flow
 
-import React from 'react'
-import { connect } from 'react-redux'
+import React, { useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import profileStyles from '../profilePage.pcss'
 
 import DeleteAccountDialog from './DeleteAccountDialog'
-import { deleteUserAccount } from '$shared/modules/user/actions'
-import { selectDeletingUserAccount } from '$shared/modules/user/selectors'
-import type { StoreState } from '$shared/flowtype/store-state'
 import Button from '$shared/components/Button'
+import useModal from '$shared/hooks/useModal'
+import usePending from '$shared/hooks/usePending'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import { logout } from '$shared/modules/user/actions'
 
-type State = {
-    modalOpen: boolean,
-}
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
-type StateProps = {
-    deletingUserAccount: boolean,
-}
-type DispatchProps = {
-    deleteAccount: () => Promise<void>,
-}
+const DeleteAccount = () => {
+    const { api: deleteAccountDialog, isOpen } = useModal('userpages.deleteAccount')
+    const { wrap, isPending: isDeleteDialogPending } = usePending('user.DELETE_ACCOUNT_DIALOG')
+    const { isPending: isSavePending } = usePending('user.SAVE')
+    const dispatch = useDispatch()
+    const isMounted = useIsMounted()
 
-type Props = StateProps & DispatchProps
+    const deleteAccount = useCallback(async () => (
+        wrap(async () => {
+            const { deleted, error } = await deleteAccountDialog.open()
 
-class DeleteAccount extends React.Component<Props, State> {
-    state = {
-        modalOpen: false,
-    }
+            if (isMounted()) {
+                if (error) {
+                    Notification.push({
+                        title: I18n.t('modal.deleteAccount.errorNotification'),
+                        icon: NotificationIcon.ERROR,
+                    })
+                } else if (deleted) {
+                    Notification.push({
+                        title: I18n.t('modal.deleteAccount.successNotification'),
+                        icon: NotificationIcon.CHECKMARK,
+                    })
+                    setTimeout(() => {
+                        if (isMounted()) {
+                            dispatch(logout())
+                        }
+                    }, 500)
+                }
+            }
+        })
+    ), [wrap, deleteAccountDialog, isMounted, dispatch])
 
-    unmounted: boolean = false
-
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    openModal = () => {
-        if (!this.unmounted) {
-            this.setState({
-                modalOpen: true,
-            })
-        }
-    }
-
-    onClose = () => {
-        if (!this.unmounted) {
-            this.setState({
-                modalOpen: false,
-            })
-        }
-    }
-
-    onSave = () => this.props.deleteAccount()
-
-    render() {
-        const { modalOpen } = this.state
-        const { deletingUserAccount } = this.props
-
-        return (
-            <div>
-                <Translate value="userpages.profilePage.deleteAccount.description" tag="p" className={profileStyles.longText} />
-                <div className={profileStyles.removeAccountButton}>
-                    <Button
-                        kind="destructive"
-                        onClick={this.openModal}
-                        disabled={modalOpen}
-                        aria-label={I18n.t('userpages.profilePage.deleteAccount.button')}
-                    >
-                        <Translate value="userpages.profilePage.deleteAccount.button" />
-                    </Button>
-                    {!!modalOpen && (
-                        <DeleteAccountDialog
-                            waiting={deletingUserAccount}
-                            onClose={this.onClose}
-                            onSave={this.onSave}
-                        />
-                    )}
-                </div>
+    return (
+        <div>
+            <Translate value="userpages.profilePage.deleteAccount.description" tag="p" className={profileStyles.longText} />
+            <div className={profileStyles.removeAccountButton}>
+                <Button
+                    kind="destructive"
+                    onClick={deleteAccount}
+                    disabled={isOpen || isSavePending}
+                    aria-label={I18n.t('userpages.profilePage.deleteAccount.button')}
+                    waiting={isDeleteDialogPending}
+                >
+                    <Translate value="userpages.profilePage.deleteAccount.button" />
+                </Button>
+                <DeleteAccountDialog />
             </div>
-        )
-    }
+        </div>
+    )
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    deletingUserAccount: selectDeletingUserAccount(state),
-})
-
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    deleteAccount: () => dispatch(deleteUserAccount()),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteAccount)
+export default DeleteAccount

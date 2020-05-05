@@ -31,14 +31,14 @@ jest.mock('$shared/components/Nav/AvatarItem', () => ({
 
 /* eslint-disable object-curly-newline */
 describe('Nav', () => {
-    let oldDataUnionsFlag
+    let oldDataUnionsDocsFlag
 
     beforeEach(() => {
-        oldDataUnionsFlag = process.env.DATA_UNIONS
+        oldDataUnionsDocsFlag = process.env.DATA_UNIONS_DOCS
     })
 
     afterEach(() => {
-        process.env.DATA_UNIONS = oldDataUnionsFlag
+        process.env.DATA_UNIONS_DOCS = oldDataUnionsDocsFlag
     })
 
     it('renders logo', () => {
@@ -58,7 +58,7 @@ describe('Nav', () => {
 
     describe('When the user is not signed in', () => {
         it('renders the menu links', () => {
-            delete process.env.DATA_UNIONS
+            delete process.env.DATA_UNIONS_DOCS
             const store = {
                 user: {},
             }
@@ -82,7 +82,7 @@ describe('Nav', () => {
 
     describe('When the user is signed in', () => {
         it('renders the menu links', () => {
-            delete process.env.DATA_UNIONS
+            delete process.env.DATA_UNIONS_DOCS
             const store = {
                 user: {
                     user: {
@@ -109,7 +109,7 @@ describe('Nav', () => {
         })
 
         it('renders the user avatar', () => {
-            delete process.env.DATA_UNIONS
+            delete process.env.DATA_UNIONS_DOCS
             const store = {
                 user: {
                     user: {
@@ -132,8 +132,8 @@ describe('Nav', () => {
     })
 
     describe('Docs links', () => {
-        it('does not show Data unions link by default (DATA_UNIONS=undefined', () => {
-            delete process.env.DATA_UNIONS
+        it('does not show Data unions link by default (DATA_UNIONS_DOCS=undefined', () => {
+            delete process.env.DATA_UNIONS_DOCS
             const store = {
                 user: {},
             }
@@ -155,8 +155,8 @@ describe('Nav', () => {
             expect(docsEl.childAt(4).text()).toBe('products')
         })
 
-        it('shows Data unions link when DATA_UNIONS is defined (DATA_UNIONS=on)', () => {
-            process.env.DATA_UNIONS = 'on'
+        it('shows Data unions link when DATA_UNIONS_DOCS is defined (DATA_UNIONS_DOCS=on)', () => {
+            process.env.DATA_UNIONS_DOCS = 'on'
             const store = {
                 user: {},
             }

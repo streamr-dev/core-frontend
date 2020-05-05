@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
 
-import links from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 # Create and monitor Data Unions
 
 ### Creating a Data Union product
 
-Creating a Data Union product is most easily handled by using the Core app. See <Link to={links.docs.dataUnions.dataUnionsInCore}>Creating a Data Union with Core</Link> for more details. Otherwise, it can be handled this way, but it is somewhat complicated.
+Creating a Data Union product is most easily handled by using the Core app. See <Link to={docsLinks.dataUnionsInCore}>Creating a Data Union with Core</Link> for more details. Otherwise, it can be handled this way, but it is somewhat complicated.
 
 Start by deploying the `DataunionVault` smart contract. This is done by the Data Union admin who then becomes the owner of the contract as well.
 
@@ -23,11 +23,11 @@ A Data Union is identified by the address of its smart contract. After the smart
 const {secret} = await streamr.createSecret(dataunionAddress)
 ```
 
-If the secret is not provided, it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Administrator of the Data Union, as described in <Link to={links.docs.dataUnions.authAndIdentity}>Data Unions Auth & Identity</Link>.
+If the secret is not provided, it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Administrator of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
 
 The idea of an app secret is that it allows new members to join the Data Union without explicit approval from the Data Union admin, to streamline the on-ramp process.
 
-After the DataunionVault is set up, it’s time to create the actual product. This is most easily done using Streamr Core, but can also be done through the <Link to={links.docs.api.root}>HTTP API</Link>.
+After the DataunionVault is set up, it’s time to create the actual product. This is most easily done using Streamr Core, but can also be done through the <Link to={docsLinks.api}>HTTP API</Link>.
 
 To create a Data Union product instead of a regular one, add `“type”: “dataunion”` to the `POST /products` body.
 
@@ -73,4 +73,4 @@ await streamr.getMemberStats(dataunionAddress, memberAddress)
 await streamr.getBalance(dataunionAddress, memberAddress)
 ```
 
-The Streamr Core app also provides monitoring functions for Admins, showing subscriber numbers, total revenue, join requests and more. <Link to={links.docs.dataUnions.dataUnionsInCore}>Create a Data Union with Core</Link> provides more information.
+The Streamr Core app also provides monitoring functions for Admins, showing subscriber numbers, total revenue, join requests and more. <Link to={docsLinks.dataUnionsInCore}>Create a Data Union with Core</Link> provides more information.

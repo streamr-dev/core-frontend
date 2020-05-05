@@ -11,6 +11,7 @@ import type { Address } from '$shared/flowtype/web3-types'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import { ErrorCodes } from '$shared/errors/Web3'
+import { usePending } from '$shared/hooks/usePending'
 
 import IdentityNameDialog from '../IdentityNameDialog'
 import { IdentityChallengeDialog, DuplicateIdentityDialog } from '../IdentityChallengeDialog'
@@ -30,28 +31,31 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
     const { web3Error, checkingWeb3, account } = useWeb3Status()
     const { load: getEthIdentities, fetching, create, isLinked } = useEthereumIdentities()
     const [phase, setPhase] = useState(identityPhases.NAME)
+    const { wrap } = usePending('user.ADD_IDENTITY')
 
-    const onSetName = useCallback(async (name: string) => {
-        setPhase(identityPhases.CHALLENGE)
+    const onSetName = useCallback(async (name: string) => (
+        wrap(async () => {
+            setPhase(identityPhases.CHALLENGE)
 
-        let added = false
-        let error
+            let added = false
+            let error
 
-        try {
-            await create(name)
-            added = true
-        } catch (e) {
-            console.warn(e)
-            error = e
-        } finally {
-            if (!error || error.code !== ErrorCodes.IDENTITY_EXISTS) {
-                api.close({
-                    added,
-                    error,
-                })
+            try {
+                await create(name)
+                added = true
+            } catch (e) {
+                console.warn(e)
+                error = e
+            } finally {
+                if (!error || error.code !== ErrorCodes.IDENTITY_EXISTS) {
+                    api.close({
+                        added,
+                        error,
+                    })
+                }
             }
-        }
-    }, [create, api])
+        })
+    ), [wrap, create, api])
 
     const onClose = useCallback(() => {
         api.close({
