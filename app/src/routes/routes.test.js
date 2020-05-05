@@ -5,7 +5,25 @@ describe('route utils', () => {
         const routes = buildRoutes({
             resource: '/resource/:id',
             external: 'https://domain.com/route/:id',
-        }, () => ({}))
+            site: '<site>/api/resource/:id',
+            slashed: '<slashed>/api/resource/:id',
+            namespace: {
+                resource: '/ns/resource/:id',
+                external: 'https://domain.com/ns/route/:id',
+                site: '<site>/ns/api/resource/:id',
+                slashed: '<slashed>/ns/api/resource/:id',
+                deep: {
+                    deep: {
+                        deep: {
+                            resource: '/deep/resource/:id',
+                        },
+                    },
+                },
+            },
+        }, () => ({
+            site: 'https://streamr.network',
+            slashed: 'https://streamr.network/',
+        }))
 
         it('generates a local route', () => {
             expect(routes.resource()).toEqual('/resource/:id')
@@ -14,15 +32,64 @@ describe('route utils', () => {
             })).toEqual('/resource/13')
         })
 
+        it('generates a local namespaced route', () => {
+            expect(routes.namespace.resource()).toEqual('/ns/resource/:id')
+            expect(routes.namespace.resource({
+                id: 13,
+            })).toEqual('/ns/resource/13')
+        })
+
         it('generates an external route', () => {
             expect(routes.external()).toEqual('https://domain.com/route/:id')
             expect(routes.external({
                 id: 13,
             })).toEqual('https://domain.com/route/13')
         })
+
+        it('generates an external namespaced route', () => {
+            expect(routes.namespace.external()).toEqual('https://domain.com/ns/route/:id')
+            expect(routes.namespace.external({
+                id: 13,
+            })).toEqual('https://domain.com/ns/route/13')
+        })
+
+        it('generates a deeply namespaced route', () => {
+            expect(routes.namespace.deep.deep.deep.resource()).toEqual('/deep/resource/:id')
+            expect(routes.namespace.deep.deep.deep.resource({
+                id: 13,
+            })).toEqual('/deep/resource/13')
+        })
+
+        it('generates a route using variabled', () => {
+            expect(routes.site()).toEqual('https://streamr.network/api/resource/:id')
+            expect(routes.site({
+                id: 13,
+            })).toEqual('https://streamr.network/api/resource/13')
+        })
+
+        it('generates a route using variabled (slash-squish)', () => {
+            expect(routes.slashed()).toEqual('https://streamr.network/api/resource/:id')
+            expect(routes.slashed({
+                id: 13,
+            })).toEqual('https://streamr.network/api/resource/13')
+        })
+
+        it('generates a namespaced route using variabled', () => {
+            expect(routes.namespace.site()).toEqual('https://streamr.network/ns/api/resource/:id')
+            expect(routes.namespace.site({
+                id: 13,
+            })).toEqual('https://streamr.network/ns/api/resource/13')
+        })
+
+        it('generates a namespaced route using variabled (slash-squish)', () => {
+            expect(routes.namespace.slashed()).toEqual('https://streamr.network/ns/api/resource/:id')
+            expect(routes.namespace.slashed({
+                id: 13,
+            })).toEqual('https://streamr.network/ns/api/resource/13')
+        })
     })
 
-    describe('defile', () => {
+    describe('define', () => {
         const r = (pathstr, params) => define(pathstr, () => ({
             url: 'url',
         }))(params)

@@ -56,7 +56,11 @@ export const buildRoutes = (paths: Paths, getVariables: () => Variables): Routes
 
         return {
             ...acc,
-            [name]: define(value, getVariables),
+            [name]: typeof value === 'string' ? (
+                define(value, getVariables)
+            ) : (
+                buildRoutes(value, getVariables)
+            ),
         }
     }, {})
 )
