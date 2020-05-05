@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
 import Warning from '$docs/components/Warning'
-import links from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 import MessagePartitioningImage from './images/streams_partioning_01_desktop.jpg'
 import MessagePartitioningImage2x from './images/streams_partioning_01_desktop@2x.jpg'
@@ -39,7 +39,7 @@ While the data publisher is free to choose a target partition for a message arbi
     </picture>
 </figure>
 
-The `publish` methods in the <Link to={links.docs.SDKs.root}>Streamr SDKs</Link> usually take an optional `partitionKey` parameter. For example, in the JS client:
+The `publish` methods in the <Link to={docsLinks.sdk}>Streamr SDKs</Link> usually take an optional `partitionKey` parameter. For example, in the JS client:
 
 ```
 streamr.publish(stream, message, timestamp, partitionKey)

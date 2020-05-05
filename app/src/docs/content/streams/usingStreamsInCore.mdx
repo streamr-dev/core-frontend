@@ -2,6 +2,7 @@ import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
 import links from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 import StreamListing from './images/core_streams_01_desktop_border.jpg'
 import StreamListing2x from './images/core_streams_01_desktop_border@2x.jpg'
@@ -17,7 +18,7 @@ import StreamHistorical from './images/core_streams_06_desktop.jpg'
 import StreamHistorical2x from './images/core_streams_06_desktop@2x.jpg'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
-import streamsStyles from '$docs/components/DocsPages/Streams/streamsStyles.pcss'
+import streamsStyles from '$docs/components/Pages/Streams/streamsStyles.pcss'
 
 # Work with streams in Core
 Streamr Core provides you with the tools to create, edit, share and delete your streams as well as view and inspect the streams you have purchased on the Marketplace.
@@ -48,7 +49,7 @@ The details section provides basic information about your stream.
 
 - The stream name is used to identify your stream in the Core app.
 - The stream description can be used to offer more information about your stream and the kind of data it contains.
-- The stream ID is the unique identifier for your stream and is needed when interacting with the <Link to={links.docs.SDKs.root}>Streamr SDKs</Link>.
+- The stream ID is the unique identifier for your stream and is needed when interacting with the <Link to={docsLinks.sdk}>Streamr SDKs</Link>.
 
 <figure>
     <picture>

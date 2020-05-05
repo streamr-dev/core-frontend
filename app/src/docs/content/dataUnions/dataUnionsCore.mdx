@@ -1,0 +1,139 @@
+import { Link } from 'react-router-dom'
+import docsLinks from '$shared/../docsLinks'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+
+import ProductChooser from './images/product_chooser.png'
+import AddName from './images/add_name.png'
+import AdminFee from './images/admin_fee.png'
+import ConnectEth from './images/connect_eth.png'
+import SharedSecrets from './images/shared_secrets.png'
+import Deploy01 from './images/deploy_1.png'
+import Deploy02 from './images/deploy_2.png'
+import Deploy03 from './images/deploy_3.png'
+import Deploy04 from './images/deploy_4.png'
+import Deploy05 from './images/deploy_5.png'
+import ProductList from './images/product_list.png'
+import Stats from './images/stats.png'
+import Members from './images/members.png'
+
+# Build a Data Union with Core
+
+To create a Data Union in Core, go to Core > Products and click <span className={docsStyles.streamrHighlight}>Create Product</span> and choose **Data Union** as the product type.
+
+<figure>
+    <picture>
+      <img
+        src={ProductChooser}
+        alt="Product Chooser"
+      />
+    </picture>
+</figure>
+
+Other than the sections below, the process is similar to creating a data product. Please see the section about <Link to={docsLinks.introToProducts}>creating Data Products</Link> before proceeding with this article.
+
+### Connect an Ethereum identity
+
+In order to manage your data union, you need to connect your Ethereum address to your Streamr account. This is required before deploying your Data Union. Note that this won't be shown if you have already connected the current Ethereum address.
+
+<figure>
+    <picture>
+      <img
+        src={ConnectEth}
+        alt="Connect an Ethereum identity"
+      />
+    </picture>
+</figure>
+
+### Admin fee
+
+Administrators are responsible for maintaining the Data Unions, including ensuring good data quality and removing members that are not contributing data as expected. They are incentivized to perform this work by receiving an admin fee, a fraction of incoming revenue. Members agree to it by joining the Data Union.
+
+<figure>
+    <picture>
+      <img
+        src={AdminFee}
+        alt="Admin Fee"
+      />
+    </picture>
+</figure>
+
+### Shared secrets
+
+Shared secrets are only available once you have deployed your product, and provides access control for your product. It allows new members to join the Data Union without explicit approval from the Data Union admin, to streamline the on-ramp process. Users may still join the Data Union without a secret but they will have to manually accepted.
+
+<figure>
+    <picture>
+      <img
+        src={SharedSecrets}
+        alt="Shared secrets"
+      />
+    </picture>
+</figure>
+
+### Deploying the Data Union
+
+Creating a Data Union product starts with deploying the Data Union smart contract. A Data Union is identified by the address of its smart contract. The admin who deploys the contract then becomes the owner of the contract as well.
+
+Once all the required fields have been given and the draft Data Union is ready to be deployed, click <span className={docsStyles.streamrHighlight}>Continue</span> to deploy the Data Union. The deploy wizard will walk you through the deploy process.
+
+<figure>
+    <picture>
+      <img
+        src={Deploy01}
+        alt="Deploying the Data Union"
+      />
+    </picture>
+</figure>
+
+For the contract deployment transaction, you'll need a web3 wallet, and a small amount of Ethereum for gas fees. The Data Union deployment might take a moment to register once the transaction has been mined. The progress indicator will show an estimate of the remaining time. You can either close the dialog and move on or wait for the process to complete after which you will be automatically redirected.
+
+<figure>
+    <picture>
+      <img
+        src={Deploy05}
+        alt="Deploying the Data Union"
+      />
+    </picture>
+</figure>
+
+### Publishing a Data Union
+
+A minimum of one member is needed to publish the Data union. Once enough members have joined the Data Union, you can publish the Data Union by clicking <span className={docsStyles.streamrHighlight}>Publish</span> from the toolbar.
+
+Your Data Union will be published on the Marketplace once the Ethereum blockchain has confirmed your transaction.
+
+### Managing the Data Union
+
+Data Unions are listed along with Data products in Core > Products. Data Unions are marked by a **Data Union** badge and a **Members** badge showing the current number of approved members. Click the tile menu to access the Data Union stats and manage members.
+
+<figure>
+    <picture>
+      <img
+        src={ProductList}
+        alt="Products"
+      />
+    </picture>
+</figure>
+
+The **Stats** view provides an overview of the Data Union as well as it's members and subscribers over time.
+
+<figure>
+    <picture>
+      <img
+        src={Stats}
+        alt="Data Union Stats"
+      />
+    </picture>
+</figure>
+
+The **Members** view allows you to manage join requests.
+
+<figure>
+    <picture>
+      <img
+        src={Members}
+        alt="Data Union Members"
+      />
+    </picture>
+</figure>

@@ -5,7 +5,7 @@ const routes = require('$routes').default
 
 const streamrRoot = process.env.STREAMR_URL || ''
 
-module.exports = {
+export default {
     streamrSite: streamrRoot,
     login: formatExternalUrl(streamrRoot, 'login/auth'),
     signup: formatExternalUrl(streamrRoot, 'register/signup'),
@@ -32,98 +32,6 @@ module.exports = {
         products2: '/marketplace/products2',
         createProduct: '/marketplace/products/create',
         createProductPreview: '/marketplace/products/preview',
-    },
-    docs: {
-        main: routes.docs(),
-        api: {
-            root: routes.docsApiRoot(),
-            apiOverview: routes.docsApiApiOverview(),
-            authentication: routes.docsApiAuthentication(),
-            usingStreamsViaApi: routes.docsApiUsingStreamsViaApi(),
-            apiExplorer: routes.docsApiApiExplorer(),
-        },
-        canvases: {
-            root: routes.docsCanvasesRoot(),
-            introToCanvases: routes.docsCanvasesIntroToCanvases(),
-            usingCanvases: routes.docsCanvasesUsingCanvases(),
-            modulesBasics: routes.docsCanvasesModulesBasics(),
-            modulesAdvanced: routes.docsCanvasesModulesAdvanced(),
-        },
-        moduleReference: {
-            root: routes.docsModuleReference(),
-            boolean: routes.docsModuleReferenceBoolean(),
-            customModules: routes.docsModuleReferenceCustomModules(),
-            input: routes.docsModuleReferenceInput(),
-            integrations: routes.docsModuleReferenceIntegrations(),
-            list: routes.docsModuleReferenceList(),
-            map: routes.docsModuleReferenceMap(),
-            streams: routes.docsModuleReferenceStreams(),
-            text: routes.docsModuleReferenceText(),
-            timeAndDate: routes.docsModuleReferenceTimeAndDate(),
-            timeSeries: routes.docsModuleReferenceTimeSeries(),
-            utils: routes.docsModuleReferenceUtils(),
-            visualizations: routes.docsModuleReferenceVisualizations(),
-        },
-        core: {
-            root: routes.docsCoreRoot(),
-            introToCore: routes.docsCoreIntroToCore(),
-            streamsInCore: routes.docsCoreUsingStreamsInCore(),
-            canvasesInCore: routes.docsCoreUsingCanvasesInCore(),
-            dashboardsInCore: routes.docsCoreUsingDashboardsInCore(),
-            productsInCore: routes.docsCoreUsingProductsInCore(),
-        },
-        dashboards: {
-            root: routes.docsDashboards(),
-        },
-        dataToken: {
-            root: routes.docsDataToken(),
-        },
-        gettingStarted: {
-            root: routes.docsGettingStarted(),
-        },
-        introduction: {
-            root: routes.docsIntroduction(),
-        },
-        marketplace: {
-            root: routes.docsMarketplaceRoot(),
-            introToMarketplace: routes.docsMarketplaceIntroToMarketplace(),
-            dataUnions: routes.docsMarketplaceDataUnions(),
-        },
-        products: {
-            root: routes.docsProductsRoot(),
-            introToProducts: routes.docsProductsIntroToProducts(),
-            dataUnions: routes.docsProductsDataUnions(),
-        },
-        dataUnions: {
-            root: routes.docsDataUnionsRoot(),
-            introToDataUnions: routes.docsDataUnionsIntroToProducts(),
-            dataUnionsInCore: routes.docsDataUnionsBuildInCore(),
-            integration: routes.docsDataUnionsIntegration(),
-            dataUnionsInSDK: routes.docsDataUnionsInSDK(),
-        },
-        // runningNode: routes.docsRunningNode(),
-        SDKs: {
-            root: routes.docsSDKs(),
-        },
-        streams: {
-            root: routes.docsStreamsRoot(),
-            introToStreams: routes.docsStreamsIntroToStreams(),
-            usingStreamsInCore: routes.docsStreamsUsingStreamsInCore(),
-            usingStreamsViaSDK: routes.docsStreamsUsingStreamsViaSDK(),
-            usingStreamsViaApi: routes.docsStreamsUsingStreamsViaApi(),
-            dataSigningAndVerification: routes.docsStreamsDataSigningAndVerification(),
-            endToEndEncryption: routes.docsStreamsEndToEndEncryption(),
-            partitioning: routes.docsStreamsPartitioning(),
-            integrationPatterns: routes.docsStreamsIntegrationPatterns(),
-        },
-        technicalNotes: {
-            root: routes.docsTechnicalNotes(),
-        },
-        tutorials: {
-            root: routes.docsTutorialsRoot(),
-            buildingPubSub: routes.docsTutorialsBuildingPubSub(),
-            buildingCustomModule: routes.docsTutorialsBuildingCustomCanvasModule(),
-        },
     },
     userpages: {
         main: '/core',

@@ -20,7 +20,7 @@ import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
 import { convert } from '$mp/utils/price'
 
 import BeneficiaryAddress from './BeneficiaryAddress'
@@ -75,7 +75,7 @@ const PriceSelector = () => {
                 <Translate
                     tag="p"
                     value="editProductPage.setPrice.description"
-                    docsLink={routes.docsProductsIntroToProducts()}
+                    docsLink={docsLinks.introToProducts}
                     dangerousHTML
                 />
                 <RadioButtonGroup

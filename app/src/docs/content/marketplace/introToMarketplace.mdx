@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import links from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 import MarketplaceOverview from './images/intro_to_marketplace_01_desktop.jpg'
 import MarketplaceOverview2x from './images/intro_to_marketplace_01_desktop@2x.jpg'
@@ -23,7 +24,7 @@ import TransactionComplete2x from './images/intro_to_marketplace_09_desktop@2x.j
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
 # Introduction to the Marketplace
-The <Link to={links.marketplace.main}>Marketplace</Link> is an application that enables users to buy and sell access to real-time data content on the Streamr Network. The Marketplace is filled with both paid and free products, offering data producers an opportunity to either monetise their data or make it freely available to everyone. Products have time-based subscription periods, and the currency used on the Marketplace is the <Link to={links.docs.dataToken.root}>DATA token</Link>.
+The <Link to={links.marketplace.main}>Marketplace</Link> is an application that enables users to buy and sell access to real-time data content on the Streamr Network. The Marketplace is filled with both paid and free products, offering data producers an opportunity to either monetise their data or make it freely available to everyone. Products have time-based subscription periods, and the currency used on the Marketplace is the <Link to={docsLinks.dataToken}>DATA token</Link>.
 
 <figure>
     <picture>
@@ -131,4 +132,4 @@ Finally, confirm the transaction in Metamask to complete your purchase. While th
     </picture>
 </figure>
 
-Note that while you may purchase products with any Web3 wallet, the purchases will not be visible until you <Link to={links.docs.gettingStarted.root}>link the account to your profile</Link>.
+Note that while you may purchase products with any Web3 wallet, the purchases will not be visible until you <Link to={docsLinks.gettingStarted}>link the account to your profile</Link>.

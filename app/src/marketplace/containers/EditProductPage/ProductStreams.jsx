@@ -20,7 +20,7 @@ import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
 } from '$mp/modules/product/selectors'
-import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
 
 import styles from './productStreams.pcss'
 
@@ -52,7 +52,7 @@ const ProductStreams = () => {
                 <Translate
                     tag="p"
                     value="editProductPage.streams.description"
-                    docsLink={routes.docsProductsIntroToProducts()}
+                    docsLink={docsLinks.introToProducts}
                     dangerousHTML
                 />
                 <StreamSelectorComponent

@@ -17,7 +17,7 @@ import Label from '$ui/Label'
 import ActionsDropdown from '$shared/components/ActionsDropdown'
 import Text from '$ui/Text'
 import SvgIcon from '$shared/components/SvgIcon'
-import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
 
 import styles from './infoView.pcss'
 
@@ -204,7 +204,7 @@ export const InfoView = ({ disabled }: Props) => {
                 >
                     <Translate
                         value="userpages.streams.partitionsTooltip"
-                        docsLink={routes.docsStreamsPartitioning()}
+                        docsLink={docsLinks.partitioning}
                         dangerousHTML
                     />
                 </div>
