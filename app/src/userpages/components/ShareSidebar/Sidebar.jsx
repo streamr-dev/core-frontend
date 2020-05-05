@@ -572,6 +572,7 @@ const ShareSidebar = connect(({ user }) => ({
         },
     })
 
+    /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (
         <div className={styles.root}>
             <div className={cx(styles.row, styles.cell, styles.anonAccessSelect)}>
@@ -589,7 +590,13 @@ const ShareSidebar = connect(({ user }) => ({
             <div className={cx(styles.row, styles.cell, styles.addUserInput)}>
                 <InputNewShare onChange={addUser} canShareToUser={canShareToUser} />
             </div>
-            <div className={cx(styles.row, styles.userList)}>
+            <div
+                className={cx(styles.row, styles.userList)}
+                onClick={(event) => {
+                    if (event.target !== event.currentTarget) { return }
+                    setSelectedUserId() // select none on click background
+                }}
+            >
                 {userEntryTransitions.map(({ item: [userId, userPermissions], props, key }) => (
                     <animated.div
                         key={key}
@@ -637,6 +644,7 @@ const ShareSidebar = connect(({ user }) => ({
                 </div>
             </div>
         </div>
+        /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     )
 })
 
