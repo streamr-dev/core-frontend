@@ -1160,6 +1160,9 @@ msgstr "Loading streams..."
 msgid "streamSelector##noStreams"
 msgstr "You haven't created any streams yet."
 
+msgid "streamSelector##noStreamResults"
+msgstr "We couldn’t find anything to match your search."
+
 msgid "streamSelector##remove"
 msgstr "Remove from selection"
 

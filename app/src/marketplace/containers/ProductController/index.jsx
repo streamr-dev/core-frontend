@@ -20,6 +20,7 @@ import useDataUnionLoadCallback from './useDataUnionLoadCallback'
 import useDataUnionStatsLoadCallback from './useDataUnionStatsLoadCallback'
 import useRelatedProductsLoadCallback from './useRelatedProductsLoadCallback'
 import useLoadStreamsCallback from './useLoadStreamsCallback'
+import useClearStreamsCallback from './useClearStreamsCallback'
 
 type ContextProps = {
     loadProduct: Function,
@@ -31,6 +32,7 @@ type ContextProps = {
     loadDataUnionStats: Function,
     loadRelatedProducts: Function,
     loadStreams: Function,
+    clearStreams: Function,
 }
 
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
@@ -79,6 +81,7 @@ function useProductController() {
     const loadDataUnionStats = useDataUnionStatsLoadCallback()
     const loadRelatedProducts = useRelatedProductsLoadCallback()
     const loadStreams = useLoadStreamsCallback()
+    const clearStreams = useClearStreamsCallback()
 
     return useMemo(() => ({
         loadProduct,
@@ -90,6 +93,7 @@ function useProductController() {
         loadDataUnionStats,
         loadRelatedProducts,
         loadStreams,
+        clearStreams,
     }), [
         loadProduct,
         loadContractProduct,
@@ -100,6 +104,7 @@ function useProductController() {
         loadDataUnionStats,
         loadRelatedProducts,
         loadStreams,
+        clearStreams,
     ])
 }
 
