@@ -12,7 +12,7 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import { Context as EditControllerContext } from './EditControllerProvider'
 import usePending from '$shared/hooks/usePending'
 import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
-import { docsLinks } from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 import styles from './productStreams.pcss'
 

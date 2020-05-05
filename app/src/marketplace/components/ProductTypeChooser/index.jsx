@@ -11,7 +11,7 @@ import standardProductImage2x from '$mp/assets/product_standard@2x.png'
 import dataUnionImage from '$mp/assets/product_dataunion.png'
 import dataUnionImage2x from '$mp/assets/product_dataunion@2x.png'
 import routes from '$routes'
-import { docsLinks } from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 import { productTypes } from '$mp/utils/constants'
 
 import styles from './productTypeChooser.pcss'

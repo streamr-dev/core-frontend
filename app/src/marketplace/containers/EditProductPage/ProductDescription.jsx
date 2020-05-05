@@ -10,7 +10,7 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import MarkdownEditor from '$mp/components/MarkdownEditor'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import usePending from '$shared/hooks/usePending'
-import { docsLinks } from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 import styles from './productDescription.pcss'
 

@@ -5,7 +5,8 @@ import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import { Footer as LayoutFooter, FooterColumn, FooterColumns, SocialChannels, MadeBy as UnstyledMadeBy } from '@streamr/streamr-layout'
 
-import links, { docsLinks } from '$shared/../links'
+import links from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;

@@ -18,7 +18,7 @@ import { truncate } from '$shared/utils/text'
 import Bar from './Bar'
 import Hamburger from './Hamburger'
 import routes from '$routes'
-import { docsLinks } from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 import styles from './mobileNav.pcss'
 
 type StateProps = {

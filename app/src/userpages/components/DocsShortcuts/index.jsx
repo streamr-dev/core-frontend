@@ -5,7 +5,7 @@ import Link from '$shared/components/Link'
 import Onboarding from '$shared/components/Onboarding'
 import { Translate } from 'react-redux-i18n'
 import routes from '$routes'
-import { docsLinks } from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 const DocsShortcuts = () => (
     <Onboarding title="Docs">

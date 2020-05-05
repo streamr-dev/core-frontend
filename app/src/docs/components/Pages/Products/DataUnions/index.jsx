@@ -10,8 +10,8 @@ const DataUnions = () => (
     <DocsLayout>
         <DocsHelmet pageTitle="Data Unions" />
         <section>
-            {!process.env.DATA_UNIONS && (<DataUnionsPlaceholderContent />)}
-            {!!process.env.DATA_UNIONS && (<DataUnionsContent />)}
+            {!process.env.DATA_UNIONS_DOCS && (<DataUnionsPlaceholderContent />)}
+            {!!process.env.DATA_UNIONS_DOCS && (<DataUnionsContent />)}
         </section>
     </DocsLayout>
 )

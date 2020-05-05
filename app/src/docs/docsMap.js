@@ -1,4 +1,4 @@
-import { docsLinks } from '$shared/../links'
+import docsLinks from '../docsLinks'
 
 // docsMap is used by the Docs UI Navigation and the Search Indexer script.
 // All sections must contain a 'root' entry.
@@ -278,9 +278,9 @@ export const generateMap = ({ dataUnions: includeDataUnions = !!process.env.DATA
         },
         'Data Unions': {
             path: docsLinks.marketplaceDataunions,
+            section: 'Marketplace',
+            title: 'Data Unions',
             filePath: 'products/dataUnions.mdx',
-            section: 'Data Unions',
-            title: '',
         },
     },
     SDKs: {
@@ -332,7 +332,7 @@ export const generateMap = ({ dataUnions: includeDataUnions = !!process.env.DATA
             path: docsLinks.apiStreamsViaApi,
             section: 'API',
             title: 'Work with streams via API',
-            filePath: 'streams/using-streams-via-api',
+            filePath: 'streams/usingStreamsViaApi.mdx',
         },
     },
     'API Explorer': {

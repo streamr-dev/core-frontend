@@ -13,7 +13,7 @@ import usePending from '$shared/hooks/usePending'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import { docsLinks } from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 import styles from './coverImage.pcss'
 

@@ -12,7 +12,7 @@ import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
 import breakpoints from '$app/scripts/breakpoints'
-import { docsLinks } from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 
 type NoResultsViewProps = {
     onResetFilter: Function,

@@ -3,7 +3,7 @@
 import React from 'react'
 import { Route as RouterRoute, Redirect } from 'react-router-dom'
 
-import { docsLinks as links } from '$shared/../links'
+import links from '$shared/../docsLinks'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
