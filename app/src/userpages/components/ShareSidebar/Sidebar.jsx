@@ -21,7 +21,7 @@ import CopyLink from '$userpages/components/ShareDialog/ShareDialogContent/CopyL
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
 import useMeasure from './useMeasure'
-import isEditableElement from '$shared/utils/isEditableElement'
+import { isFormElement } from '$shared/utils/isEditableElement'
 
 const options = ['onlyInvited', 'withLink']
 
@@ -204,8 +204,9 @@ function UserPermissions({
     const permissionGroupOptions = Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')
 
     const onClick = useCallback((event) => {
-        if (isSelected && !isEditableElement(event.target)) {
-            // toggle open state if not clicking on a form element
+        if (isFormElement(event.target)) { return }
+        // toggle open state
+        if (isSelected) {
             return onSelect()
         }
         onSelect(userId)
@@ -232,7 +233,10 @@ function UserPermissions({
                 </div>
                 <Button
                     kind="secondary"
-                    onClick={() => removeUser(userId)}
+                    onClick={(event) => {
+                        event.stopPropagation()
+                        removeUser(userId)
+                    }}
                     className={styles.button}
                 >
                     <SvgIcon name="trash" className={styles.trashIcon} />

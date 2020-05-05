@@ -10,7 +10,16 @@ export default function isEditableElement(element) {
         tagName === 'input' ||
         tagName === 'select' ||
         tagName === 'textarea' ||
-        tagName === 'label' || // should generally treat the same as form control
         element.isContentEditable
     ) || element.classList.contains('ace_content')
+}
+
+export function isFormElement(element) {
+    if (!element || !element.tagName) { return false } // doesn't look like an element
+    const tagName = element.tagName.toLowerCase()
+
+    return isEditableElement(element) || (
+        tagName === 'button' ||
+        tagName === 'label'
+    ) || isFormElement(element.parentElement)
 }
