@@ -127,17 +127,15 @@ const StreamListing = ({
 }: Props) => (
     <ProductContainer id={styles.details} className={classNames(styles.details, className)}>
         <div className={classNames(styles.streams)}>
-            <HeaderRow title={<TitleStreamCount count={streams.length || 0} />} className={styles.headerRow}>
+            <HeaderRow
+                title={<TitleStreamCount count={streams.length || 0} />}
+                className={styles.headerRow}
+            >
                 <MediaQuery minWidth={767}>
                     <Translate value="productPage.streamListing.description" />
                 </MediaQuery>
             </HeaderRow>
-            {fetchingStreams && (
-                <Row>
-                    <Translate value="productPage.streamListing.loading" />
-                </Row>
-            )}
-            {!fetchingStreams && streams.length > 0 && (
+            {streams.length > 0 && (
                 <div className={styles.tableBody}>
                     {streams.map(({ id: streamId, name, description }: Stream) => (
                         <MediaQuery key={streamId} maxWidth={768}>
@@ -177,6 +175,11 @@ const StreamListing = ({
                         </MediaQuery>
                     ))}
                 </div>
+            )}
+            {fetchingStreams && (
+                <Row className={styles.streamListingRow}>
+                    <Translate value="productPage.streamListing.loading" />
+                </Row>
             )}
             {!fetchingStreams && streams.length === 0 && (
                 <Row className={styles.streamListingRow}>
