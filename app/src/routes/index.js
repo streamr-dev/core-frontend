@@ -6,8 +6,10 @@ import p2r from 'path-to-regexp'
 
 import definitions from './definitions'
 
+type Helper = (?Object, ?string) => string
+
 type Routes = {
-    [string]: (?Object, ?string) => string,
+    [string]: Helper | Routes,
 }
 
 type Paths = {
