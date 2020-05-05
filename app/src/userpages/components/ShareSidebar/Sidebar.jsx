@@ -22,6 +22,8 @@ import * as State from './state'
 import styles from './ShareSidebar.pcss'
 import useMeasure from './useMeasure'
 import { isFormElement } from '$shared/utils/isEditableElement'
+import DropdownActions from '$shared/components/DropdownActions'
+import Meatball from '$shared/components/Meatball'
 
 const options = ['onlyInvited', 'withLink']
 
@@ -231,16 +233,31 @@ function UserPermissions({
                         {isCustom ? 'Custom' : startCase(selectedGroupName)}
                     </div>
                 </div>
-                <Button
-                    kind="secondary"
-                    onClick={(event) => {
-                        event.stopPropagation()
-                        removeUser(userId)
+                <DropdownActions
+                    title={<Meatball />}
+                    noCaret
+                    toggleProps={{
+                        onClick: (event) => event.stopPropagation(),
                     }}
-                    className={styles.button}
+                    menuProps={{
+                        modifiers: {
+                            offset: {
+                                // Make menu aligned to the right.
+                                // See https://popper.js.org/popper-documentation.html#modifiers..offset
+                                offset: '-100%p + 100%',
+                            },
+                        },
+                    }}
                 >
-                    <SvgIcon name="trash" className={styles.trashIcon} />
-                </Button>
+                    <DropdownActions.Item
+                        onClick={(event) => {
+                            event.stopPropagation()
+                            removeUser(userId)
+                        }}
+                    >
+                        Remove
+                    </DropdownActions.Item>
+                </DropdownActions>
             </div>
             <animated.div className={styles.permissionControls} style={permissionControlsStyle}>
                 <div {...bind}>
