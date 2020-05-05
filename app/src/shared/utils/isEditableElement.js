@@ -10,6 +10,7 @@ export default function isEditableElement(element) {
         tagName === 'input' ||
         tagName === 'select' ||
         tagName === 'textarea' ||
+        tagName === 'label' || // should generally treat the same as form control
         element.isContentEditable
     ) || element.classList.contains('ace_content')
 }

@@ -21,6 +21,7 @@ import CopyLink from '$userpages/components/ShareDialog/ShareDialogContent/CopyL
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
 import useMeasure from './useMeasure'
+import isEditableElement from '$shared/utils/isEditableElement'
 
 const options = ['onlyInvited', 'withLink']
 
@@ -202,13 +203,21 @@ function UserPermissions({
 
     const permissionGroupOptions = Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')
 
+    const onClick = useCallback((event) => {
+        if (isSelected && !isEditableElement(event.target)) {
+            // toggle open state if not clicking on a form element
+            return onSelect()
+        }
+        onSelect(userId)
+    }, [isSelected, onSelect, userId])
+
     /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (
         <div
             className={cx(styles.userPermissions, className, {
                 [styles.isSelected]: isSelected,
             })}
-            onClick={() => onSelect(userId)}
+            onClick={onClick}
         >
             <div className={styles.permissionsHeader}>
                 <div className={styles.permissionsHeaderTitle}>
