@@ -61,7 +61,7 @@ export default {
         youtube: routes.community.youtube(),
         medium: routes.community.medium(),
         github: routes.community.github(),
-        devForum: 'https://forum.streamr.dev/',
+        devForum: routes.community.devForum(),
     },
     contact: {
         general: 'mailto:contact@streamr.com',

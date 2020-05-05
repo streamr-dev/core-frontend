@@ -3,6 +3,7 @@
     "canvasEmbed": "/canvas/embed/:id",
     "canvases": "/core/canvases",
     "community": {
+        "devForum": "https://forum.streamr.dev/",
         "github": "https://github.com/streamr-dev",
         "linkedin": "https://www.linkedin.com/company/streamr-ltd-/",
         "medium": "https://medium.com/streamrblog",
