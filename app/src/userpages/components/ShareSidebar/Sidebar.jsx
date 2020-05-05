@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
-import { useSpring, animated } from 'react-spring'
+import { useSpring, useTransition, animated } from 'react-spring'
 
 import * as api from '$shared/utils/api'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -531,6 +531,30 @@ const ShareSidebar = connect(({ user }) => ({
 
     const uid = useUniqueId('ShareSidebar')
 
+    // add enter/leave transitions for users
+    const userEntryTransitions = useTransition(userEntries, ([userId]) => userId, {
+        initial: false,
+        from: {
+            opacity: 0,
+            willChange: 'max-height',
+            maxHeight: '0px',
+        },
+        enter: {
+            opacity: 1,
+            maxHeight: '9999px',
+        },
+        leave: {
+            opacity: 0,
+            maxHeight: '0px',
+        },
+        config: {
+            mass: 1,
+            friction: 62,
+            tension: 700,
+            precision: 0.00001,
+        },
+    })
+
     return (
         <div className={styles.root}>
             <div className={cx(styles.row, styles.cell, styles.anonAccessSelect)}>
@@ -549,19 +573,23 @@ const ShareSidebar = connect(({ user }) => ({
                 <InputNewShare onChange={addUser} canShareToUser={canShareToUser} />
             </div>
             <div className={cx(styles.row, styles.userList)}>
-                {userEntries.map(([userId, userPermissions]) => (
-                    <UserPermissions
-                        key={userId}
-                        userId={userId}
-                        userPermissions={userPermissions}
-                        resourceType={resourceType}
-                        removeUser={removeUser}
-                        updatePermission={updatePermission}
-                        permissions={permissions}
-                        isSelected={selectedUserId === userId}
-                        onSelect={setSelectedUserId}
-                        error={userErrors[userId]}
-                    />
+                {userEntryTransitions.map(({ item: [userId, userPermissions], props, key }) => (
+                    <animated.div
+                        key={key}
+                        style={props}
+                    >
+                        <UserPermissions
+                            userId={userId}
+                            userPermissions={userPermissions}
+                            resourceType={resourceType}
+                            removeUser={removeUser}
+                            updatePermission={updatePermission}
+                            permissions={permissions}
+                            isSelected={selectedUserId === userId}
+                            onSelect={setSelectedUserId}
+                            error={userErrors[userId]}
+                        />
+                    </animated.div>
                 ))}
             </div>
             <animated.div className={styles.errorMessageWrapper} style={tryCloseWarningStyle}>
