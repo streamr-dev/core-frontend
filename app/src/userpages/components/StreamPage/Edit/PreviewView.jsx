@@ -17,8 +17,10 @@ type Props = {
     currentUser: ?User,
 }
 
-export const Controls = styled.div`
+const Controls = styled.div`
     align-items: center;
+    border: solid #ebebeb;
+    border-width: 0 1px 1px;
     display: flex;
     justify-content: flex-end;
     padding: 1rem;

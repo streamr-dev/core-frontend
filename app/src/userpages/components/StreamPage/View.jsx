@@ -16,7 +16,7 @@ import Toolbar from '$shared/components/Toolbar'
 import { getRange } from '$userpages/modules/userPageStreams/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/hooks/useOnMount'
-import Preview, { Controls } from './Edit/PreviewView'
+import Preview from './Edit/PreviewView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import routes from '$routes'
@@ -330,11 +330,6 @@ const View = styled(UnstyledView)`
 
     strong {
         font-weight: ${MEDIUM};
-    }
-
-    ${Controls} {
-        border: solid #ebebeb;
-        border-width: 0 1px 1px;
     }
 
     ${Text} + * {
