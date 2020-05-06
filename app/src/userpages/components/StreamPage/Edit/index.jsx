@@ -33,6 +33,7 @@ import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
 import links from '$shared/../links'
+import docsLinks from '$shared/../docsLinks'
 import breakpoints from '$app/scripts/breakpoints'
 
 import Notification from '$shared/utils/Notification'
@@ -256,7 +257,7 @@ export class StreamShowView extends Component<Props, State> {
                             className={styles.longText}
                             tag="p"
                             dangerousHTML
-                            docsLink={routes.docsGettingStarted()}
+                            docsLink={docsLinks.gettingStarted}
                         />
                         <PreviewView
                             stream={editedStream}
