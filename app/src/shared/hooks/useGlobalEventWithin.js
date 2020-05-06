@@ -7,7 +7,7 @@ import { useEffect } from 'react'
  * within a given element (ref.current) or not.
  */
 
-export default (eventName: string, ref: any, callback: (boolean) => void, ignoredWithin?: any, useCapture?: ?boolean) => {
+export default (eventName: string, ref: any, callback: (boolean) => void, ignoreWithin?: any, useCapture?: ?boolean) => {
     useEffect(() => {
         const onEvent = (e: any) => {
             const { current } = ref
@@ -17,12 +17,12 @@ export default (eventName: string, ref: any, callback: (boolean) => void, ignore
                 return
             }
 
-            if (typeof ignoredWithin === 'string' && ignoredWithin && target.classList.contains(ignoredWithin)) {
+            if (typeof ignoreWithin === 'string' && ignoreWithin && target.classList.contains(ignoreWithin)) {
                 return
             }
 
-            if (typeof ignoredWithin === 'object' && ignoredWithin && ignoredWithin.current) {
-                if (ignoredWithin.current === target || ignoredWithin.current.contains(target)) {
+            if (typeof ignoreWithin === 'object' && ignoreWithin && ignoreWithin.current) {
+                if (ignoreWithin.current === target || ignoreWithin.current.contains(target)) {
                     return
                 }
             }
@@ -41,5 +41,5 @@ export default (eventName: string, ref: any, callback: (boolean) => void, ignore
                 window.removeEventListener(name, onEvent, useCapture)
             })
         }
-    }, [useCapture, eventName, ref, callback, ignoredWithin])
+    }, [useCapture, eventName, ref, callback, ignoreWithin])
 }
