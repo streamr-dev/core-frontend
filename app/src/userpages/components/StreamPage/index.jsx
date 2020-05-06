@@ -29,6 +29,7 @@ import Edit from './Edit'
 import View from './View'
 import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 
 type Props = {
     match: Match,
@@ -64,6 +65,12 @@ const StreamPage = (props: Props) => {
     useEffect(() => {
         const fetch = async () => {
             try {
+                try {
+                    await dispatch(getMyResourceKeys())
+                } catch (e) { /**/ }
+                if (!isMounted()) {
+                    return
+                }
                 try {
                     await Promise.all([
                         dispatch(getStream(idProp)),
