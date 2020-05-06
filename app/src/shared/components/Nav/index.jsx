@@ -66,7 +66,7 @@ const Nav = compose(
                 </Link>
             </DropdownItem>
             <LinkItem
-                to={routes.marketplace()}
+                to={routes.marketplace.root()}
                 underlined
             >
                 <Translate value="general.marketplace" />

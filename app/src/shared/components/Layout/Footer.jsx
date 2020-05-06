@@ -4,8 +4,7 @@ import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import { Footer as LayoutFooter, FooterColumn, FooterColumns, SocialChannels, MadeBy as UnstyledMadeBy } from '@streamr/streamr-layout'
-
-import links from '$shared/../links'
+import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
 const MadeBy = styled(UnstyledMadeBy)`
@@ -30,35 +29,35 @@ const Footer = ({ topBorder = false }: Props) => (
     <LayoutFooter>
         <FooterWithBorder topBorder={topBorder}>
             <FooterColumn title={I18n.t('general.learn')}>
-                <a href="/">
+                <a href={routes.root()}>
                     <Translate value="general.top" />
                 </a>
-                <a href="/learn/network">
+                <a href={routes.site.learn.network()}>
                     <Translate value="general.network" />
                 </a>
-                <a href="/learn/marketplace">
+                <a href={routes.site.learn.marketplace()}>
                     <Translate value="general.marketplace" />
                 </a>
-                <a href="/learn/core">
+                <a href={routes.site.learn.core}>
                     <Translate value="general.core" />
                 </a>
             </FooterColumn>
             <FooterColumn title={I18n.t('general.apps')}>
-                <a href={links.marketplace.main}>
+                <a href={routes.marketplace.root()}>
                     <Translate value="general.marketplace" />
                 </a>
-                <a href={links.userpages.main}>
+                <a href={routes.userpages.root()}>
                     <Translate value="general.core" />
                 </a>
             </FooterColumn>
             <FooterColumn title={I18n.t('general.project')}>
-                <a href="/about">
+                <a href={routes.site.about()}>
                     <Translate value="general.aboutUs" />
                 </a>
-                <a href="/design">
+                <a href={routes.site.design()}>
                     <Translate value="general.designAssets" />
                 </a>
-                <a href={links.blog}>
+                <a href={routes.community.medium()}>
                     <Translate value="general.blog" />
                 </a>
             </FooterColumn>
@@ -77,16 +76,16 @@ const Footer = ({ topBorder = false }: Props) => (
                 </a>
             </FooterColumn>
             <FooterColumn title={I18n.t('general.contact')}>
-                <a href={links.contact.general}>
+                <a href={routes.contact.general()}>
                     <Translate value="general.general" />
                 </a>
-                <a href={links.contact.media}>
+                <a href={routes.contact.media()}>
                     <Translate value="general.media" />
                 </a>
-                <a href={links.contact.jobs}>
+                <a href={routes.contact.jobs()}>
                     <Translate value="general.jobs" />
                 </a>
-                <a href={links.contact.labs}>
+                <a href={routes.contact.labs()}>
                     <Translate value="general.labs" />
                 </a>
             </FooterColumn>
@@ -94,13 +93,13 @@ const Footer = ({ topBorder = false }: Props) => (
                 <a href={I18n.t('urls.whitepaper')}>
                     <Translate value="general.whitepaper" />
                 </a>
-                <a href={links.contributionSummary}>
+                <a href={routes.contributionSummary()}>
                     <Translate value="general.contributionSummary" />
                 </a>
-                <a href="https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf">
+                <a href={routes.tos()}>
                     <Translate value="general.terms" />
                 </a>
-                <a href="https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf">
+                <a href={routes.privacyPolicy()}>
                     <Translate value="general.privacy" />
                 </a>
             </FooterColumn>

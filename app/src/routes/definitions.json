@@ -2,18 +2,26 @@
     "canvasEditor": "/canvas/editor",
     "canvasEmbed": "/canvas/embed/:id",
     "canvases": "/core/canvases",
-    "communityGithub": "https://github.com/streamr-dev",
-    "communityLinkedin": "https://www.linkedin.com/company/streamr-ltd-/",
-    "communityMedium": "https://medium.com/streamrblog",
-    "communityReddit": "https://reddit.com/r/streamr",
-    "communityTelegram": "https://t.me/streamrdata",
-    "communityTrello": "https://trello.com/b/j24hxvjg/streamr-milestone-1",
-    "communityTwitter": "https://twitter.com/streamr",
-    "communityYoutube": "https://www.youtube.com/channel/UCGWEA61RueG-9DV53s-ZyJQ",
-    "contactGeneral": "mailto:contact@streamr.com",
-    "contactJobs": "mailto:jobs@streamr.com",
-    "contactLabs": "mailto:labs@streamr.com",
-    "contactMedia": "mailto:media@streamr.com",
+    "community": {
+        "devForum": "https://forum.streamr.dev/",
+        "github": "https://github.com/streamr-dev",
+        "linkedin": "https://www.linkedin.com/company/streamr-ltd-/",
+        "medium": "https://medium.com/streamrblog",
+        "reddit": "https://reddit.com/r/streamr",
+        "telegram": "https://t.me/streamrdata",
+        "trello": "https://trello.com/b/j24hxvjg/streamr-milestone-1",
+        "twitter": "https://twitter.com/streamr",
+        "youtube": "https://www.youtube.com/channel/UCGWEA61RueG-9DV53s-ZyJQ"
+    },
+    "contact": {
+        "general": "mailto:contact@streamr.com",
+        "jobs": "mailto:jobs@streamr.com",
+        "labs": "mailto:labs@streamr.com",
+        "media": "mailto:media@streamr.com"
+    },
+    "contributionSummary": "https://s3.amazonaws.com/streamr-public/Crowdcontribution+Information+Summary+(20170912).pdf",
+    "tos": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
+    "privacyPolicy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "newProduct": "/core/products/new",
     "createProduct": "/marketplace/products/create",
     "dashboardEditor": "/dashboard/editor",
@@ -31,7 +39,9 @@
     "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
     "login": "/login",
     "logout": "/logout",
-    "marketplace": "/marketplace",
+    "marketplace": {
+        "root": "/marketplace"
+    },
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "product": "/marketplace/products/:id",
     "externalProduct": "<streamr>/marketplace/products/:id",
@@ -47,11 +57,22 @@
     "streams": "/core/streams",
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "transactions": "/core/transactions",
-    "userPages": "/core",
+    "userpages": {
+        "root": "/core"
+    },
     "userPageStreamListing": "/core/streams",
     "userPageStreamPreview": "/core/stream/preview/:streamId",
     "userPageStreamShow": "/core/stream/show/:streamId",
     "whitepaper": "<landingPage>/whitepaper",
+    "site": {
+        "about": "/about",
+        "design": "/design",
+        "learn": {
+            "core": "/learn/core",
+            "marketplace": "/learn/marketplace",
+            "network": "/learn/network"
+        }
+    },
     "notFound": "/404",
     "error": "/error"
 }
