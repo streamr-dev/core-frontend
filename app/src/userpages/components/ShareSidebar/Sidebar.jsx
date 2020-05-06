@@ -17,13 +17,14 @@ import Checkbox from '$shared/components/Checkbox'
 import SvgIcon from '$shared/components/SvgIcon'
 import useUniqueId from '$shared/hooks/useUniqueId'
 import TextInput from '$ui/Text'
-import CopyLink from '$userpages/components/ShareDialog/ShareDialogContent/CopyLink'
-import * as State from './state'
-import styles from './ShareSidebar.pcss'
-import useMeasure from './useMeasure'
 import { isFormElement } from '$shared/utils/isEditableElement'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
+
+import * as State from './state'
+import styles from './ShareSidebar.pcss'
+import useMeasure from './useMeasure'
+import CopyLink from './CopyLink'
 
 const options = ['onlyInvited', 'withLink']
 
