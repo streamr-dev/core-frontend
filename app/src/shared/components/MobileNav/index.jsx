@@ -124,7 +124,7 @@ const MobileNav = withRouter(({ location: { pathname: redirect }, className }: P
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.marketplace()}
+                                to={routes.marketplace.root()}
                             >
                                 <Translate value="general.marketplace" />
                             </Link>

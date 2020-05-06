@@ -41,7 +41,7 @@ export const ProfilePage = () => {
     const dispatch = useDispatch()
 
     const doSaveCurrentUser = useCallback(() => dispatch(saveCurrentUser()), [dispatch])
-    const redirectToUserPages = useCallback(() => dispatch(push(routes.userPages())), [dispatch])
+    const redirectToUserPages = useCallback(() => dispatch(push(routes.userpages.root())), [dispatch])
 
     const onSave = useCallback(async () => (
         wrap(async () => {

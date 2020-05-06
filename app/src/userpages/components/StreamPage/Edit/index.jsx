@@ -397,7 +397,7 @@ const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
             })
         }
     },
-    redirectToUserPages: () => dispatch(push(routes.userPages())),
+    redirectToUserPages: () => dispatch(push(routes.userpages.root())),
     cancel: () => {
         dispatch(push(routes.userPageStreamListing()))
     },

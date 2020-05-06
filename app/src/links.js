@@ -63,12 +63,6 @@ export default {
         github: routes.community.github(),
         devForum: routes.community.devForum(),
     },
-    contact: {
-        general: 'mailto:contact@streamr.com',
-        media: 'mailto:media@streamr.com',
-        jobs: 'mailto:jobs@streamr.com',
-        labs: 'mailto:labs@streamr.com',
-    },
     external: {
         ethereum: 'https://www.ethereum.org',
         decentralizedWeb: 'https://blockchainhub.net/web3-decentralized-web/',
