@@ -232,12 +232,6 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                     </Details>
                 </TOCSection>
                 <TOCSection
-                    id="preview"
-                    title={I18n.t('userpages.streams.edit.details.nav.preview')}
-                >
-                    <Preview currentUser={currentUser} stream={stream} />
-                </TOCSection>
-                <TOCSection
                     id="security"
                     title={I18n.t('userpages.streams.edit.details.nav.security')}
                 >
@@ -268,6 +262,12 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                         ))}
                     </TOCSection>
                 )}
+                <TOCSection
+                    id="preview"
+                    title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                >
+                    <Preview currentUser={currentUser} stream={stream} />
+                </TOCSection>
                 <TOCSection
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
