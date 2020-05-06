@@ -95,12 +95,12 @@ export const runSearchQuery = ({ query, index, store }: any) => {
             q.term(lunr.tokenizer(query), {
                 fields: ['content'],
                 boost: 100,
-                usePipeline: false,
+                usePipeline: true,
             })
             q.term(lunr.tokenizer(query), {
                 fields: ['content'],
                 boost: 10,
-                usePipeline: false,
+                usePipeline: true,
                 wildcard: lunr.Query.wildcard.TRAILING,
             })
         })
