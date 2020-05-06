@@ -1,14 +1,13 @@
 // @flow
 
 import { useEffect } from 'react'
-import { type Ref } from '$shared/flowtype/common-types'
 
 /*
  * useGlobalEventWithin triggers a `callback` with an argument indicating whether the event happened
  * within a given element (ref.current) or not.
  */
 
-export default (eventName: string, ref: Ref<Element>, callback: (boolean) => void, ignoredClassName?: ?string, useCapture?: ?boolean) => {
+export default (eventName: string, ref: any, callback: (boolean) => void, ignoredWithin?: any, useCapture?: ?boolean) => {
     useEffect(() => {
         const onEvent = (e: any) => {
             const { current } = ref
@@ -18,8 +17,14 @@ export default (eventName: string, ref: Ref<Element>, callback: (boolean) => voi
                 return
             }
 
-            if (ignoredClassName && target.classList.contains(ignoredClassName)) {
+            if (typeof ignoredWithin === 'string' && ignoredWithin && target.classList.contains(ignoredWithin)) {
                 return
+            }
+
+            if (typeof ignoredWithin === 'object' && ignoredWithin && ignoredWithin.current) {
+                if (ignoredWithin.current === target || ignoredWithin.current.contains(target)) {
+                    return
+                }
             }
 
             callback(current === target || current.contains(target))
@@ -36,5 +41,5 @@ export default (eventName: string, ref: Ref<Element>, callback: (boolean) => voi
                 window.removeEventListener(name, onEvent, useCapture)
             })
         }
-    }, [useCapture, eventName, ref, callback, ignoredClassName])
+    }, [useCapture, eventName, ref, callback, ignoredWithin])
 }
