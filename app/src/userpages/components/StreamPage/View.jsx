@@ -181,11 +181,13 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
     const isMounted = useIsMounted()
 
     useOnMount(async () => {
-        const r = await dispatch(getRange(stream.id))
+        try {
+            const r = await dispatch(getRange(stream.id))
 
-        if (isMounted() && r) {
-            setRange(r)
-        }
+            if (isMounted() && r) {
+                setRange(r)
+            }
+        } catch (e) { /**/ }
     })
 
     return (
