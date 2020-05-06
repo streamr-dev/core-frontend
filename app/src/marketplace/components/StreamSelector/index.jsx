@@ -14,7 +14,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 
-import links from '$mp/../links'
+import routes from '$routes'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtype/stream-types'
@@ -161,7 +161,7 @@ export const StreamSelector = (props: Props) => {
                                 {!search && (
                                     <Button
                                         tag="a"
-                                        href={links.userpages.streamCreate}
+                                        href={routes.newStream()}
                                         kind="special"
                                         variant="light"
                                     >
