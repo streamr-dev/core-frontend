@@ -40,7 +40,6 @@ const ProductsPageAuth = userIsAuthenticated(ProductsPage)
 const StatsPageAuth = userIsAuthenticated(StatsPage)
 const MembersPageAuth = userIsAuthenticated(MembersPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
-const StreamPageAuth = userIsAuthenticated(StreamPage)
 const NewStreamPageAuth = userIsAuthenticated(NewStreamPage)
 
 const { userpages } = links
@@ -50,7 +49,7 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.profile} component={ProfilePageAuth} key="ProfilePage" />,
     <Route exact path={userpages.dashboards} component={DashboardListAuth} key="DashboardList" />,
     <Route exact path={routes.newStream()} component={NewStreamPageAuth} key="newStreamPage" />,
-    <Route exact path={routes.stream()} component={StreamPageAuth} key="streamPage" />,
+    <Route exact path={routes.stream()} component={StreamPage} key="streamPage" />,
     <Route exact path={userpages.streams} component={StreamListViewAuth} key="StreamListView" />,
     <Route exact path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreviewAuth} key="StreamLivePreview" />,
     <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,
