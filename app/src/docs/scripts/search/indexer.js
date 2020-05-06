@@ -72,7 +72,8 @@ async function processModuleReferenceDocs() {
             fullPath: `${baseModuleRefPath}${path}#${name}`,
         })
     })
-    commitModulesToStore(modules)
+
+    return modules
 }
 
 /**
@@ -162,9 +163,10 @@ function saveIndex(searchIndex) {
 /**
  * Process the docs. Save the index & store as JSON files.
 */
-(function start() {
+(async function start() {
     console.warn('Generate the Docs Search Index & Store...')
-    processModuleReferenceDocs()
+    const modules = await processModuleReferenceDocs()
+    commitModulesToStore(modules)
     processMdxDocsPages()
     const searchIndex = buildLunrIndex()
     saveStore()
