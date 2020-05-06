@@ -48,8 +48,6 @@ const prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject
     inlineCharacterLimit: compact ? Infinity : 5,
 })
 
-const getNumberOfRows = (isMobile: boolean) => (isMobile ? 5 : 8)
-
 const StreamLivePreview = ({
     streamId,
     selectedDataPoint,
@@ -108,7 +106,7 @@ const StreamLivePreview = ({
             />
             <MediaQuery maxWidth={sm.max}>
                 {(isMobile) => {
-                    const length = getNumberOfRows(isMobile)
+                    const length = 5
                     let data = visibleData.slice(0, length)
 
                     // Pad array with nulls to fill preview length
