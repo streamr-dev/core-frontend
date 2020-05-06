@@ -20,6 +20,7 @@ import Preview, { Controls } from './Edit/PreviewView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import routes from '$routes'
+import { scrollTop } from '$shared/hooks/useScrollToTop'
 
 const Details = styled.div`
     border: solid #e7e7e7;
@@ -173,8 +174,14 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
     const dispatch = useDispatch()
 
     const onBack = useCallback(() => {
-        dispatch(push(routes.streams()))
-    }, [dispatch])
+        scrollTop()
+
+        if (currentUser) {
+            dispatch(push(routes.streams()))
+        } else {
+            dispatch(push(routes.root()))
+        }
+    }, [dispatch, currentUser])
 
     const [range, setRange] = useState({})
 
