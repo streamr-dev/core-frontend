@@ -65,28 +65,26 @@ function useAsyncCallbackWithState(callback) {
     })
 
     const isMounted = useIsMounted()
-
-    const currentCallback = useRef(callback)
-    currentCallback.current = callback
+    const { isLoading } = state
 
     const run = useCallback(async () => {
         let error
         let result
         if (!isMounted()) { return }
+        if (isLoading) { return } // already loading
 
         setState({
-            error,
-            result,
             isLoading: true,
             hasStarted: true,
         })
+
         try {
             result = await callback()
         } catch (err) {
             error = err
         } finally {
-            // only do something if mounted and callback didn't change
-            if (isMounted() && currentCallback.current === callback) {
+            // only do something if mounted
+            if (isMounted()) {
                 setState({
                     error,
                     result,
@@ -95,7 +93,7 @@ function useAsyncCallbackWithState(callback) {
                 })
             }
         }
-    }, [isMounted, callback])
+    }, [isLoading, isMounted, callback])
     return [state, run]
 }
 
@@ -462,7 +460,7 @@ const ShareSidebar = connect(({ user }) => ({
             ].map((task) => task.catch((error) => {
                 hasError = true
                 // store failure but do not abort
-                console.error(error)
+                console.error(error) // eslint-disable-line no-console
                 if (!isMounted()) { return }
                 setUserUpdateError(userId, error)
             })))
