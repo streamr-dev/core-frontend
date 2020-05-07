@@ -2,11 +2,9 @@
 
 import React, { type Node } from 'react'
 import styled from 'styled-components'
-import { MD, LG, XL } from '$shared/utils/styled'
-
+import { MD, LG, XL, REGULAR } from '$shared/utils/styled'
 import TOCSection from './TOCSection'
 import TOCNav, { Link } from './TOCNav'
-import styles from './tocPage.pcss'
 import BusLine, { useBusLine } from '$shared/components/BusLine'
 
 type Props = {
@@ -33,6 +31,25 @@ const Wing = styled.div`
     }
 `
 
+export const Title = styled.h1`
+    color: #323232;
+    display: none;
+    font-size: 24px;
+    font-weight: ${REGULAR};
+    letter-spacing: 0;
+    line-height: 1.5rem;
+    margin: 0;
+
+    @media (min-width: ${MD}px) {
+        font-size: 18px;
+    }
+
+    @media (min-width: ${LG}px) {
+        display: block;
+        font-size: 36px;
+    }
+`
+
 const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
     const { stop } = useBusLine()
 
@@ -42,7 +59,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                 {!!title && (
                     <React.Fragment>
                         <Wing />
-                        <h1 className={styles.pageTitle}>{title}</h1>
+                        <Title>{title}</Title>
                         <div />
                     </React.Fragment>
                 )}

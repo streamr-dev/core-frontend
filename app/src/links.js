@@ -38,8 +38,6 @@ export default {
         canvases: '/core/canvases',
         dashboards: '/core/dashboards',
         streams: '/core/streams',
-        streamCreate: '/core/stream/show',
-        streamShow: '/core/stream/show',
         streamPreview: '/core/stream/preview',
         profile: '/core/profile/edit',
         products: '/core/products',

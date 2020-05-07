@@ -18,6 +18,7 @@ import ActionsDropdown from '$shared/components/ActionsDropdown'
 import Text from '$ui/Text'
 import SvgIcon from '$shared/components/SvgIcon'
 import docsLinks from '$shared/../docsLinks'
+import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
 
 import styles from './infoView.pcss'
 
@@ -105,27 +106,11 @@ export const InfoView = ({ disabled }: Props) => {
         setTooltipOpen((isOpen) => !isOpen)
     }, [setTooltipOpen])
 
-    useEffect(() => {
-        if (!tooltipRef.current || !iconRef.current) { return }
-
-        if (tooltipOpen) {
-            const clickHandler = (e: SyntheticInputEvent<EventTarget>) => {
-                e.preventDefault()
-                e.stopPropagation()
-
-                // $FlowFixMe Flow doesn't understand that tooltipRef and iconRef are defined
-                if (tooltipOpen && !tooltipRef.current.contains(e.target) && !iconRef.current.contains(e.target)) {
-                    setTooltipOpen(false)
-                }
-            }
-
-            (document.addEventListener: Function)('mousedown', clickHandler, true)
-
-            return () => {
-                (document.addEventListener: Function)('mousedown', clickHandler, true)
-            }
+    useGlobalEventWithin('mousedown', iconRef, (within) => {
+        if (!within) {
+            setTooltipOpen(false)
         }
-    }, [tooltipOpen])
+    }, tooltipRef, true)
 
     return (
         <div className={cx('constrainInputWidth', styles.infoView)}>

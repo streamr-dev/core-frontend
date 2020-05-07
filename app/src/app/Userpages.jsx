@@ -14,7 +14,8 @@ import ErrorPage from '$shared/components/ErrorPage'
 // Userpages
 import DashboardList from '$userpages/components/DashboardPage/List'
 import CanvasList from '$userpages/components/CanvasPage/List'
-import StreamShowView from '$userpages/components/StreamPage/Edit'
+import StreamPage from '$userpages/components/StreamPage'
+import NewStreamPage from '$userpages/components/NewStreamPage'
 import StreamListView from '$userpages/components/StreamPage/List'
 import StreamLivePreview from '$userpages/components/StreamLivePreview'
 import TransactionList from '$userpages/components/TransactionPage/List'
@@ -31,7 +32,6 @@ const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 const CanvasListAuth = userIsAuthenticated(CanvasList)
 const ProfilePageAuth = userIsAuthenticated(ProfilePage)
 const DashboardListAuth = userIsAuthenticated(DashboardList)
-const StreamShowViewAuth = userIsAuthenticated(StreamShowView)
 const StreamListViewAuth = userIsAuthenticated(StreamListView)
 const StreamLivePreviewAuth = userIsAuthenticated(StreamLivePreview)
 const TransactionListAuth = userIsAuthenticated(TransactionList)
@@ -40,6 +40,7 @@ const ProductsPageAuth = userIsAuthenticated(ProductsPage)
 const StatsPageAuth = userIsAuthenticated(StatsPage)
 const MembersPageAuth = userIsAuthenticated(MembersPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
+const NewStreamPageAuth = userIsAuthenticated(NewStreamPage)
 
 const { userpages } = links
 
@@ -47,7 +48,8 @@ const UserpagesRouter = () => ([
     <Route exact path={userpages.canvases} component={CanvasListAuth} key="CanvasesCanvasList" />,
     <Route exact path={userpages.profile} component={ProfilePageAuth} key="ProfilePage" />,
     <Route exact path={userpages.dashboards} component={DashboardListAuth} key="DashboardList" />,
-    <Route exact path={formatPath(userpages.streamShow, ':id?')} component={StreamShowViewAuth} key="streamShow" />,
+    <Route exact path={routes.newStream()} component={NewStreamPageAuth} key="newStreamPage" />,
+    <Route exact path={routes.stream()} component={StreamPage} key="streamPage" />,
     <Route exact path={userpages.streams} component={StreamListViewAuth} key="StreamListView" />,
     <Route exact path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreviewAuth} key="StreamLivePreview" />,
     <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,

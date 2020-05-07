@@ -27,6 +27,12 @@ function shouldRedirect(error) {
     }
 
     if (error.response && error.response.status === 401) {
+        const { ignoreUnauthorized } = error.config
+
+        if (ignoreUnauthorized) {
+            return false
+        }
+
         const url = new window.URL(error.config.url)
         const me = new window.URL(formatApiUrl('users', 'me'))
         const keys = new window.URL(formatApiUrl('users', 'me', 'keys'))

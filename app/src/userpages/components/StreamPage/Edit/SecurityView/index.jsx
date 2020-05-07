@@ -109,6 +109,10 @@ export function getSecurityLevel({ requireSignedData, requireEncryptedData }: an
     })
 }
 
+export const getSecurityLevelConfig = (stream: any) => (
+    securityLevels[getSecurityLevel(stream) || 'basic']
+)
+
 export function getSecurityLevelTitle(stream: Stream) {
     if (!stream) { return '' }
     const level = getSecurityLevel(stream)
