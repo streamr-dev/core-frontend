@@ -1020,7 +1020,7 @@ msgstr ""
 "For help creating streams, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "productTypeChooser##standard##linkTitle"
-msgstr "Create data product"
+msgstr "Create Data Product"
 
 msgid "productTypeChooser##dataUnion##title"
 msgstr "Data Union"
@@ -1029,7 +1029,7 @@ msgid "productTypeChooser##dataUnion##description"
 msgstr "Gather members via your own app and crowdsell the data they provide. You take a cut, and the rest is distributed to members."
 
 msgid "productTypeChooser##dataUnion##linkTitle"
-msgstr "Create data union"
+msgstr "Create Data Union"
 
 msgid "productDetailsEditor##category"
 msgstr "Set product category"
