@@ -38,7 +38,7 @@ const Footer = ({ topBorder = false }: Props) => (
                 <a href={routes.site.learn.marketplace()}>
                     <Translate value="general.marketplace" />
                 </a>
-                <a href={routes.site.learn.core}>
+                <a href={routes.site.learn.core()}>
                     <Translate value="general.core" />
                 </a>
             </FooterColumn>
