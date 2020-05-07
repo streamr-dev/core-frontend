@@ -69,6 +69,8 @@ export const transactionTypes = {
     DEPLOY_DATA_UNION: 'deployDataUnion',
     UPDATE_ADMIN_FEE: 'updateAdminFee',
     SET_REQUIRES_WHITELIST: 'setRequiresWhitelist',
+    WHITELIST_APPROVE: 'whitelistApprove',
+    WHITELIST_REJECT: 'whitelistReject',
 }
 
 export const gasLimits = {

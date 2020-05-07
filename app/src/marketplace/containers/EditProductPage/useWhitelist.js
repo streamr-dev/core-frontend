@@ -1,56 +1,55 @@
 // @flow
 
-import { useMemo, useEffect, useState, useCallback } from 'react'
+import { useMemo, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { getWhitelistAddresses, whitelistApprove, whitelistReject } from '$mp/modules/contractProduct/services'
+import { whitelistApprove, whitelistReject } from '$mp/modules/contractProduct/services'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { transactionTypes } from '$shared/utils/constants'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
+import { useWhitelistContext } from './WhitelistContext'
 
 export function useWhitelist() {
     const product = useEditableProduct()
     const { updateRequiresWhitelist } = useEditableProductActions()
     const isEnabled = product.requiresWhitelist
     const productId = product.id
-    const [items, setItems] = useState([])
-    const [pendingItems, setPendingItems] = useState([])
+    const { items, addPendingItem, removePendingItem } = useWhitelistContext()
     const dispatch = useDispatch()
-
-    useEffect(() => {
-        const loadWhitelist = async () => {
-            const whitelist = await getWhitelistAddresses(productId)
-            setItems(whitelist)
-        }
-
-        loadWhitelist()
-    }, [productId])
 
     const approve = useCallback(async (address: string) => (
         whitelistApprove(productId, address)
             .onTransactionHash((hash) => {
-                dispatch(addTransaction(hash, transactionTypes.DEPLOY_DATA_UNION))
-                setPendingItems((prev) => [
-                    ...prev,
-                    hash,
-                ])
+                dispatch(addTransaction(hash, transactionTypes.WHITELIST_APPROVE))
+                addPendingItem(hash, address, transactionTypes.WHITELIST_APPROVE)
             })
-    ), [dispatch, productId])
+            .onTransactionComplete((receipt) => {
+                removePendingItem(receipt.transactionHash)
+            })
+            .onError((error) => {
+                if (error.receipt && error.receipt.transactionHash) {
+                    removePendingItem(error.receipt.transactionHash)
+                }
+            })
+    ), [dispatch, productId, addPendingItem, removePendingItem])
 
     const reject = useCallback(async (address: string) => (
         whitelistReject(productId, address)
             .onTransactionHash((hash) => {
-                dispatch(addTransaction(hash, transactionTypes.DEPLOY_DATA_UNION))
-                setPendingItems((prev) => [
-                    ...prev,
-                    hash,
-                ])
+                dispatch(addTransaction(hash, transactionTypes.WHITELIST_REJECT))
+                addPendingItem(hash, address, transactionTypes.WHITELIST_REJECT)
             })
-    ), [dispatch, productId])
-
-    console.log('Pending', pendingItems)
+            .onTransactionComplete((receipt) => {
+                removePendingItem(receipt.transactionHash)
+            })
+            .onError((error) => {
+                if (error.receipt && error.receipt.transactionHash) {
+                    removePendingItem(error.receipt.transactionHash)
+                }
+            })
+    ), [dispatch, productId, addPendingItem, removePendingItem])
 
     return useMemo(() => ({
         isEnabled,

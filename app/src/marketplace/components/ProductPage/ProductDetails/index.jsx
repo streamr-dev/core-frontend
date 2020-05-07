@@ -20,9 +20,14 @@ type Props = {
     productSubscription?: Subscription,
     onPurchase: () => void | Promise<void>,
     isPurchasing?: boolean,
+    isWhitelisted?: ?boolean,
 }
 
-const buttonTitle = (product: Product, isValidSubscription: boolean) => {
+const buttonTitle = (product: Product, isValidSubscription: boolean, isWhitelisted: ?boolean) => {
+    if (product.requiresWhitelist && isWhitelisted === false) {
+        return 'Request access'
+    }
+
     if (isPaidProduct(product)) {
         return isValidSubscription ?
             I18n.t('productPage.productDetails.renew') :
@@ -40,6 +45,7 @@ const ProductDetails = ({
     productSubscription,
     onPurchase,
     isPurchasing,
+    isWhitelisted,
 }: Props) => (
     <div className={styles.root}>
         <div
@@ -81,7 +87,7 @@ const ProductDetails = ({
                     onClick={onPurchase}
                     waiting={isPurchasing}
                 >
-                    {buttonTitle(product, isValidSubscription)}
+                    {buttonTitle(product, isValidSubscription, isWhitelisted)}
                 </Button>
                 {product.contact && (
                     <SocialIcons className={styles.socialIcons} contactDetails={product.contact} />

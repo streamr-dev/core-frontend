@@ -10,9 +10,12 @@ import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
 import useModal from '$shared/hooks/useModal'
 import useCopy from '$shared/hooks/useCopy'
+import Tooltip from '$shared/components/Tooltip'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 
 import useWhitelist from './useWhitelist'
+import { Provider as WhitelistContextProvider } from './WhitelistContext'
+import { WhitelistAddModal, WhitelistRemoveModal } from './WhitelistModals'
 
 const Container = styled.div`
     background: #fdfdfd;
@@ -22,20 +25,25 @@ const Container = styled.div`
 `
 
 const Rows = styled.div`
-    height: 279px;
-    overflow: auto;
+    height: 280px;
+    overflow: overlay;
 `
 
 const TableRow = styled.span`
     display: grid;
-    grid-template-columns: auto 90px 90px;
+    grid-template-columns: 1fr 90px 90px;
+    height: 56px;
+    opacity: ${(props) => (props.pending ? '0.5' : '1.0')};    
+
+    &:not(:last-child) {
+        border-bottom: 1px solid #ebebeb;
+    }
 `
 
 const TableColumnBase = styled.span`
     display: flex;
     justify-content: ${(props) => (props.center ? 'center' : 'unset')};
     align-items: center;
-    height: 56px;
     padding: 0 24px;
 
     * {
@@ -50,14 +58,11 @@ const TableColumnBase = styled.span`
 const TableHeader = styled(TableColumnBase)`
     font-weight: 500;
     letter-spacing: 0px;
-    border-bottom: 1px solid #ebebeb;
 `
 
 const TableColumn = styled(TableColumnBase)`
-    border-bottom: 1px solid #ebebeb;
-
     ${TableRow}:hover & {
-        background-color: #f8f8f8;
+        background-color: ${(props) => (props.disabled ? '#fdfdfd' : '#f8f8f8')};
     }
 `
 
@@ -88,6 +93,12 @@ const StyledToggle = styled(Toggle)`
     }
 `
 
+const StyledTooltip = styled(Tooltip)`
+    * {
+        display: flex;
+    }
+`
+
 const Status = styled.span`
     width: 16px;
     height: 16px;
@@ -103,32 +114,6 @@ const Status = styled.span`
         return '#2ac437'
     }};
     pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
-
-    &::after {
-        display: inline-block;
-        content: attr(data-tooltip);
-        visibility: hidden;
-        opacity: 0;
-        transition: 0s all;
-        position: relative;
-        background-color: #323232;
-        border-radius: 2px;
-        color: white;
-        font-size: 12px;
-        line-height: 16px;
-        top: 26px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 2px 6px;
-    }
-
-    &:hover {
-        &::after {
-            transition-delay: 0.5s;
-            visibility: visible;
-            opacity: 1;
-        }
-    }
 `
 
 const Label = styled.label`
@@ -145,6 +130,8 @@ type Props = {
     copy: (string) => void,
 }
 
+const MIN_ROWS = 5
+
 export const WhitelistEditorComponent = ({
     className,
     enabled,
@@ -153,79 +140,107 @@ export const WhitelistEditorComponent = ({
     addDialog,
     removeDialog,
     copy,
-}: Props) => (
-    <Container className={className}>
-        <TableRow>
-            <TableHeader>{I18n.t('editProductPage.whitelist.header.address')}</TableHeader>
-            <TableHeader>{I18n.t('editProductPage.whitelist.header.status')}</TableHeader>
-            <TableHeader />
-        </TableRow>
-        <Rows>
-            {items.map((item, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <TableRow key={index}>
-                    <TableColumn disabled={!enabled}>
-                        <span>{item.address}</span>
-                    </TableColumn>
-                    <TableColumn disabled={!enabled} center>
-                        <Status
-                            status={item.status}
-                            disabled={!enabled}
-                            data-tooltip={I18n.t(`editProductPage.whitelist.status.${item.status}`)}
-                        />
-                    </TableColumn>
-                    <TableColumn disabled={!enabled} center>
-                        <StyledDropdownActions
-                            title={<Meatball alt="Select" />}
-                            noCaret
-                            disabled={!enabled}
-                        >
-                            <DropdownActions.Item onClick={() => copy(item.address)}>
-                                {I18n.t('editProductPage.whitelist.copy')}
-                            </DropdownActions.Item>
-                            {item.status !== 'removed' && (
-                                <DropdownActions.Item onClick={() => removeDialog.open({
-                                    address: item.address,
-                                })}
-                                >
-                                    {I18n.t('editProductPage.whitelist.remove')}
-                                </DropdownActions.Item>
-                            )}
-                        </StyledDropdownActions>
-                    </TableColumn>
-                </TableRow>
-            ))}
-        </Rows>
-        <Controls>
-            <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
-            <StyledToggle
-                id="whitelist"
-                value={enabled}
-                onChange={(val) => {
-                    onEnableChanged(val)
-                }}
-            />
-            <Button
-                kind="secondary"
-                size="normal"
-                disabled={!enabled}
-                onClick={() => {
-                    addDialog.open()
-                }}
-            >
-                {I18n.t('editProductPage.whitelist.add')}
-            </Button>
-        </Controls>
-    </Container>
-)
+}: Props) => {
+    let rows = items
+    if (rows.length < MIN_ROWS) {
+        rows = rows.concat(new Array(MIN_ROWS - rows.length).fill(undefined))
+    }
 
-export const WhitelistEditor = () => {
+    return (
+        <Container className={className}>
+            <TableRow>
+                <TableHeader>{I18n.t('editProductPage.whitelist.header.address')}</TableHeader>
+                <TableHeader>{I18n.t('editProductPage.whitelist.header.status')}</TableHeader>
+                <TableHeader />
+            </TableRow>
+            <Rows>
+                {rows.map((item, index) => {
+                    const disabled = !enabled || (item != null && item.isPending)
+
+                    if (item == null) {
+                        return (
+                            // eslint-disable-next-line react/no-array-index-key
+                            <TableRow key={index} disabled>
+                                <TableColumn disabled />
+                                <TableColumn disabled center />
+                                <TableColumn disabled center />
+                            </TableRow>
+                        )
+                    }
+
+                    return (
+                        <TableRow key={item.address}>
+                            <TableColumn disabled={disabled}>
+                                <span>{item.address}</span>
+                            </TableColumn>
+                            <TableColumn disabled={disabled} center>
+                                <StyledTooltip
+                                    value={I18n.t(`editProductPage.whitelist.status.${item.status}`)}
+                                    placement="bottom"
+                                    boundariesElement="viewport"
+                                    disabled={disabled}
+                                >
+                                    <Status
+                                        status={item.status}
+                                        disabled={disabled}
+                                    />
+                                </StyledTooltip>
+                            </TableColumn>
+                            <TableColumn disabled={disabled} center>
+                                <StyledDropdownActions
+                                    title={<Meatball alt="Select" />}
+                                    noCaret
+                                    disabled={disabled}
+                                >
+                                    <DropdownActions.Item onClick={() => copy(item.address)}>
+                                        {I18n.t('editProductPage.whitelist.copy')}
+                                    </DropdownActions.Item>
+                                    {item.status !== 'removed' && (
+                                        <DropdownActions.Item onClick={() => removeDialog.open({
+                                            address: item.address,
+                                        })}
+                                        >
+                                            {I18n.t('editProductPage.whitelist.remove')}
+                                        </DropdownActions.Item>
+                                    )}
+                                </StyledDropdownActions>
+                            </TableColumn>
+                        </TableRow>
+                    )
+                })}
+            </Rows>
+            <Controls>
+                <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
+                <StyledToggle
+                    id="whitelist"
+                    value={enabled}
+                    onChange={(val) => {
+                        onEnableChanged(val)
+                    }}
+                />
+                <Button
+                    kind="secondary"
+                    size="normal"
+                    disabled={!enabled}
+                    onClick={() => {
+                        addDialog.open()
+                    }}
+                >
+                    {I18n.t('editProductPage.whitelist.add')}
+                </Button>
+            </Controls>
+        </Container>
+    )
+}
+
+export const WhitelistEditorContainer = () => {
     const { isEnabled, setEnabled, items } = useWhitelist()
     const { api: addDialog } = useModal('addWhitelistAddress')
     const { api: removeDialog } = useModal('removeWhitelistAddress')
     const { copy } = useCopy()
 
-    // TODO: Email address must be provided when we enable whitelist
+    // TODO: Email address must be provided when we enable whitelist!
+    //       Add this validation when we have contact email for products.
 
     return (
         <WhitelistEditorComponent
@@ -238,5 +253,13 @@ export const WhitelistEditor = () => {
         />
     )
 }
+
+export const WhitelistEditor = () => (
+    <WhitelistContextProvider>
+        <WhitelistEditorContainer />
+        <WhitelistAddModal />
+        <WhitelistRemoveModal />
+    </WhitelistContextProvider>
+)
 
 export default WhitelistEditor

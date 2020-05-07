@@ -1,9 +1,11 @@
-import React from 'react'
+// @flow
+
+import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { withKnobs } from '@storybook/addon-knobs'
 
-import WhitelistEditorComponent from './WhitelistEditor'
+import { WhitelistEditorComponent } from './WhitelistEditor'
 
 const stories = storiesOf('Marketplace/ProductEditor/Whitelist', module)
     .addDecorator(styles({
@@ -13,7 +15,37 @@ const stories = storiesOf('Marketplace/ProductEditor/Whitelist', module)
     }))
     .addDecorator(withKnobs)
 
-stories.add('basic', () => {
+type Props = {
+    items: Array<any>,
+}
+
+const WhiteListEditor = ({ items }: Props) => {
+    const [isEnabled, setIsEnabled] = useState(true)
+
+    return (
+        <WhitelistEditorComponent
+            enabled={isEnabled}
+            items={items}
+            onEnableChanged={(val) => setIsEnabled(val)}
+        />
+    )
+}
+
+stories.add('short', () => {
+    const items = [
+        {
+            name: 'Test 1',
+            address: '0x123123213234234231',
+            status: 'added',
+        },
+    ]
+
+    return (
+        <WhiteListEditor items={items} />
+    )
+})
+
+stories.add('long', () => {
     const items = [
         {
             name: 'Test 1',
@@ -22,22 +54,37 @@ stories.add('basic', () => {
         },
         {
             name: 'Test 2',
-            address: '0x123123223423231',
-            status: 'added',
+            address: '0x123123223423231232',
+            status: 'subscribed',
         },
         {
             name: 'Test 3',
-            address: '0x12312342342342413231',
+            address: '0x123123423423424132',
             status: 'removed',
         },
         {
             name: 'Test 4',
-            address: '0x12323444444231',
+            address: '0x919921123123333123',
             status: 'subscribed',
+        },
+        {
+            name: 'Test 5',
+            address: '0x999123912939123912',
+            status: 'subscribed',
+        },
+        {
+            name: 'Test 6',
+            address: '0xDEADBEEFDEADBEEFEF',
+            status: 'removed',
+        },
+        {
+            name: 'Test 7',
+            address: '0x991919191818189182',
+            status: 'added',
         },
     ]
 
     return (
-        <WhitelistEditorComponent enabled items={items} />
+        <WhiteListEditor items={items} />
     )
 })
