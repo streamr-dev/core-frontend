@@ -201,23 +201,41 @@ export const generateMap = ({ dataUnions: includeDataUnions = !!process.env.DATA
                 title: 'Intro to products',
                 filePath: 'dataUnions/introToDataUnions.mdx',
             },
-            'Build Data Unions in Core': {
+            'Create a DU with Core': {
                 path: docsLinks.dataUnionsInCore,
                 section: 'Data Unions',
-                title: 'Build Data Unions in Core',
-                filePath: 'dataUnions/dataUnionsCore.mdx',
+                title: 'Create a DU with Core',
+                filePath: 'dataUnions/dataUnionsInCore.mdx',
             },
-            'Integrate Data Unions into your app': {
-                path: docsLinks.integrateDataUnions,
+            'Framework Roles': {
+                path: docsLinks.frameworkRoles,
                 section: 'Data Unions',
-                title: 'Integrate Data Unions into your app',
-                filePath: 'dataUnions/integration.mdx',
+                title: 'Framework Roles',
+                filePath: 'dataUnions/frameworkRoles.mdx',
             },
-            'Build Data Unions with SDK': {
-                path: docsLinks.dataUnionsWithSdk,
+            'Auth & Identity': {
+                path: docsLinks.authAndIdentity,
                 section: 'Data Unions',
-                title: 'Build Data Unions with SDK',
-                filePath: 'dataUnions/dataUnionsSdk.mdx',
+                title: 'Auth & Identity',
+                filePath: 'dataUnions/authAndIdentity.mdx',
+            },
+            'Create & Monitor': {
+                path: docsLinks.createAndMonitor,
+                section: 'Data Unions',
+                title: 'Create & Monitor',
+                filePath: 'dataUnions/createAndMonitor.mdx',
+            },
+            'Join & Withdraw': {
+                path: docsLinks.joinAndWithdraw,
+                section: 'Data Unions',
+                title: 'Join & Withdraw',
+                filePath: 'dataUnions/joinAndWithdraw.mdx',
+            },
+            'UX Best Practices': {
+                path: docsLinks.uxBestPractices,
+                section: 'Data Unions',
+                title: 'UX Best Practices',
+                filePath: 'dataUnions/uxBestPractices.mdx',
             },
         },
     } : {}),

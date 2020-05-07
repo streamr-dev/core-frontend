@@ -3,15 +3,15 @@
 import React from 'react'
 import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import DataUnionsContent from '$docs/content/dataUnions/introToDataUnions.mdx'
+import IntroToDataUnionsContent from '$docs/content/dataUnions/introToDataUnions.mdx'
 
-const DataUnions = () => (
+const IntroToDataUnions = () => (
     <DocsLayout>
         <DocsHelmet pageTitle="Intro to Data Unions" />
         <section>
-            <DataUnionsContent />
+            <IntroToDataUnionsContent />
         </section>
     </DocsLayout>
 )
 
-export default DataUnions
+export default IntroToDataUnions

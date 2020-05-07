@@ -3,15 +3,15 @@
 import React from 'react'
 import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import DataUnionsContent from '$docs/content/dataUnions/dataUnionsCore.mdx'
+import DataUnionsCoreContent from '$docs/content/dataUnions/dataUnionsCore.mdx'
 
-const DataUnions = () => (
+const DataUnionsInCore = () => (
     <DocsLayout>
-        <DocsHelmet pageTitle="Build a Data Union with Core" />
+        <DocsHelmet pageTitle="Create a Data Union with Core" />
         <section>
-            <DataUnionsContent />
+            <DataUnionsCoreContent />
         </section>
     </DocsLayout>
 )
 
-export default DataUnions
+export default DataUnionsInCore

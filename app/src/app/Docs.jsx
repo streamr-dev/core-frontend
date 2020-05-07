@@ -34,9 +34,12 @@ import IntroToProducts from '$docs/components/Pages/Products/IntroToProducts'
 import DataUnions from '$docs/components/Pages/Products/DataUnions'
 // Data Unions Docs
 import IntroToDataUnions from '$docs/components/Pages/DataUnions/IntroToDataUnions'
-import DataUnionsInCore from '$docs/components/Pages/DataUnions/DataUnionsCore'
-import DataUnionsIntegration from '$docs/components/Pages/DataUnions/DataUnionsIntegration'
-import DataUnionsInSdk from '$docs/components/Pages/DataUnions/DataUnionsSdk'
+import DataUnionsCore from '$docs/components/Pages/DataUnions/DataUnionsCore'
+import FrameworkRoles from '$docs/components/Pages/DataUnions/FrameworkRoles'
+import AuthAndIdentity from '$docs/components/Pages/DataUnions/AuthAndIdentity'
+import CreateAndMonitor from '$docs/components/Pages/DataUnions/CreateAndMonitor'
+import JoinAndWithdraw from '$docs/components/Pages/DataUnions/JoinAndWithdraw'
+import UXBestPractices from '$docs/components/Pages/DataUnions/UXBestPractices'
 // Tutorials Docs
 import BuildingPubSub from '$docs/components/Pages/Tutorials/BuildingPubSub'
 import BuildingCustomModule from '$docs/components/Pages/Tutorials/BuildingCustomModule'
@@ -89,13 +92,18 @@ const DocsRouter = () => ([
     <Route exact path={links.introToProducts} component={IntroToProducts} key="IntroToProducts" />,
     <Redirect exact from={links.products} to={links.introToProducts} key="ProductsRoot" />,
     <Route exact path={links.productsDataunions} component={DataUnions} key="DataUnions" />,
-    // Data Unions
+    // Data union routes
     ...(process.env.DATA_UNIONS_DOCS ? [
-        <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsIntro" />,
+        <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsRoot" />,
         <Redirect exact from={links.dataUnions} to={links.introToDataUnions} key="DataUnionsRoot" />,
-        <Route exact path={links.dataUnionsInCore} component={DataUnionsInCore} key="DataUnionsInCore" />,
-        <Route exact path={links.integrateDataUnions} component={DataUnionsIntegration} key="DataUnionsIntegration" />,
-        <Route exact path={links.dataUnionsWithSdk} component={DataUnionsInSdk} key="DataUnionsInSdk" />,
+        // add redirect
+        <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsIntro" />,
+        <Route exact path={links.dataUnionsInCore} component={DataUnionsCore} key="DataUnionsInCore" />,
+        <Route exact path={links.frameworkRoles} component={FrameworkRoles} key="FrameworkRoles" />,
+        <Route exact path={links.authAndIdentity} component={AuthAndIdentity} key="AuthAndIdentity" />,
+        <Route exact path={links.createAndMonitor} component={CreateAndMonitor} key="CreateAndMonitor" />,
+        <Route exact path={links.joinAndWithdraw} component={JoinAndWithdraw} key="JoinAndWithdraw" />,
+        <Route exact path={links.uxBestPractices} component={UXBestPractices} key="UXBestPractices" />,
     ] : []),
     // Module Reference routes
     <Route
