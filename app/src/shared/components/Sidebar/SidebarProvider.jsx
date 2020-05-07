@@ -35,15 +35,15 @@ export type Props = {
 
 export default function SidebarProvider({ children }: Props) {
     const [currentSidebar, setCurrentSidebar] = React.useState(CLOSED)
-    const [transitionChecks, setTransitionChecks] = React.useState([])
+    const transitionChecksRef = React.useRef([])
     const trySetCurrentSidebar = React.useCallback((fn) => {
         setCurrentSidebar((prevValue) => {
             const nextValue = typeof fn === 'function' ? fn(prevValue) : fn
-            const canTransition = transitionChecks.every((check) => check(prevValue, nextValue))
+            const canTransition = transitionChecksRef.current.every((check) => check(prevValue, nextValue))
             if (!canTransition) { return prevValue }
             return nextValue
         })
-    }, [setCurrentSidebar, transitionChecks])
+    }, [setCurrentSidebar, transitionChecksRef])
 
     const openSidebar = React.useCallback((sidebarName, doOpen = true) => {
         trySetCurrentSidebar(doOpen ? sidebarName : CLOSED)
@@ -83,18 +83,16 @@ export default function SidebarProvider({ children }: Props) {
     }, [currentSidebar])
 
     const addTransitionCheck = React.useCallback((check) => {
-        setTransitionChecks((prevChecks) => {
-            if (prevChecks.includes(check)) { return prevChecks }
-            return [...prevChecks, check]
-        })
-    }, [setTransitionChecks])
+        const prevChecks = transitionChecksRef.current
+        if (prevChecks.includes(check)) { return }
+        transitionChecksRef.current = [...prevChecks, check]
+    }, [transitionChecksRef])
 
     const removeTransitionCheck = React.useCallback((check) => {
-        setTransitionChecks((prevChecks) => {
-            if (!prevChecks.includes(check)) { return prevChecks }
-            return prevChecks.filter((c) => c !== check)
-        })
-    }, [setTransitionChecks])
+        const prevChecks = transitionChecksRef.current
+        if (!prevChecks.includes(check)) { return }
+        transitionChecksRef.current = prevChecks.filter((c) => c !== check)
+    }, [transitionChecksRef])
 
     const sidebarContext = React.useMemo(() => ({
         open: openSidebar,
