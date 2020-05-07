@@ -14,4 +14,4 @@ const UXBestPractices = () => (
     </DocsLayout>
 )
 
-export default UXBestPractises
+export default UXBestPractices
