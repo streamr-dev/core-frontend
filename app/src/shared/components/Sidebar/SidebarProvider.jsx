@@ -3,7 +3,6 @@
 import React, { type Context, type Node } from 'react'
 
 type SidebarContextType = {
-    current: ?string,
     open: (string, ?boolean) => void,
     close: (?string) => void,
     toggle: (string) => void,
@@ -22,7 +21,6 @@ function notInitialized() {
 }
 
 export const SidebarContext: Context<SidebarContextType> = React.createContext({
-    current: CLOSED,
     open: notInitialized,
     close: notInitialized,
     toggle: notInitialized,
@@ -36,7 +34,7 @@ export type Props = {
 }
 
 export default function SidebarProvider({ children }: Props) {
-    const [currentSidebar, setCurrentSidebar] = React.useState()
+    const [currentSidebar, setCurrentSidebar] = React.useState(CLOSED)
     const [transitionChecks, setTransitionChecks] = React.useState([])
     const trySetCurrentSidebar = React.useCallback((fn) => {
         setCurrentSidebar((prevValue) => {
@@ -99,7 +97,6 @@ export default function SidebarProvider({ children }: Props) {
     }, [setTransitionChecks])
 
     const sidebarContext = React.useMemo(() => ({
-        current: currentSidebar,
         open: openSidebar,
         close: closeSidebar,
         toggle: toggleSidebar,
@@ -107,7 +104,6 @@ export default function SidebarProvider({ children }: Props) {
         addTransitionCheck,
         removeTransitionCheck,
     }), [
-        currentSidebar,
         openSidebar,
         closeSidebar,
         toggleSidebar,

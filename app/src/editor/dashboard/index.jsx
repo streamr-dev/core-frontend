@@ -193,7 +193,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                     )}
                     {sidebar.isOpen('share') && (
                         <ShareSidebar
-                            onClose={() => sidebar.close('share')}
+                            sidebarName="share"
                             resourceTitle={dashboard.name}
                             resourceType="DASHBOARD"
                             resourceId={dashboard.id}

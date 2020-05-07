@@ -109,15 +109,24 @@ type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | Targe
 
 function StreamPageSidebar({ stream }) {
     const sidebar = useContext(SidebarContext)
+    const onClose = useCallback(() => {
+        sidebar.close()
+    }, [sidebar])
+
+    React.useEffect(() => {
+        console.log('sidebar changed')
+    }, [sidebar])
+
+
     return (
         <Sidebar
             className={styles.ModuleSidebar}
             isOpen={sidebar.isOpen()}
-            onClose={() => sidebar.close()}
+            onClose={onClose}
         >
             {sidebar.isOpen('share') && (
                 <ShareSidebar
-                    onClose={() => sidebar.close('share')}
+                    sidebarName="share"
                     resourceTitle={stream && stream.name}
                     resourceType="STREAM"
                     resourceId={stream && stream.id}

@@ -470,7 +470,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                             )}
                             {sidebar.isOpen('share') && (
                                 <ShareSidebar
-                                    onClose={() => sidebar.close('share')}
+                                    sidebarName="share"
                                     resourceTitle={canvas.name}
                                     resourceType="CANVAS"
                                     resourceId={canvas.id}
