@@ -1,18 +1,10 @@
 // @flow
 
-import React, { useState, useEffect, useCallback, useMemo, useContext, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useContext } from 'react'
 import classnames from 'classnames'
 import { Link } from 'react-router-dom'
 import findIndex from 'lodash/findIndex'
 import { Translate, I18n } from 'react-redux-i18n'
-import { useSelector, useDispatch } from 'react-redux'
-import { getMyStreamPermissions } from '$userpages/modules/userPageStreams/actions'
-import { selectPermissions, selectFetching } from '$userpages/modules/userPageStreams/selectors'
-import UnauthorizedError from '$shared/errors/UnauthorizedError'
-import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
-import { handleLoadError } from '$auth/utils/loginInterceptor'
-import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
-import useFailure from '$shared/hooks/useFailure'
 
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
@@ -30,6 +22,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { Context as ClientContext, Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useStreamReadPermission from '$shared/hooks/useStreamReadPermission'
 
 type Props = {
     match: {
@@ -112,70 +105,9 @@ const StreamPreviewPage = ({
         setHasData(true)
     }, [isMounted])
 
-    const permissions = useSelector(selectPermissions)
+    const ready = useStreamReadPermission(urlId)
 
-    const dispatch = useDispatch()
-
-    const fetching = useSelector(selectFetching)
-
-    const fail = useFailure()
-
-    const idRef = useRef(urlId)
-
-    const [ready, setReady] = useState(false)
-
-    useEffect(() => {
-        if (ready) {
-            return
-        }
-
-        const fetch = async (id) => {
-            if (!id) {
-                return
-            }
-            try {
-                try {
-                    await dispatch(getMyResourceKeys())
-                } catch (e) { /**/ }
-                if (!isMounted()) {
-                    return
-                }
-                try {
-                    await dispatch(getMyStreamPermissions(id))
-                } catch (e) {
-                    await handleLoadError(e)
-                }
-                if (isMounted()) {
-                    setReady(true)
-                }
-            } catch (e) {
-                if (e instanceof ResourceNotFoundError) {
-                    fail(e)
-                    return
-                }
-                Notification.push({
-                    title: e.message,
-                    icon: NotificationIcon.ERROR,
-                })
-                throw e
-            }
-        }
-
-        fetch(idRef.current)
-    }, [ready, dispatch, fail, isMounted])
-
-    useEffect(() => {
-        idRef.current = urlId
-        setReady(false)
-    }, [urlId])
-
-    const canRead = (permissions || []).includes('read')
-
-    if (ready && !fetching && !canRead) {
-        throw new UnauthorizedError()
-    }
-
-    if (!ready || fetching) {
+    if (!ready) {
         return null
     }
 
