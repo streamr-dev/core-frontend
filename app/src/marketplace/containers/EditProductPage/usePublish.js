@@ -124,10 +124,11 @@ export default function usePublish() {
             }
         }
 
-        // update price, currency & beneficiary if changed
+        // update price, currency & beneficiary if changed. This will also
+        // do republish for products that have been at some point deployed
         if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
             if (hasPriceChanged && contractProduct) {
-                const redeploy = !!(nextMode === publishModes.REDEPLOY)
+                const isRedeploy = !!(nextMode === publishModes.REDEPLOY)
 
                 queue.add({
                     id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
@@ -144,13 +145,13 @@ export default function usePublish() {
                                 pricePerSecond: pricePerSecond || product.pricePerSecond,
                                 beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
                                 priceCurrency: priceCurrency || product.priceCurrency,
-                            }, redeploy)
+                            }, isRedeploy)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
 
-                                    if (redeploy) {
+                                    if (isRedeploy) {
                                         postSetDeploying(product.id || '', hash)
                                     }
                                 })
@@ -237,7 +238,8 @@ export default function usePublish() {
             }
         }
 
-        // do republish for products that have been at some point deployed
+        // do a separate republish for products that have been at some point deployed
+        // and we didn't do a contract update above
         if (nextMode === publishModes.REDEPLOY && !hasPriceChanged && contractProduct) {
             queue.add({
                 id: actionsTypes.REDEPLOY_PAID,
