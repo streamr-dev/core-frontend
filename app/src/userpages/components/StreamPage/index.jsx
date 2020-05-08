@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { type Match } from 'react-router-dom'
 import {
     closeStream,
-    getMyStreamPermissions,
     getStream,
     getStreamStatus,
     initEditStream,
@@ -15,7 +14,6 @@ import {
 import { handleLoadError } from '$auth/utils/loginInterceptor'
 import { NotificationIcon } from '$shared/utils/constants'
 import {
-    selectPermissions,
     selectFetching,
     selectUpdating,
     selectOpenStream,
@@ -29,7 +27,8 @@ import Edit from './Edit'
 import View from './View'
 import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
+// import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 
 type Props = {
     match: Match,
@@ -38,7 +37,7 @@ type Props = {
 const StreamPage = (props: Props) => {
     const { id: idProp } = props.match.params || {}
 
-    const permissions = useSelector(selectPermissions)
+    const permissions = useStreamPermissions(idProp)
 
     const fetching = useSelector(selectFetching)
 
@@ -48,9 +47,9 @@ const StreamPage = (props: Props) => {
 
     const fail = useFailure()
 
-    const readOnly = !permissions || !permissions.some((p) => p === 'write')
+    const readOnly = !(permissions || []).includes('write')
 
-    const canShare = !!permissions && permissions.some((p) => p === 'share')
+    const canShare = (permissions || []).includes('share')
 
     const stream = useSelector(selectOpenStream)
 
@@ -66,16 +65,7 @@ const StreamPage = (props: Props) => {
         const fetch = async () => {
             try {
                 try {
-                    await dispatch(getMyResourceKeys())
-                } catch (e) { /**/ }
-                if (!isMounted()) {
-                    return
-                }
-                try {
-                    await Promise.all([
-                        dispatch(getStream(idProp)),
-                        dispatch(getMyStreamPermissions(idProp)),
-                    ])
+                    await dispatch(getStream(idProp))
                     if (isMounted()) {
                         dispatch(openStream(idProp))
                     }
@@ -95,8 +85,10 @@ const StreamPage = (props: Props) => {
             }
         }
 
-        fetch()
-    }, [fail, dispatch, idProp, isMounted])
+        if (permissions) {
+            fetch()
+        }
+    }, [fail, dispatch, idProp, isMounted, permissions])
 
     useEffect(() => {
         const initEditing = async () => {
@@ -123,7 +115,7 @@ const StreamPage = (props: Props) => {
         dispatch(closeStream())
     }, [dispatch])
 
-    if ((fetching && !updating) || !stream || (!readOnly && !editedStream)) {
+    if (!permissions || (fetching && !updating) || !stream || (!readOnly && !editedStream)) {
         return (
             <Layout loading />
         )
