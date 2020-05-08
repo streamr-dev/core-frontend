@@ -1,7 +1,7 @@
 // @flow
 
 import { connect } from 'react-redux'
-import { goBack } from 'connected-react-router'
+import { goBack, push } from 'connected-react-router'
 
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { StreamList, StreamId } from '$shared/flowtype/stream-types'
@@ -11,6 +11,7 @@ import StreamPreviewPage from '$mp/components/StreamPreviewPage'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectOpenStream } from '$userpages/modules/userPageStreams/selectors'
 import { getStream, openStream } from '$userpages/modules/userPageStreams/actions'
+import routes from '$routes'
 
 type OwnProps = {
     match: {
@@ -48,7 +49,21 @@ const mapDispatchToProps = (dispatch: Function, { match: { params: { streamId } 
         dispatch(openStream(streamId))
         return dispatch(getStream(streamId))
     },
-    onClose: () => dispatch(goBack()),
+    onClose: () => {
+        const { href } = window.location
+
+        dispatch(goBack())
+
+        setTimeout(() => {
+            if (window.location.href !== href) {
+                return
+            }
+
+            dispatch(push(routes.stream({
+                id: streamId,
+            })))
+        }, 100)
+    },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(StreamPreviewPage)
