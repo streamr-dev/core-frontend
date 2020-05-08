@@ -177,7 +177,7 @@ describe('Userpages Routes', () => {
     it('shows stream preview', () => {
         const el = mount((
             <MemoryRouter
-                initialEntries={['/core/stream/preview/steamid123']}
+                initialEntries={['/core/streams/steamid123/preview']}
             >
                 <Switch>
                     {UserpagesRouter()}

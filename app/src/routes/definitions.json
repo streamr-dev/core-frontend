@@ -61,7 +61,7 @@
     "transactions": "/core/transactions",
     "userpages": {
         "root": "/core",
-        "streamPreview": "/core/stream/preview/:streamId"
+        "streamPreview": "/core/streams/:streamId/preview"
     },
     "userPageStreamListing": "/core/streams",
     "whitepaper": "<landingPage>/whitepaper",
