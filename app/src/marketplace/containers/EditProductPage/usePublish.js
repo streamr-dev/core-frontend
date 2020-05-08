@@ -127,6 +127,8 @@ export default function usePublish() {
         // update price, currency & beneficiary if changed
         if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
             if (hasPriceChanged && contractProduct) {
+                const redeploy = !!(nextMode === publishModes.REDEPLOY)
+
                 queue.add({
                     id: actionsTypes.UPDATE_CONTRACT_PRODUCT,
                     requireWeb3: true,
@@ -142,11 +144,15 @@ export default function usePublish() {
                                 pricePerSecond: pricePerSecond || product.pricePerSecond,
                                 beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
                                 priceCurrency: priceCurrency || product.priceCurrency,
-                            })
+                            }, redeploy)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
+
+                                    if (redeploy) {
+                                        postSetDeploying(product.id || '', hash)
+                                    }
                                 })
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
@@ -232,7 +238,7 @@ export default function usePublish() {
         }
 
         // do republish for products that have been at some point deployed
-        if (nextMode === publishModes.REDEPLOY && contractProduct) {
+        if (nextMode === publishModes.REDEPLOY && !hasPriceChanged && contractProduct) {
             queue.add({
                 id: actionsTypes.REDEPLOY_PAID,
                 requireWeb3: true,

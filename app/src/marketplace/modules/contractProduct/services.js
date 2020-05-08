@@ -159,7 +159,7 @@ export const createContractProduct = (product: SmartContractProduct): SmartContr
     })
 }
 
-export const updateContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
+export const updateContractProduct = (product: SmartContractProduct, redeploy: boolean = false): SmartContractTransaction => {
     const {
         id,
         name,
@@ -179,7 +179,7 @@ export const updateContractProduct = (product: SmartContractProduct): SmartContr
         transformedPricePerSecond,
         currencyIndex,
         minimumSubscriptionInSeconds,
-        false,
+        redeploy,
     )
     return send(methodToSend, {
         gas: gasLimits.UPDATE_PRODUCT,
