@@ -27,7 +27,6 @@ import Edit from './Edit'
 import View from './View'
 import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
-// import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 
 type Props = {
