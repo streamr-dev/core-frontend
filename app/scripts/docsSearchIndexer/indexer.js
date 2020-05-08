@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {
     buildLunrIndex,
     processMdxDocsPages,
@@ -11,7 +12,7 @@ const fs = require('fs')
  * Write Store to disk.
 */
 function saveStore(searchStore) {
-    fs.writeFileSync('../../components/Search/index/store.json', JSON.stringify(searchStore), (err) => {
+    fs.writeFileSync('../../src/docs/components/Search/index/store.json', JSON.stringify(searchStore), (err) => {
         if (err) {
             throw err
         }
@@ -22,7 +23,7 @@ function saveStore(searchStore) {
  * Write Index to disk.
 */
 function saveIndex(searchIndex) {
-    fs.writeFileSync('../../components/Search/index/index.json', JSON.stringify(searchIndex), (err) => {
+    fs.writeFileSync('../../src/docs/components/Search/index/index.json', JSON.stringify(searchIndex), (err) => {
         if (err) {
             throw err
         }
@@ -33,7 +34,7 @@ function saveIndex(searchIndex) {
  * Process the docs. Save the index & store as JSON files.
 */
 (async function start() {
-    console.warn('Generate the Docs Search Index & Store...')
+    console.log('Generating the Docs Search Index & Store...')
     const modules = await processModuleReferenceDocs()
     commitModulesToStore(modules)
     const searchStore = processMdxDocsPages()

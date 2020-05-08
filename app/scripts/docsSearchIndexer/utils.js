@@ -1,5 +1,5 @@
 /* eslint-disable global-require, import/no-dynamic-require */
-import docsMap from '../../docsMap'
+import docsMap from '../../src/docs/docsMap'
 
 const fs = require('fs')
 const remark = require('remark')
@@ -13,7 +13,7 @@ const baseModuleRefPath = '/docs/module-reference/'
 const searchStore = {}
 
 /**
- * Injest mdx as plain text.
+ * Loads MDX as plain text.
 */
 require.extensions['.mdx'] = function readMdx(module, filename) {
     const mdxFilename = filename
@@ -22,20 +22,27 @@ require.extensions['.mdx'] = function readMdx(module, filename) {
 }
 
 /**
- * Sanitizer function.
+ * Convert category name into suitable anchor
+ * e.g. Time & Date -> time-and-date
+ * NB: Must match toAnchor from the Platorm: src/docs/components/Pages/ModuleReference/data.js
 */
 const toAnchor = (text) => (
     text.trim()
         .toLowerCase()
-        .replace(' & ', ' and ')
+        .replace(/&/g, 'and')
         .replace(/\s+/g, '-')
 )
+
+/**
+ * Convenience function - Ensures first letter is a capital.
+*/
+const titleize = (text) => (text.charAt(0).toUpperCase() + text.slice(1))
 
 /**
  * Generates formatted Module text content.
 */
 const generateModuleRefTextContent = (name, path, content) => (
-    `${name.charAt(0).toUpperCase() + name.slice(1)} (${path.charAt(0).toUpperCase() + path.slice(1)}). ${content}`
+    `${titleize(name)} (${titleize(path)}). ${content}`
 )
 
 /**
@@ -47,8 +54,8 @@ export function commitModulesToStore(modules) {
             searchStore[`${fullPath}`] = {
                 id: `${fullPath}`,
                 content: generateModuleRefTextContent(refName, refPath, refContent),
-                section: `${refPath.charAt(0).toUpperCase() + refPath.slice(1)}`,
-                title: `Canvas Module: ${refName.charAt(0).toUpperCase() + refName.slice(1)}`,
+                section: titleize(refPath),
+                title: `Canvas Module: ${titleize(refName)}`,
             }
         }
     })
@@ -63,12 +70,16 @@ export async function processModuleReferenceDocs() {
 
     canvasModules.forEach((module) => {
         const { helpText } = module.help
-        const { path, name } = module
+        let { path, name } = module
+
+        // Take the first part of: "Integrations: Ethereum"
+        path = toAnchor(path.split(':')[0])
+        name = toAnchor(name.split(':')[0])
 
         modules.push({
             refContent: h2p(helpText).replace(/(\r\n|\n|\r)/gm, ''),
-            refPath: toAnchor(path.split(':')[0].trim()),
-            refName: toAnchor(name.split(':')[0].trim()),
+            refPath: path,
+            refName: name,
             fullPath: `${baseModuleRefPath}${path}#${name}`,
         })
     })
@@ -99,7 +110,7 @@ export function processMdxDocsPages() {
                 if (page !== 'root') {
                     const { path, title, section: pageSection, filePath } = docsMap[section][page]
                     try {
-                        const contentPage = require(`../../content/${filePath}`)
+                        const contentPage = require(`../../src/docs/content/${filePath}`)
                         await remark()
                             .use(remarkMdx)
                             .use(strip)
