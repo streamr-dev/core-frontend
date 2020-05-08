@@ -11,7 +11,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 
 const extractOperations = (data: Array<any>, username: ?string): Array<string> => (
     data
-        .filter((item) => item.user === 'anonymous' || (username && item.user === username))
+        .filter((item) => item.anonymous || (username && item.user === username))
         .map((item) => item.operation)
 )
 
