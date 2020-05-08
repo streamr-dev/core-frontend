@@ -162,3 +162,53 @@ export const WhitelistRemoveModal = () => {
         />
     )
 }
+
+export type RequestAccessModalProps = {
+    onClose: () => void,
+}
+
+const WhitelistRequestAccessModalComponent = ({ onClose }: RequestAccessModalProps) => (
+    <ModalPortal>
+        <Dialog
+            title={I18n.t('modal.whitelistRemove.title')}
+            onClose={onClose}
+            renderActions={() => (
+                <Footer>
+                    <Buttons
+                        actions={{
+                            cancel: {
+                                title: I18n.t('modal.common.cancel'),
+                                onClick: onClose,
+                                kind: 'link',
+                            },
+                            remove: {
+                                title: I18n.t('modal.whitelistRemove.remove'),
+                                kind: 'destructive',
+                                onClick: () => console.log('save'),
+                            },
+                        }}
+                    />
+                </Footer>
+            )}
+        >
+            <Translate value="modal.whitelistRemove.message" dangerousHTML />
+        </Dialog>
+    </ModalPortal>
+)
+
+export const WhitelistRequestAccessModal = () => {
+    const { api, isOpen } = useModal('requestWhitelistAccess')
+
+    if (!isOpen) {
+        return null
+    }
+
+    return (
+        <WhitelistRequestAccessModalComponent
+            onClose={() => api.close({
+                save: false,
+                redirect: false,
+            })}
+        />
+    )
+}

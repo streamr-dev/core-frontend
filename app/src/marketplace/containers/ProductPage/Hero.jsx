@@ -38,6 +38,7 @@ const Hero = () => {
     const { api: purchaseDialog } = useModal('purchase')
     const { isPending, wrap } = usePending('product.PURCHASE_DIALOG')
     const isMounted = useIsMounted()
+    const { api: requestAccessDialog } = useModal('requestWhitelistAccess')
 
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
@@ -49,11 +50,17 @@ const Hero = () => {
 
     const productId = product.id
     const isPaid = isPaidProduct(product)
+    const isWhitelistEnabled = product.requiresWhitelist
 
     const onPurchase = useCallback(async () => (
         wrap(async () => {
             if (isLoggedIn) {
                 if (isPaid) {
+                    if (isWhitelistEnabled && !isWhitelisted) {
+                        await requestAccessDialog.open()
+                        return
+                    }
+
                     // Paid product has to be bought with Metamask
                     const { started, succeeded, viewInCore } = await purchaseDialog.open({
                         productId,
@@ -83,26 +90,20 @@ const Hero = () => {
 
                     dispatch(getMyPurchases())
                 }
-            } else {
-                dispatch(replace(routes.auth.login({
-                    redirect: routes.marketplace.product({
-                        id: productId,
-                    }),
-                })))
             }
         })
-    ), [productId, dispatch, isLoggedIn, purchaseDialog, isPaid, wrap, isMounted])
+    ), [productId, dispatch, isLoggedIn, purchaseDialog, isPaid, wrap, isMounted, isWhitelistEnabled, isWhitelisted, requestAccessDialog])
 
     useEffect(() => {
         const loadWhitelistStatus = async () => {
-            if (productId && account) {
+            if (isWhitelistEnabled && productId && account) {
                 const whitelisted = await isAddressWhitelisted(productId, account)
                 setIsWhitelisted(whitelisted)
             }
         }
 
         loadWhitelistStatus()
-    }, [productId, account])
+    }, [productId, account, isWhitelistEnabled])
 
     return (
         <HeroComponent

@@ -25,7 +25,7 @@ type Props = {
 
 const buttonTitle = (product: Product, isValidSubscription: boolean, isWhitelisted: ?boolean) => {
     if (product.requiresWhitelist && isWhitelisted === false) {
-        return 'Request access'
+        return 'Request Access'
     }
 
     if (isPaidProduct(product)) {
