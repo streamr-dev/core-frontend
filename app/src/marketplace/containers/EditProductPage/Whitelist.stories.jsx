@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
+import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import { withKnobs } from '@storybook/addon-knobs'
 
@@ -27,6 +28,9 @@ const WhiteListEditor = ({ items }: Props) => {
             enabled={isEnabled}
             items={items}
             onEnableChanged={(val) => setIsEnabled(val)}
+            addDialog={null}
+            removeDialog={null}
+            copy={action('Copy')}
         />
     )
 }

@@ -25,19 +25,25 @@ const Container = styled.div`
 `
 
 const Rows = styled.div`
-    height: 280px;
-    overflow: overlay;
+    height: 336px;
+    overflow: auto;
 `
 
 const TableRow = styled.span`
     display: grid;
     grid-template-columns: 1fr 90px 90px;
     height: 56px;
-    opacity: ${(props) => (props.pending ? '0.5' : '1.0')};    
+    opacity: ${(props) => (props.pending ? '0.5' : '1.0')};
+    background: #fdfdfd;
 
     &:not(:last-child) {
         border-bottom: 1px solid #ebebeb;
     }
+`
+
+const TableHeaderRow = styled(TableRow)`
+    position: sticky;
+    top: 0;
 `
 
 const TableColumnBase = styled.span`
@@ -55,7 +61,7 @@ const TableColumnBase = styled.span`
     }
 `
 
-const TableHeader = styled(TableColumnBase)`
+const TableHeaderColumn = styled(TableColumnBase)`
     font-weight: 500;
     letter-spacing: 0px;
 `
@@ -132,6 +138,22 @@ type Props = {
 
 const MIN_ROWS = 5
 
+const padWithEmptyRows = (rows: Array<WhitelistItem>) => {
+    if (rows.length < MIN_ROWS) {
+        const empties = new Array(MIN_ROWS - rows.length).fill(null)
+        return empties.map((item, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <TableRow key={index} disabled>
+                <TableColumn disabled />
+                <TableColumn disabled center />
+                <TableColumn disabled center />
+            </TableRow>
+        ))
+    }
+
+    return null
+}
+
 export const WhitelistEditorComponent = ({
     className,
     enabled,
@@ -140,98 +162,81 @@ export const WhitelistEditorComponent = ({
     addDialog,
     removeDialog,
     copy,
-}: Props) => {
-    let rows = items
-    if (rows.length < MIN_ROWS) {
-        rows = rows.concat(new Array(MIN_ROWS - rows.length).fill(undefined))
-    }
+}: Props) => (
+    <Container className={className}>
+        <Rows>
+            <TableHeaderRow>
+                <TableHeaderColumn>{I18n.t('editProductPage.whitelist.header.address')}</TableHeaderColumn>
+                <TableHeaderColumn>{I18n.t('editProductPage.whitelist.header.status')}</TableHeaderColumn>
+                <TableHeaderColumn />
+            </TableHeaderRow>
+            {items.map((item) => {
+                const disabled = !enabled || item.isPending
 
-    return (
-        <Container className={className}>
-            <TableRow>
-                <TableHeader>{I18n.t('editProductPage.whitelist.header.address')}</TableHeader>
-                <TableHeader>{I18n.t('editProductPage.whitelist.header.status')}</TableHeader>
-                <TableHeader />
-            </TableRow>
-            <Rows>
-                {rows.map((item, index) => {
-                    const disabled = !enabled || (item != null && item.isPending)
-
-                    if (item == null) {
-                        return (
-                            // eslint-disable-next-line react/no-array-index-key
-                            <TableRow key={index} disabled>
-                                <TableColumn disabled />
-                                <TableColumn disabled center />
-                                <TableColumn disabled center />
-                            </TableRow>
-                        )
-                    }
-
-                    return (
-                        <TableRow key={item.address}>
-                            <TableColumn disabled={disabled}>
-                                <span>{item.address}</span>
-                            </TableColumn>
-                            <TableColumn disabled={disabled} center>
-                                <StyledTooltip
-                                    value={I18n.t(`editProductPage.whitelist.status.${item.status}`)}
-                                    placement="bottom"
-                                    boundariesElement="viewport"
+                return (
+                    <TableRow key={item.address}>
+                        <TableColumn disabled={disabled}>
+                            <span>{item.address}</span>
+                        </TableColumn>
+                        <TableColumn disabled={disabled} center>
+                            <StyledTooltip
+                                value={I18n.t(`editProductPage.whitelist.status.${item.status}`)}
+                                placement="bottom"
+                                boundariesElement="viewport"
+                                disabled={disabled}
+                            >
+                                <Status
+                                    status={item.status}
                                     disabled={disabled}
-                                >
-                                    <Status
-                                        status={item.status}
-                                        disabled={disabled}
-                                    />
-                                </StyledTooltip>
-                            </TableColumn>
-                            <TableColumn disabled={disabled} center>
-                                <StyledDropdownActions
-                                    title={<Meatball alt="Select" />}
-                                    noCaret
-                                    disabled={disabled}
-                                >
-                                    <DropdownActions.Item onClick={() => copy(item.address)}>
-                                        {I18n.t('editProductPage.whitelist.copy')}
+                                />
+                            </StyledTooltip>
+                        </TableColumn>
+                        <TableColumn disabled={disabled} center>
+                            <StyledDropdownActions
+                                title={<Meatball alt="Select" />}
+                                noCaret
+                                disabled={disabled}
+                            >
+                                <DropdownActions.Item onClick={() => copy(item.address)}>
+                                    {I18n.t('editProductPage.whitelist.copy')}
+                                </DropdownActions.Item>
+                                {item.status !== 'removed' && (
+                                    <DropdownActions.Item onClick={() => removeDialog.open({
+                                        address: item.address,
+                                    })}
+                                    >
+                                        {I18n.t('editProductPage.whitelist.remove')}
                                     </DropdownActions.Item>
-                                    {item.status !== 'removed' && (
-                                        <DropdownActions.Item onClick={() => removeDialog.open({
-                                            address: item.address,
-                                        })}
-                                        >
-                                            {I18n.t('editProductPage.whitelist.remove')}
-                                        </DropdownActions.Item>
-                                    )}
-                                </StyledDropdownActions>
-                            </TableColumn>
-                        </TableRow>
-                    )
-                })}
-            </Rows>
-            <Controls>
-                <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
-                <StyledToggle
-                    id="whitelist"
-                    value={enabled}
-                    onChange={(val) => {
-                        onEnableChanged(val)
-                    }}
-                />
-                <Button
-                    kind="secondary"
-                    size="normal"
-                    disabled={!enabled}
-                    onClick={() => {
-                        addDialog.open()
-                    }}
-                >
-                    {I18n.t('editProductPage.whitelist.add')}
-                </Button>
-            </Controls>
-        </Container>
-    )
-}
+                                )}
+                            </StyledDropdownActions>
+                        </TableColumn>
+                    </TableRow>
+                )
+            })}
+            {padWithEmptyRows(items)}
+        </Rows>
+        <Controls>
+            <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
+            <StyledToggle
+                id="whitelist"
+                value={enabled}
+                onChange={(val) => {
+                    onEnableChanged(val)
+                }}
+            />
+            <Button
+                kind="secondary"
+                size="normal"
+                disabled={!enabled}
+                onClick={() => {
+                    addDialog.open()
+                }}
+            >
+                {I18n.t('editProductPage.whitelist.add')}
+            </Button>
+        </Controls>
+    </Container>
+)
 
 export const WhitelistEditorContainer = () => {
     const { isEnabled, setEnabled, items } = useWhitelist()
