@@ -108,11 +108,11 @@ const StreamPreviewPage = ({
 
     const permissions = useStreamPermissions(urlId)
 
-    if (!permissions) {
+    if (!permissions && !productId) {
         return null
     }
 
-    if (!permissions.includes('read')) {
+    if (!productId && !(permissions || []).includes('read')) {
         throw new ResourceNotFoundError(ResourceType.STREAM, urlId)
     }
 
