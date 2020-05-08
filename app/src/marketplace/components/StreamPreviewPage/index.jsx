@@ -22,7 +22,8 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { Context as ClientContext, Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useStreamReadPermission from '$shared/hooks/useStreamReadPermission'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 
 type Props = {
     match: {
@@ -105,10 +106,14 @@ const StreamPreviewPage = ({
         setHasData(true)
     }, [isMounted])
 
-    const ready = useStreamReadPermission(urlId)
+    const permissions = useStreamPermissions(urlId)
 
-    if (!ready) {
+    if (!permissions) {
         return null
+    }
+
+    if (!permissions.includes('read')) {
+        throw new ResourceNotFoundError(ResourceType.STREAM, urlId)
     }
 
     return (
