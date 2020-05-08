@@ -6,7 +6,8 @@ import { getMyStreamPermissions } from '$userpages/modules/userPageStreams/servi
 import { handleLoadError } from '$auth/utils/loginInterceptor'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
-import { selectUserData } from '$shared/modules/user/selectors'
+import { selectUserData, isAuthenticating } from '$shared/modules/user/selectors'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 const extractOperations = (data: Array<any>, username: ?string): Array<string> => (
     data
@@ -19,7 +20,11 @@ export default (id: string) => {
 
     const fail = useFailure()
 
-    const { name: username } = useSelector(selectUserData) || {}
+    const { username } = useSelector(selectUserData) || {}
+
+    const authenticating = useSelector(isAuthenticating)
+
+    const isMounted = useIsMounted()
 
     useEffect(() => {
         setPermissions(undefined)
@@ -27,7 +32,11 @@ export default (id: string) => {
         const fetch = async () => {
             try {
                 try {
-                    setPermissions(extractOperations(await getMyStreamPermissions(id), username))
+                    const data = await getMyStreamPermissions(id)
+
+                    if (isMounted()) {
+                        setPermissions(extractOperations(data, username))
+                    }
                 } catch (e) {
                     await handleLoadError(e)
                 }
@@ -40,8 +49,10 @@ export default (id: string) => {
             }
         }
 
-        fetch()
-    }, [id, username, fail])
+        if (!authenticating) {
+            fetch()
+        }
+    }, [id, username, authenticating, fail, isMounted])
 
     return permissions
 }
