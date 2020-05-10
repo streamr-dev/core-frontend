@@ -73,10 +73,11 @@ function useAsyncCallbackWithState(callback) {
         if (!isMounted()) { return }
         if (isLoading) { return } // already loading
 
-        setState({
+        setState((s) => ({
+            ...s,
             isLoading: true,
             hasStarted: true,
-        })
+        }))
 
         try {
             result = await callback()
@@ -308,59 +309,86 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
+function filterPermissions({ permissions, currentUser }) {
+    return permissions
+    // remove currentUser, not editable
+        .filter((p) => p.user !== currentUser)
+    // convert permission.anonymous to permission.user = 'anonymous', if needed
+        .map((p) => State.fromAnonymousPermission(p))
+}
+
 /*
- * Store update errors against user.
- * Simple { [userid]: Error } mapping.
- * Nothing special.
+ * big horrible async handler for updating permission records
+ * each permission that was added needs to send a request that it be created
+ * each permission that was removed added needs to send a request that it be removed
+ * Issues all requests in parallel, should not abort if one fails.
+ * Returns any errors
  */
 
-function useUserErrors() {
-    const [userErrors, setUserErrors] = useState({})
+async function savePermissions(currentUsers, props) {
+    const { resourceType, resourceId, currentUser } = props
+    const oldPermissions = filterPermissions({
+        permissions: await getResourcePermissions({
+            resourceType,
+            resourceId,
+        }),
+        currentUser,
+    })
+    const { added, removed } = State.diffUsersPermissions({
+        oldPermissions,
+        newUsers: currentUsers,
+        resourceType,
+    })
 
-    const setUserUpdateError = useCallback((userId, err) => {
-        setUserErrors((prevUserErrors) => ({
-            ...prevUserErrors,
-            [userId]: err,
-        }))
-    }, [setUserErrors])
-
-    const resetUserUpdateError = useCallback((userId) => {
-        setUserErrors((prevUserErrors) => {
-            const nextErrors = Object.assign({}, prevUserErrors)
-            delete nextErrors[userId]
-            return nextErrors
-        })
-    }, [setUserErrors])
-
-    const hasUserError = Object.values(userErrors).some((v) => v)
+    const allChangedUserIds = [
+        ...new Set([
+            ...added.map(({ user }) => user),
+            ...removed.map(({ user }) => user),
+        ]),
+    ]
+    const errors = {}
+    await Promise.all(allChangedUserIds.map(async (userId) => {
+        const userAddedItems = added.filter((p) => p.user === userId)
+        const userRemovedItems = removed.filter((p) => p.id != null && p.user === userId)
+        await Promise.all([
+            ...userAddedItems.map(async (data) => setResourcePermission({
+                resourceType,
+                resourceId,
+                data: State.toAnonymousPermission(data),
+            })),
+            ...userRemovedItems.map(async (data) => removeResourcePermission({
+                resourceType,
+                resourceId,
+                data: State.toAnonymousPermission(data),
+            })),
+        ].map((task) => task.catch((error) => {
+            console.error(error) // eslint-disable-line no-console
+            // store failure but do not abort
+            // if user has multiple errors will only store one,
+            // this is fine, we don't need to show all of them
+            errors[userId] = error
+        })))
+    }))
 
     return {
-        userErrors,
-        setUserUpdateError,
-        resetUserUpdateError,
-        hasUserError,
+        errors,
     }
 }
 
-const ShareSidebar = connect(({ user }) => ({
-    currentUser: user && user.user && user.user.username,
-}))((props) => {
-    const { currentUser, resourceType, resourceId, onClose } = props
+/**
+ * Handling of permission state updates, selection & new user list
+ * Factored out mainly to give main component some space.
+ */
 
-    let { permissions } = props
-
-    // convert permission.anonymous to permission.user = 'anonymous', if needed
-    permissions = useMemo(() => permissions.map((p) => State.fromAnonymousPermission(p)), [permissions])
-
-    const propsRef = useRef(props)
-    propsRef.current = props
-    const whoHasAccessOptions = options.map((o) => ({
-        label: I18n.t(`modal.shareResource.${o}`),
-        value: o,
-    }))
-
+function useUserPermissionState(props) {
+    const { resourceType, currentUser, permissions: propPermissions } = props
+    const permissions = useMemo(() => (
+        filterPermissions({
+            permissions: propPermissions,
+            currentUser,
+        })
+    ), [currentUser, propPermissions])
     const users = useMemo(() => State.usersFromPermissions(resourceType, permissions), [resourceType, permissions])
-
     const [currentUsers, setCurrentUsers] = useState(users) // state of user permissions to save to server
     const [newUserIdList, setNewUserIdList] = useState([]) // users added since last save
     const [selectedUserId, setSelectedUserId] = useState() // currently selected user
@@ -372,6 +400,8 @@ const ShareSidebar = connect(({ user }) => ({
             userId,
         })
     ), [currentUser])
+
+    /* CRUD APIs */
 
     const addUser = useCallback((userId) => {
         if (!canShareToUser(userId)) { return }
@@ -401,109 +431,124 @@ const ShareSidebar = connect(({ user }) => ({
         updatePermission('anonymous', permissions)
     }, [updatePermission, resourceType])
 
+    // return everything
+
+    return useMemo(() => ({
+        permissions,
+        currentUsers,
+        canShareToUser,
+        addUser,
+        removeUser,
+        updatePermission,
+        onAnonymousAccessChange,
+        newUserIdList,
+        setNewUserIdList,
+        selectedUserId,
+        setSelectedUserId,
+    }), [
+        permissions,
+        currentUsers,
+        canShareToUser,
+        addUser,
+        removeUser,
+        updatePermission,
+        onAnonymousAccessChange,
+        newUserIdList,
+        setNewUserIdList,
+        selectedUserId,
+        setSelectedUserId,
+    ])
+}
+
+const ShareSidebar = connect(({ user }) => ({
+    currentUser: user && user.user && user.user.username,
+}))((props) => {
+    const { currentUser, resourceType, resourceId, onClose } = props
+    const isMounted = useIsMounted()
+    const propsRef = useRef(props)
+    propsRef.current = props
+    const { userErrors, setUserErrors } = props
+
+    const {
+        permissions,
+        currentUsers,
+        canShareToUser,
+        addUser,
+        removeUser,
+        updatePermission,
+        onAnonymousAccessChange,
+        newUserIdList,
+        setNewUserIdList,
+        selectedUserId,
+        setSelectedUserId,
+    } = useUserPermissionState(props)
+
+    // i.e. something different between server state and our state
     const hasChanges = State.hasPermissionsChanges({
         oldPermissions: permissions,
         newUsers: currentUsers,
         resourceType,
     })
 
-    useEffect(() => {
-        if (!hasChanges) { return }
-        // warn if user navigating away before saving
-        window.addEventListener('beforeunload', unsavedUnloadWarning)
-        return () => {
-            window.removeEventListener('beforeunload', unsavedUnloadWarning)
-        }
-    }, [hasChanges])
-
-    const [didTryClose, setDidTryClose] = useState(false) // should be true when user tries to close sidebar
-
-    const isMounted = useIsMounted()
-    const { userErrors, setUserUpdateError, resetUserUpdateError, hasUserError } = useUserErrors()
+    // should be true when user tries to close sidebar
+    const [didTryClose, setDidTryClose] = useState(false)
 
     /*
-     * big horrible async handler for updating permission records
-     * each permission that was added needs to send a request that it be created
-     * each permission that was removed added needs to send a request that it be removed
-     * Issues all requests in parallel, should not abort if one fails.
+     * Saves permissions by:
+     * issuing updates, loading latest, then restoring state of users with failed updates
+     * note all happens within an useAsyncCallbackWithState so changes are blocked while saving
      */
 
-    const onSaveCallback = useCallback(async () => {
-        setDidTryClose(false)
-        const { added, removed } = State.diffUsersPermissions({
-            oldPermissions: permissions,
-            newUsers: currentUsers,
-            resourceType,
+    const [{ isLoading: isSaving, error }, onSave] = useAsyncCallbackWithState(useCallback(async () => {
+        setDidTryClose(false) // hide any 'need to save' errors
+        // issue permission updates
+        const { errors } = await savePermissions(currentUsers, propsRef.current)
+        if (!isMounted()) { return }
+        // load latest permissions
+        // required to set base permissions to whatever changes were successful
+        await propsRef.current.loadPermissions()
+        if (!isMounted()) { return }
+
+        setUserErrors(errors) // errors will be empty if no errors
+        setNewUserIdList((prevIds) => (
+            // reset new user list to only include new users that had errors
+            prevIds.filter((id) => Object.keys(errors).includes(id))
+        ))
+
+        // restore state of any users with failed updates
+        Object.keys(errors).forEach((userId) => {
+            updatePermission(userId, currentUsers[userId])
         })
+    }, [isMounted, currentUsers, setUserErrors, setDidTryClose, updatePermission, setNewUserIdList]))
 
-        const allChangedUserIds = [
-            ...new Set([
-                ...added.map(({ user }) => user),
-                ...removed.map(({ user }) => user),
-            ]),
-        ]
-        await Promise.all(allChangedUserIds.map(async (userId) => {
-            const userAddedItems = added.filter((p) => p.user === userId)
-            const userRemovedItems = removed.filter((p) => p.id != null && p.user === userId)
-            let hasError = false
-            await Promise.all([
-                ...userAddedItems.map(async (data) => setResourcePermission({
-                    resourceType,
-                    resourceId,
-                    data: State.toAnonymousPermission(data),
-                })),
-                ...userRemovedItems.map(async (data) => removeResourcePermission({
-                    resourceType,
-                    resourceId,
-                    data: State.toAnonymousPermission(data),
-                })),
-            ].map((task) => task.catch((error) => {
-                hasError = true
-                // store failure but do not abort
-                console.error(error) // eslint-disable-line no-console
-                if (!isMounted()) { return }
-                setUserUpdateError(userId, error)
-            })))
+    const previousIsSaving = usePrevious(isSaving) // note previous isSaving state so we know when we just finished saving
+    const hasUserError = !!Object.keys(userErrors).length
 
-            if (!isMounted()) { return }
-            if (!hasError) {
-                resetUserUpdateError(userId)
-            }
-        }))
-    }, [
-        isMounted, currentUsers, permissions, resourceType, resourceId,
-        resetUserUpdateError, setUserUpdateError, setDidTryClose,
-    ])
-
-    // wrap onSave with async state handling
-    const [isSavingState, onSave] = useAsyncCallbackWithState(onSaveCallback)
-    const { isLoading: isSaving, error } = isSavingState
-    const previousIsSaving = usePrevious(isSaving)
-
+    // was just successful in saving users
     const isSuccessful = !!(previousIsSaving && !isSaving && !error && !hasUserError)
 
-    /* prevent sidebar closing if unsaved changes */
-    const [bindTryCloseWarning, tryCloseWarningStyle] = useSlideIn({ isVisible: didTryClose })
-    const { addTransitionCheck, removeTransitionCheck } = useContext(SidebarContext)
     const shouldForceCloseRef = useRef(false)
 
+    // close sidebar if successful
     useEffect(() => {
         if (isSuccessful) {
             shouldForceCloseRef.current = true
-            propsRef.current.loadPermissions()
             onClose()
         }
     }, [isSuccessful, onClose])
 
+    // user clicked cancel button
     const onCancel = useCallback(() => {
-        // user clicked cancel button
         shouldForceCloseRef.current = true // use ref as we don't need to trigger render
         // no need to unset shouldForceCloseRef since cancel will lead to unmount anyway
         onClose()
     }, [onClose])
 
+    // prevent sidebar closing if unsaved changes
+    const { addTransitionCheck, removeTransitionCheck } = useContext(SidebarContext)
+
+    // true if sidebar can close safely without cancel
     const checkCanClose = useCallback(() => {
-        // true if sidebar can close safely without cancel
         if (!hasChanges) { return true }
         if (shouldForceCloseRef.current) { return true }
         setDidTryClose(true)
@@ -511,6 +556,7 @@ const ShareSidebar = connect(({ user }) => ({
         return false
     }, [hasChanges, isSaving, setDidTryClose])
 
+    // block closing sidebar unless checkCanClose passes
     useEffect(() => {
         addTransitionCheck(checkCanClose)
         return () => removeTransitionCheck(checkCanClose)
@@ -521,10 +567,27 @@ const ShareSidebar = connect(({ user }) => ({
         setDidTryClose(false)
     }, [setDidTryClose, currentUsers])
 
+    // browser warning if user navigating away before saving complete
+    useEffect(() => {
+        if (!hasChanges && !isSaving) { return }
+        window.addEventListener('beforeunload', unsavedUnloadWarning)
+        return () => {
+            window.removeEventListener('beforeunload', unsavedUnloadWarning)
+        }
+    }, [hasChanges, isSaving])
+
+    const [bindTryCloseWarning, tryCloseWarningStyle] = useSlideIn({ isVisible: didTryClose })
+
+    const uid = useUniqueId('ShareSidebar') // for html labels
+
     /* render (no hooks past here) */
 
     if (error) { return error.message } // this shouldn't happen
-    if (!permissions) { return null }
+
+    const whoHasAccessOptions = options.map((o) => ({
+        label: I18n.t(`modal.shareResource.${o}`),
+        value: o,
+    }))
 
     const anonymousPermissions = currentUsers.anonymous
 
@@ -544,8 +607,6 @@ const ShareSidebar = connect(({ user }) => ({
         ...newUserIdList,
         ...oldUserIdList,
     ].map((userId) => [userId, editableUsers[userId]])
-
-    const uid = useUniqueId('ShareSidebar')
 
     // add enter/leave transitions for users
     const userEntryTransitions = useTransition(userEntries, ([userId]) => userId, {
@@ -647,7 +708,7 @@ const ShareSidebar = connect(({ user }) => ({
     )
 })
 
-export function usePermissions({ resourceType, resourceId }) {
+export function usePermissionsLoader({ resourceType, resourceId }) {
     const loadPermissionsCallback = useCallback(() => (
         getResourcePermissions({
             resourceType,
@@ -668,20 +729,24 @@ export function usePermissions({ resourceType, resourceId }) {
 export default (props) => {
     const { resourceType, resourceId } = props
 
-    const [{ isLoading, error, result: permissions }, loadPermissions] = usePermissions({
+    const [{ isLoading, error, result: permissions }, loadPermissions] = usePermissionsLoader({
         resourceType,
         resourceId,
     })
 
-    if (isLoading) { return 'Loading...' }
-    if (error) { return error.message }
+    const [userErrors, setUserErrors] = useState({})
+
     if (!permissions) { return null }
 
     return (
         <ShareSidebar
             {...props}
+            isLoading={isLoading}
+            error={error}
             permissions={permissions}
             loadPermissions={loadPermissions}
+            userErrors={userErrors}
+            setUserErrors={setUserErrors}
         />
     )
 }

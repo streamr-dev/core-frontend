@@ -113,11 +113,6 @@ function StreamPageSidebar({ stream }) {
         sidebar.close()
     }, [sidebar])
 
-    React.useEffect(() => {
-        console.log('sidebar changed')
-    }, [sidebar])
-
-
     return (
         <Sidebar
             className={styles.ModuleSidebar}
