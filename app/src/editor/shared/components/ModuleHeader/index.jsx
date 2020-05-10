@@ -3,7 +3,7 @@
 import React, { useState, type Node, Fragment, useContext, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import EditableText from '$shared/components/EditableText'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
 import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
 import { Context as ResizableContext } from '$editor/canvas/components/Resizable'

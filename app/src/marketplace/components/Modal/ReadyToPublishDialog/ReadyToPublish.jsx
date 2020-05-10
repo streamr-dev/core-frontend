@@ -14,6 +14,7 @@ import links from '../../../../links'
 import type { Props } from '.'
 
 const Footer = styled.div`
+    border-top: 1px solid #F2F1F1;
     padding: 1.5rem;
     display: flex;
     align-items: center;

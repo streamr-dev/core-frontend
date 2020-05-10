@@ -14,6 +14,7 @@ import DropdownItem from './DropdownItem'
 import LinkItem from './LinkItem'
 import AvatarItem from './AvatarItem'
 import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
 
 import styles from './nav.pcss'
 
@@ -65,7 +66,7 @@ const Nav = compose(
                 </Link>
             </DropdownItem>
             <LinkItem
-                to={routes.marketplace()}
+                to={routes.marketplace.root()}
                 underlined
             >
                 <Translate value="general.marketplace" />
@@ -73,26 +74,26 @@ const Nav = compose(
             <DropdownItem
                 align="left"
                 label={I18n.t('general.docs')}
-                to={routes.docs()}
+                to={docsLinks.docs}
             >
                 {[
-                    <Link to={routes.docsGettingStarted()} key="gettingStarted">
+                    <Link to={docsLinks.gettingStarted} key="gettingStarted">
                         <Translate value="general.gettingStarted" />
                     </Link>,
-                    <Link to={routes.docsStreamsRoot()} key="streams">
+                    <Link to={docsLinks.streams} key="streams">
                         <Translate value="general.streams" />
                     </Link>,
-                    <Link to={routes.docsCanvasesRoot()} key="canvases">
+                    <Link to={docsLinks.canvases} key="canvases">
                         <Translate value="general.canvases" />
                     </Link>,
-                    <Link to={routes.docsDashboards()} key="dashboards">
+                    <Link to={docsLinks.dashboards} key="dashboards">
                         <Translate value="general.dashboards" />
                     </Link>,
-                    <Link to={routes.docsProductsRoot()} key="products">
+                    <Link to={docsLinks.products} key="products">
                         <Translate value="general.products" />
                     </Link>,
-                    ...(process.env.DATA_UNIONS ? [(
-                        <Link to={routes.docsDataUnionsRoot()} key="dataUnions">
+                    ...(process.env.DATA_UNIONS_DOCS ? [(
+                        <Link to={docsLinks.dataUnions} key="dataUnions">
                             <Translate value="general.dataUnions" />
                         </Link>
                     )] : []),

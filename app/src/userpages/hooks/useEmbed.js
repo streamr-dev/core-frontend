@@ -24,7 +24,9 @@ const getEmbedCode = (resourceType: ResourceType, resourceId: ResourceId) => {
 const getLinks = (resourceId: ResourceId) => ({
     CANVAS: `canvas/editor/${resourceId}`,
     DASHBOARD: `dashboard/editor/${resourceId}`,
-    STREAM: `core/stream/show/${resourceId}`,
+    STREAM: routes.stream({
+        id: resourceId,
+    }),
 })
 
 export function useEmbed(resourceType: ResourceType, resourceId: ResourceId) {

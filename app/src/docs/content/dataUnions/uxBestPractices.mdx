@@ -1,0 +1,77 @@
+
+import WalletAndEarningUi from './images/ux_best_practices_01_wallet_and_earning_ui.jpg'
+import WalletAndEarningUi2x from './images/ux_best_practices_01_wallet_and_earning_ui@2x.jpg'
+
+import KnowYourResponsibility from './images/ux_best_practices_02_know_your_responsibility.jpg'
+import KnowYourResponsibility2x from './images/ux_best_practices_02_know_your_responsibility@2x.jpg'
+
+import WalletAddress from './images/ux_best_practices_03_wallet_address.jpg'
+import WalletAddress2x from './images/ux_best_practices_03_wallet_address@2x.jpg'
+
+import FiatCurrencyDisplay from './images/ux_best_practices_04_fiat_currency_display.jpg'
+import FiatCurrencyDisplay2x from './images/ux_best_practices_04_fiat_currency_display@2x.jpg'
+
+# Data Unions UX best practices
+
+If you build a Data Unions based app, it needs to incorporate a simple crypto wallet, because your users will receive revenue in Streamr’s ERC-20 token, DATA. Below are a collection of features, suggestions and good usability practices you may want to include  in your app.
+
+### Balance, available balance and cumulative earnings
+
+Because users can withdraw tokens from their primary Ethereum address to another wallet, showing both current total and cumulative earnings is a good idea, so users can know their historical earnings as well as the current balance.
+
+Due to an anti-fraud measure, earnings are made available to the user with a 48hr time lag, so showing both a total balance and available balance is good practice. You may wish to offer a tooltip or other information to your users informing them of the reason for this lag.
+
+<figure>
+    <picture>
+        <img
+            src={WalletAndEarningUi}
+            srcSet={`${WalletAndEarningUi2x} 2x`}
+            alt="Balance, available balance and cumulative earnings"
+        />
+    </picture>
+    <figcaption>Example wallet and earnings UI for a Data Union app</figcaption>
+</figure>
+
+### Private key handling
+
+Because users may want to use another wallet for managing their funds, we strongly recommend offering private key access to all your users. Without this, they do not really have control of their own funds. When handling private keys, you need to allow users to access the private keys, but you should generally avoid displaying them on screen and keep them hidden from view.
+
+You also need to inform your users about their responsibility for security, because it is entirely up to them. When building onboarding, good practice is to break users flow of just blindly clicking onwards through key information. Using disabled, conditional buttons that require explicit agreement from the user will not solve all your problems, but might help to prevent some users from ignoring your warnings.
+
+<figure>
+    <picture>
+        <img
+            src={KnowYourResponsibility}
+            srcSet={`${KnowYourResponsibility2x} 2x`}
+            alt="Private key handling"
+        />
+    </picture>
+</figure>
+
+### Wallet addresses
+
+Providing clear access and copy functionality to the user's wallet address is always good practice, so they can watch it via other applications, and check it with external services. When pasting addresses into wallet address fields, informing the user that the contents of the field match the clipboard, and also show the ETH & ERC-20 tokens held by that address helps to reduce user stress and avoids the common practice of double-checking addresses by copy-pasting them as text.
+
+<figure>
+    <picture>
+        <img
+            src={WalletAddress}
+            srcSet={`${WalletAddress2x} 2x`}
+            alt="Wallet addresses"
+        />
+    </picture>
+</figure>
+
+### Fiat currency display
+
+Allowing your users to switch currency views between DATA and a standard fiat currency like USD is a good idea. If they use your app over a long time they might get accustomed to thinking in DATA, but don’t assume they will.
+
+<figure>
+    <picture>
+        <img
+            src={FiatCurrencyDisplay}
+            srcSet={`${FiatCurrencyDisplay2x} 2x`}
+            alt="Fiat currency display"
+        />
+    </picture>
+</figure>

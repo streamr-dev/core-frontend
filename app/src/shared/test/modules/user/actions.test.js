@@ -106,6 +106,15 @@ describe('user - actions', () => {
                 {
                     type: constants.RESET_USER_DATA,
                 },
+                {
+                    type: '@@router/CALL_HISTORY_METHOD',
+                    payload: {
+                        method: 'push',
+                        args: [
+                            '/',
+                        ],
+                    },
+                },
             ]
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })

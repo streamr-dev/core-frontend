@@ -1,13 +1,13 @@
 // @flow
 
 import React, { type Node, type Element } from 'react'
-import ScrollableAnchor from 'react-scrollable-anchor'
 import styled, { css } from 'styled-components'
 import { REGULAR, MD, LG } from '$shared/utils/styled'
+import TOCBusStop from './TOCBusStop'
 
 type Props = {
     id: string,
-    title: string | Element<any>,
+    title?: string | Element<any>,
     children?: Node,
     onlyDesktop?: boolean,
 }
@@ -35,15 +35,27 @@ const Title = styled.h3`
     }
 `
 
-export const TOCSection = ({ id, title, children, onlyDesktop }: Props) => (
-    <ScrollableAnchor id={id}>
-        <Section onlyDesktop={onlyDesktop}>
+export const UnstyledTOCSection = ({
+    id,
+    title,
+    children,
+    onlyDesktop,
+    ...props
+}: Props) => (
+    <Section {...props} onlyDesktop={onlyDesktop}>
+        {title ? (
             <Title>
+                <TOCBusStop name={id} />
                 {title}
             </Title>
-            {children}
-        </Section>
-    </ScrollableAnchor>
+        ) : (
+            <TOCBusStop name={id} />
+        )}
+        {children}
+    </Section>
 )
+
+const TOCSection = styled(UnstyledTOCSection)`
+`
 
 export default TOCSection

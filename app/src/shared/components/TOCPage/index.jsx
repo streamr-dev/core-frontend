@@ -1,13 +1,11 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import { MD, LG, XL } from '$shared/utils/styled'
-
+import { MD, LG, XL, REGULAR } from '$shared/utils/styled'
 import TOCSection from './TOCSection'
 import TOCNav, { Link } from './TOCNav'
-import styles from './tocPage.pcss'
+import BusLine, { useBusLine } from '$shared/components/BusLine'
 
 type Props = {
     title?: string,
@@ -33,8 +31,27 @@ const Wing = styled.div`
     }
 `
 
+export const Title = styled.h1`
+    color: #323232;
+    display: none;
+    font-size: 24px;
+    font-weight: ${REGULAR};
+    letter-spacing: 0;
+    line-height: 1.5rem;
+    margin: 0;
+
+    @media (min-width: ${MD}px) {
+        font-size: 18px;
+    }
+
+    @media (min-width: ${LG}px) {
+        display: block;
+        font-size: 36px;
+    }
+`
+
 const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
-    const { hash } = useLocation()
+    const { stop } = useBusLine()
 
     return (
         <div {...props}>
@@ -42,7 +59,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                 {!!title && (
                     <React.Fragment>
                         <Wing />
-                        <h1 className={styles.pageTitle}>{title}</h1>
+                        <Title>{title}</Title>
                         <div />
                     </React.Fragment>
                 )}
@@ -51,7 +68,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                         {React.Children.map(children, (child) => (
                             child.type === TOCSection ? (
                                 <Link
-                                    active={hash.substr(1) === child.props.id}
+                                    active={stop === child.props.id}
                                     href={`#${child.props.id}`}
                                 >
                                     {child.props.linkTitle || child.props.title}
@@ -69,19 +86,19 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
     )
 }
 
-const TOCPage = styled(UnstyledTOCPage)`
+const StyledTOCPage = styled(UnstyledTOCPage)`
     margin: 0 auto;
     max-width: 624px;
-    padding: 0 32px 10rem;
+    padding: 48px 32px 10rem;
 
     @media (min-width: ${MD}px) {
-        padding: 0 32px 5rem;
+        padding: 48px 0 5rem;
         width: 896px;
     }
 
     @media (min-width: ${LG}px) {
         max-width: none;
-        padding-top: 0;
+        padding: 88px 0 128px;
         width: 928px;
 
         > div {
@@ -99,6 +116,12 @@ const TOCPage = styled(UnstyledTOCPage)`
         }
     }
 `
+
+const TOCPage = (props: any) => (
+    <BusLine dynamicScrollPosition>
+        <StyledTOCPage {...props} />
+    </BusLine>
+)
 
 TOCPage.Section = TOCSection
 

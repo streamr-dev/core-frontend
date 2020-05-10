@@ -27,9 +27,21 @@ function shouldRedirect(error) {
     }
 
     if (error.response && error.response.status === 401) {
+        const { ignoreUnauthorized } = error.config
+
+        if (ignoreUnauthorized) {
+            return false
+        }
+
         const url = new window.URL(error.config.url)
         const me = new window.URL(formatApiUrl('users', 'me'))
         const keys = new window.URL(formatApiUrl('users', 'me', 'keys'))
+        const changePassword = new window.URL(formatApiUrl('users', 'me', 'changePassword'))
+
+        // shouldn't redirect if current password is wrong when changing password
+        if (changePassword.pathname === url.pathname && me.origin === url.origin && error.config.method === 'post') {
+            return false
+        }
 
         // shouldn't redirect if hitting /users/me api, 401 normal, signals logged out
         if ([me.pathname, keys.pathname].includes(url.pathname) && me.origin === url.origin && error.config.method === 'get') {

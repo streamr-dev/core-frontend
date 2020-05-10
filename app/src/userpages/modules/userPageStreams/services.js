@@ -92,6 +92,9 @@ export const confirmCsvFileUpload = (
 
 export const getRange = (id: StreamId): ApiResult<Range> => get({
     url: formatApiUrl('streams', id, 'range'),
+    options: {
+        ignoreUnauthorized: true,
+    },
 })
 
 export const deleteDataUpTo = (id: StreamId, date: Date): ApiResult<any> => del({

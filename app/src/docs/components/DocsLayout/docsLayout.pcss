@@ -279,6 +279,26 @@
       display: none;
     }
   }
+
+  .checklist {
+    ul {
+      padding-left: 1.75rem;
+    }
+
+    li {
+      list-style-type: none;
+    }
+
+    li::before {
+      background: url('../../../shared/assets/images/checkbox-checked.svg');
+      background-repeat: no-repeat;
+      content: ' ';
+      margin-left: -1.7rem;
+      margin-top: 6px;
+      width: 16px;
+      height: 16px;
+    }
+  }
 }
 
 :global(.react-syntax-highlighter-line-number) {

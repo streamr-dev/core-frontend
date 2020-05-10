@@ -1,6 +1,59 @@
+import { Link } from 'react-router-dom'
+import docsLinks from '$shared/../docsLinks'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+
+import RevenueAndData from './images/intro_to_data_unions_01_revenue_and_data.jpg'
+import RevenueAndData2x from './images/intro_to_data_unions_01_revenue_and_data@2x.jpg'
+
 # Introduction to Data Unions
 
-This would be a general overview that functions as a first step on the road to building an app with integrated Data Union. It would cover broad general steps for devs thinking about building on a Data Union. It would link out to the other articles below for more in-depth technical information. 
+As a general concept, a Data Union is a structure that allows separate entities who generate data to pool their data in order to achieve a common goal, typically to increase its value. Data Unions may differ from each other based on the membership model, use cases, revenue structure and governance, but also share some common components: a group of members contributing their data, an entity providing the application layer to manage the data and a discovery mechanism or marketplace for the data.
 
-- What is a Data Union
-- Building your app
+Streamr implements this idea with its Data Unions Framework, which allows admins to create crowdsourced data products that combine real-time data from many members into a single, more valuable dataset. 
+
+A Data Union Product is an Ethereum smart contract, created and deployed via the Core app and published on the Marketplace. Most revenue from a Data Union flows to its members, but the admin can set a percentage fee they receive in return for creating and managing the union. For more information on structure, see Data Union Framework Roles.
+
+<figure>
+    <picture>
+        <img
+            src={RevenueAndData}
+            srcSet={`${RevenueAndData2x} 2x`}
+            alt="Introduction to Data Unions"
+        />
+    </picture>
+    <figcaption>Example wallet and earnings UI for a Data Union app</figcaption>
+</figure>
+
+### What you’ll need
+
+Creating a Data Union requires a Streamr account, with a connected Ethereum address, to create, manage and receive revenue from the underlying smart contract. It also requires a host application that enables your users to join and provide real-time data. 
+
+Once the product is published, you can view revenue and community size and manage members via the Core app. Revenue from marketplace subscriptions will be paid out to members in the Streamr token, DATA, once it has accumulated in the smart contract.
+
+The most valuable Data Unions will incentivize collection of datasets otherwise difficult to source. Some examples could include real-time health data, web user data, pollution monitoring, smart city data and more. 
+
+### Pre-flight Checklist
+
+<div className={docsStyles.checklist}>
+
+- Created a Streamr account
+- Connected an Ethereum address to your account
+- Have an ETH balance at that address to deploy and publish the product
+- Created a name, description and cover image for the Marketplace listing
+- Have an app with a community of users who will provide real-time data
+
+</div>
+
+### General Flow
+
+- Use the Core app to create and deploy a draft Data Union smart contract
+- Connect the smart contract to your app
+- Add users and publish to the Marketplace
+- You must have a minimum of 1 user to publish, but the larger the number<br />
+  of members, the more valuable your product is likely to be
+- Manage users and view revenue via the Core app
+
+### Get Started
+
+If you want to get started now, you should learn how to <Link to={docsLinks.dataUnionsInCore}>Build a Data Union with Core</Link>. If this is your first time, learn how to <Link to={docsLinks.products}>Create a Product with Core</Link> first. For an in-depth guide to connecting your app to a Data Union, check out our <Link to={docsLinks.joinAndWithdraw}>Data Unions Integration Guide</Link>.

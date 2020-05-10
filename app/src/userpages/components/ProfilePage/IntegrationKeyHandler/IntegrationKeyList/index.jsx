@@ -20,6 +20,7 @@ type CommonProps = {|
     truncateValues?: boolean,
     onDelete: (IntegrationKeyId: IntegrationKeyId) => Promise<void>,
     onEdit: (IntegrationKeyId: IntegrationKeyId, keyName: string) => Promise<void>,
+    disabled?: boolean,
 |}
 
 type ItemProps = {
@@ -33,6 +34,7 @@ const IntegrationKeyItem = ({
     truncateValues,
     onDelete,
     onEdit,
+    disabled,
 }: ItemProps) => {
     const [editing, setEditing] = useState(false)
     const address = useMemo(() => (item.json || {}).address || '', [item])
@@ -46,8 +48,8 @@ const IntegrationKeyItem = ({
                 className={styles.singleKey}
                 keyName={item.name}
                 value={(item.json || {}).address || ''}
-                allowDelete
-                allowEdit
+                allowDelete={!disabled}
+                allowEdit={!disabled}
                 hideValue={hideValues}
                 truncateValue={truncateValues}
                 onDelete={() => onDelete(item.id)}

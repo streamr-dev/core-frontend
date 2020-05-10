@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import UndoControls from '$editor/shared/components/UndoControls'
 import { Context as UndoContext, Provider as UndoContextProvider } from '$shared/contexts/Undo'

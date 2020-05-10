@@ -3,11 +3,11 @@
 import React from 'react'
 import { Link, withRouter, type Location } from 'react-router-dom'
 import cx from 'classnames'
-import scrollIntoView from 'smooth-scroll-into-view-if-needed'
+import scrollTo from '$shared/utils/scrollTo'
 import ElevatedContainer from '$shared/components/ElevatedContainer'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import { docsNav } from '$docs/components/DocsLayout/Navigation/navLinks'
+import docsMap from '$docs/docsMap'
 import Search from '../../Search'
 import TableOfContents from './TableOfContents'
 
@@ -33,8 +33,8 @@ class Navigation extends React.Component<Props, State> {
     getTopLevelTitle() {
         let title = ''
 
-        Object.keys(docsNav).forEach((topLevelNavItem) => {
-            if (this.props.location.pathname.includes(docsNav[topLevelNavItem].root)) {
+        Object.keys(docsMap).forEach((topLevelNavItem) => {
+            if (this.props.location.pathname.includes(docsMap[topLevelNavItem].root.path)) {
                 title = topLevelNavItem
             }
         })
@@ -44,11 +44,10 @@ class Navigation extends React.Component<Props, State> {
 
     getSecondLevelTitle() {
         let title = ''
-
-        Object.keys(docsNav).forEach((topLevelNavItem) => {
-            if (this.props.location.pathname.includes(docsNav[topLevelNavItem].root)) {
-                Object.keys(docsNav[topLevelNavItem]).forEach((secondLevelNavItem) => {
-                    if (this.props.location.pathname.includes(docsNav[topLevelNavItem][secondLevelNavItem])) {
+        Object.keys(docsMap).forEach((topLevelNavItem) => {
+            if (this.props.location.pathname.includes(docsMap[topLevelNavItem].root.path)) {
+                Object.keys(docsMap[topLevelNavItem]).forEach((secondLevelNavItem) => {
+                    if (this.props.location.pathname.includes(docsMap[topLevelNavItem][secondLevelNavItem].path)) {
                         title = secondLevelNavItem
                     }
                 })
@@ -59,15 +58,7 @@ class Navigation extends React.Component<Props, State> {
     }
 
     scrollTop = () => {
-        const root = document.getElementById('root')
-
-        if (root) {
-            scrollIntoView(root, {
-                behavior: 'smooth',
-                block: 'start',
-                inline: 'nearest',
-            })
-        }
+        scrollTo(document.getElementById('root'))
     }
 
     generateMobileHeader() {

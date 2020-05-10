@@ -1,9 +1,10 @@
 // @flow
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 
 import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 import useModal from '$shared/hooks/useModal'
+import { usePending } from '$shared/hooks/usePending'
 
 import PrivateKeyNameDialog from './PrivateKeyNameDialog'
 
@@ -13,29 +14,27 @@ type Props = {
 
 const AddIdentityDialog = ({ api }: Props) => {
     const { load: getPrivateKeys, fetching, create } = usePrivateKeys()
-    const [waiting, setWaiting] = useState(false)
+    const { wrap, isPending } = usePending('user.ADD_PRIVATE_KEY')
 
-    const onSetName = useCallback((name: string) => {
-        setWaiting(true)
+    const onSetName = useCallback(async (name: string) => (
+        wrap(async () => {
+            let added = false
+            let error
 
-        let added = false
-        let error
-
-        try {
-            create(name)
-            added = true
-        } catch (e) {
-            console.warn(e)
-            error = e
-        } finally {
-            setWaiting(false)
-
-            api.close({
-                added,
-                error,
-            })
-        }
-    }, [create, api])
+            try {
+                await create(name)
+                added = true
+            } catch (e) {
+                console.warn(e)
+                error = e
+            } finally {
+                api.close({
+                    added,
+                    error,
+                })
+            }
+        })
+    ), [wrap, create, api])
 
     const onClose = useCallback(() => {
         api.close({
@@ -52,7 +51,7 @@ const AddIdentityDialog = ({ api }: Props) => {
         <PrivateKeyNameDialog
             onClose={onClose}
             onSave={onSetName}
-            waiting={fetching || waiting}
+            waiting={fetching || isPending}
         />
     )
 }

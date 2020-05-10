@@ -17,10 +17,10 @@ jest.mock('$userpages/components/CanvasPage/List', () => ({
         <div>Canvas list</div>
     ),
 }))
-jest.mock('$userpages/components/StreamPage/Show', () => ({
+jest.mock('$userpages/components/StreamPage', () => ({
     __esModule: true,
     default: ({ match }) => (
-        <div>Stream {match.params.id} page</div>
+        <div>Stream {match.params.id} view/edit page</div>
     ),
 }))
 jest.mock('$userpages/components/StreamPage/List', () => ({
@@ -29,10 +29,10 @@ jest.mock('$userpages/components/StreamPage/List', () => ({
         <div>Stream list</div>
     ),
 }))
-jest.mock('$userpages/components/StreamPage/Show', () => ({
+jest.mock('$userpages/components/NewStreamPage', () => ({
     __esModule: true,
-    default: ({ match }) => (
-        <div>Stream {match.params.id} page</div>
+    default: () => (
+        <div>New stream page</div>
     ),
 }))
 jest.mock('$userpages/components/StreamLivePreview', () => ({
@@ -146,10 +146,10 @@ describe('Userpages Routes', () => {
         expect(el.text()).toBe('Stream list')
     })
 
-    it('shows stream details', () => {
+    it('shows the new stream page', () => {
         const el = mount((
             <MemoryRouter
-                initialEntries={['/core/stream/show/steamid123']}
+                initialEntries={['/core/streams/new']}
             >
                 <Switch>
                     {UserpagesRouter()}
@@ -157,7 +157,21 @@ describe('Userpages Routes', () => {
             </MemoryRouter>
         ))
 
-        expect(el.text()).toBe('Stream steamid123 page')
+        expect(el.text()).toBe('New stream page')
+    })
+
+    it('shows stream details', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/streams/steamid123']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Stream steamid123 view/edit page')
     })
 
     it('shows stream preview', () => {

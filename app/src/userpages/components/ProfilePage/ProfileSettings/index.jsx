@@ -1,112 +1,152 @@
 // @flow
 
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import React, { useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { I18n, Translate } from 'react-redux-i18n'
 
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 
-import {
-    updateCurrentUserName,
-    updateCurrentUserImage,
-    getUserData,
-} from '$shared/modules/user/actions'
-
-import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
 import type { User } from '$shared/flowtype/user-types'
-import Avatar from '$userpages/components/Avatar'
+import { usePending } from '$shared/hooks/usePending'
+import Button from '$shared/components/Button'
+import AvatarCircle from '$shared/components/AvatarCircle'
+import useModal from '$shared/hooks/useModal'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import { updateCurrentUserName } from '$shared/modules/user/actions'
 
-import * as ChangePassword from '../ChangePassword'
+import ChangePasswordDialog from './ChangePasswordDialog'
+import EditAvatarDialog from './EditAvatarDialog'
 import styles from './profileSettings.pcss'
 
-type StateProps = {
-    user: ?User
-}
+const ProfileSettings = () => {
+    const user = useSelector(selectUserData)
+    const dispatch = useDispatch()
+    const isMounted = useIsMounted()
+    const { isPending } = usePending('user.SAVE')
+    const { wrap: wrapChangePasswordDialog } = usePending('user.CHANGE_PASSWORD_DIALOG')
+    const { wrap: wrapUploadAvatarDialog } = usePending('user.UPLOAD_AVATAR_DIALOG')
+    const { api: changePasswordDialog, isOpen: isChangePasswordDialogOpen } = useModal('userpages.changePassword')
+    const { api: uploadAvatarDialog, isOpen: isUploadAvatarDialogOpen } = useModal('userpages.uploadAvatar')
 
-type DispatchProps = {
-    getCurrentUser: () => void,
-    updateCurrentUserName: (name: $ElementType<User, 'name'>) => void,
-    updateCurrentUserImage: (image: ?File) => Promise<void>,
-}
+    const doUpdateUserName = useCallback((name: $ElementType<User, 'name'>) => (
+        dispatch(updateCurrentUserName(name))
+    ), [dispatch])
 
-type Props = StateProps & DispatchProps
+    const onNameChange = useCallback(({ target }: { target: { value: $ElementType<User, 'name'> } }) => {
+        doUpdateUserName(target.value)
+    }, [doUpdateUserName])
 
-export class ProfileSettings extends Component<Props> {
-    componentDidMount() {
-        // TODO: move to (yet nonexistent) router
-        this.props.getCurrentUser()
-    }
+    const changePassword = useCallback(async () => (
+        wrapChangePasswordDialog(async () => {
+            const { changed, error } = await changePasswordDialog.open()
 
-    onNameChange = ({ target }: { target: { value: $ElementType<User, 'name'> } }) => {
-        this.props.updateCurrentUserName(target.value)
-    }
+            if (isMounted()) {
+                if (error) {
+                    Notification.push({
+                        title: I18n.t('modal.changePassword.errorNotification'),
+                        icon: NotificationIcon.ERROR,
+                    })
+                } else if (changed) {
+                    Notification.push({
+                        title: I18n.t('modal.changePassword.successNotification'),
+                        icon: NotificationIcon.CHECKMARK,
+                    })
+                }
+            }
+        })
 
-    onImageChange = (image: ?File) => (
-        this.props.updateCurrentUserImage(image)
-    )
+    ), [wrapChangePasswordDialog, changePasswordDialog, isMounted])
 
-    render() {
-        const user = this.props.user || {
-            email: '',
-            name: '',
-            username: '',
-            imageUrlSmall: '',
-            imageUrlLarge: '',
-        }
+    const originalImage = user.imageUrlLarge
+    const uploadAvatar = useCallback(async () => (
+        wrapUploadAvatarDialog(async () => {
+            const { uploaded, error } = await uploadAvatarDialog.open({
+                originalImage,
+            })
 
-        return (
-            <div className="constrainInputWidth">
-                <Avatar
-                    className={styles.avatar}
-                    editable
-                    user={user}
-                    onImageChange={this.onImageChange}
+            if (isMounted()) {
+                if (error) {
+                    Notification.push({
+                        title: error.message,
+                        icon: NotificationIcon.ERROR,
+                    })
+                } else if (uploaded) {
+                    Notification.push({
+                        title: I18n.t('modal.avatar.successNotification'),
+                        icon: NotificationIcon.CHECKMARK,
+                    })
+                }
+            }
+        })
+
+    ), [wrapUploadAvatarDialog, uploadAvatarDialog, isMounted, originalImage])
+
+    return (
+        <div className="constrainInputWidth">
+            <div className={styles.avatarContainer}>
+                <AvatarCircle
+                    name={user.name}
+                    imageUrl={user.imageUrlLarge}
+                    className={styles.avatarCircle}
+                    uploadAvatarPlaceholder
                 />
-                <div className={styles.fullname}>
-                    <Label htmlFor="userFullname">
-                        Your Name
-                    </Label>
-                    <Text
-                        id="userFullname"
-                        name="name"
-                        value={user.name || ''}
-                        onChange={this.onNameChange}
-                        required
-                    />
-                </div>
-                <div className={styles.email}>
-                    <Label htmlFor="userEmail">
-                        Email
-                    </Label>
-                    <Text
-                        id="userEmail"
-                        value={user.username || ''}
-                        readOnly
-                    />
-                </div>
-                <div className={styles.password}>
-                    <ChangePassword.Button />
+                <div className={styles.upload}>
+                    <Button
+                        kind="secondary"
+                        disabled={isPending || isUploadAvatarDialogOpen}
+                        onClick={() => uploadAvatar()}
+                        waiting={isUploadAvatarDialogOpen}
+                    >
+                        <Translate value={user.imageUrlLarge ? 'userpages.profile.settings.update' : 'userpages.profile.settings.upload'} />
+                    </Button>
+                    <div className={styles.uploadHelpText}>
+                        <Translate value="userpages.profile.settings.uploadHelpText" />
+                    </div>
                 </div>
             </div>
-        )
-    }
+            <div className={styles.fullname}>
+                <Label htmlFor="userFullname">
+                    <Translate value="userpages.profilePage.profileSettings.userFullname" />
+                </Label>
+                <Text
+                    id="userFullname"
+                    name="name"
+                    value={user.name || ''}
+                    onChange={onNameChange}
+                    required
+                    disabled={isPending}
+                />
+            </div>
+            <div className={styles.email}>
+                <Label htmlFor="userEmail">
+                    <Translate value="userpages.profilePage.profileSettings.userEmail" />
+                </Label>
+                <Text
+                    id="userEmail"
+                    value={user.username || ''}
+                    readOnly
+                    disabled={isPending}
+                />
+            </div>
+            <div className={styles.password}>
+                <Button
+                    kind="secondary"
+                    onClick={changePassword}
+                    aria-label="Change Password"
+                    disabled={isPending || isChangePasswordDialogOpen}
+                    waiting={isChangePasswordDialogOpen}
+                >
+                    <Translate value="userpages.profilePage.profileSettings.changePassword" />
+                </Button>
+            </div>
+            <ChangePasswordDialog />
+            <EditAvatarDialog />
+        </div>
+    )
 }
 
-export const mapStateToProps = (state: StoreState): StateProps => ({
-    user: selectUserData(state),
-})
-
-export const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    getCurrentUser() {
-        dispatch(getUserData())
-    },
-    updateCurrentUserName(name: $ElementType<User, 'name'>) {
-        dispatch(updateCurrentUserName(name))
-    },
-    updateCurrentUserImage(image: ?File) {
-        return dispatch(updateCurrentUserImage(image))
-    },
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfileSettings)
+export default ProfileSettings

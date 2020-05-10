@@ -1,0 +1,62 @@
+import CodeSnippet from '$shared/components/CodeSnippet'
+
+# Join and withdraw funds from Data Unions
+
+### Joining Data Unions
+
+Joining the Data Union requires no transaction. The request must be authenticated with their Ethereum address, see Data Unions Auth & Identity.
+
+```
+await streamr.joinDataunion(dataunionAddress, secret)
+await streamr.hasJoined(dataunionAddress)
+```
+
+The correct secret allows the member to join without manual approval from the Data Union administrator. If the secret is omitted, the admin must log in, find pending joinRequests in the Data Union admin view of the product, and approve the requests manually.
+
+Similar to `deployDataunion`, you should wait until the member has joined before querying the member’s stats. The Data Union member can check their earnings (minus earlier withdrawals) in every Data Union:
+
+```
+const {total, withdrawable} = await streamr.getBalance(dataunionAddress)
+```
+
+The two numbers refer to the number of tokens actually `withdrawable` right now, and the total number of tokens that will be `withdrawable` after the Operator commits the earnings to the blockchain.
+
+Also other interesting stats are available from the server:
+
+```
+await streamr.memberStats(dataunionAddress)
+```
+
+Response would be something like:
+
+```
+{
+    address: "0xdC353aA3d81fC3d67Eb49F443df258029B01D8aB",
+    earnings: "333333333333333333",
+    active: true,
+    proof: [
+        "0xd92d93e1a5532affe4f635cc97c555c39413ceecea690323cbd2d21b0d5acb8d",
+        "0x6cfa6f3735edabee127ccb3ad7dc4a9aba79993664eead578e3544b7dc58c515"
+    ],
+    recordedEarnings: "333333333333333333",
+    withdrawableEarnings: "333333333333333333",
+    frozenEarnings: "0",
+    withdrawableBlockNumber: 7
+}
+```
+
+Here the earnings refer to “total lifetime earnings”. `recordedEarnings` are those that the Operator has committed to the smart contract, and `frozenEarnings` are those that are not yet available for withdraw (giving Validators time to validate new blocks). The difference of the two is  `withdrawableEarnings`, which doesn’t account for earlier withdrawals. The `earnings` figure is the most current number, and the difference of `earnings` and `recordedEarnings` are the newest revenue share that is still in the hand of the Operator, not yet committed.
+
+### Withdrawing earnings
+When the member wants to withdraw their earnings, that happens through an Ethereum transaction to the smart contract:
+
+```
+streamr.withdraw(dataunionAddress)
+```
+
+Before withdrawing (or in the UI) it may be interesting to show also that the proof provided by the server has been verified from the DataunionVault contract in blockchain. This verification doesn’t require making a transaction, so it should be as fast as making 
+a couple HTTP calls:
+
+```
+const isOk = await streamr.validateProof(dataunionAddress)
+```

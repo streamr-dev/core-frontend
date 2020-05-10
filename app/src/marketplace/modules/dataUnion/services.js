@@ -18,7 +18,6 @@ import { post, del, get, put } from '$shared/utils/api'
 import { formatApiUrl } from '$shared/utils/url'
 import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
-import analytics from '$app/src/analytics'
 
 import type { Secret } from './types'
 
@@ -170,25 +169,14 @@ export const getDataUnionStats = (id: DataUnionId): ApiResult<Object> => get({
 })
 
 export const getDataUnions = async (): ApiResult<Array<Object>> => {
-    // TODO: Currently data union server returns 'communities' but after refactoring
-    // it will use 'dataunions'. Read both properties from the response for now and
-    // use whichever is defined.
-    const { dataunions, communities } = await get({
+    const { dataunions } = await get({
         url: formatApiUrl('dataunions'),
         useAuthorization: false,
     })
 
-    if (communities == null) {
-        const message = 'Data union server has been updated to use "dataunions" instead of "communities" ' +
-                        'Old code can be removed from function getDataUnions at /marketplace/modules/dataUnion/services.js'
-        console.error(message)
-        analytics.reportError(new Error(message))
-    }
-
-    const unions = dataunions || communities
-    return Object.keys(unions || {}).map((id) => ({
+    return Object.keys(dataunions || {}).map((id) => ({
         id: id.toLowerCase(),
-        ...unions[id],
+        ...dataunions[id],
     }))
 }
 

@@ -1,0 +1,43 @@
+.icon {
+  margin: 20px 0 40px;
+}
+
+.buttonContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-column-gap: 1um;
+  grid-row-gap: 1um;
+  border-top: 1px solid #F2F1F1;
+  padding: 1.5um;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  display: block;
+}
+
+.mobileMessage {
+  display: none;
+}
+
+@media (--xs) {
+  .message {
+    display: none;
+  }
+
+  .mobileMessage {
+    display: block;
+  }
+
+  .icon {
+    display: none;
+  }
+
+  .buttonContainer {
+    grid-template-columns: 144px;
+    border-top: none;
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+}

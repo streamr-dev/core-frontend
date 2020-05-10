@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
 
-import links from '$shared/../links'
+import routes from '$routes'
 import SvgIcon from '$shared/components/SvgIcon'
 
 import SearchInput from '$mp/components/ActionBar/SearchInput'
@@ -103,7 +103,7 @@ const Search = ({ toggleOverlay }: Props) => {
                                     value="docs.search.noResults"
                                     tag="p"
                                     className={styles.noResultsMoreInfo}
-                                    url={links.community.devForum}
+                                    url={routes.community.devForum()}
                                     dangerousHTML
                                 />
                             </React.Fragment>

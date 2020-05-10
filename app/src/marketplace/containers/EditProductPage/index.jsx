@@ -1,11 +1,13 @@
 // @flow
 
-import React, { useContext, useMemo, useEffect } from 'react'
+import React, { useContext, useMemo, useEffect, useCallback, useState, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import CoreLayout from '$shared/components/Layout/Core'
+import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import * as UndoContext from '$shared/contexts/Undo'
 import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
@@ -21,6 +23,7 @@ import useProductPermissions from '../ProductController/useProductPermissions'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
+import { selectFetchingStreams, selectHasMoreResults } from '$mp/modules/streams/selectors'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from '$shared/components/BackButton'
@@ -34,6 +37,8 @@ import CropImageModal from './CropImageModal'
 
 import styles from './editProductPage.pcss'
 
+const STREAMS_PAGE_SIZE = 999
+
 const EditProductPage = ({ product }: { product: Product }) => {
     const {
         isPreview,
@@ -45,13 +50,44 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isAnyChangePending } = useContext(ValidationContext)
-    const { loadCategories, loadStreams, loadDataUnion, loadDataUnionStats } = useController()
+    const {
+        loadCategories,
+        loadProductStreams,
+        loadDataUnion,
+        loadDataUnionStats,
+        clearStreams,
+        loadStreams,
+    } = useController()
+    const fetchingAllStreams = useSelector(selectFetchingStreams)
+    const hasMoreResults = useSelector(selectHasMoreResults)
+    const [nextPage, setNextPage] = useState(0)
+    const loadedPageRef = useRef(0)
 
+    const doLoadStreams = useCallback((page = 0) => {
+        loadedPageRef.current = page
+        loadStreams({
+            max: STREAMS_PAGE_SIZE,
+            offset: page * STREAMS_PAGE_SIZE,
+        }).then(() => {
+            setNextPage(page + 1)
+        })
+    }, [loadStreams])
+
+    const productId = product.id
     // Load categories and streams
     useEffect(() => {
+        clearStreams()
         loadCategories()
-        loadStreams()
-    }, [loadCategories, loadStreams])
+        loadProductStreams(productId)
+        doLoadStreams()
+    }, [loadCategories, loadProductStreams, productId, clearStreams, doLoadStreams])
+
+    // Load more streams if we didn't get all in the initial load
+    useEffect(() => {
+        if (!fetchingAllStreams && hasMoreResults && nextPage > loadedPageRef.current) {
+            doLoadStreams(nextPage)
+        }
+    }, [nextPage, fetchingAllStreams, hasMoreResults, doLoadStreams])
 
     // Load eth identities & data union (used to determine if owner account is linked)
     const { load: loadEthIdentities } = useEthereumIdentities()
@@ -159,11 +195,11 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 />
             )}
             loadingClassname={styles.loadingIndicator}
-            contentClassname={cx({
+            contentClassname={cx(coreLayoutStyles.pad, {
                 [styles.editorContent]: !isPreview,
                 [styles.previewContent]: !!isPreview,
             })}
-            loading={isSaving}
+            loading={isSaving || (isPreview && fetchingAllStreams)}
         >
             {process.env.DATA_UNIONS && (
                 <ProductEditorDebug />

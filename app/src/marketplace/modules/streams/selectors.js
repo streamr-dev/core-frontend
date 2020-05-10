@@ -33,3 +33,8 @@ export const selectStreamsError: (StoreState) => ?ErrorInUi = createSelector(
     selectStreamsState,
     (subState: StreamsState): ?ErrorInUi => subState.error,
 )
+
+export const selectHasMoreResults: (StoreState) => boolean = createSelector(
+    selectStreamsState,
+    (subState: StreamsState): boolean => subState.hasMoreResults,
+)

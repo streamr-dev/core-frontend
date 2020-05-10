@@ -109,8 +109,6 @@ describe('user - services', () => {
                 updating: false,
             }
 
-            const userInputs = ['tester2@streamr.com', 'Tester Two']
-
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -125,7 +123,7 @@ describe('user - services', () => {
                 done()
             })
 
-            const result = await services.postPasswordUpdate(passwordUpdate, userInputs)
+            const result = await services.postPasswordUpdate(passwordUpdate, 'tester2@streamr.com')
             assert.deepStrictEqual(result, '')
         })
     })

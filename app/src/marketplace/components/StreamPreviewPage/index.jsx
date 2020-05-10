@@ -12,7 +12,7 @@ import type { ProductId } from '../../flowtype/product-types'
 import Button from '$shared/components/Button'
 import routes from '$routes'
 import BodyClass from '$shared/components/BodyClass'
-import LoadingIndicator from '$userpages/components/LoadingIndicator'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 
 import StreamLivePreviewTable, { type DataPoint } from './StreamLivePreview'
 import styles from './streamPreviewPage.pcss'
