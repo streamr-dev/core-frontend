@@ -1245,6 +1245,9 @@ msgstr "Purchase"
 msgid "productPage##productDetails##renew"
 msgstr "Renew"
 
+msgid "productPage##productDetails##requestAccess"
+msgstr "Request Access"
+
 msgid "productPage##productDetails##saved"
 msgstr "Saved to my purchases"
 
