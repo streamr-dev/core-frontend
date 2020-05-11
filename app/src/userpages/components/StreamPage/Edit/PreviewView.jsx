@@ -70,7 +70,7 @@ const UnstyledPreviewView = ({ stream, currentUser, ...props }: Props) => {
                     <Button
                         kind="secondary"
                         tag={Link}
-                        to={routes.userPageStreamPreview({
+                        to={routes.userpages.streamPreview({
                             streamId: stream.id,
                         })}
                         disabled={!hasData}

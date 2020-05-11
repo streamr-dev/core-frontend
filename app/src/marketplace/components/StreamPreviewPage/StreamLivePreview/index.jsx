@@ -5,7 +5,6 @@ import classnames from 'classnames'
 import { Table } from 'reactstrap'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
-import throttle from 'lodash/throttle'
 import { Translate } from 'react-redux-i18n'
 import MediaQuery from 'react-responsive'
 import SwipeableViews from 'react-swipeable-views'
@@ -17,6 +16,7 @@ import { Context as ClientContext } from '$shared/contexts/StreamrClient'
 import { formatDateTime } from '../../../utils/time'
 import type { StreamId } from '$shared/flowtype/stream-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { useThrottled } from '$shared/hooks/wrapCallback'
 
 import styles from './streamLivePreview.pcss'
 
@@ -63,7 +63,7 @@ const StreamLivePreview = ({
     const { hasLoaded, client } = useContext(ClientContext)
     const isMounted = useIsMounted()
 
-    const updateDataToState = useCallback(throttle((data) => {
+    const updateDataToState = useThrottled(useCallback((data) => {
         if (hasData && visibleData.length === 0) {
             hasData()
         }
@@ -72,7 +72,7 @@ const StreamLivePreview = ({
         if (!selectedDataPoint && data.length) {
             onSelectDataPoint(data[0], true)
         }
-    }, 100), [hasData, selectedDataPoint])
+    }, [hasData, selectedDataPoint, onSelectDataPoint, visibleData]), 100)
 
     const onData = useCallback((data, metadata) => {
         if (!isMounted()) { return }
@@ -87,6 +87,21 @@ const StreamLivePreview = ({
         updateDataToState(dataRef.current)
     }, [dataRef, updateDataToState, isMounted])
 
+    const onSub = useCallback(() => {
+        if (isMounted()) {
+            // Clear data when subscribed to make sure
+            // we don't get duplicate messages with resend
+            setVisibleData([])
+            dataRef.current = []
+        }
+    }, [isMounted])
+
+    const onError = useCallback(() => {
+        if (isMounted()) {
+            setDataError(true)
+        }
+    }, [isMounted])
+
     return (
         <SubscriptionStatusProvider>
             <Subscription
@@ -94,15 +109,10 @@ const StreamLivePreview = ({
                     id: streamId,
                 }}
                 resendLast={LOCAL_DATA_LIST_LENGTH}
-                onSubscribed={() => {
-                    // Clear data when subscribed to make sure
-                    // we don't get duplicate messages with resend
-                    setVisibleData([])
-                    dataRef.current = []
-                }}
+                onSubscribed={onSub}
                 isActive={run}
                 onMessage={onData}
-                onErrorMessage={() => setDataError(true)}
+                onErrorMessage={onError}
             />
             <MediaQuery maxWidth={sm.max}>
                 {(isMobile) => {

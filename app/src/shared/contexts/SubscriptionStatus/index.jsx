@@ -5,7 +5,7 @@
  */
 
 import React, { type Context, type Node, useState, useCallback, useMemo, useEffect, useRef } from 'react'
-import useIsMountedRef from '$shared/hooks/useIsMountedRef'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type ContextProps = {
     onAllReady: Function,
@@ -52,7 +52,7 @@ function getPromiseResolver(): PromiseResolver {
  */
 
 function useAllReady(subscriptions) {
-    const isMountedRef = useIsMountedRef()
+    const isMounted = useIsMounted()
     const subscriptionIds = Object.keys(subscriptions)
     const allReady = !!(subscriptionIds.length && subscriptionIds.every((key) => subscriptions[key]))
 
@@ -72,7 +72,7 @@ function useAllReady(subscriptions) {
     }, [allReady])
 
     const onAllReady = useCallback(async () => {
-        if (allReady || !isMountedRef.current) {
+        if (allReady || !isMounted()) {
             return () => {} // resolve immediately
         }
 
@@ -82,51 +82,53 @@ function useAllReady(subscriptions) {
         }
         // wait for resolve
         return onAllReadyRef.current.promise
-    }, [allReady, isMountedRef])
+    }, [allReady, isMounted])
 
     return [onAllReady, allReady]
 }
 
 function useSubscriptionStatus() {
+    const isMounted = useIsMounted()
+
     const [subscriptions, setSubscriptions] = useState({})
 
     const [onAllReady, allReady] = useAllReady(subscriptions)
 
     const unregister = useCallback((uid) => {
-        if (subscriptions[uid] == null) { return }
+        if (subscriptions[uid] == null || !isMounted()) { return }
         const nextState = {
             ...subscriptions,
         }
         delete nextState[uid]
         setSubscriptions(nextState)
-    }, [subscriptions, setSubscriptions])
+    }, [subscriptions, setSubscriptions, isMounted])
 
     const register = useCallback((uid) => {
         // noop if already have subscription
-        if (subscriptions[uid] != null) { return }
+        if (subscriptions[uid] != null || !isMounted()) { return }
         setSubscriptions({
             ...subscriptions,
             [uid]: false,
         })
-    }, [subscriptions, setSubscriptions])
+    }, [subscriptions, setSubscriptions, isMounted])
 
     const unsubscribed = useCallback((uid) => {
         // noop if don't have subscription or already unsubscribed
-        if (!subscriptions[uid]) { return }
+        if (!subscriptions[uid] || !isMounted()) { return }
         setSubscriptions({
             ...subscriptions,
             [uid]: false,
         })
-    }, [subscriptions, setSubscriptions])
+    }, [subscriptions, setSubscriptions, isMounted])
 
     const subscribed = useCallback((uid) => {
         // noop if already subscribed
-        if (subscriptions[uid]) { return }
+        if (subscriptions[uid] || !isMounted()) { return }
         setSubscriptions({
             ...subscriptions,
             [uid]: true,
         })
-    }, [subscriptions, setSubscriptions])
+    }, [subscriptions, setSubscriptions, isMounted])
 
     return useMemo(() => ({
         onAllReady,

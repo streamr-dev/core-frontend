@@ -60,10 +60,10 @@
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "transactions": "/core/transactions",
     "userpages": {
-        "root": "/core"
+        "root": "/core",
+        "streamPreview": "/core/streams/:streamId/preview"
     },
     "userPageStreamListing": "/core/streams",
-    "userPageStreamPreview": "/core/stream/preview/:streamId",
     "whitepaper": "<landingPage>/whitepaper",
     "site": {
         "about": "/about",
