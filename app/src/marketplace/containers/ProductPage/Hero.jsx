@@ -49,6 +49,7 @@ const Hero = () => {
     const [isWhitelisted, setIsWhitelisted] = useState(null)
 
     const productId = product.id
+    const productContact = product.contact
     const isPaid = isPaidProduct(product)
     const isWhitelistEnabled = product.requiresWhitelist
 
@@ -57,7 +58,9 @@ const Hero = () => {
             if (isLoggedIn) {
                 if (isPaid) {
                     if (isWhitelistEnabled && !isWhitelisted) {
-                        await requestAccessDialog.open()
+                        await requestAccessDialog.open({
+                            contactAddress: productContact,
+                        })
                         return
                     }
 
@@ -90,9 +93,26 @@ const Hero = () => {
 
                     dispatch(getMyPurchases())
                 }
+            } else {
+                dispatch(replace(routes.auth.login({
+                    redirect: routes.marketplace.product({
+                        id: productId,
+                    }),
+                })))
             }
         })
-    ), [productId, dispatch, isLoggedIn, purchaseDialog, isPaid, wrap, isMounted, isWhitelistEnabled, isWhitelisted, requestAccessDialog])
+    ), [productId,
+        dispatch,
+        isLoggedIn,
+        purchaseDialog,
+        isPaid,
+        wrap,
+        isMounted,
+        isWhitelistEnabled,
+        isWhitelisted,
+        requestAccessDialog,
+        productContact,
+    ])
 
     useEffect(() => {
         const loadWhitelistStatus = async () => {

@@ -44,6 +44,7 @@ const TableRow = styled.span`
 const TableHeaderRow = styled(TableRow)`
     position: sticky;
     top: 0;
+    z-index: 1000;
 `
 
 const TableColumnBase = styled.span`

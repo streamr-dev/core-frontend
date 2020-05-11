@@ -12,6 +12,8 @@ import Buttons from '$shared/components/Buttons'
 import useModal from '$shared/hooks/useModal'
 import withWeb3 from '$shared/utils/withWeb3'
 import { isEthereumAddress } from '$mp/utils/validate'
+import MailPng from '$mp/assets/mail.png'
+import MailPng2x from '$mp/assets/mail@2x.png'
 
 import useWhitelist from './useWhitelist'
 
@@ -165,46 +167,61 @@ export const WhitelistRemoveModal = () => {
 
 export type RequestAccessModalProps = {
     onClose: () => void,
+    contactAddress: string,
 }
 
-const WhitelistRequestAccessModalComponent = ({ onClose }: RequestAccessModalProps) => (
-    <ModalPortal>
-        <Dialog
-            title={I18n.t('modal.whitelistRemove.title')}
-            onClose={onClose}
-            renderActions={() => (
-                <Footer>
-                    <Buttons
-                        actions={{
-                            cancel: {
-                                title: I18n.t('modal.common.cancel'),
-                                onClick: onClose,
-                                kind: 'link',
-                            },
-                            remove: {
-                                title: I18n.t('modal.whitelistRemove.remove'),
-                                kind: 'destructive',
-                                onClick: () => console.log('save'),
-                            },
-                        }}
-                    />
-                </Footer>
-            )}
-        >
-            <Translate value="modal.whitelistRemove.message" dangerousHTML />
-        </Dialog>
-    </ModalPortal>
-)
+const WhitelistRequestAccessModalComponent = ({ onClose, contactAddress }: RequestAccessModalProps) => {
+    const address = encodeURIComponent(contactAddress)
+    const subject = encodeURIComponent(I18n.t('modal.whitelistRequestAccess.mailtoSubject'))
+    const body = encodeURIComponent(I18n.t('modal.whitelistRequestAccess.mailtoBody'))
+
+    return (
+        <ModalPortal>
+            <Dialog
+                title={I18n.t('modal.whitelistRequestAccess.title')}
+                onClose={onClose}
+                renderActions={() => (
+                    <Footer>
+                        <Buttons
+                            actions={{
+                                cancel: {
+                                    title: I18n.t('modal.common.cancel'),
+                                    onClick: onClose,
+                                    kind: 'link',
+                                },
+                                send: {
+                                    title: I18n.t('modal.whitelistRequestAccess.sendEmail'),
+                                    kind: 'primary',
+                                    href: `mailto:${address}?subject=${subject}&body=${body}`,
+                                },
+                            }}
+                        />
+                    </Footer>
+                )}
+            >
+                <img
+                    src={MailPng}
+                    srcSet={`${MailPng2x} 2x`}
+                    alt={I18n.t('modal.whitelistRequestAccess.imageAlt')}
+                />
+                <Translate value="modal.whitelistRequestAccess.message" dangerousHTML />
+            </Dialog>
+        </ModalPortal>
+    )
+}
 
 export const WhitelistRequestAccessModal = () => {
-    const { api, isOpen } = useModal('requestWhitelistAccess')
+    const { api, isOpen, value } = useModal('requestWhitelistAccess')
 
     if (!isOpen) {
         return null
     }
 
+    const { contactAddress } = value || {}
+
     return (
         <WhitelistRequestAccessModalComponent
+            contactAddress={contactAddress}
             onClose={() => api.close({
                 save: false,
                 redirect: false,

@@ -1116,6 +1116,27 @@ msgstr ""
 msgid "modal##whitelistRemove##remove"
 msgstr "Remove"
 
+msgid "modal##whitelistRequestAccess##title"
+msgstr "Enquire about product access"
+
+msgid "modal##whitelistRequestAccess##message"
+msgstr ""
+"The seller has restricted access to this product. "
+"<br />"
+"Please click below to contact them via email."
+
+msgid "modal##whitelistRequestAccess##sendEmail"
+msgstr "Send email"
+
+msgid "modal##whitelistRequestAccess##imageAlt"
+msgstr "Mailbox"
+
+msgid "modal##whitelistRequestAccess##mailtoSubject"
+msgstr "Whitelisting request"
+
+msgid "modal##whitelistRequestAccess##mailtoBody"
+msgstr "Hi! I'd like to access your product on Streamr Marketplace."
+
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
 
