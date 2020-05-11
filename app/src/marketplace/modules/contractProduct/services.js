@@ -169,7 +169,6 @@ export const createContractProductWithWhitelist = (product: SmartContractProduct
         pricePerSecond,
         priceCurrency,
         minimumSubscriptionInSeconds,
-        requiresWhitelist,
     } = product
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     validateContractProductPricePerSecond(pricePerSecond)
@@ -182,7 +181,6 @@ export const createContractProductWithWhitelist = (product: SmartContractProduct
         transformedPricePerSecond,
         currencyIndex,
         minimumSubscriptionInSeconds,
-        requiresWhitelist,
     )
     return send(methodToSend, {
         gas: gasLimits.CREATE_PRODUCT,

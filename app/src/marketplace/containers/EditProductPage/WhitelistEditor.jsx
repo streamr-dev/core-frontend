@@ -17,6 +17,8 @@ import useWhitelist from './useWhitelist'
 import { Provider as WhitelistContextProvider } from './WhitelistContext'
 import { WhitelistAddModal, WhitelistRemoveModal } from './WhitelistModals'
 
+const MIN_ROWS = 5
+
 const Container = styled.div`
     background: #fdfdfd;
     border-radius: 4px;
@@ -25,7 +27,7 @@ const Container = styled.div`
 `
 
 const Rows = styled.div`
-    height: 336px;
+    height: ${(props) => (((props.rowCount + 1) * 56) - 1)}px; /* +1 for header, -1 for bottom border */
     overflow: auto;
 `
 
@@ -44,7 +46,6 @@ const TableRow = styled.span`
 const TableHeaderRow = styled(TableRow)`
     position: sticky;
     top: 0;
-    z-index: 1000;
 `
 
 const TableColumnBase = styled.span`
@@ -52,10 +53,7 @@ const TableColumnBase = styled.span`
     justify-content: ${(props) => (props.center ? 'center' : 'unset')};
     align-items: center;
     padding: 0 24px;
-
-    * {
-        opacity: ${(props) => (props.disabled ? '0.5' : '1.0')};
-    }
+    color: ${(props) => (props.disabled ? 'rgba(82, 82, 82, 0.5)' : 'rgba(82, 82, 82)')};
 
     &:not(:last-child) {
         border-right: 1px solid #ebebeb;
@@ -137,8 +135,6 @@ type Props = {
     copy: (string) => void,
 }
 
-const MIN_ROWS = 5
-
 const padWithEmptyRows = (rows: Array<WhitelistItem>) => {
     if (rows.length < MIN_ROWS) {
         const empties = new Array(MIN_ROWS - rows.length).fill(null)
@@ -165,7 +161,7 @@ export const WhitelistEditorComponent = ({
     copy,
 }: Props) => (
     <Container className={className}>
-        <Rows>
+        <Rows rowCount={MIN_ROWS}>
             <TableHeaderRow>
                 <TableHeaderColumn>{I18n.t('editProductPage.whitelist.header.address')}</TableHeaderColumn>
                 <TableHeaderColumn>{I18n.t('editProductPage.whitelist.header.status')}</TableHeaderColumn>
