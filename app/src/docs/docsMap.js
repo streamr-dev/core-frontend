@@ -205,7 +205,7 @@ export const generateMap = ({ dataUnions: includeDataUnions = !!process.env.DATA
                 path: docsLinks.dataUnionsInCore,
                 section: 'Data Unions',
                 title: 'Create a DU with Core',
-                filePath: 'dataUnions/dataUnionsInCore.mdx',
+                filePath: 'dataUnions/dataUnionsCore.mdx',
             },
             'Framework Roles': {
                 path: docsLinks.frameworkRoles,
