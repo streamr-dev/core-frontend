@@ -47,7 +47,7 @@ const Hero = () => {
                 dispatch(addFreeProduct(productId || ''))
             }
         } else {
-            dispatch(replace(routes.login({
+            dispatch(replace(routes.auth.login({
                 redirect: routes.product({
                     id: productId,
                 }),
