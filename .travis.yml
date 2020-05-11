@@ -83,6 +83,7 @@ jobs:
     install: true
     script:
       - npm ci
+      - npm run build-index
       - npm run build
       - docker build -t $OWNER/$IMAGE_NAME:local --build-arg NPM_TOKEN=${NPM_TOKEN} .
       - travis_scripts/smoke-test.sh
@@ -102,6 +103,7 @@ jobs:
     install: true
     script:
       - npm ci
+      - npm run build-index
       - npm run build
       - docker build -t $OWNER/$IMAGE_NAME:local --build-arg NPM_TOKEN=${NPM_TOKEN} .
     deploy:
@@ -240,6 +242,7 @@ jobs:
     - DATA_UNION_PUBLISH_MEMBER_LIMIT=10
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
     script:
+    - npm run build-index
     - npm run build
     deploy:
     - provider: s3 # test for production deployment
