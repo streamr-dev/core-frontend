@@ -25,7 +25,7 @@ echo $LOGROCKET_SLUG
 docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
 WEB_ACL_ID=$(aws waf list-web-acls --region eu-west-1  --query "WebACLs[].WebACLId" --output text)
 echo $WEB_ACL_ID
-docker run -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY -e AWS_DEFAULT_REGION=eu-west-1 streamr/infra-marketplace-pr:stg  "(terraform init;terraform apply -auto-approve -var 'bucket_name=streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA' -var 'waf_acl_id=$WEB_ACL_ID')"
+docker run -e AWS_ACCESS_KEY_ID=$ACCESS_KEY_STG -e AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_STG -e AWS_DEFAULT_REGION=eu-west-1 streamr/infra-marketplace-pr:stg  "(terraform init;terraform apply -auto-approve -var 'bucket_name=streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA' -var 'waf_acl_id=$WEB_ACL_ID')"
 CONTAINER_ID=$(docker ps -a -q)
 docker commit $CONTAINER_ID streamr/infra-marketplace-pr:stg
 npm run build
