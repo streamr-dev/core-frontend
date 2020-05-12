@@ -24,6 +24,7 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { selectFetchingStreams, selectHasMoreResults } from '$mp/modules/streams/selectors'
+import useModal from '$shared/hooks/useModal'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import BackButton from '$shared/components/BackButton'
@@ -49,6 +50,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         back,
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
+    const { isPending: publishDialogLoading } = usePending('product.PUBLISH_DIALOG_LOAD')
     const { isAnyChangePending } = useContext(ValidationContext)
     const {
         loadCategories,
@@ -62,6 +64,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const hasMoreResults = useSelector(selectHasMoreResults)
     const [nextPage, setNextPage] = useState(0)
     const loadedPageRef = useRef(0)
+    const { isOpen: isDataUnionDeployDialogOpen } = useModal('dataUnion.DEPLOY')
+    const { isOpen: isConfirmSaveDialogOpen } = useModal('confirmSave')
+    const { isOpen: isPublishDialogOpen } = useModal('publish')
 
     const doLoadStreams = useCallback((page = 0) => {
         loadedPageRef.current = page
@@ -100,7 +105,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadDataUnionStats(beneficiaryAddress)
     }, [beneficiaryAddress, loadDataUnion, loadDataUnionStats, loadEthIdentities])
 
-    const isSaving = savePending
+    const isLoading = savePending || publishDialogLoading
+    const modalsOpen = !!(isDataUnionDeployDialogOpen || isConfirmSaveDialogOpen || isPublishDialogOpen)
+    const isDisabled = isLoading || modalsOpen
     const isDataUnion = isDataUnionProduct(product)
     // TODO: should really check for the contract existance here
     const isDeployed = isDataUnion && isEthereumAddress(product.beneficiaryAddress)
@@ -109,8 +116,8 @@ const EditProductPage = ({ product }: { product: Product }) => {
         title: 'Save & Exit',
         kind: 'link',
         onClick: () => save(),
-        disabled: isSaving,
-    }), [save, isSaving])
+        disabled: isDisabled,
+    }), [save, isDisabled])
 
     const previewButton = useMemo(() => {
         if (isPreview) {
@@ -118,7 +125,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 title: 'Edit',
                 outline: true,
                 onClick: () => setIsPreview(false),
-                disabled: isSaving,
+                disabled: isDisabled,
             }
         }
 
@@ -126,9 +133,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
             title: 'Preview',
             outline: true,
             onClick: () => setIsPreview(true),
-            disabled: isSaving,
+            disabled: isDisabled,
         }
-    }, [isPreview, setIsPreview, isSaving])
+    }, [isPreview, setIsPreview, isDisabled])
 
     const productState = product.state
     const publishButton = useMemo(() => {
@@ -146,9 +153,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
             title: (productState && I18n.t(`editProductPage.${titles[tmpState]}`)) || '',
             kind: 'primary',
             onClick: publish,
-            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isSaving,
+            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isDisabled,
         }
-    }, [isAnyChangePending, productState, publish, isSaving])
+    }, [isAnyChangePending, productState, publish, isDisabled])
 
     const deployButton = useMemo(() => {
         if (isDataUnion && !isDeployed) {
@@ -156,12 +163,12 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 title: 'Continue',
                 kind: 'primary',
                 onClick: deployDataUnion,
-                disabled: isSaving,
+                disabled: isDisabled,
             }
         }
 
         return publishButton
-    }, [isDataUnion, isDeployed, deployDataUnion, isSaving, publishButton])
+    }, [isDataUnion, isDeployed, deployDataUnion, isDisabled, publishButton])
 
     const actions = {
         saveAndExit: saveAndExitButton,
@@ -199,7 +206,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 [styles.editorContent]: !isPreview,
                 [styles.previewContent]: !!isPreview,
             })}
-            loading={isSaving || (isPreview && fetchingAllStreams)}
+            loading={isLoading || (isPreview && fetchingAllStreams)}
         >
             {process.env.DATA_UNIONS && (
                 <ProductEditorDebug />
@@ -208,7 +215,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 <Preview />
             )}
             {!isPreview && (
-                <Editor />
+                <Editor disabled={isDisabled} />
             )}
             <ConfirmSaveModal />
             <DeployDataUnionModal />

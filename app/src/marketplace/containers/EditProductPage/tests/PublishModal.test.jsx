@@ -70,7 +70,59 @@ describe('Publish modal', () => {
             expect(el.find('ErrorDialog').contains(error.message)).toBe(true)
         })
 
-        it('shows a spinner screen if web3 is required and wallet is being checked', async () => {
+        it('renders null if product is being loaded', async () => {
+            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+                web3Error: undefined,
+                checkingWeb3: false,
+                account: null,
+            }))
+            const product = {
+                id: '1',
+                state: 'NOT_DEPLOYED',
+                isFree: false,
+                pricePerSecond: BN(1),
+                beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                priceCurrency: 'DATA',
+            }
+
+            let productResolver
+            sandbox.stub(productServices, 'getProductById').callsFake(() => new Promise((resolve) => {
+                productResolver = resolve
+            }))
+            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+                throw new Error('no contract product')
+            })
+            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+                throw new Error('no admin fee')
+            })
+            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+                throw new Error('no owner')
+            })
+
+            let el
+            act(() => {
+                el = mount((
+                    <PublishOrUnpublishModal
+                        product={{
+                            id: '1',
+                        }}
+                        api={{}}
+                    />
+                ))
+            })
+
+            el.update()
+            expect(el.html()).toBeFalsy()
+
+            await act(async () => {
+                await productResolver(product)
+            })
+
+            el.update()
+            expect(el.find('ReadyToPublishDialog').exists()).toBe(true)
+        })
+
+        it('shows a loading screen if web3 is required and wallet is being checked', async () => {
             sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
                 web3Error: undefined,
                 checkingWeb3: true,
@@ -109,8 +161,8 @@ describe('Publish modal', () => {
             })
 
             el.update()
-            expect(el.find('Web3ErrorDialog').exists()).toBe(true)
-            expect(el.find('Web3ErrorDialog').prop('waiting')).toBeTruthy()
+            expect(el.find('ReadyToPublishDialog').exists()).toBe(true)
+            expect(el.find('ReadyToPublishDialog').prop('waiting')).toBeTruthy()
         })
 
         it('shows an error screen if web3 is required and wallet is locked', async () => {
@@ -197,8 +249,7 @@ describe('Publish modal', () => {
                 ))
             })
 
-            expect(el.find('MockDialog').exists()).toBe(true)
-            expect(el.find('MockDialog').prop('waiting')).toBeTruthy()
+            expect(el.html()).toBeFalsy()
 
             await act(async () => {
                 await resolveProduct(product)
@@ -397,8 +448,7 @@ describe('Publish modal', () => {
                 ))
             })
 
-            expect(el.find('MockDialog').exists()).toBe(true)
-            expect(el.find('MockDialog').prop('waiting')).toBeTruthy()
+            expect(el.html()).toBeFalsy()
 
             await act(async () => {
                 await resolveProduct(product)

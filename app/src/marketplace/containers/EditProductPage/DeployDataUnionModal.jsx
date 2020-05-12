@@ -70,7 +70,15 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         if (!isMounted()) { return Promise.resolve() }
 
         // Set estimate
-        const blockEstimate = await averageBlockTime(getWeb3())
+        let blockEstimate = 0
+
+        try {
+            blockEstimate = await averageBlockTime(getWeb3())
+        } catch (e) {
+            // just log the error if estimate fails, otherwise we can continue
+            console.warn(e)
+        }
+
         if (!isMounted()) { return Promise.resolve() }
         setEstimate(blockEstimate + API_READY_ESTIMATE)
 

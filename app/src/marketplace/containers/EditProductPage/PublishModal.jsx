@@ -10,7 +10,6 @@ import { getProductById } from '$mp/modules/product/services'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
-import Dialog from '$shared/components/Dialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
 import PublishComplete from '$mp/components/Modal/PublishComplete'
@@ -19,6 +18,7 @@ import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import usePublish, { publishModes } from './usePublish'
+import usePending from '$shared/hooks/usePending'
 
 type Props = {
     product: Product,
@@ -41,6 +41,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [requiredOwner, setRequiredOwner] = useState(null)
     const [web3Actions, setWeb3Actions] = useState(new Set([]))
     const { web3Error, checkingWeb3, account } = useWeb3Status(requireWeb3)
+    const { isPending, start: startPending, end: endPending } = usePending('product.PUBLISH_DIALOG_LOAD')
 
     const setActionStatus = useCallback((name, s) => {
         setStatus((prevStatus) => ({
@@ -55,6 +56,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         if (!productId || !publishRef.current) { return }
 
         try {
+            startPending()
             getProductById(productId || '')
                 .then(publishRef.current)
                 .then(
@@ -66,10 +68,12 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                         setModalError(e)
                     },
                 )
+                .finally(endPending)
         } catch (e) {
             setModalError(e)
+            endPending()
         }
-    }, [productId])
+    }, [productId, startPending, endPending])
 
     useEffect(() => {
         if (!queue) { return () => {} }
@@ -132,10 +136,13 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         }
     }, [queue])
 
-    if ((!mode && !modalError) || (!!requireWeb3 && (checkingWeb3 || web3Error))) {
+    if (isPending || (!mode && checkingWeb3)) {
+        return null
+    }
+
+    if (!!requireWeb3 && web3Error) {
         return (
             <Web3ErrorDialog
-                waiting={checkingWeb3 || !mode}
                 onClose={onClose}
                 error={web3Error}
             />
@@ -151,7 +158,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         )
     }
 
-    if (!!requireWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
+    if (!checkingWeb3 && !!requireWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
         return (
             <UnlockWalletDialog onClose={onClose} requiredAddress={requiredOwner}>
                 <Translate
@@ -163,17 +170,13 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     }
 
     if (!mode) {
-        return (
-            <Dialog
-                waiting
-                onClose={onClose}
-            />
-        )
+        return null
     }
 
     if (!started) {
         return (
             <ReadyToPublishDialog
+                waiting={!!requireWeb3 && checkingWeb3}
                 publishMode={mode}
                 onContinue={onConfirm}
                 onCancel={onClose}

@@ -39,13 +39,15 @@ export const hasTransactionCompleted = (txHash: Hash): Promise<boolean> => {
 export const averageBlockTime = async (web3Instance: StreamrWeb3, blocksAgo: number = 500) => {
     // Get the current block number
     const currentBlockNumber = await web3Instance.eth.getBlockNumber()
+    const numberOfBlocks = Math.min(currentBlockNumber, blocksAgo)
 
     // Get the current block
     const currentBlock = await web3Instance.eth.getBlock(currentBlockNumber)
 
     // Get the block X number of blocks ago
-    const thenBlock = await web3Instance.eth.getBlock(currentBlockNumber - blocksAgo)
+    const thenBlock = await web3Instance.eth.getBlock(currentBlockNumber - numberOfBlocks)
 
     // Take the average of the then and now timestamps
-    return (currentBlock.timestamp - thenBlock.timestamp) / blocksAgo
+    const divider = numberOfBlocks > 0 ? numberOfBlocks : 1
+    return (currentBlock.timestamp - thenBlock.timestamp) / divider
 }

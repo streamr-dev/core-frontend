@@ -48,7 +48,7 @@ const StyledLabel = styled(Label)`
     }
 `
 
-const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode }: Props) => {
+const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, waiting }: Props) => {
     const [termsAccepted, setTermsAccepted] = useState(false)
 
     return (
@@ -56,6 +56,7 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode }: Props) => {
             <Dialog
                 onClose={onCancel}
                 title={I18n.t(`modal.readyToPublish.${publishMode}.title`)}
+                waiting={waiting}
                 renderActions={() => (
                     <Footer>
                         <FooterText>

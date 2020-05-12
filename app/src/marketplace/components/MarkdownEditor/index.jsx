@@ -14,6 +14,7 @@ type Props = LastErrorProps & {
     placeholder?: string,
     onChange?: (string) => void,
     className?: string,
+    disabled?: boolean,
 }
 
 const MarkdownEditor = ({
@@ -22,6 +23,7 @@ const MarkdownEditor = ({
     error,
     isProcessing,
     className,
+    disabled,
     ...editorProps
 }: Props) => {
     const [text, setText] = useState(value || '')
@@ -50,10 +52,12 @@ const MarkdownEditor = ({
             <div
                 className={cx(styles.root, {
                     [styles.withError]: !!hasError,
+                    [styles.disabled]: !!disabled,
                 }, className)}
             >
                 <Text
                     {...editorProps}
+                    disabled={!!disabled}
                     unstyled
                     className={styles.input}
                     onChange={onTextChange}
