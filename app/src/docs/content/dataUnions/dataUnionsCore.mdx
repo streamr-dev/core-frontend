@@ -4,11 +4,8 @@ import docsLinks from '$shared/../docsLinks'
 import Build from './images/data_unions_in_core_01_build.jpg'
 import Build2x from './images/data_unions_in_core_01_build@2x.jpg'
 
-import Deploy from './images/data_unions_in_core_02_deploy.jpg'
-import Deploy2x from './images/data_unions_in_core_02_deploy@2x.jpg'
-
-import Managing from './images/data_unions_in_core_03_managing.jpg'
-import Managing2x from './images/data_unions_in_core_03_managing@2x.jpg'
+import Deploy from './videos/data_unions_in_core_02_deploy.mp4'
+import Managing from './videos/data_unions_in_core_03_managing.mp4'
 
 # Build a Data Union with Core
 
@@ -43,13 +40,9 @@ Creating a Data Union starts with deploying the Data Union smart contract. A Dat
 For the contract deployment transaction, you'll need a web3 wallet, and a small amount of Ethereum for gas fees. The Data Union deployment might take a moment to register once the transaction has been mined. The progress indicator will show an estimate of the remaining time. You can either close the dialog and move on or wait for the process to complete after which you will be automatically redirected.
 
 <figure>
-    <picture>
-        <img
-            src={Deploy}
-            srcSet={`${Deploy2x} 2x`}
-            alt="Deploying a Data Union"
-        />
-    </picture>
+    <video muted loop autoPlay>
+        <source src={Deploy} type="video/mp4" />
+    </video>
 </figure>
 
 ### Publishing a Data Union
@@ -63,11 +56,7 @@ Data Unions are listed along with Data products in Core > Products. Data Unions 
 The Stats view provides an overview of the Data Union as well as it's members and subscribers over time, while the Members view allows you to manage join requests.
 
 <figure>
-    <picture>
-        <img
-            src={Managing}
-            srcSet={`${Managing2x} 2x`}
-            alt="Managing the Data Union"
-        />
-    </picture>
+    <video muted loop autoPlay>
+        <source src={Managing} type="video/mp4" />
+    </video>
 </figure>
