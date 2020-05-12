@@ -309,6 +309,11 @@ export default function usePublish() {
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.UNDEPLOY_PRODUCT))
                                     postSetUndeploying(product.id || '', hash)
+
+                                    Activity.push({
+                                        action: actionTypes.UNPUBLISH,
+                                        productId: product.id,
+                                    })
                                 })
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)

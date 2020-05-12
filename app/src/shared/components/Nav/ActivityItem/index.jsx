@@ -2,12 +2,10 @@
 
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { useSelector } from 'react-redux'
 
 import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 import Subscription from '$shared/components/Subscription'
 import ActivityList from '$shared/components/ActivityList'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
 import Activity from '$shared/utils/Activity'
 import SvgIcon from '$shared/components/SvgIcon'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
@@ -38,12 +36,6 @@ const ActivityItem = () => {
             [activity, ...prev]
         ))
     }, [])
-
-    const apiKey = useSelector(selectAuthApiKeyId)
-    if (!apiKey) {
-        // Break out here so that we will only create an authenticated client
-        return null
-    }
 
     const streamId = storage ? storage.getItem('user.activityStreamId') : null
     if (!streamId) {

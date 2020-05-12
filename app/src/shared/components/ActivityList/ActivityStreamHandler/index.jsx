@@ -1,12 +1,8 @@
 // @flow
 
-import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect, useState, useContext } from 'react'
 
-import { getMyResourceKeys } from '$shared/modules/resourceKey/actions'
-import { selectAuthApiKeyId } from '$shared/modules/resourceKey/selectors'
-import { selectAuthState } from '$shared/modules/user/selectors'
-import { useClientProvider } from '$shared/contexts/StreamrClient'
+import { Provider as ClientProvider, Context as ClientContext } from '$shared/contexts/StreamrClient'
 import Activity from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
@@ -14,28 +10,21 @@ import { Provider as PendingProvider } from '$shared/contexts/Pending'
 const storage = isLocalStorageAvailable() ? localStorage : null
 
 const Handler = () => {
-    const dispatch = useDispatch()
     const [streamId, setStreamId] = useState(storage ? storage.getItem('user.activityStreamId') : null)
-    const apiKey = useSelector(selectAuthApiKeyId)
-    const authState = useSelector(selectAuthState)
-    const { client } = useClientProvider({
-        apiKey,
-        loadKeys: () => dispatch(getMyResourceKeys()),
-        ...authState,
-    })
+    const { client } = useContext(ClientContext)
 
     useEffect(() => {
         const publishActivity = (activity) => {
-            if (client && client.options.auth.apiKey && streamId) {
+            if (client && streamId) {
                 const data = activity.serialize()
                 client.publish(streamId, data)
             }
         }
 
-        if (client && apiKey && streamId) {
+        if (client && streamId) {
             Activity.subscribe(publishActivity)
         }
-    }, [client, apiKey, streamId])
+    }, [client, streamId])
 
     useEffect(() => {
         const createStream = async () => {
@@ -49,17 +38,19 @@ const Handler = () => {
             }
         }
 
-        if (client && apiKey && streamId == null) {
+        if (client && streamId == null) {
             createStream()
         }
-    }, [client, apiKey, streamId])
+    }, [client, streamId])
 
     return null
 }
 
 const ActivityStreamHandler = () => (
     <PendingProvider name="streamr-client">
-        <Handler />
+        <ClientProvider>
+            <Handler />
+        </ClientProvider>
     </PendingProvider>
 )
 
