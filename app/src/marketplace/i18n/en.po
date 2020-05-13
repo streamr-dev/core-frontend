@@ -693,7 +693,7 @@ msgid "modal##readyToPublish##republish##title"
 msgstr "Republish your product"
 
 msgid "modal##readyToPublish##redeploy##title"
-msgstr "Republish your product"
+msgstr "Publish your product"
 
 msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"
@@ -702,7 +702,7 @@ msgid "modal##readyToPublish##republish##action"
 msgstr "Republish"
 
 msgid "modal##readyToPublish##redeploy##action"
-msgstr "Republish"
+msgstr "Publish"
 
 msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"

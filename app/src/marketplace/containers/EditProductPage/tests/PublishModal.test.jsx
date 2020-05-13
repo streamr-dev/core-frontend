@@ -162,7 +162,7 @@ describe('Publish modal', () => {
 
             el.update()
             expect(el.find('ReadyToPublishDialog').exists()).toBe(true)
-            expect(el.find('ReadyToPublishDialog').prop('waiting')).toBeTruthy()
+            expect(el.find('ReadyToPublishDialog').prop('disabled')).toBeTruthy()
         })
 
         it('shows an error screen if web3 is required and wallet is locked', async () => {

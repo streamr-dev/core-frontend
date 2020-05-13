@@ -9,20 +9,20 @@ import ReadyToUnpublish from './ReadyToUnpublish'
 export type BaseProps = {
     onCancel: () => void,
     onContinue: () => void,
-    waiting?: boolean,
+    disabled?: boolean,
 }
 
 export type Props = BaseProps & {
     publishMode: PublishMode,
 }
 
-export default ({ publishMode, onCancel, onContinue, waiting }: Props) => {
+export default ({ publishMode, onCancel, onContinue, disabled }: Props) => {
     if (publishMode === publishModes.UNPUBLISH) {
         return (
             <ReadyToUnpublish
                 onContinue={onContinue}
                 onCancel={onCancel}
-                waiting={waiting}
+                disabled={disabled}
             />
         )
     }
@@ -32,7 +32,7 @@ export default ({ publishMode, onCancel, onContinue, waiting }: Props) => {
             publishMode={publishMode}
             onContinue={onContinue}
             onCancel={onCancel}
-            waiting={waiting}
+            disabled={disabled}
         />
     )
 }

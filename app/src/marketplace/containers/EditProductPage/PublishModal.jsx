@@ -176,7 +176,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     if (!started) {
         return (
             <ReadyToPublishDialog
-                waiting={!!requireWeb3 && checkingWeb3}
+                disabled={!!requireWeb3 && checkingWeb3}
                 publishMode={mode}
                 onContinue={onConfirm}
                 onCancel={onClose}
