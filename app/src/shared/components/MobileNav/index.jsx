@@ -155,7 +155,7 @@ const MobileNav = withRouter(({ location: { pathname: redirect }, className }: P
                             <li>
                                 <Link
                                     className={styles.link}
-                                    to={routes.logout()}
+                                    to={routes.auth.logout()}
                                 >
                                     <Translate value="general.signout" />
                                 </Link>
@@ -169,7 +169,7 @@ const MobileNav = withRouter(({ location: { pathname: redirect }, className }: P
                             kind="primary"
                             tag={Link}
                             className={styles.signUpLink}
-                            to={routes.signUp()}
+                            to={routes.auth.signUp()}
                         >
                             <Translate value="general.signUp" />
                         </Button>
@@ -177,7 +177,7 @@ const MobileNav = withRouter(({ location: { pathname: redirect }, className }: P
                             Already have an account?
                             &nbsp;
                             <Link
-                                to={routes.login(redirect !== '/' ? {
+                                to={routes.auth.login(redirect !== '/' ? {
                                     redirect,
                                 } : {})}
                             >

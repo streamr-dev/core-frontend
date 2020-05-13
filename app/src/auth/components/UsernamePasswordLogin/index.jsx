@@ -148,7 +148,7 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
                     {errors.password}
                 </Errors>
                 <Actions>
-                    <Link to={routes.forgotPassword()}>
+                    <Link to={routes.auth.forgotPassword()}>
                         <Translate value="auth.login.forgotPassword" />
                     </Link>
                     <Button className={styles.button} disabled={isProcessing}>

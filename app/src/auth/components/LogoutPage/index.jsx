@@ -18,7 +18,7 @@ const LogoutPage = () => {
     useOnMount(async () => {
         try {
             await post({
-                url: routes.externalLogout(),
+                url: routes.auth.external.logout(),
             })
             if (isMounted()) {
                 dispatch(logoutAction())

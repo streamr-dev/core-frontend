@@ -25,7 +25,7 @@ export default function EmbedToolbar({ canvas }) {
             </div>
             <a
                 className={styles.button}
-                href={routes.login({
+                href={routes.auth.login({
                     redirect: `${links.editor.canvasEditor}/${canvas.id}`,
                 })}
                 {...(inIframe() ? {

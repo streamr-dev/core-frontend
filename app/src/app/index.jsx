@@ -66,16 +66,16 @@ const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) =>
 )
 
 const AuthenticationRouter = () => ([
-    <Route exact path={routes.login()} component={LoginPage} key="LoginPage" />,
-    <Route exact path={routes.logout()} component={LogoutPage} key="LogoutPage" />,
-    <Route path={routes.signUp()} component={SignupPage} key="SignupPage" />,
-    <Route path={routes.forgotPassword()} component={ForgotPasswordPage} key="ForgotPasswordPage" />,
-    <Route path={routes.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
-    <Route exact path={routes.register()} component={RegisterPage} key="RegisterPage" />,
-    <Redirect from="/login/auth" to={routes.login()} key="LoginRedirect" />,
-    <Route exact path="/register/register" key="RegisterRedirect" render={forwardTo(routes.register)} />,
-    <Route exact path="/register/resetPassword" key="ResetPasswordRedirect" render={forwardTo(routes.resetPassword)} />,
-    <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
+    <Route exact path={routes.auth.login()} component={LoginPage} key="LoginPage" />,
+    <Route exact path={routes.auth.logout()} component={LogoutPage} key="LogoutPage" />,
+    <Route path={routes.auth.signUp()} component={SignupPage} key="SignupPage" />,
+    <Route path={routes.auth.forgotPassword()} component={ForgotPasswordPage} key="ForgotPasswordPage" />,
+    <Route path={routes.auth.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
+    <Route exact path={routes.auth.register()} component={RegisterPage} key="RegisterPage" />,
+    <Redirect from="/login/auth" to={routes.auth.login()} key="LoginRedirect" />,
+    <Route exact path="/register/register" key="RegisterRedirect" render={forwardTo(routes.auth.register)} />,
+    <Route exact path="/register/resetPassword" key="ResetPasswordRedirect" render={forwardTo(routes.auth.resetPassword)} />,
+    <Redirect from="/register/forgotPassword" to={routes.auth.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
 const EditorRouter = () => ([

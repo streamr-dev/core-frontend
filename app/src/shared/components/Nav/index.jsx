@@ -104,7 +104,7 @@ const Nav = compose(
             )}
             {!currentUser && (
                 <LinkItem
-                    to={routes.login(redirect !== '/' ? {
+                    to={routes.auth.login(redirect !== '/' ? {
                         redirect,
                     } : {})}
                     underlined
@@ -115,7 +115,7 @@ const Nav = compose(
             {!currentUser && (
                 <LinkItem
                     className={Nav.styles.button}
-                    to={routes.signUp()}
+                    to={routes.auth.signUp()}
                 >
                     <Translate value="general.signUp" />
                 </LinkItem>

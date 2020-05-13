@@ -71,7 +71,7 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
     const submit = useCallback(() => {
         const { password, confirmPassword: password2, token: t } = form
 
-        return post(routes.externalResetPassword(), {
+        return post(routes.auth.external.resetPassword(), {
             password,
             password2,
             t,
@@ -194,7 +194,7 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
 export { ResetPasswordPage }
 
 const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    redirectToLoginPage: () => dispatch(push(routes.login())),
+    redirectToLoginPage: () => dispatch(push(routes.auth.login())),
 })
 
 export default connect(null, mapDispatchToProps)(userIsNotAuthenticated((props: Props) => (

@@ -34,7 +34,7 @@ class FailureComponent extends Component<Props> {
 
 export const userIsAuthenticated = connectedRouterRedirect({
     authenticatingSelector,
-    redirectPath: routes.login(),
+    redirectPath: routes.auth.login(),
     allowRedirectBack: true,
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data

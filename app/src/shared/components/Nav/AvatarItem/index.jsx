@@ -72,7 +72,7 @@ const AvatarItem = ({ user }: Props) => {
             </Link>
             {null}
             <Link
-                to={routes.logout()}
+                to={routes.auth.logout()}
                 className={styles.link}
             >
                 <Translate value="general.logout" />

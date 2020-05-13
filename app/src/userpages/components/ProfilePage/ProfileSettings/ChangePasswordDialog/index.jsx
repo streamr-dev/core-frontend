@@ -58,7 +58,7 @@ export const ChangePasswordDialogComponent = ({ onSave, onClose, waiting }: Comp
                     <div className={styles.footer}>
                         <div className={styles.footerText}>
                             <Link
-                                to={routes.forgotPassword({
+                                to={routes.auth.forgotPassword({
                                     from: 'profile',
                                 })}
                                 className={styles.forgotLink}

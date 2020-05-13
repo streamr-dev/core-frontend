@@ -111,7 +111,7 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
             invite,
         } = form
 
-        return post(routes.externalRegister(), {
+        return post(routes.auth.external.register(), {
             name,
             password,
             password2,
