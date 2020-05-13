@@ -48,9 +48,9 @@ const StreamPage = (props: Props) => {
 
     const fail = useFailure()
 
-    const readOnly = !permissions || !permissions.some((p) => p === 'write')
+    const readOnly = !permissions || !permissions.some((p) => p === 'stream_edit')
 
-    const canShare = !!permissions && permissions.some((p) => p === 'share')
+    const canShare = !!permissions && permissions.some((p) => p === 'stream_share')
 
     const stream = useSelector(selectOpenStream)
 
