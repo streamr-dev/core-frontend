@@ -66,7 +66,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                 <Wing>
                     <TOCNav>
                         {React.Children.map(children, (child) => (
-                            child.type === TOCSection ? (
+                            child && child.type === TOCSection ? (
                                 <Link
                                     active={stop === child.props.id}
                                     href={`#${child.props.id}`}
