@@ -100,7 +100,7 @@ const Nav = compose(
                     )] : []),
                 ]}
             </DropdownItem>
-            {!!currentUser && (
+            {!!currentUser && process.env.ACTIVITY_QUEUE && (
                 <ActivityItem />
             )}
             {!!currentUser && (

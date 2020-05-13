@@ -196,7 +196,7 @@ const ActivityListItem = ({
     product,
     canvas,
 }: Props) => {
-    const [isTxCompleted, setTxCompleted] = useState(false)
+    const [isTxCompleted, setTxCompleted] = useState(true)
     const showSpinner = activity.txHash && !isTxCompleted
     const { wrap, isPending } = usePending(`checktx.${activity.id}`)
 

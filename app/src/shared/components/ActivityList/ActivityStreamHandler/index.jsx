@@ -23,7 +23,12 @@ const Handler = () => {
 
         if (client && streamId) {
             Activity.subscribe(publishActivity)
+            return () => {
+                Activity.unsubscribe(publishActivity)
+            }
         }
+
+        return () => {}
     }, [client, streamId])
 
     useEffect(() => {
@@ -32,6 +37,7 @@ const Handler = () => {
                 name: 'Activity stream',
                 description: 'Automatically created stream for storing user activity',
             })
+            // TODO: Remove permissions from stream so that user cannot delete this stream
             setStreamId(stream.id)
             if (storage) {
                 storage.setItem('user.activityStreamId', stream.id)

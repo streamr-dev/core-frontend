@@ -103,7 +103,7 @@ const App = () => (
                         {MiscRouter()}
                     </Switch>
                     <Notifications />
-                    <ActivityStreamHandler />
+                    {process.env.ACTIVITY_QUEUE && <ActivityStreamHandler />}
                     {isProduction() && <GoogleAnalyticsTracker />}
                 </ModalProvider>
             </ModalPortalProvider>
