@@ -4,7 +4,7 @@ import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import { Context as RouterContext } from '$shared/contexts/Router'
 import usePending from '$shared/hooks/usePending'
 
-import links from '../../../../links'
+import routes from '$routes'
 import { isRunning } from '../../state'
 import * as services from '../../services'
 
@@ -24,7 +24,9 @@ export default function useCanvasDuplicateCallback() {
             }
             const newCanvas = await services.duplicateCanvas(canvas)
             if (!isMountedRef.current) { return }
-            history.push(`${links.editor.canvasEditor}/${newCanvas.id}`)
+            history.push(routes.canvases.edit({
+                id: newCanvas.id,
+            }))
         })
     }, [wrap, isPending, history, isMountedRef, hasWritePermission])
 }

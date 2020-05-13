@@ -14,9 +14,19 @@
         "resetPassword": "/resetPassword",
         "signUp": "/signup"
     },
-    "canvasEditor": "/canvas/editor",
-    "canvasEmbed": "/canvas/embed/:id",
-    "canvases": "/core/canvases",
+    "canvases": {
+        "edit": "/canvas/editor/:id?",
+        "embed": "/canvas/embed/:id",
+        "public": {
+            "edit": "<platform>/canvas/editor/:id",
+            "embed": "<platform>/canvas/embed/:id"
+        },
+        "root": "/core/canvases"
+    },
+    "dashboards": {
+        "edit": "/dashboard/editor/:id?",
+        "root": "/core/dashboards"
+    },
     "community": {
         "devForum": "https://forum.streamr.dev/",
         "github": "https://github.com/streamr-dev",
@@ -39,8 +49,6 @@
     "privacyPolicy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "newProduct": "/core/products/new",
     "createProduct": "/marketplace/products/create",
-    "dashboardEditor": "/dashboard/editor",
-    "dashboards": "/core/dashboards",
     "editProduct": "/core/products/:id/edit",
     "productStats": "/core/products/:id/stats",
     "productMembers": "/core/products/:id/members",
@@ -65,7 +73,10 @@
     "transactions": "/core/transactions",
     "userpages": {
         "root": "/core",
-        "streamPreview": "/core/streams/:streamId/preview"
+        "streamPreview": "/core/streams/:streamId/preview",
+        "public": {
+            "stream": "<platform>/core/streams/:id"
+        }
     },
     "userPageStreamListing": "/core/streams",
     "whitepaper": "<landingPage>/whitepaper",

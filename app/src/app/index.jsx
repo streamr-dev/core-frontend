@@ -35,9 +35,7 @@ import DashboardEditor from '$editor/dashboard'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
-import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
-import links from '../links'
 import history from '../history'
 import '../analytics'
 
@@ -59,8 +57,6 @@ const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
-const { editor } = links
-
 const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) => (
     <Redirect to={routeFn(qs.parse(search))} />
 )
@@ -79,10 +75,10 @@ const AuthenticationRouter = () => ([
 ])
 
 const EditorRouter = () => ([
-    <Route exact path="/" component={Products} key="root" />, // edge case for localhost
-    <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditor} key="CanvasEditor" />,
-    <Route exact path={formatPath(editor.canvasEmbed)} component={CanvasEmbed} key="CanvasEmbed" />,
-    <Route exact path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
+    <Route exact path={routes.root()} component={Products} key="root" />, // edge case for localhost
+    <Route exact path={routes.canvases.edit()} component={CanvasEditor} key="CanvasEditor" />,
+    <Route exact path={routes.canvases.embed()} component={CanvasEmbed} key="CanvasEmbed" />,
+    <Route exact path={routes.dashboards.edit()} component={DashboardEditorAuth} key="DashboardEditor" />,
 ])
 
 const MiscRouter = () => ([

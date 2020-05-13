@@ -9,9 +9,7 @@ import ProductContainer from '$shared/components/Container/Product'
 import routes from '$routes'
 import type { Stream, StreamList, StreamId } from '$shared/flowtype/stream-types'
 import { Row, CollapseRow, HeaderRow } from '../../Table'
-import { formatExternalUrl } from '$shared/utils/url'
 import type { Product, ProductId } from '../../../flowtype/product-types'
-import links from '../../../../links'
 import Link from '$shared/components/Link'
 import Button from '$shared/components/Button'
 
@@ -66,7 +64,8 @@ const HoverComponent = ({
                 outline
                 tag={Link}
                 className={styles.button}
-                href={formatExternalUrl(links.editor.canvasEditor, {
+                href={routes.canvases.edit({
+                    id: null,
                     addStream: streamId,
                 })}
             >

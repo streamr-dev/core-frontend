@@ -96,7 +96,11 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
         <Menu onToggle={onMenuToggle}>
             {actions}
         </Menu>
-        <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
+        <Link
+            to={routes.canvases.edit({
+                id: canvas.id,
+            })}
+        >
             <ImageContainer>
                 <Image
                     as={CanvasPreview}
@@ -122,7 +126,11 @@ type DashboardTileProps = {
 
 const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
     <Tile {...props}>
-        <Link to={`${links.editor.dashboardEditor}/${dashboard.id}`}>
+        <Link
+            to={routes.dashboards.edit({
+                id: dashboard.id,
+            })}
+        >
             <ImageContainer>
                 <Image
                     as={DashboardPreview}

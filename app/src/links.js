@@ -45,11 +45,6 @@ export default {
         transactions: '/core/transactions',
         settings: '/core/settings',
     },
-    editor: {
-        canvasEditor: routes.canvasEditor(),
-        canvasEmbed: routes.canvasEmbed(),
-        dashboardEditor: routes.dashboardEditor(),
-    },
     community: {
         trello: routes.community.trello(),
         telegram: routes.community.telegram(),
