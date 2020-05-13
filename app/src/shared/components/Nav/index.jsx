@@ -49,10 +49,10 @@ const Nav = compose(
                 <Link to={routes.streams()}>
                     <Translate value="general.streams" />
                 </Link>
-                <Link to={routes.canvases()}>
+                <Link to={routes.canvases.root()}>
                     <Translate value="general.canvases" />
                 </Link>
-                <Link to={routes.dashboards()}>
+                <Link to={routes.dashboards.root()}>
                     <Translate value="general.dashboards" />
                 </Link>
                 <Link to={routes.products()}>

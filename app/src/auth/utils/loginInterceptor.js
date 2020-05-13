@@ -14,14 +14,14 @@ function shouldRedirect(error) {
     if (window.location.pathname === routes.auth.login()) { return false }
     // no redirects for embeds
     if (matchPath(window.location.pathname, {
-        path: routes.canvasEmbed(),
+        path: routes.canvases.embed(),
     })) {
         return false
     }
 
     // no redirects for canvases
     if (matchPath(window.location.pathname, {
-        path: routes.canvasEditor(),
+        path: routes.canvases.edit(),
     })) {
         return false
     }
