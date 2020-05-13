@@ -25,7 +25,7 @@ import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import PublishQueue, { actionsTypes } from './publishQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
-import Activity, { actionTypes } from '$shared/utils/Activity'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 
 export const publishModes = {
     REPUBLISH: 'republish', // live product update
@@ -158,7 +158,8 @@ export default function usePublish() {
                                     Activity.push({
                                         action: actionTypes.PUBLISH,
                                         txHash: hash,
-                                        productId: product.id,
+                                        resourceId: product.id,
+                                        resourceType: resourceTypes.PRODUCT,
                                     })
                                 })
                                 .onTransactionComplete(() => {
@@ -209,7 +210,8 @@ export default function usePublish() {
                                     Activity.push({
                                         action: actionTypes.PUBLISH,
                                         txHash: hash,
-                                        productId: product.id,
+                                        resourceId: product.id,
+                                        resourceType: resourceTypes.PRODUCT,
                                     })
                                 })
                                 .onTransactionComplete(() => {
@@ -238,7 +240,8 @@ export default function usePublish() {
 
                                 Activity.push({
                                     action: actionTypes.PUBLISH,
-                                    productId: product.id,
+                                    resourceId: product.id,
+                                    resourceType: resourceTypes.PRODUCT,
                                 })
                             }, (error) => {
                                 update(transactionStates.FAILED, error)
@@ -274,7 +277,8 @@ export default function usePublish() {
                                 Activity.push({
                                     action: actionTypes.PUBLISH,
                                     txHash: hash,
-                                    productId: product.id,
+                                    resourceId: product.id,
+                                    resourceType: resourceTypes.PRODUCT,
                                 })
                             })
                             .onTransactionComplete(() => {
@@ -312,7 +316,8 @@ export default function usePublish() {
 
                                     Activity.push({
                                         action: actionTypes.UNPUBLISH,
-                                        productId: product.id,
+                                        resourceId: product.id,
+                                        resourceType: resourceTypes.PRODUCT,
                                     })
                                 })
                                 .onTransactionComplete(() => {
@@ -341,7 +346,8 @@ export default function usePublish() {
 
                                 Activity.push({
                                     action: actionTypes.UNPUBLISH,
-                                    productId: product.id,
+                                    resourceId: product.id,
+                                    resourceType: resourceTypes.PRODUCT,
                                 })
                             }, (error) => {
                                 update(transactionStates.FAILED, error)

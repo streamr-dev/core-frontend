@@ -21,16 +21,23 @@ export const actionTypes = {
 
 type Action = $Keys<typeof actionTypes>
 
+export const resourceTypes = {
+    STREAM: 'STREAM',
+    PRODUCT: 'PRODUCT',
+    CANVAS: 'CANVAS',
+    DASHBOARD: 'DASHBOARD',
+}
+
+export type ResourceType = $Keys<typeof resourceTypes>
+
 type Params = {
     id?: string,
     timestamp?: Date,
     action: Action,
     txHash?: Hash,
     userId?: ?string,
-    productId?: ?string,
-    streamId?: ?string,
-    canvasId?: ?string,
-    dashboardId?: ?string,
+    resourceId?: ?string,
+    resourceType?: ?ResourceType,
 }
 
 const events = {
@@ -43,10 +50,8 @@ class Activity {
     action: Action
     txHash: ?Hash
     userId: ?string
-    productId: ?string
-    streamId: ?string
-    canvasId: ?string
-    dashboardId: ?string
+    resourceId: ?string
+    resourceType: ?ResourceType
 
     static push(params: Params) {
         emitter.emit(events.PUSH, new Activity(params))
@@ -67,10 +72,8 @@ class Activity {
             action: data.action,
             userId: data.userId,
             txHash: data.txHash,
-            productId: data.productId,
-            streamId: data.streamId,
-            canvasId: data.canvasId,
-            dashboardId: data.dashboardId,
+            resourceId: data.resourceId,
+            resourceType: data.resourceType,
         }
         return new Activity(params)
     }
@@ -81,10 +84,8 @@ class Activity {
         this.action = params.action
         this.userId = params.userId || null
         this.txHash = params.txHash || null
-        this.productId = params.productId || null
-        this.streamId = params.streamId || null
-        this.canvasId = params.canvasId || null
-        this.dashboardId = params.dashboardId || null
+        this.resourceId = params.resourceId || null
+        this.resourceType = params.resourceType || null
     }
 
     serialize() {
@@ -94,10 +95,8 @@ class Activity {
             action: this.action,
             userId: this.userId,
             txHash: this.txHash,
-            productId: this.productId,
-            streamId: this.streamId,
-            canvasId: this.canvasId,
-            dashboardId: this.dashboardId,
+            resourceId: this.resourceId,
+            resourceType: this.resourceType,
         }
     }
 }

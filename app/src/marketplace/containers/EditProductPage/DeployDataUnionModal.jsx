@@ -20,7 +20,7 @@ import { averageBlockTime } from '$shared/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
-import Activity, { actionTypes } from '$shared/utils/Activity'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 
 type DeployDialogProps = {
     product: Product,
@@ -96,7 +96,8 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     Activity.push({
                         action: actionTypes.DEPLOY,
                         txHash: hash,
-                        productId,
+                        resourceId: productId,
+                        resourceType: resourceTypes.PRODUCT,
                     })
 
                     resolve()

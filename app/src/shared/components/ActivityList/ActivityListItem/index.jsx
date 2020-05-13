@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { I18n } from 'react-redux-i18n'
 
-import Activity from '$shared/utils/Activity'
+import Activity, { type ResourceType, resourceTypes } from '$shared/utils/Activity'
 import { hasTransactionCompleted } from '$shared/utils/web3'
 import Avatar from '$shared/components/Avatar'
 import { ago } from '$shared/utils/time'
@@ -20,10 +20,10 @@ const Container = styled.div`
     grid-template-columns: 32px auto;
     grid-column-gap: 16px;
     width: 100%;
-    border: 1px solid #f5f5f5;
+    border-bottom: 1px solid #f5f5f5;
     padding: 16px;
 
-    &:not(:last-child) {
+    &:last-child {
         border-bottom: none;
     }
 
@@ -90,12 +90,11 @@ const Type = styled.span`
 type Props = {
     activity: Activity,
     user?: any,
-    stream?: any,
-    product?: any,
-    canvas?: any,
+    resource?: any, // Product | Canvas | Stream
+    resourceType?: ?ResourceType,
 }
 
-const renderItem = (action: string, linkTitle: ?string, linkHref: ?string, id: string) => (
+const renderItem = (action: string, linkTitle: ?string, linkHref: ?string, id: ?string) => (
     <React.Fragment>
         {linkHref != null ? (
             <a
@@ -115,8 +114,8 @@ const renderStreamItem = (id, stream, action) => (
     renderItem(
         action,
         stream && stream.name,
-        stream && routes.userPageStreamShow({
-            streamId: stream.id,
+        stream && routes.stream({
+            id: stream.id,
         }),
         id,
     )
@@ -144,27 +143,27 @@ const renderCanvasItem = (id, canvas, action) => (
     )
 )
 
-const renderContent = (activity, stream, product, canvas) => {
-    if (activity.streamId != null) {
-        return renderStreamItem(activity.streamId, stream, activity.action)
+const renderContent = (activity, resource, resourceType) => {
+    if (resourceType === resourceTypes.STREAM) {
+        return renderStreamItem(activity.resourceId, resource, activity.action)
     }
-    if (activity.productId != null) {
-        return renderProductItem(activity.productId, product, activity.action)
+    if (resourceType === resourceTypes.PRODUCT) {
+        return renderProductItem(activity.resourceId, resource, activity.action)
     }
-    if (activity.canvasId != null) {
-        return renderCanvasItem(activity.canvasId, canvas, activity.action)
+    if (resourceType === resourceTypes.CANVAS) {
+        return renderCanvasItem(activity.resourceId, resource, activity.action)
     }
     return activity.action
 }
 
-const renderImage = (activity, user, stream, product, canvas, isLoading) => {
-    if (product) {
-        return <StyledAvatar alt={product.name} src={product.imageUrl} isLoading={isLoading} />
+const renderImage = (activity, user, resource, resourceType, isLoading) => {
+    if (resourceType === resourceTypes.PRODUCT && resource) {
+        return <StyledAvatar alt={resource.name} src={resource.imageUrl} isLoading={isLoading} />
     }
-    if (canvas) {
+    if (resourceType === resourceTypes.CANVAS) {
         return <SvgIcon name="canvas" />
     }
-    if (stream) {
+    if (resourceType === resourceTypes.STREAM) {
         return <SvgIcon name="stream" />
     }
     if (user) {
@@ -173,29 +172,23 @@ const renderImage = (activity, user, stream, product, canvas, isLoading) => {
     return null
 }
 
-const renderType = (stream, product, canvas) => {
-    if (product && product.type === productTypes.DATAUNION) {
+const renderType = (resource, resourceType) => {
+    if (resourceType === resourceTypes.PRODUCT && resource && resource.type === productTypes.DATAUNION) {
         return I18n.t('general.dataUnion')
     }
-    if (product && product.type === productTypes.NORMAL) {
+    if (resourceType === resourceTypes.PRODUCT && resource && resource.type === productTypes.NORMAL) {
         return I18n.t('general.dataProduct')
     }
-    if (canvas) {
+    if (resourceType === resourceTypes.CANVAS) {
         return I18n.t('general.canvas')
     }
-    if (stream) {
+    if (resourceType === resourceTypes.STREAM) {
         return I18n.t('general.stream')
     }
     return null
 }
 
-const ActivityListItem = ({
-    activity,
-    user,
-    stream,
-    product,
-    canvas,
-}: Props) => {
+const ActivityListItem = ({ activity, user, resource, resourceType }: Props) => {
     const [isTxCompleted, setTxCompleted] = useState(true)
     const showSpinner = activity.txHash && !isTxCompleted
     const { wrap, isPending } = usePending(`checktx.${activity.id}`)
@@ -216,15 +209,15 @@ const ActivityListItem = ({
     return (
         <Container>
             <ImageContainer>
-                {renderImage(activity, user, stream, product, canvas, showSpinner)}
+                {renderImage(activity, user, resource, resourceType, showSpinner)}
                 {showSpinner && (
                     <StyledSpinner color="white" size="small" />
                 )}
             </ImageContainer>
             <TextContent>
-                <Text>{renderContent(activity, stream, product, canvas)}</Text>
+                <Text>{renderContent(activity, resource, resourceType)}</Text>
                 <Details>
-                    <Type>{renderType(stream, product, canvas)}</Type>
+                    <Type>{renderType(resource, resourceType)}</Type>
                     &nbsp;
                     {activity.timestamp ? ago(new Date(activity.timestamp)) : null}
                 </Details>

@@ -3,8 +3,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
+import { Translate } from 'react-redux-i18n'
 
-import Activity, { actionTypes } from '$shared/utils/Activity'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { getFilters } from '$userpages/utils/constants'
 import { selectStreams } from '$userpages/modules/userPageStreams/selectors'
 import { getStreams } from '$userpages/modules/userPageStreams/actions'
@@ -26,6 +27,7 @@ const Tabs = styled.div`
     display: flex;
     width: 100%;
     padding: 16px 0 0 16px;
+    border-bottom: 1px solid #f5f5f5;
 `
 
 const Tab = styled.div`
@@ -36,6 +38,8 @@ const Tab = styled.div`
     color: #323232;
     opacity: ${(props) => (props.active ? '1' : '0.5')};
     border-bottom: ${(props) => (props.active ? '1px solid #323232' : 'none')};
+    position: relative;
+    top: 1px;
     margin-right: 40px;
     cursor: pointer;
     padding-bottom: 16px;
@@ -66,17 +70,17 @@ const ActivityList = ({ activities }: Props) => {
     const products = useSelector(selectMyProductList)
     const canvases = useSelector(selectCanvases)
 
-    if (activities.some((n) => n.streamId != null) && (streams == null || streams.length === 0)) {
+    if (activities.some((n) => n.resourceType === resourceTypes.STREAM) && (streams == null || streams.length === 0)) {
         dispatch(getStreams({
             updateStatus: false,
         }))
     }
 
-    if (activities.some((n) => n.productId != null) && (products == null || products.length === 0)) {
+    if (activities.some((n) => n.resourceType === resourceTypes.PRODUCT) && (products == null || products.length === 0)) {
         dispatch(getMyProducts(getFilters().RECENT.filter))
     }
 
-    if (activities.some((n) => n.canvasId != null) && (canvases == null || canvases.length === 0)) {
+    if (activities.some((n) => n.resourceType === resourceTypes.CANVAS) && (canvases == null || canvases.length === 0)) {
         dispatch(getCanvases(getFilters().RECENT.filter))
     }
 
@@ -90,26 +94,32 @@ const ActivityList = ({ activities }: Props) => {
                     active={activeTab === 'activity'}
                     onClick={() => setActiveTab('activity')}
                 >
-                    Activity
+                    <Translate value="shared.activity" />
                 </Tab>
                 <Tab
                     active={activeTab === 'notifications'}
                     onClick={() => setActiveTab('notifications')}
                 >
-                    Notifications
+                    <Translate value="shared.notifications" />
                 </Tab>
             </Tabs>
             <Items>
-                {items.map((item, index) => (
-                    <ActivityListItem
-                        // eslint-disable-next-line react/no-array-index-key
-                        key={index}
-                        activity={item}
-                        stream={streams.find((s) => s.id === item.streamId)}
-                        product={products.find((s) => s.id === item.productId)}
-                        canvas={canvases.find((s) => s.id === item.canvasId)}
-                    />
-                ))}
+                {items.map((item, index) => {
+                    const stream = item.resourceType === resourceTypes.STREAM ? streams.find((s) => s.id === item.resourceId) : undefined
+                    const product = item.resourceType === resourceTypes.PRODUCT ? products.find((s) => s.id === item.resourceId) : undefined
+                    const canvas = item.resourceType === resourceTypes.CANVAS ? canvases.find((s) => s.id === item.resourceId) : undefined
+                    const resource = stream || product || canvas
+
+                    return (
+                        <ActivityListItem
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={index}
+                            activity={item}
+                            resource={resource}
+                            resourceType={item.resourceType}
+                        />
+                    )
+                })}
             </Items>
         </Container>
     )

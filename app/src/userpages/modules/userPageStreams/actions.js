@@ -9,7 +9,7 @@ import type { Operation } from '$userpages/flowtype/permission-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
 import Notification from '$shared/utils/Notification'
-import Activity, { actionTypes } from '$shared/utils/Activity'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { NotificationIcon } from '$shared/utils/constants'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
@@ -397,7 +397,8 @@ export const createStream = (options: { name: string, description: ?string }) =>
                 })
                 Activity.push({
                     action: actionTypes.CREATE,
-                    streamId: data.id,
+                    resourceId: data.id,
+                    resourceType: resourceTypes.STREAM,
                 })
                 return data
             })

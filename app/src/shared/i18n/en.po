@@ -319,6 +319,12 @@ msgstr "was unpublished"
 msgid "shared##action##deploy"
 msgstr "was deployed"
 
+msgid "shared##activity"
+msgstr "Activity"
+
+msgid "shared##notifications"
+msgstr "Notifications"
+
 msgid "general##docs"
 msgstr "Docs"
 
