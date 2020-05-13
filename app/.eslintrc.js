@@ -1,7 +1,10 @@
 const path = require('path')
 
 module.exports = exports = {
-    extends: 'streamr',
+    extends: [
+        'streamr',
+        'plugin:cypress/recommended',
+    ],
     settings: {
         'import/resolver': {
             webpack: {

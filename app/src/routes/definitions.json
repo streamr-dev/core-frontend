@@ -1,4 +1,19 @@
 {
+    "auth": {
+        "external": {
+            "forgotPassword": "<streamr>/api/v1/passwords/tokens",
+            "logout": "<streamr>/api/v1/logout",
+            "register": "<streamr>/api/v1/users",
+            "resetPassword": "<streamr>/api/v1/passwords",
+            "signUp": "<streamr>/api/v1/signups"
+        },
+        "forgotPassword": "/forgotPassword",
+        "login": "/login",
+        "logout": "/logout",
+        "register": "/register",
+        "resetPassword": "/resetPassword",
+        "signUp": "/signup"
+    },
     "canvasEditor": "/canvas/editor",
     "canvasEmbed": "/canvas/embed/:id",
     "canvases": "/core/canvases",
@@ -30,15 +45,7 @@
     "productStats": "/core/products/:id/stats",
     "productMembers": "/core/products/:id/members",
     "editProfile": "/core/profile/edit",
-    "externalForgotPassword": "<streamr>/api/v1/passwords/tokens",
-    "externalLogout": "<streamr>/api/v1/logout",
-    "externalRegister": "<streamr>/api/v1/users",
-    "externalResetPassword": "<streamr>/api/v1/passwords",
-    "externalSignUp": "<streamr>/api/v1/signups",
-    "forgotPassword": "/forgotPassword",
     "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
-    "login": "/login",
-    "logout": "/logout",
     "marketplace": {
         "root": "/marketplace"
     },
@@ -49,10 +56,7 @@
     "publish": "/marketplace/products/:id/publish",
     "purchase": "/marketplace/products/:id/purchase",
     "purchases": "/core/purchases",
-    "register": "/register",
-    "resetPassword": "/resetPassword",
     "root": "/",
-    "signUp": "/signup",
     "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
     "streams": "/core/streams",
     "stream": "/core/streams/:id",
@@ -60,10 +64,10 @@
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "transactions": "/core/transactions",
     "userpages": {
-        "root": "/core"
+        "root": "/core",
+        "streamPreview": "/core/streams/:streamId/preview"
     },
     "userPageStreamListing": "/core/streams",
-    "userPageStreamPreview": "/core/stream/preview/:streamId",
     "whitepaper": "<landingPage>/whitepaper",
     "site": {
         "about": "/about",

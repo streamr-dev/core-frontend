@@ -31,6 +31,9 @@ env:
   - secure: sUzjQJhRmjgRZX2aPcCChTbUpOObNR6virIw0AjfCtQlQQBF0AmCLOSgi4a6GIC4lBIl67flUwbAOHGOaRqVw1K6WZ1A8hEjcmBor6sbIIVtbbJFGr6GnozLeXI/fkTfFfH5n6oRvtJwZAk4GT1weiUzn0xCgvLcn7p5oXZ+M9qvTFDaWr18R9EQF9I+BDX3PwSuhrzveYH6mQRmXVIkoFYmmjAh2MNvP46fIS+HEGadhrpshUwipYmMZ0xyF+xw4Km2tj9okoP18C5UtG43/LcJ0Ja4Fg0WMqXlNSi+JcO5IEg0noJ/x77woIZtsNrphqhUgpp8PJJPBg2YyzQk57OPWVSDlaBfI2Jkhf0E/LTTFuzbORjBOgS2S4zWS8sHWtsnjECpiCb+v20PBIEcLjfUGJEhBW4bsNoJCtE1afUDCkcvarT9pQBqlOrVzvTNlAHyjBzB9JeWel0MKUm+g4/hSHhaDYVfAWGIo0fUboLL09+CVzKPcKfQjdu4vROyQWheDpC/kzvCEMhnaxIAB3fs6lA+BsBFo9lXFF93PVatBdo36mw6fJkk75kfXBOTu0D2fPWYryQm1GeE2uiTWLWscoOQ4GDh6o0vummVk6mxA1A1RU5p2lC8SrB3WMTvrM3dg3vTvzvUavP1WVnPmCoYg0+j+UVpkBEWvazNZqM=
   - OWNER=streamr
   - IMAGE_NAME=platform
+  - secure: "UU7sXnneUH2l+j8egLqIsy7Bq1J3x/agciXIjn+y/pSp5tCA5iGUAnXzbWKhY1sfjg6aMVcdMUombs8YVsRy5qNXCAS1mLDQy+Uxw1pCjYCFxpaM4LNUZ9RLu8QqK/qI2pX+vSrj/ips50vaRaHuhyRIxvy1AtYxIh4Xytl2+fs+YWp1BE1TBEWucxO+PJIkGU0RGYE8SqPPS0gjl1wsPH3PibswtyBpRV51AtxVNbH0PVRB+kTA/H+6HiV7E3QSdKnqD1qzdYR/tfqDyIXF3zrtjrTwYQtlPunceYqAyNGsTB7PT1gOFUzOg6h/5dI5Shv0afMpDW6RIodylobbbQTiVjkngd5VaicipnxiY7CEH5XViGZansHD1JtBEnI6sw1YZK6C1+DDEaJENgiliLWQcuBrqot5NCj3Wj5wjEH9BmiP4FS1/ccJqheQXIBUGqprB8Hprhcv+NhxfhQVMDD6fpY8h4b+eAB12hXr3/rtjfY614XFuMoI9Yr4vMLoHUkTxO05gg874GnPwA2iLRywH6Vktfd7L9AoGqlgBsi6dWLIbeA34lor1m10vhhaQTU0+D2WCd6kCA8akS/o2/yMTB45WMQOGGTkANHUL/wwKlRuOQVqRoBwLte7Lgc3Pzsx9cQKT5XXu1Y4ZG9x9tlbSmrLoSEhxdBD6BzbRkc="
+  - secure: "WF1gZwG5J2sFY59f1bBZp54tuRv1u1D3RVnKn4U+chb4m4khnCD13lYxGS4sd5E6+EOeB/RpySv5mtTS+9RE53EET9jdcTukKDn82nXqOpWfExWZSR8P60hXGE3Rri9FezsPTVi9vpTzN2pxBdRWneEIjxlF0H7q0xJ9lWFpKT0IeBOuAJQsZN4aLM8LwQED5xPTxDrIsRumNZhS5zEycmGpek0b7nTaNBzIu0Qqv/9CbxVLiJn1snQLU8G6hO6WBokv9DFp+r0u0jUxfKWHZaBcXCjvbc1dGIRo0F6IoeQ6NFptM18QxLK469lPK2qhqY1B/VvKSv+QNxV0G6AK1dJm4oVFh7j2YnKr1qeVZJlsd9mQg1DoMZmWBcFh/afOYm/7sH3SpdiRacy/zgpQhVlVHDfsT3ucuSkokyW8PBLRssvV/UO+4ktbk7b+dp7e/m0NKi1K503lqJ2rPE7U19pKniOPENWlP54G5Bj4x60m+i9JVEzunWs+ypMIOk44EecxTUn781tN59/rL5c7JlwcMwrRbycCRr3T8QramAlVtmH6/AR9q8KtYMj81GLg79FqF8jQy23dpz1FAFWeD4FQ0dE0ArCgIoo7jr/mb7L3LOFj3xCi0ceXG2on/EDfXPzpPeHOavuoSZgZwxGeqyNQ8C5I7jlBTitGe2mL+Lc="
+
 jobs:
   include:
   - stage: Platform Tests
@@ -76,6 +79,31 @@ jobs:
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     - DATA_UNION_PUBLISH_MEMBER_LIMIT=0
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
+  - stage: Platform tests
+    if: type IN (pull_request)
+    env:
+    - DESCRIPTION=END_TO_END_TEST
+    - NODE_ENV=production
+    - PORT=3333
+    - STREAMR_URL=http://localhost
+    - PLATFORM_ORIGIN_URL=http://localhost
+    - STREAMR_API_URL=http://localhost/api/v1
+    - STREAMR_WS_URL=ws://localhost/api/v1/ws
+    - STREAMR_ENGINE_NODE_ADDRESSES=0xFCAd0B19bB29D4674531d6f115237E16AfCE377c
+    - DATA_UNION_OPERATOR_ADDRESS=0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1
+    - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
+    - DATA_UNION_PUBLISH_MEMBER_LIMIT=1
+    - MARKETPLACE_CONTRACT_ADDRESS=0xF1371c0f40528406dc4f4cAf89924eA9Da49E866
+    - DATA_TOKEN_CONTRACT_ADDRESS=0xbAA81A0179015bE47Ad439566374F2Bae098686F
+    - DAI_TOKEN_CONTRACT_ADDRESS=0x642d2b84a32a9a92fec78ceaa9488388b3704898
+    - WEB3_REQUIRED_NETWORK_ID=1111
+    - WEB3_PUBLIC_HTTP_PROVIDER=http://localhost:8545
+    - WEB3_PUBLIC_WS_PROVIDER=ws://localhost:8545
+    - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
+    - SENTRY_ORG=streamr
+    - SENTRY_PROJECT=marketplace
+    - UNISWAP_ADAPTOR_CONTRACT_ADDRESS=0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/e2e-tests.sh"
   - stage: Build docker (Dev/Nightly)
     if: branch = development
     env:
@@ -144,9 +172,8 @@ jobs:
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
-      access_key_id: AKIAI3FGPGMK3EREJJTQ
-      secret_access_key:
-        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      access_key_id: $ACCESS_KEY_STG
+      secret_access_key: $SECRET_ACCESS_KEY_STG
       bucket: eu-west-1-stg-streamr-marketplace
       local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       acl: private
@@ -155,9 +182,8 @@ jobs:
       on:
         branch: development
     - provider: s3
-      access_key_id: AKIAI3FGPGMK3EREJJTQ
-      secret_access_key:
-        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      access_key_id: $ACCESS_KEY_STG
+      secret_access_key: $SECRET_ACCESS_KEY_STG
       bucket: eu-west-1-stg-streamr-vault
       local-dir: "$TRAVIS_BUILD_DIR/build"
       upload-dir: marketplace/releases
@@ -167,9 +193,8 @@ jobs:
       on:
         branch: development
     - provider: codedeploy
-      access_key_id: AKIAI3FGPGMK3EREJJTQ
-      secret_access_key:
-        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      access_key_id: $ACCESS_KEY_STG
+      secret_access_key: $SECRET_ACCESS_KEY_STG
       bucket: eu-west-1-stg-streamr-vault
       key: marketplace/releases/marketplace.tar
       application: eu-west-1-stg-marketplace-codedeploy
@@ -208,8 +233,6 @@ jobs:
     - DATA_UNION_OPERATOR_ADDRESS=0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1
     - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
-    - secure: H4xOzWwc5rnx8XxEumkrHqYdMhfIYVoqdTp4OwqBNjScn0FuB2Zbud+sU5cQmox/L631Cni2lGyjUa1Z/BwavSo/paYBv8ufeabMI8cnLyKe878Yqstk5hwgYVOHfmbhIBRUVcWNIRZeFZORPFFIZP84Dn3Gg9hCgtbjrmT/yqyyoaftJY1ppwAo1xyxv0yUE/uNUbZGQuYkVY9yEh8gBc5N3SpQ4FyDekAAS425cYXzgaAMmdBjNw5Xp9brqyKGEPLFHDtXi5r1J3xUlzk48AgEq+1B627ckWjCkxP71ko28Kp92vPjYjV3BjPLBsHYtZX0HGZokwwFNZHl/eg2H9uIyUL1DY3+OkuzTanW4aq9NmMbxMmQ4pvfzEokk2LH89VFp09ev832NcSpCLQdSYMcxpm6NedZWWteL2e2Qzc1RZRlJpdAYDZunQYsqnV9812YAiqG9Mud2GGOIn24PO71abGnlTT6FqLP5mdxqQ+A40+Yky5ETQRq86e3vxcwASGaNcp5ICbAALndmwCD/GwDYHZ7LTniZB7kpDX9MBluzwD67mhQ1+lcNSiVTQ0tf0oi65MUPFJchs++iFYiapIt7bnxrnvxiMDdNHLjm0iPWZthKeLWQnm/opU7D9tVvWbc+zGPNfmRBN9ePI98Lts60OELNKwwoIo5PZ9HtS8=
-    - secure: T3thsbASJalYo5IhRb5gahvrcso+JUgHFIJeWcVtzkaFt+NPQ7EOnpMjgsdAtSiiwzoEx+Rxz90+oUYb4A+Z7dImQqAVpBr6NwA4W2TQnw0VOoqnzE17anSqRKPzOjH1UczvBP64EINvQvWE1bBycq61t3mJ7fTm1gaWq3FDVr5uOUD/OnJkq4caIs8W52Yt/AaATcQ5kpWDGFAYgE0sbaaob8gQJxJ3SyEtUo10y5NJNPsX8jz0Ar4JxTL48WUtWGsBJ/yCuQDKO+eaB4oNQhO32y44PM7YP+7v0UD7BM3/7fLl/KJA144ATPraCFDin2D1XQ+niWZSENTkpC6sRwoBJawvL95gXSIsUTr0BZ3LeXm2l4u5Hhpsz7Qib/vNsGTLQXcP9RK8QbUU5mrrMtw6hJ/iNo54JiW785BSR94X/MHyMliMiUZQbKlFxLmpHs2n+WsmfT95aWDOS2YI4N1ny0p08BhuA/UAzPq/jegP6DhqztNcavpBfMW1joAm2V5D8KwY0KCm39b5jB0RqBmY7OhI7GMH6SIcPLz2TexkFcKpAmj9Vb15x8gHWtbUb1dTJk9uXnLFarmD95Ox3mTGdCHlKr8wHeyNClXyDoMmcEpL7MOmkLIR7uHFtW4EDMQc8xQTKPll+sQQxDLNeUPtHK9pthPOHmvUgf4O1e4=
     - secure: DTaSLAdOFG57aSb9IjP3N2NlrWPKh+8Z2oDl20zlVsLSm0tAXqiGudTg6rkcxHShM/J2XPsYvVMe/r/0qBEihvWq/bEuJvnrLHZ4ssXfOpN0nk2Ds/N9RReOD4MgSa5DE4KPTiXiVY/jrcRPcpGum0N7d91jFoiBFsazAcjO5KoyErTfZG4QtM3BXR7eVivL8JmsPLgAQGtuSLqpw53ilyl62xXzjiXs0akfMBc6a31XMPFWqyFUELn0oWDjvfeJI3vNXct56cPJ1aqod/LPhgKZMbjD8CdhgVxETkh5iZGV5NiTNF0skwB0uHDMYOD4+qE6jFEGKzZXCPk/1DHFDMN//3LoLw9OS5TC34/wW5E0ZCXhPLqMWEMvr0cm2oTJgyzZY7w+4PXuomfYocqm4VgZiCVS5UUi+7rcYnsFPJv73KBTy2DLvh902kzuGcMf7EaC5imxDFjql4X8o0ceQFqXGi6v2riBM8Fhb/sENOB55MicFG5MuI4TKR9BGyBTg4KkgyJEZswQ2xG8yPRuARqchblI/+avexuxROJ/m++y3ZuPkH3KGSw+yECkG7bZ7TBPLaL7VO87XinLIPO+fRtzm6nNId7KoA+jcrxlAljzsCxVsPVVHsL5+7B8jT0VvLNcH89FHxEuTh/axYdAmAix4Od17wg0pg3ZdJSAnuM=
     - secure: DVAbGPA0dx5I02puqZpkFplRsMTys7OLisIfQKkspA9t+ECLVXM/gsAH/cha4B3Ic9EwBBahKHiaVK6zjuguowjoSQpDpIL+r+frWFXyzV+WfMCEYXdvPcnrpRruP7+QzURgO+s2FLraOSAovXL4fyePfQwLNnDQFWhu4dtl1Ncfe1Kqd6mHi40DKeNv1wR8mmJz4SBDaWcbhkfrDutF6P9LF4lnpOaNHEhHYLsMd7ICIRJ2+w4ZQTVtFqQcI/WT1m7eWhBT6FrQba911AjogFrtRLWrK5YZYCC98m7VMIz2vNt+bnULwPOjJC69VyHW75uJcQvE+woUL6U4xHrVsD5HVdh3tj/nN9swFFc95pEs9GQbGzvKvNBO0chhdwmCTWgyx4Z4sNNiop/WmKQVHswZ1wxOSBeRVOsDYYiDILOojSQh+bSIzIH9Ows57ro9HVpMLL0M/pptNUw6hrqyGE896JAXPWu87Vh7Wqq0H2vfTWdFxmCqv7ncIRngkCbjLZ04MFWENlNpdnhGkrc6WFmh2NMMSua5nsAH8judr2Pbr3s4WeWu1Bwc8uTu8BJ7JU5I6FsrTFOVUO/yIwmAeLA6NCCg7bFNq2ajWVl5exuZOZv0bWWfjvJ9BAIbS6nGQwMUKzjmNLtoEbk4EqLJDKxI2uGoFk6hAlW7GHEaQ2A=
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/deploy-pr.sh"

@@ -22,6 +22,6 @@ export const canvasModulesCategorised = Object.entries((
 export const toAnchor = (name) => (
     name.trim()
         .toLowerCase()
-        .replace(' & ', ' and ')
+        .replace(/&/g, 'and')
         .replace(/\s+/g, '-')
 )

@@ -4,19 +4,41 @@ const colors = require('colors/safe')
 const definitions = require('../src/routes/definitions')
 
 const palette = [
-    [/:\w+/g, 'green'],
+    [/(?<!mailto):\w+/g, 'green'],
     [/(\([^)]*\))?[*+?]?/g, 'yellow'],
     [/<[^>]*>/g, 'blue'],
 ]
 
+const final = (defs, prefix = '') => (
+    Object.keys(defs).sort().reduce((memo, name) => {
+        const route = defs[name]
+
+        const prefixed = `${prefix}.${name}`.replace(/^\.+/g, '')
+
+        if (typeof route === 'string') {
+            return {
+                ...memo,
+                [prefixed]: route,
+            }
+        }
+
+        return {
+            ...memo,
+            ...final(route, prefixed),
+        }
+    }, {})
+)
+
+const finalDefinitions = final(definitions)
+
 const formatName = (value) => (
-    `${value}:`.padEnd(Object.keys(definitions).reduce((memo, name) => Math.max(memo, name.length), 0) + 1, ' ')
+    `${value}:`.padEnd(Object.keys(finalDefinitions).reduce((memo, name) => Math.max(memo, name.length), 0) + 1, ' ')
 )
 
 const formatPath = (value) => palette.reduce((memo, [format, color]) => (
     memo.replace(format, (match) => colors[color](match))
 ), value)
 
-Object.keys(definitions).sort().forEach((name) => {
-    console.log(`${formatName(name)} ${formatPath(definitions[name])}`) // eslint-disable-line no-console
+Object.entries(finalDefinitions).forEach(([name, route]) => {
+    console.log(`${formatName(name)} ${formatPath(route)}`) // eslint-disable-line no-console
 })

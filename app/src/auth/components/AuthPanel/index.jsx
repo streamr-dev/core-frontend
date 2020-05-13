@@ -37,7 +37,7 @@ const AuthPanel = ({ children, onPrev, validationSchemas, onValidationError }: P
             />
             <div className={styles.panel}>
                 <div className={styles.header}>
-                    <span>
+                    <span data-title>
                         {child.props.title}
                     </span>
                 </div>

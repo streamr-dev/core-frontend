@@ -5,7 +5,6 @@ import { Route as RouterRoute, Redirect } from 'react-router-dom'
 
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import { formatPath } from '$shared/utils/url'
 import routes from '$routes'
 import links from '../links'
 
@@ -33,7 +32,6 @@ const CanvasListAuth = userIsAuthenticated(CanvasList)
 const ProfilePageAuth = userIsAuthenticated(ProfilePage)
 const DashboardListAuth = userIsAuthenticated(DashboardList)
 const StreamListViewAuth = userIsAuthenticated(StreamListView)
-const StreamLivePreviewAuth = userIsAuthenticated(StreamLivePreview)
 const TransactionListAuth = userIsAuthenticated(TransactionList)
 const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
@@ -51,7 +49,7 @@ const UserpagesRouter = () => ([
     <Route exact path={routes.newStream()} component={NewStreamPageAuth} key="newStreamPage" />,
     <Route exact path={routes.stream()} component={StreamPage} key="streamPage" />,
     <Route exact path={userpages.streams} component={StreamListViewAuth} key="StreamListView" />,
-    <Route exact path={formatPath(userpages.streamPreview, ':streamId')} component={StreamLivePreviewAuth} key="StreamLivePreview" />,
+    <Route exact path={routes.userpages.streamPreview()} component={StreamLivePreview} key="StreamLivePreview" />,
     <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={userpages.purchases} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
