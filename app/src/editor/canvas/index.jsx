@@ -595,7 +595,7 @@ const CanvasErrorBoundary = ({ error }) => {
             <Button
                 kind="special"
                 tag={Link}
-                to={routes.canvases.root()}
+                to={routes.canvases.index()}
                 className="d-none d-md-inline-flex"
             >
                 <Translate value="editor.general.backToCanvases" />

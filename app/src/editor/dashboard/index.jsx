@@ -118,7 +118,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         this.isDeleted = true
         await services.deleteDashboard(dashboard)
         if (this.unmounted) { return }
-        this.props.history.push(routes.dashboards.root())
+        this.props.history.push(routes.dashboards.index())
     }
 
     newDashboard = async () => {

@@ -48,7 +48,7 @@ const Hero = () => {
             }
         } else {
             dispatch(replace(routes.auth.login({
-                redirect: routes.product({
+                redirect: routes.marketplace.product({
                     id: productId,
                 }),
             })))

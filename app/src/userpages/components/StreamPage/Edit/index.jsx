@@ -43,7 +43,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
     const isMounted = useIsMounted()
 
     const cancel = useCallback(() => {
-        dispatch(push(routes.streams()))
+        dispatch(push(routes.streams.index()))
     }, [dispatch])
 
     const [spinner, setSpinner] = useState(false)
@@ -55,7 +55,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
             await dispatch(updateStream(stream))
 
             if (isMounted()) {
-                dispatch(push(routes.streams()))
+                dispatch(push(routes.streams.index()))
             }
         } catch (e) {
             console.warn(e)

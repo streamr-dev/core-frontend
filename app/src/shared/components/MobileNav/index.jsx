@@ -116,7 +116,7 @@ const MobileNav = withRouter(({ location: { pathname: redirect }, className }: P
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.streams()}
+                                to={routes.streams.index()}
                             >
                                 <Translate value="general.core" />
                             </Link>
@@ -124,7 +124,7 @@ const MobileNav = withRouter(({ location: { pathname: redirect }, className }: P
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.marketplace.root()}
+                                to={routes.marketplace.index()}
                             >
                                 <Translate value="general.marketplace" />
                             </Link>
@@ -142,7 +142,7 @@ const MobileNav = withRouter(({ location: { pathname: redirect }, className }: P
                         <li>
                             <Link
                                 className={styles.link}
-                                to={routes.editProfile()}
+                                to={routes.profile()}
                                 disabled={!currentUser}
                             >
                                 <Translate value="general.settings" />

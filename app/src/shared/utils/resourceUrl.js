@@ -21,7 +21,7 @@ export default (resourceType: $Keys<typeof ResourceType>, id: ResourceID) => {
                 id,
             })
         case ResourceType.STREAM:
-            return routes.userpages.public.stream({
+            return routes.streams.public.show({
                 id,
             })
         default:

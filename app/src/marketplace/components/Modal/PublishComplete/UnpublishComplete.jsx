@@ -26,7 +26,7 @@ const UnpublishComplete = ({ onClose }: Props) => (
                 value="modal.unpublishComplete.message"
                 dangerousHTML
                 tag="p"
-                productLink={routes.products()}
+                productLink={routes.products.index()}
             />
         </Dialog>
     </ModalPortal>

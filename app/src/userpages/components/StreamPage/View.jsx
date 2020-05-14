@@ -177,7 +177,7 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
         scrollTop()
 
         if (currentUser) {
-            dispatch(push(routes.streams()))
+            dispatch(push(routes.streams.index()))
         } else {
             dispatch(push(routes.root()))
         }

@@ -21,7 +21,7 @@ const NewStreamPage = () => {
             }))
 
             if (isMounted()) {
-                dispatch(push(routes.stream({
+                dispatch(push(routes.streams.show({
                     id,
                     newStream: 1,
                 })))

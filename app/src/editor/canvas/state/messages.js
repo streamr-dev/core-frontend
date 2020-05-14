@@ -16,7 +16,7 @@ function NoFieldsConfiguredMessage(canvas, moduleHash) {
     const streamModule = CanvasState.getModule(canvas, moduleHash)
     const streamParam = streamModule.params.find(({ name }) => name === 'stream')
     const streamId = streamParam && streamParam.value
-    const streamLink = routes.stream({ id: streamId })
+    const streamLink = routes.streams.show({ id: streamId })
     return {
         level: 'warn',
         translate: true,

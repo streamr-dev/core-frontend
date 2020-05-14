@@ -59,7 +59,7 @@ const mapDispatchToProps = (dispatch: Function, { match: { params: { streamId } 
                 return
             }
 
-            dispatch(push(routes.stream({
+            dispatch(push(routes.streams.show({
                 id: streamId,
             })))
         }, 100)

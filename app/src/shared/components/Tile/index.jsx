@@ -242,7 +242,7 @@ const ProductTile = ({
             </Menu>
         )}
         <Link
-            to={product.id && routes.editProduct({
+            to={product.id && routes.products.edit({
                 id: product.id,
             })}
         >
@@ -284,7 +284,7 @@ type MarketplaceProductTileProps = {
 const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
     <Tile {...props}>
         <Link
-            to={routes.product({
+            to={routes.marketplace.product({
                 id: product.id,
             })}
         >

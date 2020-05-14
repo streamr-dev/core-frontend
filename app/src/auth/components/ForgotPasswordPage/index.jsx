@@ -63,7 +63,7 @@ const ForgotPasswordPage = ({ from }: Props) => {
 
     const onBack = useCallback(() => {
         if (from === 'profile') {
-            dispatch(push(routes.editProfile()))
+            dispatch(push(routes.profile()))
         }
     }, [from, dispatch])
 

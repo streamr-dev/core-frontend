@@ -49,7 +49,7 @@ export const CreateProductButton = () => {
         <Button
             tag={Link}
             className={styles.createProductButton}
-            to={routes.newProduct({
+            to={routes.products.new({
                 type: productTypes.NORMAL,
             })}
         >

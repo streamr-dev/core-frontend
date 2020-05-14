@@ -21,11 +21,11 @@
             "edit": "<platform>/canvas/editor/:id",
             "embed": "<platform>/canvas/embed/:id"
         },
-        "root": "/core/canvases"
+        "index": "/core/canvases"
     },
     "dashboards": {
         "edit": "/dashboard/editor/:id?",
-        "root": "/core/dashboards"
+        "index": "/core/dashboards"
     },
     "community": {
         "devForum": "https://forum.streamr.dev/",
@@ -47,38 +47,38 @@
     "contributionSummary": "https://s3.amazonaws.com/streamr-public/Crowdcontribution+Information+Summary+(20170912).pdf",
     "tos": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "privacyPolicy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
-    "newProduct": "/core/products/new",
-    "createProduct": "/marketplace/products/create",
-    "editProduct": "/core/products/:id/edit",
-    "productStats": "/core/products/:id/stats",
-    "productMembers": "/core/products/:id/members",
-    "editProfile": "/core/profile/edit",
     "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
     "marketplace": {
-        "root": "/marketplace"
-    },
-    "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
-    "product": "/marketplace/products/:id",
-    "externalProduct": "<streamr>/marketplace/products/:id",
-    "products": "/core/products",
-    "publish": "/marketplace/products/:id/publish",
-    "purchase": "/marketplace/products/:id/purchase",
-    "purchases": "/core/purchases",
-    "root": "/",
-    "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
-    "streams": "/core/streams",
-    "stream": "/core/streams/:id",
-    "newStream": "/core/streams/new",
-    "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
-    "transactions": "/core/transactions",
-    "userpages": {
-        "root": "/core",
-        "streamPreview": "/core/streams/:streamId/preview",
+        "index": "/marketplace",
+        "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
+        "product": "/marketplace/products/:id",
         "public": {
-            "stream": "<platform>/core/streams/:id"
+            "product": "<streamr>/marketplace/products/:id"
         }
     },
-    "userPageStreamListing": "/core/streams",
+    "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
+    "purchases": "/core/purchases",
+    "root": "/",
+    "transactions": "/core/transactions",
+    "streams": {
+        "index": "/core/streams",
+        "show": "/core/streams/:id",
+        "new": "/core/streams/new",
+        "preview": "/core/streams/:streamId/preview",
+        "public": {
+            "show": "<platform>/core/streams/:id"
+        }
+    },
+    "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
+    "core": "/core",
+    "profile": "/core/profile/edit",
+    "products": {
+        "edit": "/core/products/:id/edit",
+        "index": "/core/products",
+        "members": "/core/products/:id/members",
+        "new": "/core/products/new",
+        "stats": "/core/products/:id/stats"
+    },
     "whitepaper": "<landingPage>/whitepaper",
     "site": {
         "about": "/about",

@@ -79,7 +79,7 @@ const HoverComponent = ({
                 size="mini"
                 outline
                 tag={Link}
-                to={routes.streamPreview({
+                to={routes.marketplace.streamPreview({
                     id: productId,
                     streamId,
                 })}
