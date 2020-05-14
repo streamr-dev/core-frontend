@@ -278,13 +278,13 @@ function UserPermissions({
                             <React.Fragment key={permission}>
                                 <Checkbox
                                     className={styles.checkbox}
-                                    id={`permission${permission}`}
+                                    id={`${userId}-${permission}`}
                                     value={value}
                                     onChange={() => updatePermission(userId, {
                                         [permission]: !value,
                                     })}
                                 />
-                                <label htmlFor={`permission${permission}`}>
+                                <label htmlFor={`${userId}-${permission}`}>
                                     {startCase(permission)}
                                 </label>
                             </React.Fragment>
