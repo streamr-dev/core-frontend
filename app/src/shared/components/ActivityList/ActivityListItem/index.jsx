@@ -1,19 +1,18 @@
 // @flow
 
-import React, { useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { I18n } from 'react-redux-i18n'
+import { useSelector } from 'react-redux'
 
 import Activity, { type ResourceType, resourceTypes } from '$shared/utils/Activity'
-import { hasTransactionCompleted } from '$shared/utils/web3'
 import Avatar from '$shared/components/Avatar'
 import { ago } from '$shared/utils/time'
-import useInterval from '$shared/hooks/useInterval'
 import Spinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
 import routes from '$routes'
-import usePending from '$shared/hooks/usePending'
 import { productTypes } from '$mp/utils/constants'
+import { selectPendingTransactions } from '$mp/modules/transactions/selectors'
 
 const Container = styled.div`
     display: grid;
@@ -157,7 +156,7 @@ const renderContent = (activity, resource, resourceType) => {
 }
 
 const renderImage = (activity, user, resource, resourceType, isLoading) => {
-    if (resourceType === resourceTypes.PRODUCT && resource) {
+    if (resourceType === resourceTypes.PRODUCT && resource && resource.imageUrl) {
         return <StyledAvatar alt={resource.name} src={resource.imageUrl} isLoading={isLoading} />
     }
     if (resourceType === resourceTypes.CANVAS) {
@@ -189,22 +188,9 @@ const renderType = (resource, resourceType) => {
 }
 
 const ActivityListItem = ({ activity, user, resource, resourceType }: Props) => {
-    const [isTxCompleted, setTxCompleted] = useState(true)
-    const showSpinner = activity.txHash && !isTxCompleted
-    const { wrap, isPending } = usePending(`checktx.${activity.id}`)
-
-    useInterval(() => {
-        const checkTxCompleted = async (txHash) => {
-            wrap(async () => {
-                const result = await hasTransactionCompleted(txHash)
-                setTxCompleted(result)
-            })
-        }
-
-        if (activity.txHash && !isPending) {
-            checkTxCompleted(activity.txHash)
-        }
-    }, activity.txHash && !isTxCompleted ? 100 : null)
+    const pendingTxs = useSelector(selectPendingTransactions)
+    const isTxPending = pendingTxs.some((item) => item.hash === activity.txHash && item.state === 'pending')
+    const showSpinner = activity.txHash && isTxPending
 
     return (
         <Container>
