@@ -1,21 +1,23 @@
 // @flow
 
 import { get, post, del, put } from '$shared/utils/api'
-import { formatApiUrl } from '$shared/utils/url'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { ResourceKeyList, ResourceKey, ResourceKeyId, ResourcePermission } from '$shared/flowtype/resource-key-types'
 import type { StreamId } from '$shared/flowtype/stream-types'
+import routes from '$routes'
 
 export const getMyResourceKeys = (): ApiResult<ResourceKeyList> => get({
-    url: formatApiUrl('users', 'me', 'keys'),
+    url: routes.api.me.keys.index(),
 })
 
 export const getStreamResourceKeys = (streamId: StreamId): ApiResult<ResourceKeyList> => get({
-    url: formatApiUrl('streams', streamId, 'keys'),
+    url: routes.api.streams.keys.index({
+        streamId,
+    }),
 })
 
 export const addMyResourceKey = (keyName: string): ApiResult<ResourceKey> => post({
-    url: formatApiUrl('users', 'me', 'keys'),
+    url: routes.api.me.keys.index(),
     data: {
         name: keyName,
     },
@@ -23,7 +25,9 @@ export const addMyResourceKey = (keyName: string): ApiResult<ResourceKey> => pos
 
 export const addStreamResourceKey = (streamId: StreamId, name: string, permission: ResourcePermission): ApiResult<ResourceKey> =>
     post({
-        url: formatApiUrl('streams', streamId, 'keys'),
+        url: routes.api.streams.keys.index({
+            streamId,
+        }),
         data: {
             name,
             permission,
@@ -31,27 +35,37 @@ export const addStreamResourceKey = (streamId: StreamId, name: string, permissio
     })
 
 export const editStreamResourceKey =
-    (streamId: StreamId, keyId: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): ApiResult<ResourceKey> =>
+    (streamId: StreamId, id: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): ApiResult<ResourceKey> =>
         put({
-            url: formatApiUrl('streams', streamId, 'keys', keyId),
+            url: routes.api.streams.keys.index({
+                streamId,
+                id,
+            }),
             data: {
                 name: keyName,
                 permission: keyPermission,
             },
         })
 
-export const editMyResourceKey = (keyId: ResourceKeyId, name: string): ApiResult<ResourceKey> =>
+export const editMyResourceKey = (id: ResourceKeyId, name: string): ApiResult<ResourceKey> =>
     put({
-        url: formatApiUrl('users', 'me', 'keys', keyId),
+        url: routes.api.me.keys.show({
+            id,
+        }),
         data: {
             name,
         },
     })
 
 export const removeMyResourceKey = (id: ResourceKeyId): ApiResult<null> => del({
-    url: formatApiUrl('users', 'me', 'keys', id),
+    url: routes.api.me.keys.show({
+        id,
+    }),
 })
 
 export const removeStreamResourceKey = (streamId: StreamId, id: ResourceKeyId): ApiResult<null> => del({
-    url: formatApiUrl('streams', streamId, 'keys', id),
+    url: routes.api.streams.keys.show({
+        streamId,
+        id,
+    }),
 })

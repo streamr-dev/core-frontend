@@ -4,7 +4,6 @@
 
 import axios from 'axios'
 import routes from '$routes'
-import { formatApiUrl } from '$shared/utils/url'
 import { matchPath } from 'react-router-dom'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
@@ -34,9 +33,9 @@ function shouldRedirect(error) {
         }
 
         const url = new window.URL(error.config.url)
-        const me = new window.URL(formatApiUrl('users', 'me'))
-        const keys = new window.URL(formatApiUrl('users', 'me', 'keys'))
-        const changePassword = new window.URL(formatApiUrl('users', 'me', 'changePassword'))
+        const me = new window.URL(routes.api.me())
+        const keys = new window.URL(routes.api.keys())
+        const changePassword = new window.URL(routes.api.changePassword())
 
         // shouldn't redirect if current password is wrong when changing password
         if (changePassword.pathname === url.pathname && me.origin === url.origin && error.config.method === 'post') {

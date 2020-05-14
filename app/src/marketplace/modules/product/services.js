@@ -1,7 +1,6 @@
 // @flow
 
 import { get, put, post } from '$shared/utils/api'
-import { formatApiUrl } from '$shared/utils/url'
 import { getContract, call } from '../../utils/smartContract'
 import getConfig from '$shared/web3/config'
 
@@ -12,14 +11,19 @@ import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import getWeb3 from '$shared/web3/web3Provider'
+import routes from '$routes'
 
 export const getProductById = async (id: ProductId): ApiResult<Product> => get({
-    url: formatApiUrl('products', getValidId(id, false)),
+    url: routes.api.products.show({
+        id: getValidId(id, false),
+    }),
 })
     .then(mapProductFromApi)
 
 export const getStreamsByProductId = async (id: ProductId, useAuthorization: boolean = true): ApiResult<StreamList> => get({
-    url: formatApiUrl('products', getValidId(id, false), 'streams'),
+    url: routes.api.products.streams({
+        id: getValidId(id, false),
+    }),
     useAuthorization,
 })
 
@@ -43,7 +47,9 @@ export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subsc
   */
 export const getUserProductPermissions = async (id: ProductId): ApiResult<Object> => {
     const result = await get({
-        url: formatApiUrl('products', getValidId(id, false), 'permissions', 'me'),
+        url: routes.api.products.permissions({
+            id: getValidId(id, false),
+        }),
     })
 
     const p = result.reduce((permissions, permission) => {
@@ -70,13 +76,15 @@ export const getUserProductPermissions = async (id: ProductId): ApiResult<Object
 }
 
 export const putProduct = (data: Product, id: ProductId): ApiResult<Product> => put({
-    url: formatApiUrl('products', id),
+    url: routes.api.products.show({
+        id,
+    }),
     data: mapProductToPutApi(data),
 })
     .then(mapProductFromApi)
 
 export const postProduct = (product: Product): ApiResult<Product> => post({
-    url: formatApiUrl('products'),
+    url: routes.api.products.index(),
     data: mapProductToPostApi(product),
 })
     .then(mapProductFromApi)
@@ -87,7 +95,7 @@ export const postEmptyProduct = (type: ProductType): ApiResult<Product> => {
     }
 
     return post({
-        url: formatApiUrl('products'),
+        url: routes.api.products.index(),
         data: product,
     })
         .then(mapProductFromApi)
@@ -104,32 +112,42 @@ export const postImage = (id: ProductId, image: File): ApiResult<Product> => {
     data.append('file', image, image.name)
 
     return post({
-        url: formatApiUrl('products', id, 'images'),
+        url: routes.api.products.images({
+            id,
+        }),
         data,
         options,
     }).then(mapProductFromApi)
 }
 
 export const postUndeployFree = async (id: ProductId): ApiResult<Product> => post({
-    url: formatApiUrl('products', getValidId(id, false), 'undeployFree'),
+    url: routes.api.products.undeployFree({
+        id: getValidId(id, false),
+    }),
 })
     .then(mapProductFromApi)
 
 export const postSetUndeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> => post({
-    url: formatApiUrl('products', getValidId(id, false), 'setUndeploying'),
+    url: routes.api.products.setUndeploying({
+        id: getValidId(id, false),
+    }),
     data: {
         transactionHash: txHash,
     },
 }).then(mapProductFromApi)
 
 export const postDeployFree = async (id: ProductId): ApiResult<Product> => post({
-    url: formatApiUrl('products', getValidId(id, false), 'deployFree'),
+    url: routes.api.products.deployFree({
+        id: getValidId(id, false),
+    }),
 })
     .then(mapProductFromApi)
 
 export const postSetDeploying = async (id: ProductId, txHash: Hash): ApiResult<Product> => (
     post({
-        url: formatApiUrl('products', getValidId(id, false), 'setDeploying'),
+        url: routes.api.products.setDeploying({
+            id: getValidId(id, false),
+        }),
         data: {
             transactionHash: txHash,
         },

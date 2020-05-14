@@ -11,13 +11,6 @@ import * as entityConstants from '$shared/modules/entities/constants'
 import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
 import { initialState } from '$mp/modules/product/reducer'
 
-jest.mock('$shared/utils/url', () => (
-    {
-        formatApiUrl: () => 'TEST_formatApiUrl_result',
-        formatExternalUrl: () => 'TEST_formatExternalUrl_result',
-        formatPath: () => 'TEST_formatPath_result',
-    }
-))
 jest.mock('$mp/modules/myPurchaseList/actions', () => (
     {
         getMyPurchases: () => (dispatch) => (
