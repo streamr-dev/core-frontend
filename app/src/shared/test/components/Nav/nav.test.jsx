@@ -114,8 +114,8 @@ describe('Nav', () => {
             expect(el.find({ id: '/signup' }).exists()).toBe(false)
         })
 
-        it('renders the activity bell icon', () => {
-            delete process.env.DATA_UNIONS
+        it('renders the activity bell icon ACTIVITY_QUEUE is enabled', () => {
+            process.env.ACTIVITY_QUEUE = 'on'
             const store = {
                 user: {
                     user: {
@@ -133,6 +133,27 @@ describe('Nav', () => {
             ))
 
             expect(el.find({ id: 'activity' }).exists()).toBe(true)
+        })
+
+        it('does not render the activity bell icon when ACTIVITY_QUEUE is disabled', () => {
+            delete process.env.ACTIVITY_QUEUE
+            const store = {
+                user: {
+                    user: {
+                        id: '1',
+                        username: 'tester1@streamr.com',
+                    },
+                },
+            }
+            const el = mount((
+                <MemoryRouter>
+                    <Provider store={mockStore(store)}>
+                        <Nav />
+                    </Provider>
+                </MemoryRouter>
+            ))
+
+            expect(el.find({ id: 'activity' }).exists()).toBe(false)
         })
 
         it('renders the user avatar', () => {
