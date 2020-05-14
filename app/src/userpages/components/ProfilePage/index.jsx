@@ -11,7 +11,6 @@ import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { saveCurrentUser, getUserData } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
 import TOCPage from '$shared/components/TOCPage'
-import links from '$shared/../links'
 import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -87,7 +86,7 @@ export const ProfilePage = () => {
                         cancel: {
                             title: I18n.t('userpages.profilePage.toolbar.cancel'),
                             kind: 'link',
-                            linkTo: links.userpages.main,
+                            linkTo: routes.code(),
                         },
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),

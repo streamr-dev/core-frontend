@@ -1,6 +1,6 @@
 import ReactPlayer from 'react-player'
 import { Link } from 'react-router-dom'
-import links from '$shared/../links'
+import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
@@ -15,7 +15,7 @@ import SignatureRequest2x from './images/signatureRequest@2x.png'
 
 # Getting Started
 Welcome to Streamr! To get a feel for what Streamr is, check out our <Link to={docsLinks.introduction}>intro docs</Link>.
-The first thing you'll want to get is a Streamr account. You can do that <Link to={links.internalLogin}>here</Link>. Creating an account requires either an Email address or a Web3 Ethereum wallet, e.g. <a href="https://metamask.io" target="blank">Metamask</a>.
+The first thing you'll want to get is a Streamr account. You can do that <Link to={routes.auth.login()}>here</Link>. Creating an account requires either an Email address or a Web3 Ethereum wallet, e.g. <a href="https://metamask.io" target="blank">Metamask</a>.
 
 ### Get your API keys
 After creating your Streamr account, visit your profile settings page to reveal your API keys. These keys grant you access to read and write to the streams you create and are your means of authentication when using the Streamr API.
@@ -48,7 +48,7 @@ The easiest way to get started is through the free and open source Chrome browse
     />
 </div>
 
-Once you have your Ethereum account on Metamask, you can connect it to Streamr. There are two ways to do it, depending whether you already have a Streamr account or not. **If you haven't created an account yet, you can use your Ethereum account to create one**. Simply go to the <Link to={links.internalLogin}>login page</Link> and click **Sign in with Ethereum**. A popup will ask you to sign a message with your Ethereum account to prove ownership, click **Sign**.
+Once you have your Ethereum account on Metamask, you can connect it to Streamr. There are two ways to do it, depending whether you already have a Streamr account or not. **If you haven't created an account yet, you can use your Ethereum account to create one**. Simply go to the <Link to={routes.auth.login()}>login page</Link> and click **Sign in with Ethereum**. A popup will ask you to sign a message with your Ethereum account to prove ownership, click **Sign**.
 
 <figure>
     <picture>

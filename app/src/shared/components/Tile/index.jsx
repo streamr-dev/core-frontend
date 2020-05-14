@@ -17,7 +17,6 @@ import Link from '$shared/components/Link'
 import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits } from '$shared/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
-import links from '$app/src/links'
 import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 import routes from '$routes'
 
@@ -192,7 +191,11 @@ const PurchaseTile = ({
     ...props
 }: PurchaseTileProps) => (
     <Tile {...props}>
-        <Link to={product.id && `${links.marketplace.products}/${product.id}`}>
+        <Link
+            to={product.id && routes.marketplace.product({
+                id: product.id,
+            })}
+        >
             <ImageContainer src={product.imageUrl || ''}>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge top left />

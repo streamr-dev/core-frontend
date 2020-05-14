@@ -5,8 +5,7 @@ import { replace } from 'connected-react-router'
 
 import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
-import { formatPath } from '$shared/utils/url'
-import links from '../../../links'
+import routes from '$routes'
 import { addFreeProduct } from '../purchase/actions'
 import { isPaidProduct } from '../../utils/product'
 import { getMyPurchases } from '../myPurchaseList/actions'
@@ -190,7 +189,9 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
     if (product) {
         if (isPaidProduct(product)) {
             // Paid product has to be bought with Metamask
-            dispatch(replace(formatPath(links.marketplace.products, product.id || '', 'purchase')))
+            dispatch(replace(routes.marketplace.purchase({
+                id: product.id,
+            })))
         } else {
             // Free product can be bought directly
             dispatch(addFreeProduct(product.id || ''))

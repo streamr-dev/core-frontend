@@ -48,10 +48,14 @@
     "tos": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "privacyPolicy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
+    "publisherTerms": "https://s3.amazonaws.com/streamr-public/streamr-data-provider-agreement.pdf",
+    "resetAllowanceInfo": "https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729",
+    "allowanceInfo": "https://tokenallowance.io",
     "marketplace": {
         "index": "/marketplace",
         "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
         "product": "/marketplace/products/:id",
+        "purchase": "/marketplace/products/:id/purchase",
         "public": {
             "product": "<streamr>/marketplace/products/:id"
         }
@@ -90,5 +94,12 @@
         }
     },
     "notFound": "/404",
-    "error": "/error"
+    "error": "/error",
+    "blogPosts": {
+        "nodered": "https://medium.com/streamrblog/streamr-node-red-integration-tutorial-b0b410496354",
+        "spark": "https://medium.com/streamrblog/integrating-streamr-with-apache-spark-4c049f2688a1"
+    },
+    "misc": {
+        "decentralizedWeb": "https://blockchainhub.net/web3-decentralized-web/"
+    }
 }

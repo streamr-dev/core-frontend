@@ -8,7 +8,7 @@ import { Translate } from 'react-redux-i18n'
 import type { User } from '$shared/flowtype/user-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
-import links from '$shared/../links'
+import routes from '$routes'
 import Tab from './Tab'
 import AccountsBalance from './AccountsBalance'
 import { formatPath } from '$shared/utils/url'
@@ -60,22 +60,22 @@ const Header = ({
                         {searchComponent}
                     </div>
                     <div className={styles.tabs}>
-                        <Tab to={formatPath(links.userpages.streams)}>
+                        <Tab to={formatPath(routes.streams.index())}>
                             <Translate value="userpages.header.streams" />
                         </Tab>
-                        <Tab to={formatPath(links.userpages.canvases)}>
+                        <Tab to={formatPath(routes.canvases.index())}>
                             <Translate value="userpages.header.canvases" />
                         </Tab>
-                        <Tab to={formatPath(links.userpages.dashboards)}>
+                        <Tab to={formatPath(routes.dashboards.index())}>
                             <Translate value="userpages.header.dashboards" />
                         </Tab>
-                        <Tab to={formatPath(links.userpages.products)}>
+                        <Tab to={formatPath(routes.products.index())}>
                             <Translate value="userpages.header.products" />
                         </Tab>
-                        <Tab to={formatPath(links.userpages.purchases)}>
+                        <Tab to={formatPath(routes.purchases())}>
                             <Translate value="userpages.header.purchases" />
                         </Tab>
-                        <Tab to={formatPath(links.userpages.transactions)}>
+                        <Tab to={formatPath(routes.transactions())}>
                             <Translate value="userpages.header.transactions" />
                         </Tab>
                     </div>
