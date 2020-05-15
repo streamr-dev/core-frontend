@@ -10,7 +10,6 @@ const h2p = require('html2plaintext')
 const canvasModules = require('../moduleReferences/canvasModuleHelpData.json')
 
 const baseModuleRefPath = '/docs/module-reference/'
-const searchStore = {}
 
 /**
  * Loads MDX as plain text.
@@ -49,9 +48,10 @@ const generateModuleRefTextContent = (name, path, content) => (
  * Saves formatted Modules with meta data to the search store.
 */
 export function commitModulesToStore(modules) {
+    const modulesStore = {}
     modules.forEach(({ refContent, refPath, refName, fullPath }) => {
         if (fullPath && refContent) {
-            searchStore[`${fullPath}`] = {
+            modulesStore[`${fullPath}`] = {
                 id: `${fullPath}`,
                 content: generateModuleRefTextContent(refName, refPath, refContent),
                 section: titleize(refPath),
@@ -59,6 +59,8 @@ export function commitModulesToStore(modules) {
             }
         }
     })
+
+    return modulesStore
 }
 
 /**
@@ -88,47 +90,73 @@ export async function processModuleReferenceDocs() {
 }
 
 /**
- * Save each docsPage to the search store.
+  * Extract plain text from the MDX files and add the necessary metaData to the
+  * entry to create valid store entries.
 */
-function commitMdxDocsPageToStore(path, section, title, mdxDocsPage) {
-    searchStore[path] = {
-        id: path,
-        content: mdxDocsPage,
-        section,
-        title,
-    }
+async function getPageContents(fileInfos) {
+    return Promise.all(fileInfos.map((fileInfo) => {
+        const contentPage = require(`../../src/docs/content/${fileInfo.filePath}`)
+        const { path, section, title } = fileInfo
+        return new Promise((resolve, reject) => {
+            remark()
+                .use(remarkMdx)
+                .use(strip)
+                .process(contentPage, (err, file) => {
+                    if (err) {
+                        reject(err)
+                    }
+                    resolve({
+                        id: path,
+                        content: String(file),
+                        section,
+                        title,
+                    })
+                })
+        })
+    }))
+}
+
+/**
+  * Helper function to get filter the file information requried to
+  * cleanly loop through the file read promises.
+*/
+function getFileInfos() {
+    const fileInfos = []
+    Object.keys(docsMap).forEach((section) => {
+        if (section !== 'Module Reference') {
+            Object.keys(docsMap[section]).forEach((page) => {
+                if (page !== 'root') {
+                    fileInfos.push({
+                        filePath: docsMap[section][page].filePath,
+                        path: docsMap[section][page].path,
+                        section: docsMap[section][page].section,
+                        title: docsMap[section][page].title,
+                    })
+                }
+            })
+        }
+    })
+
+    return fileInfos
 }
 
 /**
   * Process mdx files by iterating through the docs Pages
   * (except for root pages and the Module Reference section).
 */
-export function processMdxDocsPages() {
-    Object.keys(docsMap).forEach((section) => {
-        if (section !== 'Module Reference') {
-            Object.keys(docsMap[section]).forEach(async (page) => {
-                if (page !== 'root') {
-                    const { path, title, section: pageSection, filePath } = docsMap[section][page]
-                    try {
-                        const contentPage = require(`../../src/docs/content/${filePath}`)
-                        await remark()
-                            .use(remarkMdx)
-                            .use(strip)
-                            .process(contentPage, (err, file) => {
-                                if (err) {
-                                    throw err
-                                }
-                                commitMdxDocsPageToStore(path, pageSection, title, String(file))
-                            })
-                    } catch (error) {
-                        console.warn(error)
-                    }
-                }
-            })
+export async function processMdxDocsPages() {
+    const pagesStore = {}
+    const fileInfos = getFileInfos()
+    const pages = await getPageContents(fileInfos)
+
+    pages.forEach((page) => {
+        pagesStore[page.id] =
+        {
+            ...page,
         }
     })
 
-    return searchStore
+    return pagesStore
 }
 
 /**
@@ -137,7 +165,7 @@ export function processMdxDocsPages() {
  * that matches a key inside the search store object.
  * Fields (content, section and title) are searchable parts of every searchable entry.
 */
-export function buildLunrIndex() {
+export function buildLunrIndex(searchStore) {
     const idx = lunr(function build() {
         this.ref('id')
         this.field('content')
@@ -150,3 +178,54 @@ export function buildLunrIndex() {
 
     return idx
 }
+
+/**
+ * Ensures we don't override the store with an empty store.
+*/
+export function validateStores(pagesStore, modulesStore) {
+    if (!pagesStore) {
+        throw new Error('Docs Pages not found!')
+    }
+    if (!modulesStore) {
+        throw new Error('Canvas Modules not found!')
+    }
+}
+
+/**
+ * Write Store to disk.
+*/
+export function saveStore(searchStore) {
+    if (!searchStore || !Object.keys(searchStore).length) {
+        throw new Error('Store cannot be empty')
+    }
+
+    fs.writeFile('./src/docs/components/Search/index/store.json', JSON.stringify(searchStore), (err) => {
+        if (err) {
+            throw err
+        }
+    })
+}
+
+/**
+ * Write Index to disk.
+*/
+export function saveIndex(searchIndex) {
+    if (!searchIndex || !Object.keys(searchIndex).length) {
+        throw new Error('Index cannot be empty')
+    }
+
+    fs.writeFile('./src/docs/components/Search/index/index.json', JSON.stringify(searchIndex), (err) => {
+        if (err) {
+            throw err
+        }
+    })
+}
+
+// Future TODO: Index external Readme resources
+// const fetch = require('node-fetch')
+// function genReadmeDocs() {
+//     console.log('enter genReadmeDocs()')
+//     fetch('https://raw.githubusercontent.com/streamr-dev/streamr-client-protocol-js/master/README.md')
+//         .then(res => res.text())
+//         .then(body => console.log(body));
+// }
