@@ -1,5 +1,18 @@
 /* eslint-disable no-console */
 // NOTE: Script must be run with `npm run build-index`.
+
+/**
+ * *** Guide to adding content to the search index ***
+ *
+ * When adding new MDX pages to the Docs. You must make a new
+ * entry inside the exported object from 'docsMap.js'. Follow the advice inside
+ * that file. If you want to hide parts of the docs from the indexer,
+ * use a conditional environmental flag inside docsMap.js to hide these pages.
+ *
+ * New canvas modules must be added/updated through the referenced
+ * canvasModuleHelpData.json.
+*/
+
 import * as Sentry from '@sentry/node'
 
 import {
