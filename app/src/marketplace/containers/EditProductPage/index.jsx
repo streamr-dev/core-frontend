@@ -17,7 +17,6 @@ import ProductController, { useController } from '../ProductController'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
-import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useProductPermissions from '../ProductController/useProductPermissions'
 import useProduct from '$mp/containers/ProductController/useProduct'
@@ -51,7 +50,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: publishDialogLoading } = usePending('product.PUBLISH_DIALOG_LOAD')
-    const { isAnyChangePending } = useContext(ValidationContext)
     const {
         loadCategories,
         loadProductStreams,
@@ -113,7 +111,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const isDeployed = isDataUnion && isEthereumAddress(product.beneficiaryAddress)
 
     const saveAndExitButton = useMemo(() => ({
-        title: 'Save & Exit',
+        title: I18n.t('editProductPage.actionBar.save'),
         kind: 'link',
         onClick: () => save(),
         disabled: isDisabled,
@@ -122,7 +120,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const previewButton = useMemo(() => {
         if (isPreview) {
             return {
-                title: 'Edit',
+                title: I18n.t('editProductPage.actionBar.edit'),
                 outline: true,
                 onClick: () => setIsPreview(false),
                 disabled: isDisabled,
@@ -130,7 +128,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         }
 
         return {
-            title: 'Preview',
+            title: I18n.t('editProductPage.actionBar.preview'),
             outline: true,
             onClick: () => setIsPreview(true),
             disabled: isDisabled,
@@ -142,25 +140,26 @@ const EditProductPage = ({ product }: { product: Product }) => {
         const titles = {
             [productStates.DEPLOYING]: 'publishing',
             [productStates.UNDEPLOYING]: 'unpublishing',
-            [productStates.NOT_DEPLOYED]: 'publish',
-            [productStates.DEPLOYED]: 'unpublish',
-            republish: 'republish',
+            continue: 'continue',
         }
 
-        const tmpState: any = (productState === productStates.DEPLOYED && isAnyChangePending()) ? 'republish' : productState
+        const tmpState: any = [
+            productStates.DEPLOYING,
+            productStates.UNDEPLOYING,
+        ].includes(productState) ? productState : 'continue'
 
         return {
-            title: (productState && I18n.t(`editProductPage.${titles[tmpState]}`)) || '',
+            title: (productState && I18n.t(`editProductPage.actionBar.${titles[tmpState]}`)) || '',
             kind: 'primary',
             onClick: publish,
             disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isDisabled,
         }
-    }, [isAnyChangePending, productState, publish, isDisabled])
+    }, [productState, publish, isDisabled])
 
     const deployButton = useMemo(() => {
         if (isDataUnion && !isDeployed) {
             return {
-                title: 'Continue',
+                title: I18n.t('editProductPage.actionBar.continue'),
                 kind: 'primary',
                 onClick: deployDataUnion,
                 disabled: isDisabled,

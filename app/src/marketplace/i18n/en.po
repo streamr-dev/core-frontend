@@ -68,29 +68,23 @@ msgstr "second"
 msgid "common##timeUnit##week"
 msgstr "week"
 
-msgid "editProductPage##edit"
+msgid "editProductPage##actionBar##edit"
 msgstr "Edit"
 
-msgid "editProductPage##publish"
-msgstr "Publish"
-
-msgid "editProductPage##publishing"
+msgid "editProductPage##actionBar##publishing"
 msgstr "Publishing"
 
-msgid "editProductPage##republish"
-msgstr "Republish"
+msgid "editProductPage##actionBar##continue"
+msgstr "Continue"
 
-msgid "editProductPage##save"
+msgid "editProductPage##actionBar##save"
 msgstr "Save & Exit"
 
-msgid "editProductPage##unpublish"
-msgstr "Unpublish"
+msgid "editProductPage##actionBar##preview"
+msgstr "Preview"
 
-msgid "editProductPage##unpublishing"
+msgid "editProductPage##actionBar##unpublishing"
 msgstr "Unpublishing"
-
-msgid "editProductPage##update"
-msgstr "Update"
 
 msgid "editProductPage##preview"
 msgstr "This is a preview of how your product will appear when published"
