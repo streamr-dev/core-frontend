@@ -1,5 +1,6 @@
 import React from 'react'
 import * as R from 'reactstrap'
+import { connect } from 'react-redux'
 import cx from 'classnames'
 
 import EditableText from '$shared/components/EditableText'
@@ -15,12 +16,16 @@ import Toolbar from '$editor/shared/components/Toolbar'
 
 import styles from '$editor/canvas/components/Toolbar/Toolbar.pcss'
 import ToolbarLayout from '$editor/canvas/components/Toolbar/ToolbarLayout'
+import { usePermissionsLoader } from '$userpages/components/ShareSidebar/Sidebar'
 
 /* eslint-disable react/no-unused-state */
 
-export default withErrorBoundary(ErrorComponentView)((props) => {
+export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
+    currentUser: user && user.user && user.user.username,
+}))((props) => {
     const {
         dashboard,
+        currentUser,
         className,
         duplicateDashboard,
         deleteDashboard,
@@ -29,6 +34,11 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
         moduleSearchOpen,
         sidebar,
     } = props
+
+    const [{ result: permissions }, loadPermissions] = usePermissionsLoader({
+        resourceType: 'DASHBOARD',
+        resourceId: dashboard && dashboard.id,
+    })
 
     const renameDashboard = React.useCallback((name) => {
         setDashboard({ type: 'Rename Dashboard' }, (dashboard) => ({
@@ -48,6 +58,8 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
     if (!dashboard) {
         return <div className={cx(className, styles.CanvasToolbar)} ref={elRef} />
     }
+
+    const hasSharePermission = (permissions || []).find((p) => p.user === currentUser && p.operation === 'dashboard_share')
 
     return (
         <div className={cx(className, styles.CanvasToolbar)} ref={elRef}>
@@ -109,6 +121,7 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
                                     <R.Button
                                         className={cx(styles.ToolbarButton, styles.ShareButton)}
                                         onClick={() => sidebar.open('share')}
+                                        disabled={!hasSharePermission}
                                     >
                                         <SvgIcon name="share" />
                                     </R.Button>
@@ -128,4 +141,4 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
             )}
         </div>
     )
-})
+}))

@@ -717,11 +717,12 @@ export function usePermissionsLoader({ resourceType, resourceId }) {
     ), [resourceType, resourceId])
 
     const [loadState, loadPermissions] = useAsyncCallbackWithState(loadPermissionsCallback)
+    const hasProps = !!(resourceType && resourceId)
     const { hasStarted } = loadState
     useEffect(() => {
-        if (hasStarted) { return }
+        if (hasStarted || !hasProps) { return }
         loadPermissions()
-    }, [hasStarted, loadPermissions])
+    }, [hasStarted, hasProps, loadPermissions])
 
     return [loadState, loadPermissions]
 }
