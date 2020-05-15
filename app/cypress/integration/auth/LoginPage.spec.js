@@ -1,14 +1,20 @@
 describe('Login page', () => {
     describe('logging in', () => {
         it('lets users log in', () => {
-            cy.login()
+            cy.visit('/login')
+            cy.get('[type=email]').type('tester1@streamr.com')
+            cy.get('button').click()
+            cy.get('[type=password]').type('tester1TESTER1')
+            cy.get('button').click()
             cy.location('pathname').should('eq', '/core/streams')
-            cy.logout()
-            cy.location('pathname').should('eq', '/')
         })
 
         it('complains on invalid credentials', () => {
-            cy.login('tester1@streamr.com', 'invalid password')
+            cy.visit('/login')
+            cy.get('[type=email]').type('tester1@streamr.com')
+            cy.get('button').click()
+            cy.get('[type=password]').type('invalid password')
+            cy.get('button').click()
             cy.contains(/invalid username or password/i)
             cy.location('pathname').should('eq', '/login')
         })
@@ -27,7 +33,10 @@ describe('Login page', () => {
         })
 
         it('complains on invalid password', () => {
-            cy.login('tester1@streamr.com', '')
+            cy.visit('/login')
+            cy.get('[type=email]').type('tester1@streamr.com')
+            cy.get('button').click()
+            cy.get('button').click()
             cy.contains(/password is required/i)
             cy.location('pathname').should('eq', '/login')
         })
