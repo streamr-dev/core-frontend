@@ -9,10 +9,6 @@
 // ***********************************************
 //
 //
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-//
-//
 // -- This is a child command --
 // Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
 //
@@ -23,3 +19,17 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('login', (email = 'tester1@streamr.com', password = 'tester1TESTER1') => {
+    cy.visit('/login')
+    cy.get('[type=email]').type(email)
+    cy.get('button').click()
+    if (password) {
+        cy.get('[type=password]').type(password)
+    }
+    cy.get('button').click()
+})
+
+Cypress.Commands.add('logout', () => {
+    cy.visit('/logout')
+})
