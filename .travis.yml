@@ -8,18 +8,24 @@ branches:
   - development
   - beta
   - "/^v\\d+\\.\\d+(\\.\\d+)?(-\\S*)?$/"
+
+
 before_install:
 - sudo apt-get -y install expect
 - pip install awscli --upgrade --user
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
 - npm i -g npm@^6.14.4
 - cd app
+- docker load -i docker_images/images.tar || true
+before_cache:
+- docker save -o docker_images/images.tar $(docker images -a -q)
 install:
 - npm ci
 - true
 cache:
   directories:
   - "$HOME/.npm"
+  - docker_images
 env:
   global:
   - secure: hu5cpsMinQEpoNgnJv1XQ+509/57gM4dHg+mRXaAkZ7ha6k0AK1AmNgsCKYfs2G8Qe3eFGM3DTuJA0JV9vOcUeHNURGQKW+ukciSN1dT8dmLC6DAjgd89LIV5jsgAMBtNNCeIDwdpSEhe39nD4P1ligVpxxtY9kbOfK+F/cNbgj9ZpC/MZ55rniMa1JkZpfWwP3bdOcko56E+dB3/Dh8L0QF1hiDA1AwpGXQcO2jQ22HvTyUIezcgIYGGSUJ0N9gPhe7f0UQ4iCdMbq2rKv2wi4vzKQPFOkK8eYAUfhbv1iHy/bP2VX8tR7ac9XJuAznaHJ3tng8iEnvF5ForiaAVhtUNOUi1Hw0i2qdaoash0hJh3Aq8IwyFZiZYAQYmIC29VuoPQJgTPVECEDkzqs8fbC0nqwjG9aVP6OkGUgSmR9LChUVsF8ZfLAp/R4bY0XJh6vuqG00qfl90f2zooTA/HPQa7D2VJBEDretZLR0u1ufPHEPkl++o5MeaeNn98KYKOD66fqK+lHf1fmyBogRRefXFZFOi1zNgZTe+xA6nNHk9eAMvYf9CfIsRM7AVnBviTWBkx3S5KDcbof8rdyUymwu5T/7Hly6JZmYKLZ5esQHoV2J5LYOxeaZoXXLARgQkxdpf/9sxNVkkB8TW6llnk+Bd7o7Qn9to80m60X2zsQ=
