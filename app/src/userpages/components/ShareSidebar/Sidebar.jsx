@@ -10,6 +10,7 @@ import { useSpring, useTransition, animated } from 'react-spring'
 import * as api from '$shared/utils/api'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import SelectInput from '$ui/Select'
+import Errors from '$ui/Errors'
 import RadioButtonGroup from './RadioButtonGroup'
 import Button from '$shared/components/Button'
 import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
@@ -145,7 +146,7 @@ function useSlideIn({ isVisible } = {}) {
  * Input for adding new users.
  */
 
-function InputNewShare({ onChange, canShareToUser }) {
+function InputNewShare({ currentUser, onChange, canShareToUser }) {
     const [value, setValue] = useState('')
     const onChangeValue = useCallback((e) => {
         setValue(e.target.value.trim())
@@ -154,7 +155,21 @@ function InputNewShare({ onChange, canShareToUser }) {
         onChange(value)
         setValue('')
     }, [value, onChange])
+
     const uid = useUniqueId('InputNewShare')
+
+    function getShareToUserError({ currentUser, userId }) {
+        if (!State.isValidUserId(userId)) { return I18n.t('share.error.invalidUserError') }
+        if (userId === 'anonymous') { return I18n.t('share.error.anonymousUserError') }
+        if (userId === currentUser) { return I18n.t('share.error.currentUserError') }
+    }
+
+    const error = getShareToUserError({
+        currentUser,
+        userId: value,
+    })
+
+    const isValid = canShareToUser(value)
 
     return (
         <div className={styles.InputNewShare}>
@@ -166,15 +181,17 @@ function InputNewShare({ onChange, canShareToUser }) {
                 value={value}
                 onChange={onChangeValue}
                 autoComplete="email"
+                invalid={value && !isValid}
             />
             <Button
                 kind="secondary"
                 onClick={onAdd}
-                disabled={!canShareToUser(value)}
+                disabled={!isValid}
                 className={styles.button}
             >
                 <SvgIcon name="plus" className={styles.plusIcon} />
             </Button>
+            {(value && !isValid) && <Errors>{error}</Errors>}
         </div>
     )
 }
@@ -648,7 +665,7 @@ const ShareSidebar = connect(({ user }) => ({
                 />
             </div>
             <div className={cx(styles.row, styles.cell, styles.addUserInput)}>
-                <InputNewShare onChange={addUser} canShareToUser={canShareToUser} />
+                <InputNewShare currentUser={currentUser} onChange={addUser} canShareToUser={canShareToUser} />
             </div>
             <div
                 className={cx(styles.row, styles.userList)}

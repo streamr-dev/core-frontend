@@ -165,9 +165,11 @@ export function findPermissionGroupName(resourceType, userPermissions = {}) {
 // CRUD Operations
 //
 
-function isValidUserId(userId) {
+export function isValidUserId(userId) {
     if (!userId || typeof userId !== 'string') { return false }
-    if (!userId.trim()) { return false }
+    userId = userId.trim()
+    if (!userId) { return false }
+    if (!userId.startsWith('0x') && !userId.includes('@')) { return false }
     return true
 }
 

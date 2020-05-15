@@ -1094,3 +1094,12 @@ msgstr "Copy"
 
 msgid "modal##copySnippet##copied"
 msgstr "Copied"
+
+msgid "share##error##invalidUserError"
+msgstr "Invalid User ID"
+
+msgid "share##error##anonymousUserError"
+msgstr "Can not share to anonymous"
+
+msgid "share##error##currentUserError"
+msgstr "Can not share to self"
