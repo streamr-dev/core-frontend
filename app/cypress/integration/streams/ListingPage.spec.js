@@ -6,7 +6,7 @@ describe('Stream listing page', () => {
 
     it('renders streams', () => {
         cy.login()
+        cy.visit('/core/streams')
         cy.location('pathname').should('eq', '/core/streams')
-        cy.contains(/public transport demo/i)
     })
 })
