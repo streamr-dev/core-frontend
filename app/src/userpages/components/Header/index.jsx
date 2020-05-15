@@ -11,7 +11,6 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import routes from '$routes'
 import Tab from './Tab'
 import AccountsBalance from './AccountsBalance'
-import { formatPath } from '$shared/utils/url'
 import Avatar from '$userpages/components/Avatar'
 import ListContainer from '$shared/components/Container/List'
 import styles from './header.pcss'
@@ -60,22 +59,22 @@ const Header = ({
                         {searchComponent}
                     </div>
                     <div className={styles.tabs}>
-                        <Tab to={formatPath(routes.streams.index())}>
+                        <Tab to={routes.streams.index()}>
                             <Translate value="userpages.header.streams" />
                         </Tab>
-                        <Tab to={formatPath(routes.canvases.index())}>
+                        <Tab to={routes.canvases.index()}>
                             <Translate value="userpages.header.canvases" />
                         </Tab>
-                        <Tab to={formatPath(routes.dashboards.index())}>
+                        <Tab to={routes.dashboards.index()}>
                             <Translate value="userpages.header.dashboards" />
                         </Tab>
-                        <Tab to={formatPath(routes.products.index())}>
+                        <Tab to={routes.products.index()}>
                             <Translate value="userpages.header.products" />
                         </Tab>
-                        <Tab to={formatPath(routes.purchases())}>
+                        <Tab to={routes.purchases()}>
                             <Translate value="userpages.header.purchases" />
                         </Tab>
-                        <Tab to={formatPath(routes.transactions())}>
+                        <Tab to={routes.transactions()}>
                             <Translate value="userpages.header.transactions" />
                         </Tab>
                     </div>
