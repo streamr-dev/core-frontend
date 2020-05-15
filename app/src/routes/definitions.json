@@ -159,7 +159,7 @@
             "show": "<api>/products/:id",
             "images": "<api>/products/:id/images",
             "streams": "<api>/products/:id/streams",
-            "permissions": "<api>/products/:id/permissions/me",
+            "myPermissions": "<api>/products/:id/permissions/me",
             "undeployFree": "<api>/products/:id/undeployFree",
             "setUndeploying": "<api>/products/:id/setUndeploying",
             "deployFree": "<api>/products/:id/deployFree",

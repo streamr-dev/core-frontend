@@ -86,7 +86,7 @@ export const ProfilePage = () => {
                         cancel: {
                             title: I18n.t('userpages.profilePage.toolbar.cancel'),
                             kind: 'link',
-                            linkTo: routes.code(),
+                            linkTo: routes.core(),
                         },
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),

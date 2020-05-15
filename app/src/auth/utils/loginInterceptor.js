@@ -33,9 +33,9 @@ function shouldRedirect(error) {
         }
 
         const url = new window.URL(error.config.url)
-        const me = new window.URL(routes.api.me())
-        const keys = new window.URL(routes.api.keys())
-        const changePassword = new window.URL(routes.api.changePassword())
+        const me = new window.URL(routes.api.me.index())
+        const keys = new window.URL(routes.api.me.keys.index())
+        const changePassword = new window.URL(routes.api.me.changePassword())
 
         // shouldn't redirect if current password is wrong when changing password
         if (changePassword.pathname === url.pathname && me.origin === url.origin && error.config.method === 'post') {

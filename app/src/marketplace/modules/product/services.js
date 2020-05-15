@@ -47,7 +47,7 @@ export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subsc
   */
 export const getUserProductPermissions = async (id: ProductId): ApiResult<Object> => {
     const result = await get({
-        url: routes.api.products.permissions({
+        url: routes.api.products.myPermissions({
             id: getValidId(id, false),
         }),
     })

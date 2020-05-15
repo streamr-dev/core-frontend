@@ -37,7 +37,7 @@ export const addStreamResourceKey = (streamId: StreamId, name: string, permissio
 export const editStreamResourceKey =
     (streamId: StreamId, id: ResourceKeyId, keyName: string, keyPermission: ResourcePermission): ApiResult<ResourceKey> =>
         put({
-            url: routes.api.streams.keys.index({
+            url: routes.api.streams.keys.show({
                 streamId,
                 id,
             }),
