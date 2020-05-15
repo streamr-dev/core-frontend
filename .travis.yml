@@ -41,6 +41,8 @@ import:
  - source: streamr-dev/travis-ci:docker-secrets.yml@master
 jobs:
   include:
+  - stage: Docker Cache
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/start-docker-env.sh"
   - stage: Platform Tests
     if: type IN (pull_request)
     env:
