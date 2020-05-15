@@ -1,0 +1,62 @@
+import StreamrClient from 'streamr-client'
+import { store, retrieve } from '$shared/utils/sessionToken'
+
+Cypress.Commands.add('login', (username = 'tester1@streamr.com', password = 'tester1TESTER1') => (
+    new StreamrClient({
+        restUrl: 'http://localhost/api/v1',
+        auth: {
+            username,
+            password,
+        },
+    }).session.getSessionToken().then(store)
+))
+
+Cypress.Commands.add('authenticatedRequest', (options = {}) => (
+    cy.request({
+        ...options,
+        headers: {
+            ...options.headers,
+            Authorization: `Bearer ${retrieve() || 0}`,
+        },
+    })
+))
+
+Cypress.Commands.add('createStream', (body) => (
+    cy
+        .authenticatedRequest({
+            url: 'http://localhost/api/v1/streams',
+            method: 'POST',
+            body: {
+                name: `Test Stream #${(
+                    new Date()
+                        .toISOString()
+                        .replace(/\W/g, '')
+                        .substr(4, 11)
+                        .replace(/T/, '/')
+                )}`,
+                ...body,
+            },
+        })
+        .then(({ body: { id } }) => id)
+))
+
+Cypress.Commands.add('ignoreUncaught404', (done) => {
+    cy.on('uncaught:exception', (err) => {
+        done()
+        return /could not be found/i.test(err.message)
+    })
+})
+
+Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'read') => (
+    cy
+        .authenticatedRequest({
+            url: `http://localhost/api/v1/streams/${streamId}/permissions`,
+            method: 'POST',
+            body: {
+                anonymous: !user,
+                new: true,
+                operation,
+                user,
+            },
+        })
+))
