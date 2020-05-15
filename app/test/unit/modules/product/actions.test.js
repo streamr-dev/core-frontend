@@ -320,7 +320,7 @@ describe('product - actions', () => {
                     payload: {
                         method: 'replace',
                         args: [
-                            'TEST_formatPath_result',
+                            '/marketplace/products/1337/purchase',
                         ],
                     },
                 },

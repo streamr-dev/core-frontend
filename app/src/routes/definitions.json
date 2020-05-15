@@ -170,6 +170,6 @@
             "index": "<api>/integration_keys",
             "show": "<api>/integration_keys/:id"
         },
-        "loginChallenge": "<api>/challenge/:account"
+        "loginChallenge": "<api>/login/challenge/:account"
     }
 }
