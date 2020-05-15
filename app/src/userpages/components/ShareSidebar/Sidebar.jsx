@@ -302,7 +302,7 @@ function UserPermissions({
                                     })}
                                 />
                                 <label htmlFor={`${userId}-${permission}`}>
-                                    {startCase(permission)}
+                                    {startCase(I18n.t(`share.permissions.${permission}`))}
                                 </label>
                             </React.Fragment>
                         ))}

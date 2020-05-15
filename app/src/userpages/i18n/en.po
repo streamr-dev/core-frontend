@@ -1103,3 +1103,27 @@ msgstr "Can not share to anonymous"
 
 msgid "share##error##currentUserError"
 msgstr "Can not share to self"
+
+msgid "share##permissions##get"
+msgstr "Get"
+
+msgid "share##permissions##edit"
+msgstr "Edit"
+
+msgid "share##permissions##delete"
+msgstr "Delete"
+
+msgid "share##permissions##publish"
+msgstr "Publish"
+
+msgid "share##permissions##subscribe"
+msgstr "Subscribe"
+
+msgid "share##permissions##share"
+msgstr "Share"
+
+msgid "share##permissions##startstop"
+msgstr "Start/Stop"
+
+msgid "share##permissions##interact"
+msgstr "Interact"
