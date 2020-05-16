@@ -35,7 +35,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
         sidebar,
     } = props
 
-    const [{ result: permissions }, loadPermissions] = usePermissionsLoader({
+    const [{ result: permissions }] = usePermissionsLoader({
         resourceType: 'DASHBOARD',
         resourceId: dashboard && dashboard.id,
     })
