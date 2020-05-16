@@ -88,6 +88,10 @@ describe('session token utility', () => {
         it('retrieves null if stored token is an empty string', () => {
             store2('')
             expect(retrieve2()).toBe(null)
+            store2(null)
+            expect(retrieve2()).toBe(null)
+            store2(undefined)
+            expect(retrieve2()).toBe(null)
         })
     })
 })
