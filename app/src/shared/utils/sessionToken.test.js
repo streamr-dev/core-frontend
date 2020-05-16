@@ -57,22 +57,15 @@ describe('session token utility', () => {
     })
 
     describe('fallback storage', () => {
-        let store2
-        let retrieve2
+        jest.resetModules()
 
-        beforeEach(() => {
-            jest.resetModules()
+        jest.mock('$shared/utils/storage', () => ({
+            __esModule: true,
+            isLocalStorageAvailable: () => false,
+        }))
 
-            jest.mock('$shared/utils/storage', () => ({
-                __esModule: true,
-                isLocalStorageAvailable: () => false,
-            }))
-
-            // eslint-disable-next-line global-require
-            const sessionToken = require('$shared/utils/sessionToken')
-            store2 = sessionToken.store
-            retrieve2 = sessionToken.retrieve
-        })
+        // eslint-disable-next-line global-require
+        const { store: store2, retrieve: retrieve2 } = require('$shared/utils/sessionToken')
 
         afterEach(() => {
             expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe(null)
