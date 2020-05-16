@@ -72,11 +72,11 @@ describe('session token utility', () => {
             expect(global.localStorage.getItem(SESSION_LOGIN_TIME)).toBe(null)
         })
 
-        it('retrieves null by default', () => {
+        it('stores null by default', () => {
             expect(retrieve2()).toBe(null)
         })
 
-        it('retrieves the stored value before its expiration', () => {
+        it('stores and expires a token', () => {
             store2('token')
             expect(retrieve2()).toBe('token')
             clock.tick(((EXPIRES_AT_VALID_HOURS * 3600) - 60) * 1000) // 60s before expiration
@@ -85,7 +85,7 @@ describe('session token utility', () => {
             expect(retrieve2()).toBe(null)
         })
 
-        it('retrieves null if stored token is an empty string', () => {
+        it('stores null when token is a falsy value', () => {
             store2('')
             expect(retrieve2()).toBe(null)
             store2(null)
