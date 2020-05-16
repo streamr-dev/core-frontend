@@ -4,7 +4,8 @@ import { act } from 'react-dom/test-utils'
 
 import Context from '$auth/contexts/Session'
 
-import SessionProvider, { SESSION_TOKEN_KEY, SESSION_LOGIN_TIME } from '$auth/components/SessionProvider'
+import SessionProvider from '$auth/components/SessionProvider'
+import { SESSION_TOKEN_KEY, SESSION_LOGIN_TIME } from '$shared/utils/sessionToken'
 
 describe('SessionProvider', () => {
     let realDate

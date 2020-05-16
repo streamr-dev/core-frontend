@@ -11,7 +11,7 @@ const cache = {
 
 const storage = isLocalStorageAvailable() ? window.localStorage : {
     setItem: (key, value) => {
-        cache[key] = value
+        cache[key] = value || null
     },
     getItem: (key) => cache[key] || null,
     removeItem: (key) => storage.setItem(key, null),
@@ -32,5 +32,5 @@ const expired = (date) => (
 )
 
 export const retrieve = () => (
-    expired(storage.getItem(SESSION_LOGIN_TIME)) ? null : storage.getItem(SESSION_TOKEN_KEY)
+    (!expired(storage.getItem(SESSION_LOGIN_TIME)) && storage.getItem(SESSION_TOKEN_KEY)) || null
 )
