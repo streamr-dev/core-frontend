@@ -1,12 +1,11 @@
 // @flow
 
-import SessionProvider from '$auth/components/SessionProvider'
+import { getToken } from '$shared/utils/sessionToken'
 
 export default () => {
-    const token: ?string = SessionProvider.token()
-    // no auth header if no token
-    if (!token) { return {} }
-    return {
-        Authorization: `Bearer ${token || 0}`,
-    }
+    const token: ?string = getToken()
+
+    return token ? {
+        Authorization: `Bearer ${token}`,
+    } : {}
 }

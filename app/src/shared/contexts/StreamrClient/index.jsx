@@ -9,7 +9,7 @@
 import React, { type Node, type Context, useState, useEffect, useLayoutEffect, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import StreamrClient from 'streamr-client'
-import SessionProvider from '$auth/components/SessionProvider'
+import { getToken } from '$shared/utils/sessionToken'
 
 import { selectAuthState } from '$shared/modules/user/selectors'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
@@ -17,7 +17,6 @@ import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 export type ContextProps = {
     hasLoaded: boolean,
     client: any,
-    sessionToken: ?string,
 }
 
 export const ClientContext: Context<ContextProps> = React.createContext({
@@ -44,10 +43,11 @@ type ClientProviderProps = {
     authenticationFailed: boolean,
 }
 
-function useClientProvider({ sessionToken, isAuthenticating, authenticationFailed }: ClientProviderProps) {
+function useClientProvider({ isAuthenticating, authenticationFailed }: ClientProviderProps) {
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
+    const sessionToken = getToken()
     const hasLoaded = !!sessionToken || !!(!isAuthenticating && authenticationFailed)
 
     const reset = useCallback(() => {
@@ -109,7 +109,6 @@ export function ClientProviderComponent({ children, ...props }: Props) {
 
 const mapStateToProps = (state) => ({
     ...selectAuthState(state),
-    sessionToken: SessionProvider.token(),
 })
 
 export const ClientProvider = connect(mapStateToProps)(ClientProviderComponent)
