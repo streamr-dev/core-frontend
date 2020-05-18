@@ -1,6 +1,6 @@
 describe('Stream page', () => {
     it('shows the 404 page for non-existing stream', (done) => {
-        cy.ignoreUncaught404(done)
+        cy.ignoreUncaughtError(/could not be found/i, done)
 
         cy.visit('/core/streams/TEST')
         cy.location('pathname').should('eq', '/core/streams/TEST')
@@ -8,7 +8,7 @@ describe('Stream page', () => {
     })
 
     it('shows the 404 page for streams you do not have permissions for', (done) => {
-        cy.ignoreUncaught404(done)
+        cy.ignoreUncaughtError(/could not be found/i, done)
 
         cy.login()
         cy.createStream().then((streamId) => {

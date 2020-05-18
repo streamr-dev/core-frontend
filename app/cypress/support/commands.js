@@ -41,11 +41,19 @@ Cypress.Commands.add('createStream', (body) => (
         .then(({ body: { id } }) => id)
 ))
 
-Cypress.Commands.add('ignoreUncaught404', (done) => {
+Cypress.Commands.add('ignoreUncaughtError', (messageRegex, done) => {
+    if (!done) {
+        throw new Error('Callback is required.')
+    }
+
     cy.on('uncaught:exception', (err) => {
         done()
-        return /could not be found/i.test(err.message)
+        return messageRegex.test(err.message)
     })
+})
+
+Cypress.Commands.add('ignoreFailedRequest', (statusCode, done) => {
+    cy.ignoreUncaught(/failed with status code/i)
 })
 
 Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'read') => (
