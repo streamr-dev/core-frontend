@@ -1,5 +1,6 @@
 import StreamrClient from 'streamr-client'
-import { store, retrieve } from '$shared/utils/sessionToken'
+import { setToken } from '$shared/utils/sessionToken'
+import getAuthorizationHeader from '$shared/utils/getAuthorizationHeader'
 
 Cypress.Commands.add('login', (username = 'tester1@streamr.com', password = 'tester1TESTER1') => (
     new StreamrClient({
@@ -8,7 +9,7 @@ Cypress.Commands.add('login', (username = 'tester1@streamr.com', password = 'tes
             username,
             password,
         },
-    }).session.getSessionToken().then(store)
+    }).session.getSessionToken().then(setToken)
 ))
 
 Cypress.Commands.add('authenticatedRequest', (options = {}) => (
@@ -16,7 +17,7 @@ Cypress.Commands.add('authenticatedRequest', (options = {}) => (
         ...options,
         headers: {
             ...options.headers,
-            Authorization: `Bearer ${retrieve() || 0}`,
+            ...getAuthorizationHeader(),
         },
     })
 ))
