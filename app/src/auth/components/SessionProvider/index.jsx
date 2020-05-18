@@ -4,7 +4,7 @@
 
 import React, { type Node, useEffect, useState, useMemo } from 'react'
 import Context from '$auth/contexts/Session'
-import { store, retrieve } from '$shared/utils/sessionToken'
+import { setToken, getToken } from '$shared/utils/sessionToken'
 
 type Props = {
     children: Node,
@@ -13,11 +13,11 @@ type Props = {
 function SessionProvider(props: Props) {
     const { children } = props
 
-    const [token, setSessionToken] = useState(retrieve())
+    const [token, setSessionToken] = useState(getToken())
 
     useEffect(() => {
         // update storage when token changes
-        store(token)
+        setToken(token)
     }, [token])
 
     const sessionProvider = useMemo(() => ({

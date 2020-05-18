@@ -9,7 +9,7 @@
 import React, { type Node, type Context, useState, useEffect, useLayoutEffect, useCallback, useMemo } from 'react'
 import { connect } from 'react-redux'
 import StreamrClient from 'streamr-client'
-import { retrieve } from '$shared/utils/sessionToken'
+import { getToken } from '$shared/utils/sessionToken'
 
 import { selectAuthState } from '$shared/modules/user/selectors'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
@@ -47,7 +47,7 @@ function useClientProvider({ isAuthenticating, authenticationFailed }: ClientPro
     const [client, setClient] = useState()
     const isMountedRef = useIsMountedRef()
     const hasClient = !!client
-    const sessionToken = retrieve()
+    const sessionToken = getToken()
     const hasLoaded = !!sessionToken || !!(!isAuthenticating && authenticationFailed)
 
     const reset = useCallback(() => {

@@ -1,9 +1,9 @@
 // @flow
 
-import { retrieve } from '$shared/utils/sessionToken'
+import { getToken } from '$shared/utils/sessionToken'
 
 export default () => {
-    const token: ?string = retrieve()
+    const token: ?string = getToken()
 
     return token ? {
         Authorization: `Bearer ${token}`,

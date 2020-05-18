@@ -6,7 +6,7 @@ import { ClientProviderComponent, createClient } from '$shared/contexts/StreamrC
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import * as State from '$editor/canvas/state'
 import * as Services from '$editor/canvas/services'
-import { retrieve } from '$shared/utils/sessionToken'
+import { getToken } from '$shared/utils/sessionToken'
 
 function throwError(err) {
     throw err
@@ -29,7 +29,7 @@ describe('Canvas Subscriptions', () => {
     })
 
     beforeAll(async () => {
-        sessionToken = retrieve()
+        sessionToken = getToken()
     })
 
     describe('create subscription', () => {

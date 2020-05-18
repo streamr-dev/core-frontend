@@ -1,7 +1,7 @@
 import keythereum from 'keythereum'
 import StreamrClient from 'streamr-client'
 import * as Services from '../services'
-import { store } from '$shared/utils/sessionToken'
+import { setToken } from '$shared/utils/sessionToken'
 
 /**
  * Creates a client for a new, generated user.
@@ -33,10 +33,10 @@ export async function setupAuthorizationHeader() {
     await client.connect()
     const sessionToken = await client.session.getSessionToken() // returns a Promise that resolves with session token
 
-    store(sessionToken)
+    setToken(sessionToken)
 
     return async () => {
-        store(null)
+        setToken(null)
 
         if (client && client.connection) {
             await client.disconnect()

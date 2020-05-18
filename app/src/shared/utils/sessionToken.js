@@ -17,7 +17,7 @@ const storage = isLocalStorageAvailable() ? window.localStorage : {
     removeItem: (key) => storage.setItem(key, null),
 }
 
-export const store = (token) => {
+export const setToken = (token) => {
     if (token) {
         storage.setItem(SESSION_TOKEN_KEY, token)
         storage.setItem(SESSION_LOGIN_TIME, new Date())
@@ -31,6 +31,6 @@ const expired = (date) => (
     Date.now() > new Date(date || 0).getTime() + (EXPIRES_AT_VALID_HOURS * 1000 * 3600)
 )
 
-export const retrieve = () => (
+export const getToken = () => (
     (!expired(storage.getItem(SESSION_LOGIN_TIME)) && storage.getItem(SESSION_TOKEN_KEY)) || null
 )
