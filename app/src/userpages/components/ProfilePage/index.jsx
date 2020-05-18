@@ -11,7 +11,6 @@ import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { saveCurrentUser, getUserData } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
 import TOCPage from '$shared/components/TOCPage'
-import links from '$shared/../links'
 import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -41,7 +40,7 @@ export const ProfilePage = () => {
     const dispatch = useDispatch()
 
     const doSaveCurrentUser = useCallback(() => dispatch(saveCurrentUser()), [dispatch])
-    const redirectToUserPages = useCallback(() => dispatch(push(routes.userpages.root())), [dispatch])
+    const redirectToUserPages = useCallback(() => dispatch(push(routes.core())), [dispatch])
 
     const onSave = useCallback(async () => (
         wrap(async () => {
@@ -87,7 +86,7 @@ export const ProfilePage = () => {
                         cancel: {
                             title: I18n.t('userpages.profilePage.toolbar.cancel'),
                             kind: 'link',
-                            linkTo: links.userpages.main,
+                            linkTo: routes.core(),
                         },
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),

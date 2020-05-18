@@ -9,7 +9,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Checkbox from '$shared/components/Checkbox'
 import Buttons from '$shared/components/Buttons'
-import links from '../../../../links'
+import routes from '$routes'
 
 import type { Props } from '.'
 
@@ -65,7 +65,7 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode }: Props) => {
                                         value={termsAccepted}
                                         onChange={(e: SyntheticInputEvent<HTMLInputElement>) => setTermsAccepted(e.currentTarget.checked)}
                                     />&nbsp;
-                                    <Translate value="modal.readyToPublish.terms" publisherTermsLink={links.publisherTerms} dangerousHTML />
+                                    <Translate value="modal.readyToPublish.terms" publisherTermsLink={routes.publisherTerms()} dangerousHTML />
                                 </StyledLabel>
                             </FormGroup>
                         </FooterText>

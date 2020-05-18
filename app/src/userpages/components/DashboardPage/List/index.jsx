@@ -6,7 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
 
-import links from '$userpages/../links'
+import routes from '$routes'
 import { getDashboards } from '$userpages/modules/dashboard/actions'
 import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/selectors'
 import Layout from '$userpages/components/Layout'
@@ -27,7 +27,9 @@ const CreateDashboardButton = () => (
     <Button
         className={styles.createDashboardButton}
         tag={Link}
-        to={links.editor.dashboardEditor}
+        to={routes.dashboards.edit({
+            id: null,
+        })}
     >
         <Translate value="userpages.dashboards.createDashboard" />
     </Button>

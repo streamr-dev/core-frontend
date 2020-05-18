@@ -17,7 +17,7 @@ import { getError } from '$shared/utils/request'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getParamsForFilter } from '$userpages/utils/filters'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
-import { formatApiUrl } from '$shared/utils/url'
+import routes from '$routes'
 
 import * as services from './services'
 import { selectOpenStream, selectPageSize, selectOffset } from './selectors'
@@ -432,7 +432,9 @@ export const deleteStream = (id: StreamId) => async (dispatch: Function): Promis
     dispatch(deleteStreamRequest())
     try {
         const deleteStream = await api.del({
-            url: formatApiUrl('streams', id),
+            url: routes.api.streams.show({
+                id,
+            }),
         })
         dispatch(deleteStreamSuccess(id))
         Notification.push({

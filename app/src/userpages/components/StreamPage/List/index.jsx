@@ -63,7 +63,7 @@ export const CreateStreamButton = () => (
     <Button
         className={styles.createStreamButton}
         tag={Link}
-        to={routes.newStream()}
+        to={routes.streams.new()}
     >
         <Translate value="userpages.streams.createStream" />
     </Button>
@@ -226,7 +226,7 @@ const StreamList = () => {
     }, [])
 
     const showStream = useCallback((id: StreamId) => (
-        dispatch(push(routes.stream({
+        dispatch(push(routes.streams.show({
             id,
         })))
     ), [dispatch])

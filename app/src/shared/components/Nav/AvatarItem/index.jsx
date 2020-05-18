@@ -22,7 +22,7 @@ const AvatarItem = ({ user }: Props) => {
         <DropdownItem
             toggle={(
                 <LinkItem
-                    to={routes.editProfile()}
+                    to={routes.profile()}
                 >
                     <Avatar
                         alt={user.name}
@@ -47,25 +47,25 @@ const AvatarItem = ({ user }: Props) => {
             </div>
             {null}
             <Link
-                to={routes.editProfile()}
+                to={routes.profile()}
                 className={styles.link}
             >
                 <Translate value="general.profile" />
             </Link>
             <Link
-                to={routes.editProfile({}, 'api-keys')}
+                to={routes.profile({}, 'api-keys')}
                 className={styles.link}
             >
                 <Translate value="userpages.profilePage.apiCredentials.linkTitle" />
             </Link>
             <Link
-                to={routes.editProfile({}, 'ethereum-accounts')}
+                to={routes.profile({}, 'ethereum-accounts')}
                 className={styles.link}
             >
                 <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
             </Link>
             <Link
-                to={routes.editProfile({}, 'private-keys')}
+                to={routes.profile({}, 'private-keys')}
                 className={styles.link}
             >
                 <Translate value="userpages.profilePage.ethereumPrivateKeys.linkTitle" />

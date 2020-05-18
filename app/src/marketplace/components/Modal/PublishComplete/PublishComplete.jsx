@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
@@ -51,9 +51,9 @@ const Copy = styled.div`
 
 const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props) => {
     const { copy, isCopied } = useCopy()
-    const productLink = useMemo(() => routes.externalProduct({
+    const productLink = routes.marketplace.public.product({
         id: productId,
-    }), [productId])
+    })
 
     return (
         <ModalPortal>

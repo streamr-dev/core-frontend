@@ -40,7 +40,7 @@ export const CreateProductButton = ({ onCreateProduct }: CreateProductButtonProp
         <Button
             kind="secondary"
             tag={Link}
-            to={routes.newProduct({
+            to={routes.products.new({
                 type: productTypes.NORMAL,
             })}
         >

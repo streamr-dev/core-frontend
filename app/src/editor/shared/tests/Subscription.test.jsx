@@ -6,7 +6,7 @@ import uniqueId from 'lodash/uniqueId'
 
 import { ClientProviderComponent, createClient } from '$shared/contexts/StreamrClient'
 import Subscription from '$shared/components/Subscription'
-import SessionProvider from '$auth/components/SessionProvider'
+import { getToken } from '$shared/utils/sessionToken'
 
 function throwError(err) {
     throw err
@@ -29,7 +29,7 @@ describe('Subscription', () => {
     })
 
     beforeAll(async () => {
-        sessionToken = SessionProvider.token()
+        sessionToken = getToken()
     })
 
     describe('create subscription', () => {

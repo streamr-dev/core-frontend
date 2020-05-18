@@ -44,18 +44,18 @@ const Nav = compose(
             <DropdownItem
                 align="right"
                 label={I18n.t('general.core')}
-                to={routes.streams()}
+                to={routes.streams.index()}
             >
-                <Link to={routes.streams()}>
+                <Link to={routes.streams.index()}>
                     <Translate value="general.streams" />
                 </Link>
-                <Link to={routes.canvases()}>
+                <Link to={routes.canvases.index()}>
                     <Translate value="general.canvases" />
                 </Link>
-                <Link to={routes.dashboards()}>
+                <Link to={routes.dashboards.index()}>
                     <Translate value="general.dashboards" />
                 </Link>
-                <Link to={routes.products()}>
+                <Link to={routes.products.index()}>
                     <Translate value="general.products" />
                 </Link>
                 <Link to={routes.purchases()}>
@@ -66,7 +66,7 @@ const Nav = compose(
                 </Link>
             </DropdownItem>
             <LinkItem
-                to={routes.marketplace.root()}
+                to={routes.marketplace.index()}
                 underlined
             >
                 <Translate value="general.marketplace" />

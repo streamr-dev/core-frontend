@@ -22,7 +22,7 @@ import DashboardStatus from '$editor/shared/components/Status'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 
-import links from '../../links'
+import routes from '$routes'
 
 import Dashboard from './components/Dashboard'
 import DashboardToolbar from './components/Toolbar'
@@ -109,7 +109,9 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         const { dashboard } = this.props
         const newDashboard = await services.duplicateDashboard(dashboard)
         if (this.unmounted) { return }
-        this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
+        this.props.history.push(routes.dashboards.edit({
+            id: newDashboard.id,
+        }))
     }
 
     deleteDashboard = async () => {
@@ -117,13 +119,15 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         this.isDeleted = true
         await services.deleteDashboard(dashboard)
         if (this.unmounted) { return }
-        this.props.history.push(links.userpages.dashboards)
+        this.props.history.push(routes.dashboards.index())
     }
 
     newDashboard = async () => {
         const newDashboard = await services.create()
         if (this.unmounted) { return }
-        this.props.history.push(`${links.editor.dashboardEditor}/${newDashboard.id}`)
+        this.props.history.push(routes.dashboards.edit({
+            id: newDashboard.id,
+        }))
     }
 
     renameDashboard = (name) => {
@@ -254,7 +258,9 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponent)(class Dashb
             // if no id, create new
             const newDashboard = await services.create()
             if (this.unmounted) { return }
-            history.replace(`${links.editor.dashboardEditor}/${newDashboard.id}`)
+            history.replace(routes.dashboards.edit({
+                id: newDashboard.id,
+            }))
             return
         }
 

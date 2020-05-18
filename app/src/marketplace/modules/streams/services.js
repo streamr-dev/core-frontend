@@ -1,7 +1,7 @@
 // @flow
 
 import { get } from '$shared/utils/api'
-import { formatApiUrl } from '$shared/utils/url'
+import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
 
@@ -21,7 +21,7 @@ export const getStreams = (params: any): ApiResult<{
     }
 
     return get({
-        url: formatApiUrl('streams', {
+        url: routes.api.streams.index({
             ...nextParams,
         }),
     })
@@ -31,8 +31,9 @@ export const getStreams = (params: any): ApiResult<{
         }))
 }
 
-export const getStreamData = (id: StreamId, fromTimestamp: number): ApiResult<Object> => get({
-    url: formatApiUrl('streams', id, 'data', 'partitions', 0, 'from', {
+export const getStreamData = (streamId: StreamId, fromTimestamp: number): ApiResult<Object> => get({
+    url: routes.api.streams.data({
         fromTimestamp,
+        streamId,
     }),
 })

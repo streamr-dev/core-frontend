@@ -3,7 +3,7 @@
 import moment from 'moment-timezone'
 
 import { get, post, put, del } from '$shared/utils/api'
-import { formatApiUrl } from '$shared/utils/url'
+import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type {
     StreamId,
@@ -17,21 +17,27 @@ import type {
 import type { Permission } from '$userpages/flowtype/permission-types'
 
 export const getStream = (id: StreamId): ApiResult<Stream> => get({
-    url: formatApiUrl('streams', id),
+    url: routes.api.streams.show({
+        id,
+    }),
 })
 
 export const postStream = (stream: NewStream): ApiResult<Stream> => post({
-    url: formatApiUrl('streams'),
+    url: routes.api.streams.index(),
     data: stream,
 })
 
 export const putStream = (id: StreamId, stream: Stream): ApiResult<null> => put({
-    url: formatApiUrl('streams', id),
+    url: routes.api.streams.show({
+        id,
+    }),
     data: stream,
 })
 
 export const deleteStream = (id: StreamId): ApiResult<null> => del({
-    url: formatApiUrl('streams', id),
+    url: routes.api.streams.show({
+        id,
+    }),
 })
 
 export type StreamListWrapper = {
@@ -40,7 +46,7 @@ export type StreamListWrapper = {
 }
 
 export const getStreams = (params: any, pageSize: number, offset: number): ApiResult<StreamListWrapper> => get({
-    url: formatApiUrl('streams', {
+    url: routes.api.streams.index({
         ...params,
         max: pageSize + 1, // query 1 extra element to determine if we should show "load more" button
         offset,
@@ -51,15 +57,20 @@ export const getStreams = (params: any, pageSize: number, offset: number): ApiRe
         hasMoreResults: streams.length > 0,
     }))
 
-export const getMyStreamPermissions = (id: StreamId): ApiResult<Array<Permission>> => get({
-    url: formatApiUrl('streams', id, 'permissions', 'me'),
+export const getMyStreamPermissions = (streamId: StreamId): ApiResult<Array<Permission>> => get({
+    url: routes.api.streams.permissions.show({
+        streamId,
+        id: 'me',
+    }),
 })
 
-export const getStreamStatus = (id: StreamId): ApiResult<StreamStatus> => get({
-    url: formatApiUrl('streams', id, 'status'),
+export const getStreamStatus = (streamId: StreamId): ApiResult<StreamStatus> => get({
+    url: routes.api.streams.status({
+        streamId,
+    }),
 })
 
-export const uploadCsvFile = (id: StreamId, file: File): Promise<CsvUploadResult> => {
+export const uploadCsvFile = (streamId: StreamId, file: File): Promise<CsvUploadResult> => {
     const options = {
         headers: {
             'Content-Type': 'multipart/form-data',
@@ -70,19 +81,23 @@ export const uploadCsvFile = (id: StreamId, file: File): Promise<CsvUploadResult
     formData.append('file', file)
 
     return post({
-        url: formatApiUrl('streams', id, 'uploadCsvFile'),
+        url: routes.api.streams.uploadCsvFile({
+            streamId,
+        }),
         data: formData,
         options,
     })
 }
 
 export const confirmCsvFileUpload = (
-    id: StreamId,
+    streamId: StreamId,
     fileId: string,
     dateFormat: string,
     timestampColumnIndex: number,
 ): ApiResult<any> => post({
-    url: formatApiUrl('streams', id, 'confirmCsvFileUpload'),
+    url: routes.api.streams.confirmCsvFileUpload({
+        streamId,
+    }),
     data: {
         fileId,
         dateFormat,
@@ -90,21 +105,27 @@ export const confirmCsvFileUpload = (
     },
 })
 
-export const getRange = (id: StreamId): ApiResult<Range> => get({
-    url: formatApiUrl('streams', id, 'range'),
+export const getRange = (streamId: StreamId): ApiResult<Range> => get({
+    url: routes.api.streams.range({
+        streamId,
+    }),
     options: {
         ignoreUnauthorized: true,
     },
 })
 
-export const deleteDataUpTo = (id: StreamId, date: Date): ApiResult<any> => del({
-    url: formatApiUrl('streams', id, 'deleteDataUpTo'),
+export const deleteDataUpTo = (streamId: StreamId, date: Date): ApiResult<any> => del({
+    url: routes.api.streams.deleteDataUpTo({
+        streamId,
+    }),
     data: {
-        id,
+        id: streamId,
         date: moment(date).valueOf(),
     },
 })
 
-export const autodetectStreamfields = (id: StreamId): ApiResult<Stream> => get({
-    url: formatApiUrl('streams', id, 'detectFields'),
+export const autodetectStreamfields = (streamId: StreamId): ApiResult<Stream> => get({
+    url: routes.api.streams.detectFields({
+        streamId,
+    }),
 })

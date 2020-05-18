@@ -220,21 +220,24 @@ describe('Stream actions', () => {
     })
 
     describe('deleteStream', () => {
+        const streamId = 'asdfjasldfjasödf'
+        const encodedStreamId = 'asdfjasldfjas%C3%B6df'
+
         it('uses DELETE request', async () => {
             const stream = {
-                id: 'asdfjasldfjasödf',
+                id: streamId,
             }
             store.dispatch(actions.deleteStream(stream.id))
             await moxios.promiseWait()
             const request = moxios.requests.mostRecent()
-            expect(request.url).toEqual(`${process.env.STREAMR_API_URL}/streams/${stream.id}`)
+            expect(request.url).toEqual(`${process.env.STREAMR_API_URL}/streams/${encodedStreamId}`)
             expect(request.config.method.toLowerCase()).toEqual('delete')
         })
         it('creates DELETE_STREAM_SUCCESS when deleting stream has succeeded', async () => {
             const stream = {
-                id: 'asdfjasldfjasödf',
+                id: streamId,
             }
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${stream.id}`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${encodedStreamId}`, {
                 status: 200,
             })
 
@@ -250,9 +253,9 @@ describe('Stream actions', () => {
         })
         it('creates DELETE_STREAM_FAILURE when deleting stream has failed', async () => {
             const stream = {
-                id: 'asdfjasldfjasödf',
+                id: streamId,
             }
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${stream.id}`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${encodedStreamId}`, {
                 status: 500,
                 response: {
                     error: 'test',

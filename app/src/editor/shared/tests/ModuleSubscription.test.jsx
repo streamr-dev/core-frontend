@@ -4,9 +4,9 @@ import { mount } from 'enzyme'
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
 import { ClientProviderComponent, createClient } from '$shared/contexts/StreamrClient'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
-import SessionProvider from '$auth/components/SessionProvider'
 import * as State from '$editor/canvas/state'
 import * as Services from '$editor/canvas/services'
+import { getToken } from '$shared/utils/sessionToken'
 
 function throwError(err) {
     throw err
@@ -29,7 +29,7 @@ describe('Canvas Subscriptions', () => {
     })
 
     beforeAll(async () => {
-        sessionToken = SessionProvider.token()
+        sessionToken = getToken()
     })
 
     describe('create subscription', () => {

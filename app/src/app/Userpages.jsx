@@ -6,7 +6,6 @@ import { Route as RouterRoute, Redirect } from 'react-router-dom'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import routes from '$routes'
-import links from '../links'
 
 import ErrorPage from '$shared/components/ErrorPage'
 
@@ -40,23 +39,21 @@ const MembersPageAuth = userIsAuthenticated(MembersPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const NewStreamPageAuth = userIsAuthenticated(NewStreamPage)
 
-const { userpages } = links
-
 const UserpagesRouter = () => ([
-    <Route exact path={userpages.canvases} component={CanvasListAuth} key="CanvasesCanvasList" />,
-    <Route exact path={userpages.profile} component={ProfilePageAuth} key="ProfilePage" />,
-    <Route exact path={userpages.dashboards} component={DashboardListAuth} key="DashboardList" />,
-    <Route exact path={routes.newStream()} component={NewStreamPageAuth} key="newStreamPage" />,
-    <Route exact path={routes.stream()} component={StreamPage} key="streamPage" />,
-    <Route exact path={userpages.streams} component={StreamListViewAuth} key="StreamListView" />,
-    <Route exact path={routes.userpages.streamPreview()} component={StreamLivePreview} key="StreamLivePreview" />,
-    <Route exact path={userpages.transactions} component={TransactionListAuth} key="TransactionList" />,
-    <Route exact path={userpages.purchases} component={PurchasesPageAuth} key="PurchasesPage" />,
-    <Route exact path={userpages.products} component={ProductsPageAuth} key="ProductsPage" />,
-    <Route exact path={routes.editProduct()} component={EditProductAuth} key="EditProduct" />,
-    <Route exact path={routes.productStats()} component={StatsPageAuth} key="StatsPage" />,
-    <Route exact path={routes.productMembers()} component={MembersPageAuth} key="MembersPage" />,
-    <Redirect from={userpages.main} to={userpages.streams} component={StreamListViewAuth} key="StreamListViewRedirect" />,
+    <Route exact path={routes.canvases.index()} component={CanvasListAuth} key="CanvasesCanvasList" />,
+    <Route exact path={routes.profile()} component={ProfilePageAuth} key="ProfilePage" />,
+    <Route exact path={routes.dashboards.index()} component={DashboardListAuth} key="DashboardList" />,
+    <Route exact path={routes.streams.new()} component={NewStreamPageAuth} key="newStreamPage" />,
+    <Route exact path={routes.streams.show()} component={StreamPage} key="streamPage" />,
+    <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,
+    <Route exact path={routes.streams.preview()} component={StreamLivePreview} key="StreamLivePreview" />,
+    <Route exact path={routes.transactions()} component={TransactionListAuth} key="TransactionList" />,
+    <Route exact path={routes.purchases()} component={PurchasesPageAuth} key="PurchasesPage" />,
+    <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
+    <Route exact path={routes.products.edit()} component={EditProductAuth} key="EditProduct" />,
+    <Route exact path={routes.products.stats()} component={StatsPageAuth} key="StatsPage" />,
+    <Route exact path={routes.products.members()} component={MembersPageAuth} key="MembersPage" />,
+    <Redirect from={routes.core()} to={routes.streams.index()} component={StreamListViewAuth} key="StreamListViewRedirect" />,
 ])
 
 export default UserpagesRouter

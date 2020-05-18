@@ -16,10 +16,10 @@ import NewProductPage from '$mp/components/NewProductPage'
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
 const MarketplaceRouter = () => ([
-    <Route exact path={routes.marketplace.root()} component={Products} key="Products" />,
-    <Route exact path={routes.streamPreview()} component={StreamPreviewPage} key="StreamPreview" />,
-    <Route exact path={routes.product()} component={ProductPage} key="ProductPage2" />,
-    <Route exact path={routes.newProduct()} component={NewProductPage} key="NewProductPage" />,
+    <Route exact path={routes.marketplace.index()} component={Products} key="Products" />,
+    <Route exact path={routes.marketplace.streamPreview()} component={StreamPreviewPage} key="StreamPreview" />,
+    <Route exact path={routes.marketplace.product()} component={ProductPage} key="ProductPage2" />,
+    <Route exact path={routes.products.new()} component={NewProductPage} key="NewProductPage" />,
 ])
 
 export default MarketplaceRouter

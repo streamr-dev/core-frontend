@@ -14,9 +14,19 @@
         "resetPassword": "/resetPassword",
         "signUp": "/signup"
     },
-    "canvasEditor": "/canvas/editor",
-    "canvasEmbed": "/canvas/embed/:id",
-    "canvases": "/core/canvases",
+    "canvases": {
+        "edit": "/canvas/editor/:id?",
+        "embed": "/canvas/embed/:id",
+        "public": {
+            "edit": "<platform>/canvas/editor/:id",
+            "embed": "<platform>/canvas/embed/:id"
+        },
+        "index": "/core/canvases"
+    },
+    "dashboards": {
+        "edit": "/dashboard/editor/:id?",
+        "index": "/core/dashboards"
+    },
     "community": {
         "devForum": "https://forum.streamr.dev/",
         "github": "https://github.com/streamr-dev",
@@ -37,37 +47,42 @@
     "contributionSummary": "https://s3.amazonaws.com/streamr-public/Crowdcontribution+Information+Summary+(20170912).pdf",
     "tos": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "privacyPolicy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
-    "newProduct": "/core/products/new",
-    "createProduct": "/marketplace/products/create",
-    "dashboardEditor": "/dashboard/editor",
-    "dashboards": "/core/dashboards",
-    "editProduct": "/core/products/:id/edit",
-    "productStats": "/core/products/:id/stats",
-    "productMembers": "/core/products/:id/members",
-    "editProfile": "/core/profile/edit",
     "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
+    "publisherTerms": "https://s3.amazonaws.com/streamr-public/streamr-data-provider-agreement.pdf",
+    "resetAllowanceInfo": "https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729",
+    "allowanceInfo": "https://tokenallowance.io",
     "marketplace": {
-        "root": "/marketplace"
+        "index": "/marketplace",
+        "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
+        "product": "/marketplace/products/:id",
+        "purchase": "/marketplace/products/:id/purchase",
+        "public": {
+            "product": "<streamr>/marketplace/products/:id"
+        }
     },
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
-    "product": "/marketplace/products/:id",
-    "externalProduct": "<streamr>/marketplace/products/:id",
-    "products": "/core/products",
-    "publish": "/marketplace/products/:id/publish",
-    "purchase": "/marketplace/products/:id/purchase",
     "purchases": "/core/purchases",
     "root": "/",
-    "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
-    "streams": "/core/streams",
-    "stream": "/core/streams/:id",
-    "newStream": "/core/streams/new",
-    "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "transactions": "/core/transactions",
-    "userpages": {
-        "root": "/core",
-        "streamPreview": "/core/streams/:streamId/preview"
+    "streams": {
+        "index": "/core/streams",
+        "show": "/core/streams/:id",
+        "new": "/core/streams/new",
+        "preview": "/core/streams/:streamId/preview",
+        "public": {
+            "show": "<platform>/core/streams/:id"
+        }
     },
-    "userPageStreamListing": "/core/streams",
+    "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
+    "core": "/core",
+    "profile": "/core/profile/edit",
+    "products": {
+        "edit": "/core/products/:id/edit",
+        "index": "/core/products",
+        "members": "/core/products/:id/members",
+        "new": "/core/products/new",
+        "stats": "/core/products/:id/stats"
+    },
     "whitepaper": "<landingPage>/whitepaper",
     "site": {
         "about": "/about",
@@ -79,5 +94,83 @@
         }
     },
     "notFound": "/404",
-    "error": "/error"
+    "error": "/error",
+    "blogPosts": {
+        "nodered": "https://medium.com/streamrblog/streamr-node-red-integration-tutorial-b0b410496354",
+        "spark": "https://medium.com/streamrblog/integrating-streamr-with-apache-spark-4c049f2688a1"
+    },
+    "misc": {
+        "cliTool": "https://github.com/streamr-dev/cli-tools",
+        "decentralizedWeb": "https://blockchainhub.net/web3-decentralized-web/"
+    },
+    "api": {
+        "me": {
+            "index": "<api>/users/me",
+            "image": "<api>/users/me/image",
+            "changePassword": "<api>/users/me/changePassword",
+            "keys": {
+                "index": "<api>/users/me/keys",
+                "show": "<api>/users/me/keys/:id"
+            },
+            "products": "<api>/users/me/products"
+        },
+        "canvases": {
+            "downloadCsv": "<api>/canvases/downloadCsv"
+        },
+        "categories": "<api>/categories",
+        "dashboards": {
+            "index": "<api>/dashboards",
+            "myPermissions": "<api>/dashboards/:dashboardId/permissions/me",
+            "show": "<api>/dashboards/:id"
+        },
+        "streams": {
+            "data": "<api>/streams/:streamId/data/partitions/0/from",
+            "index": "<api>/streams",
+            "show": "<api>/streams/:id",
+            "status": "<api>/streams/:streamId/status",
+            "uploadCsvFile": "<api>/streams/:streamId/uploadCsvFile",
+            "confirmCsvFileUpload": "<api>/streams/:streamId/confirmCsvFileUpload",
+            "range": "<api>/streams/:streamId/range",
+            "deleteDataUpTo": "<api>/streams/:streamId/deleteDataUpTo",
+            "detectFields": "<api>/streams/:streamId/detectFields",
+            "keys": {
+                "index": "<api>/streams/:streamId/keys",
+                "show": "<api>/streams/:streamId/keys/:id"
+            },
+            "permissions": {
+                "index": "<api>/streams/:streamId/permissions",
+                "show": "<api>/streams/:streamId/permissions/:id"
+            }
+        },
+        "dataunions": {
+            "index": "<api>/dataunions",
+            "stats": "<api>/dataunions/:id/stats",
+            "secrets": {
+                "index": "<api>/dataunions/:dataUnionId/secrets",
+                "show": "<api>/dataunions/:dataUnionId/secrets/:id"
+            },
+            "joinRequests": {
+                "index": "<api>/dataunions/:dataUnionId/joinRequests",
+                "show": "<api>/dataunions/:dataUnionId/joinRequests/:id"
+            }
+        },
+        "subscriptions": "<api>/subscriptions",
+        "products": {
+            "index": "<api>/products",
+            "show": "<api>/products/:id",
+            "images": "<api>/products/:id/images",
+            "streams": "<api>/products/:id/streams",
+            "myPermissions": "<api>/products/:id/permissions/me",
+            "undeployFree": "<api>/products/:id/undeployFree",
+            "setUndeploying": "<api>/products/:id/setUndeploying",
+            "deployFree": "<api>/products/:id/deployFree",
+            "setDeploying": "<api>/products/:id/setDeploying",
+            "related": "<api>/products/:id/related"
+        },
+        "integrationKeys": {
+            "index": "<api>/integration_keys",
+            "show": "<api>/integration_keys/:id"
+        },
+        "loginChallenge": "<api>/login/challenge/:account"
+    }
 }
