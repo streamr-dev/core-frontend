@@ -2,7 +2,7 @@ import React from 'react'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
-import links from '../../../../links'
+import routes from '$routes'
 
 import styles from './Canvas.pcss'
 
@@ -20,7 +20,9 @@ export default class CanvasModule extends React.Component {
                 {isActive && currentCanvasPort && currentCanvasPort.value && (
                     <Link
                         className={styles.link}
-                        to={`${links.editor.canvasEditor}/${currentCanvasPort.value}`}
+                        to={routes.canvases.edit({
+                            id: currentCanvasPort.value,
+                        })}
                     >
                         <button
                             type="button"

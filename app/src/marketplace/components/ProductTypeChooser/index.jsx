@@ -116,7 +116,7 @@ const ProductTypeChooser = ({ className }: Props) => (
                         kind="primary"
                         outline
                         tag={Link}
-                        to={routes.newProduct({
+                        to={routes.products.new({
                             type: productTypes.NORMAL,
                         })}
                     >
@@ -139,7 +139,7 @@ const ProductTypeChooser = ({ className }: Props) => (
                         kind="primary"
                         outline
                         tag={Link}
-                        to={routes.newProduct({
+                        to={routes.products.new({
                             type: productTypes.DATAUNION,
                         })}
                     >

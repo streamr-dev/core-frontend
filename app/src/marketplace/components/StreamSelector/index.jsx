@@ -161,7 +161,7 @@ export const StreamSelector = (props: Props) => {
                                 {!search && (
                                     <Button
                                         tag="a"
-                                        href={routes.newStream()}
+                                        href={routes.streams.new()}
                                         kind="special"
                                         variant="light"
                                     >

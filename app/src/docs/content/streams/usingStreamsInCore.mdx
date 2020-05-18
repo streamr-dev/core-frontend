@@ -1,7 +1,7 @@
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
-import links from '$shared/../links'
+import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
 import StreamListing from './images/core_streams_01_desktop_border.jpg'
@@ -24,7 +24,7 @@ import streamsStyles from '$docs/components/Pages/Streams/streamsStyles.pcss'
 Streamr Core provides you with the tools to create, edit, share and delete your streams as well as view and inspect the streams you have purchased on the Marketplace.
 
 ### Overview of your streams
-Head over to the <Link to={links.userpages.streams}>Streams page</Link> to see an overview of your subscribed streams. The list includes streams you have created and streams that you have purchased on the Marketplace.Using streams in Core
+Head over to the <Link to={routes.streams.index()}>Streams page</Link> to see an overview of your subscribed streams. The list includes streams you have created and streams that you have purchased on the Marketplace.Using streams in Core
 
 <figure>
     <picture>

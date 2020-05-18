@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import links from '../../../links'
+import routes from '$routes'
 import { getCanvases } from '$userpages/modules/canvas/actions'
 import { selectCanvases } from '$userpages/modules/canvas/selectors'
 
@@ -58,7 +58,9 @@ export default connect((state) => ({
                         className={styles.CanvasSearchRow}
                         component={Link}
                         refName="innerRef"
-                        to={`${links.editor.canvasEditor}/${canvas.id}`}
+                        to={routes.canvases.edit({
+                            id: canvas.id,
+                        })}
                     >
                         <span className={cx(styles.canvasState, styles[canvas.state.toLowerCase()])} />
                         {startCase(canvas.name)}

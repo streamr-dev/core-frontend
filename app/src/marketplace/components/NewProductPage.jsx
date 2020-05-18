@@ -36,7 +36,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
         postEmptyProduct(sanitizedType(type))
             .then(({ id }) => {
                 if (isMounted()) {
-                    dispatch(replace(routes.editProduct({
+                    dispatch(replace(routes.products.edit({
                         id,
                         newProduct: true,
                     })))

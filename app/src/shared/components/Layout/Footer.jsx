@@ -43,10 +43,10 @@ const Footer = ({ topBorder = false }: Props) => (
                 </a>
             </FooterColumn>
             <FooterColumn title={I18n.t('general.apps')}>
-                <a href={routes.marketplace.root()}>
+                <a href={routes.marketplace.index()}>
                     <Translate value="general.marketplace" />
                 </a>
-                <a href={routes.userpages.root()}>
+                <a href={routes.core()}>
                     <Translate value="general.core" />
                 </a>
             </FooterColumn>

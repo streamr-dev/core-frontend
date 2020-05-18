@@ -231,6 +231,7 @@ module.exports = {
                 'src/userpages/**/*.*',
                 'src/editor/**/*.*',
                 'src/docs/**/*.*',
+                'src/*.*',
             ].filter(Boolean),
             globOptions: {
                 ignore: [

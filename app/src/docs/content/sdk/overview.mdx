@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import links from '$shared/../links'
+import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
@@ -14,7 +14,7 @@ There are both official and unofficial Software Development Kits (SDKs) availabl
 
 Currently, we provide official SDKs for JavaScript (browser and Node.js) and Java. There is also a community-built SDK for Python in the works. The range of features each of these SDKs provide may vary, so be sure to check the documentation of the specific SDK for more information. If your programming language or software environment of choice does not have an SDK available, you can still interact with Streamr using our <Link to={docsLinks.api}>JSON-based HTTP API</Link>.
 
-In addition to the SDKs, there is the <a target="_blank" href={links.external.cliTool}>Command Line Interface (CLI) tool</a> for interacting with Streamr. The CLI tool is a thin wrapper around the <Link to={docsLinks.javascriptSdk}>Streamr Javascript Client</Link>, which does the heavy lifting, while the tool concentrates on CLI concerns: parsing and passing arguments, stdin/stdout, errors, and so forth.
+In addition to the SDKs, there is the <a target="_blank" href={routes.misc.cliTool()}>Command Line Interface (CLI) tool</a> for interacting with Streamr. The CLI tool is a thin wrapper around the <Link to={docsLinks.javascriptSdk}>Streamr Javascript Client</Link>, which does the heavy lifting, while the tool concentrates on CLI concerns: parsing and passing arguments, stdin/stdout, errors, and so forth.
 
 <table className={cx(docsStyles.striped, sdkStyles.matrix)}>
     <thead>

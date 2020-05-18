@@ -38,7 +38,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
 
     const redirectToProductList = useCallback(() => {
         if (!isMounted()) { return }
-        dispatch(push(routes.products()))
+        dispatch(push(routes.products.index()))
     }, [
         isMounted,
         dispatch,
@@ -68,7 +68,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                             outline
                             {...(product.state === productStates.DEPLOYED ? {
                                 tag: Link,
-                                to: routes.product({
+                                to: routes.marketplace.product({
                                     id: product.id,
                                 }),
                             } : {
@@ -83,7 +83,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                             className={styles.editProductButton}
                             tag={Link}
                             outline
-                            to={routes.editProduct({
+                            to={routes.products.edit({
                                 id: product.id,
                             })}
                         >
@@ -98,14 +98,14 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                         </div>
                         <div className={styles.tabs}>
                             <Tab
-                                to={routes.productStats({
+                                to={routes.products.stats({
                                     id: product.id,
                                 })}
                             >
                                 Overview
                             </Tab>
                             <Tab
-                                to={routes.productMembers({
+                                to={routes.products.members({
                                     id: product.id,
                                 })}
                             >

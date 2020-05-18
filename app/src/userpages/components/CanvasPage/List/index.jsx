@@ -10,12 +10,10 @@ import { Helmet } from 'react-helmet'
 import type { Canvas } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
-import links from '$app/src/links'
 import { getCanvases, deleteCanvas } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFetching } from '$userpages/modules/canvas/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import DropdownActions from '$shared/components/DropdownActions'
-import { formatExternalUrl } from '$shared/utils/url'
 import Search from '../../Header/Search'
 import Dropdown from '$shared/components/Dropdown'
 import ShareDialog from '$userpages/components/ShareDialog'
@@ -35,12 +33,15 @@ import useCopy from '$shared/hooks/useCopy'
 import styles from './canvasList.pcss'
 import { CanvasTile } from '$shared/components/Tile'
 import Grid from '$shared/components/Tile/Grid'
+import routes from '$routes'
 
 const CreateCanvasButton = () => (
     <Button
         className={styles.createCanvasButton}
         tag={RouterLink}
-        to={links.editor.canvasEditor}
+        to={routes.canvases.edit({
+            id: null,
+        })}
     >
         <Translate value="userpages.canvases.createCanvas" />
     </Button>
@@ -131,34 +132,35 @@ const CanvasList = () => {
 
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
 
-    const getActions = useCallback((canvas) => {
-        const editUrl = formatExternalUrl(
-            process.env.PLATFORM_ORIGIN_URL,
-            `${links.editor.canvasEditor}/${canvas.id}`,
-        )
-
-        return (
-            <Fragment>
-                <DropdownActions.Item onClick={() => navigate(`${links.editor.canvasEditor}/${canvas.id}`)}>
-                    <Translate value="userpages.canvases.menu.edit" />
-                </DropdownActions.Item>
-                <DropdownActions.Item
-                    disabled={!canBeSharedByCurrentUser(canvas.id)}
-                    onClick={() => onOpenShareDialog(canvas)}
-                >
-                    <Translate value="userpages.canvases.menu.share" />
-                </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => onCopyUrl(editUrl)}>
-                    <Translate value="userpages.canvases.menu.copyUrl" />
-                </DropdownActions.Item>
-                <DropdownActions.Item
-                    onClick={() => confirmDeleteCanvas(canvas)}
-                >
-                    <Translate value="userpages.canvases.menu.delete" />
-                </DropdownActions.Item>
-            </Fragment>
-        )
-    }, [navigate, canBeSharedByCurrentUser, onOpenShareDialog, onCopyUrl, confirmDeleteCanvas])
+    const getActions = useCallback((canvas) => (
+        <Fragment>
+            <DropdownActions.Item
+                onClick={() => navigate(routes.canvases.edit({
+                    id: canvas.id,
+                }))}
+            >
+                <Translate value="userpages.canvases.menu.edit" />
+            </DropdownActions.Item>
+            <DropdownActions.Item
+                disabled={!canBeSharedByCurrentUser(canvas.id)}
+                onClick={() => onOpenShareDialog(canvas)}
+            >
+                <Translate value="userpages.canvases.menu.share" />
+            </DropdownActions.Item>
+            <DropdownActions.Item
+                onClick={() => onCopyUrl(routes.canvases.public.edit({
+                    id: canvas.id,
+                }))}
+            >
+                <Translate value="userpages.canvases.menu.copyUrl" />
+            </DropdownActions.Item>
+            <DropdownActions.Item
+                onClick={() => confirmDeleteCanvas(canvas)}
+            >
+                <Translate value="userpages.canvases.menu.delete" />
+            </DropdownActions.Item>
+        </Fragment>
+    ), [navigate, canBeSharedByCurrentUser, onOpenShareDialog, onCopyUrl, confirmDeleteCanvas])
 
     return (
         <Layout

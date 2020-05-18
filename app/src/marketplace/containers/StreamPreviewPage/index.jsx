@@ -44,7 +44,7 @@ const mapStateToProps = (state: StoreState, { match: { params: { id, streamId } 
 const mapDispatchToProps = (dispatch: Function, { match: { params: { id: productId } } }: OwnProps): DispatchProps => ({
     getStreams: () => dispatch(getStreamsByProductId(productId)),
     onClose: () => {
-        const route = routes.product({
+        const route = routes.marketplace.product({
             id: productId,
         })
         return dispatch(push(route))

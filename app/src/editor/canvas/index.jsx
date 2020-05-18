@@ -12,7 +12,6 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { ErrorPageContent } from '$shared/components/GenericErrorPage'
 import copyToClipboard from 'copy-to-clipboard'
 
-import links from '../../links'
 import routes from '$routes'
 
 import { findNonOverlappingPositionForModule } from '$editor/shared/utils/bounds'
@@ -248,7 +247,9 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
     }
 
     newCanvas = async () => {
-        this.props.history.push(links.editor.canvasEditor)
+        this.props.history.push(routes.canvases.edit({
+            id: null,
+        }))
     }
 
     renameCanvas = (name) => {
@@ -594,7 +595,7 @@ const CanvasErrorBoundary = ({ error }) => {
             <Button
                 kind="special"
                 tag={Link}
-                to={routes.canvases()}
+                to={routes.canvases.index()}
                 className="d-none d-md-inline-flex"
             >
                 <Translate value="editor.general.backToCanvases" />

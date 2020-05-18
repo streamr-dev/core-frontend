@@ -9,7 +9,7 @@ import AvatarCircle from '$shared/components/AvatarCircle'
 import type { User } from '$shared/flowtype/user-types'
 
 import styles from './avatar.pcss'
-import links from '$shared/../links'
+import routes from '$routes'
 
 type Props = {
     user: User,
@@ -21,7 +21,7 @@ type Props = {
 const Avatar = ({ user, className, linkToProfile, children }: Props) => (
     <div className={cx(className, styles.container)}>
         {!!linkToProfile && (
-            <Link to={links.userpages.profile} className={styles.avatarLink}>
+            <Link to={routes.profile()} className={styles.avatarLink}>
                 <AvatarCircle name={user.name} imageUrl={user.imageUrlLarge} className={styles.avatarCircle} />
             </Link>
         )}

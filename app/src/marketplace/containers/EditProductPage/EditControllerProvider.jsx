@@ -92,7 +92,7 @@ function useEditController(product: Product) {
 
     const redirectToProductList = useCallback(() => {
         if (!isMounted()) { return }
-        history.replace(routes.products())
+        history.replace(routes.products.index())
     }, [
         isMounted,
         history,
@@ -101,7 +101,7 @@ function useEditController(product: Product) {
     const productId = product.id
     const redirectToProduct = useCallback(() => {
         if (!isMounted()) { return }
-        history.replace(routes.product({
+        history.replace(routes.marketplace.product({
             id: productId,
         }))
     }, [
