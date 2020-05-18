@@ -66,5 +66,6 @@ export default {
     external: {
         ethereum: 'https://www.ethereum.org',
         decentralizedWeb: 'https://blockchainhub.net/web3-decentralized-web/',
+        cliTool: 'https://github.com/streamr-dev/cli-tools',
     },
 }
