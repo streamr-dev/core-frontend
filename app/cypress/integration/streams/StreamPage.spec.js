@@ -30,37 +30,26 @@ describe('Stream page', () => {
 
     it('shows stream shared with you for viewing as read-only', () => {
         cy.login()
-        cy
-            .createStream().then((streamId) => {
-                cy
-                    .createStreamPermission(streamId, 'tester2@streamr.com', 'read')
-                    .then(() => {
-                        cy.login('tester2@streamr.com', 'tester2')
-                        cy.visit(`/core/streams/${streamId}`)
-                        cy.location('pathname').should('eq', `/core/streams/${streamId}`)
-                        cy.get('h1').contains(/test stream #\d{4}\/\d{6}/i)
-                    })
-            })
+        cy.createStream().then((streamId) => {
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'read')
+            cy.login('tester2@streamr.com', 'tester2')
+            cy.visit(`/core/streams/${streamId}`)
+            cy.location('pathname').should('eq', `/core/streams/${streamId}`)
+            cy.get('h1').contains(/test stream #\d{4}\/\d{6}/i)
+        })
     })
 
     it('shows stream shared with you for editing as editable', () => {
         cy.login()
-        cy
-            .createStream().then((streamId) => {
-                // Having `write` permission doesn't mean you can open the stream page w/o a 404. In
-                // order to access it at all you need to be able to `read`. :/
-                cy
-                    .createStreamPermission(streamId, 'tester2@streamr.com', 'read')
-                    .then(() => {
-                        cy
-                            .createStreamPermission(streamId, 'tester2@streamr.com', 'write')
-                            .then(() => {
-                                cy.login('tester2@streamr.com', 'tester2')
-                                cy.visit(`/core/streams/${streamId}`)
-                                cy.location('pathname').should('eq', `/core/streams/${streamId}`)
-                                cy.get('h1').contains('Edit your Stream')
-                            })
-                    })
-            })
+        cy.createStream().then((streamId) => {
+            // Having `write` permission doesn't mean you can open the stream page w/o a 404. In
+            // order to access it at all you need to be able to `read`. :/
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'read')
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'write')
+            cy.login('tester2@streamr.com', 'tester2')
+            cy.visit(`/core/streams/${streamId}`)
+            cy.location('pathname').should('eq', `/core/streams/${streamId}`)
+            cy.get('h1').contains('Edit your Stream')
+        })
     })
 })
