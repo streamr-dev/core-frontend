@@ -32,6 +32,7 @@ const Search = ({ toggleOverlay }: Props) => {
 
     const resultClick = () => {
         setOverlayVisible(false)
+        toggleOverlay()
     }
 
     const closeOverlay = () => {
@@ -42,8 +43,9 @@ const Search = ({ toggleOverlay }: Props) => {
     const onKeyDown = useCallback((event) => {
         if (event.key === 'Escape') {
             setOverlayVisible(false)
+            toggleOverlay()
         }
-    }, [])
+    }, [toggleOverlay])
 
     useEffect(() => {
         window.addEventListener('keydown', onKeyDown)
