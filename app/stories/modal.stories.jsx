@@ -48,6 +48,8 @@ import CropAvatarDialog from '$userpages/components/ProfilePage/ProfileSettings/
 import { ChangePasswordDialogComponent } from '$userpages/components/ProfilePage/ProfileSettings/ChangePasswordDialog'
 import { SignatureRequestDialog, DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
+import EthereumAccountCreatedDialog from '$userpages/components/ProfilePage/IdentityHandler/EthereumAccountCreatedDialog'
+import CopyPrivateKeyDialog from '$userpages/components/ProfilePage/IdentityHandler/CopyPrivateKeyDialog'
 import PrivateKeyNameDialog from '$userpages/components/ProfilePage/IntegrationKeyHandler/AddPrivateKeyDialog/PrivateKeyNameDialog'
 import { DeleteAccountDialogComponent } from '$userpages/components/ProfilePage/DeleteAccount/DeleteAccountDialog'
 
@@ -995,6 +997,31 @@ story('EthereumIdentity/IdentityNameDialog')
         <IdentityNameDialog
             onClose={action('onClose')}
             onSave={action('onSave')}
+        />
+    ))
+    .add('waiting', () => (
+        <IdentityNameDialog
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+            waiting
+        />
+    ))
+
+story('EthereumIdentity/EthereumAccountCreatedDialog')
+    .add('default', () => (
+        <EthereumAccountCreatedDialog
+            onClose={action('onClose')}
+            onSave={action('onSave')}
+            name={text('Name', 'Main Eth account')}
+            address={text('Address', '0x538a2Fa87E03B280e10C83AA8dD7E5B15B868BD9')}
+        />
+    ))
+
+story('EthereumIdentity/CopyPrivateKeyDialog')
+    .add('default', () => (
+        <CopyPrivateKeyDialog
+            onClose={action('onClose')}
+            privateKey={text('Private Key', '1234567890abcdefg')}
         />
     ))
 

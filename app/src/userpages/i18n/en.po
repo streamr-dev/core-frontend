@@ -1006,6 +1006,36 @@ msgstr "Account name"
 msgid "modal##newIdentity##placeholder"
 msgstr "eg. Mainnet Eth Address"
 
+msgid "modal##ethereumAccountCreated##defaultTitle"
+msgstr "Ethereum account created"
+
+msgid "modal##ethereumAccountCreated##description"
+msgstr ""
+"Your account has been created and the address<br />"
+"is shown below. Click next to get your private key."
+
+msgid "modal##copyPrivateKey##defaultTitle"
+msgstr "Your private key"
+
+msgid "modal##copyPrivateKey##defaultDescription"
+msgstr ""
+"Your private key will be <strong>given to you once only</strong>,<br />"
+"so ensure that you copy and store it securely."
+
+msgid "modal##copyPrivateKey##descriptionAfterKeyCopiedOnce"
+msgstr ""
+"Be careful with your private key, as <strong>anyone with your key<br />"
+"controls your tokens</strong>. Please check the box to continue."
+
+msgid "modal##copyPrivateKey##checkboxLabel"
+msgstr "I will securely store my private key"
+
+msgid "modal##copyPrivateKey##copyKey"
+msgstr "Copy key"
+
+msgid "modal##copyPrivateKey##keyCopied"
+msgstr "Copied!"
+
 msgid "modal##duplicateIdentity##defaultTitle"
 msgstr "Account already connected"
 
