@@ -124,7 +124,6 @@ export class NewFieldEditor extends Component<Props, State> {
                             options={this.typeOptions}
                             value={this.typeOptions.find((t) => t.value === type)}
                             onChange={this.onTypeChange}
-                            menuIsOpen
                         />
                     </div>
                 </SplitControl>
