@@ -11,7 +11,6 @@ import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import usePending from '$shared/hooks/usePending'
 import {
     selectStreams as selectAllStreams,
     selectFetchingStreams,
@@ -24,12 +23,15 @@ import docsLinks from '$shared/../docsLinks'
 
 import styles from './productStreams.pcss'
 
-const ProductStreams = () => {
+type Props = {
+    disabled?: boolean,
+}
+
+const ProductStreams = ({ disabled }: Props) => {
     const product = useEditableProduct()
     const { isValid, message } = useValidation('streams')
     const { updateStreams } = useEditableProductActions()
     const { publishAttempted } = useContext(EditControllerContext)
-    const { isPending } = usePending('product.SAVE')
     const allStreams = useSelector(selectAllStreams)
     const fetchingAllStreams = useSelector(selectFetchingStreams)
     const productStreams = useSelector(selectProductStreams)
@@ -62,7 +64,7 @@ const ProductStreams = () => {
                     streams={streamIds}
                     className={styles.streams}
                     error={publishAttempted && !isValid ? message : undefined}
-                    disabled={!!isPending}
+                    disabled={!!disabled}
                 />
             </div>
         </section>

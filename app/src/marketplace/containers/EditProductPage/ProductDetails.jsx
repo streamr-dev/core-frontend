@@ -8,7 +8,6 @@ import { Translate } from 'react-redux-i18n'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
-import { usePending } from '$shared/hooks/usePending'
 import SelectField from '$mp/components/SelectField'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { Context as EditControllerContext } from './EditControllerProvider'
@@ -23,7 +22,11 @@ const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
     value: `${value / 100}`,
 }))
 
-const ProductDetails = () => {
+type Props = {
+    disabled?: boolean,
+}
+
+const ProductDetails = ({ disabled }: Props) => {
     const product = useEditableProduct()
     const { publishAttempted } = useContext(EditControllerContext)
     const categories = useSelector(selectAllCategories)
@@ -32,7 +35,6 @@ const ProductDetails = () => {
     const { isValid: isCategoryValid, message: categoryMessage } = useValidation('category')
     const { isValid: isAdminFeeValid, message: adminFeeMessage } = useValidation('adminFee')
     const { updateCategory, updateAdminFee } = useEditableProductActions()
-    const { isPending } = usePending('product.SAVE')
 
     const adminFee = product && product.adminFee
     const selectedAdminFee = useMemo(() => adminFeeOptions.find(({ value }) => value === adminFee), [adminFee])
@@ -63,7 +65,7 @@ const ProductDetails = () => {
                                 onChange={(option) => updateCategory(option.value)}
                                 isSearchable={false}
                                 error={publishAttempted && !isCategoryValid ? categoryMessage : undefined}
-                                disabled={!!isPending}
+                                disabled={!!disabled}
                             />
                         )}
                     </Details.Row>
@@ -76,7 +78,7 @@ const ProductDetails = () => {
                                 onChange={(option) => updateAdminFee(option.value)}
                                 isSearchable={false}
                                 error={publishAttempted && !isAdminFeeValid ? adminFeeMessage : undefined}
-                                disabled={!!isPending}
+                                disabled={!!disabled}
                             />
                         </Details.Row>
                     )}

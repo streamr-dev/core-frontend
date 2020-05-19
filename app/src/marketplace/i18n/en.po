@@ -68,29 +68,23 @@ msgstr "second"
 msgid "common##timeUnit##week"
 msgstr "week"
 
-msgid "editProductPage##edit"
+msgid "editProductPage##actionBar##edit"
 msgstr "Edit"
 
-msgid "editProductPage##publish"
-msgstr "Publish"
-
-msgid "editProductPage##publishing"
+msgid "editProductPage##actionBar##publishing"
 msgstr "Publishing"
 
-msgid "editProductPage##republish"
-msgstr "Republish"
+msgid "editProductPage##actionBar##continue"
+msgstr "Continue"
 
-msgid "editProductPage##save"
+msgid "editProductPage##actionBar##save"
 msgstr "Save & Exit"
 
-msgid "editProductPage##unpublish"
-msgstr "Unpublish"
+msgid "editProductPage##actionBar##preview"
+msgstr "Preview"
 
-msgid "editProductPage##unpublishing"
+msgid "editProductPage##actionBar##unpublishing"
 msgstr "Unpublishing"
-
-msgid "editProductPage##update"
-msgstr "Update"
 
 msgid "editProductPage##preview"
 msgstr "This is a preview of how your product will appear when published"
@@ -693,7 +687,7 @@ msgid "modal##readyToPublish##republish##title"
 msgstr "Republish your product"
 
 msgid "modal##readyToPublish##redeploy##title"
-msgstr "Republish your product"
+msgstr "Publish your product"
 
 msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"
@@ -702,7 +696,7 @@ msgid "modal##readyToPublish##republish##action"
 msgstr "Republish"
 
 msgid "modal##readyToPublish##redeploy##action"
-msgstr "Republish"
+msgstr "Publish"
 
 msgid "modal##readyToPublish##publish##action"
 msgstr "Publish"
@@ -925,7 +919,7 @@ msgid "modal##deployDataUnion##guide##step1"
 msgstr ""
 "Deploying your product’s smart contract will allow"
 "<br />"
-"your users to join the data union via your app."
+"your users to join the Data Union via your app."
 
 msgid "modal##deployDataUnion##guide##step2"
 msgstr ""
@@ -937,13 +931,13 @@ msgid "modal##deployDataUnion##guide##step3"
 msgstr ""
 "A minimum of one member is needed to publish the product."
 "<br />"
-"In Core, data union size is shown on the Members badge."
+"In Core, Data Union size is shown on the members badge."
 
 msgid "modal##deployDataUnion##guide##step4"
 msgstr ""
-"View analytics and manually manage your data union"
+"View analytics and manually manage your Data Union"
 "<br />"
-"by clicking the Members badge on the product tile."
+"by clicking the members badge on the product tile."
 
 msgid "modal##deployDataUnion##deploying##title"
 msgstr "Deploying %{name}"

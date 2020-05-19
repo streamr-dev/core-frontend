@@ -18,9 +18,16 @@ export type Props = {
     onClose: () => void,
     onContinue: () => Promise<void>,
     onShowGuidedDialog: () => void,
+    disabled?: boolean,
 }
 
-const ConfirmDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueProp, onShowGuidedDialog: onShowGuidedDialogProp }: Props) => {
+const ConfirmDeployDataUnionDialog = ({
+    product,
+    onClose,
+    onContinue: onContinueProp,
+    onShowGuidedDialog: onShowGuidedDialogProp,
+    disabled,
+}: Props) => {
     const [waitingOnContinue, setWaitingOnContinue] = useState(false)
 
     const onContinue = useCallback(async () => {
@@ -73,6 +80,7 @@ const ConfirmDeployDataUnionDialog = ({ product, onClose, onContinue: onContinue
                         />
                     </div>
                 )}
+                disabled={disabled}
             >
                 <ThemeProvider
                     theme={{

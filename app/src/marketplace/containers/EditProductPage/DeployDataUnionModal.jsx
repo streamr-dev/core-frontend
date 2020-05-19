@@ -10,7 +10,6 @@ import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployData
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
-import withWeb3 from '$shared/utils/withWeb3'
 import { deployContract, createJoinPartStream } from '$mp/modules/dataUnion/services'
 import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
@@ -19,6 +18,8 @@ import { transactionTypes } from '$shared/utils/constants'
 import getWeb3 from '$shared/web3/web3Provider'
 import { averageBlockTime } from '$shared/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useWeb3Status from '$shared/hooks/useWeb3Status'
+import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 
 type DeployDialogProps = {
     product: Product,
@@ -55,6 +56,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const [address, setAddress] = useState(null)
     const dispatch = useDispatch()
     const isMounted = useIsMounted()
+    const { web3Error, checkingWeb3 } = useWeb3Status()
 
     const onClose = useCallback(() => {
         api.close(!!address && isEthereumAddress(address))
@@ -70,7 +72,15 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         if (!isMounted()) { return Promise.resolve() }
 
         // Set estimate
-        const blockEstimate = await averageBlockTime(getWeb3())
+        let blockEstimate = 0
+
+        try {
+            blockEstimate = await averageBlockTime(getWeb3())
+        } catch (e) {
+            // just log the error if estimate fails, otherwise we can continue
+            console.warn(e)
+        }
+
         if (!isMounted()) { return Promise.resolve() }
         setEstimate(blockEstimate + API_READY_ESTIMATE)
 
@@ -114,6 +124,15 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         }
     }, [address, updateAddress])
 
+    if (!checkingWeb3 && web3Error) {
+        return (
+            <Web3ErrorDialog
+                onClose={onClose}
+                error={web3Error}
+            />
+        )
+    }
+
     if (deployError) {
         return (
             <ErrorDialog
@@ -127,6 +146,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         case steps.GUIDE:
             return (
                 <GuidedDeployDataUnionDialog
+                    disabled={checkingWeb3}
                     dontShowAgain={dontShowAgain}
                     product={product}
                     onContinue={onGuideContinue}
@@ -137,6 +157,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         case steps.CONFIRM:
             return (
                 <ConfirmDeployDataUnionDialog
+                    disabled={checkingWeb3}
                     product={product}
                     onContinue={onDeploy}
                     onShowGuidedDialog={() => setStep(steps.GUIDE)}
@@ -160,8 +181,6 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     }
 }
 
-export const DeployDialogWithWeb3 = withWeb3(DeployDialog)
-
 export default () => {
     const { api, isOpen, value } = useModal('dataUnion.DEPLOY')
 
@@ -172,7 +191,7 @@ export default () => {
     const { product, updateAddress } = value
 
     return (
-        <DeployDialogWithWeb3
+        <DeployDialog
             product={product}
             api={api}
             onClose={() => api.close(false)}

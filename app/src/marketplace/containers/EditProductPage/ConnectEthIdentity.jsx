@@ -14,9 +14,10 @@ import styles from './productStreams.pcss'
 
 type Props = {
     className?: string,
+    disabled?: boolean,
 }
 
-const ConnectEthIdentity = ({ className }: Props) => {
+const ConnectEthIdentity = ({ className, disabled }: Props) => {
     const { isRequired, requiredAddress, walletLocked } = useIsEthIdentityNeeded()
 
     const [waiting, setWaiting] = useState(false)
@@ -59,7 +60,7 @@ const ConnectEthIdentity = ({ className }: Props) => {
                     />
                     <Button
                         kind="secondary"
-                        disabled={isOpen}
+                        disabled={isOpen || !!disabled}
                         onClick={() => addIdentity({
                             requiredAddress,
                         })}
