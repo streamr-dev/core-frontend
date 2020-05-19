@@ -246,13 +246,14 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                         id="fields"
                         title={I18n.t('userpages.streams.edit.details.nav.fields')}
                     >
-                        {stream.config.fields.map(({ name, type }) => (
+                        {stream.config.fields.map(({ name, type, id }) => (
                             <FieldGroup key={name}>
                                 <Field label={I18n.t('userpages.streams.edit.configure.fieldName')}>
-                                    <Text disabled value={name} readOnly />
+                                    <Text id={`name-${id}`} disabled value={name} readOnly />
                                 </Field>
                                 <Field label={I18n.t('userpages.streams.edit.configure.dataType')} narrow>
                                     <Text
+                                        id={`type-${id}`}
                                         disabled
                                         value={I18n.t(`userpages.streams.fieldTypes.${type}`)}
                                         readOnly
@@ -285,6 +286,7 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                                 )}
                                 readOnly
                                 disabled
+                                name="range"
                             />
                         </Field>
                         <Field narrow desktopOnly />

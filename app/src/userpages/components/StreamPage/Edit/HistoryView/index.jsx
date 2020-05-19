@@ -424,6 +424,7 @@ class HistoryView extends Component<Props, State> {
                                 value={storageAmount}
                                 onChange={this.onStorageAmountChange}
                                 disabled={disabled}
+                                name="storageAmount"
                             />
                             <Select
                                 options={unitOptions}

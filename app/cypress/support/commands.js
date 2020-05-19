@@ -12,6 +12,10 @@ Cypress.Commands.add('login', (username = 'tester1@streamr.com', password = 'tes
     }).session.getSessionToken().then(setToken)
 ))
 
+Cypress.Commands.add('logout', () => {
+    setToken(null)
+})
+
 Cypress.Commands.add('authenticatedRequest', (options = {}) => (
     cy.request({
         ...options,
@@ -41,6 +45,14 @@ Cypress.Commands.add('createStream', (body) => (
         .then(({ body: { id } }) => id)
 ))
 
+Cypress.Commands.add('getStream', (id) => {
+    cy
+        .authenticatedRequest({
+            url: `http://localhost/api/v1/streams/${id}`,
+        })
+        .then(({ body }) => body)
+})
+
 Cypress.Commands.add('ignoreUncaughtError', (messageRegex, done) => {
     if (!done) {
         throw new Error('Callback is required.')
@@ -50,10 +62,6 @@ Cypress.Commands.add('ignoreUncaughtError', (messageRegex, done) => {
         done()
         return messageRegex.test(err.message)
     })
-})
-
-Cypress.Commands.add('ignoreFailedRequest', (statusCode, done) => {
-    cy.ignoreUncaught(/failed with status code/i)
 })
 
 Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'read') => (

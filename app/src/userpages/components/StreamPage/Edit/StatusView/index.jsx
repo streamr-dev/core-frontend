@@ -104,6 +104,7 @@ function StatusView(props: Props) {
                         onChange={onChange}
                         onBlur={onCommit}
                         disabled={disabled}
+                        name="inactivityValue"
                     />
                     <Select
                         options={unitOptions}
