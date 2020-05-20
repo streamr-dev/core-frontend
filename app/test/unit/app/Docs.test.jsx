@@ -285,7 +285,7 @@ jest.mock('$docs/components/Pages/Api/Authentication', () => ({
 jest.mock('$docs/components/Pages/ApiExplorer', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/api-explorer</div>
+        <div>/docs/API-explorer</div>
     ),
 }))
 jest.mock('$docs/components/Pages/TechnicalNotes', () => ({
