@@ -309,7 +309,7 @@ export const generateMap = ({ dataUnions: includeDataUnions = !!process.env.DATA
             filePath: 'sdk/overview.mdx',
         },
         Overview: {
-            path: docsLinks.sdk,
+            path: docsLinks.sdkOverview,
             section: 'SDKs',
             title: 'Overview',
             filePath: 'sdk/overview.mdx',
