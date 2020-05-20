@@ -12,12 +12,21 @@ import styles from './identityNameDialog.pcss'
 
 type Props = {
     onClose: () => void,
+    onCancel: () => void,
     onSave: (string) => Promise<void>,
     waiting?: boolean,
     initialValue?: string,
+    disabled?: boolean,
 }
 
-const IdentityNameDialog = ({ onClose, onSave: onSaveProp, waiting, initialValue }: Props) => {
+const IdentityNameDialog = ({
+    onClose,
+    onCancel,
+    onSave: onSaveProp,
+    waiting,
+    initialValue,
+    disabled,
+}: Props) => {
     const [name, setName] = useState(initialValue || '')
     const nameRef = useRef()
     nameRef.current = name
@@ -40,7 +49,7 @@ const IdentityNameDialog = ({ onClose, onSave: onSaveProp, waiting, initialValue
                         title: I18n.t('modal.common.cancel'),
                         kind: 'link',
                         outline: true,
-                        onClick: () => onClose(),
+                        onClick: () => onCancel(),
                     },
                     save: {
                         title: I18n.t('modal.common.next'),
@@ -50,6 +59,7 @@ const IdentityNameDialog = ({ onClose, onSave: onSaveProp, waiting, initialValue
                         spinner: !!waiting,
                     },
                 }}
+                disabled={disabled}
             >
                 <div className={styles.textField}>
                     <Label>

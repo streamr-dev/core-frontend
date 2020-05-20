@@ -995,12 +995,14 @@ story('EthereumIdentity/IdentityNameDialog')
     .add('default', () => (
         <IdentityNameDialog
             onClose={action('onClose')}
+            onCancel={action('onCancel')}
             onSave={action('onSave')}
         />
     ))
     .add('initial value', () => (
         <IdentityNameDialog
             onClose={action('onClose')}
+            onCancel={action('onCancel')}
             onSave={action('onSave')}
             initialValue="My Eth address"
         />
@@ -1008,6 +1010,7 @@ story('EthereumIdentity/IdentityNameDialog')
     .add('waiting', () => (
         <IdentityNameDialog
             onClose={action('onClose')}
+            onCancel={action('onCancel')}
             onSave={action('onSave')}
             waiting
         />

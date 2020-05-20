@@ -15,6 +15,7 @@ import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
+import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 
 import Layout from '$shared/components/Layout'
 import CoreLayout from '$shared/components/Layout/Core'
@@ -40,6 +41,7 @@ export const ProfilePage = () => {
     const isMounted = useIsMounted()
     const dispatch = useDispatch()
     const { fetching: isLoadingEthIdentities } = useEthereumIdentities()
+    const { fetching: isLoadingPrivateKeys } = usePrivateKeys()
 
     const doSaveCurrentUser = useCallback(() => dispatch(saveCurrentUser()), [dispatch])
     const redirectToUserPages = useCallback(() => dispatch(push(routes.core())), [dispatch])
@@ -76,7 +78,8 @@ export const ProfilePage = () => {
         isDeleteAccountPending ||
         isChangePasswordPending ||
         isAvatarUploadPending ||
-        isLoadingEthIdentities
+        isLoadingEthIdentities ||
+        isLoadingPrivateKeys
     )
 
     return (

@@ -75,14 +75,14 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
                 console.warn(e)
                 error = e
             } finally {
-                if ((createAccount && error) || (!createAccount && (!error || error.code !== ErrorCodes.IDENTITY_EXISTS))) {
+                if (createAccount && !error) {
+                    setPhase(identityPhases.ACCOUNT_CREATED)
+                } else if (!error || error.code !== ErrorCodes.IDENTITY_EXISTS) {
                     api.close({
                         added,
                         error,
                     })
                 }
-
-                setPhase(identityPhases.ACCOUNT_CREATED)
             }
         })
     ), [wrap, connectMethod, api, createAccount])
@@ -163,6 +163,7 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
 
             return (
                 <IdentityNameDialog
+                    onCancel={onClose}
                     onClose={onClose}
                     onSave={onSetName}
                     waiting={isPending}
@@ -191,7 +192,8 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
         case identityPhases.RENAME_ACCOUNT:
             return (
                 <IdentityNameDialog
-                    onClose={onClose}
+                    onClose={() => {}}
+                    onCancel={() => setPhase(identityPhases.ACCOUNT_CREATED)}
                     onSave={onRename}
                     initialValue={linkedAccount.name || ''}
                     waiting={renaming}

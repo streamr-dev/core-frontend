@@ -47,11 +47,16 @@ const AddPrivateKeyDialog = ({ api }: Props) => {
         getPrivateKeys()
     }, [getPrivateKeys])
 
+    if (fetching) {
+        return null
+    }
+
     return (
         <IdentityNameDialog
             onClose={onClose}
+            onCancel={onClose}
             onSave={onSetName}
-            waiting={fetching || isPending}
+            waiting={isPending}
         />
     )
 }
