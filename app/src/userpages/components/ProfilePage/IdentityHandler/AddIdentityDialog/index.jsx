@@ -96,34 +96,40 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
         })
     }, [api])
 
-    const onRename = useCallback(async (name: string) => {
-        const { id, name: oldName } = linkedAccountRef.current || {}
+    const onRename = useCallback(async (name: string) => (
+        wrap(async () => {
+            const { id, name: oldName } = linkedAccountRef.current || {}
 
-        if (name !== oldName) {
-            setRenaming(true)
+            if (name !== oldName) {
+                setRenaming(true)
 
-            try {
-                await edit(id, name)
+                try {
+                    await edit(id, name)
 
-                setLinkedAccount((prev) => ({
-                    ...prev,
-                    name,
-                }))
-            } catch (e) {
-                console.warn(e)
-            } finally {
-                setRenaming(false)
+                    setLinkedAccount((prev) => ({
+                        ...prev,
+                        name,
+                    }))
+                } catch (e) {
+                    console.warn(e)
+                } finally {
+                    setRenaming(false)
+                }
             }
-        }
 
-        setPhase(identityPhases.ACCOUNT_CREATED)
-    }, [edit])
+            setPhase(identityPhases.ACCOUNT_CREATED)
+        })
+    ), [wrap, edit])
 
     useEffect(() => {
         getEthIdentities()
     }, [getEthIdentities])
 
-    if (fetching || checkingWeb3 || web3Error || (!createAccount && !walletAddress)) {
+    if (fetching && phase === identityPhases.NAME) {
+        return null
+    }
+
+    if (!checkingWeb3 && (web3Error || (!createAccount && !walletAddress))) {
         return (
             <Web3ErrorDialog
                 waiting={fetching || checkingWeb3}
@@ -133,7 +139,7 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
         )
     }
 
-    if (!!requiredAddress && (!walletAddress || !areAddressesEqual(walletAddress, requiredAddress))) {
+    if (!checkingWeb3 && !!requiredAddress && (!walletAddress || !areAddressesEqual(walletAddress, requiredAddress))) {
         return (
             <UnlockWalletDialog onClose={onClose} requiredAddress={requiredAddress}>
                 <Translate
@@ -160,6 +166,7 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
                     onClose={onClose}
                     onSave={onSetName}
                     waiting={isPending}
+                    disabled={checkingWeb3}
                 />
             )
         }

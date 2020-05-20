@@ -14,6 +14,7 @@ import TOCPage from '$shared/components/TOCPage'
 import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 
 import Layout from '$shared/components/Layout'
 import CoreLayout from '$shared/components/Layout/Core'
@@ -38,6 +39,7 @@ export const ProfilePage = () => {
     const { isPending: isAvatarUploadPending } = usePending('user.UPLOAD_AVATAR')
     const isMounted = useIsMounted()
     const dispatch = useDispatch()
+    const { fetching: isLoadingEthIdentities } = useEthereumIdentities()
 
     const doSaveCurrentUser = useCallback(() => dispatch(saveCurrentUser()), [dispatch])
     const redirectToUserPages = useCallback(() => dispatch(push(routes.core())), [dispatch])
@@ -73,7 +75,8 @@ export const ProfilePage = () => {
         isAddPrivateKeyPending ||
         isDeleteAccountPending ||
         isChangePasswordPending ||
-        isAvatarUploadPending
+        isAvatarUploadPending ||
+        isLoadingEthIdentities
     )
 
     return (

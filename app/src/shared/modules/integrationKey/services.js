@@ -1,6 +1,6 @@
 // @flow
 
-import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
+import { getPublicWeb3 } from '$shared/web3/web3Provider'
 import { get, post, del, put } from '$shared/utils/api'
 import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
@@ -16,7 +16,6 @@ import { integrationKeyServices } from '$shared/utils/constants'
 import { getDataTokenBalance, getEthBalance } from '$mp/utils/web3'
 
 import {
-    Web3NotEnabledError,
     ChallengeFailedError,
     CreateIdentityFailedError,
     IdentityExistsError,

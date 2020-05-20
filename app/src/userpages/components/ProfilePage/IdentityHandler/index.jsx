@@ -34,7 +34,8 @@ const IdentityHandler = () => {
     const { api: addIdentityDialog, isOpen } = useModal('userpages.addIdentity')
     const isMounted = useIsMounted()
     const { isPending: isSavePending } = usePending('user.SAVE')
-    const { wrap, isPending: isAddIdentityDialogPending } = usePending('user.ADD_IDENTITY_DIALOG')
+    const { wrap: wrapConnectWalletDialog, isPending: isConnectWalletDialogPending } = usePending('user.CONNECT_WALLET_DIALOG')
+    const { wrap: wrapCreateAccountDialog, isPending: isCreateAccountDialogPending } = usePending('user.CREATE_ACCOUNT_DIALOG')
     const { wrap: wrapIdentityAction } = usePending('user.ADD_IDENTITY')
 
     const wrappedEdit = useCallback(async (...args) => (
@@ -49,34 +50,45 @@ const IdentityHandler = () => {
         })
     ), [wrapIdentityAction, remove])
 
-    const addIdentity = useCallback(async (createAccount: boolean = false) => (
-        wrap(async () => {
-            const { added, error } = await addIdentityDialog.open({
-                createAccount,
-            })
-
-            if (isMounted()) {
-                if (error) {
-                    Notification.push({
-                        title: I18n.t('modal.newIdentity.errorNotification'),
-                        icon: NotificationIcon.ERROR,
-                        error,
-                    })
-                } else if (added) {
-                    Notification.push({
-                        title: I18n.t('modal.newIdentity.successNotification'),
-                        icon: NotificationIcon.CHECKMARK,
-                    })
-                }
-            }
+    const addIdentity = useCallback(async (createAccount: boolean = false) => {
+        const { added, error } = await addIdentityDialog.open({
+            createAccount,
         })
-    ), [wrap, addIdentityDialog, isMounted])
+
+        if (isMounted()) {
+            if (error) {
+                Notification.push({
+                    title: I18n.t('modal.newIdentity.errorNotification'),
+                    icon: NotificationIcon.ERROR,
+                    error,
+                })
+            } else if (added) {
+                Notification.push({
+                    title: I18n.t('modal.newIdentity.successNotification'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            }
+        }
+    }, [addIdentityDialog, isMounted])
+
+    const connectWallet = useCallback(async () => (
+        wrapConnectWalletDialog(async () => addIdentity())
+    ), [wrapConnectWalletDialog, addIdentity])
+
+    const createAccount = useCallback(async () => (
+        wrapCreateAccountDialog(async () => addIdentity(true))
+    ), [wrapCreateAccountDialog, addIdentity])
 
     useEffect(() => {
         load()
     }, [load])
 
-    const isDisabled = !!(fetching || isSavePending || isAddIdentityDialogPending)
+    const isDisabled = !!(
+        fetching ||
+        isSavePending ||
+        isConnectWalletDialogPending ||
+        isConnectWalletDialogPending
+    )
 
     return (
         <Wrapper>
@@ -97,8 +109,8 @@ const IdentityHandler = () => {
                 type="button"
                 kind="secondary"
                 disabled={isOpen || isDisabled}
-                onClick={() => addIdentity()}
-                waiting={isAddIdentityDialogPending}
+                onClick={connectWallet}
+                waiting={isConnectWalletDialogPending}
             >
                 <Translate value="userpages.profilePage.ethereumAddress.connectWallet" />
             </Button>
@@ -106,8 +118,8 @@ const IdentityHandler = () => {
                 type="button"
                 kind="secondary"
                 disabled={isOpen || isDisabled}
-                onClick={() => addIdentity(true)}
-                waiting={isAddIdentityDialogPending}
+                onClick={createAccount}
+                waiting={isCreateAccountDialogPending}
             >
                 <Translate value="userpages.profilePage.ethereumAddress.createAccount" />
             </Button>
