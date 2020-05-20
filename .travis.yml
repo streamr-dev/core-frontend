@@ -110,6 +110,7 @@ jobs:
     install: true
     script:
       - npm ci
+      - npm run build-index
       - npm run build
       - docker build -t $OWNER/$IMAGE_NAME:local --build-arg NPM_TOKEN=${NPM_TOKEN} .
       - travis_scripts/smoke-test.sh
@@ -129,6 +130,7 @@ jobs:
     install: true
     script:
       - npm ci
+      - npm run build-index
       - npm run build
       - docker build -t $OWNER/$IMAGE_NAME:local --build-arg NPM_TOKEN=${NPM_TOKEN} .
     deploy:
