@@ -1,7 +1,8 @@
 // @flow
 
-import React, { Fragment, useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
+import styled from 'styled-components'
 
 import IntegrationKeyList from '../IntegrationKeyHandler/IntegrationKeyList'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
@@ -15,6 +16,12 @@ import { usePending } from '$shared/hooks/usePending'
 import profileStyles from '../profilePage.pcss'
 
 import AddIdentityDialog from './AddIdentityDialog'
+
+const Wrapper = styled.div`
+    > button + button {
+        margin-left: 1rem;
+    }
+`
 
 const IdentityHandler = () => {
     const {
@@ -42,9 +49,11 @@ const IdentityHandler = () => {
         })
     ), [wrapIdentityAction, remove])
 
-    const addIdentity = useCallback(async () => (
+    const addIdentity = useCallback(async (createAccount: boolean = false) => (
         wrap(async () => {
-            const { added, error } = await addIdentityDialog.open()
+            const { added, error } = await addIdentityDialog.open({
+                createAccount,
+            })
 
             if (isMounted()) {
                 if (error) {
@@ -70,7 +79,7 @@ const IdentityHandler = () => {
     const isDisabled = !!(fetching || isSavePending || isAddIdentityDialogPending)
 
     return (
-        <Fragment>
+        <Wrapper>
             <Translate
                 tag="p"
                 value="userpages.profilePage.ethereumAddress.description"
@@ -88,13 +97,22 @@ const IdentityHandler = () => {
                 type="button"
                 kind="secondary"
                 disabled={isOpen || isDisabled}
-                onClick={addIdentity}
+                onClick={() => addIdentity()}
                 waiting={isAddIdentityDialogPending}
             >
-                <Translate value="userpages.profilePage.ethereumAddress.addNewAddress" />
+                <Translate value="userpages.profilePage.ethereumAddress.connectWallet" />
+            </Button>
+            <Button
+                type="button"
+                kind="secondary"
+                disabled={isOpen || isDisabled}
+                onClick={() => addIdentity(true)}
+                waiting={isAddIdentityDialogPending}
+            >
+                <Translate value="userpages.profilePage.ethereumAddress.createAccount" />
             </Button>
             <AddIdentityDialog />
-        </Fragment>
+        </Wrapper>
     )
 }
 

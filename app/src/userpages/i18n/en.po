@@ -804,8 +804,11 @@ msgstr ""
 msgid "userpages##profilePage##ethereumAddress##addAddress"
 msgstr "Add address"
 
-msgid "userpages##profilePage##ethereumAddress##addNewAddress"
-msgstr "Add new address"
+msgid "userpages##profilePage##ethereumAddress##connectWallet"
+msgstr "Connect wallet"
+
+msgid "userpages##profilePage##ethereumAddress##createAccount"
+msgstr "Create account"
 
 msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
 msgstr ""
@@ -982,15 +985,6 @@ msgstr "Signature request"
 msgid "modal##signatureRequest##description"
 msgstr "Please sign the challenge in Metamask window"
 
-msgid "modal##privateKey##defaultTitle"
-msgstr "Add a name to this Ethereum account"
-
-msgid "modal##privateKey##label"
-msgstr "Account name"
-
-msgid "modal##privateKey##placeholder"
-msgstr "eg. Mainnet Eth Address"
-
 msgid "modal##privateKey##successNotification"
 msgstr "Ethereum account added"
 
@@ -998,7 +992,7 @@ msgid "modal##privateKey##errorNotification"
 msgstr "There was an error while adding an Ethereum account"
 
 msgid "modal##newIdentity##defaultTitle"
-msgstr "Add a name to this Ethereum address"
+msgstr "Add a name to this Ethereum account"
 
 msgid "modal##newIdentity##label"
 msgstr "Account name"

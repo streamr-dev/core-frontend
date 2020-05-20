@@ -10,7 +10,7 @@ import type {
     IntegrationKeysErrorActionCreator,
     SetBalanceActionCreator,
 } from './types'
-import type { IntegrationKeyId, IntegrationKeyIdList, Balances } from '$shared/flowtype/integration-key-types'
+import type { IntegrationKeyId, IntegrationKeyIdList, Balances, CreateIdentity } from '$shared/flowtype/integration-key-types'
 import { integrationKeysSchema, integrationKeySchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import { integrationKeyServices } from '$shared/utils/constants'
@@ -248,9 +248,9 @@ export const editIntegrationKey = (id: IntegrationKeyId, keyName: string) => (di
         })
 }
 
-export const createIdentity = (name: string) => (dispatch: Function) => {
+export const createIdentity = (args: CreateIdentity) => (dispatch: Function) => {
     dispatch(createIdentityRequest())
-    return services.createIdentity(name)
+    return services.createIdentity(args)
         .then((result) => {
             const newId = handleEntities(integrationKeySchema, dispatch)(result)
             dispatch(createIdentitySuccess(newId))
@@ -261,6 +261,8 @@ export const createIdentity = (name: string) => (dispatch: Function) => {
             if (address) {
                 dispatch(updateBalance(address))
             }
+
+            return newId
         }, (error) => {
             dispatch(createIdentityFailure({
                 message: error.message,

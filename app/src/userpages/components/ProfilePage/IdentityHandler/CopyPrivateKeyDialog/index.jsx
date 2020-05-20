@@ -50,10 +50,10 @@ const CopyPrivateKeyDialog = ({ onClose: onCloseProp, privateKey }: Props) => {
     }, [copy, privateKey])
 
     const onClose = useCallback(() => {
-        if (securelyStored) {
+        if (securelyStored && copiedOnce) {
             onCloseProp()
         }
-    }, [onCloseProp, securelyStored])
+    }, [onCloseProp, securelyStored, copiedOnce])
 
     const onSecurelyStoredToggle = useCallback(() => {
         setSecurelyStored((stored) => !stored)
@@ -70,7 +70,7 @@ const CopyPrivateKeyDialog = ({ onClose: onCloseProp, privateKey }: Props) => {
                         kind: 'primary',
                         outline: true,
                         onClick: () => onClose(),
-                        disabled: !securelyStored,
+                        disabled: !securelyStored || !copiedOnce,
                     },
                     copy: {
                         title: I18n.t(`modal.copyPrivateKey.${isCopied ? 'keyCopied' : 'copyKey'}`),

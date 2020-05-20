@@ -9,8 +9,8 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 
 type Props = {
-    onClose: () => void,
-    onSave: () => Promise<void>,
+    onBack: () => void,
+    onSave: () => void,
     name: string,
     address: Address,
 }
@@ -39,17 +39,17 @@ const EthAddress = styled.div`
     line-height: 1.5rem;
 `
 
-const EthereumAccountCreatedDialog = ({ onClose, onSave, name, address }: Props) => (
+const EthereumAccountCreatedDialog = ({ onBack, onSave, name, address }: Props) => (
     <ModalPortal>
         <Dialog
             title={I18n.t('modal.ethereumAccountCreated.defaultTitle')}
-            onClose={onClose}
+            onClose={() => {}}
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.cancel'),
+                    title: I18n.t('modal.common.back'),
                     kind: 'link',
                     outline: true,
-                    onClick: () => onClose(),
+                    onClick: () => onBack(),
                 },
                 save: {
                     title: I18n.t('modal.common.next'),

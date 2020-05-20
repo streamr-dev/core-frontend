@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -14,10 +14,17 @@ type Props = {
     onClose: () => void,
     onSave: (string) => Promise<void>,
     waiting?: boolean,
+    initialValue?: string,
 }
 
-const IdentityNameDialog = ({ onClose, onSave, waiting }: Props) => {
-    const [name, setName] = useState('')
+const IdentityNameDialog = ({ onClose, onSave: onSaveProp, waiting, initialValue }: Props) => {
+    const [name, setName] = useState(initialValue || '')
+    const nameRef = useRef()
+    nameRef.current = name
+
+    const onSave = useCallback(() => {
+        onSaveProp(nameRef.current || '')
+    }, [onSaveProp, nameRef])
 
     const onNameChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         setName(e.target.value)
@@ -38,7 +45,7 @@ const IdentityNameDialog = ({ onClose, onSave, waiting }: Props) => {
                     save: {
                         title: I18n.t('modal.common.next'),
                         kind: 'primary',
-                        onClick: () => onSave(name),
+                        onClick: () => onSave(),
                         disabled: !name || !!waiting,
                         spinner: !!waiting,
                     },
@@ -52,11 +59,16 @@ const IdentityNameDialog = ({ onClose, onSave, waiting }: Props) => {
                         placeholder={I18n.t('modal.newIdentity.placeholder')}
                         value={name}
                         onChange={onNameChange}
+                        disabled={!!waiting}
                     />
                 </div>
             </Dialog>
         </ModalPortal>
     )
+}
+
+IdentityNameDialog.defaultProps = {
+    initialValue: '',
 }
 
 export default IdentityNameDialog
