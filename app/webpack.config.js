@@ -99,6 +99,15 @@ module.exports = {
                     publicPath,
                 },
             },
+            // Videos are put to <BASE_URL>/videos
+            {
+                test: /\.(mp4)$/,
+                loader: 'file-loader',
+                options: {
+                    name: 'videos/[name]_[hash:8].[ext]',
+                    publicPath,
+                },
+            },
             // Fonts are put to <BASE_URL>/fonts
             {
                 test: /\.(woff|woff2|eot|ttf)$/,
@@ -222,6 +231,7 @@ module.exports = {
                 'src/userpages/**/*.*',
                 'src/editor/**/*.*',
                 'src/docs/**/*.*',
+                'src/*.*',
             ].filter(Boolean),
             globOptions: {
                 ignore: [
@@ -248,8 +258,6 @@ module.exports = {
                     // skip sketch files
                     '**/*.sketch',
                     'src/docs/scripts/*.*',
-                    // deprecated components
-                    'src/marketplace/components/deprecated/**/*.*',
                 ],
             },
         }),

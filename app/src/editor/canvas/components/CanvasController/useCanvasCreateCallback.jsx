@@ -4,7 +4,7 @@ import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import { Context as RouterContext } from '$shared/contexts/Router'
 import usePending from '$shared/hooks/usePending'
 
-import links from '../../../../links'
+import routes from '$routes'
 import * as services from '../../services'
 
 export default function useCanvasCreateCallback() {
@@ -17,7 +17,9 @@ export default function useCanvasCreateCallback() {
         return wrap(async () => {
             const newCanvas = await services.create()
             if (!isMountedRef.current) { return }
-            const dest = `${links.editor.canvasEditor}/${newCanvas.id}`
+            const dest = routes.canvases.edit({
+                id: newCanvas.id,
+            })
             if (replace) {
                 history.replace(dest)
             } else {

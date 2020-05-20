@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
-import { Label, FormGroup } from 'reactstrap'
+import { Label } from 'reactstrap'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Checkbox from '$shared/components/Checkbox'
 import Buttons from '$shared/components/Buttons'
-import links from '../../../../links'
+import routes from '$routes'
 
 import type { Props } from '.'
 
@@ -48,7 +48,7 @@ const StyledLabel = styled(Label)`
     }
 `
 
-const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode }: Props) => {
+const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: Props) => {
     const [termsAccepted, setTermsAccepted] = useState(false)
 
     return (
@@ -56,18 +56,17 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode }: Props) => {
             <Dialog
                 onClose={onCancel}
                 title={I18n.t(`modal.readyToPublish.${publishMode}.title`)}
+                disabled={disabled}
                 renderActions={() => (
                     <Footer>
                         <FooterText>
-                            <FormGroup check>
-                                <StyledLabel check>
-                                    <Checkbox
-                                        value={termsAccepted}
-                                        onChange={(e: SyntheticInputEvent<HTMLInputElement>) => setTermsAccepted(e.currentTarget.checked)}
-                                    />&nbsp;
-                                    <Translate value="modal.readyToPublish.terms" publisherTermsLink={links.publisherTerms} dangerousHTML />
-                                </StyledLabel>
-                            </FormGroup>
+                            <StyledLabel check>
+                                <Checkbox
+                                    value={termsAccepted}
+                                    onChange={(e: SyntheticInputEvent<HTMLInputElement>) => setTermsAccepted(e.currentTarget.checked)}
+                                />&nbsp;
+                                <Translate value="modal.readyToPublish.terms" publisherTermsLink={routes.publisherTerms()} dangerousHTML />
+                            </StyledLabel>
                         </FooterText>
                         <Buttons
                             actions={{

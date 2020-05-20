@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 import Logo from '$shared/components/Logo'
 import SvgIcon from '$shared/components/SvgIcon'
-import links from '$shared/../links'
+import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
@@ -33,7 +33,7 @@ Welcome to Streamr, the platform for real-time data on the decentralised web. Ex
 <hr />
 
 ## What is Streamr?
-Streamr is an open source, crowdfunded, decentralized platform for real-time data. At its heart is the <a target="_blank" href={links.site.network}>Streamr Network</a>, which transports <Link to={docsLinks.streams}>streams</Link> of messages from data publishers to subscribers, appearing to the user as a global publish/subscribe messaging service.
+Streamr is an open source, crowdfunded, decentralized platform for real-time data. At its heart is the <a target="_blank" href={routes.site.learn.network()}>Streamr Network</a>, which transports <Link to={docsLinks.streams}>streams</Link> of messages from data publishers to subscribers, appearing to the user as a global publish/subscribe messaging service.
 
 It is similar in functionality to message queues, enterprise messaging systems, MQTT brokers, Apache Kafka, or pub/sub cloud messaging services. The key features of such systems, including Streamr, are:
 
@@ -44,7 +44,7 @@ It is similar in functionality to message queues, enterprise messaging systems, 
 You can interact with Streamr using the <Link to={docsLinks.core}>Core</Link> user interface, <Link to={docsLinks.sdk}>SDKs</Link>, or directly via the <Link to={docsLinks.api}>API</Link>.
 In addition to the Network, the Streamr stack includes a <Link to={docsLinks.marketplace}>Marketplace</Link> for data sharing and monetization, and <Link to={docsLinks.canvases}>Canvases</Link> for data processing and analytics as part of the Core web app.
 
-Using the built-in tooling is optional, as Streamr also integrates with many popular data frameworks including <a target="_blank" href={links.blogPosts.spark}>Apache Spark</a> and <a target="_blank" href={links.blogPosts.nodered}>Node-RED</a>. To start using Streamr right away, check out the Getting Started section and the Tutorials.
+Using the built-in tooling is optional, as Streamr also integrates with many popular data frameworks including <a target="_blank" href={routes.blogPosts.spark()}>Apache Spark</a> and <a target="_blank" href={routes.blogPosts.nodered()}>Node-RED</a>. To start using Streamr right away, check out the Getting Started section and the Tutorials.
 
 Using the built-in tooling is optional, as Streamr also integrates with many popular data frameworks including Apache Spark and Node-RED. To start using Streamr right away, check out the <Link to={docsLinks.gettingStarted}>Getting Started</Link> section and the <Link to={docsLinks.tutorials}>Tutorials.</Link>
 
@@ -53,9 +53,9 @@ The big difference to comparable data frameworks is that Streamr aims to be dece
 
 Similar to cloud services, you get on-demand scalability, minimal up-front investment, and benefit from economies of scale. Unlike cloud services, there's no vendor lock-in, no monopolies, no proprietary code, and no need to trust a third party with your data. Decentralised networks are also secure by design, more resilient to attacks and disruptions due to their distributed and peer-to-peer nature. They also benefit from network effects— as adoption grows, the above points become stronger, a shared standard is formed across industries, and a lot of useful content becomes available from a single source.
 
-Instead of a centralized party, the Network is run by its community of users, and it heavily relies on cryptography to remove the need for trust. This creates a permissionless and neutral network for real-time data, which is highly suitable for use cases such as data sharing, data monetisation, and the <a target="_blank" href={links.external.decentralizedWeb}>decentralised web</a>, extending the capabilities of the underlying internet without compromising its open and decentralised nature.
+Instead of a centralized party, the Network is run by its community of users, and it heavily relies on cryptography to remove the need for trust. This creates a permissionless and neutral network for real-time data, which is highly suitable for use cases such as data sharing, data monetisation, and the <a target="_blank" href={routes.misc.decentralizedWeb()}>decentralised web</a>, extending the capabilities of the underlying internet without compromising its open and decentralised nature.
 
-Another major difference is that Streamr utilizes a companion blockchain, currently <a target="_blank" href={links.external.ethereum}>Ethereum</a>. The blockchain provides users with secure digital identities, enables direct transfers of value in the form of a Streamr-specific cryptocurrency <Link to={docsLinks.dataToken}>DATA</Link>, and provides a shared ground truth for the network nodes.
+Another major difference is that Streamr utilizes a companion blockchain, currently <a target="_blank" href="https://www.ethereum.org">Ethereum</a>. The blockchain provides users with secure digital identities, enables direct transfers of value in the form of a Streamr-specific cryptocurrency <Link to={docsLinks.dataToken}>DATA</Link>, and provides a shared ground truth for the network nodes.
 
 ## Work in Progress
 While Streamr already works today, it is not yet feature-complete or fully decentralized.  It is being very actively developed towards decentralization, node incentives, and new features. Learn more about the roadmap on the <a target="_blank" href={process.env.PLATFORM_ORIGIN_URL}>project website</a>.
@@ -77,8 +77,8 @@ While Streamr already works today, it is not yet feature-complete or fully decen
 ## Dig Deeper
 On the below channels, you can find others developing on Streamr, as well as get in touch with the Streamr core contributors:
 
-- <a target="_blank" href={links.community.devForum}>Community dev forum</a>
-- <a target="_blank" href={links.community.telegram}>Telegram</a>
-- <a target="_blank" href={links.community.reddit}>Reddit</a>
+- <a target="_blank" href={routes.community.devForum()}>Community dev forum</a>
+- <a target="_blank" href={routes.community.telegram()}>Telegram</a>
+- <a target="_blank" href={routes.community.reddit()}>Reddit</a>
 
-To understand the exact inner workings of Streamr, and perhaps help build it, check the <Link to={docsLinks.technicalNotes}>Technical Notes</Link> section and of course the project <a target="_blank" href={links.community.github}>GitHub</a>.
+To understand the exact inner workings of Streamr, and perhaps help build it, check the <Link to={docsLinks.technicalNotes}>Technical Notes</Link> section and of course the project <a target="_blank" href={routes.community.github()}>GitHub</a>.

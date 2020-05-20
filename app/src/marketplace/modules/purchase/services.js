@@ -6,15 +6,15 @@ import { getWeb3 } from '$shared/web3/web3Provider'
 import { getContract, send } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 import { post } from '$shared/utils/api'
-import { formatApiUrl } from '$shared/utils/url'
 import type { NumberString, ApiResult, PaymentCurrency } from '$shared/flowtype/common-types'
 import type { ProductId } from '../../flowtype/product-types'
 import type { SmartContractTransaction } from '$shared/flowtype/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import { getValidId } from '$mp/utils/product'
+import routes from '$routes'
 
 export const addFreeProduct = async (id: ProductId, endsAt: number): ApiResult<null> => post({
-    url: formatApiUrl('subscriptions'),
+    url: routes.api.subscriptions(),
     data: {
         product: getValidId(id, false),
         endsAt,

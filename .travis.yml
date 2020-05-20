@@ -22,15 +22,17 @@ cache:
   - "$HOME/.npm"
 env:
   global:
-  - secure: g/km642SU0HZoBmYIkt3gsWoXonuXYN4rdYfXm2ynavMKyojbDLHM+EYLB1uk1vsGR8SITHTQaE1lBoSlgD9aTXzyhtnDp3VkWJAm3/sxQIE8HEoKRT+4odrV/DCoidMLmeIL0xqLSYc2u+fLKm6dMnEdOVwBRPMPSdx6EMfusEbv2fPBMbWNTSEk5Jd8ppR1QwpbJQomeSp9uhxIH8pQWYUD3/zmhl26xYZ93wJMDQXoNyCQhlfpL7IcTljWPI+LP/U7GgSjBON/NHQ7Ka0Pq2UIA9B0QfrMPMrqOHb8AG2P/RaUyBqu0Jay6sdpyrJxJpANv7OAPE4RhLgjJx9fK4qzBvV6dwqxFt+1sNQRZCHc3AL5P7QiE4uVahbfy7i0xq1/aoJPLkIUEwnGn1HD1TBYE4LDnukkkFqN/GCuMBor2rqJLobRYlOY6g+EFfaCrG1gKfqVFr98XxJbBbTV8fRdyiqiJzpXtTLVpxJL2KDNdnhrTI+l5+/wRsiROu3rv2d5V0W25qOhhE02IxHAyfDb63dhddBopxO0TyjE5v7yew6HbpukixSDap7dq+w/P6m0Z7MjrAc+tMUOW/36TGVcLdK1pdEl1heVhNA9KVfzFT3nUP9nua/9weScISusQdhw6+GZrRyFQSfAJqaUemyJbyl0VFuxcVIt+fVNLQ=
   - secure: hu5cpsMinQEpoNgnJv1XQ+509/57gM4dHg+mRXaAkZ7ha6k0AK1AmNgsCKYfs2G8Qe3eFGM3DTuJA0JV9vOcUeHNURGQKW+ukciSN1dT8dmLC6DAjgd89LIV5jsgAMBtNNCeIDwdpSEhe39nD4P1ligVpxxtY9kbOfK+F/cNbgj9ZpC/MZ55rniMa1JkZpfWwP3bdOcko56E+dB3/Dh8L0QF1hiDA1AwpGXQcO2jQ22HvTyUIezcgIYGGSUJ0N9gPhe7f0UQ4iCdMbq2rKv2wi4vzKQPFOkK8eYAUfhbv1iHy/bP2VX8tR7ac9XJuAznaHJ3tng8iEnvF5ForiaAVhtUNOUi1Hw0i2qdaoash0hJh3Aq8IwyFZiZYAQYmIC29VuoPQJgTPVECEDkzqs8fbC0nqwjG9aVP6OkGUgSmR9LChUVsF8ZfLAp/R4bY0XJh6vuqG00qfl90f2zooTA/HPQa7D2VJBEDretZLR0u1ufPHEPkl++o5MeaeNn98KYKOD66fqK+lHf1fmyBogRRefXFZFOi1zNgZTe+xA6nNHk9eAMvYf9CfIsRM7AVnBviTWBkx3S5KDcbof8rdyUymwu5T/7Hly6JZmYKLZ5esQHoV2J5LYOxeaZoXXLARgQkxdpf/9sxNVkkB8TW6llnk+Bd7o7Qn9to80m60X2zsQ=
   - secure: "nHD48tYG5jDsFdgE5h7ZLxEYmIeXmjlcB+lswQqTzBOAgPSPmf89OCH1AYXQz2Bf9DhynIspPIQxuM/peeaPNLiuvBKubVtmSTMLrM3dyy2x9XUUKnGDEQPS0lOWA6k/Nyx2k4tqyx8Jvlzfgy3ayWyQQOxm8Rfmn4oyNz4ePCOxKwVIaeNwvdLzg5MqU9oDgxsSL2CGuHRJ7zgyDxxm7rKQcNgFEifUtB3+U0t5WfElWvhyAkgzhTZlfcHhEPqnoDxuQmlHMFl5f6PSvJXSaWaF+Q+co5Apw1KKJOAhfT6e3Pe1dsxTrQzFzzJCKPbjoHfknUBmX4wV0YDTz5VsR/L4L4PqVlZgP8Y8MdbeBwqfZY624wa/x3V4kOtfucEJDVO/n8rAqm3SREdSTN6HwgV6mdr870PUZhG512ZMT7J9IfyeigtQt6OYYDWtCqMb4rYNDsZQeepzWKegdKCByuyxchJZ+1/yg30ql+qeYkdVWV8npjEFU10PGgpo1m21Sqjq6mfjMi7IWT+DSh0oFPj7ua6A/5VTw/5OjqrBHbFmRcCM2cKvuS5dyTG0ETdBDfstgdqINiwW1cYzq9yqu+KDwwOFbeiELAZoQVERDYPu1RbX6ccIi4bYbd09nknxAAcGl1XEegEKouQxBDb6XexOdDnbtaxTFMUa9BsAZyI="
   - SENTRY_ORG=streamr
   - SENTRY_PROJECT=marketplace
-  - secure: FttWn322rLJj+iCCAyHxptnyj4LZPyNVx8owctcq8/C5hYC2cEWqEy0e7h4Hu1EUXlXVvgPa/b/ND1NZbKARNeiVtBFiwaThXNBJuttRWaVTV5WnKyVQNCcHeuWC/vYtIRSfW0sw1x7rSEMRqv2SRa7tqdkENCNmovr2soF8FyeImI1AxUXN+qlTAa6Nt8g2nNBUnes061O1bkAJJeH7vxAeLLSSvxGKtMCn+l31hKkSzwsc0M8bVCNoh95B8Klz0xgyfTn11sW1eQR2bkHctVn0VYc7LjMvnavQjD4kQUaTFb7bQrH1YSE2YetjIvNrUoHqcZETok86ONC0OoeJJeGl22cPYWThyANtBTer2dNkIXkJxVrF75nJ8T1Tr8aDd0Y2lOvH4OsP++1uHkGRgQ20cyl2t36BxZ30sIj2HALqGd9R7k+wUIyDSPYMu0N9NvTQjDvF3KWOTrKe8ImvOSxRukCe9sEIxPB159smpD4YsWHoJ/T0N9NC7D2S34tn9Nh4OZDnPpaDY5mrfa9yZC0cgIf6uj1X08fDhCq0cc5Jn3RqpTAImCs1r1xwCv2LfaxvYFrmt3+WmDq4eFW2kzhaOF9C74FzS+D4cm6GihbikWx1QrWZJUTnpRJ1Sl0Z4X5mPQAqA9MzIX+Eik1MrOOEaB4K5p4GTi++BEJwd1U=
-  - secure: sUzjQJhRmjgRZX2aPcCChTbUpOObNR6virIw0AjfCtQlQQBF0AmCLOSgi4a6GIC4lBIl67flUwbAOHGOaRqVw1K6WZ1A8hEjcmBor6sbIIVtbbJFGr6GnozLeXI/fkTfFfH5n6oRvtJwZAk4GT1weiUzn0xCgvLcn7p5oXZ+M9qvTFDaWr18R9EQF9I+BDX3PwSuhrzveYH6mQRmXVIkoFYmmjAh2MNvP46fIS+HEGadhrpshUwipYmMZ0xyF+xw4Km2tj9okoP18C5UtG43/LcJ0Ja4Fg0WMqXlNSi+JcO5IEg0noJ/x77woIZtsNrphqhUgpp8PJJPBg2YyzQk57OPWVSDlaBfI2Jkhf0E/LTTFuzbORjBOgS2S4zWS8sHWtsnjECpiCb+v20PBIEcLjfUGJEhBW4bsNoJCtE1afUDCkcvarT9pQBqlOrVzvTNlAHyjBzB9JeWel0MKUm+g4/hSHhaDYVfAWGIo0fUboLL09+CVzKPcKfQjdu4vROyQWheDpC/kzvCEMhnaxIAB3fs6lA+BsBFo9lXFF93PVatBdo36mw6fJkk75kfXBOTu0D2fPWYryQm1GeE2uiTWLWscoOQ4GDh6o0vummVk6mxA1A1RU5p2lC8SrB3WMTvrM3dg3vTvzvUavP1WVnPmCoYg0+j+UVpkBEWvazNZqM=
   - OWNER=streamr
   - IMAGE_NAME=platform
+import:
+ - source: streamr-dev/travis-ci:aws-staging-secrets.yml@master
+ - source: streamr-dev/travis-ci:aws-production-secrets.yml@master
+ - source: streamr-dev/travis-ci:npm-secrets.yml@master
+ - source: streamr-dev/travis-ci:docker-secrets.yml@master
 jobs:
   include:
   - stage: Platform Tests
@@ -76,6 +78,31 @@ jobs:
     - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
     - DATA_UNION_PUBLISH_MEMBER_LIMIT=0
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/visual-tests.sh"
+  - stage: Platform tests
+    if: type IN (pull_request)
+    env:
+    - DESCRIPTION=END_TO_END_TEST
+    - NODE_ENV=production
+    - PORT=3333
+    - STREAMR_URL=http://localhost
+    - PLATFORM_ORIGIN_URL=http://localhost
+    - STREAMR_API_URL=http://localhost/api/v1
+    - STREAMR_WS_URL=ws://localhost/api/v1/ws
+    - STREAMR_ENGINE_NODE_ADDRESSES=0xFCAd0B19bB29D4674531d6f115237E16AfCE377c
+    - DATA_UNION_OPERATOR_ADDRESS=0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1
+    - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
+    - DATA_UNION_PUBLISH_MEMBER_LIMIT=1
+    - MARKETPLACE_CONTRACT_ADDRESS=0xF1371c0f40528406dc4f4cAf89924eA9Da49E866
+    - DATA_TOKEN_CONTRACT_ADDRESS=0xbAA81A0179015bE47Ad439566374F2Bae098686F
+    - DAI_TOKEN_CONTRACT_ADDRESS=0x642d2b84a32a9a92fec78ceaa9488388b3704898
+    - WEB3_REQUIRED_NETWORK_ID=1111
+    - WEB3_PUBLIC_HTTP_PROVIDER=http://localhost:8545
+    - WEB3_PUBLIC_WS_PROVIDER=ws://localhost:8545
+    - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
+    - SENTRY_ORG=streamr
+    - SENTRY_PROJECT=marketplace
+    - UNISWAP_ADAPTOR_CONTRACT_ADDRESS=0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3
+    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/e2e-tests.sh"
   - stage: Build docker (Dev/Nightly)
     if: branch = development
     env:
@@ -146,9 +173,8 @@ jobs:
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
-      access_key_id: AKIAI3FGPGMK3EREJJTQ
-      secret_access_key:
-        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      access_key_id: $ACCESS_KEY_STG
+      secret_access_key: $SECRET_ACCESS_KEY_STG
       bucket: eu-west-1-stg-streamr-marketplace
       local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       acl: private
@@ -157,9 +183,8 @@ jobs:
       on:
         branch: development
     - provider: s3
-      access_key_id: AKIAI3FGPGMK3EREJJTQ
-      secret_access_key:
-        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      access_key_id: $ACCESS_KEY_STG
+      secret_access_key: $SECRET_ACCESS_KEY_STG
       bucket: eu-west-1-stg-streamr-vault
       local-dir: "$TRAVIS_BUILD_DIR/build"
       upload-dir: marketplace/releases
@@ -169,9 +194,8 @@ jobs:
       on:
         branch: development
     - provider: codedeploy
-      access_key_id: AKIAI3FGPGMK3EREJJTQ
-      secret_access_key:
-        secure: ZLCC1RIDEb619rNRSeamkYoLaqJhwJYQKxKnlar2uZZjm+QQBaoqxX0VqD/vwdqN+eW7XsIZJIzQgxjjZpcD6uZnRbVFO2RzZHIAY1xHxQ+72zHUXhPi0YmCUiCoUUWcxD/S52rOHgK9k8Dse8db/CTSEkEqvjP2Z90cDbs9m0jv6BoQr6zUBiYnsd2cklW7bnpDaKpE0Lv6HotevJwQd7oCUN8fAMWdYtnTvff7id2q/YO9JnM0ZLQfAC9k+UEOBd61QzSZAIQedGktmSa1xrM/KwJ5zyoVsYwII0e23EitnV3Vcu/2LAwCjRCr42XZdU/6MXbnLAuEcWfmS1qYVWIOU16JVc6cruIz69yTnZADSl/guuozZwGbXajMhUM9LrxobnlNo/SZKhqZodmec+h5RlI0Z4DtG9E1hh8AVICOA2KH2TYJG3eKkuqIvh0KSvuiN82eZ7fke1kzIJvQDn0/XSJzKG3kc0TpwBFR5T4y/UYDTkgEErCPwjZtxRpw9yh201qudCcV/8pJWca8vIlnTF8kAf3JFr8Lpn19zXSqrxNEXkvkbVbfs+pfzYx/DB4IFzr1o7H3pzt3ajDuaZboYcyvJIqF6YR2sMnti6fmxsZVKMtTtA2f7pEAtyQcyy0zjY2wIDBwshjbCqLl2kGQTtKBROWPU57PuuOIGK4=
+      access_key_id: $ACCESS_KEY_STG
+      secret_access_key: $SECRET_ACCESS_KEY_STG
       bucket: eu-west-1-stg-streamr-vault
       key: marketplace/releases/marketplace.tar
       application: eu-west-1-stg-marketplace-codedeploy
@@ -210,58 +234,10 @@ jobs:
     - DATA_UNION_OPERATOR_ADDRESS=0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1
     - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
-    - secure: H4xOzWwc5rnx8XxEumkrHqYdMhfIYVoqdTp4OwqBNjScn0FuB2Zbud+sU5cQmox/L631Cni2lGyjUa1Z/BwavSo/paYBv8ufeabMI8cnLyKe878Yqstk5hwgYVOHfmbhIBRUVcWNIRZeFZORPFFIZP84Dn3Gg9hCgtbjrmT/yqyyoaftJY1ppwAo1xyxv0yUE/uNUbZGQuYkVY9yEh8gBc5N3SpQ4FyDekAAS425cYXzgaAMmdBjNw5Xp9brqyKGEPLFHDtXi5r1J3xUlzk48AgEq+1B627ckWjCkxP71ko28Kp92vPjYjV3BjPLBsHYtZX0HGZokwwFNZHl/eg2H9uIyUL1DY3+OkuzTanW4aq9NmMbxMmQ4pvfzEokk2LH89VFp09ev832NcSpCLQdSYMcxpm6NedZWWteL2e2Qzc1RZRlJpdAYDZunQYsqnV9812YAiqG9Mud2GGOIn24PO71abGnlTT6FqLP5mdxqQ+A40+Yky5ETQRq86e3vxcwASGaNcp5ICbAALndmwCD/GwDYHZ7LTniZB7kpDX9MBluzwD67mhQ1+lcNSiVTQ0tf0oi65MUPFJchs++iFYiapIt7bnxrnvxiMDdNHLjm0iPWZthKeLWQnm/opU7D9tVvWbc+zGPNfmRBN9ePI98Lts60OELNKwwoIo5PZ9HtS8=
-    - secure: T3thsbASJalYo5IhRb5gahvrcso+JUgHFIJeWcVtzkaFt+NPQ7EOnpMjgsdAtSiiwzoEx+Rxz90+oUYb4A+Z7dImQqAVpBr6NwA4W2TQnw0VOoqnzE17anSqRKPzOjH1UczvBP64EINvQvWE1bBycq61t3mJ7fTm1gaWq3FDVr5uOUD/OnJkq4caIs8W52Yt/AaATcQ5kpWDGFAYgE0sbaaob8gQJxJ3SyEtUo10y5NJNPsX8jz0Ar4JxTL48WUtWGsBJ/yCuQDKO+eaB4oNQhO32y44PM7YP+7v0UD7BM3/7fLl/KJA144ATPraCFDin2D1XQ+niWZSENTkpC6sRwoBJawvL95gXSIsUTr0BZ3LeXm2l4u5Hhpsz7Qib/vNsGTLQXcP9RK8QbUU5mrrMtw6hJ/iNo54JiW785BSR94X/MHyMliMiUZQbKlFxLmpHs2n+WsmfT95aWDOS2YI4N1ny0p08BhuA/UAzPq/jegP6DhqztNcavpBfMW1joAm2V5D8KwY0KCm39b5jB0RqBmY7OhI7GMH6SIcPLz2TexkFcKpAmj9Vb15x8gHWtbUb1dTJk9uXnLFarmD95Ox3mTGdCHlKr8wHeyNClXyDoMmcEpL7MOmkLIR7uHFtW4EDMQc8xQTKPll+sQQxDLNeUPtHK9pthPOHmvUgf4O1e4=
-    - secure: DTaSLAdOFG57aSb9IjP3N2NlrWPKh+8Z2oDl20zlVsLSm0tAXqiGudTg6rkcxHShM/J2XPsYvVMe/r/0qBEihvWq/bEuJvnrLHZ4ssXfOpN0nk2Ds/N9RReOD4MgSa5DE4KPTiXiVY/jrcRPcpGum0N7d91jFoiBFsazAcjO5KoyErTfZG4QtM3BXR7eVivL8JmsPLgAQGtuSLqpw53ilyl62xXzjiXs0akfMBc6a31XMPFWqyFUELn0oWDjvfeJI3vNXct56cPJ1aqod/LPhgKZMbjD8CdhgVxETkh5iZGV5NiTNF0skwB0uHDMYOD4+qE6jFEGKzZXCPk/1DHFDMN//3LoLw9OS5TC34/wW5E0ZCXhPLqMWEMvr0cm2oTJgyzZY7w+4PXuomfYocqm4VgZiCVS5UUi+7rcYnsFPJv73KBTy2DLvh902kzuGcMf7EaC5imxDFjql4X8o0ceQFqXGi6v2riBM8Fhb/sENOB55MicFG5MuI4TKR9BGyBTg4KkgyJEZswQ2xG8yPRuARqchblI/+avexuxROJ/m++y3ZuPkH3KGSw+yECkG7bZ7TBPLaL7VO87XinLIPO+fRtzm6nNId7KoA+jcrxlAljzsCxVsPVVHsL5+7B8jT0VvLNcH89FHxEuTh/axYdAmAix4Od17wg0pg3ZdJSAnuM=
-    - secure: DVAbGPA0dx5I02puqZpkFplRsMTys7OLisIfQKkspA9t+ECLVXM/gsAH/cha4B3Ic9EwBBahKHiaVK6zjuguowjoSQpDpIL+r+frWFXyzV+WfMCEYXdvPcnrpRruP7+QzURgO+s2FLraOSAovXL4fyePfQwLNnDQFWhu4dtl1Ncfe1Kqd6mHi40DKeNv1wR8mmJz4SBDaWcbhkfrDutF6P9LF4lnpOaNHEhHYLsMd7ICIRJ2+w4ZQTVtFqQcI/WT1m7eWhBT6FrQba911AjogFrtRLWrK5YZYCC98m7VMIz2vNt+bnULwPOjJC69VyHW75uJcQvE+woUL6U4xHrVsD5HVdh3tj/nN9swFFc95pEs9GQbGzvKvNBO0chhdwmCTWgyx4Z4sNNiop/WmKQVHswZ1wxOSBeRVOsDYYiDILOojSQh+bSIzIH9Ows57ro9HVpMLL0M/pptNUw6hrqyGE896JAXPWu87Vh7Wqq0H2vfTWdFxmCqv7ncIRngkCbjLZ04MFWENlNpdnhGkrc6WFmh2NMMSua5nsAH8judr2Pbr3s4WeWu1Bwc8uTu8BJ7JU5I6FsrTFOVUO/yIwmAeLA6NCCg7bFNq2ajWVl5exuZOZv0bWWfjvJ9BAIbS6nGQwMUKzjmNLtoEbk4EqLJDKxI2uGoFk6hAlW7GHEaQ2A=
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/deploy-pr.sh"
-  - stage: Platform Deploy CDN # Will be new production
-    if: NOT type IN (pull_request)
-    env:
-    - NODE_ENV=production
-    - PORT=12345
-    - VERSION=$TRAVIS_BRANCH
-    - SENTRY_ENVIRONMENT=production
-    - STREAMR_API_URL=https://www.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://www.streamr.com/api/v1/ws
-    - PLATFORM_ORIGIN_URL=https://www.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
-    - STREAMR_URL=https://www.streamr.com
-    - GOOGLE_ANALYTICS_ID=UA-55331565-5
-    - MARKETPLACE_CONTRACT_ADDRESS=0x0
-    - DATA_TOKEN_CONTRACT_ADDRESS=0x0
-    - DAI_TOKEN_CONTRACT_ADDRESS=0x0
-    - UNISWAP_ADAPTOR_CONTRACT_ADDRESS=0x0
-    - WEB3_REQUIRED_NETWORK_ID=1
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
-    - WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
-    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
-    - STREAMR_ENGINE_NODE_ADDRESSES=0x0
-    - DATA_UNION_OPERATOR_ADDRESS=0x0
-    - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
-    - DATA_UNION_PUBLISH_MEMBER_LIMIT=10
-    - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
-    script:
-    - npm run build-index
-    - npm run build
-    deploy:
-    - provider: s3 # test for production deployment
-      access_key_id: AKIAISTYQBVHXK5LXXIQ
-      secret_access_key:
-        secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
-      bucket: eu-west-1-streamr-cdn
-      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        branch: beta
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
     env:
-    - secure: BC16381MZ+00NWm6tRzaz+Cx2NFar4HlOOkXSf6Pm6jIj0/5Z3pD+CWIpl2Ga2KrOGNoc7wb6ASyST6/pkz5kfflEOvbpix1m1/GJrpbqdNfkkyeqsQznCaHPToP6ndnAAXw0+1944bLprsvIBQY4/ycs3HobPQypOOSPy8TYtt2PheOG3MqYnsbhLb9KC9yZ1HOBM1jwbUwmsxjtK/3BcyDum1OS3IrA59R96pWVfaoO5QfvBN8Hrgkwn8MCQdBSglVibm9D+xg41+oXhjLpgjuYM0eUIC6hngo6KT8BxSrR0BOykb1S5VGl0yZl5PtWadHrMYA6Ohop+WRWO7oWtCXk9GlTqwLC/huZQ0g9glpTkzN24/uaXsqksS0EpMBfkz6x9YwF/DSWBxdUhIOZzXrqWtw6gbPzg8VhKPYWD0bzijo8C7/2EZN7OzQd0vhdQlA6K9PR4pFD/UrmuAzw4YaGRXH6psAxHHDsx0jD9Vhz7US+m2BQcZgZUwhLwPzf88+y0/bZrHj14eKTJUEeTtKeTFCy7rPFx3gHyRNCAq11sjs1idIS74vPHia3tjYE6PBZa4x0P54P5F1I2dqvJaHk49xImMxh3EXZOobdITvUZRLPUh2E3fJSUXgpsTIw7q0vEXUH9ExiocCa9rNPtm5lkzfYUfBQKcnMXBb54c=
-    - secure: "P9oLi/dbSNc6l6W+XXWv0cs8m+TtgNxd2W7QDY3ZHNxY1kSzBvAtqJyPF8Mm+KdjhIxXxJXc1YnXQju56CQRcZWrzH03gzD7BfglztvLfppFA1H/cZhQa3/qUMKEr+lGtwdvnJ8PlgI8H+43WHmMDjMJRXprghBnp5GwB4GxyDXTKRbUoWG49u9/aXe7OnMW9qzunyMTqFTxjlCIYlf+PclA76Q8YtIsoPPaAxC8CSccQCuitgbflDt8o20qhHkQr5uvXe5GlK2t1yu9JA5UaTlw3KNk7v9E5u6U8Rg954Oa9rw5N14+kpNR3J9fzrtcg+fFZ5BsSQ1u4ulhBddLueBdOaxFHm5a25+a4gqx22OkuaEUSdAlEvQzAfPF9NgBzuOJHc3W1z1YcarE4p1rWzGRtR10TDYeX5xL4FJFA7RxgxwNtEB3uhHLcdvdNE5JZvRJE+qhJFNV5GqtzxN2XmKG+hmmzaSWfMczX09ihY/GD41aPONJezMYekefVfaKDw4+lrlBaXGdDPiebLKzW8ixzNlJyOS36DTX+Ib9zTKuYiSao6jyFZaAy6hU54wpbNHgkOzTFFIlVap4VU6Wm9cy3gQjIDzefYOo3NvBMWwTuG42aSwY8cFVPsrRD+YoOW7eb9yNtFQ9L7UZHKptLhMjB3053R/NX2kinjfHMG0="
-    - secure: "uZU+5q8GFWywUrw1Ppc0djYxFblSYRahhKgii054g5urMXj2ZZQjuBE9lXLZfR07360HRsuY+Lkg4HkMDAvybos1cXkAbECnUmoIyGQhikt+O4+2PEIzOiHsz7eiW2pQ6YOCfYpVQJtjNK0PpZrvyxb2GmJQ9+oM+MOiAhxxWTi8UL+kbNMa+rq9aS6RV9fEVy/huLtLZpgeh3n0Yt/FssukVs8AFclVfRkjOOjJ0+hVvwLIwfcGGx3UquJsWDth/zPkAjf0oQVOJpYvbpk5w4A3A9kuaylkLm174X11q42jSWQU6pTVKr87QfsmamwdWUZ8eAJTRlppSqrkbXyLmt9ZwOwd1/uNVyfNFJuzJBaD/bZ/Zyey7GyDLVAWQycJpTmjJP27lkPtbj1NPr1lzlOamTB3bdlAIgy3BzTOlL4iMMSzI9NJMkuC23Cf90G57577d+vk70YdZlNozMrEMcu01y6wiKn2c3d81FwIXQ4ljWIrvOuE3IukE0/ghEomLRabM/giJgumetoipQj/VeJ3CHpJcdxzOGCsV7vobgJCJSYiC2/krrs/K0XPDPePEV7x1jkLKMuZy4c5VxNHr58zuXkLrvA8zGbPounYRFm3Lcspn0WBCGxD9jbnY3xWQFQyl0hMuLYYMgnNO6EEDO7GBKZYgKHvoVGS7ZIR87U="
     - NODE_ENV=production
     - VERSION=$TRAVIS_TAG
     - PORT=12345
@@ -286,12 +262,13 @@ jobs:
     - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
     - DATA_UNION_PUBLISH_MEMBER_LIMIT=10
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
+    - AWS_ACCESS_KEY_ID=$ACCESS_KEY_PRD
+    - AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_PRD
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
     - provider: s3
-      access_key_id: AKIAISTYQBVHXK5LXXIQ
-      secret_access_key:
-        secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
+      access_key_id: $ACCESS_KEY_PRD
+      secret_access_key: $SECRET_ACCESS_KEY_PRD
       bucket: eu-west-1-streamr-cdn
       local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       acl: private
@@ -300,9 +277,8 @@ jobs:
       on:
         tags: true
     - provider: s3
-      access_key_id: AKIAISTYQBVHXK5LXXIQ
-      secret_access_key:
-        secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
+      access_key_id: $ACCESS_KEY_PRD
+      secret_access_key: $SECRET_ACCESS_KEY_PRD
       bucket: eu-west-1-streamr-vault
       local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       upload-dir: marketplace/releases/latest
@@ -312,9 +288,8 @@ jobs:
       on:
         tags: false
     - provider: s3
-      access_key_id: AKIAISTYQBVHXK5LXXIQ
-      secret_access_key:
-        secure: SmtMYr1JhqzneGtg4sx10/Z7e5TsvlwPl05kkpx2dsGUuWX1gb+kWidNDpC8fWvkREg38o3yOtPza/FOyRtLwdIe1N1lZyYFvIhac7lATroMNyCWmTuYAZMbLtVUEsI43LNhQAC+F/N48TwM+0EJEWUIddc0ANbYEH8cReqDcngL7ZPtFEqtx9Qc/ZVY7/a83munHnd9dXga+4m8xVGo/u6UIn0hSVKt/LLHOAYw4chNXvUgyP2hNmmxHn2cdKocqM4dmEochqe8THSK3F37xlPfaHKzLQfEKfWgWdSQ+lDXonGfDz5ZSs8Owwnd8R/OmOmMKdAs6i96Kj3u4amOANMj1tixtrN4BiFuTM89iTPwKy49xOTSiLjS6XGvyZ1+GIYXuwmsLJbEef19qxpPUz41N8Kmue7Vf2ijy3c6Q0jpFJTKOAZe7m0hONyQi+SG6GYDAxRmuvghIrlZ71zydSn6FYLv3R5cI17tbCZAK9kZdzSXkr4K8W4LJbbZzmJk+X2IYT+Y9WLganeWk9RhmSz5GG84Y33AtsJXiNkBRrV32VtkYkwOa+FtqqLkLnJ7czqez1RyoNGXuhM2djY0pibhabsj7Z9o6ZyLKnm+2FTNdRFpJnkfl2Opv9R5ghOmTLjPSY+Dxjw/1PJoBfzzIEe4tnzpEsC9gqDxJ79KW6k=
+      access_key_id: $ACCESS_KEY_PRD
+      secret_access_key: $SECRET_ACCESS_KEY_PRD
       bucket: eu-west-1-streamr-vault
       local-dir: "$TRAVIS_BUILD_DIR/app/dist"
       upload-dir: marketplace/releases/$TRAVIS_TAG

@@ -3,7 +3,6 @@ import React from 'react'
 import styles from './EmbedToolbar.pcss'
 import LogoItem from '$shared/components/Logo'
 
-import links from '../../../links'
 import routes from '$routes'
 
 function inIframe() {
@@ -25,8 +24,10 @@ export default function EmbedToolbar({ canvas }) {
             </div>
             <a
                 className={styles.button}
-                href={routes.login({
-                    redirect: `${links.editor.canvasEditor}/${canvas.id}`,
+                href={routes.auth.login({
+                    redirect: routes.canvases.edit({
+                        id: canvas.id,
+                    }),
                 })}
                 {...(inIframe() ? {
                     // open in new tab if in iframe

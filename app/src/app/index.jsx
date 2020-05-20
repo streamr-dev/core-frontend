@@ -35,9 +35,7 @@ import DashboardEditor from '$editor/dashboard'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
-import { formatPath } from '$shared/utils/url'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
-import links from '../links'
 import history from '../history'
 import '../analytics'
 
@@ -59,30 +57,28 @@ const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
-const { editor } = links
-
 const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) => (
     <Redirect to={routeFn(qs.parse(search))} />
 )
 
 const AuthenticationRouter = () => ([
-    <Route exact path={routes.login()} component={LoginPage} key="LoginPage" />,
-    <Route exact path={routes.logout()} component={LogoutPage} key="LogoutPage" />,
-    <Route path={routes.signUp()} component={SignupPage} key="SignupPage" />,
-    <Route path={routes.forgotPassword()} component={ForgotPasswordPage} key="ForgotPasswordPage" />,
-    <Route path={routes.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
-    <Route exact path={routes.register()} component={RegisterPage} key="RegisterPage" />,
-    <Redirect from="/login/auth" to={routes.login()} key="LoginRedirect" />,
-    <Route exact path="/register/register" key="RegisterRedirect" render={forwardTo(routes.register)} />,
-    <Route exact path="/register/resetPassword" key="ResetPasswordRedirect" render={forwardTo(routes.resetPassword)} />,
-    <Redirect from="/register/forgotPassword" to={routes.forgotPassword()} key="ForgotPasswordRedirect" />,
+    <Route exact path={routes.auth.login()} component={LoginPage} key="LoginPage" />,
+    <Route exact path={routes.auth.logout()} component={LogoutPage} key="LogoutPage" />,
+    <Route path={routes.auth.signUp()} component={SignupPage} key="SignupPage" />,
+    <Route path={routes.auth.forgotPassword()} component={ForgotPasswordPage} key="ForgotPasswordPage" />,
+    <Route path={routes.auth.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
+    <Route exact path={routes.auth.register()} component={RegisterPage} key="RegisterPage" />,
+    <Redirect from="/login/auth" to={routes.auth.login()} key="LoginRedirect" />,
+    <Route exact path="/register/register" key="RegisterRedirect" render={forwardTo(routes.auth.register)} />,
+    <Route exact path="/register/resetPassword" key="ResetPasswordRedirect" render={forwardTo(routes.auth.resetPassword)} />,
+    <Redirect from="/register/forgotPassword" to={routes.auth.forgotPassword()} key="ForgotPasswordRedirect" />,
 ])
 
 const EditorRouter = () => ([
-    <Route exact path="/" component={Products} key="root" />, // edge case for localhost
-    <Route exact path={formatPath(editor.canvasEditor, ':id?')} component={CanvasEditor} key="CanvasEditor" />,
-    <Route exact path={formatPath(editor.canvasEmbed)} component={CanvasEmbed} key="CanvasEmbed" />,
-    <Route exact path={formatPath(editor.dashboardEditor, ':id?')} component={DashboardEditorAuth} key="DashboardEditor" />,
+    <Route exact path={routes.root()} component={Products} key="root" />, // edge case for localhost
+    <Route exact path={routes.canvases.edit()} component={CanvasEditor} key="CanvasEditor" />,
+    <Route exact path={routes.canvases.embed()} component={CanvasEmbed} key="CanvasEmbed" />,
+    <Route exact path={routes.dashboards.edit()} component={DashboardEditorAuth} key="DashboardEditor" />,
 ])
 
 const MiscRouter = () => ([

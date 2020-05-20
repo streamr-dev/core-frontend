@@ -45,7 +45,7 @@ const addStreamIdCopiedNotification = () => {
     })
 }
 
-const getStreamTabUrl = (productId: ProductId, streamId: ?StreamId) => (streamId ? routes.streamPreview({
+const getStreamTabUrl = (productId: ProductId, streamId: ?StreamId) => (streamId ? routes.marketplace.streamPreview({
     id: productId,
     streamId,
 }) : '#')

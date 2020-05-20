@@ -9,7 +9,6 @@ import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
-import usePending from '$shared/hooks/usePending'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { Context as EditControllerContext } from './EditControllerProvider'
@@ -17,12 +16,15 @@ import docsLinks from '$shared/../docsLinks'
 
 import styles from './coverImage.pcss'
 
-const CoverImage = () => {
+type Props = {
+    disabled?: boolean,
+}
+
+const CoverImage = ({ disabled }: Props) => {
     const product = useEditableProduct()
     const { updateImageFile } = useEditableProductActions()
     const { isValid, message } = useValidation('imageUrl')
-    const { isPending } = usePending('product.SAVE')
-    const { api: cropImageDialog } = useModal('cropImage')
+    const { api: cropImageDialog, isOpen } = useModal('cropImage')
     const { preview, createPreview } = useFilePreview()
     const { publishAttempted } = useContext(EditControllerContext)
 
@@ -66,7 +68,7 @@ const CoverImage = () => {
                     dropzoneClassname={cx(styles.dropZone, {
                         [styles.dropZoneError]: !!hasError,
                     })}
-                    disabled={!!isPending}
+                    disabled={!!disabled || isOpen}
                     noPreview
                 />
                 {hasError && !!message && (

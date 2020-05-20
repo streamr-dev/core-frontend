@@ -4,7 +4,7 @@ import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import { Context as RouterContext } from '$shared/contexts/Router'
 import usePending from '$shared/hooks/usePending'
 
-import links from '../../../../links'
+import routes from '$routes'
 import * as services from '../../services'
 
 export default function useCanvasRemoveCallback() {
@@ -17,7 +17,7 @@ export default function useCanvasRemoveCallback() {
         return wrap(async () => {
             await services.deleteCanvas({ id })
             if (!isMountedRef.current) { return }
-            history.push(links.userpages.canvases)
+            history.push(routes.canvases.index())
         })
     }, [wrap, isPending, history, isMountedRef])
 }

@@ -34,7 +34,7 @@ class FailureComponent extends Component<Props> {
 
 export const userIsAuthenticated = connectedRouterRedirect({
     authenticatingSelector,
-    redirectPath: routes.login(),
+    redirectPath: routes.auth.login(),
     allowRedirectBack: true,
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
@@ -47,7 +47,7 @@ export const userIsNotAuthenticated = connectedRouterRedirect({
     authenticatingSelector,
     // This sends the user either to the query param route if we have one, or to
     // the landing page if none is specified and the user is already logged in
-    redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || routes.streams(),
+    redirectPath: (state, ownProps) => locationHelper.getRedirectQueryParam(ownProps) || routes.streams.index(),
     // This prevents us from adding the query parameter when we send the user away from the login page
     allowRedirectBack: false,
     // If selector is true, wrapper will not redirect

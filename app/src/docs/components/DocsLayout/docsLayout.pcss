@@ -189,11 +189,17 @@
     picture img {
       display: block;
       margin: 0 auto;
-      max-width: 100%;
+      width: 100%;
 
       &.bordered {
         border: 1px solid #D8D8D8;
       }
+    }
+
+    video {
+      display: block;
+      overflow: hidden;
+      width: 100%;
     }
   }
 
@@ -272,6 +278,17 @@
         border-left: 1px solid #E7E7E7;
       }
     }
+
+    &.striped {
+      thead tr th {
+        font-weight: var(--medium);
+        color: #323232;
+      }
+
+      tbody tr:nth-child(even) {
+        background: #F8F8F8;
+      }
+    }
   }
 
   .tableNoHeader table {
@@ -282,7 +299,7 @@
 
   .checklist {
     ul {
-      padding-left: 1.75rem;
+      padding-left: 1.75um;
     }
 
     li {
@@ -293,8 +310,8 @@
       background: url('../../../shared/assets/images/checkbox-checked.svg');
       background-repeat: no-repeat;
       content: ' ';
-      margin-left: -1.7rem;
-      margin-top: 6px;
+      margin-left: -1.75um;
+      margin-top: 7px;
       width: 16px;
       height: 16px;
     }
@@ -311,6 +328,14 @@
 
 .content {
   overflow: auto;
+}
+
+.hideOnMobile {
+  display: block !important;
+}
+
+.showOnMobile {
+  display: none !important;
 }
 
 @media (--md-down) {
@@ -402,6 +427,14 @@
     section ol {
       padding-left: 1rem;
     }
+  }
+
+  .hideOnMobile {
+    display: none !important;
+  }
+
+  .showOnMobile {
+    display: block !important;
   }
 }
 

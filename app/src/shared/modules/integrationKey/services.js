@@ -2,7 +2,7 @@
 
 import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
 import { get, post, del, put } from '$shared/utils/api'
-import { formatApiUrl } from '$shared/utils/url'
+import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import {
     BalanceType,
@@ -22,7 +22,7 @@ import {
 } from '$shared/errors/Web3'
 
 export const getIntegrationKeys = (): ApiResult<Array<IntegrationKey>> => get({
-    url: formatApiUrl('integration_keys'),
+    url: routes.api.integrationKeys.index(),
 })
 
 export const createPrivateKey = (name: string): ApiResult<IntegrationKey> => {
@@ -31,7 +31,7 @@ export const createPrivateKey = (name: string): ApiResult<IntegrationKey> => {
     const { privateKey } = web3.eth.accounts.create()
 
     return post({
-        url: formatApiUrl('integration_keys'),
+        url: routes.api.integrationKeys.index(),
         data: {
             name,
             service: integrationKeyServices.PRIVATE_KEY,
@@ -42,16 +42,20 @@ export const createPrivateKey = (name: string): ApiResult<IntegrationKey> => {
     })
 }
 
-export const editIntegrationKey = (keyId: IntegrationKeyId, name: string): ApiResult<IntegrationKey> =>
+export const editIntegrationKey = (id: IntegrationKeyId, name: string): ApiResult<IntegrationKey> =>
     put({
-        url: formatApiUrl('integration_keys', keyId),
+        url: routes.api.integrationKeys.show({
+            id,
+        }),
         data: {
             name,
         },
     })
 
 export const createChallenge = (account: Address): ApiResult<Challenge> => post({
-    url: formatApiUrl('login', 'challenge', account),
+    url: routes.api.loginChallenge({
+        account,
+    }),
 })
 
 export const createEthereumIdentity = (
@@ -60,7 +64,7 @@ export const createEthereumIdentity = (
     challenge: Challenge,
     signature: Hash,
 ): ApiResult<IntegrationKey> => post({
-    url: formatApiUrl('integration_keys'),
+    url: routes.api.integrationKeys.index(),
     data: {
         name,
         service: integrationKeyServices.ETHEREREUM_IDENTITY,
@@ -109,7 +113,9 @@ export const createIdentity = async (name: string): ApiResult<IntegrationKey> =>
 }
 
 export const deleteIntegrationKey = (id: IntegrationKeyId): ApiResult<null> => del({
-    url: formatApiUrl('integration_keys', id),
+    url: routes.api.integrationKeys.show({
+        id,
+    }),
 })
 
 type GetBalance = {

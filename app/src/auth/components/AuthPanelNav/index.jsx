@@ -58,12 +58,12 @@ class AuthPanelNav extends React.Component<Props> {
                         )}
                         <span>
                             {signup && (
-                                <Link to={routes.signUp()}>
+                                <Link to={routes.auth.signUp()}>
                                     <Translate value="general.signUp" />
                                 </Link>
                             )}
                             {signin && (
-                                <Link to={routes.login()}>
+                                <Link to={routes.auth.login()}>
                                     <Translate value="general.signIn" />
                                 </Link>
                             )}

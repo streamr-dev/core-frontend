@@ -14,7 +14,7 @@ type Props = {
 
 const Logo = ({ className }: Props) => (
     <div className={cx(className, styles.root)}>
-        <Link to={routes.root()} className={styles.link}>
+        <Link to={routes.root()} className={styles.link} data-logo>
             <img src={logo} alt="Streamr logo" />
         </Link>
     </div>

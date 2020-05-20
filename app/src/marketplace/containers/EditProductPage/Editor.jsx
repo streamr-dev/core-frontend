@@ -19,7 +19,11 @@ import SharedSecrets from './SharedSecrets'
 
 import styles from './editor.pcss'
 
-const Editor = () => {
+type Props = {
+    disabled?: boolean,
+}
+
+const Editor = ({ disabled }: Props) => {
     const product = useProduct()
     const isDataUnion = isDataUnionProduct(product)
 
@@ -31,15 +35,15 @@ const Editor = () => {
                         <EditorNav />
                     </div>
                     <div className={styles.info}>
-                        <ProductName />
-                        <CoverImage />
-                        <ProductDescription />
-                        <ProductStreams />
-                        <PriceSelector />
-                        <ProductDetails />
-                        <ConnectEthIdentity />
+                        <ProductName disabled={disabled} />
+                        <CoverImage disabled={disabled} />
+                        <ProductDescription disabled={disabled} />
+                        <ProductStreams disabled={disabled} />
+                        <PriceSelector disabled={disabled} />
+                        <ProductDetails disabled={disabled} />
+                        <ConnectEthIdentity disabled={disabled} />
                         {!!isDataUnion && (
-                            <SharedSecrets />
+                            <SharedSecrets disabled={disabled} />
                         )}
                     </div>
                 </div>

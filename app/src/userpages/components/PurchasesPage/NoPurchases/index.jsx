@@ -31,7 +31,7 @@ const NoAddedPurchasesView = () => (
             />
         )}
         link={(
-            <Button kind="special" tag={Link} to={routes.marketplace.root()}>
+            <Button kind="special" tag={Link} to={routes.marketplace.index()}>
                 <Translate value="userpages.purchases.noAddedPurchases.hint" />
             </Button>
         )}

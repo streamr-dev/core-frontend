@@ -203,6 +203,7 @@ const DocsRouter = () => ([
     <Redirect exact from={links.api} to={links.apiOverview} key="ApiOverview" />,
     <Route exact path={links.authentication} component={Authentication} key="Authentication" />,
     <Route exact path={links.apiStreamsViaApi} component={UsingStreamsViaApi} key="usingStreamsViaApi" />,
+    // API Explorer
     <Route exact path={links.apiExplorer} component={ApiExplorer} key="apiExplorer" />,
     // Technical Notes routes
     <Route exact path={links.technicalNotes} component={TechnicalNotes} key="technicalNotes" />,

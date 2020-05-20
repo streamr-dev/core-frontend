@@ -61,6 +61,6 @@ export default {
     apiOverview: '/docs/api/api-overview',
     authentication: '/docs/api/authentication',
     apiStreamsViaApi: '/docs/api/using-streams-via-api',
-    apiExplorer: '/docs/api-explorer',
+    apiExplorer: '/docs/API-explorer',
     technicalNotes: '/docs/technical-notes',
 }

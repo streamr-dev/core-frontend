@@ -1,7 +1,7 @@
 // @flow
 
 import { get } from '$shared/utils/api'
-import { formatApiUrl } from '$shared/utils/url'
+import routes from '$routes'
 
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { Filter, ProductListPageWrapper } from '../../flowtype/product-types'
@@ -9,7 +9,7 @@ import { mapProductFromApi } from '../../utils/product'
 
 export const getProducts = (filter: Filter, pageSize: number, offset: number): ApiResult<ProductListPageWrapper> => (
     get({
-        url: formatApiUrl('products', {
+        url: routes.api.products.index({
             ...filter,
             publicAccess: true,
             grantedAccess: false,

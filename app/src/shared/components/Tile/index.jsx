@@ -17,7 +17,6 @@ import Link from '$shared/components/Link'
 import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits } from '$shared/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
-import links from '$app/src/links'
 import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 import routes from '$routes'
 
@@ -96,7 +95,11 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
         <Menu onToggle={onMenuToggle}>
             {actions}
         </Menu>
-        <Link to={`${links.editor.canvasEditor}/${canvas.id}`}>
+        <Link
+            to={routes.canvases.edit({
+                id: canvas.id,
+            })}
+        >
             <ImageContainer>
                 <Image
                     as={CanvasPreview}
@@ -122,7 +125,11 @@ type DashboardTileProps = {
 
 const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
     <Tile {...props}>
-        <Link to={`${links.editor.dashboardEditor}/${dashboard.id}`}>
+        <Link
+            to={routes.dashboards.edit({
+                id: dashboard.id,
+            })}
+        >
             <ImageContainer>
                 <Image
                     as={DashboardPreview}
@@ -184,7 +191,11 @@ const PurchaseTile = ({
     ...props
 }: PurchaseTileProps) => (
     <Tile {...props}>
-        <Link to={product.id && `${links.marketplace.products}/${product.id}`}>
+        <Link
+            to={product.id && routes.marketplace.product({
+                id: product.id,
+            })}
+        >
             <ImageContainer src={product.imageUrl || ''}>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge top left />
@@ -234,7 +245,7 @@ const ProductTile = ({
             </Menu>
         )}
         <Link
-            to={product.id && routes.editProduct({
+            to={product.id && routes.products.edit({
                 id: product.id,
             })}
         >
@@ -276,7 +287,7 @@ type MarketplaceProductTileProps = {
 const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
     <Tile {...props}>
         <Link
-            to={routes.product({
+            to={routes.marketplace.product({
                 id: product.id,
             })}
         >

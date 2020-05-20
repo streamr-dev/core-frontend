@@ -308,22 +308,28 @@ export const generateMap = ({ dataUnions: includeDataUnions = !!process.env.DATA
             title: 'SDKs',
             filePath: 'sdk/overview.mdx',
         },
-        'JavaScript SDK': {
+        Overview: {
+            path: docsLinks.sdkOverview,
+            section: 'SDKs',
+            title: 'Overview',
+            filePath: 'sdk/overview.mdx',
+        },
+        JavaScript: {
             path: docsLinks.javascriptSdk,
             section: 'SDKs',
-            title: 'JavaScript SDK',
+            title: 'JavaScript',
             filePath: 'sdk/javascript.mdx',
         },
-        'Java SDK': {
+        Java: {
             path: docsLinks.javaSdk,
             section: 'SDKs',
-            title: 'Java SDK',
+            title: 'Java',
             filePath: 'sdk/java.mdx',
         },
-        'Python SDK': {
+        Python: {
             path: docsLinks.pythonSdk,
             section: 'SDKs',
-            title: 'Python SDK',
+            title: 'Python',
             filePath: 'sdk/python.mdx',
         },
     },

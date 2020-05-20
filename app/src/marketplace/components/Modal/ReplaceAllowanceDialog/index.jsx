@@ -5,7 +5,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import links from '../../../../links'
+import routes from '$routes'
 
 import style from '../SetAllowanceDialog/setAllowanceDialog.pcss'
 
@@ -18,7 +18,7 @@ export type Props = {
 
 const HelpText = () => (
     <p className={style.helpText}>
-        <Translate value="modal.replaceAllowance.helpText" resetAllowanceLink={links.resetAllowanceInfo} dangerousHTML />
+        <Translate value="modal.replaceAllowance.helpText" resetAllowanceLink={routes.resetAllowanceInfo()} dangerousHTML />
     </p>
 )
 

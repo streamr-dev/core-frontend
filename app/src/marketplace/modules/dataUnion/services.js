@@ -15,10 +15,9 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
 
 import { post, del, get, put } from '$shared/utils/api'
-import { formatApiUrl } from '$shared/utils/url'
 import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
-
+import routes from '$routes'
 import type { Secret } from './types'
 
 export const getStreamrEngineAddresses = (): Array<string> => {
@@ -27,13 +26,18 @@ export const getStreamrEngineAddresses = (): Array<string> => {
     return addresses
 }
 
-export const addPermission = (id: StreamId, permission: Permission): ApiResult<Array<Permission>> => post({
-    url: formatApiUrl('streams', id, 'permissions'),
+export const addPermission = (streamId: StreamId, permission: Permission): ApiResult<Array<Permission>> => post({
+    url: routes.api.streams.permissions.index({
+        streamId,
+    }),
     data: permission,
 })
 
 export const deletePermission = (id: StreamId, permissionId: $PropertyType<Permission, 'id'>): ApiResult<Array<Permission>> => del({
-    url: formatApiUrl('streams', id, 'permissions', permissionId),
+    url: routes.api.streams.permissions.show({
+        streamId: id,
+        id: permissionId,
+    }),
 })
 
 export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
@@ -164,13 +168,15 @@ export const getJoinPartStreamId = (address: DataUnionId, usePublicNode: boolean
     call(getCommunityContract(address, usePublicNode).methods.joinPartStream())
 
 export const getDataUnionStats = (id: DataUnionId): ApiResult<Object> => get({
-    url: formatApiUrl('dataunions', id, 'stats'),
+    url: routes.api.dataunions.stats({
+        id,
+    }),
     useAuthorization: false,
 })
 
 export const getDataUnions = async (): ApiResult<Array<Object>> => {
     const { dataunions } = await get({
-        url: formatApiUrl('dataunions'),
+        url: routes.api.dataunions.index(),
         useAuthorization: false,
     })
 
@@ -198,7 +204,9 @@ type GetSecrets = {
 }
 
 export const getSecrets = ({ dataUnionId }: GetSecrets): ApiResult<Array<Secret>> => get({
-    url: formatApiUrl('dataunions', dataUnionId, 'secrets'),
+    url: routes.api.dataunions.secrets.index({
+        dataUnionId,
+    }),
 })
 
 type PostSecrect = {
@@ -208,7 +216,9 @@ type PostSecrect = {
 }
 
 export const postSecret = ({ dataUnionId, name, secret }: PostSecrect): ApiResult<Secret> => post({
-    url: formatApiUrl('dataunions', dataUnionId, 'secrets'),
+    url: routes.api.dataunions.secrets.index({
+        dataUnionId,
+    }),
     data: {
         name,
         secret,
@@ -221,8 +231,11 @@ type PutSecrect = {
     name: string,
 }
 
-export const putSecret = ({ dataUnionId, secretId, name }: PutSecrect): ApiResult<Secret> => put({
-    url: formatApiUrl('dataunions', dataUnionId, 'secrets', secretId),
+export const putSecret = ({ dataUnionId, secretId: id, name }: PutSecrect): ApiResult<Secret> => put({
+    url: routes.api.dataunions.secrets.show({
+        dataUnionId,
+        id,
+    }),
     data: {
         name,
     },
@@ -233,8 +246,11 @@ type DeleteSecrect = {
     secretId: string,
 }
 
-export const deleteSecret = ({ dataUnionId, secretId }: DeleteSecrect): ApiResult<void> => del({
-    url: formatApiUrl('dataunions', dataUnionId, 'secrets', secretId),
+export const deleteSecret = ({ dataUnionId, secretId: id }: DeleteSecrect): ApiResult<void> => del({
+    url: routes.api.dataunions.secrets.show({
+        dataUnionId,
+        id,
+    }),
 })
 
 type GetJoinRequests = {
@@ -243,7 +259,9 @@ type GetJoinRequests = {
 }
 
 export const getJoinRequests = ({ dataUnionId, params }: GetJoinRequests): ApiResult<any> => get({
-    url: formatApiUrl('dataunions', dataUnionId, 'joinRequests'),
+    url: routes.api.dataunions.joinRequests.index({
+        dataUnionId,
+    }),
     options: {
         params,
     },
@@ -255,8 +273,11 @@ type PutJoinRequest = {
     state: 'ACCEPTED' | 'REJECTED' | 'PENDING',
 }
 
-export const updateJoinRequest = async ({ dataUnionId, joinRequestId, state }: PutJoinRequest): ApiResult<any> => put({
-    url: formatApiUrl('dataunions', dataUnionId, 'joinRequests', joinRequestId),
+export const updateJoinRequest = async ({ dataUnionId, joinRequestId: id, state }: PutJoinRequest): ApiResult<any> => put({
+    url: routes.api.dataunions.joinRequests.show({
+        dataUnionId,
+        id,
+    }),
     data: {
         state,
     },
@@ -268,7 +289,9 @@ type PostJoinRequest = {
 }
 
 export const addJoinRequest = async ({ dataUnionId, memberAddress }: PostJoinRequest): ApiResult<any> => post({
-    url: formatApiUrl('dataunions', dataUnionId, 'joinRequests'),
+    url: routes.api.dataunions.joinRequests.index({
+        dataUnionId,
+    }),
     data: {
         memberAddress,
     },
@@ -279,6 +302,9 @@ type DeleteJoinRequest = {
     joinRequestId: string,
 }
 
-export const removeJoinRequest = async ({ dataUnionId, joinRequestId }: DeleteJoinRequest): ApiResult<void> => del({
-    url: formatApiUrl('dataunions', dataUnionId, 'joinRequests', joinRequestId),
+export const removeJoinRequest = async ({ dataUnionId, joinRequestId: id }: DeleteJoinRequest): ApiResult<void> => del({
+    url: routes.api.dataunions.joinRequests.show({
+        dataUnionId,
+        id,
+    }),
 })

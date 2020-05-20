@@ -47,8 +47,8 @@ const Hero = () => {
                 dispatch(addFreeProduct(productId || ''))
             }
         } else {
-            dispatch(replace(routes.login({
-                redirect: routes.product({
+            dispatch(replace(routes.auth.login({
+                redirect: routes.marketplace.product({
                     id: productId,
                 }),
             })))

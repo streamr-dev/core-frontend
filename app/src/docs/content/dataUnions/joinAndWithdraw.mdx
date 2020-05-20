@@ -1,10 +1,13 @@
+import { Link } from 'react-router-dom'
+
+import docsLinks from '$shared/../docsLinks'
 import CodeSnippet from '$shared/components/CodeSnippet'
 
 # Join and withdraw funds from Data Unions
 
 ### Joining Data Unions
 
-Joining the Data Union requires no transaction. The request must be authenticated with their Ethereum address, see Data Unions Auth & Identity.
+Joining the Data Union requires no transaction. The request must be authenticated with their Ethereum address, see <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
 
 ```
 await streamr.joinDataunion(dataunionAddress, secret)

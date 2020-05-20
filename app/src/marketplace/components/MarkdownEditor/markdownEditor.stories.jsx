@@ -39,3 +39,12 @@ stories.add('with error', () => (
         error="Something went wrong"
     />
 ))
+
+stories.add('disabled with error', () => (
+    <MarkdownEditor
+        placeholder="Type here"
+        onCommit={action('commit')}
+        disabled
+        error="Something went wrong"
+    />
+))

@@ -8,7 +8,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import BodyClass, { PAGE_SECONDARY } from '$shared/components/BodyClass'
 import EmptyState from '$shared/components/EmptyState'
 import Layout from '$shared/components/Layout'
-import links from '../../../links'
+import routes from '$routes'
 import pageNotFoundPic from '$shared/assets/images/404_blocks.png'
 import pageNotFoundPic2x from '$shared/assets/images/404_blocks@2x.png'
 import Button from '$shared/components/Button'
@@ -32,21 +32,21 @@ const NotFoundPage = () => (
                         <Button
                             kind="special"
                             tag={Link}
-                            to={links.userpages.main}
+                            to={routes.core()}
                         >
                             <Translate value="notFoundPage.coreApp" />
                         </Button>
                         <Button
                             kind="special"
                             tag={Link}
-                            to={links.marketplace.main}
+                            to={routes.core()}
                         >
                             <Translate value="notFoundPage.top" />
                         </Button>
                         <Button
                             kind="special"
                             tag={Link}
-                            to={links.root}
+                            to={routes.root()}
                         >
                             <Translate value="notFoundPage.publicSite" />
                         </Button>

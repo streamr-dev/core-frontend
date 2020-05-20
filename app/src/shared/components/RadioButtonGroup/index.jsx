@@ -50,7 +50,10 @@ const RadioButtonGroup = ({
     ), [options, selection])
 
     return (
-        <div className={cx(styles.root, className)}>
+        <div className={cx(styles.root, className, {
+            [styles.disabled]: !!disabled,
+        })}
+        >
             <div className={styles.inner}>
                 <div
                     className={styles.slider}
