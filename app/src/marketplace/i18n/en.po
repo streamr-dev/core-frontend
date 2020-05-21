@@ -363,7 +363,7 @@ msgid "modal##publishProgress##publish##title"
 msgstr "Publishing"
 
 msgid "modal##publishProgress##redeploy##title"
-msgstr "Redeploying"
+msgstr "Publishing"
 
 msgid "modal##publishProgress##republish##title"
 msgstr "Republishing"
@@ -429,7 +429,7 @@ msgid "modal##publishError##publishModes##republish"
 msgstr "Republishing"
 
 msgid "modal##publishError##publishModes##redeploy"
-msgstr "Redeploying"
+msgstr "Publishing"
 
 msgid "modal##publishError##publishModes##unpublish"
 msgstr "Unpublishing"
@@ -477,7 +477,7 @@ msgid "modal##publishComplete##republish##title"
 msgstr "Republish completed"
 
 msgid "modal##publishComplete##redeploy##title"
-msgstr "Redeploy completed"
+msgstr "Publish completed"
 
 msgid "modal##publishComplete##publish##title"
 msgstr "Publish completed"
