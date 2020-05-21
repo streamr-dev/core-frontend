@@ -251,9 +251,9 @@ describe('integrationKey - services', () => {
         })
 
         it('sends a POST request with the signed challenge', async () => {
-            const account = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
+            const address = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
             const signature = 'signature'
-            const signMethod = sandbox.stub().callsFake(() => Promise.resolve(signature))
+            const signChallenge = sandbox.stub().callsFake(() => Promise.resolve(signature))
             const challenge = {
                 expires: '2018-12-11T09:55:26Z',
                 challenge: 'This is a challenge created by Streamr',
@@ -265,10 +265,10 @@ describe('integrationKey - services', () => {
                 name,
                 service: integrationKeyServices.ETHEREREUM_IDENTITY,
                 json: {
-                    address: account,
+                    address,
                 },
             }
-            moxios.stubRequest(`/login/challenge/${account}`, {
+            moxios.stubRequest(`/login/challenge/${address}`, {
                 status: 200,
                 response: challenge,
             })
@@ -280,11 +280,11 @@ describe('integrationKey - services', () => {
 
             const result = await services.createIdentity({
                 name: 'test',
-                account,
-                signMethod,
+                address,
+                signChallenge,
             })
             assert.deepStrictEqual(result, data)
-            assert.equal(signMethod.calledWith(challenge.challenge), true)
+            assert.equal(signChallenge.calledWith(challenge.challenge), true)
         })
     })
 

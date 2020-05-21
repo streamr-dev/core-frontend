@@ -791,15 +791,16 @@ msgid "userpages##profilePage##apiCredentials##addAPIKey"
 msgstr "Add new key"
 
 msgid "userpages##profilePage##ethereumAddress##title"
-msgstr "Ethereum identities"
+msgstr "Ethereum Accounts"
 
 msgid "userpages##profilePage##ethereumAddress##linkTitle"
-msgstr "Eth Identities"
+msgstr "ETH Accounts"
 
 msgid "userpages##profilePage##ethereumAddress##description"
 msgstr ""
-"You can connect any number of Ethereum identities to your Streamr account. "
-"You might use them for the Ethereum one-click login feature or for buying and selling products on the Marketplace."
+"You can connect any number of Ethereum accounts to Streamr, though you need at least one "
+"to use the Marketplace. You can also create new Ethereum accounts from here, but you will "
+"need to secure private keys for these accounts yourself."
 
 msgid "userpages##profilePage##ethereumAddress##addAddress"
 msgstr "Add address"
@@ -823,10 +824,10 @@ msgid "userpages##profilePage##ethereumPrivateKeys##description"
 msgstr ""
 "These Ethereum accounts can be used on canvases to build data-driven interactions "
 "with Ethereum. Even though the private keys are securely stored server-side, "
-"we do not recommend having significant amounts of value on these accounts."
+"<strong>we do not recommend</strong> having significant amounts of value on these accounts."
 
 msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
-msgstr "Eth Dev Accounts"
+msgstr "ETH canvas keys"
 
 msgid "userpages##profilePage##ethereumPrivateKeys##addAddress"
 msgstr "Add account"
@@ -998,7 +999,7 @@ msgid "modal##newIdentity##label"
 msgstr "Account name"
 
 msgid "modal##newIdentity##placeholder"
-msgstr "eg. Mainnet Eth Address"
+msgstr "eg. Main Eth Address"
 
 msgid "modal##ethereumAccountCreated##defaultTitle"
 msgstr "Ethereum account created"
