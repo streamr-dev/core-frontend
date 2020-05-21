@@ -14,6 +14,7 @@ import { ErrorCodes } from '$shared/errors/Web3'
 import { usePending } from '$shared/hooks/usePending'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
 import { type Account } from '$shared/flowtype/integration-key-types'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import IdentityNameDialog from '../IdentityNameDialog'
 import { IdentityChallengeDialog, DuplicateIdentityDialog } from '../IdentityChallengeDialog'
@@ -44,10 +45,10 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
         edit,
         isLinked,
     } = useEthereumIdentities()
+    const isMounted = useIsMounted()
     const [phase, setPhase] = useState(identityPhases.NAME)
     const { wrap, isPending } = usePending('user.ADD_IDENTITY')
     const [linkedAccount, setLinkedAccount]: UseStateTuple<Account> = useState({})
-    const [renaming, setRenaming] = useState(false)
     const linkedAccountRef = useRef()
     linkedAccountRef.current = linkedAccount
 
@@ -68,7 +69,9 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
             try {
                 const newAccount = await connectMethod(name)
 
-                setLinkedAccount(newAccount)
+                if (isMounted()) {
+                    setLinkedAccount(newAccount)
+                }
 
                 added = true
             } catch (e) {
@@ -76,7 +79,9 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
                 error = e
             } finally {
                 if (createAccount && !error) {
-                    setPhase(identityPhases.ACCOUNT_CREATED)
+                    if (isMounted()) {
+                        setPhase(identityPhases.ACCOUNT_CREATED)
+                    }
                 } else if (!error || error.code !== ErrorCodes.IDENTITY_EXISTS) {
                     api.close({
                         added,
@@ -85,7 +90,7 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
                 }
             }
         })
-    ), [wrap, connectMethod, api, createAccount])
+    ), [wrap, connectMethod, api, createAccount, isMounted])
 
     const onClose = useCallback(() => {
         const { address } = linkedAccountRef.current || {}
@@ -101,25 +106,25 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
             const { id, name: oldName } = linkedAccountRef.current || {}
 
             if (name !== oldName) {
-                setRenaming(true)
-
                 try {
                     await edit(id, name)
 
-                    setLinkedAccount((prev) => ({
-                        ...prev,
-                        name,
-                    }))
+                    if (isMounted()) {
+                        setLinkedAccount((prev) => ({
+                            ...prev,
+                            name,
+                        }))
+                    }
                 } catch (e) {
                     console.warn(e)
-                } finally {
-                    setRenaming(false)
                 }
             }
 
-            setPhase(identityPhases.ACCOUNT_CREATED)
+            if (isMounted()) {
+                setPhase(identityPhases.ACCOUNT_CREATED)
+            }
         })
-    ), [wrap, edit])
+    ), [wrap, edit, isMounted])
 
     useEffect(() => {
         getEthIdentities()
@@ -196,7 +201,7 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
                     onCancel={() => setPhase(identityPhases.ACCOUNT_CREATED)}
                     onSave={onRename}
                     initialValue={linkedAccount.name || ''}
-                    waiting={renaming}
+                    waiting={isPending}
                 />
             )
 
