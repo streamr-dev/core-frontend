@@ -19,6 +19,7 @@ type Props = {
     isValidSubscription: boolean,
     productSubscription?: Subscription,
     onPurchase: () => void | Promise<void>,
+    isPurchasing?: boolean,
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean) => {
@@ -33,7 +34,13 @@ const buttonTitle = (product: Product, isValidSubscription: boolean) => {
         I18n.t('productPage.productDetails.add')
 }
 
-const ProductDetails = ({ product, isValidSubscription, productSubscription, onPurchase }: Props) => (
+const ProductDetails = ({
+    product,
+    isValidSubscription,
+    productSubscription,
+    onPurchase,
+    isPurchasing,
+}: Props) => (
     <div className={styles.root}>
         <div
             className={cx(styles.basics, {
@@ -70,8 +77,9 @@ const ProductDetails = ({ product, isValidSubscription, productSubscription, onP
                     className={styles.button}
                     kind="primary"
                     size="big"
-                    disabled={(!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
+                    disabled={isPurchasing || (!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
                     onClick={onPurchase}
+                    waiting={isPurchasing}
                 >
                     {buttonTitle(product, isValidSubscription)}
                 </Button>

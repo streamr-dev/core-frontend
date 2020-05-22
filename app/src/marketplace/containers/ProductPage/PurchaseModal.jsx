@@ -376,10 +376,9 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         }
     }, [isMounted, dispatch, productId])
 
-    if (isPending || checkingWeb3 || web3Error) {
+    if (!isPending && !checkingWeb3 && web3Error) {
         return (
             <Web3ErrorDialog
-                waiting={isPending || checkingWeb3}
                 onClose={onClose}
                 error={web3Error}
             />
@@ -395,7 +394,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         priceInEthUsdEquivalent,
     } = accessPeriodParams.current || {}
 
-    if (purchaseError || contractProductError) {
+    if (!isPending && !checkingWeb3 && (purchaseError || contractProductError)) {
         if (purchaseError instanceof NoBalanceError) {
             return (
                 <NoBalanceDialog
@@ -437,6 +436,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 priceCurrency={priceCurrency}
                 onCancel={onClose}
                 onNext={onSetAccessPeriod}
+                disabled={checkingWeb3}
             />
         )
     }

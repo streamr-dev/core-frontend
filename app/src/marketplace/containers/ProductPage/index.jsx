@@ -35,10 +35,11 @@ const ProductPage = () => {
     const product = useProduct()
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null && !!getToken()
+    const { isPending } = usePending('contractProduct.LOAD')
 
     const { match } = useContext(RouterContext.Context)
 
-    const loadProduct = useCallback(async (id: ProductId) => {
+    const loadAdditionalProductData = useCallback(async (id: ProductId) => {
         loadContractProductSubscription(id)
         loadCategories()
         loadProductStreams(id, isLoggedIn)
@@ -56,8 +57,8 @@ const ProductPage = () => {
     ])
 
     useEffect(() => {
-        loadProduct(match.params.id)
-    }, [loadProduct, match.params.id])
+        loadAdditionalProductData(match.params.id)
+    }, [loadAdditionalProductData, match.params.id])
 
     const { dataUnionDeployed, beneficiaryAddress } = product
 
@@ -70,6 +71,10 @@ const ProductPage = () => {
     return (
         <Layout navShadow>
             <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
+            <LoadingIndicator
+                loading={isPending}
+                className={styles.loadingIndicator}
+            />
             <Page />
             <PurchaseModal />
         </Layout>
