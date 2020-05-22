@@ -39,6 +39,7 @@ export type Props = {
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
     onNext: (AccessPeriod) => Promise<void>,
     onCancel: () => void,
+    disabled?: boolean,
 }
 
 const getPrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN, currency: ContractCurrency) => {
@@ -62,6 +63,7 @@ export const ChooseAccessPeriodDialog = ({
     onNext: onNextProp,
     onCancel,
     dataPerUsd,
+    disabled,
 }: Props) => {
     const [time, setTime] = useState('1')
     const [timeUnit, setTimeUnit] = useState('hour')
@@ -248,6 +250,7 @@ export const ChooseAccessPeriodDialog = ({
                     </div>
                 )}
                 contentClassName={styles.noPadding}
+                disabled={disabled}
             >
                 <div className={styles.root}>
                     <div className={styles.accessPeriod}>
