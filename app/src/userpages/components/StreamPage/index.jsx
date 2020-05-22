@@ -72,15 +72,13 @@ const StreamPage = (props: Props) => {
                     await handleLoadError(e)
                 }
             } catch (e) {
-                if (e instanceof ResourceNotFoundError) {
-                    fail(e)
-                    return
+                if (!(e instanceof ResourceNotFoundError)) {
+                    Notification.push({
+                        title: e.message,
+                        icon: NotificationIcon.ERROR,
+                    })
                 }
-                Notification.push({
-                    title: e.message,
-                    icon: NotificationIcon.ERROR,
-                })
-                throw e
+                fail(e)
             }
         }
 

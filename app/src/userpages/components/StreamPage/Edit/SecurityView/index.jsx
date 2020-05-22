@@ -188,6 +188,7 @@ export function SecurityView(props: Props) {
                     if (selected) { mode = 'selected' }
                     return (
                         <label
+                            data-hook={`level-${index}`}
                             key={key}
                             className={cx(styles.SecurityOption, {
                                 [styles.disabled]: disabled,
