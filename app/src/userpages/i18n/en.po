@@ -984,7 +984,7 @@ msgid "modal##signatureRequest##defaultTitle"
 msgstr "Signature request"
 
 msgid "modal##signatureRequest##description"
-msgstr "Please sign the challenge in Metamask window"
+msgstr "Please sign the challenge in MetaMask"
 
 msgid "modal##privateKey##successNotification"
 msgstr "Ethereum account added"

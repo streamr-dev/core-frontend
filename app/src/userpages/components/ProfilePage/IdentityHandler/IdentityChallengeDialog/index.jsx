@@ -21,11 +21,17 @@ export const SignatureRequestDialog = ({ onClose }: Props) => (
         <Dialog
             title={I18n.t('modal.signatureRequest.defaultTitle')}
             onClose={onClose}
+            contentClassName={styles.dialogContent}
         >
-            <div>
-                <PngIcon name="metamask" className={styles.icon} />
-                <Translate tag="p" value="modal.signatureRequest.description" />
-            </div>
+            <PngIcon
+                name="metamask"
+                className={styles.icon}
+            />
+            <Translate
+                tag="p"
+                value="modal.signatureRequest.description"
+                className={styles.text}
+            />
         </Dialog>
     </ModalPortal>
 )
@@ -35,11 +41,18 @@ export const DuplicateIdentityDialog = ({ onClose }: Props) => (
         <Dialog
             title={I18n.t('modal.duplicateIdentity.defaultTitle')}
             onClose={onClose}
+            contentClassName={styles.dialogContent}
         >
-            <div>
-                <PngIcon name="metamask" className={styles.icon} />
-                <Translate tag="p" value="modal.duplicateIdentity.description" dangerousHTML />
-            </div>
+            <PngIcon
+                name="metamask"
+                className={styles.icon}
+            />
+            <Translate
+                tag="p"
+                value="modal.duplicateIdentity.description"
+                dangerousHTML
+                className={styles.text}
+            />
         </Dialog>
     </ModalPortal>
 )
