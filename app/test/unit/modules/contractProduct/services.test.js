@@ -436,6 +436,29 @@ describe('Product services', () => {
                 false,
             ))
         })
+        it('must call updateProductSpy with correct params redeploying', () => {
+            const updateProductSpy = sandbox.spy()
+            sandbox.stub(utils, 'send')
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    updateProduct: updateProductSpy,
+                },
+            }))
+            all.updateContractProduct({
+                ...exampleProduct,
+                priceCurrency: 'USD',
+            }, true)
+            assert(updateProductSpy.calledOnce)
+            assert(updateProductSpy.calledWithExactly(
+                '0x1234abcdef',
+                'Awesome Granite Sausages',
+                '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
+                '63000000000000000000',
+                1,
+                0,
+                true,
+            ))
+        })
     })
 
     describe('deleteProduct', () => {
