@@ -96,6 +96,7 @@ const IdentityHandler = () => {
                 tag="p"
                 value="userpages.profilePage.ethereumAddress.description"
                 className={profileStyles.longText}
+                dangerousHTML
             />
             <IntegrationKeyList
                 onDelete={wrappedRemove}
