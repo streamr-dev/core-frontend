@@ -6,13 +6,13 @@ import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 import useModal from '$shared/hooks/useModal'
 import { usePending } from '$shared/hooks/usePending'
 
-import PrivateKeyNameDialog from './PrivateKeyNameDialog'
+import IdentityNameDialog from '../../IdentityHandler/IdentityNameDialog'
 
 type Props = {
     api: Object,
 }
 
-const AddIdentityDialog = ({ api }: Props) => {
+const AddPrivateKeyDialog = ({ api }: Props) => {
     const { load: getPrivateKeys, fetching, create } = usePrivateKeys()
     const { wrap, isPending } = usePending('user.ADD_PRIVATE_KEY')
 
@@ -47,11 +47,16 @@ const AddIdentityDialog = ({ api }: Props) => {
         getPrivateKeys()
     }, [getPrivateKeys])
 
+    if (fetching) {
+        return null
+    }
+
     return (
-        <PrivateKeyNameDialog
+        <IdentityNameDialog
             onClose={onClose}
+            onCancel={onClose}
             onSave={onSetName}
-            waiting={fetching || isPending}
+            waiting={isPending}
         />
     )
 }
@@ -64,7 +69,7 @@ export default () => {
     }
 
     return (
-        <AddIdentityDialog
+        <AddPrivateKeyDialog
             api={api}
         />
     )

@@ -46,7 +46,7 @@ describe('IdentityHandler', () => {
         mockRemove.mockClear()
     })
 
-    describe('componentDidMount', () => {
+    describe('mount', () => {
         it('loads integrationKeys', () => {
             act(() => {
                 mount(<IdentityHandler />)
@@ -55,19 +55,29 @@ describe('IdentityHandler', () => {
         })
     })
 
-    describe('onNew', () => {
-        it('must open dialog to add identity', async () => {
+    describe('connect account', () => {
+        it('must open dialog to connect identity', async () => {
             const el = shallow(<IdentityHandler />)
 
             await act(async () => {
-                await el.find('Button').simulate('click')
+                await el.find('Button').at(0).simulate('click')
+            })
+
+            expect(mockApiOpen).toHaveBeenCalled()
+        })
+
+        it('must open dialog to create identity', async () => {
+            const el = shallow(<IdentityHandler />)
+
+            await act(async () => {
+                await el.find('Button').at(1).simulate('click')
             })
 
             expect(mockApiOpen).toHaveBeenCalled()
         })
     })
 
-    describe('onDelete', () => {
+    describe('remove', () => {
         it('must call to remove identity', () => {
             const el = mount(<IdentityHandler />)
 

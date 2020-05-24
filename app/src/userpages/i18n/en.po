@@ -791,21 +791,25 @@ msgid "userpages##profilePage##apiCredentials##addAPIKey"
 msgstr "Add new key"
 
 msgid "userpages##profilePage##ethereumAddress##title"
-msgstr "Ethereum identities"
+msgstr "Ethereum Accounts"
 
 msgid "userpages##profilePage##ethereumAddress##linkTitle"
-msgstr "Eth Identities"
+msgstr "ETH Accounts"
 
 msgid "userpages##profilePage##ethereumAddress##description"
 msgstr ""
-"You can connect any number of Ethereum identities to your Streamr account. "
-"You might use them for the Ethereum one-click login feature or for buying and selling products on the Marketplace."
+"Ethereum accounts are used for decentralized identity, calling smart contracts,<br />"
+"and signing data in streams. Connect your wallet accounts to use them in Core<br />"
+"and Marketplace, or create new accounts to be used in scripts."
 
 msgid "userpages##profilePage##ethereumAddress##addAddress"
 msgstr "Add address"
 
-msgid "userpages##profilePage##ethereumAddress##addNewAddress"
-msgstr "Add new address"
+msgid "userpages##profilePage##ethereumAddress##connectWallet"
+msgstr "Connect wallet"
+
+msgid "userpages##profilePage##ethereumAddress##createAccount"
+msgstr "Create account"
 
 msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
 msgstr ""
@@ -820,10 +824,10 @@ msgid "userpages##profilePage##ethereumPrivateKeys##description"
 msgstr ""
 "These Ethereum accounts can be used on canvases to build data-driven interactions "
 "with Ethereum. Even though the private keys are securely stored server-side, "
-"we do not recommend having significant amounts of value on these accounts."
+"<strong>we do not recommend</strong> having significant amounts of value on these accounts."
 
 msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
-msgstr "Eth Dev Accounts"
+msgstr "ETH canvas keys"
 
 msgid "userpages##profilePage##ethereumPrivateKeys##addAddress"
 msgstr "Add account"
@@ -980,16 +984,7 @@ msgid "modal##signatureRequest##defaultTitle"
 msgstr "Signature request"
 
 msgid "modal##signatureRequest##description"
-msgstr "Please sign the challenge in Metamask window"
-
-msgid "modal##privateKey##defaultTitle"
-msgstr "Add a name to this Ethereum account"
-
-msgid "modal##privateKey##label"
-msgstr "Account name"
-
-msgid "modal##privateKey##placeholder"
-msgstr "eg. Mainnet Eth Address"
+msgstr "Please sign the challenge in MetaMask"
 
 msgid "modal##privateKey##successNotification"
 msgstr "Ethereum account added"
@@ -998,13 +993,43 @@ msgid "modal##privateKey##errorNotification"
 msgstr "There was an error while adding an Ethereum account"
 
 msgid "modal##newIdentity##defaultTitle"
-msgstr "Add a name to this Ethereum address"
+msgstr "Add a name to this Ethereum account"
 
 msgid "modal##newIdentity##label"
 msgstr "Account name"
 
 msgid "modal##newIdentity##placeholder"
-msgstr "eg. Mainnet Eth Address"
+msgstr "eg. Main Eth Address"
+
+msgid "modal##ethereumAccountCreated##defaultTitle"
+msgstr "Ethereum account created"
+
+msgid "modal##ethereumAccountCreated##description"
+msgstr ""
+"Your account has been created and the address<br />"
+"is shown below. Click next to get your private key."
+
+msgid "modal##copyPrivateKey##defaultTitle"
+msgstr "Your private key"
+
+msgid "modal##copyPrivateKey##defaultDescription"
+msgstr ""
+"Your private key will be <strong>given to you once only</strong>,<br />"
+"so ensure that you copy and store it securely."
+
+msgid "modal##copyPrivateKey##descriptionAfterKeyCopiedOnce"
+msgstr ""
+"Be careful with your private key, as <strong>anyone with your key<br />"
+"controls your tokens</strong>. Please check the box to continue."
+
+msgid "modal##copyPrivateKey##checkboxLabel"
+msgstr "I will securely store my private key"
+
+msgid "modal##copyPrivateKey##copyKey"
+msgstr "Copy key"
+
+msgid "modal##copyPrivateKey##keyCopied"
+msgstr "Copied!"
 
 msgid "modal##duplicateIdentity##defaultTitle"
 msgstr "Account already connected"

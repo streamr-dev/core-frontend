@@ -160,8 +160,14 @@ describe('integrationKey - actions', () => {
             }))
 
             const store = mockStore()
-            await store.dispatch(actions.createIdentity('name'))
+            const params = {
+                name: 'name',
+                address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
+                signChallenge: () => Promise.resolve('signature'),
+            }
+            await store.dispatch(actions.createIdentity(params))
             assert(serviceStub.calledOnce)
+            assert(serviceStub.calledWith(params))
 
             const expectedActions = [{
                 type: constants.CREATE_IDENTITY_REQUEST,
@@ -181,7 +187,7 @@ describe('integrationKey - actions', () => {
 
         it('creates CREATE_IDENTITY_FAILURE creating identity fails', async () => {
             const error = new Error('error')
-            sandbox.stub(services, 'createIdentity').callsFake(() => Promise.reject(error))
+            const serviceStub = sandbox.stub(services, 'createIdentity').callsFake(() => Promise.reject(error))
             const expectedActions = [{
                 type: constants.CREATE_IDENTITY_REQUEST,
             },
@@ -195,13 +201,19 @@ describe('integrationKey - actions', () => {
                 },
             }]
             const store = mockStore()
+            const params = {
+                name: 'name',
+                address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
+                signChallenge: () => Promise.resolve('signature'),
+            }
 
             try {
-                await store.dispatch(actions.createIdentity('name'))
+                await store.dispatch(actions.createIdentity(params))
             } catch (e) {
                 assert(e === error)
             }
 
+            assert(serviceStub.calledWith(params))
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })
