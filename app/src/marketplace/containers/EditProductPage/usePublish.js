@@ -22,10 +22,21 @@ import {
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { getPendingChanges, withPendingChanges } from './state'
 import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
-import PublishQueue, { actionsTypes } from './publishQueue'
+import ActionQueue from '$mp/utils/actionQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
+
+export const actionsTypes = {
+    UPDATE_ADMIN_FEE: 'updateAdminFee',
+    UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
+    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
+    REDEPLOY_PAID: 'publishPaid',
+    UNDEPLOY_CONTRACT_PRODUCT: 'undeployContractProduct',
+    PUBLISH_FREE: 'publishFree',
+    UNPUBLISH_FREE: 'unpublishFree',
+    PUBLISH_PENDING_CHANGES: 'publishPendingChanges',
+}
 
 export const publishModes = {
     REPUBLISH: 'republish', // live product update
@@ -90,7 +101,7 @@ export default function usePublish() {
             throw new Error('Invalid product state')
         }
 
-        const queue = new PublishQueue()
+        const queue = new ActionQueue()
 
         // update admin fee if it has changed
         if ([publishModes.REPUBLISH, publishModes.REDEPLOY, publishModes.PUBLISH].includes(nextMode)) {

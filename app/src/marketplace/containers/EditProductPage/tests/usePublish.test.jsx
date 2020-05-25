@@ -6,13 +6,12 @@ import sinon from 'sinon'
 import BN from 'bignumber.js'
 
 import Transaction from '$shared/utils/Transaction'
-import usePublish, { publishModes } from '../usePublish'
+import usePublish, { publishModes, actionsTypes } from '../usePublish'
 import * as contractProductServices from '$mp/modules/contractProduct/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as productServices from '$mp/modules/product/services'
 
-import { actionsTypes } from '../publishQueue'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 
 jest.mock('react-redux', () => ({
