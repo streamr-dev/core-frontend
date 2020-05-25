@@ -1,9 +1,10 @@
-import PublishQueue, { actionsTypes } from '../publishQueue'
+import ActionQueue from '$mp/utils/actionQueue'
+import { actionsTypes } from '$mp/containers/EditProductPage/usePublish'
 import { transactionStates } from '$shared/utils/constants'
 
-describe('Publish queue', () => {
+describe('Action queue', () => {
     it('calls finish on empty queue', () => {
-        const queue = new PublishQueue()
+        const queue = new ActionQueue()
 
         const handlerFn = jest.fn()
         queue.subscribe('finish', handlerFn)
@@ -14,7 +15,7 @@ describe('Publish queue', () => {
     })
 
     it('starts an action', async () => {
-        const queue = new PublishQueue()
+        const queue = new ActionQueue()
 
         const startedFn = jest.fn()
         const statusFn = jest.fn()
@@ -43,7 +44,7 @@ describe('Publish queue', () => {
     })
 
     it('can update action status multiple times', async () => {
-        const queue = new PublishQueue()
+        const queue = new ActionQueue()
 
         const startedFn = jest.fn()
         const statusFn = jest.fn()
@@ -80,7 +81,7 @@ describe('Publish queue', () => {
     })
 
     it('can handle multiple actions', async () => {
-        const queue = new PublishQueue()
+        const queue = new ActionQueue()
 
         const startedFn = jest.fn()
         const statusFn = jest.fn()
@@ -135,7 +136,7 @@ describe('Publish queue', () => {
     })
 
     it('processes the queue in order and moves on to the next one after the previous completes', async () => {
-        const queue = new PublishQueue()
+        const queue = new ActionQueue()
 
         const startedFn = jest.fn()
         const statusFn = jest.fn()
@@ -185,7 +186,7 @@ describe('Publish queue', () => {
     })
 
     it('updates action with error status if action throws an error', async () => {
-        const queue = new PublishQueue()
+        const queue = new ActionQueue()
 
         const startedFn = jest.fn()
         const statusFn = jest.fn()
@@ -217,7 +218,7 @@ describe('Publish queue', () => {
     })
 
     it('continues next action after previous action throws an error', async () => {
-        const queue = new PublishQueue()
+        const queue = new ActionQueue()
 
         const startedFn = jest.fn()
         const statusFn = jest.fn()
@@ -258,7 +259,7 @@ describe('Publish queue', () => {
 
     describe('needsWeb3', () => {
         it('returns false if there are no actions that require web3', () => {
-            const queue = new PublishQueue()
+            const queue = new ActionQueue()
 
             queue
                 .add({
@@ -278,7 +279,7 @@ describe('Publish queue', () => {
         })
 
         it('returns false if there are no actions that require web3', () => {
-            const queue = new PublishQueue()
+            const queue = new ActionQueue()
 
             queue
                 .add({
@@ -308,7 +309,7 @@ describe('Publish queue', () => {
 
     describe('needsOwner', () => {
         it('returns empty array if there are no actions that require owner', () => {
-            const queue = new PublishQueue()
+            const queue = new ActionQueue()
 
             queue
                 .add({
@@ -328,7 +329,7 @@ describe('Publish queue', () => {
         })
 
         it('returns false if there are no actions that require web3', () => {
-            const queue = new PublishQueue()
+            const queue = new ActionQueue()
 
             queue
                 .add({

@@ -5,25 +5,14 @@ import EventEmitter from 'events'
 import { transactionStates } from '$shared/utils/constants'
 import type { Address } from '$shared/flowtype/web3-types'
 
-export const actionsTypes = {
-    UPDATE_ADMIN_FEE: 'updateAdminFee',
-    UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
-    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
-    REDEPLOY_PAID: 'publishPaid',
-    UNDEPLOY_CONTRACT_PRODUCT: 'undeployContractProduct',
-    PUBLISH_FREE: 'publishFree',
-    UNPUBLISH_FREE: 'unpublishFree',
-    PUBLISH_PENDING_CHANGES: 'publishPendingChanges',
-}
-
-export type PublishAction = {
+export type QueuedAction = {
     id: string,
     handler: Function,
     requireWeb3?: boolean,
     requireOwner?: Address,
 }
 
-export class PublishQueue {
+export class ActionQueue {
     emitter = new EventEmitter()
     actions = []
 
@@ -39,7 +28,7 @@ export class PublishQueue {
         return this
     }
 
-    add(action: PublishAction) {
+    add(action: QueuedAction) {
         this.actions.push(action)
 
         return this
@@ -99,4 +88,4 @@ export class PublishQueue {
     }
 }
 
-export default PublishQueue
+export default ActionQueue

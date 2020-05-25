@@ -11,11 +11,10 @@ import { Translate } from 'react-redux-i18n'
 
 import { transactionStates } from '$shared/utils/constants'
 import { subscribeSnippets } from '$utils/streamSnippets'
-import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 import PngIcon from '$shared/components/PngIcon'
 
 import croppedImage from '$mp/assets/product_standard.png'
-import { publishModes } from '$mp/containers/EditProductPage/usePublish'
+import { publishModes, actionsTypes } from '$mp/containers/EditProductPage/usePublish'
 
 // marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
