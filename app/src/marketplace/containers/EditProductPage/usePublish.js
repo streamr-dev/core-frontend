@@ -38,6 +38,17 @@ export const actionsTypes = {
     PUBLISH_PENDING_CHANGES: 'publishPendingChanges',
 }
 
+export const actionsTypes = {
+    UPDATE_ADMIN_FEE: 'updateAdminFee',
+    UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
+    CREATE_CONTRACT_PRODUCT: 'createContractProduct',
+    REDEPLOY_PAID: 'publishPaid',
+    UNDEPLOY_CONTRACT_PRODUCT: 'undeployContractProduct',
+    PUBLISH_FREE: 'publishFree',
+    UNPUBLISH_FREE: 'unpublishFree',
+    PUBLISH_PENDING_CHANGES: 'publishPendingChanges',
+}
+
 export const publishModes = {
     REPUBLISH: 'republish', // live product update
     REDEPLOY: 'redeploy', // unpublished, but published at least once
