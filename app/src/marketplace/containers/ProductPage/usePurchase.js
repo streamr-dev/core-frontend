@@ -42,15 +42,33 @@ type Allowances = {
     daiAllowance: NumberString,
 }
 
+type Purchase = {
+    contractProduct: SmartContractProduct,
+    accessPeriod: AccessPeriod,
+    allowances: Allowances,
+}
+
 export default function usePurchase() {
     const dispatch = useDispatch()
     const dataPerUsd = useSelector(selectDataPerUsd)
     const dataPerUsdRef = useRef(dataPerUsd)
     dataPerUsdRef.current = dataPerUsd
 
-    const purchase = useCallback(async (contractProduct: SmartContractProduct, accessPeriod: AccessPeriod, allowances: Allowances) => {
+    const purchase = useCallback(async ({ contractProduct, accessPeriod, allowances }: Purchase = {}) => {
         if (!contractProduct) {
             throw new Error('no product')
+        }
+
+        const {
+            paymentCurrency,
+            time,
+            timeUnit,
+            priceInEth,
+            priceInDai,
+        } = accessPeriod || {}
+
+        if (!accessPeriod || !time || !timeUnit || !paymentCurrency) {
+            throw new Error(I18n.t('no access period'))
         }
 
         const { pricePerSecond, priceCurrency } = contractProduct
@@ -62,19 +80,14 @@ export default function usePurchase() {
             accessPeriod.timeUnit,
         )
 
-        if (!accessPeriod || !purchasePrice) {
-            throw new Error(I18n.t('error.noProductOrAccess'))
+        if (!purchasePrice) {
+            throw new Error(I18n.t('could not calculate price'))
         }
 
-        const {
+        await validateBalanceForPurchase({
+            price: purchasePrice.current,
             paymentCurrency,
-            time,
-            timeUnit,
-            priceInEth,
-            priceInDai,
-        } = accessPeriod
-
-        await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
+        })
 
         const queue = new ActionQueue()
 
@@ -227,7 +240,9 @@ export default function usePurchase() {
             },
         })
 
-        return queue
+        return {
+            queue,
+        }
     }, [dispatch])
 
     return useMemo(() => ({

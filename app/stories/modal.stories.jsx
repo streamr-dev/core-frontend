@@ -487,53 +487,71 @@ story('Marketplace/InsufficientEthDialog')
 story('Marketplace/NoBalanceDialog')
     .add('eth balance 0', () => (
         <NoBalanceDialog
-            requiredGasBalance={BN(0)}
-            requiredEthBalance={BN(0)}
-            currentEthBalance={BN(0)}
-            requiredDataBalance={BN(0)}
-            currentDataBalance={BN(0)}
-            currentDaiBalance={BN(0)}
-            requiredDaiBalance={BN(0)}
+            required={{
+                gas: BN(0),
+            }}
+            balances={{
+                eth: BN(0),
+            }}
             paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('eth balance < required', () => (
         <NoBalanceDialog
-            requiredGasBalance={BN(1)}
-            requiredEthBalance={BN(2)}
-            currentEthBalance={BN(1)}
-            requiredDataBalance={BN(0)}
-            currentDataBalance={BN(0)}
-            currentDaiBalance={BN(0)}
-            requiredDaiBalance={BN(0)}
-            paymentCurrency="DATA"
+            required={{
+                gas: BN(1),
+                eth: BN(2),
+            }}
+            balances={{
+                eth: BN(1),
+                data: BN(0),
+            }}
+            paymentCurrency="ETH"
             onCancel={action('onCancel')}
         />
     ))
     .add('DATA balance 0', () => (
         <NoBalanceDialog
-            requiredGasBalance={BN(0)}
-            requiredEthBalance={BN(2)}
-            currentEthBalance={BN(3)}
-            requiredDataBalance={BN(0)}
-            currentDataBalance={BN(0)}
-            currentDaiBalance={BN(0)}
-            requiredDaiBalance={BN(0)}
+            required={{
+                gas: BN(0),
+                eth: BN(2),
+            }}
+            balances={{
+                eth: BN(3),
+                data: BN(0),
+            }}
             paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('DATA balance < required', () => (
         <NoBalanceDialog
-            requiredGasBalance={BN(0)}
-            requiredEthBalance={BN(2)}
-            currentEthBalance={BN(3)}
-            requiredDataBalance={BN(3)}
-            currentDataBalance={BN(2)}
-            currentDaiBalance={BN(0)}
-            requiredDaiBalance={BN(0)}
+            required={{
+                gas: BN(0),
+                eth: BN(2),
+                data: BN(3),
+            }}
+            balances={{
+                eth: BN(3),
+                data: BN(2),
+            }}
             paymentCurrency="DATA"
+            onCancel={action('onCancel')}
+        />
+    ))
+    .add('DAI balance < required', () => (
+        <NoBalanceDialog
+            required={{
+                gas: BN(0),
+                eth: BN(2),
+                dai: BN(3),
+            }}
+            balances={{
+                eth: BN(3),
+                dai: BN(2),
+            }}
+            paymentCurrency="DAI"
             onCancel={action('onCancel')}
         />
     ))
@@ -542,8 +560,13 @@ story('Marketplace/ChooseAccessPeriodDialog')
     .add('default', () => (
         <ChooseAccessPeriodDialog
             dataPerUsd={BN(10)}
-            pricePerSecond={BN(1)}
+            pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
+            balances={{
+                ETH: BN(10),
+                DATA: BN(200),
+                DAI: BN(999),
+            }}
             onCancel={action('onCancel')}
             onNext={action('onNext')}
         />
