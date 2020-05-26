@@ -198,7 +198,10 @@ export function removeUser(users, userId) {
 }
 
 export function updatePermission(users, userId, permissions = {}) {
-    userId = validateUserId(userId)
+    // allow updating anonymous permissions
+    if (userId !== 'anonymous') {
+        userId = validateUserId(userId)
+    }
     return {
         ...users,
         [userId]: {
