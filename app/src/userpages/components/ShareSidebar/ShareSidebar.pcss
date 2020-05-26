@@ -173,18 +173,29 @@
 
   .permissionsCheckboxes {
     display: grid;
-    grid-template-columns: auto 1fr auto 1fr;
-    grid-column-gap: 1um;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    grid-row-gap: 0.5um;
+
+    > * {
+      padding-bottom: 0.5um;
+      display: flex;
+      align-items: center;
+    }
+
+    .checkboxContainer {
+      display: flex;
+      align-items: center;
+    }
 
     .checkbox {
       margin-right: 0;
     }
 
     label {
+      padding-left: 0.5um;
       margin-bottom: 0;
       line-height: normal;
+      width: 100%;
     }
   }
 

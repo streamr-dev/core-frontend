@@ -231,15 +231,15 @@ function UserPermissions({
         onSelect(userId)
     }, [isSelected, onSelect, userId])
 
-    /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
+    // eslint-disable-next-line max-len
+    /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions */
     return (
         <div
             className={cx(styles.userPermissions, className, {
                 [styles.isSelected]: isSelected,
             })}
-            onClick={onClick}
         >
-            <div className={styles.permissionsHeader}>
+            <div className={styles.permissionsHeader} onClick={onClick}>
                 <div className={styles.permissionsHeaderTitle}>
                     <h4 title={userId}>{userId}</h4>
                     <div
@@ -292,19 +292,21 @@ function UserPermissions({
                     />
                     <div className={styles.permissionsCheckboxes}>
                         {Object.entries(userPermissions).map(([permission, value]) => (
-                            <React.Fragment key={permission}>
-                                <Checkbox
-                                    className={styles.checkbox}
-                                    id={`${userId}-${permission}`}
-                                    value={value}
-                                    onChange={() => updatePermission(userId, {
-                                        [permission]: !value,
-                                    })}
-                                />
+                            <div key={permission}>
+                                <div className={styles.checkboxContainer}>
+                                    <Checkbox
+                                        className={styles.checkbox}
+                                        id={`${userId}-${permission}`}
+                                        value={value}
+                                        onChange={() => updatePermission(userId, {
+                                            [permission]: !value,
+                                        })}
+                                    />
+                                </div>
                                 <label htmlFor={`${userId}-${permission}`}>
                                     {startCase(I18n.t(`share.permissions.${permission}`))}
                                 </label>
-                            </React.Fragment>
+                            </div>
                         ))}
                     </div>
                 </div>
