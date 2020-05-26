@@ -141,55 +141,79 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boole
     return BN('infinity')
 }
 
-export const validateBalanceForPurchase = async (price: BN, paymentCurrency: PaymentCurrency) => {
+type GetPrice = {
+    price: BN,
+    paymentCurrency: PaymentCurrency,
+    includeGasForSetAllowance?: boolean,
+    includeGasForResetAllowance?: boolean,
+}
+
+/* eslint-disable object-curly-newline */
+export const validateBalanceForPurchase = async ({
+    price,
+    paymentCurrency,
+    includeGasForSetAllowance = false,
+    includeGasForResetAllowance = false,
+}: GetPrice) => {
+/* eslint-enable object-curly-newline */
     const [ethBalance, dataBalance, daiBalance] = await getBalances()
     const ethPrice = await uniswapDATAtoETH(price.toString())
     const daiPrice = await uniswapDATAtoDAI(price.toString())
-    const requiredEth = ethPrice
-    const requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
-    const requiredDai = daiPrice
+    let requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
+
+    if (includeGasForSetAllowance) {
+        requiredGas = requiredGas.plus(gasLimits.APPROVE)
+    }
+
+    if (includeGasForResetAllowance) {
+        requiredGas = requiredGas.plus(gasLimits.APPROVE)
+    }
 
     switch (paymentCurrency) {
-        case paymentCurrencies.ETH:
-            if (ethBalance.isLessThan(requiredEth) || ethBalance.isLessThan(ethPrice)) {
-                throw new NoBalanceError(
-                    I18n.t('error.noBalance'),
-                    requiredGas,
-                    requiredEth,
-                    ethBalance,
-                    price,
-                    dataBalance,
-                    daiBalance,
-                    requiredDai,
-                )
+        case paymentCurrencies.ETH: {
+            const requiredEth = BN(ethPrice).plus(requiredGas)
+            if (ethBalance.isLessThan(requiredEth)) {
+                throw new NoBalanceError({
+                    message: I18n.t('error.noBalance'),
+                    required: {
+                        gas: requiredGas,
+                        eth: requiredEth,
+                    },
+                    balances: {
+                        eth: ethBalance,
+                    },
+                })
             }
             break
+        }
         case paymentCurrencies.DATA:
-            if (ethBalance.isLessThan(requiredEth) || dataBalance.isLessThan(price)) {
-                throw new NoBalanceError(
-                    I18n.t('error.noBalance'),
-                    requiredGas,
-                    requiredEth,
-                    ethBalance,
-                    price,
-                    dataBalance,
-                    daiBalance,
-                    requiredDai,
-                )
+            if (ethBalance.isLessThan(requiredGas) || dataBalance.isLessThan(price)) {
+                throw new NoBalanceError({
+                    message: I18n.t('error.noBalance'),
+                    required: {
+                        gas: requiredGas,
+                        data: price,
+                    },
+                    balances: {
+                        eth: ethBalance,
+                        data: dataBalance,
+                    },
+                })
             }
             break
         case paymentCurrencies.DAI:
-            if (ethBalance.isLessThan(requiredEth) || daiBalance.isLessThan(daiPrice)) {
-                throw new NoBalanceError(
-                    I18n.t('error.noBalance'),
-                    requiredGas,
-                    requiredEth,
-                    ethBalance,
-                    price,
-                    dataBalance,
-                    daiBalance,
-                    requiredDai,
-                )
+            if (ethBalance.isLessThan(requiredGas) || daiBalance.isLessThan(daiPrice)) {
+                throw new NoBalanceError({
+                    message: I18n.t('error.noBalance'),
+                    required: {
+                        gas: requiredGas,
+                        dai: daiPrice,
+                    },
+                    balances: {
+                        eth: ethBalance,
+                        dai: daiBalance,
+                    },
+                })
             }
             break
         default:
