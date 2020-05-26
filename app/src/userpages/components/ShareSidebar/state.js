@@ -169,7 +169,10 @@ export function isValidUserId(userId) {
     if (!userId || typeof userId !== 'string') { return false }
     userId = userId.trim()
     if (!userId) { return false }
-    if (!userId.startsWith('0x') && !userId.includes('@')) { return false }
+    if (userId === 'anonymous') { return true }
+    if (!userId.startsWith('0x') && !userId.includes('@')) {
+        return false
+    }
     return true
 }
 
@@ -198,10 +201,7 @@ export function removeUser(users, userId) {
 }
 
 export function updatePermission(users, userId, permissions = {}) {
-    // allow updating anonymous permissions
-    if (userId !== 'anonymous') {
-        userId = validateUserId(userId)
-    }
+    userId = validateUserId(userId)
     return {
         ...users,
         [userId]: {
