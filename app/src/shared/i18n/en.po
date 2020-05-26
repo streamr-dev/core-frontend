@@ -319,12 +319,6 @@ msgstr "was unpublished"
 msgid "shared##action##deploy"
 msgstr "was deployed"
 
-msgid "shared##activity"
-msgstr "Activity"
-
-msgid "shared##notifications"
-msgstr "Notifications"
-
 msgid "general##docs"
 msgstr "Docs"
 
@@ -385,3 +379,23 @@ msgstr ""
 
 msgid "genericErrorPage##top"
 msgstr "Marketplace top"
+
+msgid "activityQueue##tab##activity"
+msgstr "Activity"
+
+msgid "activityQueue##tab##notifications"
+msgstr "Notifications"
+
+msgid "activityQueue##activities##empty##title"
+msgstr "No activity yet."
+
+msgid "activityQueue##activities##empty##message"
+msgstr "Create, deploy, publish or update something!"
+
+msgid "activityQueue##notifications##empty##title"
+msgstr "No notifications yet."
+
+msgid "activityQueue##notifications##empty##message"
+msgstr ""
+"You'll be notified about payments, <br />"
+"sharing and permissions."

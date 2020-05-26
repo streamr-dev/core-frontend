@@ -70,6 +70,7 @@ const Text = styled.div`
         background-color: transparent;
         font-weight: 500;
         line-height: 18px;
+        white-space: normal;
     }
 
     ${Container}:hover && a {
@@ -104,60 +105,52 @@ const renderItem = (action: string, linkTitle: ?string, linkHref: ?string, id: ?
         ) : (
             id
         )}
-        &nbsp;
+        {' '}
         {I18n.t(`shared.action.${action.toLowerCase()}`)}
     </React.Fragment>
 )
 
-const renderStreamItem = (id, stream, action) => (
-    renderItem(
-        action,
-        stream && stream.name,
-        stream && routes.stream({
-            id: stream.id,
-        }),
-        id,
-    )
-)
-
-const renderProductItem = (id, product, action) => (
-    renderItem(
-        action,
-        product && product.name,
-        product && routes.editProduct({
-            id: product.id,
-        }),
-        id,
-    )
-)
-
-const renderCanvasItem = (id, canvas, action) => (
-    renderItem(
-        action,
-        canvas && canvas.name,
-        canvas && routes.canvasEdit({
-            id: canvas.id,
-        }),
-        id,
-    )
-)
+const resourcePath = (id, resourceType) => {
+    switch (resourceType) {
+        case resourceTypes.STREAM:
+            return routes.stream({
+                id,
+            })
+        case resourceTypes.PRODUCT:
+            return routes.editProduct({
+                id,
+            })
+        case resourceTypes.CANVAS:
+            return routes.canvasEdit({
+                id,
+            })
+        default:
+            return null
+    }
+}
 
 const renderContent = (activity, resource, resourceType) => {
-    if (resourceType === resourceTypes.STREAM) {
-        return renderStreamItem(activity.resourceId, resource, activity.action)
+    switch (resourceType) {
+        case resourceTypes.STREAM:
+        case resourceTypes.PRODUCT:
+        case resourceTypes.CANVAS:
+            return renderItem(
+                activity.action,
+                resource && resource.name,
+                resource && resourcePath(activity.resourceId, resourceType),
+                activity.resourceId,
+            )
+        default:
+            return activity.action
     }
-    if (resourceType === resourceTypes.PRODUCT) {
-        return renderProductItem(activity.resourceId, resource, activity.action)
-    }
-    if (resourceType === resourceTypes.CANVAS) {
-        return renderCanvasItem(activity.resourceId, resource, activity.action)
-    }
-    return activity.action
 }
 
 const renderImage = (activity, user, resource, resourceType, isLoading) => {
-    if (resourceType === resourceTypes.PRODUCT && resource && resource.imageUrl) {
-        return <StyledAvatar alt={resource.name} src={resource.imageUrl} isLoading={isLoading} />
+    if (resourceType === resourceTypes.PRODUCT && resource) {
+        if (resource.imageUrl) {
+            return <StyledAvatar alt={resource.name} src={resource.imageUrl} isLoading={isLoading} />
+        }
+        return <SvgIcon name="product" />
     }
     if (resourceType === resourceTypes.CANVAS) {
         return <SvgIcon name="canvas" />
@@ -189,14 +182,13 @@ const renderType = (resource, resourceType) => {
 
 const ActivityListItem = ({ activity, user, resource, resourceType }: Props) => {
     const pendingTxs = useSelector(selectPendingTransactions)
-    const isTxPending = pendingTxs.some((item) => item.hash === activity.txHash && item.state === 'pending')
-    const showSpinner = activity.txHash && isTxPending
+    const isTxPending = activity.txHash && pendingTxs.some((item) => item.hash === activity.txHash && item.state === 'pending')
 
     return (
         <Container>
             <ImageContainer>
-                {renderImage(activity, user, resource, resourceType, showSpinner)}
-                {showSpinner && (
+                {renderImage(activity, user, resource, resourceType, isTxPending)}
+                {isTxPending && (
                     <StyledSpinner color="white" size="small" />
                 )}
             </ImageContainer>

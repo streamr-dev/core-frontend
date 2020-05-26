@@ -19,6 +19,7 @@ const Icon = styled(SvgIcon)`
     width: 16px;
     display: flex;
     color: #a3a3a3;
+    cursor: pointer;
 
     &:hover {
         color: #323232;
@@ -53,9 +54,7 @@ const ActivityItem = () => {
                 resendFrom={ACTIVITY_FROM}
             />
             <DropdownItem
-                toggle={(
-                    <Icon name="alarmBell" />
-                )}
+                toggle={<Icon name="alarmBell" />}
                 align="left"
                 eatPadding={false}
             >
