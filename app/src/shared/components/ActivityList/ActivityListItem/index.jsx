@@ -65,7 +65,7 @@ const Text = styled.div`
     // styles without using !important
     // https://styled-components.com/docs/faqs#how-can-i-override-styles-with-higher-specificity
     && a {
-        display: inline-block;
+        display: contents;
         padding: 0;
         background-color: transparent;
         font-weight: 500;
@@ -94,13 +94,15 @@ type Props = {
     resourceType?: ?ResourceType,
 }
 
+const truncate = (input: string, maxLength: number) => (input.length > maxLength ? `${input.substring(0, maxLength)}...` : input)
+
 const renderItem = (action: string, linkTitle: ?string, linkHref: ?string, id: ?string) => (
     <React.Fragment>
         {linkHref != null ? (
             <a
                 href={linkHref}
             >
-                {linkTitle}
+                {truncate(linkTitle || '', 75)}
             </a>
         ) : (
             id
@@ -113,15 +115,15 @@ const renderItem = (action: string, linkTitle: ?string, linkHref: ?string, id: ?
 const resourcePath = (id, resourceType) => {
     switch (resourceType) {
         case resourceTypes.STREAM:
-            return routes.stream({
+            return routes.streams.show({
                 id,
             })
         case resourceTypes.PRODUCT:
-            return routes.editProduct({
+            return routes.products.edit({
                 id,
             })
         case resourceTypes.CANVAS:
-            return routes.canvasEdit({
+            return routes.canvases.edit({
                 id,
             })
         default:
