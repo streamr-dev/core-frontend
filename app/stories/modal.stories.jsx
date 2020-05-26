@@ -48,7 +48,8 @@ import CropAvatarDialog from '$userpages/components/ProfilePage/ProfileSettings/
 import { ChangePasswordDialogComponent } from '$userpages/components/ProfilePage/ProfileSettings/ChangePasswordDialog'
 import { SignatureRequestDialog, DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
-import PrivateKeyNameDialog from '$userpages/components/ProfilePage/IntegrationKeyHandler/AddPrivateKeyDialog/PrivateKeyNameDialog'
+import EthereumAccountCreatedDialog from '$userpages/components/ProfilePage/IdentityHandler/EthereumAccountCreatedDialog'
+import CopyPrivateKeyDialog from '$userpages/components/ProfilePage/IdentityHandler/CopyPrivateKeyDialog'
 import { DeleteAccountDialogComponent } from '$userpages/components/ProfilePage/DeleteAccount/DeleteAccountDialog'
 
 // shared
@@ -994,21 +995,41 @@ story('EthereumIdentity/IdentityNameDialog')
     .add('default', () => (
         <IdentityNameDialog
             onClose={action('onClose')}
+            onCancel={action('onCancel')}
             onSave={action('onSave')}
         />
     ))
-
-story('PrivateKey/PrivateKeyNameDialog')
-    .add('default', () => (
-        <PrivateKeyNameDialog
+    .add('initial value', () => (
+        <IdentityNameDialog
             onClose={action('onClose')}
+            onCancel={action('onCancel')}
             onSave={action('onSave')}
+            initialValue="My Eth address"
         />
     ))
     .add('waiting', () => (
-        <PrivateKeyNameDialog
+        <IdentityNameDialog
             onClose={action('onClose')}
+            onCancel={action('onCancel')}
             onSave={action('onSave')}
             waiting
+        />
+    ))
+
+story('EthereumIdentity/EthereumAccountCreatedDialog')
+    .add('default', () => (
+        <EthereumAccountCreatedDialog
+            onBack={action('onBack')}
+            onSave={action('onSave')}
+            name={text('Name', 'Main Eth account')}
+            address={text('Address', '0x538a2Fa87E03B280e10C83AA8dD7E5B15B868BD9')}
+        />
+    ))
+
+story('EthereumIdentity/CopyPrivateKeyDialog')
+    .add('default', () => (
+        <CopyPrivateKeyDialog
+            onClose={action('onClose')}
+            privateKey={text('Private Key', '1234567890abcdefg')}
         />
     ))

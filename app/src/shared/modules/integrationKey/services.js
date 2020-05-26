@@ -1,6 +1,6 @@
 // @flow
 
-import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
+import { getPublicWeb3 } from '$shared/web3/web3Provider'
 import { get, post, del, put } from '$shared/utils/api'
 import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
@@ -9,13 +9,13 @@ import {
     type IntegrationKeyId,
     type IntegrationKey,
     type Challenge,
+    type CreateIdentity,
 } from '$shared/flowtype/integration-key-types'
 import type { Address, Hash } from '$shared/flowtype/web3-types'
 import { integrationKeyServices } from '$shared/utils/constants'
 import { getDataTokenBalance, getEthBalance } from '$mp/utils/web3'
 
 import {
-    Web3NotEnabledError,
     ChallengeFailedError,
     CreateIdentityFailedError,
     IdentityExistsError,
@@ -74,34 +74,22 @@ export const createEthereumIdentity = (
     },
 })
 
-export const createIdentity = async (name: string): ApiResult<IntegrationKey> => {
-    const ownWeb3 = getWeb3()
-
-    if (!ownWeb3.isEnabled()) {
-        throw new Web3NotEnabledError()
-    }
-
-    let account
+export const createIdentity = async ({ name, address, signChallenge }: CreateIdentity) => {
     let response
     let challenge
     let signature
 
     try {
-        account = await ownWeb3.getDefaultAccount()
-        response = await createChallenge(account)
+        response = await createChallenge(address)
         challenge = response && response.challenge
-        signature = await ownWeb3.eth.personal.sign(
-            challenge,
-            account,
-            '', // required, but MetaMask will ignore the password argument here
-        )
+        signature = await signChallenge(challenge)
     } catch (error) {
         console.warn(error)
         throw new ChallengeFailedError()
     }
 
     try {
-        return await createEthereumIdentity(name, account, response, signature)
+        return await createEthereumIdentity(name, address, response, signature)
     } catch (error) {
         if (error.code === 'DUPLICATE_NOT_ALLOWED') {
             throw new IdentityExistsError()

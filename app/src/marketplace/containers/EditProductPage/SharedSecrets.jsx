@@ -15,9 +15,10 @@ import styles from './productStreams.pcss'
 
 type Props = {
     className?: string,
+    disabled?: boolean,
 }
 
-const SharedSecrets = ({ className }: Props) => {
+const SharedSecrets = ({ className, disabled }: Props) => {
     const product = useProduct()
     const isDataUnion = isDataUnionProduct(product)
     const dataunion = useDataUnion()
@@ -34,7 +35,7 @@ const SharedSecrets = ({ className }: Props) => {
                 tag="p"
                 dangerousHTML
             />
-            <SharedSecretEditor disabled={!isDeployed || !ownerLinked} />
+            <SharedSecretEditor disabled={!!disabled || !isDeployed || !ownerLinked} />
         </section>
     )
 }

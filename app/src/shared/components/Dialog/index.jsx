@@ -20,6 +20,7 @@ export type Props = {
     children?: Node,
     helpText?: Node,
     waiting?: boolean,
+    disabled?: boolean,
     className?: string,
     contentClassName?: string,
     containerClassname?: string,
@@ -102,6 +103,7 @@ class Dialog extends Component<Props, State> {
             title,
             children,
             waiting,
+            disabled,
             helpText,
             actions,
             className,
@@ -147,6 +149,9 @@ class Dialog extends Component<Props, State> {
                     )}
                     {!waiting && (!helpText || !this.state.isHelpOpen) && renderActions && renderActions(actions || {})}
                 </Container>
+                {!!disabled && (
+                    <div className={styles.disabledModal} />
+                )}
             </ModalDialog>
         )
     }

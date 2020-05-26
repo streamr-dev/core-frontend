@@ -27,17 +27,20 @@ import BeneficiaryAddress from './BeneficiaryAddress'
 
 import styles from './PriceSelector.pcss'
 
-const PriceSelector = () => {
+type Props = {
+    disabled?: boolean,
+}
+
+const PriceSelector = ({ disabled }: Props) => {
     const product = useEditableProduct()
     const { publishAttempted, preferredCurrency: currency, setPreferredCurrency: setCurrency } = useContext(EditControllerContext)
     const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)
-    const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: contractProductLoadPending } = usePending('contractProduct.LOAD')
     const isPublic = isPublished(product)
     const contractProduct = useSelector(selectContractProduct)
-    const isLoadingOrSaving = !!(savePending || contractProductLoadPending)
-    const isPriceTypeDisabled = !!(isLoadingOrSaving || isPublic || !!contractProduct)
+    const isDisabled = !!(disabled || contractProductLoadPending)
+    const isPriceTypeDisabled = !!(isDisabled || isPublic || !!contractProduct)
 
     const onPriceTypeChange = useCallback((type) => {
         updateIsFree(type === 'Free')
@@ -87,12 +90,12 @@ const PriceSelector = () => {
                     className={styles.radioGroup}
                 />
                 <div className={cx(styles.inner, {
-                    [styles.disabled]: isFreeProduct || isLoadingOrSaving,
+                    [styles.disabled]: isFreeProduct || isDisabled,
                 })}
                 >
                     <SetPrice
                         className={styles.priceSelector}
-                        disabled={isFreeProduct || isLoadingOrSaving}
+                        disabled={isFreeProduct || isDisabled}
                         price={convert(product.price, dataPerUsd, product.priceCurrency, currency)}
                         onPriceChange={onPriceChange}
                         currency={currency}
@@ -112,7 +115,7 @@ const PriceSelector = () => {
                             <BeneficiaryAddress
                                 address={product.beneficiaryAddress}
                                 onChange={updateBeneficiaryAddress}
-                                disabled={isFreeProduct || isLoadingOrSaving}
+                                disabled={isFreeProduct || isDisabled}
                             />
                         )}
                         <div className={cx(styles.fixPrice, {
@@ -133,7 +136,7 @@ const PriceSelector = () => {
                                 className={styles.toggle}
                                 value={fixInFiat}
                                 onChange={onFixPriceChange}
-                                disabled={isFreeProduct || isLoadingOrSaving}
+                                disabled={isFreeProduct || isDisabled}
                             />
                         </div>
                     </div>

@@ -111,7 +111,7 @@ describe('usePublish', () => {
             expect(result.mode).toBe(publishModes.UNPUBLISH)
         })
 
-        it('sets redeploy mode if there are pending changes', async () => {
+        it('sets republish mode if there are pending changes', async () => {
             let publish
             function Test() {
                 publish = usePublish()
@@ -825,7 +825,6 @@ describe('usePublish', () => {
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                    actionsTypes.REDEPLOY_PAID,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -836,16 +835,7 @@ describe('usePublish', () => {
                 const receipt1 = {
                     transactionHash: hash1,
                 }
-
-                const emitter2 = new EventEmitter()
-                const tx2 = new Transaction(emitter2)
-                const hash2 = 'test2'
-                const receipt2 = {
-                    transactionHash: hash2,
-                }
-
                 const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx1)
-                const redeployStub = sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx2)
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
                 const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
@@ -866,14 +856,8 @@ describe('usePublish', () => {
                     }, 200)
                     setTimeout(() => {
                         emitter1.emit('receipt', receipt1)
-                    }, 400)
-                    setTimeout(() => {
-                        emitter2.emit('transactionHash', hash2)
-                    }, 600)
-                    setTimeout(() => {
-                        emitter2.emit('receipt', receipt2)
                         resolve()
-                    }, 800)
+                    }, 400)
                 })
 
                 await Promise.all([
@@ -882,23 +866,18 @@ describe('usePublish', () => {
                 ])
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
+                expect(startedFn).not.toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
                 expect(updateContractStub.calledWith({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
-                })).toBe(true)
-                expect(redeployStub.calledWith('1')).toBe(true)
+                }, true)).toBe(true)
                 expect(postSetDeployingStub.calledWith('1')).toBe(true)
                 expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
-                expect(addTransactionStub.calledWith(hash2, transactionTypes.REDEPLOY_PRODUCT)).toBe(true)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.PENDING)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
                 expect(finishFn).toHaveBeenCalled()
             })
 
@@ -940,26 +919,15 @@ describe('usePublish', () => {
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                    actionsTypes.REDEPLOY_PAID,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
-
-                const emitter1 = new EventEmitter()
-                const tx1 = new Transaction(emitter1)
-                const hash1 = 'test'
-                const receipt1 = {
-                    transactionHash: hash1,
-                }
 
                 const updateError = new Error('update failed')
 
                 const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => {
                     throw updateError
                 })
-                const redeployStub = sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx1)
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -972,37 +940,17 @@ describe('usePublish', () => {
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
 
-                const txPromise = new Promise((resolve) => {
-                    setTimeout(() => {
-                        emitter1.emit('transactionHash', hash1)
-                    }, 200)
-                    setTimeout(() => {
-                        emitter1.emit('receipt', receipt1)
-                        resolve()
-                    }, 400)
-                })
-
-                await Promise.all([
-                    txPromise,
-                    result.queue.start(),
-                ])
+                await result.queue.start()
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
                 expect(updateContractStub.calledWith({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
                 })).toBe(true)
-                expect(redeployStub.calledWith('1')).toBe(true)
-                expect(postSetDeployingStub.calledWith('1')).toBe(true)
-                expect(addTransactionStub.calledWith(hash1, transactionTypes.REDEPLOY_PRODUCT)).toBe(true)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.FAILED, updateError)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.PENDING)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
                 expect(finishFn).toHaveBeenCalled()
             })
 
@@ -1427,15 +1375,7 @@ describe('usePublish', () => {
                     transactionHash: hash1,
                 }
 
-                const emitter2 = new EventEmitter()
-                const tx2 = new Transaction(emitter2)
-                const hash2 = 'test2'
-                const receipt2 = {
-                    transactionHash: hash2,
-                }
-
                 const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx1)
-                const redeployStub = sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx2)
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
                 const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
@@ -1457,7 +1397,6 @@ describe('usePublish', () => {
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                    actionsTypes.REDEPLOY_PAID,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -1479,14 +1418,8 @@ describe('usePublish', () => {
                     }, 200)
                     setTimeout(() => {
                         emitter1.emit('receipt', receipt1)
-                    }, 400)
-                    setTimeout(() => {
-                        emitter2.emit('transactionHash', hash2)
-                    }, 600)
-                    setTimeout(() => {
-                        emitter2.emit('receipt', receipt2)
                         resolve()
-                    }, 800)
+                    }, 400)
                 })
 
                 await Promise.all([
@@ -1495,23 +1428,17 @@ describe('usePublish', () => {
                 ])
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
                 expect(updateContractStub.calledWith({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
-                })).toBe(true)
-                expect(redeployStub.calledWith('1')).toBe(true)
+                }, true)).toBe(true)
                 expect(postSetDeployingStub.calledWith('1')).toBe(true)
                 expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
-                expect(addTransactionStub.calledWith(hash2, transactionTypes.REDEPLOY_PRODUCT)).toBe(true)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.PENDING)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
                 expect(finishFn).toHaveBeenCalled()
             })
 
@@ -1553,16 +1480,8 @@ describe('usePublish', () => {
                     transactionHash: hash2,
                 }
 
-                const emitter3 = new EventEmitter()
-                const tx3 = new Transaction(emitter3)
-                const hash3 = 'test3'
-                const receipt3 = {
-                    transactionHash: hash3,
-                }
-
                 const setAdminFeeStub = sandbox.stub(dataUnionServices, 'setAdminFee').callsFake(() => tx1)
                 const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx2)
-                const redeployStub = sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx3)
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
                 const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
 
@@ -1588,7 +1507,6 @@ describe('usePublish', () => {
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                     actionsTypes.UPDATE_ADMIN_FEE,
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                    actionsTypes.REDEPLOY_PAID,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -1616,14 +1534,8 @@ describe('usePublish', () => {
                     }, 600)
                     setTimeout(() => {
                         emitter2.emit('receipt', receipt2)
-                    }, 800)
-                    setTimeout(() => {
-                        emitter3.emit('transactionHash', hash3)
-                    }, 1000)
-                    setTimeout(() => {
-                        emitter3.emit('receipt', receipt3)
                         resolve()
-                    }, 1200)
+                    }, 800)
                 })
 
                 await Promise.all([
@@ -1633,28 +1545,22 @@ describe('usePublish', () => {
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
                 expect(setAdminFeeStub.calledWith(product.beneficiaryAddress, product.pendingChanges.adminFee)).toBe(true)
                 expect(updateContractStub.calledWith({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
-                })).toBe(true)
-                expect(redeployStub.calledWith('1')).toBe(true)
+                }, true)).toBe(true)
                 expect(postSetDeployingStub.calledWith('1')).toBe(true)
                 expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)).toBe(true)
                 expect(addTransactionStub.calledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
-                expect(addTransactionStub.calledWith(hash3, transactionTypes.REDEPLOY_PRODUCT)).toBe(true)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.PENDING)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
                 expect(finishFn).toHaveBeenCalled()
             })
 

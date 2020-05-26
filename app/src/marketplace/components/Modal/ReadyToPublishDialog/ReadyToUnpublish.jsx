@@ -8,11 +8,12 @@ import Dialog from '$shared/components/Dialog'
 
 import type { BaseProps as Props } from '.'
 
-const ReadyToUnpublishDialog = ({ onCancel, onContinue }: Props) => (
+const ReadyToUnpublishDialog = ({ onCancel, onContinue, disabled }: Props) => (
     <ModalPortal>
         <Dialog
             onClose={onCancel}
             title={I18n.t('modal.readyToUnpublish.title')}
+            disabled={disabled}
             actions={{
                 cancel: {
                     title: I18n.t('modal.common.cancel'),

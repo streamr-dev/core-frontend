@@ -9,17 +9,19 @@ import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import MarkdownEditor from '$mp/components/MarkdownEditor'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import usePending from '$shared/hooks/usePending'
 import docsLinks from '$shared/../docsLinks'
 
 import styles from './productDescription.pcss'
 
-const ProductDescription = () => {
+type Props = {
+    disabled?: boolean,
+}
+
+const ProductDescription = ({ disabled }: Props) => {
     const product = useEditableProduct()
     const { publishAttempted } = useContext(EditControllerContext)
     const { isValid, message } = useValidation('description')
     const { updateDescription } = useEditableProductActions()
-    const { isPending } = usePending('product.SAVE')
 
     return (
         <section id="description" className={cx(styles.root, styles.ProductDescription)}>
@@ -40,7 +42,7 @@ const ProductDescription = () => {
                     onChange={updateDescription}
                     className={styles.productDescription}
                     error={publishAttempted && !isValid ? message : undefined}
-                    disabled={!!isPending}
+                    disabled={!!disabled}
                 />
             </div>
         </section>

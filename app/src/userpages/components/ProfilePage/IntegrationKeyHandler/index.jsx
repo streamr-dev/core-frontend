@@ -71,7 +71,12 @@ export const IntegrationKeyHandler = () => {
 
     return (
         <Fragment>
-            <Translate value="userpages.profilePage.ethereumPrivateKeys.description" tag="p" className={styles.longText} />
+            <Translate
+                value="userpages.profilePage.ethereumPrivateKeys.description"
+                tag="p"
+                className={styles.longText}
+                dangerousHTML
+            />
             <div className="constrainInputWidth">
                 <IntegrationKeyList
                     integrationKeys={privateKeys}

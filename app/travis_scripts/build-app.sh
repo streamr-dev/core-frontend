@@ -22,4 +22,5 @@ echo $WEB3_PUBLIC_HTTP_PROVIDER
 echo $WEB3_PUBLIC_WS_PROVIDER
 echo $SENTRY_DSN
 echo $LOGROCKET_SLUG
+npm run build-index
 npm run build

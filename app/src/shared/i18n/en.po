@@ -215,6 +215,9 @@ msgstr "Close"
 msgid "modal##common##confirm"
 msgstr "Confirm"
 
+msgid "modal##common##back"
+msgstr "Back"
+
 msgid "modal##unlockWallet##title"
 msgstr "Access your wallet"
 

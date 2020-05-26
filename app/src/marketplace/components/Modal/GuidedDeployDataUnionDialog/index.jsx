@@ -60,9 +60,16 @@ export type Props = {
     onClose: () => void,
     onContinue: (boolean) => Promise<void>,
     dontShowAgain?: boolean,
+    disabled?: boolean,
 }
 
-const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueProp, dontShowAgain }: Props) => {
+const GuidedDeployDataUnionDialog = ({
+    product,
+    onClose,
+    onContinue: onContinueProp,
+    dontShowAgain,
+    disabled,
+}: Props) => {
     const [skipHelp, setSkipHelp] = useState(!!dontShowAgain)
     const [step, setStep] = useState(0)
     const [waitingOnContinue, setWaitingOnContinue] = useState(false)
@@ -194,6 +201,7 @@ const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueP
                         />
                     </div>
                 )}
+                disabled={disabled}
             >
                 {helpContent}
                 <div className={styles.tabs}>

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import useWeb3Status from '$shared/hooks/useWeb3Status'
@@ -12,42 +12,77 @@ import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletD
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import { ErrorCodes } from '$shared/errors/Web3'
 import { usePending } from '$shared/hooks/usePending'
+import { type UseStateTuple } from '$shared/flowtype/common-types'
+import { type Account } from '$shared/flowtype/integration-key-types'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import IdentityNameDialog from '../IdentityNameDialog'
 import { IdentityChallengeDialog, DuplicateIdentityDialog } from '../IdentityChallengeDialog'
+import CopyPrivateKeyDialog from '../CopyPrivateKeyDialog'
+import EthereumAccountCreatedDialog from '../EthereumAccountCreatedDialog'
 
 type Props = {
     api: Object,
     requiredAddress?: Address,
+    createAccount: boolean,
 }
 
 const identityPhases = {
     NAME: 'name',
     CHALLENGE: 'challenge',
-    COMPLETE: 'complete',
+    ACCOUNT_CREATED: 'accountCreated',
+    RENAME_ACCOUNT: 'renameAccount',
+    COPY_PRIVATE_KEY: 'copyPrivateKey',
 }
 
-const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
-    const { web3Error, checkingWeb3, account } = useWeb3Status()
-    const { load: getEthIdentities, fetching, create, isLinked } = useEthereumIdentities()
+const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
+    const { web3Error, checkingWeb3, account: walletAddress } = useWeb3Status(!createAccount)
+    const {
+        load: getEthIdentities,
+        fetching,
+        connect,
+        create,
+        edit,
+        isLinked,
+    } = useEthereumIdentities()
+    const isMounted = useIsMounted()
     const [phase, setPhase] = useState(identityPhases.NAME)
-    const { wrap } = usePending('user.ADD_IDENTITY')
+    const { wrap, isPending } = usePending('user.ADD_IDENTITY')
+    const [linkedAccount, setLinkedAccount]: UseStateTuple<Account> = useState({})
+    const linkedAccountRef = useRef()
+    linkedAccountRef.current = linkedAccount
+
+    const connectMethod = useMemo(
+        () => (createAccount ? create : connect),
+        [createAccount, create, connect],
+    )
 
     const onSetName = useCallback(async (name: string) => (
         wrap(async () => {
-            setPhase(identityPhases.CHALLENGE)
+            if (!createAccount) {
+                setPhase(identityPhases.CHALLENGE)
+            }
 
             let added = false
             let error
 
             try {
-                await create(name)
+                const newAccount = await connectMethod(name)
+
+                if (isMounted()) {
+                    setLinkedAccount(newAccount)
+                }
+
                 added = true
             } catch (e) {
                 console.warn(e)
                 error = e
             } finally {
-                if (!error || error.code !== ErrorCodes.IDENTITY_EXISTS) {
+                if (createAccount && !error) {
+                    if (isMounted()) {
+                        setPhase(identityPhases.ACCOUNT_CREATED)
+                    }
+                } else if (!error || error.code !== ErrorCodes.IDENTITY_EXISTS) {
                     api.close({
                         added,
                         error,
@@ -55,20 +90,51 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
                 }
             }
         })
-    ), [wrap, create, api])
+    ), [wrap, connectMethod, api, createAccount, isMounted])
 
     const onClose = useCallback(() => {
+        const { address } = linkedAccountRef.current || {}
+
         api.close({
-            added: false,
+            added: !!address,
             error: undefined,
         })
     }, [api])
+
+    const onRename = useCallback(async (name: string) => (
+        wrap(async () => {
+            const { id, name: oldName } = linkedAccountRef.current || {}
+
+            if (name !== oldName) {
+                try {
+                    await edit(id, name)
+
+                    if (isMounted()) {
+                        setLinkedAccount((prev) => ({
+                            ...prev,
+                            name,
+                        }))
+                    }
+                } catch (e) {
+                    console.warn(e)
+                }
+            }
+
+            if (isMounted()) {
+                setPhase(identityPhases.ACCOUNT_CREATED)
+            }
+        })
+    ), [wrap, edit, isMounted])
 
     useEffect(() => {
         getEthIdentities()
     }, [getEthIdentities])
 
-    if (fetching || checkingWeb3 || web3Error || !account) {
+    if (fetching && phase === identityPhases.NAME) {
+        return null
+    }
+
+    if (!checkingWeb3 && (web3Error || (!createAccount && !walletAddress))) {
         return (
             <Web3ErrorDialog
                 waiting={fetching || checkingWeb3}
@@ -78,7 +144,7 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
         )
     }
 
-    if (!!requiredAddress && (!account || !areAddressesEqual(account, requiredAddress))) {
+    if (!checkingWeb3 && !!requiredAddress && (!walletAddress || !areAddressesEqual(walletAddress, requiredAddress))) {
         return (
             <UnlockWalletDialog onClose={onClose} requiredAddress={requiredAddress}>
                 <Translate
@@ -92,7 +158,7 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
     switch (phase) {
         case identityPhases.NAME: {
             // Check if account is already linked and show an error.
-            if (isLinked(account)) {
+            if (!createAccount && walletAddress && isLinked(walletAddress)) {
                 return (
                     <DuplicateIdentityDialog
                         onClose={onClose}
@@ -102,8 +168,11 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
 
             return (
                 <IdentityNameDialog
+                    onCancel={onClose}
                     onClose={onClose}
                     onSave={onSetName}
+                    waiting={isPending}
+                    disabled={checkingWeb3}
                 />
             )
         }
@@ -114,9 +183,43 @@ const AddIdentityDialog = ({ api, requiredAddress }: Props) => {
                     onClose={onClose}
                 />
             )
+
+        case identityPhases.ACCOUNT_CREATED:
+            return (
+                <EthereumAccountCreatedDialog
+                    name={linkedAccount.name || ''}
+                    address={linkedAccount.address || ''}
+                    onBack={() => setPhase(identityPhases.RENAME_ACCOUNT)}
+                    onSave={() => setPhase(identityPhases.COPY_PRIVATE_KEY)}
+                />
+            )
+
+        case identityPhases.RENAME_ACCOUNT:
+            return (
+                <IdentityNameDialog
+                    onClose={() => {}}
+                    onCancel={() => setPhase(identityPhases.ACCOUNT_CREATED)}
+                    onSave={onRename}
+                    initialValue={linkedAccount.name || ''}
+                    waiting={isPending}
+                />
+            )
+
+        case identityPhases.COPY_PRIVATE_KEY:
+            return (
+                <CopyPrivateKeyDialog
+                    privateKey={linkedAccount.privateKey || ''}
+                    onClose={onClose}
+                />
+            )
+
         default:
             return null
     }
+}
+
+AddIdentityDialog.defaultProps = {
+    createAccount: false,
 }
 
 export default () => {
@@ -126,12 +229,13 @@ export default () => {
         return null
     }
 
-    const { requiredAddress } = value || {}
+    const { requiredAddress, createAccount } = value || {}
 
     return (
         <AddIdentityDialog
             api={api}
             requiredAddress={requiredAddress}
+            createAccount={!!createAccount}
         />
     )
 }

@@ -40,3 +40,16 @@ export type Balances = {
 export type BalanceList = {
     [Address]: Balances,
 }
+
+export type Account = {
+    id: IntegrationKeyId,
+    name: string,
+    address: Address,
+    privateKey?: string,
+}
+
+export type CreateIdentity = {
+    name: string,
+    address: Address,
+    signChallenge: (string) => Promise<string>,
+}

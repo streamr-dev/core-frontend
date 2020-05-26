@@ -180,6 +180,7 @@ export const InfoView = ({ disabled }: Props) => {
                     onChange={onPartitionsChange}
                     onBlur={onCommit}
                     disabled={disabled}
+                    name="partitions"
                 />
                 <div
                     className={cx(styles.tooltip, {

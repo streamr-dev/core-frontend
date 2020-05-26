@@ -8,7 +8,7 @@ import * as utils from '$mp/utils/web3'
 import { BalanceType } from '$shared/flowtype/integration-key-types'
 
 import { integrationKeyServices } from '$shared/utils/constants'
-import { Web3NotEnabledError } from '$shared/errors/Web3'
+import { ChallengeFailedError } from '$shared/errors/Web3'
 
 describe('integrationKey - services', () => {
     let sandbox
@@ -182,31 +182,78 @@ describe('integrationKey - services', () => {
     })
 
     describe('createIdentity', () => {
-        it('throws an error if web is not enabled', async () => {
-            const web3Stub = sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                isEnabled: () => false,
-            }))
+        it('throws an error if getting challege fails', async () => {
+            const address = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
+            const signature = 'signature'
+            moxios.stubRequest(`/login/challenge/${address}`, {
+                status: 401,
+            })
+
+            const signChallenge = sandbox.stub().callsFake(() => Promise.resolve(signature))
 
             try {
-                await services.createIdentity('test')
+                await services.createIdentity({
+                    name: 'test',
+                    address,
+                    signChallenge,
+                })
             } catch (e) {
-                assert(web3Stub.calledOnce)
-                assert(e instanceof Web3NotEnabledError)
+                assert.equal(e instanceof ChallengeFailedError, true)
+            }
+        })
+
+        it('throws an error if sign method is undefined', async () => {
+            const address = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
+            const challenge = {
+                expires: '2018-12-11T09:55:26Z',
+                challenge: 'This is a challenge created by Streamr',
+                id: '0fWncFCPW4CAeeBYKGAdUuHY8yN0Ty',
+            }
+            moxios.stubRequest(`/login/challenge/${address}`, {
+                status: 200,
+                response: challenge,
+            })
+
+            try {
+                await services.createIdentity({
+                    name: 'test',
+                    address,
+                })
+            } catch (e) {
+                assert.equal(e instanceof ChallengeFailedError, true)
+            }
+        })
+
+        it('throws an error if sign method fails', async () => {
+            const address = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
+            const challenge = {
+                expires: '2018-12-11T09:55:26Z',
+                challenge: 'This is a challenge created by Streamr',
+                id: '0fWncFCPW4CAeeBYKGAdUuHY8yN0Ty',
+            }
+            moxios.stubRequest(`/login/challenge/${address}`, {
+                status: 200,
+                response: challenge,
+            })
+            const signChallenge = () => {
+                throw new Error('something went wrong')
+            }
+
+            try {
+                await services.createIdentity({
+                    name: 'test',
+                    address,
+                    signChallenge,
+                })
+            } catch (e) {
+                assert.equal(e instanceof ChallengeFailedError, true)
             }
         })
 
         it('sends a POST request with the signed challenge', async () => {
-            const account = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
+            const address = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
             const signature = 'signature'
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
-                isEnabled: () => true,
-                getDefaultAccount: () => Promise.resolve(account),
-                eth: {
-                    personal: {
-                        sign: () => Promise.resolve(signature),
-                    },
-                },
-            }))
+            const signChallenge = sandbox.stub().callsFake(() => Promise.resolve(signature))
             const challenge = {
                 expires: '2018-12-11T09:55:26Z',
                 challenge: 'This is a challenge created by Streamr',
@@ -218,10 +265,10 @@ describe('integrationKey - services', () => {
                 name,
                 service: integrationKeyServices.ETHEREREUM_IDENTITY,
                 json: {
-                    address: account,
+                    address,
                 },
             }
-            moxios.stubRequest(`/login/challenge/${account}`, {
+            moxios.stubRequest(`/login/challenge/${address}`, {
                 status: 200,
                 response: challenge,
             })
@@ -231,8 +278,13 @@ describe('integrationKey - services', () => {
                 response: data,
             })
 
-            const result = await services.createIdentity('test')
+            const result = await services.createIdentity({
+                name: 'test',
+                address,
+                signChallenge,
+            })
             assert.deepStrictEqual(result, data)
+            assert.equal(signChallenge.calledWith(challenge.challenge), true)
         })
     })
 
