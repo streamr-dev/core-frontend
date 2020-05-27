@@ -144,7 +144,7 @@ export default function usePublish() {
         }
 
         // update whitelist enabled status if it has changed
-        if ([publishModes.REPUBLISH, publishModes.REDEPLOY, publishModes.PUBLISH].includes(nextMode)) {
+        if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
             if (hasRequireWhitelistChanged && contractProduct) {
                 queue.add({
                     id: actionsTypes.SET_REQUIRES_WHITELIST,
@@ -248,9 +248,11 @@ export default function usePublish() {
                                 requiresWhitelist,
                             })
                                 .onTransactionHash((hash) => {
+                                    console.log('got hash')
                                     update(transactionStates.PENDING)
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
+                                    console.log('call postset')
                                     postSetDeploying(product.id || '', hash)
 
                                     Activity.push({
