@@ -141,7 +141,7 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boole
     return BN('infinity')
 }
 
-type GetPrice = {
+type ValidateBalance = {
     price: BN,
     paymentCurrency: PaymentCurrency,
     includeGasForSetAllowance?: boolean,
@@ -154,7 +154,7 @@ export const validateBalanceForPurchase = async ({
     paymentCurrency,
     includeGasForSetAllowance = false,
     includeGasForResetAllowance = false,
-}: GetPrice) => {
+}: ValidateBalance) => {
 /* eslint-enable object-curly-newline */
     const [ethBalance, dataBalance, daiBalance] = await getBalances()
     let requiredGas = fromAtto(gasLimits.BUY_PRODUCT)

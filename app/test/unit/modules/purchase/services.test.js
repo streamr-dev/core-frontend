@@ -7,21 +7,27 @@ import * as all from '$mp/modules/purchase/services'
 import * as utils from '$mp/utils/smartContract'
 import * as productUtils from '$mp/utils/product'
 
+const ONE_DAY = '86400'
+
 describe('purchase - services', () => {
     let sandbox
     let oldStreamrApiUrl
+    let oldDaiTokenAddress
 
     beforeEach(() => {
         moxios.install()
         sandbox = sinon.createSandbox()
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
+        oldDaiTokenAddress = process.env.DAI_TOKEN_CONTRACT_ADDRESS
+        process.env.DAI_TOKEN_CONTRACT_ADDRESS = 'daiTokenAddress'
     })
 
     afterEach(() => {
         moxios.uninstall()
         sandbox.restore()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
+        process.env.DAI_TOKEN_CONTRACT_ADDRESS = oldDaiTokenAddress
     })
 
     describe('addFreeProduct', () => {
@@ -52,7 +58,7 @@ describe('purchase - services', () => {
     })
 
     describe('buyProduct', () => {
-        it('must call buy', () => {
+        it('must call marketplaceContractMethods.buy when bying with DATA', () => {
             const buyStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
             }))
@@ -64,13 +70,49 @@ describe('purchase - services', () => {
                     buy: buyStub,
                 },
             }))
-            all.buyProduct('1234', '1000')
+            all.buyProduct('1234', '1000', 'DATA', '4321')
             assert(buyStub.calledOnce)
             assert(buyStub.calledWith('0x1234', '1000'))
             assert(getIdSpy.calledOnce)
             assert(getIdSpy.calledWith('1234'))
         })
-        it('must call send with correct object', (done) => {
+        it('must call marketplaceContractMethods.buy when bying with ETH', () => {
+            const buyStub = sinon.stub().callsFake(() => ({
+                send: () => 'test',
+            }))
+
+            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
+            sandbox.stub(utils, 'send').callsFake((method) => method.send())
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    buyWithETH: buyStub,
+                },
+            }))
+            all.buyProduct('1234', '1000', 'ETH', '4321')
+            assert(buyStub.calledOnce)
+            assert(buyStub.calledWith('0x1234', '1000', ONE_DAY))
+            assert(getIdSpy.calledOnce)
+            assert(getIdSpy.calledWith('1234'))
+        })
+        it('must call marketplaceContractMethods.buy when bying with DAI', () => {
+            const buyStub = sinon.stub().callsFake(() => ({
+                send: () => 'test',
+            }))
+
+            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
+            sandbox.stub(utils, 'send').callsFake((method) => method.send())
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    buyWithERC20: buyStub,
+                },
+            }))
+            all.buyProduct('1234', '1000', 'DAI', '4321')
+            assert(buyStub.calledOnce)
+            assert(buyStub.calledWith('0x1234', '1000', ONE_DAY, process.env.DAI_TOKEN_CONTRACT_ADDRESS, '4321000000000000000000'))
+            assert(getIdSpy.calledOnce)
+            assert(getIdSpy.calledWith('1234'))
+        })
+        it('must call send with correct object when bying with DATA', (done) => {
             sandbox.stub(utils, 'send').callsFake((a) => {
                 assert.equal('test', a)
                 done()
@@ -80,9 +122,33 @@ describe('purchase - services', () => {
                     buy: () => 'test',
                 },
             }))
-            all.buyProduct('1234', 1000)
+            all.buyProduct('1234', 1000, 'DATA', '4321')
         })
-        it('must return the result of send', () => {
+        it('must call send with correct object when bying with ETH', (done) => {
+            sandbox.stub(utils, 'send').callsFake((a) => {
+                assert.equal('test', a)
+                done()
+            })
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    buyWithETH: () => 'test',
+                },
+            }))
+            all.buyProduct('1234', 1000, 'ETH', '4321')
+        })
+        it('must call send with correct object when bying with DAI', (done) => {
+            sandbox.stub(utils, 'send').callsFake((a) => {
+                assert.equal('test', a)
+                done()
+            })
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    buyWithERC20: () => 'test',
+                },
+            }))
+            all.buyProduct('1234', 1000, 'DAI', '4321')
+        })
+        it('must return the result of send when bying with DATA', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -90,7 +156,27 @@ describe('purchase - services', () => {
                     },
                 },
             }))
-            assert.equal('test', all.buyProduct('1234', 1000))
+            assert.equal('test', all.buyProduct('1234', 1000, 'DATA', '4321'))
+        })
+        it('must return the result of send when bying with ETH', () => {
+            sandbox.stub(utils, 'send').callsFake(() => 'test')
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    buyWithETH: () => {
+                    },
+                },
+            }))
+            assert.equal('test', all.buyProduct('1234', 1000, 'ETH', '4321'))
+        })
+        it('must return the result of send when bying with DAI', () => {
+            sandbox.stub(utils, 'send').callsFake(() => 'test')
+            sandbox.stub(utils, 'getContract').callsFake(() => ({
+                methods: {
+                    buyWithERC20: () => {
+                    },
+                },
+            }))
+            assert.equal('test', all.buyProduct('1234', 1000, 'DAI', '4321'))
         })
     })
 })

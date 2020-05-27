@@ -36,12 +36,14 @@ describe('purchase - actions', () => {
                 onError: () => cc,
             }
             const subscriptionInSeconds = '200000000'
+            const paymentCurrency = 'DATA'
+            const price = '1234'
 
             const ccStub = sandbox.stub(services, 'buyProduct').callsFake(() => cc)
             const store = mockStore()
-            await store.dispatch(actions.buyProduct(id, subscriptionInSeconds))
+            await store.dispatch(actions.buyProduct(id, subscriptionInSeconds, paymentCurrency, price))
             assert(ccStub.calledOnce)
-            assert(ccStub.calledWith(id))
+            assert(ccStub.calledWith(id, subscriptionInSeconds, paymentCurrency, price))
         })
 
         it('dispatches right actions on buyProduct().onTransactionHash', async () => {
@@ -61,10 +63,12 @@ describe('purchase - actions', () => {
                 onError: () => cc,
             }
             const subscriptionInSeconds = '200000000'
+            const paymentCurrency = 'DATA'
+            const price = '1234'
 
             sandbox.stub(services, 'buyProduct').callsFake(() => cc)
             const store = mockStore()
-            store.dispatch(actions.buyProduct(id, subscriptionInSeconds))
+            store.dispatch(actions.buyProduct(id, subscriptionInSeconds, paymentCurrency, price))
 
             const expectedActions = [{
                 type: constants.BUY_PRODUCT_REQUEST,
@@ -95,6 +99,8 @@ describe('purchase - actions', () => {
                 transactionHash,
             }
             const subscriptionInSeconds = '200000000'
+            const paymentCurrency = 'DATA'
+            const price = '1234'
 
             const cc = {
                 onTransactionHash: () => cc,
@@ -120,7 +126,7 @@ describe('purchase - actions', () => {
                 },
             })
 
-            store.dispatch(actions.buyProduct(id, subscriptionInSeconds))
+            store.dispatch(actions.buyProduct(id, subscriptionInSeconds, paymentCurrency, price))
 
             const expectedActions = [{
                 type: constants.BUY_PRODUCT_REQUEST,
@@ -150,6 +156,8 @@ describe('purchase - actions', () => {
                 transactionHash,
             }
             const subscriptionInSeconds = '200000000'
+            const paymentCurrency = 'DATA'
+            const price = '1234'
 
             sandbox.stub(productActions, 'getProductSubscription').callsFake((idToGet) => ({
                 type: 'getProductSubscription',
@@ -175,7 +183,7 @@ describe('purchase - actions', () => {
                     action: {},
                 },
             })
-            store.dispatch(actions.buyProduct(id, subscriptionInSeconds))
+            store.dispatch(actions.buyProduct(id, subscriptionInSeconds, paymentCurrency, price))
             const expectedActions = [{
                 type: constants.BUY_PRODUCT_REQUEST,
                 payload: {
@@ -204,11 +212,13 @@ describe('purchase - actions', () => {
                 },
             }
             const subscriptionInSeconds = '200000000'
+            const paymentCurrency = 'DATA'
+            const price = '1234'
 
             sandbox.stub(services, 'buyProduct').callsFake(() => cc)
 
             const store = mockStore()
-            store.dispatch(actions.buyProduct(id, subscriptionInSeconds))
+            store.dispatch(actions.buyProduct(id, subscriptionInSeconds, paymentCurrency, price))
             const expectedActions = [{
                 type: constants.BUY_PRODUCT_REQUEST,
                 payload: {

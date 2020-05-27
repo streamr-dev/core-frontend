@@ -47,7 +47,7 @@ const Hero = () => {
                     })
                 } else {
                     // Free product can be bought directly
-                    dispatch(addFreeProduct(productId || ''))
+                    await dispatch(addFreeProduct(productId || ''))
                 }
             } else {
                 dispatch(replace(routes.auth.login({
