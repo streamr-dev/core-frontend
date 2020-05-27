@@ -13,7 +13,7 @@ import CurrencySelector from './CurrencySelector'
 import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } from '$mp/utils/web3'
 import { dataToUsd, formatDecimals, dataForTimeUnits } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product, AccessPeriod } from '$mp/flowtype/product-types'
 import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -21,14 +21,6 @@ import Errors, { MarketplaceTheme } from '$ui/Errors'
 import { useDebounced } from '$shared/hooks/wrapCallback'
 
 import styles from './chooseAccessPeriod.pcss'
-
-export type AccessPeriod = {
-    time: NumberString,
-    timeUnit: TimeUnit,
-    paymentCurrency: PaymentCurrency,
-    price: ?NumberString,
-    approxUsd: ?NumberString,
-}
 
 export type Balances = {
     [$Values<typeof paymentCurrencies>]: NumberString,
