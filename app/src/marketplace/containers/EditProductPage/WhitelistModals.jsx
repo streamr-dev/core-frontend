@@ -187,12 +187,17 @@ export const WhitelistRemoveModal = () => {
 export type RequestAccessModalProps = {
     onClose: () => void,
     contactEmail: string,
+    productName: string,
 }
 
-const WhitelistRequestAccessModalComponent = ({ onClose, contactEmail }: RequestAccessModalProps) => {
+const WhitelistRequestAccessModalComponent = ({ onClose, contactEmail, productName }: RequestAccessModalProps) => {
     const address = encodeURIComponent(contactEmail)
-    const subject = encodeURIComponent(I18n.t('modal.whitelistRequestAccess.mailtoSubject'))
-    const body = encodeURIComponent(I18n.t('modal.whitelistRequestAccess.mailtoBody'))
+    const subject = encodeURIComponent(I18n.t('modal.whitelistRequestAccess.mailtoSubject', {
+        productName,
+    }))
+    const body = encodeURIComponent(I18n.t('modal.whitelistRequestAccess.mailtoBody', {
+        productName,
+    }))
 
     return (
         <ModalPortal>
@@ -236,7 +241,7 @@ export const WhitelistRequestAccessModal = () => {
         return null
     }
 
-    const { contactEmail } = value || {}
+    const { contactEmail, productName } = value || {}
 
     return (
         <WhitelistRequestAccessModalComponent
@@ -245,6 +250,7 @@ export const WhitelistRequestAccessModal = () => {
                 save: false,
                 redirect: false,
             })}
+            productName={productName}
         />
     )
 }

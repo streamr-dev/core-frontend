@@ -24,11 +24,11 @@ type Props = {
 }
 
 const buttonTitle = (product: Product, isValidSubscription: boolean, isWhitelisted: ?boolean) => {
-    if (product.requiresWhitelist && isWhitelisted === false) {
-        return I18n.t('productPage.productDetails.requestAccess')
-    }
-
     if (isPaidProduct(product)) {
+        if (product.requiresWhitelist && isWhitelisted === false) {
+            return I18n.t('productPage.productDetails.requestAccess')
+        }
+
         return isValidSubscription ?
             I18n.t('productPage.productDetails.renew') :
             I18n.t('productPage.productDetails.purchase')

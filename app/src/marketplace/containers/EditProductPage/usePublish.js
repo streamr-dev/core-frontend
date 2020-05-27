@@ -93,7 +93,7 @@ export default function usePublish() {
         } = pendingChanges || {}
         const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
         const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChanges)
-        const hasRequireWhitelistChanged = !!contractProduct && contractProduct.requiresWhitelist !== requiresWhitelist
+        const hasRequireWhitelistChanged = !!contractProduct && requiresWhitelist != null && contractProduct.requiresWhitelist !== requiresWhitelist
         const hasPendingChanges = Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasPriceChanged || hasRequireWhitelistChanged
 
         let nextMode

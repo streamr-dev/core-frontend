@@ -11,8 +11,10 @@ import Meatball from '$shared/components/Meatball'
 import useModal from '$shared/hooks/useModal'
 import useCopy from '$shared/hooks/useCopy'
 import Tooltip from '$shared/components/Tooltip'
+import { productStates } from '$shared/utils/constants'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useWhitelist from './useWhitelist'
 import { Provider as WhitelistContextProvider } from './WhitelistContext'
 import { WhitelistAddModal, WhitelistRemoveModal } from './WhitelistModals'
@@ -133,6 +135,7 @@ type Props = {
     addDialog: any,
     removeDialog: any,
     copy: (string) => void,
+    actionsEnabled: boolean,
 }
 
 const padWithEmptyRows = (rows: Array<WhitelistItem>) => {
@@ -159,6 +162,7 @@ export const WhitelistEditorComponent = ({
     addDialog,
     removeDialog,
     copy,
+    actionsEnabled,
 }: Props) => (
     <Container className={className}>
         <Rows rowCount={MIN_ROWS}>
@@ -197,7 +201,7 @@ export const WhitelistEditorComponent = ({
                                 <DropdownActions.Item onClick={() => copy(item.address)}>
                                     {I18n.t('editProductPage.whitelist.copy')}
                                 </DropdownActions.Item>
-                                {item.status !== 'removed' && (
+                                {item.status !== 'removed' && actionsEnabled && (
                                     <DropdownActions.Item onClick={() => removeDialog.open({
                                         address: item.address,
                                     })}
@@ -224,7 +228,7 @@ export const WhitelistEditorComponent = ({
             <Button
                 kind="secondary"
                 size="normal"
-                disabled={!enabled}
+                disabled={!enabled || !actionsEnabled}
                 onClick={() => {
                     addDialog.open()
                 }}
@@ -240,6 +244,7 @@ export const WhitelistEditorContainer = () => {
     const { api: addDialog } = useModal('addWhitelistAddress')
     const { api: removeDialog } = useModal('removeWhitelistAddress')
     const { copy } = useCopy()
+    const product = useEditableProduct()
 
     // TODO: Email address must be provided when we enable whitelist!
     //       Add this validation when we have contact email for products.
@@ -252,6 +257,7 @@ export const WhitelistEditorContainer = () => {
             addDialog={addDialog}
             removeDialog={removeDialog}
             copy={copy}
+            actionsEnabled={product.state === productStates.DEPLOYED}
         />
     )
 }

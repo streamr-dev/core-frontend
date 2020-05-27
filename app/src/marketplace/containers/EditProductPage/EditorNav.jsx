@@ -3,7 +3,7 @@
 import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { I18n } from 'react-redux-i18n'
 
-import { isDataUnionProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
 import Scrollspy from 'react-scrollspy'
 
@@ -36,6 +36,7 @@ const EditorNav = () => {
 
     const isDataUnion = isDataUnionProduct(product)
     const isPublic = isPublished(product)
+    const isPaid = isPaidProduct(product)
 
     const getStatus = useCallback((name: string) => {
         if (isNewProduct && !isTouched(name)) {
@@ -154,11 +155,12 @@ const EditorNav = () => {
             id: 'details',
             heading: I18n.t('editProductPage.navigation.details'),
             status: detailsStatus,
-        }, {
+        },
+        ...includeIf(!!isPaid, [{
             id: 'whitelist',
             heading: I18n.t('editProductPage.navigation.whitelist'),
             status: getStatus('requiresWhitelist'),
-        },
+        }]),
         ...includeIf(!!showConnectEthIdentity, [{
             id: 'connect-eth-identity',
             heading: I18n.t('editProductPage.navigation.connectEthIdentity'),
@@ -183,6 +185,7 @@ const EditorNav = () => {
         showConnectEthIdentity,
         ethIdentityStatus,
         sharedSecretStatus,
+        isPaid,
     ])
 
     const sectionWithLinks = useMemo(() => sections.map((section) => ({

@@ -1132,10 +1132,13 @@ msgid "modal##whitelistRequestAccess##imageAlt"
 msgstr "Mailbox"
 
 msgid "modal##whitelistRequestAccess##mailtoSubject"
-msgstr "Whitelisting request"
+msgstr "Streamr Marketplace access request for %{productName}"
 
 msgid "modal##whitelistRequestAccess##mailtoBody"
-msgstr "Hi! I'd like to access your product on Streamr Marketplace."
+msgstr ""
+"Hi,\n"
+"I'd like to request access to your data product, %{productName}.\n"
+"My ethereum address is as follows:"
 
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"

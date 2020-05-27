@@ -31,6 +31,7 @@ const WhiteListEditor = ({ items }: Props) => {
             addDialog={null}
             removeDialog={null}
             copy={action('Copy')}
+            actionsEnabled
         />
     )
 }
