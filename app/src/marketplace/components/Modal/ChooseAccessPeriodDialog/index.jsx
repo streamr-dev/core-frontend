@@ -11,12 +11,10 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import CurrencySelector from './CurrencySelector'
 import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } from '$mp/utils/web3'
-import { isMobile } from '$shared/utils/platform'
-import { toSeconds } from '$mp/utils/time'
-import { dataToUsd, usdToData, formatDecimals } from '$mp/utils/price'
+import { dataToUsd, formatDecimals, dataForTimeUnits } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
 import type { Product } from '$mp/flowtype/product-types'
-import type { ContractCurrency, PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
@@ -28,9 +26,8 @@ export type AccessPeriod = {
     time: NumberString,
     timeUnit: TimeUnit,
     paymentCurrency: PaymentCurrency,
-    priceInEth: ?NumberString,
-    priceInDai: ?NumberString,
-    priceInEthUsdEquivalent: ?NumberString,
+    price: ?NumberString,
+    approxUsd: ?NumberString,
 }
 
 export type Balances = {
@@ -45,16 +42,7 @@ export type Props = {
     onNext: (AccessPeriod) => Promise<void>,
     onCancel: () => void,
     disabled?: boolean,
-}
-
-const getPrice = (time: NumberString | BN, timeUnit: TimeUnit, pricePerSecond: BN, currency: ContractCurrency) => {
-    if (!BN(time).isNaN() && BN(time).isGreaterThan(0)) {
-        if (currency === paymentCurrencies.ETH || currency === paymentCurrencies.DAI) {
-            return formatDecimals(toSeconds(time, timeUnit), currency).toString()
-        }
-        return formatDecimals(toSeconds(time, timeUnit).multipliedBy(pricePerSecond), currency).toString()
-    }
-    return '-'
+    initialValues?: AccessPeriod,
 }
 
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => ({
@@ -62,34 +50,41 @@ const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month]
     value: unit,
 }))
 
+/* eslint-disable object-curly-newline */
 export const ChooseAccessPeriodDialog = ({
     pricePerSecond,
     priceCurrency,
     balances,
-    onNext: onNextProp,
+    onNext,
     onCancel,
     dataPerUsd,
     disabled,
+    initialValues,
 }: Props) => {
-    const [time, setTime] = useState('1')
-    const [timeUnit, setTimeUnit] = useState('hour')
-    const [paymentCurrency, setPaymentCurrency] = useState(DEFAULT_CURRENCY)
+    const {
+        time: initialTime = '1',
+        timeUnit: initialTimeUnit = 'hour',
+        paymentCurrency: initialPaymentCurrency = DEFAULT_CURRENCY,
+    } = initialValues || {}
+    const [time, setTime] = useState(initialTime)
+    const [timeUnit, setTimeUnit] = useState(initialTimeUnit)
+    const [paymentCurrency, setPaymentCurrency] = useState(initialPaymentCurrency)
     const [loading, setLoading] = useState(false)
     const [currentPrice, setCurrentPrice] = useState('-')
     const [approxUsd, setApproxUsd] = useState('-')
 
     const [priceInData, priceInUsd] = useMemo(() => {
-        const pricePerSecondInData = priceCurrency === contractCurrencies.DATA ?
-            pricePerSecond :
-            usdToData(pricePerSecond, dataPerUsd)
-
-        const pricePerSecondInUsd = priceCurrency === contractCurrencies.USD ?
-            pricePerSecond :
-            dataToUsd(pricePerSecond, dataPerUsd)
+        const inData = dataForTimeUnits(
+            pricePerSecond,
+            dataPerUsd,
+            priceCurrency,
+            time,
+            timeUnit,
+        )
 
         return [
-            getPrice(time, timeUnit, pricePerSecondInData, contractCurrencies.DATA),
-            getPrice(time, timeUnit, pricePerSecondInUsd, contractCurrencies.USD),
+            inData,
+            dataToUsd(inData, dataPerUsd),
         ]
     }, [dataPerUsd, priceCurrency, pricePerSecond, time, timeUnit])
 
@@ -109,30 +104,49 @@ export const ChooseAccessPeriodDialog = ({
         return true
     }, [paymentCurrency, priceInUsd, currentPrice])
 
-    const setExternalPrices = useDebounced(useCallback(async (dataPerUsd_, priceInData_, priceInUsd_, paymentCurrency_) => {
+    const setExternalPrices = useDebounced(useCallback(async ({
+        dataPerUsd: perUsd,
+        priceInData: inData,
+        priceInUsd: inUsd,
+        paymentCurrency: currency,
+    }) => {
         setLoading(true)
 
         let price
-        let inUsd
-        if (paymentCurrency_ === paymentCurrencies.ETH) {
-            price = await uniswapDATAtoETH(priceInData_)
-            inUsd = await uniswapETHtoDATA(price.toString())
-            inUsd.dividedBy(Number(dataPerUsd_) || 1)
-        } else if (paymentCurrency_ === paymentCurrencies.DAI) {
-            price = await uniswapDATAtoDAI(priceInData_)
-            inUsd = price
+        let usdEstimate
+        if (currency === paymentCurrencies.ETH) {
+            price = await uniswapDATAtoETH(inData.toString(), true)
+            usdEstimate = await uniswapETHtoDATA(price.toString(), true)
+            usdEstimate = usdEstimate.dividedBy(Number(perUsd) || 1)
+        } else if (currency === paymentCurrencies.DAI) {
+            price = await uniswapDATAtoDAI(inData.toString(), true)
+            usdEstimate = price
         } else {
-            price = priceInData_
-            inUsd = priceInUsd_
+            price = inData
+            usdEstimate = inUsd
         }
-        setCurrentPrice(BN(price).isNaN() ? 'N/A' : formatDecimals(price, paymentCurrency_).toString())
-        setApproxUsd(BN(inUsd).isNaN() ? 'N/A' : formatDecimals(inUsd, contractCurrencies.USD))
+
+        setCurrentPrice(price)
+        setApproxUsd(usdEstimate)
 
         setLoading(false)
     }, []), 250)
 
+    const displayPrice = useMemo(() => (
+        BN(currentPrice).isNaN() ? 'N/A' : formatDecimals(currentPrice, paymentCurrency)
+    ), [currentPrice, paymentCurrency])
+
+    const displayApproxUsd = useMemo(() => (
+        BN(approxUsd).isNaN() ? 'N/A' : formatDecimals(approxUsd, contractCurrencies.USD)
+    ), [approxUsd])
+
     useEffect(() => {
-        setExternalPrices(dataPerUsd, priceInData, priceInUsd, paymentCurrency)
+        setExternalPrices({
+            dataPerUsd,
+            priceInData,
+            priceInUsd,
+            paymentCurrency,
+        })
     }, [setExternalPrices, dataPerUsd, priceInData, paymentCurrency, priceInUsd])
 
     const currentBalance = useMemo(() => (
@@ -144,19 +158,6 @@ export const ChooseAccessPeriodDialog = ({
     const onTimeUnitChange = useCallback((t) => {
         setTimeUnit(t)
     }, [])
-
-    const onNext = useCallback(async (selectedTime: NumberString | BN, selectedTimeUnit: TimeUnit, selectedPaymentCurrency: PaymentCurrency) => {
-        setLoading(true)
-
-        await onNextProp({
-            time: selectedTime,
-            timeUnit: selectedTimeUnit,
-            paymentCurrency: selectedPaymentCurrency,
-            priceInEth: '',
-            priceInDai: '',
-            priceInEthUsdEquivalent: '',
-        })
-    }, [onNextProp])
 
     const onPaymentCurrencyChange = useCallback((currency: PaymentCurrency) => {
         setPaymentCurrency(currency)
@@ -172,7 +173,13 @@ export const ChooseAccessPeriodDialog = ({
             title: I18n.t('modal.common.next'),
             kind: 'primary',
             outline: true,
-            onClick: () => onNext(time, timeUnit, paymentCurrency),
+            onClick: () => onNext({
+                time,
+                timeUnit,
+                paymentCurrency,
+                price: currentPrice,
+                approxUsd,
+            }),
             disabled: !isValidTime || !isValidPrice || loading,
         },
     }
@@ -181,20 +188,26 @@ export const ChooseAccessPeriodDialog = ({
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
-                title={isMobile() ? I18n.t('modal.chooseAccessPeriod.mobileTitle') : I18n.t('modal.chooseAccessPeriod.title')}
+                title={(
+                    <React.Fragment>
+                        <Translate value="modal.chooseAccessPeriod.title" className={styles.title} />
+                        <Translate value="modal.chooseAccessPeriod.mobileTitle" className={styles.mobileTitle} />
+                    </React.Fragment>
+                )}
                 actions={actions}
                 renderActions={() => (
                     <div className={cx(styles.footer, {
                         [styles.onlyButtons]: paymentCurrency === paymentCurrencies.DATA,
                     })}
                     >
-                        {!isMobile() && paymentCurrency !== paymentCurrencies.DATA &&
+                        {paymentCurrency !== paymentCurrencies.DATA && (
                             <Translate
                                 value="modal.chooseAccessPeriod.uniswap"
                                 className={styles.uniswapFooter}
                                 tag="span"
                                 dangerousHTML
-                            />}
+                            />
+                        )}
                         <Buttons
                             actions={actions}
                         />
@@ -282,13 +295,13 @@ export const ChooseAccessPeriodDialog = ({
                             </span>
                         </span>
                         <span className={styles.priceValue}>
-                            {currentPrice}
+                            {displayPrice}
                             <span className={styles.priceCurrency}>
                                 {paymentCurrency}
                             </span>
                         </span>
                         <span className={styles.usdEquiv}>
-                            {I18n.t('modal.chooseAccessPeriod.approx')} {approxUsd} {contractCurrencies.USD}
+                            {I18n.t('modal.chooseAccessPeriod.approx')} {displayApproxUsd} {contractCurrencies.USD}
                         </span>
                     </div>
                     <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
@@ -296,19 +309,19 @@ export const ChooseAccessPeriodDialog = ({
                         onChange={onPaymentCurrencyChange}
                         paymentCurrency={paymentCurrency}
                     />
-                    {isMobile() && paymentCurrency !== paymentCurrencies.DATA ?
+                    {paymentCurrency !== paymentCurrencies.DATA && (
                         <Translate
                             value="modal.chooseAccessPeriod.uniswap"
                             className={styles.uniswapMsg}
                             tag="p"
                             dangerousHTML
                         />
-                        : null
-                    }
+                    )}
                 </div>
             </Dialog>
         </ModalPortal>
     )
 }
+/* eslint-enable object-curly-newline */
 
 export default ChooseAccessPeriodDialog

@@ -16,7 +16,7 @@ import HelpToggle from './HelpToggle'
 import styles from './dialog.pcss'
 
 export type Props = {
-    title?: string,
+    title?: Node,
     children?: Node,
     helpText?: Node,
     waiting?: boolean,

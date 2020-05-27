@@ -79,7 +79,7 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: bool
             productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
             productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
 
-            let uniswapETH = await call(uniswapAdaptorMethods().getConversionRateOutput(ETH, DATA, productPriceDATA))
+            let uniswapETH = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(ETH, DATA, productPriceDATA))
             uniswapETH = BN(web3.utils.fromWei(uniswapETH.toString()))
 
             return uniswapETH
@@ -103,7 +103,7 @@ export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: bool
             productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
             productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
 
-            let uniswapDAI = await call(uniswapAdaptorMethods().getConversionRateOutput(DAI, DATA, productPriceDATA))
+            let uniswapDAI = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(DAI, DATA, productPriceDATA))
             uniswapDAI = BN(web3.utils.fromWei(uniswapDAI.toString()))
 
             return uniswapDAI
@@ -125,7 +125,7 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boole
             const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
             const ethWei = web3.utils.toWei(ethQuantity)
 
-            let uniswapDATA = await call(uniswapAdaptorMethods().getConversionRateOutput(DATA, ETH, ethWei))
+            let uniswapDATA = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(DATA, ETH, ethWei))
             uniswapDATA = BN(web3.utils.fromWei(uniswapDATA.toString()))
 
             return uniswapDATA
@@ -157,8 +157,6 @@ export const validateBalanceForPurchase = async ({
 }: GetPrice) => {
 /* eslint-enable object-curly-newline */
     const [ethBalance, dataBalance, daiBalance] = await getBalances()
-    const ethPrice = await uniswapDATAtoETH(price.toString())
-    const daiPrice = await uniswapDATAtoDAI(price.toString())
     let requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
 
     if (includeGasForSetAllowance) {
@@ -171,7 +169,7 @@ export const validateBalanceForPurchase = async ({
 
     switch (paymentCurrency) {
         case paymentCurrencies.ETH: {
-            const requiredEth = BN(ethPrice).plus(requiredGas)
+            const requiredEth = BN(price).plus(requiredGas)
             if (ethBalance.isLessThan(requiredEth)) {
                 throw new NoBalanceError({
                     message: I18n.t('error.noBalance'),
@@ -202,16 +200,16 @@ export const validateBalanceForPurchase = async ({
             }
             break
         case paymentCurrencies.DAI:
-            if (ethBalance.isLessThan(requiredGas) || daiBalance.isLessThan(daiPrice)) {
+            if (ethBalance.isLessThan(requiredGas) || daiBalance.isLessThan(price)) {
                 throw new NoBalanceError({
                     message: I18n.t('error.noBalance'),
                     required: {
                         gas: requiredGas,
-                        dai: daiPrice,
+                        dai: price,
                     },
                     balances: {
                         eth: ethBalance,
-                        dai: daiBalance,
+                        dai: price,
                     },
                 })
             }
