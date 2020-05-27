@@ -376,7 +376,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
             if (!isMounted()) { return }
 
-            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds, paymentCurrency, price, price))
+            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds, paymentCurrency, price))
         } catch (e) {
             setPurchaseError(e)
         }

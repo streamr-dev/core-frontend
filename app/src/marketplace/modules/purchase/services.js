@@ -29,8 +29,7 @@ export const buyProduct = (
     id: ProductId,
     subscriptionInSeconds: NumberString | BN,
     paymentCurrency: PaymentCurrency,
-    ethPrice: BN,
-    daiPrice: BN,
+    price: BN,
 ): SmartContractTransaction => {
     const web3 = getWeb3()
     const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
@@ -43,7 +42,7 @@ export const buyProduct = (
                 ONE_DAY,
             ), {
                 gas: gasLimits.BUY_PRODUCT_WITH_ETH,
-                value: web3.utils.toWei(ethPrice.toString()).toString(),
+                value: web3.utils.toWei(price.toString()).toString(),
             })
         case paymentCurrencies.DAI:
             return send(uniswapAdaptorContractMethods().buyWithERC20(
@@ -51,7 +50,7 @@ export const buyProduct = (
                 subscriptionInSeconds.toString(),
                 ONE_DAY,
                 DAI,
-                web3.utils.toWei(daiPrice.toString()).toString(),
+                web3.utils.toWei(price.toString()).toString(),
             ), {
                 gas: gasLimits.BUY_PRODUCT_WITH_ERC20,
             })

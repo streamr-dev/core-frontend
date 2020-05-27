@@ -85,13 +85,12 @@ export const buyProduct = (
     productId: ProductId,
     subscriptionInSeconds: NumberString | BN,
     paymentCurrency: PaymentCurrency,
-    ethPrice: NumberString | BN,
-    daiPrice: NumberString | BN,
+    price: NumberString | BN,
 ) => (dispatch: Function, getState: () => StoreState) => {
     dispatch(buyProductRequest(productId, subscriptionInSeconds.toString()))
 
     return services
-        .buyProduct(productId, subscriptionInSeconds, paymentCurrency, ethPrice, daiPrice)
+        .buyProduct(productId, subscriptionInSeconds, paymentCurrency, price)
         .onTransactionHash((hash) => {
             dispatch(receivePurchaseHash(hash))
             dispatch(addTransaction(hash, transactionTypes.PURCHASE))
