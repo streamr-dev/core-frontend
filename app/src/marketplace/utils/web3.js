@@ -208,11 +208,11 @@ export const validateBalanceForPurchase = async ({
                     message: I18n.t('error.noBalance'),
                     required: {
                         gas: requiredGas,
-                        dai: daiPrice,
+                        dai: price,
                     },
                     balances: {
                         eth: ethBalance,
-                        dai: daiBalance,
+                        dai: price,
                     },
                 })
             }
