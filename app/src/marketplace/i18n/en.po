@@ -1136,7 +1136,7 @@ msgstr "Streamr Marketplace access request for %{productName}"
 
 msgid "modal##whitelistRequestAccess##mailtoBody"
 msgstr ""
-"Hi,\n"
+"Hi,\n\n"
 "I'd like to request access to your data product, %{productName}.\n"
 "My ethereum address is as follows:"
 
