@@ -5,7 +5,7 @@ import BN from 'bignumber.js'
 import { useSelector, useDispatch } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { ProductId, AccessPeriod } from '$mp/flowtype/product-types'
 
 import useModal from '$shared/hooks/useModal'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
@@ -55,11 +55,12 @@ import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
-import ChooseAccessPeriodDialog, { type AccessPeriod } from '$mp/components/Modal/ChooseAccessPeriodDialog'
+import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import { type Ref } from '$shared/flowtype/common-types'
+import usePurchase from './usePurchase'
 
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 
@@ -83,7 +84,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
     const contractProductError = useSelector(selectContractProductError)
-    const { load: loadEthIdentities, isLinked, connect: connectIdentity } = useEthereumIdentities()
+    const { load: loadEthIdentities, isLinked, create: createIdentity } = useEthereumIdentities()
     const accessPeriodParams: Ref<AccessPeriod> = useRef({
         time: '1',
         timeUnit: 'hour',
@@ -93,6 +94,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     })
     const [creatingIdentity, setCreatingIdentity] = useState(false)
     const [balances, setBalances] = useState({})
+    const { purchase } = usePurchase()
 
     // Check if current metamask account is linked to Streamr account
     const accountLinked = useMemo(() => !!account && isLinked(account), [isLinked, account])
@@ -278,7 +280,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         let succeeded = false
 
         try {
-            await connectIdentity(account || 'Account name')
+            await createIdentity(account || 'Account name')
             succeeded = true
         } catch (e) {
             console.warn(e)
@@ -289,21 +291,21 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
                 // continue with setting allowance
                 if (succeeded) {
-                    onVerifyAllowance()
+                    setStep(purchaseFlowSteps.SUMMARY)
                 }
             }
         }
-    }, [account, isMounted, connectIdentity, onVerifyAllowance])
+    }, [account, isMounted, createIdentity])
 
     const onSetAccessPeriod = useCallback(async (accessPeriod: AccessPeriod) => {
         accessPeriodParams.current = accessPeriod
 
         if (accountLinked) {
-            onVerifyAllowance()
+            setStep(purchaseFlowSteps.SUMMARY)
         } else {
             setStep(purchaseFlowSteps.LINK_ACCOUNT)
         }
-    }, [accountLinked, onVerifyAllowance])
+    }, [accountLinked])
 
     const onSetDataAllowance = useCallback(async () => {
         if (!accessPeriodParams.current) {

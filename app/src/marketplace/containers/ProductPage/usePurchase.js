@@ -1,18 +1,19 @@
 // @flow
 
-import { useMemo, useCallback, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useMemo, useCallback } from 'react'
+import { useDispatch } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 
-import type { SmartContractProduct } from '$mp/flowtype/product-types'
-import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import type { SmartContractProduct, AccessPeriod } from '$mp/flowtype/product-types'
+import type { NumberString } from '$shared/flowtype/common-types'
 import { dataForTimeUnits } from '$mp/utils/price'
-import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import { validateBalanceForPurchase } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
 import ActionQueue from '$mp/utils/actionQueue'
 import {
+    getMyDaiAllowance,
+    getMyDataAllowance,
     setMyDaiAllowance,
     setMyDataAllowance,
 } from '$mp/modules/allowance/services'
@@ -28,184 +29,195 @@ export const actionsTypes = {
     PURCHASE: 'purchase',
 }
 
-export type AccessPeriod = {
-    time: NumberString,
-    timeUnit: TimeUnit,
-    paymentCurrency: PaymentCurrency,
-    priceInEth: ?NumberString,
-    priceInDai: ?NumberString,
-    priceInEthUsdEquivalent: ?NumberString,
-}
-
-type Allowances = {
-    dataAllowance: NumberString,
-    daiAllowance: NumberString,
+type Purchase = {
+    contractProduct: SmartContractProduct,
+    accessPeriod: AccessPeriod,
+    dataPerUsd: NumberString,
 }
 
 export default function usePurchase() {
     const dispatch = useDispatch()
-    const dataPerUsd = useSelector(selectDataPerUsd)
-    const dataPerUsdRef = useRef(dataPerUsd)
-    dataPerUsdRef.current = dataPerUsd
 
-    const purchase = useCallback(async (contractProduct: SmartContractProduct, accessPeriod: AccessPeriod, allowances: Allowances) => {
+    const purchase = useCallback(async ({ contractProduct, accessPeriod, dataPerUsd }: Purchase = {}) => {
         if (!contractProduct) {
             throw new Error('no product')
         }
 
-        const { pricePerSecond, priceCurrency } = contractProduct
-        const purchasePrice = dataForTimeUnits(
-            pricePerSecond,
-            dataPerUsdRef.current,
-            priceCurrency,
-            accessPeriod.time,
-            accessPeriod.timeUnit,
-        )
-
-        if (!accessPeriod || !purchasePrice) {
-            throw new Error(I18n.t('error.noProductOrAccess'))
+        if (!dataPerUsd) {
+            throw new Error('no dataPerUsd')
         }
 
-        const {
-            paymentCurrency,
-            time,
-            timeUnit,
-            priceInEth,
-            priceInDai,
-        } = accessPeriod
+        const { paymentCurrency, time, timeUnit, price } = accessPeriod || {}
 
-        await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
+        if (!accessPeriod || !time || !timeUnit || !paymentCurrency) {
+            throw new Error(I18n.t('no access period'))
+        }
+
+        const isEthPurchase = !!(paymentCurrency === paymentCurrencies.ETH)
+        const isDaiPurchase = !!(paymentCurrency === paymentCurrencies.DAI)
+        const isUniswapPurchase = isEthPurchase || isDaiPurchase
+        const isTokenPurchase = !isEthPurchase
+
+        let purchasePrice
+        if (isUniswapPurchase) {
+            if (!price) {
+                throw new Error('no price')
+            }
+
+            purchasePrice = price
+        } else {
+            const { pricePerSecond, priceCurrency } = contractProduct
+
+            purchasePrice = dataForTimeUnits(
+                pricePerSecond,
+                dataPerUsd,
+                priceCurrency,
+                time,
+                timeUnit,
+            )
+
+            if (!purchasePrice) {
+                throw new Error(I18n.t('could not calculate price'))
+            }
+        }
+
+        let allowance
+        if (isDaiPurchase) {
+            allowance = await getMyDaiAllowance()
+        } else if (!isEthPurchase) {
+            allowance = await getMyDataAllowance()
+        }
+
+        allowance = BN(allowance || 0)
+
+        const needsAllowance = !!(isTokenPurchase && allowance.isLessThan(price))
+        const needsAllowanceReset = !!(needsAllowance && allowance.isGreaterThan(0))
+
+        await validateBalanceForPurchase({
+            price: purchasePrice,
+            paymentCurrency,
+            includeGasForSetAllowance: needsAllowance,
+            includeGasForResetAllowance: needsAllowanceReset,
+        })
 
         const queue = new ActionQueue()
 
-        if (paymentCurrency === paymentCurrencies.DAI) {
-            const daiPurchasePrice = (priceInDai || 0).toString()
-            const daiAllowance = BN(allowances.daiAllowance)
-
-            if (daiAllowance.isLessThan(daiPurchasePrice)) {
-                // we need to reset the allowance before setting it again
-                if (daiAllowance.isGreaterThan(0)) {
-                    queue.add({
-                        id: actionsTypes.RESET_DAI_ALLOWANCE,
-                        handler: (update, done) => {
-                            try {
-                                return setMyDaiAllowance('0')
-                                    .onTransactionHash((hash) => {
-                                        update(transactionStates.PENDING)
-                                        dispatch(addTransaction(hash, transactionTypes.RESET_DAI_ALLOWANCE))
-                                        done()
-                                    })
-                                    .onTransactionComplete(() => {
-                                        update(transactionStates.CONFIRMED)
-                                    })
-                                    .onError((error) => {
-                                        done()
-                                        update(transactionStates.FAILED, error)
-                                    })
-                            } catch (e) {
+        if (needsAllowanceReset && isDaiPurchase) {
+            queue.add({
+                id: actionsTypes.RESET_DAI_ALLOWANCE,
+                handler: (update, done) => {
+                    try {
+                        return setMyDaiAllowance('0')
+                            .onTransactionHash((hash) => {
+                                update(transactionStates.PENDING)
+                                dispatch(addTransaction(hash, transactionTypes.RESET_DAI_ALLOWANCE))
                                 done()
-                                update(transactionStates.FAILED, e)
-                            }
-
-                            return null
-                        },
-                    })
-                }
-
-                queue.add({
-                    id: actionsTypes.SET_DAI_ALLOWANCE,
-                    handler: (update, done) => {
-                        try {
-                            return setMyDaiAllowance(priceInDai)
-                                .onTransactionHash((hash) => {
-                                    update(transactionStates.PENDING)
-                                    dispatch(addTransaction(hash, transactionTypes.SET_DAI_ALLOWANCE))
-                                    done()
-                                })
-                                .onTransactionComplete(() => {
-                                    update(transactionStates.CONFIRMED)
-                                })
-                                .onError((error) => {
-                                    done()
-                                    update(transactionStates.FAILED, error)
-                                })
-                        } catch (e) {
-                            done()
-                            update(transactionStates.FAILED, e)
-                        }
-
-                        return null
-                    },
-                })
-            }
-        } else if (paymentCurrency !== paymentCurrencies.ETH) {
-            const dataAllowance = BN(allowances.dataAllowance)
-
-            if (dataAllowance.isLessThan(purchasePrice)) {
-                if (dataAllowance.isGreaterThan(0)) {
-                    queue.add({
-                        id: actionsTypes.RESET_DATA_ALLOWANCE,
-                        handler: (update, done) => {
-                            try {
-                                return setMyDataAllowance('0')
-                                    .onTransactionHash((hash) => {
-                                        update(transactionStates.PENDING)
-                                        dispatch(addTransaction(hash, transactionTypes.RESET_DATA_ALLOWANCE))
-                                        done()
-                                    })
-                                    .onTransactionComplete(() => {
-                                        update(transactionStates.CONFIRMED)
-                                    })
-                                    .onError((error) => {
-                                        done()
-                                        update(transactionStates.FAILED, error)
-                                    })
-                            } catch (e) {
+                            })
+                            .onTransactionComplete(() => {
+                                update(transactionStates.CONFIRMED)
+                            })
+                            .onError((error) => {
                                 done()
-                                update(transactionStates.FAILED, e)
-                            }
+                                update(transactionStates.FAILED, error)
+                            })
+                    } catch (e) {
+                        done()
+                        update(transactionStates.FAILED, e)
+                    }
 
-                            return null
-                        },
-                    })
-                }
+                    return null
+                },
+            })
+        } else if (needsAllowanceReset && !isEthPurchase) {
+            queue.add({
+                id: actionsTypes.RESET_DATA_ALLOWANCE,
+                handler: (update, done) => {
+                    try {
+                        return setMyDataAllowance('0')
+                            .onTransactionHash((hash) => {
+                                update(transactionStates.PENDING)
+                                dispatch(addTransaction(hash, transactionTypes.RESET_DATA_ALLOWANCE))
+                                done()
+                            })
+                            .onTransactionComplete(() => {
+                                update(transactionStates.CONFIRMED)
+                            })
+                            .onError((error) => {
+                                done()
+                                update(transactionStates.FAILED, error)
+                            })
+                    } catch (e) {
+                        done()
+                        update(transactionStates.FAILED, e)
+                    }
 
-                queue.add({
-                    id: actionsTypes.SET_DATA_ALLOWANCE,
-                    handler: (update, done) => {
-                        try {
-                            return setMyDataAllowance(purchasePrice)
-                                .onTransactionHash((hash) => {
-                                    update(transactionStates.PENDING)
-                                    dispatch(addTransaction(hash, transactionTypes.SET_DATA_ALLOWANCE))
-                                    done()
-                                })
-                                .onTransactionComplete(() => {
-                                    update(transactionStates.CONFIRMED)
-                                })
-                                .onError((error) => {
-                                    done()
-                                    update(transactionStates.FAILED, error)
-                                })
-                        } catch (e) {
-                            done()
-                            update(transactionStates.FAILED, e)
-                        }
+                    return null
+                },
+            })
+        }
 
-                        return null
-                    },
-                })
-            }
+        if (needsAllowance && isDaiPurchase) {
+            queue.add({
+                id: actionsTypes.SET_DAI_ALLOWANCE,
+                handler: (update, done) => {
+                    try {
+                        return setMyDaiAllowance(price)
+                            .onTransactionHash((hash) => {
+                                update(transactionStates.PENDING)
+                                dispatch(addTransaction(hash, transactionTypes.SET_DAI_ALLOWANCE))
+                                done()
+                            })
+                            .onTransactionComplete(() => {
+                                update(transactionStates.CONFIRMED)
+                            })
+                            .onError((error) => {
+                                done()
+                                update(transactionStates.FAILED, error)
+                            })
+                    } catch (e) {
+                        done()
+                        update(transactionStates.FAILED, e)
+                    }
+
+                    return null
+                },
+            })
+        } else if (needsAllowance && !isEthPurchase) {
+            queue.add({
+                id: actionsTypes.SET_DATA_ALLOWANCE,
+                handler: (update, done) => {
+                    try {
+                        return setMyDataAllowance(purchasePrice)
+                            .onTransactionHash((hash) => {
+                                update(transactionStates.PENDING)
+                                dispatch(addTransaction(hash, transactionTypes.SET_DATA_ALLOWANCE))
+                                done()
+                            })
+                            .onTransactionComplete(() => {
+                                update(transactionStates.CONFIRMED)
+                            })
+                            .onError((error) => {
+                                done()
+                                update(transactionStates.FAILED, error)
+                            })
+                    } catch (e) {
+                        done()
+                        update(transactionStates.FAILED, e)
+                    }
+
+                    return null
+                },
+            })
         }
 
         // Do the actual purchase
-        const subscriptionInSeconds = toSeconds(time, timeUnit)
+        const subscriptionInSeconds = toSeconds(time, timeUnit).toString()
 
         queue.add({
             id: actionsTypes.PURCHASE,
             handler: (update, done) => {
                 try {
-                    return buyProduct(contractProduct.id, subscriptionInSeconds, paymentCurrency, priceInEth, priceInDai)
+                    return buyProduct(contractProduct.id, subscriptionInSeconds, paymentCurrency, purchasePrice)
                         .onTransactionHash((hash) => {
                             update(transactionStates.PENDING)
                             dispatch(addTransaction(hash, transactionTypes.PURCHASE))
@@ -227,7 +239,9 @@ export default function usePurchase() {
             },
         })
 
-        return queue
+        return {
+            queue,
+        }
     }, [dispatch])
 
     return useMemo(() => ({
