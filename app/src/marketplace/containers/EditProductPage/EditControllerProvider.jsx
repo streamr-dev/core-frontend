@@ -20,6 +20,7 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 
 import * as State from '../EditProductPage/state'
 import useModal from '$shared/hooks/useModal'
@@ -143,6 +144,12 @@ function useEditController(product: Product) {
                 ...nextProduct,
             })), nextProduct.id || '')
             resetTouched()
+
+            Activity.push({
+                action: actionTypes.UPDATE,
+                resourceId: nextProduct.id,
+                resourceType: resourceTypes.PRODUCT,
+            })
 
             // TODO: handle saving errors
             return true
