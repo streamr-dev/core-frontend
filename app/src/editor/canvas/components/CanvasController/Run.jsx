@@ -32,7 +32,7 @@ function isStateNotAllowedError(error) {
 function useRunController(canvas = EMPTY) {
     const isEmbedMode = useEmbedMode()
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
-    const { hasWritePermission, hasSharePermission } = useCanvasPermissions()
+    const { hasWritePermission, hasSharePermission, hasStartStopPermission } = useCanvasPermissions()
     const { replaceCanvas } = useCanvasUpdater()
     const isMountedRef = useIsMountedRef()
 
@@ -170,7 +170,7 @@ function useRunController(canvas = EMPTY) {
     const canChangeRunState = (
         !isEmbedMode && // can't change run state when in embed mode
         !isPending && // no pending
-        hasWritePermission && ( // has write perms
+        hasStartStopPermission && ( // has start/stop perms
             // check historical settings ok if historical
             !isHistorical ||
             // don't prevent stopping running canvas if not valid
@@ -191,13 +191,14 @@ function useRunController(canvas = EMPTY) {
         isAdjustable,
         isEditable,
         isSubscriptionActive,
+        hasStartStopPermission,
         hasSharePermission,
         hasWritePermission,
         start,
         stop,
         exit,
     }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isAdjustable,
-        hasSharePermission, hasWritePermission, isStopping, start, stop, exit, canChangeRunState, isSubscriptionActive])
+        hasStartStopPermission, hasWritePermission, hasSharePermission, isStopping, start, stop, exit, canChangeRunState, isSubscriptionActive])
 }
 
 export default function RunControllerProvider({ children, canvas }) {

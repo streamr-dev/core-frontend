@@ -1,0 +1,222 @@
+.root {
+  height: 100%;
+  max-height: stretch;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.anonAccessSelect label,
+.addUserInput label {
+  color: #323232;
+  font-size: 12px;
+  font-weight: var(--medium);
+  line-height: 20px;
+}
+
+.row {
+  flex-shrink: 0;
+}
+
+.cell {
+  padding: 1.4um 2um;
+}
+
+.userList {
+  overflow: auto;
+  flex-grow: 1;
+  flex-shrink: initial;
+  border-top: 1px solid #EFEFEF;
+}
+
+.anonAccessSelect {
+  padding-bottom: 0.7um;
+}
+
+.addUserInput {
+  padding-top: 0.7um;
+}
+
+.saveCancelButtons {
+  display: grid;
+  grid-column-gap: 1um;
+  grid-template-columns: auto auto;
+}
+
+.InputNewShare {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-column-gap: 1um;
+
+  label {
+    grid-column: span 2;
+  }
+
+  .input {
+    font-size: 14px;
+  }
+
+  .plusIcon {
+    height: 1um;
+    width: 1um;
+  }
+}
+
+.errorMessageWrapper {
+  overflow: hidden;
+}
+
+.errorMessage {
+  color: #FF0F2D;
+  background-color: #FFF4F5;
+  font-size: 14px;
+  padding: 1.5um 2um;
+}
+
+.userPermissions {
+  padding: 1.4um 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #EFEFEF;
+  }
+
+  &:only-child {
+    /* override not last child border if only child */
+    border-bottom: 1px solid #EFEFEF;
+  }
+
+  .permissionsHeader {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding: 0 2um;
+
+    .permissionsHeaderTitle {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    h4 {
+      font-size: inherit;
+      margin: 0;
+      line-height: normal;
+      padding: 0;
+      margin-bottom: 2px;
+      text-overflow: ellipsis;
+      max-width: 260px;
+      overflow: hidden;
+    }
+
+    .button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s ease-in;
+      background: transparent;
+      height: 24px;
+      width: 24px;
+      opacity: 0;
+      padding: 0;
+      border: none;
+    }
+
+    &:hover .button {
+      background: #F8F8F8;
+      opacity: 1;
+      border: none;
+    }
+
+    .trashIcon {
+      height: 1um;
+      width: 1um;
+    }
+  }
+
+  .permissionControls {
+    opacity: 0;
+    transition: opacity 300ms;
+    overflow: hidden;
+    will-change: height, opacity;
+    background: #FDFDFD;
+    padding: 0 2um;
+  }
+
+  .selectedGroup {
+    padding: 2px 4px;
+    font-size: 10px;
+    color: #525252;
+    background: #EFEFEF;
+    transition: all 300ms;
+    display: inline-block;
+    line-height: normal;
+    opacity: 1;
+    will-change: opacity, padding, height;
+    height: auto;
+    position: relative;
+  }
+
+  &.isSelected {
+    .selectedGroup {
+      opacity: 0;
+      height: 0;
+      padding: 0 4px;
+    }
+
+    .permissionControls {
+      opacity: 1;
+    }
+  }
+
+  .groupSelector {
+    margin-bottom: 1.4um;
+  }
+
+  .permissionsCheckboxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+
+    > * {
+      padding-bottom: 0.5um;
+      display: flex;
+      align-items: center;
+    }
+
+    .checkboxContainer {
+      display: flex;
+      align-items: center;
+    }
+
+    .checkbox {
+      margin-right: 0;
+    }
+
+    label {
+      padding-left: 0.5um;
+      margin-bottom: 0;
+      line-height: normal;
+      width: 100%;
+    }
+  }
+
+  .errorMessage {
+    margin: -1.4um 0um;
+    margin-top: 1.4um;
+  }
+}
+
+.footer {
+  border-top: 1px solid #EFEFEF;
+  display: flex;
+
+  :first-child {
+    margin-right: auto;
+  }
+
+  .cancelButton {
+    background: transparent;
+    border: transparent;
+    outline: transparent;
+    color: #525252 !important;
+  }
+}

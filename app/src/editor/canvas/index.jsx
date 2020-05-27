@@ -15,7 +15,7 @@ import copyToClipboard from 'copy-to-clipboard'
 import routes from '$routes'
 
 import { findNonOverlappingPositionForModule } from '$editor/shared/utils/bounds'
-import isEditableElement from '$editor/shared/utils/isEditableElement'
+import isEditableElement from '$shared/utils/isEditableElement'
 import UndoControls from '$editor/shared/components/UndoControls'
 import Button from '$shared/components/Button'
 import * as UndoContext from '$shared/contexts/Undo'
@@ -25,10 +25,11 @@ import * as SubscriptionStatus from '$shared/contexts/SubscriptionStatus'
 import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
 import * as sharedServices from '$editor/shared/services'
 import BodyClass from '$shared/components/BodyClass'
-import Sidebar from '$editor/shared/components/Sidebar'
+import Sidebar from '$shared/components/Sidebar'
 import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import ConsoleSidebar from './components/ConsoleSidebar'
+import ShareSidebar from '$userpages/components/ShareSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 import { CameraProvider, cameraControl } from './components/Camera'
 import { useCanvasCameraEffects } from './hooks/useCanvasCamera'
@@ -48,6 +49,7 @@ import CanvasStatus, { CannotSaveStatus } from '$editor/shared/components/Status
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -58,9 +60,6 @@ import styles from './index.pcss'
 const CanvasEditComponent = class CanvasEdit extends PureComponent {
     state = {
         moduleSearchIsOpen: true,
-        moduleSidebarIsOpen: false,
-        keyboardShortcutIsOpen: false,
-        consoleSidebarIsOpen: false,
     }
 
     setCanvas = (action, fn, done) => {
@@ -80,53 +79,20 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
     }
 
     moduleSidebarOpen = (show = true) => {
-        this.setState({
-            consoleSidebarIsOpen: false,
-            moduleSidebarIsOpen: !!show,
-            keyboardShortcutIsOpen: false,
-        })
-    }
-
-    moduleSidebarClose = () => {
-        this.moduleSidebarOpen(false)
+        this.props.sidebar.open('module', show)
     }
 
     consoleSidebarOpen = (show = true) => {
-        this.setState({
-            consoleSidebarIsOpen: !!show,
-            moduleSidebarIsOpen: false,
-            keyboardShortcutIsOpen: false,
-        })
-    }
-
-    consoleSidebarClose = () => {
-        this.consoleSidebarOpen(false)
-    }
-
-    keyboardShortcutOpen = (show = true) => {
-        this.setState({
-            consoleSidebarIsOpen: false,
-            moduleSidebarIsOpen: false,
-            keyboardShortcutIsOpen: !!show,
-        })
-    }
-
-    keyboardShortcutClose = () => {
-        this.keyboardShortcutOpen(false)
+        this.props.sidebar.open('console', show)
     }
 
     selectModule = async ({ hash } = {}) => {
-        this.setState(({ moduleSidebarIsOpen, consoleSidebarIsOpen, keyboardShortcutIsOpen }) => {
-            const noSelection = hash == null
-            return {
-                selectedModuleHash: hash,
-                // close sidebar if no selection
-                moduleSidebarIsOpen: moduleSidebarIsOpen && !noSelection,
-                keyboardShortcutIsOpen: keyboardShortcutIsOpen && !noSelection,
-                consoleSidebarIsOpen: consoleSidebarIsOpen && !noSelection,
-            }
-        })
-        if (hash == null) {
+        const noSelection = hash == null
+
+        this.setState({ selectedModuleHash: hash })
+
+        if (noSelection) {
+            this.props.sidebar.close()
             this.props.selection.none()
             // remove focus on deselect
             if (document.activeElement) {
@@ -414,7 +380,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
     }
 
     render() {
-        const { canvas, runController, isEmbedMode } = this.props
+        const { canvas, runController, isEmbedMode, sidebar } = this.props
         if (!canvas) {
             return (
                 <div className={styles.CanvasEdit}>
@@ -423,7 +389,6 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
             )
         }
         const { isEditable } = runController
-        const { moduleSidebarIsOpen, keyboardShortcutIsOpen, consoleSidebarIsOpen } = this.state
         const { settings } = canvas
         const resendFrom = settings.beginDate
         const resendTo = settings.endDate
@@ -447,7 +412,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                     updateModule={this.updateModule}
                     renameModule={this.renameModule}
                     moduleSidebarOpen={this.moduleSidebarOpen}
-                    moduleSidebarIsOpen={moduleSidebarIsOpen}
+                    moduleSidebarIsOpen={sidebar.isOpen('module')}
                     consoleSidebarOpen={this.consoleSidebarOpen}
                     setCanvas={this.setCanvas}
                     pushNewDefinition={this.pushNewDefinition}
@@ -470,39 +435,46 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                             duplicateCanvas={this.duplicateCanvas}
                             moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                             moduleSearchOpen={this.moduleSearchOpen}
-                            consoleSidebarOpen={this.consoleSidebarOpen}
                             setRunTab={this.setRunTab}
                             setHistorical={this.setHistorical}
                             setSpeed={this.setSpeed}
                             setSaveState={this.setSaveState}
                             canvasStart={this.canvasStart}
                             canvasStop={this.canvasStop}
-                            keyboardShortcutOpen={this.keyboardShortcutOpen}
                             canvasExit={this.canvasExit}
+                            sidebar={sidebar}
                         />
                         <Sidebar
                             className={styles.ModuleSidebar}
-                            isOpen={moduleSidebarIsOpen || keyboardShortcutIsOpen || consoleSidebarIsOpen}
+                            isOpen={sidebar.isOpen()}
                         >
-                            {keyboardShortcutIsOpen && (
+                            {sidebar.isOpen('keyboardShortcuts') && (
                                 <KeyboardShortcutsSidebar
-                                    onClose={this.keyboardShortcutClose}
+                                    onClose={() => sidebar.close('keyboardShortcuts')}
                                 />
                             )}
-                            {moduleSidebarIsOpen && (
+                            {sidebar.isOpen('module') && (
                                 <ModuleSidebar
-                                    onClose={this.moduleSidebarClose}
+                                    onClose={() => sidebar.close('module')}
                                     canvas={canvas}
                                     selectedModuleHash={this.props.selection.last()}
                                     setModuleOptions={this.setModuleOptions}
                                 />
                             )}
-                            {consoleSidebarIsOpen && (
+                            {sidebar.isOpen('console') && (
                                 <ConsoleSidebar
-                                    onClose={this.consoleSidebarClose}
+                                    onClose={() => sidebar.close('console')}
                                     canvas={canvas}
                                     selectedModuleHash={this.props.selection.last()}
                                     selectModule={this.selectModule}
+                                />
+                            )}
+                            {sidebar.isOpen('share') && (
+                                <ShareSidebar
+                                    sidebarName="share"
+                                    resourceTitle={canvas.name}
+                                    resourceType="CANVAS"
+                                    resourceId={canvas.id}
                                 />
                             )}
                         </Sidebar>
@@ -530,6 +502,7 @@ const CanvasEdit = withRouter((props) => {
     useCanvasNotifications(canvas)
     useCanvasCameraEffects()
     const selection = useCanvasSelection()
+    const sidebar = useContext(SidebarContext)
 
     return (
         <AutosaveProvider>
@@ -546,6 +519,7 @@ const CanvasEdit = withRouter((props) => {
                 updated={updated}
                 setUpdated={setUpdated}
                 selection={selection}
+                sidebar={sidebar}
             />
         </AutosaveProvider>
     )
@@ -567,7 +541,9 @@ const CanvasEditWrap = () => {
         <SubscriptionStatus.Provider key={key}>
             <RunController.Provider canvas={canvas}>
                 <CameraProvider>
-                    <CanvasEdit />
+                    <SidebarProvider>
+                        <CanvasEdit />
+                    </SidebarProvider>
                 </CameraProvider>
             </RunController.Provider>
         </SubscriptionStatus.Provider>

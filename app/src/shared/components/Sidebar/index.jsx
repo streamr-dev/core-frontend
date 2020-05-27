@@ -4,15 +4,15 @@ import React, { type Node, useEffect, useCallback, useRef } from 'react'
 import cx from 'classnames'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
+import isEditableElement from '$shared/utils/isEditableElement'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import isEditableElement from '$editor/shared/utils/isEditableElement'
 
 import Header from './Header'
 import Content from './Content'
 import Section from './Section'
 import Select from './Select'
 
-import styles from './sidebar.pcss'
+import styles from './Sidebar.pcss'
 
 type Props = {
     className?: string,
@@ -42,13 +42,16 @@ const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
     }, [onClose, elRef, isOpen])
 
     useEffect(() => {
+        if (!isOpen) { return undefined }
+        // only attach handlers once opened, otherwise can lead to situation
+        // where sidebar closes immediately after it opened
         window.addEventListener('keydown', onKeyDown)
-        window.addEventListener('click', onClick)
+        window.addEventListener('click', onClick, true)
         return () => {
             window.removeEventListener('keydown', onKeyDown)
-            window.removeEventListener('click', onClick)
+            window.removeEventListener('click', onClick, true)
         }
-    }, [onKeyDown, onClick])
+    }, [onKeyDown, onClick, isOpen])
 
     return (
         <div className={cx(className, styles.sidebar)} ref={elRef} hidden={!isOpen}>

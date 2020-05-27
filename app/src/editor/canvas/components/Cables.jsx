@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { useMemo, useState, useLayoutEffect, useContext, useCallback } from 'react'
 import cx from 'classnames'
-import { animated, to, useSprings } from 'react-spring'
+import { animated, interpolate, useSprings } from 'react-spring'
 import { moduleHasPort, isConnectedToModule } from '../state'
 import styles from './Canvas.pcss'
 import { DragDropContext } from './DragDropContext'
@@ -103,7 +103,7 @@ function CableSpring({ className, spring, cable, ...props }) {
     return (
         <animated.path
             className={cx(styles.Connection, className)}
-            d={to([spring.src, spring.c1, spring.c2, spring.dest], (src, c1, c2, dest) => {
+            d={interpolate([spring.src, spring.c1, spring.c2, spring.dest], (src, c1, c2, dest) => {
                 const l = []
                 l.push('M', ...src)
                 l.push('C', ...c1, ...c2, ...dest)

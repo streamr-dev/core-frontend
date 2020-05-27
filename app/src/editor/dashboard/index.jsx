@@ -14,11 +14,13 @@ import { SelectionProvider } from '$shared/hooks/useSelection'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { useAnyPending } from '$shared/hooks/usePending'
 import CanvasStyles from '$editor/canvas/index.pcss'
-import Sidebar from '$editor/shared/components/Sidebar'
+import Sidebar from '$shared/components/Sidebar'
+import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import { handleLoadError } from '$auth/utils/loginInterceptor'
 import BodyClass from '$shared/components/BodyClass'
 import DashboardStatus from '$editor/shared/components/Status'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import ShareSidebar from '$userpages/components/ShareSidebar'
 
 import routes from '$routes'
 
@@ -35,7 +37,6 @@ import styles from './index.pcss'
 const DashboardEdit = withRouter(class DashboardEdit extends Component {
     state = {
         moduleSearchIsOpen: false,
-        keyboardShortcutIsOpen: false,
     }
 
     setDashboard = (action, fn, done) => {
@@ -157,18 +158,8 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         })
     }
 
-    keyboardShortcutOpen = (show = true) => {
-        this.setState({
-            keyboardShortcutIsOpen: !!show,
-        })
-    }
-
-    keyboardShortcutClose = () => {
-        this.keyboardShortcutOpen(false)
-    }
-
     render() {
-        const { dashboard } = this.props
+        const { dashboard, sidebar } = this.props
         return (
             <div className={styles.DashboardEdit}>
                 <Helmet title={`${dashboard.name} | Streamr Core`} />
@@ -181,6 +172,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                     <DashboardStatus updated={dashboard.updated} />
                 </Dashboard>
                 <DashboardToolbar
+                    sidebar={sidebar}
                     className={styles.DashboardToolbar}
                     dashboard={dashboard}
                     setDashboard={this.setDashboard}
@@ -192,16 +184,25 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                     removeModule={this.removeModule}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
-                    keyboardShortcutOpen={this.keyboardShortcutOpen}
                 />
                 <Sidebar
                     className={CanvasStyles.ModuleSidebar}
-                    isOpen={this.state.keyboardShortcutIsOpen}
-                    onClose={this.keyboardShortcutClose}
+                    isOpen={sidebar.isOpen()}
+                    onClose={sidebar.close}
                 >
-                    <KeyboardShortcutsSidebar
-                        onClose={this.keyboardShortcutClose}
-                    />
+                    {sidebar.isOpen('keyboardShortcuts') && (
+                        <KeyboardShortcutsSidebar
+                            onClose={() => sidebar.close('keyboardShortcuts')}
+                        />
+                    )}
+                    {sidebar.isOpen('share') && (
+                        <ShareSidebar
+                            sidebarName="share"
+                            resourceTitle={dashboard.name}
+                            resourceType="DASHBOARD"
+                            resourceId={dashboard.id}
+                        />
+                    )}
                 </Sidebar>
                 <DashboardModuleSearch
                     isOpen={this.state.moduleSearchIsOpen}
@@ -313,18 +314,20 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponent)(class Dashb
     }
 }))
 
-const DashboardEditWrap = () => (
-    <UndoContext.Consumer>
-        {({ state: dashboard, push, replace }) => (
-            <DashboardEdit
-                key={dashboard.id}
-                push={push}
-                replace={replace}
-                dashboard={dashboard}
-            />
-        )}
-    </UndoContext.Consumer>
-)
+const DashboardEditWrap = () => {
+    const sidebar = useContext(SidebarContext)
+    const { undo, push, replace, state: dashboard } = useContext(UndoContext)
+    return (
+        <DashboardEdit
+            key={dashboard.id}
+            push={push}
+            undo={undo}
+            replace={replace}
+            dashboard={dashboard}
+            sidebar={sidebar}
+        />
+    )
+}
 
 function DashboardLoadingIndicator() {
     const { state } = useContext(UndoContext)
@@ -343,8 +346,10 @@ export default withRouter((props) => (
                     <DashboardLoadingIndicator />
                     <DashboardLoader>
                         <SelectionProvider>
-                            <UndoControls />
-                            <DashboardEditWrap />
+                            <SidebarProvider>
+                                <UndoControls />
+                                <DashboardEditWrap />
+                            </SidebarProvider>
                         </SelectionProvider>
                     </DashboardLoader>
                 </ClientProvider>

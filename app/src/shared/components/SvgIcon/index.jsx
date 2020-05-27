@@ -433,6 +433,18 @@ const sources = {
             </g>
         </svg>
     ),
+    trash: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 14">
+            <path
+                fill="none"
+                fillRule="evenodd"
+                stroke="#A3A3A3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.167 13h-7a1 1 0 01-1-1V3h9v9a1 1 0 01-1 1zm-5-3V6m3 4V6m-8-3h13m-5-2h-3a1 1 0 00-1 1v1h5V2a1 1 0 00-1-1z"
+            />
+        </svg>
+    ),
     brevetDown: (
         <svg viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
             <path d="M.756 1l4.245 4.245 4.243-4.242" stroke="#CDCDCD" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />

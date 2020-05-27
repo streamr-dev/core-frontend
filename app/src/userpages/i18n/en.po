@@ -1061,10 +1061,10 @@ msgid "modal##shareResource##withLink"
 msgstr "Public — viewable by anyone with the link or via the API"
 
 msgid "modal##shareResource##enterEmailAddressLabel"
-msgstr "Email or ETH address"
+msgstr "Email or Ethereum address"
 
 msgid "modal##shareResource##enterEmailAddress"
-msgstr "Enter your email or ETH address"
+msgstr "Enter email or Ethereum address."
 
 msgid "modal##shareResource##permissions##read"
 msgstr "View only"
@@ -1102,6 +1102,12 @@ msgstr "Copy link"
 msgid "modal##shareResource##linkCopied"
 msgstr "Link copied"
 
+msgid "modal##shareResource##warnUnsavedChanges"
+msgstr "To update your permissions please save your changes. To discard them, click cancel."
+
+msgid "modal##shareResource##warnSavingChanges"
+msgstr "Please wait while saving changes."
+
 msgid "modal##copySnippet##defaultTitle"
 msgstr "Copy Snippet"
 
@@ -1113,3 +1119,36 @@ msgstr "Copy"
 
 msgid "modal##copySnippet##copied"
 msgstr "Copied"
+
+msgid "share##error##invalidUserError"
+msgstr "Invalid User ID"
+
+msgid "share##error##anonymousUserError"
+msgstr "Can not share to anonymous"
+
+msgid "share##error##currentUserError"
+msgstr "Can not share to self"
+
+msgid "share##permissions##get"
+msgstr "Get"
+
+msgid "share##permissions##edit"
+msgstr "Edit"
+
+msgid "share##permissions##delete"
+msgstr "Delete"
+
+msgid "share##permissions##publish"
+msgstr "Publish"
+
+msgid "share##permissions##subscribe"
+msgstr "Subscribe"
+
+msgid "share##permissions##share"
+msgstr "Share"
+
+msgid "share##permissions##startstop"
+msgstr "Start/Stop"
+
+msgid "share##permissions##interact"
+msgstr "Interact"

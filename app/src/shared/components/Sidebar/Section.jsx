@@ -5,7 +5,7 @@ import { Collapse } from 'reactstrap'
 import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import styles from './sidebar.pcss'
+import styles from './Sidebar.pcss'
 
 type Props = {
     label: string,
