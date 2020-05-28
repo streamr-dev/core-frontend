@@ -56,11 +56,18 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
 
     // Add public read permission
     try {
-        await addPermission(stream.id, {
-            anonymous: true,
-            operation: 'read',
-            user: null,
-        })
+        await Promise.all([
+            addPermission(stream.id, {
+                anonymous: true,
+                operation: 'stream_get',
+                user: null,
+            }),
+            addPermission(stream.id, {
+                anonymous: true,
+                operation: 'stream_subscribe',
+                user: null,
+            }),
+        ])
     } catch (e) {
         console.error('Could not add public read permission for JoinPart stream', e)
         throw e
@@ -78,16 +85,20 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
             // Share permission is not strictly necessary but needed to avoid error when
             // removing user's share permission (must have at least one share permission)
             // eslint-disable-next-line no-await-in-loop
-            await addPermission(stream.id, {
-                operation: 'share',
-                user: address,
-            })
-
-            // eslint-disable-next-line no-await-in-loop
-            await addPermission(stream.id, {
-                operation: 'write',
-                user: address,
-            })
+            await Promise.all([
+                addPermission(stream.id, {
+                    operation: 'stream_publish',
+                    user: address,
+                }),
+                addPermission(stream.id, {
+                    operation: 'stream_share',
+                    user: address,
+                }),
+                addPermission(stream.id, {
+                    operation: 'stream_edit',
+                    user: address,
+                }),
+            ])
         }
     } catch (e) {
         console.error('Could not add write keys to JoinPart stream', e)
@@ -97,7 +108,7 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
     // Remove share permission to prevent deleting the stream
     try {
         const myPermissions = await getMyStreamPermissions(stream.id)
-        const sharePermission = myPermissions.find((p) => p.operation === 'share')
+        const sharePermission = myPermissions.find((p) => p.operation === 'stream_share')
         if (sharePermission) {
             await deletePermission(stream.id, sharePermission.id)
         }

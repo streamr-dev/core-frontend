@@ -142,7 +142,7 @@ class PermissionKeyField extends React.Component<Props, State> {
     onPermissionChange = (permissionValue: string) => {
         const { value, keyName, allowEdit } = this.props
         // Value needs to be checked to satisfy Flow
-        const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === permissionValue)
+        const permission: ?ResourcePermission = ['stream_subscribe', 'stream_publish'].find((p) => p === permissionValue)
         if (allowEdit && permission) {
             this.setState({
                 permission,
@@ -219,12 +219,12 @@ class PermissionKeyField extends React.Component<Props, State> {
 
         const permissionOptions = [
             {
-                value: 'read',
-                label: 'Read',
+                value: 'stream_subscribe',
+                label: 'Subscribe',
             },
             {
-                value: 'write',
-                label: 'Write',
+                value: 'stream_publish',
+                label: 'Publish',
             },
         ]
 

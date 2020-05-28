@@ -42,7 +42,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
     state = {
         keyName: this.props.keyName || '',
         keyId: this.props.value || '',
-        permission: this.props.permission || 'read',
+        permission: this.props.permission || 'stream_subscribe',
     }
 
     onKeyNameChange = (e: SyntheticInputEvent<EventTarget>) => {
@@ -59,7 +59,7 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
 
     onPermissionChange = (value: string) => {
         // Value needs to be checked to satisfy Flow
-        const permission: ?ResourcePermission = ['read', 'write', 'share'].find((p) => p === value)
+        const permission: ?ResourcePermission = ['stream_subscribe', 'stream_publish'].find((p) => p === value)
         if (permission) {
             this.setState({
                 permission,
@@ -89,12 +89,12 @@ class PermissionKeyFieldEditor extends React.Component<Props, State> {
 
         const permissionOptions = [
             {
-                value: 'read',
-                label: 'Read',
+                value: 'stream_subscribe',
+                label: 'Subscribe',
             },
             {
-                value: 'write',
-                label: 'Write',
+                value: 'stream_publish',
+                label: 'Publish',
             },
         ]
 

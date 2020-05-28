@@ -24,19 +24,19 @@ const defaultKeys = [{
     id: 'abcdefg1234567',
     name: 'Key 1',
     user: 'user1',
-    permission: 'write',
+    permission: 'stream_subscribe',
     type: 'STREAM',
 }, {
     id: '123456abcefgd',
     name: 'Key 2',
     user: 'user1',
-    permission: 'read',
+    permission: 'stream_subscribe',
     type: 'STREAM',
 }, {
     id: '987654123bgdasaffgaf',
     name: 'Key 3',
     user: 'user1',
-    permission: 'write',
+    permission: 'stream_subscribe',
     type: 'STREAM',
 }]
 
