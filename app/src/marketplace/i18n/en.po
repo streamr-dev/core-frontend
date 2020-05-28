@@ -502,25 +502,20 @@ msgstr ""
 "This product is unpublished now, <br/>"
 "but you still can see in your <a href=\"%{productLink}\">core product</a>"
 
-msgid "modal##completePurchase##confirmed##message"
-msgstr "You need to connect your Ethereum identity to your Streamr account."
+msgid "modal##purchaseComplete##title"
+msgstr "Transaction completed"
 
-msgid "modal##completePurchase##confirmed##link"
-msgstr "Connect it here."
+msgid "modal##purchaseComplete##message"
+msgstr "Verify your transaction on Etherscan"
 
-msgid "modal##completePurchase##confirmed##title"
-msgstr "Transaction complete"
+msgid "modal##purchaseComplete##viewInCore"
+msgstr "View in Core"
 
-msgid "modal##completePurchase##failed##message"
-msgstr ""
-"There was a problem with your transaction. <br /> Please check your wallet "
-"settings and try again."
+msgid "modal##purchaseComplete##copyLink"
+msgstr "Copy link"
 
-msgid "modal##completePurchase##failed##title"
-msgstr "Transaction failed"
-
-msgid "modal##completePurchase##pending##title"
-msgstr "Writing to the blockchain"
+msgid "modal##purchaseComplete##linkCopied"
+msgstr "Copied"
 
 msgid "modal##completeUnpublish##confirmed##title"
 msgstr "Unpublish complete"

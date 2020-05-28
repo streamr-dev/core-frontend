@@ -34,7 +34,7 @@ import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDia
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
 import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
-import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
+import PurchaseComplete from '$mp/components/Modal/PurchaseComplete'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
@@ -778,30 +778,12 @@ story('Marketplace/ReplaceAllowanceDialog')
         />
     ))
 
-story('Marketplace/CompletePurchaseDialog')
-    .add('pending', () => (
-        <CompletePurchaseDialog
-            purchaseState={transactionStates.PENDING}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed', () => (
-        <CompletePurchaseDialog
-            purchaseState={transactionStates.CONFIRMED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed (account not linked)', () => (
-        <CompletePurchaseDialog
-            purchaseState={transactionStates.CONFIRMED}
-            accountLinked={false}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('error', () => (
-        <CompletePurchaseDialog
-            purchaseState={transactionStates.FAILED}
-            onCancel={action('onCancel')}
+story('Marketplace/PurchaseComplete')
+    .add('default', () => (
+        <PurchaseComplete
+            onContinue={action('onContinue')}
+            onClose={action('onClose')}
+            txHash="0x68dda92ba60240b74b2a79c2b7c87c3316273b40b6d93d6367d95b5a467fe885"
         />
     ))
 
