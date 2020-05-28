@@ -251,6 +251,7 @@ describe('useProductLoadCallback', () => {
             timeUnit: 'hour',
             adminFee: undefined,
             dataUnionDeployed: false,
+            requiresWhitelist: undefined,
         })
     })
 

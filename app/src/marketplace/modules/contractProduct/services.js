@@ -135,7 +135,7 @@ export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, 
     return subscriptions
 }
 
-export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
+const createContractProductWithoutWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
     const {
         id,
         name,
@@ -161,7 +161,7 @@ export const createContractProduct = (product: SmartContractProduct): SmartContr
     })
 }
 
-export const createContractProductWithWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
+const createContractProductWithWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
     const {
         id,
         name,
@@ -185,6 +185,13 @@ export const createContractProductWithWhitelist = (product: SmartContractProduct
     return send(methodToSend, {
         gas: gasLimits.CREATE_PRODUCT,
     })
+}
+
+export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
+    if (product.requiresWhitelist) {
+        return createContractProductWithWhitelist(product)
+    }
+    return createContractProductWithoutWhitelist(product)
 }
 
 export const updateContractProduct = (product: SmartContractProduct, redeploy: boolean = false): SmartContractTransaction => {
