@@ -14,7 +14,8 @@ import { subscribeSnippets } from '$utils/streamSnippets'
 import PngIcon from '$shared/components/PngIcon'
 
 import croppedImage from '$mp/assets/product_standard.png'
-import { publishModes, actionsTypes } from '$mp/containers/EditProductPage/usePublish'
+import { publishModes, actionsTypes as publishActionTypes } from '$mp/containers/EditProductPage/usePublish'
+import { actionsTypes as purchaseActionTypes } from '$mp/containers/ProductPage/usePurchase'
 
 // marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
@@ -32,6 +33,7 @@ import InsufficientEthDialog from '$mp/components/Modal/InsufficientEthDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
+import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
 import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
 import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
@@ -92,12 +94,12 @@ story('Product Editor/PublishTransactionProgress')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -118,12 +120,12 @@ story('Product Editor/PublishTransactionProgress')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -144,12 +146,12 @@ story('Product Editor/PublishTransactionProgress')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -166,8 +168,8 @@ story('Product Editor/PublishTransactionProgress')
         const undeployPaidStatus = select('Undeploy paid', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
-            [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
+            [publishActionTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+            [publishActionTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
         }
 
         return (
@@ -223,12 +225,12 @@ story('Product Editor/PublishError')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -248,12 +250,12 @@ story('Product Editor/PublishError')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -273,12 +275,12 @@ story('Product Editor/PublishError')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -294,8 +296,8 @@ story('Product Editor/PublishError')
         const undeployPaidStatus = select('Undeploy paid', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
-            [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
+            [publishActionTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+            [publishActionTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
         }
 
         return (
@@ -674,37 +676,35 @@ story('Marketplace/PurchaseSummaryDialog')
             defaultViewport: 'iPhone',
         },
     })
-    .add('purchase started', () => (
-        <PurchaseSummaryDialog
-            name="Example Product"
-            price={BN(123)}
-            paymentCurrency="DATA"
-            time="24"
-            timeUnit="hour"
-            approxUsd="0.11"
-            onBack={action('onBack')}
-            onCancel={action('onCancel')}
-            onPay={action('onPay')}
-            purchaseStarted
-        />
-    ))
-    .add('purchase started (iPhone)', () => (
-        <PurchaseSummaryDialog
-            name="Example Product"
-            price={BN(123)}
-            paymentCurrency="DATA"
-            time="24"
-            timeUnit="hour"
-            approxUsd="0.11"
-            onBack={action('onBack')}
-            onCancel={action('onCancel')}
-            onPay={action('onPay')}
-            purchaseStarted
-        />
-    ), {
-        viewport: {
-            defaultViewport: 'iPhone',
-        },
+
+story('Marketplace/PurchaseTransactionProgress')
+    .add('default', () => {
+        const resetDataAllowanceStatus = select('Reset DATAA Allowance', options, transactionStates.STARTED)
+        const setDataAllowanceStatus = select('Set DATA Allowance', options, transactionStates.STARTED)
+        const resetDaiAllowanceStatus = select('Reset DAI Allowance', options, transactionStates.STARTED)
+        const setDaiAllowanceStatus = select('Set DAI Allowance', options, transactionStates.STARTED)
+        const purchaseStateStatus = select('Purchase', options, transactionStates.STARTED)
+
+        const statuses = {
+            [purchaseActionTypes.RESET_DATA_ALLOWANCE]: resetDataAllowanceStatus,
+            [purchaseActionTypes.SET_DATA_ALLOWANCE]: setDataAllowanceStatus,
+            [purchaseActionTypes.RESET_DAI_ALLOWANCE]: resetDaiAllowanceStatus,
+            [purchaseActionTypes.SET_DAI_ALLOWANCE]: setDaiAllowanceStatus,
+            [purchaseActionTypes.PURCHASE]: purchaseStateStatus,
+        }
+
+        const prompt = select('Prompt', {
+            none: undefined,
+            ...purchaseActionTypes,
+        })
+
+        return (
+            <PurchaseTransactionProgress
+                onCancel={action('cancel')}
+                status={statuses}
+                prompt={prompt}
+            />
+        )
     })
 
 story('Marketplace/ConnectEthereumAddressDialog')

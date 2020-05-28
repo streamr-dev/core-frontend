@@ -19,7 +19,6 @@ export type Props = {
     paymentCurrency: PaymentCurrency,
     price: BN,
     approxUsd: BN,
-    purchaseStarted?: boolean,
     waiting?: boolean,
     onBack: () => void,
     onCancel: () => void,
@@ -33,7 +32,6 @@ export const PurchaseSummaryDialog = ({
     price: priceProp,
     paymentCurrency,
     approxUsd: approxUsdProp,
-    purchaseStarted,
     waiting,
     onCancel,
     onBack,
@@ -42,34 +40,6 @@ export const PurchaseSummaryDialog = ({
     const price = useMemo(() => formatDecimals(priceProp, paymentCurrency), [priceProp, paymentCurrency])
 
     const approxUsd = useMemo(() => formatDecimals(approxUsdProp, contractCurrencies.USD), [approxUsdProp])
-
-    if (purchaseStarted) {
-        return (
-            <ModalPortal>
-                <Dialog
-                    onClose={onCancel}
-                    title={I18n.t('modal.purchaseSummary.started.title')}
-                    actions={{
-                        back: {
-                            title: I18n.t('modal.purchaseSummary.back'),
-                            kind: 'link',
-                            disabled: true,
-                        },
-                        publish: {
-                            title: I18n.t('modal.common.waiting'),
-                            kind: 'primary',
-                            disabled: true,
-                            spinner: true,
-                        },
-                    }}
-                >
-                    <div>
-                        <p><Translate value="modal.purchaseSummary.started.message" dangerousHTML /></p>
-                    </div>
-                </Dialog>
-            </ModalPortal>
-        )
-    }
 
     return (
         <ModalPortal>
@@ -120,7 +90,6 @@ export const PurchaseSummaryDialog = ({
 
 PurchaseSummaryDialog.defaultProps = {
     waiting: false,
-    purchaseStarted: false,
 }
 
 export default PurchaseSummaryDialog

@@ -669,6 +669,24 @@ msgstr "Purchase confirmation"
 msgid "modal##purchaseSummary##title"
 msgstr "Complete your purchase"
 
+msgid "modal##purchaseProgress##title"
+msgstr "Purchasing the product"
+
+msgid "modal##purchaseProgress##setDaiAllowance##pending"
+msgstr "Setting allowance"
+
+msgid "modal##purchaseProgress##resetDaiAllowance##pending"
+msgstr "Resetting allowance"
+
+msgid "modal##purchaseProgress##setDataAllowance##pending"
+msgstr "Setting allowance"
+
+msgid "modal##purchaseProgress##resetDataAllowance##pending"
+msgstr "Resetting allowance"
+
+msgid "modal##purchaseProgress##purchase##pending"
+msgstr "Purchasing the product"
+
 msgid "modal##readyToPublish##title"
 msgstr "Publish product"
 
@@ -755,18 +773,22 @@ msgstr "Writing to the blockchain"
 msgid "modal##saveProduct##started##title"
 msgstr "Updating"
 
-msgid "modal##setAllowance##dai"
-msgstr "This allows the marketplace to <br /> transfer the required amount of DAI."
+msgid "modal##setAllowance##DAI"
+msgstr ""
+"This step allows the marketplace to <br />"
+"transfer the required amount of DAI."
 
-msgid "modal##setAllowance##data"
-msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
+msgid "modal##setAllowance##DATA"
+msgstr ""
+"This step allows the marketplace to <br />"
+"transfer the required amount of DATA."
 
 msgid "modal##setAllowance##helpText"
 msgstr ""
-"Allowance is a requirement of ERC-20 token transfers, designed to increase "
-"security and efficiency. For more about allowances, see this <a "
-"href=%{allowanceLink} target=\"_blank\" rel=\"noopener "
-"noreferrer\">page</a>."
+"Allowance is a requirement of ERC-20 token transfers,<br/>"
+"designed to increase security and efficiency.<br />"
+"For more about allowances, see this "
+"<a href=%{allowanceLink} target=\"_blank\" rel=\"noopener noreferrer\">page</a>."
 
 msgid "modal##setAllowance##started##message"
 msgstr ""
