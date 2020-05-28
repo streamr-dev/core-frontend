@@ -155,7 +155,6 @@ export const validateBalanceForPurchase = async ({
     includeGasForSetAllowance = false,
     includeGasForResetAllowance = false,
 }: ValidateBalance) => {
-/* eslint-enable object-curly-newline */
     const [ethBalance, dataBalance, daiBalance] = await getBalances()
     let requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
 
@@ -212,7 +211,7 @@ export const validateBalanceForPurchase = async ({
                     },
                     balances: {
                         eth: ethBalance,
-                        dai: price,
+                        dai: daiBalance,
                     },
                 })
             }
@@ -222,3 +221,4 @@ export const validateBalanceForPurchase = async ({
             break
     }
 }
+/* eslint-enable object-curly-newline */

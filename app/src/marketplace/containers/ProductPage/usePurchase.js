@@ -109,7 +109,7 @@ export default function usePurchase() {
                     try {
                         return setMyDaiAllowance('0')
                             .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
+                                update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.RESET_DAI_ALLOWANCE))
                                 done()
                             })
@@ -135,7 +135,7 @@ export default function usePurchase() {
                     try {
                         return setMyDataAllowance('0')
                             .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
+                                update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.RESET_DATA_ALLOWANCE))
                                 done()
                             })
@@ -163,7 +163,7 @@ export default function usePurchase() {
                     try {
                         return setMyDaiAllowance(price)
                             .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
+                                update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.SET_DAI_ALLOWANCE))
                                 done()
                             })
@@ -189,7 +189,7 @@ export default function usePurchase() {
                     try {
                         return setMyDataAllowance(purchasePrice)
                             .onTransactionHash((hash) => {
-                                update(transactionStates.PENDING)
+                                update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.SET_DATA_ALLOWANCE))
                                 done()
                             })
@@ -219,7 +219,7 @@ export default function usePurchase() {
                 try {
                     return buyProduct(contractProduct.id, subscriptionInSeconds, paymentCurrency, purchasePrice)
                         .onTransactionHash((hash) => {
-                            update(transactionStates.PENDING)
+                            update(transactionStates.PENDING, hash)
                             dispatch(addTransaction(hash, transactionTypes.PURCHASE))
                             done()
                         })
