@@ -59,7 +59,7 @@ import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDia
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
-import { type Ref } from '$shared/flowtype/common-types'
+import type { Ref, UseStateTuple } from '$shared/flowtype/common-types'
 import usePurchase from './usePurchase'
 
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
@@ -73,7 +73,8 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const dispatch = useDispatch()
     const { loadContractProduct } = useController()
     const { web3Error, checkingWeb3, account } = useWeb3Status()
-    const { isPending } = usePending('contractProduct.LOAD')
+    const { isPending: isContractProductLoadPending } = usePending('contractProduct.LOAD')
+    const { isPending: isPurchasePending, wrap: wrapPurchase } = usePending('product.PURCHASE')
     const [step, setStep] = useState(null)
     const [purchaseError, setPurchaseError] = useState(null)
     const [purchaseSucceeded, setPurchaseSucceeded] = useState(false)
@@ -95,6 +96,16 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const [creatingIdentity, setCreatingIdentity] = useState(false)
     const [balances, setBalances] = useState({})
     const { purchase } = usePurchase()
+    const [queue, setQueue]: UseStateTuple<any> = useState(undefined)
+    const [currentAction, setCurrentAction] = useState(undefined)
+    const [status, setStatus] = useState({})
+
+    const setActionStatus = useCallback((name, s) => {
+        setStatus((prevStatus) => ({
+            ...prevStatus,
+            [name]: s,
+        }))
+    }, [setStatus])
 
     // Check if current metamask account is linked to Streamr account
     const accountLinked = useMemo(() => !!account && isLinked(account), [isLinked, account])
@@ -357,6 +368,47 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         }
     }, [isMounted, daiAllowance, dispatch])
 
+    const onApprovePurchaseNew = useCallback(async () => (
+        wrapPurchase(async () => {
+            if (!accessPeriodParams.current) {
+                throw new Error(I18n.t('error.noProductOrAccess'))
+            }
+
+            try {
+                const { queue: nextQueue } = await purchase({
+                    contractProduct,
+                    accessPeriod: accessPeriodParams.current,
+                    dataPerUsd,
+                })
+
+                if (isMounted()) {
+                    setStep(purchaseFlowSteps.PROGRESS)
+                    setQueue(nextQueue)
+                }
+            } catch (e) {
+                console.warn(e)
+                setPurchaseError(e)
+            }
+            await new Promise((resolve) => setTimeout(resolve, 3000))
+        })
+    ), [wrapPurchase, purchase, contractProduct, dataPerUsd, isMounted])
+
+    useEffect(() => {
+        if (!queue) { return () => {} }
+
+        queue
+            .subscribe('started', (id) => {
+                setCurrentAction(id)
+            })
+            .subscribe('status', (id, nextStatus) => {
+                setActionStatus(id, nextStatus)
+            })
+
+        return () => {
+            queue.unsubscribeAll()
+        }
+    }, [setActionStatus, queue])
+
     const onApprovePurchase = useCallback(async () => {
         if (!accessPeriodParams.current) {
             throw new Error(I18n.t('error.noProductOrAccess'))
@@ -384,7 +436,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         }
     }, [isMounted, dispatch, productId])
 
-    if (!isPending && !checkingWeb3 && web3Error) {
+    if (!isContractProductLoadPending && !checkingWeb3 && web3Error) {
         return (
             <Web3ErrorDialog
                 onClose={onClose}
@@ -401,7 +453,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         approxUsd,
     } = accessPeriodParams.current || {}
 
-    if (!isPending && !checkingWeb3 && (purchaseError || contractProductError)) {
+    if (!isContractProductLoadPending && !checkingWeb3 && (purchaseError || contractProductError)) {
         if (purchaseError instanceof NoBalanceError) {
             return (
                 <NoBalanceDialog
@@ -506,7 +558,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     if (step === purchaseFlowSteps.SUMMARY) {
         return (
             <PurchaseSummaryDialog
-                purchaseStarted={purchaseStarted}
+                waiting={isPurchasePending}
                 name={product.name}
                 time={time}
                 timeUnit={timeUnit}
@@ -514,7 +566,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 approxUsd={approxUsd}
                 onBack={() => setStep(purchaseFlowSteps.ACCESS_PERIOD)}
                 onCancel={onClose}
-                onPay={onApprovePurchase}
+                onPay={onApprovePurchaseNew}
                 paymentCurrency={paymentCurrency}
             />
         )

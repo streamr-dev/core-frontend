@@ -17,6 +17,7 @@ export const purchaseFlowSteps = {
     DAI_ALLOWANCE: 'daiAllowance',
     NO_BALANCE: 'noBalance',
     SUMMARY: 'summary',
+    PROGRESS: 'progress',
     COMPLETE: 'complete',
 }
 
