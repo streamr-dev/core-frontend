@@ -28,7 +28,8 @@ export type ProductSubscriptionAction = PayloadAction<{
 export type ProductSubscriptionActionCreator = (id: ProductId, subscription: Subscription) => ProductSubscriptionAction
 
 export type UserProductPermissionsIdAction = PayloadAction<{
-    read: boolean,
-    write: boolean,
+    get: boolean,
+    edit: boolean,
+    del: boolean,
     share: boolean,
 }>

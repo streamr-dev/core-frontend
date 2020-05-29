@@ -91,7 +91,7 @@ export const getFilters = (): { [string]: SortOption } => {
             filter: {
                 id: 'mine',
                 key: 'operation',
-                value: 'WRITE',
+                value: 'EDIT',
                 order: 'desc',
             },
         },

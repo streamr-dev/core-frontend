@@ -49,21 +49,24 @@ describe('PermissionContext', () => {
         })
 
         expect(result.hasPermissions).toBe(false)
-        expect(result.read).toBe(false)
-        expect(result.write).toBe(false)
+        expect(result.get).toBe(false)
+        expect(result.edit).toBe(false)
+        expect(result.del).toBe(false)
         expect(result.share).toBe(false)
 
         await act(async () => {
             resolvePermissions({
-                read: true,
-                write: false,
+                get: true,
+                edit: false,
+                del: true,
                 share: true,
             })
         })
 
         expect(result.hasPermissions).toBe(true)
-        expect(result.read).toBe(true)
-        expect(result.write).toBe(false)
+        expect(result.get).toBe(true)
+        expect(result.edit).toBe(false)
+        expect(result.del).toBe(true)
         expect(result.share).toBe(true)
     })
 })
