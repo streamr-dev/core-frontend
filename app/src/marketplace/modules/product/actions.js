@@ -1,13 +1,9 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { replace } from 'connected-react-router'
 
 import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
-import routes from '$routes'
-import { addFreeProduct } from '../purchase/actions'
-import { isPaidProduct } from '../../utils/product'
 import { getMyPurchases } from '../myPurchaseList/actions'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
@@ -180,23 +176,6 @@ export const getProductSubscription = (id: ProductId) => (dispatch: Function) =>
                     })),
                 )
         ))
-}
-
-export const purchaseProduct = () => (dispatch: Function, getState: () => StoreState) => {
-    const state = getState()
-    const product = selectProduct(state)
-
-    if (product) {
-        if (isPaidProduct(product)) {
-            // Paid product has to be bought with Metamask
-            dispatch(replace(routes.marketplace.purchase({
-                id: product.id,
-            })))
-        } else {
-            // Free product can be bought directly
-            dispatch(addFreeProduct(product.id || ''))
-        }
-    }
 }
 
 export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {

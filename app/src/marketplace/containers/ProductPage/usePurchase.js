@@ -12,12 +12,13 @@ import { validateBalanceForPurchase } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
 import ActionQueue from '$mp/utils/actionQueue'
 import {
+    buyProduct,
     getMyDaiAllowance,
     getMyDataAllowance,
     setMyDaiAllowance,
     setMyDataAllowance,
-} from '$mp/modules/allowance/services'
-import { buyProduct } from '$mp/modules/purchase/services'
+} from '$mp/modules/product/services'
+import { getProductSubscription } from '$mp/modules/product/actions'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { toSeconds } from '$mp/utils/time'
 
@@ -225,6 +226,7 @@ export default function usePurchase() {
                         })
                         .onTransactionComplete(() => {
                             update(transactionStates.CONFIRMED)
+                            dispatch(getProductSubscription(contractProduct.id))
                         })
                         .onError((error) => {
                             done()

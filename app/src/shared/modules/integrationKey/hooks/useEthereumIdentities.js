@@ -17,9 +17,9 @@ function useEthereumIdentities() {
     const error = useSelector(selectIntegrationKeysError)
     const fetching = useSelector(selectFetchingIntegrationKeys)
 
-    const load = useCallback(() => {
+    const load = useCallback(() => (
         dispatch(fetchIntegrationKeys())
-    }, [dispatch])
+    ), [dispatch])
 
     const create = useCallback(async (name: string): Promise<Account> => {
         const web3 = getPublicWeb3()

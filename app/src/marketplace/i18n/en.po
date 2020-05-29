@@ -741,11 +741,6 @@ msgstr ""
 "Due to an issue with ERC-20 allowance, we need to reset your allowance "
 "before proceeding."
 
-msgid "modal##replaceAllowance##started##message"
-msgstr ""
-"You need to confirm the transaction <br /> in your wallet to set the "
-"allowance."
-
 msgid "modal##saveProduct##confirmed##title"
 msgstr "Update completed"
 
@@ -768,15 +763,10 @@ msgstr "Writing to the blockchain"
 msgid "modal##saveProduct##started##title"
 msgstr "Updating"
 
-msgid "modal##setAllowance##DAI"
+msgid "modal##setAllowance##description"
 msgstr ""
 "This step allows the marketplace to <br />"
-"transfer the required amount of DAI."
-
-msgid "modal##setAllowance##DATA"
-msgstr ""
-"This step allows the marketplace to <br />"
-"transfer the required amount of DATA."
+"transfer the required amount of %{currency}."
 
 msgid "modal##setAllowance##helpText"
 msgstr ""
@@ -784,14 +774,6 @@ msgstr ""
 "designed to increase security and efficiency.<br />"
 "For more about allowances, see this "
 "<a href=%{allowanceLink} target=\"_blank\" rel=\"noopener noreferrer\">page</a>."
-
-msgid "modal##setAllowance##started##message"
-msgstr ""
-"You need to confirm the transaction <br /> in your wallet to set the "
-"allowance."
-
-msgid "modal##setAllowance##started##title"
-msgstr "Set allowance confirmation"
 
 msgid "modal##setAllowance##title"
 msgstr "Set Marketplace Allowance"

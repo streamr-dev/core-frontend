@@ -33,9 +33,9 @@ const getInputValues = (type, logs) => {
 
         case 'PaymentSent':
             return {
-                productId: logValues[1].events[0].value,
+                productId: logValues[0].events[0].value,
                 type: transactionTypes.PURCHASE,
-                value: BN(logValues[2].events[2].value).negated(),
+                value: BN(logValues[0].events[2].value).negated(),
             }
 
         case 'ProductCreated':
@@ -138,25 +138,31 @@ export const getTransactionsFromEvents = (events: EventLogList): Promise<Transac
         web3.eth.getTransactionReceipt(event.transactionHash),
         web3.eth.getBlock(event.blockHash),
     ])))
-        .then(([...transactions]) =>
-            transactions.map(([event, tx, receipt, block]): TransactionEntity => {
-                const rest = {}
+        .then(([...transactions]) => transactions.map(([event, tx, receipt, block]): TransactionEntity => {
+            const rest = {}
 
-                if (receipt.status === true) {
-                    rest.receipt = receipt
-                } else {
-                    rest.error = new TransactionError(I18n.t('error.txFailed'), receipt)
-                }
+            if (receipt.status === true) {
+                rest.receipt = receipt
+            } else {
+                rest.error = new TransactionError(I18n.t('error.txFailed'), receipt)
+            }
 
-                return {
-                    id: event.id,
-                    hash: tx.hash,
-                    state: 'completed',
-                    gasUsed: receipt.gasUsed,
-                    gasPrice: tx.gas,
-                    timestamp: block.timestamp,
-                    ...getInputValues(event.type, receipt.logs),
-                    ...rest,
-                }
-            }))
+            let inputValues
+
+            try {
+                inputValues = getInputValues(event.type, receipt.logs)
+            } catch (e) {
+                console.warn(e)
+            }
+            return {
+                id: event.id,
+                hash: tx.hash,
+                state: 'completed',
+                gasUsed: receipt.gasUsed,
+                gasPrice: tx.gas,
+                timestamp: block.timestamp,
+                ...(inputValues || {}),
+                ...rest,
+            }
+        }))
 }

@@ -154,78 +154,11 @@ describe('product - selectors', () => {
         assert.equal(all.selectContractSubscriptionIsValid(state), false)
     })
 
-    it('selects product free status', () => {
-        assert.equal(all.selectProductIsFree(state), false)
-    })
-
     it('selects product purchased status', () => {
         assert.equal(all.selectProductIsPurchased(state), true)
     })
 
     it('selects subscription validity status', () => {
         assert.equal(all.selectSubscriptionIsValid(state), true)
-    })
-
-    it('selects permission fetching status', () => {
-        assert.deepStrictEqual(all.selectFetchingProductSharePermission(state), false)
-    })
-
-    it('selects share permission', () => {
-        assert.deepStrictEqual(all.selectProductSharePermission(state), true)
-    })
-
-    it('selects edit permission', () => {
-        assert.deepStrictEqual(all.selectProductEditPermission(state), true)
-    })
-
-    it('selects publish permission when product is free', () => {
-        const nextState = {
-            ...state,
-            product: {
-                ...state.product,
-                id: '1338',
-            },
-        }
-
-        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
-    })
-
-    it('selects publish permission when product is paid and owned', () => {
-        const nextState = {
-            ...state,
-            product: {
-                ...state.product,
-                id: '1338',
-            },
-        }
-
-        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
-    })
-
-    it('selects publish permission when product is paid, owned and owner address matches despite capital letters', () => {
-        const nextState = {
-            ...state,
-            web3: {
-                accountId: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
-            },
-            product: {
-                ...state.product,
-                id: '1338',
-            },
-        }
-
-        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), true)
-    })
-
-    it('selects publish permission when product is paid and not owned', () => {
-        const nextState = {
-            ...state,
-            product: {
-                ...state.product,
-                id: '1339',
-            },
-        }
-
-        assert.deepStrictEqual(all.selectProductPublishPermission(nextState), false)
     })
 })

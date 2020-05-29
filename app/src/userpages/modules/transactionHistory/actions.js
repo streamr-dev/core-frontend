@@ -68,10 +68,6 @@ export const clearTransactionList = () => ({
     type: CLEAR_TRANSACTION_LIST,
 })
 
-export const noTransactionResults = () => (dispatch: Function) => {
-    dispatch(getTransactionsSuccess([]))
-}
-
 export const showEvents = () => (dispatch: Function, getState: () => StoreState) => {
     dispatch(getTransactionsRequest())
 
@@ -107,9 +103,13 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
 }
 
 export const getTransactionEvents = () => (dispatch: Function, getState: () => StoreState) => {
-    dispatch(getTransactionEventsRequest())
-
     const web3Accounts = selectEthereumIdentities(getState())
+
+    if (!web3Accounts || !web3Accounts.length) {
+        return dispatch(getTransactionsSuccess([]))
+    }
+
+    dispatch(getTransactionEventsRequest())
 
     return services.getTransactionEvents((web3Accounts || []).map((account) => (account.json || {}).address || ''))
         .then((result) => {

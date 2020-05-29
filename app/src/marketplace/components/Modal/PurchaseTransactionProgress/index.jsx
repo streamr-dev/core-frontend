@@ -116,7 +116,8 @@ const SetAllowancePrompt = ({ onCancel, paymentCurrency }: SetAllowancePromptPro
             }}
         >
             <Translate
-                value={`modal.setAllowance.${paymentCurrency}`}
+                value="modal.setAllowance.description"
+                currency={paymentCurrency}
                 dangerousHTML
                 tag="p"
             />
