@@ -202,7 +202,6 @@ export const getTransactionsFromEvents = (events: EventLogList): Promise<Transac
             } catch (e) {
                 console.warn(e)
             }
-
             return {
                 id: event.id,
                 hash: tx.hash,

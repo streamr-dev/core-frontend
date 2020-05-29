@@ -3,13 +3,9 @@
 import { type Node, useCallback, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { selectAccountId } from '$mp/modules/web3/selectors'
-import { receiveAccount, changeAccount, accountError, updateEthereumNetworkId } from '$mp/modules/web3/actions'
 import type { Hash, Receipt } from '$shared/flowtype/web3-types'
-import type { ErrorInUi, NumberString } from '$shared/flowtype/common-types'
 import { getUserData } from '$shared/modules/user/actions'
 import { getDataPerUsd } from '$mp/modules/global/actions'
-import { areAddressesEqual } from '$mp/utils/smartContract'
 import {
     addTransaction,
     completeTransaction,
@@ -33,9 +29,6 @@ const PENDING_TX_WAIT = 1000 // 1s
 
 export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
-    const account = useSelector(selectAccountId)
-    const accountRef = useRef(account)
-    accountRef.current = account
 
     // Poll usd rate from contract
     const dataPerUsdRatePollTimeout = useRef()
@@ -70,46 +63,6 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
             clearTimeout(loginPollTimeout.current)
         }
     }, [loginPoll])
-
-    // Poll for web3 account
-    const handleAccount = useCallback((nextAccount: string) => {
-        const next = nextAccount
-        const curr = accountRef.current
-
-        const didChange = curr && next && !areAddressesEqual(curr, next)
-        const didDefine = !curr && next
-        if (didDefine) {
-            dispatch(receiveAccount(next))
-        } else if (didChange) {
-            dispatch(changeAccount(next))
-        }
-    }, [accountRef, dispatch])
-    const handleAccountError = useCallback((error: ErrorInUi) => {
-        dispatch(accountError(error))
-    }, [dispatch])
-
-    useEffect(() => {
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, handleAccountError)
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT, handleAccount)
-
-        return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, handleAccountError)
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, handleAccount)
-        }
-    }, [handleAccount, handleAccountError])
-
-    // Poll network
-    const handleNetwork = useCallback((network: NumberString) => {
-        dispatch(updateEthereumNetworkId(network))
-    }, [dispatch])
-
-    useEffect(() => {
-        Web3Poller.subscribe(Web3Poller.events.NETWORK, handleNetwork)
-
-        return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.NETWORK, handleNetwork)
-        }
-    }, [handleNetwork])
 
     // Poll transactions
     useEffect(() => {

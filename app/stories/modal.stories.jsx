@@ -34,11 +34,9 @@ import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
-import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
 import PurchaseComplete from '$mp/components/Modal/PurchaseComplete'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
-import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
 
@@ -729,53 +727,6 @@ story('Marketplace/ConnectEthereumAddressDialog')
             onCancel={action('close')}
             onSet={action('onSet')}
             waiting
-        />
-    ))
-
-story('Marketplace/SetAllowanceDialog')
-    .add('default', () => (
-        <SetAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            paymentCurrency="DATA"
-        />
-    ))
-    .add('getting allowance', () => (
-        <SetAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            gettingAllowance
-            paymentCurrency="DATA"
-        />
-    ))
-    .add('setting allowance', () => (
-        <SetAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            settingAllowance
-            paymentCurrency="DATA"
-        />
-    ))
-
-story('Marketplace/ReplaceAllowanceDialog')
-    .add('default', () => (
-        <ReplaceAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-        />
-    ))
-    .add('getting allowance', () => (
-        <ReplaceAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            gettingAllowance
-        />
-    ))
-    .add('setting allowance', () => (
-        <ReplaceAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            settingAllowance
         />
     ))
 

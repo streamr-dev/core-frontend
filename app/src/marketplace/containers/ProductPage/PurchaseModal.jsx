@@ -14,14 +14,7 @@ import { purchaseFlowSteps } from '$mp/utils/constants'
 import { selectProduct } from '$mp/modules/product/selectors'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
-import { clearPurchaseState } from '$mp/modules/purchase/actions'
 import { transactionStates, DEFAULT_CURRENCY, paymentCurrencies } from '$shared/utils/constants'
-import {
-    getDataAllowance,
-    resetDataAllowanceState,
-    getDaiAllowance,
-    resetDaiAllowanceState,
-} from '$mp/modules/allowance/actions'
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import { IdentityExistsError } from '$shared/errors/Web3'
 import { getBalances } from '$mp/utils/web3'
@@ -87,11 +80,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
     // Start loading the contract product & clear allowance state
     useEffect(() => {
-        dispatch(resetDataAllowanceState())
-        dispatch(getDataAllowance())
-        dispatch(resetDaiAllowanceState())
-        dispatch(getDaiAllowance())
-        dispatch(clearPurchaseState())
         loadEthIdentities()
 
         loadContractProduct(productId)

@@ -10,9 +10,9 @@ import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/
 import usePurchase, { actionsTypes } from '../usePurchase'
 import * as priceUtils from '$mp/utils/price'
 import * as web3Utils from '$mp/utils/web3'
-import * as allowanceServices from '$mp/modules/allowance/services'
-import * as purchaseServices from '$mp/modules/purchase/services'
 import * as transactionActions from '$mp/modules/transactions/actions'
+import * as productServices from '$mp/modules/product/services'
+import * as productActions from '$mp/modules/product/actions'
 
 const mockState = {
     global: {
@@ -314,8 +314,9 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            sandbox.stub(allowanceServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(20)))
+            sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(20)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+
             const result = await publish.purchase({
                 contractProduct,
                 accessPeriod,
@@ -349,7 +350,7 @@ describe('usePurchase', () => {
             }
 
             let callCount = 0
-            const setAllowanceStub = sandbox.stub(allowanceServices, 'setMyDataAllowance').callsFake(() => {
+            const setAllowanceStub = sandbox.stub(productServices, 'setMyDataAllowance').callsFake(() => {
                 if (callCount === 0) {
                     callCount += 1
                     return tx1
@@ -357,8 +358,9 @@ describe('usePurchase', () => {
 
                 return tx2
             })
-            const buyProductStub = sandbox.stub(purchaseServices, 'buyProduct').callsFake(() => tx3)
+            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx3)
             const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -420,6 +422,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: true,
             })).toBe(true)
             expect(buyProductStub.calledWith('1', '3600', 'DATA', purchasePrice)).toBe(true)
+            expect(subscriptionStub.calledWith('1')).toBe(true)
         })
 
         it('purchases the product & sets allowance', async () => {
@@ -456,8 +459,9 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            sandbox.stub(allowanceServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(0)))
+            sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(0)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+
             const result = await publish.purchase({
                 contractProduct,
                 accessPeriod,
@@ -483,8 +487,9 @@ describe('usePurchase', () => {
                 transactionHash: hash2,
             }
 
-            const setAllowanceStub = sandbox.stub(allowanceServices, 'setMyDataAllowance').callsFake(() => tx1)
-            const buyProductStub = sandbox.stub(purchaseServices, 'buyProduct').callsFake(() => tx2)
+            const setAllowanceStub = sandbox.stub(productServices, 'setMyDataAllowance').callsFake(() => tx1)
+            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx2)
+            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -533,6 +538,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: false,
             })).toBe(true)
             expect(buyProductStub.calledWith('1', '3600', 'DATA', purchasePrice)).toBe(true)
+            expect(subscriptionStub.calledWith('1')).toBe(true)
         })
 
         it('purchases the product when there is enough allowance', async () => {
@@ -569,8 +575,9 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            sandbox.stub(allowanceServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(5000)))
+            sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(5000)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+
             const result = await publish.purchase({
                 contractProduct,
                 accessPeriod,
@@ -589,7 +596,8 @@ describe('usePurchase', () => {
                 transactionHash: hash,
             }
 
-            const buyProductStub = sandbox.stub(purchaseServices, 'buyProduct').callsFake(() => tx)
+            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx)
+            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -628,6 +636,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: false,
             })).toBe(true)
             expect(buyProductStub.calledWith('1', '3600', 'DATA', purchasePrice)).toBe(true)
+            expect(subscriptionStub.calledWith('1')).toBe(true)
         })
     })
 
@@ -658,8 +667,9 @@ describe('usePurchase', () => {
                 price: '1234',
             }
 
-            sandbox.stub(allowanceServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(20)))
+            sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(20)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+
             const result = await publish.purchase({
                 contractProduct,
                 accessPeriod,
@@ -693,7 +703,7 @@ describe('usePurchase', () => {
             }
 
             let callCount = 0
-            const setAllowanceStub = sandbox.stub(allowanceServices, 'setMyDaiAllowance').callsFake(() => {
+            const setAllowanceStub = sandbox.stub(productServices, 'setMyDaiAllowance').callsFake(() => {
                 if (callCount === 0) {
                     callCount += 1
                     return tx1
@@ -701,8 +711,9 @@ describe('usePurchase', () => {
 
                 return tx2
             })
-            const buyProductStub = sandbox.stub(purchaseServices, 'buyProduct').callsFake(() => tx3)
+            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx3)
             const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -764,6 +775,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: true,
             })).toBe(true)
             expect(buyProductStub.calledWith('1', '3600', 'DAI', '1234')).toBe(true)
+            expect(subscriptionStub.calledWith('1')).toBe(true)
         })
 
         it('purchases the product & sets allowance', async () => {
@@ -792,8 +804,9 @@ describe('usePurchase', () => {
                 price: '1234',
             }
 
-            sandbox.stub(allowanceServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(0)))
+            sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(0)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+
             const result = await publish.purchase({
                 contractProduct,
                 accessPeriod,
@@ -819,8 +832,9 @@ describe('usePurchase', () => {
                 transactionHash: hash2,
             }
 
-            const setAllowanceStub = sandbox.stub(allowanceServices, 'setMyDaiAllowance').callsFake(() => tx1)
-            const buyProductStub = sandbox.stub(purchaseServices, 'buyProduct').callsFake(() => tx2)
+            const setAllowanceStub = sandbox.stub(productServices, 'setMyDaiAllowance').callsFake(() => tx1)
+            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx2)
+            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -869,6 +883,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: false,
             })).toBe(true)
             expect(buyProductStub.calledWith('1', '3600', 'DAI', '1234')).toBe(true)
+            expect(subscriptionStub.calledWith('1')).toBe(true)
         })
 
         it('purchases the product when there is enough allowance', async () => {
@@ -897,8 +912,9 @@ describe('usePurchase', () => {
                 price: '1234',
             }
 
-            sandbox.stub(allowanceServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(5000)))
+            sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(5000)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+
             const result = await publish.purchase({
                 contractProduct,
                 accessPeriod,
@@ -917,7 +933,8 @@ describe('usePurchase', () => {
                 transactionHash: hash,
             }
 
-            const buyProductStub = sandbox.stub(purchaseServices, 'buyProduct').callsFake(() => tx)
+            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx)
+            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -956,6 +973,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: false,
             })).toBe(true)
             expect(buyProductStub.calledWith('1', '3600', 'DAI', '1234')).toBe(true)
+            expect(subscriptionStub.calledWith('1')).toBe(true)
         })
     })
 
@@ -987,6 +1005,7 @@ describe('usePurchase', () => {
             }
 
             sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+
             const result = await publish.purchase({
                 contractProduct,
                 accessPeriod,
@@ -1005,7 +1024,8 @@ describe('usePurchase', () => {
                 transactionHash: hash,
             }
 
-            const buyProductStub = sandbox.stub(purchaseServices, 'buyProduct').callsFake(() => tx)
+            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx)
+            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -1038,6 +1058,7 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
             expect(finishFn).toHaveBeenCalled()
             expect(buyProductStub.calledWith('1', '3600', 'ETH', '1234')).toBe(true)
+            expect(subscriptionStub.calledWith('1')).toBe(true)
         })
     })
 })
