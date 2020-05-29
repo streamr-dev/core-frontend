@@ -160,11 +160,11 @@ export const validateBalanceForPurchase = async ({
     let requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
 
     if (includeGasForSetAllowance) {
-        requiredGas = requiredGas.plus(gasLimits.APPROVE)
+        requiredGas = requiredGas.plus(fromAtto(gasLimits.APPROVE))
     }
 
     if (includeGasForResetAllowance) {
-        requiredGas = requiredGas.plus(gasLimits.APPROVE)
+        requiredGas = requiredGas.plus(fromAtto(gasLimits.APPROVE))
     }
 
     switch (paymentCurrency) {

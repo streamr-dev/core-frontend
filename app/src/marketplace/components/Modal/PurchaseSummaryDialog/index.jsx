@@ -54,13 +54,6 @@ export const PurchaseSummaryDialog = ({
                             title: I18n.t('modal.purchaseSummary.back'),
                             kind: 'link',
                             disabled: true,
-                            className: styles.backButton,
-                        },
-                        cancel: {
-                            title: I18n.t('modal.common.cancel'),
-                            kind: 'link',
-                            disabled: true,
-                            className: styles.cancelButton,
                         },
                         publish: {
                             title: I18n.t('modal.common.waiting'),
@@ -89,14 +82,6 @@ export const PurchaseSummaryDialog = ({
                         kind: 'link',
                         onClick: () => onBack(),
                         disabled: !!waiting,
-                        className: styles.backButton,
-                    },
-                    cancel: {
-                        title: I18n.t('modal.common.cancel'),
-                        kind: 'link',
-                        onClick: () => onCancel(),
-                        disabled: !!waiting,
-                        className: styles.cancelButton,
                     },
                     next: {
                         title: I18n.t('modal.purchaseSummary.payNow'),

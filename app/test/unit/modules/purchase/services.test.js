@@ -58,7 +58,7 @@ describe('purchase - services', () => {
     })
 
     describe('buyProduct', () => {
-        it('must call marketplaceContractMethods.buy when bying with DATA', () => {
+        it('must call marketplaceContractMethods.buy when buying with DATA', () => {
             const buyStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
             }))
@@ -76,7 +76,7 @@ describe('purchase - services', () => {
             assert(getIdSpy.calledOnce)
             assert(getIdSpy.calledWith('1234'))
         })
-        it('must call marketplaceContractMethods.buy when bying with ETH', () => {
+        it('must call marketplaceContractMethods.buy when buying with ETH', () => {
             const buyStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
             }))
@@ -94,7 +94,7 @@ describe('purchase - services', () => {
             assert(getIdSpy.calledOnce)
             assert(getIdSpy.calledWith('1234'))
         })
-        it('must call marketplaceContractMethods.buy when bying with DAI', () => {
+        it('must call marketplaceContractMethods.buy when buying with DAI', () => {
             const buyStub = sinon.stub().callsFake(() => ({
                 send: () => 'test',
             }))
@@ -112,7 +112,7 @@ describe('purchase - services', () => {
             assert(getIdSpy.calledOnce)
             assert(getIdSpy.calledWith('1234'))
         })
-        it('must call send with correct object when bying with DATA', (done) => {
+        it('must call send with correct object when buying with DATA', (done) => {
             sandbox.stub(utils, 'send').callsFake((a) => {
                 assert.equal('test', a)
                 done()
@@ -124,7 +124,7 @@ describe('purchase - services', () => {
             }))
             all.buyProduct('1234', 1000, 'DATA', '4321')
         })
-        it('must call send with correct object when bying with ETH', (done) => {
+        it('must call send with correct object when buying with ETH', (done) => {
             sandbox.stub(utils, 'send').callsFake((a) => {
                 assert.equal('test', a)
                 done()
@@ -136,7 +136,7 @@ describe('purchase - services', () => {
             }))
             all.buyProduct('1234', 1000, 'ETH', '4321')
         })
-        it('must call send with correct object when bying with DAI', (done) => {
+        it('must call send with correct object when buying with DAI', (done) => {
             sandbox.stub(utils, 'send').callsFake((a) => {
                 assert.equal('test', a)
                 done()
@@ -148,7 +148,7 @@ describe('purchase - services', () => {
             }))
             all.buyProduct('1234', 1000, 'DAI', '4321')
         })
-        it('must return the result of send when bying with DATA', () => {
+        it('must return the result of send when buying with DATA', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -158,7 +158,7 @@ describe('purchase - services', () => {
             }))
             assert.equal('test', all.buyProduct('1234', 1000, 'DATA', '4321'))
         })
-        it('must return the result of send when bying with ETH', () => {
+        it('must return the result of send when buying with ETH', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
@@ -168,7 +168,7 @@ describe('purchase - services', () => {
             }))
             assert.equal('test', all.buyProduct('1234', 1000, 'ETH', '4321'))
         })
-        it('must return the result of send when bying with DAI', () => {
+        it('must return the result of send when buying with DAI', () => {
             sandbox.stub(utils, 'send').callsFake(() => 'test')
             sandbox.stub(utils, 'getContract').callsFake(() => ({
                 methods: {
