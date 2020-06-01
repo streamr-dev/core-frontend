@@ -7,7 +7,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import DropdownActions from '$shared/components/DropdownActions'
-import CodeSnippet from '$shared/components/CodeSnippet'
+import { CodeSnippet } from '@streamr/streamr-layout'
 
 import { ProgrammingLanguages, StreamrClientRepositories } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'

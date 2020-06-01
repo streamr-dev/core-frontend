@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import CodeSnippet from '$shared/components/CodeSnippet'
+import { CodeSnippet } from '@streamr/streamr-layout'
 import docsLinks from '$shared/../docsLinks'
 
 import {
@@ -25,27 +25,27 @@ When reading from or writing to streams, you need to provide a session token or 
 ### Creating a client instance with API key
 
 #### Javascript
-<CodeSnippet language='javascript'>{CreateJavascriptClient}</CodeSnippet>
+<CodeSnippet language="javascript">{CreateJavascriptClient}</CodeSnippet>
 
 #### Java
-<CodeSnippet language='java'>{CreateJavaClient}</CodeSnippet>
+<CodeSnippet language="java">{CreateJavaClient}</CodeSnippet>
 
 ### Subscribing to real-time events in a stream
 
 By subscribing to Streams, your application gets immediately notified about new events in the stream.
 
 #### JavaScript
-<CodeSnippet language='javascript'>{SubscribeJavascriptClient}</CodeSnippet>
+<CodeSnippet language="javascript">{SubscribeJavascriptClient}</CodeSnippet>
 
 #### Java
-<CodeSnippet language='java'>{SubscribeJavaClient}</CodeSnippet>
+<CodeSnippet language="java">{SubscribeJavaClient}</CodeSnippet>
 
 ### Publishing events to Streams
 
 #### JavaScript
-<CodeSnippet language='javascript'>{PublishJavascriptClient}</CodeSnippet>
+<CodeSnippet language="javascript">{PublishJavascriptClient}</CodeSnippet>
 
 #### Java
 Events in Streams are key-value pairs, represented in Java as Map objects. Below is an example of creating an event payload and publishing it into a Stream.
 
-<CodeSnippet language='java'>{PublishJavaClient}</CodeSnippet>
+<CodeSnippet language="java">{PublishJavaClient}</CodeSnippet>
