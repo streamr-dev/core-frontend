@@ -133,7 +133,7 @@ function StreamPageSidebar({ stream }) {
 
 const StreamList = () => {
     const sortOptions = useMemo(() => {
-        const filters = getFilters()
+        const filters = getFilters('stream')
         return [
             filters.RECENT,
             filters.NAME_ASC,

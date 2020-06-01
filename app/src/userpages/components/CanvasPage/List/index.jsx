@@ -71,7 +71,7 @@ const CreateCanvasButton = () => (
 
 const CanvasList = () => {
     const sortOptions = useMemo(() => {
-        const filters = getFilters()
+        const filters = getFilters('canvas')
         return [
             filters.RECENT,
             filters.RUNNING,

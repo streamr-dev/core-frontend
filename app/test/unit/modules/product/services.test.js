@@ -153,17 +153,17 @@ describe('product - services', () => {
                 {
                     id: 1,
                     user: 'tester1@streamr.com',
-                    operation: 'read',
+                    operation: 'product_get',
                 },
                 {
                     id: 2,
                     user: 'tester1@streamr.com',
-                    operation: 'write',
+                    operation: 'product_edit',
                 },
                 {
                     id: 3,
                     user: 'tester1@streamr.com',
-                    operation: 'share',
+                    operation: 'product_share',
                 },
             ]
 
@@ -179,8 +179,8 @@ describe('product - services', () => {
                 assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/permissions/me`)
             })
             const expected = {
-                read: true,
-                write: true,
+                get: true,
+                edit: true,
                 share: true,
             }
 

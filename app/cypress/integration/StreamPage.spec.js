@@ -57,7 +57,7 @@ describe('New stream page', () => {
     })
 })
 
-describe('Stream read-only page (no write permission)', () => {
+describe('Stream read-only page (no edit permission)', () => {
     it('displays "not found" page if stream does not exist', (done) => {
         cy.ignoreUncaughtError(/could not be found/i, done)
 
@@ -132,7 +132,7 @@ describe('Stream read-only page (no write permission)', () => {
         })
     })
 
-    it('displays public stream information to logged in users w/o "read" permission', () => {
+    it('displays public stream information to logged in users w/o "get" permission', () => {
         const field1 = {
             id: uuid(),
             name: 'foo',
@@ -186,7 +186,8 @@ describe('Stream read-only page (no write permission)', () => {
                 fields: [field1, field2],
             },
         }).then((streamId) => {
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'read')
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)
@@ -207,7 +208,8 @@ describe('Stream read-only page (no write permission)', () => {
                 fields: [],
             },
         }).then((streamId) => {
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'read')
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)
@@ -274,7 +276,8 @@ describe('Stream read-only page (no write permission)', () => {
         it('takes logged in user to their stream listing page', () => {
             cy.login()
             cy.createStream().then((streamId) => {
-                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'read')
+                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
                 cy.logout()
                 cy.login('tester2@streamr.com', 'tester2')
                 cy.visit(`/core/streams/${streamId}`)
@@ -367,10 +370,10 @@ describe('Stream edit page', () => {
     it('shows stream shared with you for editing as editable', () => {
         cy.login()
         cy.createStream().then((streamId) => {
-            // Having `write` permission doesn't mean you can open the stream page w/o a 404. In
-            // order to access it at all you need to be able to `read`. :/
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'read')
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'write')
+            // Having `edit` permission doesn't mean you can open the stream page w/o a 404. In
+            // order to access it at all you need to be able to `get`. :/
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)

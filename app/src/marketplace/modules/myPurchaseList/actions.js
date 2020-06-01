@@ -115,7 +115,7 @@ const filterPurchases = (data: ProductSubscriptionList, filter: ?Filter): Produc
 
         // Match key-value filters
         if (filter && filter.key && filter.value) {
-            const filterConstants = getFilters()
+            const filterConstants = getFilters('product')
             const activeFilter = filterConstants.ACTIVE
             const expiredFilter = filterConstants.EXPIRED
 
