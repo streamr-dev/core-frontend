@@ -104,7 +104,7 @@ const StyledTOCPage = styled(UnstyledTOCPage)`
         > div {
             display: grid;
             grid-column-gap: 64px;
-            grid-template-columns: 160px 1fr 160px;
+            grid-template-columns: 160px 608px 160px;
         }
     }
 
@@ -112,7 +112,7 @@ const StyledTOCPage = styled(UnstyledTOCPage)`
         width: 1132px;
 
         > div {
-            grid-template-columns: 192px 1fr 192px;
+            grid-template-columns: 192px 748px 192px;
         }
     }
 `

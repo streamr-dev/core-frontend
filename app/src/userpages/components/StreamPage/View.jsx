@@ -1,8 +1,9 @@
-import React, { Children, useCallback, useState } from 'react'
+import React, { Children, useCallback, useState, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { useDispatch } from 'react-redux'
+import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
@@ -19,6 +20,8 @@ import { getSecurityLevelConfig } from './Edit/SecurityView'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import routes from '$routes'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
+import Button from '$shared/components/Button'
+import useCopy from '$shared/hooks/useCopy'
 
 const Details = styled.div`
     border: solid #e7e7e7;
@@ -195,6 +198,17 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
         } catch (e) { /**/ }
     })
 
+    const { copy } = useCopy()
+
+    const [lang, setLang] = useState('javascript')
+
+    const codeRef = useRef({})
+
+    const onCopyClick = useCallback(() => {
+        console.log(lang)
+        copy(codeRef.current[lang])
+    }, [copy, lang])
+
     return (
         <Layout
             {...props}
@@ -228,6 +242,57 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                             {stream.partitions}
                         </Detail>
                     </Details>
+                </TOCSection>
+                <TOCSection
+                    id="cs"
+                    title="Snippets"
+                >
+                    <h4>
+                        Subscribe
+                    </h4>
+                    <Tabs
+                        footer={
+                            <Button kind="secondary" onClick={onCopyClick}>
+                                Copy
+                            </Button>
+                        }
+                        onSelect={setLang}
+                        selected={lang}
+                    >
+                        <Tabs.Item label="Js" value="javascript">
+                            <CodeSnippet language="javascript" codeRef={codeRef}>
+                                {`
+                                    const sub = client.subscribe(
+                                        {
+                                            stream: '${stream.id}',
+                                        },
+                                        // The "message" variable includes the "content" plus other metadata information
+                                        (content, message) => {
+                                            // Here you can react to the latest message's content, you probably don't need
+                                            // the metadata information contained in "message".
+                                            console.log(content)
+                                        }
+                                    )
+                                `}
+                            </CodeSnippet>
+                        </Tabs.Item>
+                        <Tabs.Item value="java">
+                            <CodeSnippet language="java" codeRef={codeRef}>
+                                {`
+                                    //Get the stream by its id (can also get it by name).
+                                    Stream stream = client.getStream("${stream.id}");
+
+                                    Subscription sub = client.subscribe(stream, new MessageHandler() {
+                                      @Override
+                                      void onMessage(Subscription s, StreamMessage message) {
+                                        // Here you can react to the latest message
+                                        System.out.println(message.getContent().toString());
+                                      }
+                                    })
+                                `}
+                            </CodeSnippet>
+                        </Tabs.Item>
+                    </Tabs>
                 </TOCSection>
                 <TOCSection
                     id="security"
@@ -330,6 +395,14 @@ const View = styled(UnstyledView)`
 
     strong {
         font-weight: ${MEDIUM};
+    }
+
+    h4 {
+        font-size: 18px;
+        font-weight: ${MEDIUM};
+        line-height: 1;
+        margin: 0 0 1em;
+        padding: 0;
     }
 
     ${Text} + * {
