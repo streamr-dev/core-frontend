@@ -22,7 +22,7 @@ export type Props = {
     prompt?: $Values<typeof actionsTypes>,
 }
 
-const PublishProgress = styled.div`
+const PurchaseProgress = styled.div`
     width: 100%;
 `
 
@@ -136,7 +136,7 @@ const PurchasePrompt = ({ onCancel }: PromptProps) => (
                     kind: 'link',
                     disabled: true,
                 },
-                publish: {
+                next: {
                     title: I18n.t('modal.common.waiting'),
                     kind: 'primary',
                     disabled: true,
@@ -221,14 +221,14 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
                     },
                 }}
             >
-                <PublishProgress>
+                <PurchaseProgress>
                     <PendingTasks>
                         {pending && pending.length > 0 && pending.map((key) => (
                             I18n.t(`modal.purchaseProgress.${key}.pending`)
                         )).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={(complete.length / Math.max(1, Object.keys(status).length)) * 100} />
-                </PublishProgress>
+                </PurchaseProgress>
             </Dialog>
         </ModalPortal>
     )

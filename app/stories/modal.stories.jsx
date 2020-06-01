@@ -34,6 +34,7 @@ import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDia
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
 import PurchaseComplete from '$mp/components/Modal/PurchaseComplete'
+import PurchaseError from '$mp/components/Modal/PurchaseError'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
@@ -676,7 +677,7 @@ story('Marketplace/PurchaseSummaryDialog')
 
 story('Marketplace/PurchaseTransactionProgress')
     .add('default', () => {
-        const resetDataAllowanceStatus = select('Reset DATAA Allowance', options, transactionStates.STARTED)
+        const resetDataAllowanceStatus = select('Reset DATA Allowance', options, transactionStates.STARTED)
         const setDataAllowanceStatus = select('Set DATA Allowance', options, transactionStates.STARTED)
         const resetDaiAllowanceStatus = select('Reset DAI Allowance', options, transactionStates.STARTED)
         const setDaiAllowanceStatus = select('Set DAI Allowance', options, transactionStates.STARTED)
@@ -737,6 +738,30 @@ story('Marketplace/PurchaseComplete')
             txHash="0x68dda92ba60240b74b2a79c2b7c87c3316273b40b6d93d6367d95b5a467fe885"
         />
     ))
+
+story('Marketplace/PurchaseError')
+    .add('default', () => {
+        const resetDataAllowanceStatus = select('Reset DATA Allowance', options, transactionStates.STARTED)
+        const setDataAllowanceStatus = select('Set DATA Allowance', options, transactionStates.STARTED)
+        const resetDaiAllowanceStatus = select('Reset DAI Allowance', options, transactionStates.STARTED)
+        const setDaiAllowanceStatus = select('Set DAI Allowance', options, transactionStates.STARTED)
+        const purchaseStateStatus = select('Purchase', options, transactionStates.STARTED)
+
+        const statuses = {
+            [purchaseActionTypes.RESET_DATA_ALLOWANCE]: resetDataAllowanceStatus,
+            [purchaseActionTypes.SET_DATA_ALLOWANCE]: setDataAllowanceStatus,
+            [purchaseActionTypes.RESET_DAI_ALLOWANCE]: resetDaiAllowanceStatus,
+            [purchaseActionTypes.SET_DAI_ALLOWANCE]: setDaiAllowanceStatus,
+            [purchaseActionTypes.PURCHASE]: purchaseStateStatus,
+        }
+
+        return (
+            <PurchaseError
+                onClose={action('onClose')}
+                status={statuses}
+            />
+        )
+    })
 
 story('Marketplace/ErrorDialog')
     .add('default', () => (

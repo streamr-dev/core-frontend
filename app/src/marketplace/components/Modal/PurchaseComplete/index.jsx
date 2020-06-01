@@ -66,7 +66,7 @@ const PurchaseComplete = ({ onContinue, onClose, txHash }: Props) => {
                 onClose={onClose}
                 title={I18n.t('modal.purchaseComplete.title')}
                 actions={{
-                    publish: {
+                    viewInCore: {
                         title: I18n.t('modal.purchaseComplete.viewInCore'),
                         kind: 'primary',
                         onClick: () => onContinue(),

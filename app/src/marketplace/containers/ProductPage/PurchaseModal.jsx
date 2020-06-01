@@ -22,6 +22,7 @@ import { DuplicateIdentityDialog } from '$userpages/components/ProfilePage/Ident
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseComplete from '$mp/components/Modal/PurchaseComplete'
+import PurchaseError from '$mp/components/Modal/PurchaseError'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
@@ -327,9 +328,8 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         }
 
         return (
-            <ErrorDialog
-                title={I18n.t('purchaseDialog.errorTitle')}
-                message="purchase failed"
+            <PurchaseError
+                status={status}
                 onClose={onClose}
             />
         )
