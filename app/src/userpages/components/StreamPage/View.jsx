@@ -1,5 +1,3 @@
-// @flow
-
 import React, { Children, useCallback, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -41,7 +39,7 @@ const CustomLabel = styled(Label)`
     margin-bottom: 1.25em;
 `
 
-const UnstyledDetail = ({ title, children, ...props }: any) => (
+const UnstyledDetail = ({ title, children, ...props }) => (
     <div {...props}>
         <CustomLabel>{title}</CustomLabel>
         <p>{children}</p>
@@ -103,7 +101,7 @@ const UnstyledField = ({
     narrow,
     desktopOnly,
     ...props
-}: any) => (
+}) => (
     <div {...props}>
         <Label>{label}&zwnj;</Label>
         <FieldControls multiple={Children.count(children) > 1}>
@@ -166,7 +164,7 @@ const FieldGroup = styled(FormGroup)`
     }
 `
 
-const UnstyledView = ({ stream, currentUser, ...props }: any) => {
+const UnstyledView = ({ stream, currentUser, ...props }) => {
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
 
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
