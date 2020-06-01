@@ -205,7 +205,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
     const codeRef = useRef({})
 
     const onCopyClick = useCallback(() => {
-        console.log(lang)
         copy(codeRef.current[lang])
     }, [copy, lang])
 
