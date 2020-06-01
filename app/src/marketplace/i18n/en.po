@@ -234,6 +234,9 @@ msgstr "No product found with id %{id}"
 msgid "error##publishFailed"
 msgstr "Publish failed"
 
+msgid "error##purchaseFailed"
+msgstr "Purchase failed"
+
 msgid "error##txAborted"
 msgstr "Transaction aborted"
 
@@ -681,6 +684,36 @@ msgstr "Resetting allowance"
 
 msgid "modal##purchaseProgress##purchase##pending"
 msgstr "Purchasing the product"
+
+msgid "modal##purchaseError##someFailed##title"
+msgstr "Purchase did not complete"
+
+msgid "modal##purchaseError##allFailed##title"
+msgstr "Purchase failed"
+
+msgid "modal##purchaseError##actions##setDaiAllowance"
+msgstr "The allowance failed to update."
+
+msgid "modal##purchaseError##actions##resetDaiAllowance"
+msgstr "Resetting the allowance failed to update."
+
+msgid "modal##purchaseError##actions##setDataAllowance"
+msgstr "The allowance failed to update."
+
+msgid "modal##purchaseError##actions##resetDataAllowance"
+msgstr "Resetting the allowance failed to update."
+
+msgid "modal##purchaseError##actions##purchase"
+msgstr "Failed to purchase product."
+
+msgid "modal##purchaseError##actions##allFailed"
+msgstr "Failed to purchase product."
+
+msgid "modal##purchaseError##actions##someFailed"
+msgstr "More than one transaction failed."
+
+msgid "modal##purchaseError##actions##checkWallet"
+msgstr "Please check your wallet or other settings and try again"
 
 msgid "modal##readyToPublish##title"
 msgstr "Publish product"
