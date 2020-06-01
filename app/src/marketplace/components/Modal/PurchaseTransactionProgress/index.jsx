@@ -27,7 +27,7 @@ const PurchaseProgress = styled.div`
 `
 
 const PendingTasks = styled.div`
-    color: '#A3A3A3';
+    color: #A3A3A3;
     font-size: 1rem;
     line-height: 1.5rem;
     width: 100%;
