@@ -46,7 +46,6 @@ function usePermissionContextValue() {
     }, [productId, loadedOnce, isPending, loadPermissions])
 
     const hasPermissions = !!permissions
-    /* eslint-disable camelcase */
     const share = !!(permissions && permissions.share)
     const del = !!(permissions && permissions.del)
     const edit = !!(permissions && permissions.edit)
@@ -59,7 +58,6 @@ function usePermissionContextValue() {
         edit,
         del,
     }), [hasPermissions, share, edit, get, del])
-    /* eslint-enable camelcase */
 }
 
 type Props = {
