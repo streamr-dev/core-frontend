@@ -163,6 +163,11 @@ describe('product - services', () => {
                 {
                     id: 3,
                     user: 'tester1@streamr.com',
+                    operation: 'product_delete',
+                },
+                {
+                    id: 4,
+                    user: 'tester1@streamr.com',
                     operation: 'product_share',
                 },
             ]
@@ -182,6 +187,7 @@ describe('product - services', () => {
                 get: true,
                 edit: true,
                 share: true,
+                del: true,
             }
 
             const result = await all.getUserProductPermissions(productId)
@@ -212,9 +218,10 @@ describe('product - services', () => {
                 assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/permissions/me`)
             })
             const expected = {
-                read: true,
-                write: false,
+                get: true,
+                edit: false,
                 share: false,
+                del: false,
             }
 
             const result = await all.getUserProductPermissions(productId)

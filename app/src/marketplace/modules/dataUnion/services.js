@@ -105,12 +105,16 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
         throw e
     }
 
-    // Remove share permission to prevent deleting the stream
+    // Remove share & edit permission to prevent deleting the stream
     try {
-        const myPermissions = await getMyStreamPermissions(stream.id)
-        const sharePermission = myPermissions.find((p) => p.operation === 'stream_share')
-        if (sharePermission) {
-            await deletePermission(stream.id, sharePermission.id)
+        const myPermissions: Array<Permission> = await getMyStreamPermissions(stream.id)
+        const deletedTypes = new Set(['stream_edit', 'stream_delete', 'stream_share'])
+        const deletedPermissions = myPermissions.filter((p) => deletedTypes.has(p.operation))
+
+        if (deletedPermissions && deletedPermissions.length > 0) {
+            await Promise.all([
+                ...deletedPermissions.map(async (permission) => deletePermission(stream.id, permission.id)),
+            ])
         }
     } catch (e) {
         console.error('Could not remove share permission from JoinPart stream', e)

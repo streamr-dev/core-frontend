@@ -210,6 +210,13 @@ const StreamList = () => {
         permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'stream_share') !== undefined
     ), [fetchingPermissions, permissions, user])
 
+    const canBeDeletedByCurrentUser = useCallback((id: StreamId): boolean => (
+        !fetchingPermissions &&
+        !!user &&
+        permissions[id] &&
+        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'stream_delete') !== undefined
+    ), [fetchingPermissions, permissions, user])
+
     const onOpenShareDialog = useCallback((stream: Stream) => {
         setDialogTargetStream(stream)
         sidebar.open('share')
@@ -387,6 +394,7 @@ const StreamList = () => {
                                                             <Translate value="userpages.streams.actions.refresh" />
                                                         </DropdownActions.Item>
                                                         <DropdownActions.Item
+                                                            disabled={!canBeDeletedByCurrentUser(stream.id)}
                                                             onClick={() => confirmDeleteStream(stream)}
                                                         >
                                                             <Translate value="userpages.streams.actions.delete" />
