@@ -17,7 +17,7 @@ export default (resourceType: $Keys<typeof ResourceType>, id: ResourceID) => {
                 id,
             })
         case ResourceType.DASHBOARD:
-            return routes.dashboards.public.edit({
+            return routes.dashboards.edit({
                 id,
             })
         case ResourceType.STREAM:
