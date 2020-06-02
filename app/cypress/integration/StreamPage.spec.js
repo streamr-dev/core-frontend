@@ -166,7 +166,7 @@ describe('Stream read-only page (no edit permission)', () => {
         })
     })
 
-    it('displays stream information to users with "read" permission', () => {
+    it('displays stream information to users with "get" permission, no "edit"', () => {
         const field1 = {
             id: uuid(),
             name: 'foo',
@@ -187,7 +187,6 @@ describe('Stream read-only page (no edit permission)', () => {
             },
         }).then((streamId) => {
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)
@@ -209,7 +208,6 @@ describe('Stream read-only page (no edit permission)', () => {
             },
         }).then((streamId) => {
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)
@@ -223,7 +221,7 @@ describe('Stream read-only page (no edit permission)', () => {
         cy.createStream({
             description: '',
         }).then((streamId) => {
-            cy.createStreamPermission(streamId)
+            cy.createStreamPermission(streamId, null, 'stream_get')
             cy.logout()
             cy.visit(`/core/streams/${streamId}`)
             cy.get('h1').contains(/test stream #\d{4}\/\d{6}/i)
@@ -273,11 +271,10 @@ describe('Stream read-only page (no edit permission)', () => {
     })
 
     describe('<- back button', () => {
-        it('takes logged in user to their stream listing page', () => {
+        it('takes logged in user with no edit permissions to their stream listing page', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
-                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
                 cy.logout()
                 cy.login('tester2@streamr.com', 'tester2')
                 cy.visit(`/core/streams/${streamId}`)
@@ -340,18 +337,23 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.createStream().then((streamId) => {
                 cy.createStreamPermission(streamId)
                 cy.logout()
+
+                const beginDate = new Date('2020-01-01T00:00')
+                const endDate = new Date('2020-01-31T23:59')
                 cy.server({
                     method: 'GET',
                     status: 200,
                     response: {
-                        beginDate: new Date('2020-01-01'),
-                        endDate: new Date('2020-01-31'),
+                        beginDate,
+                        endDate,
                     },
                 })
                 cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('range')
                 cy.visit(`/core/streams/${streamId}`)
                 cy.wait('@range')
-                cy.get('[name=range]').invoke('val').should('eq', 'This stream has stored data between 1/1/2020 and 1/31/2020.')
+                cy.get('[name=range]')
+                    .invoke('val')
+                    .should('eq', `This stream has stored data between ${beginDate.toLocaleDateString()} and ${endDate.toLocaleDateString()}.`)
             })
         })
     })
