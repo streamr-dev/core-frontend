@@ -198,7 +198,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
         } catch (e) { /**/ }
     })
 
-    const { copy } = useCopy()
+    const { copy, isCopied } = useCopy()
 
     const [lang, setLang] = useState('javascript')
 
@@ -252,7 +252,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     <Tabs
                         footer={
                             <Button kind="secondary" onClick={onCopyClick}>
-                                Copy
+                                {isCopied ? 'Copied' : 'Copy'}
                             </Button>
                         }
                         onSelect={setLang}
