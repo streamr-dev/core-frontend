@@ -261,34 +261,38 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                         <Tabs.Item label="Js" value="javascript">
                             <CodeSnippet language="javascript" codeRef={codeRef}>
                                 {`
-                                    const sub = client.subscribe(
-                                        {
-                                            stream: '${stream.id}',
-                                            apiKey: 'secret',       // Optional. If not given, uses the apiKey given at client creation time.
-                                            partition: 0,           // Optional, defaults to zero. Use for partitioned streams to select partition.
-                                            // optional resend options here
+                                    const StreamrClient = require('streamr-client')
+
+                                    const streamr = new StreamrClient({
+                                        auth: {
+                                            apiKey: 'YOUR-API-KEY',
                                         },
-                                        (message, metadata) => {
-                                            // This is the message handler which gets called for every incoming message in the Stream.
-                                            // Do something with the message here!
-                                        }
-                                    )
+                                    })
+
+                                    // Subscribe to a stream
+                                    streamr.subscribe({
+                                        stream: '${stream.id}'
+                                    },
+                                    (message, metadata) => {
+                                        // Do something with the message here!
+                                        console.log(message)
+                                    }
                                 `}
                             </CodeSnippet>
                         </Tabs.Item>
                         <Tabs.Item value="java">
                             <CodeSnippet language="java" codeRef={codeRef}>
                                 {`
-                                    //Get the stream by its id (can also get it by name).
+                                    StreamrClient client = new StreamrClient();
                                     Stream stream = client.getStream("${stream.id}");
 
                                     Subscription sub = client.subscribe(stream, new MessageHandler() {
-                                      @Override
-                                      void onMessage(Subscription s, StreamMessage message) {
-                                        // Here you can react to the latest message
-                                        System.out.println(message.getContent().toString());
-                                      }
-                                    })
+                                        @Override
+                                        void onMessage(Subscription s, StreamMessage message) {
+                                            // Here you can react to the latest message
+                                            System.out.println(message.getPayload().toString());
+                                        }
+                                    });
                                 `}
                             </CodeSnippet>
                         </Tabs.Item>

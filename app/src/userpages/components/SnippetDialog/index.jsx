@@ -90,7 +90,6 @@ const SnippetDialog = ({ snippets, onClose }) => {
                     <CodeSnippet
                         language={SnippetLanguageMappings[selectedLanguage]}
                         showLineNumbers
-                        className={styles.codeSnippet}
                     >
                         {snippets[selectedLanguage]}
                     </CodeSnippet>
