@@ -25,7 +25,10 @@
     },
     "dashboards": {
         "edit": "/dashboard/editor/:id?",
-        "index": "/core/dashboards"
+        "index": "/core/dashboards",
+        "public": {
+            "edit": "<platform>/dashboard/editor/:id?"
+        }
     },
     "community": {
         "devForum": "https://forum.streamr.dev/",
