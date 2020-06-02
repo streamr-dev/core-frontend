@@ -101,8 +101,8 @@ export const NotificationIcon = {
 }
 
 export const ProgrammingLanguages = {
-    JAVASCRIPT: 'Javascript',
-    JAVA: 'Java',
+    JAVASCRIPT: 'javascript',
+    JAVA: 'java',
 }
 
 export const StreamrClientRepositories = {

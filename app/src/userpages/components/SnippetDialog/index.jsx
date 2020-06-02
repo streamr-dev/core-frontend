@@ -1,43 +1,26 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useState, useCallback, useRef } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
-
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import DropdownActions from '$shared/components/DropdownActions'
-import { CodeSnippet } from '@streamr/streamr-layout'
+import { CodeSnippet, titleize } from '@streamr/streamr-layout'
 
-import { ProgrammingLanguages, StreamrClientRepositories } from '$shared/utils/constants'
+import { StreamrClientRepositories } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
 
 import styles from './snippetDialog.pcss'
 
-const SnippetLanguageMappings = {
-    [ProgrammingLanguages.JAVASCRIPT]: 'javascript',
-    [ProgrammingLanguages.JAVA]: 'java',
-}
-
 const SnippetDialog = ({ snippets, onClose }) => {
     const { isCopied, copy } = useCopy()
-    const [selectedLanguage, setSelectedLanguage] = useState(undefined)
 
-    const onSelectLanguage = useCallback((language) => {
-        setSelectedLanguage(language)
-    }, [])
+    const [selectedLanguage, setSelectedLanguage] = useState(Object.keys(snippets)[0])
 
-    const snippetLanguages = useMemo(() => Object.keys(snippets), [snippets])
-
-    useEffect(() => {
-        if (!selectedLanguage) {
-            setSelectedLanguage(snippetLanguages.length > 0 && snippetLanguages[0])
-        }
-    }, [selectedLanguage, snippetLanguages])
+    const codeRef = useRef({})
 
     const onCopy = useCallback(() => {
-        if (selectedLanguage && snippets[selectedLanguage]) {
-            copy(snippets[selectedLanguage])
-        }
-    }, [snippets, selectedLanguage, copy])
+        copy(codeRef.current[selectedLanguage] || '')
+    }, [selectedLanguage, copy])
 
     return (
         <ModalPortal>
@@ -50,15 +33,17 @@ const SnippetDialog = ({ snippets, onClose }) => {
                     <div className={styles.footer}>
                         <div className={styles.language}>
                             <DropdownActions title={
-                                <span className={styles.languageTitle}>{selectedLanguage}</span>
+                                <span className={styles.languageTitle}>
+                                    {titleize(selectedLanguage)}
+                                </span>
                             }
                             >
-                                {snippetLanguages.map((language) => (
+                                {Object.keys(snippets).map((language) => (
                                     <DropdownActions.Item
                                         key={language}
-                                        onClick={() => onSelectLanguage(language)}
+                                        onClick={() => setSelectedLanguage(language)}
                                     >
-                                        {language}
+                                        {titleize(language)}
                                     </DropdownActions.Item>
                                 ))}
                             </DropdownActions>
@@ -88,7 +73,8 @@ const SnippetDialog = ({ snippets, onClose }) => {
             >
                 {selectedLanguage && (
                     <CodeSnippet
-                        language={SnippetLanguageMappings[selectedLanguage]}
+                        codeRef={codeRef}
+                        language={selectedLanguage}
                         showLineNumbers
                     >
                         {snippets[selectedLanguage]}

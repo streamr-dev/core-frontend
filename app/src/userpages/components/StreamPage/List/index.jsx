@@ -40,7 +40,7 @@ import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/m
 import type { Permission } from '$userpages/flowtype/permission-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
-import { ProgrammingLanguages, NotificationIcon } from '$shared/utils/constants'
+import { NotificationIcon } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import breakpoints from '$app/scripts/breakpoints'
@@ -54,6 +54,7 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { ago } from '$shared/utils/time'
+import streamSnippets from '$utils/streamSnippets'
 
 import styles from './streamsList.pcss'
 
@@ -73,35 +74,6 @@ const Dialogs = {
     SHARE: 'share',
     SNIPPET: 'snippet',
 }
-
-const getSnippets = (streamId: StreamId) => ({
-    [ProgrammingLanguages.JAVASCRIPT]: `const StreamrClient = require('streamr-client')
-
-const streamr = new StreamrClient({
-    auth: {
-        apiKey: 'YOUR-API-KEY',
-    },
-})
-
-// Subscribe to a stream
-streamr.subscribe({
-    stream: '${streamId}'
-},
-(message, metadata) => {
-    // Do something with the message here!
-    console.log(message)
-}`,
-    [ProgrammingLanguages.JAVA]: `StreamrClient client = new StreamrClient();
-Stream stream = client.getStream("${streamId}");
-
-Subscription sub = client.subscribe(stream, new MessageHandler() {
-    @Override
-    void onMessage(Subscription s, StreamMessage message) {
-        // Here you can react to the latest message
-        System.out.println(message.getPayload().toString());
-    }
-});`,
-})
 
 type TargetStream = ?Stream
 
@@ -294,7 +266,7 @@ const StreamList = () => {
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.streams')}`} />
             {!!dialogTargetStream && activeDialog === Dialogs.SNIPPET && (
                 <SnippetDialog
-                    snippets={getSnippets(dialogTargetStream.id)}
+                    snippets={streamSnippets(dialogTargetStream.id)}
                     onClose={onCloseDialog}
                 />
             )}

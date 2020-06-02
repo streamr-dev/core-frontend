@@ -9,7 +9,8 @@ import styles from '@sambego/storybook-styles'
 import BN from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 
-import { transactionStates, ProgrammingLanguages } from '$shared/utils/constants'
+import { transactionStates } from '$shared/utils/constants'
+import streamSnippets from '$utils/streamSnippets'
 import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 import PngIcon from '$shared/components/PngIcon'
 
@@ -718,39 +719,10 @@ story('Streams/ConfirmCsvImportDialog')
         />
     ))
 
-const snippets = {
-    [ProgrammingLanguages.JAVASCRIPT]: `const StreamrClient = require('streamr-client')
-
-const streamr = new StreamrClient({
-    auth: {
-        apiKey: 'YOUR-API-KEY',
-    },
-})
-
-// Subscribe to a stream
-streamr.subscribe({
-    stream: 'streamId'
-},
-(message, metadata) => {
-    // Do something with the message here!
-    console.log(message)
-}`,
-    [ProgrammingLanguages.JAVA]: `StreamrClient client = new StreamrClient();
-Stream stream = client.getStream("streamId");
-
-Subscription sub = client.subscribe(stream, new MessageHandler() {
-    @Override
-    void onMessage(Subscription s, StreamMessage message) {
-        // Here you can react to the latest message
-        System.out.println(message.getPayload().toString());
-    }
-});`,
-}
-
 story('Streams/SnippetDialog')
     .add('default', () => (
         <SnippetDialog
-            snippets={snippets}
+            snippets={streamSnippets('stream-id')}
             onClose={action('onClose')}
         />
     ))

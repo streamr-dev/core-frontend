@@ -1,4 +1,4 @@
-import React, { Children, useCallback, useState, useRef } from 'react'
+import React, { Children, useCallback, useState, useRef, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
@@ -22,6 +22,7 @@ import routes from '$routes'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import Button from '$shared/components/Button'
 import useCopy from '$shared/hooks/useCopy'
+import streamSnippets from '$utils/streamSnippets'
 
 const Details = styled.div`
     border: solid #e7e7e7;
@@ -204,6 +205,10 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
 
     const codeRef = useRef({})
 
+    const snippets = useMemo(() => (
+        streamSnippets(stream.id)
+    ), [stream.id])
+
     const onCopyClick = useCallback(() => {
         copy(codeRef.current[lang])
     }, [copy, lang])
@@ -260,40 +265,12 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     >
                         <Tabs.Item label="Js" value="javascript">
                             <CodeSnippet language="javascript" codeRef={codeRef}>
-                                {`
-                                    const StreamrClient = require('streamr-client')
-
-                                    const streamr = new StreamrClient({
-                                        auth: {
-                                            apiKey: 'YOUR-API-KEY',
-                                        },
-                                    })
-
-                                    // Subscribe to a stream
-                                    streamr.subscribe({
-                                        stream: '${stream.id}'
-                                    },
-                                    (message, metadata) => {
-                                        // Do something with the message here!
-                                        console.log(message)
-                                    }
-                                `}
+                                {snippets.javascript}
                             </CodeSnippet>
                         </Tabs.Item>
                         <Tabs.Item value="java">
                             <CodeSnippet language="java" codeRef={codeRef}>
-                                {`
-                                    StreamrClient client = new StreamrClient();
-                                    Stream stream = client.getStream("${stream.id}");
-
-                                    Subscription sub = client.subscribe(stream, new MessageHandler() {
-                                        @Override
-                                        void onMessage(Subscription s, StreamMessage message) {
-                                            // Here you can react to the latest message
-                                            System.out.println(message.getPayload().toString());
-                                        }
-                                    });
-                                `}
+                                {snippets.java}
                             </CodeSnippet>
                         </Tabs.Item>
                     </Tabs>
