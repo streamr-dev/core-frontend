@@ -38,11 +38,11 @@ You can also try it locally in your browser. Just open this <a target="_blank" h
 
 Additionally, you can interact with the Streamr API using any HTTP library of your choice. You will find all the details in the <Link to={docsLinks.api}>API section</Link>, but here’s a brief rundown. You’ll be making a `HTTP POST` request to a URL, which contains your stream ID.
 
-<CodeSnippet language="json" wrapLines >{`https://streamr.network/api/v1/streams/MY-STREAM-ID/data`}</CodeSnippet>
+<CodeSnippet language="text" wrapLines>{`https://streamr.network/api/v1/streams/MY-STREAM-ID/data`}</CodeSnippet>
 
 The body of the request will be your data payload in JSON. Add your API key to the HTTP headers as follows.
 
-<CodeSnippet language="json" wrapLines >{`Authorization: token MY-API-KEY`}</CodeSnippet>
+<CodeSnippet language="text" wrapLines>{`Authorization: token MY-API-KEY`}</CodeSnippet>
 
 This is how a test request would look in the fabulous <a target="_blank" href="https://www.getpostman.com/">Postman</a> app, with the URL and Authorization header set.
 

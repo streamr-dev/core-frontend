@@ -1,5 +1,3 @@
-// @flow
-
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
@@ -14,25 +12,16 @@ import useCopy from '$shared/hooks/useCopy'
 
 import styles from './snippetDialog.pcss'
 
-type Language = $Values<typeof ProgrammingLanguages>
-
-type Props = {
-    snippets: {
-        [Language]: string,
-    },
-    onClose: () => void,
-}
-
 const SnippetLanguageMappings = {
     [ProgrammingLanguages.JAVASCRIPT]: 'javascript',
     [ProgrammingLanguages.JAVA]: 'java',
 }
 
-const SnippetDialog = ({ snippets, onClose }: Props) => {
+const SnippetDialog = ({ snippets, onClose }) => {
     const { isCopied, copy } = useCopy()
     const [selectedLanguage, setSelectedLanguage] = useState(undefined)
 
-    const onSelectLanguage = useCallback((language: Language) => {
+    const onSelectLanguage = useCallback((language) => {
         setSelectedLanguage(language)
     }, [])
 
@@ -64,7 +53,7 @@ const SnippetDialog = ({ snippets, onClose }: Props) => {
                                 <span className={styles.languageTitle}>{selectedLanguage}</span>
                             }
                             >
-                                {snippetLanguages.map((language: Language) => (
+                                {snippetLanguages.map((language) => (
                                     <DropdownActions.Item
                                         key={language}
                                         onClick={() => onSelectLanguage(language)}

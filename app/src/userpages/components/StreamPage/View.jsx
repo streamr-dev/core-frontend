@@ -264,12 +264,13 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                                     const sub = client.subscribe(
                                         {
                                             stream: '${stream.id}',
+                                            apiKey: 'secret',       // Optional. If not given, uses the apiKey given at client creation time.
+                                            partition: 0,           // Optional, defaults to zero. Use for partitioned streams to select partition.
+                                            // optional resend options here
                                         },
-                                        // The "message" variable includes the "content" plus other metadata information
-                                        (content, message) => {
-                                            // Here you can react to the latest message's content, you probably don't need
-                                            // the metadata information contained in "message".
-                                            console.log(content)
+                                        (message, metadata) => {
+                                            // This is the message handler which gets called for every incoming message in the Stream.
+                                            // Do something with the message here!
                                         }
                                     )
                                 `}

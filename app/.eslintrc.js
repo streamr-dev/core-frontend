@@ -24,5 +24,6 @@ module.exports = exports = {
         'react/jsx-indent': 'warn',
         'max-len': 'warn',
         'flowtype/no-flow-fix-me-comments': ['warn', '\\s.+'],
+        'react/prop-types': 0,
     }
 }
