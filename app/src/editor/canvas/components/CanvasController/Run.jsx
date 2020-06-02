@@ -32,7 +32,7 @@ function isStateNotAllowedError(error) {
 function useRunController(canvas = EMPTY) {
     const isEmbedMode = useEmbedMode()
     const subscriptionStatus = useContext(SubscriptionStatus.Context)
-    const { hasWritePermission, hasSharePermission, hasStartStopPermission } = useCanvasPermissions()
+    const { hasWritePermission, hasSharePermission, hasStartStopPermission, hasDeletePermission } = useCanvasPermissions()
     const { replaceCanvas } = useCanvasUpdater()
     const isMountedRef = useIsMountedRef()
 
@@ -194,11 +194,13 @@ function useRunController(canvas = EMPTY) {
         hasStartStopPermission,
         hasSharePermission,
         hasWritePermission,
+        hasDeletePermission,
         start,
         stop,
         exit,
     }), [canvas, isPending, isStarting, isActive, isRunning, isHistorical, isEditable, isAdjustable,
-        hasStartStopPermission, hasWritePermission, hasSharePermission, isStopping, start, stop, exit, canChangeRunState, isSubscriptionActive])
+        hasStartStopPermission, hasWritePermission, hasSharePermission, hasDeletePermission, isStopping,
+        start, stop, exit, canChangeRunState, isSubscriptionActive])
 }
 
 export default function RunControllerProvider({ children, canvas }) {

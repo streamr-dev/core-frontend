@@ -154,7 +154,13 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
 
         const runController = this.context
         const { runButtonDropdownOpen, canvasSearchIsOpen } = this.state
-        const { isRunning, isActive, hasWritePermission, canChangeRunState } = runController
+        const {
+            isRunning,
+            isActive,
+            hasWritePermission,
+            hasDeletePermission,
+            canChangeRunState,
+        } = runController
         const canEdit = runController.isEditable
         const canShare = runController.hasSharePermission
         const { settings = {} } = canvas
@@ -213,7 +219,12 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             Rename
                                         </DropdownActions.Item>
                                         <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={this.onDeleteCanvas} disabled={!canEdit}>Delete</DropdownActions.Item>
+                                        <DropdownActions.Item
+                                            onClick={this.onDeleteCanvas}
+                                            disabled={!hasDeletePermission}
+                                        >
+                                            Delete
+                                        </DropdownActions.Item>
                                     </DropdownActions>
                                 </div>
                             )}
