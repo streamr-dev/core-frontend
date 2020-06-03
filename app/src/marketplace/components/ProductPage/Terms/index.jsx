@@ -1,0 +1,104 @@
+// @flow
+
+import React from 'react'
+import styled from 'styled-components'
+import { I18n } from 'react-redux-i18n'
+
+import ProductContainer from '$shared/components/Container/Product'
+import type { Product } from '$mp/flowtype/product-types'
+
+const Container = styled(ProductContainer)`
+    background-color: #f8f8f8;
+    margin-top: 48px !important;
+`
+
+const Header = styled.div`
+    display: flex;
+    background-color: #efefef;
+    color: #525252;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    letter-spacing: 1.17px;
+    text-transform: uppercase;
+    height: 4.5rem;
+    align-items: center;
+    padding: 2em;
+`
+
+const Content = styled.div`
+    padding: 1.5em 2em;
+`
+
+const Text = styled.span`
+    font-size: 14px;
+    line-height: 28px;
+    font-weight: ${(props) => (props.bold ? '500' : '400')};
+`
+
+type Props = {
+    className?: string,
+    product: Product,
+}
+
+const getTermStrings = (ids: Array<string>) => (
+    ids.map((id, index) => {
+        const term = I18n.t(`editProductPage.terms.${id}`)
+        if (index !== 0) {
+            const separator = (index === ids.length - 1) ? ' & ' : ', '
+            return `${separator}${term.toLowerCase()}`
+        }
+        return term
+    })
+)
+
+const Terms = ({ className, product }: Props) => {
+    if (product == null) {
+        return null
+    }
+
+    const terms = product.termsOfUse
+    const entries = Object.entries(terms)
+    const permitted = entries.filter((e) => e[1] === true).map((e) => e[0])
+    const notPermitted = entries.filter((e) => e[1] === false).map((e) => e[0])
+
+    return (
+        <Container className={className}>
+            <Header>
+                Terms and conditions
+            </Header>
+            <Content>
+                <Text bold>Basic terms</Text>
+                {' '}
+                <Text>
+                    {getTermStrings(permitted)}
+                    {' '}
+                    {permitted.length > 0 && `${I18n.t('productPage.termsOfUse.permitted', {
+                        count: permitted.length,
+                    })}. `}
+                    {getTermStrings(notPermitted)}
+                    {' '}
+                    {notPermitted.length > 0 && I18n.t('productPage.termsOfUse.notPermitted', {
+                        count: notPermitted.length,
+                    })}
+                    {permitted.length === 0 && ` ${I18n.t('productPage.termsOfUse.postfix')}`}
+                    {notPermitted.length > 0 && '.'}
+                </Text>
+                {terms.termsUrl && (
+                    <React.Fragment>
+                        <br />
+                        <Text bold>Detailed terms</Text>
+                        {' '}
+                        <Text bold>
+                            <a href={terms.termsUrl} target="_blank" rel="noopener noreferrer">
+                                {terms.termsName != null && terms.termsName.length > 0 ? terms.termsName : terms.termsUrl}
+                            </a>
+                        </Text>
+                    </React.Fragment>
+                )}
+            </Content>
+        </Container>
+    )
+}
+
+export default Terms

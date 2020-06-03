@@ -22,6 +22,15 @@ export type PendingChanges = {
     adminFee?: number
 }
 
+export type TermsOfUse = {
+    commercialUse: boolean,
+    redistribution: boolean,
+    reselling: boolean,
+    storage: boolean,
+    termsName: ?string,
+    termsUrl: ?string,
+}
+
 export type Product = {
     adminFee?: number,
     key?: string,
@@ -49,6 +58,7 @@ export type Product = {
     isFree?: boolean,
     type?: ProductType,
     pendingChanges?: PendingChanges,
+    termsOfUse: TermsOfUse,
 }
 
 export type ProductSubscriptionId = string

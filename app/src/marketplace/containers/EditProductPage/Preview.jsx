@@ -18,6 +18,7 @@ import HeroComponent from '$mp/components/Hero'
 import { ImageTile } from '$shared/components/Tile'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
+import Terms from '$mp/components/ProductPage/Terms'
 import ProductContainer from '$shared/components/Container/Product'
 import StatsValues from '$shared/components/DataUnionStats/Values'
 import StatsHeader from '$shared/components/DataUnionStats/Header'
@@ -216,6 +217,16 @@ const Streams = () => {
     )
 }
 
+const TermsOfUse = () => {
+    const product = useEditableProduct()
+
+    return (
+        <Terms
+            product={product}
+        />
+    )
+}
+
 const Preview = () => {
     const product = useEditableProduct()
 
@@ -236,6 +247,7 @@ const Preview = () => {
                 <DataUnionStats />
             )}
             <Streams />
+            <TermsOfUse />
         </div>
     )
 }

@@ -16,6 +16,7 @@ import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
 import ConnectEthIdentity from './ConnectEthIdentity'
 import SharedSecrets from './SharedSecrets'
+import TermsOfUse from './TermsOfUse'
 
 import styles from './editor.pcss'
 
@@ -42,6 +43,7 @@ const Editor = ({ disabled }: Props) => {
                         <PriceSelector disabled={disabled} />
                         <ProductDetails disabled={disabled} />
                         <ConnectEthIdentity disabled={disabled} />
+                        <TermsOfUse disabled={disabled} />
                         {!!isDataUnion && (
                             <SharedSecrets disabled={disabled} />
                         )}

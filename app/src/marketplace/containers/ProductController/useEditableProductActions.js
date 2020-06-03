@@ -122,6 +122,13 @@ export function useEditableProductActions() {
         }))
         touch('type')
     }, [commit, touch])
+    const updateTermsOfUse = useCallback((termsOfUse: $ElementType<Product, 'termsOfUse'>) => {
+        commit('Update terms of use', (p) => ({
+            ...p,
+            termsOfUse,
+        }))
+        touch('termsOfUse')
+    }, [commit, touch])
 
     return useMemo(() => ({
         undo,
@@ -137,6 +144,7 @@ export function useEditableProductActions() {
         updatePrice,
         updateBeneficiaryAddress,
         updateType,
+        updateTermsOfUse,
     }), [
         undo,
         updateProduct,
@@ -151,6 +159,7 @@ export function useEditableProductActions() {
         updatePrice,
         updateBeneficiaryAddress,
         updateType,
+        updateTermsOfUse,
     ])
 }
 

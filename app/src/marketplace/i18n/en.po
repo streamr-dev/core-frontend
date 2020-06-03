@@ -201,6 +201,9 @@ msgstr "Ethereum identity"
 msgid "editProductPage##navigation##sharedSecrets"
 msgstr "Shared secrets"
 
+msgid "editProductPage##navigation##terms"
+msgstr "Terms"
+
 msgid "editProductPage##sidebar##category"
 msgstr "Product category"
 
@@ -209,6 +212,39 @@ msgstr "Active subscribers"
 
 msgid "editProductPage##sidebar##mostRecentPurchase"
 msgstr "Most recent purchase"
+
+msgid "editProductPage##terms##title"
+msgstr "Set terms of use"
+
+msgid "editProductPage##terms##description"
+msgstr ""
+"You can indicate the terms of use you prefer for data purchasers, either by checking boxes "
+"below to show permitted usage types, or give more detail by providing a link to your own terms "
+"of use document."
+
+msgid "editProductPage##terms##redistribution"
+msgstr "Redistribution"
+
+msgid "editProductPage##terms##commercialUse"
+msgstr "Commercial use"
+
+msgid "editProductPage##terms##reselling"
+msgstr "Reselling"
+
+msgid "editProductPage##terms##storage"
+msgstr "Storage"
+
+msgid "editProductPage##terms##link##title"
+msgstr "Link to detailed terms"
+
+msgid "editProductPage##terms##link##placeholder"
+msgstr "Add a URL here"
+
+msgid "editProductPage##terms##displayName##title"
+msgstr "Display name for link"
+
+msgid "editProductPage##terms##displayName##placeholder"
+msgstr "Add a display name"
 
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
@@ -1128,6 +1164,19 @@ msgstr "Streams"
 
 msgid "productPage##streamListing##view"
 msgstr "View live data"
+
+msgid "productPage##termsOfUse##permitted"
+msgid_plural "productPage##termsOfUse##permitted"
+msgstr[1] "is permitted"
+msgstr[2] "are permitted"
+
+msgid "productPage##termsOfUse##notPermitted"
+msgid_plural "productPage##termsOfUse##notPermitted"
+msgstr[1] "is not"
+msgstr[2] "are not"
+
+msgid "productPage##termsOfUse##postfix"
+msgstr "permitted"
 
 msgid "productTile##active"
 msgstr "Active"
