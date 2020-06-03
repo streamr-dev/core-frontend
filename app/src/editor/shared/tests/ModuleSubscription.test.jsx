@@ -99,7 +99,7 @@ describe('Canvas Subscriptions', () => {
             }, 10000)
         })
 
-        it('should get canvas module subscription messages in restarted canvas', async () => {
+        describe('should get canvas module subscription messages in restarted canvas', async () => {
             let canvas
             const messages = []
             beforeEach(async () => {
