@@ -6,10 +6,16 @@ import { I18n } from 'react-redux-i18n'
 
 import ProductContainer from '$shared/components/Container/Product'
 import type { Product } from '$mp/flowtype/product-types'
+import { MD } from '$shared/utils/styled'
 
 const Container = styled(ProductContainer)`
     background-color: #f8f8f8;
     margin-top: 48px !important;
+    
+    @media (max-width: ${MD}px) {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
 `
 
 const Header = styled.div`
