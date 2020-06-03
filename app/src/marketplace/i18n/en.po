@@ -1165,6 +1165,15 @@ msgstr "Streams"
 msgid "productPage##streamListing##view"
 msgstr "View live data"
 
+msgid "productPage##termsOfUse##title"
+msgstr "Terms and conditions"
+
+msgid "productPage##termsOfUse##basic"
+msgstr "Basic terms"
+
+msgid "productPage##termsOfUse##detailed"
+msgstr "Detailed terms"
+
 msgid "productPage##termsOfUse##permitted"
 msgid_plural "productPage##termsOfUse##permitted"
 msgstr[1] "is permitted"

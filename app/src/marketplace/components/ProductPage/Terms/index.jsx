@@ -2,7 +2,7 @@
 
 import React from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import ProductContainer from '$shared/components/Container/Product'
 import type { Product } from '$mp/flowtype/product-types'
@@ -71,10 +71,12 @@ const Terms = ({ className, product }: Props) => {
     return (
         <Container className={className}>
             <Header>
-                Terms and conditions
+                <Translate value="productPage.termsOfUse.title" />
             </Header>
             <Content>
-                <Text bold>Basic terms</Text>
+                <Text bold>
+                    <Translate value="productPage.termsOfUse.basic" />
+                </Text>
                 {' '}
                 <Text>
                     {getTermStrings(permitted)}
@@ -93,7 +95,9 @@ const Terms = ({ className, product }: Props) => {
                 {terms.termsUrl && (
                     <React.Fragment>
                         <br />
-                        <Text bold>Detailed terms</Text>
+                        <Text bold>
+                            <Translate value="productPage.termsOfUse.detailed" />
+                        </Text>
                         {' '}
                         <Text bold>
                             <a href={terms.termsUrl} target="_blank" rel="noopener noreferrer">
