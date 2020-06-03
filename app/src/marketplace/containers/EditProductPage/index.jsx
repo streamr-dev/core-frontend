@@ -242,8 +242,8 @@ const EditWrap = () => {
     const product = useEditableProduct()
     const { isPending: isLoadPending } = usePending('product.LOAD')
     const { isPending: isPermissionsPending } = usePending('product.PERMISSIONS')
-    const { hasPermissions, write, share } = useProductPermissions()
-    const canEdit = !!(write || share)
+    const { hasPermissions, edit } = useProductPermissions()
+    const canEdit = !!edit
 
     if (hasPermissions && !isPermissionsPending && !canEdit) {
         throw new ResourceNotFoundError(ResourceType.PRODUCT, product.id)

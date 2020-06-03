@@ -71,7 +71,7 @@ const CreateCanvasButton = () => (
 
 const CanvasList = () => {
     const sortOptions = useMemo(() => {
-        const filters = getFilters()
+        const filters = getFilters('canvas')
         return [
             filters.RECENT,
             filters.RUNNING,
@@ -151,6 +151,13 @@ const CanvasList = () => {
         permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'canvas_share') !== undefined
     ), [fetchingPermissions, permissions, user])
 
+    const canBeDeletedByCurrentUser = useCallback((id: string): boolean => (
+        !fetchingPermissions &&
+        !!user &&
+        permissions[id] &&
+        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'canvas_delete') !== undefined
+    ), [fetchingPermissions, permissions, user])
+
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
 
     const getActions = useCallback((canvas) => (
@@ -176,12 +183,13 @@ const CanvasList = () => {
                 <Translate value="userpages.canvases.menu.copyUrl" />
             </DropdownActions.Item>
             <DropdownActions.Item
+                disabled={!canBeDeletedByCurrentUser(canvas.id)}
                 onClick={() => confirmDeleteCanvas(canvas)}
             >
                 <Translate value="userpages.canvases.menu.delete" />
             </DropdownActions.Item>
         </Fragment>
-    ), [navigate, canBeSharedByCurrentUser, onOpenShareDialog, onCopyUrl, confirmDeleteCanvas])
+    ), [navigate, canBeSharedByCurrentUser, canBeDeletedByCurrentUser, onOpenShareDialog, onCopyUrl, confirmDeleteCanvas])
 
     return (
         <Layout

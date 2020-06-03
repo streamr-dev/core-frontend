@@ -37,7 +37,7 @@ const CreateDashboardButton = () => (
 
 const DashboardList = () => {
     const sortOptions = useMemo(() => {
-        const filters = getFilters()
+        const filters = getFilters('dashboard')
         return [
             filters.RECENT,
             filters.NAME_ASC,

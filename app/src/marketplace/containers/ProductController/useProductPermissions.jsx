@@ -11,8 +11,9 @@ import { getUserProductPermissions } from '$mp/modules/product/services'
 type ContextProps = {
     hasPermissions: boolean,
     share: boolean,
-    write: boolean,
-    read: boolean,
+    get: boolean,
+    edit: boolean,
+    del: boolean,
 }
 
 const PermissionContext: Context<ContextProps> = React.createContext({})
@@ -46,15 +47,17 @@ function usePermissionContextValue() {
 
     const hasPermissions = !!permissions
     const share = !!(permissions && permissions.share)
-    const write = !!(permissions && permissions.write)
-    const read = !!(permissions && permissions.read)
+    const del = !!(permissions && permissions.del)
+    const edit = !!(permissions && permissions.edit)
+    const get = !!(permissions && permissions.get)
 
     return useMemo(() => ({
         hasPermissions,
         share,
-        write,
-        read,
-    }), [hasPermissions, share, write, read])
+        get,
+        edit,
+        del,
+    }), [hasPermissions, share, edit, get, del])
 }
 
 type Props = {

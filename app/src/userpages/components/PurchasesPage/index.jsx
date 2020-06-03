@@ -24,7 +24,7 @@ import styles from './purchases.pcss'
 
 const PurchasesPage = () => {
     const sortOptions = useMemo(() => {
-        const filters = getFilters()
+        const filters = getFilters('product')
         return [
             filters.RECENT,
             filters.NAME_ASC,

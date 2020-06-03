@@ -60,7 +60,7 @@ export const CreateProductButton = () => {
 
 const ProductsPage = () => {
     const sortOptions = useMemo(() => {
-        const filters = getFilters()
+        const filters = getFilters('product')
         return [
             filters.RECENT,
             filters.NAME_ASC,

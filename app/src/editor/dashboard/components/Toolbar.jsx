@@ -60,6 +60,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
     }
 
     const hasSharePermission = (permissions || []).find((p) => p.user === currentUser && p.operation === 'dashboard_share')
+    const hasDeletePermission = (permissions || []).find((p) => p.user === currentUser && p.operation === 'dashboard_delete')
 
     return (
         <div className={cx(className, styles.CanvasToolbar)} ref={elRef}>
@@ -90,14 +91,24 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
                                         }}
                                     >
                                         <DropdownActions.Item onClick={newDashboard}>New Dashboard</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => sidebar.open('share')}>Share</DropdownActions.Item>
+                                        <DropdownActions.Item
+                                            disabled={!hasSharePermission}
+                                            onClick={() => sidebar.open('share')}
+                                        >
+                                            Share
+                                        </DropdownActions.Item>
                                         <DropdownActions.Item
                                             onClick={() => setEditing(true)}
                                         >
                                             Rename
                                         </DropdownActions.Item>
                                         <DropdownActions.Item onClick={() => duplicateDashboard()}>Duplicate</DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => deleteDashboard()}>Delete</DropdownActions.Item>
+                                        <DropdownActions.Item
+                                            disabled={!hasDeletePermission}
+                                            onClick={() => deleteDashboard()}
+                                        >
+                                            Delete
+                                        </DropdownActions.Item>
                                     </DropdownActions>
                                 </div>
                             )}

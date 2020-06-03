@@ -107,11 +107,11 @@ const ActivityList = ({ activities }: Props) => {
     }
 
     if (activities.some((n) => n.resourceType === resourceTypes.PRODUCT) && (products == null || products.length === 0)) {
-        dispatch(getMyProducts(getFilters().RECENT.filter))
+        dispatch(getMyProducts(getFilters('product').RECENT.filter))
     }
 
     if (activities.some((n) => n.resourceType === resourceTypes.CANVAS) && (canvases == null || canvases.length === 0)) {
-        dispatch(getCanvases(getFilters().RECENT.filter))
+        dispatch(getCanvases(getFilters('product').RECENT.filter))
     }
 
     const filter = activeTab === 'notifications' ? notificationFilter : activityFilter

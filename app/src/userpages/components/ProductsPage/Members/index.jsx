@@ -51,7 +51,7 @@ const mapStatus = (state) => {
 const Members = () => {
     const { loadDataUnion } = useController()
     const product = useProduct()
-    const filters = getFilters()
+    const filters = getFilters('dataunion')
     const sortOptions = useMemo(() => ([
         filters.APPROVE,
         filters.REMOVE,

@@ -125,7 +125,7 @@ export const selectProductSharePermission: (StoreState) => boolean = createSelec
 
 export const selectProductEditPermission: (StoreState) => boolean = createSelector(
     selectProductState,
-    (subState: ProductState): boolean => subState.productPermissions.write,
+    (subState: ProductState): boolean => subState.productPermissions.edit,
 )
 
 export const selectProductPublishPermission = createSelector([

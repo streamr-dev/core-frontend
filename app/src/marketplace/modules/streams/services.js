@@ -11,7 +11,7 @@ export const getStreams = (params: any): ApiResult<{
 }> => {
     const nextParams = {
         uiChannel: false,
-        operation: 'SHARE',
+        operation: 'STREAM_SHARE',
         ...(params || {}),
     }
 

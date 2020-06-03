@@ -19,3 +19,7 @@ coverage
 # storybook
 storybook-static
 .cache
+
+# cypress
+cypress/fixtures/example.json
+

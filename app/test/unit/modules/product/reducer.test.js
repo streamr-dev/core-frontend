@@ -163,8 +163,9 @@ describe('product - reducer', () => {
             const expectedState = {
                 ...initialState,
                 productPermissions: {
-                    read: false,
-                    write: false,
+                    get: false,
+                    edit: false,
+                    del: false,
                     share: false,
                     fetchingPermissions: true,
                     permissionsError: null,
@@ -181,8 +182,9 @@ describe('product - reducer', () => {
 
         it('handles success', () => {
             const permissions = {
-                read: true,
-                write: true,
+                get: true,
+                edit: true,
+                del: false,
                 share: false,
             }
 
@@ -209,8 +211,9 @@ describe('product - reducer', () => {
             const expectedState = {
                 ...initialState,
                 productPermissions: {
-                    read: false,
-                    write: false,
+                    get: false,
+                    edit: false,
+                    del: false,
                     share: false,
                     fetchingPermissions: false,
                     permissionsError: error,
