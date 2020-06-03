@@ -1,4 +1,4 @@
-import React, { Children, useCallback, useState, useRef, useMemo } from 'react'
+import React, { Children, useCallback, useState, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
