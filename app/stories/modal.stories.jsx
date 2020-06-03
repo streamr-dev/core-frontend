@@ -10,7 +10,7 @@ import BN from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 
 import { transactionStates } from '$shared/utils/constants'
-import streamSnippets from '$utils/streamSnippets'
+import { subscribeSnippets } from '$utils/streamSnippets'
 import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 import PngIcon from '$shared/components/PngIcon'
 
@@ -722,7 +722,7 @@ story('Streams/ConfirmCsvImportDialog')
 story('Streams/SnippetDialog')
     .add('default', () => (
         <SnippetDialog
-            snippets={streamSnippets({
+            snippets={subscribeSnippets({
                 id: 'stream-id',
             })}
             onClose={action('onClose')}

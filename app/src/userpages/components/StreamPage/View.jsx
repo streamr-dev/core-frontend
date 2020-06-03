@@ -20,7 +20,7 @@ import { convertFromStorageDays } from './Edit/HistoryView'
 import routes from '$routes'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import CodeSnippets from '$shared/components/CodeSnippets'
-import streamSnippets from '$utils/streamSnippets'
+import { subscribeSnippets } from '$utils/streamSnippets'
 
 const Details = styled.div`
     border: solid #e7e7e7;
@@ -198,7 +198,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
     })
 
     const snippets = useMemo(() => (
-        streamSnippets({
+        subscribeSnippets({
             id: stream.id,
         })
     ), [stream.id])
@@ -238,8 +238,8 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     </Details>
                 </TOCSection>
                 <TOCSection
-                    id="cs"
-                    title="Snippets"
+                    id="snippets"
+                    title="Code Snippets"
                 >
                     <CodeSnippets
                         items={[
@@ -350,14 +350,6 @@ const View = styled(UnstyledView)`
 
     strong {
         font-weight: ${MEDIUM};
-    }
-
-    h4 {
-        font-size: 18px;
-        font-weight: ${MEDIUM};
-        line-height: 1;
-        margin: 0 0 1em;
-        padding: 0;
     }
 
     ${Text} + * {

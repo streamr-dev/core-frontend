@@ -490,6 +490,9 @@ msgstr "Start"
 msgid "userpages##streams##edit##preview##stop"
 msgstr "Stop"
 
+msgid "userpages##streams##edit##codeSnippets##description"
+msgstr "You can grab the code (JS & Java) you’ll need to use this stream in your applications below. Everyone can subscribe, but only users with permission can publish."
+
 msgid "userpages##streams##delete##confirmTitle"
 msgstr "Delete this stream?"
 

@@ -54,7 +54,7 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { ago } from '$shared/utils/time'
-import streamSnippets from '$utils/streamSnippets'
+import { subscribeSnippets } from '$utils/streamSnippets'
 
 import styles from './streamsList.pcss'
 
@@ -266,7 +266,7 @@ const StreamList = () => {
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.streams')}`} />
             {!!dialogTargetStream && activeDialog === Dialogs.SNIPPET && (
                 <SnippetDialog
-                    snippets={streamSnippets(dialogTargetStream)}
+                    snippets={subscribeSnippets(dialogTargetStream)}
                     onClose={onCloseDialog}
                 />
             )}

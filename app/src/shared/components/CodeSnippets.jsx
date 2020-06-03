@@ -3,6 +3,7 @@ import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import Button from '$shared/components/Button'
 import useCopy from '$shared/hooks/useCopy'
 import { css } from 'styled-components'
+import { MEDIUM } from '$shared/utils/styled'
 
 /* eslint-disable react/jsx-curly-brace-presence */
 
@@ -26,8 +27,25 @@ const CodeSnippets = ({ items, title, ...props }) => {
     }, [])
 
     return (
-        <div {...props}>
-            <h4>
+        <div
+            {...props}
+            css={`
+                margin-top: 2em;
+
+                & + & {
+                    margin-top: 3em;
+                }
+            `}
+        >
+            <h4
+                css={`
+                    font-size: 18px;
+                    font-weight: ${MEDIUM};
+                    line-height: 1;
+                    margin: 0 0 1em;
+                    padding: 0;
+                `}
+            >
                 {title}
             </h4>
             <Tabs
@@ -72,7 +90,7 @@ const CodeSnippets = ({ items, title, ...props }) => {
                         <div
                             css={`
                                 ${!!contract && css`
-                                    height: 119px;
+                                    max-height: 119px;
                                     overflow: hidden;
                                 `}
                             `}
