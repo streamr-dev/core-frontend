@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { useDispatch } from 'react-redux'
-import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
@@ -20,8 +19,7 @@ import { getSecurityLevelConfig } from './Edit/SecurityView'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import routes from '$routes'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
-import Button from '$shared/components/Button'
-import useCopy from '$shared/hooks/useCopy'
+import CodeSnippets from '$shared/components/CodeSnippets'
 import streamSnippets from '$utils/streamSnippets'
 
 const Details = styled.div`
@@ -199,21 +197,11 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
         } catch (e) { /**/ }
     })
 
-    const { copy, isCopied } = useCopy()
-
-    const [lang, setLang] = useState('javascript')
-
-    const codeRef = useRef({})
-
     const snippets = useMemo(() => (
         streamSnippets({
             id: stream.id,
         })
     ), [stream.id])
-
-    const onCopyClick = useCallback(() => {
-        copy(codeRef.current[lang])
-    }, [copy, lang])
 
     return (
         <Layout
@@ -253,29 +241,13 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="cs"
                     title="Snippets"
                 >
-                    <h4>
-                        Subscribe
-                    </h4>
-                    <Tabs
-                        footer={
-                            <Button kind="secondary" onClick={onCopyClick}>
-                                {isCopied ? 'Copied' : 'Copy'}
-                            </Button>
-                        }
-                        onSelect={setLang}
-                        selected={lang}
-                    >
-                        <Tabs.Item label="Js" value="javascript">
-                            <CodeSnippet language="javascript" codeRef={codeRef}>
-                                {snippets.javascript}
-                            </CodeSnippet>
-                        </Tabs.Item>
-                        <Tabs.Item value="java">
-                            <CodeSnippet language="java" codeRef={codeRef}>
-                                {snippets.java}
-                            </CodeSnippet>
-                        </Tabs.Item>
-                    </Tabs>
+                    <CodeSnippets
+                        items={[
+                            ['javascript', 'Js', snippets.javascript],
+                            ['java', 'Java', snippets.java],
+                        ]}
+                        title="Subscribe"
+                    />
                 </TOCSection>
                 <TOCSection
                     id="security"
