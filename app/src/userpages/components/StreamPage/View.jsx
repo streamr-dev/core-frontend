@@ -239,7 +239,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                 </TOCSection>
                 <TOCSection
                     id="snippets"
-                    title="Code Snippets"
+                    title={I18n.t('general.codeSnippets')}
                 >
                     <CodeSnippets
                         items={[
