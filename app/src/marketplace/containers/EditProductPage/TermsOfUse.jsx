@@ -24,6 +24,7 @@ const Section = styled.section`
 const CheckboxContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 16px;
     margin: 40px 0;
 `
 
