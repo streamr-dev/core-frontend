@@ -266,7 +266,7 @@ const StreamList = () => {
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.streams')}`} />
             {!!dialogTargetStream && activeDialog === Dialogs.SNIPPET && (
                 <SnippetDialog
-                    snippets={streamSnippets(dialogTargetStream.id)}
+                    snippets={streamSnippets(dialogTargetStream)}
                     onClose={onCloseDialog}
                 />
             )}

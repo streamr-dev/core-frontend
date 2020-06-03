@@ -1,4 +1,4 @@
-export default (id) => ({
+export default ({ id }) => ({
     javascript: `
         const StreamrClient = require('streamr-client')
 

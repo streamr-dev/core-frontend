@@ -206,7 +206,9 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
     const codeRef = useRef({})
 
     const snippets = useMemo(() => (
-        streamSnippets(stream.id)
+        streamSnippets({
+            id: stream.id,
+        })
     ), [stream.id])
 
     const onCopyClick = useCallback(() => {

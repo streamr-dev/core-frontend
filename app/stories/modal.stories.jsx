@@ -722,7 +722,9 @@ story('Streams/ConfirmCsvImportDialog')
 story('Streams/SnippetDialog')
     .add('default', () => (
         <SnippetDialog
-            snippets={streamSnippets('stream-id')}
+            snippets={streamSnippets({
+                id: 'stream-id',
+            })}
             onClose={action('onClose')}
         />
     ))
