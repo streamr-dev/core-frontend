@@ -5,8 +5,6 @@ import useCopy from '$shared/hooks/useCopy'
 import { css } from 'styled-components'
 import { MEDIUM } from '$shared/utils/styled'
 
-/* eslint-disable react/jsx-curly-brace-presence */
-
 const CodeSnippets = ({ items, title, ...props }) => {
     const { copy, isCopied } = useCopy()
 
