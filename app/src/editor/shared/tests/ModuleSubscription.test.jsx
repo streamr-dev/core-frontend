@@ -69,7 +69,7 @@ describe('Canvas Subscriptions', () => {
                 canvas = State.updateCanvas(State.connectPorts(canvas, clockDateOut.id, tableIn1.id))
                 const startedCanvas = State.updateCanvas(await Services.start(canvas))
                 runningTable = startedCanvas.modules.find((m) => m.name === 'Table')
-            }, 10000)
+            }, 10001)
 
             it('works', async () => {
                 const result = mount((
@@ -96,7 +96,7 @@ describe('Canvas Subscriptions', () => {
             afterEach(async () => {
                 if (!canvas) { return }
                 await Services.stop(canvas)
-            }, 10000)
+            }, 10002)
         })
 
         describe('should get canvas module subscription messages in restarted canvas', async () => {
@@ -113,7 +113,8 @@ describe('Canvas Subscriptions', () => {
                 canvas = State.updateCanvas(State.connectPorts(canvas, clockDateOut.id, tableIn1.id))
                 canvas = State.updateCanvas(await Services.start(canvas))
                 canvas = State.updateCanvas(await Services.stop(canvas))
-            }, 10000)
+                canvas = State.updateCanvas(await Services.start(canvas))
+            }, 20000)
 
             it('works', async () => {
                 const result = mount((
@@ -128,7 +129,6 @@ describe('Canvas Subscriptions', () => {
                     </ClientProviderComponent>
                 ))
 
-                canvas = State.updateCanvas(await Services.start(canvas))
 
                 await wait(10000)
                 const receivedMessages = messages.slice() // copy before unmounting
