@@ -170,14 +170,39 @@ function InputNewShare({ currentUser, onChange, canShareToUser }) {
     })
 
     const isValid = canShareToUser(value)
+    const [trySubmit, setTrySubmit] = useState(false)
+
+    // only show validation when not focussed
     const [shouldShowValidation, setShouldShowValidation] = useState(false)
     const onBlur = useCallback(() => {
         setShouldShowValidation(true)
     }, [])
 
     const onFocus = useCallback(() => {
+        setTrySubmit(false)
         setShouldShowValidation(false)
     }, [])
+
+    const onKeyDown = useCallback((event) => {
+        // try add user on enter
+        if (event.key === 'Enter') {
+            setTrySubmit(true)
+        } else {
+            setTrySubmit(false)
+            setShouldShowValidation(false)
+        }
+    }, [])
+
+    // only add user on enter if valid
+    const shouldTrySubmit = !!(value && isValid && trySubmit)
+    const onAddRef = useRef()
+    onAddRef.current = onAdd
+    // trigger onAdd in effect so value/validity state has chance to update
+    useEffect(() => {
+        if (!shouldTrySubmit) { return }
+        onAddRef.current()
+        setTrySubmit(false)
+    }, [shouldTrySubmit, onAddRef])
 
     const showValidationError = shouldShowValidation && value && !isValid
 
@@ -194,6 +219,7 @@ function InputNewShare({ currentUser, onChange, canShareToUser }) {
                 onBlur={onBlur}
                 autoComplete="email"
                 invalid={showValidationError}
+                onKeyDown={onKeyDown}
             />
             <Button
                 kind="secondary"
