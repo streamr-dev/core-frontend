@@ -18,10 +18,10 @@ const CodeSnippets = ({ items, title, ...props }) => {
         copy(codeRef.current[language])
     }, [copy, language])
 
-    const [contract, setContract] = useState(true)
+    const [showAll, setShowAll] = useState(false)
 
-    const onContractClick = useCallback(() => {
-        setContract((c) => !c)
+    const onShowAllClick = useCallback(() => {
+        setShowAll((c) => !c)
     }, [])
 
     return (
@@ -58,7 +58,7 @@ const CodeSnippets = ({ items, title, ...props }) => {
                     >
                         <Button
                             kind="secondary"
-                            onClick={onContractClick}
+                            onClick={onShowAllClick}
                             css={`
                                 && {
                                     border: 0;
@@ -68,7 +68,7 @@ const CodeSnippets = ({ items, title, ...props }) => {
                             `}
                         >
                             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                {contract ? (
+                                {!showAll ? (
                                     // eslint-disable-next-line max-len
                                     <path d="M15.879 11.794a.703.703 0 0 1 .915 1.062l-4.02 4.021-.093.083a1.093 1.093 0 0 1-1.455-.083l-4.02-4.02-.068-.08a.703.703 0 0 1 .068-.915l.079-.068a.703.703 0 0 1 .915.068l3.8 3.8 3.8-3.8zm.836-4.656l.08.068c.249.25.271.64.067.915l-.068.08-4.022 4.021a1.094 1.094 0 0 1-1.45.084l-.095-.085-4.021-4.02a.703.703 0 0 1 .915-1.063l.08.068L12 11.005l3.8-3.8a.704.704 0 0 1 .915-.067z" />
                                 ) : (
@@ -89,7 +89,7 @@ const CodeSnippets = ({ items, title, ...props }) => {
                     <Tabs.Item label={label} value={lang} key={lang}>
                         <div
                             css={`
-                                ${!!contract && css`
+                                ${!showAll && css`
                                     max-height: 119px;
                                     overflow: hidden;
                                 `}
