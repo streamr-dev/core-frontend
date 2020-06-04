@@ -1064,7 +1064,7 @@ msgid "modal##shareResource##enterEmailAddressLabel"
 msgstr "Email or Ethereum address"
 
 msgid "modal##shareResource##enterEmailAddress"
-msgstr "Enter email or Ethereum address."
+msgstr "Enter email or Ethereum address"
 
 msgid "modal##shareResource##permissions##read"
 msgstr "View only"
