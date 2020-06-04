@@ -451,8 +451,8 @@ function useUserPermissionState(props) {
     }, [setCurrentUsers, canShareToUser])
 
     const updatePermission = useCallback((userId, permissions) => {
-        setCurrentUsers((prevUsers) => State.updatePermission(prevUsers, userId, permissions))
-    }, [setCurrentUsers])
+        setCurrentUsers((prevUsers) => State.updatePermission(resourceType, prevUsers, userId, permissions))
+    }, [setCurrentUsers, resourceType])
 
     // 'who has access' handler
     const onAnonymousAccessChange = useCallback(({ value }) => {

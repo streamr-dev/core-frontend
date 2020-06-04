@@ -53,11 +53,20 @@ describe('ShareSidebar Permission Handling', () => {
         const newUserId = 'test@test.com'
         let users = State.usersFromPermissions(resourceType, permissions)
         users = State.addUser(users, newUserId)
-        users = State.updatePermission(users, newUserId, { get: true })
+        users = State.updatePermission(resourceType, users, newUserId, { get: true })
         expect(users[newUserId].get).toBeTruthy()
-        users = State.updatePermission(users, newUserId, { get: false })
+        users = State.updatePermission(resourceType, users, newUserId, { get: false })
         expect(users[newUserId].get).not.toBeTruthy() // read perm gone
         expect(users[user.username]).toBeTruthy() // original user still around
+    })
+
+    it('keeps order of keys', () => {
+        let users = State.usersFromPermissions(resourceType, permissions)
+        const expectedOrder = Object.keys(State.getEmptyPermissions(resourceType))
+        users = State.updatePermission(resourceType, users, user.username, { get: true })
+        expect(Object.keys(users[user.username])).toEqual(expectedOrder)
+        users = State.updatePermission(resourceType, users, user.username, { get: false })
+        expect(Object.keys(users[user.username])).toEqual(expectedOrder)
     })
 
     it('errors with bad userId', () => {
@@ -76,7 +85,7 @@ describe('ShareSidebar Permission Handling', () => {
         badUserIds.forEach((badUserId) => {
             expect(() => State.addUser(users, badUserId)).toThrow(/Invalid/g)
             expect(() => State.removeUser(users, badUserId)).toThrow(/Invalid/g)
-            expect(() => State.updatePermission(users, badUserId, { get: false })).toThrow(/Invalid/g)
+            expect(() => State.updatePermission(resourceType, users, badUserId, { get: false })).toThrow(/Invalid/g)
         })
     })
 
@@ -143,7 +152,7 @@ describe('ShareSidebar Permission Handling', () => {
             const oldReadPerm = updatedPermissions.find(({ user, operation }) => user === newUserId && operation === 'canvas_get')
             expect(oldReadPerm).toBeTruthy()
 
-            users = State.updatePermission(users, newUserId, { get: false })
+            users = State.updatePermission(resourceType, users, newUserId, { get: false })
             const diff = State.diffUsersPermissions({
                 newUsers: users,
                 oldPermissions: updatedPermissions,
@@ -171,7 +180,7 @@ describe('ShareSidebar Permission Handling', () => {
             }
             updatedPermissions.push(duplicateOldReadPermision)
 
-            users = State.updatePermission(users, newUserId, { get: false })
+            users = State.updatePermission(resourceType, users, newUserId, { get: false })
             const diff = State.diffUsersPermissions({
                 newUsers: users,
                 oldPermissions: updatedPermissions,
