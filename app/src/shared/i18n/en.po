@@ -399,3 +399,6 @@ msgid "activityQueue##notifications##empty##message"
 msgstr ""
 "You'll be notified about payments, <br />"
 "sharing and permissions."
+
+msgid "general##codeSnippets"
+msgstr "Code Snippets"

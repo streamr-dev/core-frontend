@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
@@ -17,15 +15,11 @@ const MadeBy = styled(UnstyledMadeBy)`
     }
 `
 
-type Props = {
-    topBorder?: boolean,
-}
-
 const FooterWithBorder = styled(FooterColumns)`
     border-top: ${({ topBorder }) => (topBorder ? '1px' : '0')} solid #D8D8D8;
 `
 
-const Footer = ({ topBorder = false }: Props) => (
+const Footer = ({ topBorder = false }) => (
     <LayoutFooter>
         <FooterWithBorder topBorder={topBorder}>
             <FooterColumn title={I18n.t('general.learn')}>

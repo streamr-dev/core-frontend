@@ -27,9 +27,9 @@ H3: Nested section title
 For short inline text code snippets, the native MD implementation is suitable. When working with longer code snippets we use our CodeSnippet component that uses `react-syntax-highlighter` under the hood. It's best to export the code snippets from `/src/docs/code/...` as the raw code can sometimes interfere with the markdown parser. 
 
 ```
-import CodeSnippet from '$shared/components/CodeSnippet'
+import { CodeSnippet } from '@streamr/streamr-layout'
 
-<CodeSnippet language='javascript' wrapLines showLineNumbers >{referencedCodeSnippet}</CodeSnippet> 
+<CodeSnippet language="javascript" wrapLines showLineNumbers >{referencedCodeSnippet}</CodeSnippet> 
 
 ```
 

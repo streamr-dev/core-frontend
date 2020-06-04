@@ -331,6 +331,9 @@ module.exports = {
             'strict-uri-encode': path.resolve(__dirname, 'node_modules/strict-uri-encode'),
             warning: path.resolve(__dirname, 'node_modules/warning'),
             underscore: path.resolve(__dirname, 'node_modules/underscore'),
+            react: path.resolve(__dirname, 'node_modules/react'),
+            'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+            'styled-components': path.resolve(__dirname, 'node_modules/styled-components'),
         },
     },
 }

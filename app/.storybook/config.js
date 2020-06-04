@@ -1,5 +1,6 @@
 import '@babel/polyfill'
 import 'storybook-chromatic'
+import '$utils/setupSnippets'
 import { setAddon, configure, addDecorator } from '@storybook/react'
 import { setOptions } from '@storybook/addon-options'
 import JSXAddon from 'storybook-addon-jsx'

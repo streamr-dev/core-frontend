@@ -7,6 +7,7 @@ const remarkMdx = require('remark-mdx')
 const strip = require('remark-mdx-to-plain-text')
 const lunr = require('lunr')
 const h2p = require('html2plaintext')
+const { titleize } = require('@streamr/streamr-layout')
 const canvasModules = require('../moduleReferences/canvasModuleHelpData.json')
 
 const baseModuleRefPath = '/docs/module-reference/'
@@ -31,11 +32,6 @@ const toAnchor = (text) => (
         .replace(/&/g, 'and')
         .replace(/\s+/g, '-')
 )
-
-/**
- * Convenience function - Ensures first letter is a capital.
-*/
-const titleize = (text) => (text.charAt(0).toUpperCase() + text.slice(1))
 
 /**
  * Generates formatted Module text content.
