@@ -170,6 +170,16 @@ function InputNewShare({ currentUser, onChange, canShareToUser }) {
     })
 
     const isValid = canShareToUser(value)
+    const [shouldShowValidation, setShouldShowValidation] = useState(false)
+    const onBlur = useCallback(() => {
+        setShouldShowValidation(true)
+    }, [])
+
+    const onFocus = useCallback(() => {
+        setShouldShowValidation(false)
+    }, [])
+
+    const showValidationError = shouldShowValidation && value && !isValid
 
     return (
         <div className={styles.InputNewShare}>
@@ -180,8 +190,10 @@ function InputNewShare({ currentUser, onChange, canShareToUser }) {
                 placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
                 value={value}
                 onChange={onChangeValue}
+                onFocus={onFocus}
+                onBlur={onBlur}
                 autoComplete="email"
-                invalid={value && !isValid}
+                invalid={showValidationError}
             />
             <Button
                 kind="secondary"
@@ -191,7 +203,7 @@ function InputNewShare({ currentUser, onChange, canShareToUser }) {
             >
                 <SvgIcon name="plus" className={styles.plusIcon} />
             </Button>
-            {(value && !isValid) && <Errors>{error}</Errors>}
+            {showValidationError && <Errors>{error}</Errors>}
         </div>
     )
 }
