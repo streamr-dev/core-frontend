@@ -180,9 +180,11 @@ function useEditController(product: Product) {
             return false
         }
 
-        if (isDataUnionProduct(productRef.current) && dataUnion != null && dataUnion.memberCount != null) {
+        if (isDataUnionProduct(productRef.current)) {
+            const { active: activeMembers } = (dataUnion && dataUnion.memberCount) || {}
             const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
-            if (dataUnion.memberCount.active < memberLimit) {
+
+            if (!dataUnion || (activeMembers || 0) < memberLimit) {
                 Notification.push({
                     title: I18n.t('notifications.notEnoughMembers', {
                         memberLimit,
