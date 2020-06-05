@@ -716,7 +716,16 @@ const ShareSidebar = connect(({ user }) => ({
                     </animated.div>
                 ))}
             </div>
-            <animated.div className={styles.errorMessageWrapper} style={tryCloseWarningStyle}>
+            <div
+                className={cx(styles.errorOverlay, {
+                    [styles.errorOverlayVisible]: didTryClose,
+                })}
+                onClick={() => setDidTryClose(false)}
+            />
+            <animated.div
+                className={styles.errorMessageWrapper}
+                style={tryCloseWarningStyle}
+            >
                 {/* only shows if trying to close with unsaved changes */}
                 <div {...bindTryCloseWarning}>
                     <div className={styles.errorMessage}>

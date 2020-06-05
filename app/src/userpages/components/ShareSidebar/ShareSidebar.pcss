@@ -78,7 +78,29 @@
   color: #FF0F2D;
   background-color: #FFF4F5;
   font-size: 14px;
-  padding: 0 2um;
+  padding: 1.5um 2um;
+  line-height: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.errorOverlay {
+  pointer-events: none;
+  transition: opacity 300ms;
+  position: absolute;
+  content: ' ';
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: white;
+  z-index: 0;
+  opacity: 0;
+}
+
+.errorOverlay.errorOverlayVisible {
+  pointer-events: auto;
+  opacity: 0.5;
 }
 
 .userPermissions {
