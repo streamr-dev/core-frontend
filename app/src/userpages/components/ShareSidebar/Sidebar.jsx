@@ -19,8 +19,6 @@ import SvgIcon from '$shared/components/SvgIcon'
 import useUniqueId from '$shared/hooks/useUniqueId'
 import TextInput from '$ui/Text'
 import { isFormElement } from '$shared/utils/isEditableElement'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
 
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
@@ -288,31 +286,16 @@ function UserPermissions({
                         {isCustom ? 'Custom' : startCase(selectedGroupName)}
                     </div>
                 </div>
-                <DropdownActions
-                    title={<Meatball />}
-                    noCaret
-                    toggleProps={{
-                        onClick: (event) => event.stopPropagation(),
+                <Button
+                    kind="secondary"
+                    onClick={(event) => {
+                        event.stopPropagation()
+                        removeUser(userId)
                     }}
-                    menuProps={{
-                        modifiers: {
-                            offset: {
-                                // Make menu aligned to the right.
-                                // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                offset: '-100%p + 100%',
-                            },
-                        },
-                    }}
+                    className={styles.button}
                 >
-                    <DropdownActions.Item
-                        onClick={(event) => {
-                            event.stopPropagation()
-                            removeUser(userId)
-                        }}
-                    >
-                        Remove
-                    </DropdownActions.Item>
-                </DropdownActions>
+                    <SvgIcon name="trash" className={styles.trashIcon} />
+                </Button>
             </div>
             <animated.div className={styles.permissionControls} style={permissionControlsStyle}>
                 <div {...bind}>
