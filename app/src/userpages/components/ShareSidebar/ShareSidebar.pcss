@@ -77,12 +77,11 @@
   color: #FF0F2D;
   background-color: #FFF4F5;
   font-size: 14px;
-  padding: 1.5um 2um;
+  padding: 0 2um;
 }
 
 .userPermissions {
   padding: 0;
-  padding-bottom: 1.5um;
   transition: all 300ms;
 
   &:not(:last-child) {
@@ -103,6 +102,8 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      padding-bottom: 1.5um;
+      transition: all 300ms;
     }
 
     h4 {
@@ -114,19 +115,20 @@
       max-width: 260px;
       overflow: hidden;
       user-select: none;
-      padding-top: 23px;
+      padding-top: 1.5um;
       padding-bottom: 4px;
       transition: all 300ms;
     }
 
     .button {
+      align-self: center;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.1s ease-in;
       background: transparent;
-      height: 24px;
-      width: 24px;
+      height: 1.5um;
+      width: 1.5um;
       opacity: 0;
       padding: 0;
       border: none;
@@ -170,6 +172,7 @@
 
   &.isSelected {
     background: #FDFDFD;
+    padding-bottom: 1.5um;
 
     .selectedGroup {
       opacity: 0;
@@ -181,8 +184,12 @@
       opacity: 1;
     }
 
+    .permissionsHeaderTitle {
+      padding-bottom: 0;
+    }
+
     .permissionsHeader h4 {
-      padding-bottom: 23px;
+      padding-bottom: 1.5um;
     }
   }
 
@@ -227,6 +234,12 @@
 .footer {
   border-top: 1px solid #EFEFEF;
   display: flex;
+
+  .saveCancelButtons {
+    button {
+      min-width: 96px;
+    }
+  }
 
   :first-child {
     margin-right: auto;
