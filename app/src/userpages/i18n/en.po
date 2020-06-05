@@ -1079,7 +1079,7 @@ msgid "modal##shareResource##user##defaultTitle"
 msgstr "Streamr user"
 
 msgid "modal##shareResource##save"
-msgstr "Share"
+msgstr "Save"
 
 msgid "modal##shareResource##tabs##share"
 msgstr "Share settings"
