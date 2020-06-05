@@ -81,7 +81,9 @@
 }
 
 .userPermissions {
-  padding: 1.4um 0;
+  padding: 0;
+  padding-bottom: 1.5um;
+  transition: all 300ms;
 
   &:not(:last-child) {
     border-bottom: 1px solid #EFEFEF;
@@ -106,13 +108,15 @@
     h4 {
       font-size: inherit;
       margin: 0;
-      line-height: normal;
       padding: 0;
-      margin-bottom: 2px;
+      line-height: normal;
       text-overflow: ellipsis;
       max-width: 260px;
       overflow: hidden;
       user-select: none;
+      padding-top: 23px;
+      padding-bottom: 4px;
+      transition: all 300ms;
     }
 
     .button {
@@ -145,12 +149,11 @@
     transition: opacity 300ms;
     overflow: hidden;
     will-change: height, opacity;
-    background: #FDFDFD;
     padding: 0 2um;
   }
 
   .selectedGroup {
-    padding: 2px 4px;
+    padding: 1.5px 4px;
     font-size: 10px;
     color: #525252;
     background: #EFEFEF;
@@ -158,12 +161,16 @@
     display: inline-block;
     line-height: normal;
     opacity: 1;
-    will-change: opacity, padding, height;
+    will-change: opacity, padding, max-height;
+    max-height: 100vh;
     height: auto;
     position: relative;
+    overflow: hidden;
   }
 
   &.isSelected {
+    background: #FDFDFD;
+
     .selectedGroup {
       opacity: 0;
       height: 0;
@@ -172,6 +179,10 @@
 
     .permissionControls {
       opacity: 1;
+    }
+
+    .permissionsHeader h4 {
+      padding-bottom: 23px;
     }
   }
 
@@ -183,9 +194,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
+    grid-row-gap: 1um;
 
     > * {
-      padding-bottom: 0.5um;
       display: flex;
       align-items: center;
     }
@@ -200,7 +211,7 @@
     }
 
     label {
-      padding-left: 0.5um;
+      padding-left: 1um;
       margin-bottom: 0;
       line-height: normal;
       width: 100%;
