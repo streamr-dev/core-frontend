@@ -180,7 +180,7 @@ function useEditController(product: Product) {
             return false
         }
 
-        if (isDataUnionProduct(productRef.current)) {
+        if (isDataUnionProduct(productRef.current) && isEthereumAddress(productRef.current.beneficiaryAddress)) {
             const { active: activeMembers } = (dataUnion && dataUnion.memberCount) || {}
             const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
 
