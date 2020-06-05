@@ -10,8 +10,15 @@ import Helmet from 'react-helmet'
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
 import * as transactionActions from '$userpages/modules/transactionHistory/actions'
-import { selectVisibleTransactions, selectTransactionEvents, selectOffset, selectFetching } from '$userpages/modules/transactionHistory/selectors'
+import {
+    selectVisibleTransactions,
+    selectTransactionEvents,
+    selectOffset,
+    selectFetching as selectFetchingTransactions,
+} from '$userpages/modules/transactionHistory/selectors'
+import { selectFetching as selectFetchingProducts } from '$mp/modules/myProductList/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
+import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { mapPriceFromContract } from '$mp/utils/product'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
@@ -37,7 +44,8 @@ const TransactionList = () => {
     const offset = useSelector(selectOffset)
     const events = useSelector(selectTransactionEvents) || []
     const transactions = useSelector(selectVisibleTransactions)
-    const fetching = useSelector(selectFetching)
+    const fetchingTransactions = useSelector(selectFetchingTransactions)
+    const fetchingProducs = useSelector(selectFetchingProducts)
     const { contractProducts: products } = useSelector(selectEntities)
     const hasMoreResults = events.length > 0 && events.length > (offset + 10)
 
@@ -50,25 +58,34 @@ const TransactionList = () => {
         }), '_blank')
     }, [])
 
+    const loadProducts = useCallback(() => dispatch(getMyProducts({
+        id: '',
+    })), [dispatch])
+
     useEffect(() => {
         clearTransactionList()
-        loadEthIdentities()
+
+        Promise.all([
+            loadEthIdentities(),
+            loadProducts(),
+        ])
             .then(getTransactionEvents)
-    }, [clearTransactionList, loadEthIdentities, getTransactionEvents])
+    }, [clearTransactionList, loadEthIdentities, loadProducts, getTransactionEvents])
 
     const accountsExist = useMemo(() => !!(ethereumIdentities && ethereumIdentities.length), [ethereumIdentities])
     const accountLinked = useMemo(() => !!(accountId && isLinked(accountId)), [isLinked, accountId])
 
+    const isLoading = !!(fetchingTransactions || fetchingProducs)
     return (
         <Layout
-            loading={fetching}
+            loading={isLoading}
             headerSearchComponent={
                 <div className={styles.searchPlaceholder} />
             }
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.transactions')}`} />
             <ListContainer className={styles.transactionList}>
-                {!fetching && transactions && transactions.length <= 0 && (
+                {!isLoading && transactions && transactions.length <= 0 && (
                     <NoTransactionsView
                         accountsExist={accountsExist}
                         accountLinked={accountLinked}
@@ -76,7 +93,7 @@ const TransactionList = () => {
                 )}
                 {transactions && transactions.length > 0 && (
                     <Table className={cx({
-                        [styles.loadingMore]: !!(hasMoreResults && fetching),
+                        [styles.loadingMore]: !!(hasMoreResults && fetchingTransactions),
                     })}
                     >
                         <thead>
@@ -144,7 +161,7 @@ const TransactionList = () => {
                         </tbody>
                     </Table>
                 )}
-                {!fetching && (
+                {!fetchingTransactions && (
                     <LoadMore
                         hasMoreSearchResults={hasMoreResults}
                         onClick={showEvents}
