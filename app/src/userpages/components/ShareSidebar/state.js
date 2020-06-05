@@ -127,15 +127,25 @@ export function getPermissionGroups(resourceType) {
     return PERMISSION_GROUPS[resourceType]
 }
 
+function sortPermissions(resourceType, obj) {
+    const newObj = {}
+    // reassign keys in order they're defined in empty obj
+    Object.keys(getEmptyPermissions(resourceType)).forEach((key) => {
+        newObj[key] = obj[key]
+    })
+    return newObj
+}
+
 export function getPermissionsForGroupName(resourceType, groupName = 'default') {
     const groups = getPermissionGroups(resourceType)
     if (groupName === 'default') {
         groupName = groups.default
     }
-    return {
+
+    return sortPermissions(resourceType, {
         ...getEmptyPermissions(resourceType),
         ...groups[groupName],
-    }
+    })
 }
 
 function countMatching(userPermissions1 = {}, userPermissions2 = {}) {
@@ -200,14 +210,14 @@ export function removeUser(users, userId) {
     return nextUsers
 }
 
-export function updatePermission(users, userId, permissions = {}) {
+export function updatePermission(resourceType, users, userId, permissions = {}) {
     userId = validateUserId(userId)
     return {
         ...users,
-        [userId]: {
+        [userId]: sortPermissions(resourceType, {
             ...users[userId],
             ...permissions,
-        },
+        }),
     }
 }
 
@@ -223,7 +233,7 @@ export function usersFromPermissions(resourceType, permissions) {
             const [, operation] = v.operation.split('_')
             r[operation] = true
         })
-        return r
+        return sortPermissions(resourceType, r)
     })
 
     if (!users.anonymous) {

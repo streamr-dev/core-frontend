@@ -1067,7 +1067,7 @@ msgid "modal##shareResource##enterEmailAddressLabel"
 msgstr "Email or Ethereum address"
 
 msgid "modal##shareResource##enterEmailAddress"
-msgstr "Enter email or Ethereum address."
+msgstr "Enter email or Ethereum address"
 
 msgid "modal##shareResource##permissions##read"
 msgstr "View only"
@@ -1082,7 +1082,7 @@ msgid "modal##shareResource##user##defaultTitle"
 msgstr "Streamr user"
 
 msgid "modal##shareResource##save"
-msgstr "Share"
+msgstr "Save"
 
 msgid "modal##shareResource##tabs##share"
 msgstr "Share settings"

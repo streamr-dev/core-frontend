@@ -54,6 +54,14 @@
 
   .input {
     font-size: 14px;
+    line-height: normal;
+    background-color: #FDFDFD;
+  }
+
+  .button {
+    height: 2.5um;
+    width: 2.5um;
+    padding: 0;
   }
 
   .plusIcon {
@@ -71,10 +79,33 @@
   background-color: #FFF4F5;
   font-size: 14px;
   padding: 1.5um 2um;
+  line-height: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.errorOverlay {
+  pointer-events: none;
+  transition: opacity 400ms ease;
+  position: absolute;
+  content: ' ';
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: white;
+  z-index: 0;
+  opacity: 0;
+}
+
+.errorOverlay.errorOverlayVisible {
+  pointer-events: auto;
+  opacity: 0.5;
 }
 
 .userPermissions {
-  padding: 1.4um 0;
+  padding: 0;
+  transition: all 400ms ease;
 
   &:not(:last-child) {
     border-bottom: 1px solid #EFEFEF;
@@ -94,27 +125,33 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+      padding-bottom: 1.5um;
+      transition: all 400ms ease;
     }
 
     h4 {
       font-size: inherit;
       margin: 0;
-      line-height: normal;
       padding: 0;
-      margin-bottom: 2px;
+      line-height: normal;
       text-overflow: ellipsis;
       max-width: 260px;
       overflow: hidden;
+      user-select: none;
+      padding-top: 1.5um;
+      padding-bottom: 4px;
+      transition: all 400ms ease;
     }
 
     .button {
+      align-self: center;
       display: flex;
       align-items: center;
       justify-content: center;
       transition: all 0.1s ease-in;
       background: transparent;
-      height: 24px;
-      width: 24px;
+      height: 1.5um;
+      width: 1.5um;
       opacity: 0;
       padding: 0;
       border: none;
@@ -134,29 +171,36 @@
 
   .permissionControls {
     opacity: 0;
-    transition: opacity 300ms;
+    transition: opacity 150ms ease, transform 400ms ease;
+    transform: translateY(-5px);
     overflow: hidden;
     will-change: height, opacity;
-    background: #FDFDFD;
     padding: 0 2um;
   }
 
   .selectedGroup {
-    padding: 2px 4px;
+    padding: 1.5px 4px;
     font-size: 10px;
+    font-weight: 500;
     color: #525252;
     background: #EFEFEF;
-    transition: all 300ms;
+    transition: all 300ms ease;
     display: inline-block;
     line-height: normal;
     opacity: 1;
-    will-change: opacity, padding, height;
+    will-change: opacity, padding, max-height, transform;
+    max-height: 100vh;
     height: auto;
     position: relative;
+    overflow: hidden;
   }
 
   &.isSelected {
+    background: #FDFDFD;
+    padding-bottom: 1.5um;
+
     .selectedGroup {
+      transform: translateY(50%);
       opacity: 0;
       height: 0;
       padding: 0 4px;
@@ -164,10 +208,21 @@
 
     .permissionControls {
       opacity: 1;
+      transform: translateY(0);
+      transition: opacity 400ms 150ms ease, transform 400ms 150ms ease;
+    }
+
+    .permissionsHeaderTitle {
+      padding-bottom: 0;
+    }
+
+    .permissionsHeader h4 {
+      padding-bottom: calc(1.5um - 4px);
     }
   }
 
   .groupSelector {
+    padding-top: 4px;
     margin-bottom: 1.4um;
   }
 
@@ -175,9 +230,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
+    grid-row-gap: 1um;
 
     > * {
-      padding-bottom: 0.5um;
       display: flex;
       align-items: center;
     }
@@ -192,7 +247,7 @@
     }
 
     label {
-      padding-left: 0.5um;
+      padding-left: 1um;
       margin-bottom: 0;
       line-height: normal;
       width: 100%;
@@ -208,6 +263,12 @@
 .footer {
   border-top: 1px solid #EFEFEF;
   display: flex;
+
+  .saveCancelButtons {
+    button {
+      min-width: 96px;
+    }
+  }
 
   :first-child {
     margin-right: auto;

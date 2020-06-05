@@ -19,8 +19,6 @@ import SvgIcon from '$shared/components/SvgIcon'
 import useUniqueId from '$shared/hooks/useUniqueId'
 import TextInput from '$ui/Text'
 import { isFormElement } from '$shared/utils/isEditableElement'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
 
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
@@ -170,6 +168,41 @@ function InputNewShare({ currentUser, onChange, canShareToUser }) {
     })
 
     const isValid = canShareToUser(value)
+    const [trySubmit, setTrySubmit] = useState(false)
+
+    // only show validation when not focussed
+    const [shouldShowValidation, setShouldShowValidation] = useState(false)
+    const onBlur = useCallback(() => {
+        setShouldShowValidation(true)
+    }, [])
+
+    const onFocus = useCallback(() => {
+        setTrySubmit(false)
+        setShouldShowValidation(false)
+    }, [])
+
+    const onKeyDown = useCallback((event) => {
+        // try add user on enter
+        if (event.key === 'Enter') {
+            setTrySubmit(true)
+        } else {
+            setTrySubmit(false)
+            setShouldShowValidation(false)
+        }
+    }, [])
+
+    // only add user on enter if valid
+    const shouldTrySubmit = !!(value && isValid && trySubmit)
+    const onAddRef = useRef()
+    onAddRef.current = onAdd
+    // trigger onAdd in effect so value/validity state has chance to update
+    useEffect(() => {
+        if (!shouldTrySubmit) { return }
+        onAddRef.current()
+        setTrySubmit(false)
+    }, [shouldTrySubmit, onAddRef])
+
+    const showValidationError = shouldShowValidation && value && !isValid
 
     return (
         <div className={styles.InputNewShare}>
@@ -180,8 +213,11 @@ function InputNewShare({ currentUser, onChange, canShareToUser }) {
                 placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
                 value={value}
                 onChange={onChangeValue}
+                onFocus={onFocus}
+                onBlur={onBlur}
                 autoComplete="email"
-                invalid={value && !isValid}
+                invalid={showValidationError}
+                onKeyDown={onKeyDown}
             />
             <Button
                 kind="secondary"
@@ -191,7 +227,7 @@ function InputNewShare({ currentUser, onChange, canShareToUser }) {
             >
                 <SvgIcon name="plus" className={styles.plusIcon} />
             </Button>
-            {(value && !isValid) && <Errors>{error}</Errors>}
+            {showValidationError && <Errors>{error}</Errors>}
         </div>
     )
 }
@@ -250,31 +286,16 @@ function UserPermissions({
                         {isCustom ? 'Custom' : startCase(selectedGroupName)}
                     </div>
                 </div>
-                <DropdownActions
-                    title={<Meatball />}
-                    noCaret
-                    toggleProps={{
-                        onClick: (event) => event.stopPropagation(),
+                <Button
+                    kind="secondary"
+                    onClick={(event) => {
+                        event.stopPropagation()
+                        removeUser(userId)
                     }}
-                    menuProps={{
-                        modifiers: {
-                            offset: {
-                                // Make menu aligned to the right.
-                                // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                offset: '-100%p + 100%',
-                            },
-                        },
-                    }}
+                    className={styles.button}
                 >
-                    <DropdownActions.Item
-                        onClick={(event) => {
-                            event.stopPropagation()
-                            removeUser(userId)
-                        }}
-                    >
-                        Remove
-                    </DropdownActions.Item>
-                </DropdownActions>
+                    <SvgIcon name="trash" className={styles.trashIcon} />
+                </Button>
             </div>
             <animated.div className={styles.permissionControls} style={permissionControlsStyle}>
                 <div {...bind}>
@@ -439,8 +460,8 @@ function useUserPermissionState(props) {
     }, [setCurrentUsers, canShareToUser])
 
     const updatePermission = useCallback((userId, permissions) => {
-        setCurrentUsers((prevUsers) => State.updatePermission(prevUsers, userId, permissions))
-    }, [setCurrentUsers])
+        setCurrentUsers((prevUsers) => State.updatePermission(resourceType, prevUsers, userId, permissions))
+    }, [setCurrentUsers, resourceType])
 
     // 'who has access' handler
     const onAnonymousAccessChange = useCallback(({ value }) => {
@@ -695,7 +716,16 @@ const ShareSidebar = connect(({ user }) => ({
                     </animated.div>
                 ))}
             </div>
-            <animated.div className={styles.errorMessageWrapper} style={tryCloseWarningStyle}>
+            <div
+                className={cx(styles.errorOverlay, {
+                    [styles.errorOverlayVisible]: didTryClose,
+                })}
+                onClick={() => setDidTryClose(false)}
+            />
+            <animated.div
+                className={styles.errorMessageWrapper}
+                style={tryCloseWarningStyle}
+            >
                 {/* only shows if trying to close with unsaved changes */}
                 <div {...bindTryCloseWarning}>
                     <div className={styles.errorMessage}>
