@@ -1,6 +1,7 @@
 // @flow
 
 import styled from 'styled-components'
+import { LG } from '$shared/utils/styled'
 
 export const Link = styled.a`
     color: #${({ active }) => (active ? '0324ff' : '323232')} !important;
@@ -9,7 +10,7 @@ export const Link = styled.a`
 const TOCNav = styled.div`
     font-size: 16px;
     line-height: 2em;
-    margin-top: 72px; /* Line up with TOCSection's title. */
+    margin-top: 0px; /* Line up with TOCSection's title. */
     position: sticky;
     text-align: right;
     top: 164px;
