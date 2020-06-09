@@ -24,6 +24,7 @@ import * as State from './state'
 import styles from './ShareSidebar.pcss'
 import useMeasure from './useMeasure'
 import CopyLink from './CopyLink'
+import Tooltip from '$shared/components/Tooltip'
 
 const options = ['onlyInvited', 'withLink']
 
@@ -286,16 +287,26 @@ function UserPermissions({
                         {isCustom ? 'Custom' : startCase(selectedGroupName)}
                     </div>
                 </div>
-                <Button
-                    kind="secondary"
-                    onClick={(event) => {
-                        event.stopPropagation()
-                        removeUser(userId)
-                    }}
-                    className={styles.button}
+                <div
+                    // eslint-disable-next-line react/jsx-curly-brace-presence
+                    css={`
+                        align-items: center;
+                        display: flex;
+                    `}
                 >
-                    <SvgIcon name="trash" className={styles.trashIcon} />
-                </Button>
+                    <Tooltip value="Remove">
+                        <Button
+                            kind="secondary"
+                            onClick={(event) => {
+                                event.stopPropagation()
+                                removeUser(userId)
+                            }}
+                            className={styles.button}
+                        >
+                            <SvgIcon name="trash" className={styles.trashIcon} />
+                        </Button>
+                    </Tooltip>
+                </div>
             </div>
             <animated.div className={styles.permissionControls} style={permissionControlsStyle}>
                 <div {...bind}>
