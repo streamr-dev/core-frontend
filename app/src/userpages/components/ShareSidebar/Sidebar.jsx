@@ -685,6 +685,7 @@ const ShareSidebar = connect(({ user }) => ({
                     onChange={onAnonymousAccessChange}
                     required
                     isSearchable={false}
+                    controlClassName={styles.anonSelectControl}
                 />
             </div>
             <div className={cx(styles.row, styles.cell, styles.addUserInput)}>
