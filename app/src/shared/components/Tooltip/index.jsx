@@ -51,6 +51,7 @@ export default function Tooltip(props: Props) {
                 // null crashes this plugin if passed as container
                 // gloss over this by passing undefined instead
                 container={container || undefined}
+                boundariesElement="viewport"
             >
                 {value}
             </RsTooltip>
