@@ -2,9 +2,8 @@
 
 import { I18n } from 'react-redux-i18n'
 import abiDecoder from 'abi-decoder'
-import BN from 'bignumber.js'
 
-import { transactionTypes } from '$shared/utils/constants'
+import { transactionTypes, paymentCurrencies } from '$shared/utils/constants'
 import { getPublicWeb3 } from '$shared/web3/web3Provider'
 import getConfig from '$shared/web3/config'
 import type { HashList, TransactionEntityList, TransactionEntity, EventLog, EventLogList } from '$shared/flowtype/web3-types'
@@ -18,33 +17,86 @@ const eventTypeToTransactionType = {
     ProductRedeployed: transactionTypes.REDEPLOY_PRODUCT,
 }
 
+const getPurchaseTokens = (logValues) => {
+    let dataEvent
+    let currencyEvent
+    let paymentCurrency
+
+    const transferEvents = (logValues && logValues.filter(({ name }) => name === 'Transfer')) || []
+
+    // bit hacky but use the amount of events to determine the purchase currency
+    // last transfer event will be the DATA amount
+    switch (transferEvents.length) {
+        // DATA
+        case 1: {
+            [dataEvent] = transferEvents
+
+            break
+        }
+
+        // ETH
+        case 2: {
+            paymentCurrency = paymentCurrencies.ETH;
+            [currencyEvent, dataEvent] = transferEvents
+
+            break
+        }
+
+        // DAI
+        case 4: {
+            paymentCurrency = paymentCurrencies.DAI;
+            [currencyEvent, , , dataEvent] = transferEvents
+
+            break
+        }
+
+        default:
+            break
+    }
+
+    const { events: tokenTransferEvents } = dataEvent || {}
+    const { events: currencyTransferEvents } = currencyEvent || {}
+    const { value: tokens } = (tokenTransferEvents && tokenTransferEvents.find(({ name }) => name === 'tokens')) || {}
+    const { value: paymentValue } = (currencyTransferEvents && currencyTransferEvents.find(({ name }) => name === 'tokens')) || {}
+
+    return {
+        tokens,
+        paymentValue,
+        paymentCurrency,
+    }
+}
+
 const getInputValues = (type, logs) => {
     const logValues = (abiDecoder.decodeLogs(logs) || []).filter(Boolean)
 
     switch (type) {
         case 'PaymentReceived': {
             const { events: subscribedEvents } = logValues.find(({ name }) => name === 'Subscribed') || {}
-            const { events: transferEvents } = logValues.find(({ name }) => name === 'Transfer') || {}
             const { value: productId } = (subscribedEvents && subscribedEvents.find(({ name }) => name === 'productId')) || {}
-            const { value: tokens } = (transferEvents && transferEvents.find(({ name }) => name === 'tokens')) || {}
+
+            const { tokens, paymentValue, paymentCurrency } = getPurchaseTokens(logValues)
 
             return {
                 productId,
                 type: transactionTypes.PAYMENT,
                 value: tokens,
+                paymentValue,
+                paymentCurrency,
             }
         }
 
         case 'PaymentSent': {
             const { events: subscribedEvents } = logValues.find(({ name }) => name === 'Subscribed') || {}
-            const { events: transferEvents } = logValues.find(({ name }) => name === 'Transfer') || {}
             const { value: productId } = (subscribedEvents && subscribedEvents.find(({ name }) => name === 'productId')) || {}
-            const { value: tokens } = (transferEvents && transferEvents.find(({ name }) => name === 'tokens')) || {}
+
+            const { tokens, paymentValue, paymentCurrency } = getPurchaseTokens(logValues)
 
             return {
                 productId,
                 type: transactionTypes.PURCHASE,
-                value: BN(tokens).negated(),
+                value: tokens,
+                paymentValue,
+                paymentCurrency,
             }
         }
 

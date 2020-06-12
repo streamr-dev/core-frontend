@@ -725,6 +725,9 @@ msgstr "View on Etherscan"
 msgid "userpages##transactions##actions##copyTxHash"
 msgstr "Copy TX hash"
 
+msgid "userpages##transactions##actions##txHashCopied"
+msgstr "TX hash copied"
+
 msgid "userpages##transactions##type##createContractProduct"
 msgstr "Publish"
 

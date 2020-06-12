@@ -19,7 +19,6 @@ import {
 import { selectFetching as selectFetchingProducts } from '$mp/modules/myProductList/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
-import { mapPriceFromContract } from '$mp/utils/product'
 import Table from '$shared/components/Table'
 import DropdownActions from '$shared/components/DropdownActions'
 import Meatball from '$shared/components/Meatball'
@@ -30,6 +29,11 @@ import { ago } from '$shared/utils/time'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import useCopy from '$shared/hooks/useCopy'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
+import { truncate } from '$shared/utils/text'
+import Notification from '$shared/utils/Notification'
+import { formatDecimals } from '$mp/utils/price'
+import { transactionTypes, paymentCurrencies, NotificationIcon } from '$shared/utils/constants'
+import { fromAtto } from '$mp/utils/math'
 import routes from '$routes'
 
 import styles from './list.pcss'
@@ -38,8 +42,17 @@ const TransactionList = () => {
     const dispatch = useDispatch()
 
     const accountId = useAccountAddress()
-    const { copy: copyToClipboard } = useCopy()
+    const { copy } = useCopy()
     const { load: loadEthIdentities, isLinked, ethereumIdentities } = useEthereumIdentities()
+
+    const copyToClipboard = useCallback((text) => {
+        copy(text)
+
+        Notification.push({
+            title: I18n.t('userpages.transactions.actions.txHashCopied'),
+            icon: NotificationIcon.CHECKMARK,
+        })
+    }, [copy])
 
     const offset = useSelector(selectOffset)
     const events = useSelector(selectTransactionEvents) || []
@@ -109,28 +122,53 @@ const TransactionList = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {transactions.map((transaction) => {
-                                const productTitle = (transaction && transaction.productId && products[transaction.productId]) ?
-                                    products[transaction.productId].name : '-'
-                                const price = BN(transaction.value)
+                            {transactions.map(({
+                                id,
+                                productId,
+                                hash,
+                                timestamp,
+                                gasUsed,
+                                gasPrice,
+                                state,
+                                type,
+                                value,
+                                paymentValue,
+                                paymentCurrency,
+                            }) => {
+                                const productTitle = (id && productId && products[productId]) ?
+                                    products[productId].name : '-'
+                                const price = BN(value)
 
                                 return (
-                                    <tr key={transaction.id}>
+                                    <tr key={id}>
                                         <Table.Th title={productTitle} noWrap>{productTitle}</Table.Th>
-                                        <Table.Td title={transaction.type} noWrap>
-                                            {!!transaction.type && (
-                                                <Translate value={`userpages.transactions.type.${transaction.type}`} />
+                                        <Table.Td title={type} noWrap>
+                                            {!!type && (
+                                                <Translate value={`userpages.transactions.type.${type}`} />
                                             )}
                                         </Table.Td>
-                                        <Table.Td title={transaction.hash} noWrap>{transaction.hash}</Table.Td>
-                                        <Table.Td noWrap>{transaction.timestamp ? ago(new Date(transaction.timestamp)) : '-'}</Table.Td>
-                                        <Table.Td noWrap>
-                                            {price.isGreaterThanOrEqualTo(0) ? '+' : ''}{mapPriceFromContract(price)} DATA
+                                        <Table.Td title={hash} noWrap>
+                                            {truncate(hash, { maxLength: 15 })}
                                         </Table.Td>
-                                        <Table.Td noWrap>{transaction.gasUsed} / {transaction.gasPrice}</Table.Td>
+                                        <Table.Td noWrap>{timestamp ? ago(new Date(timestamp)) : '-'}</Table.Td>
                                         <Table.Td noWrap>
-                                            {!!transaction.state && (
-                                                <Translate value={`userpages.transactions.status.${transaction.state}`} />
+                                            {type === transactionTypes.PURCHASE ? '-' : '+'}
+                                            {(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && (
+                                                <React.Fragment>
+                                                    {formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA
+                                                    ({paymentValue && paymentCurrency && (
+                                                        `${formatDecimals(fromAtto(paymentValue), paymentCurrency)} ${paymentCurrency}`
+                                                    )})
+                                                </React.Fragment>
+                                            )}
+                                            {(paymentCurrency !== paymentCurrencies.ETH && paymentCurrency !== paymentCurrencies.DAI) && (
+                                                `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
+                                            )}
+                                        </Table.Td>
+                                        <Table.Td noWrap>{gasUsed} / {gasPrice}</Table.Td>
+                                        <Table.Td noWrap>
+                                            {!!state && (
+                                                <Translate value={`userpages.transactions.status.${state}`} />
                                             )}
                                         </Table.Td>
                                         <Table.Td className={styles.menuColumn}>
@@ -147,10 +185,10 @@ const TransactionList = () => {
                                                     },
                                                 }}
                                             >
-                                                <DropdownActions.Item onClick={() => openInEtherscan(transaction.hash)}>
+                                                <DropdownActions.Item onClick={() => openInEtherscan(hash)}>
                                                     <Translate value="userpages.transactions.actions.viewOnEtherscan" />
                                                 </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => copyToClipboard(transaction.hash)}>
+                                                <DropdownActions.Item onClick={() => copyToClipboard(hash)}>
                                                     <Translate value="userpages.transactions.actions.copyTxHash" />
                                                 </DropdownActions.Item>
                                             </DropdownActions>

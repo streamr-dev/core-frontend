@@ -53,6 +53,7 @@
     "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
     "publisherTerms": "https://s3.amazonaws.com/streamr-public/streamr-data-provider-agreement.pdf",
     "resetAllowanceInfo": "https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729",
+    "etherscanTransaction": "https://etherscan.io/tx/:tx",
     "allowanceInfo": "https://tokenallowance.io",
     "marketplace": {
         "index": "/marketplace",
