@@ -3,7 +3,6 @@
 import React, { useEffect, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import { Link } from 'react-router-dom'
 import Helmet from 'react-helmet'
 
 import Layout from '../Layout'
@@ -20,10 +19,8 @@ import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useModal from '$shared/hooks/useModal'
 import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
-import routes from '$routes'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
-import { productTypes } from '$mp/utils/constants'
 import Grid from '$shared/components/Tile/Grid'
 import { ProductTile } from '$shared/components/Tile'
 import * as MenuItems from './MenuItems'
@@ -33,25 +30,11 @@ import styles from './products.pcss'
 export const CreateProductButton = () => {
     const { api: createProductDialog } = useModal('marketplace.createProduct')
 
-    if (process.env.DATA_UNIONS) {
-        return (
-            <Button
-                type="button"
-                className={styles.createProductButton}
-                onClick={() => createProductDialog.open()}
-            >
-                <Translate value="userpages.products.createProduct" />
-            </Button>
-        )
-    }
-
     return (
         <Button
-            tag={Link}
+            type="button"
             className={styles.createProductButton}
-            to={routes.products.new({
-                type: productTypes.NORMAL,
-            })}
+            onClick={() => createProductDialog.open()}
         >
             <Translate value="userpages.products.createProduct" />
         </Button>

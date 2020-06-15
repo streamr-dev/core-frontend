@@ -93,18 +93,14 @@ const DocsRouter = () => ([
     <Redirect exact from={links.products} to={links.introToProducts} key="ProductsRoot" />,
     <Route exact path={links.productsDataunions} component={DataUnions} key="DataUnions" />,
     // Data union routes
-    ...(process.env.DATA_UNIONS_DOCS ? [
-        <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsRoot" />,
-        <Redirect exact from={links.dataUnions} to={links.introToDataUnions} key="DataUnionsRoot" />,
-        // add redirect
-        <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsIntro" />,
-        <Route exact path={links.dataUnionsInCore} component={DataUnionsCore} key="DataUnionsInCore" />,
-        <Route exact path={links.frameworkRoles} component={FrameworkRoles} key="FrameworkRoles" />,
-        <Route exact path={links.authAndIdentity} component={AuthAndIdentity} key="AuthAndIdentity" />,
-        <Route exact path={links.createAndMonitor} component={CreateAndMonitor} key="CreateAndMonitor" />,
-        <Route exact path={links.joinAndWithdraw} component={JoinAndWithdraw} key="JoinAndWithdraw" />,
-        <Route exact path={links.uxBestPractices} component={UXBestPractices} key="UXBestPractices" />,
-    ] : []),
+    <Redirect exact from={links.dataUnions} to={links.introToDataUnions} key="DataUnionsRoot" />,
+    <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsIntro" />,
+    <Route exact path={links.dataUnionsInCore} component={DataUnionsCore} key="DataUnionsInCore" />,
+    <Route exact path={links.frameworkRoles} component={FrameworkRoles} key="FrameworkRoles" />,
+    <Route exact path={links.authAndIdentity} component={AuthAndIdentity} key="AuthAndIdentity" />,
+    <Route exact path={links.createAndMonitor} component={CreateAndMonitor} key="CreateAndMonitor" />,
+    <Route exact path={links.joinAndWithdraw} component={JoinAndWithdraw} key="JoinAndWithdraw" />,
+    <Route exact path={links.uxBestPractices} component={UXBestPractices} key="UXBestPractices" />,
     // Module Reference routes
     <Route
         exact
