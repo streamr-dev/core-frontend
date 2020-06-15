@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
-import { handleLoadError } from '$auth/utils/loginInterceptor'
+import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import usePending from '$shared/hooks/usePending'
 
 import * as services from '../../services'
@@ -15,11 +15,15 @@ export default function useCanvasLoadCallback() {
             let canvas
             try {
                 canvas = await services.loadRelevantCanvas({ id: canvasId })
-            } catch (err) {
+            } catch (error) {
                 if (!isMountedRef.current) { return }
-                await handleLoadError(err)
+                if (canHandleLoadError(error)) {
+                    await handleLoadError({
+                        error,
+                    })
+                }
 
-                throw err
+                throw error
             }
             if (!isMountedRef.current) { return }
             canvasUpdater.replaceCanvas(() => canvas)

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
-import { handleLoadError } from '$auth/utils/loginInterceptor'
+import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
 import { selectUserData, isAuthenticating } from '$shared/modules/user/selectors'
@@ -37,8 +37,12 @@ export default (id: string) => {
                     if (isMounted()) {
                         setPermissions(extractOperations(data, username))
                     }
-                } catch (e) {
-                    await handleLoadError(e)
+                } catch (error) {
+                    if (canHandleLoadError(error)) {
+                        await handleLoadError({
+                            error,
+                        })
+                    }
                 }
             } catch (e) {
                 if (e instanceof ResourceNotFoundError) {

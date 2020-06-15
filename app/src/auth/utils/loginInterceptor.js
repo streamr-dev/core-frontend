@@ -99,27 +99,27 @@ export function canHandleLoadError(err) {
     return false
 }
 
-export async function handleLoadError(err) {
-    if (err instanceof InvalidHexStringError) {
-        throw new ResourceNotFoundError(ResourceType.PRODUCT, err.id)
+export async function handleLoadError({ error, ignoreUnauthorized = false } = {}) {
+    if (error instanceof InvalidHexStringError) {
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, error.id)
     }
 
-    const { status } = err.response || {}
+    const { status } = error.response || {}
 
     if (!status || status >= 500) {
-        throw err
+        throw error
     }
 
-    if (status === 404 || ([401, 403].includes(status) && isLoggedInError(err))) {
-        const data = err.response.data || {}
-        throw new ResourceNotFoundError(data.type, data.id)
+    if (status === 404 || ([401, 403].includes(status) && (!!ignoreUnauthorized || isLoggedInError(error)))) {
+        const data = error.response.data || {}
+        throw new ResourceNotFoundError(data.type || data.resource, data.id)
     }
 
     if ([401, 403].includes(status)) {
         await loginRedirect()
     }
 
-    throw err
+    throw error
 }
 
 export default function installInterceptor(instance = axios) {
