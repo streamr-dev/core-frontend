@@ -36,8 +36,10 @@ const getPurchaseTokens = (logValues) => {
 
         // ETH
         case 2: {
-            paymentCurrency = paymentCurrencies.ETH;
-            [currencyEvent, dataEvent] = transferEvents
+            // TODO: approximate ETH from currencyEvent token amount
+            // paymentCurrency = paymentCurrencies.ETH;
+            // [currencyEvent, dataEvent] = transferEvents
+            [, dataEvent] = transferEvents
 
             break
         }

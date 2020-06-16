@@ -58,7 +58,7 @@ const TransactionList = () => {
     const events = useSelector(selectTransactionEvents) || []
     const transactions = useSelector(selectVisibleTransactions)
     const fetchingTransactions = useSelector(selectFetchingTransactions)
-    const fetchingProducs = useSelector(selectFetchingProducts)
+    const fetchingProducts = useSelector(selectFetchingProducts)
     const { contractProducts: products } = useSelector(selectEntities)
     const hasMoreResults = events.length > 0 && events.length > (offset + 10)
 
@@ -88,7 +88,7 @@ const TransactionList = () => {
     const accountsExist = useMemo(() => !!(ethereumIdentities && ethereumIdentities.length), [ethereumIdentities])
     const accountLinked = useMemo(() => !!(accountId && isLinked(accountId)), [isLinked, accountId])
 
-    const isLoading = !!(fetchingTransactions || fetchingProducs)
+    const isLoading = !!(fetchingTransactions || fetchingProducts)
     return (
         <Layout
             loading={isLoading}
