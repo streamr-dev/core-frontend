@@ -39,7 +39,7 @@ const NotFoundPage = () => (
                         <Button
                             kind="special"
                             tag={Link}
-                            to={routes.core()}
+                            to={routes.marketplace.index()}
                         >
                             <Translate value="notFoundPage.top" />
                         </Button>
