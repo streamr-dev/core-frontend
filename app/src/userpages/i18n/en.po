@@ -191,13 +191,13 @@ msgid "userpages##products##createProduct"
 msgstr "Create"
 
 msgid "userpages##products##viewProduct"
-msgstr "View Product"
+msgstr "View on Marketplace"
 
 msgid "userpages##products##settings"
-msgstr "Settings"
+msgstr "Edit product"
 
 msgid "userpages##members##noDataUnionMembers##approve##title"
-msgstr "No one has applied to join yet."
+msgstr "No one is waiting to join at the moment."
 
 msgid "userpages##members##noDataUnionMembers##approve##message"
 msgstr "Get out there and promote it 🚀"

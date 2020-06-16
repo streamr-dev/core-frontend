@@ -98,7 +98,7 @@ describe('StreamSelector', () => {
                 .find('Translate')
                 .findWhere((node) =>
                     node.prop('value') === 'streamSelector.sortByName' ||
-                    node.prop('value') === 'streamSelector.sortByRecent' ||
+                    node.prop('value') === 'streamSelector.sortByCreated' ||
                     node.prop('value') === 'streamSelector.sortByAdded')
 
             expect(sortElements.length).toEqual(3)
@@ -185,16 +185,16 @@ describe('StreamSelector', () => {
             wrapper.update()
             expect(wrapper.find(`.${styles.sortDropdownTitle}`).text()).toMatch(/sort\s*added/)
 
-            const sortByRecent = wrapper
+            const sortByCreated = wrapper
                 .find('DropdownItem')
                 .find('Translate')
-                .findWhere((node) => node.prop('value') === 'streamSelector.sortByRecent')
+                .findWhere((node) => node.prop('value') === 'streamSelector.sortByCreated')
 
             act(() => {
-                sortByRecent.simulate('click')
+                sortByCreated.simulate('click')
             })
             wrapper.update()
-            expect(wrapper.find(`.${styles.sortDropdownTitle}`).text()).toMatch(/sort\s*recent/)
+            expect(wrapper.find(`.${styles.sortDropdownTitle}`).text()).toMatch(/sort\s*created/)
         })
 
         it('will update state based on search input', () => {
