@@ -31,7 +31,7 @@ type Props = LastErrorProps & {
 }
 
 const SORT_BY_NAME = 'name'
-const SORT_BY_RECENT = 'recent'
+const SORT_BY_CREATED = 'created'
 const SORT_BY_ADDED = 'added'
 
 export const StreamSelector = (props: Props) => {
@@ -65,7 +65,7 @@ export const StreamSelector = (props: Props) => {
         if (sort === SORT_BY_NAME) {
             sortOptions = ['lowerName']
         }
-        if (sort === SORT_BY_RECENT) {
+        if (sort === SORT_BY_CREATED) {
             sortOptions = ['lastUpdated']
         }
 
@@ -143,8 +143,8 @@ export const StreamSelector = (props: Props) => {
                             <DropdownActions.Item onClick={() => setSort(SORT_BY_NAME)}>
                                 <Translate value="streamSelector.sortByName" />
                             </DropdownActions.Item>
-                            <DropdownActions.Item onClick={() => setSort(SORT_BY_RECENT)}>
-                                <Translate value="streamSelector.sortByRecent" />
+                            <DropdownActions.Item onClick={() => setSort(SORT_BY_CREATED)}>
+                                <Translate value="streamSelector.sortByCreated" />
                             </DropdownActions.Item>
                             <DropdownActions.Item onClick={() => setSort(SORT_BY_ADDED)}>
                                 <Translate value="streamSelector.sortByAdded" />
