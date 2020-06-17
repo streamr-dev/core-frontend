@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
-import { SM, MD, LG, XL, MEDIUM } from '$shared/utils/styled'
+import { SM, MD, XL, MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
@@ -358,14 +358,6 @@ const View = styled(UnstyledView)`
 
     ${Title} {
         display: block;
-    }
-
-    ${TOCSection}:first-child {
-        padding-top: 24px;
-
-        @media (min-width: ${LG}px) {
-            padding-top: 72px;
-        }
     }
 `
 
