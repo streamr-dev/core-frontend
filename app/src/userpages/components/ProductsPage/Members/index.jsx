@@ -10,8 +10,6 @@ import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
-import LoadingIndicator from '$shared/components/LoadingIndicator'
-import Layout from '$shared/components/Layout'
 import Dropdown from '$shared/components/Dropdown'
 import { getFilters } from '$userpages/utils/constants'
 import ProductController, { useController } from '$mp/containers/ProductController'
@@ -222,29 +220,29 @@ const Members = () => {
             hideNavOnDesktop
             navComponent={(
                 <Header
-                    {...(dataUnionDeployed ? {
-                        searchComponent: (
-                            <Search
-                                placeholder={I18n.t('userpages.members.filterMembers')}
-                                value={search || ''}
-                                onChange={setSearch}
-                            />
-                        ),
-                        filterComponent: (
-                            <Dropdown
-                                title={I18n.t('userpages.filter.sortBy')}
-                                onChange={onSortChange}
-                                selectedItem={selectedFilterId}
-                                disabled={!dataUnionDeployed}
-                            >
-                                {sortOptions.map((s) => (
-                                    <Dropdown.Item key={s.filter.id} value={s.filter.id}>
-                                        {s.displayName}
-                                    </Dropdown.Item>
-                                ))}
-                            </Dropdown>
-                        ),
-                    } : {})}
+                    searchComponent={dataUnionDeployed ? (
+                        <Search
+                            placeholder={I18n.t('userpages.members.filterMembers')}
+                            value={search || ''}
+                            onChange={setSearch}
+                        />
+                    ) : (
+                        <div className={styles.searchPlaceholder} />
+                    )}
+                    filterComponent={!!dataUnionDeployed && (
+                        <Dropdown
+                            title={I18n.t('userpages.filter.sortBy')}
+                            onChange={onSortChange}
+                            selectedItem={selectedFilterId}
+                            disabled={!dataUnionDeployed}
+                        >
+                            {sortOptions.map((s) => (
+                                <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                                    {s.displayName}
+                                </Dropdown.Item>
+                            ))}
+                        </Dropdown>
+                    )}
                 />
             )}
             loading={fetchingMembers}
@@ -387,9 +385,19 @@ const Members = () => {
 }
 
 const LoadingView = () => (
-    <Layout nav={false}>
-        <LoadingIndicator loading className={styles.loadingIndicator} />
-    </Layout>
+    <CoreLayout
+        footer={false}
+        hideNavOnDesktop
+        navComponent={(
+            <Header
+                searchComponent={
+                    <div className={styles.searchPlaceholder} />
+                }
+            />
+        )}
+        contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
+        loading
+    />
 )
 
 const MembersWrap = () => {
