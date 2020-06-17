@@ -9,6 +9,7 @@ import type { Operation } from '$userpages/flowtype/permission-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
 import Notification from '$shared/utils/Notification'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { NotificationIcon } from '$shared/utils/constants'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
@@ -311,9 +312,11 @@ export const cancelStreamStatusFetch = () => {
 type GetStreamParams = {
     replace?: boolean,
     filter?: Filter,
+    updateStatus?: boolean,
 }
 
-export const getStreams = ({ replace = false, filter = {} }: GetStreamParams = {}) => (dispatch: Function, getState: Function) => {
+// eslint-disable-next-line max-len
+export const getStreams = ({ replace = false, filter = {}, updateStatus = true }: GetStreamParams = {}) => (dispatch: Function, getState: Function) => {
     dispatch(getStreamsRequest())
 
     const state = getState()
@@ -341,7 +344,10 @@ export const getStreams = ({ replace = false, filter = {} }: GetStreamParams = {
                 dispatch(clearStreamsListAction())
             }
             dispatch(getStreamsSuccess(ids, hasMoreResults))
-            streamStatusCancel = dispatch(updateStreamStatuses(ids))
+
+            if (updateStatus) {
+                streamStatusCancel = dispatch(updateStreamStatuses(ids))
+            }
         })
         .catch((e) => {
             dispatch(getStreamsFailure(e))
@@ -388,6 +394,11 @@ export const createStream = (options: { name: string, description: ?string }) =>
                 Notification.push({
                     title: 'Stream created successfully!',
                     icon: NotificationIcon.CHECKMARK,
+                })
+                Activity.push({
+                    action: actionTypes.CREATE,
+                    resourceId: data.id,
+                    resourceType: resourceTypes.STREAM,
                 })
                 return data
             })

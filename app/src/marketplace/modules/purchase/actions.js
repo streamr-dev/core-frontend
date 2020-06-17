@@ -12,6 +12,7 @@ import type { Hash } from '$shared/flowtype/web3-types'
 import type { ProductId } from '$mp/flowtype/product-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { NotificationIcon, transactionTypes } from '$shared/utils/constants'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { getMyPurchases } from '../myPurchaseList/actions'
 import { getProductSubscription } from '../product/actions'
 import { addTransaction } from '../transactions/actions'
@@ -94,6 +95,13 @@ export const buyProduct = (
         .onTransactionHash((hash) => {
             dispatch(receivePurchaseHash(hash))
             dispatch(addTransaction(hash, transactionTypes.PURCHASE))
+
+            Activity.push({
+                action: actionTypes.PURCHASE,
+                txHash: hash,
+                resourceId: productId,
+                resourceType: resourceTypes.PRODUCT,
+            })
         })
         .onTransactionComplete(() => {
             dispatch(buyProductSuccess())
@@ -130,6 +138,11 @@ export const addFreeProduct = (id: ProductId) => (dispatch: Function) => {
                 Notification.push({
                     title: I18n.t('notifications.productSaved'),
                     icon: NotificationIcon.CHECKMARK,
+                })
+                Activity.push({
+                    action: actionTypes.ADD,
+                    resourceId: id,
+                    resourceType: resourceTypes.PRODUCT,
                 })
                 dispatch(getMyPurchases())
             },

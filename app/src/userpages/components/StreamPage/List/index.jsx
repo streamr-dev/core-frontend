@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useEffect, useState, useCallback, useMemo } from 'react'
+import React, { Fragment, useEffect, useState, useCallback, useMemo, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -39,9 +39,8 @@ import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import { selectUserData } from '$shared/modules/user/selectors'
-import ShareDialog from '$userpages/components/ShareDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
-import { ProgrammingLanguages, NotificationIcon } from '$shared/utils/constants'
+import { NotificationIcon } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import breakpoints from '$app/scripts/breakpoints'
@@ -51,7 +50,11 @@ import ListContainer from '$shared/components/Container/List'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
+import Sidebar from '$shared/components/Sidebar'
+import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import ShareSidebar from '$userpages/components/ShareSidebar'
 import { ago } from '$shared/utils/time'
+import { subscribeSnippets } from '$utils/streamSnippets'
 
 import styles from './streamsList.pcss'
 
@@ -72,42 +75,37 @@ const Dialogs = {
     SNIPPET: 'snippet',
 }
 
-const getSnippets = (streamId: StreamId) => ({
-    [ProgrammingLanguages.JAVASCRIPT]: `const StreamrClient = require('streamr-client')
-
-const streamr = new StreamrClient({
-    auth: {
-        apiKey: 'YOUR-API-KEY',
-    },
-})
-
-// Subscribe to a stream
-streamr.subscribe({
-    stream: '${streamId}'
-},
-(message, metadata) => {
-    // Do something with the message here!
-    console.log(message)
-}`,
-    [ProgrammingLanguages.JAVA]: `StreamrClient client = new StreamrClient();
-Stream stream = client.getStream("${streamId}");
-
-Subscription sub = client.subscribe(stream, new MessageHandler() {
-    @Override
-    void onMessage(Subscription s, StreamMessage message) {
-        // Here you can react to the latest message
-        System.out.println(message.getPayload().toString());
-    }
-});`,
-})
-
 type TargetStream = ?Stream
 
 type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | TargetStream) => void]
 
+function StreamPageSidebar({ stream }) {
+    const sidebar = useContext(SidebarContext)
+    const onClose = useCallback(() => {
+        sidebar.close()
+    }, [sidebar])
+
+    return (
+        <Sidebar
+            className={styles.ModuleSidebar}
+            isOpen={sidebar.isOpen()}
+            onClose={onClose}
+        >
+            {sidebar.isOpen('share') && (
+                <ShareSidebar
+                    sidebarName="share"
+                    resourceTitle={stream && stream.name}
+                    resourceType="STREAM"
+                    resourceId={stream && stream.id}
+                />
+            )}
+        </Sidebar>
+    )
+}
+
 const StreamList = () => {
     const sortOptions = useMemo(() => {
-        const filters = getFilters()
+        const filters = getFilters('stream')
         return [
             filters.RECENT,
             filters.NAME_ASC,
@@ -133,6 +131,8 @@ const StreamList = () => {
     const permissions = useSelector(selectStreamPermissions)
     const hasMoreResults = useSelector(selectHasMoreSearchResults)
     const [openedDropdownStreamId, setOpenedDropdownStreamId] = useState(undefined)
+
+    const sidebar = useContext(SidebarContext)
 
     useEffect(() => () => {
         cancelStreamStatusFetch()
@@ -179,13 +179,20 @@ const StreamList = () => {
         !fetchingPermissions &&
         !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'share') !== undefined
+        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'stream_share') !== undefined
+    ), [fetchingPermissions, permissions, user])
+
+    const canBeDeletedByCurrentUser = useCallback((id: StreamId): boolean => (
+        !fetchingPermissions &&
+        !!user &&
+        permissions[id] &&
+        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'stream_delete') !== undefined
     ), [fetchingPermissions, permissions, user])
 
     const onOpenShareDialog = useCallback((stream: Stream) => {
         setDialogTargetStream(stream)
-        setActiveDialog(Dialogs.SHARE)
-    }, [])
+        sidebar.open('share')
+    }, [sidebar])
 
     const onCloseDialog = useCallback(() => {
         setDialogTargetStream(null)
@@ -257,17 +264,9 @@ const StreamList = () => {
             loading={fetching}
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.streams')}`} />
-            {!!dialogTargetStream && activeDialog === Dialogs.SHARE && (
-                <ShareDialog
-                    resourceTitle={dialogTargetStream.name}
-                    resourceType="STREAM"
-                    resourceId={dialogTargetStream.id}
-                    onClose={onCloseDialog}
-                />
-            )}
             {!!dialogTargetStream && activeDialog === Dialogs.SNIPPET && (
                 <SnippetDialog
-                    snippets={getSnippets(dialogTargetStream.id)}
+                    snippets={subscribeSnippets(dialogTargetStream)}
                     onClose={onCloseDialog}
                 />
             )}
@@ -367,6 +366,7 @@ const StreamList = () => {
                                                             <Translate value="userpages.streams.actions.refresh" />
                                                         </DropdownActions.Item>
                                                         <DropdownActions.Item
+                                                            disabled={!canBeDeletedByCurrentUser(stream.id)}
                                                             onClick={() => confirmDeleteStream(stream)}
                                                         >
                                                             <Translate value="userpages.streams.actions.delete" />
@@ -442,9 +442,14 @@ const StreamList = () => {
                     </Fragment>
                 )}
             </ListContainer>
+            <StreamPageSidebar stream={dialogTargetStream} />
             <DocsShortcuts />
         </Layout>
     )
 }
 
-export default StreamList
+export default (props: any) => (
+    <SidebarProvider>
+        <StreamList {...props} />
+    </SidebarProvider>
+)

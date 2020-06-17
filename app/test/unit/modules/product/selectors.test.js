@@ -85,8 +85,9 @@ const state = {
             id: '1337',
         },
         productPermissions: {
-            read: true,
-            write: true,
+            get: true,
+            edit: true,
+            del: true,
             share: true,
             fetchingPermissions: false,
             permissionsError: null,

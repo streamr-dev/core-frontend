@@ -188,7 +188,6 @@ module.exports = {
             TRAVIS_BRANCH: process.env.TRAVIS_BRANCH || '',
             TRAVIS_COMMIT: process.env.TRAVIS_COMMIT || '',
             TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
-            DATA_UNIONS: process.env.DATA_UNIONS,
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [
@@ -331,6 +330,9 @@ module.exports = {
             'strict-uri-encode': path.resolve(__dirname, 'node_modules/strict-uri-encode'),
             warning: path.resolve(__dirname, 'node_modules/warning'),
             underscore: path.resolve(__dirname, 'node_modules/underscore'),
+            react: path.resolve(__dirname, 'node_modules/react'),
+            'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+            'styled-components': path.resolve(__dirname, 'node_modules/styled-components'),
         },
     },
 }

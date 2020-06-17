@@ -2,6 +2,7 @@
 
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
+import '$utils/setupSnippets'
 
 import React from 'react'
 import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
@@ -35,6 +36,7 @@ import DashboardEditor from '$editor/dashboard'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
+import ActivityStreamHandler from '$shared/components/ActivityList/ActivityStreamHandler'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
 import history from '../history'
 import '../analytics'
@@ -102,6 +104,7 @@ const App = () => (
                         {MiscRouter()}
                     </Switch>
                     <Notifications />
+                    {process.env.ACTIVITY_QUEUE && <ActivityStreamHandler />}
                     {isProduction() && <GoogleAnalyticsTracker />}
                 </ModalProvider>
             </ModalPortalProvider>

@@ -433,6 +433,18 @@ const sources = {
             </g>
         </svg>
     ),
+    trash: (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 14">
+            <path
+                fill="none"
+                fillRule="evenodd"
+                stroke="#A3A3A3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M11.167 13h-7a1 1 0 01-1-1V3h9v9a1 1 0 01-1 1zm-5-3V6m3 4V6m-8-3h13m-5-2h-3a1 1 0 00-1 1v1h5V2a1 1 0 00-1-1z"
+            />
+        </svg>
+    ),
     brevetDown: (
         <svg viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
             <path d="M.756 1l4.245 4.245 4.243-4.242" stroke="#CDCDCD" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" />
@@ -511,6 +523,84 @@ const sources = {
             >
                 <path d="M2.525 18.775a1.35 1.35 0 01-1.35-1.35V2.678a1.458 1.458 0 011.453-1.453h17.35a1.45 1.45 0 011.447 1.446v14.65a1.458 1.458 0 01-1.454 1.454H2.525zm18.9-13.5H1.175m10.8 6.75h4.05" />
                 <path d="M6.575 9.325l2.7 2.7-2.7 2.7" />
+            </g>
+        </svg>
+    ),
+    alarmBell: (
+        <svg viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
+            <g strokeWidth="1.5" stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6.444 17.917a1.623 1.623 0 003.115 0M8 3.333v-1.75M8 3.333a5.833 5.833 0 015.833 5.834c0 5.48 1.167 6.416 1.167 6.416H1s1.167-1.49 1.167-6.416A5.833 5.833 0 018 3.333z" />
+            </g>
+        </svg>
+    ),
+    canvas: (
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <rect id="a" x="0" y="0" width="32" height="32" rx="4" />
+                <rect id="b" x="0" y="0" width="32" height="32" rx="4" />
+            </defs>
+            <g fill="none" fillRule="evenodd">
+                <rect stroke="#D8D8D8" x=".5" y=".5" width="31" height="31" rx="4" />
+                <mask id="c" fill="#fff">
+                    <use xlinkHref="#b" />
+                </mask>
+                <use fill="#97BAC0" xlinkHref="#b" />
+                <g mask="url(#c)">
+                    <g transform="translate(6 6)">
+                        <circle stroke="#FFF" strokeWidth="1.5" cx="4" cy="4" r="3.25" />
+                        <circle fill="#FFF" cx="4" cy="4" r="1" />
+                    </g>
+                </g>
+                <g mask="url(#c)">
+                    <g transform="translate(18 6)">
+                        <circle stroke="#FFF" strokeWidth="1.5" cx="4" cy="4" r="3.25" />
+                        <circle fill="#FFF" cx="4" cy="4" r="1" />
+                    </g>
+                </g>
+                <g mask="url(#c)">
+                    <g transform="translate(6 18)">
+                        <path stroke="#FFF" strokeWidth="1.5" d="M.75.75h6.5v6.5H.75z" />
+                        <circle fill="#FFF" cx="4" cy="4" r="1" />
+                    </g>
+                </g>
+                <g mask="url(#c)">
+                    <circle stroke="#FFF" strokeWidth="1.5" cx="4" cy="4" r="3.25" transform="translate(18 18)" />
+                </g>
+            </g>
+        </svg>
+    ),
+    product: (
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <rect id="a" x="0" y="0" width="32" height="32" rx="4" />
+            </defs>
+            <g fill="none" fillRule="evenodd">
+                <mask id="b" fill="#fff">
+                    <use xlinkHref="#a" />
+                </mask>
+                <use fill="#97BAC0" xlinkHref="#a" />
+                <g mask="url(#b)" stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                    <g transform="translate(6 7)">
+                        <rect x=".455" y=".227" width="19.091" height="17.727" rx="1.5" />
+                        <path d="M.455 4.318h19.09" />
+                        <rect x="3.182" y="8.045" width="5.455" height="4.545" rx=".75" />
+                        <path d="M11.818 13.5h5M11.818 8.045h5M11.818 10.773h5" />
+                    </g>
+                </g>
+            </g>
+        </svg>
+    ),
+    stream: (
+        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <rect id="a" x="0" y="0" width="32" height="32" rx="4" />
+            </defs>
+            <g fill="none" fillRule="evenodd">
+                <use fill="#97BAC0" xlinkHref="#a" />
+                <g transform="translate(9 9)" stroke="#FFF" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                    <circle cx="2.5" cy="11.497" r="2.25" />
+                    <path d="M.205 5.126a6.807 6.807 0 018.4 9.36M.359.445a11.279 11.279 0 0113 14.08" />
+                </g>
             </g>
         </svg>
     ),

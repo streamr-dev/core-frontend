@@ -29,7 +29,6 @@ import { Provider as EditControllerProvider, Context as EditControllerContext } 
 import BackButton from '$shared/components/BackButton'
 import Editor from './Editor'
 import Preview from './Preview'
-import ProductEditorDebug from './ProductEditorDebug'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import DeployDataUnionModal from './DeployDataUnionModal'
 import PublishModal from './PublishModal'
@@ -207,9 +206,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
             })}
             loading={isLoading || (isPreview && fetchingAllStreams)}
         >
-            {process.env.DATA_UNIONS && (
-                <ProductEditorDebug />
-            )}
             {isPreview && (
                 <Preview />
             )}
@@ -242,8 +238,8 @@ const EditWrap = () => {
     const product = useEditableProduct()
     const { isPending: isLoadPending } = usePending('product.LOAD')
     const { isPending: isPermissionsPending } = usePending('product.PERMISSIONS')
-    const { hasPermissions, write, share } = useProductPermissions()
-    const canEdit = !!(write || share)
+    const { hasPermissions, edit } = useProductPermissions()
+    const canEdit = !!edit
 
     if (hasPermissions && !isPermissionsPending && !canEdit) {
         throw new ResourceNotFoundError(ResourceType.PRODUCT, product.id)

@@ -15,7 +15,7 @@ type Props = {
 
 const SectionWrapper = styled.div`
     > div {
-        padding-top: 72px;
+        padding-top: 0px;
     }
 
     > div + div {
@@ -37,8 +37,12 @@ export const Title = styled.h1`
     font-size: 24px;
     font-weight: ${REGULAR};
     letter-spacing: 0;
-    line-height: 1.5rem;
     margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-bottom: 24px;
+    line-height: 24px;
 
     @media (min-width: ${MD}px) {
         font-size: 18px;
@@ -47,6 +51,8 @@ export const Title = styled.h1`
     @media (min-width: ${LG}px) {
         display: block;
         font-size: 36px;
+        margin-bottom: 64px;
+        line-height: 40px;
     }
 `
 
@@ -59,7 +65,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                 {!!title && (
                     <React.Fragment>
                         <Wing />
-                        <Title>{title}</Title>
+                        <Title title={title}>{title}</Title>
                         <div />
                     </React.Fragment>
                 )}
@@ -98,13 +104,13 @@ const StyledTOCPage = styled(UnstyledTOCPage)`
 
     @media (min-width: ${LG}px) {
         max-width: none;
-        padding: 88px 0 128px;
+        padding: 80px 0 128px;
         width: 928px;
 
         > div {
             display: grid;
             grid-column-gap: 64px;
-            grid-template-columns: 160px 1fr 160px;
+            grid-template-columns: 160px 608px 160px;
         }
     }
 
@@ -112,7 +118,7 @@ const StyledTOCPage = styled(UnstyledTOCPage)`
         width: 1132px;
 
         > div {
-            grid-template-columns: 192px 1fr 192px;
+            grid-template-columns: 192px 748px 192px;
         }
     }
 `

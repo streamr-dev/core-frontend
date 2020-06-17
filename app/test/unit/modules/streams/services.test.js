@@ -50,7 +50,7 @@ describe('streams - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/streams?operation=SHARE&uiChannel=false`)
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/streams?operation=STREAM_SHARE&uiChannel=false`)
         })
 
         const result = await services.getStreams()
@@ -117,7 +117,7 @@ describe('streams - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/streams?operation=SHARE&search=streamId&uiChannel=false`)
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/streams?operation=STREAM_SHARE&search=streamId&uiChannel=false`)
         })
 
         const result = await services.getStreams({
@@ -152,7 +152,7 @@ describe('streams - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/streams?max=6&offset=0&operation=SHARE&uiChannel=false`)
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/streams?max=6&offset=0&operation=STREAM_SHARE&uiChannel=false`)
         })
 
         const result = await services.getStreams({
@@ -188,7 +188,7 @@ describe('streams - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/streams?max=6&offset=5&operation=SHARE&uiChannel=false`)
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/streams?max=6&offset=5&operation=STREAM_SHARE&uiChannel=false`)
         })
 
         const result = await services.getStreams({

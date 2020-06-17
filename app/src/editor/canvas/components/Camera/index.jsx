@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useLayoutEffect, useEffect, useMemo, useContext } from 'react'
-import { useSpring, animated, to } from 'react-spring'
+import { useSpring, animated, interpolate } from 'react-spring'
 import cx from 'classnames'
 import { useThrottled } from '$shared/hooks/wrapCallback'
 
@@ -416,7 +416,7 @@ export default function Camera({ className, children }) {
             <animated.div
                 className={styles.scaleLayer}
                 style={{
-                    transform: to([spring.x, spring.y, spring.scale], (x, y, scale) => (
+                    transform: interpolate([spring.x, spring.y, spring.scale], (x, y, scale) => (
                         `translate(${x}px, ${y}px) scale(${scale})`
                     )),
                 }}

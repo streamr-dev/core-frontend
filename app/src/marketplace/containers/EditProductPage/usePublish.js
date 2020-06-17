@@ -25,6 +25,7 @@ import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import PublishQueue, { actionsTypes } from './publishQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 
 export const publishModes = {
     REPUBLISH: 'republish', // live product update
@@ -154,6 +155,12 @@ export default function usePublish() {
                                     if (isRedeploy) {
                                         postSetDeploying(product.id || '', hash)
                                     }
+                                    Activity.push({
+                                        action: actionTypes.PUBLISH,
+                                        txHash: hash,
+                                        resourceId: product.id,
+                                        resourceType: resourceTypes.PRODUCT,
+                                    })
                                 })
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
@@ -199,6 +206,13 @@ export default function usePublish() {
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
                                     postSetDeploying(product.id || '', hash)
+
+                                    Activity.push({
+                                        action: actionTypes.PUBLISH,
+                                        txHash: hash,
+                                        resourceId: product.id,
+                                        resourceType: resourceTypes.PRODUCT,
+                                    })
                                 })
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
@@ -223,6 +237,12 @@ export default function usePublish() {
                             return postDeployFree(product.id || '').then(() => {
                                 update(transactionStates.CONFIRMED)
                                 done()
+
+                                Activity.push({
+                                    action: actionTypes.PUBLISH,
+                                    resourceId: product.id,
+                                    resourceType: resourceTypes.PRODUCT,
+                                })
                             }, (error) => {
                                 update(transactionStates.FAILED, error)
                                 done()
@@ -253,6 +273,13 @@ export default function usePublish() {
                                 done()
                                 dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
                                 postSetDeploying(product.id || '', hash)
+
+                                Activity.push({
+                                    action: actionTypes.PUBLISH,
+                                    txHash: hash,
+                                    resourceId: product.id,
+                                    resourceType: resourceTypes.PRODUCT,
+                                })
                             })
                             .onTransactionComplete(() => {
                                 update(transactionStates.CONFIRMED)
@@ -286,6 +313,12 @@ export default function usePublish() {
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.UNDEPLOY_PRODUCT))
                                     postSetUndeploying(product.id || '', hash)
+
+                                    Activity.push({
+                                        action: actionTypes.UNPUBLISH,
+                                        resourceId: product.id,
+                                        resourceType: resourceTypes.PRODUCT,
+                                    })
                                 })
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
@@ -310,6 +343,12 @@ export default function usePublish() {
                             return postUndeployFree(product.id || '').then(() => {
                                 update(transactionStates.CONFIRMED)
                                 done()
+
+                                Activity.push({
+                                    action: actionTypes.UNPUBLISH,
+                                    resourceId: product.id,
+                                    resourceType: resourceTypes.PRODUCT,
+                                })
                             }, (error) => {
                                 update(transactionStates.FAILED, error)
                                 done()

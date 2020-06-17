@@ -10,8 +10,12 @@ export const defaultColumns = {
     lg: 3,
 }
 
+type ResourceType = 'stream' | 'canvas' | 'product' | 'dashboard' | 'dataunion'
+
 /* eslint-disable arrow-body-style */
-export const getFilters = (): { [string]: SortOption } => {
+export const getFilters = (resourceType: ResourceType): {
+    [string]: SortOption,
+} => {
     return {
         RECENT: {
             displayName: I18n.t('userpages.filter.recent'),
@@ -82,7 +86,7 @@ export const getFilters = (): { [string]: SortOption } => {
             filter: {
                 id: 'shared',
                 key: 'operation',
-                value: 'SHARE',
+                value: `${resourceType}_share`,
                 order: 'desc',
             },
         },
@@ -91,7 +95,7 @@ export const getFilters = (): { [string]: SortOption } => {
             filter: {
                 id: 'mine',
                 key: 'operation',
-                value: 'WRITE',
+                value: `${resourceType}_edit`,
                 order: 'desc',
             },
         },

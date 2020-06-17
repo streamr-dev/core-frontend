@@ -23,7 +23,7 @@ stories.add('default', () => (
     <PermissionKeyField
         keyName="Key name"
         value={text('Key value', 'Key value')}
-        permission="read"
+        permission="stream_subscribe"
     />
 ))
 
@@ -31,7 +31,7 @@ stories.add('value hidden', () => (
     <PermissionKeyField
         keyName="Key name"
         value={text('Value', 'Key value')}
-        permission="read"
+        permission="stream_subscribe"
         hideValue
         onSave={action('onSave')}
     />
@@ -48,7 +48,7 @@ stories.add('editable', () => {
         <PermissionKeyField
             keyName="Key name"
             value={text('Value', 'Key value')}
-            permission="read"
+            permission="stream_subscribe"
             allowEdit
             onSave={onSave}
         />
@@ -59,7 +59,7 @@ stories.add('truncated value', () => (
     <PermissionKeyField
         keyName="Key name"
         value={text('Value', 'Long value which will truncate')}
-        permission="read"
+        permission="stream_subscribe"
         truncateValue
     />
 ))
@@ -75,7 +75,7 @@ stories.add('truncated value (editable)', () => {
         <PermissionKeyField
             keyName="Key name"
             value={text('Value', 'Long value which will truncate')}
-            permission="read"
+            permission="stream_subscribe"
             allowEdit
             onSave={onSave}
             truncateValue

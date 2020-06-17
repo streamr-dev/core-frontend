@@ -23,6 +23,8 @@ import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
+import CodeSnippets from '$shared/components/CodeSnippets'
+import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
 import styles from './edit.pcss'
 
 const { lg } = breakpoints
@@ -66,6 +68,18 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
         }
     }, [stream, dispatch, isMounted])
 
+    const subSnippets = useMemo(() => (
+        subscribeSnippets({
+            id: stream.id,
+        })
+    ), [stream.id])
+
+    const pubSnippets = useMemo(() => (
+        publishSnippets({
+            id: stream.id,
+        })
+    ), [stream.id])
+
     return (
         <CoreLayout
             hideNavOnDesktop
@@ -101,6 +115,29 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
                     <InfoView disabled={disabled} />
+                </TOCPage.Section>
+                <TOCPage.Section
+                    id="snippets"
+                    title={I18n.t('general.codeSnippets')}
+                >
+                    <Translate
+                        value="userpages.streams.edit.codeSnippets.description"
+                        tag="p"
+                    />
+                    <CodeSnippets
+                        items={[
+                            ['javascript', 'Js', subSnippets.javascript],
+                            ['java', 'Java', subSnippets.java],
+                        ]}
+                        title="Subscribe"
+                    />
+                    <CodeSnippets
+                        items={[
+                            ['javascript', 'Js', pubSnippets.javascript],
+                            ['java', 'Java', pubSnippets.java],
+                        ]}
+                        title="Publish"
+                    />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="security"

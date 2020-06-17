@@ -7,9 +7,14 @@ import { Translate } from 'react-redux-i18n'
 import routes from '$routes'
 import useCopy from '$shared/hooks/useCopy'
 
+// wrap link to avoid validation error in MenuItem
+const MenuLink = (props) => (
+    <Link {...props} />
+)
+
 export const Edit = ({ id }: any) => (
     <MenuItem
-        tag={Link}
+        tag={MenuLink}
         to={routes.products.edit({
             id,
         })}
@@ -37,7 +42,7 @@ export const View = ({ id, disabled }: any) => {
 
 export const ViewStats = ({ id }: any) => (
     <MenuItem
-        tag={Link}
+        tag={MenuLink}
         to={routes.products.stats({
             id,
         })}
@@ -48,7 +53,7 @@ export const ViewStats = ({ id }: any) => (
 
 export const ViewDataUnion = ({ id }: any) => (
     <MenuItem
-        tag={Link}
+        tag={MenuLink}
         to={routes.products.members({
             id,
         })}

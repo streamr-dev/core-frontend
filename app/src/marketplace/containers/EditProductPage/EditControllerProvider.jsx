@@ -20,6 +20,7 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
+import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 
 import * as State from '../EditProductPage/state'
 import useModal from '$shared/hooks/useModal'
@@ -144,6 +145,12 @@ function useEditController(product: Product) {
             })), nextProduct.id || '')
             resetTouched()
 
+            Activity.push({
+                action: actionTypes.UPDATE,
+                resourceId: nextProduct.id,
+                resourceType: resourceTypes.PRODUCT,
+            })
+
             // TODO: handle saving errors
             return true
         })
@@ -173,9 +180,11 @@ function useEditController(product: Product) {
             return false
         }
 
-        if (isDataUnionProduct(productRef.current) && dataUnion != null && dataUnion.memberCount != null) {
+        if (isDataUnionProduct(productRef.current) && isEthereumAddress(productRef.current.beneficiaryAddress)) {
+            const { active: activeMembers } = (dataUnion && dataUnion.memberCount) || {}
             const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
-            if (dataUnion.memberCount.active < memberLimit) {
+
+            if (!dataUnion || (activeMembers || 0) < memberLimit) {
                 Notification.push({
                     title: I18n.t('notifications.notEnoughMembers', {
                         memberLimit,

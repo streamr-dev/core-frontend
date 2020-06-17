@@ -33,13 +33,13 @@ msgid "actionsDropdown##edit"
 msgstr "Edit"
 
 msgid "actionsDropdown##viewProduct"
-msgstr "View Product"
+msgstr "View product"
 
 msgid "actionsDropdown##viewStats"
-msgstr "View Stats"
+msgstr "View stats"
 
 msgid "actionsDropdown##viewDataUnion"
-msgstr "View Data Union"
+msgstr "View members"
 
 msgid "actionsDropdown##copyUrl"
 msgstr "Copy URL"
@@ -1181,8 +1181,8 @@ msgstr "Added"
 msgid "streamSelector##sortByName"
 msgstr "Name"
 
-msgid "streamSelector##sortByRecent"
-msgstr "Recent"
+msgid "streamSelector##sortByCreated"
+msgstr "Created"
 
 msgid "streamSelector##typeToSearch"
 msgstr "Type to search & select streams or click to select individually"

@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useRef } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import { Header, Content, Section, Select } from '$editor/shared/components/Sidebar'
+import { Header, Content, Section, Select } from '$shared/components/Sidebar'
 import Toggle from '$shared/components/Toggle'
 import Text from '$editor/canvas/components/Ports/Value/Text'
 

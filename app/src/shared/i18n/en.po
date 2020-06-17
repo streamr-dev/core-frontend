@@ -26,6 +26,9 @@ msgstr "Blog"
 msgid "general##browse"
 msgstr "Browse"
 
+msgid "general##canvas"
+msgstr "Canvas"
+
 msgid "general##canvases"
 msgstr "Canvases"
 
@@ -49,6 +52,12 @@ msgstr "Editor"
 
 msgid "general##faq"
 msgstr "FAQ"
+
+msgid "general##dataProduct"
+msgstr "Data Product"
+
+msgid "general##dataUnion"
+msgstr "Data Union"
 
 msgid "general##designAssets"
 msgstr "Design Assets"
@@ -124,6 +133,9 @@ msgstr "Apps"
 
 msgid "general##streamrSystem"
 msgstr "Streamr System"
+
+msgid "general##stream"
+msgstr "Stream"
 
 msgid "general##streams"
 msgstr "Streams"
@@ -286,6 +298,27 @@ msgstr "Year"
 msgid "shared##date##year_plural"
 msgstr "Years"
 
+msgid "shared##action##add"
+msgstr "was added"
+
+msgid "shared##action##create"
+msgstr "was created"
+
+msgid "shared##action##update"
+msgstr "was updated"
+
+msgid "shared##action##purchase"
+msgstr "was purchased"
+
+msgid "shared##action##publish"
+msgstr "was published"
+
+msgid "shared##action##unpublish"
+msgstr "was unpublished"
+
+msgid "shared##action##deploy"
+msgstr "was deployed"
+
 msgid "general##docs"
 msgstr "Docs"
 
@@ -346,3 +379,26 @@ msgstr ""
 
 msgid "genericErrorPage##top"
 msgstr "Marketplace top"
+
+msgid "activityQueue##tab##activity"
+msgstr "Activity"
+
+msgid "activityQueue##tab##notifications"
+msgstr "Notifications"
+
+msgid "activityQueue##activities##empty##title"
+msgstr "No activity yet."
+
+msgid "activityQueue##activities##empty##message"
+msgstr "Create, deploy, publish or update something!"
+
+msgid "activityQueue##notifications##empty##title"
+msgstr "No notifications yet."
+
+msgid "activityQueue##notifications##empty##message"
+msgstr ""
+"You'll be notified about payments, <br />"
+"sharing and permissions."
+
+msgid "general##codeSnippets"
+msgstr "Code Snippets"

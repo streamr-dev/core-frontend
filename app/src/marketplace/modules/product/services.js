@@ -56,7 +56,7 @@ export const getUserProductPermissions = async (id: ProductId): ApiResult<Object
         if (permission.anonymous) {
             return {
                 ...permissions,
-                read: true,
+                product_get: true,
             }
         }
         if (!permission.operation) {
@@ -69,9 +69,10 @@ export const getUserProductPermissions = async (id: ProductId): ApiResult<Object
     }, {})
 
     return {
-        read: !!p.read || false,
-        write: !!p.write || false,
-        share: !!p.share || false,
+        get: !!p.product_get || false,
+        edit: !!p.product_edit || false,
+        del: !!p.product_delete || false,
+        share: !!p.product_share || false,
     }
 }
 

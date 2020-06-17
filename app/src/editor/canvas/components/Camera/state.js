@@ -1,4 +1,4 @@
-import isEditableElement from '$editor/shared/utils/isEditableElement'
+import isEditableElement from '$shared/utils/isEditableElement'
 import styles from './Camera.pcss'
 
 function clamp(value, min, max) {

@@ -80,7 +80,7 @@ export class KeyView extends Component<Props> {
 
     addKey = async (keyName: string, permission: ?ResourcePermission): Promise<void> => {
         if (this.props.streamId == null) { return }
-        const keyPermission = permission || 'read'
+        const keyPermission = permission || 'stream_publish'
         return this.props.addKey(this.props.streamId, keyName, keyPermission)
     }
 
@@ -95,7 +95,7 @@ export class KeyView extends Component<Props> {
     removeKey = (keyId: ResourceKeyId): Promise<void> => this.props.removeKey(this.props.streamId || '', keyId)
 
     onSubmit = (keyName: string, value: string, permission: ?ResourcePermission): Promise<void> =>
-        this.addKey(keyName, permission || 'read')
+        this.addKey(keyName, permission || 'stream_publish')
 
     render() {
         const { disabled } = this.props

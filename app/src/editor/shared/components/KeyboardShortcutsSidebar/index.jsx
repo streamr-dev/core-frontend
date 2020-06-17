@@ -2,8 +2,8 @@ import React, { useEffect, useCallback, useState } from 'react'
 import cx from 'classnames'
 
 import { isWindows as getIsWindows, isMac as getIsMac } from '$shared/utils/platform'
-import { Header, Content, Section } from '$editor/shared/components/Sidebar'
-import isEditableElement from '$editor/shared/utils/isEditableElement'
+import { Header, Content, Section } from '$shared/components/Sidebar'
+import isEditableElement from '$shared/utils/isEditableElement'
 
 import styles from './KeyboardShortcutsSidebar.pcss'
 

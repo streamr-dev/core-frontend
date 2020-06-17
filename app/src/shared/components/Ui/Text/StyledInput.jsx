@@ -68,6 +68,8 @@ export default styled.input`
     }
 
     ${({ invalid }) => !!invalid && css`
-        border-color: #FF5C00;
+        :not(:disabled), :not(:disabled):focus {
+            border-color: #FF5C00;
+        }
     `}
 `

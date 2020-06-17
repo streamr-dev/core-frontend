@@ -13,6 +13,7 @@ import LogoItem from './LogoItem'
 import DropdownItem from './DropdownItem'
 import LinkItem from './LinkItem'
 import AvatarItem from './AvatarItem'
+import ActivityItem from './ActivityItem'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
@@ -92,13 +93,14 @@ const Nav = compose(
                     <Link to={docsLinks.products} key="products">
                         <Translate value="general.products" />
                     </Link>,
-                    ...(process.env.DATA_UNIONS_DOCS ? [(
-                        <Link to={docsLinks.dataUnions} key="dataUnions">
-                            <Translate value="general.dataUnions" />
-                        </Link>
-                    )] : []),
+                    <Link to={docsLinks.dataUnions} key="dataUnions">
+                        <Translate value="general.dataUnions" />
+                    </Link>,
                 ]}
             </DropdownItem>
+            {!!currentUser && process.env.ACTIVITY_QUEUE && (
+                <ActivityItem />
+            )}
             {!!currentUser && (
                 <AvatarItem user={currentUser} />
             )}

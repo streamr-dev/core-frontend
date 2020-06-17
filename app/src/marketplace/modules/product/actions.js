@@ -116,9 +116,10 @@ const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
 
 const getUserProductPermissionsSuccess = createAction(
     GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    (read: boolean, write: boolean, share: boolean) => ({
-        read,
-        write,
+    ({ get, edit, del, share }) => ({
+        get,
+        edit,
+        del,
         share,
     }),
 )
@@ -199,15 +200,16 @@ export const purchaseProduct = () => (dispatch: Function, getState: () => StoreS
     }
 }
 
-export const getUserProductPermissions = (id: ProductId) => (dispatch: Function) => {
+export const getUserProductPermissions = (id: ProductId) => async (dispatch: Function) => {
     dispatch(getUserProductPermissionsRequest(id))
-    return services
-        .getUserProductPermissions(id)
-        .then(({ read, write, share }) => {
-            dispatch(getUserProductPermissionsSuccess(read, write, share))
-        }, (error) => {
-            dispatch(getUserProductPermissionsFailure(id, {
-                message: error.message,
-            }))
-        })
+    let permissions
+    try {
+        permissions = await services.getUserProductPermissions(id)
+    } catch (error) {
+        dispatch(getUserProductPermissionsFailure(id, {
+            message: error.message,
+        }))
+        return
+    }
+    dispatch(getUserProductPermissionsSuccess(permissions))
 }

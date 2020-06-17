@@ -64,7 +64,7 @@ Cypress.Commands.add('ignoreUncaughtError', (messageRegex, done) => {
     })
 })
 
-Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'read') => (
+Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'stream_get') => (
     cy
         .authenticatedRequest({
             url: `http://localhost/api/v1/streams/${streamId}/permissions`,

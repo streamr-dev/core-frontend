@@ -119,8 +119,9 @@ export type UserProductPermissionList = {
 }
 
 export type ProductPermissions = {
-    read: boolean,
-    write: boolean,
+    get: boolean,
+    edit: boolean,
+    del: boolean,
     share: boolean,
     fetchingPermissions: boolean,
     permissionsError: ?ErrorInUi,

@@ -375,8 +375,9 @@ describe('product - actions', () => {
         it('calls services.getUserProductPermissions and sets permissions', async () => {
             const productId = 1
             const data = {
-                read: true,
-                write: true,
+                get: true,
+                edit: true,
+                del: false,
                 share: false,
             }
 
@@ -396,8 +397,9 @@ describe('product - actions', () => {
                 {
                     type: constants.GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
                     payload: {
-                        read: true,
-                        write: true,
+                        get: true,
+                        edit: true,
+                        del: false,
                         share: false,
                     },
                 },
@@ -408,8 +410,9 @@ describe('product - actions', () => {
         it('handles anonymous permission as read', async () => {
             const productId = 1
             const data = {
-                read: true,
-                write: false,
+                get: true,
+                edit: false,
+                del: false,
                 share: false,
             }
 
@@ -429,8 +432,9 @@ describe('product - actions', () => {
                 {
                     type: constants.GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
                     payload: {
-                        read: true,
-                        write: false,
+                        get: true,
+                        edit: false,
+                        del: false,
                         share: false,
                     },
                 },

@@ -1,6 +1,4 @@
-// @flow
-
-import React, { Children, useCallback, useState } from 'react'
+import React, { Children, useCallback, useState, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
@@ -8,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
-import { SM, MD, LG, XL, MEDIUM } from '$shared/utils/styled'
+import { SM, MD, XL, MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
@@ -21,6 +19,8 @@ import { getSecurityLevelConfig } from './Edit/SecurityView'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import routes from '$routes'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
+import CodeSnippets from '$shared/components/CodeSnippets'
+import { subscribeSnippets } from '$utils/streamSnippets'
 
 const Details = styled.div`
     border: solid #e7e7e7;
@@ -41,7 +41,7 @@ const CustomLabel = styled(Label)`
     margin-bottom: 1.25em;
 `
 
-const UnstyledDetail = ({ title, children, ...props }: any) => (
+const UnstyledDetail = ({ title, children, ...props }) => (
     <div {...props}>
         <CustomLabel>{title}</CustomLabel>
         <p>{children}</p>
@@ -103,7 +103,7 @@ const UnstyledField = ({
     narrow,
     desktopOnly,
     ...props
-}: any) => (
+}) => (
     <div {...props}>
         <Label>{label}&zwnj;</Label>
         <FieldControls multiple={Children.count(children) > 1}>
@@ -166,7 +166,7 @@ const FieldGroup = styled(FormGroup)`
     }
 `
 
-const UnstyledView = ({ stream, currentUser, ...props }: any) => {
+const UnstyledView = ({ stream, currentUser, ...props }) => {
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
 
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
@@ -196,6 +196,12 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
             }
         } catch (e) { /**/ }
     })
+
+    const snippets = useMemo(() => (
+        subscribeSnippets({
+            id: stream.id,
+        })
+    ), [stream.id])
 
     return (
         <Layout
@@ -230,6 +236,18 @@ const UnstyledView = ({ stream, currentUser, ...props }: any) => {
                             {stream.partitions}
                         </Detail>
                     </Details>
+                </TOCSection>
+                <TOCSection
+                    id="snippets"
+                    title={I18n.t('general.codeSnippets')}
+                >
+                    <CodeSnippets
+                        items={[
+                            ['javascript', 'Js', snippets.javascript],
+                            ['java', 'Java', snippets.java],
+                        ]}
+                        title="Subscribe"
+                    />
                 </TOCSection>
                 <TOCSection
                     id="security"
@@ -340,14 +358,6 @@ const View = styled(UnstyledView)`
 
     ${Title} {
         display: block;
-    }
-
-    ${TOCSection}:first-child {
-        padding-top: 24px;
-
-        @media (min-width: ${LG}px) {
-            padding-top: 72px;
-        }
     }
 `
 

@@ -191,13 +191,13 @@ msgid "userpages##products##createProduct"
 msgstr "Create"
 
 msgid "userpages##products##viewProduct"
-msgstr "View Product"
+msgstr "View on Marketplace"
 
 msgid "userpages##products##settings"
-msgstr "Settings"
+msgstr "Edit product"
 
 msgid "userpages##members##noDataUnionMembers##approve##title"
-msgstr "No one has applied to join yet."
+msgstr "No one is waiting to join at the moment."
 
 msgid "userpages##members##noDataUnionMembers##approve##message"
 msgstr "Get out there and promote it 🚀"
@@ -490,6 +490,9 @@ msgstr "Start"
 msgid "userpages##streams##edit##preview##stop"
 msgstr "Stop"
 
+msgid "userpages##streams##edit##codeSnippets##description"
+msgstr "You can grab the code (JS & Java) you’ll need to use this stream in your applications below. Everyone can subscribe, but only users with permission can publish."
+
 msgid "userpages##streams##delete##confirmTitle"
 msgstr "Delete this stream?"
 
@@ -721,6 +724,9 @@ msgstr "View on Etherscan"
 
 msgid "userpages##transactions##actions##copyTxHash"
 msgstr "Copy TX hash"
+
+msgid "userpages##transactions##actions##txHashCopied"
+msgstr "TX hash copied"
 
 msgid "userpages##transactions##type##createContractProduct"
 msgstr "Publish"
@@ -1058,13 +1064,13 @@ msgid "modal##shareResource##onlyInvited"
 msgstr "Private — only people you’ve invited"
 
 msgid "modal##shareResource##withLink"
-msgstr "Public — viewable by anyone with the link or via the API"
+msgstr "Public — anyone with link or via API"
 
 msgid "modal##shareResource##enterEmailAddressLabel"
-msgstr "Email or ETH address"
+msgstr "Email or Ethereum address"
 
 msgid "modal##shareResource##enterEmailAddress"
-msgstr "Enter your email or ETH address"
+msgstr "Enter email or Ethereum address"
 
 msgid "modal##shareResource##permissions##read"
 msgstr "View only"
@@ -1079,7 +1085,7 @@ msgid "modal##shareResource##user##defaultTitle"
 msgstr "Streamr user"
 
 msgid "modal##shareResource##save"
-msgstr "Share"
+msgstr "Save"
 
 msgid "modal##shareResource##tabs##share"
 msgstr "Share settings"
@@ -1102,6 +1108,12 @@ msgstr "Copy link"
 msgid "modal##shareResource##linkCopied"
 msgstr "Link copied"
 
+msgid "modal##shareResource##warnUnsavedChanges"
+msgstr "To update your permissions please save your changes. To discard them, click cancel."
+
+msgid "modal##shareResource##warnSavingChanges"
+msgstr "Please wait while saving changes."
+
 msgid "modal##copySnippet##defaultTitle"
 msgstr "Copy Snippet"
 
@@ -1113,3 +1125,36 @@ msgstr "Copy"
 
 msgid "modal##copySnippet##copied"
 msgstr "Copied"
+
+msgid "share##error##invalidUserError"
+msgstr "Invalid User ID"
+
+msgid "share##error##anonymousUserError"
+msgstr "Can not share to anonymous"
+
+msgid "share##error##currentUserError"
+msgstr "Can not share to self"
+
+msgid "share##permissions##get"
+msgstr "Get"
+
+msgid "share##permissions##edit"
+msgstr "Edit"
+
+msgid "share##permissions##delete"
+msgstr "Delete"
+
+msgid "share##permissions##publish"
+msgstr "Publish"
+
+msgid "share##permissions##subscribe"
+msgstr "Subscribe"
+
+msgid "share##permissions##share"
+msgstr "Share"
+
+msgid "share##permissions##startstop"
+msgstr "Start/Stop"
+
+msgid "share##permissions##interact"
+msgstr "Interact"
