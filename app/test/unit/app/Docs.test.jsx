@@ -312,60 +312,26 @@ const links = ({ section, dataUnions }) => {
 }
 
 describe('Marketplace Routes', () => {
-    describe('Without data unions', () => {
-        describe.each(sections({
+    describe.each(sections({
+        dataUnions: true,
+    }))('Smoke test routes for %s', (section) => {
+        it.each(links({
+            section,
             dataUnions: true,
-        }))('Smoke test routes for %s', (section) => {
-            it.each(links({
-                section,
-                dataUnions: true,
-            }))(`${section === 'Data Unions' ? 'does not show' : 'shows'} route: %s`, (url) => {
-                delete process.env.DATA_UNIONS_DOCS
-                const el = mount((
-                    <MemoryRouter
-                        initialEntries={[url]}
-                    >
-                        <Switch>
-                            {DocsRouter()}
-                        </Switch>
-                        <Route component={GenericErrorPage} key="NotFoundPage" />
-                    </MemoryRouter>
-                ))
+        }))('shows route: %s', (url) => {
+            const el = mount((
+                <MemoryRouter
+                    initialEntries={[url]}
+                >
+                    <Switch>
+                        {DocsRouter()}
+                    </Switch>
+                    <Route component={GenericErrorPage} key="NotFoundPage" />
+                </MemoryRouter>
+            ))
 
-                if (section === 'Data Unions') {
-                    expect(el.text().indexOf(url) >= 0).toBe(false)
-                    expect(el.text()).toBe('Error page')
-                } else {
-                    expect(el.text().indexOf(url) >= 0).toBe(true)
-                    expect(el.text()).not.toBe('Error page')
-                }
-            })
-        })
-    })
-
-    describe('With data unions', () => {
-        describe.each(sections({
-            dataUnions: true,
-        }))('Smoke test routes for %s', (section) => {
-            it.each(links({
-                section,
-                dataUnions: true,
-            }))('shows route: %s', (url) => {
-                process.env.DATA_UNIONS_DOCS = 'on'
-                const el = mount((
-                    <MemoryRouter
-                        initialEntries={[url]}
-                    >
-                        <Switch>
-                            {DocsRouter()}
-                        </Switch>
-                        <Route component={GenericErrorPage} key="NotFoundPage" />
-                    </MemoryRouter>
-                ))
-
-                expect(el.text().indexOf(url) >= 0).toBe(true)
-                expect(el.text()).not.toBe('Error page')
-            })
+            expect(el.text().indexOf(url) >= 0).toBe(true)
+            expect(el.text()).not.toBe('Error page')
         })
     })
 })
