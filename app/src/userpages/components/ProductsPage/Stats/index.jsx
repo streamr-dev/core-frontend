@@ -22,6 +22,7 @@ import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import StatsValues from '$shared/components/DataUnionStats/Values'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 
 import styles from './stats.pcss'
 
@@ -102,7 +103,14 @@ const StatsWrap = () => {
         return <LoadingView />
     }
 
-    const key = (!!product && product.id) || ''
+    // show not found if DU is not actually yet deployed
+    const { id, beneficiaryAddress } = product
+
+    if (!beneficiaryAddress) {
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, id)
+    }
+
+    const key = (!!product && id) || ''
 
     return (
         <Stats key={key} />

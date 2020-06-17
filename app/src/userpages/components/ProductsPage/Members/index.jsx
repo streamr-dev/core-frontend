@@ -32,6 +32,7 @@ import { ago } from '$shared/utils/time'
 import confirmDialog from '$shared/utils/confirm'
 import Search from '$userpages/components/Header/Search'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 
 import styles from './members.pcss'
 
@@ -401,7 +402,14 @@ const MembersWrap = () => {
         return <LoadingView />
     }
 
-    const key = (!!product && product.id) || ''
+    // show not found if DU is not actually yet deployed
+    const { id, beneficiaryAddress } = product
+
+    if (!beneficiaryAddress) {
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, id)
+    }
+
+    const key = (!!product && id) || ''
 
     return (
         <SelectionProvider key={key}>
