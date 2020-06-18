@@ -82,20 +82,6 @@ describe('GlobalInfoWatcher', () => {
         expect(userDataStub.callCount).toEqual(2)
     })
 
-    it('starts web3 polling on mount', () => {
-        sandbox.stub(redux, 'useSelector')
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(useBalances, 'useBalances').callsFake(() => ({
-            update: () => {},
-        }))
-        sandbox.stub(Web3Poller, 'subscribe')
-
-        act(() => {
-            mount(<GlobalInfoWatcher />)
-        })
-        expect(Web3Poller.subscribe.callCount).toEqual(5)
-    })
-
     it('stops polling on unmount', () => {
         sandbox.stub(redux, 'useSelector')
         sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
@@ -112,7 +98,7 @@ describe('GlobalInfoWatcher', () => {
         })
 
         expect(clockSpy.callCount).toEqual(5)
-        expect(Web3Poller.unsubscribe.callCount).toEqual(5)
+        expect(Web3Poller.unsubscribe.callCount).toEqual(2)
     })
 
     it('adds pending transactions from storage on mount', () => {

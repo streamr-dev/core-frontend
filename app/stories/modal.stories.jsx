@@ -14,7 +14,8 @@ import { subscribeSnippets } from '$utils/streamSnippets'
 import PngIcon from '$shared/components/PngIcon'
 
 import croppedImage from '$mp/assets/product_standard.png'
-import { publishModes, actionsTypes } from '$mp/containers/EditProductPage/usePublish'
+import { publishModes, actionsTypes as publishActionTypes } from '$mp/containers/EditProductPage/usePublish'
+import { actionsTypes as purchaseActionTypes } from '$mp/containers/ProductPage/usePurchase'
 
 // marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
@@ -32,11 +33,11 @@ import InsufficientEthDialog from '$mp/components/Modal/InsufficientEthDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
-import ReplaceAllowanceDialog from '$mp/components/Modal/ReplaceAllowanceDialog'
-import CompletePurchaseDialog from '$mp/components/Modal/CompletePurchaseDialog'
+import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
+import PurchaseComplete from '$mp/components/Modal/PurchaseComplete'
+import PurchaseError from '$mp/components/Modal/PurchaseError'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
-import SetAllowanceDialog from '$mp/components/Modal/SetAllowanceDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
 
@@ -92,12 +93,12 @@ story('Product Editor/PublishTransactionProgress')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -118,12 +119,12 @@ story('Product Editor/PublishTransactionProgress')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -144,12 +145,12 @@ story('Product Editor/PublishTransactionProgress')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -166,8 +167,8 @@ story('Product Editor/PublishTransactionProgress')
         const undeployPaidStatus = select('Undeploy paid', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
-            [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
+            [publishActionTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+            [publishActionTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
         }
 
         return (
@@ -223,12 +224,12 @@ story('Product Editor/PublishError')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -248,12 +249,12 @@ story('Product Editor/PublishError')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -273,12 +274,12 @@ story('Product Editor/PublishError')
         const publishPendingStatus = select('Publish penging changes', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
-            [actionsTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
-            [actionsTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
-            [actionsTypes.REDEPLOY_PAID]: redeployPaidStatus,
-            [actionsTypes.PUBLISH_FREE]: publishFreeStatus,
-            [actionsTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
+            [publishActionTypes.UPDATE_ADMIN_FEE]: adminFeeStatus,
+            [publishActionTypes.UPDATE_CONTRACT_PRODUCT]: updateContractStatus,
+            [publishActionTypes.CREATE_CONTRACT_PRODUCT]: createContractStatus,
+            [publishActionTypes.REDEPLOY_PAID]: redeployPaidStatus,
+            [publishActionTypes.PUBLISH_FREE]: publishFreeStatus,
+            [publishActionTypes.PUBLISH_PENDING_CHANGES]: publishPendingStatus,
         }
 
         return (
@@ -294,8 +295,8 @@ story('Product Editor/PublishError')
         const undeployPaidStatus = select('Undeploy paid', options, transactionStates.STARTED)
 
         const statuses = {
-            [actionsTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
-            [actionsTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
+            [publishActionTypes.UNPUBLISH_FREE]: unpublishFreeStatus,
+            [publishActionTypes.UNDEPLOY_CONTRACT_PRODUCT]: undeployPaidStatus,
         }
 
         return (
@@ -674,37 +675,35 @@ story('Marketplace/PurchaseSummaryDialog')
             defaultViewport: 'iPhone',
         },
     })
-    .add('purchase started', () => (
-        <PurchaseSummaryDialog
-            name="Example Product"
-            price={BN(123)}
-            paymentCurrency="DATA"
-            time="24"
-            timeUnit="hour"
-            approxUsd="0.11"
-            onBack={action('onBack')}
-            onCancel={action('onCancel')}
-            onPay={action('onPay')}
-            purchaseStarted
-        />
-    ))
-    .add('purchase started (iPhone)', () => (
-        <PurchaseSummaryDialog
-            name="Example Product"
-            price={BN(123)}
-            paymentCurrency="DATA"
-            time="24"
-            timeUnit="hour"
-            approxUsd="0.11"
-            onBack={action('onBack')}
-            onCancel={action('onCancel')}
-            onPay={action('onPay')}
-            purchaseStarted
-        />
-    ), {
-        viewport: {
-            defaultViewport: 'iPhone',
-        },
+
+story('Marketplace/PurchaseTransactionProgress')
+    .add('default', () => {
+        const resetDataAllowanceStatus = select('Reset DATA Allowance', options, transactionStates.STARTED)
+        const setDataAllowanceStatus = select('Set DATA Allowance', options, transactionStates.STARTED)
+        const resetDaiAllowanceStatus = select('Reset DAI Allowance', options, transactionStates.STARTED)
+        const setDaiAllowanceStatus = select('Set DAI Allowance', options, transactionStates.STARTED)
+        const purchaseStateStatus = select('Purchase', options, transactionStates.STARTED)
+
+        const statuses = {
+            [purchaseActionTypes.RESET_DATA_ALLOWANCE]: resetDataAllowanceStatus,
+            [purchaseActionTypes.SET_DATA_ALLOWANCE]: setDataAllowanceStatus,
+            [purchaseActionTypes.RESET_DAI_ALLOWANCE]: resetDaiAllowanceStatus,
+            [purchaseActionTypes.SET_DAI_ALLOWANCE]: setDaiAllowanceStatus,
+            [purchaseActionTypes.PURCHASE]: purchaseStateStatus,
+        }
+
+        const prompt = select('Prompt', {
+            none: undefined,
+            ...purchaseActionTypes,
+        })
+
+        return (
+            <PurchaseTransactionProgress
+                onCancel={action('cancel')}
+                status={statuses}
+                prompt={prompt}
+            />
+        )
     })
 
 story('Marketplace/ConnectEthereumAddressDialog')
@@ -732,79 +731,38 @@ story('Marketplace/ConnectEthereumAddressDialog')
         />
     ))
 
-story('Marketplace/SetAllowanceDialog')
+story('Marketplace/PurchaseComplete')
     .add('default', () => (
-        <SetAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            paymentCurrency="DATA"
-        />
-    ))
-    .add('getting allowance', () => (
-        <SetAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            gettingAllowance
-            paymentCurrency="DATA"
-        />
-    ))
-    .add('setting allowance', () => (
-        <SetAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            settingAllowance
-            paymentCurrency="DATA"
+        <PurchaseComplete
+            onContinue={action('onContinue')}
+            onClose={action('onClose')}
+            txHash="0x68dda92ba60240b74b2a79c2b7c87c3316273b40b6d93d6367d95b5a467fe885"
         />
     ))
 
-story('Marketplace/ReplaceAllowanceDialog')
-    .add('default', () => (
-        <ReplaceAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-        />
-    ))
-    .add('getting allowance', () => (
-        <ReplaceAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            gettingAllowance
-        />
-    ))
-    .add('setting allowance', () => (
-        <ReplaceAllowanceDialog
-            onCancel={action('onCancel')}
-            onSet={action('onSet')}
-            settingAllowance
-        />
-    ))
+story('Marketplace/PurchaseError')
+    .add('default', () => {
+        const resetDataAllowanceStatus = select('Reset DATA Allowance', options, transactionStates.STARTED)
+        const setDataAllowanceStatus = select('Set DATA Allowance', options, transactionStates.STARTED)
+        const resetDaiAllowanceStatus = select('Reset DAI Allowance', options, transactionStates.STARTED)
+        const setDaiAllowanceStatus = select('Set DAI Allowance', options, transactionStates.STARTED)
+        const purchaseStateStatus = select('Purchase', options, transactionStates.STARTED)
 
-story('Marketplace/CompletePurchaseDialog')
-    .add('pending', () => (
-        <CompletePurchaseDialog
-            purchaseState={transactionStates.PENDING}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed', () => (
-        <CompletePurchaseDialog
-            purchaseState={transactionStates.CONFIRMED}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('confirmed (account not linked)', () => (
-        <CompletePurchaseDialog
-            purchaseState={transactionStates.CONFIRMED}
-            accountLinked={false}
-            onCancel={action('onCancel')}
-        />
-    ))
-    .add('error', () => (
-        <CompletePurchaseDialog
-            purchaseState={transactionStates.FAILED}
-            onCancel={action('onCancel')}
-        />
-    ))
+        const statuses = {
+            [purchaseActionTypes.RESET_DATA_ALLOWANCE]: resetDataAllowanceStatus,
+            [purchaseActionTypes.SET_DATA_ALLOWANCE]: setDataAllowanceStatus,
+            [purchaseActionTypes.RESET_DAI_ALLOWANCE]: resetDaiAllowanceStatus,
+            [purchaseActionTypes.SET_DAI_ALLOWANCE]: setDaiAllowanceStatus,
+            [purchaseActionTypes.PURCHASE]: purchaseStateStatus,
+        }
+
+        return (
+            <PurchaseError
+                onClose={action('onClose')}
+                status={statuses}
+            />
+        )
+    })
 
 story('Marketplace/ErrorDialog')
     .add('default', () => (

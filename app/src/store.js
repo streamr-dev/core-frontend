@@ -16,10 +16,7 @@ import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
 import integrationKeyReducer from '$shared/modules/integrationKey/reducer'
 import resourceKeyReducer from '$shared/modules/resourceKey/reducer'
-import purchaseReducer from './marketplace/modules/purchase/reducer'
-import allowanceReducer from './marketplace/modules/allowance/reducer'
 import streamsReducer from './marketplace/modules/streams/reducer'
-import web3Reducer from './marketplace/modules/web3/reducer'
 import globalReducer from './marketplace/modules/global/reducer'
 import relatedProductsReducer from './marketplace/modules/relatedProducts/reducer'
 import transactionsReducer from './marketplace/modules/transactions/reducer'
@@ -41,7 +38,6 @@ if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 export function initStore() {
     const store = createStore(
         combineReducers({
-            allowance: allowanceReducer,
             categories: categoriesReducer,
             contractProduct: contractProductReducer,
             dataUnion: dataUnionReducer,
@@ -51,13 +47,11 @@ export function initStore() {
             myPurchaseList: myPurchasesReducer,
             product: productReducer,
             productList: productsReducer,
-            purchase: purchaseReducer,
             router: connectRouter(history),
             streams: streamsReducer,
             user: userReducer,
             integrationKey: integrationKeyReducer,
             resourceKey: resourceKeyReducer,
-            web3: web3Reducer,
             i18n: i18nReducer,
             relatedProducts: relatedProductsReducer,
             transactions: transactionsReducer,

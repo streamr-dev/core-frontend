@@ -23,21 +23,6 @@ jest.mock('$mp/modules/myPurchaseList/actions', () => (
         ),
     }
 ))
-jest.mock('$mp/modules/purchase/actions', () => (
-    {
-        addFreeProduct: (id) => (dispatch) => (
-            new Promise((resolve) => {
-                dispatch({
-                    type: 'TEST_ADD_FREE_PRODUCT',
-                    payload: {
-                        id,
-                    },
-                })
-                resolve()
-            })
-        ),
-    }
-))
 
 describe('product - actions', () => {
     let sandbox
@@ -290,83 +275,6 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-    })
-
-    describe('purchaseProduct', () => {
-        it('purchases a paid product', async () => {
-            const productId = '1337'
-            const store = mockStore({
-                product: {
-                    id: productId,
-                },
-                entities: {
-                    products: {
-                        [productId]: {
-                            id: productId,
-                            name: 'Test product',
-                            pricePerSecond: 123,
-                            isFree: false,
-                        },
-                    },
-                },
-            })
-            await store.dispatch(actions.purchaseProduct())
-
-            const expectedActions = [
-                {
-                    type: CALL_HISTORY_METHOD,
-                    payload: {
-                        method: 'replace',
-                        args: [
-                            '/marketplace/products/1337/purchase',
-                        ],
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('adds a free product to my products', async () => {
-            const productId = '1337'
-            const store = mockStore({
-                product: {
-                    id: productId,
-                },
-                entities: {
-                    products: {
-                        [productId]: {
-                            id: productId,
-                            name: 'Test product',
-                            pricePerSecond: 0,
-                            isFree: true,
-                        },
-                    },
-                },
-            })
-            await store.dispatch(actions.purchaseProduct())
-
-            const expectedActions = [
-                {
-                    type: 'TEST_ADD_FREE_PRODUCT',
-                    payload: {
-                        id: productId,
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('skips if no product is selected', async () => {
-            const store = mockStore({
-                product: {
-                    id: null,
-                },
-            })
-            await store.dispatch(actions.purchaseProduct())
-
-            const expectedActions = []
             assert.deepStrictEqual(store.getActions(), expectedActions)
         })
     })

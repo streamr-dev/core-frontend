@@ -155,7 +155,6 @@ export const validateBalanceForPurchase = async ({
     includeGasForSetAllowance = false,
     includeGasForResetAllowance = false,
 }: ValidateBalance) => {
-/* eslint-enable object-curly-newline */
     const [ethBalance, dataBalance, daiBalance] = await getBalances()
     let requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
 
@@ -169,7 +168,8 @@ export const validateBalanceForPurchase = async ({
 
     switch (paymentCurrency) {
         case paymentCurrencies.ETH: {
-            const requiredEth = BN(price).plus(requiredGas)
+            const ethPrice = await uniswapDATAtoETH(price.toString())
+            const requiredEth = BN(ethPrice).plus(requiredGas)
             if (ethBalance.isLessThan(requiredEth)) {
                 throw new NoBalanceError({
                     message: I18n.t('error.noBalance'),
@@ -184,7 +184,7 @@ export const validateBalanceForPurchase = async ({
             }
             break
         }
-        case paymentCurrencies.DATA:
+        case paymentCurrencies.DATA: {
             if (ethBalance.isLessThan(requiredGas) || dataBalance.isLessThan(price)) {
                 throw new NoBalanceError({
                     message: I18n.t('error.noBalance'),
@@ -199,8 +199,10 @@ export const validateBalanceForPurchase = async ({
                 })
             }
             break
-        case paymentCurrencies.DAI:
-            if (ethBalance.isLessThan(requiredGas) || daiBalance.isLessThan(price)) {
+        }
+        case paymentCurrencies.DAI: {
+            const daiPrice = await uniswapDATAtoDAI(price.toString())
+            if (ethBalance.isLessThan(requiredGas) || daiBalance.isLessThan(daiPrice)) {
                 throw new NoBalanceError({
                     message: I18n.t('error.noBalance'),
                     required: {
@@ -209,12 +211,14 @@ export const validateBalanceForPurchase = async ({
                     },
                     balances: {
                         eth: ethBalance,
-                        dai: price,
+                        dai: daiBalance,
                     },
                 })
             }
             break
+        }
         default:
             break
     }
 }
+/* eslint-enable object-curly-newline */

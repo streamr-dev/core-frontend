@@ -1,17 +1,27 @@
 // @flow
 
 import { get, put, post } from '$shared/utils/api'
-import { getContract, call } from '../../utils/smartContract'
+import { getContract, call, send } from '../../utils/smartContract'
 import getConfig from '$shared/web3/config'
+import BN from 'bignumber.js'
+import getWeb3 from '$shared/web3/web3Provider'
+import { I18n } from 'react-redux-i18n'
 
-import type { ApiResult } from '$shared/flowtype/common-types'
+import type { SmartContractTransaction, SmartContractCall, Hash } from '$shared/flowtype/web3-types'
+import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
+import type { NumberString, ApiResult, PaymentCurrency } from '$shared/flowtype/common-types'
 import type { Product, ProductId, Subscription, ProductType } from '$mp/flowtype/product-types'
-import type { SmartContractCall, Hash } from '$shared/flowtype/web3-types'
 import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import getWeb3 from '$shared/web3/web3Provider'
+import { fromAtto, toAtto } from '$mp/utils/math'
 import routes from '$routes'
+
+const marketplaceContractMethods = () => getContract(getConfig().marketplace).methods
+const uniswapAdaptorContractMethods = () => getContract(getConfig().uniswapAdaptor).methods
+const dataTokenContractMethods = () => getContract(getConfig().dataToken).methods
+const daiTokenContractMethods = () => getContract(getConfig().daiToken).methods
+const marketplaceContract = () => getContract(getConfig().marketplace)
 
 export const getProductById = async (id: ProductId): ApiResult<Product> => get({
     url: routes.api.products.show({
@@ -27,14 +37,12 @@ export const getStreamsByProductId = async (id: ProductId, useAuthorization: boo
     useAuthorization,
 })
 
-const contractMethods = () => getContract(getConfig().marketplace).methods
-
 export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subscription> => (
     Promise.all([
         getProductFromContract(id),
         getWeb3().getDefaultAccount(),
     ])
-        .then(([, account]) => call(contractMethods().getSubscription(getValidId(id), account)))
+        .then(([, account]) => call(marketplaceContractMethods().getSubscription(getValidId(id), account)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),
@@ -154,3 +162,86 @@ export const postSetDeploying = async (id: ProductId, txHash: Hash): ApiResult<P
         },
     }).then(mapProductFromApi)
 )
+
+export const addFreeProduct = async (id: ProductId, endsAt: number): ApiResult<null> => post({
+    url: routes.api.subscriptions(),
+    data: {
+        product: getValidId(id, false),
+        endsAt,
+    },
+})
+
+const ONE_DAY = '86400'
+
+export const buyProduct = (
+    id: ProductId,
+    subscriptionInSeconds: NumberString | BN,
+    paymentCurrency: PaymentCurrency,
+    price: BN,
+): SmartContractTransaction => {
+    const web3 = getWeb3()
+    const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
+
+    switch (paymentCurrency) {
+        case paymentCurrencies.ETH:
+            return send(uniswapAdaptorContractMethods().buyWithETH(
+                getValidId(id),
+                subscriptionInSeconds.toString(),
+                ONE_DAY,
+            ), {
+                gas: gasLimits.BUY_PRODUCT_WITH_ETH,
+                value: web3.utils.toWei(price.toString()).toString(),
+            })
+        case paymentCurrencies.DAI:
+            return send(uniswapAdaptorContractMethods().buyWithERC20(
+                getValidId(id),
+                subscriptionInSeconds.toString(),
+                ONE_DAY,
+                DAI,
+                web3.utils.toWei(price.toString()).toString(),
+            ), {
+                gas: gasLimits.BUY_PRODUCT_WITH_ERC20,
+            })
+
+        default: // Pay with DATA
+            return send(marketplaceContractMethods().buy(getValidId(id), subscriptionInSeconds.toString()), {
+                gas: gasLimits.BUY_PRODUCT,
+            })
+    }
+}
+
+export const getMyDataAllowance = (): SmartContractCall<BN> => {
+    const web3 = getWeb3()
+    return web3.getDefaultAccount()
+        .then((myAddress) => call(dataTokenContractMethods().allowance(myAddress, marketplaceContract().options.address)))
+        .then(fromAtto)
+}
+
+export const setMyDataAllowance = (amount: string | BN): SmartContractTransaction => {
+    if (BN(amount).isLessThan(0)) {
+        throw new Error(I18n.t('error.negativeAmount'))
+    }
+
+    const method = dataTokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
+    return send(method, {
+        gas: gasLimits.APPROVE,
+    })
+}
+
+export const getMyDaiAllowance = (): SmartContractCall<BN> => {
+    const web3 = getWeb3()
+    return web3.getDefaultAccount()
+        .then((myAddress) => call(daiTokenContractMethods().allowance(myAddress, process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS)))
+        .then(fromAtto)
+}
+
+export const setMyDaiAllowance = (amount: string | BN): SmartContractTransaction => {
+    if (BN(amount).isLessThan(0)) {
+        throw new Error(I18n.t('error.negativeAmount'))
+    }
+
+    const method = daiTokenContractMethods().approve(process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS, toAtto(amount).toFixed(0))
+    return send(method, {
+        gas: gasLimits.APPROVE,
+    })
+}

@@ -234,6 +234,9 @@ msgstr "No product found with id %{id}"
 msgid "error##publishFailed"
 msgstr "Publish failed"
 
+msgid "error##purchaseFailed"
+msgstr "Purchase failed"
+
 msgid "error##txAborted"
 msgstr "Transaction aborted"
 
@@ -502,25 +505,20 @@ msgstr ""
 "This product is unpublished now, <br/>"
 "but you still can see in your <a href=\"%{productLink}\">core product</a>"
 
-msgid "modal##completePurchase##confirmed##message"
-msgstr "You need to connect your Ethereum identity to your Streamr account."
+msgid "modal##purchaseComplete##title"
+msgstr "Transaction completed"
 
-msgid "modal##completePurchase##confirmed##link"
-msgstr "Connect it here."
+msgid "modal##purchaseComplete##message"
+msgstr "Verify your transaction on Etherscan"
 
-msgid "modal##completePurchase##confirmed##title"
-msgstr "Transaction complete"
+msgid "modal##purchaseComplete##viewInCore"
+msgstr "View in Core"
 
-msgid "modal##completePurchase##failed##message"
-msgstr ""
-"There was a problem with your transaction. <br /> Please check your wallet "
-"settings and try again."
+msgid "modal##purchaseComplete##copyLink"
+msgstr "Copy link"
 
-msgid "modal##completePurchase##failed##title"
-msgstr "Transaction failed"
-
-msgid "modal##completePurchase##pending##title"
-msgstr "Writing to the blockchain"
+msgid "modal##purchaseComplete##linkCopied"
+msgstr "Copied"
 
 msgid "modal##completeUnpublish##confirmed##title"
 msgstr "Unpublish complete"
@@ -669,6 +667,54 @@ msgstr "Purchase confirmation"
 msgid "modal##purchaseSummary##title"
 msgstr "Complete your purchase"
 
+msgid "modal##purchaseProgress##title"
+msgstr "Purchasing the product"
+
+msgid "modal##purchaseProgress##setDaiAllowance##pending"
+msgstr "Setting allowance"
+
+msgid "modal##purchaseProgress##resetDaiAllowance##pending"
+msgstr "Resetting allowance"
+
+msgid "modal##purchaseProgress##setDataAllowance##pending"
+msgstr "Setting allowance"
+
+msgid "modal##purchaseProgress##resetDataAllowance##pending"
+msgstr "Resetting allowance"
+
+msgid "modal##purchaseProgress##purchase##pending"
+msgstr "Purchasing the product"
+
+msgid "modal##purchaseError##someFailed##title"
+msgstr "Purchase did not complete"
+
+msgid "modal##purchaseError##allFailed##title"
+msgstr "Purchase failed"
+
+msgid "modal##purchaseError##actions##setDaiAllowance"
+msgstr "The allowance failed to update."
+
+msgid "modal##purchaseError##actions##resetDaiAllowance"
+msgstr "Resetting the allowance failed to update."
+
+msgid "modal##purchaseError##actions##setDataAllowance"
+msgstr "The allowance failed to update."
+
+msgid "modal##purchaseError##actions##resetDataAllowance"
+msgstr "Resetting the allowance failed to update."
+
+msgid "modal##purchaseError##actions##purchase"
+msgstr "Failed to purchase product."
+
+msgid "modal##purchaseError##actions##allFailed"
+msgstr "Failed to purchase product."
+
+msgid "modal##purchaseError##actions##someFailed"
+msgstr "More than one transaction failed."
+
+msgid "modal##purchaseError##actions##checkWallet"
+msgstr "Please check your wallet or other settings and try again"
+
 msgid "modal##readyToPublish##title"
 msgstr "Publish product"
 
@@ -728,11 +774,6 @@ msgstr ""
 "Due to an issue with ERC-20 allowance, we need to reset your allowance "
 "before proceeding."
 
-msgid "modal##replaceAllowance##started##message"
-msgstr ""
-"You need to confirm the transaction <br /> in your wallet to set the "
-"allowance."
-
 msgid "modal##saveProduct##confirmed##title"
 msgstr "Update completed"
 
@@ -755,26 +796,17 @@ msgstr "Writing to the blockchain"
 msgid "modal##saveProduct##started##title"
 msgstr "Updating"
 
-msgid "modal##setAllowance##dai"
-msgstr "This allows the marketplace to <br /> transfer the required amount of DAI."
-
-msgid "modal##setAllowance##data"
-msgstr "This allows the marketplace to <br /> transfer the required amount of DATA."
+msgid "modal##setAllowance##description"
+msgstr ""
+"This step allows the marketplace to <br />"
+"transfer the required amount of %{currency}."
 
 msgid "modal##setAllowance##helpText"
 msgstr ""
-"Allowance is a requirement of ERC-20 token transfers, designed to increase "
-"security and efficiency. For more about allowances, see this <a "
-"href=%{allowanceLink} target=\"_blank\" rel=\"noopener "
-"noreferrer\">page</a>."
-
-msgid "modal##setAllowance##started##message"
-msgstr ""
-"You need to confirm the transaction <br /> in your wallet to set the "
-"allowance."
-
-msgid "modal##setAllowance##started##title"
-msgstr "Set allowance confirmation"
+"Allowance is a requirement of ERC-20 token transfers,<br/>"
+"designed to increase security and efficiency.<br />"
+"For more about allowances, see this "
+"<a href=%{allowanceLink} target=\"_blank\" rel=\"noopener noreferrer\">page</a>."
 
 msgid "modal##setAllowance##title"
 msgstr "Set Marketplace Allowance"
