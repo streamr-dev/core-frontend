@@ -53,21 +53,31 @@ const PendingTasks = styled.div`
 `
 
 const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted }: Props) => {
-    const { pending, complete } = useMemo(() => Object.keys(status).reduce((result, key) => {
+    const { pending, progress } = useMemo(() => Object.keys(status).reduce((result, key) => {
         const value = status[key]
 
         if (value === transactionStates.PENDING) {
-            result.pending.push(key)
+            return {
+                ...result,
+                pending: [
+                    ...result.pending,
+                    key,
+                ],
+                progress: result.progress + 1,
+            }
         }
 
         if (value === transactionStates.FAILED || value === transactionStates.CONFIRMED) {
-            result.complete.push(key)
+            return {
+                ...result,
+                progress: result.progress + 2,
+            }
         }
 
         return result
     }, {
         pending: [],
-        complete: [],
+        progress: 0,
     }), [status])
 
     return (
@@ -100,7 +110,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
                             I18n.t(`modal.publishProgress.${key}.pending`)
                         )).join(', ')}
                     </PendingTasks>
-                    <ProgressBar value={(complete.length / Math.max(1, Object.keys(status).length)) * 100} />
+                    <ProgressBar value={((progress + 1) / ((Object.keys(status).length * 2) + 1)) * 100} />
                 </PublishProgress>
             </StyledDialog>
         </ModalPortal>
