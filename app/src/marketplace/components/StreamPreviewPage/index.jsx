@@ -112,7 +112,7 @@ const StreamPreviewPage = ({
         return null
     }
 
-    if (!productId && !(permissions || []).includes('read')) {
+    if (!productId && !(permissions || []).includes('stream_get')) {
         throw new ResourceNotFoundError(ResourceType.STREAM, urlId)
     }
 
