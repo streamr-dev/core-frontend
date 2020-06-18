@@ -227,6 +227,7 @@ export function updatePermission(resourceType, users, userId, permissions = {}) 
 
 export function usersFromPermissions(resourceType, permissions) {
     if (!resourceType) { throw new Error('resourceType required') }
+    permissions = permissions.filter((p) => !p.key) // ignore api keys
     const users = mapValues(groupBy(permissions, 'user'), (value) => {
         const r = Object.assign({}, getEmptyPermissions(resourceType))
         value.forEach((v) => {
