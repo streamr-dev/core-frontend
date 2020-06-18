@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { isDataUnionProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useProduct from '$mp/containers/ProductController/useProduct'
 
 import Hero from './Hero'
@@ -16,11 +16,12 @@ import styles from './page.pcss'
 const ProductDetailsPage = () => {
     const product = useProduct()
     const isDataUnion = !!(product && isDataUnionProduct(product))
+    const isProductFree = !!(product && !isPaidProduct(product))
 
     return (
         <div className={styles.productPage}>
             <Hero />
-            <Description />
+            <Description isProductFree={isProductFree} />
             {isDataUnion && (
                 <DataUnionStats />
             )}
