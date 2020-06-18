@@ -1,7 +1,6 @@
 // @flow
 
 import styled from 'styled-components'
-import { LG } from '$shared/utils/styled'
 
 export const Link = styled.a`
     color: #${({ active }) => (active ? '0324ff' : '323232')} !important;

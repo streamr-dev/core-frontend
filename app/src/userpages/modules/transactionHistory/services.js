@@ -209,7 +209,7 @@ export const getTransactionsFromEvents = (events: EventLogList): Promise<Transac
                 state: 'completed',
                 gasUsed: receipt.gasUsed,
                 gasPrice: tx.gas,
-                timestamp: block.timestamp,
+                timestamp: block.timestamp * 1000,
                 ...(inputValues || {}),
                 ...rest,
             }
