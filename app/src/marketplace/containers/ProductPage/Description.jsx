@@ -12,7 +12,11 @@ import { ago } from '$shared/utils/time'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 
-const Description = () => {
+type Props = {
+    isProductFree: boolean,
+}
+
+const Description = ({ isProductFree }: Props) => {
     const product = useProduct()
     const contractProduct = useContractProduct()
     const category = useSelector(selectCategory)
@@ -25,17 +29,19 @@ const Description = () => {
             loading: !category,
             value: category && category.name,
         },
-        subscriberCount: {
-            title: I18n.t('editProductPage.sidebar.activeSubscribers'),
-            loading: isPending,
-            value: subscriberCount || 0,
-        },
-        purchaseTimestamp: {
-            title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
-            loading: isPending,
-            value: purchaseTimestamp != null ? ago(new Date(purchaseTimestamp)) : '-',
-        },
-    }), [category, isPending, subscriberCount, purchaseTimestamp])
+        ...(!isProductFree ? { // Temporarily hide active subscribers info for free products while the backend does not support it.
+            subscriberCount: {
+                title: I18n.t('editProductPage.sidebar.activeSubscribers'),
+                loading: isPending,
+                value: subscriberCount || 0,
+            },
+            purchaseTimestamp: {
+                title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
+                loading: isPending,
+                value: purchaseTimestamp != null ? ago(new Date(purchaseTimestamp)) : '-',
+            },
+        } : {}),
+    }), [category, isPending, subscriberCount, purchaseTimestamp, isProductFree])
 
     return (
         <DescriptionComponent
