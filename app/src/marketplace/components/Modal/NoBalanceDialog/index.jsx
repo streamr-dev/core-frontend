@@ -11,55 +11,52 @@ import InsufficientEthDialog from '../InsufficientEthDialog'
 
 import { paymentCurrencies } from '$shared/utils/constants'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
+import type { Required, Balances } from '$mp/errors/NoBalanceError'
 
 export type Props = {
     onCancel: () => void,
-    requiredGasBalance: BN,
-    requiredEthBalance: BN,
-    currentEthBalance: BN,
-    requiredDataBalance: BN,
-    currentDataBalance: BN,
-    currentDaiBalance: BN,
-    requiredDaiBalance: BN,
+    required: Required,
+    balances: Balances,
     paymentCurrency: PaymentCurrency,
 }
 
-const NoBalanceDialog = ({
-    onCancel,
-    requiredGasBalance,
-    requiredEthBalance,
-    currentEthBalance,
-    requiredDataBalance,
-    currentDataBalance,
-    currentDaiBalance,
-    requiredDaiBalance,
-    paymentCurrency,
-}: Props) => {
+const NoBalanceDialog = ({ onCancel, required, balances, paymentCurrency }: Props) => {
+    const currentEthBalance = BN(balances.eth)
+    const requiredGasBalance = BN(required.gas)
+
     // Not enough gas for any transaction
     if (currentEthBalance.isLessThan(requiredGasBalance) || currentEthBalance.isZero()) {
         return <GetCryptoDialog onCancel={onCancel} />
     }
 
     switch (paymentCurrency) {
-        case paymentCurrencies.ETH:
+        case paymentCurrencies.ETH: {
+            const requiredEthBalance = BN(required.eth)
             if (currentEthBalance.isLessThan(requiredEthBalance)) {
                 return <InsufficientEthDialog onCancel={onCancel} />
             }
             break
-        case paymentCurrencies.DATA:
+        }
+        case paymentCurrencies.DATA: {
+            const currentDataBalance = BN(balances.data)
             if (currentDataBalance.isZero()) {
                 return <GetDataTokensDialog onCancel={onCancel} />
             }
 
+            const requiredDataBalance = BN(required.data)
             if (currentDataBalance.isLessThan(requiredDataBalance)) {
                 return <InsufficientDataDialog onCancel={onCancel} />
             }
             break
-        case paymentCurrencies.DAI:
+        }
+        case paymentCurrencies.DAI: {
+            const currentDaiBalance = BN(balances.dai)
+            const requiredDaiBalance = BN(required.dai)
             if (currentDaiBalance.isLessThan(requiredDaiBalance)) {
                 return <InsufficientDaiDialog onCancel={onCancel} />
             }
             break
+        }
         default:
             return <GetCryptoDialog onCancel={onCancel} />
     }

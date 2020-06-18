@@ -11,11 +11,10 @@ import { Translate } from 'react-redux-i18n'
 
 import { transactionStates } from '$shared/utils/constants'
 import { subscribeSnippets } from '$utils/streamSnippets'
-import { actionsTypes } from '$mp/containers/EditProductPage/publishQueue'
 import PngIcon from '$shared/components/PngIcon'
 
 import croppedImage from '$mp/assets/product_standard.png'
-import { publishModes } from '$mp/containers/EditProductPage/usePublish'
+import { publishModes, actionsTypes } from '$mp/containers/EditProductPage/usePublish'
 
 // marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
@@ -488,53 +487,71 @@ story('Marketplace/InsufficientEthDialog')
 story('Marketplace/NoBalanceDialog')
     .add('eth balance 0', () => (
         <NoBalanceDialog
-            requiredGasBalance={BN(0)}
-            requiredEthBalance={BN(0)}
-            currentEthBalance={BN(0)}
-            requiredDataBalance={BN(0)}
-            currentDataBalance={BN(0)}
-            currentDaiBalance={BN(0)}
-            requiredDaiBalance={BN(0)}
+            required={{
+                gas: BN(0),
+            }}
+            balances={{
+                eth: BN(0),
+            }}
             paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('eth balance < required', () => (
         <NoBalanceDialog
-            requiredGasBalance={BN(1)}
-            requiredEthBalance={BN(2)}
-            currentEthBalance={BN(1)}
-            requiredDataBalance={BN(0)}
-            currentDataBalance={BN(0)}
-            currentDaiBalance={BN(0)}
-            requiredDaiBalance={BN(0)}
-            paymentCurrency="DATA"
+            required={{
+                gas: BN(1),
+                eth: BN(2),
+            }}
+            balances={{
+                eth: BN(1),
+                data: BN(0),
+            }}
+            paymentCurrency="ETH"
             onCancel={action('onCancel')}
         />
     ))
     .add('DATA balance 0', () => (
         <NoBalanceDialog
-            requiredGasBalance={BN(0)}
-            requiredEthBalance={BN(2)}
-            currentEthBalance={BN(3)}
-            requiredDataBalance={BN(0)}
-            currentDataBalance={BN(0)}
-            currentDaiBalance={BN(0)}
-            requiredDaiBalance={BN(0)}
+            required={{
+                gas: BN(0),
+                eth: BN(2),
+            }}
+            balances={{
+                eth: BN(3),
+                data: BN(0),
+            }}
             paymentCurrency="DATA"
             onCancel={action('onCancel')}
         />
     ))
     .add('DATA balance < required', () => (
         <NoBalanceDialog
-            requiredGasBalance={BN(0)}
-            requiredEthBalance={BN(2)}
-            currentEthBalance={BN(3)}
-            requiredDataBalance={BN(3)}
-            currentDataBalance={BN(2)}
-            currentDaiBalance={BN(0)}
-            requiredDaiBalance={BN(0)}
+            required={{
+                gas: BN(0),
+                eth: BN(2),
+                data: BN(3),
+            }}
+            balances={{
+                eth: BN(3),
+                data: BN(2),
+            }}
             paymentCurrency="DATA"
+            onCancel={action('onCancel')}
+        />
+    ))
+    .add('DAI balance < required', () => (
+        <NoBalanceDialog
+            required={{
+                gas: BN(0),
+                eth: BN(2),
+                dai: BN(3),
+            }}
+            balances={{
+                eth: BN(3),
+                dai: BN(2),
+            }}
+            paymentCurrency="DAI"
             onCancel={action('onCancel')}
         />
     ))
@@ -543,10 +560,54 @@ story('Marketplace/ChooseAccessPeriodDialog')
     .add('default', () => (
         <ChooseAccessPeriodDialog
             dataPerUsd={BN(10)}
-            pricePerSecond={BN(1)}
+            pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
+            balances={{
+                ETH: BN(10),
+                DATA: BN(200),
+                DAI: BN(999),
+            }}
             onCancel={action('onCancel')}
             onNext={action('onNext')}
+        />
+    ))
+    .add('default (iPhone)', () => (
+        <ChooseAccessPeriodDialog
+            dataPerUsd={BN(10)}
+            pricePerSecond={BN(1).dividedBy(3600)}
+            priceCurrency="DATA"
+            balances={{
+                ETH: BN(10),
+                DATA: BN(200),
+                DAI: BN(999),
+            }}
+            onCancel={action('onCancel')}
+            onNext={action('onNext')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
+    .add('initial values', () => (
+        <ChooseAccessPeriodDialog
+            dataPerUsd={BN(10)}
+            pricePerSecond={BN(1).dividedBy(3600)}
+            priceCurrency="DATA"
+            balances={{
+                ETH: BN(10),
+                DATA: BN(200),
+                DAI: BN(999),
+            }}
+            onCancel={action('onCancel')}
+            onNext={action('onNext')}
+            initialValues={{
+                time: '1',
+                timeUnit: 'day',
+                paymentCurrency: 'ETH',
+                price: '-',
+                approxUsd: '-',
+            }}
         />
     ))
 
@@ -555,33 +616,96 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            ethPrice={BN(124)}
-            daiPrice={BN(125)}
-            dataPerUsd="0.1"
-            ethPriceInUsd="1"
             paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
+            approxUsd="0.11"
+            onBack={action('onBack')}
             onCancel={action('onCancel')}
             onPay={action('onPay')}
         />
     ))
-    .add('purchaseStarted', () => (
+    .add('default (iPhone)', () => (
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            ethPrice={BN(124)}
-            daiPrice={BN(125)}
-            dataPerUsd="0.1"
-            ethPriceInUsd="1"
             paymentCurrency="DATA"
             time="24"
             timeUnit="hour"
+            approxUsd="0.11"
+            onBack={action('onBack')}
+            onCancel={action('onCancel')}
+            onPay={action('onPay')}
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
+    .add('waiting', () => (
+        <PurchaseSummaryDialog
+            name="Example Product"
+            price={BN(123)}
+            paymentCurrency="DATA"
+            time="24"
+            timeUnit="hour"
+            approxUsd="0.11"
+            onBack={action('onBack')}
+            onCancel={action('onCancel')}
+            onPay={action('onPay')}
+            waiting
+        />
+    ))
+    .add('waiting (iPhone)', () => (
+        <PurchaseSummaryDialog
+            name="Example Product"
+            price={BN(123)}
+            paymentCurrency="DATA"
+            time="24"
+            timeUnit="hour"
+            approxUsd="0.11"
+            onBack={action('onBack')}
+            onCancel={action('onCancel')}
+            onPay={action('onPay')}
+            waiting
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
+    .add('purchase started', () => (
+        <PurchaseSummaryDialog
+            name="Example Product"
+            price={BN(123)}
+            paymentCurrency="DATA"
+            time="24"
+            timeUnit="hour"
+            approxUsd="0.11"
+            onBack={action('onBack')}
             onCancel={action('onCancel')}
             onPay={action('onPay')}
             purchaseStarted
         />
     ))
+    .add('purchase started (iPhone)', () => (
+        <PurchaseSummaryDialog
+            name="Example Product"
+            price={BN(123)}
+            paymentCurrency="DATA"
+            time="24"
+            timeUnit="hour"
+            approxUsd="0.11"
+            onBack={action('onBack')}
+            onCancel={action('onCancel')}
+            onPay={action('onPay')}
+            purchaseStarted
+        />
+    ), {
+        viewport: {
+            defaultViewport: 'iPhone',
+        },
+    })
 
 story('Marketplace/ConnectEthereumAddressDialog')
     .add('default', () => (

@@ -44,9 +44,8 @@ import {
     selectResetDaiAllowanceError,
 } from '$mp/modules/allowance/selectors'
 import { selectPurchaseTransaction, selectPurchaseStarted } from '$mp/modules/purchase/selectors'
-import { dataForTimeUnits } from '$mp/utils/price'
 import { toSeconds } from '$mp/utils/time'
-import { validateBalanceForPurchase } from '$mp/utils/web3'
+import { validateBalanceForPurchase, getBalances } from '$mp/utils/web3'
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import { IdentityExistsError } from '$shared/errors/Web3'
 import { DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
@@ -89,12 +88,11 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         time: '1',
         timeUnit: 'hour',
         paymentCurrency: DEFAULT_CURRENCY,
-        priceInEth: undefined,
-        priceInDai: undefined,
-        priceInEthUsdEquivalent: undefined,
+        price: undefined,
+        approxUsd: undefined,
     })
-    const purchasePrice: Ref<BN> = useRef(undefined)
     const [creatingIdentity, setCreatingIdentity] = useState(false)
+    const [balances, setBalances] = useState({})
 
     // Check if current metamask account is linked to Streamr account
     const accountLinked = useMemo(() => !!account && isLinked(account), [isLinked, account])
@@ -115,6 +113,17 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 }
             })
     }, [dispatch, loadEthIdentities, loadContractProduct, productId, isMounted])
+
+    useEffect(() => {
+        getBalances()
+            .then(([eth, data, dai]) => {
+                setBalances({
+                    [paymentCurrencies.ETH]: eth,
+                    [paymentCurrencies.DATA]: data,
+                    [paymentCurrencies.DAI]: dai,
+                })
+            })
+    }, [account])
 
     // Monitor reset DATA allowance state, set error or proceed after receiving the hash
     const resetDataAllowanceTx = useSelector(selectResetDataAllowanceTx)
@@ -215,14 +224,17 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const { pricePerSecond, priceCurrency } = contractProduct || {}
 
     const onVerifyAllowance = useCallback(async () => {
-        if (!accessPeriodParams.current || !purchasePrice.current) {
+        if (!accessPeriodParams.current) {
             throw new Error(I18n.t('error.noProductOrAccess'))
         }
 
-        const { paymentCurrency, priceInDai } = accessPeriodParams.current
+        const { paymentCurrency, price } = accessPeriodParams.current
 
         try {
-            await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
+            await validateBalanceForPurchase({
+                price,
+                paymentCurrency,
+            })
 
             if (!isMounted()) { return }
 
@@ -233,8 +245,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
                 // eslint-disable-next-line no-case-declarations
                 case paymentCurrencies.DAI:
-                    const daiPurchasePrice = (priceInDai || 0).toString()
-                    if (daiAllowance.isLessThan(daiPurchasePrice)) {
+                    if (daiAllowance.isLessThan(price)) {
                         if (daiAllowance.isGreaterThan(0)) {
                             setStep(purchaseFlowSteps.RESET_DAI_ALLOWANCE)
                         } else {
@@ -246,7 +257,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                     break
 
                 default: // Pay w DATA
-                    if (dataAllowance.isLessThan(purchasePrice.current)) {
+                    if (dataAllowance.isLessThan(price)) {
                         if (dataAllowance.isGreaterThan(0)) {
                             setStep(purchaseFlowSteps.RESET_DATA_ALLOWANCE)
                         } else {
@@ -287,37 +298,32 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const onSetAccessPeriod = useCallback(async (accessPeriod: AccessPeriod) => {
         accessPeriodParams.current = accessPeriod
 
-        purchasePrice.current = dataForTimeUnits(
-            pricePerSecond,
-            dataPerUsd,
-            priceCurrency,
-            accessPeriod.time,
-            accessPeriod.timeUnit,
-        )
-
         if (accountLinked) {
             onVerifyAllowance()
         } else {
             setStep(purchaseFlowSteps.LINK_ACCOUNT)
         }
-    }, [accountLinked, pricePerSecond, dataPerUsd, onVerifyAllowance, priceCurrency])
+    }, [accountLinked, onVerifyAllowance])
 
     const onSetDataAllowance = useCallback(async () => {
-        if (!accessPeriodParams.current || !purchasePrice.current) {
+        if (!accessPeriodParams.current) {
             throw new Error(I18n.t('error.noProductOrAccess'))
         }
 
-        const { paymentCurrency } = accessPeriodParams.current
+        const { paymentCurrency, price } = accessPeriodParams.current
 
         try {
-            await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
+            await validateBalanceForPurchase({
+                price,
+                paymentCurrency,
+            })
 
             if (!isMounted()) { return }
 
             if (BN(dataAllowance).isGreaterThan(0)) {
                 await dispatch(resetDataAllowanceToContract())
             } else {
-                await dispatch(setDataAllowanceToContract((purchasePrice.current || 0).toString()))
+                await dispatch(setDataAllowanceToContract(price))
             }
         } catch (e) {
             setPurchaseError(e)
@@ -325,21 +331,24 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     }, [isMounted, dataAllowance, dispatch])
 
     const onSetDaiAllowance = useCallback(async () => {
-        if (!accessPeriodParams.current || !purchasePrice.current) {
+        if (!accessPeriodParams.current) {
             throw new Error(I18n.t('error.noProductOrAccess'))
         }
 
-        const { paymentCurrency, priceInDai } = accessPeriodParams.current
+        const { paymentCurrency, price } = accessPeriodParams.current
 
         try {
-            await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
+            await validateBalanceForPurchase({
+                price,
+                paymentCurrency,
+            })
 
             if (!isMounted()) { return }
 
             if (BN(daiAllowance).isGreaterThan(0)) {
                 await dispatch(resetDaiAllowanceToContract())
             } else {
-                await dispatch(setDaiAllowanceToContract(priceInDai))
+                await dispatch(setDaiAllowanceToContract(price))
             }
         } catch (e) {
             setPurchaseError(e)
@@ -347,17 +356,11 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     }, [isMounted, daiAllowance, dispatch])
 
     const onApprovePurchase = useCallback(async () => {
-        if (!accessPeriodParams.current || !purchasePrice.current) {
+        if (!accessPeriodParams.current) {
             throw new Error(I18n.t('error.noProductOrAccess'))
         }
 
-        const {
-            paymentCurrency,
-            time,
-            timeUnit,
-            priceInEth,
-            priceInDai,
-        } = accessPeriodParams.current
+        const { paymentCurrency, time, timeUnit, price } = accessPeriodParams.current
 
         if (!time || !timeUnit) {
             throw new Error(I18n.t('error.noProductOrAccess'))
@@ -366,20 +369,22 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         const subscriptionTimeInSeconds = toSeconds(time, timeUnit)
 
         try {
-            await validateBalanceForPurchase(purchasePrice.current, paymentCurrency)
+            await validateBalanceForPurchase({
+                price,
+                paymentCurrency,
+            })
 
             if (!isMounted()) { return }
 
-            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds, paymentCurrency, priceInEth, priceInDai))
+            await dispatch(buyProduct(productId || '', subscriptionTimeInSeconds, paymentCurrency, price))
         } catch (e) {
             setPurchaseError(e)
         }
     }, [isMounted, dispatch, productId])
 
-    if (isPending || checkingWeb3 || web3Error) {
+    if (!isPending && !checkingWeb3 && web3Error) {
         return (
             <Web3ErrorDialog
-                waiting={isPending || checkingWeb3}
                 onClose={onClose}
                 error={web3Error}
             />
@@ -390,23 +395,17 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         paymentCurrency,
         time,
         timeUnit,
-        priceInEth,
-        priceInDai,
-        priceInEthUsdEquivalent,
+        price,
+        approxUsd,
     } = accessPeriodParams.current || {}
 
-    if (purchaseError || contractProductError) {
+    if (!isPending && !checkingWeb3 && (purchaseError || contractProductError)) {
         if (purchaseError instanceof NoBalanceError) {
             return (
                 <NoBalanceDialog
                     onCancel={onClose}
-                    requiredGasBalance={purchaseError.getRequiredGasBalance()}
-                    requiredEthBalance={purchaseError.getRequiredEthBalance()}
-                    currentEthBalance={purchaseError.getCurrentEthBalance()}
-                    requiredDataBalance={purchaseError.getRequiredDataBalance()}
-                    currentDataBalance={purchaseError.getCurrentDataBalance()}
-                    currentDaiBalance={purchaseError.getCurrentDaiBalance()}
-                    requiredDaiBalance={purchaseError.getRequiredDaiBalance()}
+                    required={purchaseError.getRequired()}
+                    balances={purchaseError.getBalances()}
                     paymentCurrency={paymentCurrency}
                 />
             )
@@ -435,8 +434,17 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 dataPerUsd={dataPerUsd}
                 pricePerSecond={pricePerSecond}
                 priceCurrency={priceCurrency}
+                balances={balances}
                 onCancel={onClose}
                 onNext={onSetAccessPeriod}
+                disabled={checkingWeb3}
+                initialValues={{
+                    paymentCurrency,
+                    time,
+                    timeUnit,
+                    price,
+                    approxUsd,
+                }}
             />
         )
     }
@@ -500,11 +508,9 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 name={product.name}
                 time={time}
                 timeUnit={timeUnit}
-                price={purchasePrice.current}
-                ethPrice={priceInEth}
-                daiPrice={priceInDai}
-                dataPerUsd={dataPerUsd}
-                ethPriceInUsd={priceInEthUsdEquivalent || ''}
+                price={price}
+                approxUsd={approxUsd}
+                onBack={() => setStep(purchaseFlowSteps.ACCESS_PERIOD)}
                 onCancel={onClose}
                 onPay={onApprovePurchase}
                 paymentCurrency={paymentCurrency}

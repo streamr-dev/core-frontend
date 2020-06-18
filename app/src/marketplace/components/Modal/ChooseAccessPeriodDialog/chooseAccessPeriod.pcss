@@ -8,6 +8,14 @@
   border-bottom: 1px solid #F2F1F1;
 }
 
+.title {
+  display: block;
+}
+
+.mobileTitle {
+  display: none;
+}
+
 .accessPeriod {
   display: flex;
   position: relative;
@@ -162,6 +170,7 @@
   letter-spacing: 0;
   line-height: 24px;
   margin-bottom: 1rem;
+  display: none;
 }
 
 .loadingIndicator {
@@ -185,12 +194,33 @@
   justify-content: flex-end;
 }
 
+.uniswapFooter {
+  color: #D8D8D7;
+  font-size: 12px;
+}
+
 @media (--xs) {
+  .title {
+    display: none;
+  }
+
+  .mobileTitle {
+    display: block;
+  }
+
   .footer {
     & > div {
       width: 100%;
       justify-content: space-between;
     }
+  }
+
+  .uniswapMsg {
+    display: block;
+  }
+
+  .uniswapFooter {
+    display: none;
   }
 }
 
@@ -198,16 +228,5 @@
   .footer,
   .footer.onlyButtons {
     justify-content: flex-end;
-  }
-}
-
-.uniswapFooter {
-  color: #D8D8D7;
-  font-size: 12px;
-}
-
-@media (--md-down) {
-  .uniswapFooter {
-    display: none;
   }
 }

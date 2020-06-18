@@ -6,6 +6,7 @@ import { replace } from 'connected-react-router'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useModal from '$shared/hooks/useModal'
+import usePending from '$shared/hooks/usePending'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { addFreeProduct } from '$mp/modules/purchase/actions'
 
@@ -26,6 +27,7 @@ const Hero = () => {
     const dispatch = useDispatch()
     const product = useProduct()
     const { api: purchaseDialog } = useModal('purchase')
+    const { isPending, wrap } = usePending('product.PURCHASE_DIALOG')
 
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
@@ -35,25 +37,27 @@ const Hero = () => {
 
     const productId = product.id
     const isPaid = isPaidProduct(product)
-    const onPurchase = useCallback(async () => {
-        if (isLoggedIn) {
-            if (isPaid) {
-                // Paid product has to be bought with Metamask
-                await purchaseDialog.open({
-                    productId,
-                })
+    const onPurchase = useCallback(async () => (
+        wrap(async () => {
+            if (isLoggedIn) {
+                if (isPaid) {
+                    // Paid product has to be bought with Metamask
+                    await purchaseDialog.open({
+                        productId,
+                    })
+                } else {
+                    // Free product can be bought directly
+                    await dispatch(addFreeProduct(productId || ''))
+                }
             } else {
-                // Free product can be bought directly
-                dispatch(addFreeProduct(productId || ''))
+                dispatch(replace(routes.auth.login({
+                    redirect: routes.marketplace.product({
+                        id: productId,
+                    }),
+                })))
             }
-        } else {
-            dispatch(replace(routes.auth.login({
-                redirect: routes.marketplace.product({
-                    id: productId,
-                }),
-            })))
-        }
-    }, [productId, dispatch, isLoggedIn, purchaseDialog, isPaid])
+        })
+    ), [productId, dispatch, isLoggedIn, purchaseDialog, isPaid, wrap])
 
     return (
         <HeroComponent
@@ -72,6 +76,7 @@ const Hero = () => {
                     isValidSubscription={!!isProductSubscriptionValid}
                     productSubscription={subscription}
                     onPurchase={onPurchase}
+                    isPurchasing={isPending}
                 />
             }
         />
