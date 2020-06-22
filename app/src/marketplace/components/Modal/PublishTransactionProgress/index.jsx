@@ -21,20 +21,12 @@ export type Props = {
     isPrompted?: boolean,
 }
 
-const StyledDialog = styled(Dialog)`
-    ${({ isPrompted }) => !!isPrompted && css`
-        .${Dialog.classNames.title} {
-            opacity: 0.5;
-        }
-    `}
-`
-
 const PublishProgress = styled.div`
     width: 100%;
 `
 
 const PendingTasks = styled.div`
-    color: #A3A3A3;
+    color: ${({ isPrompted }) => (isPrompted ? '#FF5C00' : '#A3A3A3')};
     font-size: 1rem;
     line-height: 1.5rem;
     width: 100%;
@@ -82,8 +74,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
 
     return (
         <ModalPortal>
-            <StyledDialog
-                isPrompted={isPrompted}
+            <Dialog
                 onClose={onCancel}
                 title={I18n.t(`modal.publishProgress.${publishMode}.title`)}
                 actions={{
@@ -112,7 +103,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
                     </PendingTasks>
                     <ProgressBar value={((progress + 1) / ((Object.keys(status).length * 2) + 1)) * 100} />
                 </PublishProgress>
-            </StyledDialog>
+            </Dialog>
         </ModalPortal>
     )
 }
