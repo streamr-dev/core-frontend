@@ -23,6 +23,7 @@ import StatsValues from '$shared/components/DataUnionStats/Values'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
+import { isDataUnionProduct } from '$mp/utils/product'
 
 import styles from './stats.pcss'
 
@@ -106,7 +107,7 @@ const StatsWrap = () => {
     // show not found if DU is not actually yet deployed
     const { id, beneficiaryAddress } = product
 
-    if (!beneficiaryAddress) {
+    if (!isDataUnionProduct(product) || !beneficiaryAddress) {
         throw new ResourceNotFoundError(ResourceType.PRODUCT, id)
     }
 

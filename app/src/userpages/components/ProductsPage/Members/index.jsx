@@ -33,6 +33,7 @@ import confirmDialog from '$shared/utils/confirm'
 import Search from '$userpages/components/Header/Search'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
+import { isDataUnionProduct } from '$mp/utils/product'
 
 import styles from './members.pcss'
 
@@ -405,7 +406,7 @@ const MembersWrap = () => {
     // show not found if DU is not actually yet deployed
     const { id, beneficiaryAddress } = product
 
-    if (!beneficiaryAddress) {
+    if (!isDataUnionProduct(product) || !beneficiaryAddress) {
         throw new ResourceNotFoundError(ResourceType.PRODUCT, id)
     }
 
