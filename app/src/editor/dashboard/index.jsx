@@ -16,7 +16,7 @@ import { useAnyPending } from '$shared/hooks/usePending'
 import CanvasStyles from '$editor/canvas/index.pcss'
 import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
-import { handleLoadError } from '$auth/utils/loginInterceptor'
+import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import BodyClass from '$shared/components/BodyClass'
 import DashboardStatus from '$editor/shared/components/Status'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
@@ -291,7 +291,12 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponent)(class Dashb
         } catch (error) {
             // ignore result if unmounted or dashboard changed
             if (this.unmounted || this.state.isLoading !== dashboardId) { return }
-            await handleLoadError(error)
+
+            if (canHandleLoadError(error)) {
+                await handleLoadError({
+                    error,
+                })
+            }
             throw error
         } finally {
             if (!this.unmounted && this.state.isLoading === dashboardId) {

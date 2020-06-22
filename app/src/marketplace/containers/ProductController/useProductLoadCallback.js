@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
-import { handleLoadError } from '$auth/utils/loginInterceptor'
+import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getProductById } from '$mp/modules/product/services'
@@ -23,6 +23,11 @@ import useFailure from '$shared/hooks/useFailure'
 import * as State from '../EditProductPage/state'
 import useEditableProductUpdater from './useEditableProductUpdater'
 
+type LoadProps = {
+    productId: ProductId,
+    ignoreUnauthorized?: boolean,
+}
+
 export default function useProductLoadCallback() {
     const productUpdater = useEditableProductUpdater()
     const { wrap } = usePending('product.LOAD')
@@ -30,17 +35,22 @@ export default function useProductLoadCallback() {
     const dispatch = useDispatch()
     const fail = useFailure()
 
-    const load = useCallback(async (productId: ProductId) => (
+    const load = useCallback(async ({ productId, ignoreUnauthorized }: LoadProps) => (
         wrap(async () => {
             dispatch(getProductByIdRequest(productId))
             let product
             try {
                 product = await getProductById(productId)
-            } catch (err) {
+            } catch (error) {
                 if (!isMounted()) { return }
-                await handleLoadError(err)
+                if (canHandleLoadError(error)) {
+                    await handleLoadError({
+                        error,
+                        ignoreUnauthorized,
+                    })
+                }
 
-                throw err
+                throw error
             }
             if (!isMounted()) { return }
 
@@ -79,9 +89,9 @@ export default function useProductLoadCallback() {
         })
     ), [wrap, dispatch, productUpdater, isMounted])
 
-    return useCallback(async (productId: ProductId) => {
+    return useCallback(async (props: LoadProps) => {
         try {
-            await load(productId)
+            await load(props)
         } catch (e) {
             if (e instanceof ResourceNotFoundError) {
                 fail(e)

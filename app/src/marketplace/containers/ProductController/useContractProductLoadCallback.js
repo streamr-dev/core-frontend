@@ -8,7 +8,7 @@ import usePending from '$shared/hooks/usePending'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/actions'
 
-export default function useProductLoadCallback() {
+export default function useContractProductLoadCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('contractProduct.LOAD')
 

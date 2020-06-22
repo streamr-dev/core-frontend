@@ -11,7 +11,7 @@ import {
     openStream,
     updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
-import { handleLoadError } from '$auth/utils/loginInterceptor'
+import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import { NotificationIcon } from '$shared/utils/constants'
 import {
     selectFetching,
@@ -68,8 +68,12 @@ const StreamPage = (props: Props) => {
                     if (isMounted()) {
                         dispatch(openStream(idProp))
                     }
-                } catch (e) {
-                    await handleLoadError(e)
+                } catch (error) {
+                    if (canHandleLoadError(error)) {
+                        await handleLoadError({
+                            error,
+                        })
+                    }
                 }
             } catch (e) {
                 if (!(e instanceof ResourceNotFoundError)) {

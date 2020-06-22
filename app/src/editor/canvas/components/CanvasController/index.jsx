@@ -82,7 +82,9 @@ function useError() {
     }, [match.path])
     if (error) {
         if (canHandleLoadError(error)) {
-            handleLoadError(error)
+            handleLoadError({
+                error,
+            })
             return
         }
         // propagate error to error boundary
