@@ -44,7 +44,7 @@ const StyledCheckbox = styled(Checkbox)`
     height: 24px !important;
 `
 
-const TermCheckbox = ({ id, product, updateTermsOfUse }: { id: string, product: any, updateTermsOfUse: any }) => (
+const TermCheckbox = ({ id, product, updateTermsOfUse, disabled }: { id: string, product: any, updateTermsOfUse: any, disabled: boolean }) => (
     <CheckboxLabel htmlFor={id}>
         <StyledCheckbox
             id={id}
@@ -56,7 +56,7 @@ const TermCheckbox = ({ id, product, updateTermsOfUse }: { id: string, product: 
                     [id]: e.target.checked,
                 })
             }}
-            autoFocus
+            disabled={disabled}
         />&nbsp;
         <Translate
             value={`editProductPage.terms.${id}`}
@@ -79,10 +79,10 @@ const TermsOfUse = ({ className, disabled }: Props) => {
                 dangerousHTML
             />
             <CheckboxContainer>
-                <TermCheckbox id="redistribution" product={product} updateTermsOfUse={updateTermsOfUse} />
-                <TermCheckbox id="commercialUse" product={product} updateTermsOfUse={updateTermsOfUse} />
-                <TermCheckbox id="reselling" product={product} updateTermsOfUse={updateTermsOfUse} />
-                <TermCheckbox id="storage" product={product} updateTermsOfUse={updateTermsOfUse} />
+                <TermCheckbox id="redistribution" product={product} updateTermsOfUse={updateTermsOfUse} disabled={!!disabled} />
+                <TermCheckbox id="commercialUse" product={product} updateTermsOfUse={updateTermsOfUse} disabled={!!disabled} />
+                <TermCheckbox id="reselling" product={product} updateTermsOfUse={updateTermsOfUse} disabled={!!disabled} />
+                <TermCheckbox id="storage" product={product} updateTermsOfUse={updateTermsOfUse} disabled={!!disabled} />
             </CheckboxContainer>
             <DetailsContainer>
                 <div>

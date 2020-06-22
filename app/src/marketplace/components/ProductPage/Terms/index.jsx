@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 
@@ -39,7 +39,7 @@ const Content = styled.div`
 const Text = styled.span`
     font-size: 14px;
     line-height: 28px;
-    font-weight: ${(props) => (props.bold ? '500' : '400')};
+    font-weight: ${(props) => (props.bold ? 'var(--medium)' : 'var(--normal)')};
 `
 
 type Props = {
@@ -55,18 +55,20 @@ const getTermStrings = (ids: Array<string>) => (
             return `${separator}${term.toLowerCase()}`
         }
         return term
-    })
+    }).join('')
 )
 
 const Terms = ({ className, product }: Props) => {
-    if (product == null) {
-        return null
-    }
-
-    const terms = product.termsOfUse
+    const terms = product.termsOfUse || {}
     const entries = Object.entries(terms)
     const permitted = entries.filter((e) => e[1] === true).map((e) => e[0])
     const notPermitted = entries.filter((e) => e[1] === false).map((e) => e[0])
+    const permittedStr = useMemo(() => getTermStrings(permitted), [permitted])
+    const notPermittedStr = useMemo(() => getTermStrings(notPermitted), [notPermitted])
+
+    if (product == null) {
+        return null
+    }
 
     return (
         <Container className={className}>
@@ -79,15 +81,14 @@ const Terms = ({ className, product }: Props) => {
                 </Text>
                 {' '}
                 <Text>
-                    {getTermStrings(permitted)}
-                    {' '}
-                    {permitted.length > 0 && `${I18n.t('productPage.termsOfUse.permitted', {
+                    {permitted.length > 0 && I18n.t('productPage.termsOfUse.permitted', {
                         count: permitted.length,
-                    })}. `}
-                    {getTermStrings(notPermitted)}
+                        permissions: permittedStr,
+                    })}
                     {' '}
                     {notPermitted.length > 0 && I18n.t('productPage.termsOfUse.notPermitted', {
                         count: notPermitted.length,
+                        permissions: notPermittedStr,
                     })}
                     {permitted.length === 0 && ` ${I18n.t('productPage.termsOfUse.postfix')}`}
                     {notPermitted.length > 0 && '.'}

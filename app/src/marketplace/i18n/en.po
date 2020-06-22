@@ -1176,13 +1176,13 @@ msgstr "Detailed terms"
 
 msgid "productPage##termsOfUse##permitted"
 msgid_plural "productPage##termsOfUse##permitted"
-msgstr[1] "is permitted"
-msgstr[2] "are permitted"
+msgstr[1] "%{permissions} is permitted."
+msgstr[2] "%{permissions} are permitted."
 
 msgid "productPage##termsOfUse##notPermitted"
 msgid_plural "productPage##termsOfUse##notPermitted"
-msgstr[1] "is not"
-msgstr[2] "are not"
+msgstr[1] "%{permissions} is not"
+msgstr[2] "%{permissions} are not"
 
 msgid "productPage##termsOfUse##postfix"
 msgstr "permitted"
