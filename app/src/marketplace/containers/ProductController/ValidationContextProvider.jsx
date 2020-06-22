@@ -1,6 +1,7 @@
 // @flow
 
 import React, { useMemo, useCallback, useState, type Node, type Context } from 'react'
+import * as yup from 'yup'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -123,6 +124,18 @@ function useValidationContext(): ContextProps {
             setStatus('streams', ERROR, 'No streams selected')
         } else {
             clearStatus('streams')
+        }
+
+        if (product.termsOfUse != null && product.termsOfUse.termsUrl) {
+            const validator = yup.string()
+                .trim()
+                .url()
+            const result = validator.isValidSync(product.termsOfUse.termsUrl)
+            if (!result) {
+                setStatus('termsOfUse', ERROR, 'Invalid URL for detailed terms')
+            } else {
+                clearStatus('termsOfUse')
+            }
         }
 
         const isPaid = isPaidProduct(product)

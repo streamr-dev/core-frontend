@@ -9,6 +9,7 @@ import Hero from './Hero'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
+import Terms from './Terms'
 import RelatedProducts from './RelatedProducts'
 
 import styles from './page.pcss'
@@ -26,6 +27,7 @@ const ProductDetailsPage = () => {
                 <DataUnionStats />
             )}
             <Streams />
+            <Terms />
             <RelatedProducts />
         </div>
     )

@@ -18,6 +18,7 @@ export const PENDING_CHANGE_FIELDS = [
     'adminFee',
     'timeUnit',
     'price',
+    'termsOfUse',
 ]
 
 export function isPublished(product: Product) {

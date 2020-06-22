@@ -144,6 +144,10 @@ const EditorNav = () => {
             id: 'details',
             heading: I18n.t('editProductPage.navigation.details'),
             status: detailsStatus,
+        }, {
+            id: 'terms',
+            heading: I18n.t('editProductPage.navigation.terms'),
+            status: getStatus('termsOfUse'),
         }]
 
         if (isDataUnion) {
