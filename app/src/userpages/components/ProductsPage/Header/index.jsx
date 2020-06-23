@@ -44,6 +44,14 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
         dispatch,
     ])
 
+    const {
+        id,
+        imageUrl,
+        name,
+        beneficiaryAddress,
+        state,
+    } = product || {}
+
     return (
         <React.Fragment>
             <BodyClass className="core" />
@@ -55,21 +63,25 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
             <ListContainer className={cx(styles.listTemp, className)}>
                 <div className={styles.profile}>
                     <div className={cx(avatarStyles.container, styles.avatar)}>
-                        <FallbackImage
-                            className={cx(avatarCircleStyles.accountCircle, avatarStyles.avatarCircle)}
-                            src={product.imageUrl || ''}
-                            alt={product.name || ''}
-                        />
-                        <NameAndUsername name={product.name} username={product.beneficiaryAddress} />
+                        {!imageUrl ? (
+                            <div className={avatarStyles.avatarCircle} />
+                        ) : (
+                            <FallbackImage
+                                className={cx(avatarCircleStyles.accountCircle, avatarStyles.avatarCircle)}
+                                src={imageUrl || ''}
+                                alt={name || ''}
+                            />
+                        )}
+                        <NameAndUsername name={name} username={beneficiaryAddress} />
                     </div>
                     <div className={styles.additionalComponent}>
                         <Button
                             className={styles.viewProductButton}
                             outline
-                            {...(product.state === productStates.DEPLOYED ? {
+                            {...(state === productStates.DEPLOYED ? {
                                 tag: Link,
                                 to: routes.marketplace.product({
-                                    id: product.id,
+                                    id,
                                 }),
                             } : {
                                 type: 'button',
@@ -81,10 +93,16 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                         </Button>
                         <Button
                             className={styles.editProductButton}
-                            tag={Link}
                             outline
-                            to={routes.products.edit({
-                                id: product.id,
+                            {...(id ? {
+                                tag: Link,
+                                to: routes.products.edit({
+                                    id,
+                                }),
+                            } : {
+                                type: 'button',
+                                onClick: () => {},
+                                disabled: true,
                             })}
                         >
                             <Translate value="userpages.products.settings" />
@@ -98,16 +116,16 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                         </div>
                         <div className={styles.tabs}>
                             <Tab
-                                to={routes.products.stats({
-                                    id: product.id,
-                                })}
+                                to={id ? routes.products.stats({
+                                    id,
+                                }) : ''}
                             >
                                 Overview
                             </Tab>
                             <Tab
-                                to={routes.products.members({
-                                    id: product.id,
-                                })}
+                                to={id ? routes.products.members({
+                                    id,
+                                }) : ''}
                             >
                                 Members
                             </Tab>

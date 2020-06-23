@@ -10,8 +10,6 @@ import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
-import LoadingIndicator from '$shared/components/LoadingIndicator'
-import Layout from '$shared/components/Layout'
 import { isEthereumAddress } from '$mp/utils/validate'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -48,7 +46,11 @@ const Stats = () => {
             footer={false}
             hideNavOnDesktop
             navComponent={(
-                <Header />
+                <Header
+                    searchComponent={
+                        <div className={styles.searchPlaceholder} />
+                    }
+                />
             )}
             contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
         >
@@ -90,9 +92,19 @@ const Stats = () => {
 }
 
 const LoadingView = () => (
-    <Layout nav={false}>
-        <LoadingIndicator loading className={styles.loadingIndicator} />
-    </Layout>
+    <CoreLayout
+        footer={false}
+        hideNavOnDesktop
+        navComponent={(
+            <Header
+                searchComponent={
+                    <div className={styles.searchPlaceholder} />
+                }
+            />
+        )}
+        contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
+        loading
+    />
 )
 
 const StatsWrap = () => {
