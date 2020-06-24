@@ -17,7 +17,7 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
-import StatsValues from '$shared/components/DataUnionStats/Values'
+import StatsValues from '$shared/components/DataUnionStats'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
@@ -28,7 +28,7 @@ import styles from './stats.pcss'
 const Stats = () => {
     const { loadDataUnion } = useController()
     const product = useProduct()
-    const { statsArray, memberCount } = useDataUnionStats()
+    const { stats, memberCount } = useDataUnionStats()
     const dataUnion = useDataUnion()
 
     const { joinPartStreamId } = dataUnion || {}
@@ -60,10 +60,10 @@ const Stats = () => {
                     {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
                         <DataUnionPending />
                     )}
-                    {!!dataUnionDeployed && statsArray && (
+                    {!!dataUnionDeployed && stats && (
                         <StatsValues
                             className={styles.stats}
-                            stats={statsArray}
+                            stats={stats}
                         />
                     )}
                 </div>
