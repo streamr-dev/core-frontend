@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import ProductContainer from '$shared/components/Container/Product'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
@@ -46,18 +47,20 @@ const DataUnionStats = ({ stats, memberCount, joinPartStreamId, showDeploying }:
                             memberCount={memberCount.total}
                         />
                         <div className={styles.memberDonut}>
-                            <StatsValues.Header>Members by status</StatsValues.Header>
+                            <StatsValues.Header>
+                                <Translate value="productPage.stats.membersDonut" />
+                            </StatsValues.Header>
                             <DonutChart
                                 className={styles.donutChart}
                                 strokeWidth={3}
                                 data={[
                                     {
-                                        title: 'Active',
+                                        title: I18n.t('productPage.stats.activeMembers'),
                                         value: memberCount.active || 0,
                                         color: '#0324FF',
                                     },
                                     {
-                                        title: 'Inactive',
+                                        title: I18n.t('productPage.stats.inactiveMembers'),
                                         value: memberCount.inactive || 0,
                                         color: '#FB0606',
                                     },

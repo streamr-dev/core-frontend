@@ -11,6 +11,7 @@ import { selectAllCategories } from '$mp/modules/categories/selectors'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { ago } from '$shared/utils/time'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
@@ -21,6 +22,8 @@ import Terms from '$mp/components/ProductPage/Terms'
 import ProductPageDataUnionStats from '$mp/containers/ProductPage/DataUnionStats'
 import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
+import useContractProduct from '$mp/containers/ProductController/useContractProduct'
+import usePending from '$shared/hooks/usePending'
 
 import productPageStyles from '$mp/containers/ProductPage/page.pcss'
 import heroStyles from '$mp/containers/ProductPage/hero.pcss'
@@ -74,20 +77,30 @@ const Description = () => {
         (categories || []).find(({ id }) => id === productCategory)
     ), [productCategory, categories])
 
+    const contractProduct = useContractProduct()
+    const { isPending } = usePending('contractProduct.LOAD_SUBSCRIPTION')
+    const { purchaseTimestamp, subscriberCount } = contractProduct || {}
+
+    const isProductFree = !!(product && !isPaidProduct(product))
+
     const sidebar = useMemo(() => ({
         category: {
             title: I18n.t('editProductPage.sidebar.category'),
             value: (category && category.name) || '-',
         },
-        subscriberCount: {
-            title: I18n.t('editProductPage.sidebar.activeSubscribers'),
-            value: 0,
-        },
-        purchaseTimestamp: {
-            title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
-            value: '-',
-        },
-    }), [category])
+        ...(!isProductFree ? {
+            subscriberCount: {
+                title: I18n.t('editProductPage.sidebar.activeSubscribers'),
+                loading: isPending,
+                value: subscriberCount || 0,
+            },
+            purchaseTimestamp: {
+                title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
+                loading: isPending,
+                value: purchaseTimestamp != null ? ago(new Date(purchaseTimestamp)) : '-',
+            },
+        } : {}),
+    }), [category, isProductFree, subscriberCount, purchaseTimestamp, isPending])
 
     return (
         <DescriptionComponent
@@ -121,30 +134,24 @@ const DataUnionStats = () => {
         return {
             stats: [{
                 id: 'revenue',
-                label: 'Total product revenue',
                 unit: 'DATA',
                 value: '0',
             }, {
                 id: 'members',
-                label: 'Active Members',
                 value: '0',
             }, {
                 id: 'averageRevenue',
-                label: 'Avg rev member / month',
                 unit: 'DATA',
                 value: '0',
             }, {
                 id: 'subscribers',
-                label: 'Subscribers',
                 value: '0',
             }, {
                 id: 'adminFee',
-                label: 'Admin Fee',
                 unit: '%',
                 value: adminFee ? (adminFee * 100).toFixed(0) : '0',
             }, {
                 id: 'created',
-                label: 'Product created',
                 value: created ? new Date(created).toLocaleDateString() : '-',
             }],
             memberCount: {

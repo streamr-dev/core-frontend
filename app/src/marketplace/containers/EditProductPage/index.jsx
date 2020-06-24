@@ -50,6 +50,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: publishDialogLoading } = usePending('product.PUBLISH_DIALOG_LOAD')
     const {
+        loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
         loadDataUnion,
@@ -79,10 +80,18 @@ const EditProductPage = ({ product }: { product: Product }) => {
     // Load categories and streams
     useEffect(() => {
         clearStreams()
+        loadContractProductSubscription(productId)
         loadCategories()
         loadProductStreams(productId)
         doLoadStreams()
-    }, [loadCategories, loadProductStreams, productId, clearStreams, doLoadStreams])
+    }, [
+        loadCategories,
+        loadContractProductSubscription,
+        loadProductStreams,
+        productId,
+        clearStreams,
+        doLoadStreams,
+    ])
 
     // Load more streams if we didn't get all in the initial load
     useEffect(() => {
