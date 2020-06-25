@@ -18,6 +18,13 @@
 
 .buttonWrapper {
   margin: 0;
+  display: grid;
+  grid-template-rows: auto auto;
+}
+
+.socialIcons {
+  margin-top: 1em;
+  justify-content: center;
 }
 
 .offer {
@@ -97,6 +104,7 @@
 }
 
 @media (--lg-up) {
+
 }
 
 @media (--xl) {
@@ -115,5 +123,14 @@
 
   .purchaseSeparator {
     display: block;
+  }
+
+  .buttonWrapper {
+    grid-template-rows: unset;
+    grid-template-columns: auto 1fr;
+  }
+
+  .socialIcons {
+    margin-top: 0;
   }
 }

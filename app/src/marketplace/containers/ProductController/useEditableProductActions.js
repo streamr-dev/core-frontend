@@ -10,7 +10,7 @@ import useEditableProductUpdater from '../ProductController/useEditableProductUp
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import { timeUnits } from '$shared/utils/constants'
 
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product, ContactDetails } from '$mp/flowtype/product-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 
 const getPricePerSecond = (isFree, price, timeUnit) => (
@@ -129,6 +129,48 @@ export function useEditableProductActions() {
         }))
         touch('termsOfUse')
     }, [commit, touch])
+    const updateContactUrl = useCallback((url: $ElementType<ContactDetails, 'url'>) => {
+        commit('Update contact url', (p) => ({
+            ...p,
+            contact: {
+                ...p.contact || {},
+                url,
+            },
+        }))
+        touch('url')
+    }, [commit, touch])
+    const updateContactEmail = useCallback((email: $ElementType<ContactDetails, 'email'>) => {
+        commit('Update contact email', (p) => ({
+            ...p,
+            contact: {
+                ...p.contact || {},
+                email,
+            },
+        }))
+        touch('email')
+    }, [commit, touch])
+    const updateSocialLinks = useCallback((social1: ?string, social2: ?string, social3: ?string, social4: ?string) => {
+        commit('Update social links', (p) => ({
+            ...p,
+            contact: {
+                ...p.contact || {},
+                // $FlowFixMe: "Computing object literal may lead to an exponentially large number of cases to reason about because inferred union"
+                ...(social1 != null && {
+                    social1,
+                }),
+                ...(social2 != null && {
+                    social2,
+                }),
+                ...(social3 != null && {
+                    social3,
+                }),
+                ...(social4 != null && {
+                    social4,
+                }),
+            },
+        }))
+        touch('socialLinks')
+    }, [commit, touch])
 
     return useMemo(() => ({
         undo,
@@ -145,6 +187,9 @@ export function useEditableProductActions() {
         updateBeneficiaryAddress,
         updateType,
         updateTermsOfUse,
+        updateContactUrl,
+        updateContactEmail,
+        updateSocialLinks,
     }), [
         undo,
         updateProduct,
@@ -160,6 +205,9 @@ export function useEditableProductActions() {
         updateBeneficiaryAddress,
         updateType,
         updateTermsOfUse,
+        updateContactUrl,
+        updateContactEmail,
+        updateSocialLinks,
     ])
 }
 

@@ -15,56 +15,97 @@ import { Context as EditControllerContext } from './EditControllerProvider'
 import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categories/selectors'
 import Text from '$ui/Text'
 import Label from '$ui/Label'
-
-// import Details from './Details'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 import styles from './productDetails.pcss'
 
 const Details = styled.div`
     display: grid;
-    grid-row-gap: 1.25rem;
+    grid-row-gap: 2.5rem;
+    grid-column-gap: 1.5rem;
+    grid-template-columns: 1fr 1fr;
 `
 
 const Row = styled.div`
-    grid-template-columns: 1fr 1fr;
     grid-column-gap: 4rem;
     align-items: center;
+    visibility: ${(props) => (props.hide ? 'hidden' : 'visible')};
+`
+
+const StyledLabel = styled.label`
+    display: block;
+`
+
+const Separator = styled.div`
+    margin: 2.5rem 0;
+    border-top: 1px solid var(--grey4);
+    width: 100%;
+`
+
+const LabelContainer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+`
+
+const OptionalLabel = styled(Label)`
+    justify-self: right;
+    color: #a3a3a3;
 `
 
 type TextFieldProps = {
     id: string,
     label: string,
-    value: string,
+    defaultValue: string,
     onChange: (string) => void,
     placeholder: string,
     disabled: boolean,
+    optional?: boolean,
+    error?: string,
 }
 
 const TextField = ({
     id,
     label,
-    value,
+    defaultValue,
     onChange,
     placeholder,
     disabled,
+    optional,
+    error,
 }: TextFieldProps) => (
-    <label htmlFor={id}>
-        <Label
-            as={Translate}
-            value={label}
-            tag="div"
-        />
+    <StyledLabel htmlFor={id}>
+        <LabelContainer>
+            <Label
+                as={Translate}
+                value={label}
+                tag="div"
+            />
+            {optional && (
+                <OptionalLabel
+                    as={Translate}
+                    value="optional"
+                    tag="div"
+                />
+            )}
+        </LabelContainer>
         <Text
             id={id}
             autoComplete="off"
-            value={value}
+            defaultValue={defaultValue}
             onCommit={onChange}
             placeholder={placeholder}
             disabled={disabled}
             selectAllOnFocus
             smartCommit
+            error={error}
+            invalid={error != null}
         />
-    </label>
+        {error != null && (
+            <Errors overlap theme={MarketplaceTheme}>
+                {error}
+            </Errors>
+        )}
+    </StyledLabel>
 )
 
 const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
@@ -84,7 +125,20 @@ const ProductDetails = ({ disabled }: Props) => {
 
     const { isValid: isCategoryValid, message: categoryMessage } = useValidation('category')
     const { isValid: isAdminFeeValid, message: adminFeeMessage } = useValidation('adminFee')
-    const { updateCategory, updateAdminFee } = useEditableProductActions()
+    const { isValid: isContactUrlValid, message: contactUrlMessage } = useValidation('url')
+    const { isValid: isContactEmailValid, message: contactEmailMessage } = useValidation('email')
+    const { isValid: isSocial1Valid, message: social1Message } = useValidation('social1')
+    const { isValid: isSocial2Valid, message: social2Message } = useValidation('social2')
+    const { isValid: isSocial3Valid, message: social3Message } = useValidation('social3')
+    const { isValid: isSocial4Valid, message: social4Message } = useValidation('social4')
+
+    const {
+        updateCategory,
+        updateAdminFee,
+        updateContactUrl,
+        updateContactEmail,
+        updateSocialLinks,
+    } = useEditableProductActions()
 
     const adminFee = product && product.adminFee
     const selectedAdminFee = useMemo(() => adminFeeOptions.find(({ value }) => value === adminFee), [adminFee])
@@ -121,85 +175,100 @@ const ProductDetails = ({ disabled }: Props) => {
                                 isSearchable={false}
                                 error={publishAttempted && !isCategoryValid ? categoryMessage : undefined}
                                 disabled={!!disabled}
+                                errorsTheme={MarketplaceTheme}
                             />
                         )}
                     </Row>
-                    {isDataUnionProduct(product) && (
-                        <Row>
-                            <Label
-                                as={Translate}
-                                value="editProductPage.productDetails.adminFee"
-                                tag="div"
-                            />
-                            <SelectField
-                                name="adminFee"
-                                options={adminFeeOptions}
-                                value={selectedAdminFee}
-                                onChange={(option) => updateAdminFee(option.value)}
-                                isSearchable={false}
-                                error={publishAttempted && !isAdminFeeValid ? adminFeeMessage : undefined}
-                                disabled={!!disabled}
-                            />
-                        </Row>
-                    )}
+                    <Row hide={!isDataUnionProduct(product)}>
+                        <Label
+                            as={Translate}
+                            value="editProductPage.productDetails.adminFee"
+                            tag="div"
+                        />
+                        <SelectField
+                            name="adminFee"
+                            options={adminFeeOptions}
+                            value={selectedAdminFee}
+                            onChange={(option) => updateAdminFee(option.value)}
+                            isSearchable={false}
+                            error={publishAttempted && !isAdminFeeValid ? adminFeeMessage : undefined}
+                            disabled={!!disabled}
+                            errorsTheme={MarketplaceTheme}
+                        />
+                    </Row>
                     <Row>
                         <TextField
                             id="url"
                             label="editProductPage.productDetails.url"
-                            value={product.contact && product.contact.url}
-                            onChange={(value) => console.log(value)}
+                            defaultValue={product.contact && product.contact.url}
+                            onChange={(value) => updateContactUrl(value)}
                             placeholder="http://siteinfo.com"
                             disabled={!!disabled}
+                            optional
+                            error={publishAttempted && !isContactUrlValid ? contactUrlMessage : undefined}
                         />
                     </Row>
                     <Row>
                         <TextField
                             id="email"
                             label="editProductPage.productDetails.email"
-                            value={product.contact && product.contact.email}
-                            onChange={(value) => console.log(value)}
-                            placeholder="http://siteinfo.com"
+                            defaultValue={product.contact && product.contact.email}
+                            onChange={(value) => updateContactEmail(value)}
+                            placeholder="owner@example.com"
                             disabled={!!disabled}
+                            optional
+                            error={publishAttempted && !isContactEmailValid ? contactEmailMessage : undefined}
                         />
                     </Row>
+                </Details>
+                <Separator />
+                <Details>
                     <Row>
                         <TextField
                             id="social_1"
                             label="editProductPage.productDetails.socialMediaLink"
-                            value={product.contact && product.contact.social1}
-                            onChange={(value) => console.log(value)}
+                            defaultValue={product.contact && product.contact.social1}
+                            onChange={(value) => updateSocialLinks(value, null, null, null)}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.reddit')}
                             disabled={!!disabled}
+                            optional
+                            error={publishAttempted && !isSocial1Valid ? social1Message : undefined}
                         />
                     </Row>
                     <Row>
                         <TextField
                             id="social_2"
                             label="editProductPage.productDetails.socialMediaLink"
-                            value={product.contact && product.contact.social2}
-                            onChange={(value) => console.log(value)}
+                            defaultValue={product.contact && product.contact.social2}
+                            onChange={(value) => updateSocialLinks(null, value, null, null)}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.telegram')}
                             disabled={!!disabled}
+                            optional
+                            error={publishAttempted && !isSocial2Valid ? social2Message : undefined}
                         />
                     </Row>
                     <Row>
                         <TextField
                             id="social_3"
                             label="editProductPage.productDetails.socialMediaLink"
-                            value={product.contact && product.contact.social3}
-                            onChange={(value) => console.log(value)}
+                            defaultValue={product.contact && product.contact.social3}
+                            onChange={(value) => updateSocialLinks(null, null, value, null)}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.twitter')}
                             disabled={!!disabled}
+                            optional
+                            error={publishAttempted && !isSocial3Valid ? social3Message : undefined}
                         />
                     </Row>
                     <Row>
                         <TextField
                             id="social_4"
                             label="editProductPage.productDetails.socialMediaLink"
-                            value={product.contact && product.contact.social4}
-                            onChange={(value) => console.log(value)}
+                            defaultValue={product.contact && product.contact.social4}
+                            onChange={(value) => updateSocialLinks(null, null, null, value)}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.linkedin')}
                             disabled={!!disabled}
+                            optional
+                            error={publishAttempted && !isSocial4Valid ? social4Message : undefined}
                         />
                     </Row>
                 </Details>

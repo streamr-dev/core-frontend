@@ -36,6 +36,9 @@ const ValidationContext: Context<ContextProps> = React.createContext({})
 
 const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 
+const urlValidator = yup.string().trim().url()
+const emailValidator = yup.string().trim().email()
+
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const [pendingChanges, setPendingChanges] = useState({})
@@ -127,10 +130,7 @@ function useValidationContext(): ContextProps {
         }
 
         if (product.termsOfUse != null && product.termsOfUse.termsUrl) {
-            const validator = yup.string()
-                .trim()
-                .url()
-            const result = validator.isValidSync(product.termsOfUse.termsUrl)
+            const result = urlValidator.isValidSync(product.termsOfUse.termsUrl)
             if (!result) {
                 setStatus('termsOfUse', ERROR, 'Invalid URL for detailed terms')
             } else {
@@ -165,6 +165,32 @@ function useValidationContext(): ContextProps {
             }
         } else {
             clearStatus('pricePerSecond')
+        }
+
+        if (product.contact) {
+            ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
+                if (product.contact[field] && product.contact[field].length > 0) {
+                    const result = urlValidator.isValidSync(product.contact[field])
+                    if (!result) {
+                        setStatus(field, ERROR, 'Invalid URL')
+                    } else {
+                        clearStatus(field)
+                    }
+                } else {
+                    clearStatus(field)
+                }
+            })
+
+            if (product.contact.email && product.contact.email.length > 0) {
+                const result = emailValidator.isValidSync(product.contact.email)
+                if (!result && product.contact.email) {
+                    setStatus('email', ERROR, 'Invalid email address')
+                } else {
+                    clearStatus('email')
+                }
+            } else {
+                clearStatus('email')
+            }
         }
 
         // Set pending fields, a change is marked pending if there was a saved pending change or

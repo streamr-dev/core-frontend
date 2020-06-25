@@ -164,16 +164,16 @@ msgid "editProductPage##productDetails##optional"
 msgstr "Optional"
 
 msgid "editProductPage##productDetails##placeholder##reddit"
-msgstr "e.g. reddit.com/r/streamr"
+msgstr "e.g. http://reddit.com/r/streamr"
 
 msgid "editProductPage##productDetails##placeholder##telegram"
-msgstr "e.g. telegram.co/streamr"
+msgstr "e.g. http://telegram.co/streamr"
 
 msgid "editProductPage##productDetails##placeholder##twitter"
-msgstr "e.g. twitter.com/streamr"
+msgstr "e.g. http://twitter.com/streamr"
 
 msgid "editProductPage##productDetails##placeholder##linkedin"
-msgstr "e.g. linkedin.com/streamr"
+msgstr "e.g. http://linkedin.com/streamr"
 
 msgid "editProductPage##connectEthIdentity##title"
 msgstr "Connect an Ethereum identity"
