@@ -24,7 +24,7 @@ type Props = {
     children?: Node,
 }
 
-const UnstyledActionsDropdown = ({ actions, disabled, children = null, ...props }: Props) => {
+const UnstyledWithInputActions = ({ actions, disabled, children = null, ...props }: Props) => {
     const [open, setOpen]: UseStateTuple<boolean> = useState(false)
 
     return !actions || !actions.length ? (
@@ -55,8 +55,8 @@ const UnstyledActionsDropdown = ({ actions, disabled, children = null, ...props 
     )
 }
 
-const ActionsDropdown = styled(UnstyledActionsDropdown)`
+const WithInputActions = styled(UnstyledWithInputActions)`
     position: relative;
 `
 
-export default ActionsDropdown
+export default WithInputActions

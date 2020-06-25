@@ -15,7 +15,6 @@ import { selectCanvases, selectFetching } from '$userpages/modules/canvas/select
 import { getFilters } from '$userpages/utils/constants'
 import DropdownActions from '$shared/components/DropdownActions'
 import Search from '../../Header/Search'
-import Dropdown from '$shared/components/Dropdown'
 import confirmDialog from '$shared/utils/confirm'
 import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
@@ -202,17 +201,22 @@ const CanvasList = () => {
                 />
             }
             headerFilterComponent={
-                <Dropdown
+                <DropdownActions
                     title={I18n.t('userpages.filter.sortBy')}
+                    type="uppercase"
+                    activeTitle
+                    menuProps={{
+                        right: true,
+                    }}
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
                     {sortOptions.map((s) => (
-                        <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                        <DropdownActions.ActiveTickItem key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Dropdown.Item>
+                        </DropdownActions.ActiveTickItem>
                     ))}
-                </Dropdown>
+                </DropdownActions>
             }
             loading={fetching}
         >

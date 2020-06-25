@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react'
 import cx from 'classnames'
 
 import { Header } from '$shared/components/DataUnionStats'
-import Dropdown from '$shared/components/Dropdown'
+import DropdownActions from '$shared/components/DropdownActions'
 
 import styles from './withShownDays.pcss'
 
@@ -42,18 +42,21 @@ export const WithShownDays = ({
                 {!!label && (
                     <Header>{label}</Header>
                 )}
-                <Dropdown
+                <DropdownActions
                     title=""
+                    activeTitle
                     selectedItem={shownDays.toString()}
                     onChange={onDaysChange}
                     className={styles.memberGraphDropdown}
-                    toggleStyle="small"
                     disabled={disabled}
+                    toggleProps={{
+                        className: styles.toggleSmall,
+                    }}
                 >
-                    <Dropdown.Item value="7">Last 7 days</Dropdown.Item>
-                    <Dropdown.Item value="28">Last 28 days</Dropdown.Item>
-                    <Dropdown.Item value="90">Last 90 days</Dropdown.Item>
-                </Dropdown>
+                    <DropdownActions.ActiveTickItem value="7">Last 7 days</DropdownActions.ActiveTickItem>
+                    <DropdownActions.ActiveTickItem value="28">Last 28 days</DropdownActions.ActiveTickItem>
+                    <DropdownActions.ActiveTickItem value="90">Last 90 days</DropdownActions.ActiveTickItem>
+                </DropdownActions>
             </div>
             {typeof children === 'function' ? children({
                 shownDays,

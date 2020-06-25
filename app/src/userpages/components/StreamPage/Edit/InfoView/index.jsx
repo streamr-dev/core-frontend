@@ -14,7 +14,7 @@ import useCopy from '$shared/hooks/useCopy'
 import type { StreamId } from '$shared/flowtype/stream-types'
 import Numeric from '$ui/Numeric'
 import Label from '$ui/Label'
-import ActionsDropdown from '$shared/components/ActionsDropdown'
+import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 import SvgIcon from '$shared/components/SvgIcon'
 import docsLinks from '$shared/../docsLinks'
@@ -146,7 +146,7 @@ export const InfoView = ({ disabled }: Props) => {
                 <Label htmlFor="streamId">
                     {I18n.t('userpages.streams.edit.details.streamId')}
                 </Label>
-                <ActionsDropdown
+                <WithInputActions
                     actions={[
                         <DropdownActions.Item key="copy" onClick={() => onCopy(stream.id)}>
                             <Translate value="userpages.keyField.copy" />
@@ -159,7 +159,7 @@ export const InfoView = ({ disabled }: Props) => {
                         value={(stream && stream.id) || ''}
                         readOnly
                     />
-                </ActionsDropdown>
+                </WithInputActions>
             </div>
             <div className={styles.partitions}>
                 <Label className={styles.partitionsLabel}>

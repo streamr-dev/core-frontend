@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import useValidation from '../ProductController/useValidation'
 import Text from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
-import ActionsDropdown from '$shared/components/ActionsDropdown'
+import WithInputActions from '$shared/components/WithInputActions'
 import DropdownActions from '$shared/components/DropdownActions'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
@@ -151,7 +151,7 @@ const BeneficiaryAddress = ({
                     value="editProductPage.setPrice.setRecipientEthAddress"
                     tag="div"
                 />
-                <ActionsDropdown
+                <WithInputActions
                     disabled={disabled}
                     actions={[
                         <DropdownActions.Item
@@ -193,7 +193,7 @@ const BeneficiaryAddress = ({
                         onBlur={onBlur}
                         onFocus={onFocus}
                     />
-                </ActionsDropdown>
+                </WithInputActions>
                 {invalid && (
                     <Fragment>
                         <div />

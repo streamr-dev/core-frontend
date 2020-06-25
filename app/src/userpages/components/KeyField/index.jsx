@@ -12,7 +12,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useCopy from '$shared/hooks/useCopy'
 import Label from '$ui/Label'
-import ActionsDropdown from '$shared/components/ActionsDropdown'
+import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 
 import styles from './keyField.pcss'
@@ -175,13 +175,13 @@ const KeyField = ({
                             {labelComponent}
                         </div>
                     </div>
-                    <ActionsDropdown actions={inputActions}>
+                    <WithInputActions actions={inputActions}>
                         <Text
                             value={displayValue}
                             readOnly
                             type={hidden ? 'password' : 'text'}
                         />
-                    </ActionsDropdown>
+                    </WithInputActions>
                 </div>
             ) : (
                 <KeyFieldEditor

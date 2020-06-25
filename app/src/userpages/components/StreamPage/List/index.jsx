@@ -33,7 +33,6 @@ import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import Layout from '$userpages/components/Layout'
 import Search from '../../Header/Search'
-import Dropdown from '$shared/components/Dropdown'
 import confirmDialog from '$shared/utils/confirm'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
@@ -249,17 +248,22 @@ const StreamList = () => {
                 />
             }
             headerFilterComponent={
-                <Dropdown
+                <DropdownActions
                     title={I18n.t('userpages.filter.sortBy')}
+                    type="uppercase"
+                    activeTitle
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
+                    menuProps={{
+                        right: true,
+                    }}
                 >
                     {sortOptions.map((s) => (
-                        <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                        <DropdownActions.ActiveTickItem key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Dropdown.Item>
+                        </DropdownActions.ActiveTickItem>
                     ))}
-                </Dropdown>
+                </DropdownActions>
             }
             loading={fetching}
         >
@@ -329,17 +333,12 @@ const StreamList = () => {
                                                     className={styles.menuColumn}
                                                 >
                                                     <DropdownActions
-                                                        title={<Meatball alt={I18n.t('userpages.streams.actions.title')} />}
+                                                        title={I18n.t('userpages.streams.actions.title')}
+                                                        type="meatball"
                                                         noCaret
                                                         onMenuToggle={onToggleStreamDropdown(stream.id)}
                                                         menuProps={{
-                                                            modifiers: {
-                                                                offset: {
-                                                                    // Make menu aligned to the right.
-                                                                    // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                                                    offset: '-100%p + 100%',
-                                                                },
-                                                            },
+                                                            right: true,
                                                         }}
                                                         toggleProps={{
                                                             className: cx(styles.dropdownActions, {

@@ -13,7 +13,7 @@ import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
 import Label from '$ui/Label'
-import ActionsDropdown from '$shared/components/ActionsDropdown'
+import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 
 import PermissionKeyFieldEditor from './PermissionKeyFieldEditor'
@@ -193,7 +193,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                 <Label htmlFor="keyName">
                     {keyName}
                 </Label>
-                <ActionsDropdown actions={actions}>
+                <WithInputActions actions={actions}>
                     <Text
                         value={value && (!truncateValue ? value : truncate(value, {
                             maxLength: 15,
@@ -201,7 +201,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                         readOnly
                         type={hidden ? 'password' : 'text'}
                     />
-                </ActionsDropdown>
+                </WithInputActions>
             </div>
         )
     }
