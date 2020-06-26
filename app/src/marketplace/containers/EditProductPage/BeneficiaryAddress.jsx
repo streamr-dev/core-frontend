@@ -10,7 +10,7 @@ import useValidation from '../ProductController/useValidation'
 import Text from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import WithInputActions from '$shared/components/WithInputActions'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -41,22 +41,28 @@ type AddressItemProps = {
 }
 
 const UnstyledAddressItem = ({ className, name, address }: AddressItemProps) => (
-    <Fragment>
-        {`Fill ${name}`}
+    <div className={className}>
+        <div>{`Fill ${name}`}</div>
         {!!address && (
-            <div className={className}>
+            <div className="address">
                 {truncate(address, {
                     maxLength: 15,
                 })}
             </div>
         )}
-    </Fragment>
+    </div>
 )
 
 const AddressItem = styled(UnstyledAddressItem)`
-    color: #adadad;
-    font-size: 10px;
-    margin-top: -16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    & > .address {
+        color: #adadad;
+        font-size: 10px;
+        margin-top: -14px;
+    }
 `
 
 const BeneficiaryAddress = ({
@@ -154,28 +160,28 @@ const BeneficiaryAddress = ({
                 <WithInputActions
                     disabled={disabled}
                     actions={[
-                        <DropdownActions.Item
+                        <Popover.Item
                             key="useCurrent"
                             onClick={useCurrentWalletAddress}
                             disabled={!accountAddress}
                         >
                             <AddressItem name="wallet address" address={accountAddress || 'Wallet locked'} />
-                        </DropdownActions.Item>,
+                        </Popover.Item>,
                         ...integrationKeysFiltered.map(({ id, name, json }) => (
-                            <DropdownActions.Item
+                            <Popover.Item
                                 key={id}
                                 onClick={() => onChange(json.address)}
                             >
                                 <AddressItem name={name} address={json.address} />
-                            </DropdownActions.Item>
+                            </Popover.Item>
                         )),
-                        <DropdownActions.Item
+                        <Popover.Item
                             key="copy"
                             disabled={!addressProp}
                             onClick={onCopy}
                         >
                             <Translate value="userpages.keyField.copy" />
-                        </DropdownActions.Item>,
+                        </Popover.Item>,
                     ]}
                 >
                     <Text

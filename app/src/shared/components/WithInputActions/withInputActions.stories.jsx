@@ -4,7 +4,7 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import Text from '$ui/Text'
 
 import WithInputActions from '.'
@@ -19,9 +19,9 @@ const stories =
 stories.add('basic', () => (
     <WithInputActions
         actions={[
-            <DropdownActions.Item key="1">
+            <Popover.Item key="1">
                 Some Action
-            </DropdownActions.Item>,
+            </Popover.Item>,
         ]}
     >
         <Text />
@@ -31,9 +31,9 @@ stories.add('basic', () => (
 stories.add('disabled', () => (
     <WithInputActions
         actions={[
-            <DropdownActions.Item key="1">
+            <Popover.Item key="1">
                 Some Action
-            </DropdownActions.Item>,
+            </Popover.Item>,
         ]}
         disabled
     >

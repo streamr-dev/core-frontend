@@ -1,13 +1,13 @@
 // @flow
 
 import React, { Component, type Node } from 'react'
-import { Dropdown, DropdownToggle } from 'reactstrap'
 import cx from 'classnames'
 import MediaQuery from 'react-responsive'
 import breakpoints from '$app/scripts/breakpoints'
+import { Dropdown } from 'reactstrap'
 
 import type { AnyFilter } from '$mp/flowtype/product-types'
-import dropdownStyles from '$shared/components/DropdownActions/dropdownActions.pcss'
+import { StyledDropdownToggle, Caret } from '$shared/components/Popover'
 
 import styles from './filterSelector.pcss'
 import FilterModal from './FilterModal'
@@ -71,10 +71,10 @@ export default class FilterSelector extends Component<Props, State> {
                         onClick={this.onClick}
                         className={cx(className, styles.filterDropdown)}
                     >
-                        <DropdownToggle href="#" tag="a" className={cx(dropdownStyles.textToggle, styles.toggle)}>
+                        <StyledDropdownToggle href="#" tag="a" className={styles.toggle}>
                             {selected || title}
-                            <span className={dropdownStyles.caret}>&#9662;</span>
-                        </DropdownToggle>
+                            <Caret open={this.state.open} />
+                        </StyledDropdownToggle>
                         {(isMobile && open) ? (
                             <FilterModal title={title} onClear={onClear} onClose={this.close}>
                                 {children}

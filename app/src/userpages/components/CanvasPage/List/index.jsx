@@ -13,7 +13,7 @@ import Layout from '$userpages/components/Layout'
 import { getCanvases, deleteCanvas } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFetching } from '$userpages/modules/canvas/selectors'
 import { getFilters } from '$userpages/utils/constants'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import Search from '../../Header/Search'
 import confirmDialog from '$shared/utils/confirm'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -161,32 +161,32 @@ const CanvasList = () => {
 
     const getActions = useCallback((canvas) => (
         <Fragment>
-            <DropdownActions.Item
+            <Popover.Item
                 onClick={() => navigate(routes.canvases.edit({
                     id: canvas.id,
                 }))}
             >
                 <Translate value="userpages.canvases.menu.edit" />
-            </DropdownActions.Item>
-            <DropdownActions.Item
+            </Popover.Item>
+            <Popover.Item
                 disabled={!canBeSharedByCurrentUser(canvas.id)}
                 onClick={() => onOpenShareDialog(canvas)}
             >
                 <Translate value="userpages.canvases.menu.share" />
-            </DropdownActions.Item>
-            <DropdownActions.Item
+            </Popover.Item>
+            <Popover.Item
                 onClick={() => onCopyUrl(routes.canvases.public.edit({
                     id: canvas.id,
                 }))}
             >
                 <Translate value="userpages.canvases.menu.copyUrl" />
-            </DropdownActions.Item>
-            <DropdownActions.Item
+            </Popover.Item>
+            <Popover.Item
                 disabled={!canBeDeletedByCurrentUser(canvas.id)}
                 onClick={() => confirmDeleteCanvas(canvas)}
             >
                 <Translate value="userpages.canvases.menu.delete" />
-            </DropdownActions.Item>
+            </Popover.Item>
         </Fragment>
     ), [navigate, canBeSharedByCurrentUser, canBeDeletedByCurrentUser, onOpenShareDialog, onCopyUrl, confirmDeleteCanvas])
 
@@ -201,7 +201,7 @@ const CanvasList = () => {
                 />
             }
             headerFilterComponent={
-                <DropdownActions
+                <Popover
                     title={I18n.t('userpages.filter.sortBy')}
                     type="uppercase"
                     activeTitle
@@ -212,11 +212,11 @@ const CanvasList = () => {
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
                     {sortOptions.map((s) => (
-                        <DropdownActions.ActiveTickItem key={s.filter.id} value={s.filter.id}>
+                        <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </DropdownActions.ActiveTickItem>
+                        </Popover.Item>
                     ))}
-                </DropdownActions>
+                </Popover>
             }
             loading={fetching}
         >

@@ -11,7 +11,7 @@ import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
 import { productStates } from '$shared/utils/constants'
 import Search from '../Header/Search'
-import Dropdown from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
@@ -83,17 +83,22 @@ const ProductsPage = () => {
                 />
             }
             headerFilterComponent={
-                <Dropdown
+                <Popover
                     title={I18n.t('userpages.filter.sortBy')}
+                    type="uppercase"
+                    activeTitle
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
+                    menuProps={{
+                        right: true,
+                    }}
                 >
                     {sortOptions.map((s) => (
-                        <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                        <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Dropdown.Item>
+                        </Popover.Item>
                     ))}
-                </Dropdown>
+                </Popover>
             }
             loading={fetching}
         >

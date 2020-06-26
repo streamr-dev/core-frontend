@@ -1,19 +1,18 @@
 // @flow
 
-import React, { Component, type Node, useState, useCallback, useEffect, useMemo } from 'react'
-import { Dropdown as RsDropdown, DropdownItem as RsDropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap'
+import React, { type Node, useState, useCallback, useEffect, useMemo } from 'react'
+import { Dropdown as RsDropdown, DropdownToggle, DropdownMenu } from 'reactstrap'
 import cx from 'classnames'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import ActiveTickItem from '../Dropdown/DropdownItem'
 import Meatball from '$shared/components/Meatball'
 
-import styles from './dropdownActions.pcss'
+import Item from './Item'
 
 type Props = {
     title: Node,
-    type: 'normal' | 'uppercase' | 'meatball',
+    type: 'normal' | 'uppercase' | 'meatball' | 'grayMeatball' | 'whiteMeatball',
     children: Node,
     className?: string,
     noCaret?: boolean,
@@ -41,7 +40,7 @@ const UppercaseTitle = styled.span`
     text-transform: uppercase;
 `
 
-const StyledDropdown = styled(RsDropdown)`
+export const StyledDropdown = styled(RsDropdown)`
     .dropdown-menu {
         border: none;
         border-radius: 4px;
@@ -79,13 +78,16 @@ const StyledDropdown = styled(RsDropdown)`
     }
 `
 
-const StyledDropdownToggle = styled(DropdownToggle)`
+export const StyledDropdownToggle = styled(DropdownToggle)`
     && {
         color: #A3A3A3;
         outline: 0;
         text-decoration: none;
         cursor: pointer;
         line-height: 32px;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
 
         &[disabled] {
             opacity: 0.5;
@@ -99,26 +101,63 @@ const StyledDropdownToggle = styled(DropdownToggle)`
     }
 `
 
-const StyledDropdownMenu = styled(DropdownMenu)`
+export const ToggleLabel = styled.span`
+    flex: 1;
+`
+
+export const StyledDropdownMenu = styled(DropdownMenu)`
     min-width: 8rem;
 `
 
-const Caret = styled.span`
+const TextCaret = styled.span`
     margin-left: 0.35em;
     display: inline-block;
+    height: 9px;
+    line-height: 6px;
 
-    ${({ open }) => (!!open && css`
-        transform: rotate(180deg) translate(0, -1px);
-    `)}
+    &.open {
+        transform: rotate(180deg);
+    }
 `
 
 const SvgCaret = styled(SvgIcon)`
     width: 11px;
     margin-left: 0.5em;
-    transform: rotate(${({ open }) => (open ? '180' : '0')}deg);
+
+    &.open {
+        transform: rotate(180deg);
+    }
 `
 
-const DropdownActions = ({
+type CaretProps = {
+    open?: boolean,
+    svg?: boolean,
+}
+
+export const Caret = ({ open, svg }: CaretProps) => {
+    if (svg) {
+        return (
+            <SvgCaret
+                className={cx('caret', {
+                    open: !!open,
+                })}
+                name="caretDown"
+            />
+        )
+    }
+
+    return (
+        <TextCaret
+            className={cx('caret', {
+                open: !!open,
+            })}
+        >
+            &#9662;
+        </TextCaret>
+    )
+}
+
+const Popover = ({
     title,
     type,
     onMenuToggle,
@@ -155,29 +194,33 @@ const DropdownActions = ({
     const titleComponent = useMemo(() => {
         switch (type) {
             case 'uppercase':
-                return <UppercaseTitle>{titleString}</UppercaseTitle>
+                return (
+                    <UppercaseTitle>{titleString}</UppercaseTitle>
+                )
 
             case 'meatball':
-                return <Meatball alt={typeof titleString === 'string' ? titleString : ''} />
+            case 'whiteMeatball':
+            case 'grayMeatball': {
+                const meatballProps = {
+                    alt: typeof titleString === 'string' ? titleString : '',
+                    gray: (type === 'grayMeatball'),
+                    white: (type === 'whiteMeatball'),
+                    disabled,
+                }
+
+                return (
+                    <Meatball {...meatballProps} />
+                )
+            }
 
             default:
                 return titleString
         }
-    }, [titleString, type])
+    }, [titleString, type, disabled])
 
-    const caretComponent = useMemo(() => {
-        switch (type) {
-            case 'uppercase':
-                return (
-                    <SvgCaret className="caret" name="caretDown" open={open} />
-                )
-
-            default:
-                return (
-                    <Caret className="caret" open={open}>&#9662;</Caret>
-                )
-        }
-    }, [type, open])
+    const caretComponent = useMemo(() => (
+        <Caret open={open} svg={type === 'uppercase'} />
+    ), [type, open])
 
     const onClick = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         e.preventDefault()
@@ -216,7 +259,7 @@ const DropdownActions = ({
                 className={toggleClassName}
                 disabled={!!disabled}
             >
-                {titleComponent}
+                <ToggleLabel>{titleComponent}</ToggleLabel>
                 {!noCaret && caretComponent}
             </StyledDropdownToggle>
             <StyledDropdownMenu
@@ -232,13 +275,12 @@ const DropdownActions = ({
     )
 }
 
-DropdownActions.Item = RsDropdownItem
-DropdownActions.ActiveTickItem = ActiveTickItem
+Popover.Item = Item
 
-DropdownActions.defaultProps = {
+Popover.defaultProps = {
     toggleProps: {},
     menuProps: {},
     type: 'normal',
 }
 
-export default DropdownActions
+export default Popover

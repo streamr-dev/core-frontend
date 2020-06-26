@@ -28,8 +28,7 @@ import {
 import { selectStreams, selectFetching, selectHasMoreSearchResults } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
+import Popover from '$shared/components/Popover'
 import StatusIcon from '$shared/components/StatusIcon'
 import Layout from '$userpages/components/Layout'
 import Search from '../../Header/Search'
@@ -248,7 +247,7 @@ const StreamList = () => {
                 />
             }
             headerFilterComponent={
-                <DropdownActions
+                <Popover
                     title={I18n.t('userpages.filter.sortBy')}
                     type="uppercase"
                     activeTitle
@@ -259,11 +258,11 @@ const StreamList = () => {
                     }}
                 >
                     {sortOptions.map((s) => (
-                        <DropdownActions.ActiveTickItem key={s.filter.id} value={s.filter.id}>
+                        <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </DropdownActions.ActiveTickItem>
+                        </Popover.Item>
                     ))}
-                </DropdownActions>
+                </Popover>
             }
             loading={fetching}
         >
@@ -332,7 +331,7 @@ const StreamList = () => {
                                                     onClick={(event) => event.stopPropagation()}
                                                     className={styles.menuColumn}
                                                 >
-                                                    <DropdownActions
+                                                    <Popover
                                                         title={I18n.t('userpages.streams.actions.title')}
                                                         type="meatball"
                                                         noCaret
@@ -346,31 +345,31 @@ const StreamList = () => {
                                                             }),
                                                         }}
                                                     >
-                                                        <DropdownActions.Item onClick={() => showStream(stream.id)}>
+                                                        <Popover.Item onClick={() => showStream(stream.id)}>
                                                             <Translate value="userpages.streams.actions.editStream" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item onClick={() => onCopyId(stream.id)}>
+                                                        </Popover.Item>
+                                                        <Popover.Item onClick={() => onCopyId(stream.id)}>
                                                             <Translate value="userpages.streams.actions.copyId" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item onClick={() => onOpenSnippetDialog(stream)}>
+                                                        </Popover.Item>
+                                                        <Popover.Item onClick={() => onOpenSnippetDialog(stream)}>
                                                             <Translate value="userpages.streams.actions.copySnippet" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item
+                                                        </Popover.Item>
+                                                        <Popover.Item
                                                             disabled={!canBeSharedByCurrentUser(stream.id)}
                                                             onClick={() => onOpenShareDialog(stream)}
                                                         >
                                                             <Translate value="userpages.streams.actions.share" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item onClick={() => onRefreshStatus(stream.id)}>
+                                                        </Popover.Item>
+                                                        <Popover.Item onClick={() => onRefreshStatus(stream.id)}>
                                                             <Translate value="userpages.streams.actions.refresh" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item
+                                                        </Popover.Item>
+                                                        <Popover.Item
                                                             disabled={!canBeDeletedByCurrentUser(stream.id)}
                                                             onClick={() => confirmDeleteStream(stream)}
                                                         >
                                                             <Translate value="userpages.streams.actions.delete" />
-                                                        </DropdownActions.Item>
-                                                    </DropdownActions>
+                                                        </Popover.Item>
+                                                    </Popover>
                                                 </Table.Td>
                                             </tr>
                                         ))}

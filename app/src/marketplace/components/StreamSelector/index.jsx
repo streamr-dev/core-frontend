@@ -9,7 +9,7 @@ import { Input } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import SvgIcon from '$shared/components/SvgIcon'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
@@ -129,7 +129,7 @@ export const StreamSelector = (props: Props) => {
                                 <SvgIcon name="cross" />
                             </button>
                         </div>
-                        <DropdownActions
+                        <Popover
                             className={classNames(styles.sortDropdown, styles.dropdown)}
                             title={
                                 <span className={styles.sortDropdownTitle}>
@@ -140,16 +140,16 @@ export const StreamSelector = (props: Props) => {
                             }
                             disabled={!!isDisabled}
                         >
-                            <DropdownActions.Item onClick={() => setSort(SORT_BY_NAME)}>
+                            <Popover.Item onClick={() => setSort(SORT_BY_NAME)}>
                                 <Translate value="streamSelector.sortByName" />
-                            </DropdownActions.Item>
-                            <DropdownActions.Item onClick={() => setSort(SORT_BY_CREATED)}>
+                            </Popover.Item>
+                            <Popover.Item onClick={() => setSort(SORT_BY_CREATED)}>
                                 <Translate value="streamSelector.sortByCreated" />
-                            </DropdownActions.Item>
-                            <DropdownActions.Item onClick={() => setSort(SORT_BY_ADDED)}>
+                            </Popover.Item>
+                            <Popover.Item onClick={() => setSort(SORT_BY_ADDED)}>
                                 <Translate value="streamSelector.sortByAdded" />
-                            </DropdownActions.Item>
-                        </DropdownActions>
+                            </Popover.Item>
+                        </Popover>
                     </div>
                     <div className={classNames(styles.streams, {
                         [styles.darkBgStreams]: !fetchingStreams && !sortedStreams.length,

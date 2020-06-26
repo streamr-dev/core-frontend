@@ -18,7 +18,7 @@ import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from 
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import Text from '$ui/Text'
 import SplitControl from '$userpages/components/SplitControl'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import WithInputActions from '$shared/components/WithInputActions'
 
 import styles from './configureView.pcss'
@@ -173,9 +173,9 @@ export class ConfigureView extends Component<Props, State> {
                                                 <WithInputActions
                                                     disabled={disabled}
                                                     actions={[
-                                                        <DropdownActions.Item key="delete" onClick={() => this.deleteField(field.name)}>
+                                                        <Popover.Item key="delete" onClick={() => this.deleteField(field.name)}>
                                                             <Translate value="userpages.streams.edit.configure.delete" />
-                                                        </DropdownActions.Item>,
+                                                        </Popover.Item>,
                                                     ]}
                                                 >
                                                     <Text

@@ -6,7 +6,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import Notification from '$shared/utils/Notification'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -148,9 +148,9 @@ export const InfoView = ({ disabled }: Props) => {
                 </Label>
                 <WithInputActions
                     actions={[
-                        <DropdownActions.Item key="copy" onClick={() => onCopy(stream.id)}>
+                        <Popover.Item key="copy" onClick={() => onCopy(stream.id)}>
                             <Translate value="userpages.keyField.copy" />
-                        </DropdownActions.Item>,
+                        </Popover.Item>,
                     ]}
                 >
                     <Text
