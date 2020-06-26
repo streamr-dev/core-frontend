@@ -184,7 +184,7 @@ const Popover = ({
     ), [selectedIndex, childrenArray])
 
     const titleString = useMemo(() => {
-        if (!activeTitle) {
+        if (!activeTitle || !currentItem) {
             return title
         }
 
@@ -230,8 +230,12 @@ const Popover = ({
         setOpen((wasOpen) => !wasOpen)
     }, [])
 
-    const getOnItemClick = useCallback((index: number) => (event: SyntheticInputEvent<EventTarget>) => {
+    const getOnItemClick = useCallback((index: number, originalHandler?: Function) => (event: SyntheticInputEvent<EventTarget>) => {
         event.preventDefault()
+
+        if (originalHandler && typeof originalHandler === 'function') {
+            originalHandler()
+        }
 
         if (onChange && childrenArray[index]) {
             const { value } = childrenArray[index].props || {}
@@ -266,10 +270,10 @@ const Popover = ({
                 {...menuProps}
                 className={menuClassName}
             >
-                {React.Children.map(children, (child, index) => React.cloneElement(child, child.props.value ? {
-                    active: child.props.value === selectedItem,
-                    onClick: getOnItemClick(index),
-                } : {}))}
+                {React.Children.map(children, (child, index) => React.cloneElement(child, {
+                    active: !!child.props.value && child.props.value === selectedItem,
+                    onClick: getOnItemClick(index, child.props.onClick),
+                }))}
             </StyledDropdownMenu>
         </StyledDropdown>
     )
