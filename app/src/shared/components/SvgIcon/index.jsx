@@ -604,6 +604,23 @@ const sources = {
             </g>
         </svg>
     ),
+    clipboardPlus: (
+        <svg viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M7.375 2.875H9.25a.75.75 0 01.75.75V11.5a.75.75 0 01-.75.75h-7.5A.75.75 0 011 11.5V3.625a.75.75 0 01.75-.75h1.875a1.875 1.875 0 113.75 0z" strokeLinejoin="round" />
+                <path d="M5.529 2.883a.187.187 0 11-.058.37.187.187 0 01.058-.37" strokeLinejoin="round" />
+                <path d="M3.5 7.5h4M5.5 5.5v4" />
+            </g>
+        </svg>
+    ),
+    clipboardCheck: (
+        <svg viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7.375 2.875H9.25a.75.75 0 01.75.75V11.5a.75.75 0 01-.75.75h-7.5A.75.75 0 011 11.5V3.625a.75.75 0 01.75-.75h1.875a1.875 1.875 0 113.75 0z" />
+                <path d="M5.529 2.883a.187.187 0 11-.058.37.187.187 0 01.058-.37M7.612 6L4.816 8.796a.409.409 0 01-.579 0L3.3 7.858" />
+            </g>
+        </svg>
+    ),
 }
 
 export type IconName = $Keys<typeof sources>

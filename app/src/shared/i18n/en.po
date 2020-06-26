@@ -185,6 +185,9 @@ msgstr "Docs"
 msgid "general##copy"
 msgstr "Copy"
 
+msgid "general##copyToClipboard"
+msgstr "Copy to clipboard"
+
 msgid "general##copied"
 msgstr "Copied"
 
