@@ -17,7 +17,7 @@ import useIsEthIdentityNeeded from './useIsEthIdentityNeeded'
 import styles from './editorNav.pcss'
 
 const SCROLLSPY_OFFSET = -40
-const CLICK_OFFSET = -120
+const CLICK_OFFSET = -130
 
 const EditorNav = () => {
     const product = useEditableProduct()
