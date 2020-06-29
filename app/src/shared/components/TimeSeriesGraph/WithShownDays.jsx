@@ -3,7 +3,7 @@
 import React, { useState, useCallback } from 'react'
 import cx from 'classnames'
 
-import Header from '$shared/components/DataUnionStats/Header'
+import { Header } from '$shared/components/DataUnionStats'
 import Dropdown from '$shared/components/Dropdown'
 
 import styles from './withShownDays.pcss'

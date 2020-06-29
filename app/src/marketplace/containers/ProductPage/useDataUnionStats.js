@@ -1,5 +1,3 @@
-// @flow
-
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
@@ -8,40 +6,27 @@ import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getDataUnionStats } from '$mp/modules/dataUnion/services'
 import { fromAtto } from '$mp/utils/math'
-import { type UseStateTuple } from '$shared/flowtype/common-types'
-import { type StatValue } from '$shared/components/DataUnionStats/Values'
-import { type Props as ValueProps } from '$shared/components/DataUnionStats/Value'
 
-type StatCollection = {
-    [string]: ValueProps,
-}
-
-const initialStats: StatCollection = {
+const initialStats = {
     revenue: {
-        label: 'Total product revenue',
         unit: 'DATA',
         loading: true,
     },
     members: {
-        label: 'Active Members',
         loading: true,
     },
     averageRevenue: {
-        label: 'Avg rev member / month',
         unit: 'DATA',
         loading: true,
     },
     subscribers: {
-        label: 'Subscribers',
         loading: true,
     },
     adminFee: {
-        label: 'Admin Fee',
         unit: '%',
         loading: true,
     },
     created: {
-        label: 'Product created',
         loading: true,
     },
 }
@@ -52,9 +37,9 @@ const MILLISECONDS_IN_MONTH = 1000 * 60 * 60 * 24 * 30
 function useDataUnionStats() {
     const product = useProduct()
     const contractProduct = useContractProduct()
-    const [stats, setStats]: UseStateTuple<StatCollection> = useState(initialStats)
+    const [stats, setStats] = useState(initialStats)
     const [totalEarnings, setTotalEarnings] = useState(null)
-    const [memberCount, setMemberCount] = useState(null)
+    const [memberCount, setMemberCount] = useState(undefined)
     const isMounted = useIsMounted()
 
     const { created, beneficiaryAddress } = product || {}
@@ -179,7 +164,7 @@ function useDataUnionStats() {
         }
     }, [getStats, resetTimeout])
 
-    const statsArray = useMemo((): Array<StatValue> => Object.keys(stats).map((key) => ({
+    const statsArray = useMemo(() => Object.keys(stats).map((key) => ({
         ...stats[key],
         id: key,
     })), [stats])
@@ -187,7 +172,7 @@ function useDataUnionStats() {
     return useMemo(() => ({
         totalEarnings,
         memberCount,
-        statsArray,
+        stats: statsArray,
     }), [
         totalEarnings,
         memberCount,

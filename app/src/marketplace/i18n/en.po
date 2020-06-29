@@ -1187,6 +1187,36 @@ msgstr[2] "%{permissions} are not"
 msgid "productPage##termsOfUse##postfix"
 msgstr "permitted"
 
+msgid "productPage##stats##revenue"
+msgstr "Total product revenue"
+
+msgid "productPage##stats##members"
+msgstr "Active Members"
+
+msgid "productPage##stats##averageRevenue"
+msgstr "Avg rev member / month"
+
+msgid "productPage##stats##subscribers"
+msgstr "Subscribers"
+
+msgid "productPage##stats##adminFee"
+msgstr "Admin Fee"
+
+msgid "productPage##stats##created"
+msgstr "Product created"
+
+msgid "productPage##stats##membersGraph"
+msgstr "Members by status"
+
+msgid "productPage##stats##membersDonut"
+msgstr "Members"
+
+msgid "productPage##stats##activeMembers"
+msgstr "Active"
+
+msgid "productPage##stats##inactiveMembers"
+msgstr "Inactive"
+
 msgid "productTile##active"
 msgstr "Active"
 
