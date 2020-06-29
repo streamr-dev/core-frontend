@@ -60,11 +60,15 @@ const getResourcePermissionsFailure = (error: ErrorInUi) => ({
     error,
 })
 
-export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId, notify: boolean = true) => async (dispatch: Function) => {
-    dispatch(getResourcePermissionsRequest())
-    const resourcePermissions = await api.get({
+export const getResourcePermissionsAPI = (resourceType: ResourceType, resourceId: ResourceId) => (
+    api.get({
         url: `${getApiUrl(resourceType, resourceId)}/permissions`,
     })
+)
+
+export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId, notify: boolean = true) => async (dispatch: Function) => {
+    dispatch(getResourcePermissionsRequest())
+    const resourcePermissions = await getResourcePermissionsAPI(resourceType, resourceId)
         .catch((error) => {
             dispatch(getResourcePermissionsFailure(error))
             if (notify) {
