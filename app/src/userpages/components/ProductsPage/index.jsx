@@ -113,7 +113,8 @@ const ProductsPage = () => {
                         const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
                         const isDeploying = isDataUnion && !fetchingDataUnionStats && !!beneficiaryAddress && typeof memberCount === 'undefined'
                         const contractAddress = isDataUnion ? beneficiaryAddress : null
-                        const deployed = state === productStates.DEPLOYED
+                        const published = state === productStates.DEPLOYED
+                        const deployed = !!(isDataUnion && !!beneficiaryAddress)
 
                         return (
                             <ProductTile
@@ -121,19 +122,20 @@ const ProductsPage = () => {
                                 actions={
                                     <Fragment>
                                         <MenuItems.Edit id={id} />
-                                        <MenuItems.View id={id} disabled={!deployed} />
-                                        {isDataUnion && !!beneficiaryAddress && (
+                                        <MenuItems.View id={id} disabled={!published} />
+                                        {deployed && (
                                             <MenuItems.ViewStats id={id} />
                                         )}
-                                        {isDataUnion && !!beneficiaryAddress && (
+                                        {deployed && (
                                             <MenuItems.ViewDataUnion id={id} />
                                         )}
                                         {contractAddress && (
                                             <MenuItems.CopyContractAddress address={contractAddress} />
                                         )}
-                                        <MenuItems.Copy id={id} disabled={!deployed} />
+                                        <MenuItems.Copy id={id} disabled={!published} />
                                     </Fragment>
                                 }
+                                published={published}
                                 deployed={deployed}
                                 numMembers={memberCount}
                                 product={product}
