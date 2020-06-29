@@ -16,7 +16,7 @@ export type Props = {
 const Container = styled.div``
 
 const Icon = styled(SvgIcon)`
-    display: none;
+    display: ${(props) => (props.forceVisible ? 'inline-flex' : 'none')};
     height: 12px;
     color: #525252;
     margin-bottom: 2px;
@@ -52,7 +52,7 @@ const HoverCopy = ({ value, children }: Props) => {
                     <CopyIcon name="clipboardPlus" onClick={() => copy(value)} />
                 )}
                 {isCopied && (
-                    <CopiedIcon name="clipboardCheck" />
+                    <CopiedIcon name="clipboardCheck" forceVisible={isCopied} />
                 )}
             </Tooltip>
         </Container>
