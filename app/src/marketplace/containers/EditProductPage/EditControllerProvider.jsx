@@ -14,7 +14,14 @@ import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon, productStates, contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import {
+    NotificationIcon,
+    productStates,
+    contractCurrencies as currencies,
+    DEFAULT_CURRENCY,
+    dataUnionMemberLimit,
+} from '$shared/utils/constants'
+import { numberToText } from '$shared/utils/text'
 import routes from '$routes'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -182,12 +189,12 @@ function useEditController(product: Product) {
 
         if (isDataUnionProduct(productRef.current) && isEthereumAddress(productRef.current.beneficiaryAddress)) {
             const { active: activeMembers } = (dataUnion && dataUnion.memberCount) || {}
-            const memberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
 
-            if (!dataUnion || (activeMembers || 0) < memberLimit) {
+            if (!dataUnion || (activeMembers || 0) < dataUnionMemberLimit) {
                 Notification.push({
                     title: I18n.t('notifications.notEnoughMembers', {
-                        memberLimit,
+                        count: dataUnionMemberLimit,
+                        memberLimit: numberToText(dataUnionMemberLimit),
                     }),
                     icon: NotificationIcon.ERROR,
                 })
