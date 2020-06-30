@@ -413,13 +413,13 @@ const StreamList = () => {
                                                             <span className={styles.tabletStreamDescription}>
                                                                 {stream.description}
                                                             </span>
-                                                            <span className={styles.lastUpdatedStreamMobile}>
-                                                                {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
+                                                            <span className={styles.lastDataStreamMobile}>
+                                                                {stream.lastData && ago(new Date(stream.lastData))}
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <span className={styles.lastUpdatedStreamTablet}>
-                                                                {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
+                                                            <span className={styles.lastDataStreamTablet}>
+                                                                {stream.lastData && ago(new Date(stream.lastData))}
                                                             </span>
                                                             <StatusIcon
                                                                 tooltip
