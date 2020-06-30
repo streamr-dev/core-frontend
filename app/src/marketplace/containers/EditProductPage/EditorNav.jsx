@@ -41,6 +41,7 @@ const EditorNav = () => {
         }
 
         const pending = !isNewProduct && !!isPublic && isPendingChange(name)
+        console.log('isPendingChange(name)', name, isPendingChange(name))
 
         const validState = pending ? statuses.UNPUBLISHED : statuses.VALID
 
@@ -68,13 +69,13 @@ const EditorNav = () => {
 
     const detailsStatus = useMemo(() => {
         const category = getStatus('category')
-        const url = getStatus('url')
-        const email = getStatus('email')
-        const social1 = getStatus('social1')
-        const social2 = getStatus('social2')
-        const social3 = getStatus('social3')
-        const social4 = getStatus('social4')
         const adminFee = getStatus('adminFee')
+        const url = getStatus('contact.url')
+        const email = getStatus('contact.email')
+        const social1 = getStatus('contact.social1')
+        const social2 = getStatus('contact.social2')
+        const social3 = getStatus('contact.social3')
+        const social4 = getStatus('contact.social4')
 
         const details = [category, url, email, social1, social2, social3, social4]
         if (isDataUnion) {

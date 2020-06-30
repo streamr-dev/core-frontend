@@ -2,6 +2,9 @@
 
 import { productStates } from '$shared/utils/constants'
 import { isDataUnionProduct } from '$mp/utils/product'
+import pick from 'lodash/pick'
+import pickBy from 'lodash/pickBy'
+import get from 'lodash/get'
 import type { Product, PendingChanges } from '$mp/flowtype/product-types'
 
 export const PENDING_CHANGE_FIELDS = [
@@ -19,6 +22,12 @@ export const PENDING_CHANGE_FIELDS = [
     'timeUnit',
     'price',
     'termsOfUse',
+    'contact.url',
+    'contact.email',
+    'contact.social1',
+    'contact.social2',
+    'contact.social3',
+    'contact.social4',
 ]
 
 export function isPublished(product: Product) {
@@ -28,9 +37,9 @@ export function isPublished(product: Product) {
 }
 
 export const getPendingObject = (product: Product | PendingChanges): Object => {
-    const allowedChanges = new Set(PENDING_CHANGE_FIELDS)
-
-    return Object.fromEntries(Object.entries(product).filter(([key, value]) => allowedChanges.has(key) && value !== undefined))
+    let pendingObj = pick(product, PENDING_CHANGE_FIELDS)
+    pendingObj = pickBy(pendingObj, (value) => value !== undefined)
+    return pendingObj
 }
 
 export const getChangeObject = (original: Product, next: Product): Object => (
@@ -64,7 +73,7 @@ export function getPendingChanges(product: Product): Object {
 export function hasPendingChange(product: Product, field: string) {
     const pendingChanges = getPendingChanges(product)
 
-    return field in pendingChanges
+    return get(pendingChanges, field) !== undefined
 }
 
 export function update(product: Product, fn: Function) {

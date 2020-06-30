@@ -3,6 +3,8 @@
 import React, { useMemo, useCallback, useState, type Node, type Context } from 'react'
 import * as yup from 'yup'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import get from 'lodash/get'
+import set from 'lodash/fp/set'
 
 import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
@@ -65,12 +67,9 @@ function useValidationContext(): ContextProps {
             throw new Error('pending change needs a name')
         }
 
-        setPendingChanges((state) => ({
-            ...state,
-            [name]: isPending,
-        }))
+        setPendingChanges((state) => set(name, isPending, state))
     }, [setPendingChanges, isMounted])
-    const isPendingChange = useCallback((name: string) => !!pendingChanges[name], [pendingChanges])
+    const isPendingChange = useCallback((name: string) => !!(get(pendingChanges, name)), [pendingChanges])
     const isAnyChangePending = useCallback(() => Object.values(pendingChanges).some(Boolean), [pendingChanges])
 
     const setStatus = useCallback((name: string, level: Level, message: string): Object => {
@@ -172,24 +171,24 @@ function useValidationContext(): ContextProps {
                 if (product.contact[field] && product.contact[field].length > 0) {
                     const result = urlValidator.isValidSync(product.contact[field])
                     if (!result) {
-                        setStatus(field, ERROR, 'Invalid URL')
+                        setStatus(`contact.${field}`, ERROR, 'Invalid URL')
                     } else {
-                        clearStatus(field)
+                        clearStatus(`contact.${field}`)
                     }
                 } else {
-                    clearStatus(field)
+                    clearStatus(`contact.${field}`)
                 }
             })
 
             if (product.contact.email && product.contact.email.length > 0) {
                 const result = emailValidator.isValidSync(product.contact.email)
                 if (!result && product.contact.email) {
-                    setStatus('email', ERROR, 'Invalid email address')
+                    setStatus('contact.email', ERROR, 'Invalid email address')
                 } else {
-                    clearStatus('email')
+                    clearStatus('contact.email')
                 }
             } else {
-                clearStatus('email')
+                clearStatus('contact.email')
             }
         }
 
@@ -198,7 +197,10 @@ function useValidationContext(): ContextProps {
         const changes = getPendingChanges(product)
         const isPublic = isPublished(product)
         PENDING_CHANGE_FIELDS.forEach((field) => {
-            setPendingChange(field, (field in changes) || (isPublic && isTouched(field) && !isEqual(product[field], originalProduct[field])))
+            setPendingChange(
+                field,
+                get(changes, field) || (isPublic && isTouched(field) && !isEqual(get(product, field), get(originalProduct, field))),
+            )
         })
     }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct])
 

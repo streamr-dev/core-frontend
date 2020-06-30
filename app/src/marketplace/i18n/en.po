@@ -163,6 +163,12 @@ msgstr "Social media link"
 msgid "editProductPage##productDetails##optional"
 msgstr "Optional"
 
+msgid "editProductPage##productDetails##placeholder##url"
+msgstr "http://siteinfo.com"
+
+msgid "editProductPage##productDetails##placeholder##email"
+msgstr "owner@example.com"
+
 msgid "editProductPage##productDetails##placeholder##reddit"
 msgstr "e.g. http://reddit.com/r/streamr"
 

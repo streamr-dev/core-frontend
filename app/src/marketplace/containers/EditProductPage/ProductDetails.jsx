@@ -117,6 +117,8 @@ type Props = {
     disabled?: boolean,
 }
 
+/* eslint-disable object-curly-newline */
+
 const ProductDetails = ({ disabled }: Props) => {
     const product = useEditableProduct()
     const { publishAttempted } = useContext(EditControllerContext)
@@ -125,12 +127,12 @@ const ProductDetails = ({ disabled }: Props) => {
 
     const { isValid: isCategoryValid, message: categoryMessage } = useValidation('category')
     const { isValid: isAdminFeeValid, message: adminFeeMessage } = useValidation('adminFee')
-    const { isValid: isContactUrlValid, message: contactUrlMessage } = useValidation('url')
-    const { isValid: isContactEmailValid, message: contactEmailMessage } = useValidation('email')
-    const { isValid: isSocial1Valid, message: social1Message } = useValidation('social1')
-    const { isValid: isSocial2Valid, message: social2Message } = useValidation('social2')
-    const { isValid: isSocial3Valid, message: social3Message } = useValidation('social3')
-    const { isValid: isSocial4Valid, message: social4Message } = useValidation('social4')
+    const { isValid: isContactUrlValid, message: contactUrlMessage } = useValidation('contact.url')
+    const { isValid: isContactEmailValid, message: contactEmailMessage } = useValidation('contact.email')
+    const { isValid: isSocial1Valid, message: social1Message } = useValidation('contact.social1')
+    const { isValid: isSocial2Valid, message: social2Message } = useValidation('contact.social2')
+    const { isValid: isSocial3Valid, message: social3Message } = useValidation('contact.social3')
+    const { isValid: isSocial4Valid, message: social4Message } = useValidation('contact.social4')
 
     const {
         updateCategory,
@@ -202,7 +204,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             label="editProductPage.productDetails.url"
                             defaultValue={product.contact && product.contact.url}
                             onChange={(value) => updateContactUrl(value)}
-                            placeholder="http://siteinfo.com"
+                            placeholder={I18n.t('editProductPage.productDetails.placeholder.url')}
                             disabled={!!disabled}
                             optional
                             error={publishAttempted && !isContactUrlValid ? contactUrlMessage : undefined}
@@ -214,7 +216,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             label="editProductPage.productDetails.email"
                             defaultValue={product.contact && product.contact.email}
                             onChange={(value) => updateContactEmail(value)}
-                            placeholder="owner@example.com"
+                            placeholder={I18n.t('editProductPage.productDetails.placeholder.email')}
                             disabled={!!disabled}
                             optional
                             error={publishAttempted && !isContactEmailValid ? contactEmailMessage : undefined}
@@ -228,7 +230,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="social_1"
                             label="editProductPage.productDetails.socialMediaLink"
                             defaultValue={product.contact && product.contact.social1}
-                            onChange={(value) => updateSocialLinks(value, null, null, null)}
+                            onChange={(value) => updateSocialLinks({ social1: value })}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.reddit')}
                             disabled={!!disabled}
                             optional
@@ -240,7 +242,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="social_2"
                             label="editProductPage.productDetails.socialMediaLink"
                             defaultValue={product.contact && product.contact.social2}
-                            onChange={(value) => updateSocialLinks(null, value, null, null)}
+                            onChange={(value) => updateSocialLinks({ social2: value })}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.telegram')}
                             disabled={!!disabled}
                             optional
@@ -252,7 +254,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="social_3"
                             label="editProductPage.productDetails.socialMediaLink"
                             defaultValue={product.contact && product.contact.social3}
-                            onChange={(value) => updateSocialLinks(null, null, value, null)}
+                            onChange={(value) => updateSocialLinks({ social3: value })}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.twitter')}
                             disabled={!!disabled}
                             optional
@@ -264,7 +266,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="social_4"
                             label="editProductPage.productDetails.socialMediaLink"
                             defaultValue={product.contact && product.contact.social4}
-                            onChange={(value) => updateSocialLinks(null, null, null, value)}
+                            onChange={(value) => updateSocialLinks({ social4: value })}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.linkedin')}
                             disabled={!!disabled}
                             optional

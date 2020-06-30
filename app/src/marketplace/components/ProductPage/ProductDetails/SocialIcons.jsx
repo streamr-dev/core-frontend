@@ -76,18 +76,14 @@ const renderIcon = (name: ?string, url: ?string) => (
 )
 
 const SocialIcons = ({ className, contactDetails }: Props) => {
-    const useMemoSocial = (name: string) => {
-        const property = contactDetails[name]
-        return useMemo(() => ({
-            iconName: getIconForUrl(property),
-            url: property,
-        }), [property])
-    }
-
-    const social1 = useMemoSocial('social1')
-    const social2 = useMemoSocial('social2')
-    const social3 = useMemoSocial('social3')
-    const social4 = useMemoSocial('social4')
+    const [social1, social2, social3, social4] = useMemo(() =>
+        ['social1', 'social2', 'social3', 'social4'].map((name) => {
+            const url = contactDetails[name]
+            return {
+                iconName: getIconForUrl(url),
+                url,
+            }
+        }), [contactDetails])
 
     return (
         <Container className={className}>

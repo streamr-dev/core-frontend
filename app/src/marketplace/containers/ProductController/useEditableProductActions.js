@@ -17,6 +17,13 @@ const getPricePerSecond = (isFree, price, timeUnit) => (
     isFree ? BN(0) : pricePerSecondFromTimeUnit(BN(price || 0), timeUnit || timeUnits.hour)
 )
 
+type SocialLinks = {
+    social1?: string,
+    social2?: string,
+    social3?: string,
+    social4?: string,
+}
+
 export function useEditableProductActions() {
     const { updateProduct: commit } = useEditableProductUpdater()
     const { undo } = useContext(UndoContext)
@@ -149,7 +156,7 @@ export function useEditableProductActions() {
         }))
         touch('email')
     }, [commit, touch])
-    const updateSocialLinks = useCallback((social1: ?string, social2: ?string, social3: ?string, social4: ?string) => {
+    const updateSocialLinks = useCallback(({ social1, social2, social3, social4 }: SocialLinks) => {
         commit('Update social links', (p) => ({
             ...p,
             contact: {
