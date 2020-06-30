@@ -5,31 +5,31 @@ const units = [
         max: 2760000,
         value: 60000,
         name: 'minute',
-        prev: 'a minute ago',
+        prev: 'A minute ago',
     },
     {
         max: 72000000,
         value: 3600000,
         name: 'hour',
-        prev: 'an hour ago',
+        prev: 'An hour ago',
     },
     {
         max: 518400000,
         value: 86400000,
         name: 'day',
-        prev: 'yesterday',
+        prev: 'Yesterday',
     },
     {
         max: 2419200000,
         value: 604800000,
         name: 'week',
-        prev: 'last week',
+        prev: 'Last week',
     },
     {
         max: 28512000000,
         value: 2592000000,
         name: 'month',
-        prev: 'last month',
+        prev: 'Last month',
     }, // max: 11 months
 ]
 
@@ -42,7 +42,7 @@ export function ago(date: Date) {
     const diff = Math.abs(Date.now() - date.getTime())
     // less than a minute
     if (diff < 60000) {
-        return 'just now'
+        return 'Just now'
     }
 
     for (let i = 0; i < units.length; i += 1) {

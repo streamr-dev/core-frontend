@@ -303,7 +303,7 @@ const StreamList = () => {
                                                 className={styles.streamRow}
                                                 onClick={() => onStreamRowClick(stream.id)}
                                             >
-                                                <Table.Th noWrap title={stream.name}>
+                                                <Table.Th noWrap title={stream.name} className={styles.streamName}>
                                                     {stream.name}
                                                     <span title={getSecurityLevelTitle(stream)}>
                                                         <SecurityIcon
@@ -396,7 +396,7 @@ const StreamList = () => {
                                                 className={styles.streamRow}
                                                 onClick={() => onStreamRowClick(stream.id)}
                                             >
-                                                <Table.Td className={styles.tabletStreamRow}>
+                                                <Table.Td noWrap className={styles.tabletStreamRow}>
                                                     <div className={styles.tabletStreamRowContainer}>
                                                         <div>
                                                             <span className={styles.tabletStreamName} title={stream.name}>

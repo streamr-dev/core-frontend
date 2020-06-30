@@ -57,8 +57,30 @@
   position: relative;
 }
 
+@media (--xs) {
+  .lastDataStreamTablet {
+    display: none;
+  }
+}
+
 .lastDataStreamMobile {
   display: none;
+}
+
+@media (--xs) {
+  .lastDataStreamMobile {
+    color: #A3A3A3;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+  }
+}
+
+.streamName {
+  color: #323232;
+  font-weight: var(--medium);
+  font-size: 14px;
+  letter-spacing: 0;
 }
 
 .SecurityIcon {
@@ -99,19 +121,25 @@
   .tabletStreamName {
     display: block;
     padding-right: 1em;
-    max-width: 650px;
+    max-width: 580px;
     word-break: break-word;
-    font-weight: var(--semiBold);
+    font-weight: var(--medium);
+    letter-spacing: 0;
     font-size: 16px;
     line-height: 20px;
+    color: #323232;
   }
 
   .tabletStreamDescription {
     display: block;
+    max-width: 580px;
     font-size: 12px;
     color: #525252;
     line-height: 20px;
     margin-bottom: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 
