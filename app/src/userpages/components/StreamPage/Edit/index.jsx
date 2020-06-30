@@ -7,8 +7,11 @@ import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import MediaQuery from 'react-responsive'
 import qs from 'query-string'
+import styled from 'styled-components'
+
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
+import StatusLabel from '$shared/components/StatusLabel'
 import { updateStream } from '$userpages/modules/userPageStreams/actions'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
@@ -21,13 +24,18 @@ import KeyView from './KeyView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
+import PartitionsView from './PartitionsView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
 import CodeSnippets from '$shared/components/CodeSnippets'
 import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
-import styles from './edit.pcss'
 
 const { lg } = breakpoints
+
+const PreviewDescription = styled(Translate)`
+    margin-bottom: 3.125rem;
+    max-width: 660px;
+`
 
 const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
     const stream = useMemo(() => ({
@@ -155,14 +163,8 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="status"
-                    linkTitle={I18n.t('userpages.streams.edit.details.nav.status')}
-                    title={(
-                        <div className={styles.statusTitle}>
-                            {I18n.t('userpages.streams.edit.details.nav.status')}
-                            &nbsp;
-                            <StatusIcon tooltip status={stream.streamStatus} />
-                        </div>
-                    )}
+                    title={I18n.t('userpages.streams.edit.details.nav.status')}
+                    status={<StatusIcon tooltip status={stream.streamStatus} />}
                     onlyDesktop
                 >
                     <StatusView disabled={disabled} />
@@ -171,9 +173,8 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                     id="preview"
                     title={I18n.t('userpages.streams.edit.details.nav.preview')}
                 >
-                    <Translate
+                    <PreviewDescription
                         value="userpages.streams.edit.preview.description"
-                        className={styles.longText}
                         tag="p"
                         dangerousHTML
                         docsLink={docsLinks.gettingStarted}
@@ -186,6 +187,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                 <TOCPage.Section
                     id="api-access"
                     title={I18n.t('userpages.streams.edit.details.nav.apiAccess')}
+                    status={(<StatusLabel.Deprecated />)}
                     onlyDesktop
                 >
                     <KeyView disabled={disabled || !canShare} />
@@ -196,6 +198,14 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                     onlyDesktop
                 >
                     <HistoryView disabled={disabled} streamId={stream.id} />
+                </TOCPage.Section>
+                <TOCPage.Section
+                    id="stream-partitions"
+                    title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
+                    linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                    status={(<StatusLabel.Advanced />)}
+                >
+                    <PartitionsView disabled={disabled} />
                 </TOCPage.Section>
             </TOCPage>
         </CoreLayout>

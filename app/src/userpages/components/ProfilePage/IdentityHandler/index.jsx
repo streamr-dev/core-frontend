@@ -13,6 +13,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { usePending } from '$shared/hooks/usePending'
 
+import Description from '../Description'
 import profileStyles from '../profilePage.pcss'
 
 import AddIdentityDialog from './AddIdentityDialog'
@@ -92,10 +93,9 @@ const IdentityHandler = () => {
 
     return (
         <Wrapper>
-            <Translate
+            <Description
                 tag="p"
                 value="userpages.profilePage.ethereumAddress.description"
-                className={profileStyles.longText}
                 dangerousHTML
             />
             <IntegrationKeyList

@@ -3,6 +3,7 @@
 import React, { Fragment, useCallback, useEffect } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
+import Description from '../Description'
 import styles from '../profilePage.pcss'
 
 import IntegrationKeyList from './IntegrationKeyList'
@@ -71,10 +72,9 @@ export const IntegrationKeyHandler = () => {
 
     return (
         <Fragment>
-            <Translate
+            <Description
                 value="userpages.profilePage.ethereumPrivateKeys.description"
                 tag="p"
-                className={styles.longText}
                 dangerousHTML
             />
             <div className="constrainInputWidth">
