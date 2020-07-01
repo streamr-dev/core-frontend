@@ -42,4 +42,36 @@ describe('text utils', () => {
             }))).toBe(true)
         })
     })
+
+    describe('numberToText', () => {
+        it('returns negative number untranslated', () => {
+            expect(all.numberToText(-12)).toBe('-12')
+        })
+
+        it('translates round numbers', () => {
+            expect(all.numberToText(0)).toBe('zero')
+            expect(all.numberToText(1)).toBe('one')
+            expect(all.numberToText(2)).toBe('two')
+            expect(all.numberToText(3)).toBe('three')
+            expect(all.numberToText(4)).toBe('four')
+            expect(all.numberToText(5)).toBe('five')
+            expect(all.numberToText(6)).toBe('six')
+            expect(all.numberToText(7)).toBe('seven')
+            expect(all.numberToText(8)).toBe('eight')
+            expect(all.numberToText(9)).toBe('nine')
+            expect(all.numberToText(10)).toBe('ten')
+            expect(all.numberToText(100)).toBe('hundred')
+            expect(all.numberToText(1000)).toBe('thousand')
+            expect(all.numberToText(10000)).toBe('tenThousand')
+            expect(all.numberToText(100000)).toBe('hundredThousand')
+            expect(all.numberToText(1000000)).toBe('million')
+        })
+
+        it('doesnt translate specific numbers', () => {
+            expect(all.numberToText(12)).toBe('12')
+            expect(all.numberToText(111)).toBe('111')
+            expect(all.numberToText(1012)).toBe('1012')
+            expect(all.numberToText(65231)).toBe('65231')
+        })
+    })
 })

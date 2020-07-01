@@ -996,10 +996,8 @@ msgstr ""
 "a Draft in Core &gt; Products. Publish when it has enough members."
 
 msgid "modal##deployDataUnion##guide##step3"
-msgstr ""
-"A minimum of one member is needed to publish the product."
-"<br />"
-"In Core, Data Union size is shown on the members badge."
+msgstr[1] "A minimum of one member is needed to publish the product.<br />In Core, Data Union size is shown on the members badge."
+msgstr[2] "A minimum of %{memberLimit} members is needed to publish the product.<br />In Core, Data Union size is shown on the members badge."
 
 msgid "modal##deployDataUnion##guide##step4"
 msgstr ""
@@ -1026,7 +1024,8 @@ msgid "noProductsView##message"
 msgstr "We couldn’t find anything to match your search"
 
 msgid "notifications##notEnoughMembers"
-msgstr "The minimum community size for a Data Union is %{memberLimit} members."
+msgstr[1] "The minimum community size for a Data Union is one member."
+msgstr[2] "The minimum community size for a Data Union is %{memberLimit} members."
 
 msgid "notifications##productPublished"
 msgstr "Your product has been published"

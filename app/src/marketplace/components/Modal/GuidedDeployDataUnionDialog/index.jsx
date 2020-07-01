@@ -12,6 +12,8 @@ import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
 import { ProductTile, ImageTile } from '$shared/components/Tile'
 import { type Product } from '$mp/flowtype/product-types'
+import { numberToText } from '$shared/utils/text'
+import { dataUnionMemberLimit } from '$shared/utils/constants'
 
 import dataUnionStats from '$mp/assets/deploy-modal-stats.png'
 
@@ -136,7 +138,12 @@ const GuidedDeployDataUnionDialog = ({
                         />
                     </PreviewContainer>
                     <TextContainer>
-                        <Translate value="modal.deployDataUnion.guide.step3" dangerousHTML />
+                        <Translate
+                            value="modal.deployDataUnion.guide.step3"
+                            dangerousHTML
+                            count={dataUnionMemberLimit}
+                            memberLimit={numberToText(dataUnionMemberLimit)}
+                        />
                     </TextContainer>
                 </React.Fragment>
             )}
