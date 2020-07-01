@@ -97,7 +97,7 @@ const Description = () => {
             purchaseTimestamp: {
                 title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
                 loading: isPending,
-                value: purchaseTimestamp != null ? ago(new Date(purchaseTimestamp)) : '-',
+                value: purchaseTimestamp != null ? ago(new Date(purchaseTimestamp), true) : '-',
             },
         } : {}),
     }), [category, isProductFree, subscriberCount, purchaseTimestamp, isPending])

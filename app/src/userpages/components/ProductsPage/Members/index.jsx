@@ -313,10 +313,10 @@ const Members = () => {
                                             </span>
                                         </Table.Th>
                                         <Table.Td noWrap className={styles.joinColumn}>
-                                            {member.dateCreated ? ago(new Date(member.dateCreated)) : '-'}
+                                            {member.dateCreated ? ago(new Date(member.dateCreated), true) : '-'}
                                         </Table.Td>
                                         <Table.Td noWrap className={styles.dataColumn}>
-                                            {member.lastUpdated ? ago(new Date(member.lastUpdated)) : '-'}
+                                            {member.lastUpdated ? ago(new Date(member.lastUpdated), true) : '-'}
                                         </Table.Td>
                                         <Table.Td className={styles.statusColumn}>
                                             <StatusIcon

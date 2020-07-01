@@ -316,10 +316,10 @@ const StreamList = () => {
                                                 </Table.Th>
                                                 <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                 <Table.Td noWrap>
-                                                    {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
+                                                    {stream.lastUpdated && ago(new Date(stream.lastUpdated), true)}
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    {stream.lastData && ago(new Date(stream.lastData))}
+                                                    {stream.lastData && ago(new Date(stream.lastData), true)}
                                                 </Table.Td>
                                                 <Table.Td className={styles.statusColumn}>
                                                     <StatusIcon status={stream.streamStatus} tooltip />

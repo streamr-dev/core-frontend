@@ -150,7 +150,7 @@ const TransactionList = () => {
                                         <Table.Td title={hash} noWrap>
                                             {truncate(hash, { maxLength: 15 })}
                                         </Table.Td>
-                                        <Table.Td noWrap>{timestamp ? ago(new Date(timestamp)) : '-'}</Table.Td>
+                                        <Table.Td noWrap>{timestamp ? ago(new Date(timestamp), true) : '-'}</Table.Td>
                                         <Table.Td noWrap>
                                             {type === transactionTypes.PURCHASE ? '-' : '+'}
                                             {(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && (
