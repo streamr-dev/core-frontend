@@ -113,11 +113,12 @@ const EditorNav = () => {
     }, [scrollTo])
 
     const ethIdentityStatus = useMemo(() => {
+        const status = getStatus('ethIdentity')
         if (!publishAttempted) {
             return statuses.EMPTY
         }
-        return statuses.VALID
-    }, [publishAttempted])
+        return status
+    }, [publishAttempted, getStatus])
 
     const sharedSecretStatus = useMemo(() => {
         if (!publishAttempted) {

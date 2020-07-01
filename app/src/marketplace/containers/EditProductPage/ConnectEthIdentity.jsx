@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useState, useCallback } from 'react'
+import React, { Fragment, useState, useCallback, useContext } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
@@ -8,7 +8,10 @@ import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Button from '$shared/components/Button'
 import AddIdentityDialog from '$userpages/components/ProfilePage/IdentityHandler/AddIdentityDialog'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
+import useValidation from '../ProductController/useValidation'
 import useIsEthIdentityNeeded from './useIsEthIdentityNeeded'
+import { Context as EditControllerContext } from './EditControllerProvider'
 
 import styles from './productStreams.pcss'
 
@@ -19,6 +22,8 @@ type Props = {
 
 const ConnectEthIdentity = ({ className, disabled }: Props) => {
     const { isRequired, requiredAddress, walletLocked } = useIsEthIdentityNeeded()
+    const { isValid, message } = useValidation('ethIdentity')
+    const { publishAttempted } = useContext(EditControllerContext)
 
     const [waiting, setWaiting] = useState(false)
     const { api: addIdentityDialog, isOpen } = useModal('userpages.addIdentity')
@@ -68,6 +73,11 @@ const ConnectEthIdentity = ({ className, disabled }: Props) => {
                     >
                         <Translate value="editProductPage.connectEthIdentity.addNewAddress" />
                     </Button>
+                    {!isValid && publishAttempted && (
+                        <Errors theme={MarketplaceTheme}>
+                            {message}
+                        </Errors>
+                    )}
                 </Fragment>
             )}
             <AddIdentityDialog />
