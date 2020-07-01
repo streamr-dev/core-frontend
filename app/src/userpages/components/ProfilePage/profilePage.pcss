@@ -1,58 +1,6 @@
-.longText {
-  line-height: 24px;
-  letter-spacing: 0;
-  display: none;
-
-  strong {
-    font-weight: var(--medium);
-  }
-}
-
-.removeAccountButton {}
-
-.keyList {
-  margin-top: 2.5rem;
-  margin-bottom: 2rem;
-}
-
-.keyList:empty {
-  margin-top: 2.5rem;
-  height: 1rem;
-}
-
 .loadingIndicator {
   top: 82px;
   position: sticky;
   width: 100%;
   z-index: 1;
-}
-
-@media (--sm-down) {
-  .keyList:empty {
-    display: none;
-  }
-}
-
-@media (--md-up) {
-  .longText {
-    display: block;
-  }
-
-  .removeAccountButton {
-    margin-top: 3.75rem;
-  }
-}
-
-@media (--lg-up) {
-  .keyList {
-    margin-top: 2.5rem;
-  }
-
-  .keyList:empty {
-    margin-top: -2rem;
-  }
-
-  .removeAccountButton {
-    margin-top: 3rem;
-  }
 }

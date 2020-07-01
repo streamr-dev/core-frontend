@@ -93,7 +93,7 @@ export const InfoView = ({ disabled }: Props) => {
     }, [copy])
 
     return (
-        <Root className="constrainInputWidth">
+        <Root>
             <Row>
                 <Label htmlFor="streamName">
                     {I18n.t('userpages.streams.edit.details.name')}

@@ -3,6 +3,7 @@
 import React, { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
+import styled from 'styled-components'
 
 import Label from '$ui/Label'
 import Text from '$ui/Text'
@@ -17,10 +18,63 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { updateCurrentUserName } from '$shared/modules/user/actions'
+import { MD, LG } from '$shared/utils/styled'
 
 import ChangePasswordDialog from './ChangePasswordDialog'
 import EditAvatarDialog from './EditAvatarDialog'
-import styles from './profileSettings.pcss'
+
+const Root = styled.div`
+`
+
+const AvatarWrapper = styled.div`
+    display: flex;
+    margin-bottom: 2.5rem;
+`
+
+const StyledAvatarCircle = styled(AvatarCircle)`
+    && {
+        margin-right: 1.5rem;
+        width: 72px;
+        height: 72px;
+        line-height: 5rem;
+        font-size: 2em;
+        overflow: hidden;
+    }
+
+    @media (min-width: ${MD}px) {
+        && {
+            margin-right: 2.5rem;
+            width: 80px;
+            height: 80px;
+        }
+    }
+`
+
+const UploadWrapper = styled.div`
+    color: #323232;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+    margin-top: 0.5em;
+`
+
+const UploadHelpText = styled(Translate)`
+    margin-top: 1rem;
+`
+
+const InputRow = styled.div`
+    & + & {
+        margin-top: 2rem;
+    }
+
+    @media (min-width: ${LG}px) {
+        max-width: 536px;
+    }
+`
+
+const PasswordButton = styled(Button)`
+    margin-top: 2rem;
+`
 
 const ProfileSettings = () => {
     const user = useSelector(selectUserData)
@@ -86,15 +140,14 @@ const ProfileSettings = () => {
     ), [wrapUploadAvatarDialog, uploadAvatarDialog, isMounted, originalImage])
 
     return (
-        <div className="constrainInputWidth">
-            <div className={styles.avatarContainer}>
-                <AvatarCircle
+        <Root>
+            <AvatarWrapper>
+                <StyledAvatarCircle
                     name={user.name}
                     imageUrl={user.imageUrlLarge}
-                    className={styles.avatarCircle}
                     uploadAvatarPlaceholder
                 />
-                <div className={styles.upload}>
+                <UploadWrapper>
                     <Button
                         kind="secondary"
                         disabled={isPending || isUploadAvatarDialogOpen}
@@ -103,12 +156,13 @@ const ProfileSettings = () => {
                     >
                         <Translate value={user.imageUrlLarge ? 'userpages.profile.settings.update' : 'userpages.profile.settings.upload'} />
                     </Button>
-                    <div className={styles.uploadHelpText}>
-                        <Translate value="userpages.profile.settings.uploadHelpText" />
-                    </div>
-                </div>
-            </div>
-            <div className={styles.fullname}>
+                    <UploadHelpText
+                        value="userpages.profile.settings.uploadHelpText"
+                        tag="p"
+                    />
+                </UploadWrapper>
+            </AvatarWrapper>
+            <InputRow>
                 <Label htmlFor="userFullname">
                     <Translate value="userpages.profilePage.profileSettings.userFullname" />
                 </Label>
@@ -120,8 +174,8 @@ const ProfileSettings = () => {
                     required
                     disabled={isPending}
                 />
-            </div>
-            <div className={styles.email}>
+            </InputRow>
+            <InputRow>
                 <Label htmlFor="userEmail">
                     <Translate value="userpages.profilePage.profileSettings.userEmail" />
                 </Label>
@@ -131,21 +185,19 @@ const ProfileSettings = () => {
                     readOnly
                     disabled={isPending}
                 />
-            </div>
-            <div className={styles.password}>
-                <Button
-                    kind="secondary"
-                    onClick={changePassword}
-                    aria-label="Change Password"
-                    disabled={isPending || isChangePasswordDialogOpen}
-                    waiting={isChangePasswordDialogOpen}
-                >
-                    <Translate value="userpages.profilePage.profileSettings.changePassword" />
-                </Button>
-            </div>
+            </InputRow>
+            <PasswordButton
+                kind="secondary"
+                onClick={changePassword}
+                aria-label="Change Password"
+                disabled={isPending || isChangePasswordDialogOpen}
+                waiting={isChangePasswordDialogOpen}
+            >
+                <Translate value="userpages.profilePage.profileSettings.changePassword" />
+            </PasswordButton>
             <ChangePasswordDialog />
             <EditAvatarDialog />
-        </div>
+        </Root>
     )
 }
 

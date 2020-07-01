@@ -4,7 +4,6 @@ import React, { Fragment, useCallback, useEffect } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 
 import Description from '../Description'
-import styles from '../profilePage.pcss'
 
 import IntegrationKeyList from './IntegrationKeyList'
 import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
@@ -77,28 +76,25 @@ export const IntegrationKeyHandler = () => {
                 tag="p"
                 dangerousHTML
             />
-            <div className="constrainInputWidth">
-                <IntegrationKeyList
-                    integrationKeys={privateKeys}
-                    onDelete={wrappedRemove}
-                    onEdit={wrappedEdit}
-                    truncateValues
-                    className={styles.keyList}
-                    disabled={isDisabled}
+            <IntegrationKeyList
+                integrationKeys={privateKeys}
+                onDelete={wrappedRemove}
+                onEdit={wrappedEdit}
+                truncateValues
+                disabled={isDisabled}
+            />
+            <Button
+                type="button"
+                kind="secondary"
+                disabled={isOpen || isDisabled}
+                onClick={addPrivateKey}
+                waiting={isAddPrivateKeyDialogPending}
+            >
+                <Translate
+                    value={`userpages.profilePage.ethereumPrivateKeys.${privateKeys && privateKeys[0] ? 'addAddress' : 'addNewAddress'}`}
                 />
-                <Button
-                    type="button"
-                    kind="secondary"
-                    disabled={isOpen || isDisabled}
-                    onClick={addPrivateKey}
-                    waiting={isAddPrivateKeyDialogPending}
-                >
-                    <Translate
-                        value={`userpages.profilePage.ethereumPrivateKeys.${privateKeys && privateKeys[0] ? 'addAddress' : 'addNewAddress'}`}
-                    />
-                </Button>
-                <AddPrivateKeyDialog />
-            </div>
+            </Button>
+            <AddPrivateKeyDialog />
         </Fragment>
     )
 }

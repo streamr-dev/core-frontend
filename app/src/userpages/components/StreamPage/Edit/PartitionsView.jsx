@@ -77,7 +77,7 @@ export const PartitionsView = ({ disabled }: Props) => {
     }, [setPartitionsValue])
 
     return (
-        <Root className="constrainInputWidth">
+        <Root>
             <Description
                 value="userpages.streams.edit.streamPartitions.description"
                 dangerousHTML
