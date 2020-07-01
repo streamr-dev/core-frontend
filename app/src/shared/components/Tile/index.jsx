@@ -223,6 +223,7 @@ const PurchaseTile = ({
 type ProductTileProps = {
     actions?: any,
     deployed?: boolean,
+    published?: boolean,
     numMembers?: number,
     product: any,
     showDataUnionBadge?: boolean,
@@ -232,6 +233,7 @@ type ProductTileProps = {
 const ProductTile = ({
     actions,
     deployed,
+    published,
     numMembers,
     product,
     showDataUnionBadge,
@@ -266,10 +268,14 @@ const ProductTile = ({
                 name={product.name}
                 description={touchedAgo(product)}
                 label={(
-                    <Label mood={deployed && HAPPY}>
-                        {deployed ? (
+                    <Label mood={published && HAPPY}>
+                        {!!published && (
                             <Translate value="userpages.products.published" />
-                        ) : (
+                        )}
+                        {!published && !!deployed && (
+                            <Translate value="userpages.products.deployed" />
+                        )}
+                        {!published && !deployed && (
                             <Translate value="userpages.products.draft" />
                         )}
                     </Label>

@@ -184,6 +184,9 @@ msgstr "Clear filters"
 msgid "userpages##products##draft"
 msgstr "Draft"
 
+msgid "userpages##products##deployed"
+msgstr "Deployed"
+
 msgid "userpages##products##published"
 msgstr "Published"
 
