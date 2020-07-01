@@ -2,7 +2,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import type { StreamId } from '$shared/flowtype/stream-types'
@@ -12,8 +12,9 @@ import { getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { selectOpenStreamId, selectOpenStreamResourceKeys } from '$userpages/modules/userPageStreams/selectors'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import Button from '$shared/components/Button'
 
-import PermissionCredentialsControl from './PermissionCredentialsControl'
+import PermissionKeyField from './PermissionKeyField'
 
 type OwnProps = {
     disabled: boolean,
@@ -31,11 +32,28 @@ type DispatchProps = {
 type Props = DispatchProps & OwnProps & StateProps
 
 const Description = styled(Translate)`
-    margin-bottom: 3.125rem;
     max-width: 660px;
+    margin-bottom: 3.125rem;
 
     a {
         text-decoration: none;
+    }
+`
+
+const ListWrapper = styled.div`
+    &:not(:empty) {
+        margin-bottom: 2rem;
+    }
+
+    &:empty {
+        display: block;
+        margin-top: -1rem;
+    }
+`
+
+const ListItem = styled(PermissionKeyField)`
+    & + & {
+        margin-top: 1.5rem;
     }
 `
 
@@ -91,7 +109,21 @@ export class KeyView extends Component<Props> {
                     dangerousHTML
                     tag="p"
                 />
-                <PermissionCredentialsControl keys={keys} />
+                <ListWrapper>
+                    {keys.map((key: ResourceKey, index: number) => (
+                        <ListItem
+                            key={key.id}
+                            keyName={key.name}
+                            value={key.id}
+                            hideValue
+                            showPermissionHeader={!index}
+                            permission={key.permission}
+                        />
+                    ))}
+                </ListWrapper>
+                <Button kind="secondary" disabled>
+                    {I18n.t('userpages.profilePage.apiCredentials.addAPIKey')}
+                </Button>
             </Fragment>
         )
     }
