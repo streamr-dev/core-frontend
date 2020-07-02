@@ -41,7 +41,6 @@ const EditorNav = () => {
         }
 
         const pending = !isNewProduct && !!isPublic && isPendingChange(name)
-        console.log('isPendingChange(name)', name, isPendingChange(name))
 
         const validState = pending ? statuses.UNPUBLISHED : statuses.VALID
 
