@@ -55,6 +55,7 @@ const securityLevels = {
             normal: 'lock',
             selected: 'lock',
             highlighted: 'lock',
+            small: 'lock',
         },
         config: {
             requireSignedData: false,
@@ -69,6 +70,7 @@ const securityLevels = {
             normal: 'checkBadgeOutline',
             selected: 'checkBadge',
             highlighted: 'checkBadge',
+            small: 'checkBadgeHD',
         },
         config: {
             requireSignedData: true,
@@ -83,6 +85,7 @@ const securityLevels = {
             normal: 'lockOutline',
             selected: 'lock',
             highlighted: 'lock',
+            small: 'lock',
         },
         config: {
             requireSignedData: true,
@@ -134,7 +137,7 @@ function setSecurityLevel(level: SecurityLevelSymbol) {
 type SecurityIconProps = {
     className?: string,
     level?: SecurityLevelSymbol,
-    mode?: 'selected' | 'highlighted' | 'normal',
+    mode?: 'selected' | 'highlighted' | 'normal' | 'small',
     hideBasic?: boolean,
 }
 

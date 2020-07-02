@@ -303,16 +303,23 @@ const StreamList = () => {
                                                 className={styles.streamRow}
                                                 onClick={() => onStreamRowClick(stream.id)}
                                             >
-                                                <Table.Th noWrap title={stream.name} className={styles.streamName}>
-                                                    {stream.name}
-                                                    <span title={getSecurityLevelTitle(stream)}>
-                                                        <SecurityIcon
-                                                            className={styles.SecurityIcon}
-                                                            level={getSecurityLevel(stream)}
-                                                            mode="selected"
-                                                            hideBasic
-                                                        />
-                                                    </span>
+                                                <Table.Th noWrap>
+                                                    <div className={styles.nameAndSecurityContainer}>
+                                                        <span
+                                                            title={stream.name}
+                                                            className={styles.streamName}
+                                                        >
+                                                            {stream.name}
+                                                        </span>
+                                                        <span title={getSecurityLevelTitle(stream)} className={styles.SecurityIconContainer}>
+                                                            <SecurityIcon
+                                                                className={styles.SecurityIcon}
+                                                                level={getSecurityLevel(stream)}
+                                                                mode="small"
+                                                                hideBasic
+                                                            />
+                                                        </span>
+                                                    </div>
                                                 </Table.Th>
                                                 <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                 <Table.Td noWrap>
@@ -399,17 +406,22 @@ const StreamList = () => {
                                                 <Table.Td noWrap className={styles.tabletStreamRow}>
                                                     <div className={styles.tabletStreamRowContainer}>
                                                         <div>
-                                                            <span className={styles.tabletStreamName} title={stream.name}>
-                                                                {stream.name}
-                                                                <span title={getSecurityLevelTitle(stream)}>
+                                                            <div className={styles.nameAndSecurityContainer}>
+                                                                <span
+                                                                    title={stream.name}
+                                                                    className={styles.tabletStreamName}
+                                                                >
+                                                                    {stream.name}
+                                                                </span>
+                                                                <span title={getSecurityLevelTitle(stream)} className={styles.SecurityIconContainer}>
                                                                     <SecurityIcon
                                                                         className={styles.SecurityIcon}
                                                                         level={getSecurityLevel(stream)}
-                                                                        mode="selected"
+                                                                        mode="small"
                                                                         hideBasic
                                                                     />
                                                                 </span>
-                                                            </span>
+                                                            </div>
                                                             <span className={styles.tabletStreamDescription}>
                                                                 {stream.description}
                                                             </span>

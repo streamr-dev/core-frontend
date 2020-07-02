@@ -76,18 +76,32 @@
   }
 }
 
-.streamName {
-  color: #323232;
+.streamsTable .streamName {
+  display: inline-block;
+  font-weight: 500;
   font-weight: var(--medium);
   font-size: 14px;
+  color: #323232;
   letter-spacing: 0;
+  max-width: 280px;
+  overflow: hidden;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+@media (--lg-down) {
+  .streamsTable .streamName {
+    max-width: 200px;
+  }
 }
 
 .SecurityIcon {
   margin-left: 8px;
   margin-top: -2px;
-  height: 12px;
-  width: 12px;
+  height: 16px;
+  width: 16px;
 }
 
 .dropdownActions {
@@ -118,16 +132,33 @@
     }
   }
 
-  .tabletStreamName {
-    display: block;
-    padding-right: 1em;
-    max-width: 580px;
-    word-break: break-word;
+  .nameAndSecurityContainer {
+    padding-right: 3rem;
     font-weight: var(--medium);
     letter-spacing: 0;
     font-size: 16px;
     line-height: 20px;
     color: #323232;
+  }
+
+  .SecurityIconContainer {
+    position: relative;
+    top: -4px;
+  }
+
+  .tabletStreamName {
+    max-width: 580px;
+    display: inline-block;
+    overflow: hidden;
+    word-break: break-word;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (--sm-down) {
+    .tabletStreamName {
+      max-width: 360px;
+    }
   }
 
   .tabletStreamDescription {
@@ -180,8 +211,14 @@
       padding: 16px 24px;
 
       > div {
-        line-height: 16px;
+        line-height: 1.5;
       }
     }
+  }
+}
+
+@media (--xs) {
+  .tabletStreamRowContainer .tabletStreamName {
+    max-width: 200px;
   }
 }
