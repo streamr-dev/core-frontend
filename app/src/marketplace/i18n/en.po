@@ -509,6 +509,9 @@ msgstr "Unpublishing"
 msgid "modal##publishProgress##publishPendingChanges##pending"
 msgstr "Updating product"
 
+msgid "modal##publishProgress##setRequiresWhitelist##pending"
+msgstr "Updating whitelist status"
+
 msgid "modal##publishProgress##updateContractProduct##failed"
 msgstr "Updating product failed"
 
@@ -532,6 +535,9 @@ msgstr "Unpublishing failed"
 
 msgid "modal##publishProgress##publishPendingChanges##failed"
 msgstr "Updating product failed"
+
+msgid "modal##publishProgress##setRequiresWhitelist##failed"
+msgstr "Updating whitelist status failed"
 
 msgid "modal##publishProgress##confirmTransaction"
 msgstr "Please confirm transaction"
@@ -571,6 +577,9 @@ msgstr "Failed to publish product."
 
 msgid "modal##publishError##actions##publishPendingChanges"
 msgstr "Failed to publish product changes."
+
+msgid "modal##publishError##actions##setRequiresWhitelist"
+msgstr "Failed to publish product whitelist status."
 
 msgid "modal##publishError##actions##unpublishFree"
 msgstr "Failed to unpublish product."
