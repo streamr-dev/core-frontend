@@ -11,9 +11,16 @@ import styles from './selectField.pcss'
 
 type SelectFieldProps = LastErrorProps & SelectProps & {
     disabled?: boolean,
+    errorsTheme?: any,
 }
 
-export const SelectField = ({ error, isProcessing, disabled, ...inputProps }: SelectFieldProps) => {
+export const SelectField = ({
+    error,
+    isProcessing,
+    disabled,
+    errorsTheme,
+    ...inputProps
+}: SelectFieldProps) => {
     const { hasError, error: lastError } = useLastError({
         error,
         isProcessing,
@@ -29,7 +36,7 @@ export const SelectField = ({ error, isProcessing, disabled, ...inputProps }: Se
                 disabled={disabled}
                 {...castProps}
             />
-            <Errors overlap>
+            <Errors overlap theme={errorsTheme}>
                 {!!hasError && lastError}
             </Errors>
         </div>

@@ -145,6 +145,42 @@ msgstr "Fix price in fiat"
 msgid "editProductPage##productDetails##title"
 msgstr "Add some more details"
 
+msgid "editProductPage##productDetails##category"
+msgstr "Choose a product category"
+
+msgid "editProductPage##productDetails##adminFee"
+msgstr "Set your admin fee"
+
+msgid "editProductPage##productDetails##url"
+msgstr "Add a site URL"
+
+msgid "editProductPage##productDetails##email"
+msgstr "Add a contact email"
+
+msgid "editProductPage##productDetails##socialMediaLink"
+msgstr "Social media link"
+
+msgid "editProductPage##productDetails##optional"
+msgstr "Optional"
+
+msgid "editProductPage##productDetails##placeholder##url"
+msgstr "http://siteinfo.com"
+
+msgid "editProductPage##productDetails##placeholder##email"
+msgstr "owner@example.com"
+
+msgid "editProductPage##productDetails##placeholder##reddit"
+msgstr "e.g. http://reddit.com/r/streamr"
+
+msgid "editProductPage##productDetails##placeholder##telegram"
+msgstr "e.g. http://telegram.co/streamr"
+
+msgid "editProductPage##productDetails##placeholder##twitter"
+msgstr "e.g. http://twitter.com/streamr"
+
+msgid "editProductPage##productDetails##placeholder##linkedin"
+msgstr "e.g. http://linkedin.com/streamr"
+
 msgid "editProductPage##connectEthIdentity##title"
 msgstr "Connect an Ethereum identity"
 

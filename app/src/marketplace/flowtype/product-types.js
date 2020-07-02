@@ -31,6 +31,15 @@ export type TermsOfUse = {
     termsUrl: ?string,
 }
 
+export type ContactDetails = {
+    url: ?string,
+    email: ?string,
+    social1: ?string,
+    social2: ?string,
+    social3: ?string,
+    social4: ?string,
+}
+
 export type Product = {
     adminFee?: number,
     key?: string,
@@ -59,6 +68,7 @@ export type Product = {
     type?: ProductType,
     pendingChanges?: PendingChanges,
     termsOfUse: TermsOfUse,
+    contact: ?ContactDetails,
 }
 
 export type ProductSubscriptionId = string

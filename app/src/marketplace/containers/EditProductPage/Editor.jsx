@@ -42,8 +42,8 @@ const Editor = ({ disabled }: Props) => {
                         <ProductStreams disabled={disabled} />
                         <PriceSelector disabled={disabled} />
                         <ProductDetails disabled={disabled} />
-                        <ConnectEthIdentity disabled={disabled} />
                         <TermsOfUse disabled={disabled} />
+                        <ConnectEthIdentity disabled={disabled} />
                         {!!isDataUnion && (
                             <SharedSecrets disabled={disabled} />
                         )}

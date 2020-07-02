@@ -55,6 +55,35 @@ describe('Product State', () => {
                 adminFee: '0.1',
             })
         })
+
+        it('it supports nested fields', () => {
+            expect(State.getPendingObject({
+                id: '1',
+                name: 'new name',
+                description: 'new description',
+                imageUrl: undefined,
+                thumbnailUrl: undefined,
+                streams: [],
+                previewStream: '',
+                updated: '2019-10-01 09:51:00',
+                adminFee: '0.1',
+                contact: {
+                    email: 'a@b.com',
+                    social1: 'http://social1.com',
+                    invalid: 1337,
+                },
+            })).toMatchObject({
+                name: 'new name',
+                description: 'new description',
+                streams: [],
+                previewStream: '',
+                adminFee: '0.1',
+                contact: {
+                    email: 'a@b.com',
+                    social1: 'http://social1.com',
+                },
+            })
+        })
     })
 
     describe('getChangeObject', () => {
@@ -287,6 +316,25 @@ describe('Product State', () => {
                 adminFee: '0.4',
             })
         })
+
+        it('returns pending changes for nested objects', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    contact: {
+                        email: 'a@b.com',
+                    },
+                },
+            }
+            expect(State.getPendingChanges(product)).toMatchObject({
+                contact: {
+                    email: 'a@b.com',
+                },
+            })
+        })
     })
 
     describe('hasPendingChange', () => {
@@ -368,6 +416,25 @@ describe('Product State', () => {
 
             // undefined value can't be detected
             expect(State.hasPendingChange(nextProduct, 'otherField')).toBe(false)
+        })
+
+        it('it returns true for nested property changes', () => {
+            const product = {
+                id: '1',
+                state: productStates.DEPLOYED,
+                contact: {
+                    email: 'a@b.com',
+                },
+            }
+            const nextProduct = {
+                ...product,
+                pendingChanges: {
+                    contact: {
+                        email: 'a@b.com',
+                    },
+                },
+            }
+            expect(State.hasPendingChange(nextProduct, 'contact.email')).toBe(true)
         })
     })
 

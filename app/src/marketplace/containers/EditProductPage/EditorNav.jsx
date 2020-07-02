@@ -68,17 +68,24 @@ const EditorNav = () => {
 
     const detailsStatus = useMemo(() => {
         const category = getStatus('category')
-
-        if (!isDataUnion) {
-            return category
-        }
         const adminFee = getStatus('adminFee')
+        const url = getStatus('contact.url')
+        const email = getStatus('contact.email')
+        const social1 = getStatus('contact.social1')
+        const social2 = getStatus('contact.social2')
+        const social3 = getStatus('contact.social3')
+        const social4 = getStatus('contact.social4')
 
-        if (category === statuses.ERROR || adminFee === statuses.ERROR) {
+        const details = [category, url, email, social1, social2, social3, social4]
+        if (isDataUnion) {
+            details.push(adminFee)
+        }
+
+        if (details.includes(statuses.ERROR)) {
             return statuses.ERROR
-        } else if (category === statuses.UNPUBLISHED || adminFee === statuses.UNPUBLISHED) {
+        } else if (details.includes(statuses.UNPUBLISHED)) {
             return statuses.UNPUBLISHED
-        } else if (category === statuses.VALID || adminFee === statuses.VALID) {
+        } else if (details.includes(statuses.VALID)) {
             return statuses.VALID
         }
 
