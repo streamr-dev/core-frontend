@@ -23,8 +23,8 @@ const TickIcon = styled(SvgIcon)`
 
 const Item = ({ children, active, onClick, ...rest }) => (
     <StyledDropdownItem
-        onClick={onClick}
         {...rest}
+        onClick={onClick}
     >
         {children}
         {active &&

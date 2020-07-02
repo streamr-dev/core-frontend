@@ -5,6 +5,7 @@ import * as yup from 'yup'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import get from 'lodash/get'
 import set from 'lodash/fp/set'
+import isPlainObject from 'lodash/isPlainObject'
 
 import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
@@ -69,8 +70,19 @@ function useValidationContext(): ContextProps {
 
         setPendingChanges((state) => set(name, isPending, state))
     }, [setPendingChanges, isMounted])
+
     const isPendingChange = useCallback((name: string) => !!(get(pendingChanges, name)), [pendingChanges])
-    const isAnyChangePending = useCallback(() => Object.values(pendingChanges).some(Boolean), [pendingChanges])
+
+    const isAnyChangePending = useCallback(() => (
+        // flatten nested values
+        Object.values(pendingChanges)
+            .reduce((result, value) => ([
+                ...result,
+                // $FlowFixMe value is in fact an object
+                ...(isPlainObject(value) ? Object.values(value) : [value]),
+            ]), [])
+            .some(Boolean)
+    ), [pendingChanges])
 
     const setStatus = useCallback((name: string, level: Level, message: string): Object => {
         if (!isMounted()) { return }

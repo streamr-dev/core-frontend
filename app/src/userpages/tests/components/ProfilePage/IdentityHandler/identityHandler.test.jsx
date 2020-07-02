@@ -82,7 +82,7 @@ describe('IdentityHandler', () => {
             const el = mount(<IdentityHandler />)
 
             act(() => {
-                el.find('ActionsDropdown').find('button').at(2).simulate('click')
+                el.find('WithInputActions').find('button').at(2).simulate('click')
             })
 
             expect(mockRemove).toHaveBeenCalled()
