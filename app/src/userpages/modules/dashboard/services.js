@@ -24,8 +24,9 @@ export const deleteDashboard = (id: DashboardId): ApiResult<null> => del({
 })
 
 export const getMyDashboardPermissions = (dashboardId: DashboardId): ApiResult<Array<Permission>> => get({
-    url: routes.api.dashboards.myPermissions({
+    url: routes.api.dashboards.permissions.show({
         dashboardId,
+        id: 'me',
     }),
 })
 

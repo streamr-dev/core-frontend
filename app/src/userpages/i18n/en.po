@@ -767,6 +767,9 @@ msgstr "Your settings have been saved"
 msgid "userpages##profilePage##toolbar##cancel"
 msgstr "Cancel"
 
+msgid "userpages##profilePage##toolbar##share"
+msgstr "Share"
+
 msgid "userpages##profilePage##toolbar##saveAndExit"
 msgstr "Save & Exit"
 

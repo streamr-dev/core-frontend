@@ -44,7 +44,6 @@ export type Dashboard = {
     id: DashboardId,
     name: string,
     items: Array<DashboardItem>,
-    ownPermissions?: Array<$ElementType<Permission, 'operation'>>,
     editingLocked?: boolean,
     layout: Layout,
     new?: boolean,

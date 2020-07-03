@@ -7,7 +7,6 @@ import type {
     ProductIdList,
     Filter,
     Subscription,
-    ProductPermissions,
     DataUnionId,
 } from './product-types'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
@@ -67,7 +66,6 @@ export type ProductState = {
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
-    productPermissions: ProductPermissions,
 }
 
 // contract product

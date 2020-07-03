@@ -1,11 +1,10 @@
 // @flow
 
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
-import MediaQuery from 'react-responsive'
 import qs from 'query-string'
 import styled from 'styled-components'
 
@@ -17,8 +16,14 @@ import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
-import breakpoints from '$app/scripts/breakpoints'
 import CoreLayout from '$shared/components/Layout/Core'
+import CodeSnippets from '$shared/components/CodeSnippets'
+import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
+import Sidebar from '$shared/components/Sidebar'
+import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import ShareSidebar from '$userpages/components/ShareSidebar'
+import BackButton from '$shared/components/BackButton'
+
 import InfoView from './InfoView'
 import KeyView from './KeyView'
 import ConfigureView from './ConfigureView'
@@ -30,7 +35,29 @@ import StatusView from './StatusView'
 import CodeSnippets from '$shared/components/CodeSnippets'
 import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
 
-const { lg } = breakpoints
+function StreamPageSidebar({ stream }) {
+    const sidebar = useContext(SidebarContext)
+    const onClose = useCallback(() => {
+        sidebar.close()
+    }, [sidebar])
+
+    return (
+        <Sidebar
+            className={styles.ModuleSidebar}
+            isOpen={sidebar.isOpen()}
+            onClose={onClose}
+        >
+            {sidebar.isOpen('share') && (
+                <ShareSidebar
+                    sidebarName="share"
+                    resourceTitle={stream && stream.name}
+                    resourceType="STREAM"
+                    resourceId={stream && stream.id}
+                />
+            )}
+        </Sidebar>
+    )
+}
 
 const PreviewDescription = styled(Translate)`
     margin-bottom: 3.125rem;
@@ -38,6 +65,7 @@ const PreviewDescription = styled(Translate)`
 `
 
 const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
+    const sidebar = useContext(SidebarContext)
     const stream = useMemo(() => ({
         ...streamProp,
         ...(streamProp.config ? {
@@ -88,33 +116,44 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
         })
     ), [stream.id])
 
+    const openShareDialog = useCallback(() => {
+        sidebar.open('share')
+    }, [sidebar])
+
     return (
         <CoreLayout
             hideNavOnDesktop
             navComponent={(
-                <MediaQuery minWidth={lg.min}>
-                    {(isDesktop) => (
-                        <Toolbar
-                            altMobileLayout
-                            actions={{
-                                cancel: {
-                                    title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                    kind: 'link',
-                                    onClick: cancel,
-                                },
-                                saveChanges: {
-                                    title: isDesktop ?
-                                        I18n.t('userpages.profilePage.toolbar.saveAndExit') :
-                                        I18n.t('userpages.profilePage.toolbar.done'),
-                                    kind: 'primary',
-                                    spinner,
-                                    onClick: save,
-                                    disabled,
-                                },
-                            }}
-                        />
-                    )}
-                </MediaQuery>
+                <Toolbar
+                    altMobileLayout
+                    left={<BackButton onBack={cancel} />}
+                    actions={{
+                        share: {
+                            title: I18n.t('userpages.profilePage.toolbar.share'),
+                            kind: 'primary',
+                            outline: true,
+                            onClick: openShareDialog,
+                            disabled,
+                            className: styles.showOnDesktop,
+                        },
+                        saveChanges: {
+                            title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
+                            kind: 'primary',
+                            spinner,
+                            onClick: save,
+                            disabled,
+                            className: styles.showOnDesktop,
+                        },
+                        done: {
+                            title: I18n.t('userpages.profilePage.toolbar.done'),
+                            kind: 'primary',
+                            spinner,
+                            onClick: save,
+                            disabled,
+                            className: styles.showOnTablet,
+                        },
+                    }}
+                />
             )}
         >
             <TOCPage title={I18n.t(`userpages.streams.edit.details.pageTitle.${isNewStream ? 'newStream' : 'existingStream'}`)}>
@@ -208,8 +247,13 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                     <PartitionsView disabled={disabled} />
                 </TOCPage.Section>
             </TOCPage>
+            <StreamPageSidebar stream={stream} />
         </CoreLayout>
     )
 }
 
-export default Edit
+export default (props: any) => (
+    <SidebarProvider>
+        <Edit {...props} />
+    </SidebarProvider>
+)

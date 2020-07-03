@@ -11,9 +11,6 @@ import {
     GET_STREAMS_REQUEST,
     GET_STREAMS_SUCCESS,
     GET_STREAMS_FAILURE,
-    GET_MY_STREAM_PERMISSIONS_REQUEST,
-    GET_MY_STREAM_PERMISSIONS_SUCCESS,
-    GET_MY_STREAM_PERMISSIONS_FAILURE,
     OPEN_STREAM,
     UPLOAD_CSV_FILE_UNKNOWN_SCHEMA,
     CONFIRM_CSV_FILE_UPLOAD_FAILURE,
@@ -29,8 +26,7 @@ import {
 
 export type StreamAction = {
     type: typeof GET_STREAM_REQUEST
-        | typeof GET_STREAMS_REQUEST
-        | typeof GET_MY_STREAM_PERMISSIONS_REQUEST,
+        | typeof GET_STREAMS_REQUEST,
 } | {
     type: typeof OPEN_STREAM
         | typeof UPLOAD_CSV_FILE_REQUEST
@@ -45,12 +41,7 @@ export type StreamAction = {
     streams: StreamIdList,
     hasMoreResults: boolean,
 } | {
-    type: typeof GET_MY_STREAM_PERMISSIONS_SUCCESS,
-    id: StreamId,
-    permissions: Array<$ElementType<Permission, 'operation'>>,
-} | {
     type: typeof GET_STREAM_FAILURE
-        | typeof GET_MY_STREAM_PERMISSIONS_FAILURE
         | typeof GET_STREAMS_FAILURE
         | typeof UPLOAD_CSV_FILE_FAILURE
         | typeof CONFIRM_CSV_FILE_UPLOAD_FAILURE

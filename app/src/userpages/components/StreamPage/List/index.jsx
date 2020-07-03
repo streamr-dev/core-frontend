@@ -167,7 +167,7 @@ const StreamList = () => {
 
         if (open && !fetchingPermissions && !permissions[streamId]) {
             try {
-                await dispatch(getResourcePermissions('STREAM', streamId, false))
+                await dispatch(getResourcePermissions('STREAM', streamId))
             } catch (e) {
                 // Noop.
             }

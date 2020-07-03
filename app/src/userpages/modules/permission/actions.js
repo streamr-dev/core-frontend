@@ -3,8 +3,6 @@
 import path from 'path'
 
 import * as api from '$shared/utils/api'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 
 export const GET_RESOURCE_PERMISSIONS_REQUEST = 'GET_RESOURCE_PERMISSIONS_REQUEST'
 export const GET_RESOURCE_PERMISSIONS_SUCCESS = 'GET_RESOURCE_PERMISSIONS_SUCCESS'
@@ -21,6 +19,7 @@ const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId) => {
         DASHBOARD: 'dashboards',
         CANVAS: 'canvases',
         STREAM: 'streams',
+        PRODUCT: 'products',
     }
     const urlPart = urlPartsByResourceType[resourceType]
     if (!urlPart) {
@@ -66,17 +65,11 @@ export const getResourcePermissionsAPI = (resourceType: ResourceType, resourceId
     })
 )
 
-export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId, notify: boolean = true) => async (dispatch: Function) => {
+export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
     const resourcePermissions = await getResourcePermissionsAPI(resourceType, resourceId)
         .catch((error) => {
             dispatch(getResourcePermissionsFailure(error))
-            if (notify) {
-                Notification.push({
-                    title: error.message,
-                    icon: NotificationIcon.ERROR,
-                })
-            }
             throw error
         })
     dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))

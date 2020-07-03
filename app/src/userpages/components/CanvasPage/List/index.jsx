@@ -136,7 +136,7 @@ const CanvasList = () => {
     const onToggleCanvasDropdown = useCallback((id: string) => async (open: boolean) => {
         if (open && !fetchingPermissions && !permissions[id]) {
             try {
-                await dispatch(getResourcePermissions('CANVAS', id, false))
+                await dispatch(getResourcePermissions('CANVAS', id))
             } catch (e) {
                 // Noop.
             }

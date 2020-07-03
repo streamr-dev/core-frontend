@@ -26,9 +26,6 @@ import {
     SAVE_STREAM_FIELDS_REQUEST,
     SAVE_STREAM_FIELDS_SUCCESS,
     SAVE_STREAM_FIELDS_FAILURE,
-    GET_MY_STREAM_PERMISSIONS_REQUEST,
-    GET_MY_STREAM_PERMISSIONS_SUCCESS,
-    GET_MY_STREAM_PERMISSIONS_FAILURE,
     UPLOAD_CSV_FILE_REQUEST,
     UPLOAD_CSV_FILE_SUCCESS,
     UPLOAD_CSV_FILE_FAILURE,
@@ -63,7 +60,6 @@ const initialState = {
     deleteDataError: null,
     autodetectFetching: false,
     streamFieldAutodetectError: null,
-    permissions: null,
     pageSize: streamListPageSize,
     hasMoreSearchResults: null,
 }
@@ -73,7 +69,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case GET_STREAM_REQUEST:
         case GET_STREAMS_REQUEST:
         case CREATE_STREAM_REQUEST:
-        case GET_MY_STREAM_PERMISSIONS_REQUEST:
         case DELETE_STREAM_REQUEST:
             return {
                 ...state,
@@ -188,14 +183,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
         }
 
-        case GET_MY_STREAM_PERMISSIONS_SUCCESS:
-            return {
-                ...state,
-                permissions: action.permissions,
-                error: null,
-                fetching: false,
-            }
-
         case UPLOAD_CSV_FILE_UNKNOWN_SCHEMA:
             return {
                 ...state,
@@ -229,7 +216,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
         case GET_STREAM_FAILURE:
         case GET_STREAMS_FAILURE:
         case CREATE_STREAM_FAILURE:
-        case GET_MY_STREAM_PERMISSIONS_FAILURE:
         case DELETE_STREAM_FAILURE:
             return {
                 ...state,

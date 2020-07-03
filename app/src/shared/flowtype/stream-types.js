@@ -33,7 +33,6 @@ export type Stream = NewStream & {
         name: string,
         module: number,
     },
-    ownPermissions: Array<$ElementType<Permission, 'operation'>>,
     lastUpdated: number,
     inactivityThresholdHours: number,
     partitions: number,
