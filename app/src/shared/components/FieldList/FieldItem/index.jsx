@@ -11,7 +11,8 @@ const Trash = styled.button`
     display: none;
     position: absolute;
     width: 40px;
-    top: 20px;
+    height: 40px;
+    top: 16px;
     right: 8px;
     border: none;
     background-color: transparent;
