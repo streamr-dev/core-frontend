@@ -390,6 +390,9 @@ msgstr "Set up your Stream"
 msgid "userpages##streams##edit##details##pageTitle##existingStream"
 msgstr "Edit your Stream"
 
+msgid "userpages##streams##edit##details##pageTitle##readOnlyStream"
+msgstr "Read only stream"
+
 msgid "userpages##streams##edit##details##nav##details"
 msgstr "Details"
 
