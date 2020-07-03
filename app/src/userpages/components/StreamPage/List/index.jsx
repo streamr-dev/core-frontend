@@ -8,6 +8,7 @@ import Helmet from 'react-helmet'
 import MediaQuery from 'react-responsive'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
+import { titleize } from '@streamr/streamr-layout'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
@@ -311,7 +312,10 @@ const StreamList = () => {
                                                         >
                                                             {stream.name}
                                                         </span>
-                                                        <span title={getSecurityLevelTitle(stream)} className={styles.SecurityIconContainer}>
+                                                        <span
+                                                            className={cx(styles.SecurityIconContainer, styles.showTooltip)}
+                                                            data-tooltiptext={`${getSecurityLevelTitle(stream)} stream`}
+                                                        >
                                                             <SecurityIcon
                                                                 className={styles.SecurityIcon}
                                                                 level={getSecurityLevel(stream)}
@@ -323,10 +327,10 @@ const StreamList = () => {
                                                 </Table.Th>
                                                 <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                 <Table.Td noWrap>
-                                                    {stream.lastUpdated && ago(new Date(stream.lastUpdated), true)}
+                                                    {stream.lastUpdated && titleize(ago(new Date(stream.lastUpdated)))}
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    {stream.lastData && ago(new Date(stream.lastData), true)}
+                                                    {stream.lastData && titleize(ago(new Date(stream.lastData)))}
                                                 </Table.Td>
                                                 <Table.Td className={styles.statusColumn}>
                                                     <StatusIcon status={stream.streamStatus} tooltip />
@@ -413,7 +417,10 @@ const StreamList = () => {
                                                                 >
                                                                     {stream.name}
                                                                 </span>
-                                                                <span title={getSecurityLevelTitle(stream)} className={styles.SecurityIconContainer}>
+                                                                <span
+                                                                    className={cx(styles.SecurityIconContainer, styles.showTooltip)}
+                                                                    data-tooltiptext={`${getSecurityLevelTitle(stream)} stream`}
+                                                                >
                                                                     <SecurityIcon
                                                                         className={styles.SecurityIcon}
                                                                         level={getSecurityLevel(stream)}
@@ -426,12 +433,12 @@ const StreamList = () => {
                                                                 {stream.description}
                                                             </span>
                                                             <span className={styles.lastDataStreamMobile}>
-                                                                {stream.lastData && ago(new Date(stream.lastData))}
+                                                                {stream.lastData && titleize(ago(new Date(stream.lastData)))}
                                                             </span>
                                                         </div>
                                                         <div>
                                                             <span className={styles.lastDataStreamTablet}>
-                                                                {stream.lastData && ago(new Date(stream.lastData))}
+                                                                {stream.lastData && titleize(ago(new Date(stream.lastData)))}
                                                             </span>
                                                             <StatusIcon
                                                                 tooltip

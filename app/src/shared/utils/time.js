@@ -1,7 +1,5 @@
 // @flow
 
-import { titleize } from '@streamr/streamr-layout'
-
 const units = [
     {
         max: 2760000,
@@ -40,18 +38,15 @@ function format(diff, divisor, unit, prev) {
     return val <= 1 ? prev : `${val} ${unit}s ago`
 }
 
-export function ago(date: Date, isTitleized?: boolean) {
+export function ago(date: Date) {
     const diff = Math.abs(Date.now() - date.getTime())
     // less than a minute
     if (diff < 60000) {
-        return isTitleized ? titleize('just now') : 'just now'
+        return 'just now'
     }
 
     for (let i = 0; i < units.length; i += 1) {
         if (diff < units[i].max) {
-            if (isTitleized) {
-                return titleize(format(diff, units[i].value, units[i].name, units[i].prev))
-            }
             return format(diff, units[i].value, units[i].name, units[i].prev)
         }
     }
@@ -63,5 +58,5 @@ export function ago(date: Date, isTitleized?: boolean) {
     //    name: 'year',
     //    prev: 'last year'
     //  }
-    return isTitleized ? titleize(format(diff, 31536000000, 'year', 'last year')) : format(diff, 31536000000, 'year', 'last year')
+    return format(diff, 31536000000, 'year', 'last year')
 }

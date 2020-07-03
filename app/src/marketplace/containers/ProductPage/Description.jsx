@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
+import { titleize } from '@streamr/streamr-layout'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
@@ -38,7 +39,7 @@ const Description = ({ isProductFree }: Props) => {
             purchaseTimestamp: {
                 title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
                 loading: isPending,
-                value: purchaseTimestamp != null ? ago(new Date(purchaseTimestamp), true) : '-',
+                value: purchaseTimestamp != null ? titleize(ago(new Date(purchaseTimestamp))) : '-',
             },
         } : {}),
     }), [category, isPending, subscriberCount, purchaseTimestamp, isProductFree])
