@@ -4,6 +4,7 @@ import React, { useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
+import { titleize } from '@streamr/streamr-layout'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
@@ -97,7 +98,7 @@ const Description = () => {
             purchaseTimestamp: {
                 title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
                 loading: isPending,
-                value: purchaseTimestamp != null ? ago(new Date(purchaseTimestamp)) : '-',
+                value: purchaseTimestamp != null ? titleize(ago(new Date(purchaseTimestamp))) : '-',
             },
         } : {}),
     }), [category, isProductFree, subscriberCount, purchaseTimestamp, isPending])

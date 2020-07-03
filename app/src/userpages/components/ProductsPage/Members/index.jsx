@@ -5,6 +5,7 @@ import Helmet from 'react-helmet'
 import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
+import { titleize } from '@streamr/streamr-layout'
 
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
@@ -318,10 +319,10 @@ const Members = () => {
                                             </span>
                                         </Table.Th>
                                         <Table.Td noWrap className={styles.joinColumn}>
-                                            {member.dateCreated ? ago(new Date(member.dateCreated)) : '-'}
+                                            {member.dateCreated ? titleize(ago(new Date(member.dateCreated))) : '-'}
                                         </Table.Td>
                                         <Table.Td noWrap className={styles.dataColumn}>
-                                            {member.lastUpdated ? ago(new Date(member.lastUpdated)) : '-'}
+                                            {member.lastUpdated ? titleize(ago(new Date(member.lastUpdated))) : '-'}
                                         </Table.Td>
                                         <Table.Td className={styles.statusColumn}>
                                             <StatusIcon

@@ -6,6 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import BN from 'bignumber.js'
 import Helmet from 'react-helmet'
+import { titleize } from '@streamr/streamr-layout'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
@@ -149,7 +150,7 @@ const TransactionList = () => {
                                         <Table.Td title={hash} noWrap>
                                             {truncate(hash, { maxLength: 15 })}
                                         </Table.Td>
-                                        <Table.Td noWrap>{timestamp ? ago(new Date(timestamp)) : '-'}</Table.Td>
+                                        <Table.Td noWrap>{timestamp ? titleize(ago(new Date(timestamp))) : '-'}</Table.Td>
                                         <Table.Td noWrap>
                                             {type === transactionTypes.PURCHASE ? '-' : '+'}
                                             {(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && (

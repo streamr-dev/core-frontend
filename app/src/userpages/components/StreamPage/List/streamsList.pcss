@@ -49,7 +49,7 @@
   top: 2px;
 }
 
-.lastUpdatedStreamTablet {
+.lastDataStreamTablet {
   color: #A3A3A3;
   font-size: 12px;
   text-align: right;
@@ -57,15 +57,44 @@
   position: relative;
 }
 
-.lastUpdatedStreamMobile {
+@media (--xs) {
+  .lastDataStreamTablet {
+    display: none;
+  }
+}
+
+.lastDataStreamMobile {
   display: none;
 }
 
-.SecurityIcon {
-  margin-left: 8px;
-  margin-top: -2px;
-  height: 12px;
-  width: 12px;
+@media (--xs) {
+  .lastDataStreamMobile {
+    color: #A3A3A3;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+  }
+}
+
+.streamsTable .streamName {
+  display: inline-block;
+  font-weight: 500;
+  font-weight: var(--medium);
+  font-size: 14px;
+  color: #323232;
+  letter-spacing: 0;
+  max-width: 280px;
+  overflow: hidden;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+@media (--lg-down) {
+  .streamsTable .streamName {
+    max-width: 200px;
+  }
 }
 
 .dropdownActions {
@@ -82,6 +111,48 @@
   opacity: 1;
 }
 
+.SecurityIconContainer {
+  position: absolute;
+  display: inline-block;
+
+  &::after {
+    display: none;
+    content: attr(data-tooltiptext);
+    visibility: hidden;
+    opacity: 0;
+    transition: 0s all;
+    position: absolute;
+    background-color: #323232;
+    border-radius: 2px;
+    color: white;
+    font-size: 12px;
+    line-height: 16px;
+    top: 34px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 2px 6px;
+  }
+
+  &.showTooltip::after {
+    display: inline-block;
+  }
+
+  &:hover {
+    &::after {
+      transition-delay: 0.5s;
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+}
+
+.SecurityIcon {
+  margin-left: 8px;
+  margin-top: -2px;
+  height: 16px;
+  width: 16px;
+}
+
 @media (--md-down) {
   .createStreamButton {
     display: none;
@@ -96,22 +167,40 @@
     }
   }
 
-  .tabletStreamName {
-    display: block;
-    padding-right: 1em;
-    max-width: 650px;
-    word-break: break-word;
-    font-weight: var(--semiBold);
+  .nameAndSecurityContainer {
+    padding-right: 3rem;
+    font-weight: var(--medium);
+    letter-spacing: 0;
     font-size: 16px;
     line-height: 20px;
+    color: #323232;
+  }
+
+  .tabletStreamName {
+    max-width: 530px;
+    display: inline-block;
+    overflow: hidden;
+    word-break: break-word;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  @media (--sm-down) {
+    .tabletStreamName {
+      max-width: 360px;
+    }
   }
 
   .tabletStreamDescription {
     display: block;
+    max-width: 530px;
     font-size: 12px;
     color: #525252;
     line-height: 20px;
     margin-bottom: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 
@@ -152,8 +241,14 @@
       padding: 16px 24px;
 
       > div {
-        line-height: 16px;
+        line-height: 1.5;
       }
     }
+  }
+}
+
+@media (--xs) {
+  .tabletStreamRowContainer .tabletStreamName {
+    max-width: 200px;
   }
 }
