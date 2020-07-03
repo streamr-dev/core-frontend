@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import { truncate } from '$shared/utils/text'
 import KeyFieldEditor, { type ValueLabel } from './KeyFieldEditor'
 import Notification from '$shared/utils/Notification'
@@ -12,7 +12,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useCopy from '$shared/hooks/useCopy'
 import Label from '$ui/Label'
-import ActionsDropdown from '$shared/components/ActionsDropdown'
+import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 
 import styles from './keyField.pcss'
@@ -126,28 +126,28 @@ const KeyField = ({
     }, [])
 
     const revealAction = useMemo(() => (
-        <DropdownActions.Item key="reveal" onClick={toggleHidden}>
+        <Popover.Item key="reveal" onClick={toggleHidden}>
             <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
-        </DropdownActions.Item>
+        </Popover.Item>
     ), [toggleHidden, hidden])
 
     const editAction = useMemo(() => (
-        <DropdownActions.Item key="edit" onClick={onEdit}>
+        <Popover.Item key="edit" onClick={onEdit}>
             <Translate value="userpages.keyField.edit" />
-        </DropdownActions.Item>
+        </Popover.Item>
     ), [onEdit])
 
     const deleteAction = useMemo(() => (
-        <DropdownActions.Item key="delete" onClick={onDelete} disabled={disableDelete}>
+        <Popover.Item key="delete" onClick={onDelete} disabled={disableDelete}>
             <Translate value="userpages.keyField.delete" />
-        </DropdownActions.Item>
+        </Popover.Item>
     ), [onDelete, disableDelete])
 
     const inputActions = useMemo(() => ([
         ...includeIf(!!hideValue, [revealAction]),
-        <DropdownActions.Item key="copy" onClick={onCopy}>
+        <Popover.Item key="copy" onClick={onCopy}>
             <Translate value="userpages.keyField.copy" />
-        </DropdownActions.Item>,
+        </Popover.Item>,
         ...includeIf(!!allowEdit, [editAction]),
         ...includeIf(!!allowDelete, [deleteAction]),
     ]), [hideValue, revealAction, onCopy, allowEdit, editAction, allowDelete, deleteAction])
@@ -175,13 +175,13 @@ const KeyField = ({
                             {labelComponent}
                         </div>
                     </div>
-                    <ActionsDropdown actions={inputActions}>
+                    <WithInputActions actions={inputActions}>
                         <Text
                             value={displayValue}
                             readOnly
                             type={hidden ? 'password' : 'text'}
                         />
-                    </ActionsDropdown>
+                    </WithInputActions>
                 </div>
             ) : (
                 <KeyFieldEditor

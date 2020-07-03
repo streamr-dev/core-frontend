@@ -14,6 +14,7 @@ import * as useModal from '$shared/hooks/useModal'
 import * as usePending from '$shared/hooks/usePending'
 import * as productServices from '$mp/modules/product/services'
 import * as useEditableProductUpdater from '$mp/containers/ProductController/useEditableProductUpdater'
+import * as sharedConstants from '$shared/utils/constants'
 
 const mockState = {
     product: {
@@ -48,16 +49,13 @@ jest.mock('react-redux', () => ({
 
 describe('EditControllerProvider', () => {
     let sandbox
-    let oldMemberLimit
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
-        oldMemberLimit = process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT
     })
 
     afterEach(() => {
         sandbox.restore()
-        process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT = oldMemberLimit
     })
 
     describe('validate', () => {
@@ -100,6 +98,8 @@ describe('EditControllerProvider', () => {
         })
 
         it('notifies if product fields are missing', async () => {
+            sandbox.stub(sharedConstants, 'dataUnionMemberLimit').value(10)
+
             let currentContext
             let validationContext
             function Test() {
@@ -139,7 +139,6 @@ describe('EditControllerProvider', () => {
                 await validationContext.validate(product)
             })
 
-            process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT = 10
             let result
             await act(async () => {
                 result = await currentContext.validate()
@@ -1076,7 +1075,7 @@ describe('EditControllerProvider', () => {
         })
 
         it('does not redirect if deploy fails', async () => {
-            process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT = 0
+            sandbox.stub(sharedConstants, 'dataUnionMemberLimit').value(0)
 
             let currentContext
             let validationContext
@@ -1140,7 +1139,7 @@ describe('EditControllerProvider', () => {
         })
 
         it('updates and saves beneficiary address if deploy succeeds', async () => {
-            process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT = 0
+            sandbox.stub(sharedConstants, 'dataUnionMemberLimit').value(0)
 
             let currentContext
             let validationContext

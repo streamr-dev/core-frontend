@@ -2,8 +2,7 @@
 
 import React, { type Node, useState } from 'react'
 import styled, { css } from 'styled-components'
-import Meatball from '$shared/components/Meatball'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
 
 const ActionContainer = styled.div`
@@ -19,12 +18,12 @@ const ActionContainer = styled.div`
 `
 
 type Props = {
-    actions?: Array<typeof DropdownActions.Item>,
+    actions?: Array<typeof Popover.Item>,
     disabled?: boolean,
     children?: Node,
 }
 
-const UnstyledActionsDropdown = ({ actions, disabled, children = null, ...props }: Props) => {
+const UnstyledWithInputActions = ({ actions, disabled, children = null, ...props }: Props) => {
     const [open, setOpen]: UseStateTuple<boolean> = useState(false)
 
     return !actions || !actions.length ? (
@@ -33,15 +32,10 @@ const UnstyledActionsDropdown = ({ actions, disabled, children = null, ...props 
         <div {...props}>
             {children}
             <ActionContainer open={open}>
-                <DropdownActions
+                <Popover
                     disabled={disabled}
-                    title={(
-                        <Meatball
-                            alt="Actions"
-                            gray
-                            disabled={disabled}
-                        />
-                    )}
+                    title="Actions"
+                    type="grayMeatball"
                     menuProps={{
                         right: true,
                     }}
@@ -49,14 +43,14 @@ const UnstyledActionsDropdown = ({ actions, disabled, children = null, ...props 
                     noCaret
                 >
                     {actions}
-                </DropdownActions>
+                </Popover>
             </ActionContainer>
         </div>
     )
 }
 
-const ActionsDropdown = styled(UnstyledActionsDropdown)`
+const WithInputActions = styled(UnstyledWithInputActions)`
     position: relative;
 `
 
-export default ActionsDropdown
+export default WithInputActions

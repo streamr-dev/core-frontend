@@ -1,12 +1,9 @@
 // @flow
 
 import React, { useState, useCallback } from 'react'
-import cx from 'classnames'
-
+import styled from 'styled-components'
 import { Header } from '$shared/components/DataUnionStats'
-import Dropdown from '$shared/components/Dropdown'
-
-import styles from './withShownDays.pcss'
+import Popover, { StyledDropdownToggle } from '$shared/components/Popover'
 
 type Props = {
     label?: string,
@@ -15,6 +12,39 @@ type Props = {
     onDaysChange?: Function,
     disabled?: boolean,
 }
+
+const StyledPopover = styled(Popover)`
+    && {
+        text-align: right;
+        margin-bottom: 0.5rem;
+
+        & > button {
+            height: 24px;
+        }
+
+        ${StyledDropdownToggle} {
+            font-size: 12px;
+            line-height: 24px;
+            color: var(--greyDark);
+        }
+
+        .caret {
+            &.open {
+                transform: rotate(180deg) translateY(2px);
+            }
+        }
+    }
+`
+
+const Root = styled.div`
+    display: inline-block;
+`
+
+const HeaderWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto;
+  margin-bottom: 1rem;
+`
 
 export const WithShownDays = ({
     label,
@@ -37,28 +67,27 @@ export const WithShownDays = ({
     }, [onDaysChangeProp])
 
     return (
-        <div className={cx(styles.memberContainer, className)}>
-            <div className={styles.memberHeadingContainer}>
+        <Root className={className}>
+            <HeaderWrapper>
                 {!!label && (
                     <Header>{label}</Header>
                 )}
-                <Dropdown
+                <StyledPopover
                     title=""
+                    activeTitle
                     selectedItem={shownDays.toString()}
                     onChange={onDaysChange}
-                    className={styles.memberGraphDropdown}
-                    toggleStyle="small"
                     disabled={disabled}
                 >
-                    <Dropdown.Item value="7">Last 7 days</Dropdown.Item>
-                    <Dropdown.Item value="28">Last 28 days</Dropdown.Item>
-                    <Dropdown.Item value="90">Last 90 days</Dropdown.Item>
-                </Dropdown>
-            </div>
+                    <Popover.Item value="7">Last 7 days</Popover.Item>
+                    <Popover.Item value="28">Last 28 days</Popover.Item>
+                    <Popover.Item value="90">Last 90 days</Popover.Item>
+                </StyledPopover>
+            </HeaderWrapper>
             {typeof children === 'function' ? children({
                 shownDays,
             }) : null}
-        </div>
+        </Root>
     )
 }
 

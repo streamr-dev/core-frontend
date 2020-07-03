@@ -12,7 +12,7 @@ import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/s
 import Layout from '$userpages/components/Layout'
 import { getFilters } from '$userpages/utils/constants'
 import Search from '../../Header/Search'
-import Dropdown from '$shared/components/Dropdown'
+import Popover from '$shared/components/Popover'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import styles from './dashboardList.pcss'
 import ListContainer from '$shared/components/Container/List'
@@ -71,17 +71,22 @@ const DashboardList = () => {
                 />
             }
             headerFilterComponent={
-                <Dropdown
+                <Popover
                     title={I18n.t('userpages.filter.sortBy')}
+                    type="uppercase"
+                    menuProps={{
+                        right: true,
+                    }}
+                    activeTitle
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                 >
                     {sortOptions.map((s) => (
-                        <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                        <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Dropdown.Item>
+                        </Popover.Item>
                     ))}
-                </Dropdown>
+                </Popover>
             }
             loading={fetching}
         >

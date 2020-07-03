@@ -10,7 +10,7 @@ import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
-import Dropdown from '$shared/components/Dropdown'
+import Popover from '$shared/components/Popover'
 import { getFilters } from '$userpages/utils/constants'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -232,18 +232,23 @@ const Members = () => {
                         <div className={styles.searchPlaceholder} />
                     )}
                     filterComponent={!!dataUnionDeployed && (
-                        <Dropdown
+                        <Popover
                             title={I18n.t('userpages.filter.sortBy')}
+                            type="uppercase"
+                            activeTitle
+                            menuProps={{
+                                right: true,
+                            }}
                             onChange={onSortChange}
                             selectedItem={selectedFilterId}
                             disabled={!dataUnionDeployed}
                         >
                             {sortOptions.map((s) => (
-                                <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                                <Popover.Item key={s.filter.id} value={s.filter.id}>
                                     {s.displayName}
-                                </Dropdown.Item>
+                                </Popover.Item>
                             ))}
-                        </Dropdown>
+                        </Popover>
                     )}
                 />
             )}

@@ -10,7 +10,7 @@ import { getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
 import { selectMyPurchaseList, selectSubscriptions, selectFetchingMyPurchaseList } from '$mp/modules/myPurchaseList/selectors'
 import Search from '../Header/Search'
-import Dropdown from '$shared/components/Dropdown'
+import Popover from '$shared/components/Popover'
 import NoPurchasesView from './NoPurchases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
@@ -82,17 +82,22 @@ const PurchasesPage = () => {
                 />
             }
             headerFilterComponent={
-                <Dropdown
+                <Popover
                     title={I18n.t('userpages.filter.sortBy')}
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
+                    type="uppercase"
+                    activeTitle
+                    menuProps={{
+                        right: true,
+                    }}
                 >
                     {sortOptions.map((s) => (
-                        <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                        <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Dropdown.Item>
+                        </Popover.Item>
                     ))}
-                </Dropdown>
+                </Popover>
             }
             loading={fetching}
         >

@@ -11,8 +11,6 @@ import { Row, Col } from 'reactstrap'
 import Toggle from '$shared/components/Toggle'
 import Table from '$shared/components/Table'
 import Checkbox from '$shared/components/Checkbox'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
 import StatusIcon from '$shared/components/StatusIcon'
 import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
@@ -26,7 +24,6 @@ import Dialog from '$shared/components/Dialog'
 import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
 import PngIcon from '$shared/components/PngIcon'
-import Dropdown from '$shared/components/Dropdown'
 import Slider from '$shared/components/Slider'
 import ModalPortal from '$shared/components/ModalPortal'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
@@ -71,47 +68,6 @@ story('Toggle')
     .addWithJSX('changeable', () => <ToggleContainer />)
     .addWithJSX('off', () => <Toggle value={boolean('value', false)} onChange={action('onChange')} />)
     .addWithJSX('on', () => <Toggle value={boolean('value', true)} onChange={action('onChange')} />)
-
-story('Popover actions')
-    .addWithJSX('basic', () => (
-        <DropdownActions title="Select">
-            <DropdownActions.Item onClick={action('clicked')}>
-                Click me
-            </DropdownActions.Item>
-            <DropdownActions.Item>Another option</DropdownActions.Item>
-        </DropdownActions>
-    ))
-    .addWithJSX('disabled', () => (
-        <DropdownActions title="Select" disabled>
-            <DropdownActions.Item onClick={action('clicked')}>
-                Click me
-            </DropdownActions.Item>
-            <DropdownActions.Item>Another option</DropdownActions.Item>
-        </DropdownActions>
-    ))
-    .addWithJSX('meatball dropdown', () => (
-        <DropdownActions
-            title={<Meatball alt="Select" />}
-            noCaret
-        >
-            <DropdownActions.Item onClick={action('clicked')}>
-                Click me
-            </DropdownActions.Item>
-            <DropdownActions.Item>Another option</DropdownActions.Item>
-        </DropdownActions>
-    ))
-    .addWithJSX('disabled meatball dropdown', () => (
-        <DropdownActions
-            title={<Meatball alt="Select" disabled />}
-            noCaret
-            disabled
-        >
-            <DropdownActions.Item onClick={action('clicked')}>
-                Click me
-            </DropdownActions.Item>
-            <DropdownActions.Item>Another option</DropdownActions.Item>
-        </DropdownActions>
-    ))
 
 story('Status icon')
     .addWithJSX('ok', () => <StatusIcon status={StatusIcon.OK} />)
@@ -421,28 +377,6 @@ story('PngIcon')
                 </Col>
             ))}
         </Row>
-    ))
-
-story('Dropdown')
-    .addWithJSX('basic', () => (
-        <Dropdown title="Select item" onChange={action('onChange')}>
-            <Dropdown.Item key="item1" value="item1">
-                Item 1
-            </Dropdown.Item>
-            <Dropdown.Item key="item2" value="item2">
-                Item 2
-            </Dropdown.Item>
-        </Dropdown>
-    ))
-    .addWithJSX('with default selection', () => (
-        <Dropdown title="Select item" defaultSelectedItem="item1" onChange={action('onChange')}>
-            <Dropdown.Item key="item1" value="item1">
-                Item 1
-            </Dropdown.Item>
-            <Dropdown.Item key="item2" value="item2">
-                Item 2
-            </Dropdown.Item>
-        </Dropdown>
     ))
 
 class SliderContainer extends React.Component {

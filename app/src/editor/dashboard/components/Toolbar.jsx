@@ -8,7 +8,7 @@ import UseState from '$shared/components/UseState'
 import Meatball from '$shared/components/Meatball'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import SvgIcon from '$shared/components/SvgIcon'
 import Tooltip from '$shared/components/Tooltip'
 
@@ -78,7 +78,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
                                     >
                                         {dashboard.name}
                                     </EditableText>
-                                    <DropdownActions
+                                    <Popover
                                         title={
                                             <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
                                                 <Meatball alt="Select" />
@@ -90,26 +90,26 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
                                             className: styles.DropdownMenuMenu,
                                         }}
                                     >
-                                        <DropdownActions.Item onClick={newDashboard}>New Dashboard</DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        <Popover.Item onClick={newDashboard}>New Dashboard</Popover.Item>
+                                        <Popover.Item
                                             disabled={!hasSharePermission}
                                             onClick={() => sidebar.open('share')}
                                         >
                                             Share
-                                        </DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        </Popover.Item>
+                                        <Popover.Item
                                             onClick={() => setEditing(true)}
                                         >
                                             Rename
-                                        </DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => duplicateDashboard()}>Duplicate</DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        </Popover.Item>
+                                        <Popover.Item onClick={() => duplicateDashboard()}>Duplicate</Popover.Item>
+                                        <Popover.Item
                                             disabled={!hasDeletePermission}
                                             onClick={() => deleteDashboard()}
                                         >
                                             Delete
-                                        </DropdownActions.Item>
-                                    </DropdownActions>
+                                        </Popover.Item>
+                                    </Popover>
                                 </div>
                             )}
                         </UseState>

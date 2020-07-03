@@ -20,8 +20,7 @@ import { selectFetching as selectFetchingProducts } from '$mp/modules/myProductL
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
 import Table from '$shared/components/Table'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
+import Popover from '$shared/components/Popover'
 import LoadMore from '$mp/components/LoadMore'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
@@ -172,26 +171,21 @@ const TransactionList = () => {
                                             )}
                                         </Table.Td>
                                         <Table.Td className={styles.menuColumn}>
-                                            <DropdownActions
-                                                title={<Meatball alt={I18n.t('userpages.transactions.actions.title')} />}
-                                                noCaret
+                                            <Popover
+                                                title={I18n.t('userpages.transactions.actions.title')}
+                                                type="meatball"
                                                 menuProps={{
-                                                    modifiers: {
-                                                        offset: {
-                                                            // Make menu aligned to the right.
-                                                            // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                                            offset: '-100%p + 100%',
-                                                        },
-                                                    },
+                                                    right: true,
                                                 }}
+                                                noCaret
                                             >
-                                                <DropdownActions.Item onClick={() => openInEtherscan(hash)}>
+                                                <Popover.Item onClick={() => openInEtherscan(hash)}>
                                                     <Translate value="userpages.transactions.actions.viewOnEtherscan" />
-                                                </DropdownActions.Item>
-                                                <DropdownActions.Item onClick={() => copyToClipboard(hash)}>
+                                                </Popover.Item>
+                                                <Popover.Item onClick={() => copyToClipboard(hash)}>
                                                     <Translate value="userpages.transactions.actions.copyTxHash" />
-                                                </DropdownActions.Item>
-                                            </DropdownActions>
+                                                </Popover.Item>
+                                            </Popover>
                                         </Table.Td>
                                     </tr>
                                 )

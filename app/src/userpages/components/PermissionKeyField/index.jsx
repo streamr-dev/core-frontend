@@ -8,12 +8,12 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import { truncate } from '$shared/utils/text'
 import Label from '$ui/Label'
-import ActionsDropdown from '$shared/components/ActionsDropdown'
+import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 
 import PermissionKeyFieldEditor from './PermissionKeyFieldEditor'
@@ -167,22 +167,22 @@ class PermissionKeyField extends React.Component<Props, State> {
 
         const actions = [
             ...useIf(!!hideValue, [
-                <DropdownActions.Item key="reveal" onClick={this.toggleHidden}>
+                <Popover.Item key="reveal" onClick={this.toggleHidden}>
                     <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
-                </DropdownActions.Item>,
+                </Popover.Item>,
             ]),
-            <DropdownActions.Item key="copy" onClick={this.onCopy}>
+            <Popover.Item key="copy" onClick={this.onCopy}>
                 <Translate value="userpages.keyField.copy" />
-            </DropdownActions.Item>,
+            </Popover.Item>,
             ...useIf(!!allowEdit, [
-                <DropdownActions.Item key="edit" onClick={this.onEdit}>
+                <Popover.Item key="edit" onClick={this.onEdit}>
                     <Translate value="userpages.keyField.edit" />
-                </DropdownActions.Item>,
+                </Popover.Item>,
             ]),
             ...useIf(!!allowDelete, [
-                <DropdownActions.Item key="delete" onClick={this.onDelete} disabled={disableDelete}>
+                <Popover.Item key="delete" onClick={this.onDelete} disabled={disableDelete}>
                     <Translate value="userpages.keyField.delete" />
-                </DropdownActions.Item>,
+                </Popover.Item>,
             ]),
         ]
 
@@ -193,7 +193,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                 <Label htmlFor="keyName">
                     {keyName}
                 </Label>
-                <ActionsDropdown actions={actions}>
+                <WithInputActions actions={actions}>
                     <Text
                         value={value && (!truncateValue ? value : truncate(value, {
                             maxLength: 15,
@@ -201,7 +201,7 @@ class PermissionKeyField extends React.Component<Props, State> {
                         readOnly
                         type={hidden ? 'password' : 'text'}
                     />
-                </ActionsDropdown>
+                </WithInputActions>
             </div>
         )
     }

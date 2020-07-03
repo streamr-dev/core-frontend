@@ -54,7 +54,7 @@ describe('IntegrationKeyHandler', () => {
 
     describe('onNew', () => {
         it('must open dialog to add identity', () => {
-            const el = shallow(<IntegrationKeyHandler />)
+            const el = mount(<IntegrationKeyHandler />)
 
             act(() => {
                 el.find('Button').simulate('click')
@@ -65,11 +65,11 @@ describe('IntegrationKeyHandler', () => {
     })
 
     describe('onDelete', () => {
-        it('must open dialog to add identity', () => {
+        it('must remove identity', () => {
             const el = mount(<IntegrationKeyHandler />)
 
             act(() => {
-                el.find('ActionsDropdown').find('button').at(2).simulate('click')
+                el.find('WithInputActions').find('button').at(2).simulate('click')
             })
 
             expect(mockRemove).toHaveBeenCalled()

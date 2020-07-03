@@ -18,8 +18,8 @@ import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from 
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import Text from '$ui/Text'
 import SplitControl from '$userpages/components/SplitControl'
-import DropdownActions from '$shared/components/DropdownActions'
-import ActionsDropdown from '$shared/components/ActionsDropdown' // look up! lol #naming
+import Popover from '$shared/components/Popover'
+import WithInputActions from '$shared/components/WithInputActions'
 
 import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
@@ -170,12 +170,12 @@ export class ConfigureView extends Component<Props, State> {
                                     <div className={styles.fieldItem} >
                                         <FieldItem name={field.name}>
                                             <SplitControl>
-                                                <ActionsDropdown
+                                                <WithInputActions
                                                     disabled={disabled}
                                                     actions={[
-                                                        <DropdownActions.Item key="delete" onClick={() => this.deleteField(field.name)}>
+                                                        <Popover.Item key="delete" onClick={() => this.deleteField(field.name)}>
                                                             <Translate value="userpages.streams.edit.configure.delete" />
-                                                        </DropdownActions.Item>,
+                                                        </Popover.Item>,
                                                     ]}
                                                 >
                                                     <Text
@@ -183,7 +183,7 @@ export class ConfigureView extends Component<Props, State> {
                                                         onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
                                                         disabled={disabled}
                                                     />
-                                                </ActionsDropdown>
+                                                </WithInputActions>
                                                 <Select
                                                     className={styles.select}
                                                     disabled={disabled}
