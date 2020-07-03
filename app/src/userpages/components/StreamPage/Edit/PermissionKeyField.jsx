@@ -8,11 +8,11 @@ import { NotificationIcon } from '$shared/utils/constants'
 import styled from 'styled-components'
 
 import type { ResourcePermission } from '$shared/flowtype/resource-key-types'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import Select from '$ui/Select'
 import SplitControl from '$userpages/components/SplitControl'
 import Label from '$ui/Label'
-import ActionsDropdown from '$shared/components/ActionsDropdown'
+import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 
 type Props = {
@@ -89,14 +89,14 @@ const PermissionKeyField = ({
                     <Label htmlFor="keyName">
                         {keyName}
                     </Label>
-                    <ActionsDropdown
+                    <WithInputActions
                         actions={[
-                            <DropdownActions.Item key="reveal" onClick={toggleHidden}>
+                            <Popover.Item key="reveal" onClick={toggleHidden}>
                                 <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
-                            </DropdownActions.Item>,
-                            <DropdownActions.Item key="copy" onClick={() => onCopy(value)}>
+                            </Popover.Item>,
+                            <Popover.Item key="copy" onClick={() => onCopy(value)}>
                                 <Translate value="userpages.keyField.copy" />
-                            </DropdownActions.Item>,
+                            </Popover.Item>,
                         ]}
                     >
                         <Text
@@ -104,7 +104,7 @@ const PermissionKeyField = ({
                             readOnly
                             type={hidden ? 'password' : 'text'}
                         />
-                    </ActionsDropdown>
+                    </WithInputActions>
                 </KeyFieldContainer>
                 <div>
                     <StyledLabel>
