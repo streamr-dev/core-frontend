@@ -5,69 +5,71 @@ import routes from '$routes'
 
 import type { ResourceType, ResourceId } from '../../flowtype/permission-types'
 
-type GetApiUrl = {
-    type: ResourceType,
+type ResourcePermission = {
+    resourceType: ResourceType,
     resourceId: ResourceId,
-    id?: ResourceId,
+    id?: string | number,
 }
 
-export const getApiUrl = ({ type, resourceId, id }: GetApiUrl) => {
-    let baseRoute
-    let params
-    switch (type) {
-        case 'DASHBOARD':
-            baseRoute = routes.api.dashboards.permissions
-            params = {
-                dashboardId: resourceId,
-            }
-            break
+export const getApiUrl = ({ resourceType, resourceId, id }: ResourcePermission) => {
+    const mapping = {
+        DASHBOARD: ['dashboards', 'dashboardId'],
+        STREAM: ['streams', 'streamId'],
+        CANVAS: ['canvases', 'canvasId'],
+        PRODUCT: ['products', 'productId'],
+    }
+    const [urlPart, targetId]: [string, string] = mapping[resourceType] || []
 
-        case 'STREAM':
-            baseRoute = routes.api.streams.permissions
-            params = {
-                streamId: resourceId,
-            }
-            break
-
-        case 'CANVAS':
-            baseRoute = routes.api.canvases.permissions
-            params = {
-                canvasId: resourceId,
-            }
-            break
-
-        case 'PRODUCT':
-            baseRoute = routes.api.products.permissions
-            params = {
-                productId: resourceId,
-            }
-            break
-
-        default:
-            break
+    if (!routes.api[urlPart] || !routes.api[urlPart].permissions) {
+        throw new Error(`Invalid resource type: ${resourceType}`)
     }
 
-    if (!baseRoute) {
-        throw new Error(`Invalid resource type: ${type}`)
-    }
+    const permissionRoute = routes.api[urlPart].permissions
 
     if (!id) {
-        return baseRoute.index({
-            ...params,
+        return permissionRoute.index({
+            [targetId]: resourceId,
         })
     }
 
-    return baseRoute.show({
-        ...params,
+    return permissionRoute.show({
+        [targetId]: resourceId,
         id,
     })
 }
 
-export const getResourcePermissionsAPI = (type: ResourceType, resourceId: ResourceId) => (
+export const getResourcePermissions = async ({ resourceType, resourceId, id }: ResourcePermission) => (
     api.get({
         url: getApiUrl({
-            type,
+            resourceType,
             resourceId,
+            id,
+        }),
+    })
+)
+
+type AddResourcePermission = {
+    resourceType: ResourceType,
+    resourceId: ResourceId,
+    data: Object,
+}
+
+export const addResourcePermission = async ({ resourceType, resourceId, data }: AddResourcePermission) => (
+    api.post({
+        url: getApiUrl({
+            resourceType,
+            resourceId,
+        }),
+        data,
+    })
+)
+
+export const removeResourcePermission = async ({ resourceType, resourceId, id }: ResourcePermission) => (
+    api.del({
+        url: getApiUrl({
+            resourceType,
+            resourceId,
+            id,
         }),
     })
 )

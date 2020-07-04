@@ -3,7 +3,6 @@
 import { get, post, put, del } from '$shared/utils/api'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { DashboardId, Dashboard, DashboardList } from '$userpages/flowtype/dashboard-types'
-import type { Permission } from '$userpages/flowtype/permission-types'
 import routes from '$routes'
 
 export const getDashboards = (params: any): ApiResult<DashboardList> => get({
@@ -20,13 +19,6 @@ export const getDashboard = (id: DashboardId): ApiResult<Dashboard> => get({
 export const deleteDashboard = (id: DashboardId): ApiResult<null> => del({
     url: routes.api.dashboards.show({
         id,
-    }),
-})
-
-export const getMyDashboardPermissions = (dashboardId: DashboardId): ApiResult<Array<Permission>> => get({
-    url: routes.api.dashboards.permissions.show({
-        dashboardId,
-        id: 'me',
     }),
 })
 

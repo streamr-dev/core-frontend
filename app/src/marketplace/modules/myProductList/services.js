@@ -8,7 +8,7 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import type { Product } from '../../flowtype/product-types'
 
 export const getMyProducts = (params: any): ApiResult<Array<Product>> => get({
-    url: routes.api.me.products(),
+    url: routes.api.currentUser.products(),
     options: {
         params,
     },

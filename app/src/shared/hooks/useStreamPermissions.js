@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
+import { getResourcePermissions } from '$userpages/modules/permission/services'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
@@ -32,7 +32,11 @@ export default (id: string) => {
         const fetch = async () => {
             try {
                 try {
-                    const data = await getMyStreamPermissions(id)
+                    const data = await getResourcePermissions({
+                        resourceType: 'STREAM',
+                        resourceId: id,
+                        id: 'me',
+                    })
 
                     if (isMounted()) {
                         setPermissions(extractOperations(data, username))
