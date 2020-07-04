@@ -66,6 +66,7 @@ const ModuleRenderer = React.memo(({
         isCanvasEditable: isEditable,
         isCanvasAdjustable: isAdjustable,
         hasWritePermission,
+        hasInteractPermission,
     } = useModule()
 
     const { hash, displayName, name, canRefresh } = module
@@ -184,6 +185,7 @@ const ModuleRenderer = React.memo(({
                 className={cx(styles.canvasModuleUI, noCameraControl)}
                 uiEmitter={uiEmitter}
                 hasWritePermission={hasWritePermission}
+                hasInteractPermission={hasInteractPermission}
                 isSubscriptionActive={isSubscriptionActive}
                 isActive={isRunning}
                 isEditable={isEditable}
@@ -199,6 +201,7 @@ export default (React.memo(({
     canvasEditable: isCanvasEditable,
     canvasAdjustable: isCanvasAdjustable,
     hasWritePermission,
+    hasInteractPermission,
     ...props
 }: any) => {
     const moduleManifest = useMemo(() => ({
@@ -206,7 +209,14 @@ export default (React.memo(({
         isCanvasEditable,
         isCanvasAdjustable,
         hasWritePermission,
-    }), [isCanvasAdjustable, isCanvasEditable, hasWritePermission, module])
+        hasInteractPermission,
+    }), [
+        isCanvasAdjustable,
+        isCanvasEditable,
+        hasWritePermission,
+        hasInteractPermission,
+        module,
+    ])
 
     return (
         <ModuleApiContext.Provider value={api}>
