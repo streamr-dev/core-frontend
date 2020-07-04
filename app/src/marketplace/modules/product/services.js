@@ -49,42 +49,6 @@ export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subsc
         }))
 )
 
-/*
-    Prefixed with 'async' so that if getValidId() throws, it can be caught with getUserProductPermissions(id).catch().
-    Otherwise it'd be a synchronous error.
-  */
-export const getUserProductPermissions = async (id: ProductId): ApiResult<Object> => {
-    const result = await get({
-        url: routes.api.products.permissions.show({
-            productId: getValidId(id, false),
-            id: 'me',
-        }),
-    })
-
-    const p = result.reduce((permissions, permission) => {
-        if (permission.anonymous) {
-            return {
-                ...permissions,
-                product_get: true,
-            }
-        }
-        if (!permission.operation) {
-            return permissions
-        }
-        return {
-            ...permissions,
-            [permission.operation]: true,
-        }
-    }, {})
-
-    return {
-        get: !!p.product_get || false,
-        edit: !!p.product_edit || false,
-        del: !!p.product_delete || false,
-        share: !!p.product_share || false,
-    }
-}
-
 export const putProduct = (data: Product, id: ProductId): ApiResult<Product> => put({
     url: routes.api.products.show({
         id,

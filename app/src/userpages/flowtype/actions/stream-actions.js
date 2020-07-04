@@ -1,7 +1,6 @@
 // @flow
 
 import type { Stream, StreamId, StreamIdList, CSVImporterSchema } from '$shared/flowtype/stream-types'
-import type { Permission } from '../permission-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import {

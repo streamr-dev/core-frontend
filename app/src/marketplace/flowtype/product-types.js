@@ -136,13 +136,6 @@ export type Filter = {
     maxPrice: ?MaxPriceFilter,
 }
 
-export type UserProductPermissionList = {
-    id?: number,
-    user?: string,
-    operation?: string,
-    anonymous?: boolean,
-}
-
 export type DataUnionId = $ElementType<Product, 'beneficiaryAddress'>
 
 export type MemberCount = {

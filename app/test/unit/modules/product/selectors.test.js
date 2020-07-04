@@ -84,14 +84,6 @@ const state = {
         contractSubscription: {
             id: '1337',
         },
-        productPermissions: {
-            get: true,
-            edit: true,
-            del: true,
-            share: true,
-            fetchingPermissions: false,
-            permissionsError: null,
-        },
     },
     myPurchaseList: {
         products: ['1337', '1338'],

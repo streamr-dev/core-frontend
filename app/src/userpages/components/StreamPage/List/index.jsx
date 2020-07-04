@@ -36,8 +36,6 @@ import Search from '../../Header/Search'
 import confirmDialog from '$shared/utils/confirm'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
-import type { Permission } from '$userpages/flowtype/permission-types'
-import { selectUserData } from '$shared/modules/user/selectors'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { NotificationIcon } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
@@ -123,7 +121,6 @@ const StreamList = () => {
     const [activeDialog, setActiveDialog] = useState(undefined)
     const dispatch = useDispatch()
     const { copy } = useCopy()
-    const user = useSelector(selectUserData)
     const streams = useSelector(selectStreams)
     const fetching = useSelector(selectFetching)
     const fetchingPermissions = useSelector(selectFetchingPermissions)
@@ -176,17 +173,15 @@ const StreamList = () => {
 
     const canBeSharedByCurrentUser = useCallback((id: StreamId): boolean => (
         !fetchingPermissions &&
-        !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'stream_share') !== undefined
-    ), [fetchingPermissions, permissions, user])
+        permissions[id].includes('stream_share')
+    ), [fetchingPermissions, permissions])
 
     const canBeDeletedByCurrentUser = useCallback((id: StreamId): boolean => (
         !fetchingPermissions &&
-        !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'stream_delete') !== undefined
-    ), [fetchingPermissions, permissions, user])
+        permissions[id].includes('stream_delete')
+    ), [fetchingPermissions, permissions])
 
     const onOpenShareDialog = useCallback((stream: Stream) => {
         setDialogTargetStream(stream)

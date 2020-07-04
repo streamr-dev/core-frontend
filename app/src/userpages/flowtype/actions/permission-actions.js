@@ -18,5 +18,7 @@ export type PermissionAction = {
     permissions: Array<Permission>
 } | {
     type: typeof GET_RESOURCE_PERMISSIONS_FAILURE,
-    error: ErrorInUi
+    error: ErrorInUi,
+    resourceType: ResourceType,
+    resourceId: ResourceId
 }

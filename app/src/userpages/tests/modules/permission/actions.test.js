@@ -34,7 +34,7 @@ describe('Permission actions', () => {
                 user: 'test',
                 operation: 'test',
             }]
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/me`, {
                 status: 200,
                 response: permissions,
             })
@@ -54,7 +54,7 @@ describe('Permission actions', () => {
         it('creates GET_RESOURCE_PERMISSIONS_FAILURE with the error when fetching permissions failed', async (done) => {
             const resourceType = 'DASHBOARD'
             const resourceId = 'asdfasdfasasd'
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/me`, {
                 status: 500,
                 response: {
                     message: 'test',

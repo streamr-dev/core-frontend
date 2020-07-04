@@ -1,7 +1,6 @@
 // @flow
 
 import type { Canvas } from './canvas-types'
-import type { Permission } from './permission-types'
 import type { Webcomponent } from './webcomponent-types'
 
 export type LayoutItem = {

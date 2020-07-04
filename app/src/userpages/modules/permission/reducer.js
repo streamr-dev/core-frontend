@@ -30,13 +30,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                     ...state.byTypeAndId,
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
-                        [action.resourceId]: action.permissions.map((permission) => ({
-                            ...permission,
-                            new: false,
-                            fetching: false,
-                            removed: false,
-                            error: null,
-                        })),
+                        [action.resourceId]: action.permissions.map(({ operation }) => operation),
                     },
                 },
                 fetching: false,
@@ -48,6 +42,13 @@ export default function (state: PermissionState = initialState, action: Permissi
                 ...state,
                 fetching: false,
                 error: action.error,
+                byTypeAndId: {
+                    ...state.byTypeAndId,
+                    [(action.resourceType: string)]: {
+                        ...(state.byTypeAndId[action.resourceType] || {}),
+                        [action.resourceId]: [],
+                    },
+                },
             }
 
         default:

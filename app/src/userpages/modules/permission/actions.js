@@ -20,20 +20,26 @@ const getResourcePermissionsSuccess = (resourceType: ResourceType, resourceId: R
     permissions,
 })
 
-const getResourcePermissionsFailure = (error: ErrorInUi) => ({
+const getResourcePermissionsFailure = (error: ErrorInUi, resourceType: ResourceType, resourceId: ResourceId) => ({
     type: GET_RESOURCE_PERMISSIONS_FAILURE,
     error,
+    resourceType,
+    resourceId,
 })
 
 export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
-    const resourcePermissions = await services.getResourcePermissions({
-        resourceType,
-        resourceId,
-    })
-        .catch((error) => {
-            dispatch(getResourcePermissionsFailure(error))
-            throw error
+
+    try {
+        const resourcePermissions = await services.getResourcePermissions({
+            resourceType,
+            resourceId,
+            id: 'me',
         })
-    dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
+        dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
+    } catch (error) {
+        dispatch(getResourcePermissionsFailure(error, resourceType, resourceId))
+        console.warn(error)
+        throw error
+    }
 }
