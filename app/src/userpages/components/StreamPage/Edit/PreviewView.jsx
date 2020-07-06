@@ -87,7 +87,6 @@ const PreviewView = styled(UnstyledPreviewView)`
     background-color: #fdfdfd;
     display: grid;
     grid-template-rows: 1fr 72px;
-    max-width: 682px;
     position: relative;
 `
 

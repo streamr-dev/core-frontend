@@ -27,12 +27,13 @@ import DeleteAccount from './DeleteAccount'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import StatusLabel from '$shared/components/StatusLabel'
+
 import styles from './profilePage.pcss'
 import routes from '$routes'
 
 export const ProfilePage = () => {
     const { isPending: isSavePending, wrap } = usePending('user.SAVE')
-    const { isPending: isApiCredentialsPending } = usePending('user.API_CREDENTIALS')
     const { isPending: isAddIdentityPending } = usePending('user.ADD_IDENTITY')
     const { isPending: isAddPrivateKeyPending } = usePending('user.ADD_PRIVATE_KEY')
     const { isPending: isDeleteAccountPending } = usePending('user.DELETE_ACCOUNT')
@@ -72,7 +73,6 @@ export const ProfilePage = () => {
 
     const isLoading = !!(
         isSavePending ||
-        isApiCredentialsPending ||
         isAddIdentityPending ||
         isAddPrivateKeyPending ||
         isDeleteAccountPending ||
@@ -130,6 +130,7 @@ export const ProfilePage = () => {
                     id="api-keys"
                     title={I18n.t('userpages.profilePage.apiCredentials.title')}
                     linkTitle={I18n.t('userpages.profilePage.apiCredentials.linkTitle')}
+                    status={(<StatusLabel.Deprecated />)}
                 >
                     <APICredentials />
                 </TOCPage.Section>

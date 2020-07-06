@@ -12,14 +12,24 @@ import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { usePending } from '$shared/hooks/usePending'
+import { LG } from '$shared/utils/styled'
 
-import profileStyles from '../profilePage.pcss'
+import Description from '../Description'
 
 import AddIdentityDialog from './AddIdentityDialog'
 
-const Wrapper = styled.div`
-    > button + button {
-        margin-left: 1rem;
+const Wrapper = styled.div``
+
+const ConnectButton = styled(Button)`
+    && {
+        display: none;
+        margin-right: 1rem;
+    }
+
+    @media (min-width: ${LG}px) {
+        && {
+            display: inline-block;
+        }
     }
 `
 
@@ -92,10 +102,9 @@ const IdentityHandler = () => {
 
     return (
         <Wrapper>
-            <Translate
+            <Description
                 tag="p"
                 value="userpages.profilePage.ethereumAddress.description"
-                className={profileStyles.longText}
                 dangerousHTML
             />
             <IntegrationKeyList
@@ -103,10 +112,9 @@ const IdentityHandler = () => {
                 onEdit={wrappedEdit}
                 integrationKeys={ethereumIdentities || []}
                 truncateValues
-                className={profileStyles.keyList}
                 disabled={isDisabled}
             />
-            <Button
+            <ConnectButton
                 type="button"
                 kind="secondary"
                 disabled={isOpen || isDisabled}
@@ -114,7 +122,7 @@ const IdentityHandler = () => {
                 waiting={isConnectWalletDialogPending}
             >
                 <Translate value="userpages.profilePage.ethereumAddress.connectWallet" />
-            </Button>
+            </ConnectButton>
             <Button
                 type="button"
                 kind="secondary"

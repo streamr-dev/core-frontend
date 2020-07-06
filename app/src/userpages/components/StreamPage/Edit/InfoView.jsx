@@ -1,38 +1,50 @@
 // @flow
 
-import React, { useEffect, useRef, useCallback, useState } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
-import cx from 'classnames'
+import styled from 'styled-components'
 
 import Notification from '$shared/utils/Notification'
-import Popover from '$shared/components/Popover'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
 import type { StreamId } from '$shared/flowtype/stream-types'
-import Numeric from '$ui/Numeric'
 import Label from '$ui/Label'
-import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
-import SvgIcon from '$shared/components/SvgIcon'
-import docsLinks from '$shared/../docsLinks'
-import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
-
-import styles from './infoView.pcss'
+import Button from '$shared/components/Button'
 
 type Props = {
     disabled?: boolean,
 }
 
-const MIN_PARTITIONS = 1
-const MAX_PARTITIONS = 99
+const Root = styled.div``
+
+const Row = styled.div`
+    max-width: 602px;
+
+    & + & {
+        margin-top: 2rem;
+    }
+`
+
+const StreamInput = styled.div`
+    display: grid;
+    grid-column-gap: 1rem;
+    grid-template-columns: 1fr 72px;
+`
+
+const StyledButton = styled(Button)`
+    && {
+        padding: 0;
+    }
+`
 
 export const InfoView = ({ disabled }: Props) => {
     const stream = useSelector(selectEditedStream)
     const dispatch = useDispatch()
-    const { copy } = useCopy()
+    const { copy, isCopied } = useCopy()
     const contentChangedRef = useRef(false)
     const streamRef = useRef()
     streamRef.current = stream
@@ -80,41 +92,9 @@ export const InfoView = ({ disabled }: Props) => {
         })
     }, [copy])
 
-    const { partitions } = stream
-
-    const [partitionsValue, setPartitionsValue] = useState(String(partitions))
-    const [tooltipOpen, setTooltipOpen] = useState(false)
-    const iconRef = useRef()
-    const tooltipRef = useRef()
-
-    const onCommit = useCallback(() => {
-        let numberValue = Number.parseInt(partitionsValue, 10)
-        // if entered value is NaN use existing value
-        numberValue = Number.isNaN(numberValue) ? partitions : numberValue
-        numberValue = Math.max(MIN_PARTITIONS, Math.min(numberValue, MAX_PARTITIONS))
-        setPartitionsValue(String(numberValue))
-        editField('partitions', numberValue)
-    }, [editField, partitions, partitionsValue])
-
-    const onPartitionsChange = useCallback((event) => {
-        setPartitionsValue(event.target.value)
-    }, [setPartitionsValue])
-
-    const openTooltip = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-        e.preventDefault()
-        e.stopPropagation()
-        setTooltipOpen((isOpen) => !isOpen)
-    }, [setTooltipOpen])
-
-    useGlobalEventWithin('mousedown', iconRef, (within) => {
-        if (!within) {
-            setTooltipOpen(false)
-        }
-    }, tooltipRef, true)
-
     return (
-        <div className={cx('constrainInputWidth', styles.infoView)}>
-            <div className={styles.name}>
+        <Root>
+            <Row>
                 <Label htmlFor="streamName">
                     {I18n.t('userpages.streams.edit.details.name')}
                 </Label>
@@ -127,8 +107,8 @@ export const InfoView = ({ disabled }: Props) => {
                     disabled={disabled}
                     autoComplete="off"
                 />
-            </div>
-            <div className={styles.description}>
+            </Row>
+            <Row>
                 <Label htmlFor="streamDescription">
                     {I18n.t('userpages.streams.edit.details.description')}
                 </Label>
@@ -141,61 +121,24 @@ export const InfoView = ({ disabled }: Props) => {
                     disabled={disabled}
                     autoComplete="off"
                 />
-            </div>
-            <div className={styles.streamId}>
+            </Row>
+            <Row>
                 <Label htmlFor="streamId">
                     {I18n.t('userpages.streams.edit.details.streamId')}
                 </Label>
-                <WithInputActions
-                    actions={[
-                        <Popover.Item key="copy" onClick={() => onCopy(stream.id)}>
-                            <Translate value="userpages.keyField.copy" />
-                        </Popover.Item>,
-                    ]}
-                >
+                <StreamInput>
                     <Text
                         name="id"
                         id="streamId"
                         value={(stream && stream.id) || ''}
                         readOnly
                     />
-                </WithInputActions>
-            </div>
-            <div className={styles.partitions}>
-                <Label className={styles.partitionsLabel}>
-                    {I18n.t('userpages.streams.partitionsLabel')}
-                    <SvgIcon
-                        name="outlineQuestionMark"
-                        className={cx(styles.helpIcon, {
-                            [styles.helpIconActive]: !disabled && tooltipOpen,
-                        })}
-                        onClick={openTooltip}
-                        ref={iconRef}
-                    />
-                </Label>
-                <Numeric
-                    min={MIN_PARTITIONS}
-                    max={MAX_PARTITIONS}
-                    value={partitionsValue}
-                    onChange={onPartitionsChange}
-                    onBlur={onCommit}
-                    disabled={disabled}
-                    name="partitions"
-                />
-                <div
-                    className={cx(styles.tooltip, {
-                        [styles.tooltipOpen]: !disabled && tooltipOpen,
-                    })}
-                    ref={tooltipRef}
-                >
-                    <Translate
-                        value="userpages.streams.partitionsTooltip"
-                        docsLink={docsLinks.partitioning}
-                        dangerousHTML
-                    />
-                </div>
-            </div>
-        </div>
+                    <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
+                        <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
+                    </StyledButton>
+                </StreamInput>
+            </Row>
+        </Root>
     )
 }
 

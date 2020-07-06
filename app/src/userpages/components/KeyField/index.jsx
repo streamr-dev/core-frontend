@@ -23,7 +23,6 @@ type Props = {
     hideValue?: boolean,
     truncateValue?: boolean,
     className?: string,
-    keyFieldClassName?: string,
     allowEdit?: boolean,
     onSave?: (?string, ?string) => Promise<void>,
     allowDelete?: boolean,
@@ -42,7 +41,6 @@ const KeyField = ({
     hideValue,
     truncateValue,
     className,
-    keyFieldClassName,
     allowEdit,
     onSave: onSaveProp,
     allowDelete,
@@ -161,9 +159,7 @@ const KeyField = ({
     return (
         <div className={cx(styles.root, styles.KeyField, className)}>
             {!editing ? (
-                <div
-                    className={cx(styles.keyFieldContainer, keyFieldClassName)}
-                >
+                <div className={styles.keyFieldContainer}>
                     <div className={styles.labelWrapper}>
                         <Label htmlFor="keyName" className={styles.label}>
                             &zwnj;

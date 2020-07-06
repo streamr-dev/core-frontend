@@ -453,3 +453,9 @@ msgstr "a hundred thousand"
 
 msgid "number##million"
 msgstr "a million"
+
+msgid "shared##statusLabel##deprecated"
+msgstr "Deprecated"
+
+msgid "shared##statusLabel##advanced"
+msgstr "Advanced"

@@ -8,6 +8,7 @@ import TOCBusStop from './TOCBusStop'
 type Props = {
     id: string,
     title?: string | Element<any>,
+    status?: string | Element<any>,
     children?: Node,
     onlyDesktop?: boolean,
 }
@@ -35,18 +36,37 @@ const Title = styled.h3`
     }
 `
 
+const TitleWrapper = styled.div`
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+`
+
+const TitleText = styled.span``
+
+const Status = styled.span``
+
 export const UnstyledTOCSection = ({
     id,
     title,
+    status,
     children,
     onlyDesktop,
     ...props
 }: Props) => (
     <Section {...props} onlyDesktop={onlyDesktop}>
-        {title ? (
+        {(!!title || !!status) ? (
             <Title>
                 <TOCBusStop name={id} />
-                {title}
+                <TitleWrapper>
+                    {!!title && (
+                        <TitleText>{title}</TitleText>
+                    )}
+                    {!!status && (
+                        <Status>{status}</Status>
+                    )}
+                </TitleWrapper>
             </Title>
         ) : (
             <TOCBusStop name={id} />
