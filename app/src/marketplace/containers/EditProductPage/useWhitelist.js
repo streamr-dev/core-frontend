@@ -19,8 +19,13 @@ export function useWhitelist() {
     const { items, addPendingItem, removePendingItem } = useWhitelistContext()
     const dispatch = useDispatch()
 
-    const approve = useCallback(async (address: string) => (
-        whitelistApprove(productId, address)
+    const approve = useCallback(async (address: string) => {
+        // Do not require transaction if address is already approved
+        if (items.find((i) => i.address === address && i.status !== 'removed')) {
+            return null
+        }
+
+        return whitelistApprove(productId, address)
             .onTransactionHash((hash) => {
                 dispatch(addTransaction(hash, transactionTypes.WHITELIST_APPROVE))
                 addPendingItem(hash, address, transactionTypes.WHITELIST_APPROVE)
@@ -33,10 +38,15 @@ export function useWhitelist() {
                     removePendingItem(error.receipt.transactionHash)
                 }
             })
-    ), [dispatch, productId, addPendingItem, removePendingItem])
+    }, [dispatch, productId, items, addPendingItem, removePendingItem])
 
-    const reject = useCallback(async (address: string) => (
-        whitelistReject(productId, address)
+    const reject = useCallback(async (address: string) => {
+        // Do not require transaction if address is already rejected
+        if (items.find((i) => i.address === address && i.status === 'removed')) {
+            return null
+        }
+
+        return whitelistReject(productId, address)
             .onTransactionHash((hash) => {
                 dispatch(addTransaction(hash, transactionTypes.WHITELIST_REJECT))
                 addPendingItem(hash, address, transactionTypes.WHITELIST_REJECT)
@@ -49,7 +59,7 @@ export function useWhitelist() {
                     removePendingItem(error.receipt.transactionHash)
                 }
             })
-    ), [dispatch, productId, addPendingItem, removePendingItem])
+    }, [dispatch, productId, items, addPendingItem, removePendingItem])
 
     return useMemo(() => ({
         isEnabled,
