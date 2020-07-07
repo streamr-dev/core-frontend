@@ -32,8 +32,8 @@ import HistoryView from './HistoryView'
 import PartitionsView from './PartitionsView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
-import CodeSnippets from '$shared/components/CodeSnippets'
-import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
+
+import styles from './edit.pcss'
 
 function StreamPageSidebar({ stream }) {
     const sidebar = useContext(SidebarContext)
@@ -43,7 +43,6 @@ function StreamPageSidebar({ stream }) {
 
     return (
         <Sidebar
-            className={styles.ModuleSidebar}
             isOpen={sidebar.isOpen()}
             onClose={onClose}
         >
@@ -133,7 +132,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                             kind: 'primary',
                             outline: true,
                             onClick: openShareDialog,
-                            disabled,
+                            disabled: disabled || !canShare,
                             className: styles.showOnDesktop,
                         },
                         saveChanges: {
