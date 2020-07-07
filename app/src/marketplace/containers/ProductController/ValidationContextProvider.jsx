@@ -219,7 +219,7 @@ function useValidationContext(): ContextProps {
         PENDING_CHANGE_FIELDS.forEach((field) => {
             setPendingChange(
                 field,
-                get(changes, field) || (isPublic && isTouched(field) && !isEqual(get(product, field), get(originalProduct, field))),
+                get(changes, field) != null || (isPublic && isTouched(field) && !isEqual(get(product, field), get(originalProduct, field))),
             )
         })
     }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct, isEthIdentityRequired])
