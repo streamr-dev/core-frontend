@@ -12,9 +12,12 @@ import Buttons from '$shared/components/Buttons'
 import useModal from '$shared/hooks/useModal'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
+import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { areAddressesEqual } from '$mp/utils/smartContract'
 import MailPng from '$mp/assets/mail.png'
 import MailPng2x from '$mp/assets/mail@2x.png'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useWhitelist from './useWhitelist'
 
 const Footer = styled.div`
@@ -30,11 +33,12 @@ const StyledLabel = styled(Label)`
 export type AddModalProps = {
     onClose: () => void,
     onSave: (string) => void,
+    requiredOwner: string,
 }
 
-const WhitelistAddAddressModal = ({ onClose, onSave }: AddModalProps) => {
+const WhitelistAddAddressModal = ({ onClose, onSave, requiredOwner }: AddModalProps) => {
     const [address, setAddress] = useState('')
-    const { web3Error, checkingWeb3 } = useWeb3Status()
+    const { web3Error, checkingWeb3, account } = useWeb3Status()
 
     if (!checkingWeb3 && web3Error) {
         return (
@@ -42,6 +46,17 @@ const WhitelistAddAddressModal = ({ onClose, onSave }: AddModalProps) => {
                 onClose={onClose}
                 error={web3Error}
             />
+        )
+    }
+
+    if (!checkingWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
+        return (
+            <UnlockWalletDialog onClose={onClose} requiredAddress={requiredOwner}>
+                <Translate
+                    value="unlockWalletDialog.message"
+                    tag="p"
+                />
+            </UnlockWalletDialog>
         )
     }
 
@@ -85,6 +100,7 @@ const WhitelistAddAddressModal = ({ onClose, onSave }: AddModalProps) => {
 export const WhitelistAddModal = () => {
     const { api, isOpen } = useModal('addWhitelistAddress')
     const { approve } = useWhitelist()
+    const { ownerAddress } = useEditableProduct()
 
     if (!isOpen) {
         return null
@@ -103,6 +119,7 @@ export const WhitelistAddModal = () => {
                 save: false,
                 redirect: false,
             })}
+            requiredOwner={ownerAddress}
         />
     )
 }
@@ -111,10 +128,11 @@ export type RemoveModalProps = {
     onClose: () => void,
     onSave: (string) => void,
     address: string,
+    requiredOwner: string,
 }
 
-const WhitelistRemoveAddressModal = ({ onClose, onSave, address }: RemoveModalProps) => {
-    const { web3Error, checkingWeb3 } = useWeb3Status()
+const WhitelistRemoveAddressModal = ({ onClose, onSave, address, requiredOwner }: RemoveModalProps) => {
+    const { web3Error, checkingWeb3, account } = useWeb3Status()
 
     if (!checkingWeb3 && web3Error) {
         return (
@@ -122,6 +140,17 @@ const WhitelistRemoveAddressModal = ({ onClose, onSave, address }: RemoveModalPr
                 onClose={onClose}
                 error={web3Error}
             />
+        )
+    }
+
+    if (!checkingWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
+        return (
+            <UnlockWalletDialog onClose={onClose} requiredAddress={requiredOwner}>
+                <Translate
+                    value="unlockWalletDialog.message"
+                    tag="p"
+                />
+            </UnlockWalletDialog>
         )
     }
 
@@ -159,6 +188,7 @@ const WhitelistRemoveAddressModal = ({ onClose, onSave, address }: RemoveModalPr
 export const WhitelistRemoveModal = () => {
     const { api, isOpen, value } = useModal('removeWhitelistAddress')
     const { reject } = useWhitelist()
+    const { ownerAddress } = useEditableProduct()
 
     if (!isOpen) {
         return null
@@ -180,6 +210,7 @@ export const WhitelistRemoveModal = () => {
                 redirect: false,
             })}
             address={address}
+            requiredOwner={ownerAddress}
         />
     )
 }
