@@ -268,6 +268,7 @@ const Status = styled(RowItem)`
     position: relative;
 
     @media (min-width: ${MD}px) {
+        grid-row: 1;
         grid-column: 3;
         padding-top: 0;
     }
