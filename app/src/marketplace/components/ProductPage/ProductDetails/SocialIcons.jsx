@@ -59,8 +59,12 @@ const getIconForUrl = (socialUrl: ?string) => {
         return 'youtube'
     } else if (url.includes('linkedin.com')) {
         return 'linkedin'
+    } else if (url.includes('facebook.com')) {
+        return 'facebook'
+    } else if (url.includes('instagram.com')) {
+        return 'instagram'
     }
-    return null
+    return 'web'
 }
 
 const renderIcon = (name: ?string, url: ?string) => (
