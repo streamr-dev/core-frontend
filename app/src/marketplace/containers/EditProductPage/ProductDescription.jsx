@@ -33,7 +33,7 @@ const ProductDescription = ({ disabled }: Props) => {
                 <Translate
                     tag="p"
                     value="editProductPage.productDescription.description"
-                    docsLink={docsLinks.introToProducts}
+                    docsLink={docsLinks.createProduct}
                     dangerousHTML
                 />
                 <MarkdownEditor

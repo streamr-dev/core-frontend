@@ -78,7 +78,7 @@ const PriceSelector = ({ disabled }: Props) => {
                 <Translate
                     tag="p"
                     value="editProductPage.setPrice.description"
-                    docsLink={docsLinks.introToProducts}
+                    docsLink={docsLinks.createProduct}
                     dangerousHTML
                 />
                 <RadioButtonGroup

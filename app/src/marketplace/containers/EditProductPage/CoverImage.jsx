@@ -58,7 +58,7 @@ const CoverImage = ({ disabled }: Props) => {
                 <Translate
                     tag="p"
                     value="editProductPage.coverImage.description"
-                    docsLink={docsLinks.introToProducts}
+                    docsLink={docsLinks.createProduct}
                     dangerousHTML
                 />
                 <ImageUpload

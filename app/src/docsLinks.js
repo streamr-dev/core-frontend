@@ -41,7 +41,7 @@ export default {
     createAndMonitor: '/docs/data-unions/create-and-monitor',
     joinAndWithdraw: '/docs/data-unions/join-and-withdraw',
     uxBestPractices: '/docs/data-unions/ux-best-practices',
-    introToProducts: '/docs/products/intro-to-products',
+    createProduct: '/docs/products/create-product',
     productsDataunions: '/docs/products/data-unions',
     tutorials: '/docs/tutorials',
     buildingPubSubTutorial: '/docs/tutorials/building-pub-sub',
