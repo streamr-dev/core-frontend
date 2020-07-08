@@ -34,7 +34,6 @@ import Search from '../../Header/Search'
 import confirmDialog from '$shared/utils/confirm'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
-import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { NotificationIcon } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
@@ -48,8 +47,9 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { ago } from '$shared/utils/time'
-import { subscribeSnippets } from '$utils/streamSnippets'
 import { MD, LG } from '$shared/utils/styled'
+import useModal from '$shared/hooks/useModal'
+import SnippetDialog from './SnippetDialog'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -370,10 +370,6 @@ const StyledSecurityIcon = styled(SecurityIcon)`
     }
 `
 
-const Dialogs = {
-    SNIPPET: 'snippet',
-}
-
 type TargetStream = ?Stream
 
 type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | TargetStream) => void]
@@ -419,7 +415,6 @@ const StreamList = () => {
         resetFilter,
     } = useFilterSort(sortOptions)
     const [dialogTargetStream, setDialogTargetStream]: TargetStreamSetter = useState(null)
-    const [activeDialog, setActiveDialog] = useState(undefined)
     const dispatch = useDispatch()
     const { copy } = useCopy()
     const streams = useSelector(selectStreams)
@@ -427,6 +422,7 @@ const StreamList = () => {
     const fetchingPermissions = useSelector(selectFetchingPermissions)
     const permissions = useSelector(selectStreamPermissions)
     const hasMoreResults = useSelector(selectHasMoreSearchResults)
+    const { api: snippetDialog } = useModal('userpages.streamSnippet')
 
     const sidebar = useContext(SidebarContext)
 
@@ -486,15 +482,11 @@ const StreamList = () => {
         sidebar.open('share')
     }, [sidebar])
 
-    const onCloseDialog = useCallback(() => {
-        setDialogTargetStream(null)
-        setActiveDialog(null)
-    }, [])
-
-    const onOpenSnippetDialog = useCallback((stream: Stream) => {
-        setDialogTargetStream(stream)
-        setActiveDialog(Dialogs.SNIPPET)
-    }, [])
+    const onOpenSnippetDialog = useCallback(async (stream: Stream) => {
+        await snippetDialog.open({
+            streamId: stream.id,
+        })
+    }, [snippetDialog])
 
     const showStream = useCallback((id: StreamId) => (
         dispatch(push(routes.streams.show({
@@ -561,12 +553,6 @@ const StreamList = () => {
             loading={fetching}
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.streams')}`} />
-            {!!dialogTargetStream && activeDialog === Dialogs.SNIPPET && (
-                <SnippetDialog
-                    snippets={subscribeSnippets(dialogTargetStream)}
-                    onClose={onCloseDialog}
-                />
-            )}
             <StyledListContainer>
                 {!fetching && streams && streams.length <= 0 && (
                     <NoStreamsView
@@ -663,6 +649,7 @@ const StreamList = () => {
                     </Fragment>
                 )}
             </StyledListContainer>
+            <SnippetDialog />
             <StreamPageSidebar stream={dialogTargetStream} />
             <DocsShortcuts />
         </Layout>
