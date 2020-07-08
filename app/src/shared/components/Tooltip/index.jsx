@@ -42,16 +42,18 @@ export default function Tooltip(props: Props) {
         children,
         container,
         className,
+        placement,
         ...otherProps
     } = props
+
     return (
         <div id={id} className={cx(styles.tooltipContainer, className)}>
             {children}
             <RsTooltip
-                placement="top"
                 {...otherProps}
                 innerClassName={styles.tooltip}
                 hideArrow
+                placement={placement}
                 delay={DELAY}
                 isOpen={isOpen}
                 target={id}
@@ -66,4 +68,8 @@ export default function Tooltip(props: Props) {
             </RsTooltip>
         </div>
     )
+}
+
+Tooltip.defaultProps = {
+    placement: 'top',
 }
