@@ -163,7 +163,7 @@ function useValidationContext(): ContextProps {
             clearStatus('beneficiaryAddress')
 
             if (isEthIdentityRequired) {
-                setStatus('ethIdentity', ERROR, 'Ethereum address not connected')
+                setStatus('ethIdentity', ERROR, 'Please connect an Ethereum address')
             } else {
                 clearStatus('ethIdentity')
             }

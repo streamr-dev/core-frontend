@@ -2,6 +2,7 @@
 
 import React, { Fragment, useState, useCallback, useContext } from 'react'
 import cx from 'classnames'
+import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
 
 import useModal from '$shared/hooks/useModal'
@@ -14,6 +15,16 @@ import useIsEthIdentityNeeded from './useIsEthIdentityNeeded'
 import { Context as EditControllerContext } from './EditControllerProvider'
 
 import styles from './productStreams.pcss'
+
+const H1 = styled.h1`
+    display: flex;
+`
+
+const ValidationError = styled(Errors)`
+    display: inline-flex;
+    justify-content: flex-end;
+    flex-grow: 1;
+`
 
 type Props = {
     className?: string,
@@ -48,7 +59,14 @@ const ConnectEthIdentity = ({ className, disabled }: Props) => {
 
     return (
         <section id="connect-eth-identity" className={cx(styles.root, className)}>
-            <Translate tag="h1" value="editProductPage.connectEthIdentity.title" />
+            <H1>
+                <Translate value="editProductPage.connectEthIdentity.title" />
+                {!isValid && publishAttempted && (
+                    <ValidationError theme={MarketplaceTheme}>
+                        {message}
+                    </ValidationError>
+                )}
+            </H1>
             {walletLocked && (
                 <Translate
                     value="editProductPage.connectEthIdentity.web3Locked"
@@ -73,11 +91,6 @@ const ConnectEthIdentity = ({ className, disabled }: Props) => {
                     >
                         <Translate value="editProductPage.connectEthIdentity.addNewAddress" />
                     </Button>
-                    {!isValid && publishAttempted && (
-                        <Errors theme={MarketplaceTheme}>
-                            {message}
-                        </Errors>
-                    )}
                 </Fragment>
             )}
             <AddIdentityDialog />

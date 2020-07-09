@@ -19,6 +19,8 @@ import styles from './editorNav.pcss'
 const SCROLLSPY_OFFSET = -40
 const CLICK_OFFSET = -130
 
+const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
+
 const EditorNav = () => {
     const product = useEditableProduct()
     const productRef = useRef()
@@ -152,26 +154,21 @@ const EditorNav = () => {
             id: 'details',
             heading: I18n.t('editProductPage.navigation.details'),
             status: detailsStatus,
-        }, {
+        },
+        ...includeIf(!!showConnectEthIdentity, [{
+            id: 'connect-eth-identity',
+            heading: I18n.t('editProductPage.navigation.connectEthIdentity'),
+            status: ethIdentityStatus,
+        }]), {
             id: 'terms',
             heading: I18n.t('editProductPage.navigation.terms'),
             status: getStatus('termsOfUse'),
-        }]
-
-        if (isDataUnion) {
-            if (showConnectEthIdentity) {
-                nextSections.push({
-                    id: 'connect-eth-identity',
-                    heading: I18n.t('editProductPage.navigation.connectEthIdentity'),
-                    status: ethIdentityStatus,
-                })
-            }
-            nextSections.push({
-                id: 'shared-secrets',
-                heading: I18n.t('editProductPage.navigation.sharedSecrets'),
-                status: sharedSecretStatus,
-            })
-        }
+        },
+        ...includeIf(!!isDataUnion, [{
+            id: 'shared-secrets',
+            heading: I18n.t('editProductPage.navigation.sharedSecrets'),
+            status: sharedSecretStatus,
+        }])]
 
         return nextSections
     }, [
