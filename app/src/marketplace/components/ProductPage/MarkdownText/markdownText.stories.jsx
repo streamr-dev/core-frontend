@@ -5,10 +5,10 @@ import { storiesOf } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 
-import CollapsedText from '.'
+import MarkdownText from '.'
 
 const stories =
-    storiesOf('Marketplace/CollapsedText', module)
+    storiesOf('Marketplace/MarkdownText', module)
         .addDecorator(styles({
             color: '#323232',
             padding: '5rem',
@@ -210,21 +210,29 @@ Bullets should align with dots, same text left align.
 /* eslint-enable max-len */
 
 stories.add('short', () => (
-    <CollapsedText text={shortText} />
+    <MarkdownText text={shortText} />
 ))
 
 stories.add('medium', () => (
-    <CollapsedText text={mediumText} />
+    <MarkdownText text={mediumText} />
 ))
 
 stories.add('long', () => (
-    <CollapsedText text={longText} />
+    <MarkdownText text={longText} />
 ))
 
 stories.add('markdown', () => (
-    <CollapsedText text={markdown} />
+    <MarkdownText text={markdown} />
 ))
 
 stories.add('numbered list', () => (
-    <CollapsedText text={markdownWithNumberedList} />
+    <MarkdownText text={markdownWithNumberedList} />
 ))
+
+stories.add('numbered list (mobile)', () => (
+    <MarkdownText text={markdownWithNumberedList} />
+), {
+    viewport: {
+        defaultViewport: 'xs',
+    },
+})

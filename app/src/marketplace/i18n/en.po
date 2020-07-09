@@ -1149,12 +1149,6 @@ msgstr "Set price"
 msgid "productList##viewMore"
 msgstr "View more"
 
-msgid "productPage##description##less"
-msgstr "Read less"
-
-msgid "productPage##description##more"
-msgstr "Read more"
-
 msgid "productPage##productDetails##add"
 msgstr "Add to my purchases"
 
