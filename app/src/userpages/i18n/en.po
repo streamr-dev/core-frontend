@@ -11,7 +11,7 @@ msgstr ""
 msgid "userpages##canvases##createCanvas"
 msgstr "Create canvas"
 
-msgid "userpages##canvases##deleteCanvas"
+msgid "userpages##canvases##deletedCanvas"
 msgstr "Canvas deleted successfully"
 
 msgid "userpages##canvases##filterCanvases"
@@ -680,6 +680,15 @@ msgstr "Create dashboard"
 msgid "userpages##dashboards##deletedDashboard"
 msgstr "Dashboard deleted successfully!"
 
+msgid "userpages##dashboards##delete##confirmTitle"
+msgstr "Delete this dashboard?"
+
+msgid "userpages##dashboards##delete##confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages##dashboards##delete##confirmButton"
+msgstr "Yes, delete"
+
 msgid "userpages##dashboards##filterDashboards"
 msgstr "Filter dashboards"
 
@@ -703,6 +712,21 @@ msgstr "Clear filters"
 
 msgid "userpages##dashboards##savedDashboard"
 msgstr "Dashboard saved successfully!"
+
+msgid "userpages##dashboards##menu##edit"
+msgstr "Edit"
+
+msgid "userpages##dashboards##menu##delete"
+msgstr "Delete"
+
+msgid "userpages##dashboards##menu##copyUrl"
+msgstr "Copy URL"
+
+msgid "userpages##dashboards##menu##copyUrlNotification"
+msgstr "Dashboard URL copied"
+
+msgid "userpages##dashboards##menu##share"
+msgstr "Share"
 
 msgid "userpages##transactions##list##name"
 msgstr "Name"

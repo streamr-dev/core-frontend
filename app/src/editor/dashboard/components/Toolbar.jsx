@@ -2,6 +2,7 @@ import React from 'react'
 import * as R from 'reactstrap'
 import { connect } from 'react-redux'
 import cx from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
@@ -11,6 +12,9 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 import Popover from '$shared/components/Popover'
 import SvgIcon from '$shared/components/SvgIcon'
 import Tooltip from '$shared/components/Tooltip'
+import confirmDialog from '$shared/utils/confirm'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import Toolbar from '$editor/shared/components/Toolbar'
 
@@ -28,7 +32,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
         currentUser,
         className,
         duplicateDashboard,
-        deleteDashboard,
+        deleteDashboard: deleteDashboardProp,
         setDashboard,
         newDashboard,
         moduleSearchOpen,
@@ -46,6 +50,39 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
             name,
         }))
     }, [setDashboard])
+
+    const deleteDashboardAndNotify = React.useCallback(async () => {
+        try {
+            await deleteDashboardProp()
+
+            Notification.push({
+                title: I18n.t('userpages.dashboards.deletedDashboard'),
+                icon: NotificationIcon.CHECKMARK,
+            })
+        } catch (e) {
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
+        }
+    }, [deleteDashboardProp])
+
+    const deleteDashboard = React.useCallback(async () => {
+        const confirmed = await confirmDialog('canvas', {
+            title: I18n.t('userpages.canvases.delete.confirmTitle'),
+            message: I18n.t('userpages.canvases.delete.confirmMessage'),
+            acceptButton: {
+                title: I18n.t('userpages.canvases.delete.confirmButton'),
+                kind: 'destructive',
+            },
+            centerButtons: true,
+            dontShowAgain: false,
+        })
+
+        if (confirmed) {
+            deleteDashboardAndNotify()
+        }
+    }, [deleteDashboardAndNotify])
 
     const elRef = React.useRef()
 
@@ -105,7 +142,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
                                         <Popover.Item onClick={() => duplicateDashboard()}>Duplicate</Popover.Item>
                                         <Popover.Item
                                             disabled={!hasDeletePermission}
-                                            onClick={() => deleteDashboard()}
+                                            onClick={deleteDashboard}
                                         >
                                             Delete
                                         </Popover.Item>
