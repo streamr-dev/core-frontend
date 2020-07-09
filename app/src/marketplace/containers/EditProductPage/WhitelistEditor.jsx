@@ -6,8 +6,7 @@ import { I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import Toggle from '$shared/components/Toggle'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
+import Popover from '$shared/components/Popover'
 import useModal from '$shared/hooks/useModal'
 import useCopy from '$shared/hooks/useCopy'
 import Tooltip from '$shared/components/Tooltip'
@@ -73,7 +72,7 @@ const TableColumn = styled(TableColumnBase)`
     }
 `
 
-const StyledDropdownActions = styled(DropdownActions)`
+const StyledPopover = styled(Popover)`
     visibility: hidden;
 
     ${TableRow}:hover & {
@@ -193,23 +192,24 @@ export const WhitelistEditorComponent = ({
                             </StyledTooltip>
                         </TableColumn>
                         <TableColumn disabled={disabled} center>
-                            <StyledDropdownActions
-                                title={<Meatball alt="Select" />}
+                            <StyledPopover
+                                title="Select"
+                                type="meatball"
                                 noCaret
                                 disabled={disabled}
                             >
-                                <DropdownActions.Item onClick={() => copy(item.address)}>
+                                <Popover.Item onClick={() => copy(item.address)}>
                                     {I18n.t('editProductPage.whitelist.copy')}
-                                </DropdownActions.Item>
+                                </Popover.Item>
                                 {item.status !== 'removed' && actionsEnabled && (
-                                    <DropdownActions.Item onClick={() => removeDialog.open({
+                                    <Popover.Item onClick={() => removeDialog.open({
                                         address: item.address,
                                     })}
                                     >
                                         {I18n.t('editProductPage.whitelist.remove')}
-                                    </DropdownActions.Item>
+                                    </Popover.Item>
                                 )}
-                            </StyledDropdownActions>
+                            </StyledPopover>
                         </TableColumn>
                     </TableRow>
                 )

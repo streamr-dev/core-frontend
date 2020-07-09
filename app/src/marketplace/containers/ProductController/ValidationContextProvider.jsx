@@ -212,6 +212,10 @@ function useValidationContext(): ContextProps {
             }
         }
 
+        if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
+            setStatus('contact.email', ERROR, 'Email address is required')
+        }
+
         // Set pending fields, a change is marked pending if there was a saved pending change or
         // we made a change that is different from the loaded product
         const changes = getPendingChanges(product)
