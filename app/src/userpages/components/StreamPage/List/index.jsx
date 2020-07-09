@@ -92,7 +92,7 @@ const StyledListContainer = styled(ListContainer)`
     }
 
     ${StreamTable}:last-child {
-        margin-bottom: 11.5rem;
+        margin-bottom: 4rem;
     }
 
     @media (min-width: ${MD}px) {
@@ -100,20 +100,24 @@ const StyledListContainer = styled(ListContainer)`
             padding-left: 1.5rem;
             padding-right: 1.5rem;
         }
-
-        ${StreamTable}:last-child {
-            margin-bottom: 15.5rem;
-        }
     }
 
     @media (min-width: ${LG}px) {
         && {
             margin-bottom: 0;
         }
+    }
+`
 
-        ${StreamTable}:last-child {
-            margin-bottom: 8.5rem;
-        }
+const LoadingMoreSpacer = styled.div`
+    margin-top: 11.5rem;
+
+    @media (min-width: ${MD}px) {
+        margin-top: 15.5rem;
+    }
+
+    @media (min-width: ${LG}px) {
+        margin-top: 7.5rem;
     }
 `
 
@@ -142,6 +146,7 @@ const HeaderRow = styled(Row)`
     @media (min-width: ${LG}px) {
         display: grid;
         padding: 0.75rem;
+        line-height: 14px;
     }
 `
 
@@ -161,10 +166,10 @@ const TableRow = styled(Row)`
 const RowItem = styled.div`
     display: none;
     overflow-y: visible;
-    color: ##525252;
+    color: #525252;
 `
 
-const HeaderItem = styled(RowItem)`
+const HeaderItem = styled(Translate)`
     display: block;
     font-family: var(--sans);
     font-size: 12px;
@@ -565,12 +570,12 @@ const StreamList = () => {
                     <Fragment>
                         <StreamTable>
                             <HeaderRow>
-                                <HeaderItem><Translate value="userpages.streams.list.name" /></HeaderItem>
-                                <HeaderItem><Translate value="userpages.streams.list.description" /></HeaderItem>
-                                <HeaderItem><Translate value="userpages.streams.list.updated" /></HeaderItem>
-                                <HeaderItem><Translate value="userpages.streams.list.lastData" /></HeaderItem>
-                                <StatusHeaderItem><Translate value="userpages.streams.list.status" /></StatusHeaderItem>
-                                <HeaderItem />
+                                <HeaderItem tag="div" value="userpages.streams.list.name" />
+                                <HeaderItem tag="div" value="userpages.streams.list.description" />
+                                <HeaderItem tag="div" value="userpages.streams.list.updated" />
+                                <HeaderItem tag="div" value="userpages.streams.list.lastData" />
+                                <StatusHeaderItem tag="div" value="userpages.streams.list.status" />
+                                <RowItem />
                             </HeaderRow>
                             {streams.map((stream) => (
                                 <TableRow
@@ -642,6 +647,9 @@ const StreamList = () => {
                                 </TableRow>
                             ))}
                         </StreamTable>
+                        {!!(fetching && hasMoreResults) && (
+                            <LoadingMoreSpacer />
+                        )}
                         <LoadMore
                             hasMoreSearchResults={!fetching && hasMoreResults}
                             onClick={() => dispatch(getStreams())}
