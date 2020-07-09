@@ -5,7 +5,6 @@ import { productTypes } from '$mp/utils/constants'
 import type { CategoryId } from './category-types'
 import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 import type {
-    ErrorInUi,
     ContractCurrency,
     PaymentCurrency,
     NumberString,
@@ -135,22 +134,6 @@ export type Filter = {
     categories: ?CategoryFilter,
     sortBy: ?SortByFilter,
     maxPrice: ?MaxPriceFilter,
-}
-
-export type UserProductPermissionList = {
-    id?: number,
-    user?: string,
-    operation?: string,
-    anonymous?: boolean,
-}
-
-export type ProductPermissions = {
-    get: boolean,
-    edit: boolean,
-    del: boolean,
-    share: boolean,
-    fetchingPermissions: boolean,
-    permissionsError: ?ErrorInUi,
 }
 
 export type DataUnionId = $ElementType<Product, 'beneficiaryAddress'>

@@ -16,12 +16,10 @@ import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
 import Search from '../../Header/Search'
 import confirmDialog from '$shared/utils/confirm'
-import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
-import type { Permission } from '$userpages/flowtype/permission-types'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import ListContainer from '$shared/components/Container/List'
@@ -89,7 +87,6 @@ const CanvasList = () => {
 
     const dispatch = useDispatch()
     const { copy } = useCopy()
-    const user = useSelector(selectUserData)
     const canvases = useSelector(selectCanvases)
     const fetching = useSelector(selectFetching)
     const fetchingPermissions = useSelector(selectFetchingPermissions)
@@ -136,7 +133,7 @@ const CanvasList = () => {
     const onToggleCanvasDropdown = useCallback((id: string) => async (open: boolean) => {
         if (open && !fetchingPermissions && !permissions[id]) {
             try {
-                await dispatch(getResourcePermissions('CANVAS', id, false))
+                await dispatch(getResourcePermissions('CANVAS', id))
             } catch (e) {
                 // Noop.
             }
@@ -145,17 +142,15 @@ const CanvasList = () => {
 
     const canBeSharedByCurrentUser = useCallback((id: string): boolean => (
         !fetchingPermissions &&
-        !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'canvas_share') !== undefined
-    ), [fetchingPermissions, permissions, user])
+        permissions[id].includes('canvas_share')
+    ), [fetchingPermissions, permissions])
 
     const canBeDeletedByCurrentUser = useCallback((id: string): boolean => (
         !fetchingPermissions &&
-        !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'canvas_delete') !== undefined
-    ), [fetchingPermissions, permissions, user])
+        permissions[id].includes('canvas_delete')
+    ), [fetchingPermissions, permissions])
 
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
 

@@ -6,6 +6,7 @@ export const ResourceType = {
     CANVAS: 'CANVAS',
     DASHBOARD: 'DASHBOARD',
     STREAM: 'STREAM',
+    PRODUCT: 'PRODUCT',
 }
 
 export type ResourceID = string | number | null | void

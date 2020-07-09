@@ -27,7 +27,7 @@ import Edit from './Edit'
 import View from './View'
 import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import useStreamPermissions from '$userpages/hooks/useStreamPermissions'
 
 type Props = {
     match: Match,
