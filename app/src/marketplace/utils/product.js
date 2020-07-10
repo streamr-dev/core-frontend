@@ -54,6 +54,7 @@ export const mapProductFromContract = (id: ProductId, result: any): SmartContrac
         priceCurrency: Object.keys(currencies)[result.currency],
         minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
         state: Object.keys(productStates)[result.state],
+        requiresWhitelist: result.requiresWhitelist,
     }
 }
 

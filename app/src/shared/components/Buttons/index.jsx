@@ -11,6 +11,7 @@ export type ButtonAction = {
     title: string,
     onClick?: () => void | Promise<void>,
     linkTo?: string,
+    href?: string,
     kind?: Kind,
     disabled?: boolean,
     visible?: boolean,
@@ -35,6 +36,7 @@ export const Buttons = ({ actions, className }: Props) => (
                 title,
                 onClick,
                 linkTo,
+                href,
                 kind,
                 disabled,
                 outline,
@@ -44,8 +46,10 @@ export const Buttons = ({ actions, className }: Props) => (
             return (
                 <Button
                     key={key}
-                    tag={linkTo != null ? Link : 'button'}
+                    // eslint-disable-next-line no-nested-ternary
+                    tag={linkTo != null ? Link : (href != null ? 'a' : 'button')}
                     to={linkTo}
+                    href={href}
                     onClick={onClick}
                     disabled={disabled}
                     kind={kind}

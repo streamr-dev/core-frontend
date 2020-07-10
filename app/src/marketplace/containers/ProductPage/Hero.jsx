@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { replace } from 'connected-react-router'
 import moment from 'moment'
@@ -25,6 +25,9 @@ import {
 import { ImageTile } from '$shared/components/Tile'
 import { NotificationIcon } from '$shared/utils/constants'
 import Notification from '$shared/utils/Notification'
+import { isAddressWhitelisted } from '$mp/modules/contractProduct/services'
+import useWeb3Status from '$shared/hooks/useWeb3Status'
+
 import routes from '$routes'
 
 import styles from './hero.pcss'
@@ -35,20 +38,34 @@ const Hero = () => {
     const { api: purchaseDialog } = useModal('purchase')
     const { isPending, wrap } = usePending('product.PURCHASE_DIALOG')
     const isMounted = useIsMounted()
+    const { api: requestAccessDialog } = useModal('requestWhitelistAccess')
 
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
     const isDataUnion = !!(product && isDataUnionProduct(product))
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const subscription = useSelector(selectContractSubscription)
+    const { account } = useWeb3Status()
+    const [isWhitelisted, setIsWhitelisted] = useState(null)
 
     const productId = product.id
+    const contactEmail = product && product.contact && product.contact.email
+    const productName = product && product.name
     const isPaid = isPaidProduct(product)
+    const isWhitelistEnabled = product.requiresWhitelist
 
     const onPurchase = useCallback(async () => (
         wrap(async () => {
             if (isLoggedIn) {
                 if (isPaid) {
+                    if (isWhitelistEnabled && !isWhitelisted) {
+                        await requestAccessDialog.open({
+                            contactEmail,
+                            productName,
+                        })
+                        return
+                    }
+
                     // Paid product has to be bought with Metamask
                     const { started, succeeded, viewInCore } = await purchaseDialog.open({
                         productId,
@@ -86,7 +103,30 @@ const Hero = () => {
                 })))
             }
         })
-    ), [productId, dispatch, isLoggedIn, purchaseDialog, isPaid, wrap, isMounted])
+    ), [productId,
+        dispatch,
+        isLoggedIn,
+        purchaseDialog,
+        isPaid,
+        wrap,
+        isMounted,
+        isWhitelistEnabled,
+        isWhitelisted,
+        requestAccessDialog,
+        contactEmail,
+        productName,
+    ])
+
+    useEffect(() => {
+        const loadWhitelistStatus = async () => {
+            if (isWhitelistEnabled && productId && account) {
+                const whitelisted = await isAddressWhitelisted(productId, account)
+                setIsWhitelisted(whitelisted)
+            }
+        }
+
+        loadWhitelistStatus()
+    }, [productId, account, isWhitelistEnabled])
 
     return (
         <HeroComponent
@@ -106,6 +146,7 @@ const Hero = () => {
                     productSubscription={subscription}
                     onPurchase={onPurchase}
                     isPurchasing={isPending}
+                    isWhitelisted={isWhitelisted}
                 />
             }
         />

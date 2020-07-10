@@ -36,6 +36,7 @@ describe('Product services', () => {
                 ownerAddress: undefined,
                 beneficiaryAddress: undefined,
                 minimumSubscriptionInSeconds: 0,
+                requiresWhitelist: undefined,
             }, result)
             assert(getContractStub.calledOnce)
             assert(getProductStub.calledOnce)

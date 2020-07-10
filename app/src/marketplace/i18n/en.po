@@ -240,6 +240,9 @@ msgstr "Shared secrets"
 msgid "editProductPage##navigation##terms"
 msgstr "Terms"
 
+msgid "editProductPage##navigation##whitelist"
+msgstr "Whitelist"
+
 msgid "editProductPage##sidebar##category"
 msgstr "Product category"
 
@@ -281,6 +284,42 @@ msgstr "Display name for link"
 
 msgid "editProductPage##terms##displayName##placeholder"
 msgstr "Add a display name"
+
+msgid "editProductPage##whitelist##title"
+msgstr "Limit product access"
+
+msgid "editProductPage##whitelist##description"
+msgstr ""
+"If you want to restrict sales of your product to approved buyers, you can enable whitelisting. "
+"Only buyers whose Ethereum addresses have been whitelisted will be able to subscribe to your product. "
+"Other buyers will be able to ask for access."
+
+msgid "editProductPage##whitelist##header##address"
+msgstr "Ethereum Address"
+
+msgid "editProductPage##whitelist##header##status"
+msgstr "Status"
+
+msgid "editProductPage##whitelist##copy"
+msgstr "Copy address"
+
+msgid "editProductPage##whitelist##remove"
+msgstr "Remove"
+
+msgid "editProductPage##whitelist##enable"
+msgstr "Enable whitelist"
+
+msgid "editProductPage##whitelist##add"
+msgstr "Add to whitelist"
+
+msgid "editProductPage##whitelist##status##subscribed"
+msgstr "Subscribed"
+
+msgid "editProductPage##whitelist##status##added"
+msgstr "Whitelisted"
+
+msgid "editProductPage##whitelist##status##removed"
+msgstr "Removed"
 
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
@@ -470,6 +509,9 @@ msgstr "Unpublishing"
 msgid "modal##publishProgress##publishPendingChanges##pending"
 msgstr "Updating product"
 
+msgid "modal##publishProgress##setRequiresWhitelist##pending"
+msgstr "Updating whitelist status"
+
 msgid "modal##publishProgress##updateContractProduct##failed"
 msgstr "Updating product failed"
 
@@ -493,6 +535,9 @@ msgstr "Unpublishing failed"
 
 msgid "modal##publishProgress##publishPendingChanges##failed"
 msgstr "Updating product failed"
+
+msgid "modal##publishProgress##setRequiresWhitelist##failed"
+msgstr "Updating whitelist status failed"
 
 msgid "modal##publishProgress##confirmTransaction"
 msgstr "Please confirm transaction"
@@ -532,6 +577,9 @@ msgstr "Failed to publish product."
 
 msgid "modal##publishError##actions##publishPendingChanges"
 msgstr "Failed to publish product changes."
+
+msgid "modal##publishError##actions##setRequiresWhitelist"
+msgstr "Failed to publish product whitelist status."
 
 msgid "modal##publishError##actions##unpublishFree"
 msgstr "Failed to unpublish product."
@@ -1053,6 +1101,54 @@ msgstr ""
 msgid "modal##deployDataUnion##deploying##estimatedDeploymentTime"
 msgstr "Estimated deployment time"
 
+msgid "modal##whitelistAdd##title"
+msgstr "Add a buyer to the whitelist"
+
+msgid "modal##whitelistAdd##add"
+msgstr "Add"
+
+msgid "modal##whitelistAdd##addressLabel"
+msgstr "Ethereum Address"
+
+msgid "modal##whitelistAdd##addressPlaceholder"
+msgstr "0x..."
+
+msgid "modal##whitelistRemove##title"
+msgstr "Remove from whitelist?"
+
+msgid "modal##whitelistRemove##message"
+msgstr ""
+"If you remove this buyer from your whitelist they will "
+"<br />"
+"not be able to resubscribe. Do you want to continue?"
+
+msgid "modal##whitelistRemove##remove"
+msgstr "Remove"
+
+msgid "modal##whitelistRequestAccess##title"
+msgstr "Enquire about product access"
+
+msgid "modal##whitelistRequestAccess##message"
+msgstr ""
+"The seller has restricted access to this product. "
+"<br />"
+"Please click below to contact them via email."
+
+msgid "modal##whitelistRequestAccess##sendEmail"
+msgstr "Send email"
+
+msgid "modal##whitelistRequestAccess##imageAlt"
+msgstr "Mailbox"
+
+msgid "modal##whitelistRequestAccess##mailtoSubject"
+msgstr "Streamr Marketplace access request for %{productName}"
+
+msgid "modal##whitelistRequestAccess##mailtoBody"
+msgstr ""
+"Hi,\n\n"
+"I'd like to request access to your data product, %{productName}.\n"
+"My ethereum address is as follows:"
+
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
 
@@ -1160,6 +1256,9 @@ msgstr "Purchase"
 
 msgid "productPage##productDetails##renew"
 msgstr "Renew"
+
+msgid "productPage##productDetails##requestAccess"
+msgstr "Request Access"
 
 msgid "productPage##productDetails##saved"
 msgstr "Saved to my purchases"

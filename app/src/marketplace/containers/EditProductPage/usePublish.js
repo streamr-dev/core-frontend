@@ -5,12 +5,14 @@ import { useDispatch } from 'react-redux'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
+
 import {
     getProductFromContract,
     createContractProduct,
     updateContractProduct,
     deleteProduct,
     redeployProduct,
+    setRequiresWhitelist,
 } from '$mp/modules/contractProduct/services'
 import {
     putProduct,
@@ -19,6 +21,7 @@ import {
     postDeployFree,
     postSetDeploying,
 } from '$mp/modules/product/services'
+
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { getPendingChanges, withPendingChanges } from './state'
 import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
@@ -36,6 +39,7 @@ export const actionsTypes = {
     PUBLISH_FREE: 'publishFree',
     UNPUBLISH_FREE: 'unpublishFree',
     PUBLISH_PENDING_CHANGES: 'publishPendingChanges',
+    SET_REQUIRES_WHITELIST: 'setRequiresWhitelist',
 }
 
 export const publishModes = {
@@ -77,17 +81,19 @@ export default function usePublish() {
         const { state: productState } = product
 
         const pendingChanges = getPendingChanges(product)
-        const productWithPendingChagnes = withPendingChanges(product)
+        const productWithPendingChanges = withPendingChanges(product)
         const {
             adminFee,
             pricePerSecond,
             beneficiaryAddress,
             priceCurrency,
+            requiresWhitelist,
             ...productDataChanges
         } = pendingChanges || {}
         const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-        const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChagnes)
-        const hasPendingChanges = Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasPriceChanged
+        const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChanges)
+        const hasRequireWhitelistChanged = !!contractProduct && requiresWhitelist != null && contractProduct.requiresWhitelist !== requiresWhitelist
+        const hasPendingChanges = Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasPriceChanged || hasRequireWhitelistChanged
 
         let nextMode
 
@@ -136,8 +142,33 @@ export default function usePublish() {
             }
         }
 
-        // update price, currency & beneficiary if changed. This will also
-        // do republish for products that have been at some point deployed
+        // update whitelist enabled status if it has changed
+        if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
+            if (hasRequireWhitelistChanged && contractProduct) {
+                queue.add({
+                    id: actionsTypes.SET_REQUIRES_WHITELIST,
+                    requireWeb3: true,
+                    requireOwner: contractProduct.ownerAddress,
+                    handler: (update, done) => (
+                        setRequiresWhitelist(product.id || '', requiresWhitelist)
+                            .onTransactionHash((hash) => {
+                                update(transactionStates.PENDING)
+                                dispatch(addTransaction(hash, transactionTypes.SET_REQUIRES_WHITELIST))
+                                done()
+                            })
+                            .onTransactionComplete(() => {
+                                update(transactionStates.CONFIRMED)
+                            })
+                            .onError((error) => {
+                                done()
+                                update(transactionStates.FAILED, error)
+                            })
+                    ),
+                })
+            }
+        }
+
+        // update price, currency & beneficiary if changed
         if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
             if (hasPriceChanged && contractProduct) {
                 const isRedeploy = !!(nextMode === publishModes.REDEPLOY)
@@ -211,6 +242,7 @@ export default function usePublish() {
                                 minimumSubscriptionInSeconds: product.minimumSubscriptionInSeconds,
                                 state: product.state,
                                 ownerAddress: '', // owner address is not needed when creating
+                                requiresWhitelist,
                             })
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
