@@ -7,6 +7,33 @@ import * as useProduct from '../useProduct'
 
 import { Provider as ValidationContextProvider, Context as ValidationContext } from '../ValidationContextProvider'
 
+const mockState = {
+    dataUnion: {
+        id: 'dataUnionId',
+    },
+    entities: {
+        dataUnions: {
+            dataUnionId: {
+                id: 'dataUnionId',
+                memberCount: {
+                    active: 0,
+                },
+            },
+        },
+        integrationKeys: {
+            test: '12345',
+        },
+    },
+    integrationKey: {
+        ethereumIdentities: ['test'],
+    },
+}
+
+jest.mock('react-redux', () => ({
+    useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
+    useDispatch: jest.fn(),
+}))
+
 describe('validation context', () => {
     let sandbox
 

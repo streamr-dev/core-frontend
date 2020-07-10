@@ -17,7 +17,9 @@ const mockState = {
     contractProduct: {
         id: '1',
     },
-    dataUnion: {},
+    dataUnion: {
+        id: 'dataUnionId',
+    },
     global: {
         dataPerUsd: 10,
     },
@@ -32,11 +34,26 @@ const mockState = {
                 id: '1',
             },
         },
+        dataUnions: {
+            dataUnionId: {
+                id: 'dataUnionId',
+                memberCount: {
+                    active: 0,
+                },
+            },
+        },
+        integrationKeys: {
+            test: '12345',
+        },
+    },
+    integrationKey: {
+        ethereumIdentities: ['test'],
     },
 }
 
 jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
+    useDispatch: jest.fn(),
 }))
 
 describe('PriceSelector', () => {
