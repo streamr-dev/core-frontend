@@ -36,9 +36,7 @@ export default class RunStateLoaderContainer extends React.PureComponent {
             type: 'json',
         }
 
-        const { apiKey } = this.context
         const res = await services.send({
-            apiKey,
             data,
             canvasId,
             dashboardId,

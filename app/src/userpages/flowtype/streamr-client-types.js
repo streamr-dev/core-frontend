@@ -43,13 +43,3 @@ export type StreamrClient = {
     bind: (event: ClientEvent, callback: Callback) => void,
     unbind: (event: ClientEvent, callback: Callback) => void
 }
-
-export type StreamrClientOptions = {
-    url: string,
-    restUrl: string,
-    auth: {
-        apiKey?: ?string,
-    },
-    autoConnect: boolean,
-    autoDisconnect: boolean
-}
