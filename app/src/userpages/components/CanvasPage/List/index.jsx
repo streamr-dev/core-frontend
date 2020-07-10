@@ -33,6 +33,7 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import routes from '$routes'
+import resourceUrl from '$shared/utils/resourceUrl'
 import { MD, LG } from '$shared/utils/styled'
 
 const DesktopOnlyButton = styled(Button)`
@@ -166,8 +167,8 @@ const CanvasList = () => {
         sidebar.open('share')
     }, [sidebar])
 
-    const onCopyUrl = useCallback((url: string) => {
-        copy(url)
+    const onCopyUrl = useCallback((id: CanvasId) => {
+        copy(resourceUrl('CANVAS', id))
 
         Notification.push({
             title: I18n.t('userpages.canvases.menu.copyUrlNotification'),
@@ -215,9 +216,7 @@ const CanvasList = () => {
                 <Translate value="userpages.canvases.menu.share" />
             </Popover.Item>
             <Popover.Item
-                onClick={() => onCopyUrl(routes.canvases.public.edit({
-                    id: canvas.id,
-                }))}
+                onClick={() => onCopyUrl(canvas.id)}
             >
                 <Translate value="userpages.canvases.menu.copyUrl" />
             </Popover.Item>

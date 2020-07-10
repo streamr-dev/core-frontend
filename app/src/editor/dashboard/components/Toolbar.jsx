@@ -68,11 +68,11 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
     }, [deleteDashboardProp])
 
     const deleteDashboard = React.useCallback(async () => {
-        const confirmed = await confirmDialog('canvas', {
-            title: I18n.t('userpages.canvases.delete.confirmTitle'),
-            message: I18n.t('userpages.canvases.delete.confirmMessage'),
+        const confirmed = await confirmDialog('dashboard', {
+            title: I18n.t('userpages.dashboards.delete.confirmTitle'),
+            message: I18n.t('userpages.dashboards.delete.confirmMessage'),
             acceptButton: {
-                title: I18n.t('userpages.canvases.delete.confirmButton'),
+                title: I18n.t('userpages.dashboards.delete.confirmButton'),
                 kind: 'destructive',
             },
             centerButtons: true,

@@ -10,7 +10,7 @@ import styled from 'styled-components'
 
 import type { Dashboard, DashboardId } from '$userpages/flowtype/dashboard-types'
 import routes from '$routes'
-import { getDashboards } from '$userpages/modules/dashboard/actions'
+import { getDashboards, deleteDashboard } from '$userpages/modules/dashboard/actions'
 import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/selectors'
 import Layout from '$userpages/components/Layout'
 import { getFilters } from '$userpages/utils/constants'
@@ -128,7 +128,7 @@ const DashboardList = () => {
 
     const deleteDashboardAndNotify = useCallback(async (id: DashboardId) => {
         try {
-            // await dispatch(deleteCanvas(id))
+            await dispatch(deleteDashboard(id))
 
             Notification.push({
                 title: I18n.t('userpages.dashboards.deletedDashboard'),
@@ -165,8 +165,8 @@ const DashboardList = () => {
         sidebar.open('share')
     }, [sidebar])
 
-    const onCopyUrl = useCallback((url: string) => {
-        copy(url)
+    const onCopyUrl = useCallback((id: DashboardId) => {
+        copy(resourceUrl('DASHBOARD', id))
 
         Notification.push({
             title: I18n.t('userpages.dashboards.menu.copyUrlNotification'),
@@ -214,13 +214,13 @@ const DashboardList = () => {
                 <Translate value="userpages.dashboards.menu.share" />
             </Popover.Item>
             <Popover.Item
-                onClick={() => onCopyUrl(resourceUrl('DASHBOARD', dashboard.id))}
+                onClick={() => onCopyUrl(dashboard.id)}
             >
                 <Translate value="userpages.dashboards.menu.copyUrl" />
             </Popover.Item>
             <Popover.Item
                 disabled={!canBeDeletedByCurrentUser(dashboard.id)}
-                onClick={() => confirmDeleteDashboard(dashboard)}
+                onClick={() => confirmDeleteDashboard(dashboard.id)}
             >
                 <Translate value="userpages.dashboards.menu.delete" />
             </Popover.Item>
