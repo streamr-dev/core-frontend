@@ -257,6 +257,13 @@ const LastData = styled(RowItem)`
     grid-row: 2;
     grid-column: 1;
 
+    &:empty {
+        &::after {
+            content: ' ';
+            white-space: pre;
+        }
+    }
+
     @media (min-width: ${MD}px) {
         grid-row: 1;
         grid-column: 2;
@@ -275,10 +282,11 @@ const LastData = styled(RowItem)`
 
 const Status = styled(RowItem)`
     display: block;
-    grid-row: 1;
+    grid-row-start: 1;
+    grid-row-end: 3;
     grid-column: 2;
     line-height: 12px;
-    padding-top: 2px;
+    padding-top: 0.5rem;
 
     @media (min-width: ${MD}px) {
         grid-row: 1;
@@ -590,6 +598,7 @@ const StreamList = () => {
                                                     level={getSecurityLevel(stream)}
                                                     mode="small"
                                                     hideBasic
+                                                    hideSigned
                                                 />
                                             </SecurityIconContainer>
                                         </StreamNameAndIcon>
