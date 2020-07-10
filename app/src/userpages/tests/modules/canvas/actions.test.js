@@ -105,19 +105,6 @@ describe('Canvas actions', () => {
         await wait
     })
 
-    it('Sets a canvas opened', async () => {
-        const expectedActions = [{
-            type: actions.OPEN_CANVAS,
-            id: 'test',
-        }, {
-            type: actions.GET_CANVAS_REQUEST,
-            id: 'test',
-        }]
-
-        store.dispatch(actions.openCanvas('test'))
-        expect(store.getActions()).toEqual(expectedActions)
-    })
-
     it('Updates the filter', async () => {
         sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
             type: 'updateEntities',

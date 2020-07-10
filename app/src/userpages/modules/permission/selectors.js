@@ -26,3 +26,7 @@ export const selectCanvasPermissions: (StoreState) => Object = createSelector(
     selectPermissions,
     (permissions: Object): Object => (permissions.CANVAS || {}),
 )
+export const selectDashboardPermissions: (StoreState) => Object = createSelector(
+    selectPermissions,
+    (permissions: Object): Object => (permissions.DASHBOARD || {}),
+)

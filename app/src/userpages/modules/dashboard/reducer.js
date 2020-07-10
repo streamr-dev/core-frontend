@@ -7,6 +7,9 @@ import {
     GET_DASHBOARDS_REQUEST,
     GET_DASHBOARDS_SUCCESS,
     GET_DASHBOARDS_FAILURE,
+    DELETE_DASHBOARD_REQUEST,
+    DELETE_DASHBOARD_SUCCESS,
+    DELETE_DASHBOARD_FAILURE,
 } from './actions'
 
 const initialState = {
@@ -18,6 +21,7 @@ const initialState = {
 const dashboard = function dashboard(state: DashboardState = initialState, action: DashboardAction): DashboardState {
     switch (action.type) {
         case GET_DASHBOARDS_REQUEST:
+        case DELETE_DASHBOARD_REQUEST:
             return {
                 ...state,
                 fetching: true,
@@ -32,6 +36,20 @@ const dashboard = function dashboard(state: DashboardState = initialState, actio
             }
 
         case GET_DASHBOARDS_FAILURE:
+            return {
+                ...state,
+                fetching: false,
+                error: action.error,
+            }
+
+        case DELETE_DASHBOARD_SUCCESS:
+            return {
+                ...state,
+                ids: state.ids.filter((id) => id !== action.id),
+                fetching: false,
+                error: null,
+            }
+        case DELETE_DASHBOARD_FAILURE:
             return {
                 ...state,
                 fetching: false,
