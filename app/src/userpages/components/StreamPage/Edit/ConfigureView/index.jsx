@@ -18,7 +18,6 @@ import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from 
 import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import Text from '$ui/Text'
 import SplitControl from '$userpages/components/SplitControl'
-import Popover from '$shared/components/Popover'
 import WithInputActions from '$shared/components/WithInputActions'
 
 import styles from './configureView.pcss'
@@ -168,15 +167,10 @@ export class ConfigureView extends Component<Props, State> {
                             {stream.config.fields.map((field, index) => (
                                 <div className={styles.hoverContainer} key={field.id || index} >
                                     <div className={styles.fieldItem} >
-                                        <FieldItem name={field.name}>
+                                        <FieldItem name={field.name} onDelete={() => this.deleteField(field.name)}>
                                             <SplitControl>
                                                 <WithInputActions
                                                     disabled={disabled}
-                                                    actions={[
-                                                        <Popover.Item key="delete" onClick={() => this.deleteField(field.name)}>
-                                                            <Translate value="userpages.streams.edit.configure.delete" />
-                                                        </Popover.Item>,
-                                                    ]}
                                                 >
                                                     <Text
                                                         value={field.name}
