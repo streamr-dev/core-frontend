@@ -27,6 +27,14 @@ const Icon = styled(SvgIcon)`
     width: 24px;
     height: 24px;
     color: #979797;
+
+    &:hover {
+        color: #525252;
+    }
+
+    &:active {
+        color: #323232;
+    }
 `
 
 type Props = {
