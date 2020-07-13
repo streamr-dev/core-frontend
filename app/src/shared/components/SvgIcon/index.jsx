@@ -657,6 +657,15 @@ const sources = {
     linkedin: (
         <SocialIcons.LinkedIn />
     ),
+    instagram: (
+        <SocialIcons.Instagram />
+    ),
+    facebook: (
+        <SocialIcons.Facebook />
+    ),
+    web: (
+        <SocialIcons.Web />
+    ),
 }
 
 export type IconName = $Keys<typeof sources>

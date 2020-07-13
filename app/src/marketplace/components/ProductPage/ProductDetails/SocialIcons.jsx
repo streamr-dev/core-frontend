@@ -27,6 +27,14 @@ const Icon = styled(SvgIcon)`
     width: 24px;
     height: 24px;
     color: #979797;
+
+    &:hover {
+        color: #525252;
+    }
+
+    &:active {
+        color: #323232;
+    }
 `
 
 type Props = {
@@ -59,8 +67,12 @@ const getIconForUrl = (socialUrl: ?string) => {
         return 'youtube'
     } else if (url.includes('linkedin.com')) {
         return 'linkedin'
+    } else if (url.includes('facebook.com')) {
+        return 'facebook'
+    } else if (url.includes('instagram.com')) {
+        return 'instagram'
     }
-    return null
+    return 'web'
 }
 
 const renderIcon = (name: ?string, url: ?string) => (
