@@ -1,16 +1,23 @@
 // @flow
 
 import React, { useMemo } from 'react'
+import styled from 'styled-components'
 import {
     XYPlot,
     LineSeries,
     XAxis,
     YAxis,
     HorizontalGridLines,
+    makeVisFlexible,
 } from 'react-vis'
 import '$app/node_modules/react-vis/dist/style.css'
 
 import Spinner from '$shared/components/Spinner'
+
+const Container = styled.div`
+    display: flex;
+    height: 100%;
+`
 
 const xAxisStyle = {
     ticks: {
@@ -38,6 +45,8 @@ const yAxisStyle = {
         letterSpacing: '0px',
     },
 }
+
+const FlexibleXYPlot = makeVisFlexible(XYPlot)
 
 const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
     // Show weekday name for small datasets
@@ -99,7 +108,7 @@ const TimeSeriesGraph = ({
     const rightMargin = 12 + (maxLength * 9)
 
     return (
-        <div className={className}>
+        <Container className={className}>
             {isLoading && (
                 <div
                     style={{
@@ -113,14 +122,13 @@ const TimeSeriesGraph = ({
                 </div>
             )}
             {!isLoading && (
-                <XYPlot
+                <FlexibleXYPlot
                     xType="time"
-                    width={width}
-                    height={height}
                     /* We need margin to not clip axis labels */
                     margin={{
                         left: 0,
                         right: rightMargin,
+                        bottom: 70,
                     }}
                     yDomain={dataDomain}
                     yBaseValue={dataDomain[0]}
@@ -148,9 +156,9 @@ const TimeSeriesGraph = ({
                         strokeWidth="4"
                         data={graphData}
                     />
-                </XYPlot>
+                </FlexibleXYPlot>
             )}
-        </div>
+        </Container>
     )
 }
 
