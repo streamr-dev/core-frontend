@@ -117,17 +117,11 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
             flags.current.scrollbar = e.target instanceof HTMLHtmlElement
         }
 
-        const onMouseUp = () => {
-            flags.current.scrollbar = false
-        }
-
         window.addEventListener('mousedown', onMouseDown)
-        window.addEventListener('mouseup', onMouseUp)
         window.addEventListener('wheel', onWheel, passiveEventOptions)
 
         return () => {
             window.removeEventListener('wheel', onWheel, passiveEventOptions)
-            window.removeEventListener('mouseup', onMouseUp)
             window.removeEventListener('mousedown', onMouseDown)
         }
     }, [])
