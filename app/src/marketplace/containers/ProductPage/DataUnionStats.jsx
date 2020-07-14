@@ -28,7 +28,7 @@ const DataUnionStats = ({ stats, memberCount, joinPartStreamId, showDeploying }:
         <div className={styles.root}>
             <div className={styles.grid}>
                 <div className={styles.header}>
-                    <span>Overview</span>
+                    <Translate value="productPage.stats.title" />
                 </div>
                 {!!showDeploying && (
                     <DataUnionPending className={styles.dataUnionPending} />
