@@ -209,7 +209,7 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
     useEffect(() => {
         const { wheel, scrollbar } = flags.current
 
-        if (!wheel || !scrollbar) {
+        if (!wheel && !scrollbar) {
             return
         }
 
