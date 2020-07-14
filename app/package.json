@@ -115,7 +115,7 @@
     "@storybook/addon-viewport": "^5.2.8",
     "@storybook/addons": "^5.2.8",
     "@storybook/react": "^5.2.8",
-    "@streamr/po-loader": "^0.1.1",
+    "@streamr/po-loader": "^1.0.0",
     "@streamr/streamr-icons": "^0.1.9",
     "@streamr/streamr-layout": "^2.2.4",
     "abi-decoder": "^1.2.0",
