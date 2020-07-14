@@ -1,10 +1,10 @@
-msgid "docs##search##noResults"
+msgid "docs.search.noResults"
 msgstr "Please try a different search or ask on our"
 
-msgid "docs##search##noResultsFoundFor"
+msgid "docs.search.noResultsFoundFor"
 msgstr "No results found for <strong>%{query}</strong>"
 
-msgid "docs##search##noResults"
+msgid "docs.search.noResults"
 msgstr "Please try a different search or ask on our "
 "<br />"
 "<a rel='noopener noreferrer' target='_blank' href='%{url}'>Community Dev Forum</a> instead."
