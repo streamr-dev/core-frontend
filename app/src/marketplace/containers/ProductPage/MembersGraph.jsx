@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import MediaQuery from 'react-responsive'
+import { I18n } from 'react-redux-i18n'
 
 import { lg } from '$app/scripts/breakpoints'
 import { getStreamData } from '$mp/modules/streams/services'
@@ -151,7 +152,7 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount }: Props) => {
         <MediaQuery maxWidth={lg.max}>
             {(isTabletOrMobile: boolean) => (
                 <WithShownDays
-                    label="Members"
+                    label={I18n.t('productPage.stats.membersGraph')}
                     className={className}
                     onDaysChange={(days) => setShownDays(days)}
                 >

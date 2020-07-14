@@ -22,7 +22,7 @@ The signing algorithm follows the convention described <a href="https://github.c
 signature = sign(keccak256("\x19Ethereum Signed Message:\\n" + len(payload) + payload)))
 ```
 
-On the recipient side, every subscriber needs to verify signed events. If a received event is unsigned, the subscriber accepts the event if and only if the stream's boolean flag `requiresSignedData` is set to `false`. The signature verification is done in three steps. The signature verification is done in three steps:
+On the recipient side, every subscriber needs to verify signed events. If a received event is unsigned, the subscriber accepts the event if and only if the stream's boolean flag `requiresSignedData` is set to `false`. The signature verification is done in three steps:
 
 1. The subscriber extracts from the event and the signature the Ethereum address that signed the message (using the EC recover operation).
 2. Check that the address recovered in step 1 matches the address defined by `publisherId`

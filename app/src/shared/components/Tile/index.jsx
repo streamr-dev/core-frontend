@@ -121,10 +121,15 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
 
 type DashboardTileProps = {
     dashboard: any,
+    onMenuToggle?: (boolean) => any,
+    actions: any,
 }
 
-const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
+const DashboardTile = ({ dashboard, onMenuToggle, actions, ...props }: DashboardTileProps) => (
     <Tile {...props}>
+        <Menu onToggle={onMenuToggle}>
+            {actions}
+        </Menu>
         <Link
             to={routes.dashboards.edit({
                 id: dashboard.id,
@@ -223,6 +228,7 @@ const PurchaseTile = ({
 type ProductTileProps = {
     actions?: any,
     deployed?: boolean,
+    published?: boolean,
     numMembers?: number,
     product: any,
     showDataUnionBadge?: boolean,
@@ -232,6 +238,7 @@ type ProductTileProps = {
 const ProductTile = ({
     actions,
     deployed,
+    published,
     numMembers,
     product,
     showDataUnionBadge,
@@ -266,10 +273,14 @@ const ProductTile = ({
                 name={product.name}
                 description={touchedAgo(product)}
                 label={(
-                    <Label mood={deployed && HAPPY}>
-                        {deployed ? (
+                    <Label mood={published && HAPPY}>
+                        {!!published && (
                             <Translate value="userpages.products.published" />
-                        ) : (
+                        )}
+                        {!published && !!deployed && (
+                            <Translate value="userpages.products.deployed" />
+                        )}
+                        {!published && !deployed && (
                             <Translate value="userpages.products.draft" />
                         )}
                     </Label>

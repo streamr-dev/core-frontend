@@ -14,11 +14,14 @@ import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
+import { WhitelistRequestAccessModal } from '$mp/containers/EditProductPage/WhitelistModals'
 
 import PurchaseModal from './PurchaseModal'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getToken } from '$shared/utils/sessionToken'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
+import { productStates } from '$shared/utils/constants'
 
 import Page from './Page'
 import styles from './page.pcss'
@@ -77,6 +80,7 @@ const ProductPage = () => {
             />
             <Page />
             <PurchaseModal />
+            <WhitelistRequestAccessModal />
         </Layout>
     )
 }
@@ -96,6 +100,13 @@ const EditWrap = () => {
         return <LoadingView />
     }
 
+    // bail if the product is not actually published - this is an edge case
+    // because this should only happen with user's own products, otherwise
+    // the product load will fail due to permissions
+    if (product.state !== productStates.DEPLOYED) {
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, product.id)
+    }
+
     const key = (!!product && product.id) || ''
 
     return (
@@ -107,7 +118,7 @@ const EditWrap = () => {
 }
 
 const ProductContainer = withRouter((props) => (
-    <ProductController key={props.match.params.id}>
+    <ProductController key={props.match.params.id} ignoreUnauthorized>
         <EditWrap />
     </ProductController>
 ))

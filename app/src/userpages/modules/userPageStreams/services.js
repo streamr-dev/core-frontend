@@ -14,7 +14,6 @@ import type {
     CsvUploadResult,
     Range,
 } from '$shared/flowtype/stream-types'
-import type { Permission } from '$userpages/flowtype/permission-types'
 
 export const getStream = (id: StreamId): ApiResult<Stream> => get({
     url: routes.api.streams.show({
@@ -56,13 +55,6 @@ export const getStreams = (params: any, pageSize: number, offset: number): ApiRe
         streams: streams.splice(0, pageSize),
         hasMoreResults: streams.length > 0,
     }))
-
-export const getMyStreamPermissions = (streamId: StreamId): ApiResult<Array<Permission>> => get({
-    url: routes.api.streams.permissions.show({
-        streamId,
-        id: 'me',
-    }),
-})
 
 export const getStreamStatus = (streamId: StreamId): ApiResult<StreamStatus> => get({
     url: routes.api.streams.status({

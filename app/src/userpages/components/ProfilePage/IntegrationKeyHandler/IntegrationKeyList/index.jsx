@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useState, useMemo } from 'react'
-import cx from 'classnames'
+import styled from 'styled-components'
 
 import {
     BalanceType,
@@ -12,8 +12,9 @@ import {
 import KeyField from '$userpages/components/KeyField'
 import Balance from '$userpages/components/Balance'
 import { useAccountBalance } from '$shared/hooks/useBalances'
-import styles from './integrationKeyList.pcss'
 import Label from '$ui/Label'
+
+import KeyList from '../../KeyList'
 
 type CommonProps = {|
     hideValues?: boolean,
@@ -27,6 +28,22 @@ type ItemProps = {
     item: IntegrationKey,
     ...CommonProps,
 }
+
+const KeyFieldWrapper = styled.div`
+    position: relative;
+
+    & + & {
+        margin-top: 1.5rem;
+    }
+
+    label {
+        line-height: 1rem;
+    }
+`
+
+const StyledBalance = styled(Balance)`
+    line-height: 1rem;
+`
 
 const IntegrationKeyItem = ({
     item,
@@ -43,9 +60,8 @@ const IntegrationKeyItem = ({
     const ethBalance = useAccountBalance(address, BalanceType.ETH)
 
     return (
-        <div className={styles.keyField}>
+        <KeyFieldWrapper>
             <KeyField
-                className={styles.singleKey}
                 keyName={item.name}
                 value={(item.json || {}).address || ''}
                 allowDelete={!disabled}
@@ -58,7 +74,7 @@ const IntegrationKeyItem = ({
                 valueLabel="address"
                 labelComponent={!editing && (
                     <Label as="div">
-                        <Balance className={styles.balances}>
+                        <StyledBalance>
                             <Balance.Account
                                 name="DATA"
                                 value={dataBalance}
@@ -67,11 +83,11 @@ const IntegrationKeyItem = ({
                                 name="ETH"
                                 value={ethBalance}
                             />
-                        </Balance>
+                        </StyledBalance>
                     </Label>
                 )}
             />
-        </div>
+        </KeyFieldWrapper>
     )
 }
 
@@ -82,11 +98,11 @@ export type ListProps = {
 }
 
 const IntegrationKeyList = ({ integrationKeys, className, ...rest }: ListProps) => (
-    <div className={cx(styles.root, 'constrainInputWidth', className)}>
+    <KeyList className={className}>
         {integrationKeys.map((key: IntegrationKey) => (
             <IntegrationKeyItem {...rest} key={key.id} item={key} />
         ))}
-    </div>
+    </KeyList>
 )
 
 export default IntegrationKeyList

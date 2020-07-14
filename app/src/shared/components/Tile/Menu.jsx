@@ -2,10 +2,9 @@
 
 import React, { type Node } from 'react'
 import styled from 'styled-components'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
+import Popover from '$shared/components/Popover'
 
-export const MenuItem = DropdownActions.Item
+export const MenuItem = Popover.Item
 
 type Props = {
     children: Node,
@@ -13,26 +12,19 @@ type Props = {
 }
 
 const UnstyledMenu = ({ children, onToggle, ...props }: Props) => (
-    <DropdownActions
+    <Popover
         {...props}
-        title={(
-            <Meatball alt="Select" white />
-        )}
+        title="Select"
+        type="whiteMeatball"
         direction="down"
         noCaret
         onMenuToggle={onToggle}
         menuProps={{
-            modifiers: {
-                offset: {
-                    // Make menu aligned to the right.
-                    // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                    offset: '-100%p + 100%',
-                },
-            },
+            right: true,
         }}
     >
         {children}
-    </DropdownActions>
+    </Popover>
 )
 
 const Menu = styled(UnstyledMenu)`

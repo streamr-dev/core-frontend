@@ -68,6 +68,9 @@ export const transactionTypes = {
     PAYMENT: 'payment',
     DEPLOY_DATA_UNION: 'deployDataUnion',
     UPDATE_ADMIN_FEE: 'updateAdminFee',
+    SET_REQUIRES_WHITELIST: 'setRequiresWhitelist',
+    WHITELIST_APPROVE: 'whitelistApprove',
+    WHITELIST_REJECT: 'whitelistReject',
 }
 
 export const gasLimits = {
@@ -81,6 +84,8 @@ export const gasLimits = {
     APPROVE: 7e4,
     DEPLOY_DATA_UNION: 4e6,
     UPDATE_ADMIN_FEE: 4e5,
+    SET_REQUIRES_WHITELIST: 1e5,
+    WHITELIST_OPERATION: 1e5,
 }
 
 export const dialogAutoCloseTimeout = 2000 // in milliseconds
@@ -109,3 +114,5 @@ export const StreamrClientRepositories = {
     [ProgrammingLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/streamr-client-javascript',
     [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }
+
+export const dataUnionMemberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0

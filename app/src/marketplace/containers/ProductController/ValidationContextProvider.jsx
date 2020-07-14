@@ -1,12 +1,17 @@
 // @flow
 
 import React, { useMemo, useCallback, useState, type Node, type Context } from 'react'
+import * as yup from 'yup'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import get from 'lodash/get'
+import set from 'lodash/fp/set'
+import isPlainObject from 'lodash/isPlainObject'
 
 import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
+import useIsEthIdentityNeeded from '../EditProductPage/useIsEthIdentityNeeded'
 import useProduct from '../ProductController/useProduct'
 
 export const INFO = 'info'
@@ -35,11 +40,15 @@ const ValidationContext: Context<ContextProps> = React.createContext({})
 
 const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 
+const urlValidator = yup.string().trim().url()
+const emailValidator = yup.string().trim().email()
+
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouched] = useState({})
     const originalProduct = useProduct()
+    const { isRequired: isEthIdentityRequired } = useIsEthIdentityNeeded()
 
     const touch = useCallback((name: string) => {
         setTouched((existing) => ({
@@ -61,13 +70,21 @@ function useValidationContext(): ContextProps {
             throw new Error('pending change needs a name')
         }
 
-        setPendingChanges((state) => ({
-            ...state,
-            [name]: isPending,
-        }))
+        setPendingChanges((state) => set(name, isPending, state))
     }, [setPendingChanges, isMounted])
-    const isPendingChange = useCallback((name: string) => !!pendingChanges[name], [pendingChanges])
-    const isAnyChangePending = useCallback(() => Object.values(pendingChanges).some(Boolean), [pendingChanges])
+
+    const isPendingChange = useCallback((name: string) => !!(get(pendingChanges, name)), [pendingChanges])
+
+    const isAnyChangePending = useCallback(() => (
+        // flatten nested values
+        Object.values(pendingChanges)
+            .reduce((result, value) => ([
+                ...result,
+                // $FlowFixMe value is in fact an object
+                ...(isPlainObject(value) ? Object.values(value) : [value]),
+            ]), [])
+            .some(Boolean)
+    ), [pendingChanges])
 
     const setStatus = useCallback((name: string, level: Level, message: string): Object => {
         if (!isMounted()) { return }
@@ -125,6 +142,15 @@ function useValidationContext(): ContextProps {
             clearStatus('streams')
         }
 
+        if (product.termsOfUse != null && product.termsOfUse.termsUrl) {
+            const result = urlValidator.isValidSync(product.termsOfUse.termsUrl)
+            if (!result) {
+                setStatus('termsOfUse', ERROR, 'Invalid URL for detailed terms')
+            } else {
+                clearStatus('termsOfUse')
+            }
+        }
+
         const isPaid = isPaidProduct(product)
 
         // applies only to data union
@@ -135,6 +161,12 @@ function useValidationContext(): ContextProps {
                 clearStatus('adminFee')
             }
             clearStatus('beneficiaryAddress')
+
+            if (isEthIdentityRequired) {
+                setStatus('ethIdentity', ERROR, 'Please connect an Ethereum address')
+            } else {
+                clearStatus('ethIdentity')
+            }
         } else {
             if (isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress))) {
                 setStatus('beneficiaryAddress', ERROR, 'A valid ethereum address is needed')
@@ -154,14 +186,47 @@ function useValidationContext(): ContextProps {
             clearStatus('pricePerSecond')
         }
 
+        if (product.contact) {
+            ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
+                if (product.contact[field] && product.contact[field].length > 0) {
+                    const result = urlValidator.isValidSync(product.contact[field])
+                    if (!result) {
+                        setStatus(`contact.${field}`, ERROR, 'Invalid URL')
+                    } else {
+                        clearStatus(`contact.${field}`)
+                    }
+                } else {
+                    clearStatus(`contact.${field}`)
+                }
+            })
+
+            if (product.contact.email && product.contact.email.length > 0) {
+                const result = emailValidator.isValidSync(product.contact.email)
+                if (!result && product.contact.email) {
+                    setStatus('contact.email', ERROR, 'Invalid email address')
+                } else {
+                    clearStatus('contact.email')
+                }
+            } else {
+                clearStatus('contact.email')
+            }
+        }
+
+        if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
+            setStatus('contact.email', ERROR, 'Email address is required')
+        }
+
         // Set pending fields, a change is marked pending if there was a saved pending change or
         // we made a change that is different from the loaded product
         const changes = getPendingChanges(product)
         const isPublic = isPublished(product)
         PENDING_CHANGE_FIELDS.forEach((field) => {
-            setPendingChange(field, (field in changes) || (isPublic && isTouched(field) && !isEqual(product[field], originalProduct[field])))
+            setPendingChange(
+                field,
+                get(changes, field) != null || (isPublic && isTouched(field) && !isEqual(get(product, field), get(originalProduct, field))),
+            )
         })
-    }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct])
+    }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct, isEthIdentityRequired])
 
     return useMemo(() => ({
         setStatus,

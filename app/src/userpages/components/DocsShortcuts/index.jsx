@@ -24,6 +24,9 @@ const DocsShortcuts = () => (
         <Link to={docsLinks.products} target="_blank" rel="noopener noreferrer">
             <Translate value="general.products" />
         </Link>
+        <Link to={docsLinks.dataUnions} target="_blank" rel="noopener noreferrer">
+            <Translate value="general.dataUnions" />
+        </Link>
         {null}
         <Link href={routes.community.telegram()} target="_blank" rel="noopener noreferrer">
             <Translate value="general.telegramGroup" />

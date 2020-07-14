@@ -54,7 +54,9 @@ describe('useProductLoadCallback', () => {
         expect(product).toBeFalsy()
 
         await act(async () => {
-            await loadProduct('1')
+            await loadProduct({
+                productId: '1',
+            })
         })
 
         expect(product).toMatchObject({
@@ -94,7 +96,9 @@ describe('useProductLoadCallback', () => {
 
         await act(async () => {
             try {
-                await loadProduct('1')
+                await loadProduct({
+                    productId: '1',
+                })
             } catch (e) {
                 expect(e.message).toBe('something happened')
             }
@@ -136,7 +140,9 @@ describe('useProductLoadCallback', () => {
         expect(product).toBeFalsy()
 
         await act(async () => {
-            await loadProduct('1')
+            await loadProduct({
+                productId: '1',
+            })
         })
 
         expect(product).toMatchObject({
@@ -184,7 +190,9 @@ describe('useProductLoadCallback', () => {
         expect(product).toBeFalsy()
 
         await act(async () => {
-            await loadProduct('1')
+            await loadProduct({
+                productId: '1',
+            })
         })
 
         expect(product).toMatchObject({
@@ -228,7 +236,9 @@ describe('useProductLoadCallback', () => {
         expect(product).toBeFalsy()
 
         await act(async () => {
-            await loadProduct('1')
+            await loadProduct({
+                productId: '1',
+            })
         })
 
         expect(product).toStrictEqual({
@@ -241,6 +251,7 @@ describe('useProductLoadCallback', () => {
             timeUnit: 'hour',
             adminFee: undefined,
             dataUnionDeployed: false,
+            requiresWhitelist: undefined,
         })
     })
 
@@ -278,7 +289,9 @@ describe('useProductLoadCallback', () => {
         expect(product).toBeFalsy()
 
         await act(async () => {
-            await loadProduct('1')
+            await loadProduct({
+                productId: '1',
+            })
         })
 
         expect(product).toMatchObject({
@@ -330,7 +343,9 @@ describe('useProductLoadCallback', () => {
         expect(product).toBeFalsy()
 
         await act(async () => {
-            await loadProduct('1')
+            await loadProduct({
+                productId: '1',
+            })
         })
         expect(entityHandler).toHaveBeenCalledWith({
             id: '1',
@@ -389,7 +404,9 @@ describe('useProductLoadCallback', () => {
         expect(product).toBeFalsy()
 
         await act(async () => {
-            await loadProduct('1')
+            await loadProduct({
+                productId: '1',
+            })
         })
         expect(product).toMatchObject({
             name: 'New name',

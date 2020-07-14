@@ -1,35 +1,70 @@
 // @flow
 
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
-import MediaQuery from 'react-responsive'
 import qs from 'query-string'
+import styled from 'styled-components'
+
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
+import StatusLabel from '$shared/components/StatusLabel'
 import { updateStream } from '$userpages/modules/userPageStreams/actions'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
-import breakpoints from '$app/scripts/breakpoints'
 import CoreLayout from '$shared/components/Layout/Core'
+import CodeSnippets from '$shared/components/CodeSnippets'
+import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
+import Sidebar from '$shared/components/Sidebar'
+import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import ShareSidebar from '$userpages/components/ShareSidebar'
+import BackButton from '$shared/components/BackButton'
+
 import InfoView from './InfoView'
 import KeyView from './KeyView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
+import PartitionsView from './PartitionsView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
-import CodeSnippets from '$shared/components/CodeSnippets'
-import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
+
 import styles from './edit.pcss'
 
-const { lg } = breakpoints
+function StreamPageSidebar({ stream }) {
+    const sidebar = useContext(SidebarContext)
+    const onClose = useCallback(() => {
+        sidebar.close()
+    }, [sidebar])
+
+    return (
+        <Sidebar
+            isOpen={sidebar.isOpen()}
+            onClose={onClose}
+        >
+            {sidebar.isOpen('share') && (
+                <ShareSidebar
+                    sidebarName="share"
+                    resourceTitle={stream && stream.name}
+                    resourceType="STREAM"
+                    resourceId={stream && stream.id}
+                />
+            )}
+        </Sidebar>
+    )
+}
+
+const PreviewDescription = styled(Translate)`
+    margin-bottom: 3.125rem;
+    max-width: 660px;
+`
 
 const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
+    const sidebar = useContext(SidebarContext)
     const stream = useMemo(() => ({
         ...streamProp,
         ...(streamProp.config ? {
@@ -80,33 +115,44 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
         })
     ), [stream.id])
 
+    const openShareDialog = useCallback(() => {
+        sidebar.open('share')
+    }, [sidebar])
+
     return (
         <CoreLayout
             hideNavOnDesktop
             navComponent={(
-                <MediaQuery minWidth={lg.min}>
-                    {(isDesktop) => (
-                        <Toolbar
-                            altMobileLayout
-                            actions={{
-                                cancel: {
-                                    title: I18n.t('userpages.profilePage.toolbar.cancel'),
-                                    kind: 'link',
-                                    onClick: cancel,
-                                },
-                                saveChanges: {
-                                    title: isDesktop ?
-                                        I18n.t('userpages.profilePage.toolbar.saveAndExit') :
-                                        I18n.t('userpages.profilePage.toolbar.done'),
-                                    kind: 'primary',
-                                    spinner,
-                                    onClick: save,
-                                    disabled,
-                                },
-                            }}
-                        />
-                    )}
-                </MediaQuery>
+                <Toolbar
+                    altMobileLayout
+                    left={<BackButton onBack={cancel} />}
+                    actions={{
+                        share: {
+                            title: I18n.t('userpages.profilePage.toolbar.share'),
+                            kind: 'primary',
+                            outline: true,
+                            onClick: openShareDialog,
+                            disabled: disabled || !canShare,
+                            className: styles.showOnDesktop,
+                        },
+                        saveChanges: {
+                            title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
+                            kind: 'primary',
+                            spinner,
+                            onClick: save,
+                            disabled,
+                            className: styles.showOnDesktop,
+                        },
+                        done: {
+                            title: I18n.t('userpages.profilePage.toolbar.done'),
+                            kind: 'primary',
+                            spinner,
+                            onClick: save,
+                            disabled,
+                            className: styles.showOnTablet,
+                        },
+                    }}
+                />
             )}
         >
             <TOCPage title={I18n.t(`userpages.streams.edit.details.pageTitle.${isNewStream ? 'newStream' : 'existingStream'}`)}>
@@ -155,14 +201,8 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="status"
-                    linkTitle={I18n.t('userpages.streams.edit.details.nav.status')}
-                    title={(
-                        <div className={styles.statusTitle}>
-                            {I18n.t('userpages.streams.edit.details.nav.status')}
-                            &nbsp;
-                            <StatusIcon tooltip status={stream.streamStatus} />
-                        </div>
-                    )}
+                    title={I18n.t('userpages.streams.edit.details.nav.status')}
+                    status={<StatusIcon tooltip status={stream.streamStatus} />}
                     onlyDesktop
                 >
                     <StatusView disabled={disabled} />
@@ -171,9 +211,8 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                     id="preview"
                     title={I18n.t('userpages.streams.edit.details.nav.preview')}
                 >
-                    <Translate
+                    <PreviewDescription
                         value="userpages.streams.edit.preview.description"
-                        className={styles.longText}
                         tag="p"
                         dangerousHTML
                         docsLink={docsLinks.gettingStarted}
@@ -186,6 +225,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                 <TOCPage.Section
                     id="api-access"
                     title={I18n.t('userpages.streams.edit.details.nav.apiAccess')}
+                    status={(<StatusLabel.Deprecated />)}
                     onlyDesktop
                 >
                     <KeyView disabled={disabled || !canShare} />
@@ -197,9 +237,22 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                 >
                     <HistoryView disabled={disabled} streamId={stream.id} />
                 </TOCPage.Section>
+                <TOCPage.Section
+                    id="stream-partitions"
+                    title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
+                    linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                    status={(<StatusLabel.Advanced />)}
+                >
+                    <PartitionsView disabled={disabled} />
+                </TOCPage.Section>
             </TOCPage>
+            <StreamPageSidebar stream={stream} />
         </CoreLayout>
     )
 }
 
-export default Edit
+export default (props: any) => (
+    <SidebarProvider>
+        <Edit {...props} />
+    </SidebarProvider>
+)

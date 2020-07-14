@@ -13,10 +13,12 @@ describe('Permission reducer', () => {
 
     describe('GET_RESOURCE_PERMISSIONS', () => {
         it('should set fetching = true on GET_RESOURCE_PERMISSIONS_REQUEST', () => {
-            assert.deepStrictEqual(reducer({}, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: actions.GET_RESOURCE_PERMISSIONS_REQUEST,
             }), {
                 fetching: true,
+                error: null,
+                byTypeAndId: {},
             })
         })
 
@@ -35,19 +37,7 @@ describe('Permission reducer', () => {
             }), {
                 byTypeAndId: {
                     testResourceType: {
-                        testResourceId: [{
-                            operation: 'test',
-                            new: false,
-                            fetching: false,
-                            removed: false,
-                            error: null,
-                        }, {
-                            operation: 'test2',
-                            new: false,
-                            fetching: false,
-                            removed: false,
-                            error: null,
-                        }],
+                        testResourceId: ['test', 'test2'],
                     },
                 },
                 fetching: false,
@@ -56,12 +46,19 @@ describe('Permission reducer', () => {
         })
 
         it('should handle the error on GET_RESOURCE_PERMISSIONS_FAILURE', () => {
-            assert.deepStrictEqual(reducer({}, {
+            assert.deepStrictEqual(reducer(undefined, {
                 type: actions.GET_RESOURCE_PERMISSIONS_FAILURE,
                 error: new Error('test-error'),
+                resourceId: 'testResourceId',
+                resourceType: 'testResourceType',
             }), {
                 fetching: false,
                 error: new Error('test-error'),
+                byTypeAndId: {
+                    testResourceType: {
+                        testResourceId: [],
+                    },
+                },
             })
         })
     })

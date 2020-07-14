@@ -4,8 +4,9 @@ import React from 'react'
 import cx from 'classnames'
 
 import DetailsContainer from '$shared/components/Container/Details'
-import useProduct from '../ProductController/useProduct'
-import { isDataUnionProduct } from '$mp/utils/product'
+import useEditableProduct from '../ProductController/useEditableProduct'
+import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import useIsEthIdentityNeeded from './useIsEthIdentityNeeded'
 
 import EditorNav from './EditorNav'
 import ProductName from './ProductName'
@@ -14,8 +15,10 @@ import ProductDescription from './ProductDescription'
 import ProductStreams from './ProductStreams'
 import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
+import Whitelist from './Whitelist'
 import ConnectEthIdentity from './ConnectEthIdentity'
 import SharedSecrets from './SharedSecrets'
+import TermsOfUse from './TermsOfUse'
 
 import styles from './editor.pcss'
 
@@ -24,8 +27,10 @@ type Props = {
 }
 
 const Editor = ({ disabled }: Props) => {
-    const product = useProduct()
+    const product = useEditableProduct()
     const isDataUnion = isDataUnionProduct(product)
+    const isPaid = isPaidProduct(product)
+    const { isRequired: showConnectEthIdentity } = useIsEthIdentityNeeded()
 
     return (
         <div className={cx(styles.root, styles.Editor)}>
@@ -41,7 +46,13 @@ const Editor = ({ disabled }: Props) => {
                         <ProductStreams disabled={disabled} />
                         <PriceSelector disabled={disabled} />
                         <ProductDetails disabled={disabled} />
-                        <ConnectEthIdentity disabled={disabled} />
+                        {!!isPaid && (
+                            <Whitelist disabled={disabled} />
+                        )}
+                        {!!showConnectEthIdentity && (
+                            <ConnectEthIdentity disabled={disabled} />
+                        )}
+                        <TermsOfUse disabled={disabled} />
                         {!!isDataUnion && (
                             <SharedSecrets disabled={disabled} />
                         )}

@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import { I18n } from 'react-redux-i18n'
 
 import useCopy from '$shared/hooks/useCopy'
+import SvgIcon from '$shared/components/SvgIcon'
+import Tooltip from '$shared/components/Tooltip'
 
 export type Props = {
     value: string,
@@ -13,43 +15,46 @@ export type Props = {
 
 const Container = styled.div``
 
-const Content = styled.span`
-    display: inline-flex;
-    margin-left: 10px;
-    width: ${(props) => props.width}px;
-    color: #13013d;
-`
-
-const Button = styled(Content)`
-    display: none;
-    color: #0324ff;
-    cursor: pointer;
+const Icon = styled(SvgIcon)`
+    display: ${(props) => (props.forceVisible ? 'inline-flex' : 'none')};
+    height: 12px;
+    color: #525252;
+    margin-bottom: 2px;
+    margin-left: 8px;
 
     ${Container}:hover & {
         display: inline-flex;
     }
 `
 
+const CopyIcon = styled(Icon)`
+    cursor: pointer;
+
+    :hover {
+        color: #0324FF;
+    }
+`
+
+const CopiedIcon = styled(Icon)`
+    color: #0324FF;
+`
+
 const HoverCopy = ({ value, children }: Props) => {
     const { copy, isCopied } = useCopy()
-    const copyText = I18n.t('general.copy')
+    const copyText = I18n.t('general.copyToClipboard')
     const copiedText = I18n.t('general.copied')
-    // Determine 'Content' element width by longest text so that we
-    // will have static size and not change between copy and copied states.
-    const maxLength = Math.max(copyText.length, copiedText.length)
-    const width = maxLength * 6
 
     return (
         <Container>
             {children}
-            {!isCopied && (
-                <Button onClick={() => copy(value)} width={width}>
-                    {copyText}
-                </Button>
-            )}
-            {isCopied && (
-                <Content width={width}>{copiedText}</Content>
-            )}
+            <Tooltip value={isCopied ? copiedText : copyText}>
+                {!isCopied && (
+                    <CopyIcon name="clipboardPlus" onClick={() => copy(value)} />
+                )}
+                {isCopied && (
+                    <CopiedIcon name="clipboardCheck" forceVisible={isCopied} />
+                )}
+            </Tooltip>
         </Container>
     )
 }

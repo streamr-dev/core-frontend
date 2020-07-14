@@ -314,6 +314,7 @@ describe('product utils', () => {
                 beneficiary: '0x1337',
                 currency: 0,
                 state: 0,
+                requiresWhitelist: true,
             }
             const outProduct = {
                 id: 1,
@@ -324,6 +325,7 @@ describe('product utils', () => {
                 beneficiaryAddress: '0x1337',
                 priceCurrency: 'DATA',
                 state: 'NOT_DEPLOYED',
+                requiresWhitelist: true,
             }
 
             assert.deepStrictEqual(all.mapProductFromContract(inProduct.id, inProduct), outProduct)

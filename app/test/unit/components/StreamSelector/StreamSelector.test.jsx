@@ -94,7 +94,7 @@ describe('StreamSelector', () => {
             wrapper = shallow(<StreamSelector {...props} />)
 
             const sortElements = wrapper
-                .find('DropdownItem')
+                .find('Item')
                 .find('Translate')
                 .findWhere((node) =>
                     node.prop('value') === 'streamSelector.sortByName' ||

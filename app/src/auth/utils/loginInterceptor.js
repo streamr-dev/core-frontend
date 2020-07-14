@@ -33,9 +33,9 @@ function shouldRedirect(error) {
         }
 
         const url = new window.URL(error.config.url)
-        const me = new window.URL(routes.api.me.index())
-        const keys = new window.URL(routes.api.me.keys.index())
-        const changePassword = new window.URL(routes.api.me.changePassword())
+        const me = new window.URL(routes.api.currentUser.index())
+        const keys = new window.URL(routes.api.currentUser.keys.index())
+        const changePassword = new window.URL(routes.api.currentUser.changePassword())
 
         // shouldn't redirect if current password is wrong when changing password
         if (changePassword.pathname === url.pathname && me.origin === url.origin && error.config.method === 'post') {
@@ -99,27 +99,27 @@ export function canHandleLoadError(err) {
     return false
 }
 
-export async function handleLoadError(err) {
-    if (err instanceof InvalidHexStringError) {
-        throw new ResourceNotFoundError(ResourceType.PRODUCT, err.id)
+export async function handleLoadError({ error, ignoreUnauthorized = false } = {}) {
+    if (error instanceof InvalidHexStringError) {
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, error.id)
     }
 
-    const { status } = err.response || {}
+    const { status } = error.response || {}
 
     if (!status || status >= 500) {
-        throw err
+        throw error
     }
 
-    if (status === 404 || ([401, 403].includes(status) && isLoggedInError(err))) {
-        const data = err.response.data || {}
-        throw new ResourceNotFoundError(data.type, data.id)
+    if (status === 404 || ([401, 403].includes(status) && (!!ignoreUnauthorized || isLoggedInError(error)))) {
+        const data = error.response.data || {}
+        throw new ResourceNotFoundError(data.type || data.resource, data.id)
     }
 
     if ([401, 403].includes(status)) {
         await loginRedirect()
     }
 
-    throw err
+    throw error
 }
 
 export default function installInterceptor(instance = axios) {

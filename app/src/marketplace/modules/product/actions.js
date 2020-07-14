@@ -22,9 +22,6 @@ import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
-    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
     RESET_PRODUCT,
 } from './constants'
 import * as services from './services'
@@ -103,31 +100,6 @@ const getProductSubscriptionFromContractFailure: ProductErrorActionCreator = cre
     }),
 )
 
-const getUserProductPermissionsRequest: ProductIdActionCreator = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-    (id: ProductId) => ({
-        id,
-    }),
-)
-
-const getUserProductPermissionsSuccess = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-    ({ get, edit, del, share }) => ({
-        get,
-        edit,
-        del,
-        share,
-    }),
-)
-
-const getUserProductPermissionsFailure: ProductErrorActionCreator = createAction(
-    GET_USER_PRODUCT_PERMISSIONS_FAILURE,
-    (id: ProductId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
-
 export const resetProduct: ReduxActionCreator = createAction(RESET_PRODUCT)
 
 export const getStreamsByProductId = (id: ProductId, useAuthorization: boolean = true) => (dispatch: Function) => {
@@ -177,18 +149,4 @@ export const getProductSubscription = (id: ProductId) => (dispatch: Function) =>
                     })),
                 )
         ))
-}
-
-export const getUserProductPermissions = (id: ProductId) => async (dispatch: Function) => {
-    dispatch(getUserProductPermissionsRequest(id))
-    let permissions
-    try {
-        permissions = await services.getUserProductPermissions(id)
-    } catch (error) {
-        dispatch(getUserProductPermissionsFailure(id, {
-            message: error.message,
-        }))
-        return
-    }
-    dispatch(getUserProductPermissionsSuccess(permissions))
 }

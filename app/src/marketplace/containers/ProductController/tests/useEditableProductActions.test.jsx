@@ -12,10 +12,30 @@ const mockState = {
     global: {
         dataPerUsd: 10,
     },
+    dataUnion: {
+        id: 'dataUnionId',
+    },
+    entities: {
+        dataUnions: {
+            dataUnionId: {
+                id: 'dataUnionId',
+                memberCount: {
+                    active: 0,
+                },
+            },
+        },
+        integrationKeys: {
+            test: '12345',
+        },
+    },
+    integrationKey: {
+        ethereumIdentities: ['test'],
+    },
 }
 
 jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
+    useDispatch: jest.fn(),
 }))
 jest.mock('../useNewProductMode', () => (
     jest.fn().mockImplementation(() => ({

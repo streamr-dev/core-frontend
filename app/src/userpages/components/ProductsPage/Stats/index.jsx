@@ -10,8 +10,6 @@ import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
-import LoadingIndicator from '$shared/components/LoadingIndicator'
-import Layout from '$shared/components/Layout'
 import { isEthereumAddress } from '$mp/utils/validate'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -19,16 +17,18 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
-import StatsValues from '$shared/components/DataUnionStats/Values'
+import StatsValues from '$shared/components/DataUnionStats'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
+import { isDataUnionProduct } from '$mp/utils/product'
 
 import styles from './stats.pcss'
 
 const Stats = () => {
     const { loadDataUnion } = useController()
     const product = useProduct()
-    const { statsArray, memberCount } = useDataUnionStats()
+    const { stats, memberCount } = useDataUnionStats()
     const dataUnion = useDataUnion()
 
     const { joinPartStreamId } = dataUnion || {}
@@ -46,7 +46,11 @@ const Stats = () => {
             footer={false}
             hideNavOnDesktop
             navComponent={(
-                <Header />
+                <Header
+                    searchComponent={
+                        <div className={styles.searchPlaceholder} />
+                    }
+                />
             )}
             contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
         >
@@ -56,10 +60,10 @@ const Stats = () => {
                     {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
                         <DataUnionPending />
                     )}
-                    {!!dataUnionDeployed && statsArray && (
+                    {!!dataUnionDeployed && stats && (
                         <StatsValues
                             className={styles.stats}
-                            stats={statsArray}
+                            stats={stats}
                         />
                     )}
                 </div>
@@ -88,9 +92,19 @@ const Stats = () => {
 }
 
 const LoadingView = () => (
-    <Layout nav={false}>
-        <LoadingIndicator loading className={styles.loadingIndicator} />
-    </Layout>
+    <CoreLayout
+        footer={false}
+        hideNavOnDesktop
+        navComponent={(
+            <Header
+                searchComponent={
+                    <div className={styles.searchPlaceholder} />
+                }
+            />
+        )}
+        contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
+        loading
+    />
 )
 
 const StatsWrap = () => {
@@ -102,7 +116,14 @@ const StatsWrap = () => {
         return <LoadingView />
     }
 
-    const key = (!!product && product.id) || ''
+    // show not found if DU is not actually yet deployed
+    const { id, beneficiaryAddress } = product
+
+    if (!isDataUnionProduct(product) || !beneficiaryAddress) {
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, id)
+    }
+
+    const key = (!!product && id) || ''
 
     return (
         <Stats key={key} />

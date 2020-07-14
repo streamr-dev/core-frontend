@@ -185,6 +185,9 @@ msgstr "Docs"
 msgid "general##copy"
 msgstr "Copy"
 
+msgid "general##copyToClipboard"
+msgstr "Copy to clipboard"
+
 msgid "general##copied"
 msgstr "Copied"
 
@@ -402,3 +405,57 @@ msgstr ""
 
 msgid "general##codeSnippets"
 msgstr "Code Snippets"
+
+msgid "number##zero"
+msgstr "zero"
+
+msgid "number##one"
+msgstr "one"
+
+msgid "number##two"
+msgstr "two"
+
+msgid "number##three"
+msgstr "three"
+
+msgid "number##four"
+msgstr "four"
+
+msgid "number##five"
+msgstr "five"
+
+msgid "number##six"
+msgstr "six"
+
+msgid "number##seven"
+msgstr "seven"
+
+msgid "number##eight"
+msgstr "eight"
+
+msgid "number##nine"
+msgstr "nine"
+
+msgid "number##ten"
+msgstr "ten"
+
+msgid "number##hundred"
+msgstr "a hundred"
+
+msgid "number##thousand"
+msgstr "a thousand"
+
+msgid "number##tenThousand"
+msgstr "ten thousand"
+
+msgid "number##hundredThousand"
+msgstr "a hundred thousand"
+
+msgid "number##million"
+msgstr "a million"
+
+msgid "shared##statusLabel##deprecated"
+msgstr "Deprecated"
+
+msgid "shared##statusLabel##advanced"
+msgstr "Advanced"

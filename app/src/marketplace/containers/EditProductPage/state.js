@@ -2,6 +2,9 @@
 
 import { productStates } from '$shared/utils/constants'
 import { isDataUnionProduct } from '$mp/utils/product'
+import pick from 'lodash/pick'
+import pickBy from 'lodash/pickBy'
+import get from 'lodash/get'
 import type { Product, PendingChanges } from '$mp/flowtype/product-types'
 
 export const PENDING_CHANGE_FIELDS = [
@@ -18,6 +21,14 @@ export const PENDING_CHANGE_FIELDS = [
     'adminFee',
     'timeUnit',
     'price',
+    'termsOfUse',
+    'contact.url',
+    'contact.email',
+    'contact.social1',
+    'contact.social2',
+    'contact.social3',
+    'contact.social4',
+    'requiresWhitelist',
 ]
 
 export function isPublished(product: Product) {
@@ -27,9 +38,9 @@ export function isPublished(product: Product) {
 }
 
 export const getPendingObject = (product: Product | PendingChanges): Object => {
-    const allowedChanges = new Set(PENDING_CHANGE_FIELDS)
-
-    return Object.fromEntries(Object.entries(product).filter(([key, value]) => allowedChanges.has(key) && value !== undefined))
+    let pendingObj = pick(product, PENDING_CHANGE_FIELDS)
+    pendingObj = pickBy(pendingObj, (value) => value !== undefined)
+    return pendingObj
 }
 
 export const getChangeObject = (original: Product, next: Product): Object => (
@@ -41,18 +52,33 @@ export function getPendingChanges(product: Product): Object {
     const isDataUnion = isDataUnionProduct(product)
 
     if (isPublic || isDataUnion) {
-        const { adminFee, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
+        const { adminFee, requiresWhitelist, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
 
         if (isPublic) {
+            // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
             return {
                 ...otherPendingChanges,
                 ...(adminFee ? {
                     adminFee,
                 } : {}),
+                ...(requiresWhitelist != null ? {
+                    requiresWhitelist,
+                } : {}),
             }
         } else if (isDataUnion && adminFee) {
             return {
                 adminFee,
+                requiresWhitelist,
+            }
+        }
+    }
+
+    if (!isPublic) {
+        const { requiresWhitelist } = getPendingObject(product.pendingChanges || {})
+
+        if (requiresWhitelist != null) {
+            return {
+                requiresWhitelist,
             }
         }
     }
@@ -63,14 +89,15 @@ export function getPendingChanges(product: Product): Object {
 export function hasPendingChange(product: Product, field: string) {
     const pendingChanges = getPendingChanges(product)
 
-    return field in pendingChanges
+    return get(pendingChanges, field) !== undefined
 }
 
 export function update(product: Product, fn: Function) {
     const result = fn(product)
-    const { adminFee, ...otherChanges } = result
+    const { adminFee, requiresWhitelist, ...otherChanges } = result
+    const isPublic = isPublished(product)
 
-    if (isPublished(product)) {
+    if (isPublic) {
         return {
             ...product,
             pendingChanges: {
@@ -82,6 +109,14 @@ export function update(product: Product, fn: Function) {
             ...otherChanges,
             pendingChanges: {
                 adminFee,
+                requiresWhitelist,
+            },
+        }
+    } else if (!isPublic && requiresWhitelist != null) {
+        return {
+            ...otherChanges,
+            pendingChanges: {
+                requiresWhitelist,
             },
         }
     }

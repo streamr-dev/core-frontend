@@ -145,6 +145,42 @@ msgstr "Fix price in fiat"
 msgid "editProductPage##productDetails##title"
 msgstr "Add some more details"
 
+msgid "editProductPage##productDetails##category"
+msgstr "Choose a product category"
+
+msgid "editProductPage##productDetails##adminFee"
+msgstr "Set your admin fee"
+
+msgid "editProductPage##productDetails##url"
+msgstr "Add a site URL"
+
+msgid "editProductPage##productDetails##email"
+msgstr "Add a contact email"
+
+msgid "editProductPage##productDetails##socialMediaLink"
+msgstr "Social media link"
+
+msgid "editProductPage##productDetails##optional"
+msgstr "Optional"
+
+msgid "editProductPage##productDetails##placeholder##url"
+msgstr "http://siteinfo.com"
+
+msgid "editProductPage##productDetails##placeholder##email"
+msgstr "owner@example.com"
+
+msgid "editProductPage##productDetails##placeholder##reddit"
+msgstr "e.g. http://reddit.com/r/streamr"
+
+msgid "editProductPage##productDetails##placeholder##telegram"
+msgstr "e.g. http://telegram.co/streamr"
+
+msgid "editProductPage##productDetails##placeholder##twitter"
+msgstr "e.g. http://twitter.com/streamr"
+
+msgid "editProductPage##productDetails##placeholder##linkedin"
+msgstr "e.g. http://linkedin.com/streamr"
+
 msgid "editProductPage##connectEthIdentity##title"
 msgstr "Connect an Ethereum identity"
 
@@ -201,6 +237,12 @@ msgstr "Ethereum identity"
 msgid "editProductPage##navigation##sharedSecrets"
 msgstr "Shared secrets"
 
+msgid "editProductPage##navigation##terms"
+msgstr "Terms"
+
+msgid "editProductPage##navigation##whitelist"
+msgstr "Whitelist"
+
 msgid "editProductPage##sidebar##category"
 msgstr "Product category"
 
@@ -209,6 +251,75 @@ msgstr "Active subscribers"
 
 msgid "editProductPage##sidebar##mostRecentPurchase"
 msgstr "Most recent purchase"
+
+msgid "editProductPage##terms##title"
+msgstr "Set terms of use"
+
+msgid "editProductPage##terms##description"
+msgstr ""
+"You can indicate the terms of use you prefer for data purchasers, either by checking boxes "
+"below to show permitted usage types, or give more detail by providing a link to your own terms "
+"of use document."
+
+msgid "editProductPage##terms##redistribution"
+msgstr "Redistribution"
+
+msgid "editProductPage##terms##commercialUse"
+msgstr "Commercial use"
+
+msgid "editProductPage##terms##reselling"
+msgstr "Reselling"
+
+msgid "editProductPage##terms##storage"
+msgstr "Storage"
+
+msgid "editProductPage##terms##link##title"
+msgstr "Link to detailed terms"
+
+msgid "editProductPage##terms##link##placeholder"
+msgstr "Add a URL here"
+
+msgid "editProductPage##terms##displayName##title"
+msgstr "Display name for link"
+
+msgid "editProductPage##terms##displayName##placeholder"
+msgstr "Add a display name"
+
+msgid "editProductPage##whitelist##title"
+msgstr "Limit product access"
+
+msgid "editProductPage##whitelist##description"
+msgstr ""
+"If you want to restrict sales of your product to approved buyers, you can enable whitelisting. "
+"Only buyers whose Ethereum addresses have been whitelisted will be able to subscribe to your product. "
+"Other buyers will be able to ask for access."
+
+msgid "editProductPage##whitelist##header##address"
+msgstr "Ethereum Address"
+
+msgid "editProductPage##whitelist##header##status"
+msgstr "Status"
+
+msgid "editProductPage##whitelist##copy"
+msgstr "Copy address"
+
+msgid "editProductPage##whitelist##remove"
+msgstr "Remove"
+
+msgid "editProductPage##whitelist##enable"
+msgstr "Enable whitelist"
+
+msgid "editProductPage##whitelist##add"
+msgstr "Add to whitelist"
+
+msgid "editProductPage##whitelist##status##subscribed"
+msgstr "Subscribed"
+
+msgid "editProductPage##whitelist##status##added"
+msgstr "Whitelisted"
+
+msgid "editProductPage##whitelist##status##removed"
+msgstr "Removed"
 
 msgid "error##general"
 msgstr "Oops. Something has broken down here."
@@ -398,6 +509,9 @@ msgstr "Unpublishing"
 msgid "modal##publishProgress##publishPendingChanges##pending"
 msgstr "Updating product"
 
+msgid "modal##publishProgress##setRequiresWhitelist##pending"
+msgstr "Updating whitelist status"
+
 msgid "modal##publishProgress##updateContractProduct##failed"
 msgstr "Updating product failed"
 
@@ -421,6 +535,9 @@ msgstr "Unpublishing failed"
 
 msgid "modal##publishProgress##publishPendingChanges##failed"
 msgstr "Updating product failed"
+
+msgid "modal##publishProgress##setRequiresWhitelist##failed"
+msgstr "Updating whitelist status failed"
 
 msgid "modal##publishProgress##confirmTransaction"
 msgstr "Please confirm transaction"
@@ -460,6 +577,9 @@ msgstr "Failed to publish product."
 
 msgid "modal##publishError##actions##publishPendingChanges"
 msgstr "Failed to publish product changes."
+
+msgid "modal##publishError##actions##setRequiresWhitelist"
+msgstr "Failed to publish product whitelist status."
 
 msgid "modal##publishError##actions##unpublishFree"
 msgstr "Failed to unpublish product."
@@ -960,10 +1080,8 @@ msgstr ""
 "a Draft in Core &gt; Products. Publish when it has enough members."
 
 msgid "modal##deployDataUnion##guide##step3"
-msgstr ""
-"A minimum of one member is needed to publish the product."
-"<br />"
-"In Core, Data Union size is shown on the members badge."
+msgstr[1] "A minimum of one member is needed to publish the product.<br />In Core, Data Union size is shown on the members badge."
+msgstr[2] "A minimum of %{memberLimit} members is needed to publish the product.<br />In Core, Data Union size is shown on the members badge."
 
 msgid "modal##deployDataUnion##guide##step4"
 msgstr ""
@@ -983,6 +1101,54 @@ msgstr ""
 msgid "modal##deployDataUnion##deploying##estimatedDeploymentTime"
 msgstr "Estimated deployment time"
 
+msgid "modal##whitelistAdd##title"
+msgstr "Add a buyer to the whitelist"
+
+msgid "modal##whitelistAdd##add"
+msgstr "Add"
+
+msgid "modal##whitelistAdd##addressLabel"
+msgstr "Ethereum Address"
+
+msgid "modal##whitelistAdd##addressPlaceholder"
+msgstr "0x..."
+
+msgid "modal##whitelistRemove##title"
+msgstr "Remove from whitelist?"
+
+msgid "modal##whitelistRemove##message"
+msgstr ""
+"If you remove this buyer from your whitelist they will "
+"<br />"
+"not be able to resubscribe. Do you want to continue?"
+
+msgid "modal##whitelistRemove##remove"
+msgstr "Remove"
+
+msgid "modal##whitelistRequestAccess##title"
+msgstr "Enquire about product access"
+
+msgid "modal##whitelistRequestAccess##message"
+msgstr ""
+"The seller has restricted access to this product. "
+"<br />"
+"Please click below to contact them via email."
+
+msgid "modal##whitelistRequestAccess##sendEmail"
+msgstr "Send email"
+
+msgid "modal##whitelistRequestAccess##imageAlt"
+msgstr "Mailbox"
+
+msgid "modal##whitelistRequestAccess##mailtoSubject"
+msgstr "Streamr Marketplace access request for %{productName}"
+
+msgid "modal##whitelistRequestAccess##mailtoBody"
+msgstr ""
+"Hi,\n\n"
+"I'd like to request access to your data product, %{productName}.\n"
+"My ethereum address is as follows:"
+
 msgid "noProductsView##keywordHint"
 msgstr "Please try some different keywords"
 
@@ -990,7 +1156,8 @@ msgid "noProductsView##message"
 msgstr "We couldn’t find anything to match your search"
 
 msgid "notifications##notEnoughMembers"
-msgstr "The minimum community size for a Data Union is %{memberLimit} members."
+msgstr[1] "The minimum community size for a Data Union is one member."
+msgstr[2] "The minimum community size for a Data Union is %{memberLimit} members."
 
 msgid "notifications##productPublished"
 msgstr "Your product has been published"
@@ -1078,12 +1245,6 @@ msgstr "Set price"
 msgid "productList##viewMore"
 msgstr "View more"
 
-msgid "productPage##description##less"
-msgstr "Read less"
-
-msgid "productPage##description##more"
-msgstr "Read more"
-
 msgid "productPage##productDetails##add"
 msgstr "Add to my purchases"
 
@@ -1095,6 +1256,9 @@ msgstr "Purchase"
 
 msgid "productPage##productDetails##renew"
 msgstr "Renew"
+
+msgid "productPage##productDetails##requestAccess"
+msgstr "Request Access"
 
 msgid "productPage##productDetails##saved"
 msgstr "Saved to my purchases"
@@ -1128,6 +1292,58 @@ msgstr "Streams"
 
 msgid "productPage##streamListing##view"
 msgstr "View live data"
+
+msgid "productPage##termsOfUse##title"
+msgstr "Terms and conditions"
+
+msgid "productPage##termsOfUse##basic"
+msgstr "Basic terms"
+
+msgid "productPage##termsOfUse##detailed"
+msgstr "Detailed terms"
+
+msgid "productPage##termsOfUse##permitted"
+msgid_plural "productPage##termsOfUse##permitted"
+msgstr[1] "%{permissions} is permitted."
+msgstr[2] "%{permissions} are permitted."
+
+msgid "productPage##termsOfUse##notPermitted"
+msgid_plural "productPage##termsOfUse##notPermitted"
+msgstr[1] "%{permissions} is not"
+msgstr[2] "%{permissions} are not"
+
+msgid "productPage##termsOfUse##postfix"
+msgstr "permitted"
+
+msgid "productPage##stats##revenue"
+msgstr "Total product revenue"
+
+msgid "productPage##stats##members"
+msgstr "Active Members"
+
+msgid "productPage##stats##averageRevenue"
+msgstr "Avg rev member / month"
+
+msgid "productPage##stats##subscribers"
+msgstr "Subscribers"
+
+msgid "productPage##stats##adminFee"
+msgstr "Admin Fee"
+
+msgid "productPage##stats##created"
+msgstr "Product created"
+
+msgid "productPage##stats##membersGraph"
+msgstr "Members by status"
+
+msgid "productPage##stats##membersDonut"
+msgstr "Members"
+
+msgid "productPage##stats##activeMembers"
+msgstr "Active"
+
+msgid "productPage##stats##inactiveMembers"
+msgstr "Inactive"
 
 msgid "productTile##active"
 msgstr "Active"

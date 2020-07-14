@@ -31,7 +31,7 @@ describe('KeyField', () => {
                 value="testValue"
             />)
 
-            const actions = el.find('ActionsDropdown').prop('actions').map((action) => (
+            const actions = el.find('WithInputActions').prop('actions').map((action) => (
                 shallow(action)
             ))
             assert(actions.length === 1)
@@ -59,7 +59,7 @@ describe('KeyField', () => {
 
             assert(el.find(Text).prop('type') === 'password')
 
-            const action = shallow(el.find('ActionsDropdown').prop('actions')[0])
+            const action = shallow(el.find('WithInputActions').prop('actions')[0])
             assert(action.find('Translate').shallow().text() === 'reveal')
         })
     })
@@ -72,7 +72,7 @@ describe('KeyField', () => {
                 allowEdit
             />)
 
-            const action = shallow(el.find('ActionsDropdown').prop('actions')[1])
+            const action = shallow(el.find('WithInputActions').prop('actions')[1])
             assert(action.find('Translate').shallow().text() === 'edit')
         })
     })
@@ -85,7 +85,7 @@ describe('KeyField', () => {
                 allowDelete
             />)
 
-            const action = shallow(el.find('ActionsDropdown').prop('actions')[1])
+            const action = shallow(el.find('WithInputActions').prop('actions')[1])
             assert(action.find('Translate').shallow().text() === 'delete')
             assert(action.prop('disabled') !== true)
         })
@@ -98,7 +98,7 @@ describe('KeyField', () => {
                 disableDelete
             />)
 
-            const action = shallow(el.find('ActionsDropdown').prop('actions')[1])
+            const action = shallow(el.find('WithInputActions').prop('actions')[1])
             assert(action.prop('disabled') === true)
         })
     })

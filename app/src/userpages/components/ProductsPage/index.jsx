@@ -11,7 +11,7 @@ import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
 import { productStates } from '$shared/utils/constants'
 import Search from '../Header/Search'
-import Dropdown from '$shared/components/Dropdown'
+import Popover from '$shared/components/Popover'
 import NoProductsView from './NoProducts'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
@@ -83,17 +83,22 @@ const ProductsPage = () => {
                 />
             }
             headerFilterComponent={
-                <Dropdown
+                <Popover
                     title={I18n.t('userpages.filter.sortBy')}
+                    type="uppercase"
+                    activeTitle
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
+                    menuProps={{
+                        right: true,
+                    }}
                 >
                     {sortOptions.map((s) => (
-                        <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                        <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Dropdown.Item>
+                        </Popover.Item>
                     ))}
-                </Dropdown>
+                </Popover>
             }
             loading={fetching}
         >
@@ -113,7 +118,8 @@ const ProductsPage = () => {
                         const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
                         const isDeploying = isDataUnion && !fetchingDataUnionStats && !!beneficiaryAddress && typeof memberCount === 'undefined'
                         const contractAddress = isDataUnion ? beneficiaryAddress : null
-                        const deployed = state === productStates.DEPLOYED
+                        const published = state === productStates.DEPLOYED
+                        const deployed = !!(isDataUnion && !!beneficiaryAddress)
 
                         return (
                             <ProductTile
@@ -121,19 +127,20 @@ const ProductsPage = () => {
                                 actions={
                                     <Fragment>
                                         <MenuItems.Edit id={id} />
-                                        <MenuItems.View id={id} disabled={!deployed} />
-                                        {isDataUnion && !!beneficiaryAddress && (
+                                        <MenuItems.View id={id} disabled={!published} />
+                                        {deployed && (
                                             <MenuItems.ViewStats id={id} />
                                         )}
-                                        {isDataUnion && !!beneficiaryAddress && (
+                                        {deployed && (
                                             <MenuItems.ViewDataUnion id={id} />
                                         )}
                                         {contractAddress && (
                                             <MenuItems.CopyContractAddress address={contractAddress} />
                                         )}
-                                        <MenuItems.Copy id={id} disabled={!deployed} />
+                                        <MenuItems.Copy id={id} disabled={!published} />
                                     </Fragment>
                                 }
+                                published={published}
                                 deployed={deployed}
                                 numMembers={memberCount}
                                 product={product}

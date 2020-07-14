@@ -1,4 +1,4 @@
-import React, { Children, useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useState, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import UnstyledText from '$ui/Text'
-import { SM, MD, XL, MEDIUM } from '$shared/utils/styled'
+import { SM, XL, MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
@@ -14,6 +14,7 @@ import Toolbar from '$shared/components/Toolbar'
 import { getRange } from '$userpages/modules/userPageStreams/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/hooks/useOnMount'
+import useCopy from '$shared/hooks/useCopy'
 import Preview from './Edit/PreviewView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
 import { convertFromStorageDays } from './Edit/HistoryView'
@@ -21,51 +22,10 @@ import routes from '$routes'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import CodeSnippets from '$shared/components/CodeSnippets'
 import { subscribeSnippets } from '$utils/streamSnippets'
-
-const Details = styled.div`
-    border: solid #e7e7e7;
-    border-width: 1px 0;
-    padding: 24px 0;
-
-    & + & {
-        border-top: 0;
-    }
-
-    @media (min-width: ${MD}px) {
-        display: flex;
-        justify-content: space-between;
-    }
-`
-
-const CustomLabel = styled(Label)`
-    margin-bottom: 1.25em;
-`
-
-const UnstyledDetail = ({ title, children, ...props }) => (
-    <div {...props}>
-        <CustomLabel>{title}</CustomLabel>
-        <p>{children}</p>
-    </div>
-)
-
-const Detail = styled(UnstyledDetail)`
-    padding-top: 2px;
-
-    & + & {
-        border-top: 1px solid #e7e7e7;
-        margin-top: 24px;
-        padding-top: 26px;
-    }
-
-    @media (min-width: ${MD}px) {
-        & + & {
-            border: 0;
-            margin: 0;
-            padding-top: 2px;
-            width: 144px;
-        }
-    }
-`
+import Button from '$shared/components/Button'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import StatusLabel from '$shared/components/StatusLabel'
 
 const Text = styled(UnstyledText)`
     &[disabled] {
@@ -79,24 +39,6 @@ const Text = styled(UnstyledText)`
     `}
 `
 
-const FieldControls = styled.div`
-    ${({ multiple }) => !!multiple && css`
-        display: flex;
-
-        @media (min-width: ${SM}px) {
-            width: 320px;
-        }
-
-        ${Text}:first-child {
-            width: 80px;
-        }
-
-        ${Text} + ${Text} {
-            flex-grow: 1;
-        }
-    `}
-`
-
 const UnstyledField = ({
     label,
     children,
@@ -106,9 +48,7 @@ const UnstyledField = ({
 }) => (
     <div {...props}>
         <Label>{label}&zwnj;</Label>
-        <FieldControls multiple={Children.count(children) > 1}>
-            {children}
-        </FieldControls>
+        {children}
     </div>
 )
 
@@ -166,7 +106,46 @@ const FieldGroup = styled(FormGroup)`
     }
 `
 
+const StreamId = styled.div`
+    display: flex;
+
+    & > :first-child {
+        flex-grow: 1;
+    }
+
+    & > :last-child {
+        min-width: 72px;
+    }
+`
+
+const HistoricalStorage = styled.div`
+    display: flex;
+
+    @media (min-width: ${SM}px) {
+        width: 320px;
+    }
+
+    ${Text}:first-child {
+        width: 80px;
+    }
+
+    ${Text} + ${Text} {
+        flex-grow: 1;
+    }
+`
+
+const StyledButton = styled(Button)`
+    && {
+        padding: 0;
+    }
+`
+
+const StreamPartitions = styled.div`
+    width: 136px;
+`
+
 const UnstyledView = ({ stream, currentUser, ...props }) => {
+    const { copy, isCopied } = useCopy()
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
 
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
@@ -203,6 +182,15 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
         })
     ), [stream.id])
 
+    const onCopy = useCallback((id) => {
+        copy(id)
+
+        Notification.push({
+            title: I18n.t('notifications.streamIdCopied'),
+            icon: NotificationIcon.CHECKMARK,
+        })
+    }, [copy])
+
     return (
         <Layout
             {...props}
@@ -216,26 +204,49 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                 />
             )}
         >
-            <TOCPage title={stream.name}>
+            <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.readOnlyStream')}>
                 <TOCSection
                     id="details"
-                    linkTitle={I18n.t('userpages.streams.edit.details.nav.details')}
+                    title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
-                    {!!stream.description && (
-                        <Details>
-                            <Detail title={I18n.t('userpages.streams.edit.details.description')}>
-                                {stream.description}
-                            </Detail>
-                        </Details>
-                    )}
-                    <Details>
-                        <Detail title={I18n.t('userpages.streams.edit.details.streamId')}>
-                            {stream.id}
-                        </Detail>
-                        <Detail title={I18n.t('userpages.streams.partitionsLabel')}>
-                            {stream.partitions}
-                        </Detail>
-                    </Details>
+                    <FormGroup>
+                        <Field label={I18n.t('userpages.streams.edit.details.name')}>
+                            <Text
+                                value={stream.name || ''}
+                                readOnly
+                                disabled
+                                name="name"
+                            />
+                        </Field>
+                        <Field narrow desktopOnly />
+                    </FormGroup>
+                    <FormGroup>
+                        <Field label={I18n.t('userpages.streams.edit.details.description')}>
+                            <Text
+                                value={stream.description || ''}
+                                readOnly
+                                disabled
+                                name="description"
+                            />
+                        </Field>
+                        <Field narrow desktopOnly />
+                    </FormGroup>
+                    <FormGroup>
+                        <Field label={I18n.t('userpages.streams.edit.details.streamId')}>
+                            <StreamId>
+                                <Text
+                                    value={stream.id || ''}
+                                    readOnly
+                                    disabled
+                                    name="streamId"
+                                />
+                                <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
+                                    <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
+                                </StyledButton>
+                            </StreamId>
+                        </Field>
+                        <Field narrow desktopOnly />
+                    </FormGroup>
                 </TOCSection>
                 <TOCSection
                     id="snippets"
@@ -321,22 +332,43 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     </FormGroup>
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>
-                            <Text
-                                value={storagePeriod}
-                                readOnly
-                                disabled
-                                centered
-                            />
-                            <Text
-                                value={I18n.t(`shared.date.${unit.replace(/s$/, '')}`, {
-                                    count: stream.storageDays,
-                                })}
-                                readOnly
-                                disabled
-                            />
+                            <HistoricalStorage>
+                                <Text
+                                    value={storagePeriod}
+                                    readOnly
+                                    disabled
+                                    centered
+                                />
+                                <Text
+                                    value={I18n.t(`shared.date.${unit.replace(/s$/, '')}`, {
+                                        count: stream.storageDays,
+                                    })}
+                                    readOnly
+                                    disabled
+                                />
+                            </HistoricalStorage>
                         </Field>
                     </FormGroup>
                 </TOCSection>
+                <TOCPage.Section
+                    id="stream-partitions"
+                    title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
+                    linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                    status={(<StatusLabel.Advanced />)}
+                >
+                    <FormGroup>
+                        <Field label={I18n.t('userpages.streams.partitionsLabel')}>
+                            <StreamPartitions>
+                                <Text
+                                    value={stream.partitions || '1'}
+                                    readOnly
+                                    disabled
+                                    centered
+                                />
+                            </StreamPartitions>
+                        </Field>
+                    </FormGroup>
+                </TOCPage.Section>
             </TOCPage>
         </Layout>
     )

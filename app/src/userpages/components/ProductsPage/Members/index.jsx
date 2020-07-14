@@ -5,14 +5,13 @@ import Helmet from 'react-helmet'
 import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
+import { titleize } from '@streamr/streamr-layout'
 
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
 import ListContainer from '$shared/components/Container/List'
-import LoadingIndicator from '$shared/components/LoadingIndicator'
-import Layout from '$shared/components/Layout'
-import Dropdown from '$shared/components/Dropdown'
+import Popover from '$shared/components/Popover'
 import { getFilters } from '$userpages/utils/constants'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import usePending from '$shared/hooks/usePending'
@@ -32,6 +31,8 @@ import { ago } from '$shared/utils/time'
 import confirmDialog from '$shared/utils/confirm'
 import Search from '$userpages/components/Header/Search'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
+import { isDataUnionProduct } from '$mp/utils/product'
 
 import styles from './members.pcss'
 
@@ -222,29 +223,34 @@ const Members = () => {
             hideNavOnDesktop
             navComponent={(
                 <Header
-                    {...(dataUnionDeployed ? {
-                        searchComponent: (
-                            <Search
-                                placeholder={I18n.t('userpages.members.filterMembers')}
-                                value={search || ''}
-                                onChange={setSearch}
-                            />
-                        ),
-                        filterComponent: (
-                            <Dropdown
-                                title={I18n.t('userpages.filter.sortBy')}
-                                onChange={onSortChange}
-                                selectedItem={selectedFilterId}
-                                disabled={!dataUnionDeployed}
-                            >
-                                {sortOptions.map((s) => (
-                                    <Dropdown.Item key={s.filter.id} value={s.filter.id}>
-                                        {s.displayName}
-                                    </Dropdown.Item>
-                                ))}
-                            </Dropdown>
-                        ),
-                    } : {})}
+                    searchComponent={dataUnionDeployed ? (
+                        <Search
+                            placeholder={I18n.t('userpages.members.filterMembers')}
+                            value={search || ''}
+                            onChange={setSearch}
+                        />
+                    ) : (
+                        <div className={styles.searchPlaceholder} />
+                    )}
+                    filterComponent={!!dataUnionDeployed && (
+                        <Popover
+                            title={I18n.t('userpages.filter.sortBy')}
+                            type="uppercase"
+                            activeTitle
+                            menuProps={{
+                                right: true,
+                            }}
+                            onChange={onSortChange}
+                            selectedItem={selectedFilterId}
+                            disabled={!dataUnionDeployed}
+                        >
+                            {sortOptions.map((s) => (
+                                <Popover.Item key={s.filter.id} value={s.filter.id}>
+                                    {s.displayName}
+                                </Popover.Item>
+                            ))}
+                        </Popover>
+                    )}
                 />
             )}
             loading={fetchingMembers}
@@ -313,10 +319,10 @@ const Members = () => {
                                             </span>
                                         </Table.Th>
                                         <Table.Td noWrap className={styles.joinColumn}>
-                                            {member.dateCreated ? ago(new Date(member.dateCreated)) : '-'}
+                                            {member.dateCreated ? titleize(ago(new Date(member.dateCreated))) : '-'}
                                         </Table.Td>
                                         <Table.Td noWrap className={styles.dataColumn}>
-                                            {member.lastUpdated ? ago(new Date(member.lastUpdated)) : '-'}
+                                            {member.lastUpdated ? titleize(ago(new Date(member.lastUpdated))) : '-'}
                                         </Table.Td>
                                         <Table.Td className={styles.statusColumn}>
                                             <StatusIcon
@@ -387,9 +393,19 @@ const Members = () => {
 }
 
 const LoadingView = () => (
-    <Layout nav={false}>
-        <LoadingIndicator loading className={styles.loadingIndicator} />
-    </Layout>
+    <CoreLayout
+        footer={false}
+        hideNavOnDesktop
+        navComponent={(
+            <Header
+                searchComponent={
+                    <div className={styles.searchPlaceholder} />
+                }
+            />
+        )}
+        contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
+        loading
+    />
 )
 
 const MembersWrap = () => {
@@ -401,7 +417,14 @@ const MembersWrap = () => {
         return <LoadingView />
     }
 
-    const key = (!!product && product.id) || ''
+    // show not found if DU is not actually yet deployed
+    const { id, beneficiaryAddress } = product
+
+    if (!isDataUnionProduct(product) || !beneficiaryAddress) {
+        throw new ResourceNotFoundError(ResourceType.PRODUCT, id)
+    }
+
+    const key = (!!product && id) || ''
 
     return (
         <SelectionProvider key={key}>

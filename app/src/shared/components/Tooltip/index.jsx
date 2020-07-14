@@ -2,6 +2,7 @@
 
 import React, { type Node, useRef, useState, useCallback } from 'react'
 import { Tooltip as RsTooltip } from 'reactstrap'
+import cx from 'classnames'
 
 import styles from './tooltip.pcss'
 
@@ -9,6 +10,8 @@ type Props = {
     value: Node,
     children?: Node,
     container?: any,
+    placement?: string,
+    className?: string,
 }
 
 let counter = 0
@@ -34,15 +37,21 @@ export default function Tooltip(props: Props) {
         setIsOpen((isOpenState) => !isOpenState)
     }, [setIsOpen])
 
-    const { value, children, container, ...otherProps } = props
+    const {
+        value,
+        children,
+        container,
+        className,
+        ...otherProps
+    } = props
     return (
-        <div id={id} className={styles.tooltipContainer}>
+        <div id={id} className={cx(styles.tooltipContainer, className)}>
             {children}
             <RsTooltip
+                placement="top"
                 {...otherProps}
                 innerClassName={styles.tooltip}
                 hideArrow
-                placement="top"
                 delay={DELAY}
                 isOpen={isOpen}
                 target={id}

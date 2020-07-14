@@ -5,6 +5,7 @@ import React, { type ComponentType } from 'react'
 import UploadIcon from './ImageUploadIcon'
 import CheckmarkIcon from './CheckmarkIcon'
 import * as MapIcons from './MapIcons'
+import * as SocialIcons from './SocialIcons'
 import styles from './svgIcon.pcss'
 
 /* eslint-disable max-len */
@@ -375,6 +376,14 @@ const sources = {
             </g>
         </svg>
     ),
+    checkBadgeHD: (
+        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+            <g fill="none" fillRule="evenodd">
+                <path fill="#0324FF" d="M8 14.88l-1.56.966-1.073-1.49-1.812.296-.42-1.787-1.787-.42.296-1.812L.154 9.56 1.12 8 .154 6.44l1.49-1.073-.296-1.812 1.787-.42.42-1.787 1.812.296L6.44.154 8 1.12 9.56.154l1.073 1.49 1.812-.296.42 1.787 1.787.42-.296 1.812 1.49 1.072L14.88 8l.966 1.56-1.49 1.073.296 1.812-1.787.42-.42 1.787-1.812-.296-1.072 1.49z" />
+                <path stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M4.865 8.172l1.65 1.792 4.243-4.243" />
+            </g>
+        </svg>
+    ),
     dropPlus: (
         <svg viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg">
             <g transform="translate(1 1)" fill="none" fillRule="evenodd">
@@ -603,6 +612,59 @@ const sources = {
                 </g>
             </g>
         </svg>
+    ),
+    clipboardPlus: (
+        <svg viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round">
+                <path d="M7.375 2.875H9.25a.75.75 0 01.75.75V11.5a.75.75 0 01-.75.75h-7.5A.75.75 0 011 11.5V3.625a.75.75 0 01.75-.75h1.875a1.875 1.875 0 113.75 0z" strokeLinejoin="round" />
+                <path d="M5.529 2.883a.187.187 0 11-.058.37.187.187 0 01.058-.37" strokeLinejoin="round" />
+                <path d="M3.5 7.5h4M5.5 5.5v4" />
+            </g>
+        </svg>
+    ),
+    clipboardCheck: (
+        <svg viewBox="0 0 11 13" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M7.375 2.875H9.25a.75.75 0 01.75.75V11.5a.75.75 0 01-.75.75h-7.5A.75.75 0 011 11.5V3.625a.75.75 0 01.75-.75h1.875a1.875 1.875 0 113.75 0z" />
+                <path d="M5.529 2.883a.187.187 0 11-.058.37.187.187 0 01.058-.37M7.612 6L4.816 8.796a.409.409 0 01-.579 0L3.3 7.858" />
+            </g>
+        </svg>
+    ),
+    github: (
+        <SocialIcons.GitHub />
+    ),
+    medium: (
+        <SocialIcons.Medium />
+    ),
+    peepeth: (
+        <SocialIcons.Peepeth />
+    ),
+    reddit: (
+        <SocialIcons.Reddit />
+    ),
+    telegram: (
+        <SocialIcons.Telegram />
+    ),
+    trello: (
+        <SocialIcons.Trello />
+    ),
+    twitter: (
+        <SocialIcons.Twitter />
+    ),
+    youtube: (
+        <SocialIcons.Youtube />
+    ),
+    linkedin: (
+        <SocialIcons.LinkedIn />
+    ),
+    instagram: (
+        <SocialIcons.Instagram />
+    ),
+    facebook: (
+        <SocialIcons.Facebook />
+    ),
+    web: (
+        <SocialIcons.Web />
     ),
 }
 

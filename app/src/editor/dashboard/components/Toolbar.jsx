@@ -2,15 +2,19 @@ import React from 'react'
 import * as R from 'reactstrap'
 import { connect } from 'react-redux'
 import cx from 'classnames'
+import { I18n } from 'react-redux-i18n'
 
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
 import Meatball from '$shared/components/Meatball'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import SvgIcon from '$shared/components/SvgIcon'
 import Tooltip from '$shared/components/Tooltip'
+import confirmDialog from '$shared/utils/confirm'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import Toolbar from '$editor/shared/components/Toolbar'
 
@@ -28,7 +32,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
         currentUser,
         className,
         duplicateDashboard,
-        deleteDashboard,
+        deleteDashboard: deleteDashboardProp,
         setDashboard,
         newDashboard,
         moduleSearchOpen,
@@ -46,6 +50,39 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
             name,
         }))
     }, [setDashboard])
+
+    const deleteDashboardAndNotify = React.useCallback(async () => {
+        try {
+            await deleteDashboardProp()
+
+            Notification.push({
+                title: I18n.t('userpages.dashboards.deletedDashboard'),
+                icon: NotificationIcon.CHECKMARK,
+            })
+        } catch (e) {
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
+        }
+    }, [deleteDashboardProp])
+
+    const deleteDashboard = React.useCallback(async () => {
+        const confirmed = await confirmDialog('dashboard', {
+            title: I18n.t('userpages.dashboards.delete.confirmTitle'),
+            message: I18n.t('userpages.dashboards.delete.confirmMessage'),
+            acceptButton: {
+                title: I18n.t('userpages.dashboards.delete.confirmButton'),
+                kind: 'destructive',
+            },
+            centerButtons: true,
+            dontShowAgain: false,
+        })
+
+        if (confirmed) {
+            deleteDashboardAndNotify()
+        }
+    }, [deleteDashboardAndNotify])
 
     const elRef = React.useRef()
 
@@ -78,7 +115,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
                                     >
                                         {dashboard.name}
                                     </EditableText>
-                                    <DropdownActions
+                                    <Popover
                                         title={
                                             <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
                                                 <Meatball alt="Select" />
@@ -90,26 +127,26 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
                                             className: styles.DropdownMenuMenu,
                                         }}
                                     >
-                                        <DropdownActions.Item onClick={newDashboard}>New Dashboard</DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        <Popover.Item onClick={newDashboard}>New Dashboard</Popover.Item>
+                                        <Popover.Item
                                             disabled={!hasSharePermission}
                                             onClick={() => sidebar.open('share')}
                                         >
                                             Share
-                                        </DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        </Popover.Item>
+                                        <Popover.Item
                                             onClick={() => setEditing(true)}
                                         >
                                             Rename
-                                        </DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => duplicateDashboard()}>Duplicate</DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        </Popover.Item>
+                                        <Popover.Item onClick={() => duplicateDashboard()}>Duplicate</Popover.Item>
+                                        <Popover.Item
                                             disabled={!hasDeletePermission}
-                                            onClick={() => deleteDashboard()}
+                                            onClick={deleteDashboard}
                                         >
                                             Delete
-                                        </DropdownActions.Item>
-                                    </DropdownActions>
+                                        </Popover.Item>
+                                    </Popover>
                                 </div>
                             )}
                         </UseState>

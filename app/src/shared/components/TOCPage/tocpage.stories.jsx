@@ -9,7 +9,7 @@ import StoryRouter from 'storybook-react-router'
 import TOCPage from '.'
 
 const stories =
-    storiesOf('Userpages/TOCPage', module)
+    storiesOf('Shared/TOCPage', module)
         .addDecorator(StoryRouter())
         .addDecorator(styles({
             padding: '2rem',

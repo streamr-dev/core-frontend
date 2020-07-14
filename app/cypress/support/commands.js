@@ -77,3 +77,22 @@ Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation
             },
         })
 ))
+
+Cypress.Commands.add('createProduct', (body) => (
+    cy
+        .authenticatedRequest({
+            url: 'http://localhost/api/v1/products',
+            method: 'POST',
+            body: {
+                name: `Test Product #${(
+                    new Date()
+                        .toISOString()
+                        .replace(/\W/g, '')
+                        .substr(4, 11)
+                        .replace(/T/, '/')
+                )}`,
+                ...body,
+            },
+        })
+        .then(({ body: { id } }) => id)
+))

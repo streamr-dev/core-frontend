@@ -10,13 +10,15 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorComponentView from '$shared/components/ErrorComponentView'
 import SvgIcon from '$shared/components/SvgIcon'
 import StatusIcon from '$shared/components/StatusIcon'
-import DropdownActions from '$shared/components/DropdownActions'
+import Popover from '$shared/components/Popover'
 import Tooltip from '$shared/components/Tooltip'
 import WithCalendar from '$shared/components/WithCalendar'
 import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
 import confirmDialog from '$shared/utils/confirm'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import Toolbar from '$editor/shared/components/Toolbar'
 import useCanvasCamera from '../../hooks/useCanvasCamera'
@@ -35,7 +37,7 @@ function ZoomControls({ className, canvas }) {
     const canvasCamera = useCanvasCamera({ canvas })
     return (
         <div className={cx(className, styles.ZoomControls)}>
-            <DropdownActions
+            <Popover
                 className={cx(styles.ZoomMenu, styles.DropdownMenu)}
                 noCaret
                 menuProps={{
@@ -63,23 +65,23 @@ function ZoomControls({ className, canvas }) {
                     </div>
                 }
             >
-                <DropdownActions.Item onClick={() => camera.setScale(1)}>
+                <Popover.Item onClick={() => camera.setScale(1)}>
                     Full size
-                </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => canvasCamera.fitCanvas()}>
+                </Popover.Item>
+                <Popover.Item onClick={() => canvasCamera.fitCanvas()}>
                     Fit screen
-                </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.zoomIn()}>
+                </Popover.Item>
+                <Popover.Item onClick={() => camera.zoomIn()}>
                     Zoom In
-                </DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.zoomOut()}>
+                </Popover.Item>
+                <Popover.Item onClick={() => camera.zoomOut()}>
                     Zoom Out
-                </DropdownActions.Item>
-                <DropdownActions.Item divider />
-                <DropdownActions.Item onClick={() => camera.setScale(0.5)}>50%</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.setScale(1)}>100%</DropdownActions.Item>
-                <DropdownActions.Item onClick={() => camera.setScale(2)}>200%</DropdownActions.Item>
-            </DropdownActions>
+                </Popover.Item>
+                <Popover.Item divider />
+                <Popover.Item onClick={() => camera.setScale(0.5)}>50%</Popover.Item>
+                <Popover.Item onClick={() => camera.setScale(1)}>100%</Popover.Item>
+                <Popover.Item onClick={() => camera.setScale(2)}>200%</Popover.Item>
+            </Popover>
         </div>
     )
 }
@@ -123,7 +125,19 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         })
 
         if (confirmed) {
-            this.props.deleteCanvas()
+            try {
+                await this.props.deleteCanvas()
+
+                Notification.push({
+                    title: I18n.t('userpages.canvases.deletedCanvas'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            } catch (e) {
+                Notification.push({
+                    title: e.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
         }
     }
 
@@ -192,7 +206,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     {/* !canEdit && (
                                         <span className={styles.ownerName}>by TODO: get owner name</span>
                                     ) */}
-                                    <DropdownActions
+                                    <Popover
                                         title={
                                             <R.Button className={cx(styles.MeatballContainer, styles.ToolbarButton)}>
                                                 <Meatball alt="Select" />
@@ -205,27 +219,27 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                             className: styles.DropdownMenuMenu,
                                         }}
                                     >
-                                        <DropdownActions.Item onClick={newCanvas}>New Canvas</DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        <Popover.Item onClick={newCanvas}>New Canvas</Popover.Item>
+                                        <Popover.Item
                                             onClick={() => sidebar.open('share')}
                                             disabled={!canShare}
                                         >
                                             Share
-                                        </DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        </Popover.Item>
+                                        <Popover.Item
                                             onClick={() => setEditing(true)}
                                             disabled={!canEdit}
                                         >
                                             Rename
-                                        </DropdownActions.Item>
-                                        <DropdownActions.Item onClick={() => duplicateCanvas()}>Duplicate</DropdownActions.Item>
-                                        <DropdownActions.Item
+                                        </Popover.Item>
+                                        <Popover.Item onClick={() => duplicateCanvas()}>Duplicate</Popover.Item>
+                                        <Popover.Item
                                             onClick={this.onDeleteCanvas}
                                             disabled={!hasDeletePermission}
                                         >
                                             Delete
-                                        </DropdownActions.Item>
-                                    </DropdownActions>
+                                        </Popover.Item>
+                                    </Popover>
                                 </div>
                             )}
                         </UseState>

@@ -37,7 +37,11 @@ type ContextProps = {
 
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
 
-function useProductLoadEffect() {
+type EffectProps = {
+    ignoreUnauthorized?: boolean,
+}
+
+function useProductLoadEffect({ ignoreUnauthorized }: EffectProps) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
@@ -49,15 +53,20 @@ function useProductLoadEffect() {
     useEffect(() => {
         if (urlId && !loadedOnce && !isPending) {
             // load product if needed and not already loading
-            loadProduct(urlId)
+            loadProduct({
+                productId: urlId,
+                ignoreUnauthorized,
+            })
             loadContractProduct(urlId)
             setLoadedOnce(true)
         }
-    }, [urlId, loadedOnce, loadProduct, loadContractProduct, isPending])
+    }, [urlId, loadedOnce, loadProduct, loadContractProduct, isPending, ignoreUnauthorized])
 }
 
-function ProductEffects() {
-    useProductLoadEffect()
+function ProductEffects({ ignoreUnauthorized }: EffectProps) {
+    useProductLoadEffect({
+        ignoreUnauthorized,
+    })
     useProductValidationEffect()
 
     // Clear product on unmount
@@ -108,11 +117,11 @@ function useProductController() {
     ])
 }
 
-type ControllerProps = {
+type ControllerProviderProps = {
     children?: Node,
 }
 
-function ControllerProvider({ children }: ControllerProps) {
+function ControllerProvider({ children }: ControllerProviderProps) {
     return (
         <ProductControllerContext.Provider value={useProductController()}>
             {children}
@@ -120,13 +129,15 @@ function ControllerProvider({ children }: ControllerProps) {
     )
 }
 
-const ProductController = ({ children }: ControllerProps) => (
+type ControllerProps = ControllerProviderProps & EffectProps
+
+const ProductController = ({ children, ignoreUnauthorized = false }: ControllerProps) => (
     <RouterContext.Provider>
         <PendingProvider name="product">
             <ValidationContextProvider>
                 <PermissionsProvider>
                     <ControllerProvider>
-                        <ProductEffects />
+                        <ProductEffects ignoreUnauthorized={ignoreUnauthorized} />
                         {children || null}
                     </ControllerProvider>
                 </PermissionsProvider>

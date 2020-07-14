@@ -10,8 +10,8 @@ import type { Product, Subscription } from '$mp/flowtype/product-types'
 import PaymentRate from '$mp/components/PaymentRate'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
 import { timeUnits, productStates } from '$shared/utils/constants'
-import Link from '$shared/components/Link'
 
+import SocialIcons from './SocialIcons'
 import styles from './productDetails2.pcss'
 
 type Props = {
@@ -20,10 +20,15 @@ type Props = {
     productSubscription?: Subscription,
     onPurchase: () => void | Promise<void>,
     isPurchasing?: boolean,
+    isWhitelisted?: ?boolean,
 }
 
-const buttonTitle = (product: Product, isValidSubscription: boolean) => {
+const buttonTitle = (product: Product, isValidSubscription: boolean, isWhitelisted: ?boolean) => {
     if (isPaidProduct(product)) {
+        if (product.requiresWhitelist && isWhitelisted === false) {
+            return I18n.t('productPage.productDetails.requestAccess')
+        }
+
         return isValidSubscription ?
             I18n.t('productPage.productDetails.renew') :
             I18n.t('productPage.productDetails.purchase')
@@ -40,6 +45,7 @@ const ProductDetails = ({
     productSubscription,
     onPurchase,
     isPurchasing,
+    isWhitelisted,
 }: Props) => (
     <div className={styles.root}>
         <div
@@ -81,8 +87,11 @@ const ProductDetails = ({
                     onClick={onPurchase}
                     waiting={isPurchasing}
                 >
-                    {buttonTitle(product, isValidSubscription)}
+                    {buttonTitle(product, isValidSubscription, isWhitelisted)}
                 </Button>
+                {product.contact && (
+                    <SocialIcons className={styles.socialIcons} contactDetails={product.contact} />
+                )}
             </div>
             <div className={cx(styles.separator, styles.purchaseSeparator)} />
             <div className={styles.details}>
@@ -91,19 +100,23 @@ const ProductDetails = ({
                     &nbsp;
                     {product.owner}
                 </div>
+                {product.contact && product.contact.url && (
+                    <div>
+                        <span className={styles.subheading}>Website</span>
+                        &nbsp;
+                        <a href={product.contact.url} rel="noopener noreferrer" target="_blank">{product.contact.url}</a>
+                    </div>
+                )}
+                {product.contact && product.contact.email && (
+                    <div>
+                        <a href={`mailto:${product.contact.email}`}>Contact seller</a>
+                    </div>
+                )}
                 {/* Hide these until we have a place to read them from */}
                 {false && (
                     <React.Fragment>
                         <div>
-                            <span className={styles.subheading}>Website</span>
-                            &nbsp;
-                            TODO
-                        </div>
-                        <div>
-                            <Link href="#TODO">Contact seller</Link>
-                        </div>
-                        <div>
-                            <Link href="#TODO">View other products</Link>
+                            <a href="#TODO">View other products</a>
                         </div>
                     </React.Fragment>
                 )}

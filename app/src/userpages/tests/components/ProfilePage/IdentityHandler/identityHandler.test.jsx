@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
+import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
 import IdentityHandler from '../../../../components/ProfilePage/IdentityHandler'
@@ -57,7 +57,7 @@ describe('IdentityHandler', () => {
 
     describe('connect account', () => {
         it('must open dialog to connect identity', async () => {
-            const el = shallow(<IdentityHandler />)
+            const el = mount(<IdentityHandler />)
 
             await act(async () => {
                 await el.find('Button').at(0).simulate('click')
@@ -67,7 +67,7 @@ describe('IdentityHandler', () => {
         })
 
         it('must open dialog to create identity', async () => {
-            const el = shallow(<IdentityHandler />)
+            const el = mount(<IdentityHandler />)
 
             await act(async () => {
                 await el.find('Button').at(1).simulate('click')
@@ -82,7 +82,7 @@ describe('IdentityHandler', () => {
             const el = mount(<IdentityHandler />)
 
             act(() => {
-                el.find('ActionsDropdown').find('button').at(2).simulate('click')
+                el.find('WithInputActions').find('button').at(2).simulate('click')
             })
 
             expect(mockRemove).toHaveBeenCalled()
@@ -91,7 +91,7 @@ describe('IdentityHandler', () => {
 
     describe('render', () => {
         it('should render correctly', () => {
-            const handler = shallow(<IdentityHandler />)
+            const handler = mount(<IdentityHandler />)
             const handlerSegment = handler.find('IntegrationKeyList')
             expect(handlerSegment.exists()).toBe(true)
         })

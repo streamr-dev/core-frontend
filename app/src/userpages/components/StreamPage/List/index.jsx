@@ -8,6 +8,7 @@ import Helmet from 'react-helmet'
 import MediaQuery from 'react-responsive'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
+import { titleize } from '@streamr/streamr-layout'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
@@ -28,17 +29,13 @@ import {
 import { selectStreams, selectFetching, selectHasMoreSearchResults } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Table from '$shared/components/Table'
-import DropdownActions from '$shared/components/DropdownActions'
-import Meatball from '$shared/components/Meatball'
+import Popover from '$shared/components/Popover'
 import StatusIcon from '$shared/components/StatusIcon'
 import Layout from '$userpages/components/Layout'
 import Search from '../../Header/Search'
-import Dropdown from '$shared/components/Dropdown'
 import confirmDialog from '$shared/utils/confirm'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
-import type { Permission } from '$userpages/flowtype/permission-types'
-import { selectUserData } from '$shared/modules/user/selectors'
 import SnippetDialog from '$userpages/components/SnippetDialog/index'
 import { NotificationIcon } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
@@ -124,7 +121,6 @@ const StreamList = () => {
     const [activeDialog, setActiveDialog] = useState(undefined)
     const dispatch = useDispatch()
     const { copy } = useCopy()
-    const user = useSelector(selectUserData)
     const streams = useSelector(selectStreams)
     const fetching = useSelector(selectFetching)
     const fetchingPermissions = useSelector(selectFetchingPermissions)
@@ -168,7 +164,7 @@ const StreamList = () => {
 
         if (open && !fetchingPermissions && !permissions[streamId]) {
             try {
-                await dispatch(getResourcePermissions('STREAM', streamId, false))
+                await dispatch(getResourcePermissions('STREAM', streamId))
             } catch (e) {
                 // Noop.
             }
@@ -177,17 +173,15 @@ const StreamList = () => {
 
     const canBeSharedByCurrentUser = useCallback((id: StreamId): boolean => (
         !fetchingPermissions &&
-        !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'stream_share') !== undefined
-    ), [fetchingPermissions, permissions, user])
+        permissions[id].includes('stream_share')
+    ), [fetchingPermissions, permissions])
 
     const canBeDeletedByCurrentUser = useCallback((id: StreamId): boolean => (
         !fetchingPermissions &&
-        !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'stream_delete') !== undefined
-    ), [fetchingPermissions, permissions, user])
+        permissions[id].includes('stream_delete')
+    ), [fetchingPermissions, permissions])
 
     const onOpenShareDialog = useCallback((stream: Stream) => {
         setDialogTargetStream(stream)
@@ -249,17 +243,22 @@ const StreamList = () => {
                 />
             }
             headerFilterComponent={
-                <Dropdown
+                <Popover
                     title={I18n.t('userpages.filter.sortBy')}
+                    type="uppercase"
+                    activeTitle
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
+                    menuProps={{
+                        right: true,
+                    }}
                 >
                     {sortOptions.map((s) => (
-                        <Dropdown.Item key={s.filter.id} value={s.filter.id}>
+                        <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Dropdown.Item>
+                        </Popover.Item>
                     ))}
-                </Dropdown>
+                </Popover>
             }
             loading={fetching}
         >
@@ -303,23 +302,33 @@ const StreamList = () => {
                                                 className={styles.streamRow}
                                                 onClick={() => onStreamRowClick(stream.id)}
                                             >
-                                                <Table.Th noWrap title={stream.name}>
-                                                    {stream.name}
-                                                    <span title={getSecurityLevelTitle(stream)}>
-                                                        <SecurityIcon
-                                                            className={styles.SecurityIcon}
-                                                            level={getSecurityLevel(stream)}
-                                                            mode="selected"
-                                                            hideBasic
-                                                        />
-                                                    </span>
+                                                <Table.Th noWrap>
+                                                    <div className={styles.nameAndSecurityContainer}>
+                                                        <span
+                                                            title={stream.name}
+                                                            className={styles.streamName}
+                                                        >
+                                                            {stream.name}
+                                                        </span>
+                                                        <span
+                                                            className={cx(styles.SecurityIconContainer, styles.showTooltip)}
+                                                            data-tooltiptext={`${getSecurityLevelTitle(stream)} stream`}
+                                                        >
+                                                            <SecurityIcon
+                                                                className={styles.SecurityIcon}
+                                                                level={getSecurityLevel(stream)}
+                                                                mode="small"
+                                                                hideBasic
+                                                            />
+                                                        </span>
+                                                    </div>
                                                 </Table.Th>
                                                 <Table.Td noWrap title={stream.description}>{stream.description}</Table.Td>
                                                 <Table.Td noWrap>
-                                                    {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
+                                                    {stream.lastUpdated && titleize(ago(new Date(stream.lastUpdated)))}
                                                 </Table.Td>
                                                 <Table.Td>
-                                                    {stream.lastData && ago(new Date(stream.lastData))}
+                                                    {stream.lastData && titleize(ago(new Date(stream.lastData)))}
                                                 </Table.Td>
                                                 <Table.Td className={styles.statusColumn}>
                                                     <StatusIcon status={stream.streamStatus} tooltip />
@@ -328,18 +337,13 @@ const StreamList = () => {
                                                     onClick={(event) => event.stopPropagation()}
                                                     className={styles.menuColumn}
                                                 >
-                                                    <DropdownActions
-                                                        title={<Meatball alt={I18n.t('userpages.streams.actions.title')} />}
+                                                    <Popover
+                                                        title={I18n.t('userpages.streams.actions.title')}
+                                                        type="meatball"
                                                         noCaret
                                                         onMenuToggle={onToggleStreamDropdown(stream.id)}
                                                         menuProps={{
-                                                            modifiers: {
-                                                                offset: {
-                                                                    // Make menu aligned to the right.
-                                                                    // See https://popper.js.org/popper-documentation.html#modifiers..offset
-                                                                    offset: '-100%p + 100%',
-                                                                },
-                                                            },
+                                                            right: true,
                                                         }}
                                                         toggleProps={{
                                                             className: cx(styles.dropdownActions, {
@@ -347,31 +351,31 @@ const StreamList = () => {
                                                             }),
                                                         }}
                                                     >
-                                                        <DropdownActions.Item onClick={() => showStream(stream.id)}>
+                                                        <Popover.Item onClick={() => showStream(stream.id)}>
                                                             <Translate value="userpages.streams.actions.editStream" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item onClick={() => onCopyId(stream.id)}>
+                                                        </Popover.Item>
+                                                        <Popover.Item onClick={() => onCopyId(stream.id)}>
                                                             <Translate value="userpages.streams.actions.copyId" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item onClick={() => onOpenSnippetDialog(stream)}>
+                                                        </Popover.Item>
+                                                        <Popover.Item onClick={() => onOpenSnippetDialog(stream)}>
                                                             <Translate value="userpages.streams.actions.copySnippet" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item
+                                                        </Popover.Item>
+                                                        <Popover.Item
                                                             disabled={!canBeSharedByCurrentUser(stream.id)}
                                                             onClick={() => onOpenShareDialog(stream)}
                                                         >
                                                             <Translate value="userpages.streams.actions.share" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item onClick={() => onRefreshStatus(stream.id)}>
+                                                        </Popover.Item>
+                                                        <Popover.Item onClick={() => onRefreshStatus(stream.id)}>
                                                             <Translate value="userpages.streams.actions.refresh" />
-                                                        </DropdownActions.Item>
-                                                        <DropdownActions.Item
+                                                        </Popover.Item>
+                                                        <Popover.Item
                                                             disabled={!canBeDeletedByCurrentUser(stream.id)}
                                                             onClick={() => confirmDeleteStream(stream)}
                                                         >
                                                             <Translate value="userpages.streams.actions.delete" />
-                                                        </DropdownActions.Item>
-                                                    </DropdownActions>
+                                                        </Popover.Item>
+                                                    </Popover>
                                                 </Table.Td>
                                             </tr>
                                         ))}
@@ -396,30 +400,38 @@ const StreamList = () => {
                                                 className={styles.streamRow}
                                                 onClick={() => onStreamRowClick(stream.id)}
                                             >
-                                                <Table.Td className={styles.tabletStreamRow}>
+                                                <Table.Td noWrap className={styles.tabletStreamRow}>
                                                     <div className={styles.tabletStreamRowContainer}>
                                                         <div>
-                                                            <span className={styles.tabletStreamName} title={stream.name}>
-                                                                {stream.name}
-                                                                <span title={getSecurityLevelTitle(stream)}>
+                                                            <div className={styles.nameAndSecurityContainer}>
+                                                                <span
+                                                                    title={stream.name}
+                                                                    className={styles.tabletStreamName}
+                                                                >
+                                                                    {stream.name}
+                                                                </span>
+                                                                <span
+                                                                    className={cx(styles.SecurityIconContainer, styles.showTooltip)}
+                                                                    data-tooltiptext={`${getSecurityLevelTitle(stream)} stream`}
+                                                                >
                                                                     <SecurityIcon
                                                                         className={styles.SecurityIcon}
                                                                         level={getSecurityLevel(stream)}
-                                                                        mode="selected"
+                                                                        mode="small"
                                                                         hideBasic
                                                                     />
                                                                 </span>
-                                                            </span>
+                                                            </div>
                                                             <span className={styles.tabletStreamDescription}>
                                                                 {stream.description}
                                                             </span>
-                                                            <span className={styles.lastUpdatedStreamMobile}>
-                                                                {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
+                                                            <span className={styles.lastDataStreamMobile}>
+                                                                {stream.lastData && titleize(ago(new Date(stream.lastData)))}
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <span className={styles.lastUpdatedStreamTablet}>
-                                                                {stream.lastUpdated && ago(new Date(stream.lastUpdated))}
+                                                            <span className={styles.lastDataStreamTablet}>
+                                                                {stream.lastData && titleize(ago(new Date(stream.lastData)))}
                                                             </span>
                                                             <StatusIcon
                                                                 tooltip

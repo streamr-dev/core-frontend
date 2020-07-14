@@ -44,6 +44,7 @@ const ProductName = ({ disabled }: Props) => {
                     invalid={invalid}
                     className={styles.input}
                     theme={SpaciousTheme}
+                    name="name"
                 />
                 {invalid && (
                     <Errors theme={MarketplaceTheme}>
