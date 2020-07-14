@@ -17,7 +17,7 @@ export const subscribeSnippets = ({ id }) => ({
         })
     `,
     java: `
-        AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY")
+        AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY");
         StreamrClient client = new StreamrClient(method);
         Stream stream = client.getStream("${id}");
 
@@ -48,7 +48,7 @@ export const publishSnippets = ({ id }) => ({
         })
     `,
     java: `
-        AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY")
+        AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY");
         StreamrClient client = new StreamrClient(method);
         Stream stream = client.getStream("${id}");
 
