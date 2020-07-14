@@ -65,6 +65,7 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
     const flags = useRef({
         wheel: false,
         mouseDown: true,
+        scrollbar: false,
     })
 
     // Window resize effect responsible for updating bus stop positions in the new resized world.
@@ -110,16 +111,23 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
             flags.current.wheel = true
         }
 
-        const onMouseDown = () => {
+        const onMouseDown = (e) => {
             flags.current.mouseDown = true
             flags.current.wheel = false
+            flags.current.scrollbar = e.target instanceof HTMLHtmlElement
+        }
+
+        const onMouseUp = () => {
+            flags.current.scrollbar = false
         }
 
         window.addEventListener('mousedown', onMouseDown)
+        window.addEventListener('mouseup', onMouseUp)
         window.addEventListener('wheel', onWheel, passiveEventOptions)
 
         return () => {
             window.removeEventListener('wheel', onWheel, passiveEventOptions)
+            window.removeEventListener('mouseup', onMouseUp)
             window.removeEventListener('mousedown', onMouseDown)
         }
     }, [])
@@ -132,7 +140,9 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
         let scrolled = false
 
         const touchScroll = () => {
-            if (document.body && isMounted() && flags.current.wheel) {
+            const { wheel, scrollbar } = flags.current
+
+            if (document.body && isMounted() && (wheel || scrollbar)) {
                 const scrollY = getScrollY()
                 const { innerHeight: windowHeight } = window
                 const documentHeight = document.body.scrollHeight
@@ -171,9 +181,9 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
     // Updates current stop and smooth-scrolls to it. Applied ONLY to hash changes being a result
     // of clicks. It's also responsible for silent scrolling to current location hash on page load.
     useEffect(() => {
-        const { wheel, mouseDown } = flags.current
+        const { wheel, mouseDown, scrollbar } = flags.current
 
-        if (!mouseDown && wheel) {
+        if (!mouseDown && (wheel || scrollbar)) {
             return
         }
 
@@ -197,7 +207,9 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
     // Updates location hash without storing it in the history. Applied ONLY
     // to non-programmatic scrolling.
     useEffect(() => {
-        if (!flags.current.wheel) {
+        const { wheel, scrollbar } = flags.current
+
+        if (!wheel || !scrollbar) {
             return
         }
 
