@@ -220,17 +220,19 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                         </Field>
                         <Field narrow desktopOnly />
                     </FormGroup>
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.details.description')}>
-                            <Text
-                                value={stream.description || ''}
-                                readOnly
-                                disabled
-                                name="description"
-                            />
-                        </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
+                    {!!stream.description && (
+                        <FormGroup>
+                            <Field label={I18n.t('userpages.streams.edit.details.description')}>
+                                <Text
+                                    value={stream.description || ''}
+                                    readOnly
+                                    disabled
+                                    name="description"
+                                />
+                            </Field>
+                            <Field narrow desktopOnly />
+                        </FormGroup>
+                    )}
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.details.streamId')}>
                             <StreamId>
