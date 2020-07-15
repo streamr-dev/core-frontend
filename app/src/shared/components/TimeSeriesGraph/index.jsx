@@ -15,7 +15,6 @@ import '$app/node_modules/react-vis/dist/style.css'
 import Spinner from '$shared/components/Spinner'
 
 const Container = styled.div`
-    display: flex;
     height: 100%;
 `
 
@@ -75,19 +74,10 @@ type Props = {
     graphData: Array<XY>,
     className?: string,
     shownDays: number,
-    width: number,
-    height: number,
     isLoading?: boolean,
 }
 
-const TimeSeriesGraph = ({
-    graphData,
-    className,
-    shownDays,
-    width,
-    height,
-    isLoading,
-}: Props) => {
+const TimeSeriesGraph = ({ graphData, className, shownDays, isLoading }: Props) => {
     const dataDomain = useMemo(() => {
         const dataValues = (graphData || []).map((d) => d.y)
         let max = Math.max(...dataValues)
@@ -112,10 +102,10 @@ const TimeSeriesGraph = ({
             {isLoading && (
                 <div
                     style={{
-                        width,
-                        height,
                         display: 'flex',
                         justifyContent: 'center',
+                        height: '100%',
+                        width: '100%',
                     }}
                 >
                     <Spinner size="large" color="white" />
@@ -160,11 +150,6 @@ const TimeSeriesGraph = ({
             )}
         </Container>
     )
-}
-
-TimeSeriesGraph.defaultProps = {
-    width: 560,
-    height: 250,
 }
 
 export default TimeSeriesGraph
