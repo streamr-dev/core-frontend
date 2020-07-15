@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import Image from '$docs/components/Image'
 import docsLinks from '$shared/../docsLinks'
 import { numberToText } from '$shared/utils/text'
 import { dataUnionMemberLimit } from '$shared/utils/constants'
@@ -19,23 +20,14 @@ Streamr implements this idea with its Data Unions Framework, which allows admins
 
 A Data Union Product is an Ethereum smart contract, created and deployed via the Core app and published on the Marketplace. Most revenue from a Data Union flows to its members, but the admin can set a percentage fee they receive in return for creating and managing the union. For more information on structure, see <Link to={docsLinks.frameworkRoles}>Data Union Framework Roles</Link>.
 
-<figure>
-    <picture>
-        <img
-            src={RevenueAndData}
-            srcSet={`${RevenueAndData2x} 2x`}
-            alt="Introduction to Data Unions"
-            className={docsStyles.hideOnMobile}
-        />
-        <img
-            src={RevenueAndDataMobile}
-            srcSet={`${RevenueAndDataMobile2x} 2x`}
-            alt="Introduction to Data Unions"
-            className={docsStyles.showOnMobile}
-        />
-    </picture>
-    <figcaption>Example wallet and earnings UI for a Data Union app</figcaption>
-</figure>
+<Image
+  lightbox
+  mobileSrc={RevenueAndDataMobile2x}
+  src={RevenueAndData}
+  highResSrc={RevenueAndData2x}
+  alt="Example wallet and earnings UI for a Data Union app"
+  figCaption="Example wallet and earnings UI for a Data Union app"
+/>
 
 ### What you’ll need
 

@@ -1,3 +1,5 @@
+import Image from '$docs/components/Image'
+
 import UserInterface from './images/intro_to_core_01_desktop_border.jpg'
 import UserInterface2x from './images/intro_to_core_01_desktop_border@2x.jpg'
 import NoResults from './images/intro_to_core_02_desktop_border.jpg'
@@ -21,16 +23,12 @@ Streamr Core is the collection of open source applications developed and support
 ## Main user interface
 The main interface to the Core app contains a number of elements, including user profile, view switcher, main view panel (list or tile), create button, filter and sort controls,  quick help button and the app menu. The main views in the app are Streams, Canvases, Dashboards, Products, Purchases and Transactions. There is also a Settings view accessed through the menu at top right (which shows the intials of your currently signed in account).
 
-<figure>
-    <picture>
-      <img
-        className={docsStyles.bordered}
-        src={UserInterface}
-        srcSet={`${UserInterface2x} 2x`}
-        alt="Main user interface"
-      />
-    </picture>
-</figure>
+<Image
+  border
+  src={UserInterface}
+  highResSrc={UserInterface2x}
+  alt="Main user interface"
+/>
 
 ### Create buttons
 Four of the main views offer create functions; Streams, Canvases, Dashboards and Products. Creating a stream or product will take you into the relevant create flow. For more on this, see Working with Streams or Working with Products. 
@@ -43,79 +41,55 @@ You can set or edit your profile image (useful in future iterations of the Marke
 ### Filter and sort
 Live filter works to filter your current Core view by keyword. It works on either tile or list views. Just click the search icon to open the filter. Sort is a contextual function, offering different options depending on which Core view you are in.
 
-<figure>
-    <picture>
-      <img
-        className={docsStyles.bordered}
-        src={NoResults}
-        srcSet={`${NoResults2x} 2x`}
-        alt="No results"
-      />
-    </picture>
-</figure>
+<Image
+  border
+  src={NoResults}
+  highResSrc={NoResults2x}
+  alt="No results"
+/>
 
 ### Quick help
 The quick help menu gives you fast access to the these docs and the main Streamr Telegram group so give it a try if you need some quick answers.
 
-<figure>
-    <picture>
-      <img
-        src={QuickHelp}
-        srcSet={`${QuickHelp2x} 2x`}
-        alt="Quick help"
-      />
-    </picture>
-</figure>
+<Image
+  src={QuickHelp}
+  highResSrc={QuickHelp2x}
+  alt="Quick help"
+/>
 
 ### Tile and List submenus
 Both tile (canvases, dashboards, products, purchases) and list views (streams and transactions) offer per-item functions, accessed via a meatball menu from top right of tiles and right hand end of list views. Simply mouseover the item to see the menu.
 
-<figure>
-    <picture>
-      <img
-        src={SubMenus}
-        srcSet={`${SubMenus2x} 2x`}
-        alt="Sub menus"
-      />
-    </picture>
-    <figcaption>List item submenu (streams)</figcaption>
-</figure>
+<Image
+  src={SubMenus}
+  highResSrc={SubMenus2x}
+  alt="Sub menus"
+  figCaption="List item submenu (streams)"
+/>
 
-<figure>
-    <picture>
-      <img
-        src={TileMenu}
-        srcSet={`${TileMenu2x} 2x`}
-        alt="Tile menu"
-      />
-    </picture>
-    <figcaption>Tile submenu (canvases)</figcaption>
-</figure>
+<Image
+  src={TileMenu}
+  highResSrc={TileMenu2x}
+  alt="Tile menu"
+  figCaption="Tile submenu (canvases)"
+/>
 
 ## Sharing resources in Core
 All of the main resources types created and used within Core can be shared with others - streams, canvases and dashboards. In the case of canvases and dashboards, they can be shared from either their tile menu or from within their editing environments. Look for the share icon in the bottom toolbar. Streams can only be shared from the main Streams view via the submenu.
 
-<figure>
-    <picture>
-      <img
-        src={ShareButton}
-        srcSet={`${ShareButton2x} 2x`}
-        alt="Share button"
-      />
-    </picture>
-    <figcaption>Share button in canvas editor</figcaption>
-</figure>
+<Image
+  src={ShareButton}
+  highResSrc={ShareButton2x}
+  alt="Share button"
+  figCaption="Share button in canvas editor"
+/>
 
 When you share a resource, you can share it either privately or publicly. A private share means the link is only accessible to the users whose email address it has been shared with. A public share means anyone with the link — and importantly, anyone using the public API — can access your resource. 
 
 To share any resource, click share, then paste in the email address of the person you want to share it with, and click +. Select the access level you want to give them (view only, can edit or can share) and hit Save to confirm.
 
-<figure>
-    <picture>
-      <img
-        src={ShareSettings}
-        srcSet={`${ShareSettings2x} 2x`}
-        alt="Share settings"
-      />
-    </picture>
-</figure>
+<Image
+  src={ShareSettings}
+  highResSrc={ShareSettings2x}
+  alt="Share settings"
+/>
