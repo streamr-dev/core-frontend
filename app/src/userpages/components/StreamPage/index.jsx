@@ -66,6 +66,8 @@ const StreamPage = (props) => {
                         await handleLoadError({
                             error,
                         })
+                    } else {
+                        throw error
                     }
                 }
             } catch (e) {
