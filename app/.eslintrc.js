@@ -25,5 +25,6 @@ module.exports = exports = {
         'max-len': 'warn',
         'flowtype/no-flow-fix-me-comments': ['warn', '\\s.+'],
         'react/prop-types': 0,
+        'no-unreachable': 'warn',
     }
 }
