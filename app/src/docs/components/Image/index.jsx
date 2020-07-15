@@ -67,7 +67,6 @@ const Figure = ({
                 src={src}
                 srcSet={highResSrc && `${highResSrc} 2x`}
                 alt={alt}
-                data-attribute="SRL"
             />
         </picture>
         {figCaption && (
@@ -95,8 +94,8 @@ const Image = ({
                     mobileSrc={mobileSrc}
                     src={lightbox && highResSrc ? highResSrc : src}
                     highResSrc={highResSrc}
-                    alt={alt}
                     border={border}
+                    alt={alt}
                     figCaption={figCaption}
                 />
                 <SvgIcon
@@ -111,11 +110,13 @@ const Image = ({
     )
         : (
             <Figure
-                lightbox={lightbox}
+                className={cx(className, imageStyles.docsImage)}
                 mobileSrc={mobileSrc}
                 src={src}
                 highResSrc={highResSrc}
+                border={border}
                 alt={alt}
+                figCaption={figCaption}
             />
         )
 )
