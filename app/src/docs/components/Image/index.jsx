@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-newline */
 // @flow
 
 import React from 'react'
@@ -9,8 +8,6 @@ import cx from 'classnames'
 import imageStyles from './image.pcss'
 
 const lightboxOptions = {
-    settings: {
-    },
     buttons: {
         showAutoplayButton: false,
         showDownloadButton: false,
