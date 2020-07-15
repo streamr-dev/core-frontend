@@ -8,141 +8,141 @@ msgstr ""
 "POT-Creation-Date: 2018-09-07T09:56:54.920Z\n"
 "PO-Revision-Date: 2018-09-07T09:56:54.920Z\n"
 
-msgid "general##aboutUs"
+msgid "general.aboutUs"
 msgstr "关于我们"
 
-msgid "general##blog"
+msgid "general.blog"
 msgstr "博客"
 
-msgid "general##browse"
+msgid "general.browse"
 msgstr "浏览"
 
 # missing
-msgid "general##canvases"
+msgid "general.canvases"
 msgstr "Canvases"
 
-msgid "general##company"
+msgid "general.company"
 msgstr "公司"
 
-msgid "general##contact"
+msgid "general.contact"
 msgstr "联系方式"
 
-msgid "general##contributionSummary"
+msgid "general.contributionSummary"
 msgstr "贡献概览"
 
 # missing
-msgid "general##dashboards"
+msgid "general.dashboards"
 msgstr "Dashboards"
 
-msgid "general##documents"
+msgid "general.documents"
 msgstr "文件"
 
 # missing
-msgid "general##editor"
+msgid "general.editor"
 msgstr "Editor"
 
-msgid "general##faq"
+msgid "general.faq"
 msgstr "常见问题"
 
-msgid "general##general"
+msgid "general.general"
 msgstr "概要"
 
-msgid "general##github"
+msgid "general.github"
 msgstr "GitHub"
 
-msgid "general##howItWorks"
+msgid "general.howItWorks"
 msgstr "工作原理"
 
-msgid "general##jobs"
+msgid "general.jobs"
 msgstr "求职纳贤"
 
-msgid "general##labs"
+msgid "general.labs"
 msgstr "实验室"
 
-msgid "general##language"
+msgid "general.language"
 msgstr "语言"
 
-msgid "general##linkedin"
+msgid "general.linkedin"
 msgstr "领英"
 
-msgid "general##marketplace"
+msgid "general.marketplace"
 msgstr "市场"
 
-msgid "general##media"
+msgid "general.media"
 msgstr "媒体"
 
-msgid "general##medium"
+msgid "general.medium"
 msgstr "Medium"
 
-msgid "general##myProducts"
+msgid "general.myProducts"
 msgstr "我的产品"
 
-msgid "general##myPurchases"
+msgid "general.myPurchases"
 msgstr "购买"
 
 # missing
-msgid "general##newCanvas"
+msgid "general.newCanvas"
 msgstr "New Canvas"
 
-msgid "general##privacy"
+msgid "general.privacy"
 msgstr "隐私政策"
 
-msgid "general##product"
+msgid "general.product"
 msgstr "产品"
 
-msgid "general##products"
+msgid "general.products"
 msgstr "产品"
 
-msgid "general##profile"
+msgid "general.profile"
 msgstr "Profile"
 
-msgid "general##purchases"
+msgid "general.purchases"
 msgstr "购买"
 
-msgid "general##reddit"
+msgid "general.reddit"
 msgstr "Reddit"
 
-msgid "general##signIn"
+msgid "general.signIn"
 msgstr "登录"
 
-msgid "general##signUp"
+msgid "general.signUp"
 msgstr "创建账户"
 
-msgid "general##streamrSystem"
+msgid "general.streamrSystem"
 msgstr "Streamr 系统"
 
 # missing
-msgid "general##streams"
+msgid "general.streams"
 msgstr "Streams"
 
-msgid "general##telegram"
+msgid "general.telegram"
 msgstr "Telegram"
 
-msgid "general##terms"
+msgid "general.terms"
 msgstr "使用条款"
 
-msgid "general##trello"
+msgid "general.trello"
 msgstr "Trello"
 
-msgid "general##tryTheEditor"
+msgid "general.tryTheEditor"
 msgstr "试用编辑器"
 
-msgid "general##twitter"
+msgid "general.twitter"
 msgstr "Twitter"
 
-msgid "general##whitepaper"
+msgid "general.whitepaper"
 msgstr "白皮书"
 
-msgid "general##youtube"
+msgid "general.youtube"
 msgstr "YouTube"
 
-msgid "language##id"
+msgid "language.id"
 msgstr "cn"
 
-msgid "language##name"
+msgid "language.name"
 msgstr "中文"
 
-msgid "urls##whitepaper"
+msgid "urls.whitepaper"
 msgstr ""
 "https://s3.amazonaws.com/streamr-public/streamr-datacoin-whitepaper-2017-05-"
 "25-v0.7_CHINESE.pdf"

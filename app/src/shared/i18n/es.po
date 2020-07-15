@@ -8,152 +8,152 @@ msgstr ""
 "POT-Creation-Date: 2018-09-07T11:47:18.924Z\n"
 "PO-Revision-Date: 2018-09-07T11:47:18.924Z\n"
 
-msgid "general##aboutUs"
+msgid "general.aboutUs"
 msgstr "Nosotros"
 
-msgid "general##blog"
+msgid "general.blog"
 msgstr "Blog"
 
-msgid "general##browse"
+msgid "general.browse"
 msgstr "Explorar"
 
 # missing
-msgid "general##canvases"
+msgid "general.canvases"
 msgstr "Canvases"
 
-msgid "general##company"
+msgid "general.company"
 msgstr "Empresa"
 
-msgid "general##contact"
+msgid "general.contact"
 msgstr "Contacto"
 
-msgid "general##contributionSummary"
+msgid "general.contributionSummary"
 msgstr "Resumen de contribución"
 
 # missing
-msgid "general##dashboards"
+msgid "general.dashboards"
 msgstr "Dashboards"
 
-msgid "general##documents"
+msgid "general.documents"
 msgstr "Documentos"
 
-msgid "general##editor"
+msgid "general.editor"
 msgstr "Editor"
 
-msgid "general##faq"
+msgid "general.faq"
 msgstr "FAQ"
 
-msgid "general##general"
+msgid "general.general"
 msgstr "General"
 
-msgid "general##github"
+msgid "general.github"
 msgstr "GitHub"
 
-msgid "general##howItWorks"
+msgid "general.howItWorks"
 msgstr "Cómo funciona"
 
-msgid "general##jobs"
+msgid "general.jobs"
 msgstr "Empleos"
 
-msgid "general##labs"
+msgid "general.labs"
 msgstr "Labs"
 
-msgid "general##language"
+msgid "general.language"
 msgstr "Idioma"
 
-msgid "general##linkedin"
+msgid "general.linkedin"
 msgstr "LinkedIn"
 
-msgid "general##marketplace"
+msgid "general.marketplace"
 msgstr "Marketplace"
 
-msgid "general##media"
+msgid "general.media"
 msgstr "Medios de comunicación"
 
-msgid "general##medium"
+msgid "general.medium"
 msgstr "Medium"
 
-msgid "general##myProducts"
+msgid "general.myProducts"
 msgstr "Mis productos"
 
-msgid "general##myPurchases"
+msgid "general.myPurchases"
 msgstr "Mis compras"
 
 # missing
-msgid "general##newCanvas"
+msgid "general.newCanvas"
 msgstr "New Canvas"
 
-msgid "general##privacy"
+msgid "general.privacy"
 msgstr "Política de Privacidad"
 
 # missing
-msgid "general##product"
+msgid "general.product"
 msgstr "Product"
 
 # missing
-msgid "general##products"
+msgid "general.products"
 msgstr "Products"
 
 # missing
-msgid "general##dataUnions"
+msgid "general.dataUnions"
 msgstr "Data Unions"
 
 # missing
-msgid "general##profile"
+msgid "general.profile"
 msgstr "Profile"
 
 # missing
-msgid "general##purchases"
+msgid "general.purchases"
 msgstr "Purchases"
 
-msgid "general##reddit"
+msgid "general.reddit"
 msgstr "Reddit"
 
-msgid "general##signIn"
+msgid "general.signIn"
 msgstr "Inicia sesión"
 
-msgid "general##signUp"
+msgid "general.signUp"
 msgstr "Regístrate"
 
-msgid "general##streamrSystem"
+msgid "general.streamrSystem"
 msgstr "Streamr System"
 
 # missing
-msgid "general##streams"
+msgid "general.streams"
 msgstr "Streams"
 
-msgid "general##telegram"
+msgid "general.telegram"
 msgstr "Telegram"
 
-msgid "general##terms"
+msgid "general.terms"
 msgstr "Términos de Uso"
 
-msgid "general##trello"
+msgid "general.trello"
 msgstr "Trello"
 
-msgid "general##tryTheEditor"
+msgid "general.tryTheEditor"
 msgstr "Prueba el editor"
 
-msgid "general##twitter"
+msgid "general.twitter"
 msgstr "Twitter"
 
-msgid "general##whitepaper"
+msgid "general.whitepaper"
 msgstr "Whitepaper"
 
-msgid "general##youtube"
+msgid "general.youtube"
 msgstr "YouTube"
 
 # missing
-msgid "general##logout"
+msgid "general.logout"
 msgstr "Logout"
 
-msgid "language##id"
+msgid "language.id"
 msgstr "es"
 
-msgid "language##name"
+msgid "language.name"
 msgstr "Español"
 
-msgid "urls##whitepaper"
+msgid "urls.whitepaper"
 msgstr ""
 "https://s3.amazonaws.com/streamr-public/streamr-datacoin-whitepaper-2017-06-"
 "25-v1.0_SPANISH.pdf"
