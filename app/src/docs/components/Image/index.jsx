@@ -24,25 +24,19 @@ const lightboxOptions = {
     },
 }
 
-type ImageProps = {
-    lightbox?: boolean,
-    mobileSrc: any,
-    src: any,
-    highResSrc: any,
+type FigureProps = {
+    mobileSrc: string,
+    src: string,
+    highResSrc: string,
     alt?: string,
     border?: boolean,
     className?: string,
     figCaption?: string,
 }
 
-type FigureProps = {
-    mobileSrc: any,
-    src: any,
-    highResSrc: any,
-    alt?: string,
-    border?: boolean,
-    className?: string,
-    figCaption?: string,
+type ImageProps = {
+    ...FigureProps,
+    lightbox?: boolean,
 }
 
 const Figure = ({
