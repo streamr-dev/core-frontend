@@ -83,7 +83,12 @@ const ProductDetails = ({
                     className={styles.button}
                     kind="primary"
                     size="big"
-                    disabled={isPurchasing || (!isPaidProduct(product) && isValidSubscription) || product.state !== productStates.DEPLOYED}
+                    disabled={
+                        isPurchasing ||
+                        isWhitelisted === null ||
+                        (!isPaidProduct(product) && isValidSubscription) ||
+                        product.state !== productStates.DEPLOYED
+                    }
                     onClick={onPurchase}
                     waiting={isPurchasing}
                 >
