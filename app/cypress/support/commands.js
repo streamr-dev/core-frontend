@@ -53,14 +53,10 @@ Cypress.Commands.add('getStream', (id) => {
         .then(({ body }) => body)
 })
 
-Cypress.Commands.add('ignoreUncaughtError', (messageRegex, done) => {
-    if (!done) {
-        throw new Error('Callback is required.')
-    }
-
+Cypress.Commands.add('ignoreUncaughtError', (messageRegex) => {
     cy.on('uncaught:exception', (err) => {
-        done()
-        return messageRegex.test(err.message)
+        expect(err.message).to.match(messageRegex)
+        return false
     })
 })
 

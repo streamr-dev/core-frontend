@@ -42,8 +42,8 @@ describe('New stream page', () => {
         cy.get('[name=name]').invoke('val').should('eq', 'Untitled Stream')
     })
 
-    it('shows the error page if stream creation fails', (done) => {
-        cy.ignoreUncaughtError(/failed with status code 422/i, done)
+    it('shows the error page if stream creation fails', () => {
+        cy.ignoreUncaughtError(/failed with status code 422/i)
 
         cy.login()
         cy.server({
@@ -51,23 +51,24 @@ describe('New stream page', () => {
             status: 422,
             response: {},
         })
-        cy.route('http://localhost/api/v1/streams')
+        cy.route('/api/v1/streams').as('getStreams')
         cy.visit('/core/streams/new')
-        cy.contains('[alt="App crashed"]')
+        cy.wait('@getStreams')
+        cy.contains(/something has broken down here/i)
     })
 })
 
 describe('Stream read-only page (no edit permission)', () => {
-    it('displays "not found" page if stream does not exist', (done) => {
-        cy.ignoreUncaughtError(/could not be found/i, done)
+    it('displays "not found" page if stream does not exist', () => {
+        cy.ignoreUncaughtError(/could not be found/i)
 
         cy.visit('/core/streams/TEST')
-        cy.contains('[alt="Not found"]')
+        cy.contains(/we don.t seem to be able to find/i)
         cy.location('pathname').should('eq', '/core/streams/TEST')
     })
 
-    it('displays "not found" page if user has no "read" permission', (done) => {
-        cy.ignoreUncaughtError(/could not be found/i, done)
+    it('displays "not found" page if user has no "read" permission', () => {
+        cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()
         cy.createStream().then((streamId) => {
@@ -76,13 +77,13 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)
-            cy.contains('[alt="Not found"]')
+            cy.contains(/we don.t seem to be able to find/i)
             cy.location('pathname').should('eq', `/core/streams/${streamId}`)
         })
     })
 
-    it('displays the generic error page if getting stream fails', (done) => {
-        cy.ignoreUncaughtError(/failed with status code 501/i, done)
+    it('displays the generic error page if getting stream fails', () => {
+        cy.ignoreUncaughtError(/request failed with status code 501/i)
 
         cy.login()
         cy.createStream().then((streamId) => {
@@ -93,9 +94,10 @@ describe('Stream read-only page (no edit permission)', () => {
                 status: 501,
                 response: {},
             })
-            cy.route(`http://localhost/api/v1/streams/${streamId}`)
+            cy.route('GET', `/api/v1/streams/${streamId}`).as('getStream')
             cy.visit(`/core/streams/${streamId}`)
-            cy.contains('img[alt="App crashed"]')
+            cy.wait('@getStream')
+            cy.contains(/something has broken down here/i)
         })
     })
 
@@ -122,8 +124,9 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.createStreamPermission(streamId)
             cy.logout()
             cy.visit(`/core/streams/${streamId}`)
-            cy.get('h1').contains(/test stream #\d{4}\/\d{6}/i)
-            cy.get('label').contains('Description').next().contains('Lorem ipsum.')
+            cy.get('h1').contains('Read only stream')
+            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
+            cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
             cy.get(`input#type-${field1.id}`).invoke('val').should('eq', 'String')
@@ -156,8 +159,9 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)
-            cy.get('h1').contains(/test stream #\d{4}\/\d{6}/i)
-            cy.get('label').contains('Description').next().contains('Lorem ipsum.')
+            cy.get('h1').contains('Read only stream')
+            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
+            cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
             cy.get(`input#type-${field1.id}`).invoke('val').should('eq', 'String')
@@ -190,8 +194,9 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)
-            cy.get('h1').contains(/test stream #\d{4}\/\d{6}/i)
-            cy.get('label').contains('Description').next().contains('Lorem ipsum.')
+            cy.get('h1').contains('Read only stream')
+            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
+            cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
             cy.get(`input#type-${field1.id}`).invoke('val').should('eq', 'String')
@@ -211,7 +216,8 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${streamId}`)
-            cy.get('h1').contains(/test stream #\d{4}\/\d{6}/i)
+            cy.get('h1').contains('Read only stream')
+            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
             cy.get('h3').contains('Fields').should('not.exist')
         })
     })
@@ -224,7 +230,8 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.createStreamPermission(streamId, null, 'stream_get')
             cy.logout()
             cy.visit(`/core/streams/${streamId}`)
-            cy.get('h1').contains(/test stream #\d{4}\/\d{6}/i)
+            cy.get('h1').contains('Read only stream')
+            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
             cy.get('label').contains('Description').should('not.exist')
         })
     })
@@ -309,9 +316,9 @@ describe('Stream read-only page (no edit permission)', () => {
                         endDate: null,
                     },
                 })
-                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('range')
+                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('getRange')
                 cy.visit(`/core/streams/${streamId}`)
-                cy.wait('@range')
+                cy.wait('@getRange')
                 cy.get('[name=range]').invoke('val').should('contain', 'No stored data.')
             })
         })
@@ -325,9 +332,9 @@ describe('Stream read-only page (no edit permission)', () => {
                     method: 'GET',
                     status: 501,
                 })
-                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('range')
+                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('getRange')
                 cy.visit(`/core/streams/${streamId}`)
-                cy.wait('@range')
+                cy.wait('@getRange')
                 cy.get('[name=range]').invoke('val').should('contain', 'No stored data.')
             })
         })
@@ -348,9 +355,9 @@ describe('Stream read-only page (no edit permission)', () => {
                         endDate,
                     },
                 })
-                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('range')
+                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('getRange')
                 cy.visit(`/core/streams/${streamId}`)
-                cy.wait('@range')
+                cy.wait('@getRange')
                 cy.get('[name=range]')
                     .invoke('val')
                     .should('eq', `This stream has stored data between ${beginDate.toLocaleDateString()} and ${endDate.toLocaleDateString()}.`)
