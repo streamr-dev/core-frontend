@@ -153,7 +153,6 @@ describe('Stream actions', () => {
             const stream = {
                 id,
                 name: 'test',
-                ownPermissions: [],
             }
             moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${id}`, {
                 status: 200,

@@ -11,7 +11,6 @@ import type {
     EntitiesState,
 } from '$shared/flowtype/store-state'
 import type {
-    ResourceKeyId,
     ResourceKeyIdList,
     ResourceKeyList,
 } from '$shared/flowtype/resource-key-types'
@@ -19,11 +18,6 @@ import { selectEntities } from '$shared/modules/entities/selectors'
 import { resourceKeysSchema } from '$shared/modules/entities/schema'
 
 const selectResourceKeyState = (state: StoreState): ResourceKeyState => state.resourceKey
-
-export const selectAuthApiKeyId: (StoreState) => ?ResourceKeyId = createSelector(
-    selectResourceKeyState,
-    (subState: ResourceKeyState): ?ResourceKeyId => (((subState.users.me || []).length > 0) ? subState.users.me[0] : undefined),
-)
 
 export const selectStreamResourceKeys: (StoreState) => StreamResourceKeys = createSelector(
     selectResourceKeyState,

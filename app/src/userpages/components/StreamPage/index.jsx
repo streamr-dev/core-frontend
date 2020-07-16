@@ -1,8 +1,5 @@
-// @flow
-
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { type Match } from 'react-router-dom'
 import {
     closeStream,
     getStream,
@@ -27,13 +24,9 @@ import Edit from './Edit'
 import View from './View'
 import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import useStreamPermissions from '$userpages/hooks/useStreamPermissions'
 
-type Props = {
-    match: Match,
-}
-
-const StreamPage = (props: Props) => {
+const StreamPage = (props) => {
     const { id: idProp } = props.match.params || {}
 
     const permissions = useStreamPermissions(idProp)
@@ -73,6 +66,8 @@ const StreamPage = (props: Props) => {
                         await handleLoadError({
                             error,
                         })
+                    } else {
+                        throw error
                     }
                 }
             } catch (e) {

@@ -10,6 +10,7 @@ import { canHandleLoadError, handleLoadError } from '$auth/utils/loginIntercepto
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductByIdRequest, getProductByIdSuccess } from '$mp/modules/product/actions'
+import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY } from '$shared/utils/constants'
 import { priceForTimeUnits } from '$mp/utils/price'
@@ -67,6 +68,19 @@ export default function useProductLoadCallback() {
             }
             if (!isMounted()) { return }
 
+            // Fetch whitelist status from contract product
+            let requiresWhitelist = false
+            try {
+                const contractProduct = await getProductFromContract(productId, true)
+                // eslint-disable-next-line prefer-destructuring
+                requiresWhitelist = contractProduct.requiresWhitelist
+            } catch (e) {
+                // ignore error, assume product is not published
+                // eslint-disable-next-line prefer-destructuring
+                requiresWhitelist = product && product.pendingChanges && product.pendingChanges.requiresWhitelist
+            }
+            if (!isMounted()) { return }
+
             const nextProduct = {
                 ...product,
                 isFree: !!product.isFree || !isPaidProduct(product),
@@ -75,6 +89,7 @@ export default function useProductLoadCallback() {
                 price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
                 adminFee: currentAdminFee,
                 dataUnionDeployed,
+                requiresWhitelist,
             }
 
             // update redux state, keep original product in redux

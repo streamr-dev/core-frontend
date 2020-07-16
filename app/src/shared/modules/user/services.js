@@ -6,13 +6,13 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
 
 export const getUserData = (): ApiResult<User> => get({
-    url: routes.api.me.index({
+    url: routes.api.currentUser.index({
         noCache: Date.now(),
     }),
 })
 
 export const putUser = (user: User): ApiResult<User> => put({
-    url: routes.api.me.index(),
+    url: routes.api.currentUser.index(),
     data: user,
 })
 
@@ -24,7 +24,7 @@ export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, username: str
     form.append('password2', passwordUpdate.confirmNewPassword)
 
     return post({
-        url: routes.api.me.changePassword(),
+        url: routes.api.currentUser.changePassword(),
         data: form,
         options: {
             headers: {
@@ -46,12 +46,12 @@ export const uploadProfileAvatar = (image: File): Promise<void> => {
     data.append('file', image, image.name)
 
     return post({
-        url: routes.api.me.image(),
+        url: routes.api.currentUser.image(),
         data,
         options,
     })
 }
 
 export const deleteUserAccount = (): ApiResult<null> => del({
-    url: routes.api.me.index(),
+    url: routes.api.currentUser.index(),
 })

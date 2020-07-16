@@ -4,7 +4,7 @@ import * as actions from '$userpages/modules/userPageStreams/actions'
 import * as selectors from '$userpages/modules/userPageStreams/selectors'
 import { initStore } from '$shared/../store'
 
-import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
+import { streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 
 describe('updateEditStream', () => {

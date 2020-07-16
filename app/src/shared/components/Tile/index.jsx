@@ -121,10 +121,15 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
 
 type DashboardTileProps = {
     dashboard: any,
+    onMenuToggle?: (boolean) => any,
+    actions: any,
 }
 
-const DashboardTile = ({ dashboard, ...props }: DashboardTileProps) => (
+const DashboardTile = ({ dashboard, onMenuToggle, actions, ...props }: DashboardTileProps) => (
     <Tile {...props}>
+        <Menu onToggle={onMenuToggle}>
+            {actions}
+        </Menu>
         <Link
             to={routes.dashboards.edit({
                 id: dashboard.id,

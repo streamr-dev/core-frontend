@@ -5,7 +5,6 @@ import { productTypes } from '$mp/utils/constants'
 import type { CategoryId } from './category-types'
 import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 import type {
-    ErrorInUi,
     ContractCurrency,
     PaymentCurrency,
     NumberString,
@@ -19,7 +18,8 @@ export type ProductState = $Keys<typeof productStates>
 export type ProductType = $Values<typeof productTypes>
 
 export type PendingChanges = {
-    adminFee?: number
+    adminFee?: number,
+    requiresWhitelist?: boolean,
 }
 
 export type TermsOfUse = {
@@ -66,6 +66,7 @@ export type Product = {
     price?: NumberString,
     isFree?: boolean,
     type?: ProductType,
+    requiresWhitelist?: boolean,
     pendingChanges?: PendingChanges,
     termsOfUse: TermsOfUse,
     contact: ?ContactDetails,
@@ -96,6 +97,7 @@ export type SmartContractProduct = {
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
     minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>,
     state: $ElementType<Product, 'state'>,
+    requiresWhitelist: $ElementType<Product, 'requiresWhitelist'>,
 }
 
 export type Subscription = {
@@ -135,22 +137,6 @@ export type Filter = {
     categories: ?CategoryFilter,
     sortBy: ?SortByFilter,
     maxPrice: ?MaxPriceFilter,
-}
-
-export type UserProductPermissionList = {
-    id?: number,
-    user?: string,
-    operation?: string,
-    anonymous?: boolean,
-}
-
-export type ProductPermissions = {
-    get: boolean,
-    edit: boolean,
-    del: boolean,
-    share: boolean,
-    fetchingPermissions: boolean,
-    permissionsError: ?ErrorInUi,
 }
 
 export type DataUnionId = $ElementType<Product, 'beneficiaryAddress'>

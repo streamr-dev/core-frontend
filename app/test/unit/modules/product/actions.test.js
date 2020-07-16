@@ -1,7 +1,6 @@
 import assert from 'assert-diff'
 import sinon from 'sinon'
 import { normalize } from 'normalizr'
-import { CALL_HISTORY_METHOD } from 'connected-react-router'
 
 import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/product/actions'
@@ -271,107 +270,6 @@ describe('product - actions', () => {
                         id: productId,
                         error: {
                             message: error.message,
-                        },
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-    })
-
-    describe('getUserProductPermissions', () => {
-        it('calls services.getUserProductPermissions and sets permissions', async () => {
-            const productId = 1
-            const data = {
-                get: true,
-                edit: true,
-                del: false,
-                share: false,
-            }
-
-            const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.resolve(data))
-
-            const store = mockStore()
-            await store.dispatch(actions.getUserProductPermissions(productId))
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-                    payload: {
-                        id: productId,
-                    },
-                },
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-                    payload: {
-                        get: true,
-                        edit: true,
-                        del: false,
-                        share: false,
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('handles anonymous permission as read', async () => {
-            const productId = 1
-            const data = {
-                get: true,
-                edit: false,
-                del: false,
-                share: false,
-            }
-
-            const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.resolve(data))
-
-            const store = mockStore()
-            await store.dispatch(actions.getUserProductPermissions(productId))
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-                    payload: {
-                        id: productId,
-                    },
-                },
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_SUCCESS,
-                    payload: {
-                        get: true,
-                        edit: false,
-                        del: false,
-                        share: false,
-                    },
-                },
-            ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-        })
-
-        it('calls services.getUserProductPermissions and handles error', async () => {
-            const productId = 1
-            const errorMessage = 'error'
-            const serviceStub = sandbox.stub(services, 'getUserProductPermissions').callsFake(() => Promise.reject(new Error(errorMessage)))
-
-            const store = mockStore()
-            await store.dispatch(actions.getUserProductPermissions(productId))
-            assert(serviceStub.calledOnce)
-
-            const expectedActions = [
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_REQUEST,
-                    payload: {
-                        id: productId,
-                    },
-                },
-                {
-                    type: constants.GET_USER_PRODUCT_PERMISSIONS_FAILURE,
-                    payload: {
-                        id: productId,
-                        error: {
-                            message: errorMessage,
                         },
                     },
                 },

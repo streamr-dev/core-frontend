@@ -28,7 +28,6 @@ const streamList = [{
     uiChannel: false,
     storageDays: 0,
     partitions: 0,
-    ownPermissions: [],
     config: {},
 }, {
     id: '2',
@@ -42,7 +41,6 @@ const streamList = [{
     uiChannel: false,
     storageDays: 0,
     partitions: 0,
-    ownPermissions: [],
     config: {},
 }, {
     id: '3',
@@ -56,7 +54,6 @@ const streamList = [{
     uiChannel: false,
     storageDays: 0,
     partitions: 0,
-    ownPermissions: [],
     config: {},
 }]
 
@@ -119,7 +116,6 @@ stories.add('1500 streams', () => {
         uiChannel: false,
         storageDays: 0,
         partitions: 0,
-        ownPermissions: [],
         config: {},
     }))
 

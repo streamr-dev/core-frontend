@@ -1,5 +1,3 @@
-import path from 'path'
-
 import React, { useCallback, useState, useRef, useEffect, useMemo, useContext, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -7,7 +5,6 @@ import cx from 'classnames'
 import startCase from 'lodash/startCase'
 import { useSpring, useTransition, animated } from 'react-spring'
 
-import * as api from '$shared/utils/api'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import SelectInput from '$ui/Select'
 import Errors from '$ui/Errors'
@@ -19,6 +16,11 @@ import SvgIcon from '$shared/components/SvgIcon'
 import useUniqueId from '$shared/hooks/useUniqueId'
 import TextInput from '$ui/Text'
 import { isFormElement } from '$shared/utils/isEditableElement'
+import {
+    getResourcePermissions,
+    addResourcePermission,
+    removeResourcePermission,
+} from '$userpages/modules/permission/services'
 
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
@@ -27,34 +29,6 @@ import CopyLink from './CopyLink'
 import Tooltip from '$shared/components/Tooltip'
 
 const options = ['onlyInvited', 'withLink']
-
-const getApiUrl = (resourceType, resourceId) => {
-    const urlPartsByResourceType = {
-        DASHBOARD: 'dashboards',
-        CANVAS: 'canvases',
-        STREAM: 'streams',
-    }
-    const urlPart = urlPartsByResourceType[resourceType]
-    if (!urlPart) {
-        throw new Error(`Invalid resource type: ${resourceType}`)
-    }
-
-    return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId)}`
-}
-
-const getResourcePermissions = async ({ resourceType, resourceId }) => api.get({
-    url: `${getApiUrl(resourceType, resourceId)}/permissions`,
-})
-
-const setResourcePermission = async ({ resourceType, resourceId, data }) => api.post({
-    url: `${getApiUrl(resourceType, resourceId)}/permissions`,
-    data,
-})
-
-const removeResourcePermission = async ({ resourceType, resourceId, data }) => api.del({
-    url: `${getApiUrl(resourceType, resourceId)}/permissions/${data.id}`,
-    data,
-})
 
 function useAsyncCallbackWithState(callback) {
     const [state, setState] = useState({
@@ -402,15 +376,15 @@ async function savePermissions(currentUsers, props) {
         const userAddedItems = added.filter((p) => p.user === userId)
         const userRemovedItems = removed.filter((p) => p.id != null && p.user === userId)
         await Promise.all([
-            ...userAddedItems.map(async (data) => setResourcePermission({
+            ...userAddedItems.map(async (data) => addResourcePermission({
                 resourceType,
                 resourceId,
                 data: State.toAnonymousPermission(data),
             })),
-            ...userRemovedItems.map(async (data) => removeResourcePermission({
+            ...userRemovedItems.map(async ({ id }) => removeResourcePermission({
                 resourceType,
                 resourceId,
-                data: State.toAnonymousPermission(data),
+                id,
             })),
         ].map((task) => task.catch((error) => {
             console.error(error) // eslint-disable-line no-console

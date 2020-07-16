@@ -3,7 +3,7 @@
 import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { I18n } from 'react-redux-i18n'
 
-import { isDataUnionProduct } from '$mp/utils/product'
+import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
 import Scrollspy from 'react-scrollspy'
 
@@ -18,6 +18,8 @@ import styles from './editorNav.pcss'
 
 const SCROLLSPY_OFFSET = -40
 const CLICK_OFFSET = -130
+
+const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
 
 const EditorNav = () => {
     const product = useEditableProduct()
@@ -34,6 +36,7 @@ const EditorNav = () => {
 
     const isDataUnion = isDataUnionProduct(product)
     const isPublic = isPublished(product)
+    const isPaid = isPaidProduct(product)
 
     const getStatus = useCallback((name: string) => {
         if (isNewProduct && !isTouched(name)) {
@@ -113,11 +116,12 @@ const EditorNav = () => {
     }, [scrollTo])
 
     const ethIdentityStatus = useMemo(() => {
+        const status = getStatus('ethIdentity')
         if (!publishAttempted) {
             return statuses.EMPTY
         }
-        return statuses.VALID
-    }, [publishAttempted])
+        return status
+    }, [publishAttempted, getStatus])
 
     const sharedSecretStatus = useMemo(() => {
         if (!publishAttempted) {
@@ -151,26 +155,26 @@ const EditorNav = () => {
             id: 'details',
             heading: I18n.t('editProductPage.navigation.details'),
             status: detailsStatus,
-        }, {
+        },
+        ...includeIf(!!isPaid, [{
+            id: 'whitelist',
+            heading: I18n.t('editProductPage.navigation.whitelist'),
+            status: getStatus('requiresWhitelist'),
+        }]),
+        ...includeIf(!!showConnectEthIdentity, [{
+            id: 'connect-eth-identity',
+            heading: I18n.t('editProductPage.navigation.connectEthIdentity'),
+            status: ethIdentityStatus,
+        }]), {
             id: 'terms',
             heading: I18n.t('editProductPage.navigation.terms'),
             status: getStatus('termsOfUse'),
-        }]
-
-        if (isDataUnion) {
-            if (showConnectEthIdentity) {
-                nextSections.push({
-                    id: 'connect-eth-identity',
-                    heading: I18n.t('editProductPage.navigation.connectEthIdentity'),
-                    status: ethIdentityStatus,
-                })
-            }
-            nextSections.push({
-                id: 'shared-secrets',
-                heading: I18n.t('editProductPage.navigation.sharedSecrets'),
-                status: sharedSecretStatus,
-            })
-        }
+        },
+        ...includeIf(!!isDataUnion, [{
+            id: 'shared-secrets',
+            heading: I18n.t('editProductPage.navigation.sharedSecrets'),
+            status: sharedSecretStatus,
+        }])]
 
         return nextSections
     }, [
@@ -181,6 +185,7 @@ const EditorNav = () => {
         showConnectEthIdentity,
         ethIdentityStatus,
         sharedSecretStatus,
+        isPaid,
     ])
 
     const sectionWithLinks = useMemo(() => sections.map((section) => ({

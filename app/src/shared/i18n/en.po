@@ -8,454 +8,454 @@ msgstr ""
 "POT-Creation-Date: 2018-09-07T10:13:34.652Z\n"
 "PO-Revision-Date: 2018-09-07T10:13:34.652Z\n"
 
-msgid "general##on"
+msgid "general.on"
 msgstr "On"
 
-msgid "general##off"
+msgid "general.off"
 msgstr "Off"
 
-msgid "general##aboutUs"
+msgid "general.aboutUs"
 msgstr "About"
 
-msgid "general##back"
+msgid "general.back"
 msgstr "Back"
 
-msgid "general##blog"
+msgid "general.blog"
 msgstr "Blog"
 
-msgid "general##browse"
+msgid "general.browse"
 msgstr "Browse"
 
-msgid "general##canvas"
+msgid "general.canvas"
 msgstr "Canvas"
 
-msgid "general##canvases"
+msgid "general.canvases"
 msgstr "Canvases"
 
-msgid "general##company"
+msgid "general.company"
 msgstr "Company"
 
-msgid "general##contact"
+msgid "general.contact"
 msgstr "Contact"
 
-msgid "general##contributionSummary"
+msgid "general.contributionSummary"
 msgstr "Contribution Summary"
 
-msgid "general##dashboards"
+msgid "general.dashboards"
 msgstr "Dashboards"
 
-msgid "general##documents"
+msgid "general.documents"
 msgstr "Documents"
 
-msgid "general##editor"
+msgid "general.editor"
 msgstr "Editor"
 
-msgid "general##faq"
+msgid "general.faq"
 msgstr "FAQ"
 
-msgid "general##dataProduct"
+msgid "general.dataProduct"
 msgstr "Data Product"
 
-msgid "general##dataUnion"
+msgid "general.dataUnion"
 msgstr "Data Union"
 
-msgid "general##designAssets"
+msgid "general.designAssets"
 msgstr "Design Assets"
 
-msgid "general##general"
+msgid "general.general"
 msgstr "General"
 
-msgid "general##github"
+msgid "general.github"
 msgstr "GitHub"
 
-msgid "general##howItWorks"
+msgid "general.howItWorks"
 msgstr "How it Works"
 
-msgid "general##jobs"
+msgid "general.jobs"
 msgstr "Jobs"
 
-msgid "general##labs"
+msgid "general.labs"
 msgstr "Business"
 
-msgid "general##language"
+msgid "general.language"
 msgstr "Language"
 
-msgid "general##linkedin"
+msgid "general.linkedin"
 msgstr "LinkedIn"
 
-msgid "general##marketplace"
+msgid "general.marketplace"
 msgstr "Marketplace"
 
-msgid "general##media"
+msgid "general.media"
 msgstr "Media"
 
-msgid "general##medium"
+msgid "general.medium"
 msgstr "Medium"
 
-msgid "general##myProducts"
+msgid "general.myProducts"
 msgstr "My Products"
 
-msgid "general##myPurchases"
+msgid "general.myPurchases"
 msgstr "My Purchases"
 
-msgid "general##newCanvas"
+msgid "general.newCanvas"
 msgstr "New Canvas"
 
-msgid "general##privacy"
+msgid "general.privacy"
 msgstr "Privacy"
 
-msgid "general##product"
+msgid "general.product"
 msgstr "Product"
 
-msgid "general##products"
+msgid "general.products"
 msgstr "Products"
 
-msgid "general##dataUnions"
+msgid "general.dataUnions"
 msgstr "Data Unions"
 
-msgid "general##profile"
+msgid "general.profile"
 msgstr "Profile"
 
-msgid "general##purchases"
+msgid "general.purchases"
 msgstr "Purchases"
 
-msgid "general##reddit"
+msgid "general.reddit"
 msgstr "Reddit"
 
-msgid "general##signIn"
+msgid "general.signIn"
 msgstr "Sign In"
 
-msgid "general##signUp"
+msgid "general.signUp"
 msgstr "Sign Up"
 
-msgid "general##apps"
+msgid "general.apps"
 msgstr "Apps"
 
-msgid "general##streamrSystem"
+msgid "general.streamrSystem"
 msgstr "Streamr System"
 
-msgid "general##stream"
+msgid "general.stream"
 msgstr "Stream"
 
-msgid "general##streams"
+msgid "general.streams"
 msgstr "Streams"
 
-msgid "general##telegram"
+msgid "general.telegram"
 msgstr "Telegram"
 
-msgid "general##terms"
+msgid "general.terms"
 msgstr "Terms & Conditions"
 
-msgid "general##title##suffix"
+msgid "general.title.suffix"
 msgstr "Streamr Marketplace"
 
-msgid "general##trello"
+msgid "general.trello"
 msgstr "Trello"
 
-msgid "general##tryTheEditor"
+msgid "general.tryTheEditor"
 msgstr "Try the Editor"
 
-msgid "general##twitter"
+msgid "general.twitter"
 msgstr "Twitter"
 
-msgid "general##whitepaper"
+msgid "general.whitepaper"
 msgstr "Whitepaper"
 
-msgid "general##youtube"
+msgid "general.youtube"
 msgstr "YouTube"
 
-msgid "general##logout"
+msgid "general.logout"
 msgstr "Logout"
 
-msgid "general##signout"
+msgid "general.signout"
 msgstr "Sign out"
 
-msgid "general##nav##marketplace"
+msgid "general.nav.marketplace"
 msgstr "Marketplace"
 
-msgid "general##nav##core"
+msgid "general.nav.core"
 msgstr "Core"
 
-msgid "general##nav##editor"
+msgid "general.nav.editor"
 msgstr "Editor"
 
-msgid "general##nav##docs"
+msgid "general.nav.docs"
 msgstr "Docs"
 
-msgid "general##copy"
+msgid "general.copy"
 msgstr "Copy"
 
-msgid "general##copyToClipboard"
+msgid "general.copyToClipboard"
 msgstr "Copy to clipboard"
 
-msgid "general##copied"
+msgid "general.copied"
 msgstr "Copied"
 
-msgid "language##id"
+msgid "language.id"
 msgstr "en"
 
-msgid "language##name"
+msgid "language.name"
 msgstr "English"
 
-msgid "urls##whitepaper"
+msgid "urls.whitepaper"
 msgstr "https://streamr.network/whitepaper"
 
-msgid "modal##common##cancel"
+msgid "modal.common.cancel"
 msgstr "Cancel"
 
-msgid "modal##common##confirm"
+msgid "modal.common.confirm"
 msgstr "Confirm"
 
-msgid "modal##common##continue"
+msgid "modal.common.continue"
 msgstr "Continue"
 
-msgid "modal##common##deploy"
+msgid "modal.common.deploy"
 msgstr "Deploy"
 
-msgid "modal##common##next"
+msgid "modal.common.next"
 msgstr "Next"
 
-msgid "modal##common##ok"
+msgid "modal.common.ok"
 msgstr "OK"
 
-msgid "modal##common##waiting"
+msgid "modal.common.waiting"
 msgstr "Waiting"
 
-msgid "modal##common##working"
+msgid "modal.common.working"
 msgstr "Working"
 
-msgid "modal##common##close"
+msgid "modal.common.close"
 msgstr "Close"
 
-msgid "modal##common##confirm"
+msgid "modal.common.confirm"
 msgstr "Confirm"
 
-msgid "modal##common##back"
+msgid "modal.common.back"
 msgstr "Back"
 
-msgid "modal##unlockWallet##title"
+msgid "modal.unlockWallet.title"
 msgstr "Access your wallet"
 
-msgid "modal##unlockWallet##waiting"
+msgid "modal.unlockWallet.waiting"
 msgstr "Connecting..."
 
-msgid "modal##confirm##dontShowAgain"
+msgid "modal.confirm.dontShowAgain"
 msgstr "Don't show this again"
 
-msgid "shared##errors##unlockWallet"
+msgid "shared.errors.unlockWallet"
 msgstr "Please unlock your wallet"
 
-msgid "shared##errors##networkName"
+msgid "shared.errors.networkName"
 msgstr "#%{networkId}"
 
-msgid "shared##errors##incorrectEthereumNetwork"
+msgid "shared.errors.incorrectEthereumNetwork"
 msgstr ""
 "Please switch to the %{requiredNetworkName} network in your Ethereum wallet. "
 "It's currently %{currentNetworkName}."
 
-msgid "shared##errors##web3NotEnabled"
+msgid "shared.errors.web3NotEnabled"
 msgstr "Please unlock your wallet or enable access to your account"
 
-msgid "shared##errors##challengeFailed"
+msgid "shared.errors.challengeFailed"
 msgstr "Challenge failed"
 
-msgid "shared##errors##createIdentityFailed"
+msgid "shared.errors.createIdentityFailed"
 msgstr "Create identity failed"
 
-msgid "shared##errors##identityExists"
+msgid "shared.errors.identityExists"
 msgstr "Identity exists"
 
-msgid "shared##status##ok"
+msgid "shared.status.ok"
 msgstr "Active"
 
-msgid "shared##status##inactive"
+msgid "shared.status.inactive"
 msgstr "No data yet"
 
-msgid "shared##status##error"
+msgid "shared.status.error"
 msgstr "Inactive"
 
-msgid "shared##status##pending"
+msgid "shared.status.pending"
 msgstr "Pending"
 
-msgid "shared##date##day"
+msgid "shared.date.day"
 msgstr "Day"
 
-msgid "shared##date##day_plural"
+msgid "shared.date.day_plural"
 msgstr "Days"
 
-msgid "shared##date##week"
+msgid "shared.date.week"
 msgstr "Week"
 
-msgid "shared##date##week_plural"
+msgid "shared.date.week_plural"
 msgstr "Weeks"
 
-msgid "shared##date##month"
+msgid "shared.date.month"
 msgstr "Month"
 
-msgid "shared##date##month_plural"
+msgid "shared.date.month_plural"
 msgstr "Months"
 
-msgid "shared##date##year"
+msgid "shared.date.year"
 msgstr "Year"
 
-msgid "shared##date##year_plural"
+msgid "shared.date.year_plural"
 msgstr "Years"
 
-msgid "shared##action##add"
+msgid "shared.action.add"
 msgstr "was added"
 
-msgid "shared##action##create"
+msgid "shared.action.create"
 msgstr "was created"
 
-msgid "shared##action##update"
+msgid "shared.action.update"
 msgstr "was updated"
 
-msgid "shared##action##purchase"
+msgid "shared.action.purchase"
 msgstr "was purchased"
 
-msgid "shared##action##publish"
+msgid "shared.action.publish"
 msgstr "was published"
 
-msgid "shared##action##unpublish"
+msgid "shared.action.unpublish"
 msgstr "was unpublished"
 
-msgid "shared##action##deploy"
+msgid "shared.action.deploy"
 msgstr "was deployed"
 
-msgid "general##docs"
+msgid "general.docs"
 msgstr "Docs"
 
-msgid "general##settings"
+msgid "general.settings"
 msgstr "Settings"
 
-msgid "general##learn"
+msgid "general.learn"
 msgstr "Learn"
 
-msgid "general##introduction"
+msgid "general.introduction"
 msgstr "Introduction"
 
-msgid "general##gettingStarted"
+msgid "general.gettingStarted"
 msgstr "Getting started"
 
-msgid "general##engine"
+msgid "general.engine"
 msgstr "Engine"
 
-msgid "general##streamrApi"
+msgid "general.streamrApi"
 msgstr "Streamr API"
 
-msgid "general##telegramGroup"
+msgid "general.telegramGroup"
 msgstr "Telegram Group"
 
-msgid "general##giveFeedback"
+msgid "general.giveFeedback"
 msgstr "Give feedback"
 
-msgid "general##labels##dataUnion"
+msgid "general.labels.dataUnion"
 msgstr "Data Union"
 
-msgid "general##top"
+msgid "general.top"
 msgstr "Top"
 
-msgid "general##network"
+msgid "general.network"
 msgstr "Network"
 
-msgid "notFoundPage##message"
+msgid "notFoundPage.message"
 msgstr ""
 "Whoops! We don’t seem to be able to find your data.</br>"
 "<small>Something might have been moved around or changed.<small>"
 
-msgid "notFoundPage##top"
+msgid "notFoundPage.top"
 msgstr "Go to marketplace"
 
-msgid "notFoundPage##coreApp"
+msgid "notFoundPage.coreApp"
 msgstr "Go to core app"
 
-msgid "notFoundPage##publicSite"
+msgid "notFoundPage.publicSite"
 msgstr "Go to public site"
 
-msgid "genericErrorPage##imageCaption"
+msgid "genericErrorPage.imageCaption"
 msgstr "App crashed"
 
-msgid "genericErrorPage##message"
+msgid "genericErrorPage.message"
 msgstr ""
 "Oops. Something has broken down here. <br /> Please try one of the links "
 "below <br /> to get things back on track."
 
-msgid "genericErrorPage##top"
+msgid "genericErrorPage.top"
 msgstr "Marketplace top"
 
-msgid "activityQueue##tab##activity"
+msgid "activityQueue.tab.activity"
 msgstr "Activity"
 
-msgid "activityQueue##tab##notifications"
+msgid "activityQueue.tab.notifications"
 msgstr "Notifications"
 
-msgid "activityQueue##activities##empty##title"
+msgid "activityQueue.activities.empty.title"
 msgstr "No activity yet."
 
-msgid "activityQueue##activities##empty##message"
+msgid "activityQueue.activities.empty.message"
 msgstr "Create, deploy, publish or update something!"
 
-msgid "activityQueue##notifications##empty##title"
+msgid "activityQueue.notifications.empty.title"
 msgstr "No notifications yet."
 
-msgid "activityQueue##notifications##empty##message"
+msgid "activityQueue.notifications.empty.message"
 msgstr ""
 "You'll be notified about payments, <br />"
 "sharing and permissions."
 
-msgid "general##codeSnippets"
+msgid "general.codeSnippets"
 msgstr "Code Snippets"
 
-msgid "number##zero"
+msgid "number.zero"
 msgstr "zero"
 
-msgid "number##one"
+msgid "number.one"
 msgstr "one"
 
-msgid "number##two"
+msgid "number.two"
 msgstr "two"
 
-msgid "number##three"
+msgid "number.three"
 msgstr "three"
 
-msgid "number##four"
+msgid "number.four"
 msgstr "four"
 
-msgid "number##five"
+msgid "number.five"
 msgstr "five"
 
-msgid "number##six"
+msgid "number.six"
 msgstr "six"
 
-msgid "number##seven"
+msgid "number.seven"
 msgstr "seven"
 
-msgid "number##eight"
+msgid "number.eight"
 msgstr "eight"
 
-msgid "number##nine"
+msgid "number.nine"
 msgstr "nine"
 
-msgid "number##ten"
+msgid "number.ten"
 msgstr "ten"
 
-msgid "number##hundred"
+msgid "number.hundred"
 msgstr "a hundred"
 
-msgid "number##thousand"
+msgid "number.thousand"
 msgstr "a thousand"
 
-msgid "number##tenThousand"
+msgid "number.tenThousand"
 msgstr "ten thousand"
 
-msgid "number##hundredThousand"
+msgid "number.hundredThousand"
 msgstr "a hundred thousand"
 
-msgid "number##million"
+msgid "number.million"
 msgstr "a million"
 
-msgid "shared##statusLabel##deprecated"
+msgid "shared.statusLabel.deprecated"
 msgstr "Deprecated"
 
-msgid "shared##statusLabel##advanced"
+msgid "shared.statusLabel.advanced"
 msgstr "Advanced"

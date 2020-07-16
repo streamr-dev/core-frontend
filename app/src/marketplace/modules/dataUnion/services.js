@@ -4,18 +4,19 @@ import { deploy, getContract, call, send } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 
 import type { SmartContractDeployTransaction, SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
-import type {
-    StreamId,
-    Stream,
-    NewStream,
-} from '$shared/flowtype/stream-types'
+import type { Stream, NewStream } from '$shared/flowtype/stream-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
 
 import { post, del, get, put } from '$shared/utils/api'
-import { postStream, getMyStreamPermissions } from '$userpages/modules/userPageStreams/services'
+import { postStream } from '$userpages/modules/userPageStreams/services'
+import {
+    getResourcePermissions,
+    addResourcePermission,
+    removeResourcePermission,
+} from '$userpages/modules/permission/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 import routes from '$routes'
 import type { Secret } from './types'
@@ -25,20 +26,6 @@ export const getStreamrEngineAddresses = (): Array<string> => {
     const addresses = addressesString.split(',')
     return addresses
 }
-
-export const addPermission = (streamId: StreamId, permission: Permission): ApiResult<Array<Permission>> => post({
-    url: routes.api.streams.permissions.index({
-        streamId,
-    }),
-    data: permission,
-})
-
-export const deletePermission = (id: StreamId, permissionId: $PropertyType<Permission, 'id'>): ApiResult<Array<Permission>> => del({
-    url: routes.api.streams.permissions.show({
-        streamId: id,
-        id: permissionId,
-    }),
-})
 
 export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
     const newStream: NewStream = {
@@ -57,15 +44,23 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
     // Add public read permission
     try {
         await Promise.all([
-            addPermission(stream.id, {
-                anonymous: true,
-                operation: 'stream_get',
-                user: null,
+            addResourcePermission({
+                resourceType: 'STREAM',
+                resourceId: stream.id,
+                data: {
+                    anonymous: true,
+                    operation: 'stream_get',
+                    user: null,
+                },
             }),
-            addPermission(stream.id, {
-                anonymous: true,
-                operation: 'stream_subscribe',
-                user: null,
+            addResourcePermission({
+                resourceType: 'STREAM',
+                resourceId: stream.id,
+                data: {
+                    anonymous: true,
+                    operation: 'stream_subscribe',
+                    user: null,
+                },
             }),
         ])
     } catch (e) {
@@ -86,17 +81,29 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
             // removing user's share permission (must have at least one share permission)
             // eslint-disable-next-line no-await-in-loop
             await Promise.all([
-                addPermission(stream.id, {
-                    operation: 'stream_publish',
-                    user: address,
+                addResourcePermission({
+                    resourceType: 'STREAM',
+                    resourceId: stream.id,
+                    data: {
+                        operation: 'stream_publish',
+                        user: address,
+                    },
                 }),
-                addPermission(stream.id, {
-                    operation: 'stream_share',
-                    user: address,
+                addResourcePermission({
+                    resourceType: 'STREAM',
+                    resourceId: stream.id,
+                    data: {
+                        operation: 'stream_share',
+                        user: address,
+                    },
                 }),
-                addPermission(stream.id, {
-                    operation: 'stream_edit',
-                    user: address,
+                addResourcePermission({
+                    resourceType: 'STREAM',
+                    resourceId: stream.id,
+                    data: {
+                        operation: 'stream_edit',
+                        user: address,
+                    },
                 }),
             ])
         }
@@ -107,13 +114,20 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
 
     // Remove share & edit permission to prevent deleting the stream
     try {
-        const myPermissions: Array<Permission> = await getMyStreamPermissions(stream.id)
+        const myPermissions: Array<Permission> = await getResourcePermissions({
+            resourceType: 'STREAM',
+            resourceId: stream.id,
+        })
         const deletedTypes = new Set(['stream_edit', 'stream_delete', 'stream_share'])
         const deletedPermissions = myPermissions.filter((p) => deletedTypes.has(p.operation))
 
         if (deletedPermissions && deletedPermissions.length > 0) {
             await Promise.all([
-                ...deletedPermissions.map(async (permission) => deletePermission(stream.id, permission.id)),
+                ...deletedPermissions.map(async ({ id }) => removeResourcePermission({
+                    resourceType: 'STREAM',
+                    resourceId: stream.id,
+                    id,
+                })),
             ])
         }
     } catch (e) {

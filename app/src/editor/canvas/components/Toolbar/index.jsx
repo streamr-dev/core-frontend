@@ -17,6 +17,8 @@ import dateFormatter from '$utils/dateFormatter'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
 import confirmDialog from '$shared/utils/confirm'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import Toolbar from '$editor/shared/components/Toolbar'
 import useCanvasCamera from '../../hooks/useCanvasCamera'
@@ -123,7 +125,19 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         })
 
         if (confirmed) {
-            this.props.deleteCanvas()
+            try {
+                await this.props.deleteCanvas()
+
+                Notification.push({
+                    title: I18n.t('userpages.canvases.deletedCanvas'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            } catch (e) {
+                Notification.push({
+                    title: e.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
         }
     }
 
