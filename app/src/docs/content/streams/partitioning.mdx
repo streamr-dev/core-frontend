@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import Image from '$docs/components/Image'
 import Warning from '$docs/components/Warning'
 import docsLinks from '$shared/../docsLinks'
 
@@ -13,15 +14,11 @@ To be precise, when messages are published to a stream, they are actually publis
 
 When a stream needs to handle large data rates, partitions are used for *sharding* of the data. Sharding data simply means dividing a large volume of messages to multiple partitions, a bit like a large river can split the same amount of water to multiple smaller branches. Each partition shares the general properties of the parent stream, such as name, description, and user permissions, but the partitions behave independently when it comes to delivering and storing data in the Streamr Network, which allows for scalability.
 
-<figure>
-    <picture>
-      <img
-        src={MessagePartitioningImage}
-        srcSet={`${MessagePartitioningImage2x} 2x`}
-        alt="Message partitioning"
-      />
-    </picture>
-</figure>
+<Image
+  src={MessagePartitioningImage}
+  highResSrc={MessagePartitioningImage2x}
+  alt="Message partitioning"
+/>
 
 Partitions also enable subscribers to scale horizontally: a user consuming data from a stream could load balance the messages over a number of consuming processes, up to the number of partitions. So if a stream has 5 partitions, the user could start up to 5 independent subscribers on separate physical machines, with each subscriber receiving different messages (each process subscribes to a unique partition).
 
@@ -29,15 +26,11 @@ Partitions are identified by a number which starts from zero. For example, a str
 
 While the data publisher is free to choose a target partition for a message arbitrarily, a common approach is to utilize a *partition key*. A partition key is a value chosen from the data which is used to determine the partition of the message. For example, a customer ID could be used as a partition key in an application that publishes customer interactions to a stream. This way, all messages from a particular customer always go to the same partition. This is useful because it keeps all the events related to a particular customer in a single and known partition instead of spreading them over all partitions.
 
-<figure>
-    <picture>
-      <img
-        src={StreamAndPartitionsImage}
-        srcSet={`${StreamAndPartitionsImage2x} 2x`}
-        alt="Stream and Partitions"
-      />
-    </picture>
-</figure>
+<Image
+  src={StreamAndPartitionsImage}
+  highResSrc={StreamAndPartitionsImage2x}
+  alt="Stream and Partitions"
+/>
 
 The `publish` methods in the <Link to={docsLinks.sdk}>Streamr SDKs</Link> usually take an optional `partitionKey` parameter. For example, in the JS client:
 
