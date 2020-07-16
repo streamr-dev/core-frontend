@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 
+import Image from '$docs/components/Image'
 import docsLinks from '$shared/../docsLinks'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import { numberToText } from '$shared/utils/text'
@@ -15,15 +16,12 @@ import Managing from './videos/data_unions_in_core_03_managing.mp4'
 
 To create a Data Union in Core, go to Core > Products, click <span className={docsStyles.streamrHighlight}>Create</span> and choose Data Union as the product type. Other than the sections below, the process is similar to creating a Data Product. If you haven’t made one before, please check out <Link to={docsLinks.products}>Creating a Data Product</Link> before proceeding with this article.
 
-<figure>
-    <picture>
-        <img
-            src={Build}
-            srcSet={`${Build2x} 2x`}
-            alt="Build a Data Union with Core"
-        />
-    </picture>
-</figure>
+<Image
+  lightbox
+  src={Build}
+  highResSrc={Build2x}
+  alt="Build a Data Union with Core"
+/>
 
 ### Connect an Ethereum identity
 

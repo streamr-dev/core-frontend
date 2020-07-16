@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
+import Image from '$docs/components/Image'
 
 import StreamListing from './images/core_streams_01_desktop_border.jpg'
 import StreamListing2x from './images/core_streams_01_desktop_border@2x.jpg'
@@ -26,16 +27,12 @@ Streamr Core provides you with the tools to create, edit, share and delete your 
 ### Overview of your streams
 Head over to the <Link to={routes.streams.index()}>Streams page</Link> to see an overview of your subscribed streams. The list includes streams you have created and streams that you have purchased on the Marketplace.Using streams in Core
 
-<figure>
-    <picture>
-      <img
-        className={docsStyles.bordered}
-        src={StreamListing}
-        srcSet={`${StreamListing2x} 2x`}
-        alt="Stream Listing"
-      />
-    </picture>
-</figure>
+<Image
+  border
+  src={StreamListing}
+  highResSrc={StreamListing2x}
+  alt="Stream Listing"
+/>
 
 This stream listing page gives an indication for when data was last pushed to each stream and uses traffic light indicators show the health of each stream, at a glance. Green shows a stream receiving data, while red indicates no data flowing. Clicking on a stream will open the stream editor. You may only edit streams that you have created or have explicit permission to edit.
 
@@ -51,69 +48,49 @@ The details section provides basic information about your stream.
 - The stream description can be used to offer more information about your stream and the kind of data it contains.
 - The stream ID is the unique identifier for your stream and is needed when interacting with the <Link to={docsLinks.sdk}>Streamr SDKs</Link>.
 
-<figure>
-    <picture>
-      <img
-        src={StreamDetails}
-        srcSet={`${StreamDetails2x} 2x`}
-        alt="Stream Details"
-      />
-    </picture>
-</figure>
+<Image
+  src={StreamDetails}
+  highResSrc={StreamDetails2x}
+  alt="Stream Details"
+/>
 
 ### Configure
 In this section you can configure stream fields and their data types. All fields have a name and a data type. The Autodetect feature can be used to automatically deduce fields from the stream's last received message. It is possible to manually correct the data types if automatic detection is not suitable for your stream.
 
-<figure>
-    <picture>
-      <img
-        src={StreamConfigure}
-        srcSet={`${StreamConfigure2x} 2x`}
-        alt="Stream Configure"
-      />
-    </picture>
-</figure>
+<Image
+  src={StreamConfigure}
+  highResSrc={StreamConfigure2x}
+  alt="Stream Configure"
+/>
 
 You can also optionally toggle on the requirement for all messages to be signed to enforce a level of verification if you choose.
 
 ### Preview
 This section is used to preview data flowing into the stream. Use the live inspector to make sure your stream is receiving data and it is correctly formatted.
 
-<figure>
-    <picture>
-      <img
-        src={StreamPreview}
-        srcSet={`${StreamPreview2x} 2x`}
-        alt="Stream Preview"
-      />
-    </picture>
-</figure>
+<Image
+  src={StreamPreview}
+  highResSrc={StreamPreview2x}
+  alt="Stream Preview"
+/>
 
 ### API Access
 Here you can manage API keys for your stream. Keys generated here grant access to only this stream and can have either read or write access. These keys can also be removed if for example, the key has been compromised.
 
-<figure>
-    <picture>
-      <img
-        src={StreamApiAccess}
-        srcSet={`${StreamApiAccess2x} 2x`}
-        alt="API Access"
-      />
-    </picture>
-</figure>
+<Image
+  src={StreamApiAccess}
+  highResSrc={StreamApiAccess2x}
+  alt="API Access"
+/>
 
 ### Historical Data
 This section contains the stream's historical data storage settings and includes tools to add or remove historical data from the stream.
 
-<figure>
-    <picture>
-      <img
-        src={StreamHistorical}
-        srcSet={`${StreamHistorical2x} 2x`}
-        alt="Historical Data"
-      />
-    </picture>
-</figure>
+<Image
+  src={StreamHistorical}
+  highResSrc={StreamHistorical2x}
+  alt="Historical Data"
+/>
 
 You can add new data to the stream by uploading a CSV file and you can delete existing historical data from the stream by choosing an inclusive date range.
 

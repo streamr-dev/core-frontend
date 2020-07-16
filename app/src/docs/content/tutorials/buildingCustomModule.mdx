@@ -1,4 +1,5 @@
 import { CodeSnippet } from '@streamr/streamr-layout'
+import Image from '$docs/components/Image'
 
 import CodeEditor from '../tutorials/images/tutorials_custom_canvas_01_desktop.jpg'  
 import CodeEditor2x from '../tutorials/images/tutorials_custom_canvas_01_desktop@2x.jpg'  
@@ -35,15 +36,11 @@ Inputs and outputs are defined in the beginning of the code template. To help yo
 
 If you uncomment those lines (as we've done above), you will get a module with one numerical input and one numerical output. If you want to see the result on the canvas, first click Apply, then Close.
 
-<figure>
-    <picture>
-      <img
-        src={CodeEditor}
-        srcSet={`${CodeEditor2x} 2x`}
-        alt="Code Editor"
-      />
-    </picture>
-</figure>
+<Image
+  src={CodeEditor}
+  highResSrc={CodeEditor2x}
+  alt="Code Editor"
+/>
 
 In this example, the inputs belong to the `TimeSeriesInput` class and the outputs to the `TimeSeriesOutput` class. The first argument of an input or output constructor is always `this`, a reference to the current module. The second argument is there for the display name, i.e. a visual label for the endpoint. The variable name on the left-hand side of the assignment can be any valid variable name in Java.
 
@@ -114,12 +111,8 @@ The code in a JavaModule is compiled and validated when you click the **Apply** 
 
 This is what the output looks like with sample input data:
 
-<figure>
-    <picture>
-      <img
-        src={JavaModuleOnCanvas}
-        srcSet={`${JavaModuleOnCanvas2x} 2x`}
-        alt="Java Module on Canvas"
-      />
-    </picture>
-</figure>
+<Image
+  src={JavaModuleOnCanvas}
+  highResSrc={JavaModuleOnCanvas2x}
+  alt="Java Module on Canvas"
+/>

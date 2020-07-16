@@ -1,5 +1,6 @@
 import { CodeSnippet } from '@streamr/streamr-layout'
 import Warning from '$docs/components/Warning'
+import Image from '$docs/components/Image'
 
 import AndModule from './images/modules_advanced_01_mobile.jpg'
 import AndModule2x from './images/modules_advanced_01_mobile@2x.jpg'
@@ -30,29 +31,23 @@ Computation in Streamr is entirely event-based. Any module will execute immediat
 
 A module processes its inputs as soon as it is activated. This happens when the following conditions are both satisfied; **every input has a value** and **an event arrives at one of the driving inputs**.
 
-<figure className={docsStyles.darkBg}>
-    <picture>
-        <img
-            src={AndModule}
-            srcSet={`${AndModule2x} 2x`}
-            alt="And Module"
-        />
-    </picture>
-</figure>
+<Image
+  src={AndModule}
+  highResSrc={AndModule2x}
+  alt="And Module"
+  className={docsStyles.darkBg}
+/>
 
 At least one endpoint in any module is designated as a driving input by default. To change the default settings, hover on top of a module and you’ll see a number of additional controls. You can make any input a driver by clicking on the associated DR icon (a toggle button) next to an input connector. A module with no driving inputs will never activate.
 
 Lastly, note the NR icon next to each output connector. This is a non-repeat button, and if it’s on, the module suppresses any output that would be an exact replica of the last outgoing event. This covers the use case where you’re only interested in events that represent something new.
 
-<figure className={docsStyles.darkBg}>
-    <picture>
-        <img
-            src={StringToNumberModule}
-            srcSet={`${StringToNumberModule2x} 2x`}
-            alt="String to Number Module"
-        />
-    </picture>
-</figure>
+<Image
+  src={StringToNumberModule}
+  highResSrc={StringToNumberModule2x}
+  alt="String to Number Module"
+  className={docsStyles.darkBg}
+/>
 
 ### State and methods
 Every Streamr module can have a state. If present, the state persists between module activations and even when a live service is stopped and later restarted. Whilst a module does not need to have a state, there are many streaming data operations which simply cannot be implemented without one.

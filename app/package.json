@@ -260,6 +260,7 @@
     "reselect": "^3.0.1",
     "resize-observer-polyfill": "^1.5.1",
     "sass-loader": "^7.0.1",
+    "simple-react-lightbox": "^3.2.3-3",
     "sinon": "^6.0.0",
     "smooth-scroll-into-view-if-needed": "^1.1.23",
     "storybook-addon-jsx": "^5.4.0",

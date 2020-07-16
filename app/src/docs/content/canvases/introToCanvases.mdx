@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
+import Image from '$docs/components/Image'
 import Warning from '$docs/components/Warning'
 import docsLinks from '$shared/../docsLinks'
 
@@ -13,16 +14,12 @@ import canvasesStyles from '$docs/components/Pages/Canvases/canvasesStyles.pcss'
 # Intro to canvases
 A Streamr canvas is a microservice which consumes and acts upon real-time data. A canvas contains one or more <Link to={docsLinks.streams}>streams</Link> (these provide the data) and one or more <Link to={docsLinks.moduleReference}>modules</Link> (these do the processing). Streams and modules are connected in the configuration that you'll design. The connections determine how the data flows through the canvas.
 
-<figure>
-    <picture>
-      <img
-        className={docsStyles.bordered}
-        src={CanvasDemo}
-        srcSet={`${CanvasDemo2x} 2x`}
-        alt="Streamr Canvas"
-      />
-    </picture>
-</figure>
+<Image
+  border
+  src={CanvasDemo}
+  highResSrc={CanvasDemo2x}
+  alt="Streamr Canvas"
+/>
 
 Here's a few examples of specific things you can do;
 
