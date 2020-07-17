@@ -8,6 +8,7 @@ import cx from 'classnames'
 import MobileNav from '$shared/components/MobileNav'
 import Nav from '$shared/components/Nav'
 import useScrollToTop from '$shared/hooks/useScrollToTop'
+import Nav2 from './Nav'
 import Footer from './Footer'
 import styles from './layout.pcss'
 
@@ -35,6 +36,7 @@ const Layout = ({
         <div className={cx(styles.framed, framedClassname)}>
             <div className={cx(styles.inner, innerClassname)}>
                 {!!nav && (
+                    <Nav2 />
                     <React.Fragment>
                         <Nav
                             className={cx(styles.desktopNav, {
