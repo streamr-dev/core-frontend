@@ -22,7 +22,7 @@ const initialStats = {
     subscribers: {
         loading: true,
     },
-    adminFee: {
+    revenueShare: {
         unit: '%',
         loading: true,
     },
@@ -74,9 +74,9 @@ function useDataUnionStats() {
         if (adminFee) {
             setStats((prev) => ({
                 ...prev,
-                adminFee: {
-                    ...prev.adminFee,
-                    value: (adminFee * 100).toFixed(0),
+                revenueShare: {
+                    ...prev.revenueShare,
+                    value: ((1 - adminFee) * 100).toFixed(0),
                     loading: false,
                 },
             }))
