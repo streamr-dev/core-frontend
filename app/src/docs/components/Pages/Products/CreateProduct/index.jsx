@@ -7,7 +7,7 @@ import CreateProductContent from '$docs/content/products/CreateProduct.mdx'
 
 const CreateProduct = () => (
     <DocsLayout>
-        <DocsHelmet pageTitle="Create a product" />
+        <DocsHelmet pageTitle="Create a Product" />
         <section>
             <CreateProductContent />
         </section>
