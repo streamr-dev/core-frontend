@@ -1327,9 +1327,6 @@ msgstr "Avg rev member / month"
 msgid "productPage.stats.subscribers"
 msgstr "Subscribers"
 
-msgid "productPage.stats.adminFee"
-msgstr "Admin Fee"
-
 msgid "productPage.stats.revenueShare"
 msgstr "Revenue share"
 
