@@ -106,6 +106,7 @@ const UnstyledWide = (props) => {
             {!!currentUser && (
                 <Fragment>
                     <Nav.Wide.Dropdown
+                        edge
                         nodeco
                         toggle={(
                             <Nav.Link>
