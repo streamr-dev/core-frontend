@@ -1,5 +1,6 @@
-import React, { useContext } from 'react'
+import React, { Fragment, useContext } from 'react'
 import styled, { ThemeProvider, ThemeContext } from 'styled-components'
+import { useSelector } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Nav, Menu, Button, Link as L } from '@streamr/streamr-layout'
 import { LG as DESKTOP } from '$shared/utils/styled'
@@ -7,9 +8,14 @@ import Link from '$shared/components/Link'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
+import { selectUserData } from '$shared/modules/user/selectors'
+import Avatar from '$shared/components/Avatar'
+import User from './User'
 
 const UnstyledWide = (props) => {
     const current = useCurrentLocation()
+
+    const currentUser = useSelector(selectUserData)
 
     return (
         <Nav.Wide
@@ -86,17 +92,64 @@ const UnstyledWide = (props) => {
                     </Menu>
                 )}
             />
-            <Nav.Wide.Divider />
-            <Button as={Link} to={routes.auth.login()}>
-                <Translate value="general.signIn" />
-            </Button>
-            <Button.Outlined as={Link} to={routes.auth.signUp()}>
-                <Translate value="general.signUp" />
-            </Button.Outlined>
+            {!currentUser && (
+                <Fragment>
+                    <Nav.Wide.Divider />
+                    <Button as={Link} to={routes.auth.login()}>
+                        <Translate value="general.signIn" />
+                    </Button>
+                    <Button.Outlined as={Link} to={routes.auth.signUp()}>
+                        <Translate value="general.signUp" />
+                    </Button.Outlined>
+                </Fragment>
+            )}
+            {!!currentUser && (
+                <Fragment>
+                    <Nav.Wide.Dropdown
+                        nodeco
+                        toggle={(
+                            <Nav.Link>
+                                <Avatar
+                                    alt={currentUser.name}
+                                    src={currentUser.imageUrlSmall}
+                                    // eslint-disable-next-line react/jsx-curly-brace-presence
+                                    css={`
+                                        background-color: #efefef;
+                                        border-radius: 50%;
+                                        overflow: hidden;
+                                        width: 32px;
+                                    `}
+                                />
+                            </Nav.Link>
+                        )}
+                        menu={(
+                            <Menu>
+                                <Menu.Item as={User} source={currentUser} />
+                                <Menu.Divider />
+                                <Menu.Item as={Link} to={routes.profile()}>
+                                    <Translate value="general.profile" />
+                                </Menu.Item>
+                                <Menu.Item as={Link} to={routes.profile({}, 'api-keys')}>
+                                    <Translate value="userpages.profilePage.apiCredentials.linkTitle" />
+                                </Menu.Item>
+                                <Menu.Item as={Link} to={routes.profile({}, 'ethereum-accounts')}>
+                                    <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
+                                </Menu.Item>
+                                <Menu.Item as={Link} to={routes.profile({}, 'private-keys')}>
+                                    <Translate value="userpages.profilePage.ethereumPrivateKeys.linkTitle" />
+                                </Menu.Item>
+                                <Menu.Divider />
+                                <Menu.Item as={Link} to={routes.auth.logout()}>
+                                    <Translate value="general.logout" />
+                                </Menu.Item>
+                            </Menu>
+                        )}
+                    />
+                </Fragment>
+            )}
         </Nav.Wide>
     )
 }
-
 
 const UnstyledNarrow = (props) => (
     <Nav.Narrow
