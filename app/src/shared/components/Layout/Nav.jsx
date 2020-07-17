@@ -10,6 +10,7 @@ import docsLinks from '$shared/../docsLinks'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Avatar from '$shared/components/Avatar'
+import SvgIcon from '$shared/components/SvgIcon'
 import User from './User'
 
 const UnstyledWide = (props) => {
@@ -105,6 +106,16 @@ const UnstyledWide = (props) => {
             )}
             {!!currentUser && (
                 <Fragment>
+                    {!!process.env.ACTIVITY_QUEUE && (
+                        <Nav.Wide.Dropdown
+                            nodeco
+                            toggle={(
+                                <Nav.Link>
+                                    <SvgIcon name="alarmBell" />
+                                </Nav.Link>
+                            )}
+                        />
+                    )}
                     <Nav.Wide.Dropdown
                         edge
                         nodeco
