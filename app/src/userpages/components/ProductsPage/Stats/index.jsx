@@ -72,6 +72,7 @@ const Stats = () => {
                         <div className={styles.graphBox}>
                             {!!dataUnionDeployed && memberCount && (
                                 <MembersGraph
+                                    className={styles.graph}
                                     joinPartStreamId={joinPartStreamId}
                                     memberCount={memberCount.total}
                                 />
@@ -80,6 +81,7 @@ const Stats = () => {
                         <div className={styles.graphBox}>
                             {!!dataUnionDeployed && product && (
                                 <SubscriberGraph
+                                    className={styles.graph}
                                     productId={product.id}
                                 />
                             )}

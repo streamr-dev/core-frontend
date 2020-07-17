@@ -3,7 +3,7 @@ import Skeleton from 'react-loading-skeleton'
 import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
-import { MD, LG } from '$shared/utils/styled'
+import { MD, XL } from '$shared/utils/styled'
 
 export const Header = styled.div`
     font-family: var(--sans);
@@ -69,7 +69,7 @@ const ValuesRoot = styled.div`
         grid-column-gap: 1em;
     }
 
-    @media (min-width: ${LG}px) {
+    @media (min-width: ${XL}px) {
         grid-template-columns: repeat(6, 1fr);
         grid-column-gap: 1em;
     }
