@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from 'react'
+import { useMemo, useCallback, useState, useRef } from 'react'
 import Activity from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 
@@ -28,5 +28,7 @@ export default () => {
         streamId,
     ])
 
-    return streamId ? result : null
+    const empty = useRef({})
+
+    return streamId ? result : empty.current
 }
