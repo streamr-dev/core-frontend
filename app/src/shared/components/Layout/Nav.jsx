@@ -102,10 +102,10 @@ const UnstyledWide = (props) => {
             {!currentUser && (
                 <Fragment>
                     <Nav.Wide.Divider />
-                    <Button as={Link} to={routes.auth.login()}>
+                    <Button as={Link.Raw} to={routes.auth.login()}>
                         <Translate value="general.signIn" />
                     </Button>
-                    <Button.Outlined as={Link} to={routes.auth.signUp()}>
+                    <Button.Outlined as={Link.Raw} to={routes.auth.signUp()}>
                         <Translate value="general.signUp" />
                     </Button.Outlined>
                 </Fragment>
