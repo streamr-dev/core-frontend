@@ -16,17 +16,9 @@ export default () => {
         ))
     }, [])
 
-    if (!process.env.ACTIVITY_QUEUE || !storage) {
-        return null
-    }
+    const streamId = storage && process.env.ACTIVITY_QUEUE ? storage.getItem('user.activityStreamId') : undefined
 
-    const streamId = storage.getItem('user.activityStreamId')
-
-    if (!streamId) {
-        return null
-    }
-
-    return useMemo(() => ({
+    const result = useMemo(() => ({
         activities,
         onMessage,
         streamId,
@@ -35,7 +27,6 @@ export default () => {
         onMessage,
         streamId,
     ])
+
+    return streamId ? result : null
 }
-
-
-// HERE: We're building a hook for activities.
