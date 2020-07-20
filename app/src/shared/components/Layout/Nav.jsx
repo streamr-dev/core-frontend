@@ -111,7 +111,14 @@ const UnstyledWide = (props) => {
                             nodeco
                             toggle={(
                                 <Nav.Link>
-                                    <SvgIcon name="alarmBell" />
+                                    <SvgIcon
+                                        name="alarmBell"
+                                        // eslint-disable-next-line react/jsx-curly-brace-presence
+                                        css={`
+                                                height: 20px;
+                                                width: 16px;
+                                        `}
+                                    />
                                 </Nav.Link>
                             )}
                         />
