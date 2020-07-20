@@ -27,5 +27,6 @@ module.exports = exports = {
         'react/prop-types': 0,
         'no-unreachable': 'warn',
         'object-curly-newline': 'warn',
+        'no-trailing-spaces': 'warn',
     }
 }
