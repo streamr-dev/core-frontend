@@ -3,7 +3,7 @@ import styled, { ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Nav, Menu, Button, Link as L } from '@streamr/streamr-layout'
-import { LG as DESKTOP } from '$shared/utils/styled'
+import { MD as TABLET, LG as DESKTOP, MEDIUM, REGULAR } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
@@ -171,7 +171,9 @@ const UnstyledWide = (props) => {
                         )}
                         menu={(
                             <Menu>
-                                <Menu.Item as={User} source={currentUser} />
+                                <Menu.Item>
+                                    <User.Avatarless source={currentUser} />
+                                </Menu.Item>
                                 <Menu.Divider />
                                 <Menu.Item as={Link} to={routes.profile()}>
                                     <Translate value="general.profile" />
@@ -198,24 +200,142 @@ const UnstyledWide = (props) => {
     )
 }
 
-const UnstyledNarrow = (props) => (
-    <Nav.Narrow
-        {...props}
-        logoComponent={(
-            <Nav.LogoItem href={routes.root()} />
-        )}
-    >
-        <Nav.Narrow.Body>
-            <Nav.Link as={Link} to={routes.root()}>
-                Core
-            </Nav.Link>
-        </Nav.Narrow.Body>
-    </Nav.Narrow>
-)
+const SiteSection = styled.div`
+    font-size: 14px;
+    font-weight: ${MEDIUM};
+    line-height: 1em;
+    margin-left: 16px;
+    text-transform: uppercase;
 
-const Wide = styled(UnstyledWide)``
+    @media (min-width: ${TABLET}px) {
+        margin-left: 24px;
+    }
+`
 
-const Narrow = styled(UnstyledNarrow)``
+const UnstyledNarrow = (props) => {
+    const current = useCurrentLocation()
+
+    const currentUser = useSelector(selectUserData)
+
+    return (
+        <Nav.Narrow
+            {...props}
+            logoComponent={(
+                <Fragment>
+                    <Nav.LogoItem href={routes.root()} />
+                    <SiteSection>
+                        {current}
+                    </SiteSection>
+                </Fragment>
+            )}
+        >
+            <Nav.Narrow.Body>
+                <div>
+                    <User source={currentUser || undefined} />
+                </div>
+                <Nav.Link as={Link} to={routes.core()}>
+                    <Translate value="general.core" />
+                </Nav.Link>
+                <Nav.Link as={Link} to={routes.marketplace.index()}>
+                    <Translate value="general.marketplace" />
+                </Nav.Link>
+                <Nav.Link as={Link} to="/docs">
+                    <Translate value="general.docs" />
+                </Nav.Link>
+                {!currentUser ? (
+                    <Nav.Link>
+                        Settings
+                    </Nav.Link>
+                ) : (
+                    <Nav.Link as={Link} to={routes.profile()}>
+                        Settings
+                    </Nav.Link>
+                )}
+            </Nav.Narrow.Body>
+            <Nav.Narrow.Footer>
+                {currentUser ? (
+                    <Button.Secondary as={Link.Raw} to={routes.auth.logout()}>
+                        <Translate value="general.logout" />
+                    </Button.Secondary>
+                ) : (
+                    <Fragment>
+                        <Button.Primary as={Link.Raw} to={routes.auth.signUp()}>
+                            <Translate value="general.signUp" />
+                        </Button.Primary>
+                        <div
+                            css={`
+                                margin-top: 20px;
+
+                                @media (min-width: ${TABLET}px) {
+                                    margin: 0 0 0 32px;
+                                }
+                            `}
+                        >
+                            Already have an account?
+                            {' '}
+                            <L.Primary as={Link.Raw} to={routes.auth.login()}>
+                                <Translate value="general.signIn" />
+                            </L.Primary>
+                        </div>
+                    </Fragment>
+                )}
+            </Nav.Narrow.Footer>
+        </Nav.Narrow>
+    )
+}
+
+const Wide = styled(UnstyledWide)`
+    ${User.Avatarless} {
+        line-height: 20px;
+        padding: 4px 0 8px;
+    }
+
+    ${User.Name} {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    ${User.Username} {
+        font-size: 12px;
+    }
+`
+
+const Narrow = styled(UnstyledNarrow)`
+    ${User} {
+        border-bottom: 1px solid #efefef;
+        line-height: 1em;
+        padding: 48px 32px 40px;
+    }
+
+    ${User.Name} {
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+
+    ${User.Username} {
+        font-size: 14px;
+    }
+
+    ${Nav.Link}:not([href]) {
+        color: #cdcdcd;
+    }
+
+    @media (min-width: ${TABLET}px) {
+        ${User} {
+            padding: 56px 64px;
+        }
+
+        ${User.Name} {
+            font-size: 28px;
+            font-weight: ${REGULAR};
+            margin-bottom: 8px;
+        }
+
+        ${User.Username} {
+            font-size: 16px;
+        }
+    }
+`
 
 const lightTheme = {
     backgroundColor: '#ffffff',
