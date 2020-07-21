@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from 'react'
-import styled, { ThemeProvider, ThemeContext } from 'styled-components'
+import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Nav, Menu, Button, Link as L } from '@streamr/streamr-layout'
@@ -285,6 +285,10 @@ const UnstyledNarrow = (props) => {
 }
 
 const Wide = styled(UnstyledWide)`
+    ${({ theme }) => !!theme.navShadow && css`
+        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
+    `}
+
     ${User.Avatarless} {
         line-height: 20px;
         padding: 4px 0 8px;
@@ -343,14 +347,14 @@ const lightTheme = {
     buttonColor: '#0324ff',
 }
 
-const N = (props) => {
+const N = ({ noWide, noNarrow, ...props }) => {
     const theme = useContext(ThemeContext) || {}
 
-    return (
+    return !noWide && !noNarrow && (
         <div {...props}>
             <ThemeProvider theme={theme.dark ? {} : lightTheme}>
-                <Wide />
-                <Narrow />
+                {!noWide && <Wide />}
+                {!noNarrow && <Narrow />}
             </ThemeProvider>
         </div>
     )

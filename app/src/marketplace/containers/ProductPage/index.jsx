@@ -26,6 +26,10 @@ import { productStates } from '$shared/utils/constants'
 import Page from './Page'
 import styles from './page.pcss'
 
+const theme = {
+    navShadow: true,
+}
+
 const ProductPage = () => {
     const dispatch = useDispatch()
     const {
@@ -72,7 +76,7 @@ const ProductPage = () => {
     }, [dataUnionDeployed, beneficiaryAddress, loadDataUnion])
 
     return (
-        <Layout navShadow>
+        <Layout theme={theme}>
             <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
             <LoadingIndicator
                 loading={isPending}
