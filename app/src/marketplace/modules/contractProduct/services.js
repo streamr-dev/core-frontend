@@ -79,7 +79,11 @@ export const seekBlockWithTimestamp = async (
     blockTime: number,
     maxTries: number = 20,
 ) => {
-    const block = await web3.eth.getBlock(initialBlockNumberGuess)
+    let block = await web3.eth.getBlock(initialBlockNumberGuess)
+    if (block == null) {
+        block = await web3.eth.getBlock('latest')
+    }
+
     const diff = block.timestamp - (targetTimestampMs / 1000)
 
     // Check if this is close enough block
@@ -94,11 +98,12 @@ export const seekBlockWithTimestamp = async (
 
     // Try to find a closer block
     const blocksToSeek = Math.floor(Math.abs(diff) / blockTime)
-
-    if (diff < 0) {
-        return seekBlockWithTimestamp(web3, block.number + blocksToSeek, targetTimestampMs, blockTime, maxTries - 1)
+    let nextBlock = diff < 0 ? block.number + blocksToSeek : block.number - blocksToSeek
+    if (nextBlock < 0) {
+        nextBlock = 0
     }
-    return seekBlockWithTimestamp(web3, block.number - blocksToSeek, targetTimestampMs, blockTime, maxTries - 1)
+
+    return seekBlockWithTimestamp(web3, nextBlock, targetTimestampMs, blockTime, maxTries - 1)
 }
 
 export const calculateBlockNumber = async (web3: any, timestampMs: number) => {
@@ -107,7 +112,11 @@ export const calculateBlockNumber = async (web3: any, timestampMs: number) => {
     const blockTime = (latestBlock.timestamp - firstBlock.timestamp) / (latestBlock.number - firstBlock.number)
     const secondsBetween = (latestBlock.timestamp - (timestampMs / 1000))
     const blocksToRewind = Math.floor(secondsBetween / blockTime)
-    const predictedBlock = latestBlock.number - blocksToRewind
+    let predictedBlock = latestBlock.number - blocksToRewind
+
+    if (predictedBlock < 0) {
+        predictedBlock = 0
+    }
 
     // Predicted block will not probably be right so make sure we get the right block
     // corresponding to given timestamp
