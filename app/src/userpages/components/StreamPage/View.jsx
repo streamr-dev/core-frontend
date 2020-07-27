@@ -26,6 +26,7 @@ import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
+import Nav from '$shared/components/Layout/Nav'
 
 const Text = styled(UnstyledText)`
     &[disabled] {
@@ -194,7 +195,9 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
     return (
         <Layout
             {...props}
-            hideNavOnDesktop
+            nav={(
+                <Nav noWide />
+            )}
             navComponent={(
                 <Toolbar
                     altMobileLayout

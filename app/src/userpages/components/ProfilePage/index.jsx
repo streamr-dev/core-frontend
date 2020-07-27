@@ -28,6 +28,7 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
+import Nav from '$shared/components/Layout/Nav'
 
 import styles from './profilePage.pcss'
 import routes from '$routes'
@@ -84,7 +85,9 @@ export const ProfilePage = () => {
 
     return (
         <CoreLayout
-            hideNavOnDesktop
+            nav={(
+                <Nav noWide />
+            )}
             navComponent={(
                 <Toolbar
                     altMobileLayout

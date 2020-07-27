@@ -14,8 +14,7 @@ import styles from './layout.pcss'
 type Props = {
     theme?: any,
     footer?: boolean,
-    nav?: boolean,
-    hideNavOnDesktop?: boolean,
+    nav?: any,
     framedClassname?: string,
     innerClassname?: string,
 }
@@ -25,8 +24,7 @@ const DefaultTheme = {}
 const Layout = ({
     theme = DefaultTheme,
     footer = true,
-    nav = true,
-    hideNavOnDesktop: noDesktopNav = false,
+    nav = <Nav />,
     framedClassname,
     innerClassname,
     ...props
@@ -37,7 +35,7 @@ const Layout = ({
         <ThemeProvider theme={theme}>
             <div className={cx(styles.framed, framedClassname)}>
                 <div className={cx(styles.inner, innerClassname)}>
-                    <Nav noNarrow={!nav} noWide={!nav || !!noDesktopNav} />
+                    {nav}
                     <div {...props} />
                 </div>
                 {!!footer && <Footer />}

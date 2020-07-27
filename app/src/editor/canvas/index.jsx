@@ -605,7 +605,12 @@ export default connect(selectAuthState)(({ embed, isAuthenticated }) => {
     // don't drop into embed mode unless no token
     embed = embed || (!isAuthenticated && !token)
     return (
-        <Layout className={styles.layout} footer={false} nav={!embed} theme={theme}>
+        <Layout
+            className={styles.layout}
+            footer={false}
+            nav={embed ? null : undefined}
+            theme={theme}
+        >
             <BodyClass className="editor" />
             <CanvasContainer embed={embed} />
         </Layout>
