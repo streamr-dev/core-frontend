@@ -1,5 +1,3 @@
-// @flow
-
 export default {
     docs: '/docs',
     introduction: '/docs/introduction',
