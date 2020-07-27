@@ -111,20 +111,23 @@ const StyledListContainer = styled(ListContainer)`
 
 const Row = styled.div`
     display: grid;
-    grid-row-gap: 0rem;
+    grid-row-gap: 2px;
     grid-column-gap: 1rem;
     border-bottom: 1px solid #CDCDCD;
-    padding: 1rem 1.5rem 1.5rem;
-    grid-template-columns: minmax(0, 1fr) 12px;
+    padding: 1.15rem 1.5rem;
+    grid-template-columns: minmax(0, 1fr) 16px;
     align-items: center;
+    line-height: 20px;
 
     @media (min-width: ${MD}px) {
-        grid-template-columns: minmax(0, 1fr) 184px 12px;
+        padding: 1.5rem;
+        grid-template-columns: minmax(0,auto) minmax(136px,1fr) 16px;
     }
 
     @media (min-width: ${LG}px) {
         grid-template-columns: minmax(200px, 3fr) 3fr minmax(136px, 2fr) minmax(136px, 2fr) minmax(68px, 1fr) 32px;
-        padding: 1rem 0.75rem;
+        grid-row-gap: 0;
+        padding: 1.25rem 0.75rem;
     }
 `
 
@@ -193,7 +196,6 @@ const StreamNameAndIcon = styled.div`
 const StreamDescription = styled(RowItem)`
     font-size: 12px;
     font-weight: var(--regular);
-    color: #a3a3a3;
 
     @media (min-width: ${MD}px) {
         display: block;
@@ -202,14 +204,15 @@ const StreamDescription = styled(RowItem)`
         text-overflow: ellipsis;
         white-space: nowrap;
         grid-row: 2;
-        grid-column: 1;
+        grid-column: 1 / 3;
+        max-width: calc(100% - 168px);
     }
 
     @media (min-width: ${LG}px) {
         grid-row: 1;
         grid-column: 2;
         font-size: 14px;
-        color: inherit;
+        max-width: none;
     }
 
     &:empty {
@@ -254,7 +257,7 @@ const LastData = styled(RowItem)`
     @media (min-width: ${MD}px) {
         grid-row: 1;
         grid-column: 2;
-        text-align: right;
+        margin-bottom: -4px;
     }
 
     @media (min-width: ${LG}px) {
@@ -264,19 +267,18 @@ const LastData = styled(RowItem)`
         text-align: left;
         color: inherit;
         font-size: 14px;
+        margin-bottom: 0;
     }
 `
 
 const Status = styled(RowItem)`
     display: block;
-    grid-row-start: 1;
-    grid-row-end: 3;
+    grid-row: 1 / 3;
     grid-column: 2;
-    line-height: 12px;
     padding-top: 0.5rem;
+    position: relative;
 
     @media (min-width: ${MD}px) {
-        grid-row: 1;
         grid-column: 3;
         padding-top: 0;
     }
@@ -285,7 +287,6 @@ const Status = styled(RowItem)`
         grid-row: 1;
         grid-column: 5;
         text-align: center;
-        line-height: 16px;
     }
 `
 
@@ -307,16 +308,12 @@ const StreamActions = styled(RowItem)`
 
 const StyledStatusIcon = styled(StatusIcon)`
     && {
-        position: relative;
-        width: 12px;
-        height: 12px;
-    }
-
-    @media (min-width: ${LG}px) {
-        && {
-            width: 16px;
-            height: 16px;
-        }
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 `
 
@@ -341,7 +338,6 @@ const SecurityIconContainer = styled.span`
         border-radius: 2px;
         color: white;
         font-size: 12px;
-        line-height: 16px;
         top: 26px;
         left: 50%;
         transform: translateX(-50%);
@@ -356,6 +352,10 @@ const SecurityIconContainer = styled.span`
             visibility: visible;
             opacity: 1;
         }
+    }
+
+    @media (min-width: ${LG}px) {
+        line-height: 16px;
     }
 `
 
