@@ -82,6 +82,7 @@ const DocsMenu = () => (
 )
 
 const BlogPostItem = styled(Menu.SecondaryItem)`
+    box-sizing: content-box;
     max-width: 136px;
     overflow: hidden;
     text-overflow: ellipsis;
