@@ -165,10 +165,10 @@ const UnstyledWide = (props) => {
                 )}
             />
             <Nav.Wide.Divider />
-            <Button as={Link} to={routes.auth.login()}>
+            <Button as={Link.Raw} to={routes.auth.login()}>
                 Sign in
             </Button>
-            <Button.Outlined as={Link} to={routes.auth.signUp()}>
+            <Button.Outlined as={Link.Raw} to={routes.auth.signUp()}>
                 Sign up
             </Button.Outlined>
         </Nav.Wide>
@@ -295,7 +295,7 @@ const UnstyledNarrow = (props) => (
             </Nav.Narrow.Dropdown>
         </Nav.Narrow.Body>
         <Nav.Narrow.Footer>
-            <Button.Primary as={Link} to={routes.auth.signUp()}>
+            <Button.Primary as={Link.Raw} to={routes.auth.signUp()}>
                 Sign up
             </Button.Primary>
             <div
@@ -309,7 +309,7 @@ const UnstyledNarrow = (props) => (
             >
                 Already have an account?
                 {' '}
-                <L.Primary as={Link} to={routes.auth.login()}>
+                <L.Primary as={Link.Raw} to={routes.auth.login()}>
                     Sign in
                 </L.Primary>
             </div>
