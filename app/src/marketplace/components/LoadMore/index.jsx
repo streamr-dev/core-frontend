@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import { Row, Container, Col } from 'reactstrap'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -10,28 +9,27 @@ import Button from '$shared/components/Button'
 export type Props = {
     onClick: () => void,
     hasMoreSearchResults: boolean,
+    preserveSpace?: boolean,
     className?: string,
 }
 
-const StyledContainer = styled(Container)`
+const StyledContainer = styled.div`
     height: 40px;
-    margin: 5em auto 0;
+    display: flex;
+    justify-content: center;
+    margin-top: 5em;
 `
 
-const LoadMore = ({ onClick, hasMoreSearchResults, className }: Props) => {
+const LoadMore = ({ onClick, hasMoreSearchResults, preserveSpace, className }: Props) => {
     if (!hasMoreSearchResults) {
-        return null
+        return preserveSpace ? <StyledContainer className={className} /> : null
     }
 
     return (
         <StyledContainer className={className}>
-            <Row className="justify-content-center">
-                <Col xs="auto">
-                    <Button kind="special" variant="dark" onClick={onClick}>
-                        <Translate value="productList.viewMore" />
-                    </Button>
-                </Col>
-            </Row>
+            <Button kind="special" variant="dark" onClick={onClick}>
+                <Translate value="productList.viewMore" />
+            </Button>
         </StyledContainer>
     )
 }

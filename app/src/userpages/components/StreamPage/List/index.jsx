@@ -109,18 +109,6 @@ const StyledListContainer = styled(ListContainer)`
     }
 `
 
-const LoadingMoreSpacer = styled.div`
-    margin-top: 11.5rem;
-
-    @media (min-width: ${MD}px) {
-        margin-top: 15.5rem;
-    }
-
-    @media (min-width: ${LG}px) {
-        margin-top: 7.5rem;
-    }
-`
-
 const Row = styled.div`
     display: grid;
     grid-row-gap: 0rem;
@@ -165,7 +153,6 @@ const TableRow = styled(Row)`
 
 const RowItem = styled.div`
     display: none;
-    overflow-y: visible;
     color: #525252;
 `
 
@@ -656,12 +643,10 @@ const StreamList = () => {
                                 </TableRow>
                             ))}
                         </StreamTable>
-                        {!!(fetching && hasMoreResults) && (
-                            <LoadingMoreSpacer />
-                        )}
                         <LoadMore
                             hasMoreSearchResults={!fetching && hasMoreResults}
                             onClick={() => dispatch(getStreams())}
+                            preserveSpace
                         />
                     </Fragment>
                 )}
