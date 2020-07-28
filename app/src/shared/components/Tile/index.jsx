@@ -386,7 +386,7 @@ const ProductTile = ({
                     bottom
                     right
                     icon="dataUnion"
-                    forwardAs={Link}
+                    forwardAs={Badge.Link}
                     to={product.id && routes.products.stats({
                         id: product.id,
                     })}
