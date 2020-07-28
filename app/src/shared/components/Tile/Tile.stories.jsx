@@ -4,7 +4,7 @@ import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, boolean } from '@storybook/addon-knobs'
 import sample from './sample.stories.png'
-import { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
+import Badge, { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
@@ -46,6 +46,99 @@ stories.add('with sample image and badge', () => (
                 <IconBadge icon="dataUnion" top right>
                     15
                 </IconBadge>
+            </Tile.ImageContainer>
+        </Tile>
+    </Grid>
+))
+
+stories.add('fixed thumbnail height', () => (
+    <Grid>
+        <Tile>
+            <Menu>
+                <MenuItem>Item #1</MenuItem>
+                <MenuItem>Item #2</MenuItem>
+                <MenuItem>Item #3</MenuItem>
+                <MenuItem>Item #4</MenuItem>
+                <MenuItem>Item #5</MenuItem>
+            </Menu>
+            <Tile.ImageContainer>
+                <a
+                    href="/resource/1403"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        action('Navigate!')()
+                    }}
+                >
+                    <Tile.ImageContainer height="144px">
+                        <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
+                    </Tile.ImageContainer>
+                </a>
+                <DataUnionBadge top left />
+                <DeployingBadge bottom right />
+            </Tile.ImageContainer>
+        </Tile>
+    </Grid>
+))
+
+stories.add('square thumbnails', () => (
+    <Grid>
+        <Tile>
+            <Menu>
+                <MenuItem>Item #1</MenuItem>
+                <MenuItem>Item #2</MenuItem>
+                <MenuItem>Item #3</MenuItem>
+                <MenuItem>Item #4</MenuItem>
+                <MenuItem>Item #5</MenuItem>
+            </Menu>
+            <Tile.ImageContainer>
+                <a
+                    href="/resource/1403"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        action('Navigate!')()
+                    }}
+                >
+                    <Tile.ImageContainer ratio="1:1">
+                        <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
+                    </Tile.ImageContainer>
+                </a>
+                <DataUnionBadge top left />
+                <DeployingBadge bottom right />
+            </Tile.ImageContainer>
+        </Tile>
+    </Grid>
+))
+
+stories.add('with Data Union badge being a link', () => (
+    <Grid>
+        <Tile>
+            <Menu>
+                <MenuItem>Item #1</MenuItem>
+                <MenuItem>Item #2</MenuItem>
+                <MenuItem>Item #3</MenuItem>
+                <MenuItem>Item #4</MenuItem>
+                <MenuItem>Item #5</MenuItem>
+            </Menu>
+            <Tile.ImageContainer>
+                <a
+                    href="/resource/1403"
+                    onClick={(e) => {
+                        e.preventDefault()
+                        action('Navigate!')()
+                    }}
+                >
+                    <Tile.ImageContainer autoSize>
+                        <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
+                    </Tile.ImageContainer>
+                </a>
+                <DataUnionBadge
+                    top
+                    left
+                    as={Badge.Link}
+                    href="https://google.com/"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                />
             </Tile.ImageContainer>
         </Tile>
     </Grid>
