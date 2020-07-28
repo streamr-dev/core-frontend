@@ -5,7 +5,6 @@ import { action } from '@storybook/addon-actions'
 import { withKnobs, boolean } from '@storybook/addon-knobs'
 import sample from './sample.stories.png'
 import { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
-import ImageContainer from './ImageContainer'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
@@ -20,16 +19,18 @@ const stories = storiesOf('Shared/Tile', module)
 
 stories.add('placeholder only', () => (
     <Grid>
-        <Tile>
-            <ImageContainer src="" />
-        </Tile>
+        <Tile.ImageContainer autoSize>
+            <Tile.Thumbnail src="" />
+        </Tile.ImageContainer>
     </Grid>
 ))
 
 stories.add('with sample image', () => (
     <Grid>
         <Tile>
-            <ImageContainer src={sample} />
+            <Tile.ImageContainer autoSize>
+                <Tile.Thumbnail src={sample} />
+            </Tile.ImageContainer>
         </Tile>
     </Grid>
 ))
@@ -37,14 +38,15 @@ stories.add('with sample image', () => (
 stories.add('with sample image and badge', () => (
     <Grid>
         <Tile>
-            <ImageContainer src={sample}>
+            <Tile.ImageContainer autoSize>
+                <Tile.Thumbnail src={sample} />
                 <DataUnionBadge top left />
                 <DeployingBadge bottom right />
                 <SharedBadge bottom left />
                 <IconBadge icon="dataUnion" top right>
                     15
                 </IconBadge>
-            </ImageContainer>
+            </Tile.ImageContainer>
         </Tile>
     </Grid>
 ))
@@ -68,7 +70,9 @@ stories.add('elastic grid', () => (
                         action('Navigate!')()
                     }}
                 >
-                    <ImageContainer skeletonize={boolean('Skeletonize')} src={sample} />
+                    <Tile.ImageContainer autoSize>
+                        <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
+                    </Tile.ImageContainer>
                     <Summary
                         skeletonize={boolean('Skeletonize')}
                         name="Helsinki Tram Network GPS"

@@ -4,6 +4,7 @@ import React, { type Node, useState, useCallback, useMemo } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
+import { ThemeProvider } from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -26,6 +27,10 @@ type ProductCardProps = {
     name: string,
     image: string,
     className?: string,
+}
+
+const tileTheme = {
+    borderRadius: 0,
 }
 
 const PreviewContainer = ({ children }: ChildrenProps) => (
@@ -97,11 +102,13 @@ const GuidedDeployDataUnionDialog = ({
         <div className={styles.tabContent}>
             {step === 0 && (
                 <React.Fragment>
-                    <ImageTile
-                        alt={name}
-                        height="240px"
-                        src={image}
-                    />
+                    <ThemeProvider theme={tileTheme}>
+                        <ImageTile
+                            alt={name}
+                            height="240px"
+                            src={image}
+                        />
+                    </ThemeProvider>
                     <TextContainer>
                         <Translate value="modal.deployDataUnion.guide.step1" dangerousHTML />
                     </TextContainer>
