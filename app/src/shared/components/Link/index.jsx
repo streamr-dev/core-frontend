@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import styled from 'styled-components'
 import cx from 'classnames'
 import { Link as RouterLink } from 'react-router-dom'
 
@@ -13,7 +14,7 @@ type Props = {
     decorated?: boolean,
 }
 
-const Link = ({ className, decorated, ...props }: Props) => {
+const UnstyledLink = ({ className, decorated, ...props }: Props) => {
     const Tag = props.href || !props.to ? 'a' : RouterLink
     return (
         <Tag
@@ -24,5 +25,7 @@ const Link = ({ className, decorated, ...props }: Props) => {
         />
     )
 }
+
+const Link = styled(UnstyledLink)``
 
 export default Link
