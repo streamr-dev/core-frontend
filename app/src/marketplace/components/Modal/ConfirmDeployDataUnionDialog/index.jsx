@@ -3,7 +3,6 @@
 import React, { useState, useCallback } from 'react'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
-import { ThemeProvider } from 'styled-components'
 
 import { ImageTile } from '$shared/components/Tile'
 import ModalPortal from '$shared/components/ModalPortal'
@@ -82,18 +81,12 @@ const ConfirmDeployDataUnionDialog = ({
                 )}
                 disabled={disabled}
             >
-                <ThemeProvider
-                    theme={{
-                        borderRadius: 0,
-                    }}
-                >
-                    <ImageTile
-                        className={styles.previewImage}
-                        alt={product.name}
-                        height="240px"
-                        src={image}
-                    />
-                </ThemeProvider>
+                <ImageTile
+                    className={styles.previewImage}
+                    alt={product.name}
+                    height="240px"
+                    src={image}
+                />
             </Dialog>
         </ModalPortal>
     )

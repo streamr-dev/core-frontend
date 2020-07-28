@@ -127,6 +127,7 @@ const UnstyledImageContainer = ({
     ratio,
     height,
     autoSize: autoSizeProp,
+    corners,
     ...props
 }) => {
     const autoSize = autoSizeProp === true || height != null || ratio != null
@@ -160,6 +161,7 @@ Object.assign(Tile, {
 
 type ImageTileProps = {
     alt?: ?string,
+    corners?: boolean,
     height?: any,
     showDataUnionBadge?: boolean,
     src?: ?string,
@@ -170,10 +172,11 @@ const ImageTile = ({
     height,
     showDataUnionBadge,
     src,
+    corners,
     ...props
 }: ImageTileProps) => (
     <Tile {...props} suppressHover>
-        <Tile.ImageContainer autoSize height={height} corners>
+        <Tile.ImageContainer autoSize height={height} corners={corners}>
             <Tile.Thumbnail
                 alt={alt || ''}
                 src={src || ''}

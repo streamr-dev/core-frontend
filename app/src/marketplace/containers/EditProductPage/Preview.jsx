@@ -55,6 +55,7 @@ const Hero = () => {
                     alt={product.name}
                     src={preview || product.imageUrl}
                     showDataUnionBadge={isDataUnion}
+                    corners
                 />
             }
             rightContent={
