@@ -127,7 +127,6 @@ const UnstyledImageContainer = ({
     ratio,
     height,
     autoSize: autoSizeProp,
-    corners,
     ...props
 }) => {
     const autoSize = autoSizeProp === true || height != null || ratio != null
@@ -146,12 +145,15 @@ const UnstyledImageContainer = ({
 }
 
 const ImageContainer = styled(UnstyledImageContainer)`
+    border-radius: 2px;
+    border-radius: ${({ theme }) => theme.borderRadius};
+    overflow: hidden;
     position: relative;
 
-    ${({ corners }) => !!corners && css`
-        border-radius: 2px;
-        overflow: hidden;
-    `}
+    & & {
+        border-radius: 0;
+        overflow: visible;
+    }
 `
 
 Object.assign(Tile, {
@@ -161,7 +163,6 @@ Object.assign(Tile, {
 
 type ImageTileProps = {
     alt?: ?string,
-    corners?: boolean,
     height?: any,
     showDataUnionBadge?: boolean,
     src?: ?string,
@@ -172,11 +173,10 @@ const ImageTile = ({
     height,
     showDataUnionBadge,
     src,
-    corners,
     ...props
 }: ImageTileProps) => (
     <Tile {...props} suppressHover>
-        <Tile.ImageContainer autoSize height={height} corners={corners}>
+        <Tile.ImageContainer autoSize height={height}>
             <Tile.Thumbnail
                 alt={alt || ''}
                 src={src || ''}
@@ -208,7 +208,7 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
                 id: canvas.id,
             })}
         >
-            <Tile.ImageContainer autoSize corners>
+            <Tile.ImageContainer autoSize>
                 <Tile.Thumbnail
                     as={CanvasPreview}
                     canvas={canvas}
@@ -243,7 +243,7 @@ const DashboardTile = ({ dashboard, onMenuToggle, actions, ...props }: Dashboard
                 id: dashboard.id,
             })}
         >
-            <Tile.ImageContainer autoSize corners>
+            <Tile.ImageContainer autoSize>
                 <Tile.Thumbnail
                     as={DashboardPreview}
                     dashboard={dashboard}
@@ -304,7 +304,7 @@ const PurchaseTile = ({
     ...props
 }: PurchaseTileProps) => (
     <Tile {...props}>
-        <Tile.ImageContainer corners>
+        <Tile.ImageContainer>
             <Link
                 to={product.id && routes.marketplace.product({
                     id: product.id,
@@ -368,7 +368,7 @@ const ProductTile = ({
                 {actions}
             </Menu>
         )}
-        <Tile.ImageContainer corners>
+        <Tile.ImageContainer>
             <Link
                 to={product.id && routes.products.edit({
                     id: product.id,
@@ -431,7 +431,7 @@ type MarketplaceProductTileProps = {
 
 const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
     <Tile {...props}>
-        <Tile.ImageContainer corners>
+        <Tile.ImageContainer>
             <Link
                 to={routes.marketplace.product({
                     id: product.id,
