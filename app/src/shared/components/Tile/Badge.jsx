@@ -2,6 +2,7 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import UnstyledSpinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
+import Link from '$shared/components/Link'
 
 const SharedTheme = {
     backgroundColor: '#525252',
@@ -82,24 +83,8 @@ const SharedBadge = (props) => (
     </Badge>
 )
 
-const UnstyledIconBadge = ({
-    forwardAs,
-    children,
-    icon,
-    top,
-    left,
-    right,
-    bottom,
-    ...props
-}) => (
-    <Badge
-        {...props}
-        as={forwardAs}
-        bottom={bottom}
-        left={left}
-        right={right}
-        top={top}
-    >
+const UnstyledIconBadge = ({ forwardAs, children, icon, ...props }) => (
+    <Badge {...props} as={forwardAs}>
         <SvgIcon name={icon} />
         {children != null && (
             <div>{children}</div>
@@ -113,6 +98,20 @@ const IconBadge = styled(UnstyledIconBadge)`
         width: auto;
     }
 `
+
+const BadgeLink = ({
+    left,
+    top,
+    bottom,
+    right,
+    ...props
+}) => (
+    <Link {...props} />
+)
+
+Object.assign(Badge, {
+    Link: styled(BadgeLink)``,
+})
 
 export {
     DataUnionBadge,
