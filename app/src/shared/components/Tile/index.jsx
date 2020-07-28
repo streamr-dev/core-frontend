@@ -3,10 +3,13 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { capital } from 'case'
+import ReactImage from 'react-image'
 import { ago } from '$shared/utils/time'
 import { Translate } from 'react-redux-i18n'
-import { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
-import ImageContainer, { Image } from './ImageContainer'
+import Logo from '$shared/components/Logo'
+import Badge, { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
+import Skeleton from '$shared/components/Skeleton'
+import Rect from '$shared/components/Rect'
 import Menu from './Menu'
 import Summary from './Summary'
 import Label, { HAPPY, ANGRY, WORRIED } from './Label'
@@ -20,6 +23,68 @@ import PaymentRate from '$mp/components/PaymentRate'
 import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
 import routes from '$routes'
 
+const Image = styled(ReactImage)`
+    img& {
+        display: block;
+        object-fit: cover;
+    }
+`
+
+const Placeholder = styled.div`
+    background-image: linear-gradient(135deg, #0045FF 0%, #7200EE 100%);
+
+    ${Logo} {
+        height: auto;
+        left: 50%;
+        max-width: 32%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+    }
+`
+
+const UnstyledThumbnail = ({ src, skeletonize, alt, ...props }) => (
+    src != null && (
+        skeletonize ? (
+            <Image
+                {...props}
+                as={Skeleton}
+                block
+            />
+        ) : (
+            <Image
+                {...props}
+                alt={alt}
+                src={src}
+                loader={(
+                    <Image
+                        {...props}
+                        as={Skeleton}
+                        block
+                    />
+                )}
+                unloader={(
+                    <Image
+                        {...props}
+                        as={Placeholder}
+                    >
+                        <Logo color="black" opacity="0.15" />
+                    </Image>
+                )}
+            />
+        )
+    )
+)
+
+const Thumbnail = styled(UnstyledThumbnail)`
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+`
+
 const Tile = styled.div`
     position: relative;
 
@@ -31,6 +96,10 @@ const Tile = styled.div`
         visibility: hidden;
     }
 
+    ${Link}:not(${Badge}) {
+        display: block;
+    }
+
     ${Menu}.show,
     :hover ${Menu},
     :focus ${Menu} {
@@ -40,18 +109,54 @@ const Tile = styled.div`
     }
 
     ${({ suppressHover }) => !suppressHover && css`
-        ${Image} {
+        ${Thumbnail} {
             filter: brightness(100%);
             transition: 240ms ease-out filter;
         }
 
-        ${Menu}.show + a ${Image},
-        :hover ${Image} {
+        ${Menu}.show + a ${Thumbnail},
+        :hover ${Thumbnail} {
             filter: brightness(70%);
             transition-duration: 40ms;
         }
     `}
 `
+
+const UnstyledImageContainer = ({
+    children,
+    ratio,
+    height,
+    autoSize: autoSizeProp,
+    ...props
+}) => {
+    const autoSize = autoSizeProp === true || height != null || ratio != null
+
+    return (
+        <div {...props}>
+            {children}
+            {!!autoSize && (
+                <Rect
+                    height={height}
+                    ratio={ratio}
+                />
+            )}
+        </div>
+    )
+}
+
+const ImageContainer = styled(UnstyledImageContainer)`
+    position: relative;
+
+    ${({ corners }) => !!corners && css`
+        border-radius: 2px;
+        overflow: hidden;
+    `}
+`
+
+Object.assign(Tile, {
+    ImageContainer,
+    Thumbnail,
+})
 
 type ImageTileProps = {
     alt?: ?string,
@@ -68,15 +173,15 @@ const ImageTile = ({
     ...props
 }: ImageTileProps) => (
     <Tile {...props} suppressHover>
-        <ImageContainer
-            alt={alt || ''}
-            height={height}
-            src={src || ''}
-        >
+        <Tile.ImageContainer autoSize height={height} corners>
+            <Tile.Thumbnail
+                alt={alt || ''}
+                src={src || ''}
+            />
             {!!showDataUnionBadge && (
                 <DataUnionBadge top left />
             )}
-        </ImageContainer>
+        </Tile.ImageContainer>
     </Tile>
 )
 
@@ -100,12 +205,12 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
                 id: canvas.id,
             })}
         >
-            <ImageContainer>
-                <Image
+            <Tile.ImageContainer autoSize corners>
+                <Tile.Thumbnail
                     as={CanvasPreview}
                     canvas={canvas}
                 />
-            </ImageContainer>
+            </Tile.ImageContainer>
             <Summary
                 name={canvas.name}
                 description={touchedAgo(canvas)}
@@ -135,12 +240,12 @@ const DashboardTile = ({ dashboard, onMenuToggle, actions, ...props }: Dashboard
                 id: dashboard.id,
             })}
         >
-            <ImageContainer>
-                <Image
+            <Tile.ImageContainer autoSize corners>
+                <Tile.Thumbnail
                     as={DashboardPreview}
                     dashboard={dashboard}
                 />
-            </ImageContainer>
+            </Tile.ImageContainer>
             <Summary
                 name={dashboard.name}
                 description={touchedAgo(dashboard)}
@@ -196,12 +301,15 @@ const PurchaseTile = ({
     ...props
 }: PurchaseTileProps) => (
     <Tile {...props}>
-        <Link
-            to={product.id && routes.marketplace.product({
-                id: product.id,
-            })}
-        >
-            <ImageContainer src={product.imageUrl || ''}>
+        <Tile.ImageContainer corners>
+            <Link
+                to={product.id && routes.marketplace.product({
+                    id: product.id,
+                })}
+            >
+                <Tile.ImageContainer autoSize>
+                    <Tile.Thumbnail src={product.imageUrl || ''} />
+                </Tile.ImageContainer>
                 {!!showDataUnionBadge && (
                     <DataUnionBadge top left />
                 )}
@@ -213,7 +321,13 @@ const PurchaseTile = ({
                 {!!showDeployingBadge && !!showDataUnionBadge && typeof numMembers === 'undefined' && (
                     <DeployingBadge bottom right />
                 )}
-            </ImageContainer>
+            </Link>
+        </Tile.ImageContainer>
+        <Link
+            to={product.id && routes.marketplace.product({
+                id: product.id,
+            })}
+        >
             <Summary
                 name={product.name}
                 description={product.owner}
@@ -251,24 +365,41 @@ const ProductTile = ({
                 {actions}
             </Menu>
         )}
+        <Tile.ImageContainer corners>
+            <Link
+                to={product.id && routes.products.edit({
+                    id: product.id,
+                })}
+            >
+                <Tile.ImageContainer autoSize>
+                    <Tile.Thumbnail src={product.imageUrl || ''} />
+                </Tile.ImageContainer>
+            </Link>
+            {!!showDataUnionBadge && (
+                <DataUnionBadge top left />
+            )}
+            {typeof numMembers !== 'undefined' && !showDeployingBadge && (
+                <IconBadge
+                    bottom
+                    right
+                    icon="dataUnion"
+                    as={Link}
+                    to={routes.products.stats({
+                        id: product.id,
+                    })}
+                >
+                    {numMembers}
+                </IconBadge>
+            )}
+            {!!showDeployingBadge && (
+                <DeployingBadge bottom right />
+            )}
+        </Tile.ImageContainer>
         <Link
             to={product.id && routes.products.edit({
                 id: product.id,
             })}
         >
-            <ImageContainer src={product.imageUrl || ''}>
-                {!!showDataUnionBadge && (
-                    <DataUnionBadge top left />
-                )}
-                {typeof numMembers !== 'undefined' && !showDeployingBadge && (
-                    <IconBadge bottom right icon="dataUnion">
-                        {numMembers}
-                    </IconBadge>
-                )}
-                {!!showDeployingBadge && (
-                    <DeployingBadge bottom right />
-                )}
-            </ImageContainer>
             <Summary
                 name={product.name}
                 description={touchedAgo(product)}
@@ -297,21 +428,30 @@ type MarketplaceProductTileProps = {
 
 const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: MarketplaceProductTileProps) => (
     <Tile {...props}>
+        <Tile.ImageContainer corners>
+            <Link
+                to={routes.marketplace.product({
+                    id: product.id,
+                })}
+            >
+                <Tile.ImageContainer autoSize>
+                    <Tile.Thumbnail src={product.imageUrl || ''} />
+                </Tile.ImageContainer>
+            </Link>
+            {!!showDataUnionBadge && (
+                <DataUnionBadge top left />
+            )}
+            {!!showDataUnionBadge && typeof product.members !== 'undefined' && (
+                <IconBadge icon="dataUnion" bottom right>
+                    {product.members}
+                </IconBadge>
+            )}
+        </Tile.ImageContainer>
         <Link
             to={routes.marketplace.product({
                 id: product.id,
             })}
         >
-            <ImageContainer src={product.imageUrl || ''}>
-                {!!showDataUnionBadge && (
-                    <DataUnionBadge top left />
-                )}
-                {!!showDataUnionBadge && typeof product.members !== 'undefined' && (
-                    <IconBadge icon="dataUnion" bottom right>
-                        {product.members}
-                    </IconBadge>
-                )}
-            </ImageContainer>
             <Summary
                 name={product.name}
                 description={product.owner}

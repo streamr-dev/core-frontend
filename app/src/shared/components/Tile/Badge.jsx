@@ -24,7 +24,7 @@ const Badge = styled.div`
     border-bottom-right-radius: ${({ bottom, left, right }) => (bottom || (!left && right) ? 0 : 2)}px;
     border-top-left-radius: ${({ top, left }) => (top || left ? 0 : 2)}px;
     border-top-right-radius: ${({ top, left, right }) => (top || (!left && right) ? 0 : 2)}px;
-    color: white;
+    color: white !important;
     cursor: default;
     display: flex;
     font-size: 12px;
@@ -33,6 +33,12 @@ const Badge = styled.div`
     padding: 0 12px;
     pointer-events: none;
     user-select: none;
+
+    a& {
+        cursor: pointer;
+        pointer-events: auto;
+        text-decoration: none !important;
+    }
 
     ${({ top, left, right, bottom }) => !!(top || left || right || bottom) && css`
         position: absolute;
@@ -88,11 +94,12 @@ const SharedBadge = (props: BadgeProps) => (
 type IconBadgeProps = BadgeProps & {
     children?: Node,
     icon: string,
+    forwardAs?: any,
 }
 
 // $FlowFixMe `icon` is missing in `BadgeProps` but I just wanted it here.
-const UnstyledIconBadge = ({ children, icon, ...props }: IconBadgeProps) => (
-    <Badge {...props}>
+const UnstyledIconBadge = ({ forwardAs, children, icon, ...props }: IconBadgeProps) => (
+    <Badge as={forwardAs} {...props}>
         <SvgIcon name={icon} />
         {children != null && (
             <div>{children}</div>
