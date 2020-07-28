@@ -1,16 +1,7 @@
-// @flow
-
-import React, { type Node } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import UnstyledSpinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
-
-type BadgeProps = {
-    bottom?: boolean,
-    left?: boolean,
-    right?: boolean,
-    top?: boolean,
-}
 
 const SharedTheme = {
     backgroundColor: '#525252',
@@ -72,34 +63,43 @@ const Spinner = styled(UnstyledSpinner)`
     width: 12px;
 `
 
-const DeployingBadge = (props: BadgeProps) => (
+const DeployingBadge = (props) => (
     <Badge {...props}>
         <span>Deploying</span>
         <Spinner size="small" color="white" />
     </Badge>
 )
 
-const DataUnionBadge = (props: BadgeProps) => (
+const DataUnionBadge = (props) => (
     <Badge {...props}>
         <span>Data Union</span>
     </Badge>
 )
 
-const SharedBadge = (props: BadgeProps) => (
+const SharedBadge = (props) => (
     <Badge {...props} theme={SharedTheme}>
         <span>Shared</span>
     </Badge>
 )
 
-type IconBadgeProps = BadgeProps & {
-    children?: Node,
-    icon: string,
-    forwardAs?: any,
-}
-
-// $FlowFixMe `icon` is missing in `BadgeProps` but I just wanted it here.
-const UnstyledIconBadge = ({ forwardAs, children, icon, ...props }: IconBadgeProps) => (
-    <Badge as={forwardAs} {...props}>
+const UnstyledIconBadge = ({
+    forwardAs,
+    children,
+    icon,
+    top,
+    left,
+    right,
+    bottom,
+    ...props
+}) => (
+    <Badge
+        {...props}
+        as={forwardAs}
+        bottom={bottom}
+        left={left}
+        right={right}
+        top={top}
+    >
         <SvgIcon name={icon} />
         {children != null && (
             <div>{children}</div>
