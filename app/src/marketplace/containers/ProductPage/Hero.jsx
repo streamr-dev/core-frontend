@@ -137,6 +137,7 @@ const Hero = () => {
                     alt={product.name}
                     src={product.imageUrl}
                     showDataUnionBadge={isDataUnion}
+                    corners
                 />
             }
             rightContent={

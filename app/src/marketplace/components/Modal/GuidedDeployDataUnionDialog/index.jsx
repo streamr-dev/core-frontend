@@ -4,7 +4,6 @@ import React, { type Node, useState, useCallback, useMemo } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
-import { ThemeProvider } from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -98,17 +97,11 @@ const GuidedDeployDataUnionDialog = ({
         <div className={styles.tabContent}>
             {step === 0 && (
                 <React.Fragment>
-                    <ThemeProvider
-                        theme={{
-                            borderRadius: 0,
-                        }}
-                    >
-                        <ImageTile
-                            alt={name}
-                            height="240px"
-                            src={image}
-                        />
-                    </ThemeProvider>
+                    <ImageTile
+                        alt={name}
+                        height="240px"
+                        src={image}
+                    />
                     <TextContainer>
                         <Translate value="modal.deployDataUnion.guide.step1" dangerousHTML />
                     </TextContainer>
