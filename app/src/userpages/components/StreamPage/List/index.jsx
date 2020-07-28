@@ -153,7 +153,7 @@ const RowItem = styled.div`
     color: #525252;
 `
 
-const HeaderItem = styled(Translate)`
+const HeaderItemComponent = styled.div`
     display: block;
     font-family: var(--sans);
     font-size: 12px;
@@ -161,6 +161,28 @@ const HeaderItem = styled(Translate)`
     color: #A3A3A3;
     font-weight: var(--medium);
 `
+
+type HeaderItemProps = {
+    filter?: any,
+    onClick?: Function,
+    value: string,
+}
+
+const HeaderItem = ({ filter, onClick: onClickProp, value }: HeaderItemProps) => {
+    const onClick = useCallback(() => {
+        if (filter && onClickProp) {
+            onClickProp(filter)
+        }
+    }, [onClickProp, filter])
+
+    return (
+        <HeaderItemComponent onClick={onClick}>
+            <Translate value={value} />
+            {filter && filter.order === 'asc' && ' (asc)'}
+            {filter && filter.order === 'desc' && ' (desc)'}
+        </HeaderItemComponent>
+    )
+}
 
 const StatusHeaderItem = styled(HeaderItem)`
     text-align: center;
@@ -342,20 +364,19 @@ function StreamPageSidebar({ stream }) {
 }
 
 const StreamList = () => {
-    const sortOptions = useMemo(() => {
-        const filters = getFilters('stream')
-        return [
-            filters.RECENT,
-            filters.NAME_ASC,
-            filters.NAME_DESC,
-        ]
-    }, [])
+    const filters = useMemo(() => getFilters('stream'), [])
+    const sortOptions = useMemo(() => ([
+        filters.RECENT,
+        filters.NAME_ASC,
+        filters.NAME_DESC,
+    ]), [filters])
 
     const {
         defaultFilter,
         filter,
         setSearch,
         setSort,
+        setFilterOptions,
         resetFilter,
     } = useFilterSort(sortOptions)
     const [dialogTargetStream, setDialogTargetStream]: TargetStreamSetter = useState(null)
@@ -466,6 +487,39 @@ const StreamList = () => {
         })
     }, [copy])
 
+    const [activeSort, setActiveSort] = useState({
+        column: undefined,
+        order: undefined,
+    })
+    const onHeaderSortUpdate = useCallback((filter) => {
+        setActiveSort((prevFilter) => {
+            if (prevFilter.id !== filter.id) {
+                return {
+                    ...filter,
+                    order: 'asc',
+                }
+            }
+
+            if (prevFilter.order === 'asc') {
+                return {
+                    ...prevFilter,
+                    order: 'desc',
+                }
+            }
+
+            return {
+                ...defaultFilter,
+            }
+        })
+    }, [setActiveSort, defaultFilter])
+
+    useEffect(() => {
+        setFilterOptions((prevFilter) => ({
+            ...prevFilter,
+            order: activeSort.order,
+        }))
+    }, [activeSort, setFilterOptions])
+
     return (
         <Layout
             headerAdditionalComponent={<CreateStreamButton />}
@@ -509,11 +563,26 @@ const StreamList = () => {
                     <Fragment>
                         <StreamTable>
                             <HeaderRow>
-                                <HeaderItem tag="div" value="userpages.streams.list.name" />
-                                <HeaderItem tag="div" value="userpages.streams.list.description" />
-                                <HeaderItem tag="div" value="userpages.streams.list.updated" />
-                                <HeaderItem tag="div" value="userpages.streams.list.lastData" />
-                                <StatusHeaderItem tag="div" value="userpages.streams.list.status" />
+                                <HeaderItem
+                                    filter={{
+                                        ...filters.NAME_ASC.filter,
+                                        order: activeSort.id === filters.NAME_ASC.filter.id ? filter.order : undefined,
+                                    }}
+                                    value="userpages.streams.list.name"
+                                    onClick={onHeaderSortUpdate}
+                                />
+                                <HeaderItem
+                                    value="userpages.streams.list.description"
+                                />
+                                <HeaderItem
+                                    value="userpages.streams.list.updated"
+                                />
+                                <HeaderItem
+                                    value="userpages.streams.list.lastData"
+                                />
+                                <StatusHeaderItem
+                                    value="userpages.streams.list.status"
+                                />
                                 <RowItem />
                             </HeaderRow>
                             {streams.map((stream) => (

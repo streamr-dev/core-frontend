@@ -111,7 +111,7 @@ const ActivityList = ({ activities }: Props) => {
     }
 
     if (activities.some((n) => n.resourceType === resourceTypes.CANVAS) && (canvases == null || canvases.length === 0)) {
-        dispatch(getCanvases(getFilters('product').RECENT.filter))
+        dispatch(getCanvases(getFilters('canvas').RECENT.filter))
     }
 
     const filter = activeTab === 'notifications' ? notificationFilter : activityFilter
