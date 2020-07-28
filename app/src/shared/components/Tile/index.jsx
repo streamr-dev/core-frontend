@@ -386,8 +386,8 @@ const ProductTile = ({
                     bottom
                     right
                     icon="dataUnion"
-                    as={Link}
-                    to={routes.products.stats({
+                    forwardAs={Link}
+                    to={product.id && routes.products.stats({
                         id: product.id,
                     })}
                 >
