@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import styled, { ThemeProvider, ThemeContext } from 'styled-components'
 import GhostContentAPI from '@tryghost/content-api'
-import { Nav, Menu, Button, Link as L, useBlogPosts } from '@streamr/streamr-layout'
+import { Nav, Menu, Button, useBlogPosts } from '@streamr/streamr-layout'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import docsLinks from '$shared/../docsLinks'
@@ -165,12 +165,8 @@ const UnstyledWide = (props) => {
                     </Menu>
                 )}
             />
-            <Nav.Wide.Divider />
-            <Button as={Link.Raw} to={routes.auth.login()}>
-                Sign in
-            </Button>
-            <Button.Outlined as={Link.Raw} to={routes.auth.signUp()}>
-                Sign up
+            <Button.Outlined as={Link.Raw} to={routes.core()}>
+                Use Core
             </Button.Outlined>
         </Nav.Wide>
     )
@@ -296,24 +292,9 @@ const UnstyledNarrow = (props) => (
             </Nav.Narrow.Dropdown>
         </Nav.Narrow.Body>
         <Nav.Narrow.Footer>
-            <Button.Primary as={Link.Raw} to={routes.auth.signUp()}>
-                Sign up
+            <Button.Primary as={Link.Raw} to={routes.core()}>
+                Use Core
             </Button.Primary>
-            <div
-                css={`
-                    margin-top: 20px;
-
-                    @media (min-width: ${TABLET}px) {
-                        margin: 0 0 0 32px;
-                    }
-                `}
-            >
-                Already have an account?
-                {' '}
-                <L.Primary as={Link.Raw} to={routes.auth.login()}>
-                    Sign in
-                </L.Primary>
-            </div>
         </Nav.Narrow.Footer>
     </Nav.Narrow>
 )
