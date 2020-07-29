@@ -26,5 +26,6 @@ module.exports = exports = {
         'flowtype/no-flow-fix-me-comments': ['warn', '\\s.+'],
         'react/prop-types': 0,
         'no-unreachable': 'warn',
+        'object-curly-newline': 'warn',
     }
 }

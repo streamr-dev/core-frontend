@@ -21,6 +21,10 @@ export type Props = {
     disabled?: boolean,
 }
 
+const tileTheme = {
+    borderRadius: 0,
+}
+
 const ConfirmDeployDataUnionDialog = ({
     product,
     onClose,
@@ -82,11 +86,7 @@ const ConfirmDeployDataUnionDialog = ({
                 )}
                 disabled={disabled}
             >
-                <ThemeProvider
-                    theme={{
-                        borderRadius: 0,
-                    }}
-                >
+                <ThemeProvider theme={tileTheme}>
                     <ImageTile
                         className={styles.previewImage}
                         alt={product.name}
