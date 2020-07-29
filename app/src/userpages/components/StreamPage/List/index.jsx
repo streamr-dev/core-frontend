@@ -44,6 +44,7 @@ import { ago } from '$shared/utils/time'
 import { MD, LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
 import SnippetDialog from './SnippetDialog'
+import SvgIcon from '$shared/components/SvgIcon'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -112,6 +113,7 @@ const Row = styled.div`
     grid-template-columns: minmax(0, 1fr) 16px;
     align-items: center;
     line-height: 20px;
+    min-height: 80px;
 
     @media (min-width: ${MD}px) {
         padding: 1.5rem;
@@ -122,6 +124,7 @@ const Row = styled.div`
         grid-template-columns: minmax(200px, 3fr) 3fr minmax(136px, 2fr) minmax(136px, 2fr) minmax(68px, 1fr) 32px;
         grid-row-gap: 0;
         padding: 1.25rem 0.75rem;
+        min-height: auto;
     }
 `
 
@@ -160,26 +163,75 @@ const HeaderItemComponent = styled.div`
     letter-spacing: 0;
     color: #A3A3A3;
     font-weight: var(--medium);
+    user-select: none;
+`
+
+const SortButton = styled.button`
+    appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font-weight: var(--medium);
+
+    &:hover,
+    &:active,
+    &:focus {
+        color: #525252;
+        outline: none;
+    }
+
+    svg {
+        width: 10px;
+        height: 10px;
+        margin-left: 0.5rem;
+        color: #525252;
+        margin-top: -2px;
+    }
 `
 
 type HeaderItemProps = {
-    filter?: any,
+    asc?: string,
+    desc?: string,
+    active?: string,
     onClick?: Function,
     value: string,
+    className?: string,
 }
 
-const HeaderItem = ({ filter, onClick: onClickProp, value }: HeaderItemProps) => {
+const HeaderItem = ({
+    asc,
+    desc,
+    active,
+    onClick: onClickProp,
+    value,
+    className,
+}: HeaderItemProps) => {
     const onClick = useCallback(() => {
-        if (filter && onClickProp) {
-            onClickProp(filter)
+        if (onClickProp) {
+            onClickProp(asc, desc)
         }
-    }, [onClickProp, filter])
+    }, [onClickProp, asc, desc])
 
     return (
-        <HeaderItemComponent onClick={onClick}>
-            <Translate value={value} />
-            {filter && filter.order === 'asc' && ' (asc)'}
-            {filter && filter.order === 'desc' && ' (desc)'}
+        <HeaderItemComponent className={className}>
+            {!!asc && !!desc && (
+                <SortButton type="button" onClick={onClick}>
+                    <Translate value={value} />
+                    {!!active && !!asc && active === asc && (
+                        <SvgIcon name="caretUp" />
+                    )}
+                    {!!active && !!desc && active === desc && (
+                        <SvgIcon name="caretDown" />
+                    )}
+                </SortButton>
+            )}
+            {(!asc || !desc) && (
+                <Translate value={value} />
+            )}
         </HeaderItemComponent>
     )
 }
@@ -194,8 +246,12 @@ const StreamName = styled(RowItem)`
     color: #323232;
     letter-spacing: 0;
 
-    grid-row: 1;
+    grid-row: ${({ hasLastData }) => (hasLastData ? '1' : '1 / 3')};
     grid-column: 1;
+
+    @media (min-width: ${MD}px) {
+        grid-row: ${({ hasDescription }) => (hasDescription ? '1' : '1 / 3')};
+    }
 
     @media (min-width: ${LG}px) {
         font-size: 14px;
@@ -227,10 +283,7 @@ const StreamDescription = styled(RowItem)`
     }
 
     &:empty {
-        &::after {
-            content: ' ';
-            white-space: pre;
-        }
+        display: none;
     }
 `
 
@@ -259,10 +312,7 @@ const LastData = styled(RowItem)`
     grid-column: 1;
 
     &:empty {
-        &::after {
-            content: ' ';
-            white-space: pre;
-        }
+        display: none;
     }
 
     @media (min-width: ${MD}px) {
@@ -290,7 +340,6 @@ const Status = styled(RowItem)`
     position: relative;
 
     @media (min-width: ${MD}px) {
-        grid-row: 1;
         grid-column: 3;
         padding-top: 0;
     }
@@ -336,6 +385,12 @@ const StreamTitle = styled.div`
     white-space: nowrap;
 `
 
+const TabletPopover = styled(Popover)`
+    @media (min-width: ${LG}px) {
+        display: none;
+    }
+`
+
 type TargetStream = ?Stream
 
 type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | TargetStream) => void]
@@ -365,8 +420,14 @@ function StreamPageSidebar({ stream }) {
 
 const StreamList = () => {
     const filters = useMemo(() => getFilters('stream'), [])
-    const sortOptions = useMemo(() => ([
-        filters.RECENT,
+    const allSortOptions = useMemo(() => ([
+        filters.RECENT_DESC,
+        filters.RECENT_ASC,
+        filters.NAME_ASC,
+        filters.NAME_DESC,
+    ]), [filters])
+    const dropdownSortOptions = useMemo(() => ([
+        filters.RECENT_DESC,
         filters.NAME_ASC,
         filters.NAME_DESC,
     ]), [filters])
@@ -376,9 +437,8 @@ const StreamList = () => {
         filter,
         setSearch,
         setSort,
-        setFilterOptions,
         resetFilter,
-    } = useFilterSort(sortOptions)
+    } = useFilterSort(allSortOptions)
     const [dialogTargetStream, setDialogTargetStream]: TargetStreamSetter = useState(null)
     const dispatch = useDispatch()
     const { copy } = useCopy()
@@ -487,38 +547,27 @@ const StreamList = () => {
         })
     }, [copy])
 
-    const [activeSort, setActiveSort] = useState({
-        column: undefined,
-        order: undefined,
-    })
-    const onHeaderSortUpdate = useCallback((filter) => {
+    const [activeSort, setActiveSort] = useState(undefined)
+
+    const onDropdownSort = useCallback((value) => {
+        setActiveSort(value)
+        setSort(value)
+    }, [setSort])
+
+    const onHeaderSortUpdate = useCallback((asc, desc) => {
         setActiveSort((prevFilter) => {
-            if (prevFilter.id !== filter.id) {
-                return {
-                    ...filter,
-                    order: 'asc',
-                }
+            let nextSort
+
+            if (![asc, desc].includes(prevFilter)) {
+                nextSort = asc
+            } else if (prevFilter === asc) {
+                nextSort = desc
             }
 
-            if (prevFilter.order === 'asc') {
-                return {
-                    ...prevFilter,
-                    order: 'desc',
-                }
-            }
-
-            return {
-                ...defaultFilter,
-            }
+            setSort(nextSort || (defaultFilter && defaultFilter.id))
+            return nextSort
         })
-    }, [setActiveSort, defaultFilter])
-
-    useEffect(() => {
-        setFilterOptions((prevFilter) => ({
-            ...prevFilter,
-            order: activeSort.order,
-        }))
-    }, [activeSort, setFilterOptions])
+    }, [setActiveSort, setSort, defaultFilter])
 
     return (
         <Layout
@@ -531,22 +580,22 @@ const StreamList = () => {
                 />
             }
             headerFilterComponent={
-                <Popover
+                <TabletPopover
                     title={I18n.t('userpages.filter.sortBy')}
                     type="uppercase"
                     activeTitle
-                    onChange={setSort}
+                    onChange={onDropdownSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                     menuProps={{
                         right: true,
                     }}
                 >
-                    {sortOptions.map((s) => (
+                    {dropdownSortOptions.map((s) => (
                         <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
                         </Popover.Item>
                     ))}
-                </Popover>
+                </TabletPopover>
             }
             loading={fetching}
         >
@@ -564,10 +613,9 @@ const StreamList = () => {
                         <StreamTable>
                             <HeaderRow>
                                 <HeaderItem
-                                    filter={{
-                                        ...filters.NAME_ASC.filter,
-                                        order: activeSort.id === filters.NAME_ASC.filter.id ? filter.order : undefined,
-                                    }}
+                                    asc={filters.NAME_ASC.filter.id}
+                                    desc={filters.NAME_DESC.filter.id}
+                                    active={activeSort}
                                     value="userpages.streams.list.name"
                                     onClick={onHeaderSortUpdate}
                                 />
@@ -576,6 +624,10 @@ const StreamList = () => {
                                 />
                                 <HeaderItem
                                     value="userpages.streams.list.updated"
+                                    asc={filters.RECENT_ASC.filter.id}
+                                    desc={filters.RECENT_DESC.filter.id}
+                                    active={activeSort}
+                                    onClick={onHeaderSortUpdate}
                                 />
                                 <HeaderItem
                                     value="userpages.streams.list.lastData"
@@ -590,7 +642,11 @@ const StreamList = () => {
                                     key={stream.id}
                                     onClick={() => onStreamRowClick(stream.id)}
                                 >
-                                    <StreamName title={stream.name}>
+                                    <StreamName
+                                        title={stream.name}
+                                        hasLastData={!!stream.lastData}
+                                        hasDescription={!!stream.description}
+                                    >
                                         <StreamTitle>{stream.name}</StreamTitle>
                                     </StreamName>
                                     <StreamDescription title={stream.description}>

@@ -67,7 +67,3 @@ export default function Tooltip({
         </div>
     )
 }
-
-Tooltip.defaultProps = {
-    placement: 'top',
-}
