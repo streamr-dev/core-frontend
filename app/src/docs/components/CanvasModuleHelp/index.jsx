@@ -1,10 +1,12 @@
 /* eslint-disable flowtype/no-types-missing-file-annotation */
-import React from 'react'
+import React, { Fragment } from 'react'
 import ReactMarkdown from 'react-markdown'
 import isEmpty from 'lodash/isEmpty'
 import get from 'lodash/get'
 import cx from 'classnames'
+import styled from 'styled-components'
 import { Module } from '$editor/canvas/components/ModuleRenderer/ModuleRenderer.stories'
+import { BusStop } from '$shared/components/BusLine'
 
 import styles from './canvasModuleHelp.pcss'
 
@@ -79,6 +81,11 @@ type Props = {
     className?: string,
 }
 
+const ModuleBusStop = styled(BusStop)`
+    position: relative;
+    top: -48px;
+`
+
 export default function CanvasModuleHelp({ module: m, help, minifiedContent, className }: Props) {
     const modulePageId = m.name.toLowerCase().replace(/\s/g, '')
 
@@ -94,7 +101,14 @@ export default function CanvasModuleHelp({ module: m, help, minifiedContent, cla
             )}
         >
             <div className={styles.nameAndDescription}>
-                {minifiedContent ? null : <a href={`#${modulePageId}`}><h4>{m.name}</h4></a>}
+                {!minifiedContent && (
+                    <Fragment>
+                        <ModuleBusStop name={modulePageId} />
+                        <a href={`#${modulePageId}`}>
+                            <h4>{m.name}</h4>
+                        </a>
+                    </Fragment>
+                )}
                 <ReactMarkdown source={help && help.helpText} />
             </div>
             {minifiedContent ? null : (

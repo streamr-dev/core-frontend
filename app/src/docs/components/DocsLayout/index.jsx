@@ -8,6 +8,7 @@ import PageTurner from '$docs/components/PageTurner'
 import DocsContainer from '$shared/components/Container/Docs'
 import styles from './docsLayout.pcss'
 import DocsNav from './DocsNav'
+import BusLine from '$shared/components/BusLine'
 
 const DocsLayout = ({ nav = <DocsNav />, ...props }) => (
     <SimpleReactLightbox>
@@ -25,9 +26,11 @@ const DocsLayout = ({ nav = <DocsNav />, ...props }) => (
                         <Navigation />
                     </div>
                     <div className={styles.content}>
-                        <MDXProvider components={Components}>
-                            <div {...props} />
-                        </MDXProvider>
+                        <BusLine dynamicScrollPosition>
+                            <MDXProvider components={Components}>
+                                <div {...props} />
+                            </MDXProvider>
+                        </BusLine>
                         <PageTurner />
                     </div>
                 </div>
