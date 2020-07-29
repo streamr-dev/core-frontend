@@ -347,7 +347,7 @@ const lightTheme = {
     buttonColor: '#0324ff',
 }
 
-const N = ({ noWide, noNarrow, ...props }) => {
+const UnstyledN = ({ noWide, noNarrow, ...props }) => {
     const theme = useContext(ThemeContext) || {}
 
     return !noWide && !noNarrow && (
@@ -360,7 +360,7 @@ const N = ({ noWide, noNarrow, ...props }) => {
     )
 }
 
-export default styled(N)`
+const N = styled(UnstyledN)`
     ${Wide} {
         display: none;
     }
@@ -375,3 +375,10 @@ export default styled(N)`
         }
     }
 `
+
+Object.assign(N, {
+    Wide,
+    Narrow,
+})
+
+export default N
