@@ -3,6 +3,7 @@
 import React, { type Node, useState, useCallback } from 'react'
 import { SortableContainer, type SortableContainerProps } from 'react-sortable-hoc'
 import cx from 'classnames'
+import styled from 'styled-components'
 import BodyClass from '$shared/components/BodyClass'
 import SortableItem from './SortableItem'
 import styles from './SortableList.pcss'
@@ -17,7 +18,7 @@ type Props = {
     disabled?: boolean,
 }
 
-const SortableList = ({ children, disabled, ...props }: Props) => {
+const UnstyledSortableList = ({ children, disabled, ...props }: Props) => {
     const len = React.Children.count(children)
 
     return (
@@ -36,6 +37,11 @@ const SortableList = ({ children, disabled, ...props }: Props) => {
         </div>
     )
 }
+
+const SortableList = styled(UnstyledSortableList)`
+    position: relative;
+    z-index: 0;
+`
 
 const Sortable = SortableContainer(SortableList)
 
