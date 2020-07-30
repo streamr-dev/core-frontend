@@ -172,13 +172,13 @@ export const generateMap = () => ({
             path: docsLinks.products,
             section: 'Data Products',
             title: 'Create a Product',
-            filePath: 'products/createProduct.mdx',
+            filePath: 'products/createDataProduct.mdx',
         },
         'Create a Product': {
             path: docsLinks.createProduct,
             section: 'Data Products',
             title: 'Create a Product',
-            filePath: 'products/createProduct.mdx',
+            filePath: 'products/createDataProduct.mdx',
         },
     },
     'Data Unions': {

@@ -3,7 +3,7 @@
 import React from 'react'
 import DocsHelmet from '$docs/components/DocsHelmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import CreateProductContent from '$docs/content/products/CreateProduct.mdx'
+import CreateProductContent from '$docs/content/products/createDataProduct.mdx'
 
 const CreateProduct = () => (
     <DocsLayout>
