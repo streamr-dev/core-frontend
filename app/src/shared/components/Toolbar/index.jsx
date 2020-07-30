@@ -33,7 +33,7 @@ const UnstyledToolbar = ({
     middle,
     ...props
 }: Props) => (
-    <ElevatedContainer {...props}>
+    <ElevatedContainer {...props} data-test-hook="Toolbar">
         {!!(left || middle) && (
             <Left>
                 {left}
