@@ -29,9 +29,8 @@ import ModulesAdvanced from '$docs/components/Pages/Canvases/ModulesAdvanced'
 import ModuleReferenceHelp from '$docs/components/Pages/ModuleReference/HelpModules'
 // Dashboard Docs
 import Dashboards from '$docs/components/Pages/Dashboards'
-// Products Docs
-import IntroToProducts from '$docs/components/Pages/Products/IntroToProducts'
-import DataUnions from '$docs/components/Pages/Products/DataUnions'
+// Data Products Docs
+import CreateProduct from '$docs/components/Pages/Products/CreateProduct'
 // Data Unions Docs
 import IntroToDataUnions from '$docs/components/Pages/DataUnions/IntroToDataUnions'
 import DataUnionsCore from '$docs/components/Pages/DataUnions/DataUnionsCore'
@@ -88,10 +87,9 @@ const DocsRouter = () => ([
     <Route exact path={links.modulesAdvanced} component={ModulesAdvanced} key="ModulesAdvanced" />,
     // Dashboard routes
     <Route exact path={links.dashboards} component={Dashboards} key="DashboardsPage" />,
-    // Products routes
-    <Route exact path={links.introToProducts} component={IntroToProducts} key="IntroToProducts" />,
-    <Redirect exact from={links.products} to={links.introToProducts} key="ProductsRoot" />,
-    <Route exact path={links.productsDataunions} component={DataUnions} key="DataUnions" />,
+    // Data Products routes
+    <Route exact path={links.createProduct} component={CreateProduct} key="CreateProduct" />,
+    <Redirect exact from={links.products} to={links.createProduct} key="ProductsRoot" />,
     // Data union routes
     <Redirect exact from={links.dataUnions} to={links.introToDataUnions} key="DataUnionsRoot" />,
     <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsIntro" />,
@@ -187,7 +185,6 @@ const DocsRouter = () => ([
     // Marketplace routes
     <Route exact path={links.introToMarketplace} component={IntroToMarketplace} key="IntroToMarketplace" />,
     <Redirect exact from={links.marketplace} to={links.introToMarketplace} key="MarketplaceRoot" />,
-    <Route exact path={links.marketplaceDataunions} component={DataUnions} key="DataUnions" />,
     // SDK Routes
     <Route exact path={links.sdkOverview} component={Sdk} key="SdkOverviewPage" />,
     <Redirect exact from={links.sdk} to={links.sdkOverview} key="SdkRoot" />,

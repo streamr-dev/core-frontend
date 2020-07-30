@@ -126,21 +126,12 @@ jest.mock('$docs/components/Pages/Dashboards', () => ({
         <div>/docs/dashboards</div>
     ),
 }))
-jest.mock('$docs/components/Pages/Products/IntroToProducts', () => ({
+jest.mock('$docs/components/Pages/Products/CreateProduct', () => ({
     __esModule: true,
     default: () => (
         <div>
             /docs/products
-            /docs/products/intro-to-products
-        </div>
-    ),
-}))
-jest.mock('$docs/components/Pages/Products/DataUnions', () => ({
-    __esModule: true,
-    default: () => (
-        <div>
-            /docs/products/data-unions
-            /docs/marketplace/data-unions
+            /docs/products/create-product
         </div>
     ),
 }))

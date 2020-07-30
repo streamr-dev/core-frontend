@@ -167,24 +167,18 @@ export const generateMap = () => ({
             filePath: 'dashboards/introToDashboards.mdx',
         },
     },
-    Products: {
+    'Data Products': {
         root: {
             path: docsLinks.products,
-            section: 'Products',
-            title: 'Intro to products',
-            filePath: 'products/introToProducts.mdx',
+            section: 'Data Products',
+            title: 'Create a Product',
+            filePath: 'products/createProduct.mdx',
         },
-        'Intro to products': {
-            path: docsLinks.introToProducts,
-            section: 'Products',
-            title: 'Intro to products',
-            filePath: 'products/introToProducts.mdx',
-        },
-        'Data Unions': {
-            path: docsLinks.productsDataunions,
-            section: 'Products',
-            title: 'Data Unions',
-            filePath: 'products/dataUnions.mdx',
+        'Create a Product': {
+            path: docsLinks.createProduct,
+            section: 'Data Products',
+            title: 'Create a Product',
+            filePath: 'products/createProduct.mdx',
         },
     },
     'Data Unions': {
@@ -197,7 +191,7 @@ export const generateMap = () => ({
         'Intro to Data Unions': {
             path: docsLinks.introToDataUnions,
             section: 'Data Unions',
-            title: 'Intro to products',
+            title: 'Intro to Data Unions',
             filePath: 'dataUnions/introToDataUnions.mdx',
         },
         'Create a DU with Core': {
@@ -291,12 +285,6 @@ export const generateMap = () => ({
             section: 'Marketplace',
             title: 'Intro to the Marketplace',
             filePath: 'marketplace/introToMarketplace.mdx',
-        },
-        'Data Unions': {
-            path: docsLinks.marketplaceDataunions,
-            section: 'Marketplace',
-            title: 'Data Unions',
-            filePath: 'products/dataUnions.mdx',
         },
     },
     SDKs: {

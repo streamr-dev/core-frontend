@@ -36,7 +36,7 @@ const NoCreatedProductsView = () => (
         <MediaQuery minWidth={breakpoints.lg.min}>
             <Translate
                 value="userpages.products.noCreatedProducts.message"
-                docsLink={docsLinks.introToProducts}
+                docsLink={docsLinks.createProduct}
                 dangerousHTML
                 tag="small"
             />
