@@ -11,12 +11,6 @@ import styled from 'styled-components'
 
 import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
-import {
-    SecurityIcon,
-    getSecurityLevel,
-    getSecurityLevelTitle,
-} from '$userpages/components/StreamPage/Edit/SecurityView'
-
 import routes from '$routes'
 import {
     getStreams,
@@ -188,11 +182,6 @@ const StreamName = styled(RowItem)`
     }
 `
 
-const StreamNameAndIcon = styled.div`
-    display: flex;
-    align-items: center;
-`
-
 const StreamDescription = styled(RowItem)`
     font-size: 12px;
     font-weight: var(--regular);
@@ -205,7 +194,7 @@ const StreamDescription = styled(RowItem)`
         white-space: nowrap;
         grid-row: 2;
         grid-column: 1 / 3;
-        max-width: calc(100% - 168px);
+        max-width: calc(100% - 144px);
     }
 
     @media (min-width: ${LG}px) {
@@ -317,57 +306,11 @@ const StyledStatusIcon = styled(StatusIcon)`
     }
 `
 
-const StreamTitle = styled.span`
+const StreamTitle = styled.div`
     overflow-x: hidden;
     word-break: break-word;
     text-overflow: ellipsis;
     white-space: nowrap;
-`
-
-const SecurityIconContainer = styled.span`
-    position: relative;
-    line-height: 12px;
-
-    &::after {
-        content: attr(data-tooltiptext);
-        visibility: hidden;
-        opacity: 0;
-        transition: 0s all;
-        position: absolute;
-        background-color: #323232;
-        border-radius: 2px;
-        color: white;
-        font-size: 12px;
-        top: 26px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 2px 6px;
-        white-space: nowrap;
-        font-weight: var(--regular);
-    }
-
-    &:hover {
-        &::after {
-            transition-delay: 0.5s;
-            visibility: visible;
-            opacity: 1;
-        }
-    }
-
-    @media (min-width: ${LG}px) {
-        line-height: 16px;
-    }
-`
-
-const StyledSecurityIcon = styled(SecurityIcon)`
-    margin-left: 8px;
-    width: 12px;
-    height: 12px;
-
-    @media (min-width: ${LG}px) {
-        width: 16px;
-        height: 16px;
-    }
 `
 
 type TargetStream = ?Stream
@@ -578,17 +521,7 @@ const StreamList = () => {
                                     onClick={() => onStreamRowClick(stream.id)}
                                 >
                                     <StreamName title={stream.name}>
-                                        <StreamNameAndIcon>
-                                            <StreamTitle>{stream.name}</StreamTitle>
-                                            <SecurityIconContainer data-tooltiptext={`${getSecurityLevelTitle(stream)} stream`}>
-                                                <StyledSecurityIcon
-                                                    level={getSecurityLevel(stream)}
-                                                    mode="small"
-                                                    hideBasic
-                                                    hideSigned
-                                                />
-                                            </SecurityIconContainer>
-                                        </StreamNameAndIcon>
+                                        <StreamTitle>{stream.name}</StreamTitle>
                                     </StreamName>
                                     <StreamDescription title={stream.description}>
                                         {stream.description}
