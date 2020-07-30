@@ -60,7 +60,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
     const { stop } = useBusLine()
 
     return (
-        <div {...props}>
+        <div {...props} data-test-hook="TOCPage">
             <div>
                 {!!title && (
                     <React.Fragment>
