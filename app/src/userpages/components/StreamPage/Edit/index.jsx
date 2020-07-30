@@ -23,6 +23,7 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
+import Nav from '$shared/components/Layout/Nav'
 
 import InfoView from './InfoView'
 import KeyView from './KeyView'
@@ -121,7 +122,9 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
 
     return (
         <CoreLayout
-            hideNavOnDesktop
+            nav={(
+                <Nav noWide />
+            )}
             navComponent={(
                 <Toolbar
                     altMobileLayout

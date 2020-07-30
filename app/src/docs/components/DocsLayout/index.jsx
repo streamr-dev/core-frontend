@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import SimpleReactLightbox from 'simple-react-lightbox'
@@ -9,12 +7,15 @@ import Components from '$docs/mdxConfig'
 import PageTurner from '$docs/components/PageTurner'
 import DocsContainer from '$shared/components/Container/Docs'
 import styles from './docsLayout.pcss'
+import DocsNav from './DocsNav'
 
-type Props = {}
-
-const DocsLayout = ({ ...props }: Props = {}) => (
+const DocsLayout = ({ nav = <DocsNav />, ...props }) => (
     <SimpleReactLightbox>
-        <Layout className={styles.docsLayout} footer>
+        <Layout
+            className={styles.docsLayout}
+            footer
+            nav={nav}
+        >
             <Navigation
                 responsive
             />

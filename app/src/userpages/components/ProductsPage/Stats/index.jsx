@@ -22,6 +22,7 @@ import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { isDataUnionProduct } from '$mp/utils/product'
+import Nav from '$shared/components/Layout/Nav'
 
 import styles from './stats.pcss'
 
@@ -44,7 +45,9 @@ const Stats = () => {
     return (
         <CoreLayout
             footer={false}
-            hideNavOnDesktop
+            nav={(
+                <Nav noWide />
+            )}
             navComponent={(
                 <Header
                     searchComponent={
@@ -96,7 +99,9 @@ const Stats = () => {
 const LoadingView = () => (
     <CoreLayout
         footer={false}
-        hideNavOnDesktop
+        nav={(
+            <Nav noWide />
+        )}
         navComponent={(
             <Header
                 searchComponent={

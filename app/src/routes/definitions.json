@@ -31,10 +31,12 @@
         }
     },
     "community": {
+        "blog": "https://blog.streamr.network/",
         "devForum": "https://forum.streamr.dev/",
         "github": "https://github.com/streamr-dev",
         "linkedin": "https://www.linkedin.com/company/streamr-ltd-/",
         "medium": "https://medium.com/streamrblog",
+        "peepeth": "https://peepeth.com/streamr",
         "reddit": "https://reddit.com/r/streamr",
         "telegram": "https://t.me/streamrdata",
         "trello": "https://trello.com/b/j24hxvjg/streamr-milestone-1",
@@ -90,12 +92,19 @@
     "whitepaper": "<landingPage>/whitepaper",
     "site": {
         "about": "/about",
+        "caseStudies": {
+            "swash": "/case-studies/swash",
+            "tracey": "/case-studies/tracey",
+            "machineWitness": "/case-studies/machine-witness"
+        },
         "design": "/design",
         "learn": {
             "core": "/learn/core",
             "marketplace": "/learn/marketplace",
-            "network": "/learn/network"
-        }
+            "network": "/learn/network",
+            "dataUnions": "/learn/data-unions"
+        },
+        "papers": "/papers"
     },
     "notFound": "/404",
     "error": "/error",

@@ -12,6 +12,7 @@ import * as UndoContext from '$shared/contexts/Undo'
 import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
+import Nav from '$shared/components/Layout/Nav'
 
 import ProductController, { useController } from '../ProductController'
 import useEditableProduct from '../ProductController/useEditableProduct'
@@ -199,7 +200,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
     return (
         <CoreLayout
             className={styles.layout}
-            hideNavOnDesktop
+            nav={(
+                <Nav noWide />
+            )}
             navComponent={(
                 <Toolbar
                     left={<BackButton onBack={back} />}
@@ -232,7 +235,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
 const LoadingView = () => (
     <CoreLayout
         className={styles.layout}
-        hideNavOnDesktop
+        nav={(
+            <Nav noWide />
+        )}
         loading
         navComponent={(
             <Toolbar

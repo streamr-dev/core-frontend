@@ -1,31 +1,29 @@
-// @flow
-
 import React from 'react'
 import styled from 'styled-components'
-import cx from 'classnames'
 import { Link as RouterLink } from 'react-router-dom'
 
-import styles from './link.pcss'
-
-type Props = {
-    className?: string,
-    href?: string,
-    to?: ?string,
-    decorated?: boolean,
-}
-
-const UnstyledLink = ({ className, decorated, ...props }: Props) => {
+const UnstyledRaw = (props) => {
     const Tag = props.href || !props.to ? 'a' : RouterLink
-    return (
-        <Tag
-            {...props}
-            className={cx(styles.root, className, {
-                [styles.decorated]: !!decorated,
-            })}
-        />
-    )
+    return <Tag {...props} />
 }
 
-const Link = styled(UnstyledLink)``
+const Raw = styled(UnstyledRaw)``
+
+const Link = styled(Raw)`
+    &,
+    :link,
+    :active,
+    :focus,
+    :hover,
+    :visited {
+        color: inherit;
+        outline: 0;
+        text-decoration: ${({ decorated }) => (decorated ? 'underline' : 'none')};
+    }
+`
+
+Object.assign(Link, {
+    Raw,
+})
 
 export default Link
