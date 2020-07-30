@@ -168,6 +168,7 @@ jobs:
     - DATA_UNION_OPERATOR_ADDRESS=0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1
     - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
+    - NO_TEST_HOOKS=1
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
@@ -230,6 +231,7 @@ jobs:
     - DATA_UNION_OPERATOR_ADDRESS=0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1
     - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
+    - NO_TEST_HOOKS=1
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/deploy-pr.sh"
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
@@ -260,6 +262,7 @@ jobs:
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
     - AWS_ACCESS_KEY_ID=$ACCESS_KEY_PRD
     - AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_PRD
+    - NO_TEST_HOOKS=1
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
     - provider: s3
