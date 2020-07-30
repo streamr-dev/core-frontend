@@ -29,7 +29,7 @@ const stats = [{
     id: 'subscribers',
     value: '34500',
 }, {
-    id: 'adminFee',
+    id: 'revenueShare',
     unit: '%',
     value: '40',
 }, {

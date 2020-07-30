@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 import { titleize } from '@streamr/streamr-layout'
 
+import Nav from '$shared/components/Layout/Nav'
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
@@ -220,7 +221,9 @@ const Members = () => {
     return (
         <CoreLayout
             footer={false}
-            hideNavOnDesktop
+            nav={(
+                <Nav noWide />
+            )}
             navComponent={(
                 <Header
                     searchComponent={dataUnionDeployed ? (
@@ -395,7 +398,9 @@ const Members = () => {
 const LoadingView = () => (
     <CoreLayout
         footer={false}
-        hideNavOnDesktop
+        nav={(
+            <Nav noWide />
+        )}
         navComponent={(
             <Header
                 searchComponent={

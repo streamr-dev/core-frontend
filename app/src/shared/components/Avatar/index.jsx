@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react'
+import styled from 'styled-components'
 import cx from 'classnames'
 import FallbackImage from '$shared/components/FallbackImage'
 import Initials from './Initials'
@@ -54,4 +55,4 @@ const Avatar = ({ className, alt, src }: Props) => {
     )
 }
 
-export default Avatar
+export default styled(Avatar)``

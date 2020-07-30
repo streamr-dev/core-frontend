@@ -15,7 +15,7 @@ type Props = {
     loadingClassname?: string,
     contentClassname?: string,
     navComponent?: Node,
-    hideNavOnDesktop?: boolean,
+    nav?: Node,
 }
 
 const CoreLayout = ({
@@ -25,12 +25,12 @@ const CoreLayout = ({
     loadingClassname,
     contentClassname,
     navComponent,
-    hideNavOnDesktop,
+    nav,
 }: Props) => (
     <Layout
         footer={false}
         className={cx(styles.container, className)}
-        hideNavOnDesktop={hideNavOnDesktop}
+        nav={nav}
     >
         {navComponent || null}
         <LoadingIndicator loading={!!loading} className={cx(styles.loadingIndicator, loadingClassname)} />

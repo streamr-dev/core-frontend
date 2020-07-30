@@ -2,41 +2,50 @@ import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
-
 import mockStore from '$testUtils/mockStoreProvider'
-
-import Nav from '$shared/components/Nav'
+import Nav from '$shared/components/Layout/Nav'
 
 /* eslint-disable react/prop-types */
-jest.mock('$shared/components/Nav/DropdownItem', () => ({
+jest.mock('$shared/components/Link', () => {
+    const Link = ({ to, href, children }) => (
+        <div id={href || to}>{children}</div>
+    )
+
+    Link.Raw = Link
+
+    return {
+        __esModule: true,
+        default: Link,
+    }
+})
+
+jest.mock('$shared/components/ActivityList', () => ({
     __esModule: true,
-    default: ({ to, children }) => (
-        <div id={to}>{children}</div>
-    ),
-}))
-jest.mock('$shared/components/Nav/LinkItem', () => ({
-    __esModule: true,
-    default: ({ to, children }) => (
-        <div id={to}>{children}</div>
-    ),
-}))
-jest.mock('$shared/components/Nav/AvatarItem', () => ({
-    __esModule: true,
-    default: ({ user }) => (
-        <div id="avatar">{user.username}</div>
-    ),
-}))
-jest.mock('$shared/components/Nav/ActivityItem', () => ({
-    __esModule: true,
-    default: () => (
-        <div id="activity" />
-    ),
+    default: () => <div id="ActivityList" />,
 }))
 
-/* eslint-enable react/prop-types */
+jest.mock('$shared/components/Avatar', () => ({
+    __esModule: true,
+    default: () => <div id="Avatar" />,
+}))
+
+jest.mock('$shared/components/Layout/User', () => {
+    const User = ({ source }) => (
+        <div id="User">
+            {(source || {}).username}
+        </div>
+    )
+
+    User.Avatarless = User
+
+    return {
+        __esModule: true,
+        default: User,
+    }
+})
 
 /* eslint-disable object-curly-newline */
-describe('Nav', () => {
+describe('Nav.Wide', () => {
     it('renders logo', () => {
         const store = {
             user: {},
@@ -44,7 +53,7 @@ describe('Nav', () => {
         const el = mount((
             <MemoryRouter>
                 <Provider store={mockStore(store)}>
-                    <Nav />
+                    <Nav.Wide />
                 </Provider>
             </MemoryRouter>
         ))
@@ -60,16 +69,14 @@ describe('Nav', () => {
             const el = mount((
                 <MemoryRouter>
                     <Provider store={mockStore(store)}>
-                        <Nav />
+                        <Nav.Wide />
                     </Provider>
                 </MemoryRouter>
             ))
 
             expect(el.find({ id: '/core/streams' }).exists()).toBe(true)
-            expect(el.find({ id: '/core/streams' }).children().length).toBe(6)
             expect(el.find({ id: '/marketplace' }).exists()).toBe(true)
-            expect(el.find({ id: '/docs' }).exists()).toBe(true)
-            expect(el.find({ id: '/docs' }).children().length).toBe(6)
+            expect(el.find({ id: '/docs/getting-started' }).exists()).toBe(true)
             expect(el.find({ id: '/login' }).exists()).toBe(true)
             expect(el.find({ id: '/signup' }).exists()).toBe(true)
         })
@@ -88,60 +95,67 @@ describe('Nav', () => {
             const el = mount((
                 <MemoryRouter>
                     <Provider store={mockStore(store)}>
-                        <Nav />
+                        <Nav.Wide />
                     </Provider>
                 </MemoryRouter>
             ))
 
             expect(el.find({ id: '/core/streams' }).exists()).toBe(true)
-            expect(el.find({ id: '/core/streams' }).children().length).toBe(6)
             expect(el.find({ id: '/marketplace' }).exists()).toBe(true)
-            expect(el.find({ id: '/docs' }).exists()).toBe(true)
-            expect(el.find({ id: '/docs' }).children().length).toBe(6)
+            expect(el.find({ id: '/docs/getting-started' }).exists()).toBe(true)
             expect(el.find({ id: '/login' }).exists()).toBe(false)
             expect(el.find({ id: '/signup' }).exists()).toBe(false)
+            expect(el.find({ id: '/logout' }).exists()).toBe(true)
         })
 
-        it('renders the activity bell icon ACTIVITY_QUEUE is enabled', () => {
-            process.env.ACTIVITY_QUEUE = 'on'
-            const store = {
-                user: {
+        describe('activities', () => {
+            afterEach(() => {
+                delete process.env.ACTIVITY_QUEUE
+                global.localStorage.removeItem('user.activityStreamId')
+            })
+
+            it('renders the activity bell icon ACTIVITY_QUEUE is enabled', () => {
+                global.localStorage.setItem('user.activityStreamId', 'STREAM_ID')
+                process.env.ACTIVITY_QUEUE = 'on'
+
+                const store = {
                     user: {
-                        id: '1',
-                        username: 'tester1@streamr.com',
+                        user: {
+                            id: '1',
+                            username: 'tester1@streamr.com',
+                        },
                     },
-                },
-            }
-            const el = mount((
-                <MemoryRouter>
-                    <Provider store={mockStore(store)}>
-                        <Nav />
-                    </Provider>
-                </MemoryRouter>
-            ))
+                }
+                const el = mount((
+                    <MemoryRouter>
+                        <Provider store={mockStore(store)}>
+                            <Nav.Wide />
+                        </Provider>
+                    </MemoryRouter>
+                ))
 
-            expect(el.find({ id: 'activity' }).exists()).toBe(true)
-        })
+                expect(el.find({ id: 'ActivityList' }).exists()).toBe(true)
+            })
 
-        it('does not render the activity bell icon when ACTIVITY_QUEUE is disabled', () => {
-            delete process.env.ACTIVITY_QUEUE
-            const store = {
-                user: {
+            it('does not render the activity bell icon when ACTIVITY_QUEUE is disabled', () => {
+                const store = {
                     user: {
-                        id: '1',
-                        username: 'tester1@streamr.com',
+                        user: {
+                            id: '1',
+                            username: 'tester1@streamr.com',
+                        },
                     },
-                },
-            }
-            const el = mount((
-                <MemoryRouter>
-                    <Provider store={mockStore(store)}>
-                        <Nav />
-                    </Provider>
-                </MemoryRouter>
-            ))
+                }
+                const el = mount((
+                    <MemoryRouter>
+                        <Provider store={mockStore(store)}>
+                            <Nav.Wide />
+                        </Provider>
+                    </MemoryRouter>
+                ))
 
-            expect(el.find({ id: 'activity' }).exists()).toBe(false)
+                expect(el.find({ id: 'ActivityList' }).exists()).toBe(false)
+            })
         })
 
         it('renders the user avatar', () => {
@@ -156,38 +170,13 @@ describe('Nav', () => {
             const el = mount((
                 <MemoryRouter>
                     <Provider store={mockStore(store)}>
-                        <Nav />
+                        <Nav.Wide />
                     </Provider>
                 </MemoryRouter>
             ))
 
-            expect(el.find({ id: 'avatar' }).exists()).toBe(true)
-            expect(el.find({ id: 'avatar' }).text()).toMatch(/tester1@streamr.com/)
-        })
-    })
-
-    describe('Docs links', () => {
-        it('shows correct links', () => {
-            const store = {
-                user: {},
-            }
-            const el = mount((
-                <MemoryRouter>
-                    <Provider store={mockStore(store)}>
-                        <Nav />
-                    </Provider>
-                </MemoryRouter>
-            ))
-
-            const docsEl = el.find({ id: '/docs' })
-            expect(docsEl.exists()).toBe(true)
-            expect(el.find({ id: '/docs' }).children().length).toBe(6)
-            expect(docsEl.childAt(0).text()).toBe('gettingStarted')
-            expect(docsEl.childAt(1).text()).toBe('streams')
-            expect(docsEl.childAt(2).text()).toBe('canvases')
-            expect(docsEl.childAt(3).text()).toBe('dashboards')
-            expect(docsEl.childAt(4).text()).toBe('products')
-            expect(docsEl.childAt(5).text()).toBe('dataUnions')
+            expect(el.find({ id: 'User' }).exists()).toBe(true)
+            expect(el.find({ id: 'User' }).text()).toMatch(/tester1@streamr\.com/)
         })
     })
 })

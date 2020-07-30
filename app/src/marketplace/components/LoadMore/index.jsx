@@ -2,32 +2,35 @@
 
 import React from 'react'
 import { Translate } from 'react-redux-i18n'
-import { Row, Container, Col } from 'reactstrap'
+import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
-
-import styles from './loadMore.pcss'
 
 export type Props = {
     onClick: () => void,
     hasMoreSearchResults: boolean,
+    preserveSpace?: boolean,
+    className?: string,
 }
 
-const LoadMore = ({ onClick, hasMoreSearchResults }: Props) => {
+const StyledContainer = styled.div`
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    margin-top: 5em;
+`
+
+const LoadMore = ({ onClick, hasMoreSearchResults, preserveSpace, className }: Props) => {
     if (!hasMoreSearchResults) {
-        return null
+        return preserveSpace ? <StyledContainer className={className} /> : null
     }
 
     return (
-        <Container className={styles.container}>
-            <Row className="justify-content-center">
-                <Col xs="auto">
-                    <Button kind="special" variant="dark" onClick={onClick}>
-                        <Translate value="productList.viewMore" />
-                    </Button>
-                </Col>
-            </Row>
-        </Container>
+        <StyledContainer className={className}>
+            <Button kind="special" variant="dark" onClick={onClick}>
+                <Translate value="productList.viewMore" />
+            </Button>
+        </StyledContainer>
     )
 }
 

@@ -1,7 +1,13 @@
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
-import { Footer as LayoutFooter, FooterColumn, FooterColumns, SocialChannels, MadeBy as UnstyledMadeBy } from '@streamr/streamr-layout'
+import {
+    Footer as LayoutFooter,
+    FooterColumn,
+    FooterColumns as UnstyledFooterColumns,
+    MadeBy as UnstyledMadeBy,
+    SocialChannels,
+} from '@streamr/streamr-layout'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
@@ -15,13 +21,13 @@ const MadeBy = styled(UnstyledMadeBy)`
     }
 `
 
-const FooterWithBorder = styled(FooterColumns)`
-    border-top: ${({ topBorder }) => (topBorder ? '1px' : '0')} solid #D8D8D8;
+const FooterColumns = styled(UnstyledFooterColumns)`
+    border-top: ${({ separate }) => (separate ? '1px' : '0')} solid #d8d8d8;
 `
 
 const Footer = ({ topBorder = false }) => (
     <LayoutFooter>
-        <FooterWithBorder topBorder={topBorder}>
+        <FooterColumns separate={topBorder}>
             <FooterColumn title={I18n.t('general.learn')}>
                 <a href={routes.root()}>
                     <Translate value="general.top" />
@@ -97,7 +103,7 @@ const Footer = ({ topBorder = false }) => (
                     <Translate value="general.privacy" />
                 </a>
             </FooterColumn>
-        </FooterWithBorder>
+        </FooterColumns>
         <SocialChannels />
         <MadeBy />
     </LayoutFooter>

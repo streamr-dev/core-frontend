@@ -21,7 +21,14 @@ const DELAY = {
     hide: 250,
 }
 
-export default function Tooltip(props: Props) {
+export default function Tooltip({
+    value,
+    children,
+    container,
+    className,
+    placement = 'top',
+    ...otherProps
+}: Props) {
     const idRef = useRef()
     // increment global id counter & assign it as an id on component init
     if (!idRef.current) {
@@ -37,21 +44,14 @@ export default function Tooltip(props: Props) {
         setIsOpen((isOpenState) => !isOpenState)
     }, [setIsOpen])
 
-    const {
-        value,
-        children,
-        container,
-        className,
-        ...otherProps
-    } = props
     return (
         <div id={id} className={cx(styles.tooltipContainer, className)}>
             {children}
             <RsTooltip
-                placement="top"
                 {...otherProps}
                 innerClassName={styles.tooltip}
                 hideArrow
+                placement={placement}
                 delay={DELAY}
                 isOpen={isOpen}
                 target={id}

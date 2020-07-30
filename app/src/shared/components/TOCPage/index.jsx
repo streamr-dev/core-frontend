@@ -65,7 +65,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                 {!!title && (
                     <React.Fragment>
                         <Wing />
-                        <Title title={title}>{title}</Title>
+                        <Title>{title}</Title>
                         <div />
                     </React.Fragment>
                 )}
