@@ -2,6 +2,7 @@
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
+import Image from '$docs/components/Image'
 import Warning from '$docs/components/Warning'
 import { CodeSnippet } from '@streamr/streamr-layout'
 import docsLinks from '$shared/../docsLinks'
@@ -26,15 +27,11 @@ The easiest way to push data to a stream is to use the one of our <Link to={docs
 
 You can also try it locally in your browser. Just open this <a target="_blank" href="https://jsbin.com/xahoxut/edit?js,output">JS Bin</a> or <a target="_blank" href="https://gist.github.com/fonty1/f09aa09afcbae0bf5d7032163a466f76">GitHub Gist</a>, and replace `MY-STREAM-ID` and `MY-API-KEY` with your stream ID and API key. Your browser will start producing data to your stream! If you were successful, you should see something like this in your stream editor preview.
 
-<figure>
-    <picture>
-      <img
-        src={StreamEditorPreview}
-        srcSet={`${StreamEditorPreview2x} 2x`}
-        alt="Stream Editor Preview"
-      />
-    </picture>
-</figure>
+<Image
+  src={StreamEditorPreview}
+  highResSrc={StreamEditorPreview2x}
+  alt="Stream Editor Preview"
+/>
 
 Additionally, you can interact with the Streamr API using any HTTP library of your choice. You will find all the details in the <Link to={docsLinks.api}>API section</Link>, but here’s a brief rundown. You’ll be making a `HTTP POST` request to a URL, which contains your stream ID.
 
@@ -46,15 +43,11 @@ The body of the request will be your data payload in JSON. Add your API key to t
 
 This is how a test request would look in the fabulous <a target="_blank" href="https://www.getpostman.com/">Postman</a> app, with the URL and Authorization header set.
 
-<figure>
-    <picture>
-      <img
-        src={Postman}
-        srcSet={`${Postman2x} 2x`}
-        alt="Postman App"
-      />
-    </picture>
-</figure>
+<Image
+  src={Postman}
+  highResSrc={Postman2x}
+  alt="Postman App"
+/>
 
 All the different authorization options are explained in the: <Link to={docsLinks.api}>API docs</Link>.
 

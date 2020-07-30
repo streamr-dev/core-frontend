@@ -5,7 +5,6 @@ import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema, StreamStatus } from '$shared/flowtype/stream-types'
-import type { Operation } from '$userpages/flowtype/permission-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
 import Notification from '$shared/utils/Notification'
@@ -15,7 +14,6 @@ import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
 import { getError } from '$shared/utils/request'
-import { selectUserData } from '$shared/modules/user/selectors'
 import { getParamsForFilter } from '$userpages/utils/filters'
 import CsvSchemaError from '$shared/errors/CsvSchemaError'
 import routes from '$routes'
@@ -31,10 +29,6 @@ export const GET_STREAMS_REQUEST = 'userpages/streams/GET_STREAMS_REQUEST'
 export const GET_STREAMS_SUCCESS = 'userpages/streams/GET_STREAMS_SUCCESS'
 export const GET_STREAMS_FAILURE = 'userpages/streams/GET_STREAMS_FAILURE'
 export const CLEAR_STREAM_LIST = 'userpages/streams/CLEAR_STREAM_LIST'
-
-export const GET_MY_STREAM_PERMISSIONS_REQUEST = 'userpages/streams/GET_MY_STREAM_PERMISSIONS_REQUEST'
-export const GET_MY_STREAM_PERMISSIONS_SUCCESS = 'userpages/streams/GET_MY_STREAM_PERMISSIONS_SUCCESS'
-export const GET_MY_STREAM_PERMISSIONS_FAILURE = 'userpages/streams/GET_MY_STREAM_PERMISSIONS_FAILURE'
 
 export const CREATE_STREAM_REQUEST = 'userpages/streams/CREATE_STREAM_REQUEST'
 export const CREATE_STREAM_SUCCESS = 'userpages/streams/CREATE_STREAM_SUCCESS'
@@ -115,21 +109,6 @@ const getStreamsSuccess = (streams: StreamIdList, hasMoreResults: boolean) => ({
 
 const getStreamsFailure = (error: ErrorInUi) => ({
     type: GET_STREAM_FAILURE,
-    error,
-})
-
-const getMyStreamPermissionsRequest = () => ({
-    type: GET_MY_STREAM_PERMISSIONS_REQUEST,
-})
-
-const getMyStreamPermissionsSuccess = (id: StreamId, permissions: Array<Operation>) => ({
-    type: GET_MY_STREAM_PERMISSIONS_SUCCESS,
-    id,
-    permissions,
-})
-
-const getMyStreamPermissionsFailure = (error: ErrorInUi) => ({
-    type: GET_MY_STREAM_PERMISSIONS_FAILURE,
     error,
 })
 
@@ -368,24 +347,6 @@ export const getStreamStatus = (id: StreamId) => (dispatch: Function) => {
     return dispatch(updateStreamStatus(id))
 }
 
-export const getMyStreamPermissions = (id: StreamId) => (dispatch: Function, getState: Function) => {
-    dispatch(getMyStreamPermissionsRequest())
-    return services.getMyStreamPermissions(id)
-        .then((data) => {
-            const currentUser = selectUserData(getState()) || {}
-            return dispatch(getMyStreamPermissionsSuccess(
-                id,
-                data
-                    .filter((item) => item.user === currentUser.username)
-                    .map((item) => item.operation),
-            ))
-        })
-        .catch((e) => {
-            dispatch(getMyStreamPermissionsFailure(e))
-            throw e
-        })
-}
-
 export const createStream = (options: { name: string, description: ?string }) => (dispatch: Function): Promise<StreamId> => {
     dispatch(createStreamRequest())
     return new Promise((resolve, reject) => {
@@ -573,7 +534,6 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             name: stream.name || '',
             description: stream.description || '',
             config: cloneDeep(stream.config) || {},
-            ownPermissions: cloneDeep(stream.ownPermissions) || [],
             lastUpdated: stream.lastUpdated || 0,
             autoConfigure: stream.autoConfigure || false,
             partitions: stream.partitions || 1,
@@ -593,7 +553,6 @@ export const initNewStream = (initData: ?any) => (dispatch: Function) => {
         name: '',
         description: '',
         config: {},
-        ownPermissions: [],
         lastUpdated: 0,
         autoConfigure: false,
         partitions: 1,

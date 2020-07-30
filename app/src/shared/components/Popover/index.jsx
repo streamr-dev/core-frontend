@@ -270,7 +270,7 @@ const Popover = ({
                 {...menuProps}
                 className={menuClassName}
             >
-                {React.Children.map(children, (child, index) => React.cloneElement(child, {
+                {React.Children.map(children, (child, index) => child && React.cloneElement(child, {
                     active: !!child.props.value && child.props.value === selectedItem,
                     onClick: getOnItemClick(index, child.props.onClick),
                 }))}

@@ -4,21 +4,21 @@ export const subscribeSnippets = ({ id }) => ({
 
         const streamr = new StreamrClient({
             auth: {
-                apiKey: 'YOUR-API-KEY',
+                privateKey: 'YOUR-PRIVATE-KEY',
             },
         })
 
         // Subscribe to a stream
         streamr.subscribe({
             stream: '${id}',
-        },
-        (message, metadata) => {
+        }, (message, metadata) => {
             // Do something with the message here!
             console.log(message)
-        }
+        })
     `,
     java: `
-        StreamrClient client = new StreamrClient();
+        AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY");
+        StreamrClient client = new StreamrClient(method);
         Stream stream = client.getStream("${id}");
 
         Subscription sub = client.subscribe(stream, new MessageHandler() {
@@ -37,7 +37,7 @@ export const publishSnippets = ({ id }) => ({
 
         const client = new StreamrClient({
             auth: {
-                privateKey: 'your-private-key',
+                privateKey: 'YOUR-PRIVATE-KEY',
             }
         })
 
@@ -48,7 +48,8 @@ export const publishSnippets = ({ id }) => ({
         })
     `,
     java: `
-        StreamrClient client = new StreamrClient();
+        AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY");
+        StreamrClient client = new StreamrClient(method);
         Stream stream = client.getStream("${id}");
 
         Map<String, Object> msg = new LinkedHashMap<>();

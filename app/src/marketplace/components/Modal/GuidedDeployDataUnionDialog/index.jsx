@@ -29,6 +29,10 @@ type ProductCardProps = {
     className?: string,
 }
 
+const tileTheme = {
+    borderRadius: 0,
+}
+
 const PreviewContainer = ({ children }: ChildrenProps) => (
     <div className={styles.previewContainer}>
         {children}
@@ -98,11 +102,7 @@ const GuidedDeployDataUnionDialog = ({
         <div className={styles.tabContent}>
             {step === 0 && (
                 <React.Fragment>
-                    <ThemeProvider
-                        theme={{
-                            borderRadius: 0,
-                        }}
-                    >
+                    <ThemeProvider theme={tileTheme}>
                         <ImageTile
                             alt={name}
                             height="240px"

@@ -4,7 +4,7 @@ import { act } from 'react-dom/test-utils'
 import sinon from 'sinon'
 
 import usePermissionContext, { Provider as PermissionContextProvider } from '../useProductPermissions'
-import * as productServices from '$mp/modules/product/services'
+import * as permissionServices from '$userpages/modules/permission/services'
 import * as useProduct from '../useProduct'
 import * as usePending from '$shared/hooks/usePending'
 
@@ -30,7 +30,7 @@ describe('PermissionContext', () => {
             isPending: false,
         }))
         let resolvePermissions
-        sandbox.stub(productServices, 'getUserProductPermissions').callsFake(() => new Promise((resolve) => {
+        sandbox.stub(permissionServices, 'getResourcePermissions').callsFake(() => new Promise((resolve) => {
             resolvePermissions = resolve
         }))
 
@@ -55,12 +55,13 @@ describe('PermissionContext', () => {
         expect(result.share).toBe(false)
 
         await act(async () => {
-            resolvePermissions({
-                get: true,
-                edit: false,
-                del: true,
-                share: true,
-            })
+            resolvePermissions([{
+                operation: 'product_get',
+            }, {
+                operation: 'product_delete',
+            }, {
+                operation: 'product_share',
+            }])
         })
 
         expect(result.hasPermissions).toBe(true)

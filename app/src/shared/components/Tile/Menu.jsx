@@ -28,10 +28,13 @@ const UnstyledMenu = ({ children, onToggle, ...props }: Props) => (
 )
 
 const Menu = styled(UnstyledMenu)`
-    position: absolute;
     right: 16px;
     top: 16px;
     z-index: 1;
+
+    && {
+        position: absolute;
+    }
 `
 
 export default Menu

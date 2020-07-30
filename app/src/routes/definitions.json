@@ -108,7 +108,7 @@
         "decentralizedWeb": "https://blockchainhub.net/web3-decentralized-web/"
     },
     "api": {
-        "me": {
+        "currentUser": {
             "index": "<api>/users/me",
             "image": "<api>/users/me/image",
             "changePassword": "<api>/users/me/changePassword",
@@ -119,13 +119,20 @@
             "products": "<api>/users/me/products"
         },
         "canvases": {
-            "downloadCsv": "<api>/canvases/downloadCsv"
+            "downloadCsv": "<api>/canvases/downloadCsv",
+            "permissions": {
+                "index": "<api>/canvases/:canvasId/permissions",
+                "show": "<api>/canvases/:canvasId/permissions/:id"
+            }
         },
         "categories": "<api>/categories",
         "dashboards": {
             "index": "<api>/dashboards",
-            "myPermissions": "<api>/dashboards/:dashboardId/permissions/me",
-            "show": "<api>/dashboards/:id"
+            "show": "<api>/dashboards/:id",
+            "permissions": {
+                "index": "<api>/dashboards/:dashboardId/permissions",
+                "show": "<api>/dashboards/:dashboardId/permissions/:id"
+            }
         },
         "streams": {
             "data": "<api>/streams/:streamId/data/partitions/0/from",
@@ -164,12 +171,15 @@
             "show": "<api>/products/:id",
             "images": "<api>/products/:id/images",
             "streams": "<api>/products/:id/streams",
-            "myPermissions": "<api>/products/:id/permissions/me",
             "undeployFree": "<api>/products/:id/undeployFree",
             "setUndeploying": "<api>/products/:id/setUndeploying",
             "deployFree": "<api>/products/:id/deployFree",
             "setDeploying": "<api>/products/:id/setDeploying",
-            "related": "<api>/products/:id/related"
+            "related": "<api>/products/:id/related",
+            "permissions": {
+                "index": "<api>/products/:productId/permissions",
+                "show": "<api>/products/:productId/permissions/:id"
+            }
         },
         "integrationKeys": {
             "index": "<api>/integration_keys",

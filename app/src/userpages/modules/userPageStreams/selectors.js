@@ -9,7 +9,6 @@ import type { UserPageStreamsState, CsvUploadState } from '$userpages/flowtype/s
 import type { Stream, StreamList, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
 import type { ResourceKeyIdList, ResourceKeyList } from '$shared/flowtype/resource-key-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Operation } from '$userpages/flowtype/permission-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { streamsSchema, streamSchema, resourceKeysSchema } from '$shared/modules/entities/schema'
@@ -81,11 +80,6 @@ export const selectUploadCsvState: (StoreState) => ?CsvUploadState = createSelec
 export const selectFieldsAutodetectFetching: (StoreState) => boolean = createSelector(
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): boolean => subState.autodetectFetching,
-)
-
-export const selectPermissions: (StoreState) => ?Array<Operation> = createSelector(
-    selectUserPageStreamsState,
-    (subState: UserPageStreamsState): ?Array<Operation> => subState.permissions,
 )
 
 export const selectPageSize: (StoreState) => number = createSelector(

@@ -5,7 +5,6 @@ describe('Canvas reducer', () => {
     it('should return the initial state', () => {
         expect(reducer(undefined, {})).toEqual({
             ids: [],
-            openCanvasId: null,
             error: null,
             fetching: false,
         })
@@ -36,15 +35,6 @@ describe('Canvas reducer', () => {
             fetching: false,
             list: ['test'],
             error: new Error('test-error'),
-        })
-    })
-
-    it('should handle OPEN_CANVAS', () => {
-        expect(reducer({}, {
-            type: actions.OPEN_CANVAS,
-            id: 1,
-        })).toEqual({
-            openCanvasId: 1,
         })
     })
 })

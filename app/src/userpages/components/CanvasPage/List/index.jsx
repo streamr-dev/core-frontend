@@ -6,8 +6,9 @@ import { Link as RouterLink } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
+import styled from 'styled-components'
 
-import type { Canvas } from '$userpages/flowtype/canvas-types'
+import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
 import { getCanvases, deleteCanvas } from '$userpages/modules/canvas/actions'
@@ -16,31 +17,59 @@ import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
 import Search from '../../Header/Search'
 import confirmDialog from '$shared/utils/confirm'
-import { selectUserData } from '$shared/modules/user/selectors'
 import NoCanvasesView from './NoCanvases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
-import type { Permission } from '$userpages/flowtype/permission-types'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import ListContainer from '$shared/components/Container/List'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
-import styles from './canvasList.pcss'
 import { CanvasTile } from '$shared/components/Tile'
 import Grid from '$shared/components/Tile/Grid'
 import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import routes from '$routes'
+import resourceUrl from '$shared/utils/resourceUrl'
+import { MD, LG } from '$shared/utils/styled'
+
+const DesktopOnlyButton = styled(Button)`
+     && {
+         display: none;
+     }
+
+     @media (min-width: ${LG}px) {
+         && {
+             display: inline-flex;
+         }
+     }
+`
+
+const StyledListContainer = styled(ListContainer)`
+    && {
+        margin-top: 16px;
+    }
+
+    @media (min-width: ${MD}px) {
+        && {
+            margin-top: 34px;
+        }
+    }
+
+    @media (min-width: ${LG}px) {
+        && {
+            margin-top: 0;
+        }
+    }
+`
 
 function CanvasPageSidebar({ canvas }) {
     const sidebar = useContext(SidebarContext)
     return (
         <Sidebar
-            className={styles.ModuleSidebar}
             isOpen={sidebar.isOpen()}
             onClose={() => sidebar.close()}
         >
@@ -57,15 +86,14 @@ function CanvasPageSidebar({ canvas }) {
 }
 
 const CreateCanvasButton = () => (
-    <Button
-        className={styles.createCanvasButton}
+    <DesktopOnlyButton
         tag={RouterLink}
         to={routes.canvases.edit({
             id: null,
         })}
     >
         <Translate value="userpages.canvases.createCanvas" />
-    </Button>
+    </DesktopOnlyButton>
 )
 
 const CanvasList = () => {
@@ -89,7 +117,6 @@ const CanvasList = () => {
 
     const dispatch = useDispatch()
     const { copy } = useCopy()
-    const user = useSelector(selectUserData)
     const canvases = useSelector(selectCanvases)
     const fetching = useSelector(selectFetching)
     const fetchingPermissions = useSelector(selectFetchingPermissions)
@@ -101,7 +128,23 @@ const CanvasList = () => {
         dispatch(getCanvases(filter))
     }, [dispatch, filter])
 
-    const confirmDeleteCanvas = useCallback(async (canvas: Canvas) => {
+    const deleteCanvasAndNotify = useCallback(async (id: CanvasId) => {
+        try {
+            await dispatch(deleteCanvas(id))
+
+            Notification.push({
+                title: I18n.t('userpages.canvases.deletedCanvas'),
+                icon: NotificationIcon.CHECKMARK,
+            })
+        } catch (e) {
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
+        }
+    }, [dispatch])
+
+    const confirmDeleteCanvas = useCallback(async (id: CanvasId) => {
         const confirmed = await confirmDialog('canvas', {
             title: I18n.t('userpages.canvases.delete.confirmTitle'),
             message: I18n.t('userpages.canvases.delete.confirmMessage'),
@@ -114,9 +157,9 @@ const CanvasList = () => {
         })
 
         if (confirmed) {
-            dispatch(deleteCanvas(canvas.id))
+            deleteCanvasAndNotify(id)
         }
-    }, [dispatch])
+    }, [deleteCanvasAndNotify])
 
     const [shareDialogCanvas, setShareDialogCanvas] = useState(undefined)
     const onOpenShareDialog = useCallback((canvas: Canvas) => {
@@ -124,8 +167,8 @@ const CanvasList = () => {
         sidebar.open('share')
     }, [sidebar])
 
-    const onCopyUrl = useCallback((url: string) => {
-        copy(url)
+    const onCopyUrl = useCallback((id: CanvasId) => {
+        copy(resourceUrl('CANVAS', id))
 
         Notification.push({
             title: I18n.t('userpages.canvases.menu.copyUrlNotification'),
@@ -136,7 +179,7 @@ const CanvasList = () => {
     const onToggleCanvasDropdown = useCallback((id: string) => async (open: boolean) => {
         if (open && !fetchingPermissions && !permissions[id]) {
             try {
-                await dispatch(getResourcePermissions('CANVAS', id, false))
+                await dispatch(getResourcePermissions('CANVAS', id))
             } catch (e) {
                 // Noop.
             }
@@ -145,17 +188,15 @@ const CanvasList = () => {
 
     const canBeSharedByCurrentUser = useCallback((id: string): boolean => (
         !fetchingPermissions &&
-        !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'canvas_share') !== undefined
-    ), [fetchingPermissions, permissions, user])
+        permissions[id].includes('canvas_share')
+    ), [fetchingPermissions, permissions])
 
     const canBeDeletedByCurrentUser = useCallback((id: string): boolean => (
         !fetchingPermissions &&
-        !!user &&
         permissions[id] &&
-        permissions[id].find((p: Permission) => p.user === user.username && p.operation === 'canvas_delete') !== undefined
-    ), [fetchingPermissions, permissions, user])
+        permissions[id].includes('canvas_delete')
+    ), [fetchingPermissions, permissions])
 
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
 
@@ -175,15 +216,13 @@ const CanvasList = () => {
                 <Translate value="userpages.canvases.menu.share" />
             </Popover.Item>
             <Popover.Item
-                onClick={() => onCopyUrl(routes.canvases.public.edit({
-                    id: canvas.id,
-                }))}
+                onClick={() => onCopyUrl(canvas.id)}
             >
                 <Translate value="userpages.canvases.menu.copyUrl" />
             </Popover.Item>
             <Popover.Item
                 disabled={!canBeDeletedByCurrentUser(canvas.id)}
-                onClick={() => confirmDeleteCanvas(canvas)}
+                onClick={() => confirmDeleteCanvas(canvas.id)}
             >
                 <Translate value="userpages.canvases.menu.delete" />
             </Popover.Item>
@@ -220,7 +259,7 @@ const CanvasList = () => {
             }
             loading={fetching}
         >
-            <ListContainer className={styles.corepageContentContainer}>
+            <StyledListContainer>
                 <Helmet title={`Streamr Core | ${I18n.t('userpages.canvases.title')}`} />
                 {!fetching && canvases && !canvases.length && (
                     <NoCanvasesView
@@ -241,7 +280,7 @@ const CanvasList = () => {
                         ))}
                     </Grid>
                 )}
-            </ListContainer>
+            </StyledListContainer>
             <CanvasPageSidebar canvas={shareDialogCanvas} />
             <DocsShortcuts />
         </Layout>

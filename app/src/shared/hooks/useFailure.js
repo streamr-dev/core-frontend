@@ -1,6 +1,6 @@
 // @flow
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
@@ -9,11 +9,9 @@ export default () => {
 
     const isMounted = useIsMounted()
 
-    useEffect(() => {
-        if (failure) {
-            throw failure
-        }
-    }, [failure])
+    if (failure) {
+        throw failure
+    }
 
     return useCallback((value: any) => {
         if (isMounted()) {

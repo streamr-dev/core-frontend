@@ -11,6 +11,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { isPriceValid } from '$mp/utils/price'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
+import useIsEthIdentityNeeded from '../EditProductPage/useIsEthIdentityNeeded'
 import useProduct from '../ProductController/useProduct'
 
 export const INFO = 'info'
@@ -47,6 +48,7 @@ function useValidationContext(): ContextProps {
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouched] = useState({})
     const originalProduct = useProduct()
+    const { isRequired: isEthIdentityRequired } = useIsEthIdentityNeeded()
 
     const touch = useCallback((name: string) => {
         setTouched((existing) => ({
@@ -159,6 +161,12 @@ function useValidationContext(): ContextProps {
                 clearStatus('adminFee')
             }
             clearStatus('beneficiaryAddress')
+
+            if (isEthIdentityRequired) {
+                setStatus('ethIdentity', ERROR, 'Please connect an Ethereum address')
+            } else {
+                clearStatus('ethIdentity')
+            }
         } else {
             if (isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress))) {
                 setStatus('beneficiaryAddress', ERROR, 'A valid ethereum address is needed')
@@ -204,6 +212,10 @@ function useValidationContext(): ContextProps {
             }
         }
 
+        if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
+            setStatus('contact.email', ERROR, 'Email address is required')
+        }
+
         // Set pending fields, a change is marked pending if there was a saved pending change or
         // we made a change that is different from the loaded product
         const changes = getPendingChanges(product)
@@ -211,10 +223,10 @@ function useValidationContext(): ContextProps {
         PENDING_CHANGE_FIELDS.forEach((field) => {
             setPendingChange(
                 field,
-                get(changes, field) || (isPublic && isTouched(field) && !isEqual(get(product, field), get(originalProduct, field))),
+                get(changes, field) != null || (isPublic && isTouched(field) && !isEqual(get(product, field), get(originalProduct, field))),
             )
         })
-    }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct])
+    }, [setStatus, clearStatus, isMounted, setPendingChange, isTouched, originalProduct, isEthIdentityRequired])
 
     return useMemo(() => ({
         setStatus,

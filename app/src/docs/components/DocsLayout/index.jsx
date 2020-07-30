@@ -2,20 +2,18 @@
 
 import React from 'react'
 import { MDXProvider } from '@mdx-js/react'
+import SimpleReactLightbox from 'simple-react-lightbox'
 import Layout from '$shared/components/Layout'
 import Navigation from './Navigation'
 import Components from '$docs/mdxConfig'
 import PageTurner from '$docs/components/PageTurner'
 import DocsContainer from '$shared/components/Container/Docs'
 import styles from './docsLayout.pcss'
-import useScrollToTop from '$shared/hooks/useScrollToTop'
 
 type Props = {}
 
-const DocsLayout = ({ ...props }: Props = {}) => {
-    useScrollToTop()
-
-    return (
+const DocsLayout = ({ ...props }: Props = {}) => (
+    <SimpleReactLightbox>
         <Layout className={styles.docsLayout} footer>
             <Navigation
                 responsive
@@ -34,7 +32,7 @@ const DocsLayout = ({ ...props }: Props = {}) => {
                 </div>
             </DocsContainer>
         </Layout>
-    )
-}
+    </SimpleReactLightbox>
+)
 
 export default DocsLayout

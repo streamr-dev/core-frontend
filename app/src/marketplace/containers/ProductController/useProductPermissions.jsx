@@ -6,7 +6,7 @@ import usePending from '$shared/hooks/usePending'
 import useProduct from './useProduct'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
-import { getUserProductPermissions } from '$mp/modules/product/services'
+import { getResourcePermissions } from '$userpages/modules/permission/services'
 
 type ContextProps = {
     hasPermissions: boolean,
@@ -29,9 +29,13 @@ function usePermissionContextValue() {
 
     const loadPermissions = useCallback(async (id) => (
         wrap(async () => {
-            const result = await getUserProductPermissions(id)
+            const result = await getResourcePermissions({
+                resourceType: 'PRODUCT',
+                resourceId: id,
+                id: 'me',
+            })
             if (!isMounted()) { return }
-            setPermissions(result)
+            setPermissions(result.map(({ operation }) => operation))
         })
     ), [wrap, isMounted])
 
@@ -46,10 +50,11 @@ function usePermissionContextValue() {
     }, [productId, loadedOnce, isPending, loadPermissions])
 
     const hasPermissions = !!permissions
-    const share = !!(permissions && permissions.share)
-    const del = !!(permissions && permissions.del)
-    const edit = !!(permissions && permissions.edit)
-    const get = !!(permissions && permissions.get)
+
+    const share = !!(permissions && permissions.includes('product_get'))
+    const del = !!(permissions && permissions.includes('product_delete'))
+    const edit = !!(permissions && permissions.includes('product_edit'))
+    const get = !!(permissions && permissions.includes('product_share'))
 
     return useMemo(() => ({
         hasPermissions,

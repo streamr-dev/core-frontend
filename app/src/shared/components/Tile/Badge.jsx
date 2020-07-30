@@ -1,16 +1,8 @@
-// @flow
-
-import React, { type Node } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import UnstyledSpinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
-
-type BadgeProps = {
-    bottom?: boolean,
-    left?: boolean,
-    right?: boolean,
-    top?: boolean,
-}
+import Link from '$shared/components/Link'
 
 const SharedTheme = {
     backgroundColor: '#525252',
@@ -24,7 +16,7 @@ const Badge = styled.div`
     border-bottom-right-radius: ${({ bottom, left, right }) => (bottom || (!left && right) ? 0 : 2)}px;
     border-top-left-radius: ${({ top, left }) => (top || left ? 0 : 2)}px;
     border-top-right-radius: ${({ top, left, right }) => (top || (!left && right) ? 0 : 2)}px;
-    color: white;
+    color: white !important;
     cursor: default;
     display: flex;
     font-size: 12px;
@@ -33,6 +25,12 @@ const Badge = styled.div`
     padding: 0 12px;
     pointer-events: none;
     user-select: none;
+
+    a& {
+        cursor: pointer;
+        pointer-events: auto;
+        text-decoration: none !important;
+    }
 
     ${({ top, left, right, bottom }) => !!(top || left || right || bottom) && css`
         position: absolute;
@@ -66,33 +64,27 @@ const Spinner = styled(UnstyledSpinner)`
     width: 12px;
 `
 
-const DeployingBadge = (props: BadgeProps) => (
+const DeployingBadge = (props) => (
     <Badge {...props}>
         <span>Deploying</span>
         <Spinner size="small" color="white" />
     </Badge>
 )
 
-const DataUnionBadge = (props: BadgeProps) => (
+const DataUnionBadge = (props) => (
     <Badge {...props}>
         <span>Data Union</span>
     </Badge>
 )
 
-const SharedBadge = (props: BadgeProps) => (
+const SharedBadge = (props) => (
     <Badge {...props} theme={SharedTheme}>
         <span>Shared</span>
     </Badge>
 )
 
-type IconBadgeProps = BadgeProps & {
-    children?: Node,
-    icon: string,
-}
-
-// $FlowFixMe `icon` is missing in `BadgeProps` but I just wanted it here.
-const UnstyledIconBadge = ({ children, icon, ...props }: IconBadgeProps) => (
-    <Badge {...props}>
+const UnstyledIconBadge = ({ forwardAs, children, icon, ...props }) => (
+    <Badge {...props} as={forwardAs}>
         <SvgIcon name={icon} />
         {children != null && (
             <div>{children}</div>
@@ -106,6 +98,20 @@ const IconBadge = styled(UnstyledIconBadge)`
         width: auto;
     }
 `
+
+const BadgeLink = ({
+    left,
+    top,
+    bottom,
+    right,
+    ...props
+}) => (
+    <Link {...props} />
+)
+
+Object.assign(Badge, {
+    Link: styled(BadgeLink)``,
+})
 
 export {
     DataUnionBadge,

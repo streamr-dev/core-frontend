@@ -17,7 +17,6 @@ const initialState = {
     deleteDataError: null,
     autodetectFetching: false,
     streamFieldAutodetectError: null,
-    permissions: null,
     pageSize: 20,
     hasMoreSearchResults: null,
 }
@@ -33,7 +32,6 @@ describe('Stream reducer', () => {
                 actions.GET_STREAM_REQUEST,
                 actions.CREATE_STREAM_REQUEST,
                 actions.UPDATE_STREAM_REQUEST,
-                actions.GET_MY_STREAM_PERMISSIONS_REQUEST,
                 actions.DELETE_STREAM_REQUEST,
                 actions.SAVE_STREAM_FIELDS_REQUEST,
             ].forEach((action) => {
@@ -186,7 +184,6 @@ describe('Stream reducer', () => {
                 actions.GET_STREAM_FAILURE,
                 actions.CREATE_STREAM_FAILURE,
                 actions.UPDATE_STREAM_FAILURE,
-                actions.GET_MY_STREAM_PERMISSIONS_FAILURE,
                 actions.DELETE_STREAM_FAILURE,
                 actions.SAVE_STREAM_FIELDS_FAILURE,
             ].forEach((action) => {

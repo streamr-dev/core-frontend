@@ -57,8 +57,8 @@ describe('New product', () => {
         cy.get('[name=name]').invoke('val').should('eq', 'Untitled Product')
     })
 
-    it('shows the error page if product creation fails', (done) => {
-        cy.ignoreUncaughtError(/failed with status code 422/i, done)
+    it('shows the error page if product creation fails', () => {
+        cy.ignoreUncaughtError(/failed with status code 422/i)
 
         cy.login()
         cy.server({
@@ -66,27 +66,28 @@ describe('New product', () => {
             status: 422,
             response: {},
         })
-        cy.route('http://localhost/api/v1/products')
+        cy.route('http://localhost/api/v1/products').as('getProducts')
         cy.visit('/core/products/new')
-        cy.contains('[alt="App crashed"]')
+        cy.wait('@getProducts')
+        cy.contains(/something has broken/i)
     })
 
-    it('displays "not found" page if product is not published', (done) => {
-        cy.ignoreUncaughtError(/could not be found/i, done)
+    it('displays "not found" page if product is not published', () => {
+        cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()
         cy.createProduct().then((productId) => {
             cy.visit(`/marketplace/products/${productId}`)
             cy.location('pathname').should('eq', `/marketplace/products/${productId}`)
-            cy.contains('[alt="Not found"]')
-            cy.location('pathname').should('eq', `/core/products/${productId}/edit`)
+            cy.contains(/we don.t seem to be able to find/i)
+            cy.location('pathname').should('eq', `/marketplace/products/${productId}`)
         })
     })
 })
 
 describe('Edit product', () => {
-    it('displays "not found" page if user has no permission to edit', (done) => {
-        cy.ignoreUncaughtError(/could not be found/i, done)
+    it('displays "not found" page if user has no permission to edit', () => {
+        cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()
         cy.createProduct().then((productId) => {
@@ -96,33 +97,33 @@ describe('Edit product', () => {
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/products/${productId}/edit`)
-            cy.contains('[alt="Not found"]')
+            cy.contains(/we don.t seem to be able to find/i)
             cy.location('pathname').should('eq', `/core/products/${productId}/edit`)
         })
     })
 })
 
 describe('Data union stats', () => {
-    it('displays "not found" page if product is not a data union', (done) => {
-        cy.ignoreUncaughtError(/could not be found/i, done)
+    it('displays "not found" page if product is not a data union', () => {
+        cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()
         cy.createProduct().then((productId) => {
             cy.visit(`/core/products/${productId}/stats`)
-            cy.contains('[alt="Not found"]')
+            cy.contains(/we don.t seem to be able to find/i)
             cy.location('pathname').should('eq', `/core/products/${productId}/stats`)
         })
     })
 })
 
 describe('Data union members', () => {
-    it('displays "not found" page if product is not a data union', (done) => {
-        cy.ignoreUncaughtError(/could not be found/i, done)
+    it('displays "not found" page if product is not a data union', () => {
+        cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()
         cy.createProduct().then((productId) => {
             cy.visit(`/core/products/${productId}/members`)
-            cy.contains('[alt="Not found"]')
+            cy.contains(/we don.t seem to be able to find/i)
             cy.location('pathname').should('eq', `/core/products/${productId}/members`)
         })
     })

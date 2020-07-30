@@ -7,25 +7,19 @@ import {
     GET_CANVASES_REQUEST,
     GET_CANVASES_SUCCESS,
     GET_CANVASES_FAILURE,
-    GET_CANVAS_REQUEST,
-    GET_CANVAS_SUCCESS,
-    GET_CANVAS_FAILURE,
     DELETE_CANVAS_REQUEST,
     DELETE_CANVAS_SUCCESS,
     DELETE_CANVAS_FAILURE,
-    OPEN_CANVAS,
 } from './actions'
 
 const initialState = {
     ids: [],
-    openCanvasId: null,
     error: null,
     fetching: false,
 }
 
 export default function (state: CanvasState = initialState, action: CanvasAction): CanvasState {
     switch (action.type) {
-        case GET_CANVAS_REQUEST:
         case GET_CANVASES_REQUEST:
         case DELETE_CANVAS_REQUEST:
             return {
@@ -45,18 +39,6 @@ export default function (state: CanvasState = initialState, action: CanvasAction
                 fetching: false,
                 error: action.error,
             }
-        case GET_CANVAS_SUCCESS:
-            return {
-                ...state,
-                fetching: false,
-                error: null,
-            }
-        case GET_CANVAS_FAILURE:
-            return {
-                ...state,
-                fetching: false,
-                error: action.error,
-            }
         case DELETE_CANVAS_SUCCESS:
             return {
                 ...state,
@@ -69,11 +51,6 @@ export default function (state: CanvasState = initialState, action: CanvasAction
                 ...state,
                 fetching: false,
                 error: action.error,
-            }
-        case OPEN_CANVAS:
-            return {
-                ...state,
-                openCanvasId: action.id,
             }
         default:
             return state

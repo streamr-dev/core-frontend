@@ -40,11 +40,18 @@ const mockState = {
                 },
             },
         },
+        integrationKeys: {
+            test: '12345',
+        },
+    },
+    integrationKey: {
+        ethereumIdentities: ['test'],
     },
 }
 
 jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
+    useDispatch: jest.fn(),
 }))
 
 describe('EditControllerProvider', () => {

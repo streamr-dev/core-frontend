@@ -1,48 +1,13 @@
 // @flow
 
-import path from 'path'
-
-import * as api from '$shared/utils/api'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
-
 export const GET_RESOURCE_PERMISSIONS_REQUEST = 'GET_RESOURCE_PERMISSIONS_REQUEST'
 export const GET_RESOURCE_PERMISSIONS_SUCCESS = 'GET_RESOURCE_PERMISSIONS_SUCCESS'
 export const GET_RESOURCE_PERMISSIONS_FAILURE = 'GET_RESOURCE_PERMISSIONS_FAILURE'
 
-export const ADD_RESOURCE_PERMISSION = 'ADD_RESOURCE_PERMISSION'
-export const REMOVE_RESOURCE_PERMISSION = 'REMOVE_RESOURCE_PERMISSION'
-
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Permission, ResourceType, ResourceId } from '../../flowtype/permission-types'
 
-const getApiUrl = (resourceType: ResourceType, resourceId: ResourceId) => {
-    const urlPartsByResourceType = {
-        DASHBOARD: 'dashboards',
-        CANVAS: 'canvases',
-        STREAM: 'streams',
-    }
-    const urlPart = urlPartsByResourceType[resourceType]
-    if (!urlPart) {
-        throw new Error(`Invalid resource type: ${resourceType}`)
-    }
-
-    return `${process.env.STREAMR_API_URL}/${path.join(urlPart, resourceId)}`
-}
-
-export const addResourcePermission = (resourceType: ResourceType, resourceId: ResourceId, permission: Permission) => ({
-    type: ADD_RESOURCE_PERMISSION,
-    resourceType,
-    resourceId,
-    permission,
-})
-
-export const removeResourcePermission = (resourceType: ResourceType, resourceId: ResourceId, permission: Permission) => ({
-    type: REMOVE_RESOURCE_PERMISSION,
-    resourceType,
-    resourceId,
-    permission,
-})
+import * as services from './services'
 
 const getResourcePermissionsRequest = () => ({
     type: GET_RESOURCE_PERMISSIONS_REQUEST,
@@ -55,29 +20,26 @@ const getResourcePermissionsSuccess = (resourceType: ResourceType, resourceId: R
     permissions,
 })
 
-const getResourcePermissionsFailure = (error: ErrorInUi) => ({
+const getResourcePermissionsFailure = (error: ErrorInUi, resourceType: ResourceType, resourceId: ResourceId) => ({
     type: GET_RESOURCE_PERMISSIONS_FAILURE,
     error,
+    resourceType,
+    resourceId,
 })
 
-export const getResourcePermissionsAPI = (resourceType: ResourceType, resourceId: ResourceId) => (
-    api.get({
-        url: `${getApiUrl(resourceType, resourceId)}/permissions`,
-    })
-)
-
-export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId, notify: boolean = true) => async (dispatch: Function) => {
+export const getResourcePermissions = (resourceType: ResourceType, resourceId: ResourceId) => async (dispatch: Function) => {
     dispatch(getResourcePermissionsRequest())
-    const resourcePermissions = await getResourcePermissionsAPI(resourceType, resourceId)
-        .catch((error) => {
-            dispatch(getResourcePermissionsFailure(error))
-            if (notify) {
-                Notification.push({
-                    title: error.message,
-                    icon: NotificationIcon.ERROR,
-                })
-            }
-            throw error
+
+    try {
+        const resourcePermissions = await services.getResourcePermissions({
+            resourceType,
+            resourceId,
+            id: 'me',
         })
-    dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
+        dispatch(getResourcePermissionsSuccess(resourceType, resourceId, resourcePermissions))
+    } catch (error) {
+        dispatch(getResourcePermissionsFailure(error, resourceType, resourceId))
+        console.warn(error)
+        throw error
+    }
 }

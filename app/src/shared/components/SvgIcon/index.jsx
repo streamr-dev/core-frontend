@@ -630,6 +630,14 @@ const sources = {
             </g>
         </svg>
     ),
+    expand: (
+        <svg width="25" height="24" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(1)" stroke="#ADADAD" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5.25 17.998L0 23.248M22.5 6.748v-6h-6M0 17.248v6h6M22.5.748l-5.25 5.25M17.25 17.998l5.25 5.25M0 6.748v-6h6M22.5 17.248v6h-6M0 .748l5.25 5.25" />
+                <rect x="7.5" y="8.248" width="7.5" height="7.5" rx=".75" />
+            </g>
+        </svg>
+    ),
     github: (
         <SocialIcons.GitHub />
     ),
@@ -656,6 +664,15 @@ const sources = {
     ),
     linkedin: (
         <SocialIcons.LinkedIn />
+    ),
+    instagram: (
+        <SocialIcons.Instagram />
+    ),
+    facebook: (
+        <SocialIcons.Facebook />
+    ),
+    web: (
+        <SocialIcons.Web />
     ),
 }
 

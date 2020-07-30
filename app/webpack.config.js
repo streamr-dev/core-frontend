@@ -153,7 +153,10 @@ module.exports = {
             // po-loader turns .po file into json
             {
                 test: /\.po$/,
-                use: '@streamr/po-loader',
+                loader: '@streamr/po-loader',
+                options: {
+                    keyseparator: '.',
+                },
             },
         ],
     },

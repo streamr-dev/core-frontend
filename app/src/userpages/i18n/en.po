@@ -8,1166 +8,1193 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
-msgid "userpages##canvases##createCanvas"
+msgid "userpages.canvases.createCanvas"
 msgstr "Create canvas"
 
-msgid "userpages##canvases##deleteCanvas"
+msgid "userpages.canvases.deletedCanvas"
 msgstr "Canvas deleted successfully"
 
-msgid "userpages##canvases##filterCanvases"
+msgid "userpages.canvases.filterCanvases"
 msgstr "Filter canvases"
 
-msgid "userpages##canvases##updated"
+msgid "userpages.canvases.updated"
 msgstr "Updated %{since}"
 
-msgid "userpages##canvases##noCreatedCanvases##title"
+msgid "userpages.canvases.noCreatedCanvases.title"
 msgstr "You haven't created any canvases yet."
 
-msgid "userpages##canvases##noCreatedCanvases##message"
+msgid "userpages.canvases.noCreatedCanvases.message"
 msgstr "Click the button above to create one."
 
-msgid "userpages##canvases##noCreatedCanvases##messageMobile"
+msgid "userpages.canvases.noCreatedCanvases.messageMobile"
 msgstr "Use the desktop app to make one."
 
-msgid "userpages##canvases##noCanvasesResult##title"
+msgid "userpages.canvases.noCanvasesResult.title"
 msgstr "No results."
 
-msgid "userpages##canvases##noCanvasesResult##message"
+msgid "userpages.canvases.noCanvasesResult.message"
 msgstr "We couldn't find any canvases that match your search."
 
-msgid "userpages##canvases##noCanvasesResult##clearFilters"
+msgid "userpages.canvases.noCanvasesResult.clearFilters"
 msgstr "Clear filters"
 
-msgid "userpages##canvases##title"
+msgid "userpages.canvases.title"
 msgstr "Canvases"
 
-msgid "userpages##canvases##menu##edit"
+msgid "userpages.canvases.menu.edit"
 msgstr "Edit"
 
-msgid "userpages##canvases##menu##delete"
+msgid "userpages.canvases.menu.delete"
 msgstr "Delete"
 
-msgid "userpages##canvases##menu##copyUrl"
+msgid "userpages.canvases.menu.copyUrl"
 msgstr "Copy URL"
 
-msgid "userpages##canvases##menu##copyUrlNotification"
+msgid "userpages.canvases.menu.copyUrlNotification"
 msgstr "Canvas URL copied"
 
-msgid "userpages##canvases##menu##share"
+msgid "userpages.canvases.menu.share"
 msgstr "Share"
 
-msgid "userpages##canvases##delete##confirmTitle"
+msgid "userpages.canvases.delete.confirmTitle"
 msgstr "Delete this canvas?"
 
-msgid "userpages##canvases##delete##confirmMessage"
+msgid "userpages.canvases.delete.confirmMessage"
 msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
 
-msgid "userpages##canvases##delete##confirmButton"
+msgid "userpages.canvases.delete.confirmButton"
 msgstr "Yes, delete"
 
-msgid "userpages##filter##sortBy"
+msgid "userpages.filter.sortBy"
 msgstr "Sort by"
 
-msgid "userpages##filter##recent"
+msgid "userpages.filter.recent"
 msgstr "Recent"
 
-msgid "userpages##filter##running"
+msgid "userpages.filter.running"
 msgstr "Running"
 
-msgid "userpages##filter##stopped"
+msgid "userpages.filter.stopped"
 msgstr "Stopped"
 
-msgid "userpages##filter##shared"
+msgid "userpages.filter.shared"
 msgstr "Shared"
 
-msgid "userpages##filter##mine"
+msgid "userpages.filter.mine"
 msgstr "Mine"
 
-msgid "userpages##filter##az"
+msgid "userpages.filter.az"
 msgstr "A to Z"
 
-msgid "userpages##filter##za"
+msgid "userpages.filter.za"
 msgstr "Z to A"
 
-msgid "userpages##filter##published"
+msgid "userpages.filter.published"
 msgstr "Published"
 
-msgid "userpages##filter##drafts"
+msgid "userpages.filter.drafts"
 msgstr "Drafts"
 
-msgid "userpages##filter##active"
+msgid "userpages.filter.active"
 msgstr "Active"
 
-msgid "userpages##filter##expired"
+msgid "userpages.filter.expired"
 msgstr "Expired"
 
-msgid "userpages##filter##approve"
+msgid "userpages.filter.approve"
 msgstr "Approve"
 
-msgid "userpages##filter##remove"
+msgid "userpages.filter.remove"
 msgstr "Remove"
 
-msgid "userpages##filter##rejected"
+msgid "userpages.filter.rejected"
 msgstr "Rejected"
 
-msgid "userpages##header##canvases"
+msgid "userpages.header.canvases"
 msgstr "Canvases"
 
-msgid "userpages##header##streams"
+msgid "userpages.header.streams"
 msgstr "Streams"
 
-msgid "userpages##header##dashboards"
+msgid "userpages.header.dashboards"
 msgstr "Dashboards"
 
-msgid "userpages##title##dashboards"
+msgid "userpages.title.dashboards"
 msgstr "Dashboards"
 
-msgid "userpages##title##products"
+msgid "userpages.title.products"
 msgstr "Products"
 
-msgid "userpages##title##purchases"
+msgid "userpages.title.purchases"
 msgstr "Purchases"
 
-msgid "userpages##title##streams"
+msgid "userpages.title.streams"
 msgstr "Streams"
 
-msgid "userpages##title##transactions"
+msgid "userpages.title.transactions"
 msgstr "Transactions"
 
-msgid "userpages##title##profile"
+msgid "userpages.title.profile"
 msgstr "Profile"
 
-msgid "userpages##title##stats"
+msgid "userpages.title.stats"
 msgstr "Overview"
 
-msgid "userpages##title##members"
+msgid "userpages.title.members"
 msgstr "Members"
 
-msgid "userpages##header##products"
+msgid "userpages.header.products"
 msgstr "Products"
 
-msgid "userpages##header##purchases"
+msgid "userpages.header.purchases"
 msgstr "Purchases"
 
-msgid "userpages##header##transactions"
+msgid "userpages.header.transactions"
 msgstr "Transactions"
 
-msgid "userpages##permissions##error"
+msgid "userpages.permissions.error"
 msgstr "Something went wrong while adding some of the permission(s)"
 
-msgid "userpages##permissions##saved"
+msgid "userpages.permissions.saved"
 msgstr "Permissions saved successfully!"
 
-msgid "userpages##products##filterProducts"
+msgid "userpages.products.filterProducts"
 msgstr "Filter products"
 
-msgid "userpages##products##noCreatedProducts##title"
+msgid "userpages.products.noCreatedProducts.title"
 msgstr "You haven’t created any Data Products or Data Unions yet."
 
-msgid "userpages##products##noCreatedProducts##message"
+msgid "userpages.products.noCreatedProducts.message"
 msgstr ""
 "Click the Create button above to get started.<br />"
 "If you need help, see the <a href=\"%{docsLink}\">docs</a>."
 
-msgid "userpages##products##noCreatedProducts##messageMobile"
+msgid "userpages.products.noCreatedProducts.messageMobile"
 msgstr "Use the app in a desktop browser to create one."
 
-msgid "userpages##products##noProductsResult##title"
+msgid "userpages.products.noProductsResult.title"
 msgstr "No results."
 
-msgid "userpages##products##noProductsResult##message"
+msgid "userpages.products.noProductsResult.message"
 msgstr "We couldn't find any products that match your search."
 
-msgid "userpages##products##noProductsResult##clearFilters"
+msgid "userpages.products.noProductsResult.clearFilters"
 msgstr "Clear filters"
 
-msgid "userpages##products##draft"
+msgid "userpages.products.draft"
 msgstr "Draft"
 
-msgid "userpages##products##deployed"
+msgid "userpages.products.deployed"
 msgstr "Deployed"
 
-msgid "userpages##products##published"
+msgid "userpages.products.published"
 msgstr "Published"
 
-msgid "userpages##products##createProduct"
+msgid "userpages.products.createProduct"
 msgstr "Create"
 
-msgid "userpages##products##viewProduct"
+msgid "userpages.products.viewProduct"
 msgstr "View on Marketplace"
 
-msgid "userpages##products##settings"
+msgid "userpages.products.settings"
 msgstr "Edit product"
 
-msgid "userpages##members##noDataUnionMembers##approve##title"
+msgid "userpages.members.noDataUnionMembers.approve.title"
 msgstr "No one is waiting to join at the moment."
 
-msgid "userpages##members##noDataUnionMembers##approve##message"
+msgid "userpages.members.noDataUnionMembers.approve.message"
 msgstr "Get out there and promote it 🚀"
 
-msgid "userpages##members##noDataUnionMembers##remove##title"
+msgid "userpages.members.noDataUnionMembers.remove.title"
 msgstr "No one has joined yet."
 
-msgid "userpages##members##noDataUnionMembers##remove##message"
+msgid "userpages.members.noDataUnionMembers.remove.message"
 msgstr "Get out there and promote it 🚀"
 
-msgid "userpages##members##noDataUnionMembers##rejected##title"
+msgid "userpages.members.noDataUnionMembers.rejected.title"
 msgstr "You haven't rejected any approvals yet."
 
-msgid "userpages##members##noDataUnionMembers##rejected##message"
+msgid "userpages.members.noDataUnionMembers.rejected.message"
 msgstr "Keep up the good work 👍"
 
-msgid "userpages##members##noDataUnionMembersResult##title"
+msgid "userpages.members.noDataUnionMembersResult.title"
 msgstr "Nope, sorry!"
 
-msgid "userpages##members##noDataUnionMembersResult##message"
+msgid "userpages.members.noDataUnionMembersResult.message"
 msgstr "We couldn't find any members that match your search."
 
-msgid "userpages##members##noDataUnionMembersResult##clearFilters"
+msgid "userpages.members.noDataUnionMembersResult.clearFilters"
 msgstr "Clear filters"
 
-msgid "userpages##members##table##ethereumAddress"
+msgid "userpages.members.table.ethereumAddress"
 msgstr "Ethereum address"
 
-msgid "userpages##members##table##joinedRequested"
+msgid "userpages.members.table.joinedRequested"
 msgstr "Joined / requested"
 
-msgid "userpages##members##table##lastUpdated"
+msgid "userpages.members.table.lastUpdated"
 msgstr "Last updated"
 
-msgid "userpages##members##table##status"
+msgid "userpages.members.table.status"
 msgstr "Status"
 
-msgid "userpages##members##status##accepted"
+msgid "userpages.members.status.accepted"
 msgstr "Accepted"
 
-msgid "userpages##members##status##rejected"
+msgid "userpages.members.status.rejected"
 msgstr "Rejected"
 
-msgid "userpages##members##status##pending"
+msgid "userpages.members.status.pending"
 msgstr "Pending"
 
-msgid "userpages##members##applicantsSelected"
-msgid_plural "userpages##members##applicantsSelected"
+msgid "userpages.members.applicantsSelected"
+msgid_plural "userpages.members.applicantsSelected"
 msgstr[1] "%{count} applicant selected"
 msgstr[2] "%{count} applicants selected"
 
-msgid "userpages##members##actions##cancel"
+msgid "userpages.members.actions.cancel"
 msgstr "Cancel"
 
-msgid "userpages##members##actions##selectAll"
+msgid "userpages.members.actions.selectAll"
 msgstr "Select all"
 
-msgid "userpages##members##actions##deselectAll"
+msgid "userpages.members.actions.deselectAll"
 msgstr "Deselect all"
 
-msgid "userpages##members##actions##approve"
+msgid "userpages.members.actions.approve"
 msgstr "Approve"
 
-msgid "userpages##members##actions##remove"
+msgid "userpages.members.actions.remove"
 msgstr "Remove"
 
-msgid "userpages##members##confirmTitle"
+msgid "userpages.members.confirmTitle"
 msgstr "Are you sure?"
 
-msgid "userpages##members##confirmMessage"
+msgid "userpages.members.confirmMessage"
 msgstr "This is an unrecoverable action. It will permanently<br/>remove the selected members from your data union."
 
-msgid "userpages##members##confirmButton"
+msgid "userpages.members.confirmButton"
 msgstr "Yes, remove"
 
-msgid "userpages##purchases##filterPurchases"
+msgid "userpages.purchases.filterPurchases"
 msgstr "Filter purchases"
 
-msgid "userpages##purchases##noAddedPurchases##title"
+msgid "userpages.purchases.noAddedPurchases.title"
 msgstr "You haven’t purchased or added any products yet."
 
-msgid "userpages##purchases##noAddedPurchases##message"
+msgid "userpages.purchases.noAddedPurchases.message"
 msgstr "Visit the Marketplace to get started."
 
-msgid "userpages##purchases##noAddedPurchases##hint"
+msgid "userpages.purchases.noAddedPurchases.hint"
 msgstr "Go to the marketplace"
 
-msgid "userpages##purchases##noPurchasesResult##title"
+msgid "userpages.purchases.noPurchasesResult.title"
 msgstr "No results."
 
-msgid "userpages##purchases##noPurchasesResult##message"
+msgid "userpages.purchases.noPurchasesResult.message"
 msgstr "We couldn't find any products that match your search."
 
-msgid "userpages##purchases##noPurchasesResult##clearFilters"
+msgid "userpages.purchases.noPurchasesResult.clearFilters"
 msgstr "Clear filters"
 
-msgid "userpages##purchases##active"
+msgid "userpages.purchases.active"
 msgstr "Active"
 
-msgid "userpages##purchases##expired"
+msgid "userpages.purchases.expired"
 msgstr "Expired"
 
-msgid "userpages##streams##createStream"
+msgid "userpages.streams.createStream"
 msgstr "Create stream"
 
-msgid "userpages##streams##filterStreams"
+msgid "userpages.streams.filterStreams"
 msgstr "Filter streams"
 
-msgid "userpages##streams##list##name"
+msgid "userpages.streams.list.name"
 msgstr "Name"
 
-msgid "userpages##streams##list##description"
+msgid "userpages.streams.list.description"
 msgstr "Description"
 
-msgid "userpages##streams##list##updated"
+msgid "userpages.streams.list.updated"
 msgstr "Updated"
 
-msgid "userpages##streams##list##lastData"
+msgid "userpages.streams.list.lastData"
 msgstr "Last Data"
 
-msgid "userpages##streams##list##status"
+msgid "userpages.streams.list.status"
 msgstr "Status"
 
-msgid "userpages##streams##list##actions"
+msgid "userpages.streams.list.actions"
 msgstr "Select"
 
-msgid "userpages##streams##actions##title"
+msgid "userpages.streams.actions.title"
 msgstr "Actions"
 
-msgid "userpages##streams##actions##addToCanvas"
+msgid "userpages.streams.actions.addToCanvas"
 msgstr "Add to canvas"
 
-msgid "userpages##streams##actions##deleteStreamSuccess"
+msgid "userpages.streams.actions.deleteStreamSuccess"
 msgstr "Stream deleted successfully"
 
-msgid "userpages##streams##actions##editStream"
+msgid "userpages.streams.actions.editStream"
 msgstr "Edit stream"
 
-msgid "userpages##streams##actions##copyId"
+msgid "userpages.streams.actions.copyId"
 msgstr "Copy ID"
 
-msgid "userpages##streams##actions##idCopied"
+msgid "userpages.streams.actions.idCopied"
 msgstr "Stream ID copied"
 
-msgid "userpages##streams##actions##copySnippet"
+msgid "userpages.streams.actions.copySnippet"
 msgstr "Copy Snippet"
 
-msgid "userpages##streams##actions##saveStreamSuccess"
+msgid "userpages.streams.actions.saveStreamSuccess"
 msgstr "Stream saved successfully"
 
-msgid "userpages##streams##actions##share"
+msgid "userpages.streams.actions.share"
 msgstr "Share"
 
-msgid "userpages##streams##actions##refresh"
+msgid "userpages.streams.actions.refresh"
 msgstr "Refresh"
 
-msgid "userpages##streams##actions##refreshSuccess"
+msgid "userpages.streams.actions.refreshSuccess"
 msgstr "Stream refreshed"
 
-msgid "userpages##streams##actions##refreshError"
+msgid "userpages.streams.actions.refreshError"
 msgstr "Stream refresh failed"
 
-msgid "userpages##streams##actions##delete"
+msgid "userpages.streams.actions.delete"
 msgstr "Delete"
 
-msgid "userpages##streams##noCreatedStreams##title"
+msgid "userpages.streams.noCreatedStreams.title"
 msgstr "You haven't created any streams yet."
 
-msgid "userpages##streams##noCreatedStreams##message"
+msgid "userpages.streams.noCreatedStreams.message"
 msgstr "Click the button above to create one."
 
-msgid "userpages##streams##noCreatedStreams##messageMobile"
+msgid "userpages.streams.noCreatedStreams.messageMobile"
 msgstr "Use the desktop app to make one."
 
-msgid "userpages##streams##noStreamsResult##title"
+msgid "userpages.streams.noStreamsResult.title"
 msgstr "No results."
 
-msgid "userpages##streams##noStreamsResult##message"
+msgid "userpages.streams.noStreamsResult.message"
 msgstr "We couldn't find any streams that match your search."
 
-msgid "userpages##streams##noStreamsResult##clearFilters"
+msgid "userpages.streams.noStreamsResult.clearFilters"
 msgstr "Clear filters"
 
-msgid "userpages##streams##edit##details##pageTitle##newStream"
+msgid "userpages.streams.edit.details.pageTitle.newStream"
 msgstr "Set up your Stream"
 
-msgid "userpages##streams##edit##details##pageTitle##existingStream"
+msgid "userpages.streams.edit.details.pageTitle.existingStream"
 msgstr "Edit your Stream"
 
-msgid "userpages##streams##edit##details##pageTitle##readOnlyStream"
+msgid "userpages.streams.edit.details.pageTitle.readOnlyStream"
 msgstr "Read only stream"
 
-msgid "userpages##streams##edit##details##nav##details"
+msgid "userpages.streams.edit.details.nav.details"
 msgstr "Details"
 
-msgid "userpages##streams##edit##details##nav##security"
+msgid "userpages.streams.edit.details.nav.security"
 msgstr "Security"
 
-msgid "userpages##streams##edit##details##nav##fields"
+msgid "userpages.streams.edit.details.nav.fields"
 msgstr "Fields"
 
-msgid "userpages##streams##edit##details##nav##status"
+msgid "userpages.streams.edit.details.nav.status"
 msgstr "Status"
 
-msgid "userpages##streams##edit##details##nav##preview"
+msgid "userpages.streams.edit.details.nav.preview"
 msgstr "Preview"
 
-msgid "userpages##streams##edit##details##nav##apiAccess"
+msgid "userpages.streams.edit.details.nav.apiAccess"
 msgstr "API Access"
 
-msgid "userpages##streams##edit##details##nav##historicalData"
+msgid "userpages.streams.edit.details.nav.historicalData"
 msgstr "Historical Data"
 
-msgid "userpages##streams##edit##details##nav##partitions"
+msgid "userpages.streams.edit.details.nav.partitions"
 msgstr "Partitions"
 
-msgid "userpages##streams##edit##details##nav##streamPartitions"
+msgid "userpages.streams.edit.details.nav.streamPartitions"
 msgstr "Stream partitions"
 
-msgid "userpages##streams##edit##details##name"
+msgid "userpages.streams.edit.details.name"
 msgstr "Name"
 
-msgid "userpages##streams##edit##details##description"
+msgid "userpages.streams.edit.details.description"
 msgstr "Description"
 
-msgid "userpages##streams##edit##details##streamId"
+msgid "userpages.streams.edit.details.streamId"
 msgstr "Stream ID"
 
-msgid "userpages##streams##edit##details##partitions"
+msgid "userpages.streams.edit.details.partitions"
 msgstr "Partitions"
 
-msgid "userpages##streams##edit##details##copyStreamId"
+msgid "userpages.streams.edit.details.copyStreamId"
 msgstr "Copy Stream ID"
 
-msgid "userpages##streams##edit##details##copied"
+msgid "userpages.streams.edit.details.copied"
 msgstr "Copied"
 
-msgid "userpages##streams##edit##details##unsavedChanges"
+msgid "userpages.streams.edit.details.unsavedChanges"
 msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
 
-msgid "userpages##streams##edit##configure##newFieldEditor##namePlaceholder"
+msgid "userpages.streams.edit.configure.newFieldEditor.namePlaceholder"
 msgstr "Enter a field name"
 
-msgid "userpages##streams##edit##configure##newFieldEditor##add"
+msgid "userpages.streams.edit.configure.newFieldEditor.add"
 msgstr "Add"
 
-msgid "userpages##streams##edit##configure##newFieldEditor##cancel"
+msgid "userpages.streams.edit.configure.newFieldEditor.cancel"
 msgstr "Cancel"
 
-msgid "userpages##streams##edit##configure##newFieldEditor##error##emptyName"
+msgid "userpages.streams.edit.configure.newFieldEditor.error.emptyName"
 msgstr "Name cannot be empty"
 
-msgid "userpages##streams##edit##configure##newFieldEditor##error##duplicateName"
+msgid "userpages.streams.edit.configure.newFieldEditor.error.duplicateName"
 msgstr "Name cannot be duplicate"
 
-msgid "userpages##streams##edit##configure##fieldName"
+msgid "userpages.streams.edit.configure.fieldName"
 msgstr "Field name"
 
-msgid "userpages##streams##edit##configure##dataType"
+msgid "userpages.streams.edit.configure.dataType"
 msgstr "Data type"
 
-msgid "userpages##streams##edit##configure##permission"
+msgid "userpages.streams.edit.configure.permission"
 msgstr "Permission"
 
-msgid "userpages##streams##edit##configure##delete"
+msgid "userpages.streams.edit.configure.delete"
 msgstr "Delete"
 
-msgid "userpages##streams##edit##configure##addField"
+msgid "userpages.streams.edit.configure.addField"
 msgstr "Add field"
 
-msgid "userpages##streams##edit##configure##help"
+msgid "userpages.streams.edit.configure.help"
 msgstr "You can configure your stream’s fields and data types here. If you’re planning to add historical data, you can choose to have Streamr try to autoconfigure fields or you can edit them yourself."
 
-msgid "userpages##streams##edit##configure##autoConfigure"
+msgid "userpages.streams.edit.configure.autoConfigure"
 msgstr "Always try to autoconfigure field names and types"
 
-msgid "userpages##streams##edit##configure##autodetect"
+msgid "userpages.streams.edit.configure.autodetect"
 msgstr "Autodetect fields"
 
-msgid "userpages##streams##edit##configure##waiting"
+msgid "userpages.streams.edit.configure.waiting"
 msgstr "Waiting..."
 
-msgid "userpages##streams##edit##configure##requireSignedData"
+msgid "userpages.streams.edit.configure.requireSignedData"
 msgstr "Require all messages in this stream to be signed"
 
-msgid "userpages##streams##edit##configure##historicalStoragePeriod##label"
+msgid "userpages.streams.edit.configure.historicalStoragePeriod.label"
 msgstr "Period to retain historical data until auto-removal"
 
-msgid "userpages##streams##edit##preview##description"
+msgid "userpages.streams.edit.preview.description"
 msgstr ""
 "You can configure your stream’s fields and preview the live data here. Use the Inspector to view details, "
 "and the transport controls to check the data is flowing correctly. "
 "If you need help pushing data to your stream, see the <a href=\"%{docsLink}\">docs</a>."
 
-msgid "userpages##streams##edit##preview##inspect"
+msgid "userpages.streams.edit.preview.inspect"
 msgstr "Inspect data"
 
-msgid "userpages##streams##edit##preview##start"
+msgid "userpages.streams.edit.preview.start"
 msgstr "Start"
 
-msgid "userpages##streams##edit##preview##stop"
+msgid "userpages.streams.edit.preview.stop"
 msgstr "Stop"
 
-msgid "userpages##streams##edit##codeSnippets##description"
+msgid "userpages.streams.edit.codeSnippets.description"
 msgstr "You can grab the code (JS & Java) you’ll need to use this stream in your applications below. Everyone can subscribe, but only users with permission can publish."
 
-msgid "userpages##streams##delete##confirmTitle"
+msgid "userpages.streams.delete.confirmTitle"
 msgstr "Delete this stream?"
 
-msgid "userpages##streams##delete##confirmMessage"
+msgid "userpages.streams.delete.confirmMessage"
 msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
 
-msgid "userpages##streams##delete##confirmButton"
+msgid "userpages.streams.delete.confirmButton"
 msgstr "Yes, delete"
 
-msgid "userpages##streams##edit##apiCredentials##description"
+msgid "userpages.streams.edit.apiCredentials.description"
 msgstr ""
 "Stream-specific API keys are deprecated, and will be replaced by Ethereum authentication. "
 "For keys that can access this stream only, create a new Ethereum account and share this "
 "stream to it. For keys that can access all your streams, add an Ethereum account in Settings."
 
-msgid "userpages##streams##edit##history##uploadCsvButton"
+msgid "userpages.streams.edit.history.uploadCsvButton"
 msgstr "Upload CSV"
 
-msgid "userpages##streams##edit##history##upload##description"
+msgid "userpages.streams.edit.history.upload.description"
 msgstr "If you want to add historical data to this stream, you can do so by uploading a .CSV file, which will be read and the data will be added to the stream."
 
-msgid "userpages##streams##edit##streamPartitions##description"
+msgid "userpages.streams.edit.streamPartitions.description"
 msgstr ""
 "Partitioning enables high-volume streams to scale beyond what one subscriber can handle. "
 "If you’re not sure if your stream needs partitions, leave it set to 1."
 
-msgid "userpages##streams##edit##history##storedEvents"
+msgid "userpages.streams.edit.history.storedEvents"
 msgstr "Stored data"
 
-msgid "userpages##streams##edit##history##noEvents"
+msgid "userpages.streams.edit.history.noEvents"
 msgstr "No stored data. Drop a CSV file here to load some."
 
-msgid "userpages##streams##edit##history##events"
+msgid "userpages.streams.edit.history.events"
 msgstr "This stream has stored data between %{start} and %{end}."
 
-msgid "userpages##streams##edit##history##delete"
+msgid "userpages.streams.edit.history.delete"
 msgstr "Delete"
 
-msgid "userpages##streams##edit##history##deleteRange"
+msgid "userpages.streams.edit.history.deleteRange"
 msgstr "Delete data"
 
-msgid "userpages##streams##edit##history##deleteEvents"
+msgid "userpages.streams.edit.history.deleteEvents"
 msgstr "Delete data up to and including"
 
-msgid "userpages##streams##edit##history##uploadCsv"
+msgid "userpages.streams.edit.history.uploadCsv"
 msgstr "Drop your .CSV file here to upload"
 
-msgid "userpages##streams##edit##history##saveFirst"
+msgid "userpages.streams.edit.history.saveFirst"
 msgstr "Cannot add historical data to a stream that has not been saved yet. Please save your changes and try again."
 
-msgid "userpages##streams##edit##history##parseError"
+msgid "userpages.streams.edit.history.parseError"
 msgstr "Could not parse timestamp column"
 
-msgid "userpages##streams##edit##history##confirmCsv##title"
+msgid "userpages.streams.edit.history.confirmCsv.title"
 msgstr "Clarify the CSV file fields"
 
-msgid "userpages##streams##edit##history##confirmCsv##customFormat"
+msgid "userpages.streams.edit.history.confirmCsv.customFormat"
 msgstr "Enter custom format"
 
-msgid "userpages##streams##edit##history##confirmCsv##selectTimestamp"
+msgid "userpages.streams.edit.history.confirmCsv.selectTimestamp"
 msgstr "Select the Timestamp column"
 
-msgid "userpages##streams##edit##history##confirmCsv##dateFormat"
+msgid "userpages.streams.edit.history.confirmCsv.dateFormat"
 msgstr "Date format"
 
-msgid "userpages##streams##edit##history##confirmCsv##dateFormats##java##name"
+msgid "userpages.streams.edit.history.confirmCsv.dateFormats.java.name"
 msgstr "Java timestamp"
 
-msgid "userpages##streams##edit##history##confirmCsv##dateFormats##java##help"
+msgid "userpages.streams.edit.history.confirmCsv.dateFormats.java.help"
 msgstr "Milliseconds since January 1st 1970 UTC"
 
-msgid "userpages##streams##edit##history##confirmCsv##dateFormats##unix##name"
+msgid "userpages.streams.edit.history.confirmCsv.dateFormats.unix.name"
 msgstr "Unix timestamp"
 
-msgid "userpages##streams##edit##history##confirmCsv##dateFormats##unix##help"
+msgid "userpages.streams.edit.history.confirmCsv.dateFormats.unix.help"
 msgstr "Seconds since January 1st 1970 UTC"
 
-msgid "userpages##streams##edit##history##confirmCsv##dateFormats##custom##name"
+msgid "userpages.streams.edit.history.confirmCsv.dateFormats.custom.name"
 msgstr "Custom Java SimpleDateFormat"
 
-msgid "userpages##streams##edit##history##datePicker##selectDate"
+msgid "userpages.streams.edit.history.datePicker.selectDate"
 msgstr "Select date"
 
-msgid "userpages##streams##partitionsLabel"
+msgid "userpages.streams.partitionsLabel"
 msgstr "Partitions"
 
-msgid "userpages##streams##inactivityDescription"
+msgid "userpages.streams.inactivityDescription"
 msgstr "If no new data is published to this stream, it will be shown as inactive on the marketplace after this period of time. Adjust the threshold to an appropriate period for your stream's frequency."
 
-msgid "userpages##streams##inactivityHours"
+msgid "userpages.streams.inactivityHours"
 msgstr "Hours"
 
-msgid "userpages##streams##inactivityDays"
+msgid "userpages.streams.inactivityDays"
 msgstr "Days"
 
-msgid "userpages##streams##inactivityLabel"
+msgid "userpages.streams.inactivityLabel"
 msgstr "Inactivity threshold"
 
-msgid "userpages##streams##fieldTypes##number"
+msgid "userpages.streams.fieldTypes.number"
 msgstr "Number"
 
-msgid "userpages##streams##fieldTypes##boolean"
+msgid "userpages.streams.fieldTypes.boolean"
 msgstr "Boolean"
 
-msgid "userpages##streams##fieldTypes##map"
+msgid "userpages.streams.fieldTypes.map"
 msgstr "Object"
 
-msgid "userpages##streams##fieldTypes##list"
+msgid "userpages.streams.fieldTypes.list"
 msgstr "List"
 
-msgid "userpages##streams##fieldTypes##string"
+msgid "userpages.streams.fieldTypes.string"
 msgstr "String"
 
-msgid "userpages##streams##fieldTypes##timestamp"
+msgid "userpages.streams.fieldTypes.timestamp"
 msgstr "Timestamp"
 
-msgid "userpages##streams##security##basic##title"
+msgid "userpages.streams.security.basic.title"
 msgstr "Basic"
 
-msgid "userpages##streams##security##basic##shortDescription"
+msgid "userpages.streams.security.basic.shortDescription"
 msgstr "No data security enforced."
 
-msgid "userpages##streams##security##basic##longDescription"
+msgid "userpages.streams.security.basic.longDescription"
 msgstr "This setting is flexible, but doesn’t give subscribers any guarantees about data authenticity. Network nodes can read any unencrypted data. This setting is suitable for testing, unimportant data, or if publishers cannot use cryptography."
 
-msgid "userpages##streams##security##signed##title"
+msgid "userpages.streams.security.signed.title"
 msgstr "Signed"
 
-msgid "userpages##streams##security##signed##shortDescription"
+msgid "userpages.streams.security.signed.shortDescription"
 msgstr "All data will be cryptographically signed."
 
-msgid "userpages##streams##security##signed##longDescription"
+msgid "userpages.streams.security.signed.longDescription"
 msgstr "Unsigned data will be rejected. This setting enables subscribers to validate all data in the stream. Network nodes can still read any unencrypted data. Recommended setting for public streams."
 
-msgid "userpages##streams##security##encrypted##title"
+msgid "userpages.streams.security.encrypted.title"
 msgstr "Encrypted"
 
-msgid "userpages##streams##security##encrypted##shortDescription"
+msgid "userpages.streams.security.encrypted.shortDescription"
 msgstr "All data will be signed and end-to-end encrypted."
 
-msgid "userpages##streams##security##encrypted##longDescription"
+msgid "userpages.streams.security.encrypted.longDescription"
 msgstr "Unsigned or unencrypted data will be rejected. This is the strongest security setting and ensures that no unauthorized party can read your data, including the network nodes brokering the data."
 
-msgid "userpages##transactions##noTransactions##title"
+msgid "userpages.transactions.noTransactions.title"
 msgstr "No transactions."
 
-msgid "userpages##transactions##noTransactions##message"
+msgid "userpages.transactions.noTransactions.message"
 msgstr "You haven't made any transactions yet."
 
-msgid "userpages##transactions##noAccountsLinked##linkAccount"
+msgid "userpages.transactions.noAccountsLinked.linkAccount"
 msgstr "Link account"
 
-msgid "userpages##transactions##noAccountsLinked##title"
+msgid "userpages.transactions.noAccountsLinked.title"
 msgstr "Account not linked."
 
-msgid "userpages##transactions##noAccountsLinked##message"
+msgid "userpages.transactions.noAccountsLinked.message"
 msgstr "You need to link an Ethereum account to see your transaction history."
 
-msgid "userpages##transactions##currentAccountNotLinked##title"
+msgid "userpages.transactions.currentAccountNotLinked.title"
 msgstr "Account not linked."
 
-msgid "userpages##transactions##currentAccountNotLinked##message"
+msgid "userpages.transactions.currentAccountNotLinked.message"
 msgstr "You need to link the current Ethereum account to see your transaction history."
 
-msgid "userpages##members##filterMembers"
+msgid "userpages.members.filterMembers"
 msgstr "Filter members"
 
-msgid "userpages##dashboards##createDashboard"
+msgid "userpages.dashboards.createDashboard"
 msgstr "Create dashboard"
 
-msgid "userpages##dashboards##deletedDashboard"
+msgid "userpages.dashboards.deletedDashboard"
 msgstr "Dashboard deleted successfully!"
 
-msgid "userpages##dashboards##filterDashboards"
+msgid "userpages.dashboards.delete.confirmTitle"
+msgstr "Delete this dashboard?"
+
+msgid "userpages.dashboards.delete.confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages.dashboards.delete.confirmButton"
+msgstr "Yes, delete"
+
+msgid "userpages.dashboards.filterDashboards"
 msgstr "Filter dashboards"
 
-msgid "userpages##dashboards##noCreatedDashboards##title"
+msgid "userpages.dashboards.noCreatedDashboards.title"
 msgstr "You haven’t created any dashboards yet."
 
-msgid "userpages##dashboards##noCreatedDashboards##message"
+msgid "userpages.dashboards.noCreatedDashboards.message"
 msgstr "Click the button above to create one."
 
-msgid "userpages##dashboards##noCreatedDashboards##messageMobile"
+msgid "userpages.dashboards.noCreatedDashboards.messageMobile"
 msgstr "Use the desktop app to make one."
 
-msgid "userpages##dashboards##noDashboardsResult##title"
+msgid "userpages.dashboards.noDashboardsResult.title"
 msgstr "No results."
 
-msgid "userpages##dashboards##noDashboardsResult##message"
+msgid "userpages.dashboards.noDashboardsResult.message"
 msgstr "We couldn't find any dashboards that match your search."
 
-msgid "userpages##dashboards##noDashboardsResult##clearFilters"
+msgid "userpages.dashboards.noDashboardsResult.clearFilters"
 msgstr "Clear filters"
 
-msgid "userpages##dashboards##savedDashboard"
+msgid "userpages.dashboards.savedDashboard"
 msgstr "Dashboard saved successfully!"
 
-msgid "userpages##transactions##list##name"
+msgid "userpages.dashboards.menu.edit"
+msgstr "Edit"
+
+msgid "userpages.dashboards.menu.delete"
+msgstr "Delete"
+
+msgid "userpages.dashboards.menu.copyUrl"
+msgstr "Copy URL"
+
+msgid "userpages.dashboards.menu.copyUrlNotification"
+msgstr "Dashboard URL copied"
+
+msgid "userpages.dashboards.menu.share"
+msgstr "Share"
+
+msgid "userpages.transactions.list.name"
 msgstr "Name"
 
-msgid "userpages##transactions##list##type"
+msgid "userpages.transactions.list.type"
 msgstr "Type"
 
-msgid "userpages##transactions##list##transaction"
+msgid "userpages.transactions.list.transaction"
 msgstr "Transaction"
 
-msgid "userpages##transactions##list##when"
+msgid "userpages.transactions.list.when"
 msgstr "When"
 
-msgid "userpages##transactions##list##value"
+msgid "userpages.transactions.list.value"
 msgstr "Value"
 
-msgid "userpages##transactions##list##gas"
+msgid "userpages.transactions.list.gas"
 msgstr "Gas"
 
-msgid "userpages##transactions##list##status"
+msgid "userpages.transactions.list.status"
 msgstr "Status"
 
-msgid "userpages##transactions##actions##title"
+msgid "userpages.transactions.actions.title"
 msgstr "Actions"
 
-msgid "userpages##transactions##actions##viewOnEtherscan"
+msgid "userpages.transactions.actions.viewOnEtherscan"
 msgstr "View on Etherscan"
 
-msgid "userpages##transactions##actions##copyTxHash"
+msgid "userpages.transactions.actions.copyTxHash"
 msgstr "Copy TX hash"
 
-msgid "userpages##transactions##actions##txHashCopied"
+msgid "userpages.transactions.actions.txHashCopied"
 msgstr "TX hash copied"
 
-msgid "userpages##transactions##type##createContractProduct"
+msgid "userpages.transactions.type.createContractProduct"
 msgstr "Publish"
 
-msgid "userpages##transactions##type##undeployProduct"
+msgid "userpages.transactions.type.undeployProduct"
 msgstr "Unpublish"
 
-msgid "userpages##transactions##type##redeployProduct"
+msgid "userpages.transactions.type.redeployProduct"
 msgstr "Republish"
 
-msgid "userpages##transactions##type##purchase"
+msgid "userpages.transactions.type.purchase"
 msgstr "Purchase"
 
-msgid "userpages##transactions##type##payment"
+msgid "userpages.transactions.type.payment"
 msgstr "Payment"
 
-msgid "userpages##transactions##type##updateContractProduct"
+msgid "userpages.transactions.type.updateContractProduct"
 msgstr "Update"
 
-msgid "userpages##transactions##status##pending"
+msgid "userpages.transactions.status.pending"
 msgstr "Pending"
 
-msgid "userpages##transactions##status##completed"
+msgid "userpages.transactions.status.completed"
 msgstr "Confirmed"
 
-msgid "userpages##profilePage##save##successNotification"
+msgid "userpages.profilePage.save.successNotification"
 msgstr "Your settings have been saved"
 
-msgid "userpages##profilePage##toolbar##cancel"
+msgid "userpages.profilePage.toolbar.cancel"
 msgstr "Cancel"
 
-msgid "userpages##profilePage##toolbar##saveAndExit"
+msgid "userpages.profilePage.toolbar.share"
+msgstr "Share"
+
+msgid "userpages.profilePage.toolbar.saveAndExit"
 msgstr "Save & Exit"
 
-msgid "userpages##profilePage##toolbar##done"
+msgid "userpages.profilePage.toolbar.done"
 msgstr "Done"
 
-msgid "userpages##profilePage##toolbar##saveChanges"
+msgid "userpages.profilePage.toolbar.saveChanges"
 msgstr "Save Changes"
 
-msgid "userpages##profilePage##pageTitle"
+msgid "userpages.profilePage.pageTitle"
 msgstr "Settings"
 
-msgid "userpages##profilePage##profile##title"
+msgid "userpages.profilePage.profile.title"
 msgstr "Profile"
 
-msgid "userpages##profilePage##profileSettings##userFullname"
+msgid "userpages.profilePage.profileSettings.userFullname"
 msgstr "Your Name"
 
-msgid "userpages##profilePage##profileSettings##userEmail"
+msgid "userpages.profilePage.profileSettings.userEmail"
 msgstr "Email"
 
-msgid "userpages##profilePage##profileSettings##changePassword"
+msgid "userpages.profilePage.profileSettings.changePassword"
 msgstr "Change Password"
 
-msgid "userpages##profilePage##apiCredentials##title"
+msgid "userpages.profilePage.apiCredentials.title"
 msgstr "API Credentials"
 
-msgid "userpages##profilePage##apiCredentials##linkTitle"
+msgid "userpages.profilePage.apiCredentials.linkTitle"
 msgstr "API keys"
 
-msgid "userpages##profilePage##apiCredentials##description"
+msgid "userpages.profilePage.apiCredentials.description"
 msgstr ""
 "API keys are deprecated, and will stop working at a later time. Creating new API keys has been "
 "disabled. To authenticate to the API from your apps and scripts, please use the Ethereum "
 "Accounts section to create private keys instead."
 
-msgid "userpages##profilePage##apiCredentials##addAPIKey"
+msgid "userpages.profilePage.apiCredentials.addAPIKey"
 msgstr "Add new key"
 
-msgid "userpages##profilePage##ethereumAddress##title"
+msgid "userpages.profilePage.ethereumAddress.title"
 msgstr "Ethereum Accounts"
 
-msgid "userpages##profilePage##ethereumAddress##linkTitle"
+msgid "userpages.profilePage.ethereumAddress.linkTitle"
 msgstr "ETH Accounts"
 
-msgid "userpages##profilePage##ethereumAddress##description"
+msgid "userpages.profilePage.ethereumAddress.description"
 msgstr ""
 "Ethereum accounts are used for decentralized identity, calling smart contracts,<br />"
 "and signing data in streams. Connect your wallet accounts to use them in Core<br />"
 "and Marketplace, or create new accounts to be used in scripts."
 
-msgid "userpages##profilePage##ethereumAddress##addAddress"
+msgid "userpages.profilePage.ethereumAddress.addAddress"
 msgstr "Add address"
 
-msgid "userpages##profilePage##ethereumAddress##connectWallet"
+msgid "userpages.profilePage.ethereumAddress.connectWallet"
 msgstr "Connect wallet"
 
-msgid "userpages##profilePage##ethereumAddress##createAccount"
+msgid "userpages.profilePage.ethereumAddress.createAccount"
 msgstr "Create account"
 
-msgid "userpages##profilePage##ethereumAddress##notMetamaskEnabledBrowser"
+msgid "userpages.profilePage.ethereumAddress.notMetamaskEnabledBrowser"
 msgstr ""
 "To bind Ethereum addresses to your Streamr account, you need an Ethereum-enabled browser. "
 "Try the <a href=\"https://metamask.io\">MetaMask plugin for Chrome</a> or "
 "the <a href=\"https://github.com/ethereum/mist/releases\">Mist browser</a>."
 
-msgid "userpages##profilePage##ethereumPrivateKeys##title"
+msgid "userpages.profilePage.ethereumPrivateKeys.title"
 msgstr "Ethereum keys for canvases"
 
-msgid "userpages##profilePage##ethereumPrivateKeys##description"
+msgid "userpages.profilePage.ethereumPrivateKeys.description"
 msgstr ""
 "These Ethereum accounts can be used on canvases to build data-driven interactions<br />"
 "with Ethereum. Even though the private keys are securely stored server-side,<br />"
 "<strong>we do not recommend</strong> having significant amounts of value on these accounts."
 
-msgid "userpages##profilePage##ethereumPrivateKeys##linkTitle"
+msgid "userpages.profilePage.ethereumPrivateKeys.linkTitle"
 msgstr "ETH canvas keys"
 
-msgid "userpages##profilePage##ethereumPrivateKeys##addAddress"
+msgid "userpages.profilePage.ethereumPrivateKeys.addAddress"
 msgstr "Add account"
 
-msgid "userpages##profilePage##ethereumPrivateKeys##addNewAddress"
+msgid "userpages.profilePage.ethereumPrivateKeys.addNewAddress"
 msgstr "Add new account"
 
-msgid "userpages##profilePage##deleteAccount##title"
+msgid "userpages.profilePage.deleteAccount.title"
 msgstr "Delete Streamr Account"
 
-msgid "userpages##profilePage##deleteAccount##linkTitle"
+msgid "userpages.profilePage.deleteAccount.linkTitle"
 msgstr "Delete account"
 
-msgid "userpages##profilePage##deleteAccount##description"
+msgid "userpages.profilePage.deleteAccount.description"
 msgstr ""
 "Unlike other companies that deactivate your account but retain your data, "
 "if you delete your Streamr account, all your data is deleted from our servers and will be unrecoverable. "
 "Please proceed with caution."
 
-msgid "userpages##profilePage##deleteAccount##button"
+msgid "userpages.profilePage.deleteAccount.button"
 msgstr "Delete account"
 
-msgid "modal##deleteAccount##defaultTitle"
+msgid "modal.deleteAccount.defaultTitle"
 msgstr "Are you sure?"
 
-msgid "modal##deleteAccount##save"
+msgid "modal.deleteAccount.save"
 msgstr "Delete account"
 
-msgid "modal##deleteAccount##content"
+msgid "modal.deleteAccount.content"
 msgstr ""
 "This is an unrecoverable action. Please check the box to confirm you want to delete your account."
 
-msgid "modal##deleteAccount##confirmCheckbox##title"
+msgid "modal.deleteAccount.confirmCheckbox.title"
 msgstr "I’m sure, go ahead and delete my account"
 
-msgid "modal##deleteAccount##confirmCheckbox##subtitle"
+msgid "modal.deleteAccount.confirmCheckbox.subtitle"
 msgstr "Streamr cannot recover it once deleted"
 
-msgid "modal##deleteAccount##successNotification"
+msgid "modal.deleteAccount.successNotification"
 msgstr "Account disabled!"
 
-msgid "modal##deleteAccount##errorNotification"
+msgid "modal.deleteAccount.errorNotification"
 msgstr "Account not disabled"
 
-msgid "userpages##profile##settings##update"
+msgid "userpages.profile.settings.update"
 msgstr "Update"
 
-msgid "userpages##profile##settings##upload"
+msgid "userpages.profile.settings.upload"
 msgstr "Upload"
 
-msgid "userpages##profile##settings##uploadHelpText"
+msgid "userpages.profile.settings.uploadHelpText"
 msgstr "JPG or PNG, at least 256px"
 
-msgid "modal##avatar##defaultTitle"
+msgid "modal.avatar.defaultTitle"
 msgstr "Avatar upload"
 
-msgid "modal##avatar##updateTitle"
+msgid "modal.avatar.updateTitle"
 msgstr "Avatar update"
 
-msgid "modal##avatar##cropYourImage"
+msgid "modal.avatar.cropYourImage"
 msgstr "Crop your image"
 
-msgid "modal##avatar##preview"
+msgid "modal.avatar.preview"
 msgstr "Preview"
 
-msgid "modal##avatar##saveAvatar"
+msgid "modal.avatar.saveAvatar"
 msgstr "Save avatar"
 
-msgid "modal##avatar##saveAndApplyAvatar"
+msgid "modal.avatar.saveAndApplyAvatar"
 msgstr "Save & Apply"
 
-msgid "modal##avatar##successNotification"
+msgid "modal.avatar.successNotification"
 msgstr "Avatar updated"
 
-msgid "modal##cropImage##title"
+msgid "modal.cropImage.title"
 msgstr "Scale and crop your image"
 
-msgid "modal##cropImage##apply"
+msgid "modal.cropImage.apply"
 msgstr "Apply"
 
-msgid "userpages##keyField##options"
+msgid "userpages.keyField.options"
 msgstr "Select"
 
-msgid "userpages##keyField##reveal"
+msgid "userpages.keyField.reveal"
 msgstr "Reveal"
 
-msgid "userpages##keyField##conceal"
+msgid "userpages.keyField.conceal"
 msgstr "Conceal"
 
-msgid "userpages##keyField##copy"
+msgid "userpages.keyField.copy"
 msgstr "Copy"
 
-msgid "userpages##keyField##copied"
+msgid "userpages.keyField.copied"
 msgstr "Copied!"
 
-msgid "userpages##keyField##edit"
+msgid "userpages.keyField.edit"
 msgstr "Edit"
 
-msgid "userpages##keyField##delete"
+msgid "userpages.keyField.delete"
 msgstr "Delete"
 
-msgid "userpages##keyFieldEditor##keyName"
+msgid "userpages.keyFieldEditor.keyName"
 msgstr "Key name"
 
-msgid "userpages##keyFieldEditor##keyValue##apiKey"
+msgid "userpages.keyFieldEditor.keyValue.apiKey"
 msgstr "API key"
 
-msgid "userpages##keyFieldEditor##keyValue##privateKey"
+msgid "userpages.keyFieldEditor.keyValue.privateKey"
 msgstr "Private key"
 
-msgid "userpages##keyFieldEditor##keyValue##address"
+msgid "userpages.keyFieldEditor.keyValue.address"
 msgstr "Address"
 
-msgid "userpages##keyFieldEditor##keyValue##sharedSecret"
+msgid "userpages.keyFieldEditor.keyValue.sharedSecret"
 msgstr "Shared secret"
 
-msgid "userpages##keyFieldEditor##add"
+msgid "userpages.keyFieldEditor.add"
 msgstr "Add"
 
-msgid "userpages##keyFieldEditor##save"
+msgid "userpages.keyFieldEditor.save"
 msgstr "Save"
 
-msgid "userpages##keyFieldEditor##cancel"
+msgid "userpages.keyFieldEditor.cancel"
 msgstr "Cancel"
 
-msgid "userpages##keyFieldEditor##permission"
+msgid "userpages.keyFieldEditor.permission"
 msgstr "Permission"
 
-msgid "modal##changePassword##defaultTitle"
+msgid "modal.changePassword.defaultTitle"
 msgstr "Change password"
 
-msgid "modal##changePassword##currentPassword"
+msgid "modal.changePassword.currentPassword"
 msgstr "Current password"
 
-msgid "modal##changePassword##newPassword"
+msgid "modal.changePassword.newPassword"
 msgstr "New password"
 
-msgid "modal##changePassword##confirmNewPassword"
+msgid "modal.changePassword.confirmNewPassword"
 msgstr "Confirm new password"
 
-msgid "modal##changePassword##forgotPassword##desktop"
+msgid "modal.changePassword.forgotPassword.desktop"
 msgstr "Forgot password?"
 
-msgid "modal##changePassword##forgotPassword##mobile"
+msgid "modal.changePassword.forgotPassword.mobile"
 msgstr "Forgot?"
 
-msgid "modal##changePassword##passwordsDoNotMatch"
+msgid "modal.changePassword.passwordsDoNotMatch"
 msgstr "The passwords do not match"
 
-msgid "modal##changePassword##errorNotification"
+msgid "modal.changePassword.errorNotification"
 msgstr "Password not changed"
 
-msgid "modal##changePassword##successNotification"
+msgid "modal.changePassword.successNotification"
 msgstr "Password changed"
 
-msgid "modal##signatureRequest##defaultTitle"
+msgid "modal.signatureRequest.defaultTitle"
 msgstr "Signature request"
 
-msgid "modal##signatureRequest##description"
+msgid "modal.signatureRequest.description"
 msgstr "Please sign the challenge in MetaMask"
 
-msgid "modal##privateKey##successNotification"
+msgid "modal.privateKey.successNotification"
 msgstr "Ethereum account added"
 
-msgid "modal##privateKey##errorNotification"
+msgid "modal.privateKey.errorNotification"
 msgstr "There was an error while adding an Ethereum account"
 
-msgid "modal##newIdentity##defaultTitle"
+msgid "modal.newIdentity.defaultTitle"
 msgstr "Add a name to this Ethereum account"
 
-msgid "modal##newIdentity##label"
+msgid "modal.newIdentity.label"
 msgstr "Account name"
 
-msgid "modal##newIdentity##placeholder"
+msgid "modal.newIdentity.placeholder"
 msgstr "eg. Main Eth Address"
 
-msgid "modal##ethereumAccountCreated##defaultTitle"
+msgid "modal.ethereumAccountCreated.defaultTitle"
 msgstr "Ethereum account created"
 
-msgid "modal##ethereumAccountCreated##description"
+msgid "modal.ethereumAccountCreated.description"
 msgstr ""
 "Your account has been created and the address<br />"
 "is shown below. Click next to get your private key."
 
-msgid "modal##copyPrivateKey##defaultTitle"
+msgid "modal.copyPrivateKey.defaultTitle"
 msgstr "Your private key"
 
-msgid "modal##copyPrivateKey##defaultDescription"
+msgid "modal.copyPrivateKey.defaultDescription"
 msgstr ""
 "Your private key will be <strong>given to you once only</strong>,<br />"
 "so ensure that you copy and store it securely."
 
-msgid "modal##copyPrivateKey##descriptionAfterKeyCopiedOnce"
+msgid "modal.copyPrivateKey.descriptionAfterKeyCopiedOnce"
 msgstr ""
 "Be careful with your private key, as <strong>anyone with your key<br />"
 "controls your tokens</strong>. Please check the box to continue."
 
-msgid "modal##copyPrivateKey##checkboxLabel"
+msgid "modal.copyPrivateKey.checkboxLabel"
 msgstr "I will securely store my private key"
 
-msgid "modal##copyPrivateKey##copyKey"
+msgid "modal.copyPrivateKey.copyKey"
 msgstr "Copy key"
 
-msgid "modal##copyPrivateKey##keyCopied"
+msgid "modal.copyPrivateKey.keyCopied"
 msgstr "Copied!"
 
-msgid "modal##duplicateIdentity##defaultTitle"
+msgid "modal.duplicateIdentity.defaultTitle"
 msgstr "Account already connected"
 
-msgid "modal##duplicateIdentity##description"
+msgid "modal.duplicateIdentity.description"
 msgstr ""
 "This account is already connected.<br />"
 "Please choose another account from Metamask to connect."
 
-msgid "modal##newIdentity##successNotification"
+msgid "modal.newIdentity.successNotification"
 msgstr "Ethereum address added"
 
-msgid "modal##newIdentity##errorNotification"
+msgid "modal.newIdentity.errorNotification"
 msgstr "There was an error while adding an Ethereum address"
 
-msgid "modal##shareResource##defaultTitle"
+msgid "modal.shareResource.defaultTitle"
 msgstr "Share %{resourceTitle}"
 
-msgid "modal##shareResource##embedInactiveWarning"
+msgid "modal.shareResource.embedInactiveWarning"
 msgstr "Make your canvas public to enable embedding"
 
-msgid "modal##shareResource##anonymousAccess"
+msgid "modal.shareResource.anonymousAccess"
 msgstr "Who can access this?"
 
-msgid "modal##shareResource##onlyInvited"
+msgid "modal.shareResource.onlyInvited"
 msgstr "Private — only people you’ve invited"
 
-msgid "modal##shareResource##withLink"
+msgid "modal.shareResource.withLink"
 msgstr "Public — anyone with link or via API"
 
-msgid "modal##shareResource##enterEmailAddressLabel"
+msgid "modal.shareResource.enterEmailAddressLabel"
 msgstr "Email or Ethereum address"
 
-msgid "modal##shareResource##enterEmailAddress"
+msgid "modal.shareResource.enterEmailAddress"
 msgstr "Enter email or Ethereum address"
 
-msgid "modal##shareResource##permissions##read"
+msgid "modal.shareResource.permissions.read"
 msgstr "View only"
 
-msgid "modal##shareResource##permissions##write"
+msgid "modal.shareResource.permissions.write"
 msgstr "Can edit"
 
-msgid "modal##shareResource##permissions##share"
+msgid "modal.shareResource.permissions.share"
 msgstr "Can share"
 
-msgid "modal##shareResource##user##defaultTitle"
+msgid "modal.shareResource.user.defaultTitle"
 msgstr "Streamr user"
 
-msgid "modal##shareResource##save"
+msgid "modal.shareResource.save"
 msgstr "Save"
 
-msgid "modal##shareResource##tabs##share"
+msgid "modal.shareResource.tabs.share"
 msgstr "Share settings"
 
-msgid "modal##shareResource##tabs##embed"
+msgid "modal.shareResource.tabs.embed"
 msgstr "Embed"
 
-msgid "modal##shareResource##embedCode"
+msgid "modal.shareResource.embedCode"
 msgstr "Embed code"
 
-msgid "modal##shareResource##copy"
+msgid "modal.shareResource.copy"
 msgstr "Copy"
 
-msgid "modal##shareResource##copied"
+msgid "modal.shareResource.copied"
 msgstr "Copied"
 
-msgid "modal##shareResource##copyLink"
+msgid "modal.shareResource.copyLink"
 msgstr "Copy link"
 
-msgid "modal##shareResource##linkCopied"
+msgid "modal.shareResource.linkCopied"
 msgstr "Link copied"
 
-msgid "modal##shareResource##warnUnsavedChanges"
+msgid "modal.shareResource.warnUnsavedChanges"
 msgstr "To update your permissions please save your changes. To discard them, click cancel."
 
-msgid "modal##shareResource##warnSavingChanges"
+msgid "modal.shareResource.warnSavingChanges"
 msgstr "Please wait while saving changes."
 
-msgid "modal##copySnippet##defaultTitle"
+msgid "modal.copySnippet.defaultTitle"
 msgstr "Copy Snippet"
 
-msgid "modal##copySnippet##goToLibrary"
+msgid "modal.copySnippet.goToLibrary"
 msgstr "Go to Library"
 
-msgid "modal##copySnippet##copy"
+msgid "modal.copySnippet.copy"
 msgstr "Copy"
 
-msgid "modal##copySnippet##copied"
+msgid "modal.copySnippet.copied"
 msgstr "Copied"
 
-msgid "share##error##invalidUserError"
+msgid "share.error.invalidUserError"
 msgstr "Invalid User ID"
 
-msgid "share##error##anonymousUserError"
+msgid "share.error.anonymousUserError"
 msgstr "Can not share to anonymous"
 
-msgid "share##error##currentUserError"
+msgid "share.error.currentUserError"
 msgstr "Can not share to self"
 
-msgid "share##permissions##get"
+msgid "share.permissions.get"
 msgstr "Get"
 
-msgid "share##permissions##edit"
+msgid "share.permissions.edit"
 msgstr "Edit"
 
-msgid "share##permissions##delete"
+msgid "share.permissions.delete"
 msgstr "Delete"
 
-msgid "share##permissions##publish"
+msgid "share.permissions.publish"
 msgstr "Publish"
 
-msgid "share##permissions##subscribe"
+msgid "share.permissions.subscribe"
 msgstr "Subscribe"
 
-msgid "share##permissions##share"
+msgid "share.permissions.share"
 msgstr "Share"
 
-msgid "share##permissions##startstop"
+msgid "share.permissions.startstop"
 msgstr "Start/Stop"
 
-msgid "share##permissions##interact"
+msgid "share.permissions.interact"
 msgstr "Interact"

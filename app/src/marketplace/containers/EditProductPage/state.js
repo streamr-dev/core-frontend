@@ -28,6 +28,7 @@ export const PENDING_CHANGE_FIELDS = [
     'contact.social2',
     'contact.social3',
     'contact.social4',
+    'requiresWhitelist',
 ]
 
 export function isPublished(product: Product) {
@@ -51,18 +52,33 @@ export function getPendingChanges(product: Product): Object {
     const isDataUnion = isDataUnionProduct(product)
 
     if (isPublic || isDataUnion) {
-        const { adminFee, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
+        const { adminFee, requiresWhitelist, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
 
         if (isPublic) {
+            // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
             return {
                 ...otherPendingChanges,
                 ...(adminFee ? {
                     adminFee,
                 } : {}),
+                ...(requiresWhitelist != null ? {
+                    requiresWhitelist,
+                } : {}),
             }
         } else if (isDataUnion && adminFee) {
             return {
                 adminFee,
+                requiresWhitelist,
+            }
+        }
+    }
+
+    if (!isPublic) {
+        const { requiresWhitelist } = getPendingObject(product.pendingChanges || {})
+
+        if (requiresWhitelist != null) {
+            return {
+                requiresWhitelist,
             }
         }
     }
@@ -78,9 +94,10 @@ export function hasPendingChange(product: Product, field: string) {
 
 export function update(product: Product, fn: Function) {
     const result = fn(product)
-    const { adminFee, ...otherChanges } = result
+    const { adminFee, requiresWhitelist, ...otherChanges } = result
+    const isPublic = isPublished(product)
 
-    if (isPublished(product)) {
+    if (isPublic) {
         return {
             ...product,
             pendingChanges: {
@@ -92,6 +109,14 @@ export function update(product: Product, fn: Function) {
             ...otherChanges,
             pendingChanges: {
                 adminFee,
+                requiresWhitelist,
+            },
+        }
+    } else if (!isPublic && requiresWhitelist != null) {
+        return {
+            ...otherChanges,
+            pendingChanges: {
+                requiresWhitelist,
             },
         }
     }
