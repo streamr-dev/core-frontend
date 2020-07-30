@@ -54,7 +54,7 @@ const ProductStreams = ({ disabled }: Props) => {
                 <Translate
                     tag="p"
                     value="editProductPage.streams.description"
-                    docsLink={docsLinks.introToProducts}
+                    docsLink={docsLinks.createProduct}
                     dangerousHTML
                 />
                 <StreamSelectorComponent
