@@ -139,6 +139,7 @@ type SecurityIconProps = {
     level?: SecurityLevelSymbol,
     mode?: 'selected' | 'highlighted' | 'normal' | 'small',
     hideBasic?: boolean,
+    hideSigned?: boolean,
 }
 
 export function SecurityIcon({
@@ -146,9 +147,11 @@ export function SecurityIcon({
     level,
     mode = 'normal',
     hideBasic = false,
+    hideSigned = false,
     ...props
 }: SecurityIconProps = {}) {
     if (!!hideBasic && level === 'basic') { return null }
+    if (!!hideSigned && level === 'signed') { return null }
     if (!level) { return null }
     const { icons } = securityLevels[level]
     return (

@@ -377,7 +377,7 @@ const sources = {
         </svg>
     ),
     checkBadgeHD: (
-        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" fillRule="evenodd">
                 <path fill="#0324FF" d="M8 14.88l-1.56.966-1.073-1.49-1.812.296-.42-1.787-1.787-.42.296-1.812L.154 9.56 1.12 8 .154 6.44l1.49-1.073-.296-1.812 1.787-.42.42-1.787 1.812.296L6.44.154 8 1.12 9.56.154l1.073 1.49 1.812-.296.42 1.787 1.787.42-.296 1.812 1.49 1.072L14.88 8l.966 1.56-1.49 1.073.296 1.812-1.787.42-.42 1.787-1.812-.296-1.072 1.49z" />
                 <path stroke="#FFF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M4.865 8.172l1.65 1.792 4.243-4.243" />
