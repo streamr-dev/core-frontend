@@ -85,23 +85,15 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
                     resourceType: 'STREAM',
                     resourceId: stream.id,
                     data: {
+                        operation: 'stream_get',
+                        user: address,
+                    },
+                }),
+                addResourcePermission({
+                    resourceType: 'STREAM',
+                    resourceId: stream.id,
+                    data: {
                         operation: 'stream_publish',
-                        user: address,
-                    },
-                }),
-                addResourcePermission({
-                    resourceType: 'STREAM',
-                    resourceId: stream.id,
-                    data: {
-                        operation: 'stream_share',
-                        user: address,
-                    },
-                }),
-                addResourcePermission({
-                    resourceType: 'STREAM',
-                    resourceId: stream.id,
-                    data: {
-                        operation: 'stream_edit',
                         user: address,
                     },
                 }),
@@ -118,7 +110,7 @@ export const createJoinPartStream = async (productId: ?ProductId = undefined): P
             resourceType: 'STREAM',
             resourceId: stream.id,
         })
-        const deletedTypes = new Set(['stream_edit', 'stream_delete', 'stream_share'])
+        const deletedTypes = new Set(['stream_edit', 'stream_delete'])
         const deletedPermissions = myPermissions.filter((p) => deletedTypes.has(p.operation))
 
         if (deletedPermissions && deletedPermissions.length > 0) {
