@@ -317,7 +317,15 @@ const PurchaseTile = ({
                     <DataUnionBadge top left />
                 )}
                 {typeof numMembers !== 'undefined' && (
-                    <IconBadge icon="dataUnion" bottom right>
+                    <IconBadge
+                        icon="dataUnion"
+                        bottom
+                        right
+                        forwardAs={Badge.Link}
+                        to={product.id && routes.marketplace.product({
+                            id: product.id,
+                        }, 'stats')}
+                    >
                         {numMembers}
                     </IconBadge>
                 )}
@@ -445,7 +453,15 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                 <DataUnionBadge top left />
             )}
             {!!showDataUnionBadge && typeof product.members !== 'undefined' && (
-                <IconBadge icon="dataUnion" bottom right>
+                <IconBadge
+                    icon="dataUnion"
+                    bottom
+                    right
+                    forwardAs={Badge.Link}
+                    to={routes.marketplace.product({
+                        id: product.id,
+                    }, 'stats')}
+                >
                     {product.members}
                 </IconBadge>
             )}
