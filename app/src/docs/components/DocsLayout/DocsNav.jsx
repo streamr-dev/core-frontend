@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import styled, { ThemeProvider, ThemeContext } from 'styled-components'
 import GhostContentAPI from '@tryghost/content-api'
 import { Nav, Menu, Button, useBlogPosts } from '@streamr/streamr-layout'
+import { Translate } from 'react-redux-i18n'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import docsLinks from '$shared/../docsLinks'
@@ -64,19 +65,22 @@ const ProjectMenu = () => (
 const DocsMenu = () => (
     <Menu>
         <Menu.Item as={Link} to={docsLinks.gettingStarted}>
-            Get Started
-        </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.dataUnions}>
-            Data Unions
+            <Translate value="general.gettingStarted" />
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.streams}>
-            Streams
+            <Translate value="general.streams" />
         </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.core}>
-            Core app
+        <Menu.Item as={Link} to={docsLinks.canvases}>
+            <Translate value="general.canvases" />
         </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.api}>
-            API
+        <Menu.Item as={Link} to={docsLinks.dashboards}>
+            <Translate value="general.dashboards" />
+        </Menu.Item>
+        <Menu.Item as={Link} to={docsLinks.products}>
+            <Translate value="general.products" />
+        </Menu.Item>
+        <Menu.Item as={Link} to={docsLinks.dataUnions}>
+            <Translate value="general.dataUnions" />
         </Menu.Item>
     </Menu>
 )
