@@ -20,7 +20,6 @@ const List = styled.div`
 const Item = styled.div`
     color: #323232;
     letter-spacing: 0;
-    font-size: 14px;
     display: none;
     position: relative;
     white-space: nowrap;
@@ -36,6 +35,7 @@ const Item = styled.div`
     `}
 
     @media (min-width: ${LG}px) {
+        font-size: 14px;
         display: block;
     }
 `
@@ -178,20 +178,24 @@ const Title = ({ description, moreInfo, children }) => (
 )
 
 const CheckboxContainer = styled.div`
-  position: absolute;
-  padding: 0.75rem;
-  padding-right: 0.5rem;
-  top: 50%;
-  left: 0;
-  transform: translate(-100%, -45%);
-  visibility: hidden;
+    position: absolute;
+    padding: 0.75rem;
+    padding-right: 0.5rem;
+    top: 50%;
+    left: 0;
+    transform: translate(-100%, -45%);
+
+    & > * {
+        visibility: hidden;
+    }
 `
 
 const SelectableRowWrapper = styled.div`
+    cursor: pointer;
     position: relative;
 
     ${({ active }) => !!active && css`
-        ${CheckboxContainer} {
+        ${CheckboxContainer} > * {
             visibility: visible;
         }
 
@@ -200,11 +204,9 @@ const SelectableRowWrapper = styled.div`
         }
     `}
 
-    @media (min-width: ${LG}px) {
-        &:hover,
-        &:focus-within,
-        &:active {
-            ${CheckboxContainer} {
+    @media (min-width: ${MD}px) {
+        &:hover {
+            ${CheckboxContainer} > * {
                 visibility: visible;
             }
 

@@ -44,7 +44,7 @@ import { ago } from '$shared/utils/time'
 import { MD, LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
 import SnippetDialog from './SnippetDialog'
-import SvgIcon from '$shared/components/SvgIcon'
+import { StreamList as StreamListComponent } from '$shared/components/List'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -67,27 +67,10 @@ export const CreateStreamButton = () => (
     </DesktopOnlyButton>
 )
 
-const StreamTable = styled.div`
-    @media (min-width: ${MD}px) {
-        margin-top: 50px;
-        border-top: 1px solid #CDCDCD;
-    }
-
-    @media (min-width: ${LG}px) {
-        margin-top: 0;
-        margin-bottom: auto;
-        border-top: none;
-    }
-`
-
 const StyledListContainer = styled(ListContainer)`
     && {
         padding: 0;
         margin-bottom: 4em;
-    }
-
-    ${StreamTable}:last-child {
-        margin-bottom: 4rem;
     }
 
     @media (min-width: ${MD}px) {
@@ -102,287 +85,6 @@ const StyledListContainer = styled(ListContainer)`
             margin-bottom: 0;
         }
     }
-`
-
-const Row = styled.div`
-    display: grid;
-    grid-row-gap: 2px;
-    grid-column-gap: 1rem;
-    border-bottom: 1px solid #CDCDCD;
-    padding: 1.15rem 1.5rem;
-    grid-template-columns: minmax(0, 1fr) 16px;
-    align-items: center;
-    line-height: 20px;
-    min-height: 80px;
-
-    @media (min-width: ${MD}px) {
-        padding: 1.5rem;
-        grid-template-columns: minmax(0,auto) minmax(136px,1fr) 16px;
-    }
-
-    @media (min-width: ${LG}px) {
-        grid-template-columns: minmax(200px, 3fr) 3fr minmax(136px, 2fr) minmax(136px, 2fr) minmax(68px, 1fr) 32px;
-        grid-row-gap: 0;
-        padding: 1.25rem 0.75rem;
-        min-height: auto;
-    }
-`
-
-const HeaderRow = styled(Row)`
-    display: none;
-
-    @media (min-width: ${LG}px) {
-        display: grid;
-        padding: 0.75rem;
-        line-height: 14px;
-    }
-`
-
-const TableRow = styled(Row)`
-    cursor: pointer;
-
-    &:hover,
-    &:focus-within {
-        background-color: #EFEFEF;
-
-        .dropdown {
-            visibility: visible;
-        }
-    }
-`
-
-const RowItem = styled.div`
-    display: none;
-    color: #525252;
-`
-
-const HeaderItemComponent = styled.div`
-    display: block;
-    font-family: var(--sans);
-    font-size: 12px;
-    letter-spacing: 0;
-    color: #A3A3A3;
-    font-weight: var(--medium);
-    user-select: none;
-`
-
-const SortButton = styled.button`
-    appearance: none;
-    background: none;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 0;
-    margin: 0;
-    color: inherit;
-    font-weight: var(--medium);
-
-    &:hover,
-    &:active,
-    &:focus {
-        color: #525252;
-        outline: none;
-    }
-
-    svg {
-        width: 10px;
-        height: 10px;
-        margin-left: 0.5rem;
-        color: #525252;
-        margin-top: -2px;
-    }
-`
-
-type HeaderItemProps = {
-    asc?: string,
-    desc?: string,
-    active?: string,
-    onClick?: Function,
-    value: string,
-    className?: string,
-}
-
-const HeaderItem = ({
-    asc,
-    desc,
-    active,
-    onClick: onClickProp,
-    value,
-    className,
-}: HeaderItemProps) => {
-    const onClick = useCallback(() => {
-        if (onClickProp) {
-            onClickProp(asc, desc)
-        }
-    }, [onClickProp, asc, desc])
-
-    return (
-        <HeaderItemComponent className={className}>
-            {!!asc && !!desc && (
-                <SortButton type="button" onClick={onClick}>
-                    <Translate value={value} />
-                    {!!active && !!asc && active === asc && (
-                        <SvgIcon name="caretUp" />
-                    )}
-                    {!!active && !!desc && active === desc && (
-                        <SvgIcon name="caretDown" />
-                    )}
-                </SortButton>
-            )}
-            {(!asc || !desc) && (
-                <Translate value={value} />
-            )}
-        </HeaderItemComponent>
-    )
-}
-
-const StatusHeaderItem = styled(HeaderItem)`
-    text-align: center;
-`
-
-const StreamName = styled(RowItem)`
-    display: block;
-    font-weight: var(--medium);
-    color: #323232;
-    letter-spacing: 0;
-
-    grid-row: ${({ hasLastData }) => (hasLastData ? '1' : '1 / 3')};
-    grid-column: 1;
-
-    @media (min-width: ${MD}px) {
-        grid-row: ${({ hasDescription }) => (hasDescription ? '1' : '1 / 3')};
-    }
-
-    @media (min-width: ${LG}px) {
-        font-size: 14px;
-        grid-row: 1;
-        grid-column: 1;
-    }
-`
-
-const StreamDescription = styled(RowItem)`
-    font-size: 12px;
-    font-weight: var(--regular);
-
-    @media (min-width: ${MD}px) {
-        display: block;
-        overflow-x: hidden;
-        word-break: break-word;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        grid-row: 2;
-        grid-column: 1 / 3;
-        max-width: calc(100% - 144px);
-    }
-
-    @media (min-width: ${LG}px) {
-        grid-row: 1;
-        grid-column: 2;
-        font-size: 14px;
-        max-width: none;
-    }
-
-    &:empty {
-        display: none;
-    }
-`
-
-const LastUpdated = styled(RowItem)`
-    @media (min-width: ${LG}px) {
-        display: block;
-        grid-row: 1;
-        grid-column: 3;
-        text-align: left;
-        font-size: 14px;
-        color: inherit;
-    }
-`
-
-const LastData = styled(RowItem)`
-    display: block;
-    color: #A3A3A3;
-    font-size: 12px;
-    overflow-x: hidden;
-    word-break: break-word;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: var(--regular);
-
-    grid-row: 2;
-    grid-column: 1;
-
-    &:empty {
-        display: none;
-    }
-
-    @media (min-width: ${MD}px) {
-        grid-row: 1;
-        grid-column: 2;
-        margin-bottom: -4px;
-    }
-
-    @media (min-width: ${LG}px) {
-        display: block;
-        grid-row: 1;
-        grid-column: 4;
-        text-align: left;
-        color: inherit;
-        font-size: 14px;
-        margin-bottom: 0;
-    }
-`
-
-const Status = styled(RowItem)`
-    display: block;
-    grid-row: 1 / 3;
-    grid-column: 2;
-    padding-top: 0.5rem;
-    position: relative;
-
-    @media (min-width: ${MD}px) {
-        grid-column: 3;
-        padding-top: 0;
-    }
-
-    @media (min-width: ${LG}px) {
-        grid-row: 1;
-        grid-column: 5;
-        text-align: center;
-    }
-`
-
-const StreamActions = styled(RowItem)`
-    @media (min-width: ${LG}px) {
-        display: block;
-        grid-row: 1;
-        grid-column: 6;
-
-        .dropdown {
-            visibility: hidden;
-        }
-
-        .dropdown.show {
-            visibility: visible;
-        }
-    }
-`
-
-const StyledStatusIcon = styled(StatusIcon)`
-    && {
-        position: absolute;
-        width: 16px;
-        height: 16px;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-`
-
-const StreamTitle = styled.div`
-    overflow-x: hidden;
-    word-break: break-word;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 `
 
 const TabletPopover = styled(Popover)`
@@ -610,60 +312,59 @@ const StreamList = () => {
                 )}
                 {streams && streams.length > 0 && (
                     <Fragment>
-                        <StreamTable>
-                            <HeaderRow>
-                                <HeaderItem
+                        <StreamListComponent>
+                            <StreamListComponent.Header>
+                                <StreamListComponent.HeaderItem
                                     asc={filters.NAME_ASC.filter.id}
                                     desc={filters.NAME_DESC.filter.id}
                                     active={activeSort}
-                                    value="userpages.streams.list.name"
                                     onClick={onHeaderSortUpdate}
-                                />
-                                <HeaderItem
-                                    value="userpages.streams.list.description"
-                                />
-                                <HeaderItem
-                                    value="userpages.streams.list.updated"
+                                >
+                                    <Translate value="userpages.streams.list.name" />
+                                </StreamListComponent.HeaderItem>
+                                <StreamListComponent.HeaderItem>
+                                    <Translate value="userpages.streams.list.description" />
+                                </StreamListComponent.HeaderItem>
+                                <StreamListComponent.HeaderItem
                                     asc={filters.RECENT_ASC.filter.id}
                                     desc={filters.RECENT_DESC.filter.id}
                                     active={activeSort}
                                     onClick={onHeaderSortUpdate}
-                                />
-                                <HeaderItem
-                                    value="userpages.streams.list.lastData"
-                                />
-                                <StatusHeaderItem
-                                    value="userpages.streams.list.status"
-                                />
-                                <RowItem />
-                            </HeaderRow>
+                                >
+                                    <Translate value="userpages.streams.list.updated" />
+                                </StreamListComponent.HeaderItem>
+                                <StreamListComponent.HeaderItem>
+                                    <Translate value="userpages.streams.list.lastData" />
+                                </StreamListComponent.HeaderItem>
+                                <StreamListComponent.HeaderItem center>
+                                    <Translate value="userpages.streams.list.status" />
+                                </StreamListComponent.HeaderItem>
+                            </StreamListComponent.Header>
                             {streams.map((stream) => (
-                                <TableRow
+                                <StreamListComponent.Row
                                     key={stream.id}
+                                    id={stream.id}
                                     onClick={() => onStreamRowClick(stream.id)}
                                 >
-                                    <StreamName
-                                        title={stream.name}
-                                        hasLastData={!!stream.lastData}
-                                        hasDescription={!!stream.description}
+                                    <StreamListComponent.Title
+                                        description={stream.description}
+                                        moreInfo={stream.lastData && titleize(ago(new Date(stream.lastData)))}
                                     >
-                                        <StreamTitle>{stream.name}</StreamTitle>
-                                    </StreamName>
-                                    <StreamDescription title={stream.description}>
+                                        {stream.name}
+                                    </StreamListComponent.Title>
+                                    <StreamListComponent.Item truncate title={stream.description}>
                                         {stream.description}
-                                    </StreamDescription>
-                                    <LastUpdated>
+                                    </StreamListComponent.Item>
+                                    <StreamListComponent.Item>
                                         {stream.lastUpdated && titleize(ago(new Date(stream.lastUpdated)))}
-                                    </LastUpdated>
-                                    <LastData>
+                                    </StreamListComponent.Item>
+                                    <StreamListComponent.Item>
                                         {stream.lastData && titleize(ago(new Date(stream.lastData)))}
-                                    </LastData>
-                                    <Status>
-                                        <StyledStatusIcon status={stream.streamStatus} tooltip />
-                                    </Status>
-                                    <StreamActions
-                                        onClick={(event) => event.stopPropagation()}
-                                    >
+                                    </StreamListComponent.Item>
+                                    <StreamListComponent.Item>
+                                        <StatusIcon status={stream.streamStatus} tooltip />
+                                    </StreamListComponent.Item>
+                                    <StreamListComponent.Actions>
                                         <Popover
                                             title={I18n.t('userpages.streams.actions.title')}
                                             type="meatball"
@@ -698,10 +399,10 @@ const StreamList = () => {
                                                 <Translate value="userpages.streams.actions.delete" />
                                             </Popover.Item>
                                         </Popover>
-                                    </StreamActions>
-                                </TableRow>
+                                    </StreamListComponent.Actions>
+                                </StreamListComponent.Row>
                             ))}
-                        </StreamTable>
+                        </StreamListComponent>
                         <LoadMore
                             hasMoreSearchResults={!fetching && hasMoreResults}
                             onClick={() => dispatch(getStreams())}
