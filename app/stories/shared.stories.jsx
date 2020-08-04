@@ -9,7 +9,6 @@ import styles from '@sambego/storybook-styles'
 import { Row, Col } from 'reactstrap'
 
 import Toggle from '$shared/components/Toggle'
-import Table from '$shared/components/Table'
 import Checkbox from '$shared/components/Checkbox'
 import StatusIcon from '$shared/components/StatusIcon'
 import Calendar from '$shared/components/Calendar'
@@ -76,58 +75,6 @@ story('Status icon')
     .addWithJSX('inactive with tooltip', () => <StatusIcon showTooltip status={StatusIcon.INACTIVE} />)
     .addWithJSX('error', () => <StatusIcon status={StatusIcon.ERROR} />)
     .addWithJSX('error with tooltip', () => <StatusIcon showTooltip status={StatusIcon.ERROR} />)
-
-story('Table')
-    .addWithJSX('basic', () => (
-        <Table>
-            <Table.Head>
-                <Table.Tr>
-                    <Table.Th>#</Table.Th>
-                    <Table.Th>First Name</Table.Th>
-                    <Table.Th>Last Name</Table.Th>
-                    <Table.Th>Address</Table.Th>
-                    <Table.Th>Username</Table.Th>
-                    <Table.Th>Username</Table.Th>
-                    <Table.Th>Username</Table.Th>
-                </Table.Tr>
-            </Table.Head>
-            <Table.Body>
-                <Table.Tr>
-                    <Table.Th>Helsinki Tram Network GPS</Table.Th>
-                    <Table.Td>Mark</Table.Td>
-                    <Table.Td>Otto</Table.Td>
-                    <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
-                        0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
-                    </Table.Td>
-                    <Table.Td>Larry</Table.Td>
-                    <Table.Td>the Bird</Table.Td>
-                    <Table.Td>@twitter</Table.Td>
-                </Table.Tr>
-                <Table.Tr>
-                    <Table.Th>Helsinki Tram Network GPS</Table.Th>
-                    <Table.Td>Jacob</Table.Td>
-                    <Table.Td>Thornton</Table.Td>
-                    <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
-                        0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
-                    </Table.Td>
-                    <Table.Td>Larry</Table.Td>
-                    <Table.Td>the Bird</Table.Td>
-                    <Table.Td>@twitter</Table.Td>
-                </Table.Tr>
-                <Table.Tr>
-                    <Table.Th>Helsinki Tram Network GPS</Table.Th>
-                    <Table.Td>Larry</Table.Td>
-                    <Table.Td>the Bird</Table.Td>
-                    <Table.Td noWrap title="0xeedcd46d223399e6b3ca395f9d9ca80b429714d9">
-                        0xeedcd46d223399e6b3ca395f9d9ca80b429714d9
-                    </Table.Td>
-                    <Table.Td>Larry</Table.Td>
-                    <Table.Td>the Bird</Table.Td>
-                    <Table.Td>@twitter</Table.Td>
-                </Table.Tr>
-            </Table.Body>
-        </Table>
-    ))
 
 class CheckboxContainer extends React.Component {
     constructor() {

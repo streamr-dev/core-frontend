@@ -782,8 +782,11 @@ msgstr "Update"
 msgid "userpages.transactions.status.pending"
 msgstr "Pending"
 
-msgid "userpages.transactions.status.completed"
+msgid "userpages.transactions.status.ok"
 msgstr "Confirmed"
+
+msgid "userpages.transactions.status.error"
+msgstr "Failed"
 
 msgid "userpages.profilePage.save.successNotification"
 msgstr "Your settings have been saved"

@@ -6,7 +6,7 @@ import styles from '@sambego/storybook-styles'
 import styled from 'styled-components'
 import { action } from '@storybook/addon-actions'
 
-import { MD } from '$shared/utils/styled'
+import { MD, LG } from '$shared/utils/styled'
 import StatusIcon from '$shared/components/StatusIcon'
 import Meatball from '$shared/components/Meatball'
 
@@ -27,6 +27,10 @@ const Container = styled.div`
     padding: 0;
 
     @media (min-width: ${MD}px) {
+        padding: 1rem 1.5rem;
+    }
+
+    @media (min-width: ${LG}px) {
         padding: 3rem 5rem;
     }
 `

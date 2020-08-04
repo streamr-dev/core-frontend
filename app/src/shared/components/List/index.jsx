@@ -60,7 +60,6 @@ const Row = styled.div`
     align-items: center;
     line-height: 20px;
     color: #525252;
-    cursor: pointer;
     min-height: 80px;
 
     &:hover,
@@ -100,11 +99,13 @@ const Header = styled(Row)`
 `
 
 const HeaderItem = styled(Item)`
-    font-family: var(--sans);
-    font-size: 12px;
-    letter-spacing: 0;
-    color: #A3A3A3;
-    font-weight: var(--medium);
+    && {
+        font-family: var(--sans);
+        font-size: 12px;
+        letter-spacing: 0;
+        color: #A3A3A3;
+        font-weight: var(--medium);
+    }
 `
 
 const TitleCell = styled(Item)`
@@ -179,11 +180,14 @@ const Title = ({ description, moreInfo, children }) => (
 
 const CheckboxContainer = styled.div`
     position: absolute;
-    padding: 0.75rem;
-    padding-right: 0.5rem;
     top: 50%;
-    left: 0;
-    transform: translate(-100%, -45%);
+    left: 1rem;
+    transform: translate(0, -45%);
+
+    @media (min-width: ${LG}px) {
+        left: 0;
+        transform: translate(-100%, -45%);
+    }
 
     & > * {
         visibility: hidden;
@@ -191,8 +195,11 @@ const CheckboxContainer = styled.div`
 `
 
 const SelectableRowWrapper = styled.div`
-    cursor: pointer;
     position: relative;
+
+    ${({ clickable }) => !!clickable && css`
+        cursor: pointer;
+    `}
 
     ${({ active }) => !!active && css`
         ${CheckboxContainer} > * {
@@ -219,6 +226,24 @@ const SelectableRowWrapper = styled.div`
             }
         }
     }
+
+    ${({ selectable }) => !!selectable && css`
+        ${Row} {
+            padding-left: 2.75rem;
+        }
+
+        @media (min-width: ${MD}px) {
+            ${Row} {
+                padding-left: 3.25rem;
+            }
+        }
+
+        @media (min-width: ${LG}px) {
+            ${Row} {
+                padding-left: 0.75rem;
+            }
+        }
+    `}
 `
 
 const SelectableRow = ({
@@ -235,7 +260,12 @@ const SelectableRow = ({
     }, [id, onClickProp])
 
     return (
-        <SelectableRowWrapper onClick={onClick} active={active}>
+        <SelectableRowWrapper
+            onClick={onClick}
+            active={active}
+            selectable={!!selectable}
+            clickable={!!onClickProp || !!selectable}
+        >
             {!!selectable && (
                 <CheckboxContainer>
                     <Checkbox

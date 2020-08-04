@@ -205,7 +205,7 @@ export const getTransactionsFromEvents = (events: EventLogList): Promise<Transac
             return {
                 id: event.id,
                 hash: tx.hash,
-                state: 'completed',
+                state: !rest.error ? 'ok' : 'error',
                 gasUsed: receipt.gasUsed,
                 gasPrice: tx.gas,
                 timestamp: block.timestamp * 1000,
