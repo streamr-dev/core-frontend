@@ -8,7 +8,7 @@ type Props = {
     onResize: () => void,
 }
 
-const ResizeWatcher = ({ onResize: onResizeProp }: Props) => {
+export const useResizeWatcher = (onResizeProp: () => void) => {
     const { width, height } = useContext(ResizableContext)
 
     const onResize = useCallback(debounce(() => {
@@ -18,6 +18,10 @@ const ResizeWatcher = ({ onResize: onResizeProp }: Props) => {
     useEffect(() => {
         onResize()
     }, [width, height, onResize])
+}
+
+const ResizeWatcher = ({ onResize }: Props) => {
+    useResizeWatcher(onResize)
 
     return null
 }
