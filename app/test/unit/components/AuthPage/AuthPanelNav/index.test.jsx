@@ -2,9 +2,10 @@ import React from 'react'
 import { mount as enzymeMount } from 'enzyme'
 import sinon from 'sinon'
 import { MemoryRouter as Router } from 'react-router-dom'
-import noop from 'empty/function'
 
 import AuthPanelNav from '$auth/components/AuthPanelNav'
+
+const noop = () => {}
 
 const mount = (component) => enzymeMount(<Router>{component}</Router>)
     .find(AuthPanelNav)

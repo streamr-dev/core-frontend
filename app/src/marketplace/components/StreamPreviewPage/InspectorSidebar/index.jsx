@@ -4,7 +4,6 @@ import React, { Fragment } from 'react'
 import moment from 'moment-timezone'
 import { Table } from 'reactstrap'
 import stringifyObject from 'stringify-object'
-import { upper } from 'case'
 import { Translate } from 'react-redux-i18n'
 
 import CopyStreamIdButton from '../CopyStreamIdButton'
@@ -59,7 +58,7 @@ const InspectorSidebar = ({ streamId, dataPoint, onStreamIdCopy }: Props) => {
                                 const value = formatValue(v)
                                 return (
                                     <tr key={`${k}${value}`}>
-                                        <th>{upper(k)}</th>
+                                        <th>{k.toUpperCase()}</th>
                                         <td>{value}</td>
                                     </tr>
                                 )

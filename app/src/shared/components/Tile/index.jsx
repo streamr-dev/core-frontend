@@ -2,7 +2,7 @@
 
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { capital } from 'case'
+import { titleize } from '@streamr/streamr-layout'
 import ReactImage from 'react-image'
 import { ago } from '$shared/utils/time'
 import { Translate } from 'react-redux-i18n'
@@ -219,7 +219,7 @@ const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps
                 description={touchedAgo(canvas)}
                 label={(
                     <Label mood={canvas.state === RunStates.Running && HAPPY}>
-                        {capital(canvas.state)}
+                        {titleize(canvas.state)}
                     </Label>
                 )}
             />
