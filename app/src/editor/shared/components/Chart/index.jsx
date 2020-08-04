@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useMemo, useEffect, useCallback, useContext } from 'react'
+import React, { useState, useMemo, useEffect, useCallback, useContext, useRef } from 'react'
 import cx from 'classnames'
 import Highcharts from 'highcharts/highstock'
 import HighchartsReact from 'highcharts-react-official'
@@ -24,7 +24,7 @@ type Props = {
 }
 
 const Chart = ({ className, series, datapoints, options }: Props) => {
-    const [chart, setChart] = useState(null)
+    const chartRef = useRef(null)
 
     const seriesData = useMemo(() => (
         Object.values(series).map((payload: any) => ({
@@ -34,18 +34,22 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
     ), [series, datapoints])
 
     const onResize = useCallback(() => {
-        if (chart) {
-            chart.reflow()
+        if (chartRef.current) {
+            chartRef.current.reflow()
         }
-    }, [chart])
+    }, [])
+
+    const setChart = useCallback((chart) => {
+        chartRef.current = chart
+    }, [])
 
     const [range, setRange] = useState(undefined)
 
     const setExtremes = useCallback((range: any) => {
         setRange(range)
 
-        if (chart) {
-            const [xAxis] = chart.xAxis
+        if (chartRef.current) {
+            const [xAxis] = chartRef.current.xAxis
             const { dataMin, dataMax, max } = xAxis.getExtremes()
 
             if (typeof range !== 'number') {
@@ -54,7 +58,7 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
                 xAxis.setExtremes(Math.max(max - range, dataMin), max, true, false)
             }
         }
-    }, [chart])
+    }, [])
 
     const onSetExtremes = useCallback((e: any) => {
         if (e.trigger !== 'zoom' && e.trigger !== 'navigator') {
@@ -69,27 +73,27 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
     }, [])
 
     useEffect(() => {
-        if (chart) {
+        if (chartRef.current) {
             seriesData.forEach((data) => {
-                const series = chart.get(data.id)
+                const series = chartRef.current.get(data.id)
                 if (series) {
                     series.update(data)
                 } else {
-                    chart.addSeries(data)
+                    chartRef.current.addSeries(data)
                 }
             })
-            chart.redraw()
+            chartRef.current.redraw()
         }
-    }, [chart, seriesData])
+    }, [seriesData])
 
     const { height } = useContext(UiSizeContext)
 
     useEffect(() => {
-        if (chart) {
+        if (chartRef.current) {
             // 40px = RangeSelect toolbar height
-            chart.setSize(undefined, height > 40 ? (height - 40) : null, false)
+            chartRef.current.setSize(undefined, height > 40 ? (height - 40) : null, false)
         }
-    }, [height, chart])
+    }, [height])
 
     const opts = useMemo(() => ({
         chart: {
