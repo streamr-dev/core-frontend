@@ -6,6 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import ProductContainer from '$shared/components/Container/Product'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import StatsValues from '$shared/components/DataUnionStats'
+import AutoScrollHook from '$shared/components/AutoScrollHook'
 import DonutChart from '$shared/components/DonutChart'
 
 import MembersGraph from './MembersGraph'
@@ -25,6 +26,7 @@ type Props = {
 
 const DataUnionStats = ({ stats, memberCount, joinPartStreamId, showDeploying }: Props) => (
     <ProductContainer className={styles.container}>
+        <AutoScrollHook hash="stats" />
         <div className={styles.root}>
             <div className={styles.grid}>
                 <div className={styles.header}>
