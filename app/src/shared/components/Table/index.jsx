@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { titleCase } from 'change-case'
+import { titleize } from '@streamr/streamr-layout'
 
 import PropTypes from 'prop-types'
 import { Table as ReactstrapTable } from 'reactstrap'
@@ -39,7 +39,7 @@ const makeComponent = (Element: string, styleOverrides?: Array<string> = []) => 
         )
     }
 
-    Component.displayName = titleCase(Element)
+    Component.displayName = titleize(Element)
 
     return Component
 }
