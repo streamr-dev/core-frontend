@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect, useCallback, useContext, useRef } 
 import cx from 'classnames'
 import Highcharts from 'highcharts/highstock'
 import HighchartsReact from 'highcharts-react-official'
-import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
+import { useResizeWatcher } from '$editor/canvas/components/Resizable/ResizeWatcher'
 import { Context as UiSizeContext } from '$editor/shared/components/UiSizeConstraint'
 import RangeSelect from './RangeSelect'
 import approximations from './approx'
@@ -23,6 +23,25 @@ type Props = {
     series: any,
 }
 
+const useResizeEffect = (chartRef: any) => {
+    const onResize = useCallback(() => {
+        if (chartRef.current) {
+            chartRef.current.reflow()
+        }
+    }, [chartRef])
+
+    useResizeWatcher(onResize)
+
+    const { height } = useContext(UiSizeContext)
+
+    useEffect(() => {
+        if (chartRef.current) {
+            // 40px = RangeSelect toolbar height
+            chartRef.current.setSize(undefined, height > 40 ? (height - 40) : null, false)
+        }
+    }, [height, chartRef])
+}
+
 const Chart = ({ className, series, datapoints, options }: Props) => {
     const chartRef = useRef(null)
 
@@ -32,12 +51,6 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             data: datapoints[payload.idx] || [],
         }))
     ), [series, datapoints])
-
-    const onResize = useCallback(() => {
-        if (chartRef.current) {
-            chartRef.current.reflow()
-        }
-    }, [])
 
     const setChart = useCallback((chart) => {
         chartRef.current = chart
@@ -86,14 +99,7 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
         }
     }, [seriesData])
 
-    const { height } = useContext(UiSizeContext)
-
-    useEffect(() => {
-        if (chartRef.current) {
-            // 40px = RangeSelect toolbar height
-            chartRef.current.setSize(undefined, height > 40 ? (height - 40) : null, false)
-        }
-    }, [height])
+    useResizeEffect(chartRef)
 
     const opts = useMemo(() => ({
         chart: {
@@ -235,7 +241,6 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
                     value={range}
                 />
             </div>
-            <ResizeWatcher onResize={onResize} />
             <HighchartsReact
                 highcharts={Highcharts}
                 constructorType="stockChart"
