@@ -1,5 +1,5 @@
-import React, { useRef, useCallback, useState, useMemo, useEffect } from 'react'
-import throttle from 'lodash/throttle'
+import React, { useRef, useCallback, useState, useEffect } from 'react'
+// import throttle from 'lodash/throttle'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Chart from '$editor/shared/components/Chart'
@@ -7,104 +7,96 @@ import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import UiSizeConstraint from '../UiSizeConstraint'
 import useOnceEffect from '$shared/hooks/useOnceEffect'
 
+const seriesId = (idx) => (
+    `series-${idx}`
+)
+
+const updateSeriesCollection = (seriesCollection, { idx, ...series }) => {
+    const id = seriesId(idx)
+
+    seriesCollection[id] = {
+        ...(seriesCollection[id] || {}),
+        ...series,
+        lineWidth: 1,
+        marker: {
+            lineColor: undefined,
+            symbol: 'circle',
+        },
+        showInNavigator: true,
+        id,
+        idx,
+        xAxis: 0,
+        yAxis: 0,
+        data: (seriesCollection[id] || {}).data || [],
+        ready: true,
+    }
+
+    return {
+        series: seriesCollection[id],
+    }
+}
+
+const addSeriesDatapoint = (seriesCollection, { s: idx, x, y }) => {
+    const id = seriesId(idx)
+
+    const datapoint = [x, y]
+
+    seriesCollection[id] = seriesCollection[id] || {
+        data: [],
+        id,
+        idx,
+        type: 's',
+        ready: false,
+    }
+
+    seriesCollection[id].data.push(datapoint)
+
+    return {
+        series: seriesCollection[id],
+        datapoint,
+    }
+}
+
 const ChartModule2 = (props) => {
     const { isActive, module } = props
 
+    const seriesCollectionRef = useRef({})
+
     const subscriptionRef = useRef(null)
-
-    const queuedDatapointsRef = useRef([])
-
-    const [series, setSeries] = useState({})
-
-    const [seriesData, setSeriesData] = useState({})
-
-    const onSeries = useCallback((payload) => {
-        const id = `series-${payload.idx}`
-
-        setSeries((series) => ({
-            ...series,
-            [id]: {
-                ...(series[id] || {}),
-                ...payload,
-                lineWidth: 1,
-                marker: {
-                    lineColor: undefined,
-                    symbol: 'circle',
-                },
-                showInNavigator: true,
-                id,
-                xAxis: 0,
-                yAxis: 0,
-            },
-        }))
-    }, [setSeries])
 
     const isMounted = useIsMounted()
 
-    const flushDatapointsRef = useRef(throttle(() => {
-        if (!isMounted()) {
+    const [chart, setChart] = useState(null)
+
+    const onMessage = useCallback(({ type, ...payload }) => {
+        let series
+
+        let datapoint
+
+        switch (type) {
+            case 'p':
+                ({ series, datapoint } = addSeriesDatapoint(seriesCollectionRef.current, payload))
+                break
+            case 's':
+                ({ series } = updateSeriesCollection(seriesCollectionRef.current, payload))
+                break
+            default:
+        }
+
+        if (!chart || (type !== 'p' && type !== 's')) {
             return
         }
 
-        const queued = queuedDatapointsRef.current || []
-        queuedDatapointsRef.current = []
+        const chartSeries = chart.get(series.id) || (series.ready ? chart.addSeries(series) : null)
 
-        setSeriesData((seriesData) => queued.reduce((memo, { s, x, y }) => ({
-            ...memo,
-            [s]: [
-                ...(memo[s] || []),
-                [x, y],
-            ],
-        }), seriesData))
-    }, 250))
-
-    const onDatapoint = useCallback((payload) => {
-        queuedDatapointsRef.current.push(payload)
-        flushDatapointsRef.current()
-    }, [flushDatapointsRef, queuedDatapointsRef])
-
-    const onMessage = useCallback((payload) => {
-        switch (payload.type) {
-            case 'p':
-                onDatapoint(payload)
-                break
-            case 's':
-                onSeries(payload)
-                break
-            default:
-                // noop
+        if (chartSeries && datapoint) {
+            chartSeries.addPoint(datapoint)
         }
-    }, [onDatapoint, onSeries])
-
-    const onSeriesRef = useRef()
-    onSeriesRef.current = onSeries
-
-    const xoxo = useMemo(() => (
-        Object.values(series).map((data) => ({
-            ...data,
-            data: seriesData[data.idx] || [],
-        }))
-    ), [series, seriesData])
-
-    const chartRef = useRef(null)
-
-    const setChart = useCallback((chart) => {
-        chartRef.current = chart
-    }, [])
+    }, [chart])
 
     useEffect(() => {
-        if (chartRef.current) {
-            xoxo.forEach((data) => {
-                const series = chartRef.current.get(data.id)
-                if (series) {
-                    series.update(data)
-                } else {
-                    chartRef.current.addSeries(data)
-                }
-            })
-            chartRef.current.redraw()
-        }
-    }, [xoxo])
+        Object.values(seriesCollectionRef.current).forEach(onMessage)
+    }, [onMessage])
 
     const init = useCallback(async () => {
         const { current: subscription } = subscriptionRef
@@ -116,8 +108,14 @@ const ChartModule2 = (props) => {
         })
 
         if (!isMounted()) { return }
-        series.forEach(onSeriesRef.current)
-    }, [isActive, isMounted])
+
+        series.forEach((s) => {
+            onMessage({
+                ...s,
+                type: 's',
+            })
+        })
+    }, [isActive, isMounted, onMessage])
 
     useOnceEffect(init)
 
