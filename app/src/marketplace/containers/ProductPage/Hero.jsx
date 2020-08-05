@@ -118,14 +118,15 @@ const Hero = () => {
     ])
 
     useEffect(() => {
-        const loadWhitelistStatus = async () => {
-            if (isWhitelistEnabled && productId && account) {
-                const whitelisted = await isAddressWhitelisted(productId, account)
-                setIsWhitelisted(whitelisted)
-            }
+        const loadWhitelistStatus = async (targetAccount) => {
+            const whitelisted = !isWhitelistEnabled || await isAddressWhitelisted(productId, targetAccount)
+
+            setIsWhitelisted(whitelisted)
         }
 
-        loadWhitelistStatus()
+        if (productId && account) {
+            loadWhitelistStatus(account)
+        }
     }, [productId, account, isWhitelistEnabled])
 
     return (
