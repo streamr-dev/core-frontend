@@ -100,7 +100,7 @@ const CanvasList = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters('canvas')
         return [
-            filters.RECENT,
+            filters.RECENT_DESC,
             filters.RUNNING,
             filters.STOPPED,
             filters.NAME_ASC,
