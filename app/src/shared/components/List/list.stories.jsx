@@ -1,10 +1,11 @@
 // @flow
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import styled from 'styled-components'
 import { action } from '@storybook/addon-actions'
+import sortBy from 'lodash/sortBy'
 
 import { MD, LG } from '$shared/utils/styled'
 import StatusIcon from '$shared/components/StatusIcon'
@@ -118,6 +119,128 @@ stories.add('default (mobile)', () => (
         defaultViewport: 'xs',
     },
 })
+
+const sortOptions = {
+    nameAsc: {
+        column: 'title',
+        order: 'asc',
+    },
+    nameDesc: {
+        column: 'title',
+        order: 'desc',
+    },
+    descAsc: {
+        column: 'description',
+        order: 'asc',
+    },
+    descDesc: {
+        column: 'description',
+        order: 'desc',
+    },
+    statusAsc: {
+        column: 'status',
+        order: 'asc',
+    },
+    statusDesc: {
+        column: 'status',
+        order: 'desc',
+    },
+}
+
+const SortableList = () => {
+    const [sort, setSort] = useState(undefined)
+    const sortedList = useMemo(() => {
+        if (!sort) {
+            return defaultList
+        }
+
+        const { column, order } = sortOptions[sort]
+        const sorted = sortBy(defaultList, column)
+
+        return order === 'desc' ? sorted.reverse() : sorted
+    }, [sort])
+
+    const onHeaderSortUpdate = useCallback((asc, desc) => {
+        setSort((prevFilter) => {
+            let nextSort
+
+            if (![asc, desc].includes(prevFilter)) {
+                nextSort = asc
+            } else if (prevFilter === asc) {
+                nextSort = desc
+            }
+
+            return nextSort
+        })
+    }, [setSort])
+
+    return (
+        <Container>
+            <List>
+                <List.Header>
+                    <List.HeaderItem
+                        asc="nameAsc"
+                        desc="nameDesc"
+                        active={sort}
+                        onClick={onHeaderSortUpdate}
+                    >
+                        Title
+                    </List.HeaderItem>
+                    <List.HeaderItem
+                        asc="descAsc"
+                        desc="descDesc"
+                        active={sort}
+                        onClick={onHeaderSortUpdate}
+                    >
+                        Description
+                    </List.HeaderItem>
+                    <List.HeaderItem>Updated</List.HeaderItem>
+                    <List.HeaderItem>Last Data</List.HeaderItem>
+                    <List.HeaderItem
+                        center
+                        asc="statusAsc"
+                        desc="statusDesc"
+                        active={sort}
+                        onClick={onHeaderSortUpdate}
+                    >
+                        Status
+                    </List.HeaderItem>
+                </List.Header>
+                {sortedList.map(({
+                    id,
+                    title,
+                    description,
+                    updated,
+                    lastData,
+                    status,
+                }) => (
+                    <List.Row
+                        id={id}
+                        key={id}
+                        onClick={action('onClick')}
+                    >
+                        <List.Title
+                            description={description}
+                            moreInfo={lastData}
+                        >
+                            {title}
+                        </List.Title>
+                        <List.Item truncate>{description}</List.Item>
+                        <List.Item>{updated}</List.Item>
+                        <List.Item>{lastData}</List.Item>
+                        <List.Item center>
+                            <StatusIcon status={status} tooltip />
+                        </List.Item>
+                    </List.Row>
+                ))}
+            </List>
+        </Container>
+    )
+}
+
+stories.add('sortable columns', () => (
+    <SortableList />
+))
 
 const selectableList = [{
     id: '1',

@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 
 import { MD, LG } from '$shared/utils/styled'
 import Checkbox from '$shared/components/Checkbox'
+import SvgIcon from '$shared/components/SvgIcon'
 
 const List = styled.div`
     @media (min-width: ${MD}px) {
@@ -98,7 +99,7 @@ const Header = styled(Row)`
     }
 `
 
-const HeaderItem = styled(Item)`
+const HeaderItemComponent = styled(Item)`
     && {
         font-family: var(--sans);
         font-size: 12px;
@@ -107,6 +108,65 @@ const HeaderItem = styled(Item)`
         font-weight: var(--medium);
     }
 `
+
+const SortButton = styled.button`
+    appearance: none;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font-weight: var(--medium);
+
+    &:hover,
+    &:active,
+    &:focus {
+        color: #525252;
+        outline: none;
+    }
+
+    svg {
+        width: 10px;
+        height: 10px;
+        margin-left: 0.5rem;
+        color: #525252;
+        margin-top: -2px;
+    }
+`
+
+const HeaderItem = ({
+    asc,
+    desc,
+    active,
+    onClick: onClickProp,
+    children,
+    ...otherProps
+}) => {
+    const onClick = useCallback(() => {
+        if (onClickProp) {
+            onClickProp(asc, desc)
+        }
+    }, [onClickProp, asc, desc])
+
+    return (
+        <HeaderItemComponent {...otherProps}>
+            {!!asc && !!desc && (
+                <SortButton type="button" onClick={onClick}>
+                    {children}
+                    {!!active && !!asc && active === asc && (
+                        <SvgIcon name="caretUp" />
+                    )}
+                    {!!active && !!desc && active === desc && (
+                        <SvgIcon name="caretDown" />
+                    )}
+                </SortButton>
+            )}
+            {(!asc || !desc) && children}
+        </HeaderItemComponent>
+    )
+}
 
 const TitleCell = styled(Item)`
     display: block;
