@@ -17,12 +17,20 @@ export const getFilters = (resourceType: ResourceType): {
     [string]: SortOption,
 } => {
     return {
-        RECENT: {
+        RECENT_DESC: {
             displayName: I18n.t('userpages.filter.recent'),
             filter: {
                 id: 'recent',
                 sortBy: 'lastUpdated',
                 order: 'desc',
+            },
+        },
+        RECENT_ASC: {
+            displayName: I18n.t('userpages.filter.oldest'),
+            filter: {
+                id: 'oldest',
+                sortBy: 'lastUpdated',
+                order: 'asc',
             },
         },
         RUNNING: {

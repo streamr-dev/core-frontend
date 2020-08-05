@@ -100,7 +100,7 @@ const DashboardList = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters('dashboard')
         return [
-            filters.RECENT,
+            filters.RECENT_DESC,
             filters.NAME_ASC,
             filters.NAME_DESC,
         ]
