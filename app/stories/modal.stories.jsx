@@ -689,7 +689,7 @@ story('Marketplace/PurchaseTransactionProgress')
             [purchaseActionTypes.SET_DATA_ALLOWANCE]: setDataAllowanceStatus,
             [purchaseActionTypes.RESET_DAI_ALLOWANCE]: resetDaiAllowanceStatus,
             [purchaseActionTypes.SET_DAI_ALLOWANCE]: setDaiAllowanceStatus,
-            [purchaseActionTypes.PURCHASE]: purchaseStateStatus,
+            [purchaseActionTypes.SUBSCRIPTION]: purchaseStateStatus,
         }
 
         const prompt = select('Prompt', {
@@ -753,7 +753,7 @@ story('Marketplace/PurchaseError')
             [purchaseActionTypes.SET_DATA_ALLOWANCE]: setDataAllowanceStatus,
             [purchaseActionTypes.RESET_DAI_ALLOWANCE]: resetDaiAllowanceStatus,
             [purchaseActionTypes.SET_DAI_ALLOWANCE]: setDaiAllowanceStatus,
-            [purchaseActionTypes.PURCHASE]: purchaseStateStatus,
+            [purchaseActionTypes.SUBSCRIPTION]: purchaseStateStatus,
         }
 
         return (

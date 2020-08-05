@@ -36,7 +36,7 @@ The <Link to={routes.marketplace.index()}>Marketplace</Link> is an application t
 The Marketplace is an <a href="https://github.com/streamr-dev/streamr-platform" target="_blank">open source</a> project that builds on the <a href="https://streamr.network/learn/network" target="_blank">Streamr Network</a> and the <a href="https://www.ethereum.org" target="_blank">Ethereum blockchain</a>. Ethereum is used to store a registry of data products, coordinate access to them, and to provide a secure ledger of value transactions. Products are published to the <a href="https://etherscan.io/address/0xa10151d088f6f2705a05d6c83719e99e079a61c1" target="_blank">Marketplace smart contract</a>, and the contract allows data buyers to directly transact with sellers using the DATA token, removing all traditionally present middlemen and their fees. All of the data on the Marketplace is delivered peer-to-peer via the Streamr Network.
 
 ## Get data from the Marketplace
-Many products on the Marketplace are free. To access the streams of a free product, simply click the <span className={docsStyles.streamrHighlight}>Add to my purchases</span> on the product page. The product will appear immediately in the Purchases view of Core, and the streams will be available for your use both in the Streams view of Core and also directly within any canvases you create — just search for it’s name in the Module search panel. You don't need any DATA or Ether to purchase a free product.
+Many products on the Marketplace are free. To access the streams of a free product, simply click <span className={docsStyles.streamrHighlight}>Subscribe</span> on the product page. The product will appear immediately in the Subscriptions view of Core, and the streams will be available for your use both in the Streams view of Core and also directly within any canvases you create — just search for it’s name in the Module search panel. You don't need any DATA or Ether to subscribe to a free product.
 
 <Image
   src={FreeProduct}
@@ -44,8 +44,8 @@ Many products on the Marketplace are free. To access the streams of a free produ
   alt="Free product"
 />
 
-### Purchasing paid products
-Interacting with paid products requires an Ethereum wallet address, and a small amount of Ether, in order to pay the gas fees required to purchase or publish the product. Getting access to a paid product requires a payment of DATA to the product owner.
+### Subscribing to paid products
+Interacting with paid products requires an Ethereum wallet address, and a small amount of Ether, in order to pay the gas fees required to subscribe or publish the product. Getting access to a paid product requires a payment of DATA to the product owner.
 
 <Image
   src={PaidProduct}
@@ -53,7 +53,7 @@ Interacting with paid products requires an Ethereum wallet address, and a small 
   alt="Paid product"
 />
 
-Clicking the <span className={docsStyles.streamrHighlight}>Purchase</span> button initiates the purchase dialog which guides you through the contract transaction process. Gaining access to the streams inside the product happens automatically once the transaction has been completed which usually takes no longer than a few minutes. A dialog will pop up where you select the desired access period.
+Clicking the <span className={docsStyles.streamrHighlight}>Subscribe</span> button initiates the subscription dialog which guides you through the contract transaction process. Gaining access to the streams inside the product happens automatically once the transaction has been completed which usually takes no longer than a few minutes. A dialog will pop up where you select the desired access period.
 
 <Image
   src={AccessPeriod}
@@ -80,15 +80,15 @@ To complete the the allowance step, confirm the transaction in Metamask. After s
 <Image
   src={CompletePurchase}
   highResSrc={CompletePurchase2x}
-  alt="Complete purchase"
+  alt="Complete subscription"
 />
 
-Finally, confirm the transaction in Metamask to complete your purchase. While the transaction is being mined, you can either wait for it to complete or continue browsing the Marketplace. You will be notified after it has completed.
+Finally, confirm the transaction in Metamask to complete your subscription. While the transaction is being mined, you can either wait for it to complete or continue browsing the Marketplace. You will be notified after it has completed.
 
 <Image
   src={CompletePurchaseMetamask}
   highResSrc={CompletePurchaseMetamask2x}
-  alt="Complete purchase on Metamask"
+  alt="Complete subscription on Metamask"
 />
 
 <Image
@@ -97,4 +97,4 @@ Finally, confirm the transaction in Metamask to complete your purchase. While th
   alt="Transaction complete"
 />
 
-Note that while you may purchase products with any Web3 wallet, the purchases will not be visible until you <Link to={docsLinks.gettingStarted}>link the account to your profile</Link>.
+Note that while you may subscribe to products with any Web3 wallet, the subscriptions will not be visible until you <Link to={docsLinks.gettingStarted}>link the account to your profile</Link>.

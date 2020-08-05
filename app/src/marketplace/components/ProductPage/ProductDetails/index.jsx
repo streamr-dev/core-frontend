@@ -31,12 +31,12 @@ const buttonTitle = (product: Product, isValidSubscription: boolean, isWhitelist
 
         return isValidSubscription ?
             I18n.t('productPage.productDetails.renew') :
-            I18n.t('productPage.productDetails.purchase')
+            I18n.t('productPage.productDetails.subscribe')
     }
 
     return isValidSubscription ?
         I18n.t('productPage.productDetails.saved') :
-        I18n.t('productPage.productDetails.add')
+        I18n.t('productPage.productDetails.subscribe')
 }
 
 const ProductDetails = ({

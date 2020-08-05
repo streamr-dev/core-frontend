@@ -91,7 +91,7 @@ const HoverComponent = ({
             <div>
                 <KeylockIconSvg />
                 &nbsp;
-                <Translate value="productPage.streamListing.purchase" />
+                <Translate value="productPage.streamListing.subscribe" />
             </div>
         )}
         {(!isLoggedIn && !isProductFree && isProductSubscriptionValid) && (

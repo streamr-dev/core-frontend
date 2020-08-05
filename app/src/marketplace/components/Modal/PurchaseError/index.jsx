@@ -50,7 +50,7 @@ const PurchaseError = ({ status, onClose }: Props) => {
                 <div>
                     <StyledPngIcon
                         name="txFailed"
-                        alt={I18n.t('error.purchaseFailed')}
+                        alt={I18n.t('error.subscriptionFailed')}
                     />
                     <p>
                         {!!failedAction && (

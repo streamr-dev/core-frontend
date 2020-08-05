@@ -60,7 +60,7 @@ export const transactionTypes = {
     RESET_DATA_ALLOWANCE: 'resetDataAllowance',
     SET_DAI_ALLOWANCE: 'setDaiAllowance',
     RESET_DAI_ALLOWANCE: 'resetDaiAllowance',
-    PURCHASE: 'purchase',
+    SUBSCRIPTION: 'subscription',
     CREATE_CONTRACT_PRODUCT: 'createContractProduct',
     UPDATE_CONTRACT_PRODUCT: 'updateContractProduct',
     REDEPLOY_PRODUCT: 'redeployProduct',

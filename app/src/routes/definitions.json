@@ -61,13 +61,12 @@
         "index": "/marketplace",
         "streamPreview": "/marketplace/products/:id/streamPreview/:streamId",
         "product": "/marketplace/products/:id",
-        "purchase": "/marketplace/products/:id/purchase",
         "public": {
             "product": "<streamr>/marketplace/products/:id"
         }
     },
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
-    "purchases": "/core/purchases",
+    "subscriptions": "/core/subscriptions",
     "root": "/",
     "transactions": "/core/transactions",
     "streams": {

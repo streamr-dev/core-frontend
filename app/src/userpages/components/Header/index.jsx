@@ -60,22 +60,22 @@ const Header = ({
                     </div>
                     <div className={styles.tabs}>
                         <Tab to={routes.streams.index()}>
-                            <Translate value="userpages.header.streams" />
+                            <Translate value="general.streams" />
                         </Tab>
                         <Tab to={routes.canvases.index()}>
-                            <Translate value="userpages.header.canvases" />
+                            <Translate value="general.canvases" />
                         </Tab>
                         <Tab to={routes.dashboards.index()}>
-                            <Translate value="userpages.header.dashboards" />
+                            <Translate value="general.dashboards" />
                         </Tab>
                         <Tab to={routes.products.index()}>
-                            <Translate value="userpages.header.products" />
+                            <Translate value="general.products" />
                         </Tab>
-                        <Tab to={routes.purchases()}>
-                            <Translate value="userpages.header.purchases" />
+                        <Tab to={routes.subscriptions()}>
+                            <Translate value="general.subscriptions" />
                         </Tab>
                         <Tab to={routes.transactions()}>
-                            <Translate value="userpages.header.transactions" />
+                            <Translate value="general.transactions" />
                         </Tab>
                     </div>
                 </div>

@@ -92,12 +92,6 @@ msgstr "Media"
 msgid "general.medium"
 msgstr "Medium"
 
-msgid "general.myProducts"
-msgstr "My Products"
-
-msgid "general.myPurchases"
-msgstr "My Purchases"
-
 msgid "general.newCanvas"
 msgstr "New Canvas"
 
@@ -116,8 +110,8 @@ msgstr "Data Unions"
 msgid "general.profile"
 msgstr "Profile"
 
-msgid "general.purchases"
-msgstr "Purchases"
+msgid "general.subscriptions"
+msgstr "Subscriptions"
 
 msgid "general.reddit"
 msgstr "Reddit"
@@ -310,8 +304,8 @@ msgstr "was created"
 msgid "shared.action.update"
 msgstr "was updated"
 
-msgid "shared.action.purchase"
-msgstr "was purchased"
+msgid "shared.action.subscription"
+msgstr "was subscribed"
 
 msgid "shared.action.publish"
 msgstr "was published"

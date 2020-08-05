@@ -75,7 +75,7 @@ const PurchasesPage = () => {
         <Layout
             headerSearchComponent={
                 <Search
-                    placeholder={I18n.t('userpages.purchases.filterPurchases')}
+                    placeholder={I18n.t('userpages.subscriptions.filterSubscriptions')}
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}
                     debounceTime={0}
@@ -101,7 +101,7 @@ const PurchasesPage = () => {
             }
             loading={fetching}
         >
-            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.purchases')}`} />
+            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.subscriptions')}`} />
             <ListContainer className={styles.corepageContentContainer} >
                 {!fetching && purchases && !purchases.length && (
                     <NoPurchasesView
