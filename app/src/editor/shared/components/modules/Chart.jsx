@@ -5,6 +5,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import Chart from '$editor/shared/components/Chart'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import UiSizeConstraint from '../UiSizeConstraint'
+import useOnceEffect from '$shared/hooks/useOnceEffect'
 
 const ChartModule2 = (props) => {
     const { isActive, module } = props
@@ -91,12 +92,7 @@ const ChartModule2 = (props) => {
         series.forEach(onSeriesRef.current)
     }, [isActive, isMounted])
 
-    const initRef = useRef()
-    initRef.current = init
-    useEffect(() => {
-        // Run init onMount. Ignore further updates.
-        initRef.current()
-    }, [initRef])
+    useOnceEffect(init)
 
     return (
         <UiSizeConstraint minWidth={300} minHeight={240}>
