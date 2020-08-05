@@ -89,7 +89,7 @@ const ChartModule2 = (props) => {
 
         if (!isMounted()) { return }
         series.forEach(onSeriesRef.current)
-    }, [onSeriesRef, subscriptionRef, isActive, isMounted])
+    }, [isActive, isMounted])
 
     const initRef = useRef()
     initRef.current = init
