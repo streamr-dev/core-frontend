@@ -21,6 +21,7 @@ type Props = {
     datapoints: Array<Datapoint>,
     options: any,
     series: any,
+    callback: (any) => void,
 }
 
 const useResizeEffect = (chartRef: any) => {
@@ -42,19 +43,13 @@ const useResizeEffect = (chartRef: any) => {
     }, [height, chartRef])
 }
 
-const Chart = ({ className, series, datapoints, options }: Props) => {
+const Chart = ({ className, options, callback }: Props) => {
     const chartRef = useRef(null)
-
-    const seriesData = useMemo(() => (
-        Object.values(series).map((payload: any) => ({
-            ...payload,
-            data: datapoints[payload.idx] || [],
-        }))
-    ), [series, datapoints])
 
     const setChart = useCallback((chart) => {
         chartRef.current = chart
-    }, [])
+        callback(chart)
+    }, [callback])
 
     const [range, setRange] = useState(undefined)
 
@@ -84,20 +79,6 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             setRange(undefined)
         }
     }, [])
-
-    useEffect(() => {
-        if (chartRef.current) {
-            seriesData.forEach((data) => {
-                const series = chartRef.current.get(data.id)
-                if (series) {
-                    series.update(data)
-                } else {
-                    chartRef.current.addSeries(data)
-                }
-            })
-            chartRef.current.redraw()
-        }
-    }, [seriesData])
 
     useResizeEffect(chartRef)
 

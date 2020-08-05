@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useEffect } from 'react'
+import React, { useRef, useCallback, useState, useMemo, useEffect } from 'react'
 import throttle from 'lodash/throttle'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -79,6 +79,33 @@ const ChartModule2 = (props) => {
     const onSeriesRef = useRef()
     onSeriesRef.current = onSeries
 
+    const xoxo = useMemo(() => (
+        Object.values(series).map((data) => ({
+            ...data,
+            data: seriesData[data.idx] || [],
+        }))
+    ), [series, seriesData])
+
+    const chartRef = useRef(null)
+
+    const setChart = useCallback((chart) => {
+        chartRef.current = chart
+    }, [])
+
+    useEffect(() => {
+        if (chartRef.current) {
+            xoxo.forEach((data) => {
+                const series = chartRef.current.get(data.id)
+                if (series) {
+                    series.update(data)
+                } else {
+                    chartRef.current.addSeries(data)
+                }
+            })
+            chartRef.current.redraw()
+        }
+    }, [xoxo])
+
     const init = useCallback(async () => {
         const { current: subscription } = subscriptionRef
 
@@ -103,9 +130,8 @@ const ChartModule2 = (props) => {
                 ref={subscriptionRef}
             />
             <Chart
-                datapoints={seriesData}
                 options={module.options || {}}
-                series={series}
+                callback={setChart}
             />
         </UiSizeConstraint>
     )
