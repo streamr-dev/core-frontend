@@ -1,5 +1,5 @@
 import React, { useRef, useCallback, useState, useEffect } from 'react'
-// import throttle from 'lodash/throttle'
+import throttle from 'lodash/throttle'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Chart from '$editor/shared/components/Chart'
@@ -57,6 +57,12 @@ const addSeriesDatapoint = (seriesCollection, { s: idx, x, y }) => {
     }
 }
 
+const redraw = throttle((chart) => {
+    if (chart) {
+        chart.redraw()
+    }
+}, 250)
+
 const ChartModule2 = (props) => {
     const { isActive, module } = props
 
@@ -90,7 +96,8 @@ const ChartModule2 = (props) => {
         const chartSeries = chart.get(series.id) || (series.ready ? chart.addSeries(series) : null)
 
         if (chartSeries && datapoint) {
-            chartSeries.addPoint(datapoint)
+            chartSeries.addPoint(datapoint, false)
+            redraw(chart)
         }
     }, [chart])
 
