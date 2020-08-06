@@ -6,6 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 import { titleize } from '@streamr/streamr-layout'
+import styled, { css } from 'styled-components'
 
 import Nav from '$shared/components/Layout/Nav'
 import CoreLayout from '$shared/components/Layout/Core'
@@ -18,9 +19,7 @@ import ProductController, { useController } from '$mp/containers/ProductControll
 import usePending from '$shared/hooks/usePending'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useFilterSort from '$userpages/hooks/useFilterSort'
-import Table from '$shared/components/Table'
 import StatusIcon from '$shared/components/StatusIcon'
-import Checkbox from '$shared/components/Checkbox'
 import Button from '$shared/components/Button'
 import { truncate } from '$shared/utils/text'
 import { useSelectionContext, SelectionProvider } from '$shared/hooks/useSelection'
@@ -34,8 +33,70 @@ import Search from '$userpages/components/Header/Search'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { isDataUnionProduct } from '$mp/utils/product'
+import { MemberList } from '$shared/components/List'
+import { MD, LG } from '$shared/utils/styled'
 
 import styles from './members.pcss'
+
+const FullAddress = styled.span`
+    display: none;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+`
+
+const TruncatedAddress = styled.span`
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+`
+
+const StyledMemberRow = styled(MemberList.Row)`
+    &:hover {
+        ${FullAddress} {
+            display: block;
+        }
+
+        ${TruncatedAddress} {
+            display: none;
+        }
+    }
+
+    ${({ active }) => !!active && css`
+        ${FullAddress} {
+            display: block;
+        }
+
+        ${TruncatedAddress} {
+            display: none;
+        }
+    `}
+`
+
+const SearchPlaceholder = styled.div`
+    width: var(--um);
+`
+
+const StyledListContainer = styled(ListContainer)`
+    && {
+        padding: 0;
+        margin-bottom: 4em;
+    }
+
+    @media (min-width: ${MD}px) {
+        && {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+    }
+
+    @media (min-width: ${LG}px) {
+        && {
+            margin-bottom: 0;
+        }
+    }
+`
 
 const mapStatus = (state) => {
     switch (state) {
@@ -233,7 +294,7 @@ const Members = () => {
                             onChange={setSearch}
                         />
                     ) : (
-                        <div className={styles.searchPlaceholder} />
+                        <SearchPlaceholder />
                     )}
                     filterComponent={!!dataUnionDeployed && (
                         <Popover
@@ -260,7 +321,7 @@ const Members = () => {
             contentClassname={coreLayoutStyles.pad}
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.members')}`} />
-            <ListContainer className={cx(styles.container, {
+            <StyledListContainer className={cx(styles.container, {
                 [styles.containerWithSelected]: isAnySelected,
             })}
             >
@@ -277,69 +338,61 @@ const Members = () => {
                     />
                 )}
                 {!!dataUnionDeployed && !fetchingMembers && filteredMembers && filteredMembers.length > 0 && (
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    <Translate value="userpages.members.table.ethereumAddress" />
-                                </th>
-                                <th className={styles.joinColumn}>
-                                    <Translate value="userpages.members.table.joinedRequested" />
-                                </th>
-                                <th className={styles.dataColumn}>
-                                    <Translate value="userpages.members.table.lastUpdated" />
-                                </th>
-                                <th className={styles.statusColumn}>
-                                    <Translate value="userpages.members.table.status" />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredMembers.map((member) => {
-                                const isSelected = selection.has(member.id)
+                    <MemberList>
+                        <MemberList.Header>
+                            <MemberList.HeaderItem>
+                                <Translate value="userpages.members.table.ethereumAddress" />
+                            </MemberList.HeaderItem>
+                            <MemberList.HeaderItem>
+                                <Translate value="userpages.members.table.joinedRequested" />
+                            </MemberList.HeaderItem>
+                            <MemberList.HeaderItem>
+                                <Translate value="userpages.members.table.lastUpdated" />
+                            </MemberList.HeaderItem>
+                            <MemberList.HeaderItem>
+                                <Translate value="userpages.members.table.status" />
+                            </MemberList.HeaderItem>
+                        </MemberList.Header>
+                        {filteredMembers.map((member) => {
+                            const isSelected = selection.has(member.id)
 
-                                return (
-                                    <tr
-                                        key={member.id}
-                                        className={cx(styles.addressRow, {
-                                            [styles.rowSelected]: isSelected,
-                                        })}
-                                        onClick={() => toggleSelect(member.id)}
+                            return (
+                                <StyledMemberRow
+                                    id={member.id}
+                                    key={member.id}
+                                    selectable
+                                    onClick={() => toggleSelect(member.id)}
+                                    active={isSelected}
+                                >
+                                    <MemberList.Title
+                                        description={member.lastUpdated ? titleize(ago(new Date(member.lastUpdated))) : '-'}
+                                        moreInfo={member.dateCreated ? titleize(ago(new Date(member.dateCreated))) : '-'}
                                     >
-                                        <Table.Th noWrap title={member.address} className={styles.addressColumn}>
-                                            <div className={styles.checkboxContainer}>
-                                                <Checkbox
-                                                    value={isSelected}
-                                                    onChange={() => toggleSelect(member.id)}
-                                                    className={styles.checkbox}
-                                                />
-                                            </div>
-                                            <span className={styles.fullAddress}>{member.memberAddress}</span>
-                                            <span className={styles.truncatedAddress}>
-                                                {truncate(member.memberAddress, {
-                                                    maxLength: 15,
-                                                })}
-                                            </span>
-                                        </Table.Th>
-                                        <Table.Td noWrap className={styles.joinColumn}>
-                                            {member.dateCreated ? titleize(ago(new Date(member.dateCreated))) : '-'}
-                                        </Table.Td>
-                                        <Table.Td noWrap className={styles.dataColumn}>
-                                            {member.lastUpdated ? titleize(ago(new Date(member.lastUpdated))) : '-'}
-                                        </Table.Td>
-                                        <Table.Td className={styles.statusColumn}>
-                                            <StatusIcon
-                                                status={mapStatus(member.state)}
-                                                tooltip={I18n.t(`userpages.members.status.${(member.state || '').toLowerCase()}`)}
-                                            />
-                                        </Table.Td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </Table>
+                                        <FullAddress>{member.memberAddress}</FullAddress>
+                                        <TruncatedAddress>
+                                            {truncate(member.memberAddress, {
+                                                maxLength: 15,
+                                            })}
+                                        </TruncatedAddress>
+                                    </MemberList.Title>
+                                    <MemberList.Item>
+                                        {member.dateCreated ? titleize(ago(new Date(member.dateCreated))) : '-'}
+                                    </MemberList.Item>
+                                    <MemberList.Item>
+                                        {member.lastUpdated ? titleize(ago(new Date(member.lastUpdated))) : '-'}
+                                    </MemberList.Item>
+                                    <MemberList.Item>
+                                        <StatusIcon
+                                            status={mapStatus(member.state)}
+                                            tooltip={I18n.t(`userpages.members.status.${(member.state || '').toLowerCase()}`)}
+                                        />
+                                    </MemberList.Item>
+                                </StyledMemberRow>
+                            )
+                        })}
+                    </MemberList>
                 )}
-            </ListContainer>
+            </StyledListContainer>
             <div className={cx(styles.selectedToolbar, {
                 [styles.hasAnySelected]: isAnySelected,
             })}
@@ -404,7 +457,7 @@ const LoadingView = () => (
         navComponent={(
             <Header
                 searchComponent={
-                    <div className={styles.searchPlaceholder} />
+                    <SearchPlaceholder />
                 }
             />
         )}

@@ -3,10 +3,10 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import cx from 'classnames'
 import BN from 'bignumber.js'
 import Helmet from 'react-helmet'
 import { titleize } from '@streamr/streamr-layout'
+import styled from 'styled-components'
 
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
@@ -20,7 +20,6 @@ import {
 import { selectFetching as selectFetchingProducts } from '$mp/modules/myProductList/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
-import Table from '$shared/components/Table'
 import Popover from '$shared/components/Popover'
 import LoadMore from '$mp/components/LoadMore'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
@@ -35,8 +34,33 @@ import { formatDecimals } from '$mp/utils/price'
 import { transactionTypes, paymentCurrencies, NotificationIcon } from '$shared/utils/constants'
 import { fromAtto } from '$mp/utils/math'
 import routes from '$routes'
+import { TransactionList as TransactionListComponent } from '$shared/components/List'
+import StatusIcon from '$shared/components/StatusIcon'
+import { MD, LG } from '$shared/utils/styled'
 
-import styles from './list.pcss'
+const StyledListContainer = styled(ListContainer)`
+    && {
+        padding: 0;
+        margin-bottom: 4em;
+    }
+
+    @media (min-width: ${MD}px) {
+        && {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+    }
+
+    @media (min-width: ${LG}px) {
+        && {
+            margin-bottom: 0;
+        }
+    }
+`
+
+const SearchPlaceholder = styled.div`
+    width: var(--um);
+`
 
 const TransactionList = () => {
     const dispatch = useDispatch()
@@ -93,11 +117,11 @@ const TransactionList = () => {
         <Layout
             loading={isLoading}
             headerSearchComponent={
-                <div className={styles.searchPlaceholder} />
+                <SearchPlaceholder />
             }
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.transactions')}`} />
-            <ListContainer className={styles.transactionList}>
+            <StyledListContainer>
                 {!isLoading && transactions && transactions.length <= 0 && (
                     <NoTransactionsView
                         accountsExist={accountsExist}
@@ -105,102 +129,126 @@ const TransactionList = () => {
                     />
                 )}
                 {transactions && transactions.length > 0 && (
-                    <Table className={cx({
-                        [styles.loadingMore]: !!(hasMoreResults && fetchingTransactions),
-                    })}
-                    >
-                        <thead>
-                            <tr>
-                                <th><Translate value="userpages.transactions.list.name" /></th>
-                                <th><Translate value="userpages.transactions.list.type" /></th>
-                                <th><Translate value="userpages.transactions.list.transaction" /></th>
-                                <th><Translate value="userpages.transactions.list.when" /></th>
-                                <th><Translate value="userpages.transactions.list.value" /></th>
-                                <th><Translate value="userpages.transactions.list.gas" /></th>
-                                <th><Translate value="userpages.transactions.list.status" /></th>
-                                <th className={styles.menuColumn} />
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {transactions.map(({
-                                id,
-                                productId,
-                                hash,
-                                timestamp,
-                                gasUsed,
-                                gasPrice,
-                                state,
-                                type,
-                                value,
-                                paymentValue,
-                                paymentCurrency,
-                            }) => {
-                                const productTitle = (id && productId && products[productId]) ?
-                                    products[productId].name : '-'
-                                const price = BN(value)
+                    <TransactionListComponent>
+                        <TransactionListComponent.Header>
+                            <TransactionListComponent.HeaderItem>
+                                <Translate value="userpages.transactions.list.name" />
+                            </TransactionListComponent.HeaderItem>
+                            <TransactionListComponent.HeaderItem>
+                                <Translate value="userpages.transactions.list.type" />
+                            </TransactionListComponent.HeaderItem>
+                            <TransactionListComponent.HeaderItem>
+                                <Translate value="userpages.transactions.list.transaction" />
+                            </TransactionListComponent.HeaderItem>
+                            <TransactionListComponent.HeaderItem>
+                                <Translate value="userpages.transactions.list.when" />
+                            </TransactionListComponent.HeaderItem>
+                            <TransactionListComponent.HeaderItem>
+                                <Translate value="userpages.transactions.list.value" />
+                            </TransactionListComponent.HeaderItem>
+                            <TransactionListComponent.HeaderItem>
+                                <Translate value="userpages.transactions.list.gas" />
+                            </TransactionListComponent.HeaderItem>
+                            <TransactionListComponent.HeaderItem center>
+                                <Translate value="userpages.transactions.list.status" />
+                            </TransactionListComponent.HeaderItem>
+                        </TransactionListComponent.Header>
+                        {transactions.map(({
+                            id,
+                            productId,
+                            hash,
+                            timestamp,
+                            gasUsed,
+                            gasPrice,
+                            state,
+                            type,
+                            value,
+                            paymentValue,
+                            paymentCurrency,
+                        }) => {
+                            const productTitle = (id && productId && products[productId]) ?
+                                products[productId].name : '-'
+                            const eventType = (!!type && I18n.t(`userpages.transactions.type.${type}`)) || ''
+                            const price = BN(value)
+                            const pricePrefix = type === transactionTypes.PURCHASE ? '-' : '+'
 
-                                return (
-                                    <tr key={id}>
-                                        <Table.Th title={productTitle} noWrap>{productTitle}</Table.Th>
-                                        <Table.Td title={type} noWrap>
-                                            {!!type && (
-                                                <Translate value={`userpages.transactions.type.${type}`} />
-                                            )}
-                                        </Table.Td>
-                                        <Table.Td title={hash} noWrap>
-                                            {truncate(hash, { maxLength: 15 })}
-                                        </Table.Td>
-                                        <Table.Td noWrap>{timestamp ? titleize(ago(new Date(timestamp))) : '-'}</Table.Td>
-                                        <Table.Td noWrap>
-                                            {type === transactionTypes.PURCHASE ? '-' : '+'}
-                                            {(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && (
-                                                <React.Fragment>
-                                                    {formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA
-                                                    ({paymentValue && paymentCurrency && (
-                                                        `${formatDecimals(fromAtto(paymentValue), paymentCurrency)} ${paymentCurrency}`
-                                                    )})
-                                                </React.Fragment>
-                                            )}
-                                            {(paymentCurrency !== paymentCurrencies.ETH && paymentCurrency !== paymentCurrencies.DAI) && (
-                                                `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
-                                            )}
-                                        </Table.Td>
-                                        <Table.Td noWrap>{gasUsed} / {gasPrice}</Table.Td>
-                                        <Table.Td noWrap>
-                                            {!!state && (
-                                                <Translate value={`userpages.transactions.status.${state}`} />
-                                            )}
-                                        </Table.Td>
-                                        <Table.Td className={styles.menuColumn}>
-                                            <Popover
-                                                title={I18n.t('userpages.transactions.actions.title')}
-                                                type="meatball"
-                                                menuProps={{
-                                                    right: true,
-                                                }}
-                                                noCaret
-                                            >
-                                                <Popover.Item onClick={() => openInEtherscan(hash)}>
-                                                    <Translate value="userpages.transactions.actions.viewOnEtherscan" />
-                                                </Popover.Item>
-                                                <Popover.Item onClick={() => copyToClipboard(hash)}>
-                                                    <Translate value="userpages.transactions.actions.copyTxHash" />
-                                                </Popover.Item>
-                                            </Popover>
-                                        </Table.Td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </Table>
+                            let displayPrice = ''
+                            let displayPayment = ''
+                            if (paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) {
+                                displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
+
+                                if (paymentValue && paymentCurrency) {
+                                    displayPayment = `${formatDecimals(fromAtto(paymentValue), paymentCurrency)} ${paymentCurrency}`
+                                }
+                            } else {
+                                displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
+                            }
+
+                            return (
+                                <TransactionListComponent.Row
+                                    key={id}
+                                    id={id}
+                                >
+                                    <TransactionListComponent.Title
+                                        /* eslint-disable-next-line max-len */
+                                        description={`${eventType} ${pricePrefix}${displayPrice}${displayPayment} (gas: ${gasUsed} / ${gasPrice})`}
+                                        moreInfo={timestamp ? titleize(ago(new Date(timestamp))) : '-'}
+                                    >
+                                        {productTitle}
+                                    </TransactionListComponent.Title>
+                                    <TransactionListComponent.Item>
+                                        {eventType}
+                                    </TransactionListComponent.Item>
+                                    <TransactionListComponent.Item title={hash}>
+                                        {truncate(hash, { maxLength: 15 })}
+                                    </TransactionListComponent.Item>
+                                    <TransactionListComponent.Item>
+                                        {timestamp ? titleize(ago(new Date(timestamp))) : '-'}
+                                    </TransactionListComponent.Item>
+                                    <TransactionListComponent.Item>
+                                        {pricePrefix}
+                                        {displayPrice}
+                                        {displayPayment}
+                                    </TransactionListComponent.Item>
+                                    <TransactionListComponent.Item>
+                                        {gasUsed} / {gasPrice}
+                                    </TransactionListComponent.Item>
+                                    <TransactionListComponent.Item>
+                                        <StatusIcon
+                                            status={state}
+                                            tooltip={I18n.t(`userpages.transactions.status.${state}`)}
+                                        />
+                                    </TransactionListComponent.Item>
+                                    <TransactionListComponent.Actions>
+                                        <Popover
+                                            title={I18n.t('userpages.transactions.actions.title')}
+                                            type="meatball"
+                                            menuProps={{
+                                                right: true,
+                                            }}
+                                            noCaret
+                                        >
+                                            <Popover.Item onClick={() => openInEtherscan(hash)}>
+                                                <Translate value="userpages.transactions.actions.viewOnEtherscan" />
+                                            </Popover.Item>
+                                            <Popover.Item onClick={() => copyToClipboard(hash)}>
+                                                <Translate value="userpages.transactions.actions.copyTxHash" />
+                                            </Popover.Item>
+                                        </Popover>
+                                    </TransactionListComponent.Actions>
+                                </TransactionListComponent.Row>
+                            )
+                        })}
+                    </TransactionListComponent>
                 )}
                 {!fetchingTransactions && (
                     <LoadMore
                         hasMoreSearchResults={hasMoreResults}
                         onClick={showEvents}
+                        preserveSpace
                     />
                 )}
-            </ListContainer>
+            </StyledListContainer>
             <DocsShortcuts />
         </Layout>
     )
