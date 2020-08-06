@@ -187,7 +187,6 @@ const Chart = ({ className, options, callback }: Props) => {
                     ${point.y}
                 `, Highcharts.dateFormat('%A, %b %e, %H:%M:%S', timestamp))
             },
-            outside: true,
         },
         xAxis: {
             crosshair: {
