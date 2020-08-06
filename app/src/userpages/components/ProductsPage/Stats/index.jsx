@@ -5,6 +5,7 @@ import Helmet from 'react-helmet'
 import { I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
+import styled from 'styled-components'
 
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
@@ -23,8 +24,29 @@ import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { isDataUnionProduct } from '$mp/utils/product'
 import Nav from '$shared/components/Layout/Nav'
+import { MD, LG } from '$shared/utils/styled'
 
 import styles from './stats.pcss'
+
+const StyledListContainer = styled(ListContainer)`
+    && {
+        padding: 0;
+        margin-bottom: 4em;
+    }
+
+    @media (min-width: ${MD}px) {
+        && {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+    }
+
+    @media (min-width: ${LG}px) {
+        && {
+            margin-bottom: 0;
+        }
+    }
+`
 
 const Stats = () => {
     const { loadDataUnion } = useController()
@@ -58,21 +80,21 @@ const Stats = () => {
             contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
         >
             <Helmet title={`Streamr Core | ${I18n.t('userpages.title.stats')}`} />
-            <ListContainer>
-                <div className={styles.statBox}>
-                    {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
-                        <DataUnionPending />
-                    )}
-                    {!!dataUnionDeployed && stats && (
-                        <StatsValues
-                            className={styles.stats}
-                            stats={stats}
-                        />
-                    )}
-                </div>
+            <StyledListContainer>
                 {!!dataUnionDeployed && (
                     <div className={styles.graphs}>
-                        <div className={styles.graphBox}>
+                        <div className={styles.statBox}>
+                            {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
+                                <DataUnionPending />
+                            )}
+                            {!!dataUnionDeployed && stats && (
+                                <StatsValues
+                                    className={styles.stats}
+                                    stats={stats}
+                                />
+                            )}
+                        </div>
+                        <div className={styles.memberCount}>
                             {!!dataUnionDeployed && memberCount && (
                                 <MembersGraph
                                     className={styles.graph}
@@ -91,7 +113,7 @@ const Stats = () => {
                         </div>
                     </div>
                 )}
-            </ListContainer>
+            </StyledListContainer>
         </CoreLayout>
     )
 }
