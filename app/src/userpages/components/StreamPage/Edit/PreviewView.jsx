@@ -8,19 +8,23 @@ import { Translate } from 'react-redux-i18n'
 import type { Stream } from '$shared/flowtype/stream-types'
 import type { User } from '$shared/flowtype/user-types'
 import Button from '$shared/components/Button'
-import StreamLivePreview from '$mp/components/StreamPreviewPage/StreamLivePreview'
 import routes from '$routes'
 import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
+
+import PreviewTable from './PreviewTable'
 
 type Props = {
     stream: ?Stream,
     currentUser: ?User,
 }
 
+const Wrapper = styled.div`
+    border: 1px solid #ebebeb;
+    border-radius: 4px;
+`
+
 const Controls = styled.div`
     align-items: center;
-    border: solid #ebebeb;
-    border-width: 0 1px 1px;
     display: flex;
     justify-content: flex-end;
     padding: 1rem;
@@ -45,15 +49,14 @@ const UnstyledPreviewView = ({ stream, currentUser, ...props }: Props) => {
 
     return (
         <ClientProvider>
-            <div {...props}>
-                <StreamLivePreview
+            <Wrapper {...props}>
+                <PreviewTable
                     key={stream.id}
                     streamId={stream.id}
                     currentUser={currentUser}
                     onSelectDataPoint={() => {}}
                     selectedDataPoint={null}
                     run={isRunning}
-                    userpagesPreview
                     hasData={() => setHasData(true)}
                 />
                 <Controls>
@@ -78,7 +81,7 @@ const UnstyledPreviewView = ({ stream, currentUser, ...props }: Props) => {
                         <Translate value="userpages.streams.edit.preview.inspect" />
                     </Button>
                 </Controls>
-            </div>
+            </Wrapper>
         </ClientProvider>
     )
 }
