@@ -95,7 +95,7 @@ const getInputValues = (type, logs) => {
 
             return {
                 productId,
-                type: transactionTypes.PURCHASE,
+                type: transactionTypes.SUBSCRIPTION,
                 value: tokens,
                 paymentValue,
                 paymentCurrency,

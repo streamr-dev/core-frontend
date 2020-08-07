@@ -74,12 +74,6 @@ msgstr "媒体"
 msgid "general.medium"
 msgstr "Medium"
 
-msgid "general.myProducts"
-msgstr "我的产品"
-
-msgid "general.myPurchases"
-msgstr "购买"
-
 # missing
 msgid "general.newCanvas"
 msgstr "New Canvas"
@@ -96,8 +90,9 @@ msgstr "产品"
 msgid "general.profile"
 msgstr "Profile"
 
-msgid "general.purchases"
-msgstr "购买"
+# missing
+msgid "general.subscriptions"
+msgstr "Subscriptions"
 
 msgid "general.reddit"
 msgstr "Reddit"

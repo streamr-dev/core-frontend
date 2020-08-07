@@ -327,7 +327,7 @@ describe('usePurchase', () => {
             expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                 actionsTypes.RESET_DATA_ALLOWANCE,
                 actionsTypes.SET_DATA_ALLOWANCE,
-                actionsTypes.PURCHASE,
+                actionsTypes.SUBSCRIPTION,
             ])
 
             const emitter1 = new EventEmitter()
@@ -402,17 +402,17 @@ describe('usePurchase', () => {
 
             expect(startedFn).toHaveBeenCalledWith(actionsTypes.RESET_DATA_ALLOWANCE)
             expect(startedFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
-            expect(startedFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.RESET_DATA_ALLOWANCE, transactionStates.CONFIRMED)
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE, transactionStates.CONFIRMED)
-            expect(statusFn).toHaveBeenCalledWith(actionsTypes.PURCHASE, transactionStates.CONFIRMED)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.RESET_DATA_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
-            expect(readyFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(addTransactionStub.calledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)).toBe(true)
             expect(addTransactionStub.calledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)).toBe(true)
-            expect(addTransactionStub.calledWith(hash3, transactionTypes.PURCHASE)).toBe(true)
+            expect(addTransactionStub.calledWith(hash3, transactionTypes.SUBSCRIPTION)).toBe(true)
             expect(setAllowanceStub.calledWith('0')).toBe(true)
             expect(setAllowanceStub.calledWith(purchasePrice)).toBe(true)
             expect(validateStub.calledWith({
@@ -471,7 +471,7 @@ describe('usePurchase', () => {
             expect(result.queue).toBeTruthy()
             expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                 actionsTypes.SET_DATA_ALLOWANCE,
-                actionsTypes.PURCHASE,
+                actionsTypes.SUBSCRIPTION,
             ])
 
             const emitter1 = new EventEmitter()
@@ -524,11 +524,11 @@ describe('usePurchase', () => {
             ])
 
             expect(startedFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
-            expect(startedFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE, transactionStates.CONFIRMED)
-            expect(statusFn).toHaveBeenCalledWith(actionsTypes.PURCHASE, transactionStates.CONFIRMED)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
-            expect(readyFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(setAllowanceStub.calledWith(purchasePrice)).toBe(true)
             expect(validateStub.calledWith({
@@ -586,7 +586,7 @@ describe('usePurchase', () => {
 
             expect(result.queue).toBeTruthy()
             expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
-                actionsTypes.PURCHASE,
+                actionsTypes.SUBSCRIPTION,
             ])
 
             const emitter = new EventEmitter()
@@ -625,9 +625,9 @@ describe('usePurchase', () => {
                 result.queue.start(),
             ])
 
-            expect(startedFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
-            expect(statusFn).toHaveBeenCalledWith(actionsTypes.PURCHASE, transactionStates.CONFIRMED)
-            expect(readyFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(validateStub.calledWith({
                 price: purchasePrice,
@@ -680,7 +680,7 @@ describe('usePurchase', () => {
             expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                 actionsTypes.RESET_DAI_ALLOWANCE,
                 actionsTypes.SET_DAI_ALLOWANCE,
-                actionsTypes.PURCHASE,
+                actionsTypes.SUBSCRIPTION,
             ])
 
             const emitter1 = new EventEmitter()
@@ -755,17 +755,17 @@ describe('usePurchase', () => {
 
             expect(startedFn).toHaveBeenCalledWith(actionsTypes.RESET_DAI_ALLOWANCE)
             expect(startedFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE)
-            expect(startedFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.RESET_DAI_ALLOWANCE, transactionStates.CONFIRMED)
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE, transactionStates.CONFIRMED)
-            expect(statusFn).toHaveBeenCalledWith(actionsTypes.PURCHASE, transactionStates.CONFIRMED)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.RESET_DAI_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE)
-            expect(readyFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(addTransactionStub.calledWith(hash1, transactionTypes.RESET_DAI_ALLOWANCE)).toBe(true)
             expect(addTransactionStub.calledWith(hash2, transactionTypes.SET_DAI_ALLOWANCE)).toBe(true)
-            expect(addTransactionStub.calledWith(hash3, transactionTypes.PURCHASE)).toBe(true)
+            expect(addTransactionStub.calledWith(hash3, transactionTypes.SUBSCRIPTION)).toBe(true)
             expect(setAllowanceStub.calledWith('0')).toBe(true)
             expect(setAllowanceStub.calledWith('1234')).toBe(true)
             expect(validateStub.calledWith({
@@ -816,7 +816,7 @@ describe('usePurchase', () => {
             expect(result.queue).toBeTruthy()
             expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
                 actionsTypes.SET_DAI_ALLOWANCE,
-                actionsTypes.PURCHASE,
+                actionsTypes.SUBSCRIPTION,
             ])
 
             const emitter1 = new EventEmitter()
@@ -869,11 +869,11 @@ describe('usePurchase', () => {
             ])
 
             expect(startedFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE)
-            expect(startedFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE, transactionStates.CONFIRMED)
-            expect(statusFn).toHaveBeenCalledWith(actionsTypes.PURCHASE, transactionStates.CONFIRMED)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE)
-            expect(readyFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(setAllowanceStub.calledWith('1234')).toBe(true)
             expect(validateStub.calledWith({
@@ -923,7 +923,7 @@ describe('usePurchase', () => {
 
             expect(result.queue).toBeTruthy()
             expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
-                actionsTypes.PURCHASE,
+                actionsTypes.SUBSCRIPTION,
             ])
 
             const emitter = new EventEmitter()
@@ -962,9 +962,9 @@ describe('usePurchase', () => {
                 result.queue.start(),
             ])
 
-            expect(startedFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
-            expect(statusFn).toHaveBeenCalledWith(actionsTypes.PURCHASE, transactionStates.CONFIRMED)
-            expect(readyFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(validateStub.calledWith({
                 price: '1234',
@@ -1014,7 +1014,7 @@ describe('usePurchase', () => {
 
             expect(result.queue).toBeTruthy()
             expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
-                actionsTypes.PURCHASE,
+                actionsTypes.SUBSCRIPTION,
             ])
 
             const emitter = new EventEmitter()
@@ -1053,9 +1053,9 @@ describe('usePurchase', () => {
                 result.queue.start(),
             ])
 
-            expect(startedFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
-            expect(statusFn).toHaveBeenCalledWith(actionsTypes.PURCHASE, transactionStates.CONFIRMED)
-            expect(readyFn).toHaveBeenCalledWith(actionsTypes.PURCHASE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(buyProductStub.calledWith('1', '3600', 'ETH', '1234')).toBe(true)
             expect(subscriptionStub.calledWith('1')).toBe(true)

@@ -48,7 +48,7 @@ const UserpagesRouter = () => ([
     <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,
     <Route exact path={routes.streams.preview()} component={StreamLivePreview} key="StreamLivePreview" />,
     <Route exact path={routes.transactions()} component={TransactionListAuth} key="TransactionList" />,
-    <Route exact path={routes.purchases()} component={PurchasesPageAuth} key="PurchasesPage" />,
+    <Route exact path={routes.subscriptions()} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
     <Route exact path={routes.products.edit()} component={EditProductAuth} key="EditProduct" />,
     <Route exact path={routes.products.stats()} component={StatsPageAuth} key="StatsPage" />,

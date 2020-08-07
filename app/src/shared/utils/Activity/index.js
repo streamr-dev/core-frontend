@@ -9,7 +9,7 @@ const emitter = new EventEmitter()
 export const actionTypes = {
     CREATE: 'CREATE',
     UPDATE: 'UPDATE',
-    PURCHASE: 'PURCHASE', // user purchased
+    SUBSCRIPTION: 'SUBSCRIPTION', // user subscribed
     PAYMENT: 'PAYMENT', // user received payment
     ADD: 'ADD',
     SHARE: 'SHARE',

@@ -249,15 +249,15 @@ msgstr "Product category"
 msgid "editProductPage.sidebar.activeSubscribers"
 msgstr "Active subscribers"
 
-msgid "editProductPage.sidebar.mostRecentPurchase"
-msgstr "Most recent purchase"
+msgid "editProductPage.sidebar.mostRecentSubscription"
+msgstr "Most recent subscription"
 
 msgid "editProductPage.terms.title"
 msgstr "Set terms of use"
 
 msgid "editProductPage.terms.description"
 msgstr ""
-"You can indicate the terms of use you prefer for data purchasers, either by checking boxes "
+"You can indicate the terms of use you prefer for data subscribers, either by checking boxes "
 "below to show permitted usage types, or give more detail by providing a link to your own terms "
 "of use document."
 
@@ -328,7 +328,7 @@ msgid "error.negativeAmount"
 msgstr "Amount must be non-negative!"
 
 msgid "error.noBalance"
-msgstr "It looks like you don’t have enough balance to purchase this product."
+msgstr "It looks like you don’t have enough balance to subscribe to this product."
 
 msgid "error.noProduct"
 msgstr "Product should be defined!"
@@ -345,8 +345,8 @@ msgstr "No product found with id %{id}"
 msgid "error.publishFailed"
 msgstr "Publish failed"
 
-msgid "error.purchaseFailed"
-msgstr "Purchase failed"
+msgid "error.subscriptionFailed"
+msgstr "Subscription failed"
 
 msgid "error.txAborted"
 msgstr "Transaction aborted"
@@ -422,7 +422,7 @@ msgstr "Connect your Ethereum address"
 
 msgid "modal.connectEthereumAddress.description"
 msgstr ""
-"Connect your Ethereum address to your Streamr account so your purchases are visible. "
+"Connect your Ethereum address to your Streamr account so your subscriptions are visible. "
 "Confirm this transaction in your wallet to proceed."
 
 msgid "modal.common.save"
@@ -722,10 +722,10 @@ msgid "modal.insufficientDaiDialog.title"
 msgstr "Insufficient DAI"
 
 msgid "modal.insufficientDaiDialog.message"
-msgstr "You don't have enough DAI to purchase <br /> this product. Please get some and try again"
+msgstr "You don't have enough DAI to subscribe <br /> to this product. Please get some and try again"
 
 msgid "modal.insufficientDaiDialog.mobileMessage"
-msgstr "It looks like you don’t have enough DAI to purchase this product. "
+msgstr "It looks like you don’t have enough DAI to subscribe to this product. "
 "Please get some & try again or choose a different"
 "<br />"
 "payment currency."
@@ -734,12 +734,12 @@ msgid "modal.getDataTokensDialog.link.bancor"
 msgstr "Bancor"
 
 msgid "modal.getDataTokensDialog.message"
-msgstr "DATA is currently required to purchase products on the Marketplace. Please purchase some and try again"
+msgstr "DATA is currently required to subscribe to products on the Marketplace. Please purchase some and try again"
 
 msgid "modal.getDataTokensDialog.mobileMessage"
-msgstr "DATA is currently required to purchase"
+msgstr "DATA is currently required to subscribe"
 "<br />"
-"products on the Marketplace."
+"to products on the Marketplace."
 "<br />"
 "Please purchase some and try again"
 
@@ -750,13 +750,13 @@ msgid "modal.insufficientDataDialog.title"
 msgstr "Insufficient DATA"
 
 msgid "modal.insufficientDataDialog.message"
-msgstr "You don't have enough DATA to purchase <br /> this product. Please get some and try again"
+msgstr "You don't have enough DATA to subscribe <br /> to this product. Please get some and try again"
 
 msgid "modal.insufficientEthDialog.title"
 msgstr "Insufficient ETH"
 
 msgid "modal.insufficientEthDialog.message"
-msgstr "You don't have enough ETH to purchase <br /> this product. Please get some and try again"
+msgstr "You don't have enough ETH to subscribe <br /> to this product. Please get some and try again"
 
 msgid "modal.purchaseSummary.access"
 msgstr "%{time} %{timeUnit} access"
@@ -775,20 +775,19 @@ msgstr "%{price} %{priceCurrency}"
 
 msgid "modal.purchaseSummary.started.message"
 msgstr ""
-"You need to confirm the transaction <br /> in your wallet to purchase this "
-"product."
+"You need to confirm the transaction <br /> in your wallet to subscribe to this product."
 
 msgid "modal.purchaseSummary.time"
 msgstr "%{time} %{timeUnit}"
 
 msgid "modal.purchaseSummary.started.title"
-msgstr "Purchase confirmation"
+msgstr "Subscription confirmation"
 
 msgid "modal.purchaseSummary.title"
-msgstr "Complete your purchase"
+msgstr "Complete your subscription"
 
 msgid "modal.purchaseProgress.title"
-msgstr "Purchasing the product"
+msgstr "Subscribing to the product"
 
 msgid "modal.purchaseProgress.setDaiAllowance.pending"
 msgstr "Setting allowance"
@@ -802,14 +801,14 @@ msgstr "Setting allowance"
 msgid "modal.purchaseProgress.resetDataAllowance.pending"
 msgstr "Resetting allowance"
 
-msgid "modal.purchaseProgress.purchase.pending"
-msgstr "Purchasing the product"
+msgid "modal.purchaseProgress.subscription.pending"
+msgstr "Subscribing to the product"
 
 msgid "modal.purchaseError.someFailed.title"
-msgstr "Purchase did not complete"
+msgstr "Subscription did not complete"
 
 msgid "modal.purchaseError.allFailed.title"
-msgstr "Purchase failed"
+msgstr "Subscription failed"
 
 msgid "modal.purchaseError.actions.setDaiAllowance"
 msgstr "The allowance failed to update."
@@ -823,11 +822,11 @@ msgstr "The allowance failed to update."
 msgid "modal.purchaseError.actions.resetDataAllowance"
 msgstr "Resetting the allowance failed to update."
 
-msgid "modal.purchaseError.actions.purchase"
-msgstr "Failed to purchase product."
+msgid "modal.purchaseError.actions.subscription"
+msgstr "Failed to subscribe to the product."
 
 msgid "modal.purchaseError.actions.allFailed"
-msgstr "Failed to purchase product."
+msgstr "Failed to subscribe to the product."
 
 msgid "modal.purchaseError.actions.someFailed"
 msgstr "More than one transaction failed."
@@ -884,7 +883,7 @@ msgstr "Unpublish"
 msgid "modal.replaceAllowance.helpText"
 msgstr ""
 "You have an allowance set for the marketplace, but it is not enough to make "
-"the purchase. To fix it, we need to make two transactions: First set "
+"the subscription. To fix it, we need to make two transactions: First set "
 "allowance to zero, then continue normally by setting it to the target "
 "value.<br/> <a href=%{resetAllowanceLink} target=\"_blank\" rel=\"noopener "
 "noreferrer\">More information</a>"
@@ -1163,7 +1162,7 @@ msgid "notifications.productPublished"
 msgstr "Your product has been published"
 
 msgid "notifications.productSaved"
-msgstr "Saved to your purchases"
+msgstr "Saved to your subscriptions"
 
 msgid "notifications.productUnpublished"
 msgstr "Your product has been unpublished"
@@ -1181,10 +1180,10 @@ msgid "notifications.published"
 msgstr "Your product has been published"
 
 msgid "notifications.purchaseComplete"
-msgstr "Product purchase completed"
+msgstr "Product subscription completed"
 
 msgid "notifications.purchaseError"
-msgstr "There was an error purchasing a product"
+msgstr "There was an error subscribing to a product"
 
 msgid "notifications.unpublishError"
 msgstr "There was an error unpublishing your product"
@@ -1245,14 +1244,11 @@ msgstr "Set price"
 msgid "productList.viewMore"
 msgstr "View more"
 
-msgid "productPage.productDetails.add"
-msgstr "Add to my purchases"
-
 msgid "productPage.productDetails.free"
 msgstr "Free"
 
-msgid "productPage.productDetails.purchase"
-msgstr "Purchase"
+msgid "productPage.productDetails.subscribe"
+msgstr "Subscribe"
 
 msgid "productPage.productDetails.renew"
 msgstr "Renew"
@@ -1261,7 +1257,7 @@ msgid "productPage.productDetails.requestAccess"
 msgstr "Request Access"
 
 msgid "productPage.productDetails.saved"
-msgstr "Saved to my purchases"
+msgstr "Saved to my subscriptions"
 
 msgid "productPage.relatedProducts"
 msgstr "Related products"
@@ -1284,8 +1280,8 @@ msgstr "Log in to interact with this stream"
 msgid "productPage.streamListing.noStreams"
 msgstr "No streams found."
 
-msgid "productPage.streamListing.purchase"
-msgstr "Purchase to unlock"
+msgid "productPage.streamListing.subscribe"
+msgstr "Subscribe to unlock"
 
 msgid "productPage.streamListing.streams"
 msgstr "Streams"
@@ -1348,23 +1344,8 @@ msgstr "Active"
 msgid "productPage.stats.inactiveMembers"
 msgstr "Inactive"
 
-msgid "productTile.active"
-msgstr "Active"
-
-msgid "productTile.draft"
-msgstr "Draft"
-
-msgid "productTile.expired"
-msgstr "Expired"
-
 msgid "productTile.free"
 msgstr "Free"
-
-msgid "productTile.imageCaption"
-msgstr "Product image"
-
-msgid "productTile.published"
-msgstr "Published"
 
 msgid "purchaseDialog.errorTitle"
 msgstr "An error occurred"

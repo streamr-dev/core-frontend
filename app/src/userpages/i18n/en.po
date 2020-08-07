@@ -110,23 +110,14 @@ msgstr "Remove"
 msgid "userpages.filter.rejected"
 msgstr "Rejected"
 
-msgid "userpages.header.canvases"
-msgstr "Canvases"
-
-msgid "userpages.header.streams"
-msgstr "Streams"
-
-msgid "userpages.header.dashboards"
-msgstr "Dashboards"
-
 msgid "userpages.title.dashboards"
 msgstr "Dashboards"
 
 msgid "userpages.title.products"
 msgstr "Products"
 
-msgid "userpages.title.purchases"
-msgstr "Purchases"
+msgid "userpages.title.subscriptions"
+msgstr "Subscriptions"
 
 msgid "userpages.title.streams"
 msgstr "Streams"
@@ -142,15 +133,6 @@ msgstr "Overview"
 
 msgid "userpages.title.members"
 msgstr "Members"
-
-msgid "userpages.header.products"
-msgstr "Products"
-
-msgid "userpages.header.purchases"
-msgstr "Purchases"
-
-msgid "userpages.header.transactions"
-msgstr "Transactions"
 
 msgid "userpages.permissions.error"
 msgstr "Something went wrong while adding some of the permission(s)"
@@ -276,31 +258,28 @@ msgstr "This is an unrecoverable action. It will permanently<br/>remove the sele
 msgid "userpages.members.confirmButton"
 msgstr "Yes, remove"
 
-msgid "userpages.purchases.filterPurchases"
-msgstr "Filter purchases"
+msgid "userpages.subscriptions.filterSubscriptions"
+msgstr "Filter subscriptions"
 
-msgid "userpages.purchases.noAddedPurchases.title"
-msgstr "You haven’t purchased or added any products yet."
+msgid "userpages.subscriptions.noAddedSubscriptions.title"
+msgstr "You haven’t subscribed to any products yet"
 
-msgid "userpages.purchases.noAddedPurchases.message"
-msgstr "Visit the Marketplace to get started."
+msgid "userpages.subscriptions.noAddedSubscriptions.message"
+msgstr "Visit the <a href=\"%{marketPlaceLink}\">Marketplace</a> to get started."
 
-msgid "userpages.purchases.noAddedPurchases.hint"
-msgstr "Go to the marketplace"
-
-msgid "userpages.purchases.noPurchasesResult.title"
+msgid "userpages.subscriptions.noSubscriptionsResult.title"
 msgstr "No results."
 
-msgid "userpages.purchases.noPurchasesResult.message"
+msgid "userpages.subscriptions.noSubscriptionsResult.message"
 msgstr "We couldn't find any products that match your search."
 
-msgid "userpages.purchases.noPurchasesResult.clearFilters"
+msgid "userpages.subscriptions.noSubscriptionsResult.clearFilters"
 msgstr "Clear filters"
 
-msgid "userpages.purchases.active"
-msgstr "Active"
+msgid "userpages.subscriptions.expiresIn"
+msgstr "Expires in %{time}"
 
-msgid "userpages.purchases.expired"
+msgid "userpages.subscriptions.expired"
 msgstr "Expired"
 
 msgid "userpages.streams.createStream"
@@ -770,8 +749,8 @@ msgstr "Unpublish"
 msgid "userpages.transactions.type.redeployProduct"
 msgstr "Republish"
 
-msgid "userpages.transactions.type.purchase"
-msgstr "Purchase"
+msgid "userpages.transactions.type.subscription"
+msgstr "Subscription"
 
 msgid "userpages.transactions.type.payment"
 msgstr "Payment"

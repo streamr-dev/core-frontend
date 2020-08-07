@@ -73,7 +73,7 @@ const Hero = () => {
 
                     if (isMounted() && !!started && !!succeeded) {
                         if (viewInCore) {
-                            dispatch(replace(routes.purchases()))
+                            dispatch(replace(routes.subscriptions()))
                         } else {
                             dispatch(getProductSubscription(productId))
                         }

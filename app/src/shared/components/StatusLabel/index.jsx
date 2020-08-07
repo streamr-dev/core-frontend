@@ -33,10 +33,6 @@ export const Advanced = () => (
     <Label theme={LightGrayTheme}>{I18n.t('shared.statusLabel.advanced')}</Label>
 )
 
-Label.defaultProps = {
-    theme: DarkGrayTheme,
-}
-
 Label.Deprecated = Deprecated
 Label.Advanced = Advanced
 

@@ -142,7 +142,7 @@ const TransactionNotification = ({ transaction }: Props) => {
         case transactionTypes.UPDATE_CONTRACT_PRODUCT:
             return renderUpdateComponent(transaction.state)
 
-        case transactionTypes.PURCHASE:
+        case transactionTypes.SUBSCRIPTION:
             return renderPurchaseComponent(transaction.state)
 
         default:

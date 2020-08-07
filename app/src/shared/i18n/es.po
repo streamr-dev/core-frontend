@@ -73,12 +73,6 @@ msgstr "Medios de comunicación"
 msgid "general.medium"
 msgstr "Medium"
 
-msgid "general.myProducts"
-msgstr "Mis productos"
-
-msgid "general.myPurchases"
-msgstr "Mis compras"
-
 # missing
 msgid "general.newCanvas"
 msgstr "New Canvas"
@@ -103,8 +97,8 @@ msgid "general.profile"
 msgstr "Profile"
 
 # missing
-msgid "general.purchases"
-msgstr "Purchases"
+msgid "general.subscriptions"
+msgstr "Subscriptions"
 
 msgid "general.reddit"
 msgstr "Reddit"

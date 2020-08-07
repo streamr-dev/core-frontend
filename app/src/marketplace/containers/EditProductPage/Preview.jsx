@@ -96,7 +96,7 @@ const Description = () => {
                 value: subscriberCount || 0,
             },
             purchaseTimestamp: {
-                title: I18n.t('editProductPage.sidebar.mostRecentPurchase'),
+                title: I18n.t('editProductPage.sidebar.mostRecentSubscription'),
                 loading: isPending,
                 value: purchaseTimestamp != null ? titleize(ago(new Date(purchaseTimestamp))) : '-',
             },

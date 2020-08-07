@@ -170,7 +170,7 @@ const TransactionList = () => {
                                 products[productId].name : '-'
                             const eventType = (!!type && I18n.t(`userpages.transactions.type.${type}`)) || ''
                             const price = BN(value)
-                            const pricePrefix = type === transactionTypes.PURCHASE ? '-' : '+'
+                            const pricePrefix = type === transactionTypes.SUBSCRIPTION ? '-' : '+'
 
                             let displayPrice = ''
                             let displayPayment = ''

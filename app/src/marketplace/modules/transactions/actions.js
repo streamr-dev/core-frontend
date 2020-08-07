@@ -46,7 +46,7 @@ export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: Fu
     addTransactionToSessionStorage(id, type)
 
     switch (type) {
-        case transactionTypes.PURCHASE:
+        case transactionTypes.SUBSCRIPTION:
         case transactionTypes.UNDEPLOY_PRODUCT:
         case transactionTypes.REDEPLOY_PRODUCT:
         case transactionTypes.CREATE_CONTRACT_PRODUCT:

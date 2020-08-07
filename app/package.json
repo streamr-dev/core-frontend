@@ -68,7 +68,7 @@
     ],
     "moduleNameMapper": {
       "\\.(css|scss|pcss|po|md)$": "identity-obj-proxy",
-      "\\.(png)$": "empty/object",
+      "\\.(png)$": "<rootDir>/scripts/emptyObject",
       "\\$app/(.*)$": "<rootDir>/$1",
       "\\$auth/(.*)$": "<rootDir>/src/auth/$1",
       "\\$mp/(.*)$": "<rootDir>/src/marketplace/$1",

@@ -56,7 +56,7 @@ jest.mock('$userpages/components/ProfilePage', () => ({
 jest.mock('$userpages/components/PurchasesPage', () => ({
     __esModule: true,
     default: () => (
-        <div>Purchases list</div>
+        <div>Subscriptions</div>
     ),
 }))
 jest.mock('$userpages/components/ProductsPage', () => ({
@@ -202,10 +202,10 @@ describe('Userpages Routes', () => {
         expect(el.text()).toBe('Transaction list')
     })
 
-    it('shows purchases list', () => {
+    it('shows subscriptions list', () => {
         const el = mount((
             <MemoryRouter
-                initialEntries={['/core/purchases']}
+                initialEntries={['/core/subscriptions']}
             >
                 <Switch>
                     {UserpagesRouter()}
@@ -213,7 +213,7 @@ describe('Userpages Routes', () => {
             </MemoryRouter>
         ))
 
-        expect(el.text()).toBe('Purchases list')
+        expect(el.text()).toBe('Subscriptions')
     })
 
     it('shows products list', () => {
