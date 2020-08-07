@@ -176,7 +176,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             .subscribe('status', (id, nextStatus, hash) => {
                 setActionStatus(id, nextStatus)
 
-                if (id === actionsTypes.PURCHASE && nextStatus === transactionStates.PENDING && !!hash) {
+                if (id === actionsTypes.SUBSCRIPTION && nextStatus === transactionStates.PENDING && !!hash) {
                     setPurchaseTransaction(hash)
                 }
             })

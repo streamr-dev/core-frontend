@@ -1,8 +1,8 @@
 // @flow
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
-import { Link } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 
 import routes from '$routes'
 import Button from '$shared/components/Button'
@@ -21,25 +21,40 @@ type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
 
-const NoAddedPurchasesView = () => (
-    <EmptyState
-        image={(
-            <img
-                src={emptyStateIcon}
-                srcSet={`${emptyStateIcon2x} 2x`}
-                alt={I18n.t('error.notFound')}
-            />
-        )}
-        link={(
-            <Button kind="special" tag={Link} to={routes.marketplace.index()}>
-                <Translate value="userpages.purchases.noAddedPurchases.hint" />
-            </Button>
-        )}
-    >
-        <Translate value="userpages.purchases.noAddedPurchases.title" />
-        <Translate value="userpages.purchases.noAddedPurchases.message" tag="small" />
-    </EmptyState>
-)
+const NoAddedSubscriptionsView = withRouter(({ history }) => {
+    const handleLink = useCallback((event) => {
+        event.stopPropagation()
+        event.preventDefault()
+
+        if (event.target.pathname) {
+            history.push(event.target.pathname)
+        }
+    }, [history])
+
+    return (
+        /* eslint-disable jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */
+        <EmptyState
+            image={(
+                <img
+                    src={emptyStateIcon}
+                    srcSet={`${emptyStateIcon2x} 2x`}
+                    alt={I18n.t('error.notFound')}
+                />
+            )}
+        >
+            <Translate value="userpages.subscriptions.noAddedSubscriptions.title" />
+            <div onClick={handleLink}>
+                <Translate
+                    value="userpages.subscriptions.noAddedSubscriptions.message"
+                    tag="small"
+                    marketPlaceLink={routes.marketplace.index()}
+                    dangerousHTML
+                />
+            </div>
+        </EmptyState>
+        /* eslint-enable jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */
+    )
+})
 
 const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
     <EmptyState
@@ -55,23 +70,23 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.purchases.noPurchasesResult.clearFilters" />
+                <Translate value="userpages.subscriptions.noSubscriptionsResult.clearFilters" />
             </Button>
         )}
     >
-        <Translate value="userpages.purchases.noPurchasesResult.title" />
-        <Translate value="userpages.purchases.noPurchasesResult.message" tag="small" />
+        <Translate value="userpages.subscriptions.noSubscriptionsResult.title" />
+        <Translate value="userpages.subscriptions.noSubscriptionsResult.message" tag="small" />
     </EmptyState>
 )
 
-const NoPurchasesView = ({ hasFilter, ...rest }: Props) => {
+const NoSubscriptionsView = ({ hasFilter, ...rest }: Props) => {
     if (hasFilter) {
         return (
             <NoResultsView {...rest} />
         )
     }
 
-    return <NoAddedPurchasesView />
+    return <NoAddedSubscriptionsView />
 }
 
-export default NoPurchasesView
+export default NoSubscriptionsView

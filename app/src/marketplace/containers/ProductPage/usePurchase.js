@@ -27,7 +27,7 @@ export const actionsTypes = {
     RESET_DAI_ALLOWANCE: 'resetDaiAllowance',
     SET_DATA_ALLOWANCE: 'setDataAllowance',
     RESET_DATA_ALLOWANCE: 'resetDataAllowance',
-    PURCHASE: 'purchase',
+    SUBSCRIPTION: 'subscription',
 }
 
 type Purchase = {
@@ -215,13 +215,13 @@ export default function usePurchase() {
         const subscriptionInSeconds = toSeconds(time, timeUnit).toString()
 
         queue.add({
-            id: actionsTypes.PURCHASE,
+            id: actionsTypes.SUBSCRIPTION,
             handler: (update, done) => {
                 try {
                     return buyProduct(contractProduct.id, subscriptionInSeconds, paymentCurrency, purchasePrice)
                         .onTransactionHash((hash) => {
                             update(transactionStates.PENDING, hash)
-                            dispatch(addTransaction(hash, transactionTypes.PURCHASE))
+                            dispatch(addTransaction(hash, transactionTypes.SUBSCRIPTION))
                             done()
                         })
                         .onTransactionComplete(() => {

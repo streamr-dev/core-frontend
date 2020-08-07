@@ -194,7 +194,7 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
                 />
             )
 
-        case actionsTypes.PURCHASE:
+        case actionsTypes.SUBSCRIPTION:
             return (
                 <PurchasePrompt onCancel={onCancel} />
             )

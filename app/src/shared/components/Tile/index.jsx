@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components'
 import { titleize } from '@streamr/streamr-layout'
 import ReactImage from 'react-image'
 import { ago } from '$shared/utils/time'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import Logo from '$shared/components/Logo'
 import Badge, { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
 import Skeleton from '$shared/components/Skeleton'
@@ -286,9 +286,11 @@ const ExpirationLabel = ({ expiresAt, now }: any) => {
     return (
         <Label mood={mood}>
             {secondsLeft > 0 ? (
-                `Expires in ${formatRemainingTime(secondsLeft)}`
+                I18n.t('userpages.subscriptions.expiresIn', {
+                    time: formatRemainingTime(secondsLeft),
+                })
             ) : (
-                'Expired'
+                I18n.t('userpages.subscriptions.expired')
             )}
         </Label>
     )
