@@ -79,7 +79,7 @@ const ChartModule2 = (props) => {
             default:
         }
 
-        if (!chart || (type !== 'p' && type !== 's')) {
+        if (!chart || !series) {
             return
         }
 
