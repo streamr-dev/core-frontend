@@ -7,13 +7,7 @@ import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import UiSizeConstraint from '../UiSizeConstraint'
 import useOnceEffect from '$shared/hooks/useOnceEffect'
 
-const seriesId = (idx) => (
-    `series-${idx}`
-)
-
-const updateSeriesCollection = (seriesCollection, { idx, ...series }) => {
-    const id = seriesId(idx)
-
+const updateSeriesCollection = (seriesCollection, { idx: id, ...series }) => {
     seriesCollection[id] = {
         ...(seriesCollection[id] || {}),
         ...series,
@@ -24,7 +18,6 @@ const updateSeriesCollection = (seriesCollection, { idx, ...series }) => {
         },
         showInNavigator: true,
         id,
-        idx,
         xAxis: 0,
         yAxis: 0,
         data: (seriesCollection[id] || {}).data || [],
@@ -36,15 +29,12 @@ const updateSeriesCollection = (seriesCollection, { idx, ...series }) => {
     }
 }
 
-const addSeriesDatapoint = (seriesCollection, { s: idx, x, y }) => {
-    const id = seriesId(idx)
-
+const addSeriesDatapoint = (seriesCollection, { s: id, x, y }) => {
     const datapoint = [x, y]
 
     seriesCollection[id] = seriesCollection[id] || {
         data: [],
         id,
-        idx,
         type: 's',
         ready: false,
     }
