@@ -91,10 +91,6 @@ const ChartModule2 = (props) => {
         }
     }, [chart])
 
-    useEffect(() => {
-        Object.values(seriesCollectionRef.current).forEach(onMessage)
-    }, [onMessage])
-
     const init = useCallback(async () => {
         const { current: subscription } = subscriptionRef
 
