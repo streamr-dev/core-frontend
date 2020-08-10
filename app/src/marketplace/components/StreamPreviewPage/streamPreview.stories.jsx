@@ -12,6 +12,7 @@ const stories = storiesOf('Marketplace/StreamPreview', module)
     .addDecorator(styles({
         color: '#323232',
         fontSize: '16px',
+        height: '100vh',
     }))
 
 stories.add('default', () => (
