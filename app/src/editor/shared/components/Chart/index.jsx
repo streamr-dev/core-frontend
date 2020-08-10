@@ -1,10 +1,10 @@
 // @flow
 
-import React, { useState, useMemo, useEffect, useCallback, useContext } from 'react'
+import React, { useState, useMemo, useEffect, useCallback, useContext, useRef } from 'react'
 import cx from 'classnames'
 import Highcharts from 'highcharts/highstock'
 import HighchartsReact from 'highcharts-react-official'
-import ResizeWatcher from '$editor/canvas/components/Resizable/ResizeWatcher'
+import { useResizeWatcher } from '$editor/canvas/components/Resizable/ResizeWatcher'
 import { Context as UiSizeContext } from '$editor/shared/components/UiSizeConstraint'
 import RangeSelect from './RangeSelect'
 import approximations from './approx'
@@ -21,31 +21,43 @@ type Props = {
     datapoints: Array<Datapoint>,
     options: any,
     series: any,
+    onReady: (any) => void,
 }
 
-const Chart = ({ className, series, datapoints, options }: Props) => {
-    const [chart, setChart] = useState(null)
-
-    const seriesData = useMemo(() => (
-        Object.values(series).map((payload: any) => ({
-            ...payload,
-            data: datapoints[payload.idx] || [],
-        }))
-    ), [series, datapoints])
-
+const useResizeEffect = (chartRef: any) => {
     const onResize = useCallback(() => {
-        if (chart) {
-            chart.reflow()
+        if (chartRef.current) {
+            chartRef.current.reflow()
         }
-    }, [chart])
+    }, [chartRef])
+
+    useResizeWatcher(onResize)
+
+    const { height } = useContext(UiSizeContext)
+
+    useEffect(() => {
+        if (chartRef.current) {
+            // 40px = RangeSelect toolbar height
+            chartRef.current.setSize(undefined, height > 40 ? (height - 40) : null, false)
+        }
+    }, [height, chartRef])
+}
+
+const Chart = ({ className, options, onReady }: Props) => {
+    const chartRef = useRef(null)
+
+    const setChart = useCallback((chart) => {
+        chartRef.current = chart
+        onReady(chart)
+    }, [onReady])
 
     const [range, setRange] = useState(undefined)
 
     const setExtremes = useCallback((range: any) => {
         setRange(range)
 
-        if (chart) {
-            const [xAxis] = chart.xAxis
+        if (chartRef.current) {
+            const [xAxis] = chartRef.current.xAxis
             const { dataMin, dataMax, max } = xAxis.getExtremes()
 
             if (typeof range !== 'number') {
@@ -54,7 +66,7 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
                 xAxis.setExtremes(Math.max(max - range, dataMin), max, true, false)
             }
         }
-    }, [chart])
+    }, [])
 
     const onSetExtremes = useCallback((e: any) => {
         if (e.trigger !== 'zoom' && e.trigger !== 'navigator') {
@@ -68,28 +80,7 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
         }
     }, [])
 
-    useEffect(() => {
-        if (chart) {
-            seriesData.forEach((data) => {
-                const series = chart.get(data.id)
-                if (series) {
-                    series.update(data)
-                } else {
-                    chart.addSeries(data)
-                }
-            })
-            chart.redraw()
-        }
-    }, [chart, seriesData])
-
-    const { height } = useContext(UiSizeContext)
-
-    useEffect(() => {
-        if (chart) {
-            // 40px = RangeSelect toolbar height
-            chart.setSize(undefined, height > 40 ? (height - 40) : null, false)
-        }
-    }, [height, chart])
+    useResizeEffect(chartRef)
 
     const opts = useMemo(() => ({
         chart: {
@@ -186,11 +177,16 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
             formatter: function () {
                 // offset x value by timezone offset
                 const timestamp = this.x - (new Date().getTimezoneOffset() * 60 * 1000)
-                return this.points.reduce((s, point) => (
-                    `${s}<br/><span style="font-weight: 500;">${point.series.name}</span> ${point.y}`
-                ), `${Highcharts.dateFormat('%A, %b %e, %H:%M:%S', timestamp)}`)
+
+                return this.points.reduce((s, point) => `
+                    ${s}
+                    <br />
+                    <span style="font-weight: 500;">
+                        ${point.series.name}
+                    </span>
+                    ${point.y}
+                `, Highcharts.dateFormat('%A, %b %e, %H:%M:%S', timestamp))
             },
-            outside: true,
         },
         xAxis: {
             crosshair: {
@@ -231,7 +227,6 @@ const Chart = ({ className, series, datapoints, options }: Props) => {
                     value={range}
                 />
             </div>
-            <ResizeWatcher onResize={onResize} />
             <HighchartsReact
                 highcharts={Highcharts}
                 constructorType="stockChart"
