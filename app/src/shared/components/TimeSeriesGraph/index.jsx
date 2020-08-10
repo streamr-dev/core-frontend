@@ -3,12 +3,11 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import {
-    XYPlot,
+    FlexibleXYPlot,
     LineSeries,
     XAxis,
     YAxis,
     HorizontalGridLines,
-    makeVisFlexible,
 } from 'react-vis'
 import '$app/node_modules/react-vis/dist/style.css'
 
@@ -44,8 +43,6 @@ const yAxisStyle = {
         letterSpacing: '0px',
     },
 }
-
-const FlexibleXYPlot = makeVisFlexible(XYPlot)
 
 const formatXAxisTicks = (value, index, scale, tickTotal, dayCount) => {
     // Show weekday name for small datasets
