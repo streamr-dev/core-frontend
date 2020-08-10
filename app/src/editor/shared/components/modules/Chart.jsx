@@ -47,7 +47,7 @@ const addSeriesDatapoint = (seriesCollection, { s: id, x, y }) => {
     }
 }
 
-const redraw = throttle((chart) => {
+const queueRedraw = throttle((chart) => {
     if (chart) {
         chart.redraw()
     }
@@ -87,7 +87,7 @@ const ChartModule2 = (props) => {
 
         if (chartSeries && datapoint) {
             chartSeries.addPoint(datapoint, false)
-            redraw(chart)
+            queueRedraw(chart)
         }
     }, [chart])
 
