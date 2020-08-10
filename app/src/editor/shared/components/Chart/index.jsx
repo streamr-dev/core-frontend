@@ -21,7 +21,7 @@ type Props = {
     datapoints: Array<Datapoint>,
     options: any,
     series: any,
-    callback: (any) => void,
+    onReady: (any) => void,
 }
 
 const useResizeEffect = (chartRef: any) => {
@@ -43,13 +43,13 @@ const useResizeEffect = (chartRef: any) => {
     }, [height, chartRef])
 }
 
-const Chart = ({ className, options, callback }: Props) => {
+const Chart = ({ className, options, onReady }: Props) => {
     const chartRef = useRef(null)
 
     const setChart = useCallback((chart) => {
         chartRef.current = chart
-        callback(chart)
-    }, [callback])
+        onReady(chart)
+    }, [onReady])
 
     const [range, setRange] = useState(undefined)
 

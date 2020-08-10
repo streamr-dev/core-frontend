@@ -122,7 +122,7 @@ const ChartModule2 = (props) => {
             />
             <Chart
                 options={module.options || {}}
-                callback={setChart}
+                onReady={setChart}
             />
         </UiSizeConstraint>
     )
