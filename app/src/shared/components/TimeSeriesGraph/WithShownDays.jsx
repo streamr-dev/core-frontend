@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { Header } from '$shared/components/DataUnionStats'
+import ProductStat from '$shared/components/ProductStat'
 import Popover, { StyledDropdownToggle } from '$shared/components/Popover'
 
 type Props = {
@@ -70,7 +70,9 @@ export const WithShownDays = ({
         <Root className={className}>
             <HeaderWrapper>
                 {!!label && (
-                    <Header>{label}</Header>
+                    <ProductStat.Title>
+                        {label}
+                    </ProductStat.Title>
                 )}
                 <StyledPopover
                     title=""

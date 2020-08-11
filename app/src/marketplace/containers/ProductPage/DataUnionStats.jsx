@@ -5,13 +5,11 @@ import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import Container from '$shared/components/Container/Product'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
-import StatsValues from '$shared/components/DataUnionStats'
 import AutoScrollHook from '$shared/components/AutoScrollHook'
 import DonutChart from '$shared/components/DonutChart'
 import Segment from '$shared/components/Segment'
-
+import ProductStat from '$shared/components/ProductStat'
 import MembersGraph from './MembersGraph'
-
 import styles from './dataUnionStats.pcss'
 
 type Props = {
@@ -45,10 +43,7 @@ const UnstyledDataUnionStats = ({
             )}
             {!showDeploying && stats && (
                 <Segment.Body>
-                    <StatsValues
-                        className={styles.stats}
-                        stats={stats}
-                    />
+                    <ProductStat.List items={stats} />
                 </Segment.Body>
             )}
             {!showDeploying && memberCount && (
@@ -60,9 +55,9 @@ const UnstyledDataUnionStats = ({
                             memberCount={memberCount.total}
                         />
                         <div className={styles.memberDonut}>
-                            <StatsValues.Header>
+                            <ProductStat.Title>
                                 <Translate value="productPage.stats.membersDonut" />
-                            </StatsValues.Header>
+                            </ProductStat.Title>
                             <DonutChart
                                 className={styles.donutChart}
                                 strokeWidth={3}
@@ -83,7 +78,6 @@ const UnstyledDataUnionStats = ({
                     </div>
                 </Segment.Body>
             )}
-            <Segment.Body pad />
         </Container>
     </Segment>
 )
@@ -91,6 +85,10 @@ const UnstyledDataUnionStats = ({
 const DataUnionStats = styled(UnstyledDataUnionStats)`
     ${DataUnionPending} {
         padding: 4em 0;
+    }
+
+    ${ProductStat.List} {
+        padding: 4em 32px;
     }
 `
 

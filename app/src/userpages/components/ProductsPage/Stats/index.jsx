@@ -18,7 +18,7 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
-import StatsValues from '$shared/components/DataUnionStats'
+import ProductStat from '$shared/components/ProductStat'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
@@ -88,10 +88,7 @@ const Stats = () => {
                                 <DataUnionPending />
                             )}
                             {!!dataUnionDeployed && stats && (
-                                <StatsValues
-                                    className={styles.stats}
-                                    stats={stats}
-                                />
+                                <ProductStat items={stats} />
                             )}
                         </div>
                         <div className={styles.memberCount}>
