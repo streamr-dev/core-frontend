@@ -2,12 +2,13 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
-
-import ProductContainer from '$shared/components/Container/Product'
+import styled from 'styled-components'
+import Container from '$shared/components/Container/Product'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import StatsValues from '$shared/components/DataUnionStats'
 import AutoScrollHook from '$shared/components/AutoScrollHook'
 import DonutChart from '$shared/components/DonutChart'
+import Segment from '$shared/components/Segment'
 
 import MembersGraph from './MembersGraph'
 
@@ -24,24 +25,34 @@ type Props = {
     showDeploying?: boolean,
 }
 
-const DataUnionStats = ({ stats, memberCount, joinPartStreamId, showDeploying }: Props) => (
-    <ProductContainer className={styles.container}>
+const UnstyledDataUnionStats = ({
+    stats,
+    memberCount,
+    joinPartStreamId,
+    showDeploying,
+    ...props
+}: Props) => (
+    <Segment {...props}>
         <AutoScrollHook hash="stats" />
-        <div className={styles.root}>
-            <div className={styles.grid}>
-                <div className={styles.header}>
-                    <Translate value="productPage.stats.title" />
-                </div>
-                {!!showDeploying && (
-                    <DataUnionPending className={styles.dataUnionPending} />
-                )}
-                {!showDeploying && stats && (
+        <Container>
+            <Segment.Header>
+                <Translate value="productPage.stats.title" />
+            </Segment.Header>
+            {!!showDeploying && (
+                <Segment.Body>
+                    <DataUnionPending />
+                </Segment.Body>
+            )}
+            {!showDeploying && stats && (
+                <Segment.Body>
                     <StatsValues
                         className={styles.stats}
                         stats={stats}
                     />
-                )}
-                {!showDeploying && memberCount && (
+                </Segment.Body>
+            )}
+            {!showDeploying && memberCount && (
+                <Segment.Body>
                     <div className={styles.graphs}>
                         <MembersGraph
                             className={styles.membersGraph}
@@ -70,11 +81,17 @@ const DataUnionStats = ({ stats, memberCount, joinPartStreamId, showDeploying }:
                             />
                         </div>
                     </div>
-                )}
-            </div>
-            <div className={styles.footer} />
-        </div>
-    </ProductContainer>
+                </Segment.Body>
+            )}
+            <Segment.Body pad />
+        </Container>
+    </Segment>
 )
+
+const DataUnionStats = styled(UnstyledDataUnionStats)`
+    ${DataUnionPending} {
+        padding: 4em 0;
+    }
+`
 
 export default DataUnionStats
