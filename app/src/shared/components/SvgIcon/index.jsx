@@ -638,6 +638,43 @@ const sources = {
             </g>
         </svg>
     ),
+    list: (
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <rect fill="none" x=".75" y=".75" width="18.5" height="18.5" rx="1.25" stroke="currentColor" strokeWidth="1.5" />
+            <path
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                d="M5.75 4.979h8.5M5.75 7.479h5.167M5.75 9.979h8.5M5.75 12.479h5.167M5.75 14.979h8.5"
+            />
+        </svg>
+    ),
+    listInspect: (
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M10.02 5.06h-4.5M7.77 8.04H5.52M5.52 11.02h2.632M5.52 13.998h2.563"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                fill="none"
+                d="M14.59 6.923V3.474a2 2 0 00-2-2H3.38a2 2 0 00-2 2v12a2 2 0 002 2h4.866"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+            />
+            <path
+                fill="none"
+                d="M14.072 16.9a3.451 3.451 0 100-6.903 3.451 3.451 0 000 6.902zM16.502 15.899L18.621 18"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    ),
     github: (
         <SocialIcons.GitHub />
     ),

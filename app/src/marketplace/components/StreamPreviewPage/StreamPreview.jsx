@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -170,9 +170,18 @@ const StreamData = styled.div`
     bottom: 0;
     width: calc(100% - 130px);
     overflow-y: scroll;
+    transition:opacity 300ms linear;
+    margin-bottom: 80px;
+
+    ${({ inspectorFocused }) => (inspectorFocused ? css`
+        opacity: 0;
+    ` : `
+        opacity: 1;
+    `)}
 
     @media (min-width: ${MD}px) {
         width: calc(100% - 504px);
+        margin-bottom: 0;
     }
 `
 
@@ -184,11 +193,17 @@ const Inspector = styled.div`
     background-color: #FAFAFA;
     border-left: 1px solid #EFEFEF;
     width: 504px;
+    transition: left 300ms ease-out;
 
     @media (max-width: ${MD}px) {
-        left: 100%;
+        left: calc(100% - 130px);
         right: auto;
-        transform: translateX(-130px);
+        width: 100%;
+
+        ${({ inspectorFocused }) => !!inspectorFocused && css`
+            left: 0;
+            transform: none;
+        `}
     }
 `
 
@@ -215,6 +230,10 @@ const TimestampHeader = styled(HeaderItem)`
     top: 200px;
     left: 0;
 
+    @media (min-width: ${MD}px) {
+        left: 16px;
+    }
+
     @media (min-width: ${LG}px) {
         left: 80px;
     }
@@ -240,17 +259,24 @@ const InspectorHeader = styled(HeaderItem)`
     width: 504px;
     background-color: #FAFAFA;
     border-left: 1px solid #EFEFEF;
+    padding: 0 40px;
+    transition: left 300ms ease-out;
 
     @media (max-width: ${MD}px) {
-        left: 100%;
+        left: calc(100% - 130px);
         right: auto;
-        transform: translateX(-130px);
+        padding: 0 24px;
+        width: 100%;
+
+        ${({ inspectorFocused }) => !!inspectorFocused && css`
+            left: 0;
+            transform: none;
+        `}
     }
 `
 
 const TableItem = styled.div`
     line-height: 56px;
-    padding: 0 24px;
     font-size: 14px;
     overflow: hidden;
     white-space: nowrap;
@@ -268,11 +294,19 @@ const DataTable = styled.div`
         margin: 0 80px;
     }
 
+    ${TableItem} {
+        padding: 0 24px;
+    }
+
     ${TableRow} {
         cursor: pointer;
 
         &:hover {
             background-color: #FAFAFA;
+        }
+
+        &:last-child {
+            border-bottom: 0;
         }
 
         @media (max-width: ${LG}px) {
@@ -281,8 +315,18 @@ const DataTable = styled.div`
             }
         }
 
+        @media (min-width: ${MD}px) {
+            ${TableItem} {
+                padding-left: 40px;
+            }
+        }
+
         @media (min-width: ${LG}px) {
             grid-template-columns: 256px 1fr;
+
+            ${TableItem} {
+                padding-left: 24px;
+            }
         }
     }
 `
@@ -304,7 +348,75 @@ const InspectorTable = styled.div`
             }
         }
 
+        @media (max-width: ${MD}px) {
+            ${TableItem} {
+                padding: 0 24px;
+            }
+
+            grid-template-columns: 130px 1fr;
+        }
+
         grid-template-columns: 164px 1fr;
+    }
+`
+
+const MobileInspectorPanel = styled.div`
+    position: fixed;
+    bottom: 0;
+    height: 80px;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+
+    @media (min-width: ${MD}px) {
+        display: none;
+    }
+`
+
+const InspectorButtons = styled.div`
+    height: 32px;
+`
+
+const InspectorButton = styled.button`
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    position: relative;
+    border: none;
+    background: none;
+    appearance: none;
+    border-radius: 2px;
+    color: #CDCDCD;
+
+    &:hover,
+    &:active,
+    &:focus {
+        background-color: #EFEFEF;
+        color: #525252;
+    }
+
+    ${({ active }) => !!active && css`
+        background-color: #EFEFEF;
+        color: #525252;
+    `}
+
+    svg {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    & + & {
+        margin-left: 32px;
     }
 `
 
@@ -334,69 +446,90 @@ const streamData = Array(20).fill({
     },
 })
 
-const StreamPreview = () => (
-    <Container>
-        <HeaderContainer>
-            <Header>
-                <CurrentStream>
-                    <Title>Woodberry Down</Title>
-                    <Description>Data from the pollution sensor at Woodberry Down</Description>
-                </CurrentStream>
-                <Controls>
-                    <Switchers>
-                        <Selector title="Streams" length={12} current={1} />
-                        <Selector title="Partitions" length={146} current={112} hideOnMobile />
-                    </Switchers>
-                    <Buttons>
-                        <StyledButton
-                            kind="secondary"
-                        >
-                            <MobileText>Copy Id</MobileText>
-                            <TabletText>Copy Stream ID</TabletText>
-                        </StyledButton>
-                    </Buttons>
-                </Controls>
-            </Header>
-        </HeaderContainer>
-        <Columns>
-            <TimestampHeader>Timestamp</TimestampHeader>
-            <DataHeader>Data</DataHeader>
-            <InspectorHeader>Inspector</InspectorHeader>
-        </Columns>
-        <StreamData>
-            <DataTable>
-                {streamData.map(({ timestamp, data }, index) => (
-                    /* eslint-disable-next-line react/no-array-index-key */
-                    <TableRow key={index}>
-                        <TableItem>{timestamp}</TableItem>
-                        <TableItem>
-                            {JSON.stringify(data)}
-                        </TableItem>
+const StreamPreview = () => {
+    const [inspectorFocused, setInspectorFocused] = useState(false)
+
+    return (
+        <Container>
+            <HeaderContainer>
+                <Header>
+                    <CurrentStream>
+                        <Title>Woodberry Down</Title>
+                        <Description>Data from the pollution sensor at Woodberry Down</Description>
+                    </CurrentStream>
+                    <Controls>
+                        <Switchers>
+                            <Selector title="Streams" length={12} current={1} />
+                            <Selector title="Partitions" length={146} current={112} hideOnMobile />
+                        </Switchers>
+                        <Buttons>
+                            <StyledButton
+                                kind="secondary"
+                            >
+                                <MobileText>Copy Id</MobileText>
+                                <TabletText>Copy Stream ID</TabletText>
+                            </StyledButton>
+                        </Buttons>
+                    </Controls>
+                </Header>
+            </HeaderContainer>
+            <Columns>
+                <TimestampHeader>Timestamp</TimestampHeader>
+                <DataHeader>Data</DataHeader>
+                <InspectorHeader inspectorFocused={inspectorFocused}>Inspector</InspectorHeader>
+            </Columns>
+            <StreamData inspectorFocused={inspectorFocused}>
+                <DataTable>
+                    {streamData.map(({ timestamp, data }, index) => (
+                        /* eslint-disable-next-line react/no-array-index-key */
+                        <TableRow key={index}>
+                            <TableItem>{timestamp}</TableItem>
+                            <TableItem>
+                                {JSON.stringify(data)}
+                            </TableItem>
+                        </TableRow>
+                    ))}
+                </DataTable>
+            </StreamData>
+            <Inspector inspectorFocused={inspectorFocused}>
+                <InspectorTable>
+                    <TableRow>
+                        <TableItem>Security</TableItem>
+                        <TableItem>-</TableItem>
                     </TableRow>
-                ))}
-            </DataTable>
-        </StreamData>
-        <Inspector>
-            <InspectorTable>
-                <TableRow>
-                    <TableItem>Security</TableItem>
-                    <TableItem>-</TableItem>
-                </TableRow>
-                <TableRow>
-                    <TableItem>Timestamp</TableItem>
-                    <TableItem>{streamData[0].timestamp}</TableItem>
-                </TableRow>
-                {Object.keys(streamData[0].data).map((key) => (
-                    <TableRow key={key}>
-                        <TableItem>{key}</TableItem>
-                        <TableItem>
-                            {JSON.stringify(streamData[0].data[key])}
-                        </TableItem>
+                    <TableRow>
+                        <TableItem>Timestamp</TableItem>
+                        <TableItem>{streamData[0].timestamp}</TableItem>
                     </TableRow>
-                ))}
-            </InspectorTable>
-        </Inspector>
-    </Container>
-)
+                    {Object.keys(streamData[0].data).map((key) => (
+                        <TableRow key={key}>
+                            <TableItem>{key}</TableItem>
+                            <TableItem>
+                                {JSON.stringify(streamData[0].data[key])}
+                            </TableItem>
+                        </TableRow>
+                    ))}
+                </InspectorTable>
+            </Inspector>
+            <MobileInspectorPanel>
+                <InspectorButtons>
+                    <InspectorButton
+                        active={!inspectorFocused}
+                        onClick={() => setInspectorFocused(false)}
+                    >
+                        <SvgIcon name="list" />
+                    </InspectorButton>
+                    <InspectorButton
+                        active={!!inspectorFocused}
+                        onClick={() => setInspectorFocused(true)}
+                    >
+                        <SvgIcon name="listInspect" />
+                    </InspectorButton>
+                </InspectorButtons>
+                <Selector title="Partitions" length={146} current={112} />
+            </MobileInspectorPanel>
+        </Container>
+    )
+}
 
 export default StreamPreview
