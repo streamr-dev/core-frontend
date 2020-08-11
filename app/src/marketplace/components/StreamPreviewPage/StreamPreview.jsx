@@ -1,5 +1,6 @@
-import React, { useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled, { css } from 'styled-components'
+import stringifyObject from 'stringify-object'
 
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -153,12 +154,6 @@ const Buttons = styled.div`
     button + button {
         margin-left: 16px;
     }
-
-    @media (max-width: ${LG}px) {
-        button:first-child {
-            display: none;
-        }
-    }
 `
 
 const StyledButton = styled(Button)`
@@ -171,6 +166,14 @@ const StyledButton = styled(Button)`
     @media (min-width: ${MD}px) {
         && {
             min-width: 125px;
+        }
+    }
+`
+
+const StreamSettingsButton = styled(StyledButton)`
+    @media (max-width: ${MD}px) {
+        && {
+            display: none;
         }
     }
 `
@@ -362,6 +365,10 @@ const TableRow = styled.div`
     border-bottom: 1px solid #EFEFEF;
     display: grid;
     grid-template-columns: 1fr;
+
+    ${({ active }) => !!active && css`
+        font-weight: var(--medium);
+    `}
 `
 
 const DataTable = styled.div`
@@ -561,29 +568,46 @@ const PartitionSelector = styled(Selector)`
     }
 `
 
-const streamData = Array(20).fill({
-    timestamp: '2020-01-21 14:31:34.166',
-    data: {
-        NO2: 14,
-        CO2: 405,
-        PM: 2.5,
-        temp: 18.5,
-        pressure: 1029.1,
-    },
+const prettyPrintData = (data, compact = false) => stringifyObject(data, {
+    indent: '  ',
+    inlineCharacterLimit: compact ? Infinity : 5,
 })
 
 const StreamPreview = ({
     streamId,
     stream,
     navigableStreamIds,
-    onChange,
+    onChange: onStreamChangeProp,
     titlePrefix,
+    linkToStreamSettings,
+    streamData,
 }) => {
     const [inspectorFocused, setInspectorFocused] = useState(false)
+    const [activePartition, setActivePartition] = useState(0)
+    const [activeDataRow, setActiveDataRow] = useState(0)
     const { copy, isCopied } = useCopy()
 
     const streamLoaded = !!(stream && stream.id === streamId)
-    const { name, description } = stream || {}
+    const { name, description, partitions } = stream || {}
+    /* eslint-disable object-curly-newline */
+    const {
+        timestamp: activeTimestamp,
+        data: activeData,
+    } = (!!streamLoaded && !!streamData && streamData[activeDataRow]) || {}
+    /* eslint-enable object-curly-newline */
+
+    const partitionOptions = useMemo(() => {
+        if (!partitions) {
+            return undefined
+        }
+
+        return [...new Array(partitions)].map((value, index) => index)
+    }, [partitions])
+
+    useEffect(() => {
+        setActivePartition(0)
+        setActiveDataRow(0)
+    }, [streamId])
 
     return (
         <Container>
@@ -619,18 +643,25 @@ const StreamPreview = ({
                     title="Streams"
                     options={navigableStreamIds}
                     active={streamId}
-                    onChange={onChange}
+                    onChange={onStreamChangeProp}
                 />
             )}
-            {!!streamLoaded && (
-                <PartitionSelector title="Partitions" length={146} current={112} />
+            {!!streamLoaded && partitionOptions && (
+                <PartitionSelector
+                    title="Partitions"
+                    options={partitionOptions}
+                    active={activePartition}
+                    onChange={setActivePartition}
+                />
             )}
             <Buttons>
-                <StyledButton
-                    kind="secondary"
-                >
-                    Stream Settings
-                </StyledButton>
+                {!!linkToStreamSettings && (
+                    <StreamSettingsButton
+                        kind="secondary"
+                    >
+                        Stream Settings
+                    </StreamSettingsButton>
+                )}
                 <StyledButton
                     kind="secondary"
                     onClick={() => copy(streamId)}
@@ -652,11 +683,15 @@ const StreamPreview = ({
                 <InspectorHeader inspectorFocused={inspectorFocused}>Inspector</InspectorHeader>
             </Columns>
             <StreamData inspectorFocused={inspectorFocused}>
-                {!!streamLoaded && (
+                {!!streamLoaded && !!streamData && streamData.length > 0 && (
                     <DataTable>
                         {streamData.map(({ timestamp, data }, index) => (
-                            /* eslint-disable-next-line react/no-array-index-key */
-                            <TableRow key={index}>
+                            <TableRow
+                                /* eslint-disable-next-line react/no-array-index-key */
+                                key={index}
+                                active={activeDataRow === index}
+                                onClick={() => setActiveDataRow(index)}
+                            >
                                 <TableItem>{timestamp}</TableItem>
                                 <TableItem>
                                     {JSON.stringify(data)}
@@ -680,15 +715,17 @@ const StreamPreview = ({
                                 </StyledTooltip>
                             </TableItem>
                         </TableRow>
-                        <TableRow>
-                            <TableItem>Timestamp</TableItem>
-                            <TableItem>{streamData[0].timestamp}</TableItem>
-                        </TableRow>
-                        {Object.keys(streamData[0].data).map((key) => (
+                        {!!activeTimestamp && (
+                            <TableRow>
+                                <TableItem>Timestamp</TableItem>
+                                <TableItem>{activeTimestamp}</TableItem>
+                            </TableRow>
+                        )}
+                        {activeData && Object.keys(activeData).map((key) => (
                             <TableRow key={key}>
                                 <TableItem>{key}</TableItem>
                                 <TableItem>
-                                    {JSON.stringify(streamData[0].data[key])}
+                                    {prettyPrintData(activeData[key], true)}
                                 </TableItem>
                             </TableRow>
                         ))}

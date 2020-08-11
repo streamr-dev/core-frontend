@@ -5,7 +5,7 @@ import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import styled from 'styled-components'
 import { action } from '@storybook/addon-actions'
-import { withKnobs, text } from '@storybook/addon-knobs'
+import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 
 import StreamPreview from './StreamPreview'
 
@@ -39,9 +39,31 @@ const streamList = [{
     description: 'Description that is really long and will break the layout if it goes long enough over the screen',
     requireEncryptedData: false,
     requireSignedData: true,
-    partitions: 0,
+    partitions: 5,
     config: {},
 }]
+
+const generateData = (rows) => [...new Array(rows)].map((value, index) => {
+    const factor = index + 1
+    const timestamp = new Date('2020-01-21 14:31:34.166')
+    timestamp.setMinutes(factor)
+    return {
+        timestamp: timestamp.toISOString(),
+        data: {
+            NO2: factor * 14,
+            CO2: factor * 405,
+            PM: factor * 2.5,
+            temp: factor * 18.5,
+            pressure: factor * 1029.1,
+        },
+    }
+})
+
+const streamData = {
+    [streamList[0].id]: generateData(10),
+    [streamList[1].id]: generateData(2),
+    [streamList[2].id]: generateData(25),
+}
 
 const streamIds = streamList.map(({ id }) => id)
 
@@ -107,7 +129,7 @@ stories.add('loading stream with navigation (iPhone)', () => (
     },
 })
 
-const SwitchStream = () => {
+const PrefixedPreview = () => {
     const [streamId, setStreamId] = useState(streamIds[0])
 
     return (
@@ -116,17 +138,52 @@ const SwitchStream = () => {
             stream={streamList.find(({ id }) => id === streamId)}
             navigableStreamIds={streamIds}
             onChange={setStreamId}
-            titlePrefix={text('Product prefix', '')}
+            titlePrefix={text('Product prefix', 'Tram Data')}
+            linkToStreamSettings={boolean('Link to settings', true)}
+        />
+    )
+}
+
+stories.add('stream prefix & settings link', () => (
+    <PrefixedPreview />
+))
+
+stories.add('stream prefix & settings link (tablet)', () => (
+    <PrefixedPreview />
+), {
+    viewport: {
+        defaultViewport: 'md',
+    },
+})
+
+stories.add('stream prefix & settings link (iPhone)', () => (
+    <PrefixedPreview />
+), {
+    viewport: {
+        defaultViewport: 'iPhone',
+    },
+})
+
+const DefaultPreview = () => {
+    const [streamId, setStreamId] = useState(streamIds[0])
+
+    return (
+        <StreamPreview
+            streamId={streamId}
+            stream={streamList.find(({ id }) => id === streamId)}
+            navigableStreamIds={streamIds}
+            onChange={setStreamId}
+            streamData={streamData[streamId]}
         />
     )
 }
 
 stories.add('default', () => (
-    <SwitchStream />
+    <DefaultPreview />
 ))
 
 stories.add('default (tablet)', () => (
-    <SwitchStream />
+    <DefaultPreview />
 ), {
     viewport: {
         defaultViewport: 'md',
@@ -134,7 +191,7 @@ stories.add('default (tablet)', () => (
 })
 
 stories.add('default (iPhone)', () => (
-    <SwitchStream />
+    <DefaultPreview />
 ), {
     viewport: {
         defaultViewport: 'iPhone',
