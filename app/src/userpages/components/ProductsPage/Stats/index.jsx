@@ -88,7 +88,7 @@ const Stats = () => {
                                 <DataUnionPending />
                             )}
                             {!!dataUnionDeployed && stats && (
-                                <ProductStat items={stats} />
+                                <ProductStat.List items={stats} />
                             )}
                         </div>
                         <div className={styles.memberCount}>
