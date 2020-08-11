@@ -12,8 +12,8 @@ import Hero from './Hero'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
-import Terms from './Terms'
 import RelatedProducts from './RelatedProducts'
+import Terms from '$mp/components/ProductPage/Terms'
 
 import styles from './page.pcss'
 
@@ -41,7 +41,9 @@ const ProductDetailsPage = () => {
                 />
             )}
             <Streams />
-            <Terms />
+            <Terms
+                product={product}
+            />
             <RelatedProducts />
         </div>
     )
