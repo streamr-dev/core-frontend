@@ -18,7 +18,7 @@ const Body = styled.div`
     background-color: #f8f8f8;
 
     & + & {
-        border-top: #e7e7e7;
+        border-top: 1px solid #e7e7e7;
     }
 
     ${({ pad }) => !!pad && css`
