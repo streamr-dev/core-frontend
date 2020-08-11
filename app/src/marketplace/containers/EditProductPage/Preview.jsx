@@ -189,16 +189,6 @@ const Streams = () => {
     )
 }
 
-const TermsOfUse = () => {
-    const product = useEditableProduct()
-
-    return (
-        <Terms
-            product={product}
-        />
-    )
-}
-
 const Preview = () => {
     const product = useEditableProduct()
 
@@ -219,7 +209,7 @@ const Preview = () => {
                 <DataUnionStats />
             )}
             <Streams />
-            <TermsOfUse />
+            <Terms product={product} />
         </div>
     )
 }
