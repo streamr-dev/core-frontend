@@ -71,7 +71,6 @@ const ValuesRoot = styled.div`
 
     @media (min-width: ${XL}px) {
         grid-template-columns: repeat(6, 1fr);
-        grid-column-gap: 1em;
     }
 `
 
