@@ -66,7 +66,7 @@ const UnstyledProductStat = ({
     ...props
 }) => (
     <div {...props}>
-        <Title>{title}&zwnj;</Title>
+        <Title>{title || null}&zwnj;</Title>
         <Value>
             {!loading ? (
                 <React.Fragment>
