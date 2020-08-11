@@ -60,12 +60,12 @@ export const Value = ({
 
 const ValuesRoot = styled.div`
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     grid-column-gap: 3em;
     grid-row-gap: 2em;
 
     @media (min-width: ${MD}px) {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr 1fr 1fr;
         grid-column-gap: 1em;
     }
 
