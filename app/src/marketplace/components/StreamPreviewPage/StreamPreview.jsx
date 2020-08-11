@@ -1,30 +1,94 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
 import { MD, LG } from '$shared/utils/styled'
+import Tooltip from '$shared/components/Tooltip'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
+import Skeleton from '$shared/components/Skeleton'
+import useCopy from '$shared/hooks/useCopy'
+
+import {
+    SecurityIcon,
+    getSecurityLevel,
+    getSecurityLevelTitle,
+} from '$userpages/components/StreamPage/Edit/SecurityView'
 
 const Container = styled.div`
     position: relative;
     height: 100%;
 `
 
-const HeaderContainer = styled.div`
-    display: fixed;
-    left: 0;
-    top: 0;
-    right: 0;
-    height: 200px;
-    border: 1px solid #EFEFEF;
-    background-color: #FDFDFD;
+const IconButton = styled.button`
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    position: relative;
+    border: none;
+    background: none;
+    appearance: none;
+    border-radius: 2px;
+
+    &:not(:disabled):hover,
+    &:focus {
+        background-color: #EFEFEF;
+        outline: none;
+    }
+
+    &:not(:disabled):active {
+        background-color: #D8D8D8;
+    }
+
+    svg {
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    & + & {
+        margin-left: 32px;
+    }
+`
+
+const CloseButton = styled(IconButton)`
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 1;
+
+    svg {
+        width: 10px;
+        height: 10px;
+    }
+`
+
+const StyledLoadingIndicator = styled(LoadingIndicator)`
+    position: fixed;
+    top: 200px;
+    z-index: 1;
+`
+
+const StyledSecurityIcon = styled(SecurityIcon)`
+    width: 16px;
+    height: 16px;
+`
+
+const StyledTooltip = styled(Tooltip)`
+    line-height: 16px;
 `
 
 const Header = styled.div`
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    position: fixed;
+    height: 200px;
+    border-bottom: 1px solid #EFEFEF;
+    background-color: #FDFDFD;
+    left: 0;
+    top: 0;
     padding: 65px 24px 16px 24px;
 
     @media (min-width: ${MD}px) {
@@ -36,40 +100,78 @@ const Header = styled.div`
     }
 `
 
+const StreamName = styled.span``
+
 const Title = styled.div`
     font-family: var(--sans);
     font-weight: var(--regular);
     font-size: 18px;
     line-height: 30px;
     color: #323232;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    @media (max-width: ${MD}px) {
+        ${StreamName} {
+            display: none;
+        }
+    }
+`
+
+const TitleSkeleton = styled(Skeleton)`
+    height: 18px;
+
+    @media (min-width: ${MD}px) {
+        width: 75%;
+    }
 `
 
 const Description = styled.div`
     font-size: 12px;
     color: #A3A3A3;
     line-height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `
 
-const CurrentStream = styled.div``
+const DescriptionSkeleton = styled(Skeleton)`
+    height: 12px;
+    width: 75%;
 
-const Controls = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    @media (min-width: ${MD}px) {
+        width: 50%;
+    }
 `
 
-const Switchers = styled.div`
-    display: flex;
-`
+const Buttons = styled.div`
+    position: fixed;
+    right: 32px;
+    top: 150px;
 
-const Buttons = styled.div``
+    button + button {
+        margin-left: 16px;
+    }
+
+    @media (max-width: ${LG}px) {
+        button:first-child {
+            display: none;
+        }
+    }
+`
 
 const StyledButton = styled(Button)`
     && {
         font-size: 12px;
         height: 32px;
         min-width: 80px;
+    }
+
+    @media (min-width: ${MD}px) {
+        && {
+            min-width: 125px;
+        }
     }
 `
 
@@ -81,20 +183,8 @@ const SelectorRoot = styled.div`
     font-size: 14px;
     color: #525252;
 
-    ${({ hideOnMobile }) => !!hideOnMobile && css`
-        display: none;
-
-        @media (min-width: ${MD}px) {
-            display: flex;
-        }
-    `}
-
     @media (min-width: ${MD}px) {
         min-width: 224px;
-    }
-
-    & + & {
-        margin-left: 32px;
     }
 `
 
@@ -109,32 +199,17 @@ const SelectorTitle = styled.div`
     }
 `
 
-const SelectorIcon = styled.button`
-    width: 32px;
-    height: 32px;
-    text-align: center;
-    position: relative;
-    border: none;
-    background: none;
-    appearance: none;
-    border-radius: 2px;
-
-    &:hover,
-    &:active,
-    &:focus {
-        background-color: #EFEFEF;
-    }
-
+const SelectorIcon = styled(IconButton)`
     svg {
         width: 8px;
         height: 14px;
         position: absolute;
-        top: 9px;
+
         ${({ back }) => !!back && css`
-            left: 11px;
+            transform: translate(-60%, -50%);
         `}
         ${({ forward }) => !!forward && css`
-            left: 13px;
+            transform: translate(-40%, -50%);
         `}
     }
 `
@@ -259,7 +334,7 @@ const InspectorHeader = styled(HeaderItem)`
     width: 504px;
     background-color: #FAFAFA;
     border-left: 1px solid #EFEFEF;
-    padding: 0 40px;
+    padding: 0 32px 0 40px;
     transition: left 300ms ease-out;
 
     @media (max-width: ${MD}px) {
@@ -333,7 +408,7 @@ const DataTable = styled.div`
 
 const InspectorTable = styled.div`
     @media (min-width: ${MD}px) {
-        margin: 0 40px;
+        margin: 0 32px 0 40px;
     }
 
     ${TableRow} {
@@ -371,7 +446,6 @@ const MobileInspectorPanel = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
     padding: 0 24px;
 
     @media (min-width: ${MD}px) {
@@ -379,11 +453,7 @@ const MobileInspectorPanel = styled.div`
     }
 `
 
-const InspectorButtons = styled.div`
-    height: 32px;
-`
-
-const InspectorButton = styled.button`
+const InspectorButton = styled(IconButton)`
     width: 32px;
     height: 32px;
     text-align: center;
@@ -405,35 +475,91 @@ const InspectorButton = styled.button`
         background-color: #EFEFEF;
         color: #525252;
     `}
+`
 
-    svg {
-        width: 20px;
-        height: 20px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+const Selector = ({
+    title,
+    options,
+    active,
+    onChange: onChangeProp,
+    ...rest
+}) => {
+    const current = useMemo(() => {
+        if (!options || options.length <= 0) {
+            return undefined
+        }
+
+        return options.indexOf(active)
+    }, [active, options])
+
+    const onChange = useCallback((target) => {
+        const nextIndex = Math.max(0, Math.min(target, options.length))
+
+        onChangeProp(options[nextIndex])
+    }, [options, onChangeProp])
+
+    if (!options || options.length <= 0) {
+        return null
     }
 
-    & + & {
-        margin-left: 32px;
+    return (
+        <SelectorRoot {...rest}>
+            <SelectorTitle>{title}</SelectorTitle>
+            <SelectorIcon
+                back
+                disabled={current <= 0}
+                onClick={() => onChange(current - 1)}
+            >
+                <SvgIcon name="back" />
+            </SelectorIcon>
+            <SelectorPages>
+                <strong>{current + 1}</strong> of <strong>{options.length}</strong>
+            </SelectorPages>
+            <SelectorIcon
+                forward
+                disabled={current >= options.length - 1}
+                onClick={() => onChange(current + 1)}
+            >
+                <SvgIcon name="forward" />
+            </SelectorIcon>
+        </SelectorRoot>
+    )
+}
+
+const StreamSelector = styled(Selector)`
+    position: fixed;
+    left: 24px;
+    top: 150px;
+
+    @media (min-width: ${MD}px) {
+        left: 40px;
+    }
+
+    @media (min-width: ${LG}px) {
+        left: 104px;
     }
 `
 
-const Selector = ({ title, length, current, ...rest }) => (
-    <SelectorRoot {...rest}>
-        <SelectorTitle>{title}</SelectorTitle>
-        <SelectorIcon back>
-            <SvgIcon name="back" />
-        </SelectorIcon>
-        <SelectorPages>
-            <strong>{current}</strong> of <strong>{length}</strong>
-        </SelectorPages>
-        <SelectorIcon forward>
-            <SvgIcon name="forward" />
-        </SelectorIcon>
-    </SelectorRoot>
-)
+const PartitionSelector = styled(Selector)`
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1;
+
+    @media (min-width: ${MD}px) {
+        left: calc(100% - 504px);
+        top: 150px;
+        bottom: auto;
+        right: auto;
+    }
+
+    @media (min-width: ${LG}px) {
+        left: 360px;
+        top: 150px;
+        bottom: auto;
+        right: auto;
+    }
+`
 
 const streamData = Array(20).fill({
     timestamp: '2020-01-21 14:31:34.166',
@@ -446,87 +572,142 @@ const streamData = Array(20).fill({
     },
 })
 
-const StreamPreview = () => {
+const StreamPreview = ({
+    streamId,
+    stream,
+    navigableStreamIds,
+    onChange,
+    titlePrefix,
+}) => {
     const [inspectorFocused, setInspectorFocused] = useState(false)
+    const { copy, isCopied } = useCopy()
+
+    const streamLoaded = !!(stream && stream.id === streamId)
+    const { name, description } = stream || {}
 
     return (
         <Container>
-            <HeaderContainer>
-                <Header>
-                    <CurrentStream>
-                        <Title>Woodberry Down</Title>
-                        <Description>Data from the pollution sensor at Woodberry Down</Description>
-                    </CurrentStream>
-                    <Controls>
-                        <Switchers>
-                            <Selector title="Streams" length={12} current={1} />
-                            <Selector title="Partitions" length={146} current={112} hideOnMobile />
-                        </Switchers>
-                        <Buttons>
-                            <StyledButton
-                                kind="secondary"
-                            >
-                                <MobileText>Copy Id</MobileText>
-                                <TabletText>Copy Stream ID</TabletText>
-                            </StyledButton>
-                        </Buttons>
-                    </Controls>
-                </Header>
-            </HeaderContainer>
+            <CloseButton>
+                <SvgIcon name="crossMedium" />
+            </CloseButton>
+            <Header>
+                {!streamLoaded && (
+                    <React.Fragment>
+                        <Title>
+                            <TitleSkeleton />
+                        </Title>
+                        <Description>
+                            <DescriptionSkeleton />
+                        </Description>
+                    </React.Fragment>
+                )}
+                {!!streamLoaded && (
+                    <React.Fragment>
+                        <Title title={name}>
+                            {!!titlePrefix && (
+                                <StreamName>{titlePrefix} &rarr; </StreamName>
+                            )}
+                            {name}
+                        </Title>
+                        <Description title={description}>{description}</Description>
+                    </React.Fragment>
+                )}
+            </Header>
+            <StyledLoadingIndicator loading={!streamLoaded} />
+            {!!navigableStreamIds && navigableStreamIds.length > 0 && (
+                <StreamSelector
+                    title="Streams"
+                    options={navigableStreamIds}
+                    active={streamId}
+                    onChange={onChange}
+                />
+            )}
+            {!!streamLoaded && (
+                <PartitionSelector title="Partitions" length={146} current={112} />
+            )}
+            <Buttons>
+                <StyledButton
+                    kind="secondary"
+                >
+                    Stream Settings
+                </StyledButton>
+                <StyledButton
+                    kind="secondary"
+                    onClick={() => copy(streamId)}
+                >
+                    {!!isCopied && (
+                        <React.Fragment>Copied!</React.Fragment>
+                    )}
+                    {!isCopied && (
+                        <React.Fragment>
+                            <MobileText>Copy Id</MobileText>
+                            <TabletText>Copy Stream ID</TabletText>
+                        </React.Fragment>
+                    )}
+                </StyledButton>
+            </Buttons>
             <Columns>
                 <TimestampHeader>Timestamp</TimestampHeader>
                 <DataHeader>Data</DataHeader>
                 <InspectorHeader inspectorFocused={inspectorFocused}>Inspector</InspectorHeader>
             </Columns>
             <StreamData inspectorFocused={inspectorFocused}>
-                <DataTable>
-                    {streamData.map(({ timestamp, data }, index) => (
-                        /* eslint-disable-next-line react/no-array-index-key */
-                        <TableRow key={index}>
-                            <TableItem>{timestamp}</TableItem>
-                            <TableItem>
-                                {JSON.stringify(data)}
-                            </TableItem>
-                        </TableRow>
-                    ))}
-                </DataTable>
+                {!!streamLoaded && (
+                    <DataTable>
+                        {streamData.map(({ timestamp, data }, index) => (
+                            /* eslint-disable-next-line react/no-array-index-key */
+                            <TableRow key={index}>
+                                <TableItem>{timestamp}</TableItem>
+                                <TableItem>
+                                    {JSON.stringify(data)}
+                                </TableItem>
+                            </TableRow>
+                        ))}
+                    </DataTable>
+                )}
             </StreamData>
             <Inspector inspectorFocused={inspectorFocused}>
-                <InspectorTable>
-                    <TableRow>
-                        <TableItem>Security</TableItem>
-                        <TableItem>-</TableItem>
-                    </TableRow>
-                    <TableRow>
-                        <TableItem>Timestamp</TableItem>
-                        <TableItem>{streamData[0].timestamp}</TableItem>
-                    </TableRow>
-                    {Object.keys(streamData[0].data).map((key) => (
-                        <TableRow key={key}>
-                            <TableItem>{key}</TableItem>
+                {!!streamLoaded && (
+                    <InspectorTable>
+                        <TableRow>
+                            <TableItem>Security</TableItem>
                             <TableItem>
-                                {JSON.stringify(streamData[0].data[key])}
+                                <StyledTooltip value={getSecurityLevelTitle(stream)} placement="top">
+                                    <StyledSecurityIcon
+                                        level={getSecurityLevel(stream)}
+                                        mode="small"
+                                    />
+                                </StyledTooltip>
                             </TableItem>
                         </TableRow>
-                    ))}
-                </InspectorTable>
+                        <TableRow>
+                            <TableItem>Timestamp</TableItem>
+                            <TableItem>{streamData[0].timestamp}</TableItem>
+                        </TableRow>
+                        {Object.keys(streamData[0].data).map((key) => (
+                            <TableRow key={key}>
+                                <TableItem>{key}</TableItem>
+                                <TableItem>
+                                    {JSON.stringify(streamData[0].data[key])}
+                                </TableItem>
+                            </TableRow>
+                        ))}
+                    </InspectorTable>
+                )}
             </Inspector>
             <MobileInspectorPanel>
-                <InspectorButtons>
-                    <InspectorButton
-                        active={!inspectorFocused}
-                        onClick={() => setInspectorFocused(false)}
-                    >
-                        <SvgIcon name="list" />
-                    </InspectorButton>
-                    <InspectorButton
-                        active={!!inspectorFocused}
-                        onClick={() => setInspectorFocused(true)}
-                    >
-                        <SvgIcon name="listInspect" />
-                    </InspectorButton>
-                </InspectorButtons>
-                <Selector title="Partitions" length={146} current={112} />
+                <InspectorButton
+                    active={!inspectorFocused}
+                    onClick={() => setInspectorFocused(false)}
+                >
+                    <SvgIcon name="list" />
+                </InspectorButton>
+                <InspectorButton
+                    active={!!inspectorFocused}
+                    onClick={() => setInspectorFocused(true)}
+                >
+                    <SvgIcon name="listInspect" />
+                </InspectorButton>
             </MobileInspectorPanel>
         </Container>
     )
