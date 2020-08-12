@@ -1344,6 +1344,9 @@ msgstr "Active"
 msgid "productPage.stats.inactiveMembers"
 msgstr "Inactive"
 
+msgid "productPage.stats.adminFee"
+msgstr "Admin fee"
+
 msgid "productTile.free"
 msgstr "Free"
 
