@@ -11,6 +11,7 @@ import Segment from '$shared/components/Segment'
 import ProductStat from '$shared/components/ProductStat'
 import DaysPopover from '$shared/components/DaysPopover'
 import MembersGraph from './MembersGraph'
+import { LG } from '$shared/utils/styled'
 
 type Props = {
     stats: Array<Object>,
@@ -24,22 +25,26 @@ type Props = {
 }
 
 const Graphs = styled.div`
-    display: flex;
-    flex-wrap: wrap;
+    @media (min-width: ${LG}px) {
+        display: flex;
+        flex-wrap: wrap;
 
-    > div {
-        flex-basis: 60%;
-    }
+        > div {
+            flex-basis: 60%;
+            padding: 32px;
+        }
 
-    > div + div {
-        border-left: 1px solid #e7e7e7;
-        flex-basis: 40%;
+        > div + div {
+            border-left: 1px solid #e7e7e7;
+            flex-basis: 40%;
+        }
     }
 `
 
 const GraphHeader = styled.div`
     align-items: center;
     display: flex;
+    margin-bottom: 12px;
 
     ${ProductStat.Title} {
         flex-grow: 1;

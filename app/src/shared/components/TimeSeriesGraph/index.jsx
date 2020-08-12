@@ -9,12 +9,21 @@ import {
     YAxis,
     HorizontalGridLines,
 } from 'react-vis'
+import Rect from '$shared/components/Rect'
 import '$app/node_modules/react-vis/dist/style.css'
 
 import Spinner from '$shared/components/Spinner'
 
-const Container = styled.div`
+const PlotContainer = styled.div`
     height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+`
+
+const Container = styled.div`
+    position: relative;
 `
 
 const xAxisStyle = {
@@ -97,54 +106,59 @@ const TimeSeriesGraph = ({ graphData, className, shownDays, isLoading }: Props) 
     return (
         <Container className={className}>
             {isLoading && (
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        height: '100%',
-                        width: '100%',
-                    }}
-                >
-                    <Spinner size="large" color="white" />
-                </div>
+                <Spinner
+                    size="large"
+                    color="white"
+                    // eslint-disable-next-line react/jsx-curly-brace-presence
+                    css={`
+                        position: absolute;
+                        left: 50%;
+                        top: 50%;
+                        transform: translate(-50%, -50%);
+                    `}
+                />
             )}
             {!isLoading && (
-                <FlexibleXYPlot
-                    xType="time"
-                    /* We need margin to not clip axis labels */
-                    margin={{
-                        left: 0,
-                        right: rightMargin,
-                        bottom: 70,
-                    }}
-                    yDomain={dataDomain}
-                    yBaseValue={dataDomain[0]}
-                >
-                    <XAxis
-                        hideLine
-                        style={xAxisStyle}
-                        tickTotal={7}
-                        tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
-                        tickSizeInner={0}
-                        tickSizeOuter={6}
-                    />
-                    <YAxis
-                        hideLine
-                        style={yAxisStyle}
-                        position="middle"
-                        orientation="right"
-                    />
-                    <HorizontalGridLines />
-                    <LineSeries
-                        curve={null}
-                        color="#0324FF"
-                        opacity={1}
-                        strokeStyle="solid"
-                        strokeWidth="4"
-                        data={graphData}
-                    />
-                </FlexibleXYPlot>
+                <PlotContainer>
+                    <FlexibleXYPlot
+                        xType="time"
+                        /* We need margin to not clip axis labels */
+                        margin={{
+                            left: 0,
+                            right: rightMargin,
+                            bottom: 24,
+                        }}
+                        yDomain={dataDomain}
+                        yBaseValue={dataDomain[0]}
+                    >
+                        <XAxis
+                            hideLine
+                            style={xAxisStyle}
+                            tickTotal={7}
+                            tickFormat={(value, index, scale, tickTotal) => formatXAxisTicks(value, index, scale, tickTotal, shownDays)}
+                            tickSizeInner={0}
+                            tickSizeOuter={6}
+                        />
+                        <YAxis
+                            hideLine
+                            style={yAxisStyle}
+                            position="middle"
+                            orientation="right"
+                        />
+                        <HorizontalGridLines />
+                        <LineSeries
+                            curve={null}
+                            color="#0324FF"
+                            opacity={1}
+                            strokeStyle="solid"
+                            strokeWidth="4"
+                            data={graphData}
+                        />
+                    </FlexibleXYPlot>
+                </PlotContainer>
             )}
+            {/* This here is how we dictate the size of the container. */}
+            <Rect ratio="5x2" />
         </Container>
     )
 }
