@@ -1,17 +1,14 @@
 // @flow
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { I18n } from 'react-redux-i18n'
-
 import { getStreamData } from '$mp/modules/streams/services'
-
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
-import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
 
 type Props = {
     className?: string,
     joinPartStreamId: ?string,
     memberCount: number,
+    shownDays?: number,
 }
 
 type JoinPartMessage = {
@@ -41,11 +38,10 @@ const convertAndCallback = (rawMessages: Array<Object>, onMessage) => {
     })
 }
 
-const MembersGraph = ({ className, joinPartStreamId, memberCount }: Props) => {
+const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays = 7 }: Props) => {
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
-    const [shownDays, setShownDays] = useState(7)
     const activeAddressesRef = useRef([])
 
     const onMessage = useCallback((data: JoinPartMessage, metadata: MessageMetadata) => {
@@ -147,18 +143,10 @@ const MembersGraph = ({ className, joinPartStreamId, memberCount }: Props) => {
     }, [shownDays, joinPartStreamId, onMessage])
 
     return (
-        <WithShownDays
-            label={I18n.t('productPage.stats.membersGraph')}
-            className={className}
-            onDaysChange={(days) => setShownDays(days)}
-        >
-            {({ shownDays: days }) => (
-                <TimeSeriesGraph
-                    graphData={graphData}
-                    shownDays={days}
-                />
-            )}
-        </WithShownDays>
+        <TimeSeriesGraph
+            graphData={graphData}
+            shownDays={shownDays}
+        />
     )
 }
 

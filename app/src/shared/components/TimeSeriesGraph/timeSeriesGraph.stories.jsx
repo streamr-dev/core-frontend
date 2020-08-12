@@ -6,7 +6,7 @@ import { withKnobs } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 
-import WithShownDays from './WithShownDays'
+// import WithShownDays from './WithShownDays'
 import TimeSeriesGraph from '.'
 
 const stories =
@@ -58,28 +58,28 @@ stories.add('custom width & height', () => (
     />
 ))
 
-stories.add('with shown days', () => (
-    <WithShownDays
-        label="Graph"
-        onDaysChange={action('onDaysChange')}
-    >
-        {({ shownDays }) => (
-            <TimeSeriesGraph graphData={graphData} shownDays={shownDays} />
-        )}
-    </WithShownDays>
-))
+// stories.add('with shown days', () => (
+//     <WithShownDays
+//         label="Graph"
+//         onDaysChange={action('onDaysChange')}
+//     >
+//         {({ shownDays }) => (
+//             <TimeSeriesGraph graphData={graphData} shownDays={shownDays} />
+//         )}
+//     </WithShownDays>
+// ))
 
-stories.add('with shown days (disabled)', () => (
-    <WithShownDays
-        label="Graph"
-        onDaysChange={action('onDaysChange')}
-        disabled
-    >
-        {({ shownDays }) => (
-            <TimeSeriesGraph graphData={graphData} shownDays={shownDays} />
-        )}
-    </WithShownDays>
-))
+// stories.add('with shown days (disabled)', () => (
+//     <WithShownDays
+//         label="Graph"
+//         onDaysChange={action('onDaysChange')}
+//         disabled
+//     >
+//         {({ shownDays }) => (
+//             <TimeSeriesGraph graphData={graphData} shownDays={shownDays} />
+//         )}
+//     </WithShownDays>
+// ))
 
 const graphDataLarge = [{
     x: today,
@@ -104,13 +104,13 @@ const graphDataLarge = [{
     y: 13400,
 }]
 
-stories.add('large values', () => (
-    <WithShownDays
-        label="Graph"
-        onDaysChange={action('onDaysChange')}
-    >
-        {({ shownDays }) => (
-            <TimeSeriesGraph graphData={graphDataLarge} shownDays={shownDays} />
-        )}
-    </WithShownDays>
-))
+// stories.add('large values', () => (
+//     <WithShownDays
+//         label="Graph"
+//         onDaysChange={action('onDaysChange')}
+//     >
+//         {({ shownDays }) => (
+//             <TimeSeriesGraph graphData={graphDataLarge} shownDays={shownDays} />
+//         )}
+//     </WithShownDays>
+// ))
