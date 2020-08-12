@@ -73,7 +73,6 @@
         "index": "/core/streams",
         "show": "/core/streams/:id",
         "new": "/core/streams/new",
-        "preview": "/core/streams/:streamId/preview",
         "public": {
             "show": "<platform>/core/streams/:id"
         }

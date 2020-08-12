@@ -1,14 +1,17 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import stringifyObject from 'stringify-object'
+import moment from 'moment-timezone'
+import { Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
-import { MD, LG } from '$shared/utils/styled'
+import { SM, LG } from '$shared/utils/styled'
 import Tooltip from '$shared/components/Tooltip'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Skeleton from '$shared/components/Skeleton'
 import useCopy from '$shared/hooks/useCopy'
+import { formatDateTime } from '$mp/utils/time'
 
 import {
     SecurityIcon,
@@ -19,6 +22,8 @@ import {
 const Container = styled.div`
     position: relative;
     height: 100%;
+    background-color: white;
+    color: #525252;
 `
 
 const IconButton = styled.button`
@@ -92,7 +97,7 @@ const Header = styled.div`
     top: 0;
     padding: 65px 24px 16px 24px;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         padding-left: 40px;
     }
 
@@ -113,7 +118,7 @@ const Title = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    @media (max-width: ${MD}px) {
+    @media (max-width: ${SM}px) {
         ${StreamName} {
             display: none;
         }
@@ -123,7 +128,7 @@ const Title = styled.div`
 const TitleSkeleton = styled(Skeleton)`
     height: 18px;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         width: 75%;
     }
 `
@@ -141,7 +146,7 @@ const DescriptionSkeleton = styled(Skeleton)`
     height: 12px;
     width: 75%;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         width: 50%;
     }
 `
@@ -163,7 +168,7 @@ const StyledButton = styled(Button)`
         min-width: 80px;
     }
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         && {
             min-width: 125px;
         }
@@ -171,7 +176,7 @@ const StyledButton = styled(Button)`
 `
 
 const StreamSettingsButton = styled(StyledButton)`
-    @media (max-width: ${MD}px) {
+    @media (max-width: ${SM}px) {
         && {
             display: none;
         }
@@ -186,7 +191,7 @@ const SelectorRoot = styled.div`
     font-size: 14px;
     color: #525252;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         min-width: 224px;
     }
 `
@@ -228,7 +233,7 @@ const SelectorPages = styled.div`
 `
 
 const MobileText = styled.span`
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         display: none;
     }
 `
@@ -236,7 +241,7 @@ const MobileText = styled.span`
 const TabletText = styled.span`
     display: none;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         display: inline-block;
     }
 `
@@ -257,7 +262,7 @@ const StreamData = styled.div`
         opacity: 1;
     `)}
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         width: calc(100% - 504px);
         margin-bottom: 0;
     }
@@ -273,7 +278,7 @@ const Inspector = styled.div`
     width: 504px;
     transition: left 300ms ease-out;
 
-    @media (max-width: ${MD}px) {
+    @media (max-width: ${SM}px) {
         left: calc(100% - 130px);
         right: auto;
         width: 100%;
@@ -308,7 +313,7 @@ const TimestampHeader = styled(HeaderItem)`
     top: 200px;
     left: 0;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         left: 16px;
     }
 
@@ -340,7 +345,7 @@ const InspectorHeader = styled(HeaderItem)`
     padding: 0 32px 0 40px;
     transition: left 300ms ease-out;
 
-    @media (max-width: ${MD}px) {
+    @media (max-width: ${SM}px) {
         left: calc(100% - 130px);
         right: auto;
         padding: 0 24px;
@@ -397,7 +402,7 @@ const DataTable = styled.div`
             }
         }
 
-        @media (min-width: ${MD}px) {
+        @media (min-width: ${SM}px) {
             ${TableItem} {
                 padding-left: 40px;
             }
@@ -414,7 +419,7 @@ const DataTable = styled.div`
 `
 
 const InspectorTable = styled.div`
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         margin: 0 32px 0 40px;
     }
 
@@ -430,7 +435,7 @@ const InspectorTable = styled.div`
             }
         }
 
-        @media (max-width: ${MD}px) {
+        @media (max-width: ${SM}px) {
             ${TableItem} {
                 padding: 0 24px;
             }
@@ -455,7 +460,7 @@ const MobileInspectorPanel = styled.div`
     align-items: center;
     padding: 0 24px;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         display: none;
     }
 `
@@ -538,7 +543,7 @@ const StreamSelector = styled(Selector)`
     left: 24px;
     top: 150px;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         left: 40px;
     }
 
@@ -553,7 +558,7 @@ const PartitionSelector = styled(Selector)`
     bottom: 24px;
     z-index: 1;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         left: calc(100% - 504px);
         top: 150px;
         bottom: auto;
@@ -568,10 +573,16 @@ const PartitionSelector = styled(Selector)`
     }
 `
 
-const prettyPrintData = (data, compact = false) => stringifyObject(data, {
-    indent: '  ',
-    inlineCharacterLimit: compact ? Infinity : 5,
-})
+const formatValue = (data) => {
+    if (typeof data === 'object') {
+        return stringifyObject(data, {
+            inlineCharacterLimit: Infinity,
+        })
+    }
+    return data.toString()
+}
+
+const tz = moment.tz.guess()
 
 const StreamPreview = ({
     streamId,
@@ -581,20 +592,15 @@ const StreamPreview = ({
     titlePrefix,
     linkToStreamSettings,
     streamData,
+    onClose: onCloseProp,
 }) => {
     const [inspectorFocused, setInspectorFocused] = useState(false)
+    const [selectedDataPoint, setSelectedDataPoint] = useState(undefined)
     const [activePartition, setActivePartition] = useState(0)
-    const [activeDataRow, setActiveDataRow] = useState(0)
     const { copy, isCopied } = useCopy()
 
     const streamLoaded = !!(stream && stream.id === streamId)
     const { name, description, partitions } = stream || {}
-    /* eslint-disable object-curly-newline */
-    const {
-        timestamp: activeTimestamp,
-        data: activeData,
-    } = (!!streamLoaded && !!streamData && streamData[activeDataRow]) || {}
-    /* eslint-enable object-curly-newline */
 
     const partitionOptions = useMemo(() => {
         if (!partitions) {
@@ -606,12 +612,15 @@ const StreamPreview = ({
 
     useEffect(() => {
         setActivePartition(0)
-        setActiveDataRow(0)
+        setSelectedDataPoint(undefined)
     }, [streamId])
+
+    const activeDataId = selectedDataPoint && JSON.stringify(selectedDataPoint.metadata.messageId)
+    const activeTimestamp = selectedDataPoint && selectedDataPoint.metadata.messageId.timestamp
 
     return (
         <Container>
-            <CloseButton>
+            <CloseButton onClick={onCloseProp}>
                 <SvgIcon name="crossMedium" />
             </CloseButton>
             <Header>
@@ -646,7 +655,7 @@ const StreamPreview = ({
                     onChange={onStreamChangeProp}
                 />
             )}
-            {!!streamLoaded && partitionOptions && (
+            {!!streamLoaded && partitionOptions && partitionOptions.length >= 2 && (
                 <PartitionSelector
                     title="Partitions"
                     options={partitionOptions}
@@ -678,26 +687,40 @@ const StreamPreview = ({
                 </StyledButton>
             </Buttons>
             <Columns>
-                <TimestampHeader>Timestamp</TimestampHeader>
-                <DataHeader>Data</DataHeader>
-                <InspectorHeader inspectorFocused={inspectorFocused}>Inspector</InspectorHeader>
+                <TimestampHeader>
+                    <Translate value="streamLivePreview.timestamp" />
+                </TimestampHeader>
+                <DataHeader>
+                    <Translate value="streamLivePreview.data" />
+                </DataHeader>
+                <InspectorHeader inspectorFocused={inspectorFocused}>
+                    <Translate value="modal.streamLiveData.inspectorSidebar.title" />
+                </InspectorHeader>
             </Columns>
             <StreamData inspectorFocused={inspectorFocused}>
                 {!!streamLoaded && !!streamData && streamData.length > 0 && (
                     <DataTable>
-                        {streamData.map(({ timestamp, data }, index) => (
-                            <TableRow
-                                /* eslint-disable-next-line react/no-array-index-key */
-                                key={index}
-                                active={activeDataRow === index}
-                                onClick={() => setActiveDataRow(index)}
-                            >
-                                <TableItem>{timestamp}</TableItem>
-                                <TableItem>
-                                    {JSON.stringify(data)}
-                                </TableItem>
-                            </TableRow>
-                        ))}
+                        {streamData.map((d) => {
+                            if (!d) {
+                                return null
+                            }
+                            const { metadata, data } = d
+                            const msgId = JSON.stringify(metadata.messageId)
+                            return (
+                                <TableRow
+                                    key={msgId}
+                                    active={activeDataId === msgId}
+                                    onClick={() => setSelectedDataPoint(d)}
+                                >
+                                    <TableItem>
+                                        {formatDateTime(metadata && metadata.messageId && metadata.messageId.timestamp, tz)}
+                                    </TableItem>
+                                    <TableItem>
+                                        {JSON.stringify(data)}
+                                    </TableItem>
+                                </TableRow>
+                            )
+                        })}
                     </DataTable>
                 )}
             </StreamData>
@@ -707,28 +730,33 @@ const StreamPreview = ({
                         <TableRow>
                             <TableItem>Security</TableItem>
                             <TableItem>
-                                <StyledTooltip value={getSecurityLevelTitle(stream)} placement="top">
-                                    <StyledSecurityIcon
-                                        level={getSecurityLevel(stream)}
-                                        mode="small"
-                                    />
-                                </StyledTooltip>
+                                {/* <StyledTooltip value={getSecurityLevelTitle(stream)} placement="top"> */}
+                                <StyledSecurityIcon
+                                    level={getSecurityLevel(stream)}
+                                    mode="small"
+                                />
+                                {/* </StyledTooltip> */}
                             </TableItem>
                         </TableRow>
                         {!!activeTimestamp && (
                             <TableRow>
                                 <TableItem>Timestamp</TableItem>
-                                <TableItem>{activeTimestamp}</TableItem>
+                                <TableItem>{formatDateTime(activeTimestamp, tz)}</TableItem>
                             </TableRow>
                         )}
-                        {activeData && Object.keys(activeData).map((key) => (
-                            <TableRow key={key}>
-                                <TableItem>{key}</TableItem>
-                                <TableItem>
-                                    {prettyPrintData(activeData[key], true)}
-                                </TableItem>
-                            </TableRow>
-                        ))}
+                        {selectedDataPoint && selectedDataPoint.data &&
+                        typeof selectedDataPoint.data === 'object' &&
+                        Object.entries(selectedDataPoint.data).map(([k, v]) => {
+                            const value = formatValue(v)
+                            return (
+                                <TableRow key={`${k}${value}`}>
+                                    <TableItem>{k}</TableItem>
+                                    <TableItem>
+                                        {value}
+                                    </TableItem>
+                                </TableRow>
+                            )
+                        })}
                     </InspectorTable>
                 )}
             </Inspector>

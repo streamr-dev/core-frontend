@@ -1,18 +1,10 @@
-// @flow
-
-import React, { useState, useCallback, useRef, useContext, useEffect } from 'react'
+import React from 'react'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 import { Translate } from 'react-redux-i18n'
 import styled, { css } from 'styled-components'
 
-import Subscription from '$shared/components/Subscription'
-import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
-import { Context as ClientContext } from '$shared/contexts/StreamrClient'
 import { formatDateTime } from '$mp/utils/time'
-import type { StreamId } from '$shared/flowtype/stream-types'
-import useIsMounted from '$shared/hooks/useIsMounted'
-import { useThrottled } from '$shared/hooks/wrapCallback'
 import { MD, LG } from '$shared/utils/styled'
 
 const tz = moment.tz.guess()
@@ -74,167 +66,55 @@ const DataTable = styled.div`
     overflow: hidden;
 `
 
-const ErrorNotice = styled.p`
-    font-size: 12px;
-    color: #808080;
-    margin: 0 1rem;
-`
-
-export type DataPoint = {
-    data: any,
-    metadata: {
-        messageId: {
-            streamId: StreamId,
-            timestamp: number,
-        },
-    }
-}
-
-type Props = {
-    streamId: ?StreamId,
-    selectedDataPoint: ?DataPoint,
-    onSelectDataPoint: (DataPoint, ?boolean) => void,
-    run?: boolean,
-    hasData?: () => void,
-}
-
-const LOCAL_DATA_LIST_LENGTH = 5
-
-const prettyPrintData = (data: ?{}, compact: boolean = false) => stringifyObject(data, {
+const prettyPrintData = (data, compact = false) => stringifyObject(data, {
     indent: '  ',
     inlineCharacterLimit: compact ? Infinity : 5,
 })
 
-const initialState = Array(LOCAL_DATA_LIST_LENGTH).fill(undefined)
+const PreviewTable = ({ streamData }) => (
+    <div>
+        <DataTable>
+            <Row>
+                <Column>
+                    <Translate
+                        value="streamLivePreview.timestamp"
+                        tag="strong"
+                    />
+                </Column>
+                <Column>
+                    <Translate
+                        value="streamLivePreview.data"
+                        tag="strong"
+                    />
+                </Column>
+            </Row>
+            {streamData.map((d, index) => {
+                if (!d) {
+                    return (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Row key={index}>
+                            <Column />
+                            <Column />
+                        </Row>
+                    )
+                }
 
-const PreviewTable = ({
-    streamId,
-    selectedDataPoint,
-    onSelectDataPoint,
-    hasData,
-    run = true,
-}: Props) => {
-    const dataRef = useRef([])
-    const [visibleData, setVisibleData] = useState(initialState)
-    const [dataReceived, setDataReceived] = useState(false)
-    const [dataError, setDataError] = useState(false)
-    const { hasLoaded, client } = useContext(ClientContext)
-    const isMounted = useIsMounted()
-
-    const updateDataToState = useThrottled(useCallback((data) => {
-        setDataReceived(true)
-        setVisibleData([...data])
-
-        if (!selectedDataPoint && data.length) {
-            onSelectDataPoint(data[0], true)
-        }
-    }, [selectedDataPoint, onSelectDataPoint]), 100)
-
-    const hasDataRef = useRef(hasData)
-    hasDataRef.current = hasData
-    useEffect(() => {
-        if (!!dataReceived && hasDataRef.current) {
-            hasDataRef.current()
-        }
-    }, [dataReceived])
-
-    const onData = useCallback((data, metadata) => {
-        if (!isMounted()) { return }
-
-        const dataPoint: DataPoint = {
-            data,
-            metadata,
-        }
-
-        dataRef.current.unshift(dataPoint)
-        dataRef.current.length = Math.min(dataRef.current.length, LOCAL_DATA_LIST_LENGTH)
-        updateDataToState(dataRef.current)
-    }, [dataRef, updateDataToState, isMounted])
-
-    const onSub = useCallback(() => {
-        if (isMounted()) {
-            // Clear data when subscribed to make sure
-            // we don't get duplicate messages with resend
-            setVisibleData(initialState)
-            dataRef.current = initialState
-            setDataReceived(false)
-        }
-    }, [isMounted])
-
-    const onError = useCallback(() => {
-        if (isMounted()) {
-            setDataError(true)
-        }
-    }, [isMounted])
-
-    return (
-        <SubscriptionStatusProvider>
-            <Subscription
-                uiChannel={{
-                    id: streamId,
-                }}
-                resendLast={LOCAL_DATA_LIST_LENGTH}
-                onSubscribed={onSub}
-                isActive={run}
-                onMessage={onData}
-                onErrorMessage={onError}
-            />
-            <div>
-                <DataTable>
-                    <Row>
+                return (
+                    <Row
+                        key={JSON.stringify(d.metadata.messageId)}
+                        highlight
+                    >
                         <Column>
-                            <Translate
-                                value="streamLivePreview.timestamp"
-                                tag="strong"
-                            />
+                            {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                         </Column>
                         <Column>
-                            <Translate
-                                value="streamLivePreview.data"
-                                tag="strong"
-                            />
+                            {prettyPrintData(d.data, true)}
                         </Column>
                     </Row>
-                    {visibleData.map((d, index) => {
-                        if (!d) {
-                            return (
-                                // eslint-disable-next-line react/no-array-index-key
-                                <Row key={index}>
-                                    <Column />
-                                    <Column />
-                                </Row>
-                            )
-                        }
-
-                        return (
-                            <Row
-                                key={JSON.stringify(d.metadata.messageId)}
-                                onClick={() => onSelectDataPoint(d)}
-                                highlight
-                            >
-                                <Column>
-                                    {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
-                                </Column>
-                                <Column>
-                                    {prettyPrintData(d.data, true)}
-                                </Column>
-                            </Row>
-                        )
-                    })}
-                </DataTable>
-                {hasLoaded && !client && (
-                    <ErrorNotice>
-                        <Translate value="streamLivePreview.subscriptionErrorNotice" />
-                    </ErrorNotice>
-                )}
-                {dataError && (
-                    <ErrorNotice>
-                        <Translate value="streamLivePreview.dataErrorNotice" />
-                    </ErrorNotice>
-                )}
-            </div>
-        </SubscriptionStatusProvider>
-    )
-}
+                )
+            })}
+        </DataTable>
+    </div>
+)
 
 export default PreviewTable
