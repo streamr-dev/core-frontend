@@ -271,6 +271,9 @@ msgstr "Inactive"
 msgid "shared.status.pending"
 msgstr "Pending"
 
+msgid "shared.status.removed"
+msgstr "Removed"
+
 msgid "shared.date.day"
 msgstr "Day"
 

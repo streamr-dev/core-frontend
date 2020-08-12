@@ -10,7 +10,6 @@ import { Row, Col } from 'reactstrap'
 
 import Toggle from '$shared/components/Toggle'
 import Checkbox from '$shared/components/Checkbox'
-import StatusIcon from '$shared/components/StatusIcon'
 import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
 import DatePicker from '$shared/components/DatePicker'
@@ -29,7 +28,6 @@ import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
-import Tooltip from '$shared/components/Tooltip'
 import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import Spinner from '$shared/components/Spinner'
@@ -67,14 +65,6 @@ story('Toggle')
     .addWithJSX('changeable', () => <ToggleContainer />)
     .addWithJSX('off', () => <Toggle value={boolean('value', false)} onChange={action('onChange')} />)
     .addWithJSX('on', () => <Toggle value={boolean('value', true)} onChange={action('onChange')} />)
-
-story('Status icon')
-    .addWithJSX('ok', () => <StatusIcon status={StatusIcon.OK} />)
-    .addWithJSX('ok with tooltip', () => <StatusIcon showTooltip status={StatusIcon.OK} />)
-    .addWithJSX('inactive', () => <StatusIcon status={StatusIcon.INACTIVE} />)
-    .addWithJSX('inactive with tooltip', () => <StatusIcon showTooltip status={StatusIcon.INACTIVE} />)
-    .addWithJSX('error', () => <StatusIcon status={StatusIcon.ERROR} />)
-    .addWithJSX('error with tooltip', () => <StatusIcon showTooltip status={StatusIcon.ERROR} />)
 
 class CheckboxContainer extends React.Component {
     constructor() {
@@ -459,13 +449,6 @@ class ContextMenuContainer extends React.Component {
 story('ContextMenu')
     .addWithJSX('basic', () => (
         <ContextMenuContainer />
-    ))
-
-story('Tooltip')
-    .addWithJSX('basic', () => (
-        <Tooltip value="This is a tooltip">
-            Hover to show tooltip
-        </Tooltip>
     ))
 
 story('Spinner')
