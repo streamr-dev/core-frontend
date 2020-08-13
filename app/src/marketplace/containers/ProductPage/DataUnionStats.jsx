@@ -3,7 +3,6 @@
 import React, { useState } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
-import Container from '$shared/components/Container/Product'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import AutoScrollHook from '$shared/components/AutoScrollHook'
 import DonutChart from '$shared/components/DonutChart'
@@ -11,7 +10,8 @@ import Segment from '$shared/components/Segment'
 import ProductStat from '$shared/components/ProductStat'
 import DaysPopover from '$shared/components/DaysPopover'
 import MembersGraph from './MembersGraph'
-import { LG } from '$shared/utils/styled'
+import { MD } from '$shared/utils/styled'
+import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 
 type Props = {
     stats: Array<Object>,
@@ -25,13 +25,13 @@ type Props = {
 }
 
 const Graphs = styled.div`
-    @media (min-width: ${LG}px) {
+    @media (min-width: ${MD}px) {
         display: flex;
         flex-wrap: wrap;
 
         > div {
             flex-basis: 60%;
-            padding: 32px;
+            padding: 48px 32px;
         }
 
         > div + div {
@@ -51,6 +51,14 @@ const GraphHeader = styled.div`
     }
 `
 
+const GraphBody = styled.div`
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 300px;
+`
+
 const UnstyledDataUnionStats = ({
     stats,
     memberCount,
@@ -63,45 +71,47 @@ const UnstyledDataUnionStats = ({
     return (
         <Segment {...props}>
             <AutoScrollHook hash="stats" />
-            <Container>
-                <Segment.Header>
-                    <Translate value="productPage.stats.title" />
-                </Segment.Header>
-                {!!showDeploying && (
-                    <Segment.Body>
-                        <DataUnionPending />
-                    </Segment.Body>
-                )}
-                {!showDeploying && stats && (
-                    <Segment.Body>
-                        <ProductStat.List items={stats} />
-                    </Segment.Body>
-                )}
-                {!showDeploying && memberCount && (
-                    <Segment.Body>
-                        <Graphs>
-                            <div>
-                                <GraphHeader>
-                                    <ProductStat.Title>
-                                        Members
-                                    </ProductStat.Title>
-                                    <DaysPopover
-                                        onChange={setDays}
-                                        selectedItem={`${days}`}
-                                    />
-                                </GraphHeader>
+            <Segment.Header>
+                <Translate value="productPage.stats.title" />
+            </Segment.Header>
+            {!!showDeploying && (
+                <Segment.Body>
+                    <DataUnionPending />
+                </Segment.Body>
+            )}
+            {!showDeploying && stats && (
+                <Segment.Body>
+                    <ProductStat.List items={stats} />
+                </Segment.Body>
+            )}
+            {!showDeploying && memberCount && (
+                <Segment.Body>
+                    <Graphs>
+                        <div>
+                            <GraphHeader>
+                                <ProductStat.Title>
+                                    Members
+                                </ProductStat.Title>
+                                <DaysPopover
+                                    onChange={setDays}
+                                    selectedItem={`${days}`}
+                                />
+                            </GraphHeader>
+                            <GraphBody>
                                 <MembersGraph
                                     joinPartStreamId={joinPartStreamId}
                                     memberCount={memberCount.total}
                                     shownDays={days}
                                 />
-                            </div>
-                            <div>
-                                <GraphHeader>
-                                    <ProductStat.Title>
-                                        <Translate value="productPage.stats.membersDonut" />
-                                    </ProductStat.Title>
-                                </GraphHeader>
+                            </GraphBody>
+                        </div>
+                        <div>
+                            <GraphHeader>
+                                <ProductStat.Title>
+                                    <Translate value="productPage.stats.membersDonut" />
+                                </ProductStat.Title>
+                            </GraphHeader>
+                            <GraphBody>
                                 <DonutChart
                                     strokeWidth={3}
                                     data={[
@@ -117,11 +127,11 @@ const UnstyledDataUnionStats = ({
                                         },
                                     ]}
                                 />
-                            </div>
-                        </Graphs>
-                    </Segment.Body>
-                )}
-            </Container>
+                            </GraphBody>
+                        </div>
+                    </Graphs>
+                </Segment.Body>
+            )}
         </Segment>
     )
 }
@@ -133,6 +143,10 @@ const DataUnionStats = styled(UnstyledDataUnionStats)`
 
     ${ProductStat.List} {
         padding: 4em 32px;
+    }
+
+    ${TimeSeriesGraph} {
+        width: 100%;
     }
 `
 

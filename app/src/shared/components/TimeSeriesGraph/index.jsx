@@ -83,7 +83,7 @@ type Props = {
     isLoading?: boolean,
 }
 
-const TimeSeriesGraph = ({ graphData, className, shownDays, isLoading }: Props) => {
+const UnstyledTimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: Props) => {
     const dataDomain = useMemo(() => {
         const dataValues = (graphData || []).map((d) => d.y)
         let max = Math.max(...dataValues)
@@ -104,7 +104,7 @@ const TimeSeriesGraph = ({ graphData, className, shownDays, isLoading }: Props) 
     const rightMargin = 12 + (maxLength * 9)
 
     return (
-        <Container className={className}>
+        <Container {...props}>
             {isLoading && (
                 <Spinner
                     size="large"
@@ -162,5 +162,7 @@ const TimeSeriesGraph = ({ graphData, className, shownDays, isLoading }: Props) 
         </Container>
     )
 }
+
+const TimeSeriesGraph = styled(UnstyledTimeSeriesGraph)``
 
 export default TimeSeriesGraph

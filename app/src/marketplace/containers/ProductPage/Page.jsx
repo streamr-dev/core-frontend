@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-
+import styled from 'styled-components'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnionStats from './useDataUnionStats'
@@ -14,10 +14,11 @@ import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
 import RelatedProducts from './RelatedProducts'
 import Terms from '$mp/components/ProductPage/Terms'
+import Segment from '$shared/components/Segment'
 
 import styles from './page.pcss'
 
-const ProductDetailsPage = () => {
+const UnstyledProductDetailsPage = () => {
     const product = useProduct()
     const isDataUnion = !!(product && isDataUnionProduct(product))
     const isProductFree = !!(product && !isPaidProduct(product))
@@ -48,5 +49,18 @@ const ProductDetailsPage = () => {
         </div>
     )
 }
+
+const ProductDetailsPage = styled(UnstyledProductDetailsPage)`
+    color: black;
+    padding-bottom: 3em;
+
+    .container {
+        max-width: 1110px;
+    }
+
+    ${Segment} {
+        margin-top: 64px;
+    }
+`
 
 export default ProductDetailsPage
