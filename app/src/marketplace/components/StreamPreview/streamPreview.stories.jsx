@@ -1,13 +1,12 @@
 // @flow
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import styled from 'styled-components'
-import { action } from '@storybook/addon-actions'
 import { withKnobs, text, boolean } from '@storybook/addon-knobs'
+import { action } from '@storybook/addon-actions'
 
-import StreamPreview from './StreamPreview'
+import StreamPreview from './'
 
 const stories = storiesOf('Marketplace/StreamPreview', module)
     .addDecorator(styles({
@@ -48,7 +47,11 @@ const generateData = (rows) => [...new Array(rows)].map((value, index) => {
     const timestamp = new Date('2020-01-21 14:31:34.166')
     timestamp.setMinutes(factor)
     return {
-        timestamp: timestamp.toISOString(),
+        metadata: {
+            messageId: {
+                timestamp: timestamp.toISOString(),
+            },
+        },
         data: {
             NO2: factor * 14,
             CO2: factor * 405,
@@ -71,6 +74,7 @@ stories.add('loading stream', () => (
     <StreamPreview
         streamId="1234"
         stream={undefined}
+        linkToStreamSettings
     />
 ))
 
@@ -78,6 +82,7 @@ stories.add('loading stream (tablet)', () => (
     <StreamPreview
         streamId="1234"
         stream={undefined}
+        linkToStreamSettings
     />
 ), {
     viewport: {
@@ -89,6 +94,7 @@ stories.add('loading stream (iPhone)', () => (
     <StreamPreview
         streamId="1234"
         stream={undefined}
+        linkToStreamSettings
     />
 ), {
     viewport: {
@@ -140,6 +146,7 @@ const PrefixedPreview = () => {
             onChange={setStreamId}
             titlePrefix={text('Product prefix', 'Tram Data')}
             linkToStreamSettings={boolean('Link to settings', true)}
+            onStreamSettingClick={action('onStreamSettingClick')}
         />
     )
 }
@@ -166,6 +173,11 @@ stories.add('stream prefix & settings link (iPhone)', () => (
 
 const DefaultPreview = () => {
     const [streamId, setStreamId] = useState(streamIds[0])
+    const [activePartition, setActivePartition] = useState(0)
+
+    useEffect(() => {
+        setActivePartition(0)
+    }, [streamId])
 
     return (
         <StreamPreview
@@ -174,6 +186,8 @@ const DefaultPreview = () => {
             navigableStreamIds={streamIds}
             onChange={setStreamId}
             streamData={streamData[streamId]}
+            activePartition={activePartition}
+            onPartitionChange={setActivePartition}
         />
     )
 }
@@ -192,6 +206,41 @@ stories.add('default (tablet)', () => (
 
 stories.add('default (iPhone)', () => (
     <DefaultPreview />
+), {
+    viewport: {
+        defaultViewport: 'iPhone',
+    },
+})
+
+stories.add('error state', () => (
+    <StreamPreview
+        streamId={streamList[0].id}
+        stream={streamList[0]}
+        subscriptionError="Error loading client"
+        dataError="Failed to subscribe to stream."
+    />
+))
+
+stories.add('error state (tablet)', () => (
+    <StreamPreview
+        streamId={streamList[0].id}
+        stream={streamList[0]}
+        subscriptionError="Error loading client"
+        dataError="Failed to subscribe to stream."
+    />
+), {
+    viewport: {
+        defaultViewport: 'md',
+    },
+})
+
+stories.add('error state (iPhone)', () => (
+    <StreamPreview
+        streamId={streamList[0].id}
+        stream={streamList[0]}
+        subscriptionError="Error loading client"
+        dataError="Failed to subscribe to stream."
+    />
 ), {
     viewport: {
         defaultViewport: 'iPhone',

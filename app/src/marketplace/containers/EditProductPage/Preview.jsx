@@ -28,7 +28,6 @@ import usePending from '$shared/hooks/usePending'
 
 import productPageStyles from '$mp/containers/ProductPage/page.pcss'
 import heroStyles from '$mp/containers/ProductPage/hero.pcss'
-import streamStyles from '$mp/containers/ProductPage/streams.pcss'
 
 import styles from './preview.pcss'
 
@@ -186,7 +185,6 @@ const Streams = () => {
             isLoggedIn={false}
             isProductSubscriptionValid={false}
             isProductFree={isProductFree}
-            className={streamStyles.section}
         />
     )
 }

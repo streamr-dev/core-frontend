@@ -83,10 +83,6 @@ const StyledSecurityIcon = styled(SecurityIcon)`
     height: 16px;
 `
 
-const StyledTooltip = styled(Tooltip)`
-    line-height: 16px;
-`
-
 const Header = styled.div`
     width: 100%;
     position: fixed;
@@ -366,6 +362,10 @@ const TableItem = styled.div`
     text-overflow: ellipsis;
 `
 
+const SecurityTableItem = styled(TableItem)`
+    overflow: initial;
+`
+
 const TableRow = styled.div`
     border-bottom: 1px solid #EFEFEF;
     display: grid;
@@ -573,6 +573,22 @@ const PartitionSelector = styled(Selector)`
     }
 `
 
+const ErrorNotice = styled.div`
+    flex: 1;
+    font-size: 12px;
+    color: #808080;
+    margin: 16px 24px;
+
+    @media (min-width: ${SM}px) {
+        margin: 16px 32px 16px 40px;
+    }
+
+    p {
+        margin: 0;
+        line-height: 1.5rem;
+    }
+`
+
 const formatValue = (data) => {
     if (typeof data === 'object') {
         return stringifyObject(data, {
@@ -591,12 +607,17 @@ const StreamPreview = ({
     onChange: onStreamChangeProp,
     titlePrefix,
     linkToStreamSettings,
+    onStreamSettingClick,
     streamData,
     onClose: onCloseProp,
+    activePartition = 0,
+    onPartitionChange,
+    loading = false,
+    subscriptionError,
+    dataError,
 }) => {
     const [inspectorFocused, setInspectorFocused] = useState(false)
     const [selectedDataPoint, setSelectedDataPoint] = useState(undefined)
-    const [activePartition, setActivePartition] = useState(0)
     const { copy, isCopied } = useCopy()
 
     const streamLoaded = !!(stream && stream.id === streamId)
@@ -611,7 +632,6 @@ const StreamPreview = ({
     }, [partitions])
 
     useEffect(() => {
-        setActivePartition(0)
         setSelectedDataPoint(undefined)
     }, [streamId])
 
@@ -646,8 +666,8 @@ const StreamPreview = ({
                     </React.Fragment>
                 )}
             </Header>
-            <StyledLoadingIndicator loading={!streamLoaded} />
-            {!!navigableStreamIds && navigableStreamIds.length > 0 && (
+            <StyledLoadingIndicator loading={!streamLoaded || !!loading} />
+            {!!navigableStreamIds && navigableStreamIds.length >= 2 && (
                 <StreamSelector
                     title="Streams"
                     options={navigableStreamIds}
@@ -660,13 +680,15 @@ const StreamPreview = ({
                     title="Partitions"
                     options={partitionOptions}
                     active={activePartition}
-                    onChange={setActivePartition}
+                    onChange={onPartitionChange}
                 />
             )}
             <Buttons>
                 {!!linkToStreamSettings && (
                     <StreamSettingsButton
                         kind="secondary"
+                        disabled={!streamLoaded}
+                        onClick={() => onStreamSettingClick(streamId)}
                     >
                         Stream Settings
                     </StreamSettingsButton>
@@ -674,6 +696,7 @@ const StreamPreview = ({
                 <StyledButton
                     kind="secondary"
                     onClick={() => copy(streamId)}
+                    disabled={!streamLoaded}
                 >
                     {!!isCopied && (
                         <React.Fragment>Copied!</React.Fragment>
@@ -729,14 +752,14 @@ const StreamPreview = ({
                     <InspectorTable>
                         <TableRow>
                             <TableItem>Security</TableItem>
-                            <TableItem>
-                                {/* <StyledTooltip value={getSecurityLevelTitle(stream)} placement="top"> */}
-                                <StyledSecurityIcon
-                                    level={getSecurityLevel(stream)}
-                                    mode="small"
-                                />
-                                {/* </StyledTooltip> */}
-                            </TableItem>
+                            <SecurityTableItem>
+                                <Tooltip value={getSecurityLevelTitle(stream)}>
+                                    <StyledSecurityIcon
+                                        level={getSecurityLevel(stream)}
+                                        mode="small"
+                                    />
+                                </Tooltip>
+                            </SecurityTableItem>
                         </TableRow>
                         {!!activeTimestamp && (
                             <TableRow>
@@ -758,6 +781,16 @@ const StreamPreview = ({
                             )
                         })}
                     </InspectorTable>
+                )}
+                {(!!subscriptionError || dataError) && (
+                    <ErrorNotice>
+                        {!!subscriptionError && (
+                            <p>{subscriptionError}</p>
+                        )}
+                        {!!dataError && (
+                            <p>{dataError}</p>
+                        )}
+                    </ErrorNotice>
                 )}
             </Inspector>
             <MobileInspectorPanel>

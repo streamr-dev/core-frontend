@@ -40,7 +40,7 @@ type Props = {
     onError: Function,
     subscriptionStatus?: SubscriptionStatus,
     isActive?: boolean,
-    uiChannel: { id: StreamId },
+    uiChannel: { id: StreamId, partition?: number },
     clientContext: ClientContextProps,
     resendFrom: number,
     resendTo: number,
@@ -183,13 +183,14 @@ class Subscription extends Component<Props> {
         const { client } = this.props.clientContext
         await client.ensureConnected()
 
-        const { id } = uiChannel
+        const { id, partition } = uiChannel
 
         const resend = this.getResendOptions()
 
         const options = {
             stream: id,
             resend,
+            partition,
         }
 
         if (!resend) {
@@ -267,7 +268,7 @@ export default (React.forwardRef(({ resendAll, ...rest }: OuterProps, ref) => {
     const props: Props = (rest: any)
     const { uiChannel } = props
     // create new subscription if uiChannel or resendAll changes
-    const subscriptionKey = (uiChannel && uiChannel.id) + (resendAll || '')
+    const subscriptionKey = (uiChannel && uiChannel.id) + (uiChannel && String(uiChannel.partition)) + (resendAll || '')
 
     if (!clientContext) {
         console.warn('Missing clientContext.')

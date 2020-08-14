@@ -9,9 +9,11 @@ import Subscription from '$shared/components/Subscription'
 import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { useThrottled } from '$shared/hooks/wrapCallback'
+import ModalPortal from '$shared/components/ModalPortal'
+import ModalDialog from '$shared/components/ModalDialog'
+import StreamPreview from '$mp/components/StreamPreview'
 
 import PreviewTable from './PreviewTable'
-import PreviewModal from './PreviewModal'
 
 const Wrapper = styled.div`
     border: 1px solid #ebebeb;
@@ -40,12 +42,33 @@ const ErrorNotice = styled.div`
     }
 `
 
+const FullPage = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(239, 239, 239, 0.98);
+    z-index: 1;
+    overflow-y: scroll;
+`
+
+const StreamPreviewDialog = ({ onClose, ...previewProps }) => (
+    <ModalPortal>
+        <ModalDialog onClose={onClose}>
+            <FullPage>
+                <StreamPreview {...previewProps} onClose={onClose} />
+            </FullPage>
+        </ModalDialog>
+    </ModalPortal>
+)
+
 const PREVIEW_TABLE_LENGTH = 5
 const LOCAL_DATA_LIST_LENGTH = 20
 
 const initialState = Array(PREVIEW_TABLE_LENGTH).fill(undefined)
 
-const UnstyledPreviewView = ({ stream, currentUser, ...props }) => {
+const UnstyledPreviewView = ({ stream, ...props }) => {
     const [isRunning, setIsRunning] = useState(true)
     const { api: showPreviewDialog, isOpen: isPreviewDialogOpen } = useModal('userpages.streamPreview')
 
@@ -55,6 +78,7 @@ const UnstyledPreviewView = ({ stream, currentUser, ...props }) => {
     const [dataReceived, setDataReceived] = useState(false)
     const [dataError, setDataError] = useState(false)
     const { hasLoaded, client } = useContext(ClientContext)
+    const [activePartition, setActivePartition] = useState(0)
     const isMounted = useIsMounted()
 
     const updateDataToState = useThrottled(useCallback((data) => {
@@ -97,6 +121,10 @@ const UnstyledPreviewView = ({ stream, currentUser, ...props }) => {
         }
     }, [isMounted])
 
+    useEffect(() => {
+        setVisibleData([...initialState])
+    }, [activePartition])
+
     const onToggleRun = useCallback(() => {
         setIsRunning((wasRunning) => !wasRunning)
     }, [setIsRunning])
@@ -113,60 +141,61 @@ const UnstyledPreviewView = ({ stream, currentUser, ...props }) => {
     }
 
     return (
-        <ClientProvider>
-            <SubscriptionStatusProvider>
-                <Subscription
-                    uiChannel={{
-                        id: stream.id,
-                    }}
-                    resendLast={LOCAL_DATA_LIST_LENGTH}
-                    onSubscribed={onSub}
-                    isActive={isRunning}
-                    onMessage={onData}
-                    onErrorMessage={onError}
+        <SubscriptionStatusProvider>
+            <Subscription
+                uiChannel={{
+                    id: stream.id,
+                    partition: activePartition,
+                }}
+                resendLast={LOCAL_DATA_LIST_LENGTH}
+                onSubscribed={onSub}
+                isActive={isRunning}
+                onMessage={onData}
+                onErrorMessage={onError}
+            />
+            <Wrapper {...props}>
+                <PreviewTable
+                    streamData={visibleData.slice(0, PREVIEW_TABLE_LENGTH)}
                 />
-                <Wrapper {...props}>
-                    <PreviewTable
-                        streamData={visibleData.slice(0, PREVIEW_TABLE_LENGTH)}
-                    />
-                    <Controls>
-                        <ErrorNotice>
-                            {hasLoaded && !client && (
-                                <Translate value="streamLivePreview.subscriptionErrorNotice" tag="p" />
-                            )}
-                            {dataError && (
-                                <Translate value="streamLivePreview.dataErrorNotice" tag="p" />
-                            )}
-                        </ErrorNotice>
-                        <Button
-                            kind="secondary"
-                            onClick={onToggleRun}
-                            disabled={!hasData}
-                        >
-                            {!isRunning ?
-                                <Translate value="userpages.streams.edit.preview.start" /> :
-                                <Translate value="userpages.streams.edit.preview.stop" />
-                            }
-                        </Button>
-                        <Button
-                            kind="secondary"
-                            onClick={() => showPreview(stream.id, stream)}
-                            disabled={!hasData}
-                        >
-                            <Translate value="userpages.streams.edit.preview.inspect" />
-                        </Button>
-                    </Controls>
-                </Wrapper>
-                {!!isPreviewDialogOpen && (
-                    <PreviewModal
-                        streamId={stream.id}
-                        stream={stream}
-                        streamData={visibleData}
-                        onClose={() => showPreviewDialog.close()}
-                    />
-                )}
-            </SubscriptionStatusProvider>
-        </ClientProvider>
+                <Controls>
+                    <ErrorNotice>
+                        {hasLoaded && !client && (
+                            <Translate value="streamLivePreview.subscriptionErrorNotice" tag="p" />
+                        )}
+                        {dataError && (
+                            <Translate value="streamLivePreview.dataErrorNotice" tag="p" />
+                        )}
+                    </ErrorNotice>
+                    <Button
+                        kind="secondary"
+                        onClick={onToggleRun}
+                        disabled={!hasData}
+                    >
+                        {!isRunning ?
+                            <Translate value="userpages.streams.edit.preview.start" /> :
+                            <Translate value="userpages.streams.edit.preview.stop" />
+                        }
+                    </Button>
+                    <Button
+                        kind="secondary"
+                        onClick={() => showPreview(stream.id, stream)}
+                        disabled={!hasData}
+                    >
+                        <Translate value="userpages.streams.edit.preview.inspect" />
+                    </Button>
+                </Controls>
+            </Wrapper>
+            {!!isPreviewDialogOpen && (
+                <StreamPreviewDialog
+                    streamId={stream.id}
+                    stream={stream}
+                    streamData={visibleData}
+                    activePartition={activePartition}
+                    onPartitionChange={setActivePartition}
+                    onClose={() => showPreviewDialog.close()}
+                />
+            )}
+        </SubscriptionStatusProvider>
     )
 }
 
@@ -177,4 +206,8 @@ const PreviewView = styled(UnstyledPreviewView)`
     position: relative;
 `
 
-export default PreviewView
+export default (props) => (
+    <ClientProvider>
+        <PreviewView {...props} />
+    </ClientProvider>
+)

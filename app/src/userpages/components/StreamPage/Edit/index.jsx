@@ -64,7 +64,7 @@ const PreviewDescription = styled(Translate)`
     max-width: 660px;
 `
 
-const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
+const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
     const sidebar = useContext(SidebarContext)
     const stream = useMemo(() => ({
         ...streamProp,
@@ -220,10 +220,7 @@ const Edit = ({ stream: streamProp, canShare, currentUser, disabled }: any) => {
                         dangerousHTML
                         docsLink={docsLinks.gettingStarted}
                     />
-                    <PreviewView
-                        stream={stream}
-                        currentUser={currentUser}
-                    />
+                    <PreviewView stream={stream} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="api-access"

@@ -675,6 +675,41 @@ const sources = {
             />
         </svg>
     ),
+    listSettings: (
+        <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path
+                fill="none"
+                d="M10.02 5.06h-4.5M7.77 8.04H5.52M5.52 11.02h2.632M5.52 13.998h2.563"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                fill="none"
+                d="M14.59 6.923V3.474a2 2 0 00-2-2H3.38a2 2 0 00-2 2v12a2 2 0 002 2h4.866"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+            />
+            <path
+                fill="none"
+                d="M14.59 15.505a1 1 0 100-2.001 1 1 0 000 2.001z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                fill="none"
+                d="M15.44 10.635l.294.969a.663.663 0 00.784.454l.982-.227a.894.894 0 01.85 1.48l-.688.74a.667.667 0 000 .91l.688.74a.893.893 0 01-.85 1.48l-.982-.227a.663.663 0 00-.784.454l-.294.966a.887.887 0 01-1.7 0l-.295-.97a.663.663 0 00-.784-.454l-.982.228a.893.893 0 01-.85-1.48l.687-.741a.667.667 0 000-.91l-.687-.74a.894.894 0 01.85-1.48l.982.227a.663.663 0 00.784-.454l.294-.97a.887.887 0 011.7.005z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </svg>
+    ),
     github: (
         <SocialIcons.GitHub />
     ),
