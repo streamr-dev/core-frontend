@@ -1,69 +1,70 @@
-// @flow
+import React from 'react'
+import styled, { css } from 'styled-components'
 
-import React, { type Node, useRef, useState, useCallback } from 'react'
-import { Tooltip as RsTooltip } from 'reactstrap'
-import cx from 'classnames'
-
-import styles from './tooltip.pcss'
-
-type Props = {
-    value: Node,
-    children?: Node,
-    container?: any,
-    placement?: string,
-    className?: string,
+const TopTheme = {
+    left: '50%',
+    top: 'auto',
+    bottom: 'calc(100% + 8px)',
+    right: 'auto',
+    transform: 'translateX(-50%)',
 }
 
-let counter = 0
-
-const DELAY = {
-    show: 300,
-    hide: 250,
+const BottomTheme = {
+    left: '50%',
+    top: 'calc(100% + 8px)',
+    bottom: 'auto',
+    right: 'auto',
+    transform: 'translateX(-50%)',
 }
 
-export default function Tooltip({
-    value,
-    children,
-    container,
-    className,
-    placement = 'top',
-    ...otherProps
-}: Props) {
-    const idRef = useRef()
-    // increment global id counter & assign it as an id on component init
-    if (!idRef.current) {
-        counter += 1
-        idRef.current = `tooltip-${counter}`
-    }
+const Root = styled.div`
+    position: relative;
+    display: inline-block;
+    line-height: 1;
 
-    const { current: id } = idRef
+    ${({ tooltip }) => !!tooltip && css`
+        &::after {
+            content: "${tooltip}";
+            visibility: hidden;
+            opacity: 0;
+            transition: 0s all;
+            position: absolute;
+            background-color: #323232;
+            border-radius: 2px;
+            color: white;
+            font-size: 12px;
+            line-height: 16px;
+            padding: 2px 6px;
+            white-space: nowrap;
+            z-index: 1;
+            text-align: center;
 
-    const [isOpen, setIsOpen] = useState(false)
+            top: ${({ theme }) => theme.top};
+            bottom: ${({ theme }) => theme.bottom};
+            left: ${({ theme }) => theme.left};
+            right: ${({ theme }) => theme.right};
+            transform: ${({ theme }) => theme.transform};
+        }
 
-    const toggleIsOpen = useCallback(() => {
-        setIsOpen((isOpenState) => !isOpenState)
-    }, [setIsOpen])
+        &:hover {
+            &::after {
+                transition-delay: 0.5s;
+                visibility: visible;
+                opacity: 1;
+            }
+        }
+    `}
+`
 
-    return (
-        <div id={id} className={cx(styles.tooltipContainer, className)}>
-            {children}
-            <RsTooltip
-                {...otherProps}
-                innerClassName={styles.tooltip}
-                hideArrow
-                placement={placement}
-                delay={DELAY}
-                isOpen={isOpen}
-                target={id}
-                toggle={toggleIsOpen}
-                // uninitialised ref.current values are null.
-                // null crashes this plugin if passed as container
-                // gloss over this by passing undefined instead
-                container={container || undefined}
-                boundariesElement="viewport"
-            >
-                {value}
-            </RsTooltip>
-        </div>
-    )
+const Tooltip = ({ value, placement, ...props }) => (
+    <Root tooltip={value} theme={placement} {...props} />
+)
+
+Tooltip.TOP = TopTheme
+Tooltip.BOTTOM = BottomTheme
+
+Tooltip.defaultProps = {
+    placement: Tooltip.TOP,
 }
+
+export default Tooltip

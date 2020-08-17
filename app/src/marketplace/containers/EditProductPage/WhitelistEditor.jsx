@@ -9,7 +9,7 @@ import Toggle from '$shared/components/Toggle'
 import Popover from '$shared/components/Popover'
 import useModal from '$shared/hooks/useModal'
 import useCopy from '$shared/hooks/useCopy'
-import Tooltip from '$shared/components/Tooltip'
+import StatusIcon from '$shared/components/StatusIcon'
 import { productStates } from '$shared/utils/constants'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 
@@ -99,29 +99,6 @@ const StyledToggle = styled(Toggle)`
     }
 `
 
-const StyledTooltip = styled(Tooltip)`
-    * {
-        display: flex;
-    }
-`
-
-const Status = styled.span`
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background-color: ${(props) => {
-        if (props.disabled) {
-            return '#cdcdcd'
-        } else if (props.status === 'added') {
-            return '#ffbc00'
-        } else if (props.status === 'removed') {
-            return '#adadad'
-        }
-        return '#2ac437'
-    }};
-    pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
-`
-
 const Label = styled.label`
     margin-bottom: 0;
 `
@@ -153,6 +130,17 @@ const padWithEmptyRows = (rows: Array<WhitelistItem>) => {
     return null
 }
 
+const statusIconTheme = (disabled, status) => {
+    if (disabled) {
+        return StatusIcon.INACTIVE
+    } else if (status === 'added') {
+        return StatusIcon.PENDING
+    } else if (status === 'removed') {
+        return StatusIcon.REMOVED
+    }
+    return StatusIcon.OK
+}
+
 export const WhitelistEditorComponent = ({
     className,
     enabled,
@@ -179,17 +167,10 @@ export const WhitelistEditorComponent = ({
                             <span>{item.address}</span>
                         </TableColumn>
                         <TableColumn disabled={disabled} center>
-                            <StyledTooltip
-                                value={I18n.t(`editProductPage.whitelist.status.${item.status}`)}
-                                placement="bottom"
-                                boundariesElement="viewport"
-                                disabled={disabled}
-                            >
-                                <Status
-                                    status={item.status}
-                                    disabled={disabled}
-                                />
-                            </StyledTooltip>
+                            <StatusIcon
+                                status={statusIconTheme(disabled, item.status)}
+                                tooltip={!disabled && I18n.t(`editProductPage.whitelist.status.${item.status}`)}
+                            />
                         </TableColumn>
                         <TableColumn disabled={disabled} center>
                             <StyledPopover

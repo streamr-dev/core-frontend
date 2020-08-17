@@ -165,7 +165,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
                         <div />
                         <div className={cx(styles.ToolbarLeft, styles.DashboardButtons)}>
                             <div className={styles.ModalButtons}>
-                                <Tooltip container={elRef.current} value="Share">
+                                <Tooltip value="Share">
                                     <R.Button
                                         className={cx(styles.ToolbarButton, styles.ShareButton)}
                                         onClick={() => sidebar.open('share')}
@@ -174,7 +174,7 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
                                         <SvgIcon name="share" />
                                     </R.Button>
                                 </Tooltip>
-                                <Tooltip container={elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                                <Tooltip value="Keyboard shortcuts">
                                     <R.Button
                                         className={cx(styles.ToolbarButton, styles.KeyboardButton)}
                                         onClick={() => sidebar.open('keyboardShortcuts')}

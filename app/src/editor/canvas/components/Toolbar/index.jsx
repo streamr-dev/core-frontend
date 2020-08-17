@@ -141,8 +141,6 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         }
     }
 
-    elRef = React.createRef()
-
     render() {
         const {
             canvas,
@@ -182,7 +180,6 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         const badgeLevel = getMaxLevel(getCanvasMessages(canvas))
         return (
             <div
-                ref={this.elRef}
                 className={cx(className, styles.CanvasToolbar, {
                     [styles.notEditable]: !hasWritePermission,
                 })}
@@ -265,7 +262,6 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                 open={this.canvasSearchOpen}
                             />
                             <Tooltip
-                                container={this.elRef.current}
                                 value={moduleSearchIsOpen ? (
                                     'Hide module panel'
                                 ) : (
@@ -490,7 +486,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                             </div>
                         </div>
                         <div className={styles.ModalButtons}>
-                            <Tooltip container={this.elRef.current} value="Console">
+                            <Tooltip value="Console">
                                 <R.Button
                                     className={cx(styles.ToolbarButton, styles.ConsoleButton)}
                                     onClick={() => sidebar.open('console')}
@@ -501,7 +497,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     <SvgIcon name="console" />
                                 </R.Button>
                             </Tooltip>
-                            <Tooltip container={this.elRef.current} value="Share">
+                            <Tooltip value="Share">
                                 <R.Button
                                     className={cx(styles.ToolbarButton, styles.ShareButton)}
                                     onClick={() => sidebar.open('share')}
@@ -510,7 +506,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                     <SvgIcon name="share" />
                                 </R.Button>
                             </Tooltip>
-                            <Tooltip container={this.elRef.current} value={<React.Fragment>Keyboard<br />shortcuts</React.Fragment>}>
+                            <Tooltip value="Keyboard shortcuts">
                                 <R.Button
                                     className={cx(styles.ToolbarButton, styles.KeyboardButton)}
                                     onClick={() => sidebar.open('keyboardShortcuts')}
