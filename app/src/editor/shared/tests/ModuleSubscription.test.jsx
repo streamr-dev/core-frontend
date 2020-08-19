@@ -16,7 +16,7 @@ function wait(delay) {
     return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
-describe('Canvas Subscriptions', () => {
+xdescribe('Canvas Subscriptions', () => {
     let teardown
     let sessionToken
 
@@ -128,7 +128,6 @@ describe('Canvas Subscriptions', () => {
                         />
                     </ClientProviderComponent>
                 ))
-
 
                 await wait(10000)
                 const receivedMessages = messages.slice() // copy before unmounting
