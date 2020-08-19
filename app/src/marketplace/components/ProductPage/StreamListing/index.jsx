@@ -176,7 +176,9 @@ export const StreamListing = ({
             <HeaderRow>
                 <TitleItem>
                     <Translate value="productPage.streamListing.streams" />
-                    <StreamCount>{streams.length}</StreamCount>
+                    {!fetchingStreams && (
+                        <StreamCount>{streams.length}</StreamCount>
+                    )}
                     {!!locked && (
                         <LockedNotice>
                             <Translate value="productPage.streamListing.subscribe" />

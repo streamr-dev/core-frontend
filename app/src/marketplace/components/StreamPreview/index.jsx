@@ -172,7 +172,7 @@ const StyledButton = styled(Button)`
 `
 
 const StreamSettingsButton = styled(StyledButton)`
-    @media (max-width: ${SM}px) {
+    @media (max-width: ${LG}px) {
         && {
             display: none;
         }
@@ -606,8 +606,7 @@ const StreamPreview = ({
     navigableStreamIds,
     onChange: onStreamChangeProp,
     titlePrefix,
-    linkToStreamSettings,
-    onStreamSettingClick,
+    onStreamSettings,
     streamData,
     onClose: onCloseProp,
     activePartition = 0,
@@ -635,8 +634,17 @@ const StreamPreview = ({
         setSelectedDataPoint(undefined)
     }, [streamId])
 
-    const activeDataId = selectedDataPoint && JSON.stringify(selectedDataPoint.metadata.messageId)
-    const activeTimestamp = selectedDataPoint && selectedDataPoint.metadata.messageId.timestamp
+    const linkToStreamSettings = useMemo(() => (
+        !!onStreamSettings && typeof onStreamSettings === 'function' && onStreamSettings
+    ), [onStreamSettings])
+
+    const [activeDataId, activeTimestamp] = useMemo(() => {
+        const { metadata } = selectedDataPoint || {}
+        return [
+            metadata && JSON.stringify(selectedDataPoint.metadata.messageId),
+            metadata && metadata.messageId.timestamp,
+        ]
+    }, [selectedDataPoint])
 
     return (
         <Container>
@@ -688,7 +696,7 @@ const StreamPreview = ({
                     <StreamSettingsButton
                         kind="secondary"
                         disabled={!streamLoaded}
-                        onClick={() => onStreamSettingClick(streamId)}
+                        onClick={() => onStreamSettings(streamId)}
                     >
                         Stream Settings
                     </StreamSettingsButton>

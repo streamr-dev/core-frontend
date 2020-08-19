@@ -1,9 +1,9 @@
 // @flow
 
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import { withKnobs, text, boolean } from '@storybook/addon-knobs'
+import { withKnobs, boolean } from '@storybook/addon-knobs'
 import { action } from '@storybook/addon-actions'
 import styled from 'styled-components'
 

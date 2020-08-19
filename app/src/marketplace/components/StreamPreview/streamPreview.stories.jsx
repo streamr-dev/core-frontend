@@ -74,7 +74,7 @@ stories.add('loading stream', () => (
     <StreamPreview
         streamId="1234"
         stream={undefined}
-        linkToStreamSettings
+        onStreamSettings={action('onStreamSettings')}
     />
 ))
 
@@ -82,7 +82,7 @@ stories.add('loading stream (tablet)', () => (
     <StreamPreview
         streamId="1234"
         stream={undefined}
-        linkToStreamSettings
+        onStreamSettings={action('onStreamSettings')}
     />
 ), {
     viewport: {
@@ -94,7 +94,7 @@ stories.add('loading stream (iPhone)', () => (
     <StreamPreview
         streamId="1234"
         stream={undefined}
-        linkToStreamSettings
+        onStreamSettings={action('onStreamSettings')}
     />
 ), {
     viewport: {
@@ -137,6 +137,12 @@ stories.add('loading stream with navigation (iPhone)', () => (
 
 const PrefixedPreview = () => {
     const [streamId, setStreamId] = useState(streamIds[0])
+    const linkToStreamSettings = boolean('Link to settings', true)
+    const [activePartition, setActivePartition] = useState(0)
+
+    useEffect(() => {
+        setActivePartition(0)
+    }, [streamId])
 
     return (
         <StreamPreview
@@ -145,8 +151,9 @@ const PrefixedPreview = () => {
             navigableStreamIds={streamIds}
             onChange={setStreamId}
             titlePrefix={text('Product prefix', 'Tram Data')}
-            linkToStreamSettings={boolean('Link to settings', true)}
-            onStreamSettingClick={action('onStreamSettingClick')}
+            onStreamSettings={linkToStreamSettings && action('onStreamSettings')}
+            activePartition={activePartition}
+            onPartitionChange={setActivePartition}
         />
     )
 }

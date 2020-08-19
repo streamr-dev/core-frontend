@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useEffect, useCallback, useContext, useMemo, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
@@ -20,9 +20,12 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
+    selectProductIsPurchased,
 } from '$mp/modules/product/selectors'
 import { useThrottled } from '$shared/hooks/wrapCallback'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { selectUserData } from '$shared/modules/user/selectors'
+import { getProductSubscription } from '$mp/modules/product/actions'
 
 const FullPage = styled.div`
     position: fixed;
@@ -129,12 +132,16 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
 const PreviewWrap = ({ productId, streamId }) => {
     const { history } = useContext(RouterContext)
     const product = useProduct()
+    const dispatch = useDispatch()
     const streams = useSelector(selectProductStreams)
     const fetchingStreams = useSelector(selectFetchingProductStreams)
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
     const { loadProductStreams } = useController()
     const isMounted = useIsMounted()
+    const userData = useSelector(selectUserData)
+    const isLoggedIn = userData !== null
+    const isProductSubscriptionValid = useSelector(selectProductIsPurchased)
 
     const targetStream = useMemo(() => (
         streams && streams.find(({ id }) => id === streamId)
@@ -146,6 +153,12 @@ const PreviewWrap = ({ productId, streamId }) => {
             loadProductStreams(productId)
         }
     }, [streamLoaded, loadProductStreams, productId])
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            dispatch(getProductSubscription(productId))
+        }
+    }, [dispatch, isLoggedIn, productId])
 
     const redirectToProduct = useCallback(() => {
         if (!isMounted()) { return }
@@ -170,6 +183,13 @@ const PreviewWrap = ({ productId, streamId }) => {
         history,
     ])
 
+    const redirectToSettings = useCallback((id) => {
+        if (!isMounted()) { return }
+        history.push(routes.streams.show({
+            id,
+        }))
+    }, [history, isMounted])
+
     if (!product || loadPending || permissionsPending || fetchingStreams) {
         return (
             <PreviewModal
@@ -191,6 +211,7 @@ const PreviewWrap = ({ productId, streamId }) => {
             titlePrefix={product.name}
             onClose={redirectToProduct}
             onChange={redirectToPreview}
+            onStreamSettings={!!isLoggedIn && isProductSubscriptionValid && redirectToSettings}
         />
     )
 }

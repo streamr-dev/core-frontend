@@ -32,6 +32,12 @@ const Streams = withRouter(({ history }) => {
         }))
     }, [history, productId])
 
+    const onStreamSettings = useCallback((id) => {
+        history.push(routes.streams.show({
+            id,
+        }))
+    }, [history])
+
     const locked = useMemo(() => !(
         isProductFree || (isLoggedIn && isProductSubscriptionValid)
     ), [isProductFree, isLoggedIn, isProductSubscriptionValid])
@@ -42,6 +48,7 @@ const Streams = withRouter(({ history }) => {
             fetchingStreams={fetchingStreams}
             locked={locked}
             onStreamPreview={onStreamPreview}
+            onStreamSettings={!!isLoggedIn && isProductSubscriptionValid && onStreamSettings}
         />
     )
 })
