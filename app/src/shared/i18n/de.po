@@ -64,6 +64,10 @@ msgstr "Sprache"
 msgid "general.linkedin"
 msgstr "LinkedIn"
 
+# missing
+msgid "general.core"
+msgstr "Core"
+
 msgid "general.marketplace"
 msgstr "Marketplace"
 
@@ -89,6 +93,10 @@ msgstr "Produkte"
 # missing
 msgid "general.profile"
 msgstr "Profile"
+
+# missing
+msgid "general.transactions"
+msgstr "Transactions"
 
 # missing
 msgid "general.subscriptions"

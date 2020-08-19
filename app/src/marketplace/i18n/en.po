@@ -954,42 +954,6 @@ msgstr "Set Ethereum addresses"
 msgid "modal.setPrice.setPrice"
 msgstr "Set your product's price"
 
-msgid "modal.streamLiveData.back"
-msgstr "Back"
-
-msgid "modal.streamLiveData.inspectorSidebar.copyStreamId"
-msgstr "Copy Stream Id"
-
-msgid "modal.streamLiveData.inspectorSidebar.hide"
-msgstr "Hide inspector"
-
-msgid "modal.streamLiveData.inspectorSidebar.noData"
-msgstr "No data"
-
-msgid "modal.streamLiveData.inspectorSidebar.show"
-msgstr "Show inspector"
-
-msgid "modal.streamLiveData.inspectorSidebar.streamId"
-msgstr "Stream Id"
-
-msgid "modal.streamLiveData.inspectorSidebar.timestamp"
-msgstr "Timestamp"
-
-msgid "modal.streamLiveData.inspectorSidebar.title"
-msgstr "Inspector"
-
-msgid "modal.streamLiveData.liveData"
-msgstr "Live Data"
-
-msgid "modal.streamLiveData.next"
-msgstr "Next"
-
-msgid "modal.streamLiveData.previous"
-msgstr "Previous"
-
-msgid "modal.streamLiveData.noLiveData"
-msgstr "0 Messages Received"
-
 msgid "modal.web3.installmetamask.message"
 msgstr ""
 "We couldn't find your wallet. Please install <br /> MetaMask or another "
@@ -1265,17 +1229,11 @@ msgstr "Related products"
 msgid "productPage.dataUnionPending.title"
 msgstr "Deploying your Data Union"
 
-msgid "productPage.streamListing.add"
-msgstr "Add to editor"
-
 msgid "productPage.streamListing.description"
 msgstr "Description"
 
 msgid "productPage.streamListing.loading"
 msgstr "Loading streams..."
-
-msgid "productPage.streamListing.login"
-msgstr "Log in to interact with this stream"
 
 msgid "productPage.streamListing.noStreams"
 msgstr "No streams found."
@@ -1285,9 +1243,6 @@ msgstr "Subscribe to unlock"
 
 msgid "productPage.streamListing.streams"
 msgstr "Streams"
-
-msgid "productPage.streamListing.view"
-msgstr "View live data"
 
 msgid "productPage.termsOfUse.title"
 msgstr "Terms and conditions"
@@ -1371,8 +1326,35 @@ msgstr "Error: Some messages in the stream have invalid content and are not show
 msgid "streamLivePreview.subscriptionErrorNotice"
 msgstr "Error: Unable to process the stream data."
 
+msgid "streamLivePreview.streamSettings"
+msgstr "Stream Settings"
+
+msgid "streamLivePreview.copyStreamId"
+msgstr "Copy Stream ID"
+
+msgid "streamLivePreview.copyStreamIdMobile"
+msgstr "Copy Id"
+
+msgid "streamLivePreview.streamIdCopied"
+msgstr "Copied!"
+
 msgid "streamLivePreview.timestamp"
 msgstr "Timestamp"
+
+msgid "streamLivePreview.security"
+msgstr "Security"
+
+msgid "streamLivePreview.inspector"
+msgstr "Inspector"
+
+msgid "streamLivePreview.streams"
+msgstr "Streams"
+
+msgid "streamLivePreview.partitions"
+msgstr "Partitions"
+
+msgid "streamLivePreview.selectorPages"
+msgstr "<strong>%{current}</strong> of <strong>%{total}</strong>"
 
 msgid "streamSelector.add"
 msgstr "Add"
@@ -1424,39 +1406,3 @@ msgstr "Type to search & select streams or click to select individually"
 
 msgid "unlockWalletDialog.message"
 msgstr "Please select the account with address"
-
-msgid "validation.invalidBeneficiaryAddress"
-msgstr "Beneficiary address is not a valid ethereum address"
-
-msgid "validation.invalidOwnerAddress"
-msgstr "Owner address is not a valid ethereum address"
-
-msgid "validation.invalidPrice"
-msgstr "Price should be greater or equal to 0"
-
-msgid "validation.priceNumber"
-msgstr "Price is a number"
-
-msgid "validation.productCategory"
-msgstr "Please choose a category"
-
-msgid "validation.productDescription"
-msgstr "Please add a description for the product"
-
-msgid "validation.productName"
-msgstr "Please name your product"
-
-msgid "validation.productPreviewStream"
-msgstr "Preview stream must be included in streams"
-
-msgid "validation.productState"
-msgstr "Product state (from free to paid and vise versa) cannot be changed"
-
-msgid "validation.productStreams"
-msgstr "Add at least one stream to your product"
-
-msgid "general.core"
-msgstr "Core"
-
-msgid "general.transactions"
-msgstr "Transactions"

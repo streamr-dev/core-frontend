@@ -2,7 +2,7 @@ import React, { useState, useMemo, useCallback, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import stringifyObject from 'stringify-object'
 import moment from 'moment-timezone'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -44,6 +44,7 @@ const IconButton = styled.button`
 
     &:not(:disabled):active {
         background-color: #D8D8D8;
+        color: #525252;
     }
 
     svg {
@@ -228,13 +229,13 @@ const SelectorPages = styled.div`
     }
 `
 
-const MobileText = styled.span`
+const MobileText = styled(Translate)`
     @media (min-width: ${SM}px) {
         display: none;
     }
 `
 
-const TabletText = styled.span`
+const TabletText = styled(Translate)`
     display: none;
 
     @media (min-width: ${SM}px) {
@@ -525,7 +526,12 @@ const Selector = ({
                 <SvgIcon name="back" />
             </SelectorIcon>
             <SelectorPages>
-                <strong>{current + 1}</strong> of <strong>{options.length}</strong>
+                <Translate
+                    value="streamLivePreview.selectorPages"
+                    current={current + 1}
+                    total={options.length}
+                    dangerousHTML
+                />
             </SelectorPages>
             <SelectorIcon
                 forward
@@ -677,7 +683,7 @@ const StreamPreview = ({
             <StyledLoadingIndicator loading={!streamLoaded || !!loading} />
             {!!navigableStreamIds && navigableStreamIds.length >= 2 && (
                 <StreamSelector
-                    title="Streams"
+                    title={I18n.t('streamLivePreview.streams')}
                     options={navigableStreamIds}
                     active={streamId}
                     onChange={onStreamChangeProp}
@@ -685,7 +691,7 @@ const StreamPreview = ({
             )}
             {!!streamLoaded && partitionOptions && partitionOptions.length >= 2 && (
                 <PartitionSelector
-                    title="Partitions"
+                    title={I18n.t('streamLivePreview.partitions')}
                     options={partitionOptions}
                     active={activePartition}
                     onChange={onPartitionChange}
@@ -698,7 +704,7 @@ const StreamPreview = ({
                         disabled={!streamLoaded}
                         onClick={() => onStreamSettings(streamId)}
                     >
-                        Stream Settings
+                        <Translate value="streamLivePreview.streamSettings" />
                     </StreamSettingsButton>
                 )}
                 <StyledButton
@@ -706,14 +712,14 @@ const StreamPreview = ({
                     onClick={() => copy(streamId)}
                     disabled={!streamLoaded}
                 >
-                    {!!isCopied && (
-                        <React.Fragment>Copied!</React.Fragment>
-                    )}
                     {!isCopied && (
                         <React.Fragment>
-                            <MobileText>Copy Id</MobileText>
-                            <TabletText>Copy Stream ID</TabletText>
+                            <TabletText value="streamLivePreview.copyStreamId" />
+                            <MobileText value="streamLivePreview.copyStreamIdMobile" />
                         </React.Fragment>
+                    )}
+                    {!!isCopied && (
+                        <Translate value="streamLivePreview.streamIdCopied" />
                     )}
                 </StyledButton>
             </Buttons>
@@ -725,7 +731,7 @@ const StreamPreview = ({
                     <Translate value="streamLivePreview.data" />
                 </DataHeader>
                 <InspectorHeader inspectorFocused={inspectorFocused}>
-                    <Translate value="modal.streamLiveData.inspectorSidebar.title" />
+                    <Translate value="streamLivePreview.inspector" />
                 </InspectorHeader>
             </Columns>
             <StreamData inspectorFocused={inspectorFocused}>
@@ -759,7 +765,9 @@ const StreamPreview = ({
                 {!!streamLoaded && (
                     <InspectorTable>
                         <TableRow>
-                            <TableItem>Security</TableItem>
+                            <TableItem>
+                                <Translate value="streamLivePreview.security" />
+                            </TableItem>
                             <SecurityTableItem>
                                 <Tooltip value={getSecurityLevelTitle(stream)}>
                                     <StyledSecurityIcon
@@ -771,7 +779,9 @@ const StreamPreview = ({
                         </TableRow>
                         {!!activeTimestamp && (
                             <TableRow>
-                                <TableItem>Timestamp</TableItem>
+                                <TableItem>
+                                    <Translate value="streamLivePreview.timestamp" />
+                                </TableItem>
                                 <TableItem>{formatDateTime(activeTimestamp, tz)}</TableItem>
                             </TableRow>
                         )}

@@ -44,12 +44,12 @@ const streamList = [{
 
 const generateData = (rows) => [...new Array(rows)].map((value, index) => {
     const factor = index + 1
-    const timestamp = new Date('2020-01-21 14:31:34.166')
-    timestamp.setMinutes(factor)
+    const timestamp = new Date('2020-08-19T13:36:00')
+    timestamp.setMinutes(timestamp.getMinutes() + factor)
     return {
         metadata: {
             messageId: {
-                timestamp: timestamp.toISOString(),
+                timestamp: timestamp.getTime(),
             },
         },
         data: {
@@ -75,6 +75,7 @@ stories.add('loading stream', () => (
         streamId="1234"
         stream={undefined}
         onStreamSettings={action('onStreamSettings')}
+        onClose={action('onClose')}
     />
 ))
 
@@ -83,6 +84,7 @@ stories.add('loading stream (tablet)', () => (
         streamId="1234"
         stream={undefined}
         onStreamSettings={action('onStreamSettings')}
+        onClose={action('onClose')}
     />
 ), {
     viewport: {
@@ -95,6 +97,7 @@ stories.add('loading stream (iPhone)', () => (
         streamId="1234"
         stream={undefined}
         onStreamSettings={action('onStreamSettings')}
+        onClose={action('onClose')}
     />
 ), {
     viewport: {
@@ -111,6 +114,7 @@ const ActiveStream = () => {
             stream={undefined}
             navigableStreamIds={streamIds}
             onChange={setStreamId}
+            onClose={action('onClose')}
         />
     )
 }
@@ -154,6 +158,7 @@ const PrefixedPreview = () => {
             onStreamSettings={linkToStreamSettings && action('onStreamSettings')}
             activePartition={activePartition}
             onPartitionChange={setActivePartition}
+            onClose={action('onClose')}
         />
     )
 }
@@ -195,6 +200,7 @@ const DefaultPreview = () => {
             streamData={streamData[streamId]}
             activePartition={activePartition}
             onPartitionChange={setActivePartition}
+            onClose={action('onClose')}
         />
     )
 }
@@ -219,22 +225,22 @@ stories.add('default (iPhone)', () => (
     },
 })
 
-stories.add('error state', () => (
+const ErrorView = () => (
     <StreamPreview
         streamId={streamList[0].id}
         stream={streamList[0]}
         subscriptionError="Error loading client"
         dataError="Failed to subscribe to stream."
+        onClose={action('onClose')}
     />
+)
+
+stories.add('error state', () => (
+    <ErrorView />
 ))
 
 stories.add('error state (tablet)', () => (
-    <StreamPreview
-        streamId={streamList[0].id}
-        stream={streamList[0]}
-        subscriptionError="Error loading client"
-        dataError="Failed to subscribe to stream."
-    />
+    <ErrorView />
 ), {
     viewport: {
         defaultViewport: 'md',
@@ -242,12 +248,7 @@ stories.add('error state (tablet)', () => (
 })
 
 stories.add('error state (iPhone)', () => (
-    <StreamPreview
-        streamId={streamList[0].id}
-        stream={streamList[0]}
-        subscriptionError="Error loading client"
-        dataError="Failed to subscribe to stream."
-    />
+    <ErrorView />
 ), {
     viewport: {
         defaultViewport: 'iPhone',
