@@ -47,7 +47,7 @@ const SignupPage = () => {
     const submit = useCallback(() => (
         post(routes.auth.external.signUp(), {
             username,
-        }, false, true)
+        }, false)
     ), [username])
 
     return (

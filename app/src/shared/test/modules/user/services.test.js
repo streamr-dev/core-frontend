@@ -103,10 +103,9 @@ describe('user - services', () => {
     describe('postPasswordUpdate', () => {
         it('should POST password update to the api', async (done) => {
             const passwordUpdate = {
-                confirmNewPassword: 'Testtesttest234!',
+                newPassword: 'newPassword',
+                confirmNewPassword: 'newPassword',
                 currentPassword: 'Testtesttest123!',
-                strongEnoughPassword: true,
-                updating: false,
             }
 
             moxios.wait(() => {
@@ -118,8 +117,12 @@ describe('user - services', () => {
 
                 assert.equal(request.config.method, 'post')
                 assert.equal(request.config.url, '/users/me/changePassword')
-                assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
-                assert.equal(request.headers['X-Requested-With'], 'XMLHttpRequest')
+                assert.deepStrictEqual(request.config.data, JSON.stringify({
+                    username: 'tester2@streamr.com',
+                    currentpassword: 'Testtesttest123!',
+                    password: 'newPassword',
+                    password2: 'newPassword',
+                }))
                 done()
             })
 

@@ -75,7 +75,7 @@ const ResetPasswordPage = ({ location: { search, pathname }, history: { replace 
             password,
             password2,
             t,
-        }, false, true)
+        }, false)
     }, [form])
 
     const mountedRef = useIsMountedRef()

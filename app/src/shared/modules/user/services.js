@@ -16,24 +16,15 @@ export const putUser = (user: User): ApiResult<User> => put({
     data: user,
 })
 
-export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, username: string): ApiResult<null> => {
-    const form = new FormData()
-    form.append('username', username)
-    form.append('currentpassword', passwordUpdate.currentPassword)
-    form.append('password', passwordUpdate.newPassword)
-    form.append('password2', passwordUpdate.confirmNewPassword)
-
-    return post({
-        url: routes.api.currentUser.changePassword(),
-        data: form,
-        options: {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-        },
-    })
-}
+export const postPasswordUpdate = (passwordUpdate: PasswordUpdate, username: string): ApiResult<null> => post({
+    url: routes.api.currentUser.changePassword(),
+    data: {
+        username,
+        currentpassword: passwordUpdate.currentPassword,
+        password: passwordUpdate.newPassword,
+        password2: passwordUpdate.confirmNewPassword,
+    },
+})
 
 export const uploadProfileAvatar = (image: File): Promise<void> => {
     const options = {

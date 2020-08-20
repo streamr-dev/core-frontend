@@ -17,26 +17,8 @@ describe('post', () => {
         await moxios.promiseWait()
         const request = moxios.requests.mostRecent()
 
-        expect(request.headers['Content-Type']).toEqual('application/x-www-form-urlencoded')
+        expect(request.headers['Content-Type']).toEqual('application/json')
         expect(request.config.method).toEqual('post')
-    })
-
-    describe('xhr requests', () => {
-        it('posts without X-Requested-With header when xhr flag is NOT set', async () => {
-            post('url', {}, false)
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-
-            expect(request.headers['X-Requested-With']).toBeUndefined()
-        })
-
-        it('posts WITH correct X-Requested-With header when xhr flag IS set', async () => {
-            post('url', {}, false, true)
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-
-            expect(request.headers['X-Requested-With']).toEqual('XMLHttpRequest')
-        })
     })
 
     it('posts with given params', async () => {
@@ -46,7 +28,9 @@ describe('post', () => {
         await moxios.promiseWait()
         const request = moxios.requests.mostRecent()
 
-        expect(request.config.data).toEqual('param=value')
+        expect(request.config.data).toEqual(JSON.stringify({
+            param: 'value',
+        }))
     })
 
     it('resolves on success with response body', async () => {
