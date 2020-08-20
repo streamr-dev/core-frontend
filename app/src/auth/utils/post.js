@@ -8,7 +8,7 @@ export default (url: string, form: FormFields, successWithError: boolean): Promi
     url,
     data: form,
 })
-    .then(({ data }) => {
+    .then((data) => {
         if (successWithError && data.error) {
             throw new Error(data.error)
         }
