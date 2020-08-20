@@ -58,7 +58,7 @@ const ForgotPasswordPage = ({ from }: Props) => {
 
         return post(routes.auth.external.forgotPassword(), {
             username,
-        }, false, true)
+        }, false)
     }, [form])
 
     const onBack = useCallback(() => {

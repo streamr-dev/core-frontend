@@ -117,7 +117,7 @@ const RegisterPage = ({ location: { search, pathname }, history: { replace } }: 
             password2,
             tosConfirmed,
             invite,
-        }, false, true).then(({ username }) => mountedRef.current && (
+        }, false).then(({ username }) => mountedRef.current && (
             getSessionToken({
                 username,
                 password,
