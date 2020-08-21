@@ -83,6 +83,9 @@ msgstr "Language"
 msgid "general.linkedin"
 msgstr "LinkedIn"
 
+msgid "general.core"
+msgstr "Core"
+
 msgid "general.marketplace"
 msgstr "Marketplace"
 
@@ -109,6 +112,9 @@ msgstr "Data Unions"
 
 msgid "general.profile"
 msgstr "Profile"
+
+msgid "general.transactions"
+msgstr "Transactions"
 
 msgid "general.subscriptions"
 msgstr "Subscriptions"

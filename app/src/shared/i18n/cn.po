@@ -65,6 +65,10 @@ msgstr "语言"
 msgid "general.linkedin"
 msgstr "领英"
 
+# missing
+msgid "general.core"
+msgstr "Core"
+
 msgid "general.marketplace"
 msgstr "市场"
 
@@ -89,6 +93,10 @@ msgstr "产品"
 
 msgid "general.profile"
 msgstr "Profile"
+
+# missing
+msgid "general.transactions"
+msgstr "Transactions"
 
 # missing
 msgid "general.subscriptions"

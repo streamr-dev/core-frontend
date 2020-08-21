@@ -35,12 +35,6 @@ jest.mock('$userpages/components/NewStreamPage', () => ({
         <div>New stream page</div>
     ),
 }))
-jest.mock('$userpages/components/StreamLivePreview', () => ({
-    __esModule: true,
-    default: ({ match }) => (
-        <div>Stream {match.params.streamId} preview</div>
-    ),
-}))
 jest.mock('$userpages/components/TransactionPage/List', () => ({
     __esModule: true,
     default: () => (
@@ -172,20 +166,6 @@ describe('Userpages Routes', () => {
         ))
 
         expect(el.text()).toBe('Stream steamid123 view/edit page')
-    })
-
-    it('shows stream preview', () => {
-        const el = mount((
-            <MemoryRouter
-                initialEntries={['/core/streams/steamid123/preview']}
-            >
-                <Switch>
-                    {UserpagesRouter()}
-                </Switch>
-            </MemoryRouter>
-        ))
-
-        expect(el.text()).toBe('Stream steamid123 preview')
     })
 
     it('shows transactions list', () => {

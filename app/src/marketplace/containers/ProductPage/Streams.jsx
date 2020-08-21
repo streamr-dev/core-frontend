@@ -1,9 +1,9 @@
 // @flow
 
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
-import { productStates } from '$shared/utils/constants'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import {
     selectSubscriptionIsValid,
@@ -13,11 +13,11 @@ import {
 import { selectUserData } from '$shared/modules/user/selectors'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
 import { isPaidProduct } from '$mp/utils/product'
+import routes from '$routes'
 
-import styles from './streams.pcss'
-
-const Streams = () => {
+const Streams = withRouter(({ history }) => {
     const product = useProduct()
+    const productId = product.id
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const userData = useSelector(selectUserData)
     const streams = useSelector(selectStreams)
@@ -25,18 +25,32 @@ const Streams = () => {
     const isLoggedIn = userData !== null
     const isProductFree = !!(product && !isPaidProduct(product))
 
+    const onStreamPreview = useCallback((streamId) => {
+        history.replace(routes.marketplace.streamPreview({
+            id: productId,
+            streamId,
+        }))
+    }, [history, productId])
+
+    const onStreamSettings = useCallback((id) => {
+        history.push(routes.streams.show({
+            id,
+        }))
+    }, [history])
+
+    const locked = useMemo(() => !(
+        isProductFree || (isLoggedIn && isProductSubscriptionValid)
+    ), [isProductFree, isLoggedIn, isProductSubscriptionValid])
+
     return (
         <StreamListing
-            product={product}
             streams={streams}
             fetchingStreams={fetchingStreams}
-            showStreamActions={product.state === productStates.DEPLOYED}
-            isLoggedIn={isLoggedIn}
-            isProductSubscriptionValid={isProductSubscriptionValid}
-            isProductFree={isProductFree}
-            className={styles.section}
+            locked={locked}
+            onStreamPreview={onStreamPreview}
+            onStreamSettings={!!isLoggedIn && isProductSubscriptionValid && onStreamSettings}
         />
     )
-}
+})
 
 export default Streams

@@ -125,7 +125,6 @@ const StreamPage = (props) => {
     ) : (
         <Edit
             stream={editedStream}
-            currentUser={currentUser}
             canShare={canShare}
             disabled={updating}
         />

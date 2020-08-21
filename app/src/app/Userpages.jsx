@@ -15,7 +15,6 @@ import CanvasList from '$userpages/components/CanvasPage/List'
 import StreamPage from '$userpages/components/StreamPage'
 import NewStreamPage from '$userpages/components/NewStreamPage'
 import StreamListView from '$userpages/components/StreamPage/List'
-import StreamLivePreview from '$userpages/components/StreamLivePreview'
 import TransactionList from '$userpages/components/TransactionPage/List'
 import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
@@ -46,7 +45,6 @@ const UserpagesRouter = () => ([
     <Route exact path={routes.streams.new()} component={NewStreamPageAuth} key="newStreamPage" />,
     <Route exact path={routes.streams.show()} component={StreamPage} key="streamPage" />,
     <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,
-    <Route exact path={routes.streams.preview()} component={StreamLivePreview} key="StreamLivePreview" />,
     <Route exact path={routes.transactions()} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={routes.subscriptions()} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
