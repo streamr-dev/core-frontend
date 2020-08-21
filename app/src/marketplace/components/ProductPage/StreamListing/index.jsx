@@ -144,6 +144,7 @@ const DescriptionItem = styled(RowItem)`
 const HeaderRow = styled(DataRow)`
     height: 72px;
     background-color: #EFEFEF;
+    color: #323232;
 
     ${RowItem} {
         font-weight: var(--medium);

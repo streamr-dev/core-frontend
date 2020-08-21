@@ -11,6 +11,8 @@ import { MD } from '$shared/utils/styled'
 const Container = styled(ProductContainer)`
     background-color: #f8f8f8;
     margin-top: 48px !important;
+    border-radius: 2px;
+    border: 1px solid #EFEFEF;
     
     @media (max-width: ${MD}px) {
         padding-left: 0 !important;
@@ -21,12 +23,10 @@ const Container = styled(ProductContainer)`
 const Header = styled.div`
     display: flex;
     background-color: #efefef;
-    color: #525252;
+    color: #323232;
     font-size: 14px;
     font-weight: 500;
     line-height: 16px;
-    letter-spacing: 1.17px;
-    text-transform: uppercase;
     height: 4.5rem;
     align-items: center;
     padding: 2em;
