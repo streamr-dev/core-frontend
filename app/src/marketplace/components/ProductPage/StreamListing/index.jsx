@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 import { Translate } from 'react-redux-i18n'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import { MD, LG } from '$shared/utils/styled'
+import { SM, MD, LG } from '$shared/utils/styled'
 import ProductContainer from '$shared/components/Container/Product'
 
 const StreamCount = styled.span`
@@ -91,6 +91,7 @@ const RowButtons = styled.div`
 `
 
 const DataRow = styled.div`
+    position: relative;
     height: 56px;
     display: flex;
     flex-direction: row;
@@ -115,16 +116,32 @@ const DataRow = styled.div`
         display: none;
     }
 
-    &:hover,
-    &:focus-within {
-        ${RowButtons} {
-            display: block;
+    ${({ clickable }) => !!clickable && css`
+        @media (max-width: ${LG}px) {
+            &:active,
+            &:focus-within {
+                background-color: #F3F3F3;
+            }
+        }
+    `}
+
+    @media (min-width: ${LG}px) {
+        &:hover,
+        &:focus-within {
+            ${RowButtons} {
+                display: block;
+            }
         }
     }
 `
 
 const TitleItem = styled(RowItem)`
     flex: 1;
+
+    @media (min-width: ${SM}px) {
+        width: 228px;
+        flex: initial;
+    }
 
     @media (min-width: ${LG}px) {
         width: 328px;
@@ -135,9 +152,22 @@ const TitleItem = styled(RowItem)`
 const DescriptionItem = styled(RowItem)`
     display: none;
 
-    @media (min-width: ${LG}px) {
+    @media (min-width: ${SM}px) {
         display: block;
         flex: 1;
+    }
+`
+
+const MobileHitTarget = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+
+    @media (min-width: ${LG}px) {
+        display: none;
     }
 `
 
@@ -193,7 +223,7 @@ export const StreamListing = ({
             {!fetchingStreams && (
                 <TableBody>
                     {streams.map(({ id: streamId, name, description }) => (
-                        <DataRow key={streamId} locked={locked}>
+                        <DataRow key={streamId} locked={locked} clickable={!locked && !!showPreview}>
                             <TitleItem title={name}>{name}</TitleItem>
                             <DescriptionItem title={description}>{description}</DescriptionItem>
                             {(!!showPreview || !!showSettings) && (
@@ -209,6 +239,9 @@ export const StreamListing = ({
                                         </button>
                                     )}
                                 </RowButtons>
+                            )}
+                            {!!showPreview && (
+                                <MobileHitTarget onClick={() => onStreamPreview(streamId)} />
                             )}
                         </DataRow>
                     ))}
