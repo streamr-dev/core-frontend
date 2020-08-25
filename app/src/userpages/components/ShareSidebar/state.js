@@ -326,6 +326,18 @@ export function hasPermissionsChanges({ oldPermissions, newUsers, resourceType }
     return !!(diff.added.length || diff.removed.length)
 }
 
+export function hasUserSpecificPermissionsChanges({ oldPermissions, newUsers, resourceType, targetUserId } = {}) {
+    const diff = diffUsersPermissions({
+        oldPermissions,
+        newUsers,
+        resourceType,
+    })
+    return !![
+        ...diff.added,
+        ...diff.removed,
+    ].some(({ user }) => user === targetUserId)
+}
+
 /**
  * Convert server anonymous permission to look like a regular user permission.
  * Allows treating anonymous permission like regular user permission.
@@ -361,6 +373,6 @@ export function toAnonymousPermission(permission) {
  * True for non-empty userIds other than currentUser and anonymous
  */
 
-export function canShareToUser({ currentUser, userId }) {
-    return isValidUserId(userId) && userId !== 'anonymous' && userId !== currentUser
+export function canShareToUser(userId) {
+    return isValidUserId(userId) && userId !== 'anonymous'
 }

@@ -99,9 +99,21 @@ type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | Targe
 
 function StreamPageSidebar({ stream }) {
     const sidebar = useContext(SidebarContext)
+    const dispatch = useDispatch()
+
+    const streamId = stream && stream.id
+    const reloadStreamPermission = useCallback(async () => {
+        try {
+            await dispatch(getResourcePermissions('STREAM', streamId || ''))
+        } catch (e) {
+            // Noop.
+        }
+    }, [dispatch, streamId])
+
     const onClose = useCallback(() => {
         sidebar.close()
-    }, [sidebar])
+        reloadStreamPermission()
+    }, [sidebar, reloadStreamPermission])
 
     return (
         <Sidebar
