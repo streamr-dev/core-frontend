@@ -536,6 +536,11 @@ const ShareSidebar = connect(({ user }) => ({
             return
         }
 
+        if (!isMounted()) {
+            // close sidebar if permission loading failed
+            propsRef.current.onClose()
+            return
+        }
         setUserErrors(errors) // errors will be empty if no errors
         setNewUserIdList((prevIds) => (
             // reset new user list to only include new users that had errors
