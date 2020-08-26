@@ -797,6 +797,12 @@ msgstr "Your Name"
 msgid "userpages.profilePage.profileSettings.userEmail"
 msgstr "Email"
 
+msgid "userpages.profilePage.profileSettings.userEmailPlaceholder"
+msgstr "Your email address (optional)"
+
+msgid "userpages.profilePage.profileSettings.userEmailError"
+msgstr "Please enter a valid email address"
+
 msgid "userpages.profilePage.profileSettings.changePassword"
 msgstr "Change Password"
 

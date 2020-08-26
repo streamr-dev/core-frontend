@@ -17,8 +17,9 @@ import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import { updateCurrentUserName } from '$shared/modules/user/actions'
+import { updateCurrentUserName, updateCurrentUserEmail } from '$shared/modules/user/actions'
 import { MD, LG } from '$shared/utils/styled'
+import { isEthereumAddress } from '$mp/utils/validate'
 
 import ChangePasswordDialog from './ChangePasswordDialog'
 import EditAvatarDialog from './EditAvatarDialog'
@@ -90,9 +91,17 @@ const ProfileSettings = () => {
         dispatch(updateCurrentUserName(name))
     ), [dispatch])
 
+    const doUpdateUserEmail = useCallback((email: $ElementType<User, 'email'>) => (
+        dispatch(updateCurrentUserEmail(email))
+    ), [dispatch])
+
     const onNameChange = useCallback(({ target }: { target: { value: $ElementType<User, 'name'> } }) => {
         doUpdateUserName(target.value)
     }, [doUpdateUserName])
+
+    const onEmailChange = useCallback(({ target }: { target: { value: $ElementType<User, 'email'> } }) => {
+        doUpdateUserEmail(target.value)
+    }, [doUpdateUserEmail])
 
     const changePassword = useCallback(async () => (
         wrapChangePasswordDialog(async () => {
@@ -139,6 +148,8 @@ const ProfileSettings = () => {
 
     ), [wrapUploadAvatarDialog, uploadAvatarDialog, isMounted, originalImage])
 
+    const isEthereumUser = !!isEthereumAddress(user.username)
+
     return (
         <Root>
             <AvatarWrapper>
@@ -181,9 +192,11 @@ const ProfileSettings = () => {
                 </Label>
                 <Text
                     id="userEmail"
-                    value={user.username || ''}
-                    readOnly
-                    disabled={isPending}
+                    value={user.email || ''}
+                    onChange={onEmailChange}
+                    disabled={isPending || !isEthereumUser}
+                    readOnly={!isEthereumUser}
+                    placeholder={I18n.t('userpages.profilePage.profileSettings.userEmailPlaceholder')}
                 />
             </InputRow>
             <PasswordButton

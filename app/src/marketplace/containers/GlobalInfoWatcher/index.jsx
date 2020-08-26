@@ -107,9 +107,10 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         balanceTimeout.current = setTimeout(balancePoll, ACCOUNT_BALANCE_POLL_INTERVAL)
     }, [updateBalances])
     const user = useSelector(selectUserData)
+    const { username } = user || {}
 
     useEffect(() => {
-        if (!user) { return () => {} }
+        if (!username) { return () => {} }
 
         // fetch the integration keys first and then start polling for the balance
         dispatch(fetchIntegrationKeys())
@@ -120,7 +121,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         return () => {
             clearTimeout(balanceTimeout.current)
         }
-    }, [dispatch, balancePoll, user])
+    }, [dispatch, balancePoll, username])
 
     return children || null
 }

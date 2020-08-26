@@ -2,6 +2,8 @@
 
 import { createAction } from 'redux-actions'
 import { push } from 'connected-react-router'
+import * as yup from 'yup'
+import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
@@ -121,6 +123,16 @@ export const updateCurrentUserName = (name: string) => (dispatch: Function, getS
     }
 }
 
+export const updateCurrentUserEmail = (email: string) => (dispatch: Function, getState: Function) => {
+    const user = selectUserData(getState())
+    if (user) {
+        dispatch(updateCurrentUser({
+            ...user,
+            email,
+        }))
+    }
+}
+
 export const updateCurrentUserImage = (image: ?File) => (dispatch: Function, getState: Function) => {
     dispatch(updateAvatarRequest())
     const user = selectUserData(getState())
@@ -143,6 +155,8 @@ export const updateCurrentUserImage = (image: ?File) => (dispatch: Function, get
         })
 }
 
+const emailValidator = yup.string().trim().email()
+
 export const saveCurrentUser = () => async (dispatch: Function, getState: Function) => {
     dispatch(saveCurrentUserRequest())
 
@@ -150,6 +164,10 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
 
     if (!user) {
         throw new Error('Invalid user data')
+    }
+
+    if (!!user.email && !emailValidator.isValidSync(user.email)) {
+        throw new Error(I18n.t('userpages.profilePage.profileSettings.userEmailError'))
     }
 
     return services.putUser(user)
