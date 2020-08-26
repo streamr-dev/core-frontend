@@ -148,6 +148,8 @@ const ProfileSettings = () => {
 
     ), [wrapUploadAvatarDialog, uploadAvatarDialog, isMounted, originalImage])
 
+    const isEthereumUser = !!isEthereumAddress(user.username)
+
     return (
         <Root>
             <AvatarWrapper>
@@ -192,8 +194,8 @@ const ProfileSettings = () => {
                     id="userEmail"
                     value={user.email || ''}
                     onChange={onEmailChange}
-                    disabled={isPending}
-                    readOnly={!isEthereumAddress(user.username)}
+                    disabled={isPending || !isEthereumUser}
+                    readOnly={!isEthereumUser}
                     placeholder={I18n.t('userpages.profilePage.profileSettings.userEmailPlaceholder')}
                 />
             </InputRow>
