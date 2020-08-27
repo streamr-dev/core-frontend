@@ -1,6 +1,7 @@
 import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
+import { useSelector } from 'react-redux'
 
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
@@ -21,6 +22,8 @@ import BodyClass from '$shared/components/BodyClass'
 import DashboardStatus from '$editor/shared/components/Status'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import ShareSidebar from '$userpages/components/ShareSidebar'
+import { usePermissionsLoader } from '$userpages/components/ShareSidebar/Sidebar'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 import routes from '$routes'
 
@@ -158,8 +161,19 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         })
     }
 
+    closeSidebar = () => {
+        const { sidebar, loadPermissions } = this.props
+
+        // If share sidebar was open, load permissions again to react to own permission changes
+        if (sidebar.isOpen('share')) {
+            loadPermissions()
+        }
+
+        sidebar.close()
+    }
+
     render() {
-        const { dashboard, sidebar } = this.props
+        const { dashboard, sidebar, hasSharePermission, hasDeletePermission } = this.props
         return (
             <div className={styles.DashboardEdit}>
                 <Helmet title={`${dashboard.name} | Streamr Core`} />
@@ -184,11 +198,13 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                     removeModule={this.removeModule}
                     moduleSearchIsOpen={this.state.moduleSearchIsOpen}
                     moduleSearchOpen={this.moduleSearchOpen}
+                    hasSharePermission={hasSharePermission}
+                    hasDeletePermission={hasDeletePermission}
                 />
                 <Sidebar
                     className={CanvasStyles.ModuleSidebar}
                     isOpen={sidebar.isOpen()}
-                    onClose={sidebar.close}
+                    onClose={this.closeSidebar}
                 >
                     {sidebar.isOpen('keyboardShortcuts') && (
                         <KeyboardShortcutsSidebar
@@ -201,6 +217,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                             resourceTitle={dashboard.name}
                             resourceType="DASHBOARD"
                             resourceId={dashboard.id}
+                            onClose={this.closeSidebar}
                         />
                     )}
                 </Sidebar>
@@ -322,6 +339,17 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponent)(class Dashb
 const DashboardEditWrap = () => {
     const sidebar = useContext(SidebarContext)
     const { undo, push, replace, state: dashboard } = useContext(UndoContext)
+
+    const [{ result: permissions }, loadPermissions] = usePermissionsLoader({
+        resourceType: 'DASHBOARD',
+        resourceId: dashboard && dashboard.id,
+    })
+
+    const currentUser = useSelector(selectUserData)
+    const { username } = currentUser || {}
+    const hasSharePermission = (permissions || []).find((p) => p.user === username && p.operation === 'dashboard_share')
+    const hasDeletePermission = (permissions || []).find((p) => p.user === username && p.operation === 'dashboard_delete')
+
     return (
         <DashboardEdit
             key={dashboard.id}
@@ -330,6 +358,9 @@ const DashboardEditWrap = () => {
             replace={replace}
             dashboard={dashboard}
             sidebar={sidebar}
+            loadPermissions={loadPermissions}
+            hasSharePermission={hasSharePermission}
+            hasDeletePermission={hasDeletePermission}
         />
     )
 }

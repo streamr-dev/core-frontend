@@ -7,6 +7,7 @@ import {
     GET_RESOURCE_PERMISSIONS_REQUEST,
     GET_RESOURCE_PERMISSIONS_SUCCESS,
     GET_RESOURCE_PERMISSIONS_FAILURE,
+    RESET_RESOURCE_PERMISSIONS,
 } from './actions'
 
 const initialState = {
@@ -50,6 +51,23 @@ export default function (state: PermissionState = initialState, action: Permissi
                     },
                 },
             }
+
+        case RESET_RESOURCE_PERMISSIONS: {
+            const newPermissions = {
+                ...(state.byTypeAndId[action.resourceType] || {}),
+            }
+            delete newPermissions[action.resourceId]
+
+            return {
+                ...state,
+                byTypeAndId: {
+                    ...state.byTypeAndId,
+                    [(action.resourceType: string)]: {
+                        ...newPermissions,
+                    },
+                },
+            }
+        }
 
         default:
             return state

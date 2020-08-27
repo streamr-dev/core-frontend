@@ -19,7 +19,7 @@ import Search from '../../Header/Search'
 import confirmDialog from '$shared/utils/confirm'
 import NoCanvasesView from './NoCanvases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
-import { getResourcePermissions } from '$userpages/modules/permission/actions'
+import { getResourcePermissions, resetResourcePermission } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -68,17 +68,29 @@ const StyledListContainer = styled(ListContainer)`
 
 function CanvasPageSidebar({ canvas }) {
     const sidebar = useContext(SidebarContext)
+    const dispatch = useDispatch()
+
+    const canvasId = canvas && canvas.id
+
+    const onClose = useCallback(() => {
+        sidebar.close()
+
+        if (canvasId) {
+            dispatch(resetResourcePermission('CANVAS', canvasId))
+        }
+    }, [sidebar, dispatch, canvasId])
+
     return (
         <Sidebar
             isOpen={sidebar.isOpen()}
-            onClose={() => sidebar.close()}
+            onClose={onClose}
         >
             {sidebar.isOpen('share') && (
                 <ShareSidebar
-                    onClose={() => sidebar.close('share')}
                     resourceTitle={canvas && canvas.name}
                     resourceType="CANVAS"
                     resourceId={canvas && canvas.id}
+                    onClose={onClose}
                 />
             )}
         </Sidebar>

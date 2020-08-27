@@ -535,6 +535,7 @@ const ShareSidebar = connect(({ user }) => ({
             propsRef.current.onClose()
             return
         }
+
         setUserErrors(errors) // errors will be empty if no errors
         setNewUserIdList((prevIds) => (
             // reset new user list to only include new users that had errors
