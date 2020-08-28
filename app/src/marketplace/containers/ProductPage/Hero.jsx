@@ -46,13 +46,13 @@ const Hero = () => {
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const subscription = useSelector(selectContractSubscription)
     const { account } = useWeb3Status()
-    const [isWhitelisted, setIsWhitelisted] = useState(null)
 
     const productId = product.id
     const contactEmail = product && product.contact && product.contact.email
     const productName = product && product.name
     const isPaid = isPaidProduct(product)
-    const isWhitelistEnabled = product.requiresWhitelist
+    const isWhitelistEnabled = !!(isPaid && product.requiresWhitelist)
+    const [isWhitelisted, setIsWhitelisted] = useState(isWhitelistEnabled ? null : false)
 
     const onPurchase = useCallback(async () => (
         wrap(async () => {
