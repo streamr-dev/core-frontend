@@ -56,13 +56,6 @@ export type Canvas = {
     uiChannel: UiChannel
 }
 
-export type CanvasAction = {
-    type: string,
-    id?: number,
-    canvases?: Array<Canvas>,
-    error?: string
-}
-
 export type CanvasEntities = {
     [CanvasId]: Canvas,
 }

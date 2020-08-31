@@ -1,8 +1,3 @@
-// @flow
-
-import type { DashboardState } from '$userpages/flowtype/states/dashboard-state'
-import type { Action as DashboardAction } from '$userpages/flowtype/actions/dashboard-actions'
-
 import {
     GET_DASHBOARDS_REQUEST,
     GET_DASHBOARDS_SUCCESS,
@@ -18,7 +13,7 @@ const initialState = {
     fetching: false,
 }
 
-const dashboard = function dashboard(state: DashboardState = initialState, action: DashboardAction): DashboardState {
+const dashboard = function dashboard(state = initialState, action) {
     switch (action.type) {
         case GET_DASHBOARDS_REQUEST:
         case DELETE_DASHBOARD_REQUEST:

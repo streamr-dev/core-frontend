@@ -1,8 +1,3 @@
-// @flow
-
-import type { CanvasState } from '../../flowtype/states/canvas-state'
-import type { CanvasAction } from '../../flowtype/actions/canvas-actions'
-
 import {
     GET_CANVASES_REQUEST,
     GET_CANVASES_SUCCESS,
@@ -18,7 +13,7 @@ const initialState = {
     fetching: false,
 }
 
-export default function (state: CanvasState = initialState, action: CanvasAction): CanvasState {
+export default function (state = initialState, action) {
     switch (action.type) {
         case GET_CANVASES_REQUEST:
         case DELETE_CANVAS_REQUEST:

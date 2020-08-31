@@ -112,12 +112,13 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
         }))
     }
 
-    onDeleteCanvas = async () => {
+    onDeleteCanvas = async (hasDeletePermission) => {
+        const type = hasDeletePermission ? 'delete' : 'remove'
         const confirmed = await confirmDialog('canvas', {
-            title: I18n.t('userpages.canvases.delete.confirmTitle'),
-            message: I18n.t('userpages.canvases.delete.confirmMessage'),
+            title: I18n.t(`userpages.canvases.${type}.confirmTitle`),
+            message: I18n.t(`userpages.canvases.${type}.confirmMessage`),
             acceptButton: {
-                title: I18n.t('userpages.canvases.delete.confirmButton'),
+                title: I18n.t(`userpages.canvases.${type}.confirmButton`),
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -129,7 +130,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                 await this.props.deleteCanvas()
 
                 Notification.push({
-                    title: I18n.t('userpages.canvases.deletedCanvas'),
+                    title: I18n.t(`userpages.canvases.${type}.notification`),
                     icon: NotificationIcon.CHECKMARK,
                 })
             } catch (e) {
@@ -231,10 +232,9 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                         </Popover.Item>
                                         <Popover.Item onClick={() => duplicateCanvas()}>Duplicate</Popover.Item>
                                         <Popover.Item
-                                            onClick={this.onDeleteCanvas}
-                                            disabled={!hasDeletePermission}
+                                            onClick={() => this.onDeleteCanvas(hasDeletePermission)}
                                         >
-                                            Delete
+                                            {hasDeletePermission ? 'Delete' : 'Remove'}
                                         </Popover.Item>
                                     </Popover>
                                 </div>

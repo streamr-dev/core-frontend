@@ -43,28 +43,13 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
         }))
     }, [setDashboard])
 
-    const deleteDashboardAndNotify = React.useCallback(async () => {
-        try {
-            await deleteDashboardProp()
-
-            Notification.push({
-                title: I18n.t('userpages.dashboards.deletedDashboard'),
-                icon: NotificationIcon.CHECKMARK,
-            })
-        } catch (e) {
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
-        }
-    }, [deleteDashboardProp])
-
-    const deleteDashboard = React.useCallback(async () => {
+    const deleteDashboard = React.useCallback(async (hasDeletePermission) => {
+        const type = hasDeletePermission ? 'delete' : 'remove'
         const confirmed = await confirmDialog('dashboard', {
-            title: I18n.t('userpages.dashboards.delete.confirmTitle'),
-            message: I18n.t('userpages.dashboards.delete.confirmMessage'),
+            title: I18n.t(`userpages.dashboards.${type}.confirmTitle`),
+            message: I18n.t(`userpages.dashboards.${type}.confirmMessage`),
             acceptButton: {
-                title: I18n.t('userpages.dashboards.delete.confirmButton'),
+                title: I18n.t(`userpages.dashboards.${type}.confirmButton`),
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -72,9 +57,21 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
         })
 
         if (confirmed) {
-            deleteDashboardAndNotify()
+            try {
+                await deleteDashboardProp()
+
+                Notification.push({
+                    title: I18n.t(`userpages.dashboards.${type}.notification`),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            } catch (e) {
+                Notification.push({
+                    title: e.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
         }
-    }, [deleteDashboardAndNotify])
+    }, [deleteDashboardProp])
 
     const elRef = React.useRef()
 
@@ -130,10 +127,9 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
                                         </Popover.Item>
                                         <Popover.Item onClick={() => duplicateDashboard()}>Duplicate</Popover.Item>
                                         <Popover.Item
-                                            disabled={!hasDeletePermission}
-                                            onClick={deleteDashboard}
+                                            onClick={() => deleteDashboard(hasDeletePermission)}
                                         >
-                                            Delete
+                                            {hasDeletePermission ? 'Delete' : 'Remove'}
                                         </Popover.Item>
                                     </Popover>
                                 </div>

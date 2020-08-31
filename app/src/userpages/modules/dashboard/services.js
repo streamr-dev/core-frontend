@@ -1,28 +1,24 @@
-// @flow
-
 import { get, post, put, del } from '$shared/utils/api'
-import type { ApiResult } from '$shared/flowtype/common-types'
-import type { DashboardId, Dashboard, DashboardList } from '$userpages/flowtype/dashboard-types'
 import routes from '$routes'
 
-export const getDashboards = (params: any): ApiResult<DashboardList> => get({
+export const getDashboards = (params) => get({
     url: routes.api.dashboards.index(),
     options: { params },
 })
 
-export const getDashboard = (id: DashboardId): ApiResult<Dashboard> => get({
+export const getDashboard = (id) => get({
     url: routes.api.dashboards.show({
         id,
     }),
 })
 
-export const deleteDashboard = (id: DashboardId): ApiResult<null> => del({
+export const deleteDashboard = (id) => del({
     url: routes.api.dashboards.show({
         id,
     }),
 })
 
-export const postDashboard = (dashboard: Dashboard): ApiResult<Dashboard> => post({
+export const postDashboard = (dashboard) => post({
     url: routes.api.dashboards.index(),
     data: {
         ...dashboard,
@@ -30,7 +26,7 @@ export const postDashboard = (dashboard: Dashboard): ApiResult<Dashboard> => pos
     },
 })
 
-export const putDashboard = (id: DashboardId, dashboard: Dashboard): ApiResult<Dashboard> => put({
+export const putDashboard = (id, dashboard) => put({
     url: routes.api.dashboards.show({
         id,
     }),

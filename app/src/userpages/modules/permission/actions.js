@@ -50,3 +50,25 @@ export const resetResourcePermission = (resourceType: ResourceType, resourceId: 
     resourceType,
     resourceId,
 })
+
+export const removeResourcePermissions = (
+    resourceType: ResourceType,
+    resourceId: ResourceId,
+    permissionIds: Array<ResourceId>,
+) => async (dispatch: Function) => {
+    try {
+        const removePermissions = await Promise.all([
+            ...permissionIds.map(async (id) => services.removeResourcePermission({
+                resourceType,
+                resourceId,
+                id,
+            })),
+        ])
+        dispatch(resetResourcePermission(resourceType, resourceId))
+
+        return removePermissions
+    } catch (error) {
+        console.warn(error)
+        throw error
+    }
+}

@@ -1,9 +1,9 @@
 import React, { useMemo, useCallback, useState, useEffect, useContext } from 'react'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import usePending from '$shared/hooks/usePending'
-import * as services from '../../services'
 import useCanvas from './useCanvas'
 import useEmbedMode from './useEmbedMode'
+import { getResourcePermissions } from '$userpages/modules/permission/services'
 
 const PermissionContext = React.createContext({
     permissions: [],
@@ -18,7 +18,11 @@ function usePermissionContextValue() {
     const canvasId = !!canvas && canvas.id
     const loadPermissions = useCallback(async (canvasId) => (
         wrap(async () => {
-            const permissions = await services.getCanvasPermissions({ id: canvasId })
+            const permissions = await getResourcePermissions({
+                resourceType: 'CANVAS',
+                resourceId: canvasId,
+                id: 'me',
+            })
             if (!isMountedRef.current) { return }
             setPermissions(permissions)
         })
