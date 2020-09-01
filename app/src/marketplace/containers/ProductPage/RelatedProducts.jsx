@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { I18n } from 'react-redux-i18n'

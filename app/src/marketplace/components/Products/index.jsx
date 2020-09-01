@@ -58,7 +58,7 @@ const Products = ({
     hasMoreSearchResults,
     header,
 }: OwnProps) => (
-    <Container className={styles[type]} fluid={type === 'products'}>
+    <Container className={classnames(styles[type])} fluid={type === 'products'}>
         {(header && <h3>{header}</h3>)}
         <Error source={error} />
         {(isFetching || products.length > 0)
