@@ -29,23 +29,27 @@ const ProductDetailsPage = () => {
     return (
         <ProductPage>
             <ProductPage.Hero>
-                <Hero />
-                <ProductPage.Separator />
-                <Description isProductFree={isProductFree} />
+                <ProductPage.Container>
+                    <Hero />
+                    <ProductPage.Separator />
+                    <Description isProductFree={isProductFree} />
+                </ProductPage.Container>
             </ProductPage.Hero>
-            {isDataUnion && (
-                <DataUnionStats
-                    showDeploying={!isDuDeployed}
-                    stats={stats}
-                    memberCount={memberCount}
-                    joinPartStreamId={joinPartStreamId}
+            <ProductPage.Container>
+                {isDataUnion && (
+                    <DataUnionStats
+                        showDeploying={!isDuDeployed}
+                        stats={stats}
+                        memberCount={memberCount}
+                        joinPartStreamId={joinPartStreamId}
+                    />
+                )}
+                <Streams />
+                <Terms
+                    product={product}
                 />
-            )}
-            <Streams />
-            <Terms
-                product={product}
-            />
-            <RelatedProducts />
+                <RelatedProducts />
+            </ProductPage.Container>
         </ProductPage>
     )
 }

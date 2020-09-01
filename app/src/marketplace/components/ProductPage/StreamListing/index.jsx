@@ -264,17 +264,4 @@ export const StreamListing = ({
     )
 }
 
-const StyledProductContainer = styled(ProductContainer)`
-    && {
-        @media (max-width: ${MD}px) {
-            padding-left: 0;
-            padding-right: 0;
-        }
-    }
-`
-
-export default (props) => (
-    <StyledProductContainer>
-        <StreamListing {...props} />
-    </StyledProductContainer>
-)
+export default StreamListing
