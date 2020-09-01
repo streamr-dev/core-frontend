@@ -4,18 +4,24 @@ import { MEDIUM } from '$shared/utils/styled'
 const Header = styled.div`
     align-items: center;
     background-color: #efefef;
-    color: #525252;
+    border-radius: 2px 2px 0 0;
+    color: #323232;
     display: flex;
     font-size: 14px;
     font-weight: ${MEDIUM};
+    height: 72px;
     letter-spacing: 1.17px;
     line-height: 16px;
-    padding: 28px 32px;
+    padding: 0 32px;
     text-transform: uppercase;
 `
 
 const Body = styled.div`
     background-color: #f8f8f8;
+
+    :last-child {
+        border-radius: 0 0 2px 2px;
+    }
 
     & + & {
         border-top: 1px solid #e7e7e7;
