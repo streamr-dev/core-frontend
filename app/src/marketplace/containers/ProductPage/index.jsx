@@ -6,6 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router-dom'
 
+import styled from 'styled-components'
 import Layout from '$shared/components/Layout'
 import type { ProductId } from '$mp/flowtype/product-types'
 import * as RouterContext from '$shared/contexts/Router'
@@ -13,7 +14,7 @@ import ProductController, { useController } from '../ProductController'
 import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
-import LoadingIndicator from '$shared/components/LoadingIndicator'
+import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import { WhitelistRequestAccessModal } from '$mp/containers/EditProductPage/WhitelistModals'
 
 import PurchaseModal from './PurchaseModal'
@@ -24,7 +25,10 @@ import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotF
 import { productStates } from '$shared/utils/constants'
 
 import Page from './Page'
-import styles from './page.pcss'
+
+const LoadingIndicator = styled(PrestyledLoadingIndicator)`
+    top: 2px;
+`
 
 const theme = {
     navShadow: true,
@@ -78,10 +82,7 @@ const ProductPage = () => {
     return (
         <Layout theme={theme}>
             <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
-            <LoadingIndicator
-                loading={isPending}
-                className={styles.loadingIndicator}
-            />
+            <LoadingIndicator loading={isPending} />
             <Page />
             <PurchaseModal />
             <WhitelistRequestAccessModal />
@@ -91,7 +92,7 @@ const ProductPage = () => {
 
 const LoadingView = () => (
     <Layout>
-        <LoadingIndicator loading className={styles.loadingIndicator} />
+        <LoadingIndicator loading />
     </Layout>
 )
 
