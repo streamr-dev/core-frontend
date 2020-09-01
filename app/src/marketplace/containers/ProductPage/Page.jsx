@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import styled from 'styled-components'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnionStats from './useDataUnionStats'
