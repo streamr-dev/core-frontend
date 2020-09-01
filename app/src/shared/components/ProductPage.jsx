@@ -2,13 +2,7 @@ import styled from 'styled-components'
 import Segment from '$shared/components/Segment'
 
 const ProductPage = styled.div`
-    color: #000000;
-    padding-bottom: 3em;
-
-    /* TODO: Determine wtf we keep this. */
-    .container {
-        max-width: 1110px;
-    }
+    color: #323232;
 
     ${Segment} {
         margin-top: 64px;
