@@ -501,73 +501,10 @@ msgstr ""
 "For keys that can access this stream only, create a new Ethereum account and share this "
 "stream to it. For keys that can access all your streams, add an Ethereum account in Settings."
 
-msgid "userpages.streams.edit.history.uploadCsvButton"
-msgstr "Upload CSV"
-
-msgid "userpages.streams.edit.history.upload.description"
-msgstr "If you want to add historical data to this stream, you can do so by uploading a .CSV file, which will be read and the data will be added to the stream."
-
 msgid "userpages.streams.edit.streamPartitions.description"
 msgstr ""
 "Partitioning enables high-volume streams to scale beyond what one subscriber can handle. "
 "If you’re not sure if your stream needs partitions, leave it set to 1."
-
-msgid "userpages.streams.edit.history.storedEvents"
-msgstr "Stored data"
-
-msgid "userpages.streams.edit.history.noEvents"
-msgstr "No stored data. Drop a CSV file here to load some."
-
-msgid "userpages.streams.edit.history.events"
-msgstr "This stream has stored data between %{start} and %{end}."
-
-msgid "userpages.streams.edit.history.delete"
-msgstr "Delete"
-
-msgid "userpages.streams.edit.history.deleteRange"
-msgstr "Delete data"
-
-msgid "userpages.streams.edit.history.deleteEvents"
-msgstr "Delete data up to and including"
-
-msgid "userpages.streams.edit.history.uploadCsv"
-msgstr "Drop your .CSV file here to upload"
-
-msgid "userpages.streams.edit.history.saveFirst"
-msgstr "Cannot add historical data to a stream that has not been saved yet. Please save your changes and try again."
-
-msgid "userpages.streams.edit.history.parseError"
-msgstr "Could not parse timestamp column"
-
-msgid "userpages.streams.edit.history.confirmCsv.title"
-msgstr "Clarify the CSV file fields"
-
-msgid "userpages.streams.edit.history.confirmCsv.customFormat"
-msgstr "Enter custom format"
-
-msgid "userpages.streams.edit.history.confirmCsv.selectTimestamp"
-msgstr "Select the Timestamp column"
-
-msgid "userpages.streams.edit.history.confirmCsv.dateFormat"
-msgstr "Date format"
-
-msgid "userpages.streams.edit.history.confirmCsv.dateFormats.java.name"
-msgstr "Java timestamp"
-
-msgid "userpages.streams.edit.history.confirmCsv.dateFormats.java.help"
-msgstr "Milliseconds since January 1st 1970 UTC"
-
-msgid "userpages.streams.edit.history.confirmCsv.dateFormats.unix.name"
-msgstr "Unix timestamp"
-
-msgid "userpages.streams.edit.history.confirmCsv.dateFormats.unix.help"
-msgstr "Seconds since January 1st 1970 UTC"
-
-msgid "userpages.streams.edit.history.confirmCsv.dateFormats.custom.name"
-msgstr "Custom Java SimpleDateFormat"
-
-msgid "userpages.streams.edit.history.datePicker.selectDate"
-msgstr "Select date"
 
 msgid "userpages.streams.partitionsLabel"
 msgstr "Partitions"

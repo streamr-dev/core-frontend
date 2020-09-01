@@ -1,7 +1,5 @@
 // @flow
 
-import moment from 'moment-timezone'
-
 import { get, post, put, del } from '$shared/utils/api'
 import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
@@ -11,8 +9,6 @@ import type {
     StreamList,
     NewStream,
     StreamStatus,
-    CsvUploadResult,
-    Range,
 } from '$shared/flowtype/stream-types'
 
 export const getStream = (id: StreamId): ApiResult<Stream> => get({
@@ -60,60 +56,6 @@ export const getStreamStatus = (streamId: StreamId): ApiResult<StreamStatus> => 
     url: routes.api.streams.status({
         streamId,
     }),
-})
-
-export const uploadCsvFile = (streamId: StreamId, file: File): Promise<CsvUploadResult> => {
-    const options = {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    }
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-    return post({
-        url: routes.api.streams.uploadCsvFile({
-            streamId,
-        }),
-        data: formData,
-        options,
-    })
-}
-
-export const confirmCsvFileUpload = (
-    streamId: StreamId,
-    fileId: string,
-    dateFormat: string,
-    timestampColumnIndex: number,
-): ApiResult<any> => post({
-    url: routes.api.streams.confirmCsvFileUpload({
-        streamId,
-    }),
-    data: {
-        fileId,
-        dateFormat,
-        timestampColumnIndex,
-    },
-})
-
-export const getRange = (streamId: StreamId): ApiResult<Range> => get({
-    url: routes.api.streams.range({
-        streamId,
-    }),
-    options: {
-        ignoreUnauthorized: true,
-    },
-})
-
-export const deleteDataUpTo = (streamId: StreamId, date: Date): ApiResult<any> => del({
-    url: routes.api.streams.deleteDataUpTo({
-        streamId,
-    }),
-    data: {
-        id: streamId,
-        date: moment(date).valueOf(),
-    },
 })
 
 export const autodetectStreamfields = (streamId: StreamId): ApiResult<Stream> => get({

@@ -5,7 +5,7 @@ import { denormalize } from 'normalizr'
 
 import type { EntitiesState, StreamResourceKeys } from '$shared/flowtype/store-state'
 import type { StoreState } from '$userpages/flowtype/states/store-state'
-import type { UserPageStreamsState, CsvUploadState } from '$userpages/flowtype/states/stream-state'
+import type { UserPageStreamsState } from '$userpages/flowtype/states/stream-state'
 import type { Stream, StreamList, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
 import type { ResourceKeyIdList, ResourceKeyList } from '$shared/flowtype/resource-key-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
@@ -70,11 +70,6 @@ export const selectOpenStreamResourceKeys: (StoreState) => ResourceKeyList = cre
 export const selectDeleteDataError: (StoreState) => ?ErrorInUi = createSelector(
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): ?ErrorInUi => subState.deleteDataError,
-)
-
-export const selectUploadCsvState: (StoreState) => ?CsvUploadState = createSelector(
-    selectUserPageStreamsState,
-    (subState: UserPageStreamsState): ?CsvUploadState => subState.csvUpload,
 )
 
 export const selectFieldsAutodetectFetching: (StoreState) => boolean = createSelector(

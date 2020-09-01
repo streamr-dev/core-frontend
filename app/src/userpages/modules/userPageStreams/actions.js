@@ -4,7 +4,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Stream, StreamId, StreamIdList, StreamFieldList, CSVImporterSchema, StreamStatus } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId, StreamIdList, StreamFieldList, StreamStatus } from '$shared/flowtype/stream-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 
 import Notification from '$shared/utils/Notification'
@@ -13,9 +13,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
-import { getError } from '$shared/utils/request'
 import { getParamsForFilter } from '$userpages/utils/filters'
-import CsvSchemaError from '$shared/errors/CsvSchemaError'
 import routes from '$routes'
 
 import * as services from './services'
@@ -46,24 +44,9 @@ export const SAVE_STREAM_FIELDS_REQUEST = 'userpages/streams/SAVE_STREAM_FIELDS_
 export const SAVE_STREAM_FIELDS_SUCCESS = 'userpages/streams/SAVE_STREAM_FIELDS_SUCCESS'
 export const SAVE_STREAM_FIELDS_FAILURE = 'userpages/streams/SAVE_STREAM_FIELDS_FAILURE'
 
-export const UPLOAD_CSV_FILE_REQUEST = 'userpages/streams/UPLOAD_CSV_FILE_REQUEST'
-export const UPLOAD_CSV_FILE_SUCCESS = 'userpages/streams/UPLOAD_CSV_FILE_SUCCESS'
-export const UPLOAD_CSV_FILE_UNKNOWN_SCHEMA = 'userpages/streams/UPLOAD_CSV_FILE_UNKNOWN_SCHEMA'
-export const UPLOAD_CSV_FILE_FAILURE = 'userpages/streams/UPLOAD_CSV_FILE_FAILURE'
-
-export const CONFIRM_CSV_FILE_UPLOAD_REQUEST = 'userpages/streams/CONFIRM_CSV_FILE_UPLOAD_REQUEST'
-export const CONFIRM_CSV_FILE_UPLOAD_SUCCESS = 'userpages/streams/CONFIRM_CSV_FILE_UPLOAD_SUCCESS'
-export const CONFIRM_CSV_FILE_UPLOAD_FAILURE = 'userpages/streams/CONFIRM_CSV_FILE_UPLOAD_FAILURE'
-
-export const DELETE_DATA_UP_TO_REQUEST = 'userpages/streams/DELETE_DATA_UP_TO_REQUEST'
-export const DELETE_DATA_UP_TO_SUCCESS = 'userpages/streams/DELETE_DATA_UP_TO_SUCCESS'
-export const DELETE_DATA_UP_TO_FAILURE = 'userpages/streams/DELETE_DATA_UP_TO_FAILURE'
-
-export const CANCEL_CSV_FILE_UPLOAD = 'userpages/streams/CANCEL_CSV_FILE_UPLOAD'
 export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
 export const UPDATE_EDIT_STREAM = 'userpages/streams/UPDATE_EDIT_STREAM'
 export const UPDATE_EDIT_STREAM_FIELD = 'userpages/streams/UPDATE_EDIT_STREAM_FIELD'
-export const GET_STREAM_RANGE_REQUEST = 'userpages/streams/GET_STREAM_RANGE_REQUEST'
 
 export const STREAM_FIELD_AUTODETECT_REQUEST = 'userpages/streams/STREAM_FIELD_AUTODETECT_REQUEST'
 export const STREAM_FIELD_AUTODETECT_SUCCESS = 'userpages/streams/STREAM_FIELD_AUTODETECT_SUCCESS'
@@ -110,10 +93,6 @@ const getStreamsSuccess = (streams: StreamIdList, hasMoreResults: boolean) => ({
 const getStreamsFailure = (error: ErrorInUi) => ({
     type: GET_STREAM_FAILURE,
     error,
-})
-
-export const cancelCsvFileUpload = () => ({
-    type: CANCEL_CSV_FILE_UPLOAD,
 })
 
 const saveFieldsRequest = () => ({
@@ -170,59 +149,6 @@ const createStreamSuccess = (stream: Stream) => ({
 const createStreamFailure = (error: ErrorInUi) => ({
     type: CREATE_STREAM_FAILURE,
     error,
-})
-
-const uploadCsvFileRequest = () => ({
-    type: UPLOAD_CSV_FILE_REQUEST,
-})
-
-const uploadCsvFileSuccess = (id: StreamId, fileUrl: string, schema: CSVImporterSchema) => ({
-    type: UPLOAD_CSV_FILE_SUCCESS,
-    streamId: id,
-    fileUrl,
-    schema,
-})
-
-const uploadCsvFileFailure = (error: ErrorInUi) => ({
-    type: UPLOAD_CSV_FILE_FAILURE,
-    error,
-})
-
-const uploadCsvFileUnknownSchema = (id: StreamId, fileUrl: string, schema: CSVImporterSchema) => ({
-    type: UPLOAD_CSV_FILE_UNKNOWN_SCHEMA,
-    streamId: id,
-    fileUrl,
-    schema,
-})
-
-const confirmCsvFileUploadRequest = () => ({
-    type: CONFIRM_CSV_FILE_UPLOAD_REQUEST,
-})
-
-const confirmCsvFileUploadSuccess = () => ({
-    type: CONFIRM_CSV_FILE_UPLOAD_SUCCESS,
-})
-
-const confirmCsvFileUploadFailure = (error: ErrorInUi) => ({
-    type: CONFIRM_CSV_FILE_UPLOAD_FAILURE,
-    error,
-})
-
-const deleteDataUpToRequest = () => ({
-    type: DELETE_DATA_UP_TO_REQUEST,
-})
-
-const deleteDataUpToSuccess = () => ({
-    type: DELETE_DATA_UP_TO_SUCCESS,
-})
-
-const deleteDataUpToFailure = (error: ErrorInUi) => ({
-    type: DELETE_DATA_UP_TO_FAILURE,
-    error,
-})
-
-const getStreamRangeRequest = () => ({
-    type: GET_STREAM_RANGE_REQUEST,
 })
 
 const clearStreamsListAction = () => ({
@@ -450,68 +376,6 @@ export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: 
                 icon: NotificationIcon.ERROR,
             })
             throw e
-        })
-}
-
-export const uploadCsvFile = (id: StreamId, file: File) => (dispatch: Function) => {
-    dispatch(uploadCsvFileRequest())
-    return services.uploadCsvFile(id, file)
-        .then(({ fileId, schema }) => {
-            if (schema.timestampColumnIndex == null) {
-                dispatch(uploadCsvFileUnknownSchema(id, fileId, schema))
-                throw new CsvSchemaError('Could not parse timestamp column!')
-            }
-            dispatch(uploadCsvFileSuccess(id, fileId, schema))
-            Notification.push({
-                title: 'CSV file imported successfully',
-                icon: NotificationIcon.CHECKMARK,
-            })
-        })
-        .catch((error) => {
-            const e = getError(error)
-            dispatch(uploadCsvFileFailure(e))
-            throw error
-        })
-}
-
-export const confirmCsvFileUpload = (id: StreamId, fileUrl: string, dateFormat: string, timestampColumnIndex: number) => (dispatch: Function) => {
-    dispatch(confirmCsvFileUploadRequest())
-    return services.confirmCsvFileUpload(id, fileUrl, dateFormat, timestampColumnIndex)
-        .then(() => {
-            dispatch(confirmCsvFileUploadSuccess())
-            Notification.push({
-                title: 'CSV file imported successfully',
-                icon: NotificationIcon.CHECKMARK,
-            })
-        })
-        .catch((e) => {
-            dispatch(confirmCsvFileUploadFailure(e))
-            throw e
-        })
-}
-
-export const getRange = (id: StreamId) => (dispatch: Function) => {
-    dispatch(getStreamRangeRequest())
-    return services.getRange(id)
-}
-
-export const deleteDataUpTo = (id: StreamId, date: Date) => (dispatch: Function) => {
-    dispatch(deleteDataUpToRequest())
-    return services.deleteDataUpTo(id, date)
-        .then(() => {
-            dispatch(deleteDataUpToSuccess())
-            Notification.push({
-                title: 'Data deleted succesfully',
-                icon: NotificationIcon.CHECKMARK,
-            })
-        })
-        .catch((error) => {
-            const e = getError(error)
-            dispatch(deleteDataUpToFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
         })
 }
 

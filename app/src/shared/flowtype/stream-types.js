@@ -51,19 +51,3 @@ export type StreamList = Array<Stream>
 export type StreamEntities = {
     [StreamId]: Stream,
 }
-
-export type CSVImporterSchema = {
-    headers: Array<string>,
-    timeZone: string,
-    timestampColumnIndex: ?number
-}
-
-export type CsvUploadResult = {
-    fileId: string,
-    schema: CSVImporterSchema,
-}
-
-export type Range = {
-    beginDate: string,
-    endDate: string,
-}

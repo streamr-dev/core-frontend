@@ -12,7 +12,6 @@ const initialState = {
     updating: false,
     deleting: false,
     error: null,
-    csvUpload: null,
     editedStream: null,
     deleteDataError: null,
     autodetectFetching: false,
