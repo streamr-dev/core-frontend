@@ -56,7 +56,6 @@ const GraphBody = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    height: 300px;
 `
 
 const UnstyledDataUnionStats = ({
