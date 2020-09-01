@@ -8,7 +8,6 @@ import type { StoreState } from '$userpages/flowtype/states/store-state'
 import type { UserPageStreamsState } from '$userpages/flowtype/states/stream-state'
 import type { Stream, StreamList, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
 import type { ResourceKeyIdList, ResourceKeyList } from '$shared/flowtype/resource-key-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { streamsSchema, streamSchema, resourceKeysSchema } from '$shared/modules/entities/schema'
@@ -65,11 +64,6 @@ export const selectOpenStreamResourceKeys: (StoreState) => ResourceKeyList = cre
     selectOpenStreamResourceKeyIds,
     selectEntities,
     (keys: ResourceKeyIdList, entities: EntitiesState): ResourceKeyList => denormalize(keys, resourceKeysSchema, entities),
-)
-
-export const selectDeleteDataError: (StoreState) => ?ErrorInUi = createSelector(
-    selectUserPageStreamsState,
-    (subState: UserPageStreamsState): ?ErrorInUi => subState.deleteDataError,
 )
 
 export const selectFieldsAutodetectFetching: (StoreState) => boolean = createSelector(

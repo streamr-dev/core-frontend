@@ -13,7 +13,6 @@ export type UserPageStreamsState = {
     error?: ?ErrorInUi,
     savingStreamFields: boolean,
     editedStream: ?Stream,
-    deleteDataError?: ?ErrorInUi,
     autodetectFetching: boolean,
     pageSize: number,
     hasMoreSearchResults: ?boolean,

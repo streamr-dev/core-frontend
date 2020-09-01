@@ -13,7 +13,6 @@ const initialState = {
     deleting: false,
     error: null,
     editedStream: null,
-    deleteDataError: null,
     autodetectFetching: false,
     streamFieldAutodetectError: null,
     pageSize: 20,
