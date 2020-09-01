@@ -465,8 +465,11 @@ msgstr "Waiting..."
 msgid "userpages.streams.edit.configure.requireSignedData"
 msgstr "Require all messages in this stream to be signed"
 
+msgid "userpages.streams.edit.historicalStoragePeriod.description"
+msgstr "You can choose how long to store your stream's historical data before auto-deletion."
+
 msgid "userpages.streams.edit.configure.historicalStoragePeriod.label"
-msgstr "Period to retain historical data until auto-removal"
+msgstr "Store historical data for"
 
 msgid "userpages.streams.edit.preview.description"
 msgstr ""

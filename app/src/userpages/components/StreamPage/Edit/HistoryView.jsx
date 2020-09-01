@@ -1,14 +1,13 @@
 import React, { Fragment, useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
+import styled from 'styled-components'
 
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Label from '$ui/Label'
-
-import styles from './historyView.pcss'
 
 export const convertFromStorageDays = (days) => {
     let amount = days
@@ -36,6 +35,22 @@ const convertToStorageDays = (amount, unit) => {
     }
     return amount
 }
+
+const Root = styled.div``
+
+const StyledTranslate = styled(Translate)`
+    margin-bottom: 3.125rem;
+`
+
+const StyledText = styled(Text)`
+    text-align: center;
+`
+
+const InputContainer = styled.div`
+    display: grid;
+    grid-template-columns: 5rem 11rem;
+    grid-column-gap: 1rem;
+`
 
 const HistoryView = ({ streamId, disabled }) => {
     const [storageAmount, setStorageAmount] = useState(0)
@@ -88,16 +103,19 @@ const HistoryView = ({ streamId, disabled }) => {
     ], [storageAmount])
 
     return (
-        <div className={styles.historyView}>
+        <Root>
+            <StyledTranslate
+                value="userpages.streams.edit.historicalStoragePeriod.description"
+                tag="p"
+            />
             {stream && stream.storageDays !== undefined &&
                 <Fragment>
                     <Label htmlFor="storageAmount">
                         {I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
                     </Label>
-                    <div className={styles.storageContainer}>
-                        <Text
+                    <InputContainer>
+                        <StyledText
                             id="storageAmount"
-                            className={styles.storageAmount}
                             value={storageAmount}
                             onChange={onStorageAmountChange}
                             disabled={disabled}
@@ -109,10 +127,10 @@ const HistoryView = ({ streamId, disabled }) => {
                             onChange={onStoragePeriodUnitChange}
                             disabled={disabled}
                         />
-                    </div>
+                    </InputContainer>
                 </Fragment>
             }
-        </div>
+        </Root>
     )
 }
 
