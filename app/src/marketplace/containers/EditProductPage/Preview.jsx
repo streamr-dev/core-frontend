@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { titleize } from '@streamr/streamr-layout'
-
+import Segment from '$shared/components/Segment'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
@@ -177,15 +177,19 @@ const Streams = () => {
     const fetchingAllStreams = useSelector(selectFetchingStreams)
 
     return (
-        <StreamListing
-            product={product}
-            streams={selectedStreams}
-            fetchingStreams={fetchingAllStreams}
-            showStreamActions={false}
-            isLoggedIn={false}
-            isProductSubscriptionValid={false}
-            isProductFree={isProductFree}
-        />
+        <Segment>
+            <Segment.Body>
+                <StreamListing
+                    product={product}
+                    streams={selectedStreams}
+                    fetchingStreams={fetchingAllStreams}
+                    showStreamActions={false}
+                    isLoggedIn={false}
+                    isProductSubscriptionValid={false}
+                    isProductFree={isProductFree}
+                />
+            </Segment.Body>
+        </Segment>
     )
 }
 

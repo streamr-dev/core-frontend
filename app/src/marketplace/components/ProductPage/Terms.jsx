@@ -4,7 +4,6 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 
-import Container from '$shared/components/Container/Product'
 import type { Product } from '$mp/flowtype/product-types'
 import { MEDIUM } from '$shared/utils/styled'
 import Segment from '$shared/components/Segment'
@@ -39,45 +38,43 @@ const UnstyledTerms = ({ product, ...props }: Props) => {
 
     return (
         <Segment {...props}>
-            <Container>
-                <Segment.Header>
-                    <Translate value="productPage.termsOfUse.title" />
-                </Segment.Header>
-                <Segment.Body pad>
-                    <strong>
-                        <Translate value="productPage.termsOfUse.basic" />
-                    </strong>
-                    {' '}
-                    {permitted.length > 0 && (
-                        <React.Fragment>
-                            {I18n.t('productPage.termsOfUse.permitted', {
-                                count: permitted.length,
-                                permissions: permittedStr,
-                            })}
-                            {' '}
-                        </React.Fragment>
-                    )}
-                    {notPermitted.length > 0 && I18n.t('productPage.termsOfUse.notPermitted', {
-                        count: notPermitted.length,
-                        permissions: notPermittedStr,
-                    })}
-                    {permitted.length === 0 && ` ${I18n.t('productPage.termsOfUse.postfix')}`}
-                    {notPermitted.length > 0 && '.'}
-                    {!!terms.termsUrl && (
-                        <React.Fragment>
-                            <strong>
-                                <Translate value="productPage.termsOfUse.detailed" />
-                            </strong>
-                            {' '}
-                            <strong>
-                                <a href={terms.termsUrl} target="_blank" rel="noopener noreferrer">
-                                    {terms.termsName != null && terms.termsName.length > 0 ? terms.termsName : terms.termsUrl}
-                                </a>
-                            </strong>
-                        </React.Fragment>
-                    )}
-                </Segment.Body>
-            </Container>
+            <Segment.Header>
+                <Translate value="productPage.termsOfUse.title" />
+            </Segment.Header>
+            <Segment.Body pad>
+                <strong>
+                    <Translate value="productPage.termsOfUse.basic" />
+                </strong>
+                {' '}
+                {permitted.length > 0 && (
+                    <React.Fragment>
+                        {I18n.t('productPage.termsOfUse.permitted', {
+                            count: permitted.length,
+                            permissions: permittedStr,
+                        })}
+                        {' '}
+                    </React.Fragment>
+                )}
+                {notPermitted.length > 0 && I18n.t('productPage.termsOfUse.notPermitted', {
+                    count: notPermitted.length,
+                    permissions: notPermittedStr,
+                })}
+                {permitted.length === 0 && ` ${I18n.t('productPage.termsOfUse.postfix')}`}
+                {notPermitted.length > 0 && '.'}
+                {!!terms.termsUrl && (
+                    <React.Fragment>
+                        <strong>
+                            <Translate value="productPage.termsOfUse.detailed" />
+                        </strong>
+                        {' '}
+                        <strong>
+                            <a href={terms.termsUrl} target="_blank" rel="noopener noreferrer">
+                                {terms.termsName != null && terms.termsName.length > 0 ? terms.termsName : terms.termsUrl}
+                            </a>
+                        </strong>
+                    </React.Fragment>
+                )}
+            </Segment.Body>
         </Segment>
     )
 }

@@ -4,6 +4,7 @@ import React, { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
+import Segment from '$shared/components/Segment'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import {
     selectSubscriptionIsValid,
@@ -43,13 +44,17 @@ const Streams = withRouter(({ history }) => {
     ), [isProductFree, isLoggedIn, isProductSubscriptionValid])
 
     return (
-        <StreamListing
-            streams={streams}
-            fetchingStreams={fetchingStreams}
-            locked={locked}
-            onStreamPreview={onStreamPreview}
-            onStreamSettings={!!isLoggedIn && isProductSubscriptionValid && onStreamSettings}
-        />
+        <Segment>
+            <Segment.Body>
+                <StreamListing
+                    streams={streams}
+                    fetchingStreams={fetchingStreams}
+                    locked={locked}
+                    onStreamPreview={onStreamPreview}
+                    onStreamSettings={!!isLoggedIn && isProductSubscriptionValid && onStreamSettings}
+                />
+            </Segment.Body>
+        </Segment>
     )
 })
 
