@@ -79,12 +79,12 @@ const UnstyledDataUnionStats = ({
                     <DataUnionPending />
                 </Segment.Body>
             )}
-            {!showDeploying && stats && (
+            {!showDeploying && !!stats && (
                 <Segment.Body>
                     <ProductStat.List items={stats} />
                 </Segment.Body>
             )}
-            {!showDeploying && memberCount && (
+            {!showDeploying && !!memberCount && (
                 <Segment.Body>
                     <Graphs>
                         <div>
