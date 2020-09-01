@@ -14,6 +14,7 @@ import Streams from './Streams'
 import RelatedProducts from './RelatedProducts'
 import Terms from '$mp/components/ProductPage/Terms'
 import ProductPage from '$shared/components/ProductPage'
+import Segment from '$shared/components/Segment'
 
 const ProductDetailsPage = () => {
     const product = useProduct()
@@ -48,7 +49,10 @@ const ProductDetailsPage = () => {
                 <Terms
                     product={product}
                 />
-                <RelatedProducts />
+                <Segment>
+                    <RelatedProducts />
+                </Segment>
+                <Segment />
             </ProductPage.Container>
         </ProductPage>
     )

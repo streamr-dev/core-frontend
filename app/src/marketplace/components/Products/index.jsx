@@ -3,7 +3,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import styled from 'styled-components'
-import { Row, Container, Col } from 'reactstrap'
+import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import type { ProductList } from '../../flowtype/product-types'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
@@ -11,6 +11,7 @@ import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
 
+import { LG } from '$shared/utils/styled'
 import { getErrorView, getCols } from './settings'
 import styles from './products.pcss'
 
@@ -49,6 +50,14 @@ const listProducts = (products, cols, isFetching: ?boolean) => (
     </Row>
 )
 
+const Container = styled(RsContainer)`
+    padding: 1.25em 30px 3.5em 30px;
+
+    @media (min-width: ${LG}px) {
+        padding: 1.5em 5em 7em 5em;
+    }
+`
+
 const Products = ({
     products,
     type,
@@ -58,7 +67,7 @@ const Products = ({
     hasMoreSearchResults,
     header,
 }: OwnProps) => (
-    <Container className={classnames(styles[type])} fluid={type === 'products'}>
+    <div>
         {(header && <h3>{header}</h3>)}
         <Error source={error} />
         {(isFetching || products.length > 0)
@@ -73,7 +82,11 @@ const Products = ({
         {isFetching && (
             <ProductPageSpinner className={styles.spinner} />
         )}
-    </Container>
+    </div>
 )
+
+Object.assign(Products, {
+    Container,
+})
 
 export default Products

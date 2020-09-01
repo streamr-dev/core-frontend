@@ -92,21 +92,23 @@ const Products = () => {
                 onCreateProduct={() => createProductModal.open()}
             />
             <CreateProductModal />
-            <ProductsComponent
-                products={products.map((p, i) => {
-                    const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
+            <ProductsComponent.Container fluid>
+                <ProductsComponent
+                    products={products.map((p, i) => {
+                        const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
 
-                    return merge({}, p, {
-                        key: `${i}-${p.id || ''}`,
-                        members: members[beneficiaryAddress],
-                    })
-                })}
-                error={productsError}
-                type="products"
-                isFetching={isFetching}
-                loadProducts={loadProducts}
-                hasMoreSearchResults={hasMoreSearchResults}
-            />
+                        return merge({}, p, {
+                            key: `${i}-${p.id || ''}`,
+                            members: members[beneficiaryAddress],
+                        })
+                    })}
+                    error={productsError}
+                    type="products"
+                    isFetching={isFetching}
+                    loadProducts={loadProducts}
+                    hasMoreSearchResults={hasMoreSearchResults}
+                />
+            </ProductsComponent.Container>
             <Footer topBorder />
         </Layout>
     )
