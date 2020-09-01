@@ -4,7 +4,6 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
-import ProductContainer from '$shared/components/Container/Product'
 import MarkdownText from '$mp/components/ProductPage/MarkdownText'
 import { MD, LG } from '$shared/utils/styled'
 
@@ -22,24 +21,6 @@ type Props = {
     description: string,
     sidebar?: SidebarEntries,
 }
-
-const Root = styled.div`
-    background-color: #F8F8F8;
-    padding-bottom: 3em;
-`
-
-const Separator = styled.div`
-    background-color: #E7E7E7;
-    width: 100%;
-    height: 1px;
-    margin: 2em 0;
-    display: inline-block;
-    vertical-align: middle;
-
-    @media (min-width: ${LG}px) {
-        margin: 3em 0;
-    }
-`
 
 const InfoWrapper = styled.div`
     @media (min-width: ${LG}px) {
@@ -96,29 +77,28 @@ const SideBarItemTitle = styled.div`
 
 const SideBarItemValue = styled.div``
 
-const Description = ({ description, sidebar }: Props) => (
-    <Root>
-        <ProductContainer>
-            <Separator />
-            <InfoWrapper>
-                <StyledMarkdownText text={description} />
-                <SideBar>
-                    {sidebar && Object.keys(sidebar).map((id) => {
-                        const { title, loading, value } = sidebar[id]
+const UnstyledDescription = ({ description, sidebar, ...props }: Props) => (
+    <div {...props}>
+        <InfoWrapper>
+            <StyledMarkdownText text={description} />
+            <SideBar>
+                {sidebar && Object.keys(sidebar).map((id) => {
+                    const { title, loading, value } = sidebar[id]
 
-                        return (
-                            <SideBarItem key={id}>
-                                <SideBarItemTitle>{title}</SideBarItemTitle>
-                                {!loading ? (
-                                    <SideBarItemValue>{value}</SideBarItemValue>
-                                ) : <Skeleton />}
-                            </SideBarItem>
-                        )
-                    })}
-                </SideBar>
-            </InfoWrapper>
-        </ProductContainer>
-    </Root>
+                    return (
+                        <SideBarItem key={id}>
+                            <SideBarItemTitle>{title}</SideBarItemTitle>
+                            {!loading ? (
+                                <SideBarItemValue>{value}</SideBarItemValue>
+                            ) : <Skeleton />}
+                        </SideBarItem>
+                    )
+                })}
+            </SideBar>
+        </InfoWrapper>
+    </div>
 )
+
+const Description = styled(UnstyledDescription)``
 
 export default Description

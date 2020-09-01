@@ -26,8 +26,6 @@ import useContractProduct from '$mp/containers/ProductController/useContractProd
 import usePending from '$shared/hooks/usePending'
 import ProductPage from '$shared/components/ProductPage'
 
-import heroStyles from '$mp/containers/ProductPage/hero.pcss'
-
 const Hero = () => {
     const product = useEditableProduct()
     const isDataUnion = !!(product && isDataUnionProduct(product))
@@ -43,9 +41,6 @@ const Hero = () => {
 
     return (
         <HeroComponent
-            className={heroStyles.hero}
-            containerClassName={heroStyles.heroContainer}
-            product={product}
             leftContent={
                 <ImageTile
                     alt={product.name}
@@ -204,13 +199,21 @@ const Preview = () => {
 
     return (
         <ProductPage>
-            <Hero />
-            <Description />
-            {isDataUnion && (
-                <DataUnionStats />
-            )}
-            <Streams />
-            <Terms product={product} />
+            <ProductPage.Hero>
+                <ProductPage.Container>
+                    <Hero />
+                    <ProductPage.Separator />
+                    <Description />
+                </ProductPage.Container>
+            </ProductPage.Hero>
+            <ProductPage.Container>
+                {isDataUnion && (
+                    <DataUnionStats />
+                )}
+                <Streams />
+                <Terms product={product} />
+            </ProductPage.Container>
+            <Segment />
         </ProductPage>
     )
 }

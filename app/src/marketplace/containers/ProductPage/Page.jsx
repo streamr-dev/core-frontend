@@ -29,8 +29,11 @@ const ProductDetailsPage = () => {
 
     return (
         <ProductPage>
-            <Hero />
-            <Description isProductFree={isProductFree} />
+            <ProductPage.Hero>
+                <Hero />
+                <ProductPage.Separator />
+                <Description isProductFree={isProductFree} />
+            </ProductPage.Hero>
             {isDataUnion && (
                 <DataUnionStats
                     showDeploying={!isDuDeployed}
