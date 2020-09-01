@@ -3,7 +3,6 @@
 import React, { useMemo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
-import cx from 'classnames'
 import { titleize } from '@streamr/streamr-layout'
 import Segment from '$shared/components/Segment'
 import useEditableProduct from '../ProductController/useEditableProduct'
@@ -25,11 +24,9 @@ import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import usePending from '$shared/hooks/usePending'
+import ProductPage from '$shared/components/ProductPage'
 
-import productPageStyles from '$mp/containers/ProductPage/page.pcss'
 import heroStyles from '$mp/containers/ProductPage/hero.pcss'
-
-import styles from './preview.pcss'
 
 const Hero = () => {
     const product = useEditableProduct()
@@ -206,7 +203,7 @@ const Preview = () => {
     }, [])
 
     return (
-        <div className={cx(productPageStyles.productPage, styles.preview)}>
+        <ProductPage>
             <Hero />
             <Description />
             {isDataUnion && (
@@ -214,7 +211,7 @@ const Preview = () => {
             )}
             <Streams />
             <Terms product={product} />
-        </div>
+        </ProductPage>
     )
 }
 

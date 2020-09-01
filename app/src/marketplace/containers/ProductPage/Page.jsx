@@ -14,11 +14,9 @@ import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
 import RelatedProducts from './RelatedProducts'
 import Terms from '$mp/components/ProductPage/Terms'
-import Segment from '$shared/components/Segment'
+import ProductPage from '$shared/components/ProductPage'
 
-import styles from './page.pcss'
-
-const UnstyledProductDetailsPage = () => {
+const ProductDetailsPage = () => {
     const product = useProduct()
     const isDataUnion = !!(product && isDataUnionProduct(product))
     const isProductFree = !!(product && !isPaidProduct(product))
@@ -30,7 +28,7 @@ const UnstyledProductDetailsPage = () => {
     const { joinPartStreamId } = dataUnion || {}
 
     return (
-        <div className={styles.productPage}>
+        <ProductPage>
             <Hero />
             <Description isProductFree={isProductFree} />
             {isDataUnion && (
@@ -46,21 +44,8 @@ const UnstyledProductDetailsPage = () => {
                 product={product}
             />
             <RelatedProducts />
-        </div>
+        </ProductPage>
     )
 }
-
-const ProductDetailsPage = styled(UnstyledProductDetailsPage)`
-    color: black;
-    padding-bottom: 3em;
-
-    .container {
-        max-width: 1110px;
-    }
-
-    ${Segment} {
-        margin-top: 64px;
-    }
-`
 
 export default ProductDetailsPage
