@@ -11,7 +11,7 @@ import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
 
-import { LG } from '$shared/utils/styled'
+import { MD, LG, REGULAR } from '$shared/utils/styled'
 import { getErrorView, getCols } from './settings'
 import styles from './products.pcss'
 
@@ -58,7 +58,16 @@ const Container = styled(RsContainer)`
     }
 `
 
-const Products = ({
+const Header = styled.h3`
+    font-size: 18px;
+    font-weight: ${REGULAR};
+
+    @media (min-width: ${MD}px) {
+        font-size: 24px;
+    }
+`
+
+const UnstyledProducts = ({
     products,
     type,
     error,
@@ -66,9 +75,14 @@ const Products = ({
     loadProducts,
     hasMoreSearchResults,
     header,
+    ...props
 }: OwnProps) => (
-    <div>
-        {(header && <h3>{header}</h3>)}
+    <div {...props}>
+        {(header && (
+            <Header>
+                {header}
+            </Header>
+        ))}
         <Error source={error} />
         {(isFetching || products.length > 0)
             ? listProducts(products, getCols(type), isFetching)
@@ -85,7 +99,10 @@ const Products = ({
     </div>
 )
 
+const Products = styled(UnstyledProducts)``
+
 Object.assign(Products, {
+    Header,
     Container,
 })
 
