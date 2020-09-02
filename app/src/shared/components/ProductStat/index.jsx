@@ -14,11 +14,16 @@ const Title = styled.h6`
 `
 
 const Value = styled.div`
-    font-size: 32px;
+    font-size: 20px;
     font-weight: 200;
-    letter-spacing: -0.67px;
+    letter-spacing: -0.6px;
     line-height: 1em;
     white-space: nowrap;
+
+    @media (min-width: ${MD}px) {
+        font-size: 32px;
+        letter-spacing: -0.67px;
+    }
 `
 
 const Unit = styled.span`

@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { MEDIUM } from '$shared/utils/styled'
+import { MEDIUM, MD } from '$shared/utils/styled'
 
 const Header = styled.div`
     align-items: center;
@@ -7,14 +7,22 @@ const Header = styled.div`
     border-radius: 2px 2px 0 0;
     color: #323232;
     display: flex;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: ${MEDIUM};
-    height: 72px;
+    height: 64px;
     letter-spacing: 1.17px;
     line-height: 16px;
-    padding: 0 32px;
+    padding: 0 24px;
     text-transform: uppercase;
+
+    @media (min-width: ${MD}px) {
+        font-size: 14px;
+        height: 72px;
+        padding: 0 32px;
+    }
 `
+
+const Footer = styled.div``
 
 const Body = styled.div`
     background-color: #f8f8f8;
@@ -28,11 +36,13 @@ const Body = styled.div`
     }
 
     ${({ pad }) => !!pad && css`
-        padding: 28px 32px;
+        padding: 24px;
+
+        @media (min-width: ${MD}px) {
+            padding: 32px;
+        }
     `}
 `
-
-const Footer = styled.div``
 
 const Segment = styled.div``
 

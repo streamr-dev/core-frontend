@@ -4,10 +4,18 @@ import { SM, LG, XL } from '$shared/utils/styled'
 
 const Container = styled.div`
     margin: 0 auto;
-    padding: 0 32px;
+
+    & & {
+        padding: 0 24px;
+    }
 
     @media (min-width: ${SM}px) {
         max-width: 624px;
+        padding: 0 24px;
+
+        & & {
+            padding: 0;
+        }
     }
 
     @media (min-width: ${XL}px) {
@@ -17,7 +25,11 @@ const Container = styled.div`
 
 const Hero = styled.div`
     background-color: #f8f8f8;
-    padding: 64px 0;
+    padding: 24px 0;
+
+    @media (min-width: ${SM}px) {
+        padding: 64px 0;
+    }
 `
 
 const Separator = styled.div`

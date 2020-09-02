@@ -3,16 +3,14 @@ import { useMediaQuery } from 'react-responsive'
 import { I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 
-import breakpoints from '$app/scripts/breakpoints'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
+import { XL } from '$shared/utils/styled'
 
 import Products from '$mp/components/Products'
 
-const { md } = breakpoints
-
 const RelatedProducts = () => {
     const isLargeScreen = useMediaQuery({
-        minDeviceWidth: md.max,
+        minWidth: XL,
     })
 
     const relatedProducts = useSelector(selectRelatedProductList)

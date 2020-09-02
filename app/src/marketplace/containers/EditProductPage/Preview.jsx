@@ -201,9 +201,11 @@ const Preview = () => {
         <ProductPage>
             <ProductPage.Hero>
                 <ProductPage.Container>
-                    <Hero />
-                    <ProductPage.Separator />
-                    <Description />
+                    <ProductPage.Container>
+                        <Hero />
+                        <ProductPage.Separator />
+                        <Description />
+                    </ProductPage.Container>
                 </ProductPage.Container>
             </ProductPage.Hero>
             <ProductPage.Container>

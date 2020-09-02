@@ -3,8 +3,7 @@ import { Translate } from 'react-redux-i18n'
 import styled, { css } from 'styled-components'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import { SM, MD, LG } from '$shared/utils/styled'
-import ProductContainer from '$shared/components/Container/Product'
+import { SM, LG } from '$shared/utils/styled'
 import Segment from '$shared/components/Segment'
 
 const StreamCount = styled.span`
@@ -90,8 +89,12 @@ const DataRow = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 32px;
+    padding: 0 24px;
     white-space: nowrap;
+
+    @media (min-width: ${SM}px) {
+        padding: 0 32px;
+    }
     
     ${Segment.Header} & {
         padding: 0;
@@ -106,7 +109,6 @@ const DataRow = styled.div`
     }
 
     ${RowItem} {
-        font-size: 14px;
         color: ${({ locked }) => (locked ? '#ADADAD' : 'inherit')};
     }
 

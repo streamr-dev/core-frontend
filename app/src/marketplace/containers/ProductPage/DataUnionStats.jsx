@@ -10,7 +10,7 @@ import Segment from '$shared/components/Segment'
 import ProductStat from '$shared/components/ProductStat'
 import DaysPopover from '$shared/components/DaysPopover'
 import MembersGraph from './MembersGraph'
-import { MD } from '$shared/utils/styled'
+import { SM, MD } from '$shared/utils/styled'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 
 type Props = {
@@ -24,20 +24,34 @@ type Props = {
     showDeploying?: boolean,
 }
 
+const Members = styled.div`
+    flex-basis: 60%;
+`
+
+const GroupedMembers = styled.div`
+    border-top: 1px solid #e7e7e7;
+
+    @media (min-width: ${MD}px) {
+        border-left: 1px solid #e7e7e7;
+        border-top: 0;
+        flex-basis: 40%;
+    }
+`
+
 const Graphs = styled.div`
+    > div {
+        padding: 24px;
+    }
+
+    @media (min-width: ${SM}px) {
+        > div {
+            padding: 32px;
+        }
+    }
+
     @media (min-width: ${MD}px) {
         display: flex;
         flex-wrap: wrap;
-
-        > div {
-            flex-basis: 60%;
-            padding: 48px 32px;
-        }
-
-        > div + div {
-            border-left: 1px solid #e7e7e7;
-            flex-basis: 40%;
-        }
     }
 `
 
@@ -79,14 +93,14 @@ const UnstyledDataUnionStats = ({
                 </Segment.Body>
             )}
             {!showDeploying && !!stats && (
-                <Segment.Body>
+                <Segment.Body pad>
                     <ProductStat.List items={stats} />
                 </Segment.Body>
             )}
             {!showDeploying && !!memberCount && (
                 <Segment.Body>
                     <Graphs>
-                        <div>
+                        <Members>
                             <GraphHeader>
                                 <ProductStat.Title>
                                     Members
@@ -103,8 +117,8 @@ const UnstyledDataUnionStats = ({
                                     shownDays={days}
                                 />
                             </GraphBody>
-                        </div>
-                        <div>
+                        </Members>
+                        <GroupedMembers>
                             <GraphHeader>
                                 <ProductStat.Title>
                                     <Translate value="productPage.stats.membersDonut" />
@@ -127,7 +141,7 @@ const UnstyledDataUnionStats = ({
                                     ]}
                                 />
                             </GraphBody>
-                        </div>
+                        </GroupedMembers>
                     </Graphs>
                 </Segment.Body>
             )}
@@ -138,10 +152,6 @@ const UnstyledDataUnionStats = ({
 const DataUnionStats = styled(UnstyledDataUnionStats)`
     ${DataUnionPending} {
         padding: 4em 0;
-    }
-
-    ${ProductStat.List} {
-        padding: 4em 32px;
     }
 
     ${TimeSeriesGraph} {

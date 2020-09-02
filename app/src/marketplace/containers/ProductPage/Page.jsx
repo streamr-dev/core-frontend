@@ -31,9 +31,11 @@ const ProductDetailsPage = () => {
         <ProductPage>
             <ProductPage.Hero>
                 <ProductPage.Container>
-                    <Hero />
-                    <ProductPage.Separator />
-                    <Description isProductFree={isProductFree} />
+                    <ProductPage.Container>
+                        <Hero />
+                        <ProductPage.Separator />
+                        <Description isProductFree={isProductFree} />
+                    </ProductPage.Container>
                 </ProductPage.Container>
             </ProductPage.Hero>
             <ProductPage.Container>
@@ -46,12 +48,12 @@ const ProductDetailsPage = () => {
                     />
                 )}
                 <Streams />
-                <Terms
-                    product={product}
-                />
-                <Segment>
-                    <RelatedProducts />
-                </Segment>
+                <Terms product={product} />
+                <ProductPage.Container>
+                    <Segment>
+                        <RelatedProducts />
+                    </Segment>
+                </ProductPage.Container>
                 <Segment />
             </ProductPage.Container>
         </ProductPage>

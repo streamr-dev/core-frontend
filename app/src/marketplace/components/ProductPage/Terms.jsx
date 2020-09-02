@@ -81,7 +81,7 @@ const UnstyledTerms = ({ product, ...props }: Props) => {
 
 const Terms = styled(UnstyledTerms)`
     font-size: 14px;
-    line-height: 28px;
+    line-height: 24px;
 
     strong {
         font-weight: ${MEDIUM};
