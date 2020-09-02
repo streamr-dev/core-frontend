@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Segment from '$shared/components/Segment'
-import { SM, LG, XL } from '$shared/utils/styled'
+import { MD, LG, XL } from '$shared/utils/styled'
 
 const Container = styled.div`
     margin: 0 auto;
@@ -9,7 +9,7 @@ const Container = styled.div`
         padding: 0 24px;
     }
 
-    @media (min-width: ${SM}px) {
+    @media (min-width: ${MD}px) {
         max-width: 624px;
         padding: 0 24px;
 
@@ -27,7 +27,7 @@ const Hero = styled.div`
     background-color: #f8f8f8;
     padding: 24px 0;
 
-    @media (min-width: ${SM}px) {
+    @media (min-width: ${MD}px) {
         padding: 64px 0;
     }
 `
