@@ -7,6 +7,9 @@ const UnstyledDaysPopover = (props) => (
         {...props}
         title=""
         activeTitle
+        menuProps={{
+            right: true,
+        }}
     >
         <Popover.Item value="7">Last 7 days</Popover.Item>
         <Popover.Item value="28">Last 28 days</Popover.Item>
