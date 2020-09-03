@@ -25,13 +25,15 @@ type Props = {
 }
 
 const Members = styled.div`
-    flex-basis: 60%;
+    @media (min-width: ${SM}px) {
+        flex-basis: 60%;
+    }
 `
 
 const GroupedMembers = styled.div`
     border-top: 1px solid #e7e7e7;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         border-left: 1px solid #e7e7e7;
         border-top: 0;
         flex-basis: 40%;
@@ -44,14 +46,11 @@ const Graphs = styled.div`
     }
 
     @media (min-width: ${SM}px) {
+        display: flex;
+
         > div {
             padding: 32px;
         }
-    }
-
-    @media (min-width: ${MD}px) {
-        display: flex;
-        flex-wrap: wrap;
     }
 `
 
