@@ -5,7 +5,7 @@ import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
 import MarkdownText from '$mp/components/ProductPage/MarkdownText'
-import { MD, LG } from '$shared/utils/styled'
+import { SM, LG } from '$shared/utils/styled'
 
 type SidebarEntry = {
     title: string,
@@ -27,7 +27,6 @@ const InfoWrapper = styled.div`
         display: grid;
         grid-template-columns: auto 17em;
         grid-column-gap: 9.875em;
-        margin-left: -1.5rem;
     }
 `
 
@@ -38,12 +37,13 @@ const StyledMarkdownText = styled(MarkdownText)`
     letter-spacing: 0;
     line-height: 30px;
     color: #525252;
-    padding-bottom: 2em;
-    margin-left: -1.5rem;
     margin-bottom: 2rem;
 
+    ${MarkdownText.Container} {
+        padding-left: 0;
+    }
+
     @media (min-width: ${LG}px) {
-        margin-left: 0;
         margin-bottom: 0;
     }
 `
@@ -58,7 +58,7 @@ const SideBar = styled.div`
     max-height: 15.5em;
     padding: 1.5em;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         grid-template-columns: 1fr 1fr 1fr;
         grid-column-gap: 1em;
     }

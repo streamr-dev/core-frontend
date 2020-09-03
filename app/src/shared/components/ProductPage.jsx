@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import Segment from '$shared/components/Segment'
-import { MD, LG, XL } from '$shared/utils/styled'
+import { SM, MD, LG, XL } from '$shared/utils/styled'
 
 const Container = styled.div`
     margin: 0 auto;
@@ -31,7 +31,15 @@ const Hero = styled.div`
     background-color: #f8f8f8;
     padding: 24px 0;
 
-    @media (min-width: ${LG}px) {
+    @media (min-width: ${SM}px) {
+        padding: 32px 0;
+    }
+
+    @media (min-width: ${MD}px) {
+        padding: 48px 0;
+    }
+
+    @media (min-width: ${XL}px) {
         padding: 64px 0;
     }
 `
@@ -50,7 +58,19 @@ const ProductPage = styled.div`
     color: #323232;
 
     ${Segment} {
-        margin-top: 32px;
+        margin-top: 24px;
+    }
+
+    @media (min-width: ${SM}px) {
+        ${Segment} {
+            margin-top: 32px;
+        }
+    }
+
+    @media (min-width: ${MD}px) {
+        ${Segment} {
+            margin-top: 48px;
+        }
     }
 
     @media (min-width: ${XL}px) {

@@ -1,6 +1,7 @@
 // @flow
 
 import React, { useMemo, useEffect } from 'react'
+import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { titleize } from '@streamr/streamr-layout'
@@ -25,6 +26,7 @@ import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import usePending from '$shared/hooks/usePending'
 import ProductPage from '$shared/components/ProductPage'
+import { MD, XL } from '$shared/utils/styled'
 
 const Hero = () => {
     const product = useEditableProduct()
@@ -185,7 +187,7 @@ const Streams = () => {
     )
 }
 
-const Preview = () => {
+const UnstyledPreview = (props) => {
     const product = useEditableProduct()
 
     const isDataUnion = !!(product && isDataUnionProduct(product))
@@ -198,7 +200,7 @@ const Preview = () => {
     }, [])
 
     return (
-        <ProductPage>
+        <ProductPage {...props}>
             <ProductPage.Hero>
                 <ProductPage.Container>
                     <ProductPage.Container>
@@ -215,9 +217,20 @@ const Preview = () => {
                 <Streams />
                 <Terms product={product} />
             </ProductPage.Container>
-            <Segment />
         </ProductPage>
     )
 }
+
+const Preview = styled(UnstyledPreview)`
+    padding-bottom: 96px;
+
+    @media (min-width: ${MD}px) {
+        padding-bottom: 48px;
+    }
+
+    @media (min-width: ${XL}px) {
+        padding-bottom: 64px;
+    }
+`
 
 export default Preview
