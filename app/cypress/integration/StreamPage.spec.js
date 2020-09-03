@@ -301,69 +301,6 @@ describe('Stream read-only page (no edit permission)', () => {
             })
         })
     })
-
-    describe('ranging', () => {
-        it('renders a placeholder text if no data is available', () => {
-            cy.login()
-            cy.createStream().then((streamId) => {
-                cy.createStreamPermission(streamId)
-                cy.logout()
-                cy.server({
-                    method: 'GET',
-                    status: 200,
-                    response: {
-                        beginDate: null,
-                        endDate: null,
-                    },
-                })
-                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('getRange')
-                cy.visit(`/core/streams/${streamId}`)
-                cy.wait('@getRange')
-                cy.get('[name=range]').invoke('val').should('contain', 'No stored data.')
-            })
-        })
-
-        it('renders a placeholder text if fetching the range fails', () => {
-            cy.login()
-            cy.createStream().then((streamId) => {
-                cy.createStreamPermission(streamId)
-                cy.logout()
-                cy.server({
-                    method: 'GET',
-                    status: 501,
-                })
-                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('getRange')
-                cy.visit(`/core/streams/${streamId}`)
-                cy.wait('@getRange')
-                cy.get('[name=range]').invoke('val').should('contain', 'No stored data.')
-            })
-        })
-
-        it('fills the Stored data field with available range', () => {
-            cy.login()
-            cy.createStream().then((streamId) => {
-                cy.createStreamPermission(streamId)
-                cy.logout()
-
-                const beginDate = new Date('2020-01-01T00:00')
-                const endDate = new Date('2020-01-31T23:59')
-                cy.server({
-                    method: 'GET',
-                    status: 200,
-                    response: {
-                        beginDate,
-                        endDate,
-                    },
-                })
-                cy.route(`http://localhost/api/v1/streams/${streamId}/range`).as('getRange')
-                cy.visit(`/core/streams/${streamId}`)
-                cy.wait('@getRange')
-                cy.get('[name=range]')
-                    .invoke('val')
-                    .should('eq', `This stream has stored data between ${beginDate.toLocaleDateString()} and ${endDate.toLocaleDateString()}.`)
-            })
-        })
-    })
 })
 
 describe('Stream edit page', () => {

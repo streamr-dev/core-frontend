@@ -9,12 +9,15 @@ import { maxFileSizeForImageUpload } from '$shared/utils/constants'
 import PngIcon from '$shared/components/PngIcon'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useFilePreview from '$shared/hooks/useFilePreview'
-import type { DropzoneFile } from '$shared/components/FileUpload'
 
 import Notification from '$shared/utils/Notification'
 import styles from './imageUpload.pcss'
 
 export type OnUploadError = (errorMessage: string) => void
+
+type DropzoneFile = File & {
+    preview?: string,
+}
 
 type Props = {
     setImageToUpload?: (DropzoneFile) => void | Promise<void>,

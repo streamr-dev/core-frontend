@@ -12,7 +12,6 @@ import Toggle from '$shared/components/Toggle'
 import Checkbox from '$shared/components/Checkbox'
 import Calendar from '$shared/components/Calendar'
 import WithCalendar from '$shared/components/WithCalendar'
-import DatePicker from '$shared/components/DatePicker'
 import dateFormatter from '$utils/dateFormatter'
 import { arrayMove } from 'react-sortable-hoc'
 import SortableList from '$shared/components/SortableList'
@@ -117,52 +116,6 @@ story('Calendar')
     ))
     .addWithJSX('attached to button', () => (
         <CalendarContainer />
-    ))
-
-class DatePickerContainer extends React.Component {
-    state = {
-        date: this.props.date,
-    }
-
-    render() {
-        return (
-            <DatePicker
-                label="Date"
-                openOnFocus
-                onChange={(date) => {
-                    this.setState({
-                        date,
-                    })
-                }}
-                value={this.state.date}
-                placeholder="Select date…"
-                {...this.props}
-            />
-        )
-    }
-}
-
-story('Date Picker')
-    .addWithJSX('basic', () => (
-        <DatePickerContainer
-            preserveLabelSpace
-        />
-    ))
-    .addWithJSX('when processing', () => (
-        <DatePickerContainer
-            label="Processing date"
-            date={new Date(2018, 12, 31)}
-            processing
-            preserveLabelSpace
-        />
-    ))
-    .addWithJSX('with error', () => (
-        <DatePickerContainer
-            label="DatePicker w/ error"
-            date={new Date(2018, 12, 31)}
-            error="Errored!"
-            preserveLabelSpace
-        />
     ))
 
 class SortableListContainer extends React.Component {

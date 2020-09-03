@@ -146,10 +146,6 @@
             "index": "<api>/streams",
             "show": "<api>/streams/:id",
             "status": "<api>/streams/:streamId/status",
-            "uploadCsvFile": "<api>/streams/:streamId/uploadCsvFile",
-            "confirmCsvFileUpload": "<api>/streams/:streamId/confirmCsvFileUpload",
-            "range": "<api>/streams/:streamId/range",
-            "deleteDataUpTo": "<api>/streams/:streamId/deleteDataUpTo",
             "detectFields": "<api>/streams/:streamId/detectFields",
             "keys": {
                 "index": "<api>/streams/:streamId/keys",

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
@@ -11,9 +11,6 @@ import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
-import { getRange } from '$userpages/modules/userPageStreams/actions'
-import useIsMounted from '$shared/hooks/useIsMounted'
-import useOnMount from '$shared/hooks/useOnMount'
 import useCopy from '$shared/hooks/useCopy'
 import Preview from './Edit/PreviewView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
@@ -163,20 +160,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
         }
     }, [dispatch, currentUser])
 
-    const [range, setRange] = useState({})
-
-    const isMounted = useIsMounted()
-
-    useOnMount(async () => {
-        try {
-            const r = await dispatch(getRange(stream.id))
-
-            if (isMounted() && r) {
-                setRange(r)
-            }
-        } catch (e) { /**/ }
-    })
-
     const snippets = useMemo(() => (
         subscribeSnippets({
             id: stream.id,
@@ -307,34 +290,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                 >
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.history.storedEvents')}>
-                            <Text
-                                value={range.beginDate && range.endDate ? (
-                                    I18n.t('userpages.streams.edit.history.events', {
-                                        start: new Date(range.beginDate).toLocaleDateString(),
-                                        end: new Date(range.endDate).toLocaleDateString(),
-                                    })
-                                ) : (
-                                    I18n.t('userpages.streams.edit.history.noEvents')
-                                )}
-                                readOnly
-                                disabled
-                                name="range"
-                            />
-                        </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.history.deleteEvents')}>
-                            <Text
-                                value="Select date"
-                                readOnly
-                                disabled
-                            />
-                        </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>
                             <HistoricalStorage>

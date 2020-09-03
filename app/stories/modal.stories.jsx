@@ -42,7 +42,6 @@ import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
 
 // userpages
-import ConfirmCsvImportDialog from '$userpages/components/StreamPage/ConfirmCsvImportDialog'
 import SnippetDialog from '$userpages/components/SnippetDialog'
 import AvatarUploadDialog from '$userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/AvatarUploadDialog'
 import CropAvatarDialog from '$userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/CropAvatarDialog'
@@ -787,17 +786,6 @@ story('Product Editor/CropImageModal')
             imageUrl={croppedImage}
             onClose={action('onClose')}
             onSave={action('onSave')}
-        />
-    ))
-
-story('Streams/ConfirmCsvImportDialog')
-    .add('default', () => (
-        <ConfirmCsvImportDialog
-            streamId="1"
-            csvUploadState={null}
-            onConfirm={action('onConfirm')}
-            onClose={action('onClose')}
-            errorMessage=""
         />
     ))
 

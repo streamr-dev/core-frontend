@@ -26,20 +26,9 @@ import {
     SAVE_STREAM_FIELDS_REQUEST,
     SAVE_STREAM_FIELDS_SUCCESS,
     SAVE_STREAM_FIELDS_FAILURE,
-    UPLOAD_CSV_FILE_REQUEST,
-    UPLOAD_CSV_FILE_SUCCESS,
-    UPLOAD_CSV_FILE_FAILURE,
-    UPLOAD_CSV_FILE_UNKNOWN_SCHEMA,
-    CONFIRM_CSV_FILE_UPLOAD_REQUEST,
-    CONFIRM_CSV_FILE_UPLOAD_SUCCESS,
-    CONFIRM_CSV_FILE_UPLOAD_FAILURE,
     OPEN_STREAM,
-    CANCEL_CSV_FILE_UPLOAD,
     UPDATE_EDIT_STREAM,
     UPDATE_EDIT_STREAM_FIELD,
-    DELETE_DATA_UP_TO_REQUEST,
-    DELETE_DATA_UP_TO_SUCCESS,
-    DELETE_DATA_UP_TO_FAILURE,
     STREAM_FIELD_AUTODETECT_REQUEST,
     STREAM_FIELD_AUTODETECT_SUCCESS,
     STREAM_FIELD_AUTODETECT_FAILURE,
@@ -55,9 +44,7 @@ const initialState = {
     updating: false,
     deleting: false,
     error: null,
-    csvUpload: null,
     editedStream: null,
-    deleteDataError: null,
     autodetectFetching: false,
     streamFieldAutodetectError: null,
     pageSize: streamListPageSize,
@@ -87,43 +74,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 ...state,
                 fetching: true,
                 savingStreamFields: true,
-            }
-
-        case UPLOAD_CSV_FILE_REQUEST:
-            return {
-                ...state,
-                csvUpload: {
-                    id: action.id,
-                    fetching: true,
-                },
-            }
-
-        case CONFIRM_CSV_FILE_UPLOAD_REQUEST:
-            return {
-                ...state,
-                csvUpload: {
-                    ...(state.csvUpload || {}),
-                    fetching: true,
-                },
-            }
-
-        case UPLOAD_CSV_FILE_SUCCESS:
-            return {
-                ...state,
-                fetching: false,
-                csvUpload: {
-                    fetching: false,
-                    id: action.streamId,
-                    fileUrl: action.fileUrl,
-                    schema: action.schema,
-                },
-            }
-
-        case CONFIRM_CSV_FILE_UPLOAD_SUCCESS:
-            return {
-                ...state,
-                fetching: false,
-                csvUpload: null,
             }
 
         case GET_STREAM_SUCCESS:
@@ -183,36 +133,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
         }
 
-        case UPLOAD_CSV_FILE_UNKNOWN_SCHEMA:
-            return {
-                ...state,
-                csvUpload: {
-                    fetching: false,
-                    id: action.streamId,
-                    fileUrl: action.fileUrl,
-                    schema: action.schema,
-                },
-            }
-
-        case UPLOAD_CSV_FILE_FAILURE:
-            return {
-                ...state,
-                fetching: false,
-                csvUpload: {
-                    ...(state.csvUpload || {}),
-                    fetching: false,
-                },
-            }
-
-        case CONFIRM_CSV_FILE_UPLOAD_FAILURE:
-            return {
-                ...state,
-                csvUpload: {
-                    ...(state.csvUpload || {}),
-                    fetching: false,
-                },
-            }
-
         case GET_STREAM_FAILURE:
         case GET_STREAMS_FAILURE:
         case CREATE_STREAM_FAILURE:
@@ -256,13 +176,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 },
             }
 
-        case CANCEL_CSV_FILE_UPLOAD:
-            return {
-                ...state,
-                csvUpload: null,
-                fetching: false,
-            }
-
         case UPDATE_EDIT_STREAM:
             return {
                 ...state,
@@ -280,28 +193,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             return {
                 ...state,
                 editedStream,
-            }
-        }
-
-        case DELETE_DATA_UP_TO_REQUEST:
-            return {
-                ...state,
-                deleting: true,
-            }
-
-        case DELETE_DATA_UP_TO_SUCCESS: {
-            return {
-                ...state,
-                deleting: false,
-                deleteDataError: null,
-            }
-        }
-
-        case DELETE_DATA_UP_TO_FAILURE: {
-            return {
-                ...state,
-                deleting: false,
-                deleteDataError: action.error,
             }
         }
 
