@@ -10,7 +10,7 @@ import Segment from '$shared/components/Segment'
 import ProductStat from '$shared/components/ProductStat'
 import DaysPopover from '$shared/components/DaysPopover'
 import MembersGraph from './MembersGraph'
-import { SM, MD } from '$shared/utils/styled'
+import { SM } from '$shared/utils/styled'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 
 type Props = {
@@ -54,23 +54,6 @@ const Graphs = styled.div`
     }
 `
 
-const GraphHeader = styled.div`
-    align-items: center;
-    display: flex;
-    margin-bottom: 12px;
-
-    ${ProductStat.Title} {
-        flex-grow: 1;
-    }
-`
-
-const GraphBody = styled.div`
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-`
-
 const UnstyledDataUnionStats = ({
     stats,
     memberCount,
@@ -100,7 +83,7 @@ const UnstyledDataUnionStats = ({
                 <Segment.Body>
                     <Graphs>
                         <Members>
-                            <GraphHeader>
+                            <TimeSeriesGraph.Header>
                                 <ProductStat.Title>
                                     Members
                                 </ProductStat.Title>
@@ -108,22 +91,22 @@ const UnstyledDataUnionStats = ({
                                     onChange={setDays}
                                     selectedItem={`${days}`}
                                 />
-                            </GraphHeader>
-                            <GraphBody>
+                            </TimeSeriesGraph.Header>
+                            <TimeSeriesGraph.Body>
                                 <MembersGraph
                                     joinPartStreamId={joinPartStreamId}
                                     memberCount={memberCount.total}
                                     shownDays={days}
                                 />
-                            </GraphBody>
+                            </TimeSeriesGraph.Body>
                         </Members>
                         <GroupedMembers>
-                            <GraphHeader>
+                            <TimeSeriesGraph.Header>
                                 <ProductStat.Title>
                                     <Translate value="productPage.stats.membersDonut" />
                                 </ProductStat.Title>
-                            </GraphHeader>
-                            <GraphBody>
+                            </TimeSeriesGraph.Header>
+                            <TimeSeriesGraph.Body>
                                 <DonutChart
                                     strokeWidth={3}
                                     data={[
@@ -139,7 +122,7 @@ const UnstyledDataUnionStats = ({
                                         },
                                     ]}
                                 />
-                            </GraphBody>
+                            </TimeSeriesGraph.Body>
                         </GroupedMembers>
                     </Graphs>
                 </Segment.Body>

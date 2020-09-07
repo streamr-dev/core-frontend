@@ -10,6 +10,7 @@ import {
     HorizontalGridLines,
 } from 'react-vis'
 import Rect from '$shared/components/Rect'
+import ProductStat from '$shared/components/ProductStat'
 import '$app/node_modules/react-vis/dist/style.css'
 
 import Spinner from '$shared/components/Spinner'
@@ -164,5 +165,28 @@ const UnstyledTimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: 
 }
 
 const TimeSeriesGraph = styled(UnstyledTimeSeriesGraph)``
+
+const Header = styled.div`
+    align-items: center;
+    display: flex;
+    margin-bottom: 12px;
+
+    ${ProductStat.Title} {
+        flex-grow: 1;
+    }
+`
+
+const Body = styled.div`
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+`
+
+Object.assign(TimeSeriesGraph, {
+    Header,
+    Body,
+})
 
 export default TimeSeriesGraph
