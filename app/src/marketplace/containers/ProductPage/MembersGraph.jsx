@@ -5,7 +5,6 @@ import { getStreamData } from '$mp/modules/streams/services'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 
 type Props = {
-    className?: string,
     joinPartStreamId: ?string,
     memberCount: number,
     shownDays?: number,
@@ -38,7 +37,7 @@ const convertAndCallback = (rawMessages: Array<Object>, onMessage) => {
     })
 }
 
-const MembersGraph = ({ className, joinPartStreamId, memberCount, shownDays = 7 }: Props) => {
+const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) => {
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
