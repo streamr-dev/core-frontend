@@ -13,64 +13,64 @@ const stories =
         }))
         .addDecorator(withKnobs)
 
-// const stats = [{
-//     id: 'revenue',
-//     unit: 'DATA',
-//     value: '123',
-// }, {
-//     id: 'members',
-//     value: '500',
-// }, {
-//     id: 'averageRevenue',
-//     unit: 'DATA',
-//     value: '5.12',
-// }, {
-//     id: 'subscribers',
-//     value: '34500',
-// }, {
-//     id: 'revenueShare',
-//     unit: '%',
-//     value: '40',
-// }, {
-//     id: 'created',
-//     value: '08/10/2019',
-// }]
+const stats = [{
+    id: 'revenue',
+    unit: 'DATA',
+    value: '123',
+}, {
+    id: 'members',
+    value: '500',
+}, {
+    id: 'averageRevenue',
+    unit: 'DATA',
+    value: '5.12',
+}, {
+    id: 'subscribers',
+    value: '34500',
+}, {
+    id: 'revenueShare',
+    unit: '%',
+    value: '40',
+}, {
+    id: 'created',
+    value: '08/10/2019',
+}]
 
-// stories.add('header', () => (
-//     <div>
-//         <Values.Header>header</Values.Header>
-//         <div>content</div>
-//     </div>
-// ))
+stories.add('header', () => (
+    <div>
+        <ProductStat.Title>header</ProductStat.Title>
+        <div>content</div>
+    </div>
+))
 
-// stories.add('value', () => (
-//     <Values.Value {...stats[0]} />
-// ))
+stories.add('value', () => (
+    <ProductStat {...stats[0]} title="Revenue" />
+))
 
-// stories.add('values', () => (
-//     <Values stats={stats} />
-// ))
+stories.add('values', () => (
+    <ProductStat.List items={stats} />
+))
 
-// stories.add('mobile', () => (
-//     <Values stats={stats} />
-// ), {
-//     viewport: {
-//         defaultViewport: 'sm',
-//     },
-// })
+stories.add('mobile', () => (
+    <ProductStat.List items={stats} />
+), {
+    viewport: {
+        defaultViewport: 'sm',
+    },
+})
 
-// stories.add('tablet', () => (
-//     <Values stats={stats} />
-// ), {
-//     viewport: {
-//         defaultViewport: 'md',
-//     },
-// })
+stories.add('tablet', () => (
+    <ProductStat.List items={stats} />
+), {
+    viewport: {
+        defaultViewport: 'md',
+    },
+})
 
-// stories.add('loading', () => (
-//     <Values stats={stats.map((stat) => ({
-//         ...stat,
-//         loading: true,
-//     }))}
-//     />
-// ))
+stories.add('loading', () => (
+    <ProductStat.List items={stats.map((stat) => ({
+        ...stat,
+        loading: true,
+    }))}
+    />
+))
