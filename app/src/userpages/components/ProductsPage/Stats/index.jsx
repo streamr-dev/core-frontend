@@ -113,7 +113,7 @@ const Stats = () => {
                                         <MembersGraph
                                             joinPartStreamId={joinPartStreamId}
                                             memberCount={memberCount.total}
-                                            showDays={membersDays}
+                                            shownDays={membersDays}
                                         />
                                     </React.Fragment>
                                 )}
