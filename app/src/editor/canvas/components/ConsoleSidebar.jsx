@@ -5,7 +5,7 @@ import sortBy from 'lodash/sortBy'
 import scrollTo from '$shared/utils/scrollTo'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import { Header, Content } from '$shared/components/Sidebar'
+import Sidebar, { Content } from '$shared/components/Sidebar'
 import { Translate } from 'react-redux-i18n'
 import * as CanvasState from '../state'
 import * as CanvasMessages from '../state/messages'
@@ -118,7 +118,10 @@ export default function ConsoleSidebar({ canvas, selectedModuleHash, selectModul
 
     return (
         <React.Fragment>
-            <Header title="Console" onClose={onClose} />
+            <Sidebar.Header
+                title="Console"
+                onClose={onClose}
+            />
             <Content className={styles.content}>
                 <ConsoleMessages
                     canvas={canvas}

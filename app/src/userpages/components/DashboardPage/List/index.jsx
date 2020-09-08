@@ -81,7 +81,7 @@ function DashboardPageSidebar({ dashboard }) {
     }, [sidebar, dispatch, dashboardId])
 
     return (
-        <Sidebar
+        <Sidebar.WithErrorBoundary
             isOpen={sidebar.isOpen()}
             onClose={onClose}
         >
@@ -93,7 +93,7 @@ function DashboardPageSidebar({ dashboard }) {
                     onClose={onClose}
                 />
             )}
-        </Sidebar>
+        </Sidebar.WithErrorBoundary>
     )
 }
 

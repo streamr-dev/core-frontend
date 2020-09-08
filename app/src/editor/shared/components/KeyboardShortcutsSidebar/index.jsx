@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react'
 import cx from 'classnames'
 
 import { isWindows as getIsWindows, isMac as getIsMac } from '$shared/utils/platform'
-import { Header, Content, Section } from '$shared/components/Sidebar'
+import Sidebar, { Content, Section } from '$shared/components/Sidebar'
 import isEditableElement from '$shared/utils/isEditableElement'
 
 import styles from './KeyboardShortcutsSidebar.pcss'
@@ -176,7 +176,7 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
 export function KeyboardShortcutsSidebar({ onClose, children }) {
     return (
         <React.Fragment>
-            <Header
+            <Sidebar.Header
                 title="Keyboard Shortcuts"
                 onClose={onClose}
             />

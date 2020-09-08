@@ -456,7 +456,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                             canvasExit={this.canvasExit}
                             sidebar={sidebar}
                         />
-                        <Sidebar
+                        <Sidebar.WithErrorBoundary
                             className={styles.ModuleSidebar}
                             isOpen={sidebar.isOpen()}
                         >
@@ -490,7 +490,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                                     onClose={this.closeSidebar}
                                 />
                             )}
-                        </Sidebar>
+                        </Sidebar.WithErrorBoundary>
                         <ModuleSearch
                             addModule={this.addAndSelectModule}
                             isOpen={isEditable && this.state.moduleSearchIsOpen}

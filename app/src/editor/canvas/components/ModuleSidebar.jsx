@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useRef } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import { Header, Content, Section, Select } from '$shared/components/Sidebar'
+import Sidebar, { Content, Section, Select } from '$shared/components/Sidebar'
 import Toggle from '$shared/components/Toggle'
 import Text from '$editor/canvas/components/Ports/Value/Text'
 
@@ -61,7 +61,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
     const optionsKeys = Object.keys(module.options || {})
     return (
         <React.Fragment>
-            <Header
+            <Sidebar.Header
                 title={module.displayName || module.name}
                 onClose={onClose}
             />
