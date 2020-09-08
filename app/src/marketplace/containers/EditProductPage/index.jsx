@@ -212,7 +212,8 @@ const EditProductPage = ({ product }: { product: Product }) => {
                 />
             )}
             loadingClassname={styles.loadingIndicator}
-            contentClassname={cx(coreLayoutStyles.pad, {
+            contentClassname={cx({
+                [coreLayoutStyles.pad]: !isPreview,
                 [styles.editorContent]: !isPreview,
                 [styles.previewContent]: !!isPreview,
             })}

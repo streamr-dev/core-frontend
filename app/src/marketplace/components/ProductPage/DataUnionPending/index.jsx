@@ -1,28 +1,37 @@
-// @flow
-
 import React from 'react'
-import cx from 'classnames'
+import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
-
 import DeploySpinner from '$shared/components/DeploySpinner'
 
-import styles from './dataUnionPending.pcss'
+const Heading = styled.div`
+    font-size: 30px;
+    letter-spacing: 0;
+    line-height: 32px;
+`
 
-type Props = {
-    className?: string,
-}
-
-const DataUnionPending = ({ className }: Props) => (
-    <div className={cx(styles.deployingGrid, className)}>
+const UnstyledDataUnionPending = (props) => (
+    <div {...props}>
         <div>
             <DeploySpinner isRunning showCounter={false} />
         </div>
         <div>
-            <div className={styles.deployMessageHeading}>
+            <Heading>
                 <Translate value="productPage.dataUnionPending.title" />
-            </div>
+            </Heading>
         </div>
     </div>
 )
+
+const DataUnionPending = styled(UnstyledDataUnionPending)`
+    align-items: center;
+    display: grid;
+    grid-column-gap: 4em;
+    grid-template-columns: 160px 500px;
+    justify-content: center;
+`
+
+Object.assign(DataUnionPending, {
+    Heading,
+})
 
 export default DataUnionPending

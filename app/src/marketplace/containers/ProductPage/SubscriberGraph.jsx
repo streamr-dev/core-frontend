@@ -2,25 +2,21 @@
 
 import React, { useEffect, useState } from 'react'
 import MediaQuery from 'react-responsive'
-
 import { lg } from '$app/scripts/breakpoints'
 import { getSubscribedEvents } from '$mp/modules/contractProduct/services'
-
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
-import WithShownDays from '$shared/components/TimeSeriesGraph/WithShownDays'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 type Props = {
-    className?: string,
     productId: string,
+    shownDays?: number,
 }
 
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
-const SubscriberGraph = ({ className, productId }: Props) => {
+const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
     const [graphData, setGraphData] = useState([])
     const [subscriptionData, setSubscriptionData] = useState([])
-    const [shownDays, setShownDays] = useState(7)
     const [isLoading, setIsLoading] = useState(false)
     const isMounted = useIsMounted()
 
@@ -99,23 +95,16 @@ const SubscriberGraph = ({ className, productId }: Props) => {
     }, [subscriptionData, shownDays])
 
     return (
+        // TODO(mariusz): MediaQuery really needed!?
         <MediaQuery maxWidth={lg.max}>
             {(isTabletOrMobile: boolean) => (
-                <WithShownDays
-                    label="Subscribers"
-                    className={className}
-                    onDaysChange={(days) => setShownDays(days)}
-                >
-                    {({ shownDays: days }) => (
-                        <TimeSeriesGraph
-                            graphData={graphData}
-                            shownDays={days}
-                            width={isTabletOrMobile ? 380 : 540}
-                            height={200}
-                            isLoading={isLoading}
-                        />
-                    )}
-                </WithShownDays>
+                <TimeSeriesGraph
+                    graphData={graphData}
+                    shownDays={shownDays}
+                    width={isTabletOrMobile ? 380 : 540}
+                    height={200}
+                    isLoading={isLoading}
+                />
             )}
         </MediaQuery>
     )

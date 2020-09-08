@@ -181,4 +181,8 @@ const MarkdownText = ({ text: textProp, className }: Props) => {
     )
 }
 
+Object.assign(MarkdownText, {
+    Container: MarkdownContainer,
+})
+
 export default MarkdownText

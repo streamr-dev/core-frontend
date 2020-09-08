@@ -16,21 +16,27 @@ const story = (name) => storiesOf(`Marketplace/${name}`, module)
 
 story('ProductList')
     .addWithJSX('basic', () => (
-        <Products
-            products={exampleProductList}
-            type="products"
-        />
+        <Products.Container fluid>
+            <Products
+                products={exampleProductList}
+                type="products"
+            />
+        </Products.Container>
     ))
     .addWithJSX('no products', () => (
-        <Products
-            products={[]}
-            type="products"
-        />
+        <Products.Container fluid>
+            <Products
+                products={[]}
+                type="products"
+            />
+        </Products.Container>
     ))
     .addWithJSX('fetching', () => (
-        <Products
-            products={exampleProductList}
-            type="products"
-            isFetching
-        />
+        <Products.Container fluid>
+            <Products
+                products={exampleProductList}
+                type="products"
+                isFetching
+            />
+        </Products.Container>
     ))

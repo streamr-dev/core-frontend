@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnionStats from './useDataUnionStats'
@@ -12,10 +11,10 @@ import Hero from './Hero'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
-import Terms from './Terms'
 import RelatedProducts from './RelatedProducts'
-
-import styles from './page.pcss'
+import Terms from '$mp/components/ProductPage/Terms'
+import ProductPage from '$shared/components/ProductPage'
+import Segment from '$shared/components/Segment'
 
 const ProductDetailsPage = () => {
     const product = useProduct()
@@ -29,21 +28,35 @@ const ProductDetailsPage = () => {
     const { joinPartStreamId } = dataUnion || {}
 
     return (
-        <div className={styles.productPage}>
-            <Hero />
-            <Description isProductFree={isProductFree} />
-            {isDataUnion && (
-                <DataUnionStats
-                    showDeploying={!isDuDeployed}
-                    stats={stats}
-                    memberCount={memberCount}
-                    joinPartStreamId={joinPartStreamId}
-                />
-            )}
-            <Streams />
-            <Terms />
-            <RelatedProducts />
-        </div>
+        <ProductPage>
+            <ProductPage.Hero>
+                <ProductPage.Container>
+                    <ProductPage.Container>
+                        <Hero />
+                        <ProductPage.Separator />
+                        <Description isProductFree={isProductFree} />
+                    </ProductPage.Container>
+                </ProductPage.Container>
+            </ProductPage.Hero>
+            <ProductPage.Container>
+                {isDataUnion && (
+                    <DataUnionStats
+                        showDeploying={!isDuDeployed}
+                        stats={stats}
+                        memberCount={memberCount}
+                        joinPartStreamId={joinPartStreamId}
+                    />
+                )}
+                <Streams />
+                <Terms product={product} />
+                <ProductPage.Container>
+                    <Segment>
+                        <RelatedProducts />
+                    </Segment>
+                </ProductPage.Container>
+                <Segment />
+            </ProductPage.Container>
+        </ProductPage>
     )
 }
 

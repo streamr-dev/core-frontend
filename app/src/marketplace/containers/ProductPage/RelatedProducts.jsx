@@ -1,40 +1,32 @@
-// @flow
-
 import React from 'react'
-import MediaQuery from 'react-responsive'
+import { useMediaQuery } from 'react-responsive'
 import { I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 
-import breakpoints from '$app/scripts/breakpoints'
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
-import ProductContainer from '$shared/components/Container/Product'
-import { isMobile } from '$shared/utils/platform'
+import { XL } from '$shared/utils/styled'
 
 import Products from '$mp/components/Products'
 
-import styles from './relatedProducts.pcss'
-
-const { md } = breakpoints
-
 const RelatedProducts = () => {
+    const isLargeScreen = useMediaQuery({
+        minWidth: XL,
+    })
+
     const relatedProducts = useSelector(selectRelatedProductList)
 
     if (!relatedProducts || relatedProducts.length < 1) {
         return null
     }
 
+    const products = isLargeScreen ? relatedProducts : relatedProducts.slice(0, 2)
+
     return (
-        <MediaQuery minDeviceWidth={md.max}>
-            {(matches) => (
-                <ProductContainer className={styles.relatedProducts}>
-                    <Products
-                        header={I18n.t('productPage.relatedProducts')}
-                        products={matches && !isMobile() ? relatedProducts : relatedProducts.slice(0, 2)}
-                        type="relatedProducts"
-                    />
-                </ProductContainer>
-            )}
-        </MediaQuery>
+        <Products
+            header={I18n.t('productPage.relatedProducts')}
+            products={products}
+            type="relatedProducts"
+        />
     )
 }
 

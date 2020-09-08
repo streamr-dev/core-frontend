@@ -30,8 +30,6 @@ import useWeb3Status from '$shared/hooks/useWeb3Status'
 
 import routes from '$routes'
 
-import styles from './hero.pcss'
-
 const Hero = () => {
     const dispatch = useDispatch()
     const product = useProduct()
@@ -131,8 +129,6 @@ const Hero = () => {
 
     return (
         <HeroComponent
-            className={styles.hero}
-            product={product}
             leftContent={
                 <ImageTile
                     alt={product.name}

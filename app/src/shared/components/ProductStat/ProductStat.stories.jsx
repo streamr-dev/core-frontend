@@ -2,11 +2,10 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
-
-import Values from '.'
+import ProductStat from '.'
 
 const stories =
-    storiesOf('Shared/DataUnionStats', module)
+    storiesOf('Shared/Stat', module)
         .addDecorator(styles({
             color: '#323232',
             padding: '1rem',
@@ -39,21 +38,21 @@ const stats = [{
 
 stories.add('header', () => (
     <div>
-        <Values.Header>header</Values.Header>
+        <ProductStat.Title>header</ProductStat.Title>
         <div>content</div>
     </div>
 ))
 
 stories.add('value', () => (
-    <Values.Value {...stats[0]} />
+    <ProductStat {...stats[0]} title="Revenue" />
 ))
 
 stories.add('values', () => (
-    <Values stats={stats} />
+    <ProductStat.List items={stats} />
 ))
 
 stories.add('mobile', () => (
-    <Values stats={stats} />
+    <ProductStat.List items={stats} />
 ), {
     viewport: {
         defaultViewport: 'sm',
@@ -61,7 +60,7 @@ stories.add('mobile', () => (
 })
 
 stories.add('tablet', () => (
-    <Values stats={stats} />
+    <ProductStat.List items={stats} />
 ), {
     viewport: {
         defaultViewport: 'md',
@@ -69,7 +68,7 @@ stories.add('tablet', () => (
 })
 
 stories.add('loading', () => (
-    <Values stats={stats.map((stat) => ({
+    <ProductStat.List items={stats.map((stat) => ({
         ...stat,
         loading: true,
     }))}

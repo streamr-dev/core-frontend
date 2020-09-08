@@ -3,7 +3,7 @@
 import React from 'react'
 import classnames from 'classnames'
 import styled from 'styled-components'
-import { Row, Container, Col } from 'reactstrap'
+import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import type { ProductList } from '../../flowtype/product-types'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
@@ -11,6 +11,7 @@ import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
 
+import { MD, LG, REGULAR } from '$shared/utils/styled'
 import { getErrorView, getCols } from './settings'
 import styles from './products.pcss'
 
@@ -49,7 +50,24 @@ const listProducts = (products, cols, isFetching: ?boolean) => (
     </Row>
 )
 
-const Products = ({
+const Container = styled(RsContainer)`
+    padding: 1.25em 30px 3.5em 30px;
+
+    @media (min-width: ${LG}px) {
+        padding: 1.5em 5em 7em 5em;
+    }
+`
+
+const Header = styled.h3`
+    font-size: 18px;
+    font-weight: ${REGULAR};
+
+    @media (min-width: ${MD}px) {
+        font-size: 24px;
+    }
+`
+
+const UnstyledProducts = ({
     products,
     type,
     error,
@@ -57,9 +75,14 @@ const Products = ({
     loadProducts,
     hasMoreSearchResults,
     header,
+    ...props
 }: OwnProps) => (
-    <Container className={styles[type]} fluid={type === 'products'}>
-        {(header && <h3>{header}</h3>)}
+    <div {...props}>
+        {(header && (
+            <Header>
+                {header}
+            </Header>
+        ))}
         <Error source={error} />
         {(isFetching || products.length > 0)
             ? listProducts(products, getCols(type), isFetching)
@@ -73,7 +96,14 @@ const Products = ({
         {isFetching && (
             <ProductPageSpinner className={styles.spinner} />
         )}
-    </Container>
+    </div>
 )
+
+const Products = styled(UnstyledProducts)``
+
+Object.assign(Products, {
+    Header,
+    Container,
+})
 
 export default Products

@@ -1,11 +1,11 @@
 // @flow
 
 import React, { useMemo, useEffect } from 'react'
+import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
-import cx from 'classnames'
 import { titleize } from '@streamr/streamr-layout'
-
+import Segment from '$shared/components/Segment'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
@@ -25,11 +25,8 @@ import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import usePending from '$shared/hooks/usePending'
-
-import productPageStyles from '$mp/containers/ProductPage/page.pcss'
-import heroStyles from '$mp/containers/ProductPage/hero.pcss'
-
-import styles from './preview.pcss'
+import ProductPage from '$shared/components/ProductPage'
+import { MD, XL } from '$shared/utils/styled'
 
 const Hero = () => {
     const product = useEditableProduct()
@@ -46,9 +43,6 @@ const Hero = () => {
 
     return (
         <HeroComponent
-            className={heroStyles.hero}
-            containerClassName={heroStyles.heroContainer}
-            product={product}
             leftContent={
                 <ImageTile
                     alt={product.name}
@@ -177,29 +171,23 @@ const Streams = () => {
     const fetchingAllStreams = useSelector(selectFetchingStreams)
 
     return (
-        <StreamListing
-            product={product}
-            streams={selectedStreams}
-            fetchingStreams={fetchingAllStreams}
-            showStreamActions={false}
-            isLoggedIn={false}
-            isProductSubscriptionValid={false}
-            isProductFree={isProductFree}
-        />
+        <Segment>
+            <Segment.Body>
+                <StreamListing
+                    product={product}
+                    streams={selectedStreams}
+                    fetchingStreams={fetchingAllStreams}
+                    showStreamActions={false}
+                    isLoggedIn={false}
+                    isProductSubscriptionValid={false}
+                    isProductFree={isProductFree}
+                />
+            </Segment.Body>
+        </Segment>
     )
 }
 
-const TermsOfUse = () => {
-    const product = useEditableProduct()
-
-    return (
-        <Terms
-            product={product}
-        />
-    )
-}
-
-const Preview = () => {
+const UnstyledPreview = (props) => {
     const product = useEditableProduct()
 
     const isDataUnion = !!(product && isDataUnionProduct(product))
@@ -212,16 +200,37 @@ const Preview = () => {
     }, [])
 
     return (
-        <div className={cx(productPageStyles.productPage, styles.preview)}>
-            <Hero />
-            <Description />
-            {isDataUnion && (
-                <DataUnionStats />
-            )}
-            <Streams />
-            <TermsOfUse />
-        </div>
+        <ProductPage {...props}>
+            <ProductPage.Hero>
+                <ProductPage.Container>
+                    <ProductPage.Container>
+                        <Hero />
+                        <ProductPage.Separator />
+                        <Description />
+                    </ProductPage.Container>
+                </ProductPage.Container>
+            </ProductPage.Hero>
+            <ProductPage.Container>
+                {isDataUnion && (
+                    <DataUnionStats />
+                )}
+                <Streams />
+                <Terms product={product} />
+            </ProductPage.Container>
+        </ProductPage>
     )
 }
+
+const Preview = styled(UnstyledPreview)`
+    padding-bottom: 96px;
+
+    @media (min-width: ${MD}px) {
+        padding-bottom: 48px;
+    }
+
+    @media (min-width: ${XL}px) {
+        padding-bottom: 64px;
+    }
+`
 
 export default Preview

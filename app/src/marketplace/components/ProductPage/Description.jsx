@@ -4,9 +4,8 @@ import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import styled from 'styled-components'
 
-import ProductContainer from '$shared/components/Container/Product'
 import MarkdownText from '$mp/components/ProductPage/MarkdownText'
-import { MD, LG } from '$shared/utils/styled'
+import { SM, LG } from '$shared/utils/styled'
 
 type SidebarEntry = {
     title: string,
@@ -23,30 +22,11 @@ type Props = {
     sidebar?: SidebarEntries,
 }
 
-const Root = styled.div`
-    background-color: #F8F8F8;
-    padding-bottom: 3em;
-`
-
-const Separator = styled.div`
-    background-color: #E7E7E7;
-    width: 100%;
-    height: 1px;
-    margin: 2em 0;
-    display: inline-block;
-    vertical-align: middle;
-
-    @media (min-width: ${LG}px) {
-        margin: 3em 0;
-    }
-`
-
 const InfoWrapper = styled.div`
     @media (min-width: ${LG}px) {
         display: grid;
         grid-template-columns: auto 17em;
         grid-column-gap: 9.875em;
-        margin-left: -1.5rem;
     }
 `
 
@@ -57,12 +37,13 @@ const StyledMarkdownText = styled(MarkdownText)`
     letter-spacing: 0;
     line-height: 30px;
     color: #525252;
-    padding-bottom: 2em;
-    margin-left: -1.5rem;
     margin-bottom: 2rem;
 
+    ${MarkdownText.Container} {
+        padding-left: 0;
+    }
+
     @media (min-width: ${LG}px) {
-        margin-left: 0;
         margin-bottom: 0;
     }
 `
@@ -77,7 +58,7 @@ const SideBar = styled.div`
     max-height: 15.5em;
     padding: 1.5em;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: ${SM}px) {
         grid-template-columns: 1fr 1fr 1fr;
         grid-column-gap: 1em;
     }
@@ -96,29 +77,28 @@ const SideBarItemTitle = styled.div`
 
 const SideBarItemValue = styled.div``
 
-const Description = ({ description, sidebar }: Props) => (
-    <Root>
-        <ProductContainer>
-            <Separator />
-            <InfoWrapper>
-                <StyledMarkdownText text={description} />
-                <SideBar>
-                    {sidebar && Object.keys(sidebar).map((id) => {
-                        const { title, loading, value } = sidebar[id]
+const UnstyledDescription = ({ description, sidebar, ...props }: Props) => (
+    <div {...props}>
+        <InfoWrapper>
+            <StyledMarkdownText text={description} />
+            <SideBar>
+                {sidebar && Object.keys(sidebar).map((id) => {
+                    const { title, loading, value } = sidebar[id]
 
-                        return (
-                            <SideBarItem key={id}>
-                                <SideBarItemTitle>{title}</SideBarItemTitle>
-                                {!loading ? (
-                                    <SideBarItemValue>{value}</SideBarItemValue>
-                                ) : <Skeleton />}
-                            </SideBarItem>
-                        )
-                    })}
-                </SideBar>
-            </InfoWrapper>
-        </ProductContainer>
-    </Root>
+                    return (
+                        <SideBarItem key={id}>
+                            <SideBarItemTitle>{title}</SideBarItemTitle>
+                            {!loading ? (
+                                <SideBarItemValue>{value}</SideBarItemValue>
+                            ) : <Skeleton />}
+                        </SideBarItem>
+                    )
+                })}
+            </SideBar>
+        </InfoWrapper>
+    </div>
 )
+
+const Description = styled(UnstyledDescription)``
 
 export default Description

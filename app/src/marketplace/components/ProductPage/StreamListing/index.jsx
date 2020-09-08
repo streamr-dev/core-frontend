@@ -3,8 +3,8 @@ import { Translate } from 'react-redux-i18n'
 import styled, { css } from 'styled-components'
 
 import SvgIcon from '$shared/components/SvgIcon'
-import { SM, MD, LG } from '$shared/utils/styled'
-import ProductContainer from '$shared/components/Container/Product'
+import { SM, LG } from '$shared/utils/styled'
+import Segment from '$shared/components/Segment'
 
 const StreamCount = styled.span`
     display: inline-block;
@@ -18,22 +18,15 @@ const StreamCount = styled.span`
 
 const LockedNotice = styled.span`
     margin-left: 16px;
-    display: inline-block;
     line-height: 24px;
     font-weight: var(--regular);
     display: none;
-`
+    letter-spacing: 0;
+    text-transform: none;
 
-const Root = styled.div`
-    background: var(--greyLight3);
-    border-radius: 2px;
-    border: 1px solid #EFEFEF;
-
-    &:hover,
-    &:focus-within {
-        ${LockedNotice} {
-            display: inline-block;
-        }
+    ${Segment}:hover &,
+    ${Segment}:focus-within & {
+        display: inline-block;
     }
 `
 
@@ -96,9 +89,17 @@ const DataRow = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 32px;
+    padding: 0 24px;
     white-space: nowrap;
+
+    @media (min-width: ${SM}px) {
+        padding: 0 32px;
+    }
     
+    ${Segment.Header} & {
+        padding: 0;
+    }
+
     &:not(:last-child) {
         border-bottom: 1px solid #EFEFEF;
     }
@@ -108,7 +109,6 @@ const DataRow = styled.div`
     }
 
     ${RowItem} {
-        font-size: 14px;
         color: ${({ locked }) => (locked ? '#ADADAD' : 'inherit')};
     }
 
@@ -172,10 +172,6 @@ const MobileHitTarget = styled.div`
 `
 
 const HeaderRow = styled(DataRow)`
-    height: 72px;
-    background-color: #EFEFEF;
-    color: #323232;
-
     ${RowItem} {
         font-weight: var(--medium);
     }
@@ -191,99 +187,83 @@ export const StreamListing = ({
     fetchingStreams,
     onStreamPreview,
     onStreamSettings,
-    className,
+    ...props
 }) => {
     const streams = useMemo(() => streamsProp || [], [streamsProp])
 
     const showPreview = useMemo(() => !!(
         !locked && !!onStreamPreview && typeof onStreamPreview === 'function'
     ), [locked, onStreamPreview])
+
     const showSettings = useMemo(() => !!(
         !locked && !!onStreamSettings && typeof onStreamSettings === 'function'
     ), [locked, onStreamSettings])
 
     return (
-        <Root className={className}>
-            <HeaderRow>
-                <TitleItem>
-                    <Translate value="productPage.streamListing.streams" />
-                    {!fetchingStreams && (
-                        <StreamCount>{streams.length}</StreamCount>
-                    )}
-                    {!!locked && (
-                        <LockedNotice>
-                            <Translate value="productPage.streamListing.subscribe" />
-                        </LockedNotice>
-                    )}
-                </TitleItem>
-                <DescriptionItem>
-                    <Translate value="productPage.streamListing.description" />
-                </DescriptionItem>
-            </HeaderRow>
-            {!fetchingStreams && (
-                <TableBody>
-                    {streams.map(({ id: streamId, name, description }) => (
-                        <DataRow key={streamId} locked={locked} clickable={!locked && !!showPreview}>
-                            <TitleItem title={name}>{name}</TitleItem>
-                            <DescriptionItem title={description}>{description}</DescriptionItem>
-                            {(!!showPreview || !!showSettings) && (
-                                <RowButtons>
-                                    {!!showPreview && (
-                                        <button type="button" onClick={() => onStreamPreview(streamId)}>
-                                            <SvgIcon name="listInspect" />
-                                        </button>
-                                    )}
-                                    {!!showSettings && (
-                                        <button type="button" onClick={() => onStreamSettings(streamId)}>
-                                            <SvgIcon name="listSettings" />
-                                        </button>
-                                    )}
-                                </RowButtons>
-                            )}
-                            {!!showPreview && (
-                                <MobileHitTarget onClick={() => onStreamPreview(streamId)} />
-                            )}
-                        </DataRow>
-                    ))}
-                </TableBody>
-            )}
-            {!!fetchingStreams && (
-                <DataRow locked={locked}>
-                    <RowItem>
-                        <Translate value="productPage.streamListing.loading" />
-                    </RowItem>
-                </DataRow>
-            )}
-            {!fetchingStreams && streams.length === 0 && (
-                <DataRow locked={locked}>
-                    <RowItem>
-                        <Translate value="productPage.streamListing.noStreams" />
-                    </RowItem>
-                </DataRow>
-            )}
-        </Root>
+        <Segment {...props}>
+            <Segment.Header>
+                <HeaderRow>
+                    <TitleItem>
+                        <Translate value="productPage.streamListing.streams" />
+                        {!fetchingStreams && (
+                            <StreamCount>{streams.length}</StreamCount>
+                        )}
+                        {!!locked && (
+                            <LockedNotice>
+                                <Translate value="productPage.streamListing.subscribe" />
+                            </LockedNotice>
+                        )}
+                    </TitleItem>
+                    <DescriptionItem>
+                        <Translate value="productPage.streamListing.description" />
+                    </DescriptionItem>
+                </HeaderRow>
+            </Segment.Header>
+            <Segment.Body>
+                {!fetchingStreams && (
+                    <TableBody>
+                        {streams.map(({ id: streamId, name, description }) => (
+                            <DataRow key={streamId} locked={locked} clickable={!locked && !!showPreview}>
+                                <TitleItem title={name}>{name}</TitleItem>
+                                <DescriptionItem title={description}>{description}</DescriptionItem>
+                                {(!!showPreview || !!showSettings) && (
+                                    <RowButtons>
+                                        {!!showPreview && (
+                                            <button type="button" onClick={() => onStreamPreview(streamId)}>
+                                                <SvgIcon name="listInspect" />
+                                            </button>
+                                        )}
+                                        {!!showSettings && (
+                                            <button type="button" onClick={() => onStreamSettings(streamId)}>
+                                                <SvgIcon name="listSettings" />
+                                            </button>
+                                        )}
+                                    </RowButtons>
+                                )}
+                                {!!showPreview && (
+                                    <MobileHitTarget onClick={() => onStreamPreview(streamId)} />
+                                )}
+                            </DataRow>
+                        ))}
+                    </TableBody>
+                )}
+                {!!fetchingStreams && (
+                    <DataRow locked={locked}>
+                        <RowItem>
+                            <Translate value="productPage.streamListing.loading" />
+                        </RowItem>
+                    </DataRow>
+                )}
+                {!fetchingStreams && streams.length === 0 && (
+                    <DataRow locked={locked}>
+                        <RowItem>
+                            <Translate value="productPage.streamListing.noStreams" />
+                        </RowItem>
+                    </DataRow>
+                )}
+            </Segment.Body>
+        </Segment>
     )
 }
 
-const StyledProductContainer = styled(ProductContainer)`
-    && {
-        margin-top: 4em;
-
-        @media (max-width: ${MD}px) {
-            padding-left: 0;
-            padding-right: 0;
-
-            ${Root} {
-                border-left: 0;
-                border-right: 0;
-                border-radius: 0;
-            }
-        }
-    }
-`
-
-export default (props) => (
-    <StyledProductContainer>
-        <StreamListing {...props} />
-    </StyledProductContainer>
-)
+export default StreamListing
