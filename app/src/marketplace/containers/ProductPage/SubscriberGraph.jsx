@@ -14,7 +14,6 @@ type Props = {
 
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
-// Q(mariusz): Is `className` used anywhere? Can we use it on TimeSeriesGraph?
 const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
     const [graphData, setGraphData] = useState([])
     const [subscriptionData, setSubscriptionData] = useState([])
