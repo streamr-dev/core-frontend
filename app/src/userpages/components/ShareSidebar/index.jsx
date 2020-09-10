@@ -1,5 +1,5 @@
 import React from 'react'
-import Sidebar, { Content } from '$shared/components/Sidebar'
+import Sidebar from '$shared/components/Sidebar'
 import { I18n } from 'react-redux-i18n'
 import SidebarContent from './Sidebar'
 
@@ -10,13 +10,13 @@ export default ({ sidebarName, resourceTitle, onClose, ...props }) => (
             onClose={onClose}
             subtitle={resourceTitle}
         />
-        <Content>
+        <Sidebar.Body>
             <SidebarContent
                 {...props}
                 resourceTitle={resourceTitle}
                 onClose={onClose}
                 allowEmbed
             />
-        </Content>
+        </Sidebar.Body>
     </React.Fragment>
 )

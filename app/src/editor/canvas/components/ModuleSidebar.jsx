@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useRef } from 'react'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import Sidebar, { Content, Section, Select } from '$shared/components/Sidebar'
+import Sidebar, { Section, Select } from '$shared/components/Sidebar'
 import Toggle from '$shared/components/Toggle'
 import Text from '$editor/canvas/components/Ports/Value/Text'
 
@@ -65,7 +65,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                 title={module.displayName || module.name}
                 onClose={onClose}
             />
-            <Content className={styles.content}>
+            <Sidebar.Body className={styles.content}>
                 {!optionsKeys.length ? null : (
                     <Section label="Options" initialIsOpen>
                         <div className={cx(styles.optionsFields)}>
@@ -119,7 +119,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                 <Section label="Description" initialIsOpen>
                     <ModuleHelp className={styles.moduleHelp} module={module} />
                 </Section>
-            </Content>
+            </Sidebar.Body>
         </React.Fragment>
     )
 }

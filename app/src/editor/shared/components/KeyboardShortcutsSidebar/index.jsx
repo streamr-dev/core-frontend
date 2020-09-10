@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react'
 import cx from 'classnames'
 
 import { isWindows as getIsWindows, isMac as getIsMac } from '$shared/utils/platform'
-import Sidebar, { Content, Section } from '$shared/components/Sidebar'
+import Sidebar, { Section } from '$shared/components/Sidebar'
 import isEditableElement from '$shared/utils/isEditableElement'
 
 import styles from './KeyboardShortcutsSidebar.pcss'
@@ -180,9 +180,9 @@ export function KeyboardShortcutsSidebar({ onClose, children }) {
                 title="Keyboard Shortcuts"
                 onClose={onClose}
             />
-            <Content>
+            <Sidebar.Body>
                 {children}
-            </Content>
+            </Sidebar.Body>
         </React.Fragment>
     )
 }

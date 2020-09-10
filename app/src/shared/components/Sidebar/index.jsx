@@ -11,7 +11,6 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 import SvgIcon from '$shared/components/SvgIcon'
 import AppInfo from '$shared/components/AppInfo'
 
-import Content from './Content'
 import Section from './Section'
 import Select from './Select'
 
@@ -64,7 +63,6 @@ const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
 }
 
 export {
-    Content,
     Section,
     Select,
 }
@@ -160,7 +158,17 @@ const Header = styled(UnstyledHeader)`
 
 const WithErrorBoundary = withErrorBoundary(ErrorComponentView)(Sidebar)
 
+const Body = styled.div`
+    color: #525252;
+    flex-grow: 1;
+`
+
 Object.assign(Sidebar, {
+    Body: withErrorBoundary((props) => (
+        <Body {...props}>
+            <ErrorComponentView {...props} />
+        </Body>
+    ))(Body),
     Header,
     WithErrorBoundary,
 })
