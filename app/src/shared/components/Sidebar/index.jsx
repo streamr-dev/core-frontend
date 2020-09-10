@@ -122,7 +122,13 @@ const Header = styled(UnstyledHeader)`
         height: 32px;
         margin: 0;
         padding: 0;
+        transition: 100ms color;
         width: 32px;
+    }
+
+    button:hover,
+    button:focus {
+        color: #525252;
     }
 
     button:focus {
