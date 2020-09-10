@@ -86,7 +86,6 @@ const UnstyledHeader = ({ onClose, title, subtitle = <AppInfo />, ...props }) =>
 )
 
 const Header = styled(UnstyledHeader)`
-    align-items: center;
     border-bottom: 1px solid #efefef;
     display: flex;
     padding: 24px 32px;
@@ -98,7 +97,7 @@ const Header = styled(UnstyledHeader)`
         font-size: 20px;
         font-weight: ${MEDIUM};
         letter-spacing: 0;
-        line-height: 1em;
+        line-height: 1.25em;
         margin: 0;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -110,6 +109,7 @@ const Header = styled(UnstyledHeader)`
         font-family: ${SANS};
         font-size: 12px;
         line-height: 16px;
+        margin: 0.25em 0 0;
         overflow-wrap: break-word;
         word-break: break-word;
     }
@@ -119,6 +119,7 @@ const Header = styled(UnstyledHeader)`
         background: none;
         border: 0;
         color: #cdcdcd;
+        display: block;
         height: 32px;
         margin: 0;
         padding: 0;
@@ -138,13 +139,22 @@ const Header = styled(UnstyledHeader)`
     svg {
         display: block;
         height: 10px;
+        margin: 0 auto;
         width: 10px;
     }
 
-    /* TODO: Gotta fix that over-flexing texts. */
+    > div {
+        min-width: 0;
+    }
 
     > div:first-child {
         flex-grow: 1;
+    }
+
+    > div:last-child {
+        flex-shrink: 0;
+        margin-right: -11px;
+        padding-top: 6px;
     }
 `
 
