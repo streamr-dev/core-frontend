@@ -161,6 +161,7 @@ const WithErrorBoundary = withErrorBoundary(ErrorComponentView)(Sidebar)
 const Body = styled.div`
     color: #525252;
     flex-grow: 1;
+    overflow: auto;
 `
 
 Object.assign(Sidebar, {
