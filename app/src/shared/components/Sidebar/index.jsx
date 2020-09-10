@@ -1,9 +1,10 @@
 // @flow
 
-import React, { type Node, useEffect, useCallback, useRef } from 'react'
+import React, { type Node, useEffect, useCallback, useRef, useState } from 'react'
 import cx from 'classnames'
 import styled from 'styled-components'
 import { MEDIUM, SANS } from '$shared/utils/styled'
+import { Collapse as RsCollapse } from 'reactstrap'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import isEditableElement from '$shared/utils/isEditableElement'
@@ -11,7 +12,6 @@ import ErrorComponentView from '$shared/components/ErrorComponentView'
 import SvgIcon from '$shared/components/SvgIcon'
 import AppInfo from '$shared/components/AppInfo'
 
-import Section from './Section'
 import Select from './Select'
 
 import styles from './Sidebar.pcss'
@@ -62,10 +62,7 @@ const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
     )
 }
 
-export {
-    Section,
-    Select,
-}
+export { Select }
 
 const UnstyledHeader = ({ onClose, title, subtitle = <AppInfo />, ...props }) => (
     <div {...props}>
@@ -164,12 +161,88 @@ const Body = styled.div`
     overflow: auto;
 `
 
+const UnstyledCollapse = ({ label, children, isOpen: isOpenProp, ...props }) => {
+    const [isOpen, setIsOpen] = useState(isOpenProp)
+
+    useEffect(() => {
+        setIsOpen(isOpenProp)
+    }, [isOpenProp])
+
+    const toggle = useCallback(() => {
+        setIsOpen((state) => !state)
+    }, [])
+
+    return (
+        <div {...props}>
+            <button type="button" onClick={toggle}>
+                <span>
+                    {label}
+                </span>
+                <SvgIcon name={isOpen ? 'minus' : 'plus'} />
+            </button>
+            <RsCollapse isOpen={isOpen}>
+                <div
+                    // eslint-disable-next-line react/jsx-curly-brace-presence
+                    css={`
+                        line-height: 1.5em;
+                        padding-top: 20px;
+                    `}
+                >
+                    {children}
+                </div>
+            </RsCollapse>
+        </div>
+    )
+}
+
+const Collapse = styled(UnstyledCollapse)`
+    border-bottom: 1px solid #efefef;
+    flex-shrink: 0;
+    max-height: stretch;
+    padding: 24px 32px;
+
+    button {
+        align-items: center;
+        appearance: none;
+        background: none;
+        border: none;
+        color: #323232;
+        display: flex;
+        font-family: ${SANS};
+        font-size: 16px;
+        font-weight: ${MEDIUM};
+        letter-spacing: 0;
+        line-height: 32px;
+        margin: 0;
+        padding: 0;
+        text-align: left;
+        width: 100%;
+    }
+
+    button:focus {
+        outline: 0;
+    }
+
+    button span:first-child {
+        flex-grow: 1;
+    }
+
+    svg {
+        color: #cdcdcd;
+        display: block;
+        height: 12px;
+        margin: 0 auto;
+        width: 12px;
+    }
+`
+
 Object.assign(Sidebar, {
     Body: withErrorBoundary((props) => (
         <Body {...props}>
             <ErrorComponentView {...props} />
         </Body>
     ))(Body),
+    Collapse,
     Header,
     WithErrorBoundary,
 })

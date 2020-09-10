@@ -20,7 +20,7 @@ const generalCombos = [
 export default function DashboardKeyboardShortcutsSidebar(props) {
     return (
         <KeyboardShortcutsSidebar {...props}>
-            <ComboList combos={generalCombos} label="General" initialIsOpen />
+            <ComboList combos={generalCombos} label="General" isOpen />
         </KeyboardShortcutsSidebar>
     )
 }

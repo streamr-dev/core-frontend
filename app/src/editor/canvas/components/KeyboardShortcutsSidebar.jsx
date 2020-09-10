@@ -136,8 +136,8 @@ const moduleCombos = [
 export default function CanvasKeyboardShortcutsSidebar(props) {
     return (
         <KeyboardShortcutsSidebar {...props}>
-            <ComboList combos={generalCombos} label="General" initialIsOpen />
-            <ComboList combos={moduleCombos} label="Regularly used modules" initialIsOpen />
+            <ComboList combos={generalCombos} label="General" isOpen />
+            <ComboList combos={moduleCombos} label="Regularly used modules" isOpen />
         </KeyboardShortcutsSidebar>
     )
 }
