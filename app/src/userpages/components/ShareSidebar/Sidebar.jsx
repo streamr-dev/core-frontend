@@ -220,6 +220,7 @@ function UserPermissions({
     className,
     onSelect,
     isSelected,
+    isCurrentUser,
     error,
 }) {
     const selectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
@@ -252,7 +253,10 @@ function UserPermissions({
         >
             <div className={styles.permissionsHeader} onClick={onClick}>
                 <div className={styles.permissionsHeaderTitle}>
-                    <h4 title={userId}>{userId}</h4>
+                    <h4 title={userId}>
+                        {userId}
+                        {!!isCurrentUser && (' (You)')}
+                    </h4>
                     <div
                         className={cx(styles.selectedGroup, {
                             [styles.isCustom]: isCustom,
@@ -334,11 +338,9 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
-function filterPermissions({ permissions, currentUser }) {
-    return permissions
-    // remove currentUser, not editable
-        .filter((p) => p.user !== currentUser)
+function filterPermissions(permissions) {
     // convert permission.anonymous to permission.user = 'anonymous', if needed
+    return permissions
         .map((p) => State.fromAnonymousPermission(p))
 }
 
@@ -351,14 +353,11 @@ function filterPermissions({ permissions, currentUser }) {
  */
 
 async function savePermissions(currentUsers, props) {
-    const { resourceType, resourceId, currentUser } = props
-    const oldPermissions = filterPermissions({
-        permissions: await getResourcePermissions({
-            resourceType,
-            resourceId,
-        }),
-        currentUser,
-    })
+    const { resourceType, resourceId } = props
+    const oldPermissions = filterPermissions(await getResourcePermissions({
+        resourceType,
+        resourceId,
+    }))
     const { added, removed } = State.diffUsersPermissions({
         oldPermissions,
         newUsers: currentUsers,
@@ -406,13 +405,8 @@ async function savePermissions(currentUsers, props) {
  */
 
 function useUserPermissionState(props) {
-    const { resourceType, currentUser, permissions: propPermissions } = props
-    const permissions = useMemo(() => (
-        filterPermissions({
-            permissions: propPermissions,
-            currentUser,
-        })
-    ), [currentUser, propPermissions])
+    const { resourceType, permissions: propPermissions } = props
+    const permissions = useMemo(() => filterPermissions(propPermissions), [propPermissions])
     const users = useMemo(() => State.usersFromPermissions(resourceType, permissions), [resourceType, permissions])
     const [currentUsers, setCurrentUsers] = useState(users) // state of user permissions to save to server
     const [newUserIdList, setNewUserIdList] = useState([]) // users added since last save
@@ -420,11 +414,8 @@ function useUserPermissionState(props) {
 
     const canShareToUser = useCallback((userId) => (
         // don't interfere with anonymous/current user
-        State.canShareToUser({
-            currentUser,
-            userId,
-        })
-    ), [currentUser])
+        State.canShareToUser(userId)
+    ), [])
 
     /* CRUD APIs */
 
@@ -514,6 +505,12 @@ const ShareSidebar = connect(({ user }) => ({
         newUsers: currentUsers,
         resourceType,
     })
+    const hasCurrentUserChanges = State.hasUserSpecificPermissionsChanges({
+        oldPermissions: permissions,
+        newUsers: currentUsers,
+        resourceType,
+        targetUserId: currentUser,
+    })
 
     // should be true when user tries to close sidebar
     const [didTryClose, setDidTryClose] = useState(false)
@@ -532,7 +529,12 @@ const ShareSidebar = connect(({ user }) => ({
         // load latest permissions
         // required to set base permissions to whatever changes were successful
         await propsRef.current.loadPermissions()
-        if (!isMounted()) { return }
+
+        if (!isMounted()) {
+            // close sidebar if permission loading failed
+            propsRef.current.onClose()
+            return
+        }
 
         setUserErrors(errors) // errors will be empty if no errors
         setNewUserIdList((prevIds) => (
@@ -601,7 +603,7 @@ const ShareSidebar = connect(({ user }) => ({
         }
     }, [hasChanges, isSaving])
 
-    const [bindTryCloseWarning, tryCloseWarningStyle] = useSlideIn({ isVisible: didTryClose })
+    const [bindWarningMessages, warningMessagesStyle] = useSlideIn({ isVisible: didTryClose || hasCurrentUserChanges })
 
     const uid = useUniqueId('ShareSidebar') // for html labels
 
@@ -616,20 +618,31 @@ const ShareSidebar = connect(({ user }) => ({
 
     const anonymousPermissions = currentUsers.anonymous
 
-    // current & anonymous user not directly editable
+    // anonymous user is not directly editable
     const editableUsers = Object.assign({}, currentUsers)
     delete editableUsers.anonymous
-    delete editableUsers[currentUser]
+
+    // current user (own permission) is displayed on top
+    let currentUserId = []
+
+    if (editableUsers[currentUser]) {
+        currentUserId = [currentUser]
+    }
 
     // users are listed in order:
+    // current user, if exists
     // new users in order added
     // old users in alphabetical order
     const oldUserIdList = Object.keys(editableUsers)
-        .filter((userId) => !newUserIdList.includes(userId))
+        .filter((userId) => !newUserIdList.includes(userId) && userId !== currentUser)
         .sort()
 
+    // remove current user
+    const newUserIdListFiltered = newUserIdList.filter((userId) => userId !== currentUser)
+
     const userEntries = [
-        ...newUserIdList,
+        ...currentUserId,
+        ...newUserIdListFiltered,
         ...oldUserIdList,
     ].map((userId) => [userId, editableUsers[userId]])
 
@@ -696,6 +709,7 @@ const ShareSidebar = connect(({ user }) => ({
                             updatePermission={updatePermission}
                             permissions={permissions}
                             isSelected={selectedUserId === userId}
+                            isCurrentUser={currentUser === userId}
                             onSelect={setSelectedUserId}
                             error={userErrors[userId]}
                         />
@@ -710,15 +724,20 @@ const ShareSidebar = connect(({ user }) => ({
             />
             <animated.div
                 className={styles.errorMessageWrapper}
-                style={tryCloseWarningStyle}
+                style={warningMessagesStyle}
             >
                 {/* only shows if trying to close with unsaved changes */}
-                <div {...bindTryCloseWarning}>
+                <div {...bindWarningMessages}>
                     <div className={styles.errorMessage}>
-                        {isSaving
-                            ? <Translate value="modal.shareResource.warnSavingChanges" />
-                            : <Translate value="modal.shareResource.warnUnsavedChanges" />
-                        }
+                        {isSaving && (
+                            <Translate value="modal.shareResource.warnSavingChanges" />
+                        )}
+                        {!isSaving && !!didTryClose && (
+                            <Translate value="modal.shareResource.warnUnsavedChanges" />
+                        )}
+                        {!isSaving && !didTryClose && !!hasCurrentUserChanges && (
+                            <Translate value="modal.shareResource.warnChangingOwnPermission" />
+                        )}
                     </div>
                 </div>
             </animated.div>

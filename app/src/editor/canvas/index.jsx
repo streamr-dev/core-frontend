@@ -41,6 +41,7 @@ import useCanvasUpdater from './components/CanvasController/useCanvasUpdater'
 import { AutosaveProvider } from './components/CanvasController/Autosave'
 import useUpdatedTime from './components/CanvasController/useUpdatedTime'
 import useEmbedMode from './components/CanvasController/useEmbedMode'
+import useCanvasPermissions from './components/CanvasController/useCanvasPermissions'
 
 import PendingLoadingIndicator from './components/PendingLoadingIndicator'
 import Canvas from './components/Canvas'
@@ -86,13 +87,24 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
         this.props.sidebar.open('console', show)
     }
 
+    closeSidebar = () => {
+        const { sidebar, loadPermissions, canvas } = this.props
+
+        // If share sidebar was open, load permissions again to react to own permission changes
+        if (sidebar.isOpen('share')) {
+            loadPermissions(canvas.id)
+        }
+
+        sidebar.close()
+    }
+
     selectModule = async ({ hash } = {}) => {
         const noSelection = hash == null
 
         this.setState({ selectedModuleHash: hash })
 
         if (noSelection) {
-            this.props.sidebar.close()
+            this.closeSidebar()
             this.props.selection.none()
             // remove focus on deselect
             if (document.activeElement) {
@@ -475,6 +487,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
                                     resourceTitle={canvas.name}
                                     resourceType="CANVAS"
                                     resourceId={canvas.id}
+                                    onClose={this.closeSidebar}
                                 />
                             )}
                         </Sidebar>
@@ -503,6 +516,7 @@ const CanvasEdit = withRouter((props) => {
     useCanvasCameraEffects()
     const selection = useCanvasSelection()
     const sidebar = useContext(SidebarContext)
+    const { loadPermissions } = useCanvasPermissions()
 
     return (
         <AutosaveProvider>
@@ -520,6 +534,7 @@ const CanvasEdit = withRouter((props) => {
                 setUpdated={setUpdated}
                 selection={selection}
                 sidebar={sidebar}
+                loadPermissions={loadPermissions}
             />
         </AutosaveProvider>
     )

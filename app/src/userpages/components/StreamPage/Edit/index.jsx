@@ -24,6 +24,7 @@ import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/Side
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
 import Nav from '$shared/components/Layout/Nav'
+import { resetResourcePermission } from '$userpages/modules/permission/actions'
 
 import InfoView from './InfoView'
 import KeyView from './KeyView'
@@ -38,9 +39,17 @@ import styles from './edit.pcss'
 
 function StreamPageSidebar({ stream }) {
     const sidebar = useContext(SidebarContext)
+    const dispatch = useDispatch()
+
+    const streamId = stream && stream.id
+
     const onClose = useCallback(() => {
         sidebar.close()
-    }, [sidebar])
+
+        if (streamId) {
+            dispatch(resetResourcePermission('STREAM', streamId))
+        }
+    }, [sidebar, dispatch, streamId])
 
     return (
         <Sidebar
@@ -53,6 +62,7 @@ function StreamPageSidebar({ stream }) {
                     resourceTitle={stream && stream.name}
                     resourceType="STREAM"
                     resourceId={stream && stream.id}
+                    onClose={onClose}
                 />
             )}
         </Sidebar>

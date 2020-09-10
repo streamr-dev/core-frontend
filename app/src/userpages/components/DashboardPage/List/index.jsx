@@ -23,7 +23,7 @@ import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useCopy from '$shared/hooks/useCopy'
 import { DashboardTile } from '$shared/components/Tile'
-import { getResourcePermissions } from '$userpages/modules/permission/actions'
+import { getResourcePermissions, resetResourcePermission } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectDashboardPermissions } from '$userpages/modules/permission/selectors'
 import Grid from '$shared/components/Tile/Grid'
 import Sidebar from '$shared/components/Sidebar'
@@ -68,17 +68,29 @@ const StyledListContainer = styled(ListContainer)`
 
 function DashboardPageSidebar({ dashboard }) {
     const sidebar = useContext(SidebarContext)
+    const dispatch = useDispatch()
+
+    const dashboardId = dashboard && dashboard.id
+
+    const onClose = useCallback(() => {
+        sidebar.close()
+
+        if (dashboardId) {
+            dispatch(resetResourcePermission('DASHBOARD', dashboardId))
+        }
+    }, [sidebar, dispatch, dashboardId])
+
     return (
         <Sidebar
             isOpen={sidebar.isOpen()}
-            onClose={() => sidebar.close()}
+            onClose={onClose}
         >
             {sidebar.isOpen('share') && (
                 <ShareSidebar
-                    onClose={() => sidebar.close('share')}
                     resourceTitle={dashboard && dashboard.name}
                     resourceType="DASHBOARD"
                     resourceId={dashboard && dashboard.id}
+                    onClose={onClose}
                 />
             )}
         </Sidebar>

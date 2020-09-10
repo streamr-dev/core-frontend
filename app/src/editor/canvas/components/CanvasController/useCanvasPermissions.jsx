@@ -57,6 +57,7 @@ function usePermissionContextValue() {
         hasDeletePermission,
         hasStartStopPermission,
         hasInteractPermission,
+        loadPermissions,
     }), [
         permissions,
         hasReadPermission,
@@ -65,6 +66,7 @@ function usePermissionContextValue() {
         hasDeletePermission,
         hasStartStopPermission,
         hasInteractPermission,
+        loadPermissions,
     ])
 }
 

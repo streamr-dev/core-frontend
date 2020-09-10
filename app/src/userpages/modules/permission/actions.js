@@ -3,6 +3,7 @@
 export const GET_RESOURCE_PERMISSIONS_REQUEST = 'GET_RESOURCE_PERMISSIONS_REQUEST'
 export const GET_RESOURCE_PERMISSIONS_SUCCESS = 'GET_RESOURCE_PERMISSIONS_SUCCESS'
 export const GET_RESOURCE_PERMISSIONS_FAILURE = 'GET_RESOURCE_PERMISSIONS_FAILURE'
+export const RESET_RESOURCE_PERMISSIONS = 'RESET_RESOURCE_PERMISSIONS'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Permission, ResourceType, ResourceId } from '../../flowtype/permission-types'
@@ -43,3 +44,9 @@ export const getResourcePermissions = (resourceType: ResourceType, resourceId: R
         throw error
     }
 }
+
+export const resetResourcePermission = (resourceType: ResourceType, resourceId: ResourceId) => ({
+    type: RESET_RESOURCE_PERMISSIONS,
+    resourceType,
+    resourceId,
+})

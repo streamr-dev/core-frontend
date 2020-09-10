@@ -26,7 +26,7 @@ import StatusIcon from '$shared/components/StatusIcon'
 import Layout from '$userpages/components/Layout'
 import Search from '../../Header/Search'
 import confirmDialog from '$shared/utils/confirm'
-import { getResourcePermissions } from '$userpages/modules/permission/actions'
+import { getResourcePermissions, resetResourcePermission } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
 import NoStreamsView from './NoStreams'
@@ -99,9 +99,17 @@ type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | Targe
 
 function StreamPageSidebar({ stream }) {
     const sidebar = useContext(SidebarContext)
+    const dispatch = useDispatch()
+
+    const streamId = stream && stream.id
+
     const onClose = useCallback(() => {
         sidebar.close()
-    }, [sidebar])
+
+        if (streamId) {
+            dispatch(resetResourcePermission('STREAM', streamId))
+        }
+    }, [sidebar, dispatch, streamId])
 
     return (
         <Sidebar
@@ -114,6 +122,7 @@ function StreamPageSidebar({ stream }) {
                     resourceTitle={stream && stream.name}
                     resourceType="STREAM"
                     resourceId={stream && stream.id}
+                    onClose={onClose}
                 />
             )}
         </Sidebar>

@@ -1,6 +1,5 @@
 import React from 'react'
 import * as R from 'reactstrap'
-import { connect } from 'react-redux'
 import cx from 'classnames'
 import { I18n } from 'react-redux-i18n'
 
@@ -20,16 +19,14 @@ import Toolbar from '$editor/shared/components/Toolbar'
 
 import styles from '$editor/canvas/components/Toolbar/Toolbar.pcss'
 import ToolbarLayout from '$editor/canvas/components/Toolbar/ToolbarLayout'
-import { usePermissionsLoader } from '$userpages/components/ShareSidebar/Sidebar'
 
 /* eslint-disable react/no-unused-state */
 
-export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
-    currentUser: user && user.user && user.user.username,
-}))((props) => {
+export default withErrorBoundary(ErrorComponentView)((props) => {
     const {
         dashboard,
-        currentUser,
+        hasSharePermission,
+        hasDeletePermission,
         className,
         duplicateDashboard,
         deleteDashboard: deleteDashboardProp,
@@ -38,11 +35,6 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
         moduleSearchOpen,
         sidebar,
     } = props
-
-    const [{ result: permissions }] = usePermissionsLoader({
-        resourceType: 'DASHBOARD',
-        resourceId: dashboard && dashboard.id,
-    })
 
     const renameDashboard = React.useCallback((name) => {
         setDashboard({ type: 'Rename Dashboard' }, (dashboard) => ({
@@ -95,9 +87,6 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
     if (!dashboard) {
         return <div className={cx(className, styles.CanvasToolbar)} ref={elRef} />
     }
-
-    const hasSharePermission = (permissions || []).find((p) => p.user === currentUser && p.operation === 'dashboard_share')
-    const hasDeletePermission = (permissions || []).find((p) => p.user === currentUser && p.operation === 'dashboard_delete')
 
     return (
         <div className={cx(className, styles.CanvasToolbar)} ref={elRef}>
@@ -189,4 +178,4 @@ export default withErrorBoundary(ErrorComponentView)(connect(({ user }) => ({
             )}
         </div>
     )
-}))
+})
