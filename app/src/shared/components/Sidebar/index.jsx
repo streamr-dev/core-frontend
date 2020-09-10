@@ -72,7 +72,9 @@ export {
 const UnstyledHeader = ({ onClose, title, subtitle = <AppInfo />, ...props }) => (
     <div {...props}>
         <div>
-            <h3>{title}</h3>
+            <h3 title={title}>
+                {title}
+            </h3>
             <p>{subtitle}</p>
         </div>
         <div>
@@ -100,6 +102,7 @@ const Header = styled(UnstyledHeader)`
         margin: 0;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     p {
