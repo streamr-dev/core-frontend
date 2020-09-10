@@ -7,7 +7,7 @@ const UnstyledAppInfo = (props) => {
 
     return (
         <div {...props}>
-            Streamr Core {[version, branch, hash].filter(Boolean).join(' ')}
+            Core {[version, branch, hash].filter(Boolean).join(' ')}
         </div>
     )
 }
