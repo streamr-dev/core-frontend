@@ -70,7 +70,7 @@ const UnstyledHeader = ({ onClose, title, subtitle = <AppInfo />, ...props }) =>
             <h3 title={title}>
                 {title}
             </h3>
-            <p>{subtitle}</p>
+            <div>{subtitle}</div>
         </div>
         <div>
             <button type="button" onClick={onClose}>
@@ -99,12 +99,12 @@ const Header = styled(UnstyledHeader)`
         white-space: nowrap;
     }
 
-    p {
+    h3 + div {
         color: #adadad;
         font-family: ${SANS};
         font-size: 12px;
         line-height: 16px;
-        margin: 0.25em 0 0;
+        margin-top: 0.25em;
         overflow-wrap: break-word;
         word-break: break-word;
     }
