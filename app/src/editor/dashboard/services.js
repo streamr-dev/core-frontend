@@ -37,6 +37,13 @@ export async function deleteDashboard({ id }) {
     return api().delete(`${dashboardsURL}/${id}`).then(getData)
 }
 
+export async function deleteDashboardPermissions({ id, permissionIds }) {
+    await autosave.cancel()
+    return Promise.all(permissionIds.map((permissionId) => (
+        api().delete(`${dashboardsURL}/${id}/permissions/${permissionId}`)
+    )))
+}
+
 export async function loadDashboard({ id }) {
     return api().get(`${dashboardsURL}/${id}`).then(getData)
 }

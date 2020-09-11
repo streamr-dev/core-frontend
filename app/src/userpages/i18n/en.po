@@ -11,8 +11,11 @@ msgstr ""
 msgid "userpages.canvases.createCanvas"
 msgstr "Create canvas"
 
-msgid "userpages.canvases.deletedCanvas"
+msgid "userpages.canvases.delete.notification"
 msgstr "Canvas deleted successfully"
+
+msgid "userpages.canvases.remove.notification"
+msgstr "Canvas removed successfully"
 
 msgid "userpages.canvases.filterCanvases"
 msgstr "Filter canvases"
@@ -47,6 +50,9 @@ msgstr "Edit"
 msgid "userpages.canvases.menu.delete"
 msgstr "Delete"
 
+msgid "userpages.canvases.menu.remove"
+msgstr "Remove"
+
 msgid "userpages.canvases.menu.copyUrl"
 msgstr "Copy URL"
 
@@ -64,6 +70,15 @@ msgstr "This is an unrecoverable action. Please confirm this is what you want be
 
 msgid "userpages.canvases.delete.confirmButton"
 msgstr "Yes, delete"
+
+msgid "userpages.canvases.remove.confirmTitle"
+msgstr "Remove this canvas?"
+
+msgid "userpages.canvases.remove.confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages.canvases.remove.confirmButton"
+msgstr "Yes, remove"
 
 msgid "userpages.filter.sortBy"
 msgstr "Sort by"
@@ -312,8 +327,14 @@ msgstr "Actions"
 msgid "userpages.streams.actions.addToCanvas"
 msgstr "Add to canvas"
 
-msgid "userpages.streams.actions.deleteStreamSuccess"
+msgid "userpages.streams.delete.notification"
 msgstr "Stream deleted successfully"
+
+msgid "userpages.streams.remove.notification"
+msgstr "Stream removed successfully"
+
+msgid "userpages.streams.remove.notification"
+msgstr "Stream removed successfully"
 
 msgid "userpages.streams.actions.editStream"
 msgstr "Edit stream"
@@ -344,6 +365,9 @@ msgstr "Stream refresh failed"
 
 msgid "userpages.streams.actions.delete"
 msgstr "Delete"
+
+msgid "userpages.streams.actions.remove"
+msgstr "Remove"
 
 msgid "userpages.streams.noCreatedStreams.title"
 msgstr "You haven't created any streams yet."
@@ -498,6 +522,15 @@ msgstr "This is an unrecoverable action. Please confirm this is what you want be
 msgid "userpages.streams.delete.confirmButton"
 msgstr "Yes, delete"
 
+msgid "userpages.streams.remove.confirmTitle"
+msgstr "Remove this stream?"
+
+msgid "userpages.streams.remove.confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages.streams.remove.confirmButton"
+msgstr "Yes, remove"
+
 msgid "userpages.streams.edit.apiCredentials.description"
 msgstr ""
 "Stream-specific API keys are deprecated, and will be replaced by Ethereum authentication. "
@@ -596,8 +629,11 @@ msgstr "Filter members"
 msgid "userpages.dashboards.createDashboard"
 msgstr "Create dashboard"
 
-msgid "userpages.dashboards.deletedDashboard"
+msgid "userpages.dashboards.delete.notification"
 msgstr "Dashboard deleted successfully!"
+
+msgid "userpages.dashboards.remove.notification"
+msgstr "Dashboard removed successfully!"
 
 msgid "userpages.dashboards.delete.confirmTitle"
 msgstr "Delete this dashboard?"
@@ -607,6 +643,15 @@ msgstr "This is an unrecoverable action. Please confirm this is what you want be
 
 msgid "userpages.dashboards.delete.confirmButton"
 msgstr "Yes, delete"
+
+msgid "userpages.dashboards.remove.confirmTitle"
+msgstr "Remove this dashboard?"
+
+msgid "userpages.dashboards.remove.confirmMessage"
+msgstr "This is an unrecoverable action. Please confirm this is what you want before you proceed."
+
+msgid "userpages.dashboards.remove.confirmButton"
+msgstr "Yes, remove"
 
 msgid "userpages.dashboards.filterDashboards"
 msgstr "Filter dashboards"
@@ -637,6 +682,9 @@ msgstr "Edit"
 
 msgid "userpages.dashboards.menu.delete"
 msgstr "Delete"
+
+msgid "userpages.dashboards.menu.remove"
+msgstr "Remove"
 
 msgid "userpages.dashboards.menu.copyUrl"
 msgstr "Copy URL"

@@ -126,6 +126,8 @@
             "products": "<api>/users/me/products"
         },
         "canvases": {
+            "index": "<api>/canvases",
+            "show": "<api>/canvases/:id",
             "downloadCsv": "<api>/canvases/downloadCsv",
             "permissions": {
                 "index": "<api>/canvases/:canvasId/permissions",

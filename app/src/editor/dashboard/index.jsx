@@ -24,6 +24,7 @@ import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { usePermissionsLoader } from '$userpages/components/ShareSidebar/Sidebar'
 import { selectUserData } from '$shared/modules/user/selectors'
+import { getResourcePermissions } from '$userpages/modules/permission/services'
 
 import routes from '$routes'
 
@@ -119,8 +120,28 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
 
     deleteDashboard = async () => {
         const { dashboard } = this.props
+
+        const dashboardPermissions = await getResourcePermissions({
+            resourceType: 'DASHBOARD',
+            resourceId: dashboard.id,
+            id: 'me',
+        })
+
+        const permissionIds = (dashboardPermissions || []).reduce((result, { id, operation }) => ({
+            ...result,
+            [id]: operation,
+        }), {})
+
+        if (Object.values(permissionIds).includes('dashboard_delete')) {
+            await services.deleteDashboard(dashboard)
+        } else {
+            await services.deleteDashboardPermissions({
+                id: dashboard.id,
+                permissionIds: Object.keys(permissionIds),
+            })
+        }
+
         this.isDeleted = true
-        await services.deleteDashboard(dashboard)
         if (this.unmounted) { return }
         this.props.history.push(routes.dashboards.index())
     }

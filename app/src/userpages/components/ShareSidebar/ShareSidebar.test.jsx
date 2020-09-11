@@ -30,7 +30,11 @@ describe('ShareSidebar Permission Handling', () => {
 
         beforeAll(async () => {
             canvas = await Services.create()
-            permissions = await Services.getCanvasPermissions(canvas)
+            permissions = await getResourcePermissions({
+                resourceType: 'CANVAS',
+                resourceId: canvas.id,
+                id: 'me',
+            })
         })
 
         afterAll(async () => {

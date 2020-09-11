@@ -11,7 +11,7 @@ import styled from 'styled-components'
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
 
 import Layout from '$userpages/components/Layout'
-import { getCanvases, deleteCanvas } from '$userpages/modules/canvas/actions'
+import { getCanvases, deleteOrRemoveCanvas } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFetching } from '$userpages/modules/canvas/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
@@ -108,6 +108,8 @@ const CreateCanvasButton = () => (
     </DesktopOnlyButton>
 )
 
+type RemoveOrDelete = 'remove' | 'delete'
+
 const CanvasList = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters('canvas')
@@ -140,12 +142,12 @@ const CanvasList = () => {
         dispatch(getCanvases(filter))
     }, [dispatch, filter])
 
-    const deleteCanvasAndNotify = useCallback(async (id: CanvasId) => {
+    const deleteCanvasAndNotify = useCallback(async (id: CanvasId, type: RemoveOrDelete) => {
         try {
-            await dispatch(deleteCanvas(id))
+            await dispatch(deleteOrRemoveCanvas(id))
 
             Notification.push({
-                title: I18n.t('userpages.canvases.deletedCanvas'),
+                title: I18n.t(`userpages.canvases.${type}.notification`),
                 icon: NotificationIcon.CHECKMARK,
             })
         } catch (e) {
@@ -156,12 +158,12 @@ const CanvasList = () => {
         }
     }, [dispatch])
 
-    const confirmDeleteCanvas = useCallback(async (id: CanvasId) => {
+    const confirmDeleteOrRemoveCanvas = useCallback(async (id: CanvasId, type: RemoveOrDelete) => {
         const confirmed = await confirmDialog('canvas', {
-            title: I18n.t('userpages.canvases.delete.confirmTitle'),
-            message: I18n.t('userpages.canvases.delete.confirmMessage'),
+            title: I18n.t(`userpages.canvases.${type}.confirmTitle`),
+            message: I18n.t(`userpages.canvases.${type}.confirmMessage`),
             acceptButton: {
-                title: I18n.t('userpages.canvases.delete.confirmButton'),
+                title: I18n.t(`userpages.canvases.${type}.confirmButton`),
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -169,7 +171,7 @@ const CanvasList = () => {
         })
 
         if (confirmed) {
-            deleteCanvasAndNotify(id)
+            deleteCanvasAndNotify(id, type)
         }
     }, [deleteCanvasAndNotify])
 
@@ -212,34 +214,44 @@ const CanvasList = () => {
 
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
 
-    const getActions = useCallback((canvas) => (
-        <Fragment>
-            <Popover.Item
-                onClick={() => navigate(routes.canvases.edit({
-                    id: canvas.id,
-                }))}
-            >
-                <Translate value="userpages.canvases.menu.edit" />
-            </Popover.Item>
-            <Popover.Item
-                disabled={!canBeSharedByCurrentUser(canvas.id)}
-                onClick={() => onOpenShareDialog(canvas)}
-            >
-                <Translate value="userpages.canvases.menu.share" />
-            </Popover.Item>
-            <Popover.Item
-                onClick={() => onCopyUrl(canvas.id)}
-            >
-                <Translate value="userpages.canvases.menu.copyUrl" />
-            </Popover.Item>
-            <Popover.Item
-                disabled={!canBeDeletedByCurrentUser(canvas.id)}
-                onClick={() => confirmDeleteCanvas(canvas.id)}
-            >
-                <Translate value="userpages.canvases.menu.delete" />
-            </Popover.Item>
-        </Fragment>
-    ), [navigate, canBeSharedByCurrentUser, canBeDeletedByCurrentUser, onOpenShareDialog, onCopyUrl, confirmDeleteCanvas])
+    const getActions = useCallback((canvas) => {
+        const removeType = canBeDeletedByCurrentUser(canvas.id) ? 'delete' : 'remove'
+
+        return (
+            <Fragment>
+                <Popover.Item
+                    onClick={() => navigate(routes.canvases.edit({
+                        id: canvas.id,
+                    }))}
+                >
+                    <Translate value="userpages.canvases.menu.edit" />
+                </Popover.Item>
+                <Popover.Item
+                    disabled={!canBeSharedByCurrentUser(canvas.id)}
+                    onClick={() => onOpenShareDialog(canvas)}
+                >
+                    <Translate value="userpages.canvases.menu.share" />
+                </Popover.Item>
+                <Popover.Item
+                    onClick={() => onCopyUrl(canvas.id)}
+                >
+                    <Translate value="userpages.canvases.menu.copyUrl" />
+                </Popover.Item>
+                <Popover.Item
+                    onClick={() => confirmDeleteOrRemoveCanvas(canvas.id, removeType)}
+                >
+                    <Translate value={`userpages.canvases.menu.${removeType}`} />
+                </Popover.Item>
+            </Fragment>
+        )
+    }, [
+        navigate,
+        canBeSharedByCurrentUser,
+        canBeDeletedByCurrentUser,
+        onOpenShareDialog,
+        onCopyUrl,
+        confirmDeleteOrRemoveCanvas,
+    ])
 
     return (
         <Layout

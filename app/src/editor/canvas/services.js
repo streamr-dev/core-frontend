@@ -82,8 +82,11 @@ export async function getModuleCategories() {
     return api().get(getModuleCategoriesURL).then(getData)
 }
 
-export async function getCanvasPermissions({ id }) {
-    return api().get(`${process.env.STREAMR_API_URL}/canvases/${id}/permissions/me`).then(getData)
+export async function deleteCanvasPermissions({ id, permissionIds }) {
+    await autosave.cancel()
+    return Promise.all(permissionIds.map((permissionId) => (
+        api().delete(`${process.env.STREAMR_API_URL}/canvases/${id}/permissions/${permissionId}`)
+    )))
 }
 
 export async function getStreams(params) {

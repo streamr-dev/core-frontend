@@ -1,30 +1,23 @@
-// @flow
-
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
-
-import type { EntitiesState } from '$shared/flowtype/store-state'
-import type { StoreState } from '$userpages/flowtype/states/store-state'
-import type { DashboardState } from '$userpages/flowtype/states/dashboard-state'
-import type { DashboardIdList, DashboardList } from '$userpages/flowtype/dashboard-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { dashboardsSchema } from '$shared/modules/entities/schema'
 
-const selectUserPageDashboardState = (state: StoreState): DashboardState => state.dashboard
+const selectUserPageDashboardState = (state) => state.dashboard
 
-export const selectDashboardIds: (StoreState) => DashboardIdList = createSelector(
+export const selectDashboardIds = createSelector(
     selectUserPageDashboardState,
-    (subState: DashboardState): DashboardIdList => subState.ids,
+    (subState) => subState.ids,
 )
 
-export const selectDashboards: (StoreState) => DashboardList = createSelector(
+export const selectDashboards = createSelector(
     selectDashboardIds,
     selectEntities,
-    (result: DashboardIdList, entities: EntitiesState): DashboardList => denormalize(result, dashboardsSchema, entities),
+    (result, entities) => denormalize(result, dashboardsSchema, entities),
 )
 
-export const selectFetching: (StoreState) => boolean = createSelector(
+export const selectFetching = createSelector(
     selectUserPageDashboardState,
-    (subState: DashboardState): boolean => subState.fetching,
+    (subState) => subState.fetching,
 )

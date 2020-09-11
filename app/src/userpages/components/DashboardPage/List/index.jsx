@@ -10,7 +10,7 @@ import styled from 'styled-components'
 
 import type { Dashboard, DashboardId } from '$userpages/flowtype/dashboard-types'
 import routes from '$routes'
-import { getDashboards, deleteDashboard } from '$userpages/modules/dashboard/actions'
+import { getDashboards, deleteOrRemoveDashboard } from '$userpages/modules/dashboard/actions'
 import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/selectors'
 import Layout from '$userpages/components/Layout'
 import { getFilters } from '$userpages/utils/constants'
@@ -108,6 +108,8 @@ const CreateDashboardButton = () => (
     </DesktopOnlyButton>
 )
 
+type RemoveOrDelete = 'remove' | 'delete'
+
 const DashboardList = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters('dashboard')
@@ -138,12 +140,12 @@ const DashboardList = () => {
         dispatch(getDashboards(filter))
     }, [dispatch, filter])
 
-    const deleteDashboardAndNotify = useCallback(async (id: DashboardId) => {
+    const deleteDashboardAndNotify = useCallback(async (id: DashboardId, type: RemoveOrDelete) => {
         try {
-            await dispatch(deleteDashboard(id))
+            await dispatch(deleteOrRemoveDashboard(id, type))
 
             Notification.push({
-                title: I18n.t('userpages.dashboards.deletedDashboard'),
+                title: I18n.t(`userpages.dashboards.${type}.notification`),
                 icon: NotificationIcon.CHECKMARK,
             })
         } catch (e) {
@@ -154,12 +156,12 @@ const DashboardList = () => {
         }
     }, [dispatch])
 
-    const confirmDeleteDashboard = useCallback(async (id: DashboardId) => {
+    const confirmDeleteOrRemoveDashboard = useCallback(async (id: DashboardId, type: RemoveOrDelete) => {
         const confirmed = await confirmDialog('dashboard', {
-            title: I18n.t('userpages.dashboards.delete.confirmTitle'),
-            message: I18n.t('userpages.dashboards.delete.confirmMessage'),
+            title: I18n.t(`userpages.dashboards.${type}.confirmTitle`),
+            message: I18n.t(`userpages.dashboards.${type}.confirmMessage`),
             acceptButton: {
-                title: I18n.t('userpages.dashboards.delete.confirmButton'),
+                title: I18n.t(`userpages.dashboards.${type}.confirmButton`),
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -167,7 +169,7 @@ const DashboardList = () => {
         })
 
         if (confirmed) {
-            deleteDashboardAndNotify(id)
+            deleteDashboardAndNotify(id, type)
         }
     }, [deleteDashboardAndNotify])
 
@@ -210,40 +212,43 @@ const DashboardList = () => {
 
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
 
-    const getActions = useCallback((dashboard) => (
-        <Fragment>
-            <Popover.Item
-                onClick={() => navigate(routes.dashboards.edit({
-                    id: dashboard.id,
-                }))}
-            >
-                <Translate value="userpages.dashboards.menu.edit" />
-            </Popover.Item>
-            <Popover.Item
-                disabled={!canBeSharedByCurrentUser(dashboard.id)}
-                onClick={() => onOpenShareDialog(dashboard)}
-            >
-                <Translate value="userpages.dashboards.menu.share" />
-            </Popover.Item>
-            <Popover.Item
-                onClick={() => onCopyUrl(dashboard.id)}
-            >
-                <Translate value="userpages.dashboards.menu.copyUrl" />
-            </Popover.Item>
-            <Popover.Item
-                disabled={!canBeDeletedByCurrentUser(dashboard.id)}
-                onClick={() => confirmDeleteDashboard(dashboard.id)}
-            >
-                <Translate value="userpages.dashboards.menu.delete" />
-            </Popover.Item>
-        </Fragment>
-    ), [
+    const getActions = useCallback((dashboard) => {
+        const removeType = canBeDeletedByCurrentUser(dashboard.id) ? 'delete' : 'remove'
+
+        return (
+            <Fragment>
+                <Popover.Item
+                    onClick={() => navigate(routes.dashboards.edit({
+                        id: dashboard.id,
+                    }))}
+                >
+                    <Translate value="userpages.dashboards.menu.edit" />
+                </Popover.Item>
+                <Popover.Item
+                    disabled={!canBeSharedByCurrentUser(dashboard.id)}
+                    onClick={() => onOpenShareDialog(dashboard)}
+                >
+                    <Translate value="userpages.dashboards.menu.share" />
+                </Popover.Item>
+                <Popover.Item
+                    onClick={() => onCopyUrl(dashboard.id)}
+                >
+                    <Translate value="userpages.dashboards.menu.copyUrl" />
+                </Popover.Item>
+                <Popover.Item
+                    onClick={() => confirmDeleteOrRemoveDashboard(dashboard.id, removeType)}
+                >
+                    <Translate value={`userpages.dashboards.menu.${removeType}`} />
+                </Popover.Item>
+            </Fragment>
+        )
+    }, [
         navigate,
         canBeSharedByCurrentUser,
         canBeDeletedByCurrentUser,
         onOpenShareDialog,
         onCopyUrl,
-        confirmDeleteDashboard,
+        confirmDeleteOrRemoveDashboard,
     ])
 
     return (

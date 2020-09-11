@@ -6,6 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList, StreamStatus } from '$shared/flowtype/stream-types'
 import type { Filter } from '$userpages/flowtype/common-types'
+import type { ResourceId } from '$userpages/flowtype/permission-types'
 
 import Notification from '$shared/utils/Notification'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
@@ -15,6 +16,8 @@ import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
 import { getParamsForFilter } from '$userpages/utils/filters'
 import routes from '$routes'
+import { removeResourcePermissions } from '$userpages/modules/permission/actions'
+import { getResourcePermissions } from '$userpages/modules/permission/services'
 
 import * as services from './services'
 import { selectOpenStream, selectPageSize, selectOffset } from './selectors'
@@ -335,18 +338,42 @@ export const deleteStream = (id: StreamId) => async (dispatch: Function): Promis
             }),
         })
         dispatch(deleteStreamSuccess(id))
-        Notification.push({
-            title: I18n.t('userpages.streams.actions.deleteStreamSuccess'),
-            icon: NotificationIcon.CHECKMARK,
-        })
         return deleteStream
     } catch (e) {
         dispatch(deleteStreamFailure(e))
-        Notification.push({
-            title: e.message,
-            icon: NotificationIcon.ERROR,
-        })
+        throw e
     }
+}
+
+export const removeStream = (id: StreamId, resourcePermissions: Array<ResourceId>) => async (dispatch: Function) => {
+    dispatch(deleteStreamRequest())
+    try {
+        const removeStream = await dispatch(removeResourcePermissions('STREAM', id, resourcePermissions))
+        dispatch(deleteStreamSuccess(id))
+        return removeStream
+    } catch (e) {
+        dispatch(deleteStreamFailure(e))
+        throw e
+    }
+}
+
+export const deleteOrRemoveStream = (id: StreamId) => async (dispatch: Function) => {
+    const resourcePermissions = await getResourcePermissions({
+        resourceType: 'STREAM',
+        resourceId: id,
+        id: 'me',
+    })
+
+    const permissionIds = (resourcePermissions || []).reduce((result, { id, operation }) => ({
+        ...result,
+        [id]: operation,
+    }), {})
+
+    if (Object.values(permissionIds).includes('stream_delete')) {
+        return dispatch(deleteStream(id))
+    }
+
+    return dispatch(removeStream(id, Object.keys(permissionIds)))
 }
 
 export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: Function) => {
