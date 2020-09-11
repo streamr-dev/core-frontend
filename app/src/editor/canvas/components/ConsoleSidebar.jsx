@@ -122,7 +122,7 @@ export default function ConsoleSidebar({ canvas, selectedModuleHash, selectModul
                 title="Console"
                 onClose={onClose}
             />
-            <Sidebar.Body className={styles.content}>
+            <Sidebar.Body>
                 <ConsoleMessages
                     canvas={canvas}
                     messages={canvasMessages}

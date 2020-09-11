@@ -65,7 +65,7 @@ export default function ModuleSidebar({ canvas, selectedModuleHash, setModuleOpt
                 title={module.displayName || module.name}
                 onClose={onClose}
             />
-            <Sidebar.Body className={styles.content}>
+            <Sidebar.Body>
                 {!optionsKeys.length ? null : (
                     <Sidebar.Collapse label="Options" isOpen>
                         <div className={cx(styles.optionsFields)}>
