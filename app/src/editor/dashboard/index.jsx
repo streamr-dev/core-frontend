@@ -222,7 +222,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                     hasSharePermission={hasSharePermission}
                     hasDeletePermission={hasDeletePermission}
                 />
-                <Sidebar
+                <Sidebar.WithErrorBoundary
                     className={CanvasStyles.ModuleSidebar}
                     isOpen={sidebar.isOpen()}
                     onClose={this.closeSidebar}
@@ -241,7 +241,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
                             onClose={this.closeSidebar}
                         />
                     )}
-                </Sidebar>
+                </Sidebar.WithErrorBoundary>
                 <DashboardModuleSearch
                     isOpen={this.state.moduleSearchIsOpen}
                     open={this.moduleSearchOpen}

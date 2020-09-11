@@ -52,7 +52,7 @@ function StreamPageSidebar({ stream }) {
     }, [sidebar, dispatch, streamId])
 
     return (
-        <Sidebar
+        <Sidebar.WithErrorBoundary
             isOpen={sidebar.isOpen()}
             onClose={onClose}
         >
@@ -65,7 +65,7 @@ function StreamPageSidebar({ stream }) {
                     onClose={onClose}
                 />
             )}
-        </Sidebar>
+        </Sidebar.WithErrorBoundary>
     )
 }
 

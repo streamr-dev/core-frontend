@@ -2,7 +2,7 @@ import React, { useEffect, useCallback, useState } from 'react'
 import cx from 'classnames'
 
 import { isWindows as getIsWindows, isMac as getIsMac } from '$shared/utils/platform'
-import { Header, Content, Section } from '$shared/components/Sidebar'
+import Sidebar from '$shared/components/Sidebar'
 import isEditableElement from '$shared/utils/isEditableElement'
 
 import styles from './KeyboardShortcutsSidebar.pcss'
@@ -176,13 +176,13 @@ function usePressedKeys(initialState = INITIAL_PRESSED_KEYS_STATE) {
 export function KeyboardShortcutsSidebar({ onClose, children }) {
     return (
         <React.Fragment>
-            <Header
+            <Sidebar.Header
                 title="Keyboard Shortcuts"
                 onClose={onClose}
             />
-            <Content>
+            <Sidebar.Body>
                 {children}
-            </Content>
+            </Sidebar.Body>
         </React.Fragment>
     )
 }
@@ -192,7 +192,7 @@ export function ComboList({ combos, ...props }) {
     const visibleCombos = combos.filter(({ hidden }) => !hidden)
     if (!visibleCombos.length) { return null }
     return (
-        <Section {...props}>
+        <Sidebar.Collapse {...props}>
             <div className={styles.keyList}>
                 {visibleCombos.map(({ keys, title }) => {
                     keys = keys.map((keySet) => keySet.map((key) => getPlatformKey(key)))
@@ -225,6 +225,6 @@ export function ComboList({ combos, ...props }) {
                     )
                 })}
             </div>
-        </Section>
+        </Sidebar.Collapse>
     )
 }

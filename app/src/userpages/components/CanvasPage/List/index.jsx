@@ -81,7 +81,7 @@ function CanvasPageSidebar({ canvas }) {
     }, [sidebar, dispatch, canvasId])
 
     return (
-        <Sidebar
+        <Sidebar.WithErrorBoundary
             isOpen={sidebar.isOpen()}
             onClose={onClose}
         >
@@ -93,7 +93,7 @@ function CanvasPageSidebar({ canvas }) {
                     onClose={onClose}
                 />
             )}
-        </Sidebar>
+        </Sidebar.WithErrorBoundary>
     )
 }
 
