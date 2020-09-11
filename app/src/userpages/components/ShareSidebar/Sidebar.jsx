@@ -6,6 +6,7 @@ import { useTransition, animated } from 'react-spring'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import SelectInput from '$ui/Select'
+import Label from '$ui/Label'
 import Button from '$shared/components/Button'
 import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import useUniqueId from '$shared/hooks/useUniqueId'
@@ -229,7 +230,9 @@ const ShareSidebar = connect(({ user }) => ({
     return (
         <div className={styles.root}>
             <div className={cx(styles.row, styles.cell, styles.anonAccessSelect)}>
-                <label htmlFor={`${uid}AnonAccessSelect`}>{I18n.t('modal.shareResource.anonymousAccess')}</label>
+                <Label htmlFor={`${uid}AnonAccessSelect`}>
+                    {I18n.t('modal.shareResource.anonymousAccess')}
+                </Label>
                 <SelectInput
                     inputId={`${uid}AnonAccessSelect`}
                     name="name"
