@@ -15,6 +15,8 @@ const Secondary = styled.div`
 
 const Description = styled(Secondary)`
     color: #a3a3a3;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 `
 
 const Label = styled(Secondary)`
