@@ -22,7 +22,7 @@ import BodyClass from '$shared/components/BodyClass'
 import DashboardStatus from '$editor/shared/components/Status'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import ShareSidebar from '$userpages/components/ShareSidebar'
-import { usePermissionsLoader } from '$userpages/components/ShareSidebar/Sidebar'
+import usePermissionsLoader from '$userpages/components/ShareSidebar/hooks/usePermissionsLoader'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getResourcePermissions } from '$userpages/modules/permission/services'
 
