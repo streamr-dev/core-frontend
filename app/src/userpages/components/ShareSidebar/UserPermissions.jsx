@@ -12,6 +12,7 @@ import Tooltip from '$shared/components/Tooltip'
 import * as State from './state'
 import useSlideIn from './hooks/useSlideIn'
 import styles from './ShareSidebar.pcss'
+
 /**
  * Individual User's Permissions UI
  */

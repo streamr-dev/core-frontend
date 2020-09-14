@@ -299,7 +299,7 @@ const UnstyledShareSidebar = connect(({ user, ...props }) => ({
                     </div>
                 </div>
             </animated.div>
-            <div className={cx(styles.footer, styles.row)}>
+            <Sidebar.Container className={styles.footer}>
                 <div className={styles.copyLink}>
                     <CopyLink
                         resourceType={resourceType}
@@ -314,7 +314,7 @@ const UnstyledShareSidebar = connect(({ user, ...props }) => ({
                         <Translate value="modal.shareResource.save" />
                     </Button>
                 </div>
-            </div>
+            </Sidebar.Container>
         </div>
         /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     )
