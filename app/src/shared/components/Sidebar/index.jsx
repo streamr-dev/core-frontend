@@ -64,8 +64,12 @@ const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
 
 export { Select }
 
+const Container = styled.div`
+    padding: 24px 32px;
+`
+
 const UnstyledHeader = ({ onClose, title, subtitle = <AppInfo />, ...props }) => (
-    <div {...props}>
+    <Container {...props}>
         <div>
             <h3 title={title}>
                 {title}
@@ -77,13 +81,12 @@ const UnstyledHeader = ({ onClose, title, subtitle = <AppInfo />, ...props }) =>
                 <SvgIcon name="crossHeavy" />
             </button>
         </div>
-    </div>
+    </Container>
 )
 
 const Header = styled(UnstyledHeader)`
     border-bottom: 1px solid #efefef;
     display: flex;
-    padding: 24px 32px;
     user-select: none;
 
     h3 {
@@ -173,7 +176,7 @@ const UnstyledCollapse = ({ label, children, isOpen: isOpenProp, ...props }) => 
     }, [])
 
     return (
-        <div {...props}>
+        <Container {...props}>
             <button type="button" onClick={toggle}>
                 <span>
                     {label}
@@ -191,7 +194,7 @@ const UnstyledCollapse = ({ label, children, isOpen: isOpenProp, ...props }) => 
                     {children}
                 </div>
             </RsCollapse>
-        </div>
+        </Container>
     )
 }
 
@@ -199,7 +202,6 @@ const Collapse = styled(UnstyledCollapse)`
     border-bottom: 1px solid #efefef;
     flex-shrink: 0;
     max-height: stretch;
-    padding: 24px 32px;
 
     button {
         align-items: center;
@@ -243,6 +245,7 @@ Object.assign(Sidebar, {
         </Body>
     ))(Body),
     Collapse,
+    Container,
     Header,
     WithErrorBoundary,
 })
