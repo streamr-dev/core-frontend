@@ -3,11 +3,13 @@ import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { useTransition, animated } from 'react-spring'
+import styled from 'styled-components'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import SelectInput from '$ui/Select'
 import Label from '$ui/Label'
 import Button from '$shared/components/Button'
+import Sidebar from '$shared/components/Sidebar'
 import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import useUniqueId from '$shared/hooks/useUniqueId'
 
@@ -32,7 +34,7 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
-const ShareSidebar = connect(({ user }) => ({
+const UnstyledShareSidebar = connect(({ user, ...props }) => ({
     currentUser: user && user.user && user.user.username,
 }))((props) => {
     const { currentUser, resourceType, resourceId, onClose } = props
@@ -228,8 +230,8 @@ const ShareSidebar = connect(({ user }) => ({
 
     /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (
-        <div className={styles.root}>
-            <div className={cx(styles.row, styles.cell, styles.anonAccessSelect)}>
+        <div {...props}>
+            <Sidebar.Container>
                 <Label htmlFor={`${uid}AnonAccessSelect`}>
                     {I18n.t('modal.shareResource.anonymousAccess')}
                 </Label>
@@ -243,10 +245,8 @@ const ShareSidebar = connect(({ user }) => ({
                     isSearchable={false}
                     controlClassName={styles.anonSelectControl}
                 />
-            </div>
-            <div className={cx(styles.row, styles.cell, styles.addUserInput)}>
                 <InputNewShare currentUser={currentUser} onChange={addUser} canShareToUser={canShareToUser} />
-            </div>
+            </Sidebar.Container>
             <div
                 className={cx(styles.row, styles.userList)}
                 onClick={(event) => {
@@ -299,7 +299,7 @@ const ShareSidebar = connect(({ user }) => ({
                     </div>
                 </div>
             </animated.div>
-            <div className={cx(styles.footer, styles.row, styles.cell)}>
+            <div className={cx(styles.footer, styles.row)}>
                 <div className={styles.copyLink}>
                     <CopyLink
                         resourceType={resourceType}
@@ -319,6 +319,18 @@ const ShareSidebar = connect(({ user }) => ({
         /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     )
 })
+
+const ShareSidebar = styled(UnstyledShareSidebar)`
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    height: 100%;
+    max-height: stretch;
+
+    * + ${Label} {
+        margin-top: 16px;
+    }
+`
 
 export default (props) => {
     const { resourceType, resourceId } = props
