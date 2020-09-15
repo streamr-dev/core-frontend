@@ -96,9 +96,6 @@ export default function UserPermissions({
                 <div {...bind}>
                     <RadioButtonGroup
                         name={`UserPermissions${userId}`}
-                        className={cx(styles.groupSelector, {
-                            [styles.isSelected]: isSelected,
-                        })}
                         options={permissionGroupOptions}
                         onChange={(name) => {
                             updatePermission(userId, State.getPermissionsForGroupName(resourceType, name))

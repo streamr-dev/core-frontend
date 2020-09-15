@@ -16,6 +16,7 @@ type Props = {
     onChange?: (string, SyntheticEvent<>) => void,
     disabled?: boolean,
     isCustom?: boolean,
+    selected?: boolean,
 }
 
 const UnstyledRadioButtonGroup = ({
@@ -25,6 +26,7 @@ const UnstyledRadioButtonGroup = ({
     onChange,
     disabled = false,
     isCustom,
+    selected,
     ...props
 }: Props) => {
     const [selection, setSelection] = useState(selectedOption)
