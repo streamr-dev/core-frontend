@@ -71,96 +71,37 @@
 }
 
 .userPermissions {
-  padding: 0;
-  transition: all 400ms ease;
+  border-bottom: 1px solid #EFEFEF;
 
-  &:not(:last-child) {
-    border-bottom: 1px solid #EFEFEF;
+  .button {
+    transition: all 0.1s ease-in;
+    background: transparent;
+    height: 1.5um;
+    width: 1.5um;
+    opacity: 0;
+    padding: 0;
+    border: none;
   }
 
-  &:only-child {
-    /* override not last child border if only child */
-    border-bottom: 1px solid #EFEFEF;
+  &:hover .button {
+    background: #F8F8F8;
+    opacity: 1;
+    border: none;
   }
 
-  .permissionsHeader {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    padding: 0 2um;
-
-    .permissionsHeaderTitle {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding-bottom: 1.5um;
-      transition: all 400ms ease;
-    }
-
-    h4 {
-      font-size: inherit;
-      margin: 0;
-      padding: 0;
-      line-height: normal;
-      text-overflow: ellipsis;
-      max-width: 260px;
-      overflow: hidden;
-      user-select: none;
-      padding-top: 1.5um;
-      padding-bottom: 4px;
-      transition: all 400ms ease;
-    }
-
-    .button {
-      transition: all 0.1s ease-in;
-      background: transparent;
-      height: 1.5um;
-      width: 1.5um;
-      opacity: 0;
-      padding: 0;
-      border: none;
-    }
-
-    &:hover .button {
-      background: #F8F8F8;
-      opacity: 1;
-      border: none;
-    }
-
-    .trashIcon {
-      height: 1um;
-      width: 1um;
-    }
+  .trashIcon {
+    height: 1um;
+    width: 1um;
   }
 
   .permissionControls {
     opacity: 0;
-    transition: opacity 150ms ease, transform 400ms ease;
-    transform: translateY(-5px);
     overflow: hidden;
     will-change: height, opacity;
-    padding: 0 2um;
-  }
-
-  .selectedGroup {
-    padding: 1.5px 4px;
-    font-size: 10px;
-    font-weight: 500;
-    color: #525252;
-    background: #EFEFEF;
-    transition: all 300ms ease;
-    display: inline-block;
-    line-height: normal;
-    opacity: 1;
-    will-change: opacity, padding, max-height, transform;
-    max-height: 100vh;
-    height: auto;
-    position: relative;
-    overflow: hidden;
   }
 
   &.isSelected {
     background: #FDFDFD;
-    padding-bottom: 1.5um;
 
     .selectedGroup {
       transform: translateY(50%);
@@ -174,21 +115,6 @@
       transform: translateY(0);
       transition: opacity 400ms 150ms ease, transform 400ms 150ms ease;
     }
-
-    .permissionsHeaderTitle {
-      padding-bottom: 0;
-    }
-
-    .permissionsHeader h4 {
-      padding-bottom: calc(1.5um - 4px);
-    }
-  }
-
-  .permissionsCheckboxes {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    align-items: center;
-    grid-row-gap: 1um;
   }
 
   .errorMessage {

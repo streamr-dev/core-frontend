@@ -34,9 +34,9 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
-const UnstyledShareSidebar = connect(({ user, ...props }) => ({
+const UnstyledShareSidebar = connect(({ user }) => ({
     currentUser: user && user.user && user.user.username,
-}))((props) => {
+}))(({ className, ...props }) => {
     const { currentUser, resourceType, resourceId, onClose } = props
     const isMounted = useIsMounted()
     const propsRef = useRef(props)
@@ -230,7 +230,7 @@ const UnstyledShareSidebar = connect(({ user, ...props }) => ({
 
     /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (
-        <div {...props}>
+        <div className={className}>
             <Sidebar.Container>
                 <Label htmlFor={`${uid}AnonAccessSelect`}>
                     {I18n.t('modal.shareResource.anonymousAccess')}
@@ -254,24 +254,21 @@ const UnstyledShareSidebar = connect(({ user, ...props }) => ({
                     setSelectedUserId() // select none on click background
                 }}
             >
-                {userEntryTransitions.map(({ item: [userId, userPermissions], props, key }) => (
-                    <animated.div
-                        key={key}
-                        style={props}
-                    >
-                        <UserPermissions
-                            userId={userId}
-                            userPermissions={userPermissions}
-                            resourceType={resourceType}
-                            removeUser={removeUser}
-                            updatePermission={updatePermission}
-                            permissions={permissions}
-                            isSelected={selectedUserId === userId}
-                            isCurrentUser={currentUser === userId}
-                            onSelect={setSelectedUserId}
-                            error={userErrors[userId]}
-                        />
-                    </animated.div>
+                {userEntries.map(([userId, userPermissions]) => (
+                    <Sidebar.Container
+                        as={UserPermissions}
+                        key={userId}
+                        userId={userId}
+                        userPermissions={userPermissions}
+                        resourceType={resourceType}
+                        removeUser={removeUser}
+                        updatePermission={updatePermission}
+                        permissions={permissions}
+                        isSelected={selectedUserId === userId}
+                        isCurrentUser={currentUser === userId}
+                        onSelect={setSelectedUserId}
+                        error={userErrors[userId]}
+                    />
                 ))}
             </div>
             <div
@@ -321,6 +318,7 @@ const UnstyledShareSidebar = connect(({ user, ...props }) => ({
 })
 
 const ShareSidebar = styled(UnstyledShareSidebar)`
+    color: #323232;
     display: flex;
     flex-direction: column;
     font-size: 14px;

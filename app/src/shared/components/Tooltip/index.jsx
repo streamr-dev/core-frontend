@@ -67,4 +67,8 @@ Tooltip.defaultProps = {
     placement: Tooltip.TOP,
 }
 
+Object.assign(Tooltip, {
+    Root,
+})
+
 export default Tooltip

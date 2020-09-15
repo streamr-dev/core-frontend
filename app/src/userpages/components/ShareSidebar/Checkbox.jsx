@@ -27,4 +27,14 @@ const Checkbox = styled(UnstyledCheckbox)`
     }
 `
 
+const List = styled.div`
+    display: grid;
+    grid-row-gap: 16px;
+    grid-template-columns: 1fr 1fr;
+`
+
+Object.assign(Checkbox, {
+    List,
+})
+
 export default Checkbox
