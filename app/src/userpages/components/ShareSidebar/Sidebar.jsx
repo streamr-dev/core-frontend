@@ -2,7 +2,7 @@ import React, { useCallback, useState, useRef, useEffect, useContext } from 'rea
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
-import { useTransition, animated } from 'react-spring'
+import { animated } from 'react-spring'
 import styled from 'styled-components'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -203,30 +203,6 @@ const UnstyledShareSidebar = connect(({ user }) => ({
         ...newUserIdListFiltered,
         ...oldUserIdList,
     ].map((userId) => [userId, editableUsers[userId]])
-
-    // add enter/leave transitions for users
-    const userEntryTransitions = useTransition(userEntries, ([userId]) => userId, {
-        initial: false,
-        from: {
-            opacity: 0,
-            willChange: 'max-height',
-            maxHeight: '0px',
-        },
-        enter: {
-            opacity: 1,
-            maxHeight: '9999px',
-        },
-        leave: {
-            opacity: 0,
-            maxHeight: '0px',
-        },
-        config: {
-            mass: 1,
-            friction: 62,
-            tension: 700,
-            precision: 0.00001,
-        },
-    })
 
     /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (

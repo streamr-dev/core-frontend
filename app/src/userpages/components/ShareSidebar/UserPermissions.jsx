@@ -1,16 +1,14 @@
 import React, { useCallback, useReducer, useEffect, useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, keyframes } from 'styled-components'
 import cx from 'classnames'
 import { I18n } from 'react-redux-i18n'
 import startCase from 'lodash/startCase'
 import RadioButtonGroup from './RadioButtonGroup'
 import SvgIcon from '$shared/components/SvgIcon'
 import { isFormElement } from '$shared/utils/isEditableElement'
-import Button from '$shared/components/Button'
 import Tooltip from '$shared/components/Tooltip'
 import Checkbox from './Checkbox'
 import * as State from './state'
-import useSlideIn from './hooks/useSlideIn'
 import useMeasure from './useMeasure'
 import usePrevious from './hooks/usePrevious'
 import styles from './ShareSidebar.pcss'
@@ -41,6 +39,16 @@ const Header = styled.div`
     }
 `
 
+const roleAnimation = keyframes`
+    from {
+        transform: translateY(4px);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+`
+
 const Role = styled.div`
     background-color: #efefef;
     color: #525252;
@@ -49,18 +57,23 @@ const Role = styled.div`
     line-height: 16px;
     margin-top: 2px;
     max-width: fit-content;
-    opacity: 1;
+    opacity: 0;
     padding: 0 4px;
     position: relative;
-    transform: translateY(0px);
-    transition: all 300ms ease;
-    visibility: visible;
+    transition-delay: 0.2s, 0s, 0s;
+    transition-duration: 0.2s;
+    transition-property: visibility, opacity;
+    user-select: none;
+    visibility: hidden;
     will-change: opacity, transform;
 
-    ${({ visible }) => !visible && css`
-        opacity: 0;
-        transform: translateY(4px);
-        visibility: hidden;
+    ${({ visible }) => !!visible && css`
+        animation-duration: 0.2s;
+        animation-fill-mode: forwards;
+        animation-name: ${roleAnimation};
+        opacity: 1;
+        transition: opacity 0.2s;
+        visibility: visible;
     `}
 `
 
@@ -99,16 +112,64 @@ const UnstyledCollapse = ({ children, open, ...props }) => {
     )
 }
 
+const collapseAnimation = keyframes`
+    from {
+        transform: translateY(-4px);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+`
+
 const Collapse = styled(UnstyledCollapse)`
     height: 0;
     opacity: 0;
     overflow: hidden;
     visibility: hidden;
-    transform: translateY(-4px);
     transition: 200ms;
-    transition-property: visibility, opacity, height, transform;
-    transition-delay: 200ms, 0s, 0s, 0s;
+    transition-property: visibility, opacity, height;
+    transition-delay: 200ms, 0s, 0s;
     will-change: opacity, height, transform;
+
+    ${({ open }) => !!open && css`
+        animation-delay: 250ms;
+        animation-duration: 0.2s;
+        animation-fill-mode: forwards;
+        animation-name: ${collapseAnimation};
+        opacity: 1;
+        transitionDelay: 0s, 250ms, 0s;
+        visibility: visible;
+    `}
+`
+
+const UnstyledRemoveButton = (props) => (
+    <button {...props} type="button">
+        <SvgIcon name="trash" />
+    </button>
+)
+
+const RemoveButton = styled(UnstyledRemoveButton)`
+    appearance: none;
+    background: transparent;
+    border: none;
+    height: 24px;
+    opacity: 0;
+    padding: 0;
+    transition: 200ms;
+    transition-delay: 0.2s, 0s, 0s;
+    transition-property: visibility, opacity, color;
+    visibility: hidden;
+    width: 24px;
+
+    :hover {
+        background-color: #f8f8f8;
+    }
+
+    svg {
+        height: 16px;
+        width: 16px;
+    }
 `
 
 /**
@@ -150,8 +211,12 @@ const UnstyledUserPermissions = ({
             className={cx(styles.userPermissions, className, {
                 [styles.isSelected]: isSelected,
             })}
+            onClick={onClick}
+            onKeyDown={() => {}}
+            role="button"
+            tabIndex="0"
         >
-            <Header onClick={onClick}>
+            <Header>
                 <div>
                     <h4 title={userId}>
                         {userId}
@@ -163,16 +228,12 @@ const UnstyledUserPermissions = ({
                 </div>
                 <div>
                     <Tooltip value="Remove">
-                        <Button
-                            kind="secondary"
-                            onClick={(event) => {
-                                event.stopPropagation()
+                        <RemoveButton
+                            onClick={(e) => {
+                                e.stopPropagation()
                                 removeUser(userId)
                             }}
-                            className={styles.button}
-                        >
-                            <SvgIcon name="trash" className={styles.trashIcon} />
-                        </Button>
+                        />
                     </Tooltip>
                 </div>
             </Header>
@@ -211,6 +272,16 @@ const UnstyledUserPermissions = ({
 }
 
 const UserPermissions = styled(UnstyledUserPermissions)`
+    outline: 0;
+
+    ${({ isSelected }) => !isSelected && css`
+        :hover ${RemoveButton} {
+            opacity: 1;
+            transition-delay: 0s;
+            visibility: visible;
+        }
+    `}
+
     ${Tooltip.Root} {
         display: block;
     }
