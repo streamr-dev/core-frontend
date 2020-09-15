@@ -4,11 +4,11 @@ import { I18n } from 'react-redux-i18n'
 import { animated } from 'react-spring'
 import startCase from 'lodash/startCase'
 import RadioButtonGroup from './RadioButtonGroup'
-import Checkbox from '$shared/components/Checkbox'
 import SvgIcon from '$shared/components/SvgIcon'
 import { isFormElement } from '$shared/utils/isEditableElement'
 import Button from '$shared/components/Button'
 import Tooltip from '$shared/components/Tooltip'
+import Checkbox from './Checkbox'
 import * as State from './state'
 import useSlideIn from './hooks/useSlideIn'
 import styles from './ShareSidebar.pcss'
@@ -105,21 +105,15 @@ export default function UserPermissions({
                     />
                     <div className={styles.permissionsCheckboxes}>
                         {Object.entries(userPermissions).map(([permission, value]) => (
-                            <div key={permission}>
-                                <div className={styles.checkboxContainer}>
-                                    <Checkbox
-                                        className={styles.checkbox}
-                                        id={`${userId}-${permission}`}
-                                        value={value}
-                                        onChange={() => updatePermission(userId, {
-                                            [permission]: !value,
-                                        })}
-                                    />
-                                </div>
-                                <label htmlFor={`${userId}-${permission}`}>
-                                    {startCase(I18n.t(`share.permissions.${permission}`))}
-                                </label>
-                            </div>
+                            <Checkbox
+                                id={`${userId}-${permission}`}
+                                key={permission}
+                                label={startCase(I18n.t(`share.permissions.${permission}`))}
+                                onChange={() => updatePermission(userId, {
+                                    [permission]: !value,
+                                })}
+                                value={value}
+                            />
                         ))}
                     </div>
                 </div>
