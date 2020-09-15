@@ -2,7 +2,9 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
+import styled from 'styled-components'
 import startCase from 'lodash/startCase'
+import { SANS } from '$shared/utils/styled'
 
 import styles from './RadioButtonGroup.pcss'
 
@@ -16,14 +18,14 @@ type Props = {
     isCustom?: boolean,
 }
 
-const RadioButtonGroup = ({
+const UnstyledRadioButtonGroup = ({
     name,
     options,
     selectedOption,
-    className,
     onChange,
     disabled = false,
     isCustom,
+    ...props
 }: Props) => {
     const [selection, setSelection] = useState(selectedOption)
 
@@ -44,7 +46,7 @@ const RadioButtonGroup = ({
     }, [disabled, onChange])
 
     return (
-        <div className={cx(styles.root, className)}>
+        <div {...props}>
             <div className={styles.inner}>
                 <div className={styles.buttonGrid}>
                     {options.map((option, index) => (
@@ -84,5 +86,13 @@ const RadioButtonGroup = ({
         </div>
     )
 }
+
+const RadioButtonGroup = styled(UnstyledRadioButtonGroup)`
+    font-family: ${SANS};
+    font-size: 14px;
+    line-height: normal;
+    text-align: center;
+    width: 100%;
+`
 
 export default RadioButtonGroup
