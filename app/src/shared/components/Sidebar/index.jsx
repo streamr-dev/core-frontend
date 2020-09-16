@@ -8,7 +8,7 @@ import { Collapse as RsCollapse } from 'reactstrap'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import isEditableElement from '$shared/utils/isEditableElement'
-import ErrorComponentView from '$shared/components/ErrorComponentView'
+import SharedErrorComponentView from '$shared/components/ErrorComponentView'
 import SvgIcon from '$shared/components/SvgIcon'
 import AppInfo from '$shared/components/AppInfo'
 
@@ -66,6 +66,19 @@ export { Select }
 
 const Container = styled.div`
     padding: 24px 32px;
+`
+
+const UnstyledErrorComponentView = (props) => (
+    <Container {...props} as={SharedErrorComponentView} />
+)
+
+const ErrorComponentView = styled(UnstyledErrorComponentView)`
+    align-items: initial;
+    align-self: initial;
+    display: block;
+    flex: initial;
+    font-size: 14px;
+    text-align: left;
 `
 
 const UnstyledHeader = ({ onClose, title, subtitle = <AppInfo />, ...props }) => (
