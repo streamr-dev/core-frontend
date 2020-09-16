@@ -23,20 +23,22 @@ const Header = styled.div`
         font-size: inherit;
         line-height: 24px;
         margin: 0;
-        min-width: 0;
         overflow: hidden;
         padding: 0;
         text-overflow: ellipsis;
         transition: all 400ms ease;
         user-select: none;
+        white-space: nowrap;
     }
 
     > div:first-child {
+        min-width: 0;
         flex-grow: 1;
     }
 
     > div:last-child {
         flex-shrink: 0;
+        margin-left: 16px;
     }
 `
 
