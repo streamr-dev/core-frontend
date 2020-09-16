@@ -225,7 +225,7 @@ const UnstyledUserPermissions = ({
                     </Role>
                 </div>
                 <div>
-                    <Tooltip value="Remove">
+                    <Tooltip value="Remove" disabled={isSelected}>
                         <RemoveButton
                             onClick={(e) => {
                                 e.stopPropagation()
