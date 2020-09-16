@@ -3,18 +3,6 @@
   font-size: 14px;
 }
 
-.userList {
-  overflow: auto;
-  flex-grow: 1;
-  border-top: 1px solid #EFEFEF;
-}
-
-.saveCancelButtons {
-  display: grid;
-  grid-column-gap: 1um;
-  grid-template-columns: auto auto;
-}
-
 .InputNewShare {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -72,53 +60,8 @@
 }
 
 .userPermissions {
-  border-bottom: 1px solid #EFEFEF;
-
-  .permissionControls {
-    opacity: 0;
-    overflow: hidden;
-    will-change: height, opacity;
-  }
-
-  &.isSelected {
-    .selectedGroup {
-      transform: translateY(50%);
-      opacity: 0;
-      height: 0;
-      padding: 0 4px;
-    }
-
-    .permissionControls {
-      opacity: 1;
-      transform: translateY(0);
-      transition: opacity 400ms 150ms ease, transform 400ms 150ms ease;
-    }
-  }
-
   .errorMessage {
     margin: -1.4um 0um;
     margin-top: 1.4um;
-  }
-}
-
-.footer {
-  border-top: 1px solid #EFEFEF;
-  display: flex;
-
-  .saveCancelButtons {
-    button {
-      min-width: 96px;
-    }
-  }
-
-  :first-child {
-    margin-right: auto;
-  }
-
-  .cancelButton {
-    background: transparent;
-    border: transparent;
-    outline: transparent;
-    color: #525252 !important;
   }
 }

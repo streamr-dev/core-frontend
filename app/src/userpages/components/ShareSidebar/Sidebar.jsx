@@ -8,22 +8,21 @@ import styled from 'styled-components'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import SelectInput from '$ui/Select'
 import Label from '$ui/Label'
-import Button from '$shared/components/Button'
 import Sidebar from '$shared/components/Sidebar'
 import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import useUniqueId from '$shared/hooks/useUniqueId'
 
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
-import CopyLink from './CopyLink'
 import InputNewShare from './InputNewShare'
-import UserPermissions from './UserPermissions'
 import useAsyncCallbackWithState from './hooks/useAsyncCallbackWithState'
 import usePrevious from './hooks/usePrevious'
 import useSlideIn from './hooks/useSlideIn'
 import useUserPermissionState from './hooks/useUserPermissionState'
 import usePermissionsLoader from './hooks/usePermissionsLoader'
 import savePermissions from './utils/savePermissions'
+import UserList from './UserList'
+import Footer from './Footer'
 
 const options = ['onlyInvited', 'withLink']
 
@@ -223,30 +222,17 @@ const UnstyledShareSidebar = connect(({ user }) => ({
                 />
                 <InputNewShare currentUser={currentUser} onChange={addUser} canShareToUser={canShareToUser} />
             </Sidebar.Container>
-            <div
-                className={cx(styles.row, styles.userList)}
-                onClick={(event) => {
-                    if (event.target !== event.currentTarget) { return }
-                    setSelectedUserId() // select none on click background
-                }}
-            >
-                {userEntries.map(([userId, userPermissions]) => (
-                    <Sidebar.Container
-                        as={UserPermissions}
-                        key={userId}
-                        userId={userId}
-                        userPermissions={userPermissions}
-                        resourceType={resourceType}
-                        removeUser={removeUser}
-                        updatePermission={updatePermission}
-                        permissions={permissions}
-                        isSelected={selectedUserId === userId}
-                        isCurrentUser={currentUser === userId}
-                        onSelect={setSelectedUserId}
-                        error={userErrors[userId]}
-                    />
-                ))}
-            </div>
+            <UserList
+                items={userEntries}
+                resourceType={resourceType}
+                removeUser={removeUser}
+                updatePermission={updatePermission}
+                permissions={permissions}
+                currentUser={currentUser}
+                userErrors={userErrors}
+                selectedUserId={selectedUserId}
+                onSelect={setSelectedUserId}
+            />
             <div
                 className={cx(styles.errorOverlay, {
                     [styles.errorOverlayVisible]: didTryClose,
@@ -272,22 +258,15 @@ const UnstyledShareSidebar = connect(({ user }) => ({
                     </div>
                 </div>
             </animated.div>
-            <Sidebar.Container className={styles.footer}>
-                <div className={styles.copyLink}>
-                    <CopyLink
-                        resourceType={resourceType}
-                        resourceId={resourceId}
-                    />
-                </div>
-                <div className={styles.saveCancelButtons}>
-                    <Button onClick={onCancel} kind="link" className={styles.cancelButton}>
-                        <Translate value="modal.common.cancel" />
-                    </Button>
-                    <Button onClick={onSave} disabled={isSaving || !hasChanges} waiting={isSaving}>
-                        <Translate value="modal.shareResource.save" />
-                    </Button>
-                </div>
-            </Sidebar.Container>
+            <Sidebar.Container
+                as={Footer}
+                disabled={isSaving || !hasChanges}
+                onCancel={onCancel}
+                onSave={onSave}
+                resourceId={resourceId}
+                resourceType={resourceType}
+                waiting={isSaving}
+            />
         </div>
         /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     )

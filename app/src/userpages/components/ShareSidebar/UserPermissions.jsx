@@ -270,6 +270,7 @@ const UnstyledUserPermissions = ({
 }
 
 const UserPermissions = styled(UnstyledUserPermissions)`
+    border-bottom: 1px solid #efefef;
     outline: 0;
     transition: background-color 200ms;
 
