@@ -21,7 +21,7 @@ const Header = styled.div`
 
     h4 {
         font-size: inherit;
-        line-height: normal;
+        line-height: 24px;
         margin: 0;
         min-width: 0;
         overflow: hidden;
@@ -56,7 +56,6 @@ const Role = styled.div`
     font-size: 10px;
     font-weight: ${MEDIUM};
     line-height: 16px;
-    margin-top: 2px;
     max-width: fit-content;
     opacity: 0;
     padding: 0 4px;
