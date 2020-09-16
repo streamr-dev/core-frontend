@@ -23,13 +23,20 @@ const INLINE_TYPES = [
     'text',
 ]
 
-const Md = ({ children, inline, ...props }) => (
+const Md = ({
+    allowedTypes,
+    children,
+    escapeHtml = true,
+    inline,
+    unwrapDisallowed = true,
+    ...props
+}) => (
     <ReactMarkdown
         {...props}
+        allowedTypes={allowedTypes || (inline ? INLINE_TYPES : BLOCK_TYPES)}
+        escapeHtml={escapeHtml}
         source={children}
-        escapeHtml
-        allowedTypes={inline ? INLINE_TYPES : BLOCK_TYPES}
-        unwrapDisallowed
+        unwrapDisallowed={unwrapDisallowed}
     />
 )
 
