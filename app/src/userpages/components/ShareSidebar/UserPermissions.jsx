@@ -52,6 +52,7 @@ const roleAnimation = keyframes`
 
 const Role = styled.div`
     background-color: #efefef;
+    border-radius: 2px;
     color: #525252;
     font-size: 10px;
     font-weight: ${MEDIUM};
