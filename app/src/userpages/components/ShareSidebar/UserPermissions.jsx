@@ -8,6 +8,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 import { isFormElement } from '$shared/utils/isEditableElement'
 import Tooltip from '$shared/components/Tooltip'
 import Checkbox from './Checkbox'
+import { Button as LayoutButton } from '@streamr/streamr-layout'
 import * as State from './state'
 import useMeasure from './useMeasure'
 import usePrevious from './hooks/usePrevious'
@@ -144,26 +145,23 @@ const Collapse = styled(UnstyledCollapse)`
 `
 
 const UnstyledRemoveButton = (props) => (
-    <button {...props} type="button">
+    <LayoutButton {...props} type="button">
         <SvgIcon name="trash" />
-    </button>
+    </LayoutButton>
 )
 
 const RemoveButton = styled(UnstyledRemoveButton)`
-    appearance: none;
-    background: transparent;
-    border: none;
     height: 24px;
     opacity: 0;
-    padding: 0;
-    transition: 200ms;
-    transition-delay: 0.2s, 0s, 0s;
-    transition-property: visibility, opacity, color;
+    transition-delay: 0.2s, 0s, 0s, 0s;
+    transition-property: visibility, background-color, border-color, opacity;
     visibility: hidden;
     width: 24px;
 
     :hover {
         background-color: #f8f8f8;
+        border-color: #f8f8f8;
+        transition-delay: 0s;
     }
 
     svg {
