@@ -2,6 +2,7 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import Sidebar from '$shared/components/Sidebar'
 import UserPermissions from './UserPermissions'
+import ErrorMessage from './ErrorMessage'
 
 const UnstyledUserList = ({
     currentUser,
@@ -29,20 +30,26 @@ const UnstyledUserList = ({
             onClick={onClick}
         >
             {items.map(([userId, userPermissions]) => (
-                <Sidebar.Container
-                    as={UserPermissions}
-                    error={userErrors[userId]}
-                    isCurrentUser={currentUser === userId}
-                    isSelected={selectedUserId === userId}
-                    key={userId}
-                    onSelect={onSelect}
-                    permissions={permissions}
-                    removeUser={removeUser}
-                    resourceType={resourceType}
-                    updatePermission={updatePermission}
-                    userId={userId}
-                    userPermissions={userPermissions}
-                />
+                <React.Fragment key={userId}>
+                    <Sidebar.Container
+                        as={UserPermissions}
+                        invalid={!!userErrors[userId]}
+                        isCurrentUser={currentUser === userId}
+                        isSelected={selectedUserId === userId}
+                        onSelect={onSelect}
+                        permissions={permissions}
+                        removeUser={removeUser}
+                        resourceType={resourceType}
+                        updatePermission={updatePermission}
+                        userId={userId}
+                        userPermissions={userPermissions}
+                    />
+                    {!!userErrors[userId] && (
+                        <Sidebar.Container as={ErrorMessage}>
+                            {userErrors[userId].message}
+                        </Sidebar.Container>
+                    )}
+                </React.Fragment>
             ))}
         </div>
     )

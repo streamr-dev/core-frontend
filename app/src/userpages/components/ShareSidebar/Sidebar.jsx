@@ -23,6 +23,8 @@ import usePermissionsLoader from './hooks/usePermissionsLoader'
 import savePermissions from './utils/savePermissions'
 import UserList from './UserList'
 import Footer from './Footer'
+import ErrorMessage from './ErrorMessage'
+import Md from '$shared/components/Md'
 
 const options = ['onlyInvited', 'withLink']
 
@@ -245,17 +247,19 @@ const UnstyledShareSidebar = connect(({ user }) => ({
             >
                 {/* only shows if trying to close with unsaved changes */}
                 <div {...bindWarningMessages}>
-                    <div className={styles.errorMessage}>
+                    <Sidebar.Container as={ErrorMessage}>
                         {isSaving && (
                             <Translate value="modal.shareResource.warnSavingChanges" />
                         )}
                         {!isSaving && !!didTryClose && (
-                            <Translate value="modal.shareResource.warnUnsavedChanges" />
+                            <Md inline>
+                                {I18n.t('modal.shareResource.warnUnsavedChanges')}
+                            </Md>
                         )}
                         {!isSaving && !didTryClose && !!hasCurrentUserChanges && (
                             <Translate value="modal.shareResource.warnChangingOwnPermission" />
                         )}
-                    </div>
+                    </Sidebar.Container>
                 </div>
             </animated.div>
             <Sidebar.Container

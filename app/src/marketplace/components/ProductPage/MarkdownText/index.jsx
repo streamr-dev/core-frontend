@@ -1,30 +1,14 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import ReactMarkdown from 'react-markdown'
 import styled from 'styled-components'
 import { MD } from '$shared/utils/styled'
+import Md from '$shared/components/Md'
 
 type Props = {
     text: string,
     className?: string,
 }
-
-const ALLOWED_MARKDOWN = [
-    'text',
-    'paragraph',
-    'break',
-    'emphasis',
-    'strong',
-    'thematicBreak',
-    'blockquote',
-    'delete',
-    'link',
-    'list',
-    'listItem',
-    'inlineCode',
-    'code',
-]
 
 const Root = styled.div`
     color: var(--greyDark2);
@@ -160,26 +144,15 @@ const MarkdownContainer = styled.div`
     }
 `
 
-const MarkdownText = ({ text: textProp, className }: Props) => {
-    const text = textProp || ''
-
-    const markdownText = useMemo(() => (
-        <ReactMarkdown
-            source={text}
-            escapeHtml
-            allowedTypes={ALLOWED_MARKDOWN}
-            unwrapDisallowed
-        />
-    ), [text])
-
-    return (
-        <Root className={className}>
-            <MarkdownContainer>
-                {markdownText}
-            </MarkdownContainer>
-        </Root>
-    )
-}
+const MarkdownText = ({ text, className }: Props) => (
+    <Root className={className}>
+        <MarkdownContainer>
+            <Md>
+                {text || ''}
+            </Md>
+        </MarkdownContainer>
+    </Root>
+)
 
 Object.assign(MarkdownText, {
     Container: MarkdownContainer,

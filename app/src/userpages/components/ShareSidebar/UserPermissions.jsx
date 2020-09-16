@@ -1,6 +1,6 @@
 import React, { useCallback, useReducer, useEffect, useMemo } from 'react'
 import styled, { css, keyframes } from 'styled-components'
-import cx from 'classnames'
+import { Button as LayoutButton } from '@streamr/streamr-layout'
 import { I18n } from 'react-redux-i18n'
 import startCase from 'lodash/startCase'
 import RadioButtonGroup from './RadioButtonGroup'
@@ -8,12 +8,11 @@ import SvgIcon from '$shared/components/SvgIcon'
 import { isFormElement } from '$shared/utils/isEditableElement'
 import Tooltip from '$shared/components/Tooltip'
 import Checkbox from './Checkbox'
-import { Button as LayoutButton } from '@streamr/streamr-layout'
 import * as State from './state'
 import useMeasure from './useMeasure'
 import usePrevious from './hooks/usePrevious'
-import styles from './ShareSidebar.pcss'
 import { MEDIUM } from '$shared/utils/styled'
+import ErrorMessage from './ErrorMessage'
 
 const Header = styled.div`
     align-items: center;
@@ -186,7 +185,6 @@ const UnstyledUserPermissions = ({
     onSelect,
     isSelected,
     isCurrentUser,
-    error,
 }) => {
     const selectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
     // custom handling:
@@ -208,9 +206,7 @@ const UnstyledUserPermissions = ({
 
     return (
         <div
-            className={cx(styles.userPermissions, className, {
-                [styles.isSelected]: isSelected,
-            })}
+            className={className}
             onClick={onClick}
             onKeyDown={() => {}}
             role="button"
@@ -261,20 +257,22 @@ const UnstyledUserPermissions = ({
                     ))}
                 </Checkbox.List>
             </Collapse>
-            {error && (
-                <div className={styles.errorMessage}>
-                    {error.message}
-                </div>
-            )}
         </div>
     )
     /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
 }
 
 const UserPermissions = styled(UnstyledUserPermissions)`
-    border-bottom: 1px solid #efefef;
     outline: 0;
     transition: background-color 200ms;
+
+    ${({ invalid }) => !invalid && css`
+        border-bottom: 1px solid #efefef;
+    `}
+
+    & + ${ErrorMessage} {
+        border-bottom: 1px solid #efefef;
+    }
 
     :hover {
         background-color: #fdfdfd;
