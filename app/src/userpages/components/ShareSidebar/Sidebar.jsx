@@ -205,7 +205,6 @@ const UnstyledShareSidebar = connect(({ user }) => ({
         ...oldUserIdList,
     ].map((userId) => [userId, editableUsers[userId]])
 
-    /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (
         <div className={className}>
             <Sidebar.Container>
@@ -235,6 +234,7 @@ const UnstyledShareSidebar = connect(({ user }) => ({
                 selectedUserId={selectedUserId}
                 onSelect={setSelectedUserId}
             />
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
             <div
                 className={cx(styles.errorOverlay, {
                     [styles.errorOverlayVisible]: didTryClose,
@@ -272,7 +272,6 @@ const UnstyledShareSidebar = connect(({ user }) => ({
                 waiting={isSaving}
             />
         </div>
-        /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     )
 })
 
