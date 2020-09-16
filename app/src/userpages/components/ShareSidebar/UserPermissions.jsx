@@ -96,10 +96,6 @@ const UnstyledCollapse = ({ children, open, ...props }) => {
 
     const style = useMemo(() => ({
         height,
-        opacity: 1,
-        transitionDelay: '0s, 250ms, 0s, 250ms',
-        visibility: 'visible',
-        transform: 'translateY(0)',
     }), [height])
 
     return (
@@ -140,7 +136,7 @@ const Collapse = styled(UnstyledCollapse)`
         animation-fill-mode: forwards;
         animation-name: ${collapseAnimation};
         opacity: 1;
-        transitionDelay: 0s, 250ms, 0s;
+        transition-delay: 0s, 250ms, 0s;
         visibility: visible;
     `}
 `
