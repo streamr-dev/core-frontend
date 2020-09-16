@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { MD } from '$shared/utils/styled'
 import Md from '$shared/components/Md'
