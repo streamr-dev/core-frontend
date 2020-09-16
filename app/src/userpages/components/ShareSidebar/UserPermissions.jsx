@@ -271,6 +271,15 @@ const UnstyledUserPermissions = ({
 
 const UserPermissions = styled(UnstyledUserPermissions)`
     outline: 0;
+    transition: background-color 200ms;
+
+    :hover {
+        background-color: #fdfdfd;
+    }
+
+    ${({ isSelected }) => !!isSelected && css`
+        background-color: #fdfdfd;
+    `}
 
     ${({ isSelected }) => !isSelected && css`
         :hover ${RemoveButton} {
