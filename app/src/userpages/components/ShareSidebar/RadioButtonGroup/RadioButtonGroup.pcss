@@ -6,10 +6,6 @@
   display: flex;
   justify-content: flex-start;
   width: 100%;
-
-  > *:not(:last-child) {
-    margin-right: 0.625um;
-  }
 }
 
 .radio {
@@ -23,6 +19,10 @@
 .option {
   display: flex;
   align-items: center;
+}
+
+.option + .option {
+  margin-left: 6px;
 }
 
 .label {
