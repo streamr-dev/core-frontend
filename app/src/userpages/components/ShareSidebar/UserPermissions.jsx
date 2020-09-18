@@ -169,6 +169,14 @@ const RemoveButton = styled(UnstyledRemoveButton)`
     }
 `
 
+const DismissBox = styled.div`
+    height: 70px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+`
+
 /**
  * Individual User's Permissions UI
  */
@@ -193,14 +201,15 @@ const UnstyledUserPermissions = ({
 
     const permissionGroupOptions = Object.keys(State.getPermissionGroups(resourceType)).filter((name) => name !== 'default')
 
-    const onClick = useCallback((event) => {
-        if (isFormElement(event.target)) { return }
-        // toggle open state
-        if (isSelected) {
-            return onSelect()
+    const onClick = useCallback((e) => {
+        if (!isFormElement(e.target) && !isSelected) {
+            onSelect(userId)
         }
-        onSelect(userId)
     }, [isSelected, onSelect, userId])
+
+    const onDismiss = useCallback(() => {
+        onSelect()
+    }, [onSelect])
 
     return (
         <div
@@ -210,6 +219,9 @@ const UnstyledUserPermissions = ({
             role="button"
             tabIndex="0"
         >
+            {isSelected && (
+                <DismissBox onClick={onDismiss} />
+            )}
             <Header>
                 <div>
                     <h4 title={userId}>
@@ -262,6 +274,7 @@ const UnstyledUserPermissions = ({
 
 const UserPermissions = styled(UnstyledUserPermissions)`
     outline: 0;
+    position: relative;
     transition: background-color 200ms;
 
     ${({ invalid }) => !invalid && css`
