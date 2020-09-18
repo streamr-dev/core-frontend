@@ -5,6 +5,7 @@ import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
 import TextInput from '$ui/Text'
 import Errors from '$ui/Errors'
+import Label from '$ui/Label'
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
 
@@ -73,29 +74,33 @@ export default function InputNewShare({ currentUser, onChange, canShareToUser })
     const showValidationError = shouldShowValidation && value && !isValid
 
     return (
-        <div className={styles.InputNewShare}>
-            <label htmlFor={uid}>{I18n.t('auth.labels.address')}</label>
-            <TextInput
-                id={uid}
-                className={styles.input}
-                placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
-                value={value}
-                onChange={onChangeValue}
-                onFocus={onFocus}
-                onBlur={onBlur}
-                autoComplete="email"
-                invalid={showValidationError}
-                onKeyDown={onKeyDown}
-            />
-            <Button
-                kind="secondary"
-                onClick={onAdd}
-                disabled={!isValid}
-                className={styles.button}
-            >
-                <SvgIcon name="plus" className={styles.plusIcon} />
-            </Button>
-            {showValidationError && <Errors>{error}</Errors>}
-        </div>
+        <React.Fragment>
+            <Label htmlFor={uid}>
+                {I18n.t('auth.labels.address')}
+            </Label>
+            <div className={styles.InputNewShare}>
+                <TextInput
+                    id={uid}
+                    className={styles.input}
+                    placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
+                    value={value}
+                    onChange={onChangeValue}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    autoComplete="email"
+                    invalid={showValidationError}
+                    onKeyDown={onKeyDown}
+                />
+                <Button
+                    kind="secondary"
+                    onClick={onAdd}
+                    disabled={!isValid}
+                    className={styles.button}
+                >
+                    <SvgIcon name="plus" className={styles.plusIcon} />
+                </Button>
+                {showValidationError && <Errors>{error}</Errors>}
+            </div>
+        </React.Fragment>
     )
 }

@@ -2,25 +2,29 @@ import React, { useCallback, useState, useRef, useEffect, useContext } from 'rea
 import { connect } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
-import { useTransition, animated } from 'react-spring'
+import { animated } from 'react-spring'
+import styled from 'styled-components'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import SelectInput from '$ui/Select'
-import Button from '$shared/components/Button'
+import Label from '$ui/Label'
+import Sidebar from '$shared/components/Sidebar'
 import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import useUniqueId from '$shared/hooks/useUniqueId'
 
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
-import CopyLink from './CopyLink'
 import InputNewShare from './InputNewShare'
-import UserPermissions from './UserPermissions'
 import useAsyncCallbackWithState from './hooks/useAsyncCallbackWithState'
 import usePrevious from './hooks/usePrevious'
 import useSlideIn from './hooks/useSlideIn'
 import useUserPermissionState from './hooks/useUserPermissionState'
 import usePermissionsLoader from './hooks/usePermissionsLoader'
 import savePermissions from './utils/savePermissions'
+import UserList from './UserList'
+import Footer from './Footer'
+import ErrorMessage from './ErrorMessage'
+import Md from '$shared/components/Md'
 
 const options = ['onlyInvited', 'withLink']
 
@@ -31,9 +35,9 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
-const ShareSidebar = connect(({ user }) => ({
+const UnstyledShareSidebar = connect(({ user }) => ({
     currentUser: user && user.user && user.user.username,
-}))((props) => {
+}))(({ className, ...props }) => {
     const { currentUser, resourceType, resourceId, onClose } = props
     const isMounted = useIsMounted()
     const propsRef = useRef(props)
@@ -201,35 +205,12 @@ const ShareSidebar = connect(({ user }) => ({
         ...oldUserIdList,
     ].map((userId) => [userId, editableUsers[userId]])
 
-    // add enter/leave transitions for users
-    const userEntryTransitions = useTransition(userEntries, ([userId]) => userId, {
-        initial: false,
-        from: {
-            opacity: 0,
-            willChange: 'max-height',
-            maxHeight: '0px',
-        },
-        enter: {
-            opacity: 1,
-            maxHeight: '9999px',
-        },
-        leave: {
-            opacity: 0,
-            maxHeight: '0px',
-        },
-        config: {
-            mass: 1,
-            friction: 62,
-            tension: 700,
-            precision: 0.00001,
-        },
-    })
-
-    /* eslint-disable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     return (
-        <div className={styles.root}>
-            <div className={cx(styles.row, styles.cell, styles.anonAccessSelect)}>
-                <label htmlFor={`${uid}AnonAccessSelect`}>{I18n.t('modal.shareResource.anonymousAccess')}</label>
+        <div className={className}>
+            <Sidebar.Container>
+                <Label htmlFor={`${uid}AnonAccessSelect`}>
+                    {I18n.t('modal.shareResource.anonymousAccess')}
+                </Label>
                 <SelectInput
                     inputId={`${uid}AnonAccessSelect`}
                     name="name"
@@ -240,37 +221,20 @@ const ShareSidebar = connect(({ user }) => ({
                     isSearchable={false}
                     controlClassName={styles.anonSelectControl}
                 />
-            </div>
-            <div className={cx(styles.row, styles.cell, styles.addUserInput)}>
                 <InputNewShare currentUser={currentUser} onChange={addUser} canShareToUser={canShareToUser} />
-            </div>
-            <div
-                className={cx(styles.row, styles.userList)}
-                onClick={(event) => {
-                    if (event.target !== event.currentTarget) { return }
-                    setSelectedUserId() // select none on click background
-                }}
-            >
-                {userEntryTransitions.map(({ item: [userId, userPermissions], props, key }) => (
-                    <animated.div
-                        key={key}
-                        style={props}
-                    >
-                        <UserPermissions
-                            userId={userId}
-                            userPermissions={userPermissions}
-                            resourceType={resourceType}
-                            removeUser={removeUser}
-                            updatePermission={updatePermission}
-                            permissions={permissions}
-                            isSelected={selectedUserId === userId}
-                            isCurrentUser={currentUser === userId}
-                            onSelect={setSelectedUserId}
-                            error={userErrors[userId]}
-                        />
-                    </animated.div>
-                ))}
-            </div>
+            </Sidebar.Container>
+            <UserList
+                items={userEntries}
+                resourceType={resourceType}
+                removeUser={removeUser}
+                updatePermission={updatePermission}
+                permissions={permissions}
+                currentUser={currentUser}
+                userErrors={userErrors}
+                selectedUserId={selectedUserId}
+                onSelect={setSelectedUserId}
+            />
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
             <div
                 className={cx(styles.errorOverlay, {
                     [styles.errorOverlayVisible]: didTryClose,
@@ -283,39 +247,46 @@ const ShareSidebar = connect(({ user }) => ({
             >
                 {/* only shows if trying to close with unsaved changes */}
                 <div {...bindWarningMessages}>
-                    <div className={styles.errorMessage}>
+                    <Sidebar.Container as={ErrorMessage}>
                         {isSaving && (
                             <Translate value="modal.shareResource.warnSavingChanges" />
                         )}
                         {!isSaving && !!didTryClose && (
-                            <Translate value="modal.shareResource.warnUnsavedChanges" />
+                            <Md inline>
+                                {I18n.t('modal.shareResource.warnUnsavedChanges')}
+                            </Md>
                         )}
                         {!isSaving && !didTryClose && !!hasCurrentUserChanges && (
                             <Translate value="modal.shareResource.warnChangingOwnPermission" />
                         )}
-                    </div>
+                    </Sidebar.Container>
                 </div>
             </animated.div>
-            <div className={cx(styles.footer, styles.row, styles.cell)}>
-                <div className={styles.copyLink}>
-                    <CopyLink
-                        resourceType={resourceType}
-                        resourceId={resourceId}
-                    />
-                </div>
-                <div className={styles.saveCancelButtons}>
-                    <Button onClick={onCancel} kind="link" className={styles.cancelButton}>
-                        <Translate value="modal.common.cancel" />
-                    </Button>
-                    <Button onClick={onSave} disabled={isSaving || !hasChanges} waiting={isSaving}>
-                        <Translate value="modal.shareResource.save" />
-                    </Button>
-                </div>
-            </div>
+            <Sidebar.Container
+                as={Footer}
+                disabled={isSaving || !hasChanges}
+                onCancel={onCancel}
+                onSave={onSave}
+                resourceId={resourceId}
+                resourceType={resourceType}
+                waiting={isSaving}
+            />
         </div>
-        /* eslint-enable jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */
     )
 })
+
+const ShareSidebar = styled(UnstyledShareSidebar)`
+    color: #323232;
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    height: 100%;
+    max-height: stretch;
+
+    * + ${Label} {
+        margin-top: 16px;
+    }
+`
 
 export default (props) => {
     const { resourceType, resourceId } = props

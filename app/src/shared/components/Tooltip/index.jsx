@@ -22,7 +22,7 @@ const Root = styled.div`
     display: inline-block;
     line-height: 1;
 
-    ${({ tooltip }) => !!tooltip && css`
+    ${({ tooltip, disabled }) => !!tooltip && !disabled && css`
         &::after {
             content: "${tooltip}";
             visibility: hidden;
@@ -66,5 +66,9 @@ Tooltip.BOTTOM = BottomTheme
 Tooltip.defaultProps = {
     placement: Tooltip.TOP,
 }
+
+Object.assign(Tooltip, {
+    Root,
+})
 
 export default Tooltip
