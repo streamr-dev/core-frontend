@@ -21,9 +21,9 @@ const Button = styled.button`
     border: 0;
     color: rgb(3, 36, 255);
     display: flex;
-    font-size: 0.875rem;
+    font-size: 14px;
     letter-spacing: 0;
-    line-height: 2.5rem;
+    line-height: 40px;
     margin: 0;
     outline: none;
     padding: 0;
@@ -34,7 +34,7 @@ const Button = styled.button`
 
     svg {
         height: 10px;
-        margin-left: 0.5rem;
+        margin-left: 8px;
         width: 10px;
     }
 
