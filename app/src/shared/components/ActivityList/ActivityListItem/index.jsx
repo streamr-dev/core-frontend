@@ -5,12 +5,12 @@ import styled from 'styled-components'
 import { I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 
-import Activity, { type ResourceType, resourceTypes } from '$shared/utils/Activity'
+import Activity, { resourceTypes } from '$shared/utils/Activity'
 import Avatar from '$shared/components/Avatar'
 import { ago } from '$shared/utils/time'
 import Spinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
-import routes from '$routes'
+import resourcePath from '$shared/utils/resourcePath'
 import { productTypes } from '$mp/utils/constants'
 import { selectPendingTransactions } from '$mp/modules/transactions/selectors'
 
@@ -91,44 +91,21 @@ type Props = {
     activity: Activity,
     user?: any,
     resource?: any, // Product | Canvas | Stream
-    resourceType?: ?ResourceType,
 }
 
 const truncate = (input: string, maxLength: number) => (input.length > maxLength ? `${input.substring(0, maxLength)}...` : input)
 
-const renderItem = (action: string, linkTitle: ?string, linkHref: ?string, id: ?string) => (
-    <React.Fragment>
-        {linkHref != null ? (
-            <a
-                href={linkHref}
-            >
-                {truncate(linkTitle || '', 75)}
-            </a>
-        ) : (
-            id
-        )}
-        {' '}
-        {I18n.t(`shared.action.${action.toLowerCase()}`)}
-    </React.Fragment>
-)
+const ResourceLink = ({ id, type, children }) => {
+    // $FlowFixMe type is STREAM, PRODUCT, or CANVAS. Nothing else here.
+    const href = resourcePath(type, id)
 
-const resourcePath = (id, resourceType) => {
-    switch (resourceType) {
-        case resourceTypes.STREAM:
-            return routes.streams.show({
-                id,
-            })
-        case resourceTypes.PRODUCT:
-            return routes.products.edit({
-                id,
-            })
-        case resourceTypes.CANVAS:
-            return routes.canvases.edit({
-                id,
-            })
-        default:
-            return null
-    }
+    return href ? (
+        <a href={href}>
+            {children}
+        </a>
+    ) : (
+        id || ''
+    )
 }
 
 const renderContent = (activity, resource, resourceType) => {
@@ -136,11 +113,18 @@ const renderContent = (activity, resource, resourceType) => {
         case resourceTypes.STREAM:
         case resourceTypes.PRODUCT:
         case resourceTypes.CANVAS:
-            return renderItem(
-                activity.action,
-                resource && resource.name,
-                resource && resourcePath(activity.resourceId, resourceType),
-                activity.resourceId,
+            return (
+                <React.Fragment>
+                    {resource ? (
+                        <ResourceLink id={activity.resourceId} type={resourceType}>
+                            {truncate(resource.name || '', 75)}
+                        </ResourceLink>
+                    ) : (
+                        activity.resourceId
+                    )}
+                    {' '}
+                    {I18n.t(`shared.action.${activity.action.toLowerCase()}`)}
+                </React.Fragment>
             )
         default:
             return activity.action
@@ -182,9 +166,12 @@ const renderType = (resource, resourceType) => {
     return null
 }
 
-const ActivityListItem = ({ activity, user, resource, resourceType }: Props) => {
+const ActivityListItem = ({ activity, user, resource }: Props) => {
     const pendingTxs = useSelector(selectPendingTransactions)
+
     const isTxPending = activity.txHash && pendingTxs.some((item) => item.hash === activity.txHash && item.state === 'pending')
+
+    const { resourceType } = activity
 
     return (
         <Container>

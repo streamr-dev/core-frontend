@@ -166,7 +166,6 @@ const ActivityList = ({ activities }: Props) => {
                             key={item.id}
                             activity={item}
                             resource={resource}
-                            resourceType={item.resourceType}
                         />
                     )
                 })}
