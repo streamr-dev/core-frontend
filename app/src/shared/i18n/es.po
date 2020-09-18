@@ -147,7 +147,7 @@ msgstr "YouTube"
 
 # missing
 msgid "general.logout"
-msgstr "Logout"
+msgstr "Sign out"
 
 msgid "language.id"
 msgstr "es"

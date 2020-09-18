@@ -165,7 +165,7 @@ msgid "general.youtube"
 msgstr "YouTube"
 
 msgid "general.logout"
-msgstr "Logout"
+msgstr "Sign out"
 
 msgid "general.signout"
 msgstr "Sign out"
