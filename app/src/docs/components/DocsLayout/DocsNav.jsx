@@ -7,6 +7,7 @@ import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import docsLinks from '$shared/../docsLinks'
 import routes from '$routes'
+import SharedNav from '$shared/components/Layout/Nav'
 
 const ghostContentApi = new GhostContentAPI({
     url: 'https://streamr.ghost.io',
@@ -197,7 +198,12 @@ const UnstyledNarrow = (props) => (
     <Nav.Narrow
         {...props}
         logoComponent={(
-            <Nav.LogoItem href={routes.root()} />
+            <React.Fragment>
+                <Nav.LogoItem href={routes.root()} />
+                <SharedNav.SiteSection>
+                    Docs
+                </SharedNav.SiteSection>
+            </React.Fragment>
         )}
     >
         <Nav.Narrow.Body>
