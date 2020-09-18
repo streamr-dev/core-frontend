@@ -14,6 +14,8 @@ import usePrevious from './hooks/usePrevious'
 import { MEDIUM } from '$shared/utils/styled'
 import ErrorMessage from './ErrorMessage'
 
+const noop = () => {}
+
 const Header = styled.div`
     align-items: center;
     display: flex;
@@ -204,7 +206,7 @@ const UnstyledUserPermissions = ({
         <div
             className={className}
             onClick={onClick}
-            onKeyDown={() => {}}
+            onKeyDown={noop}
             role="button"
             tabIndex="0"
         >
