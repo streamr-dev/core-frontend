@@ -17,16 +17,16 @@ const ghostContentApi = new GhostContentAPI({
 
 const AppsAndServicesGroup = () => (
     <Menu.Group name="Apps and services">
-        <Menu.Item as={Link} href={routes.site.learn.dataUnions()}>
+        <Menu.Item as={Link} href={routes.site.discover.dataUnions()}>
             Data Unions
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.learn.marketplace()}>
+        <Menu.Item as={Link} href={routes.site.discover.marketplace()}>
             Marketplace
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.learn.core()}>
+        <Menu.Item as={Link} href={routes.site.discover.core()}>
             Core
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.learn.network()}>
+        <Menu.Item as={Link} href={routes.site.discover.network()}>
             Network
         </Menu.Item>
     </Menu.Group>

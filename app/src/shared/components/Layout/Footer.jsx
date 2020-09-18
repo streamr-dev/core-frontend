@@ -32,13 +32,13 @@ const Footer = ({ topBorder = false }) => (
                 <a href={routes.root()}>
                     <Translate value="general.top" />
                 </a>
-                <a href={routes.site.learn.network()}>
+                <a href={routes.site.discover.network()}>
                     <Translate value="general.network" />
                 </a>
-                <a href={routes.site.learn.marketplace()}>
+                <a href={routes.site.discover.marketplace()}>
                     <Translate value="general.marketplace" />
                 </a>
-                <a href={routes.site.learn.core()}>
+                <a href={routes.site.discover.core()}>
                     <Translate value="general.core" />
                 </a>
             </FooterColumn>

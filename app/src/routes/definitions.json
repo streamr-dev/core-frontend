@@ -96,11 +96,11 @@
             "machineWitness": "/case-studies/machine-witness"
         },
         "design": "/design",
-        "learn": {
-            "core": "/learn/core",
-            "marketplace": "/learn/marketplace",
-            "network": "/learn/network",
-            "dataUnions": "/learn/data-unions"
+        "discover": {
+            "core": "/discover/core",
+            "marketplace": "/discover/marketplace",
+            "network": "/discover/network",
+            "dataUnions": "/discover/data-unions"
         },
         "papers": "/papers"
     },
