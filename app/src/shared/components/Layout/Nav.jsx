@@ -379,6 +379,7 @@ const N = styled(UnstyledN)`
 Object.assign(N, {
     Wide,
     Narrow,
+    SiteSection,
 })
 
 export default N

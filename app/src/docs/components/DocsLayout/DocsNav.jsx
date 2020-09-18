@@ -7,6 +7,7 @@ import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import docsLinks from '$shared/../docsLinks'
 import routes from '$routes'
+import SharedNav from '$shared/components/Layout/Nav'
 
 const ghostContentApi = new GhostContentAPI({
     url: 'https://streamr.ghost.io',
@@ -16,16 +17,16 @@ const ghostContentApi = new GhostContentAPI({
 
 const AppsAndServicesGroup = () => (
     <Menu.Group name="Apps and services">
-        <Menu.Item as={Link} href={routes.site.learn.dataUnions()}>
+        <Menu.Item as={Link} href={routes.site.discover.dataUnions()}>
             Data Unions
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.learn.marketplace()}>
+        <Menu.Item as={Link} href={routes.site.discover.marketplace()}>
             Marketplace
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.learn.core()}>
+        <Menu.Item as={Link} href={routes.site.discover.core()}>
             Core
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.learn.network()}>
+        <Menu.Item as={Link} href={routes.site.discover.network()}>
             Network
         </Menu.Item>
     </Menu.Group>
@@ -197,7 +198,12 @@ const UnstyledNarrow = (props) => (
     <Nav.Narrow
         {...props}
         logoComponent={(
-            <Nav.LogoItem href={routes.root()} />
+            <React.Fragment>
+                <Nav.LogoItem href={routes.root()} />
+                <SharedNav.SiteSection>
+                    Docs
+                </SharedNav.SiteSection>
+            </React.Fragment>
         )}
     >
         <Nav.Narrow.Body>
