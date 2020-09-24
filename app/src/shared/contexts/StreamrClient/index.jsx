@@ -34,6 +34,7 @@ export function createClient(sessionToken: ?string) {
         },
         autoConnect: true,
         autoDisconnect: false,
+        verifySignatures: 'never',
     })
 }
 
