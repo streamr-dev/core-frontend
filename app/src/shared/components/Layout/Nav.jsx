@@ -12,17 +12,12 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import Avatar from '$shared/components/Avatar'
 import SvgIcon from '$shared/components/SvgIcon'
 import User from './User'
-import useActivity, { ACTIVITY_FROM } from '$shared/hooks/useActivity'
-import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
-import Subscription from '$shared/components/Subscription'
 import ActivityList from '$shared/components/ActivityList'
 
 const UnstyledWide = (props) => {
     const current = useCurrentLocation()
 
     const currentUser = useSelector(selectUserData)
-
-    const { streamId, activities, onMessage } = useActivity()
 
     return (
         <Nav.Wide
@@ -112,7 +107,7 @@ const UnstyledWide = (props) => {
             )}
             {!!currentUser && (
                 <Fragment>
-                    {!!streamId && (
+                    <ActivityList>
                         <Nav.Wide.Dropdown
                             alignMenu="right"
                             nodeco
@@ -135,21 +130,11 @@ const UnstyledWide = (props) => {
                                         padding: 0 !important;
                                     `}
                                 >
-                                    <ClientProvider key={streamId}>
-                                        <Subscription
-                                            uiChannel={{
-                                                id: streamId,
-                                            }}
-                                            isActive
-                                            onMessage={onMessage}
-                                            resendFrom={ACTIVITY_FROM}
-                                        />
-                                        <ActivityList activities={activities} />
-                                    </ClientProvider>
+                                    <ActivityList.Items />
                                 </Menu>
                             )}
                         />
-                    )}
+                    </ActivityList>
                     <Nav.Wide.Dropdown
                         edge
                         alignMenu="right"
