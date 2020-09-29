@@ -9,7 +9,6 @@ import EventEmitter from 'events'
 import t from 'prop-types'
 import React from 'react'
 
-import { Context as ClientContext } from '$shared/contexts/StreamrClient'
 import * as services from '$editor/shared/services'
 
 /**
@@ -23,8 +22,6 @@ export default class RunStateLoaderContainer extends React.PureComponent {
         canvasId: t.string,
         dashboardId: t.string,
     }
-
-    static contextType = ClientContext
 
     loadRunState = async () => {
         const { canvasId, dashboardId, moduleHash, canvas } = this.props
