@@ -3,14 +3,14 @@
 import React from 'react'
 
 import Button from '$shared/components/Button'
-import KeyFieldEditor, { type ValueLabel } from '../KeyFieldEditor'
+import KeyFieldEditor, { type LabelType } from '../KeyFieldEditor'
 
 type Props = {
     label: string,
     createWithValue?: boolean,
     onSave: (keyName: string, value: string) => Promise<void>,
     addKeyFieldAllowed: boolean,
-    valueLabel?: ValueLabel,
+    labelType?: LabelType,
 }
 
 type State = {
@@ -73,7 +73,7 @@ class AddKeyField extends React.Component<Props, State> {
 
     render = () => {
         const { editing, waiting, error } = this.state
-        const { label, createWithValue, addKeyFieldAllowed, valueLabel } = this.props
+        const { label, createWithValue, addKeyFieldAllowed, labelType } = this.props
         return !editing ? (
             <Button
                 kind="secondary"
@@ -90,7 +90,7 @@ class AddKeyField extends React.Component<Props, State> {
                 editValue={createWithValue}
                 waiting={waiting}
                 error={error}
-                valueLabel={valueLabel}
+                labelType={labelType}
             />
         )
     }

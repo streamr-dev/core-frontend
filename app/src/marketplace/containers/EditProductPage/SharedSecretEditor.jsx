@@ -69,7 +69,7 @@ const SharedSecretEditor = ({ className, disabled }: Props) => {
                         })
                         setSecrets((currentSecrets) => currentSecrets.filter((secret) => secret.id !== s.id))
                     }}
-                    valueLabel="sharedSecret"
+                    labelType="sharedSecret"
                     className={styles.keyField}
                 />
             ))}
@@ -77,6 +77,7 @@ const SharedSecretEditor = ({ className, disabled }: Props) => {
                 <AddKeyField
                     label={I18n.t('editProductPage.sharedSecrets.addSecret')}
                     addKeyFieldAllowed={!disabled}
+                    labelType="sharedSecret"
                     onSave={async (name, value) => {
                         const result = await postSecret({
                             dataUnionId,

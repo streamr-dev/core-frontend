@@ -10,7 +10,7 @@ import Errors from '$ui/Errors'
 
 import styles from './keyFieldEditor.pcss'
 
-export type ValueLabel = 'apiKey' | 'privateKey' | 'address' | 'sharedSecret'
+export type LabelType = 'apiKey' | 'address' | 'sharedSecret'
 
 type Props = {
     keyName?: string,
@@ -21,7 +21,7 @@ type Props = {
     onSave: (keyName: string, value: string) => void | Promise<void>,
     waiting?: boolean,
     error?: ?string,
-    valueLabel: ValueLabel,
+    labelType: LabelType,
 }
 
 type State = {
@@ -31,7 +31,7 @@ type State = {
 
 class KeyFieldEditor extends React.Component<Props, State> {
     static defaultProps = {
-        valueLabel: 'apiKey',
+        labelType: 'apiKey',
     }
 
     state = {
@@ -66,7 +66,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
             editValue,
             waiting,
             error,
-            valueLabel,
+            labelType,
         } = this.props
         const filled = !!keyName && (createNew || !!keyId)
 
@@ -77,7 +77,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                         htmlFor="keyName"
                         state={createNew && !editValue && error && 'ERROR'}
                     >
-                        {I18n.t('userpages.keyFieldEditor.keyName')}
+                        {I18n.t(`userpages.keyFieldEditor.keyName.${labelType}`)}
                     </Label>
                     <Text
                         value={keyName}
@@ -95,7 +95,7 @@ class KeyFieldEditor extends React.Component<Props, State> {
                             htmlFor="keyValue"
                             state={error && 'ERROR'}
                         >
-                            {I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`)}
+                            {I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`)}
                         </Label>
                         <Text
                             id="keyValue"

@@ -20,7 +20,7 @@ describe('KeyFieldEditor', () => {
 
             assert(el.exists('.keyName Text'))
             assert(el.exists('.keyValue Text'))
-            assert(el.find('Label').at(0).text() === 'keyName')
+            assert(el.find('Label').at(0).text() === 'apiKey')
             assert(el.find('Label').at(1).text() === 'apiKey')
         })
 
@@ -99,7 +99,7 @@ describe('KeyFieldEditor', () => {
             />)
 
             assert(el.find('Text').length === 1)
-            assert(el.find('Label').text() === 'keyName')
+            assert(el.find('Label').text() === 'apiKey')
         })
 
         it('shows correct text for save button', () => {

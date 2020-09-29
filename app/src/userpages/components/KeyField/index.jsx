@@ -6,7 +6,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 
 import Popover from '$shared/components/Popover'
 import { truncate } from '$shared/utils/text'
-import KeyFieldEditor, { type ValueLabel } from './KeyFieldEditor'
+import KeyFieldEditor, { type LabelType } from './KeyFieldEditor'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -28,7 +28,7 @@ type Props = {
     allowDelete?: boolean,
     disableDelete?: boolean,
     onDelete?: () => Promise<void>,
-    valueLabel: ValueLabel,
+    labelType: LabelType,
     onToggleEditor?: (boolean) => void,
     labelComponent?: any,
 }
@@ -46,7 +46,7 @@ const KeyField = ({
     allowDelete,
     disableDelete,
     onDelete: onDeleteProp,
-    valueLabel,
+    labelType,
     onToggleEditor: onToggleEditorProp,
     labelComponent,
 }: Props) => {
@@ -71,11 +71,11 @@ const KeyField = ({
     const notify = useCallback(() => {
         Notification.push({
             title: I18n.t('notifications.valueCopied', {
-                value: I18n.t(`userpages.keyFieldEditor.keyValue.${valueLabel}`),
+                value: I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`),
             }),
             icon: NotificationIcon.CHECKMARK,
         })
-    }, [valueLabel])
+    }, [labelType])
 
     const onCopy = useCallback(() => {
         copy(value || '')
@@ -187,7 +187,7 @@ const KeyField = ({
                     onSave={onSave}
                     waiting={waiting}
                     error={error}
-                    valueLabel={valueLabel}
+                    labelType={labelType}
                 />
             )}
         </div>
@@ -195,7 +195,7 @@ const KeyField = ({
 }
 
 KeyField.defaultProps = {
-    valueLabel: 'apiKey',
+    labelType: 'apiKey',
 }
 
 export default KeyField
