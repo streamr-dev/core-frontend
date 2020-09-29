@@ -253,11 +253,13 @@ const StreamData = styled.div`
     transition:opacity 300ms linear;
     margin-bottom: 80px;
 
-    ${({ inspectorFocused }) => (inspectorFocused ? css`
-        opacity: 0;
-    ` : `
-        opacity: 1;
-    `)}
+    @media (max-width: ${SM}px) {
+        ${({ inspectorFocused }) => (inspectorFocused ? css`
+            opacity: 0;
+        ` : `
+            opacity: 1;
+        `)}
+    }
 
     @media (min-width: ${SM}px) {
         width: calc(100% - 504px);
@@ -274,6 +276,8 @@ const Inspector = styled.div`
     border-left: 1px solid #EFEFEF;
     width: 504px;
     transition: left 300ms ease-out;
+    overflow-y: scroll;
+    margin-bottom: 80px;
 
     @media (max-width: ${SM}px) {
         left: calc(100% - 130px);
@@ -284,6 +288,10 @@ const Inspector = styled.div`
             left: 0;
             transform: none;
         `}
+    }
+
+    @media (min-width: ${SM}px) {
+        margin-bottom: 0;
     }
 `
 
