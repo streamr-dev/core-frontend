@@ -36,7 +36,7 @@ import DashboardEditor from '$editor/dashboard'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
-import ActivityStreamHandler from '$shared/components/ActivityList/ActivityStreamHandler'
+import ActivityResourceProvider from '$shared/components/ActivityList/ActivityResourceProvider'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
 import history from '../history'
 import '../analytics'
@@ -93,18 +93,19 @@ const App = () => (
         <SessionProvider>
             <ModalPortalProvider>
                 <ModalProvider>
-                    <LocaleSetter />
-                    <Analytics />
-                    <Switch>
-                        {AuthenticationRouter()}
-                        {MarketplaceRouter()}
-                        {DocsRouter()}
-                        {UserpagesRouter()}
-                        {EditorRouter()}
-                        {MiscRouter()}
-                    </Switch>
-                    <Notifications />
-                    {process.env.ACTIVITY_QUEUE && <ActivityStreamHandler />}
+                    <ActivityResourceProvider>
+                        <LocaleSetter />
+                        <Analytics />
+                        <Switch>
+                            {AuthenticationRouter()}
+                            {MarketplaceRouter()}
+                            {DocsRouter()}
+                            {UserpagesRouter()}
+                            {EditorRouter()}
+                            {MiscRouter()}
+                        </Switch>
+                        <Notifications />
+                    </ActivityResourceProvider>
                     {isProduction() && <GoogleAnalyticsTracker />}
                 </ModalProvider>
             </ModalPortalProvider>

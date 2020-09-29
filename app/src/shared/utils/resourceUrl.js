@@ -11,7 +11,7 @@ export const ResourceType = {
 
 export type ResourceID = string | number | null | void
 
-export default (resourceType: $Keys<typeof ResourceType>, id: ResourceID) => {
+const resourceUrl = (resourceType: $Keys<typeof ResourceType>, id: ResourceID) => {
     switch (resourceType) {
         case ResourceType.CANVAS:
             return routes.canvases.public.edit({
@@ -29,3 +29,5 @@ export default (resourceType: $Keys<typeof ResourceType>, id: ResourceID) => {
             throw new Error(`Invalid resource type "${resourceType}"`)
     }
 }
+
+export default resourceUrl
