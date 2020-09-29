@@ -19,16 +19,6 @@ jest.mock('$shared/components/Link', () => {
     }
 })
 
-jest.mock('$shared/components/ActivityList', () => ({
-    __esModule: true,
-    default: () => <div id="ActivityList" />,
-}))
-
-jest.mock('$shared/components/Avatar', () => ({
-    __esModule: true,
-    default: () => <div id="Avatar" />,
-}))
-
 jest.mock('$shared/components/Layout/User', () => {
     const User = ({ source }) => (
         <div id="User">
@@ -106,56 +96,6 @@ describe('Nav.Wide', () => {
             expect(el.find({ id: '/login' }).exists()).toBe(false)
             expect(el.find({ id: '/signup' }).exists()).toBe(false)
             expect(el.find({ id: '/logout' }).exists()).toBe(true)
-        })
-
-        describe('activities', () => {
-            afterEach(() => {
-                delete process.env.ACTIVITY_QUEUE
-                global.localStorage.removeItem('user.activityStreamId')
-            })
-
-            it('renders the activity bell icon ACTIVITY_QUEUE is enabled', () => {
-                global.localStorage.setItem('user.activityStreamId', 'STREAM_ID')
-                process.env.ACTIVITY_QUEUE = 'on'
-
-                const store = {
-                    user: {
-                        user: {
-                            id: '1',
-                            username: 'tester1@streamr.com',
-                        },
-                    },
-                }
-                const el = mount((
-                    <MemoryRouter>
-                        <Provider store={mockStore(store)}>
-                            <Nav.Wide />
-                        </Provider>
-                    </MemoryRouter>
-                ))
-
-                expect(el.find({ id: 'ActivityList' }).exists()).toBe(true)
-            })
-
-            it('does not render the activity bell icon when ACTIVITY_QUEUE is disabled', () => {
-                const store = {
-                    user: {
-                        user: {
-                            id: '1',
-                            username: 'tester1@streamr.com',
-                        },
-                    },
-                }
-                const el = mount((
-                    <MemoryRouter>
-                        <Provider store={mockStore(store)}>
-                            <Nav.Wide />
-                        </Provider>
-                    </MemoryRouter>
-                ))
-
-                expect(el.find({ id: 'ActivityList' }).exists()).toBe(false)
-            })
         })
 
         it('renders the user avatar', () => {
