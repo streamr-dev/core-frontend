@@ -71,7 +71,7 @@ const IntegrationKeyItem = ({
                 onDelete={() => onDelete(item.id)}
                 onSave={(keyName) => onEdit(item.id, keyName || '')}
                 onToggleEditor={setEditing}
-                valueLabel="address"
+                labelType="address"
                 labelComponent={!editing && (
                     <Label as="div">
                         <StyledBalance>

@@ -34,17 +34,17 @@ stories.add('default (address)', () => (
         value="value"
         onCancel={action('onCancel')}
         onSave={action('onSave')}
-        valueLabel="address"
+        labelType="address"
     />
 ))
 
-stories.add('default (private key)', () => (
+stories.add('default (shared secret)', () => (
     <KeyFieldEditor
         keyName="key"
         value="value"
         onCancel={action('onCancel')}
         onSave={action('onSave')}
-        valueLabel="privateKey"
+        labelType="sharedSecret"
     />
 ))
 

@@ -948,14 +948,17 @@ msgstr "Edit"
 msgid "userpages.keyField.delete"
 msgstr "Delete"
 
-msgid "userpages.keyFieldEditor.keyName"
+msgid "userpages.keyFieldEditor.keyName.apiKey"
 msgstr "Key name"
+
+msgid "userpages.keyFieldEditor.keyName.address"
+msgstr "Account name"
+
+msgid "userpages.keyFieldEditor.keyName.sharedSecret"
+msgstr "Secret name"
 
 msgid "userpages.keyFieldEditor.keyValue.apiKey"
 msgstr "API key"
-
-msgid "userpages.keyFieldEditor.keyValue.privateKey"
-msgstr "Private key"
 
 msgid "userpages.keyFieldEditor.keyValue.address"
 msgstr "Address"
