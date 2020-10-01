@@ -3,11 +3,9 @@ import { mount } from 'enzyme'
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 import { act } from 'react-dom/test-utils'
 import { ClientProviderComponent, Context as ClientContext } from '$shared/contexts/StreamrClient'
-import { getToken } from '$shared/utils/sessionToken'
 
 describe('Client', () => {
     let teardown
-    let sessionToken
 
     beforeAll(async () => {
         teardown = await setupAuthorizationHeader()
@@ -15,10 +13,6 @@ describe('Client', () => {
 
     afterAll(async () => {
         await teardown()
-    })
-
-    beforeAll(async () => {
-        sessionToken = getToken()
     })
 
     it('creates client on mount, can unmount', (done) => {
@@ -29,7 +23,7 @@ describe('Client', () => {
         }
 
         const result = mount((
-            <ClientProviderComponent sessionToken={sessionToken}>
+            <ClientProviderComponent>
                 <Test />
             </ClientProviderComponent>
         ))
@@ -51,7 +45,7 @@ describe('Client', () => {
         }
 
         const result = mount((
-            <ClientProviderComponent sessionToken={sessionToken}>
+            <ClientProviderComponent>
                 <Test />
             </ClientProviderComponent>
         ))
@@ -82,7 +76,7 @@ describe('Client', () => {
         }
 
         const result = mount((
-            <ClientProviderComponent sessionToken={sessionToken}>
+            <ClientProviderComponent>
                 <Test />
             </ClientProviderComponent>
         ))
@@ -107,7 +101,7 @@ describe('Client', () => {
         }
 
         const result = mount((
-            <ClientProviderComponent sessionToken={sessionToken}>
+            <ClientProviderComponent>
                 <Test />
             </ClientProviderComponent>
         ))
