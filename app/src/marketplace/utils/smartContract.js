@@ -15,13 +15,10 @@ import type {
     Address,
     SmartContractConfig,
     SmartContractTransaction,
-    SmartContractDeployTransaction,
-    SmartContractMetadata,
 } from '$shared/flowtype/web3-types'
 import type { NumberString } from '$shared/flowtype/common-types'
 
 import Transaction from '$shared/utils/Transaction'
-import DeployTransaction from '$shared/utils/DeployTransaction'
 import type { Product, SmartContractProduct } from '../flowtype/product-types'
 import { arePricesEqual } from '../utils/price'
 
@@ -115,54 +112,6 @@ export const send = (method: Sendable, options?: {
                     }
                 })
         ), errorHandler)
-
-    return tx
-}
-
-export const deploy = (contract: SmartContractMetadata, args: Array<any>, options?: {
-    gas?: number,
-}): SmartContractDeployTransaction => {
-    const web3 = getWeb3()
-    const emitter = new EventEmitter()
-    // NOTE: looks like there's double handling of errors happening here
-    // i.e. .catch + on('error')
-    const errorHandler = (error: Error) => {
-        emitter.emit('error', error)
-    }
-    const tx = new DeployTransaction(emitter)
-    Promise.all([
-        web3.getDefaultAccount(),
-        checkEthereumNetworkIsCorrect(web3),
-    ])
-        .then(([account]) => Promise.all([
-            Promise.resolve(account),
-            // Calculate future address of the contract so that we don't have to wait
-            // for the transaction to be confirmed.
-            calculateContractAddress(account),
-        ]))
-        .then(([account, futureAddress]) => {
-            const web3Contract = new web3.eth.Contract(contract.abi)
-            const deployer = web3Contract.deploy({
-                data: contract.bytecode,
-                arguments: args,
-            })
-            return deployer
-                .send({
-                    gas: (options && options.gas),
-                    from: account,
-                })
-                .on('error', errorHandler)
-                .on('transactionHash', (hash) => {
-                    emitter.emit('transactionHash', hash, futureAddress)
-                })
-                .on('receipt', (receipt) => {
-                    if (parseInt(receipt.status, 16) === 0) {
-                        errorHandler(new TransactionError('Transaction failed', receipt))
-                    } else {
-                        emitter.emit('receipt', receipt)
-                    }
-                })
-        }, errorHandler)
 
     return tx
 }

@@ -122,7 +122,7 @@ const Stats = () => {
                     <React.Fragment>
                         <div className={styles.graphs}>
                             <div className={styles.memberCount}>
-                                {!!dataUnionDeployed && memberCount && (
+                                {!!dataUnionDeployed && !!memberCount && (
                                     <React.Fragment>
                                         <TimeSeriesGraph.Header>
                                             <ProductStat.Title>

@@ -10,7 +10,7 @@ import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployData
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
-import { deployContract, createJoinPartStream } from '$mp/modules/dataUnion/services'
+import { deployContract } from '$mp/modules/dataUnion/services'
 import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
 import { addTransaction } from '$mp/modules/transactions/actions'
@@ -68,30 +68,11 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const productId = product.id
     const { adminFee = 0 } = product || {}
     const onDeploy = useCallback(async () => {
-        if (!productId) {
-            throw new Error('no product!')
-        }
-
-        const web3 = getWeb3()
-        const account = await web3.getDefaultAccount()
-
-        let joinPartStreamId
-
-        try {
-            const joinPartStream = await createJoinPartStream(account, productId)
-            joinPartStreamId = joinPartStream.id
-        } catch (e) {
-            setDeployError(e)
-            throw e
-        }
-
-        if (!isMounted()) { return Promise.resolve() }
-
         // Set estimate
         let blockEstimate = 0
 
         try {
-            blockEstimate = await averageBlockTime(web3)
+            blockEstimate = await averageBlockTime(getWeb3())
         } catch (e) {
             // just log the error if estimate fails, otherwise we can continue
             console.warn(e)
@@ -101,7 +82,11 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         setEstimate(blockEstimate + API_READY_ESTIMATE)
 
         return new Promise((resolve) => (
-            deployContract(joinPartStreamId, adminFee)
+            deployContract({
+                productId: productId || '',
+                adminFee,
+                version: 2,
+            })
                 .onTransactionHash((hash, dataUnionAddress) => {
                     if (!isMounted()) { return }
                     dispatch(addTransaction(hash, transactionTypes.DEPLOY_DATA_UNION))
