@@ -75,7 +75,7 @@ Development values (set the values in your `.env`):
 | MARKETPLACE_CONTRACT_ADDRESS                      | `0xF1371c0f40528406dc4f4cAf89924eA9Da49E866` |                                 |
 | DATA_TOKEN_CONTRACT_ADDRESS                       | `0xbAA81A0179015bE47Ad439566374F2Bae098686F` |                                 |
 | DAI_TOKEN_CONTRACT_ADDRESS                        | `0x642d2b84a32a9a92fec78ceaa9488388b3704898` |                                 |
-| WEB3_REQUIRED_NETWORK_ID                          | 1111                                         |                                 |
+| WEB3_REQUIRED_NETWORK_ID                          | 8995                                         |                                 |
 | WEB3_PUBLIC_HTTP_PROVIDER                         | http://localhost:8545                        | Private network                 |
 | WEB3_PUBLIC_WS_PROVIDER                           | ws://localhost:8545                          |                                 |
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            | Ganache confirms tx immediately |
@@ -116,7 +116,7 @@ Development values (set the values in your `.env`):
 |------------------------------|----------------------------------------------|------------------|
 | MARKETPLACE_CONTRACT_ADDRESS | `0xF1371c0f40528406dc4f4cAf89924eA9Da49E866` |                  |
 | DATA_TOKEN_CONTRACT_ADDRESS  | `0xbAA81A0179015bE47Ad439566374F2Bae098686F` |                  |
-| WEB3_REQUIRED_NETWORK_ID     | 1111                                         | Private network  |
+| WEB3_REQUIRED_NETWORK_ID     | 8995                                         | Private network  |
 | WEB3_PUBLIC_HTTP_PROVIDER    | http://localhost:8545                        |                  |
 | WEB3_PUBLIC_WS_PROVIDER      | ws://localhost:8545                          |                  |
 
