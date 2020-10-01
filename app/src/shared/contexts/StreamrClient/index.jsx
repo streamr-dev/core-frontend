@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // @flow
 
 /**
@@ -6,13 +7,12 @@
 
 /* eslint-disable react/no-unused-state */
 
-import React, { type Node, type Context, useState, useEffect, useLayoutEffect, useCallback, useMemo } from 'react'
-import { connect } from 'react-redux'
+import React, { type Context, useMemo } from 'react'
+import Provider, { useClient } from 'streamr-client-react'
 import StreamrClient from 'streamr-client'
 import { getToken } from '$shared/utils/sessionToken'
 
-import { selectAuthState } from '$shared/modules/user/selectors'
-import useIsMountedRef from '$shared/hooks/useIsMountedRef'
+import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 
 export type ContextProps = {
     hasLoaded: boolean,
@@ -38,81 +38,53 @@ export function createClient(sessionToken: ?string) {
     })
 }
 
-type ClientProviderProps = {
-    sessionToken: ?string,
-    isAuthenticating: boolean,
-    authenticationFailed: boolean,
-}
+const CustomContextProvider = ({ sessionToken, hasLoaded, children }) => {
+    const client = useClient()
 
-function useClientProvider({ isAuthenticating, authenticationFailed }: ClientProviderProps) {
-    const [client, setClient] = useState()
-    const isMountedRef = useIsMountedRef()
-    const hasClient = !!client
-    const sessionToken = getToken()
-    const hasLoaded = !!sessionToken || !!(!isAuthenticating && authenticationFailed)
-
-    const reset = useCallback(() => {
-        if (!client) { return }
-        // clean up listeners
-        client.connection.off('disconnecting', reset)
-        client.connection.off('disconnected', reset)
-        client.off('error', reset)
-        if (!isMountedRef.current) { return }
-        // reset client unless already changed
-        setClient((currentClient) => {
-            if (currentClient !== client) { return currentClient }
-            return undefined
-        })
-    }, [client, setClient, isMountedRef])
-
-    // listen for state changes which should trigger reset
-    useEffect(() => {
-        if (!client) { return () => {} }
-        client.connection.once('disconnecting', reset)
-        client.connection.once('disconnected', reset)
-        client.once('error', reset)
-        return reset // reset to cleanup
-    }, [reset, client, sessionToken])
-
-    // (re)create client if none
-    useLayoutEffect(() => {
-        if (hasClient || !hasLoaded) { return }
-        setClient(createClient(sessionToken))
-    }, [hasClient, setClient, sessionToken, hasLoaded])
-
-    // disconnect on unmount/client change
-    useEffect(() => {
-        if (!client) { return () => {} }
-        return () => {
-            client.ensureDisconnected()
-        }
-    }, [client, setClient])
-
-    return useMemo(() => ({
-        hasLoaded,
+    const value = useMemo(() => ({
         client,
+        hasLoaded,
         sessionToken,
-    }), [client, sessionToken, hasLoaded])
-}
+    }), [
+        client,
+        hasLoaded,
+        sessionToken,
+    ])
 
-type Props = ClientProviderProps & {
-    children?: Node,
-}
-
-export function ClientProviderComponent({ children, ...props }: Props) {
-    const clientContext = useClientProvider(props)
     return (
-        <ClientContext.Provider value={clientContext}>
-            {children || null}
+        <ClientContext.Provider value={value}>
+            {children}
         </ClientContext.Provider>
     )
 }
 
-const mapStateToProps = (state) => ({
-    ...selectAuthState(state),
-})
+export const ClientProvider = ({ children }: any) => {
+    const sessionToken = getToken()
 
-export const ClientProvider = connect(mapStateToProps)(ClientProviderComponent)
+    const hasLoaded = useIsSessionTokenReady()
+
+    const auth = useMemo(() => (sessionToken == null ? {} : {
+        sessionToken,
+    }), [sessionToken])
+
+    return (
+        <Provider
+            auth={auth}
+            autoConnect
+            autoDisconnect={false}
+            restUrl={process.env.STREAMR_API_URL}
+            url={process.env.STREAMR_WS_URL}
+            verifySignatures="never"
+        >
+            <CustomContextProvider
+                hasLoaded={hasLoaded}
+                sessionToken={sessionToken}
+            >
+                {children}
+            </CustomContextProvider>
+        </Provider>
+    )
+}
 
 export {
     ClientProvider as Provider,
