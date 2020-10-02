@@ -1,8 +1,9 @@
 // @flow
 
-import React, { useEffect, useState, useContext } from 'react'
-
-import { Provider as ClientProvider, Context as ClientContext } from '$shared/contexts/StreamrClient'
+import React, { useEffect, useState } from 'react'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useClient } from 'streamr-client-react'
+import ClientProvider from '$shared/contexts/StreamrClient'
 import Activity from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
@@ -11,7 +12,7 @@ const storage = isLocalStorageAvailable() ? localStorage : null
 
 const Handler = () => {
     const [streamId, setStreamId] = useState(storage ? storage.getItem('user.activityStreamId') : null)
-    const { client } = useContext(ClientContext)
+    const client = useClient()
 
     useEffect(() => {
         const publishActivity = (activity) => {

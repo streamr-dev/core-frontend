@@ -3,7 +3,7 @@ import { mount } from 'enzyme'
 import { Provider } from 'react-redux'
 import mockStore from '$testUtils/mockStoreProvider'
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
-import { Provider as ClientProvider } from '$shared/contexts/StreamrClient'
+import ClientProvider from '$shared/contexts/StreamrClient'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { useClient } from 'streamr-client-react'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'

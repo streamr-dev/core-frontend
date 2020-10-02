@@ -4,7 +4,7 @@ import { mount } from 'enzyme'
 
 jest.mock('$shared/contexts/StreamrClient', () => ({
     __esModule: true,
-    Provider: ({ children }) => <div>{children}</div>,
+    default: ({ children }) => <div>{children}</div>,
 }))
 
 jest.mock('$shared/components/Subscription', () => ({

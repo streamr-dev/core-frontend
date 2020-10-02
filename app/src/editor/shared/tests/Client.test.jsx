@@ -1,10 +1,12 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { mount } from 'enzyme'
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 import { act } from 'react-dom/test-utils'
 import { Provider } from 'react-redux'
-import { Provider as ClientProvider, Context as ClientContext } from '$shared/contexts/StreamrClient'
+import ClientProvider from '$shared/contexts/StreamrClient'
 import mockStore from '$testUtils/mockStoreProvider'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { useClient } from 'streamr-client-react'
 
 describe('Client', () => {
     describe('when user is authenticated', () => {
@@ -19,9 +21,9 @@ describe('Client', () => {
         })
 
         it('creates client on mount, can unmount', async (done) => {
-            let currentContext
+            let client
             function Test() {
-                currentContext = useContext(ClientContext)
+                client = useClient()
                 return null
             }
 
@@ -36,17 +38,16 @@ describe('Client', () => {
                     </ClientProvider>
                 </Provider>
             ))
-            expect(currentContext.client).toBeTruthy()
-            const { client } = currentContext
+            expect(client).toBeTruthy()
             result.unmount()
             await client.ensureDisconnected()
             done()
         })
 
         it('creates new client after disconnect', async (done) => {
-            let currentContext
+            let client
             function Test() {
-                currentContext = useContext(ClientContext)
+                client = useClient()
                 return null
             }
 
@@ -61,7 +62,6 @@ describe('Client', () => {
                     </ClientProvider>
                 </Provider>
             ))
-            const { client } = currentContext
             expect(client).toBeTruthy()
 
             const prevClient = client
@@ -73,17 +73,17 @@ describe('Client', () => {
                 await prevClient.ensureDisconnected()
             })
             expect(prevClient.connection.state).toBe('disconnected')
-            expect(currentContext.client).not.toBe(prevClient)
+            expect(client).not.toBe(prevClient)
             result.unmount()
             await prevClient.ensureDisconnected()
-            await currentContext.client.ensureDisconnected()
+            await client.ensureDisconnected()
             done()
         })
 
         it('creates new client after unmount', async (done) => {
-            let currentContext
+            let client
             function Test() {
-                currentContext = useContext(ClientContext)
+                client = useClient()
                 return null
             }
 
@@ -98,24 +98,23 @@ describe('Client', () => {
                     </ClientProvider>
                 </Provider>
             ))
-            const { client: prevClient } = currentContext
+            const prevClient = client
             expect(prevClient).toBeTruthy()
             result.unmount()
             result.mount()
-            expect(currentContext.client).not.toBe(prevClient)
+            expect(client).not.toBe(prevClient)
             result.unmount()
             await prevClient.ensureDisconnected()
-            await currentContext.client.ensureDisconnected()
+            await client.ensureDisconnected()
             done()
         })
 
         it('disconnects on unmount', async (done) => {
-            let currentContext
+            let client
             function Test() {
-                currentContext = useContext(ClientContext)
+                client = useClient()
                 return null
             }
-
             const store = {
                 user: {},
             }
@@ -128,9 +127,7 @@ describe('Client', () => {
                 </Provider>
             ))
 
-            expect(currentContext.client).toBeTruthy()
-            const { client } = currentContext
-
+            expect(client).toBeTruthy()
             client.once('disconnected', () => {
                 expect(client.isConnected()).not.toBeTruthy()
                 done()
@@ -142,9 +139,9 @@ describe('Client', () => {
     })
 
     it('can create client for unauthed user', async (done) => {
-        let currentContext
+        let client
         function Test() {
-            currentContext = useContext(ClientContext)
+            client = useClient()
             return null
         }
 
@@ -160,15 +157,15 @@ describe('Client', () => {
                 </ClientProvider>
             </Provider>
         ))
-        const { client: prevClient } = currentContext
+        const prevClient = client
         expect(prevClient).toBeTruthy()
 
         result.unmount()
         result.mount()
-        expect(currentContext.client).not.toBe(prevClient)
+        expect(client).not.toBe(prevClient)
         result.unmount()
         await prevClient.ensureDisconnected()
-        await currentContext.client.ensureDisconnected()
+        await client.ensureDisconnected()
         done()
     })
 })
