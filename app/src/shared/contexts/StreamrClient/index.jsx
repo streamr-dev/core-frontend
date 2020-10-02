@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Provider from 'streamr-client-react'
 import { getToken } from '$shared/utils/sessionToken'
 

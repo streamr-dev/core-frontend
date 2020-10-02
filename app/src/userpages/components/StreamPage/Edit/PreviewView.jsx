@@ -1,11 +1,9 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
-
+import { useClient } from 'streamr-client-react'
 import Button from '$shared/components/Button'
 import ClientProvider from '$shared/contexts/StreamrClient'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { useClient } from 'streamr-client-react'
 import useModal from '$shared/hooks/useModal'
 import Subscription from '$shared/components/Subscription'
 import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'

@@ -1,11 +1,10 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import { Provider } from 'react-redux'
+import { useClient } from 'streamr-client-react'
 import mockStore from '$testUtils/mockStoreProvider'
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
 import ClientProvider from '$shared/contexts/StreamrClient'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { useClient } from 'streamr-client-react'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import * as State from '$editor/canvas/state'
 import * as Services from '$editor/canvas/services'

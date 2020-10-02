@@ -5,7 +5,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { useClient } from 'streamr-client-react'
 import { Context as RouterContext } from '$shared/contexts/Router'
 import ProductController, { useController } from '../ProductController'

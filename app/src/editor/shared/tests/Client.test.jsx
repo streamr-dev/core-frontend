@@ -1,12 +1,11 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 import { act } from 'react-dom/test-utils'
 import { Provider } from 'react-redux'
+import { useClient } from 'streamr-client-react'
+import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 import ClientProvider from '$shared/contexts/StreamrClient'
 import mockStore from '$testUtils/mockStoreProvider'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { useClient } from 'streamr-client-react'
 
 describe('Client', () => {
     describe('when user is authenticated', () => {

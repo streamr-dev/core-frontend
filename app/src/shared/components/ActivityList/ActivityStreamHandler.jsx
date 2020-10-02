@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useEffect, useState } from 'react'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { useClient } from 'streamr-client-react'
 import ClientProvider from '$shared/contexts/StreamrClient'
 import Activity from '$shared/utils/Activity'

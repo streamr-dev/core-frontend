@@ -6,7 +6,6 @@
 
 import React, { type Node, Component, useContext, type ComponentType } from 'react'
 import uniqueId from 'lodash/uniqueId'
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { useClient } from 'streamr-client-react'
 import type { StreamId } from '$shared/flowtype/stream-types'
 
