@@ -12,13 +12,13 @@ import { getProductById } from '$mp/modules/product/services'
 import { getProductByIdRequest, getProductByIdSuccess } from '$mp/modules/product/actions'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
-import { timeUnits, DEFAULT_CURRENCY } from '$shared/utils/constants'
+import { timeUnits, DEFAULT_CURRENCY, productStates } from '$shared/utils/constants'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import { handleEntities } from '$shared/utils/entities'
 import { productSchema } from '$shared/modules/entities/schema'
-import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
 
 import * as State from '../EditProductPage/state'
@@ -27,6 +27,7 @@ import useEditableProductUpdater from './useEditableProductUpdater'
 type LoadProps = {
     productId: ProductId,
     ignoreUnauthorized?: boolean,
+    requirePublished?: boolean,
 }
 
 export default function useProductLoadCallback() {
@@ -36,7 +37,7 @@ export default function useProductLoadCallback() {
     const dispatch = useDispatch()
     const fail = useFailure()
 
-    const load = useCallback(async ({ productId, ignoreUnauthorized }: LoadProps) => (
+    const load = useCallback(async ({ productId, ignoreUnauthorized, requirePublished }: LoadProps) => (
         wrap(async () => {
             dispatch(getProductByIdRequest(productId))
             let product
@@ -54,6 +55,13 @@ export default function useProductLoadCallback() {
                 throw error
             }
             if (!isMounted()) { return }
+
+            // bail if the product is not actually published - this is an edge case
+            // because this should only happen with user's own products, otherwise
+            // the product load will fail due to permissions
+            if (!!requirePublished && product.state !== productStates.DEPLOYED) {
+                throw new ResourceNotFoundError(ResourceType.PRODUCT, product.id)
+            }
 
             // fetch admin fee from data union contract
             let currentAdminFee

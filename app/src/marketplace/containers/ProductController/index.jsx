@@ -39,9 +39,10 @@ const ProductControllerContext: Context<ContextProps> = React.createContext({})
 
 type EffectProps = {
     ignoreUnauthorized?: boolean,
+    requirePublished?: boolean,
 }
 
-function useProductLoadEffect({ ignoreUnauthorized }: EffectProps) {
+function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectProps) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
@@ -56,16 +57,18 @@ function useProductLoadEffect({ ignoreUnauthorized }: EffectProps) {
             loadProduct({
                 productId: urlId,
                 ignoreUnauthorized,
+                requirePublished,
             })
             loadContractProduct(urlId)
             setLoadedOnce(true)
         }
-    }, [urlId, loadedOnce, loadProduct, loadContractProduct, isPending, ignoreUnauthorized])
+    }, [urlId, loadedOnce, loadProduct, loadContractProduct, isPending, ignoreUnauthorized, requirePublished])
 }
 
-function ProductEffects({ ignoreUnauthorized }: EffectProps) {
+function ProductEffects({ ignoreUnauthorized, requirePublished }: EffectProps) {
     useProductLoadEffect({
         ignoreUnauthorized,
+        requirePublished,
     })
     useProductValidationEffect()
 
@@ -131,13 +134,13 @@ function ControllerProvider({ children }: ControllerProviderProps) {
 
 type ControllerProps = ControllerProviderProps & EffectProps
 
-const ProductController = ({ children, ignoreUnauthorized = false }: ControllerProps) => (
+const ProductController = ({ children, ignoreUnauthorized = false, requirePublished = false }: ControllerProps) => (
     <RouterContext.Provider>
         <PendingProvider name="product">
             <ValidationContextProvider>
                 <PermissionsProvider>
                     <ControllerProvider>
-                        <ProductEffects ignoreUnauthorized={ignoreUnauthorized} />
+                        <ProductEffects ignoreUnauthorized={ignoreUnauthorized} requirePublished={requirePublished} />
                         {children || null}
                     </ControllerProvider>
                 </PermissionsProvider>
