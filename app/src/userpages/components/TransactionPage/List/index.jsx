@@ -62,6 +62,17 @@ const SearchPlaceholder = styled.div`
     width: var(--um);
 `
 
+const mapState = (state) => {
+    switch (state) {
+        case 'ok':
+            return StatusIcon.OK
+        case 'error':
+            return StatusIcon.ERROR
+        default:
+            return StatusIcon.INACTIVE
+    }
+}
+
 const TransactionList = () => {
     const dispatch = useDispatch()
 
@@ -215,7 +226,7 @@ const TransactionList = () => {
                                     </TransactionListComponent.Item>
                                     <TransactionListComponent.Item>
                                         <StatusIcon
-                                            status={state}
+                                            status={mapState(state)}
                                             tooltip={I18n.t(`userpages.transactions.status.${state}`)}
                                         />
                                     </TransactionListComponent.Item>

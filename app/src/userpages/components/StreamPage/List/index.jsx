@@ -93,6 +93,19 @@ const TabletPopover = styled(Popover)`
     }
 `
 
+export const mapStatus = (state: string) => {
+    switch (state) {
+        case 'ok':
+            return StatusIcon.OK
+        case 'error':
+            return StatusIcon.ERROR
+        case 'pending':
+            return StatusIcon.PENDING
+        default:
+            return StatusIcon.INACTIVE
+    }
+}
+
 type TargetStream = ?Stream
 
 type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | TargetStream) => void]
@@ -435,7 +448,10 @@ const StreamList = () => {
                                         {stream.lastData && titleize(ago(new Date(stream.lastData)))}
                                     </StreamListComponent.Item>
                                     <StreamListComponent.Item>
-                                        <StatusIcon status={stream.streamStatus} tooltip />
+                                        <StatusIcon
+                                            status={mapStatus(stream.streamStatus)}
+                                            tooltip
+                                        />
                                     </StreamListComponent.Item>
                                     <StreamListComponent.Actions>
                                         {getActions(stream)}
