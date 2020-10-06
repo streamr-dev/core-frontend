@@ -269,8 +269,8 @@ export default (React.forwardRef(({ resendAll, ...rest }: OuterProps, ref) => {
     // create new subscription if uiChannel or resendAll changes
     const subscriptionKey = (uiChannel && uiChannel.id) + (uiChannel && String(uiChannel.partition)) + (resendAll || '')
 
-    if (!client) {
-        console.warn('Missing client.')
+    if (typeof client === 'undefined') {
+        console.warn('Missing client provider')
         return null
     }
 
