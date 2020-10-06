@@ -2,7 +2,7 @@ import React from 'react'
 import ActivityList from '$shared/components/ActivityList'
 import { mount } from 'enzyme'
 
-jest.mock('$shared/contexts/StreamrClient', () => ({
+jest.mock('$shared/components/StreamrClientProvider', () => ({
     __esModule: true,
     default: ({ children }) => <div>{children}</div>,
 }))

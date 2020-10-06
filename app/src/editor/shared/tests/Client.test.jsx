@@ -4,7 +4,7 @@ import { act } from 'react-dom/test-utils'
 import { Provider } from 'react-redux'
 import { useClient } from 'streamr-client-react'
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
-import ClientProvider from '$shared/contexts/StreamrClient'
+import ClientProvider from '$shared/components/StreamrClientProvider'
 import mockStore from '$testUtils/mockStoreProvider'
 
 describe('Client', () => {
