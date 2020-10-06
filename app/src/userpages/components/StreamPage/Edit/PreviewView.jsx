@@ -208,8 +208,8 @@ const PreviewView = styled(UnstyledPreviewView)`
     position: relative;
 `
 
-export default () => (
+export default (props) => (
     <ClientProvider>
-        <PreviewView />
+        <PreviewView {...props} />
     </ClientProvider>
 )
