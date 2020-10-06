@@ -1,12 +1,16 @@
 // @flow
 
 import { createAction } from 'redux-actions'
+import { denormalize } from 'normalizr'
 
-import { dataUnionSchema, dataUnionsSchema } from '$shared/modules/entities/schema'
+import { dataUnionSchema, dataUnionsSchema, productsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { DataUnionId, DataUnionSecretId } from '$mp/flowtype/product-types'
+import type { DataUnionId, DataUnionSecretId, ProductIdList } from '$mp/flowtype/product-types'
+import { selectEntities } from '$shared/modules/entities/selectors'
 import * as services from './services'
+import { isDataUnionProduct } from '$mp/utils/product'
+import { isEthereumAddress } from '$mp/utils/validate'
 import {
     GET_DATA_UNION_REQUEST,
     GET_DATA_UNION_SUCCESS,
@@ -137,6 +141,47 @@ export const getDataUnionStats = (id: DataUnionId) => async (dispatch: Function)
     } catch (e) {
         dispatch(getDataUnionStatsFailure(id, e))
     }
+}
+
+let dataUnionStatsCancel = () => null
+
+export const cancelDataUnionStatsFetch = () => {
+    dataUnionStatsCancel()
+}
+
+export const startUpdateDataUnionStats = (ids: Array<DataUnionId>) => (dispatch: Function) => {
+    let cancelled = false
+
+    const fetchStats = async () => {
+        for (let index = 0; index < ids.length && !cancelled; index += 1) {
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                await dispatch(getDataUnionStats(ids[index]))
+            } catch (e) {
+                // ignore error and continue
+            }
+        }
+    }
+
+    fetchStats()
+
+    return () => {
+        cancelled = true
+    }
+}
+
+export const updateDataUnionStats = (productIds: ProductIdList) => (dispatch: Function, getState: Function) => {
+    dataUnionStatsCancel()
+
+    const state = getState()
+    const entities = selectEntities(state)
+    const products = denormalize(productIds, productsSchema, entities)
+
+    const dataUnionIds = (products || [])
+        .filter(({ type, beneficiaryAddress }) => isDataUnionProduct(type) && isEthereumAddress(beneficiaryAddress))
+        .map(({ beneficiaryAddress }) => beneficiaryAddress)
+
+    dataUnionStatsCancel = dispatch(startUpdateDataUnionStats(dataUnionIds))
 }
 
 export const getAllDataUnions = () => async (dispatch: Function) => {

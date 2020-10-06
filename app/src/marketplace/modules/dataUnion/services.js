@@ -373,7 +373,9 @@ export const getDataUnionStats = async (id: DataUnionId): ApiResult<Object> => {
         })
 
         return {
-            memberCount: memberCount && BN(memberCount.toString()).toNumber(),
+            memberCount: {
+                total: memberCount && BN(memberCount.toString()).toNumber(),
+            },
             totalEarnings: totalEarnings && BN(totalEarnings.toString()).toNumber(),
         }
     } else if (version === 1) {
