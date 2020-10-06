@@ -25,6 +25,7 @@ import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
 import Nav from '$shared/components/Layout/Nav'
 import { resetResourcePermission } from '$userpages/modules/permission/actions'
+import { mapStatus } from '../List'
 
 import InfoView from './InfoView'
 import KeyView from './KeyView'
@@ -215,7 +216,10 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                 <TOCPage.Section
                     id="status"
                     title={I18n.t('userpages.streams.edit.details.nav.status')}
-                    status={<StatusIcon tooltip status={stream.streamStatus} />}
+                    status={<StatusIcon
+                        tooltip
+                        status={mapStatus(stream.streamStatus)}
+                    />}
                     onlyDesktop
                 >
                     <StatusView disabled={disabled} />

@@ -42,21 +42,21 @@ const defaultList = [{
     description: 'Short description',
     updated: '4 days ago',
     lastData: '1 second ago',
-    status: 'error',
+    status: StatusIcon.ERROR,
 }, {
     id: '2',
     title: 'Just the title',
     description: '',
     updated: '',
     lastData: '',
-    status: 'ok',
+    status: StatusIcon.OK,
 }, {
     id: '3',
     title: 'Title for the item that is really long and will break the layout if it goes long enough over the screen',
     description: 'Description that is really long and will break the layout if it goes long enough over the screen',
     updated: 'a week ago',
     lastData: '1 weeek ago',
-    status: 'inactive',
+    status: StatusIcon.INACTIVE,
 }]
 
 const DefaultList = () => (
@@ -330,14 +330,14 @@ const streamList = [{
     description: 'Live updates from my coffee machine',
     updated: '',
     lastData: '4 days ago',
-    status: 'ok',
+    status: StatusIcon.OK,
 }, {
     id: '2',
     title: 'JoinPart stream for data union 21aec220f1c0460798828211aa3070f265e261dd9e474405824f6379af7849df',
     description: 'Automatically created JoinPart stream for data union',
     updated: '1 week ago',
     lastData: '2 minutes ago',
-    status: 'error',
+    status: StatusIcon.ERROR,
 }]
 
 const StreamList = () => (
@@ -406,19 +406,19 @@ const memberList = [{
     address: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
     joined: 'An hour ago',
     lastUpdated: 'An hour ago',
-    status: 'pending',
+    status: StatusIcon.PENDING,
 }, {
     id: '2',
     address: '0x538a2Fa87E03B280e10C83AA8dD7E5B15B868BD9',
     joined: '2 hours ago',
     lastUpdated: 'An hour ago',
-    status: 'pending',
+    status: StatusIcon.PENDING,
 }, {
     id: '3',
     address: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
     joined: '1 day ago',
     lastUpdated: '1 day ago',
-    status: 'ok',
+    status: StatusIcon.OK,
 }]
 
 const MemberList = () => {
@@ -504,7 +504,7 @@ const transactions = [{
     when: '2 months ago',
     value: '+1.05 DATA',
     gas: '186347 / 500000',
-    status: 'ok',
+    status: StatusIcon.OK,
 }]
 
 const TransactionList = () => (
