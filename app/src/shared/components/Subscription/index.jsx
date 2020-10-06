@@ -6,8 +6,7 @@
 
 import React, { type Node, Component, useContext, type ComponentType } from 'react'
 import uniqueId from 'lodash/uniqueId'
-
-import { Context as ClientContext, type ContextProps as ClientContextProps } from '$shared/contexts/StreamrClient'
+import { useClient } from 'streamr-client-react'
 import type { StreamId } from '$shared/flowtype/stream-types'
 
 import { SubscriptionStatusContext } from '$shared/contexts/SubscriptionStatus'
@@ -41,7 +40,7 @@ type Props = {
     subscriptionStatus?: SubscriptionStatus,
     isActive?: boolean,
     uiChannel: { id: StreamId, partition?: number },
-    clientContext: ClientContextProps,
+    client: any,
     resendFrom: number,
     resendTo: number,
     resendLast: number,
@@ -165,7 +164,7 @@ class Subscription extends Component<Props> {
     autosubscribe() {
         if (this.isSubscribed) { return }
         const { isActive, uiChannel } = this.props
-        if (!this.props.clientContext.client) { return }
+        if (!this.props.client) { return }
 
         if (isActive && uiChannel && uiChannel.id) {
             this.subscribe()
@@ -180,7 +179,7 @@ class Subscription extends Component<Props> {
         this.unsubscribe()
 
         this.isSubscribed = true
-        const { client } = this.props.clientContext
+        const { client } = this.props
         await client.ensureConnected()
 
         const { id, partition } = uiChannel
@@ -210,7 +209,7 @@ class Subscription extends Component<Props> {
     unsubscribe() {
         if (!this.isSubscribed) { return }
         const { subscription } = this
-        const { client } = this.props.clientContext
+        const { client } = this.props
         if (subscription) {
             subscription.off('subscribed', this.onSubscribed)
             subscription.off('resending', this.onResending)
@@ -264,14 +263,14 @@ type OuterProps = {
 
 export default (React.forwardRef(({ resendAll, ...rest }: OuterProps, ref) => {
     const subscriptionStatus = useContext(SubscriptionStatusContext)
-    const clientContext = useContext(ClientContext)
+    const client = useClient()
     const props: Props = (rest: any)
     const { uiChannel } = props
     // create new subscription if uiChannel or resendAll changes
     const subscriptionKey = (uiChannel && uiChannel.id) + (uiChannel && String(uiChannel.partition)) + (resendAll || '')
 
-    if (!clientContext) {
-        console.warn('Missing clientContext.')
+    if (typeof client === 'undefined') {
+        console.warn('Missing client provider')
         return null
     }
 
@@ -281,7 +280,7 @@ export default (React.forwardRef(({ resendAll, ...rest }: OuterProps, ref) => {
             ref={ref}
             key={subscriptionKey}
             subscriptionStatus={subscriptionStatus}
-            clientContext={clientContext}
+            client={client}
         />
     )
 }): ComponentType<OuterProps>)

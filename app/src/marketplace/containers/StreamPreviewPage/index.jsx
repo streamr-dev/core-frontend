@@ -5,10 +5,10 @@ import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
-
+import { useClient } from 'streamr-client-react'
 import { Context as RouterContext } from '$shared/contexts/Router'
 import ProductController, { useController } from '../ProductController'
-import { Provider as ClientProvider, Context as ClientContext } from '$shared/contexts/StreamrClient'
+import ClientProvider from '$shared/components/StreamrClientProvider'
 import Subscription from '$shared/components/Subscription'
 import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
 import usePending from '$shared/hooks/usePending'
@@ -26,6 +26,7 @@ import { useThrottled } from '$shared/hooks/wrapCallback'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getProductSubscription } from '$mp/modules/product/actions'
+import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 
 const FullPage = styled.div`
     position: fixed;
@@ -54,7 +55,8 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
     const dataRef = useRef([])
     const [visibleData, setVisibleData] = useState([])
     const [dataError, setDataError] = useState(false)
-    const { hasLoaded, client } = useContext(ClientContext)
+    const hasLoaded = useIsSessionTokenReady()
+    const client = useClient()
     const isMounted = useIsMounted()
     const [activePartition, setActivePartition] = useState(0)
     const [subscribed, setSubscribed] = useState(false)

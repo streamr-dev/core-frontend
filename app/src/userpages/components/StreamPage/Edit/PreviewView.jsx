@@ -1,9 +1,9 @@
-import React, { useState, useCallback, useRef, useContext, useEffect } from 'react'
+import React, { useState, useCallback, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
-
+import { useClient } from 'streamr-client-react'
 import Button from '$shared/components/Button'
-import { Provider as ClientProvider, Context as ClientContext } from '$shared/contexts/StreamrClient'
+import ClientProvider from '$shared/components/StreamrClientProvider'
 import useModal from '$shared/hooks/useModal'
 import Subscription from '$shared/components/Subscription'
 import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
@@ -12,6 +12,7 @@ import { useThrottled } from '$shared/hooks/wrapCallback'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$mp/components/StreamPreview'
+import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 
 import PreviewTable from './PreviewTable'
 
@@ -77,7 +78,8 @@ const UnstyledPreviewView = ({ stream, ...props }) => {
     const [visibleData, setVisibleData] = useState(initialState)
     const [dataReceived, setDataReceived] = useState(false)
     const [dataError, setDataError] = useState(false)
-    const { hasLoaded, client } = useContext(ClientContext)
+    const hasLoaded = useIsSessionTokenReady()
+    const client = useClient()
     const [activePartition, setActivePartition] = useState(0)
     const isMounted = useIsMounted()
 

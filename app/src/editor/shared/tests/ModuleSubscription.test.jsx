@@ -1,24 +1,16 @@
 import React from 'react'
 import { mount } from 'enzyme'
-
+import { Provider } from 'react-redux'
+import { useClient } from 'streamr-client-react'
+import mockStore from '$testUtils/mockStoreProvider'
 import { setupAuthorizationHeader, loadModuleDefinition } from '$editor/shared/tests/utils'
-import { ClientProviderComponent, createClient } from '$shared/contexts/StreamrClient'
+import ClientProvider from '$shared/components/StreamrClientProvider'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
 import * as State from '$editor/canvas/state'
 import * as Services from '$editor/canvas/services'
-import { getToken } from '$shared/utils/sessionToken'
 
-function throwError(err) {
-    throw err
-}
-
-function wait(delay) {
-    return new Promise((resolve) => setTimeout(resolve, delay))
-}
-
-xdescribe('Canvas Subscriptions', () => {
+describe('Canvas Subscriptions', () => {
     let teardown
-    let sessionToken
 
     beforeAll(async () => {
         teardown = await setupAuthorizationHeader()
@@ -28,120 +20,98 @@ xdescribe('Canvas Subscriptions', () => {
         await teardown()
     })
 
-    beforeAll(async () => {
-        sessionToken = getToken()
-    })
-
-    describe('create subscription', () => {
-        let client
-
-        async function setup() {
-            client = await createClient(sessionToken)
-            client.on('error', throwError)
-        }
-
-        async function teardown() {
-            if (client) {
-                await client.ensureDisconnected()
-                client.off('error', throwError)
-                client = undefined
-            }
-        }
+    describe('message reception', () => {
+        let canvas
+        let runningTable
 
         beforeEach(async () => {
-            await teardown()
-            await setup()
-        })
+            canvas = await Services.create()
+            canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
+            const clock = canvas.modules.find((m) => m.name === 'Clock')
+            canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
+            const table = canvas.modules.find((m) => m.name === 'Table')
+            const clockDateOut = State.findModulePort(canvas, clock.hash, (p) => p.name === 'date')
+            const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in1')
+            canvas = State.updateCanvas(State.connectPorts(canvas, clockDateOut.id, tableIn1.id))
+            canvas = State.updateCanvas(await Services.start(canvas))
+            runningTable = canvas.modules.find((m) => m.name === 'Table')
+        }, 10001)
 
-        describe('should get canvas module subscription messages', () => {
-            let canvas
-            let runningTable
-            const messages = []
+        afterEach(async () => {
+            if (!canvas) { return }
+            await Services.stop(canvas)
+        }, 10002)
 
-            beforeEach(async () => {
-                canvas = await Services.create()
-                canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
-                const clock = canvas.modules.find((m) => m.name === 'Clock')
-                canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
-                const table = canvas.modules.find((m) => m.name === 'Table')
-                const clockDateOut = State.findModulePort(canvas, clock.hash, (p) => p.name === 'date')
-                const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in1')
-                canvas = State.updateCanvas(State.connectPorts(canvas, clockDateOut.id, tableIn1.id))
-                const startedCanvas = State.updateCanvas(await Services.start(canvas))
-                runningTable = startedCanvas.modules.find((m) => m.name === 'Table')
-            }, 10001)
+        it('receives the messages', (done) => {
+            let client
 
-            it('works', async () => {
-                const result = mount((
-                    <ClientProviderComponent sessionToken={sessionToken}>
+            const ClientCatcher = () => {
+                client = useClient()
+                return null
+            }
+
+            const store = {
+                user: {},
+            }
+
+            const result = mount((
+                <Provider store={mockStore(store)}>
+                    <ClientProvider>
+                        <ClientCatcher />
                         <ModuleSubscription
                             module={runningTable}
-                            onMessage={(message) => {
-                                messages.push(message)
+                            onMessage={async ({ nr }) => {
+                                if (nr) {
+                                    result.unmount()
+                                    await client.ensureDisconnected()
+                                    done()
+                                }
                             }}
                             isSubscriptionActive
                         />
-                    </ClientProviderComponent>
-                ))
+                    </ClientProvider>
+                </Provider>
+            ))
+        }, 20000)
 
-                await wait(10000)
-                const receivedMessages = messages.slice() // copy before unmounting
-                result.unmount()
-                const newRowMessages = receivedMessages.filter(({ nr }) => nr)
-                // should have roughly 10 new row messages
-                expect(newRowMessages.length).toBeTruthy()
-                expect(newRowMessages.length).toBeGreaterThanOrEqual(7)
-            }, 20000)
-
-            afterEach(async () => {
-                if (!canvas) { return }
-                await Services.stop(canvas)
-            }, 10002)
-        })
-
-        describe('should get canvas module subscription messages in restarted canvas', async () => {
-            let canvas
-            const messages = []
+        describe('after a restart', () => {
             beforeEach(async () => {
-                canvas = await Services.create()
-                canvas = State.addModule(canvas, await loadModuleDefinition('Clock'))
-                const clock = canvas.modules.find((m) => m.name === 'Clock')
-                canvas = State.addModule(canvas, await loadModuleDefinition('Table'))
-                const table = canvas.modules.find((m) => m.name === 'Table')
-                const clockDateOut = State.findModulePort(canvas, clock.hash, (p) => p.name === 'date')
-                const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in1')
-                canvas = State.updateCanvas(State.connectPorts(canvas, clockDateOut.id, tableIn1.id))
-                canvas = State.updateCanvas(await Services.start(canvas))
+                // canvas is running at this point, see `beforeEach` above.
                 canvas = State.updateCanvas(await Services.stop(canvas))
                 canvas = State.updateCanvas(await Services.start(canvas))
-            }, 20000)
+            })
 
-            it('works', async () => {
+            it('receives the messages', (done) => {
+                let client
+
+                const ClientCatcher = () => {
+                    client = useClient()
+                    return null
+                }
+
+                const store = {
+                    user: {},
+                }
+
                 const result = mount((
-                    <ClientProviderComponent sessionToken={sessionToken}>
-                        <ModuleSubscription
-                            module={canvas.modules.find((m) => m.name === 'Table')}
-                            onMessage={(message) => {
-                                messages.push(message)
-                            }}
-                            isSubscriptionActive
-                        />
-                    </ClientProviderComponent>
+                    <Provider store={mockStore(store)}>
+                        <ClientProvider>
+                            <ClientCatcher />
+                            <ModuleSubscription
+                                module={runningTable}
+                                onMessage={async ({ nr }) => {
+                                    if (nr) {
+                                        result.unmount()
+                                        await client.ensureDisconnected()
+                                        done()
+                                    }
+                                }}
+                                isSubscriptionActive
+                            />
+                        </ClientProvider>
+                    </Provider>
                 ))
-
-                await wait(10000)
-                const receivedMessages = messages.slice() // copy before unmounting
-                result.unmount()
-                const newRowMessages = receivedMessages.filter(({ nr }) => nr)
-                // should have roughly 10 new row messages
-                expect(newRowMessages.length).toBeTruthy()
-                expect(newRowMessages.length).toBeGreaterThanOrEqual(7)
             }, 20000)
-
-            afterEach(async () => {
-                if (!canvas) { return }
-                await Services.stop(canvas)
-            }, 10000)
         })
     })
 })
