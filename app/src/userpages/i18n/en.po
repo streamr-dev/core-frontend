@@ -415,7 +415,7 @@ msgid "userpages.streams.edit.details.nav.apiAccess"
 msgstr "API Access"
 
 msgid "userpages.streams.edit.details.nav.historicalData"
-msgstr "Historical Data"
+msgstr "Data storage"
 
 msgid "userpages.streams.edit.details.nav.partitions"
 msgstr "Partitions"
@@ -490,7 +490,10 @@ msgid "userpages.streams.edit.configure.requireSignedData"
 msgstr "Require all messages in this stream to be signed"
 
 msgid "userpages.streams.edit.historicalStoragePeriod.description"
-msgstr "You can choose how long to store your stream's historical data before auto-deletion."
+msgstr "Enable storage to retain historical data in one or more geographic locations of your choice. You can also choose how long to store your stream’s historical data before auto-deletion."
+
+msgid "userpages.streams.edit.storageNodes.label"
+msgstr "Choose storage nodes (one or more)"
 
 msgid "userpages.streams.edit.configure.historicalStoragePeriod.label"
 msgstr "Store historical data for"

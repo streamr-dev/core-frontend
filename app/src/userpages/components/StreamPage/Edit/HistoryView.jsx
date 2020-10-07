@@ -8,6 +8,7 @@ import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Label from '$ui/Label'
+import Storage from './Storage'
 
 export const convertFromStorageDays = (days) => {
     let amount = days
@@ -108,6 +109,7 @@ const HistoryView = ({ streamId, disabled }) => {
                 value="userpages.streams.edit.historicalStoragePeriod.description"
                 tag="p"
             />
+            <Storage />
             {stream && stream.storageDays !== undefined &&
                 <Fragment>
                     <Label htmlFor="storageAmount">
