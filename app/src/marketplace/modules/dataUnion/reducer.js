@@ -8,19 +8,18 @@ import {
     GET_DATA_UNION_REQUEST,
     GET_DATA_UNION_SUCCESS,
     GET_DATA_UNION_FAILURE,
+    GET_DATA_UNION_STATS_REQUEST,
     GET_DATA_UNION_STATS_SUCCESS,
-    GET_ALL_DATA_UNIONS_REQUEST,
-    GET_ALL_DATA_UNIONS_SUCCESS,
-    GET_ALL_DATA_UNIONS_FAILURE,
     SET_DATA_UNION_SECRETS,
     ADD_DATA_UNION_SECRET,
     REMOVE_DATA_UNION_SECRET,
+    GET_DATA_UNION_STATS_FAILURE,
+    GET_ALL_DATA_UNION_STATS_REQUEST,
+    RESET_DATA_UNION_STATS,
 } from './constants'
 import type {
     DataUnionIdAction,
-    DataUnionErrorAction,
     DataUnionIdsAction,
-    DataUnionsErrorAction,
     DataUnionSecretsAction,
     DataUnionSecretAction,
 } from './types'
@@ -28,10 +27,9 @@ import type {
 export const initialState: DataUnionState = {
     id: null,
     fetching: false,
-    error: null,
-    fetchingStats: false,
-    ids: [],
-    statsError: null,
+    requested: [],
+    ready: [],
+    fetchingStats: [],
     secrets: [],
 }
 
@@ -64,55 +62,68 @@ const reducer: (DataUnionState) => DataUnionState = handleActions({
         }
     },
 
-    [GET_DATA_UNION_REQUEST]: (state: DataUnionState, action: DataUnionIdAction) => ({
+    [GET_DATA_UNION_REQUEST]: (state: DataUnionState) => ({
+        ...state,
+        id: undefined,
+        fetching: true,
+    }),
+
+    [GET_DATA_UNION_SUCCESS]: (state: DataUnionState, action: DataUnionIdAction) => ({
         ...state,
         id: action.payload.id,
-        fetching: true,
-        error: null,
+        fetching: false,
     }),
 
-    [GET_DATA_UNION_SUCCESS]: (state: DataUnionState) => ({
+    [GET_DATA_UNION_FAILURE]: (state: DataUnionState) => ({
         ...state,
         fetching: false,
     }),
 
-    [GET_DATA_UNION_FAILURE]: (state: DataUnionState, action: DataUnionErrorAction) => ({
+    [GET_ALL_DATA_UNION_STATS_REQUEST]: (state: DataUnionState, action: DataUnionIdsAction) => ({
         ...state,
-        error: action.payload.error,
-        fetching: false,
+        requested: [...new Set(action.payload.ids)],
+        fetchingStats: [...new Set(action.payload.ids)],
     }),
 
-    [GET_ALL_DATA_UNIONS_REQUEST]: (state: DataUnionState) => ({
+    [GET_DATA_UNION_STATS_REQUEST]: (state: DataUnionState, action: DataUnionIdAction) => ({
         ...state,
-        fetchingStats: true,
-        statsError: null,
-    }),
-
-    [GET_ALL_DATA_UNIONS_SUCCESS]: (state: DataUnionState, action: DataUnionIdsAction) => ({
-        ...state,
-        fetchingStats: false,
-        ids: action.payload.ids,
-    }),
-
-    [GET_ALL_DATA_UNIONS_FAILURE]: (state: DataUnionState, action: DataUnionsErrorAction) => ({
-        ...state,
-        fetchingStats: false,
-        statsError: action.payload.error,
+        requested: [...new Set([...state.requested, action.payload.id])],
+        fetchingStats: [...new Set([...state.fetchingStats, action.payload.id])],
     }),
 
     [GET_DATA_UNION_STATS_SUCCESS]: (state: DataUnionState, action: DataUnionIdAction) => {
-        const ids = [
+        const ready = [
             ...new Set([
-                ...state.ids,
+                ...state.ready,
                 action.payload.id,
             ]),
         ]
+        const fetchingStats = new Set(state.fetchingStats)
+        fetchingStats.delete(action.payload.id)
 
         return {
             ...state,
-            ids,
+            ready: [...ready],
+            fetchingStats: [...fetchingStats],
         }
     },
+
+    [GET_DATA_UNION_STATS_FAILURE]: (state: DataUnionState, action: DataUnionIdAction) => {
+        const fetchingStats = new Set(state.fetchingStats)
+        fetchingStats.delete(action.payload.id)
+
+        return {
+            ...state,
+            fetchingStats: [...fetchingStats],
+        }
+    },
+
+    [RESET_DATA_UNION_STATS]: (state: DataUnionState) => ({
+        ...state,
+        requested: [],
+        ready: [],
+        fetchingStats: [],
+    }),
 
 }, initialState)
 

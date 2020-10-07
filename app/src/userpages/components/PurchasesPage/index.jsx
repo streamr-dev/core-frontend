@@ -49,19 +49,23 @@ const PurchasesPage = () => {
 
     const dispatch = useDispatch()
 
-    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useAllDataUnionStats()
+    const {
+        load: loadDataUnionStats,
+        members,
+        loadedIds,
+        fetchingIds,
+        reset: resetStats,
+    } = useAllDataUnionStats()
 
     useEffect(() => {
         dispatch(updateFilter(filter))
         dispatch(getMyPurchases())
             .then(() => {
-                dispatch(applyFilter())
-            })
-    }, [dispatch, filter])
+                const productIds = dispatch(applyFilter())
 
-    useEffect(() => {
-        loadDataUnionStats()
-    }, [loadDataUnionStats])
+                loadDataUnionStats(productIds)
+            })
+    }, [dispatch, filter, loadDataUnionStats])
 
     const subEndAts = useMemo(() => (
         subscriptions.reduce((memo, sub) => ({
@@ -69,6 +73,10 @@ const PurchasesPage = () => {
             [sub.product.id]: new Date(sub.endsAt),
         }), {})
     ), [subscriptions])
+
+    useEffect(() => () => {
+        resetStats()
+    }, [resetStats])
 
     return (
         <Layout
@@ -115,7 +123,10 @@ const PurchasesPage = () => {
                         {purchases.map((product) => {
                             const isDataUnion = isDataUnionProduct(product)
                             const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
-                            const memberCount = isDataUnion ? members[beneficiaryAddress] : undefined
+                            const readyToFetch = loadedIds.includes(beneficiaryAddress)
+                            const isFetching = fetchingIds.includes(beneficiaryAddress)
+                            const memberCount = (isDataUnion && !isFetching) ? members[beneficiaryAddress] : undefined
+                            const isDeploying = isDataUnion && readyToFetch && !isFetching && typeof memberCount === 'undefined'
 
                             return (
                                 <PurchaseTile
@@ -124,7 +135,7 @@ const PurchasesPage = () => {
                                     numMembers={memberCount}
                                     product={product}
                                     showDataUnionBadge={isDataUnion}
-                                    showDeployingBadge={!fetchingDataUnionStats}
+                                    showDeployingBadge={isDeploying}
                                 />
                             )
                         })}

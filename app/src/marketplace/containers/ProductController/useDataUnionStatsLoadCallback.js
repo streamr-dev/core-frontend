@@ -14,7 +14,12 @@ export default function useDataUnionStatsLoadCallback() {
 
     return useCallback(async (id: DataUnionId) => (
         wrap(async () => {
-            await dispatch(getDataUnionStats(id))
+            try {
+                await dispatch(getDataUnionStats(id))
+            } catch (e) {
+                // ignore error, stats might not respond if DU not yet deployed
+                console.warn(e)
+            }
         })
     ), [wrap, dispatch])
 }

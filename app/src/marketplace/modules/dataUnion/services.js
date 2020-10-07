@@ -4,6 +4,7 @@ import EventEmitter from 'events'
 import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 import StreamrClient from 'streamr-client'
+import { getToken } from '$shared/utils/sessionToken'
 
 import { getContract, call, send, calculateContractAddress } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
@@ -176,10 +177,10 @@ const deprecated_deployContract = (productId: ProductId, adminFee: number): Smar
             // create join part stream
             createJoinPartStream(account, productId),
         ]))
-        .then(([account, futureAddress, joinPartStreamId]) => {
+        .then(([account, futureAddress, joinPartStream]) => {
             const args = [
                 operatorAddress,
-                joinPartStreamId,
+                joinPartStream.id,
                 tokenAddress,
                 blockFreezePeriodSeconds,
                 deprecated_getAdminFeeInEther(adminFee),
@@ -219,6 +220,7 @@ export const createClient = (usePublicNode: boolean = false) => new StreamrClien
     autoConnect: false,
     autoDisconnect: false,
     auth: {
+        sessionToken: getToken(),
         privateKey,
     },
     sidechain: {
@@ -228,6 +230,12 @@ export const createClient = (usePublicNode: boolean = false) => new StreamrClien
         url: process.env.WEB3_PUBLIC_HTTP_PROVIDER,
     },
 })
+
+export const calculateDataUnionAddress = async (productId: ProductId, owner: Address, usePublicNode: boolean = false) => {
+    const client = createClient(usePublicNode)
+
+    return client.calculateDataUnionMainnetAddress(productId, owner)
+}
 
 export const deployDataUnion2 = (productId: ProductId, adminFee: number): SmartContractDeployTransaction => {
     const web3 = getWeb3()
@@ -246,14 +254,22 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: number): SmartC
     ])
         .then(([account]) => Promise.all([
             Promise.resolve(account),
-            client.deployDataUnion({
-                dataUnionName: productId,
-                adminFee,
-            }),
+            calculateDataUnionAddress(productId, account),
         ]))
-        .then(([account, dataUnion]) => {
-            emitter.emit('transactionHash', '0x0', dataUnion.address)
+        .then(([account, futureAddress]) => {
+            debugger
+            emitter.emit('transactionHash', '0x0', futureAddress)
 
+            return Promise.all([
+                Promise.resolve(account),
+                client.deployDataUnion({
+                    dataUnionName: productId,
+                    adminFee,
+                }),
+            ])
+        })
+        .then(([account, dataUnion]) => {
+            debugger
             return dataUnion.isReady().then(() => {
                 emitter.emit('receipt')
             }, () => {
@@ -289,11 +305,20 @@ const deprecated_getCommunityContract = (address: DataUnionId, usePublicNode: bo
     }, usePublicNode)
 }
 
+const whitelist = [
+    '0x838D899ef5A89689d61329AA64C1a799c21a1693',
+    '0xaF79F2DE50AC857320098331B09f0b05a5CB5C50',
+].map((s) => s.toLowerCase())
+
 export const getDataUnionVersion = async (address: DataUnionId, usePublicNode: boolean = false) => {
+    if (whitelist.includes(address.toLowerCase())) {
+        return 2
+    }
+
     const client = createClient(usePublicNode)
     const version = await client.getDataUnionVersion(address)
 
-    return version
+    return version || 0
 }
 
 // eslint-disable-next-line camelcase
@@ -308,7 +333,10 @@ export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boo
     const version = await getDataUnionVersion(address, usePublicNode)
 
     if (version === 2) {
-        throw new Error('Not implemented!')
+        const client = createClient()
+        return client.getAdminAddress({
+            dataUnionAddress: address,
+        })
     } else if (version === 1) {
         return deprecated_getDataUnionOwner(address, usePublicNode)
     }
@@ -368,13 +396,16 @@ export const getDataUnionStats = async (id: DataUnionId): ApiResult<Object> => {
     if (version === 2) {
         const client = createClient()
 
-        const { memberCount, totalEarnings } = await client.getDataUnionStats({
+        const stats = await client.getDataUnionStats({
             dataUnionAddress: id,
         })
+        const { memberCount, totalEarnings } = stats
 
         return {
             memberCount: {
                 total: memberCount && BN(memberCount.toString()).toNumber(),
+                active: undefined, // todo: missing in contract?
+                inactive: undefined, // todo: missing in contract?
             },
             totalEarnings: totalEarnings && BN(totalEarnings.toString()).toNumber(),
         }
@@ -383,18 +414,6 @@ export const getDataUnionStats = async (id: DataUnionId): ApiResult<Object> => {
     }
 
     throw new Error('unknow DU version')
-}
-
-export const getDataUnions = async (): ApiResult<Array<Object>> => {
-    const { dataunions } = await get({
-        url: routes.api.dataunions.index(),
-        useAuthorization: false,
-    })
-
-    return Object.keys(dataunions || {}).map((id) => ({
-        id: id.toLowerCase(),
-        ...dataunions[id],
-    }))
 }
 
 // eslint-disable-next-line camelcase
@@ -408,7 +427,7 @@ const deprecated_getDataUnion = async (id: DataUnionId, usePublicNode: boolean =
     const owner = await deprecated_getDataUnionOwner(id, usePublicNode)
 
     return {
-        id,
+        id: id.toLowerCase(),
         adminFee,
         joinPartStreamId,
         owner,
@@ -420,13 +439,13 @@ export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = tru
 
     if (version === 2) {
         const adminFee = await getAdminFee(id, usePublicNode)
-        const owner = undefined // todo: get ownwer
+        const owner = await getDataUnionOwner(id, usePublicNode)
 
         return {
-            id,
+            id: id.toLowerCase(),
             adminFee,
-            version,
             owner,
+            version,
         }
     } else if (version === 1) {
         const du = await deprecated_getDataUnion(id, usePublicNode)

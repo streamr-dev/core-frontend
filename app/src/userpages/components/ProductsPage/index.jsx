@@ -61,12 +61,22 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useAllDataUnionStats()
+    const {
+        load: loadDataUnionStats,
+        members,
+        loadedIds,
+        fetchingIds,
+        reset: resetStats,
+    } = useAllDataUnionStats()
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
             .then(loadDataUnionStats)
     }, [dispatch, filter, loadDataUnionStats])
+
+    useEffect(() => () => {
+        resetStats()
+    }, [resetStats])
 
     return (
         <Layout
@@ -110,10 +120,13 @@ const ProductsPage = () => {
                 )}
                 <Grid>
                     {products.map((product) => {
-                        const { id, beneficiaryAddress, state } = product
-                        const isDataUnion = isDataUnionProduct(product.type)
-                        const memberCount = isDataUnion ? members[(beneficiaryAddress || '').toLowerCase()] : undefined
-                        const isDeploying = isDataUnion && !fetchingDataUnionStats && !!beneficiaryAddress && typeof memberCount === 'undefined'
+                        const { id, beneficiaryAddress: originalBeneficiaryAddress, state, type } = product
+                        const isDataUnion = isDataUnionProduct(type)
+                        const beneficiaryAddress = (originalBeneficiaryAddress || '').toLowerCase()
+                        const readyToFetch = loadedIds.includes(beneficiaryAddress)
+                        const isFetching = fetchingIds.includes(beneficiaryAddress)
+                        const memberCount = (isDataUnion && !isFetching) ? members[beneficiaryAddress] : undefined
+                        const isDeploying = isDataUnion && readyToFetch && !isFetching && typeof memberCount === 'undefined'
                         const contractAddress = isDataUnion ? beneficiaryAddress : null
                         const published = state === productStates.DEPLOYED
                         const deployed = !!(isDataUnion && !!beneficiaryAddress)

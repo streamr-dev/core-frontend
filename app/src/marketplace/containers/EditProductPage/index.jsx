@@ -114,19 +114,17 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const originalProduct = useProduct()
     const { beneficiaryAddress } = originalProduct
 
+    const isDataUnion = isDataUnionProduct(product)
+
+    // TODO: should really check for the contract existance here
+    const isDeployed = isDataUnion && isEthereumAddress(product.beneficiaryAddress)
     const isLoading = savePending || publishDialogLoading
     const modalsOpen = !!(isDataUnionDeployDialogOpen || isConfirmSaveDialogOpen || isPublishDialogOpen)
     const isDisabled = isLoading || modalsOpen
-    const isDataUnion = isDataUnionProduct(product)
-    // TODO: should really check for the contract existance here
-    const isDeployed = isDataUnion && isEthereumAddress(product.beneficiaryAddress)
 
     useEffect(() => {
-        if (isDataUnion) {
-            loadEthIdentities()
-        }
+        loadEthIdentities()
     }, [
-        isDataUnion,
         loadEthIdentities,
     ])
 

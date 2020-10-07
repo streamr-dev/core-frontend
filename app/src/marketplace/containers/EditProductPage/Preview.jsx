@@ -19,7 +19,6 @@ import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import StreamListing from '$mp/components/ProductPage/StreamListing'
 import Terms from '$mp/components/ProductPage/Terms'
 import ProductPageDataUnionStats from '$mp/containers/ProductPage/DataUnionStats'
-import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
@@ -27,6 +26,8 @@ import usePending from '$shared/hooks/usePending'
 import ProductPage from '$shared/components/ProductPage'
 import { MD, XL } from '$shared/utils/styled'
 import useEditableProduct from '../ProductController/useEditableProduct'
+
+import usePreviewStats from '$mp/containers/ProductPage/usePreviewStats'
 
 const Hero = () => {
     const product = useEditableProduct()
@@ -106,23 +107,24 @@ const Description = () => {
 
 const DataUnionStats = () => {
     const product = useEditableProduct()
-    const contractProduct = useContractProduct()
 
-    const { subscriberCount } = contractProduct || {}
     const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
 
     const isDuDeployed = !!dataUnionDeployed && isEthereumAddress(beneficiaryAddress)
 
     const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
-    const stats = useDataUnionStats({
-        beneficiaryAddress,
+    const dataUnion = useDataUnion()
+    const contractProduct = useContractProduct()
+    const { subscriberCount } = contractProduct || {
+        subscriberCount: 0,
+    }
+    const { stats } = usePreviewStats({
         created,
         adminFee,
+        memberCount,
         subscriberCount,
         totalEarnings,
-        memberCount,
     })
-    const dataUnion = useDataUnion()
     const { joinPartStreamId } = dataUnion || {}
 
     useEffect(() => {

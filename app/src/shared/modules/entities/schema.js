@@ -37,6 +37,9 @@ export const integrationKeysSchema = [integrationKeySchema]
 export const dataUnionSchema = new schema.Entity('dataUnions')
 export const dataUnionsSchema = [dataUnionSchema]
 
+export const dataUnionStatSchema = new schema.Entity('dataUnionStats')
+export const dataUnionStatsSchema = [dataUnionStatSchema]
+
 export const joinRequestSchema = new schema.Entity('joinRequests')
 export const joinRequestsSchema = [joinRequestSchema]
 

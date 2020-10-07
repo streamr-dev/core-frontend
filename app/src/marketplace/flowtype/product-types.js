@@ -163,7 +163,12 @@ export type DataUnion = {
     adminFee: number | string,
     joinPartStreamId: StreamId,
     owner: Address,
-    memberCount?: MemberCount,
+}
+
+export type DataUnionStat = {
+    id: DataUnionId,
+    memberCount: MemberCount,
+    totalEarnings: number,
 }
 
 export type AccessPeriod = {

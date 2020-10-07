@@ -151,7 +151,10 @@ export const applyFilter = () => (dispatch: Function, getState: () => StoreState
     const subscriptions = selectSubscriptions(getState())
     const filtered = filterPurchases(subscriptions, filter)
     const { result } = normalize(filtered, subscriptionsSchema)
+
     dispatch(updateResults(result))
+
+    return result
 }
 
 export const updateFilter = (filter: Filter) => (dispatch: Function) => {

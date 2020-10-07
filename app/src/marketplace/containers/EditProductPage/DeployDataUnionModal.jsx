@@ -85,7 +85,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
             deployContract({
                 productId: productId || '',
                 adminFee,
-                version: 2,
+                version: 1,
             })
                 .onTransactionHash((hash, dataUnionAddress) => {
                     if (!isMounted()) { return }

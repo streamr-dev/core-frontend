@@ -1,128 +1,78 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useEffect, useRef, useCallback, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
-import { fromAtto } from '$mp/utils/math'
+import useProduct from '$mp/containers/ProductController/useProduct'
+import useContractProduct from '$mp/containers/ProductController/useContractProduct'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import { getDataUnionStats } from '$mp/modules/dataUnion/actions'
+import { selectDataUnionStats } from '$mp/modules/dataUnion/selectors'
 
-const initialStats = {
-    revenue: {
-        unit: 'DATA',
-        loading: true,
-    },
-    members: {
-        loading: true,
-    },
-    averageRevenue: {
-        unit: 'DATA',
-        loading: true,
-    },
-    subscribers: {
-        loading: true,
-    },
-    revenueShare: {
-        unit: '%',
-        loading: true,
-    },
-    created: {
-        loading: true,
-    },
-}
+import usePreviewStats from './usePreviewStats'
 
-const MILLISECONDS_IN_MONTH = 1000 * 60 * 60 * 24 * 30
+const DATA_UNION_SERVER_POLL_INTERVAL_MS = 10000
 
-function useDataUnionStats({
-    created,
-    adminFee,
-    subscriberCount,
-    totalEarnings,
-    memberCount,
-} = {}) {
-    const [stats, setStats] = useState(initialStats)
+function useDataUnionStats() {
+    const { created, beneficiaryAddress } = useProduct() || {}
+    const { subscriberCount } = useContractProduct() || {}
+    const { adminFee } = useDataUnion() || {}
+    const { memberCount, totalEarnings } = useSelector(selectDataUnionStats) || {}
+    const isMounted = useIsMounted()
+    const dispatch = useDispatch()
+
+    const { stats } = usePreviewStats({
+        created,
+        subscriberCount,
+        adminFee,
+        memberCount,
+        totalEarnings,
+    })
+
+    const timeOutId = useRef(null)
+    const resetTimeout = useCallback(() => {
+        clearTimeout(timeOutId.current)
+    }, [])
+
+    const getStats = useCallback(async () => {
+        if (!beneficiaryAddress) { return }
+        try {
+            await dispatch(getDataUnionStats(beneficiaryAddress))
+            if (!isMounted()) {
+                return
+            }
+        } catch (e) {
+            // Try again if status is 404, it means API might not be up yet
+            if (e.statusCode && e.statusCode === 404) {
+                console.warn(e)
+
+                if (isMounted()) {
+                    resetTimeout()
+                    timeOutId.current = setTimeout(getStats, DATA_UNION_SERVER_POLL_INTERVAL_MS)
+                }
+            } else {
+                // Otherwise pass the error on
+                throw e
+            }
+        }
+    }, [beneficiaryAddress, dispatch, timeOutId, resetTimeout, isMounted])
 
     useEffect(() => {
-        if (totalEarnings !== undefined) {
-            setStats((prev) => ({
-                ...prev,
-                revenue: {
-                    ...prev.revenue,
-                    value: fromAtto(totalEarnings || 0).toFixed(0),
-                    loading: false,
-                },
-            }))
+        getStats()
+
+        return () => {
+            resetTimeout()
         }
-    }, [totalEarnings])
+    }, [getStats, resetTimeout])
 
-    useEffect(() => {
-        if (subscriberCount !== undefined) {
-            setStats((prev) => ({
-                ...prev,
-                subscribers: {
-                    ...prev.subscribers,
-                    value: subscriberCount || 0,
-                    loading: false,
-                },
-            }))
-        }
-    }, [subscriberCount])
-
-    useEffect(() => {
-        if (adminFee !== undefined) {
-            setStats((prev) => ({
-                ...prev,
-                revenueShare: {
-                    ...prev.revenueShare,
-                    value: ((1 - (+adminFee)) * 100).toFixed(0),
-                    loading: false,
-                },
-            }))
-        }
-    }, [adminFee])
-
-    useEffect(() => {
-        if (created) {
-            setStats((prev) => ({
-                ...prev,
-                created: {
-                    ...prev.created,
-                    value: new Date(created).toLocaleDateString(),
-                    loading: false,
-                },
-            }))
-        }
-    }, [created])
-
-    useEffect(() => {
-        if (totalEarnings !== undefined && created && memberCount) {
-            const productAgeMs = Date.now() - new Date(created).getTime()
-            const revenuePerMonth = totalEarnings !== 0 ? (totalEarnings / (productAgeMs / MILLISECONDS_IN_MONTH)) : 0
-            const revenuePerMonthPerMember = memberCount.total > 0 ? (revenuePerMonth / memberCount.total) : 0
-
-            setStats((prev) => ({
-                ...prev,
-                averageRevenue: {
-                    ...prev.averageRevenue,
-                    value: fromAtto(revenuePerMonthPerMember).toFixed(1),
-                    loading: false,
-                },
-            }))
-        }
-    }, [totalEarnings, created, memberCount])
-
-    useEffect(() => {
-        if (memberCount) {
-            setStats((prev) => ({
-                ...prev,
-                members: {
-                    ...prev.members,
-                    value: memberCount.active || 0,
-                    loading: false,
-                },
-            }))
-        }
-    }, [memberCount])
-
-    return useMemo(() => Object.keys(stats).map((key) => ({
-        ...stats[key],
-        id: key,
-    })), [stats])
+    return useMemo(() => ({
+        totalEarnings,
+        memberCount,
+        stats,
+    }), [
+        totalEarnings,
+        memberCount,
+        stats,
+    ])
 }
 
 export default useDataUnionStats

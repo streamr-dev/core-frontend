@@ -13,6 +13,7 @@ export const initialState: EntitiesState = {
     products: {},
     contractProducts: {},
     dataUnions: {},
+    dataUnionStats: {},
     streams: {},
     relatedProducts: {},
     subscriptions: {},
