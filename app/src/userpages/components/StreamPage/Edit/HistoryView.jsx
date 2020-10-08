@@ -109,7 +109,7 @@ const HistoryView = ({ streamId, disabled }) => {
                 value="userpages.streams.edit.historicalStoragePeriod.description"
                 tag="p"
             />
-            <Storage />
+            <Storage streamId={streamId} />
             {stream && stream.storageDays !== undefined &&
                 <Fragment>
                     <Label htmlFor="storageAmount">

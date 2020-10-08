@@ -1,0 +1,22 @@
+[
+    {
+        "address": "0x0",
+        "name": "Switzerland"
+    },
+    {
+        "address": "0x1",
+        "name": "United States of America"
+    },
+    {
+        "address": "0x2",
+        "name": "Canada"
+    },
+    {
+        "address": "0x3",
+        "name": "United Kingdom"
+    },
+    {
+        "address": "0x4",
+        "name": "Singapore"
+    }
+]

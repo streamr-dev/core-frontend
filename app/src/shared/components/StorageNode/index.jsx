@@ -1,15 +1,63 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import Checkbox from '$shared/components/Checkbox2'
+import useStreamStorageNodeToggle from '$shared/components/StorageNode/useStreamStorageNodeToggle'
+import Spinner from '$shared/components/Spinner'
 
-const UnstyledStorageNode = ({ children, checked, disabled, ...props }) => (
-    <button {...props} type="button" disabled={disabled} title={children}>
-        <div>{children}</div>
-        {(!disabled || !!checked) && (
-            <Checkbox checked={checked} />
-        )}
-    </button>
-)
+const Button = styled.button`
+    color: #cdcdcd;
+    cursor: pointer;
+
+    :disabled,
+    &[disabled] {
+        cursor: default;
+    }
+
+    ${({ checked }) => !!checked && css`
+        color: #323232;
+    `}
+
+    ${({ clickable }) => !clickable && css`
+        cursor: default !important;
+    `}
+`
+
+const UnstyledStorageNode = ({
+    address,
+    streamId,
+    children,
+    checked: checkedProp,
+    changing: changingProp,
+    disabled,
+    onClick: onClickProp,
+    ...props
+}) => {
+    const [checked, changing, change] = useStreamStorageNodeToggle(streamId, address, checkedProp, changingProp)
+
+    const onClick = useCallback(() => {
+        change()
+    }, [change])
+
+    return (
+        <Button
+            {...props}
+            checked={checked}
+            disabled={disabled}
+            onClick={onClick}
+            title={children}
+            type="button"
+            clickable={!changing}
+        >
+            <div>{children}</div>
+            {(!disabled || !!checked) && !changing && (
+                <Checkbox checked={checked} />
+            )}
+            {changing && (
+                <Spinner color="gray" />
+            )}
+        </Button>
+    )
+}
 
 const StorageNode = styled(UnstyledStorageNode)`
     align-items: center;
@@ -18,8 +66,6 @@ const StorageNode = styled(UnstyledStorageNode)`
     border: 1px solid #efefef;
     border-radius: 4px;
     box-sizing: border-box;
-    color: #cdcdcd;
-    cursor: pointer;
     display: flex;
     font-size: 16px;
     height: 40px;
@@ -33,16 +79,11 @@ const StorageNode = styled(UnstyledStorageNode)`
     &[disabled] {
         background: #efefef;
         border-color: #efefef;
-        cursor: default;
     }
 
     :focus {
         outline: 0;
     }
-
-    ${({ checked }) => !!checked && css`
-        color: #323232;
-    `}
 
     & + & {
         margin-top: 16px;

@@ -3,17 +3,11 @@ import styled from 'styled-components'
 import { I18n } from 'react-redux-i18n'
 import StorageNode from '$shared/components/StorageNode'
 import Label from '$ui/Label'
-
-const useStorageNodes = () => [
-    [true, 'Switzerland'],
-    [true, 'United States of America'],
-    [false, 'Canada'],
-    [false, 'United Kingdom'],
-    [false, 'Singapore'],
-]
+import nodes from '$shared/components/StorageNode/nodes'
+import useStreamStorageNodeAddresses from '$shared/components/StorageNode/useStreamStorageNodeAddresses'
 
 const UnstyledStorage = ({ streamId, ...props }) => {
-    const storageNodes = useStorageNodes(streamId)
+    const addresses = useStreamStorageNodeAddresses(streamId)
 
     return (
         <div {...props}>
@@ -21,8 +15,14 @@ const UnstyledStorage = ({ streamId, ...props }) => {
                 {I18n.t('userpages.streams.edit.storageNodes.label')}
             </Label>
             <StorageNode.List>
-                {storageNodes.map(([enabled, name]) => (
-                    <StorageNode key={name} checked={enabled}>
+                {nodes.map(({ address, name }) => (
+                    <StorageNode
+                        address={address}
+                        checked={(addresses || []).includes(address)}
+                        changing={addresses == null}
+                        key={address}
+                        streamId={streamId}
+                    >
                         {name}
                     </StorageNode>
                 ))}
