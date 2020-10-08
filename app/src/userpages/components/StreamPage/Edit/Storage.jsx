@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { I18n } from 'react-redux-i18n'
 import StorageNode from '$shared/components/StorageNode'
 import Label from '$ui/Label'
-import nodes from '$shared/components/StorageNode/nodes'
+import nodes from '$shared/utils/storageNodes'
 import useStreamStorageNodeAddresses from '$shared/components/StorageNode/useStreamStorageNodeAddresses'
 
 const UnstyledStorage = ({ streamId, ...props }) => {

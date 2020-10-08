@@ -190,6 +190,12 @@
             "index": "<api>/integration_keys",
             "show": "<api>/integration_keys/:id"
         },
+        "storageNodes": {
+            "index": "<api>/streams/:id/storageNodes",
+            "addresses": {
+                "show": "<api>/streams/:streamId/storageNodes/:address"
+            }
+        },
         "loginChallenge": "<api>/login/challenge/:account"
     }
 }

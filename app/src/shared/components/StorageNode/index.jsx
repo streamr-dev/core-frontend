@@ -42,11 +42,11 @@ const UnstyledStorageNode = ({
         <Button
             {...props}
             checked={checked}
+            clickable={!changing}
             disabled={disabled}
             onClick={onClick}
             title={children}
             type="button"
-            clickable={!changing}
         >
             <div>{children}</div>
             {(!disabled || !!checked) && !changing && (

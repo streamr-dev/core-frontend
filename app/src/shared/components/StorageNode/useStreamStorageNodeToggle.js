@@ -1,5 +1,7 @@
 import { useCallback, useState, useRef, useEffect } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { post, del } from '$shared/utils/api'
+import routes from '$routes'
 
 const useStreamStorageNodeToggle = (streamId, address, _enabled, _changing) => {
     const [changing, setChanging] = useState(_changing)
@@ -27,11 +29,23 @@ const useStreamStorageNodeToggle = (streamId, address, _enabled, _changing) => {
         setChanging(true)
 
         try {
-            await new Promise((resolve) => {
-                setTimeout(() => {
-                    resolve()
-                }, 2000)
-            })
+            if (enabled) {
+                await del({
+                    url: routes.api.storageNodes.addresses.show({
+                        streamId,
+                        address,
+                    }),
+                })
+            } else {
+                await post({
+                    url: routes.api.storageNodes.index({
+                        id: streamId,
+                    }),
+                    data: {
+                        address,
+                    },
+                })
+            }
 
             if (isMounted()) {
                 setEnabled(!enabled)
@@ -43,7 +57,7 @@ const useStreamStorageNodeToggle = (streamId, address, _enabled, _changing) => {
                 setChanging(false)
             }
         }
-    }, [isMounted, enabled])
+    }, [isMounted, enabled, address, streamId])
 
     useEffect(() => {
         if (!changing) {
