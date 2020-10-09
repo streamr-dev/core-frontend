@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import styled, { css } from 'styled-components'
-import Checkbox from '$shared/components/Checkbox2'
+import Checkbox from '$shared/components/Checkbox'
 import useStreamStorageNodeToggle from '$shared/components/StorageNode/useStreamStorageNodeToggle'
 import Spinner from '$shared/components/Spinner'
 
@@ -50,7 +50,7 @@ const UnstyledStorageNode = ({
         >
             <div>{children}</div>
             {(!disabled || !!checked) && !changing && (
-                <Checkbox checked={checked} />
+                <Checkbox.Dummy checked={checked} />
             )}
             {changing && (
                 <Spinner color="gray" />
