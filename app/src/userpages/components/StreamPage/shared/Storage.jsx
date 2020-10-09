@@ -6,7 +6,7 @@ import Label from '$ui/Label'
 import nodes from '$shared/utils/storageNodes'
 import useStreamStorageNodeAddresses from '$shared/components/StorageNode/useStreamStorageNodeAddresses'
 
-const UnstyledStorage = ({ streamId, ...props }) => {
+const UnstyledStorage = ({ streamId, disabled, ...props }) => {
     const addresses = useStreamStorageNodeAddresses(streamId)
 
     return (
@@ -18,8 +18,9 @@ const UnstyledStorage = ({ streamId, ...props }) => {
                 {nodes.map(({ address, name }) => (
                     <StorageNode
                         address={address}
-                        checked={(addresses || []).includes(address)}
                         changing={addresses == null}
+                        checked={(addresses || []).includes(address)}
+                        disabled={disabled}
                         key={address}
                         streamId={streamId}
                     >
@@ -32,7 +33,7 @@ const UnstyledStorage = ({ streamId, ...props }) => {
 }
 
 const Storage = styled(UnstyledStorage)`
-    margin-bottom: 48px;
+    margin-bottom: 40px;
 `
 
 export default Storage

@@ -24,12 +24,12 @@ const Button = styled.button`
 
 const UnstyledStorageNode = ({
     address,
-    streamId,
-    children,
-    checked: checkedProp,
     changing: changingProp,
+    checked: checkedProp,
+    children,
     disabled,
     onClick: onClickProp,
+    streamId,
     ...props
 }) => {
     const [checked, changing, change] = useStreamStorageNodeToggle(streamId, address, checkedProp, changingProp)

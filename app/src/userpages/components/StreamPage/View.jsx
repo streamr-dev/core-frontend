@@ -24,6 +24,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
 import Nav from '$shared/components/Layout/Nav'
+import Storage from './shared/Storage'
 
 const Text = styled(UnstyledText)`
     &[disabled] {
@@ -290,6 +291,8 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                 >
+                    <Translate tag="p" value="userpages.streams.edit.historicalStoragePeriod.description" />
+                    <Storage streamId={stream.id} disabled />
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>
                             <HistoricalStorage>
@@ -350,6 +353,10 @@ const View = styled(UnstyledView)`
 
     ${Title} {
         display: block;
+    }
+
+    ${Storage} {
+        margin-top: 32px;
     }
 `
 

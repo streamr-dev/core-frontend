@@ -8,7 +8,7 @@ import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Label from '$ui/Label'
-import Storage from './Storage'
+import Storage from '../shared/Storage'
 
 export const convertFromStorageDays = (days) => {
     let amount = days
