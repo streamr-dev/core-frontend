@@ -97,7 +97,7 @@ const StorageNode = styled(UnstyledStorageNode)`
         white-space: nowrap;
     }
 
-    ${Checkbox} {
+    ${Checkbox.Dummy} {
         flex-shrink: 0;
         margin-left: 12px;
     }
