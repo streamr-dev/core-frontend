@@ -301,6 +301,53 @@ describe('Stream read-only page (no edit permission)', () => {
             })
         })
     })
+
+    describe('Storage nodes UI', () => {
+        it('displays disabled UI without checkboxes when unchecked', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+                cy.logout()
+                cy.login('tester2@streamr.com', 'tester2')
+
+                cy.server()
+
+                cy.route('GET', `/api/v1/streams/${streamId}/storageNodes`).as('getNodes')
+
+                cy.visit(`/core/streams/${streamId}`)
+                cy.wait('@getNodes')
+                cy.get('[data-test-hook="Storage nodes"]').within(() => {
+                    cy.get('button:disabled').contains(/local/i).should('exist')
+                    // Disabled and unchecked => no checkbox at all
+                    cy.get('[data-test-hook="Checkbox on"]').should('not.exist')
+                    cy.get('[data-test-hook="Checkbox off"]').should('not.exist')
+                })
+            })
+        })
+
+        it('displays disabled UI with checkboxes when checked', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+                cy.logout()
+                cy.login('tester2@streamr.com', 'tester2')
+
+                cy.server()
+
+                cy.route('GET', `/api/v1/streams/${streamId}/storageNodes`).as('getNodes')
+
+                cy.visit(`/core/streams/${streamId}`)
+                cy.wait('@getNodes')
+                cy.get('[data-test-hook="Storage nodes"]').within(() => {
+                    cy.get('button:disabled').contains(/local/i).should('exist')
+                    // Disabled and checked => checked checkbox
+                    cy.get('[data-test-hook="Checkbox on"]').should('exist')
+                    cy.get('[data-test-hook="Checkbox off"]').should('not.exist')
+                })
+            })
+        })
+    })
 })
 
 describe('Stream edit page', () => {
@@ -359,6 +406,108 @@ describe('Stream edit page', () => {
                 expect(stream.storageDays).to.eq(360)
                 expect(stream.requireEncryptedData).to.eq(true)
                 expect(stream.requireSignedData).to.eq(true)
+            })
+        })
+    })
+
+    describe('Storage nodes UI', () => {
+        it('displays non-disabled UI', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.server()
+
+                cy.route('GET', `/api/v1/streams/${streamId}/storageNodes`).as('getNodes')
+
+                cy.visit(`/core/streams/${streamId}`)
+                cy.wait('@getNodes')
+                cy.get('[data-test-hook="Storage nodes"]').within(() => {
+                    cy.get('button:not(:disabled)').contains(/local/i)
+                    cy.get('[data-test-hook="Checkbox off"]').should('exist')
+                })
+            })
+        })
+
+        it('loads current nodes from the server', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+
+                cy.server()
+
+                cy.route('GET', `/api/v1/streams/${streamId}/storageNodes`).as('getNodes')
+
+                cy.visit(`/core/streams/${streamId}`)
+                cy.wait('@getNodes')
+                cy.get('[data-test-hook="Storage nodes"]').within(() => {
+                    cy.get('button [data-test-hook="Checkbox on"]').should('exist')
+                })
+            })
+        })
+
+        it('allows user to enable a storage node', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.server()
+
+                cy.route('POST', `/api/v1/streams/${streamId}/storageNodes`).as('enableNode')
+
+                cy.visit(`/core/streams/${streamId}`)
+                cy.get('[data-test-hook="Storage nodes"]').within(() => {
+                    cy.get('button [data-test-hook="Checkbox off"]').should('exist')
+                    cy.get('button [data-test-hook="Checkbox on"]').should('not.exist')
+                    cy.get('button').contains('Local').click()
+                    cy.wait('@enableNode')
+                    cy.get('button [data-test-hook="Checkbox on"]').should('exist')
+                    cy.get('button [data-test-hook="Checkbox off"]').should('not.exist')
+                })
+            })
+        })
+
+        it('allows user to disable a storage node', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+
+                cy.server()
+
+                cy.route('DELETE', `/api/v1/streams/${streamId}/storageNodes/0xde1112f631486CfC759A50196853011528bC5FA0`).as('disableNode')
+
+                cy.visit(`/core/streams/${streamId}`)
+                cy.get('[data-test-hook="Storage nodes"]').within(() => {
+                    cy.get('button [data-test-hook="Checkbox on"]').should('exist')
+                    cy.get('button [data-test-hook="Checkbox off"]').should('not.exist')
+                    cy.get('button').contains('Local').click()
+                    cy.wait('@disableNode')
+                    cy.get('button [data-test-hook="Checkbox on"]').should('not.exist')
+                    cy.get('button [data-test-hook="Checkbox off"]').should('exist')
+                })
+            })
+        })
+
+        it('does not toggle a storage node on network failure', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.server()
+
+                cy.route('GET', `/api/v1/streams/${streamId}`).as('getStream')
+
+                cy.route({
+                    method: 'POST',
+                    status: 500,
+                    response: [],
+                    url: `/api/v1/streams/${streamId}/storageNodes`,
+                }).as('enableNode')
+
+                cy.visit(`/core/streams/${streamId}`)
+
+                cy.wait('@getStream')
+
+                cy.get('[data-test-hook="Storage nodes"]').within(() => {
+                    cy.get('button [data-test-hook="Checkbox off"]').should('exist')
+                    cy.get('button').contains('Local').click()
+                    cy.wait('@enableNode')
+                    cy.get('button [data-test-hook="Checkbox off"]').should('exist')
+                })
             })
         })
     })

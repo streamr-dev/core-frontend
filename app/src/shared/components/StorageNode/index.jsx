@@ -50,7 +50,10 @@ const UnstyledStorageNode = ({
         >
             <div>{children}</div>
             {(!disabled || !!checked) && !changing && (
-                <Checkbox.Dummy checked={checked} />
+                <Checkbox.Dummy
+                    checked={checked}
+                    data-test-hook={checked ? 'Checkbox on' : 'Checkbox off'}
+                />
             )}
             {changing && (
                 <Spinner color="gray" />
