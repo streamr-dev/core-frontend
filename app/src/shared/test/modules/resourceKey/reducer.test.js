@@ -21,24 +21,6 @@ describe('resourceKey - reducer', () => {
             }), expectedState)
         })
 
-        it('should add the key to the resource on GET_MY_RESOURCE_KEYS_SUCCESS', () => {
-            const keys = ['test', 'test2']
-            const expectedState = {
-                ...initialState,
-                users: {
-                    me: keys,
-                },
-                fetching: false,
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.GET_MY_RESOURCE_KEYS_SUCCESS,
-                payload: {
-                    keys,
-                },
-            }), expectedState)
-        })
-
         it('should add the key to the resource on GET_STREAM_RESOURCE_KEYS_SUCCESS', () => {
             const streamId = '1234'
             const keys = ['test', 'test2']
@@ -87,48 +69,6 @@ describe('resourceKey - reducer', () => {
             assert.deepStrictEqual(reducer(undefined, {
                 type: constants.ADD_RESOURCE_KEY_REQUEST,
                 payload: {},
-            }), expectedState)
-        })
-
-        it('should add the key to the resource on ADD_MY_RESOURCE_KEY_SUCCESS if the resource doesnt have keys', () => {
-            const key = 'test'
-            const expectedState = {
-                ...initialState,
-                users: {
-                    me: [key],
-                },
-                fetching: false,
-            }
-
-            assert.deepStrictEqual(reducer(undefined, {
-                type: constants.ADD_MY_RESOURCE_KEY_SUCCESS,
-                payload: {
-                    key,
-                },
-            }), expectedState)
-        })
-
-        it('should add the key to the resource on ADD_MY_RESOURCE_KEY_SUCCESS if the resource already has keys', () => {
-            const key = 'test'
-            const nextState = {
-                ...initialState,
-                users: {
-                    me: ['1', '2'],
-                },
-            }
-            const expectedState = {
-                ...initialState,
-                users: {
-                    me: ['1', '2', key],
-                },
-                fetching: false,
-            }
-
-            assert.deepStrictEqual(reducer(nextState, {
-                type: constants.ADD_MY_RESOURCE_KEY_SUCCESS,
-                payload: {
-                    key,
-                },
             }), expectedState)
         })
 
@@ -208,54 +148,6 @@ describe('resourceKey - reducer', () => {
             assert.deepStrictEqual(reducer(undefined, {
                 type: constants.REMOVE_RESOURCE_KEY_REQUEST,
                 payload: {},
-            }), expectedState)
-        })
-
-        it('should remove the key on REMOVE_MY_RESOURCE_KEY_SUCCESS', () => {
-            const key = 'test2'
-            const nextState = {
-                ...initialState,
-                users: {
-                    me: ['test1', 'test2'],
-                },
-            }
-            const expectedState = {
-                ...initialState,
-                users: {
-                    me: ['test1'],
-                },
-                fetching: false,
-            }
-
-            assert.deepStrictEqual(reducer(nextState, {
-                type: constants.REMOVE_MY_RESOURCE_KEY_SUCCESS,
-                payload: {
-                    key,
-                },
-            }), expectedState)
-        })
-
-        it('should do nothing if no key is found on REMOVE_MY_RESOURCE_KEY_SUCCESS', () => {
-            const key = 'somekey'
-            const nextState = {
-                ...initialState,
-                users: {
-                    me: ['test1', 'test2'],
-                },
-            }
-            const expectedState = {
-                ...initialState,
-                users: {
-                    me: ['test1', 'test2'],
-                },
-                fetching: false,
-            }
-
-            assert.deepStrictEqual(reducer(nextState, {
-                type: constants.REMOVE_MY_RESOURCE_KEY_SUCCESS,
-                payload: {
-                    key,
-                },
             }), expectedState)
         })
 

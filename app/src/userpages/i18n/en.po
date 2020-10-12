@@ -537,6 +537,9 @@ msgstr ""
 "For keys that can access this stream only, create a new Ethereum account and share this "
 "stream to it. For keys that can access all your streams, add an Ethereum account in Settings."
 
+msgid "userpages.streams.edit.apiCredentials.addAPIKey"
+msgstr "Add new key"
+
 msgid "userpages.streams.edit.streamPartitions.description"
 msgstr ""
 "Partitioning enables high-volume streams to scale beyond what one subscriber can handle. "
@@ -793,21 +796,6 @@ msgstr "Please enter a valid email address"
 
 msgid "userpages.profilePage.profileSettings.changePassword"
 msgstr "Change Password"
-
-msgid "userpages.profilePage.apiCredentials.title"
-msgstr "API Credentials"
-
-msgid "userpages.profilePage.apiCredentials.linkTitle"
-msgstr "API keys"
-
-msgid "userpages.profilePage.apiCredentials.description"
-msgstr ""
-"API keys are deprecated, and will stop working at a later time. Creating new API keys has been "
-"disabled. To authenticate to the API from your apps and scripts, please use the Ethereum "
-"Accounts section to create private keys instead."
-
-msgid "userpages.profilePage.apiCredentials.addAPIKey"
-msgstr "Add new key"
 
 msgid "userpages.profilePage.ethereumAddress.title"
 msgstr "Ethereum Accounts"

@@ -58,15 +58,11 @@ export type IntegrationKeyState = {
 }
 
 // resource key
-export type UserResourceKeys = {
-    [UserId | 'me']: ResourceKeyIdList,
-}
 export type StreamResourceKeys = {
     [StreamId]: ResourceKeyIdList,
 }
 
 export type ResourceKeyState = {
-    users: UserResourceKeys,
     streams: StreamResourceKeys,
     error?: ?ErrorInUi,
     fetching: boolean

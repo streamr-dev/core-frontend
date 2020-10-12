@@ -6,21 +6,10 @@ import type { ResourceKeyList, ResourceKey, ResourceKeyId, ResourcePermission } 
 import type { StreamId } from '$shared/flowtype/stream-types'
 import routes from '$routes'
 
-export const getMyResourceKeys = (): ApiResult<ResourceKeyList> => get({
-    url: routes.api.currentUser.keys.index(),
-})
-
 export const getStreamResourceKeys = (streamId: StreamId): ApiResult<ResourceKeyList> => get({
     url: routes.api.streams.keys.index({
         streamId,
     }),
-})
-
-export const addMyResourceKey = (keyName: string): ApiResult<ResourceKey> => post({
-    url: routes.api.currentUser.keys.index(),
-    data: {
-        name: keyName,
-    },
 })
 
 export const addStreamResourceKey = (streamId: StreamId, name: string, permission: ResourcePermission): ApiResult<ResourceKey> =>
@@ -46,22 +35,6 @@ export const editStreamResourceKey =
                 permission: keyPermission,
             },
         })
-
-export const editMyResourceKey = (id: ResourceKeyId, name: string): ApiResult<ResourceKey> =>
-    put({
-        url: routes.api.currentUser.keys.show({
-            id,
-        }),
-        data: {
-            name,
-        },
-    })
-
-export const removeMyResourceKey = (id: ResourceKeyId): ApiResult<null> => del({
-    url: routes.api.currentUser.keys.show({
-        id,
-    }),
-})
 
 export const removeStreamResourceKey = (streamId: StreamId, id: ResourceKeyId): ApiResult<null> => del({
     url: routes.api.streams.keys.show({

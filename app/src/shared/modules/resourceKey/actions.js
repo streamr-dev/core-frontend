@@ -14,44 +14,28 @@ import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-type
 import { handleEntities } from '$shared/utils/entities'
 import { resourceKeysSchema, resourceKeySchema } from '$shared/modules/entities/schema'
 
-// "MY_RESOURCE_KEY": user API key
 // "STREAM_RESOURCE_KEY": stream API key
 import {
     GET_RESOURCE_KEYS_REQUEST,
-    GET_MY_RESOURCE_KEYS_SUCCESS,
     GET_STREAM_RESOURCE_KEYS_SUCCESS,
     GET_RESOURCE_KEYS_FAILURE,
     ADD_RESOURCE_KEY_REQUEST,
-    ADD_MY_RESOURCE_KEY_SUCCESS,
     ADD_STREAM_RESOURCE_KEY_SUCCESS,
     ADD_RESOURCE_KEY_FAILURE,
     REMOVE_RESOURCE_KEY_REQUEST,
-    REMOVE_MY_RESOURCE_KEY_SUCCESS,
     REMOVE_STREAM_RESOURCE_KEY_SUCCESS,
     REMOVE_RESOURCE_KEY_FAILURE,
     EDIT_STREAM_RESOURCE_KEY_REQUEST,
     EDIT_STREAM_RESOURCE_KEY_SUCCESS,
     EDIT_STREAM_RESOURCE_KEY_FAILURE,
-    EDIT_MY_RESOURCE_KEY_REQUEST,
-    EDIT_MY_RESOURCE_KEY_SUCCESS,
-    EDIT_MY_RESOURCE_KEY_FAILURE,
 } from './constants'
 import type {
-    MyResourceKeysActionCreator,
-    MyResourceKeyActionCreator,
     StreamResourceKeysActionCreator,
     StreamResourceKeyActionCreator,
     ResourceKeysErrorActionCreator,
 } from './types'
 
 const getResourceKeysRequest: ReduxActionCreator = createAction(GET_RESOURCE_KEYS_REQUEST)
-
-const getMyResourceKeysSuccess: MyResourceKeysActionCreator = createAction(
-    GET_MY_RESOURCE_KEYS_SUCCESS,
-    (keys: ResourceKeyIdList) => ({
-        keys,
-    }),
-)
 
 const getStreamResourceKeysSuccess: StreamResourceKeysActionCreator = createAction(
     GET_STREAM_RESOURCE_KEYS_SUCCESS,
@@ -70,13 +54,6 @@ const getResourceKeysFailure: ResourceKeysErrorActionCreator = createAction(
 
 const addResourceKeyRequest: ReduxActionCreator = createAction(ADD_RESOURCE_KEY_REQUEST)
 
-const addMyResourceKeySuccess: MyResourceKeyActionCreator = createAction(
-    ADD_MY_RESOURCE_KEY_SUCCESS,
-    (key: ResourceKeyId) => ({
-        key,
-    }),
-)
-
 const addStreamResourceKeySuccess: StreamResourceKeyActionCreator = createAction(
     ADD_STREAM_RESOURCE_KEY_SUCCESS,
     (id: StreamId, key: ResourceKeyId) => ({
@@ -93,13 +70,6 @@ const addResourceKeyFailure: ResourceKeysErrorActionCreator = createAction(
 )
 
 const removeResourceKeyRequest: ReduxActionCreator = createAction(REMOVE_RESOURCE_KEY_REQUEST)
-
-const removeMyResourceKeySuccess: MyResourceKeyActionCreator = createAction(
-    REMOVE_MY_RESOURCE_KEY_SUCCESS,
-    (key: ResourceKeyId) => ({
-        key,
-    }),
-)
 
 const removeStreamResourceKeySuccess: StreamResourceKeyActionCreator = createAction(
     REMOVE_STREAM_RESOURCE_KEY_SUCCESS,
@@ -135,41 +105,6 @@ const editStreamResourceKeyFailure: ResourceKeysErrorActionCreator = createActio
     }),
 )
 
-const editMyResourceKeyRequest: ReduxActionCreator = createAction(EDIT_MY_RESOURCE_KEY_REQUEST)
-
-const editMyResourceKeySuccess: MyResourceKeysActionCreator = createAction(
-    EDIT_MY_RESOURCE_KEY_SUCCESS,
-    (keys: ResourceKeyIdList) => ({
-        keys,
-    }),
-)
-
-const editMyResourceKeyFailure: ResourceKeysErrorActionCreator = createAction(
-    EDIT_MY_RESOURCE_KEY_FAILURE,
-    (error: ErrorInUi) => ({
-        error,
-    }),
-)
-
-export const getMyResourceKeys = () => (dispatch: Function) => {
-    dispatch(getResourceKeysRequest())
-    return services.getMyResourceKeys()
-        .then((data) => data.map((key) => ({
-            ...key,
-            type: 'USER',
-        })))
-        .then(handleEntities(resourceKeysSchema, dispatch))
-        .then((result) => dispatch(getMyResourceKeysSuccess(result)))
-        .catch((e) => {
-            const error = {
-                title: 'Error!',
-                message: e.message,
-            }
-            dispatch(getResourceKeysFailure(error))
-            throw e
-        })
-}
-
 export const getStreamResourceKeys = (id: StreamId) => (dispatch: Function) => {
     dispatch(getResourceKeysRequest())
     return services.getStreamResourceKeys(id)
@@ -185,25 +120,6 @@ export const getStreamResourceKeys = (id: StreamId) => (dispatch: Function) => {
                 message: e.message,
             }
             dispatch(getResourceKeysFailure(error))
-            throw e
-        })
-}
-
-export const addMyResourceKey = (name: string) => (dispatch: Function) => {
-    dispatch(addResourceKeyRequest())
-    return services.addMyResourceKey(name)
-        .then((data) => ({
-            ...data,
-            type: 'USER',
-        }))
-        .then(handleEntities(resourceKeySchema, dispatch))
-        .then((result) => dispatch(addMyResourceKeySuccess(result)))
-        .catch((e) => {
-            const error = {
-                title: 'Error!',
-                message: e.message,
-            }
-            dispatch(addResourceKeyFailure(error))
             throw e
         })
 }
@@ -225,20 +141,6 @@ export const addStreamResourceKey = (id: StreamId, name: string, permission: Res
                 message: e.message,
             }
             dispatch(addResourceKeyFailure(error))
-            throw e
-        })
-}
-
-export const removeMyResourceKey = (keyId: ResourceKeyId) => (dispatch: Function) => {
-    dispatch(removeResourceKeyRequest())
-    return services.removeMyResourceKey(keyId)
-        .then(() => dispatch(removeMyResourceKeySuccess(keyId)))
-        .catch((e) => {
-            const error = {
-                title: 'Error!',
-                message: e.message,
-            }
-            dispatch(removeResourceKeyFailure(error))
             throw e
         })
 }
@@ -279,25 +181,3 @@ export const editStreamResourceKey =
                 throw e
             })
     }
-
-export const editMyResourceKey = (keyId: ResourceKeyId, keyName: string) => (dispatch: Function) => {
-    dispatch(editMyResourceKeyRequest())
-    return services.editMyResourceKey(keyId, keyName)
-        .then((data) => ({
-            ...data,
-            type: 'USER',
-        }))
-        .then(handleEntities(resourceKeySchema, dispatch))
-        .then((result) => {
-            dispatch(editMyResourceKeySuccess(result))
-            dispatch(getMyResourceKeys())
-        })
-        .catch((e) => {
-            const error = {
-                title: 'Error!',
-                message: e.message,
-            }
-            dispatch(editMyResourceKeyFailure(error))
-            throw e
-        })
-}

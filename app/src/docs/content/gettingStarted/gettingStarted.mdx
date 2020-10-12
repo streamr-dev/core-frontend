@@ -5,8 +5,6 @@ import docsLinks from '$shared/../docsLinks'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import Image from '$docs/components/Image'
 
-import ApiCredentials from './images/gs_api_01_desktop.jpg'
-import ApiCredentials2x from './images/gs_api_01_desktop@2x.jpg'
 import EthIdentities from './images/gs_eth_id_03_desktop.jpg'
 import EthIdentities2x from './images/gs_eth_id_03_desktop@2x.jpg'
 import SignInWithEth from './images/gs_eth_sign_02_desktop.jpg'
@@ -17,15 +15,6 @@ import SignatureRequest2x from './images/signatureRequest@2x.png'
 # Getting Started
 Welcome to Streamr! To get a feel for what Streamr is, check out our <Link to={docsLinks.introduction}>intro docs</Link>.
 The first thing you'll want to get is a Streamr account. You can do that <Link to={routes.auth.login()}>here</Link>. Creating an account requires either an Email address or a Web3 Ethereum wallet, e.g. <a href="https://metamask.io" target="blank">Metamask</a>.
-
-### Get your API keys
-After creating your Streamr account, visit your profile settings page to reveal your API keys. These keys grant you access to read and write to the streams you create and are your means of authentication when using the Streamr API.
-
-<Image
-  src={ApiCredentials}
-  highResSrc={ApiCredentials2x}
-  alt="API Credentials"
-/>
 
 ### Ethereum identity on Streamr
 You will need to have an Ethereum account on Streamr if you want to publish or buy a paid product on the Marketplace. It is optional, but recommended if you want to enjoy the full Streamr experience.

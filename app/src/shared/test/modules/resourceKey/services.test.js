@@ -25,32 +25,6 @@ describe('resourceKey - services', () => {
         moxios.uninstall()
     })
 
-    describe('getMyResourceKeys', () => {
-        it('gets users API keys', async () => {
-            const data = [
-                {
-                    id: 'testid',
-                    name: 'Test',
-                    user: 'tester1@streamr.com',
-                },
-            ]
-
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: data,
-                })
-
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, '/users/me/keys')
-            })
-
-            const result = await services.getMyResourceKeys()
-            assert.deepStrictEqual(result, data)
-        })
-    })
-
     describe('getStreamResourceKeys', () => {
         it('gets API keys from stream', async () => {
             const streamId = '1234'
@@ -78,31 +52,6 @@ describe('resourceKey - services', () => {
         })
     })
 
-    describe('addMyResourceKey', () => {
-        it('makes a POST request', async () => {
-            const name = 'new key'
-            const data = {
-                id: 'testid',
-                name,
-                user: 'tester1@streamr.com',
-            }
-
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: data,
-                })
-
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, '/users/me/keys')
-            })
-
-            const result = await services.addMyResourceKey(name)
-            assert.deepStrictEqual(result, data)
-        })
-    })
-
     describe('addStreamResourceKey', () => {
         it('makes a POST request', async () => {
             const streamId = '1234'
@@ -126,25 +75,6 @@ describe('resourceKey - services', () => {
 
             const result = await services.addStreamResourceKey(streamId, name)
             assert.deepStrictEqual(result, data)
-        })
-    })
-
-    describe('removeMyResourceKey', () => {
-        it('makes a DELETE request', async () => {
-            const id = 'testid'
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 204,
-                    response: null,
-                })
-
-                assert.equal(request.config.method, 'delete')
-                assert.equal(request.config.url, `/users/me/keys/${id}`)
-            })
-
-            const result = await services.removeMyResourceKey(id)
-            assert.deepStrictEqual(result, null)
         })
     })
 
