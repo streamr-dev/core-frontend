@@ -42,7 +42,7 @@ function useDataUnionStats() {
             }
         } catch (e) {
             // Try again if status is 404, it means API might not be up yet
-            if (e.statusCode && e.statusCode === 404) {
+            if (e.statusCode && e.statusCode === 503) {
                 console.warn(e)
 
                 if (isMounted()) {
