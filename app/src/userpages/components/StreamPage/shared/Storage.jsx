@@ -9,7 +9,7 @@ import useStreamStorageNodeAddresses from '$shared/components/StorageNode/useStr
 const UnstyledStorage = ({ streamId, disabled, ...props }) => {
     const addresses = useStreamStorageNodeAddresses(streamId)
 
-    return (
+    return !!process.env.STORAGE_NODES && (
         <div {...props}>
             <Label>
                 {I18n.t('userpages.streams.edit.storageNodes.label')}

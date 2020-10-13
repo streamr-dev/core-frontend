@@ -143,6 +143,12 @@ const StreamPartitions = styled.div`
     width: 136px;
 `
 
+const StyledTranslate = styled(Translate)`
+    /* TODO: Get rid of it in a consistency pass. This and "Edit/HistoryView" both define this
+       component */
+    margin-bottom: 3.125rem !important;
+`
+
 const UnstyledView = ({ stream, currentUser, ...props }) => {
     const { copy, isCopied } = useCopy()
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
@@ -291,7 +297,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                 >
-                    <Translate tag="p" value="userpages.streams.edit.historicalStoragePeriod.description" />
+                    <StyledTranslate tag="p" value="userpages.streams.edit.historicalStoragePeriod.description" />
                     <Storage streamId={stream.id} disabled />
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>
@@ -353,10 +359,6 @@ const View = styled(UnstyledView)`
 
     ${Title} {
         display: block;
-    }
-
-    ${Storage} {
-        margin-top: 32px;
     }
 `
 
