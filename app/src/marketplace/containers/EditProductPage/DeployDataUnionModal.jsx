@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useCallback, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
 
 import useModal from '$shared/hooks/useModal'
 import { type Product } from '$mp/flowtype/product-types'
@@ -10,11 +9,9 @@ import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployData
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
-import { deployContract } from '$mp/modules/dataUnion/services'
+import { deployDataUnion } from '$mp/modules/dataUnion/services'
 import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
-import { addTransaction } from '$mp/modules/transactions/actions'
-import { transactionTypes } from '$shared/utils/constants'
 import getWeb3 from '$shared/web3/web3Provider'
 import { averageBlockTime } from '$shared/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -55,7 +52,6 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const [deployError, setDeployError] = useState(null)
     const [estimate, setEstimate] = useState(0)
     const [address, setAddress] = useState(null)
-    const dispatch = useDispatch()
     const isMounted = useIsMounted()
     const { web3Error, checkingWeb3 } = useWeb3Status()
 
@@ -82,20 +78,21 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         setEstimate(blockEstimate + API_READY_ESTIMATE)
 
         return new Promise((resolve) => (
-            deployContract({
+            deployDataUnion({
                 productId: productId || '',
                 adminFee,
-                version: 1,
+                version: 2,
             })
-                .onTransactionHash((hash, dataUnionAddress) => {
+                .onTransactionHash((contractAddress) => {
                     if (!isMounted()) { return }
-                    dispatch(addTransaction(hash, transactionTypes.DEPLOY_DATA_UNION))
-                    setAddress(dataUnionAddress)
+
+                    // deployDataUnion() returns the calculated contract address as the tx hash,
+                    // set it here to make sure we save it if the transaction wouldn't have time to complete
+                    setAddress(contractAddress)
                     setStep(steps.COMPLETE)
 
                     Activity.push({
                         action: actionTypes.DEPLOY,
-                        txHash: hash,
                         resourceId: productId,
                         resourceType: resourceTypes.PRODUCT,
                     })
@@ -104,6 +101,9 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                 })
                 .onTransactionComplete(({ contractAddress }) => {
                     if (!isMounted()) { return }
+
+                    // the new contract address is valid by this point and should match the calculated
+                    // address but save it once more just to be sure
                     setAddress(contractAddress)
 
                     // Redirect back to product but allow the api to start up
@@ -119,7 +119,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     resolve()
                 })
         ))
-    }, [isMounted, productId, adminFee, dispatch])
+    }, [isMounted, productId, adminFee])
 
     const onGuideContinue = useCallback((dontShow) => {
         setSkipGuide(dontShow)

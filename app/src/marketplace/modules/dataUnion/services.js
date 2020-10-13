@@ -8,7 +8,7 @@ import { getToken } from '$shared/utils/sessionToken'
 
 import { getContract, call, calculateContractAddress } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
-import type { SmartContractDeployTransaction, SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
+import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import type { Stream, NewStream } from '$shared/flowtype/stream-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
@@ -23,7 +23,6 @@ import {
     removeResourcePermission,
 } from '$userpages/modules/permission/services'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
-import DeployTransaction from '$shared/utils/DeployTransaction'
 import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
 import routes from '$routes'
@@ -153,13 +152,13 @@ const getAdminFeeInEther = (adminFee: number) => {
 }
 
 // eslint-disable-next-line camelcase
-const deprecated_deployContract = (productId: ProductId, adminFee: number): SmartContractDeployTransaction => {
+const deprecated_deployDataUnion = (productId: ProductId, adminFee: number): SmartContractTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         emitter.emit('error', error)
     }
-    const tx = new DeployTransaction(emitter)
+    const tx = new Transaction(emitter)
     const contract = getConfig().communityProduct
     const operatorAddress = process.env.DATA_UNION_OPERATOR_ADDRESS
     const tokenAddress = process.env.DATA_TOKEN_CONTRACT_ADDRESS
@@ -195,8 +194,10 @@ const deprecated_deployContract = (productId: ProductId, adminFee: number): Smar
                     from: account,
                 })
                 .on('error', errorHandler)
-                .on('transactionHash', (hash) => {
-                    emitter.emit('transactionHash', hash, futureAddress)
+                .on('transactionHash', () => {
+                    // send calculated contract address as the transaction hash,
+                    // ignore actual tx hash
+                    emitter.emit('transactionHash', futureAddress)
                 })
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
@@ -231,19 +232,13 @@ export const createClient = (usePublicNode: boolean = false) => new StreamrClien
     },
 })
 
-export const calculateDataUnionAddress = async (productId: ProductId, owner: Address, usePublicNode: boolean = false) => {
-    const client = createClient(usePublicNode)
-
-    return client.calculateDataUnionMainnetAddress(productId, owner)
-}
-
-export const deployDataUnion2 = (productId: ProductId, adminFee: number): SmartContractDeployTransaction => {
+export const deployDataUnion2 = (productId: ProductId, adminFee: number): SmartContractTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         emitter.emit('error', error)
     }
-    const tx = new DeployTransaction(emitter)
+    const tx = new Transaction(emitter)
 
     const client = createClient()
 
@@ -252,44 +247,43 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: number): SmartC
         checkEthereumNetworkIsCorrect(web3),
         client.ensureConnected(),
     ])
-        .then(([account]) => Promise.all([
-            Promise.resolve(account),
-            calculateDataUnionAddress(productId, account),
-        ]))
-        .then(([account, futureAddress]) => {
-            debugger
-            emitter.emit('transactionHash', '0x0', futureAddress)
+        .then(([account]) => client.calculateDataUnionMainnetAddress(productId, account))
+        .then((futureAddress) => {
+            // send calculated contract address as the transaction hash,
+            // streamr-client doesn't tell us the actual tx hash
+            emitter.emit('transactionHash', futureAddress)
 
-            return Promise.all([
-                Promise.resolve(account),
-                client.deployDataUnion({
-                    dataUnionName: productId,
-                    adminFee,
-                }),
-            ])
-        })
-        .then(([account, dataUnion]) => {
-            debugger
-            return dataUnion.isReady().then(() => {
-                emitter.emit('receipt')
-            }, () => {
-                errorHandler(new TransactionError(I18n.t('error.txFailed')))
+            return client.deployDataUnion({
+                dataUnionName: productId,
+                adminFee,
             })
+        })
+        .then((dataUnion) => {
+            const receipt = dataUnion.deployTxReceipt
+
+            if (parseInt(receipt.status, 16) === 0) {
+                errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+            } else {
+                emitter.emit('receipt', {
+                    ...receipt,
+                    contractAddress: dataUnion.address,
+                })
+            }
         }, errorHandler)
         .catch(errorHandler)
 
     return tx
 }
 
-type DeployContract = {
+type DeployDataUnion = {
     productId: ProductId,
     adminFee: number,
     version?: number,
 }
 
-export const deployContract = ({ productId, adminFee, version = 1 }: DeployContract): SmartContractDeployTransaction => {
+export const deployDataUnion = ({ productId, adminFee, version = 1 }: DeployDataUnion): SmartContractTransaction => {
     if (version !== 2) {
-        return deprecated_deployContract(productId, adminFee)
+        return deprecated_deployDataUnion(productId, adminFee)
     }
 
     return deployDataUnion2(productId, adminFee)
@@ -308,6 +302,7 @@ const deprecated_getCommunityContract = (address: DataUnionId, usePublicNode: bo
 const whitelist = [
     '0xCe4302EE40D8BA2EfE3D973bd585D1C0ED90b374',
     '0xaF79F2DE50AC857320098331B09f0b05a5CB5C50',
+    '0x481FaDebf6892461ecF514516f1F7B3597125A5D',
 ].map((s) => s.toLowerCase())
 
 export const getDataUnionVersion = async (address: DataUnionId, usePublicNode: boolean = false) => {

@@ -72,7 +72,6 @@ export default function useProductLoadCallback() {
                     dataUnionDeployed = true
                 } catch (e) {
                     // ignore error, assume contract has not been deployed
-                    debugger
                 }
             }
             if (!isMounted()) { return }
