@@ -263,6 +263,7 @@ jobs:
     - AWS_ACCESS_KEY_ID=$ACCESS_KEY_PRD
     - AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY_PRD
     - NO_TEST_HOOKS=1
+    - STORAGE_NODES=Streamr Germany:0xc3075C2556A1FD30c67530F1ac5ddAE618762CAa
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
     - provider: s3
