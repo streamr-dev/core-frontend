@@ -3,20 +3,20 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { post, del } from '$shared/utils/api'
 import routes from '$routes'
 
-const useStreamStorageNodeToggle = (streamId, address, _enabled, _changing) => {
-    const [changing, setChanging] = useState(_changing)
+const useStreamStorageNodeToggle = (streamId, address, isEnabled, isChanging) => {
+    const [changing, setChanging] = useState(isChanging)
 
     useEffect(() => {
-        setChanging(_changing)
-    }, [_changing])
+        setChanging(isChanging)
+    }, [isChanging])
 
-    const [enabled, setEnabled] = useState(_enabled)
+    const [enabled, setEnabled] = useState(isEnabled)
 
     useEffect(() => {
-        setEnabled(_enabled)
-    }, [_enabled])
+        setEnabled(isEnabled)
+    }, [isEnabled])
 
-    const busyRef = useRef(!!_changing)
+    const busyRef = useRef(!!isChanging)
 
     const isMounted = useIsMounted()
 
