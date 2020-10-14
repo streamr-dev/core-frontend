@@ -169,6 +169,7 @@ jobs:
     - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
     - NO_TEST_HOOKS=1
+    - STORAGE_NODES=Staging Storage:0xde1112f631486CfC759A50196853011528bC5FA0
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
     deploy:
     - provider: s3
@@ -232,6 +233,7 @@ jobs:
     - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
     - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
     - NO_TEST_HOOKS=1
+    - STORAGE_NODES=Staging Storage:0xde1112f631486CfC759A50196853011528bC5FA0
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/deploy-pr.sh"
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
