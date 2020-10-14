@@ -45,6 +45,17 @@ Cypress.Commands.add('createStream', (body) => (
         .then(({ body: { id } }) => id)
 ))
 
+Cypress.Commands.add('enableStorageNode', (streamId, address) => (
+    cy
+        .authenticatedRequest({
+            url: `http://localhost/api/v1/streams/${streamId}/storageNodes`,
+            method: 'POST',
+            body: {
+                address,
+            },
+        })
+))
+
 Cypress.Commands.add('getStream', (id) => {
     cy
         .authenticatedRequest({

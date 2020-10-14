@@ -1,28 +1,61 @@
-// @flow
-
 import React from 'react'
-import classNames from 'classnames'
+import styled, { css } from 'styled-components'
+import ImageChecked from './checkbox-checked.svg'
+import ImageUnchecked from './checkbox.svg'
 
-import styles from './checkbox.pcss'
+const Tick = styled.div`
+    background: url(${ImageUnchecked}) no-repeat;
+    height: 16px;
+    position: relative;
+    width: 16px;
 
-export type Props = {
-    className?: string,
-    value?: any,
-    onChange?: (any) => void,
-}
+    ::after {
+        background: url(${ImageChecked}) no-repeat;
+        bottom: 0;
+        content: ' ';
+        display: block;
+        left: 0;
+        opacity: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transition: opacity 0.1s;
+    }
 
-const Checkbox = ({ value, className, onChange, ...props }: Props) => (
-    <input
+    ${({ checked }) => !!checked && css`
+        ::after {
+            opacity: 1;
+        }
+    `}
+`
+
+const noop = () => {}
+
+const UnstyledCheckbox = ({ value, onChange = noop, ...props }) => (
+    <Tick
         {...props}
+        as="input"
         type="checkbox"
         checked={!!value}
         onChange={onChange}
-        className={classNames(styles.root, className)}
     />
 )
 
-Checkbox.defaultProps = {
-    onChange: () => {},
-}
+const Checkbox = styled(UnstyledCheckbox)`
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+    margin-right: 0.5em;
+    top: 0;
+
+    :focus {
+        outline: none;
+    }
+`
+
+Object.assign(Checkbox, {
+    Tick,
+})
 
 export default Checkbox

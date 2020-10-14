@@ -24,6 +24,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
 import Nav from '$shared/components/Layout/Nav'
+import Storage from './shared/Storage'
 
 const Text = styled(UnstyledText)`
     &[disabled] {
@@ -140,6 +141,12 @@ const StyledButton = styled(Button)`
 
 const StreamPartitions = styled.div`
     width: 136px;
+`
+
+const StyledTranslate = styled(Translate)`
+    /* TODO: Get rid of it in a consistency pass. This and "Edit/HistoryView" both define this
+       component */
+    margin-bottom: 3.125rem !important;
 `
 
 const UnstyledView = ({ stream, currentUser, ...props }) => {
@@ -290,6 +297,8 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                 >
+                    <StyledTranslate tag="p" value="userpages.streams.edit.historicalStoragePeriod.description" />
+                    <Storage streamId={stream.id} disabled />
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>
                             <HistoricalStorage>
