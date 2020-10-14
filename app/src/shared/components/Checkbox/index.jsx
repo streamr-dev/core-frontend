@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import ImageChecked from './checkbox-checked.svg'
 import ImageUnchecked from './checkbox.svg'
 
-const Dummy = styled.div`
+const Tick = styled.div`
     background: url(${ImageUnchecked}) no-repeat;
     height: 16px;
     position: relative;
@@ -32,7 +32,7 @@ const Dummy = styled.div`
 const noop = () => {}
 
 const UnstyledCheckbox = ({ value, onChange = noop, ...props }) => (
-    <Dummy
+    <Tick
         {...props}
         as="input"
         type="checkbox"
@@ -55,7 +55,7 @@ const Checkbox = styled(UnstyledCheckbox)`
 `
 
 Object.assign(Checkbox, {
-    Dummy,
+    Tick,
 })
 
 export default Checkbox

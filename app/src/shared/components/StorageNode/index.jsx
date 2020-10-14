@@ -50,7 +50,7 @@ const UnstyledStorageNode = ({
         >
             <div>{children}</div>
             {(!disabled || !!checked) && !changing && (
-                <Checkbox.Dummy
+                <Checkbox.Tick
                     checked={checked}
                     data-test-hook={checked ? 'Checkbox on' : 'Checkbox off'}
                 />
@@ -100,7 +100,7 @@ const StorageNode = styled(UnstyledStorageNode)`
         white-space: nowrap;
     }
 
-    ${Checkbox.Dummy} {
+    ${Checkbox.Tick} {
         flex-shrink: 0;
         margin-left: 12px;
     }
