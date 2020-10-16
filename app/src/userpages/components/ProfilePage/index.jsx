@@ -20,14 +20,12 @@ import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 import Layout from '$shared/components/Layout'
 import CoreLayout from '$shared/components/Layout/Core'
 import ProfileSettings from './ProfileSettings'
-import APICredentials from './APICredentials'
 import IntegrationKeyHandler from './IntegrationKeyHandler'
 import IdentityHandler from './IdentityHandler/index'
 import DeleteAccount from './DeleteAccount'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import StatusLabel from '$shared/components/StatusLabel'
 import Nav from '$shared/components/Layout/Nav'
 
 import styles from './profilePage.pcss'
@@ -128,14 +126,6 @@ export const ProfilePage = () => {
                     linkTitle={I18n.t('userpages.profilePage.ethereumPrivateKeys.linkTitle')}
                 >
                     <IntegrationKeyHandler />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="api-keys"
-                    title={I18n.t('userpages.profilePage.apiCredentials.title')}
-                    linkTitle={I18n.t('userpages.profilePage.apiCredentials.linkTitle')}
-                    status={(<StatusLabel.Deprecated />)}
-                >
-                    <APICredentials />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="delete-account"

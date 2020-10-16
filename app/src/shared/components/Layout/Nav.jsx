@@ -163,9 +163,6 @@ const UnstyledWide = (props) => {
                                 <Menu.Item as={Link} to={routes.profile()}>
                                     <Translate value="general.profile" />
                                 </Menu.Item>
-                                <Menu.Item as={Link} to={routes.profile({}, 'api-keys')}>
-                                    <Translate value="userpages.profilePage.apiCredentials.linkTitle" />
-                                </Menu.Item>
                                 <Menu.Item as={Link} to={routes.profile({}, 'ethereum-accounts')}>
                                     <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
                                 </Menu.Item>

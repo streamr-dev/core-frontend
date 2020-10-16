@@ -34,7 +34,6 @@ function shouldRedirect(error) {
 
         const url = new window.URL(error.config.url)
         const me = new window.URL(routes.api.currentUser.index())
-        const keys = new window.URL(routes.api.currentUser.keys.index())
         const changePassword = new window.URL(routes.api.currentUser.changePassword())
 
         // shouldn't redirect if current password is wrong when changing password
@@ -43,7 +42,7 @@ function shouldRedirect(error) {
         }
 
         // shouldn't redirect if hitting /users/me api, 401 normal, signals logged out
-        if ([me.pathname, keys.pathname].includes(url.pathname) && me.origin === url.origin && error.config.method === 'get') {
+        if (me.pathname === url.pathname && me.origin === url.origin && error.config.method === 'get') {
             return false
         }
         return true

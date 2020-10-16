@@ -122,7 +122,7 @@ export class KeyView extends Component<Props> {
                     ))}
                 </ListWrapper>
                 <Button kind="secondary" disabled>
-                    {I18n.t('userpages.profilePage.apiCredentials.addAPIKey')}
+                    {I18n.t('userpages.streams.edit.apiCredentials.addAPIKey')}
                 </Button>
             </Fragment>
         )

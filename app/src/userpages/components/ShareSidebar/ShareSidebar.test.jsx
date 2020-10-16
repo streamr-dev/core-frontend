@@ -1,8 +1,9 @@
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 import * as Services from '$editor/canvas/services'
 import * as StreamServices from '$userpages/modules/userPageStreams/services'
-import { addStreamResourceKey } from '$shared/modules/resourceKey/services'
 import { getResourcePermissions } from '$userpages/modules/permission/services'
+import { post } from '$shared/utils/api'
+import routes from '$routes'
 
 import { getUserData } from '$shared/modules/user/services'
 import uid from 'lodash/uniqueId'
@@ -262,7 +263,15 @@ describe('ShareSidebar Permission Handling', () => {
             })
 
             // add resource key (this shows up in permissions response)
-            await addStreamResourceKey(stream.id, uid(`${name}-stream-api-key`), 'stream_subscribe')
+            await post({
+                url: routes.api.streams.keys.index({
+                    streamId: stream.id,
+                }),
+                data: {
+                    name: uid(`${name}-stream-api-key`),
+                    permission: 'stream_subscribe',
+                },
+            })
             permissions = await getResourcePermissions({
                 resourceType,
                 resourceId: stream.id,
