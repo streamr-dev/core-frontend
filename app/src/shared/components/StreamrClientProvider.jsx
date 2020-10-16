@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import Provider from 'streamr-client-react'
 import { getToken } from '$shared/utils/sessionToken'
 
-export default function ClientProvider({ children }) {
+export default function StreamrClientProvider({ children }) {
     const sessionToken = getToken()
 
     const auth = useMemo(() => (sessionToken == null ? {} : {
