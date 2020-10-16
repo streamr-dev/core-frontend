@@ -26,7 +26,7 @@ import StatusLabel from '$shared/components/StatusLabel'
 import Nav from '$shared/components/Layout/Nav'
 import Storage from './shared/Storage'
 
-const Text = styled(UnstyledText)`
+export const Text = styled(UnstyledText)`
     &[disabled] {
         background-color: #efefef;
         color: #525252;
@@ -51,7 +51,7 @@ const UnstyledField = ({
     </div>
 )
 
-const Field = styled(UnstyledField)`
+export const Field = styled(UnstyledField)`
     flex-grow: 1;
 
     & + & {
@@ -78,7 +78,7 @@ const Field = styled(UnstyledField)`
     `}
 `
 
-const FormGroup = styled.div`
+export const FormGroup = styled.div`
     & + & {
         margin-top: 32px;
     }
@@ -117,7 +117,7 @@ const StreamId = styled.div`
     }
 `
 
-const HistoricalStorage = styled.div`
+export const HistoricalStorage = styled.div`
     display: flex;
 
     @media (min-width: ${SM}px) {
@@ -139,7 +139,7 @@ const StyledButton = styled(Button)`
     }
 `
 
-const StreamPartitions = styled.div`
+export const StreamPartitions = styled.div`
     width: 136px;
 `
 

@@ -15,7 +15,7 @@ import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
 import Select from '$ui/Select'
 import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream, selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
+import { selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import Text from '$ui/Text'
 import SplitControl from '$userpages/components/SplitControl'
 import WithInputActions from '$shared/components/WithInputActions'
@@ -24,11 +24,11 @@ import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
 
 type OwnProps = {
+    stream: Stream,
     disabled: boolean,
 }
 
 type StateProps = {
-    stream: ?Stream,
     fieldsAutodetectFetching: boolean,
 }
 
@@ -233,7 +233,6 @@ export class ConfigureView extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: StoreState): StateProps => ({
-    stream: selectEditedStream(state),
     fieldsAutodetectFetching: selectFieldsAutodetectFetching(state),
 })
 

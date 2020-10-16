@@ -1,32 +1,21 @@
 // @flow
 
 import React, { useCallback, useState, useEffect, useRef } from 'react'
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
 import type { Stream } from '$shared/flowtype/stream-types'
-import type { StoreState } from '$shared/flowtype/store-state'
 import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Label from '$ui/Label'
 
 import styles from './statusView.pcss'
 
-type OwnProps = {
+type Props = {
     disabled: boolean,
+    stream: Stream,
 }
-
-type StateProps = {
-    stream: ?Stream,
-}
-
-type DispatchProps = {
-    updateEditStream: (Stream) => void,
-}
-
-type Props = OwnProps & StateProps & DispatchProps
 
 function hoursToUnits(value, units) {
     return units === 'days' ? value / 24 : value
@@ -40,10 +29,9 @@ function getUnits(value) {
     return (value !== 0 && value % 24 === 0) ? 'days' : 'hours'
 }
 
-function StatusView(props: Props) {
-    // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
-    const { disabled, stream, updateEditStream } = props
+export function StatusView({ disabled, stream }: Props) {
     const { inactivityThresholdHours } = stream || {}
+    const dispatch = useDispatch()
 
     // init units based on initial threshold value
     // don't calculate on the fly otherwise
@@ -67,11 +55,11 @@ function StatusView(props: Props) {
         // if entered value is NaN use existing value
         numberValue = Number.isNaN(numberValue) ? hoursToUnits(inactivityThresholdHours, units) : numberValue
         setValue(String(numberValue))
-        updateEditStream({
+        dispatch(updateEditStream({
             ...stream,
             inactivityThresholdHours: Math.max(0, unitsToHours(numberValue, units)),
-        })
-    }, [stream, updateEditStream, inactivityThresholdHours, value, units])
+        }))
+    }, [stream, dispatch, inactivityThresholdHours, value, units])
 
     const onChangeUnits = useCallback((newUnits) => {
         setUnits(newUnits)
@@ -118,22 +106,4 @@ function StatusView(props: Props) {
     )
 }
 
-/*
- * Renders nothing while stream not set up.
- * Prevents needless complication with hooks.
- */
-
-function StatusViewMaybe(props: Props) {
-    const { stream } = props
-    // stream initially an empty object
-    if (!stream || !Object.keys(stream).length) { return null }
-    return <StatusView {...props} />
-}
-
-const mapStateToProps = (state: StoreState): StateProps => ({
-    stream: selectEditedStream(state),
-})
-
-const mapDispatchToProps = { updateEditStream }
-
-export default connect(mapStateToProps, mapDispatchToProps)(StatusViewMaybe)
+export default StatusView

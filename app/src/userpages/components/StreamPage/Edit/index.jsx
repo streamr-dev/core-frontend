@@ -27,6 +27,8 @@ import Nav from '$shared/components/Layout/Nav'
 import { resetResourcePermission } from '$userpages/modules/permission/actions'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
@@ -104,10 +106,19 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
             await dispatch(updateStream(stream))
 
             if (isMounted()) {
+                Notification.push({
+                    title: I18n.t('userpages.streams.actions.saveStreamSuccess'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
                 dispatch(push(routes.streams.index()))
             }
         } catch (e) {
             console.warn(e)
+
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
         } finally {
             if (isMounted()) {
                 setSpinner(false)
@@ -178,7 +189,7 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                     id="details"
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
-                    <InfoView disabled={disabled} />
+                    <InfoView stream={stream} disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="snippets"
@@ -208,14 +219,14 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                     title={I18n.t('userpages.streams.edit.details.nav.security')}
                     onlyDesktop
                 >
-                    <SecurityView disabled={disabled} />
+                    <SecurityView stream={stream} disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="configure"
                     title={I18n.t('userpages.streams.edit.details.nav.fields')}
                     onlyDesktop
                 >
-                    <ConfigureView disabled={disabled} />
+                    <ConfigureView stream={stream} disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="status"
@@ -226,7 +237,7 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                     />}
                     onlyDesktop
                 >
-                    <StatusView disabled={disabled} />
+                    <StatusView stream={stream} disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="preview"
@@ -245,7 +256,7 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                     onlyDesktop
                 >
-                    <HistoryView disabled={disabled} streamId={stream.id} />
+                    <HistoryView stream={stream} disabled={disabled} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="stream-partitions"
@@ -253,7 +264,7 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                     linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
                     status={(<StatusLabel.Advanced />)}
                 >
-                    <PartitionsView disabled={disabled} />
+                    <PartitionsView stream={stream} disabled={disabled} />
                 </TOCPage.Section>
             </TOCPage>
             <StreamPageSidebar stream={stream} />

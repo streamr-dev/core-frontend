@@ -6,11 +6,12 @@ import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
+import type { Stream } from '$shared/flowtype/stream-types'
 import Numeric from '$ui/Numeric'
 import Label from '$ui/Label'
 
 type Props = {
+    stream: Stream,
     disabled?: boolean,
 }
 
@@ -30,8 +31,7 @@ const Partitions = styled.div`
 
 const PartitionsLabel = styled(Label)``
 
-export const PartitionsView = ({ disabled }: Props) => {
-    const stream = useSelector(selectEditedStream)
+export const PartitionsView = ({ stream, disabled }: Props) => {
     const dispatch = useDispatch()
     const contentChangedRef = useRef(false)
     const streamRef = useRef()
@@ -101,12 +101,4 @@ export const PartitionsView = ({ disabled }: Props) => {
     )
 }
 
-function PartitionsViewMaybe(props: Props) {
-    const stream = useSelector(selectEditedStream)
-
-    // stream initially an empty object
-    if (!stream || !Object.keys(stream).length) { return null }
-    return <PartitionsView {...props} />
-}
-
-export default PartitionsViewMaybe
+export default PartitionsView

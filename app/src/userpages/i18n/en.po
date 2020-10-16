@@ -385,7 +385,7 @@ msgid "userpages.streams.noStreamsResult.clearFilters"
 msgstr "Clear filters"
 
 msgid "userpages.streams.edit.details.pageTitle.newStream"
-msgstr "Set up your Stream"
+msgstr "Name your Stream"
 
 msgid "userpages.streams.edit.details.pageTitle.existingStream"
 msgstr "Edit your Stream"
@@ -422,6 +422,12 @@ msgstr "Stream partitions"
 
 msgid "userpages.streams.edit.details.name"
 msgstr "Name"
+
+msgid "userpages.streams.edit.details.domain"
+msgstr "Domain"
+
+msgid "userpages.streams.edit.details.pathname"
+msgstr "Path name"
 
 msgid "userpages.streams.edit.details.description"
 msgstr "Description"

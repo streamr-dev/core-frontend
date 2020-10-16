@@ -1,21 +1,21 @@
 // @flow
 
 import React, { useEffect, useRef, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Notification from '$shared/utils/Notification'
 import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
-import type { StreamId } from '$shared/flowtype/stream-types'
+import type { StreamId, Stream } from '$shared/flowtype/stream-types'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Button from '$shared/components/Button'
 
 type Props = {
+    stream: Stream,
     disabled?: boolean,
 }
 
@@ -41,8 +41,7 @@ const StyledButton = styled(Button)`
     }
 `
 
-export const InfoView = ({ disabled }: Props) => {
-    const stream = useSelector(selectEditedStream)
+export const InfoView = ({ stream, disabled }: Props) => {
     const dispatch = useDispatch()
     const { copy, isCopied } = useCopy()
     const contentChangedRef = useRef(false)
@@ -142,12 +141,4 @@ export const InfoView = ({ disabled }: Props) => {
     )
 }
 
-function InfoViewMaybe(props: Props) {
-    const stream = useSelector(selectEditedStream)
-
-    // stream initially an empty object
-    if (!stream || !Object.keys(stream).length) { return null }
-    return <InfoView {...props} />
-}
-
-export default InfoViewMaybe
+export default InfoView

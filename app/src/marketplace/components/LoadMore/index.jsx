@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import Button from '$shared/components/Button'
 
 export type Props = {
-    onClick: () => void,
+    onClick: () => void | Promise<void>,
     hasMoreSearchResults: boolean,
     preserveSpace?: boolean,
     className?: string,

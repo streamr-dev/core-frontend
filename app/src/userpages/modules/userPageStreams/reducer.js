@@ -1,7 +1,5 @@
 // @flow
 
-import set from 'lodash/set'
-
 import type { UserPageStreamsState } from '$userpages/flowtype/states/stream-state'
 import type { StreamAction } from '$userpages/flowtype/actions/stream-actions'
 import { streamListPageSize } from '$userpages/utils/constants'
@@ -23,12 +21,7 @@ import {
     DELETE_STREAM_REQUEST,
     DELETE_STREAM_SUCCESS,
     DELETE_STREAM_FAILURE,
-    SAVE_STREAM_FIELDS_REQUEST,
-    SAVE_STREAM_FIELDS_SUCCESS,
-    SAVE_STREAM_FIELDS_FAILURE,
     OPEN_STREAM,
-    UPDATE_EDIT_STREAM,
-    UPDATE_EDIT_STREAM_FIELD,
     STREAM_FIELD_AUTODETECT_REQUEST,
     STREAM_FIELD_AUTODETECT_SUCCESS,
     STREAM_FIELD_AUTODETECT_FAILURE,
@@ -44,7 +37,6 @@ const initialState = {
     updating: false,
     deleting: false,
     error: null,
-    editedStream: null,
     autodetectFetching: false,
     streamFieldAutodetectError: null,
     pageSize: streamListPageSize,
@@ -67,13 +59,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 ...state,
                 fetching: true,
                 updating: true,
-            }
-
-        case SAVE_STREAM_FIELDS_REQUEST:
-            return {
-                ...state,
-                fetching: true,
-                savingStreamFields: true,
             }
 
         case GET_STREAM_SUCCESS:
@@ -151,22 +136,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 error: action.error,
             }
 
-        case SAVE_STREAM_FIELDS_FAILURE:
-            return {
-                ...state,
-                savingStreamFields: false,
-                fetching: false,
-                error: action.error,
-            }
-
-        case SAVE_STREAM_FIELDS_SUCCESS: {
-            return {
-                ...state,
-                fetching: false,
-                error: null,
-            }
-        }
-
         case OPEN_STREAM:
             return {
                 ...state,
@@ -175,26 +144,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                     id: action.id,
                 },
             }
-
-        case UPDATE_EDIT_STREAM:
-            return {
-                ...state,
-                editedStream: action.stream ? {
-                    ...action.stream,
-                } : null,
-            }
-
-        case UPDATE_EDIT_STREAM_FIELD: {
-            const editedStream: any = {
-                ...state.editedStream,
-            }
-            set(editedStream, action.field, action.data)
-
-            return {
-                ...state,
-                editedStream,
-            }
-        }
 
         case STREAM_FIELD_AUTODETECT_REQUEST: {
             return {
@@ -207,12 +156,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             const newState = {
                 ...state,
                 autodetectFetching: false,
-            }
-
-            if (newState.editedStream) {
-                newState.editedStream.config = {
-                    fields: action.fields,
-                }
             }
 
             return newState

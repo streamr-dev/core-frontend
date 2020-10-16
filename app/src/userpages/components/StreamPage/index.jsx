@@ -5,7 +5,6 @@ import {
     getStream,
     initEditStream,
     openStream,
-    updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -13,7 +12,6 @@ import {
     selectFetching,
     selectUpdating,
     selectOpenStream,
-    selectEditedStream,
 } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Notification from '$shared/utils/Notification'
@@ -44,8 +42,6 @@ const StreamPage = (props) => {
     const canShare = (permissions || []).includes('stream_share')
 
     const stream = useSelector(selectOpenStream)
-
-    const editedStream = useSelector(selectEditedStream)
 
     const currentUser = useSelector(selectUserData)
 
@@ -99,11 +95,10 @@ const StreamPage = (props) => {
     }, [id, readOnly, dispatch, isMounted])
 
     useEffect(() => () => {
-        dispatch(updateEditStream(null))
         dispatch(closeStream())
     }, [dispatch])
 
-    if (!permissions || (fetching && !updating) || !stream || (!readOnly && !editedStream)) {
+    if (!permissions || (fetching && !updating) || !stream) {
         return (
             <Layout loading />
         )
@@ -118,7 +113,7 @@ const StreamPage = (props) => {
                 />
             ) : (
                 <Edit
-                    stream={editedStream}
+                    stream={stream}
                     canShare={canShare}
                     disabled={updating}
                 />

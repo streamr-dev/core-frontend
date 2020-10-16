@@ -12,7 +12,6 @@ export type UserPageStreamsState = {
     updating: boolean,
     error?: ?ErrorInUi,
     savingStreamFields: boolean,
-    editedStream: ?Stream,
     autodetectFetching: boolean,
     pageSize: number,
     hasMoreSearchResults: ?boolean,

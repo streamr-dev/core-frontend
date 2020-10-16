@@ -142,12 +142,23 @@ const StreamList = () => {
         dispatch(clearStreamsList())
     }, [dispatch])
 
+    const fetchStreams = useCallback(async (...args) => {
+        try {
+            await dispatch(getStreams(...args))
+        } catch (e) {
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
+        }
+    }, [dispatch])
+
     useEffect(() => {
-        dispatch(getStreams({
+        fetchStreams({
             replace: true,
             filter,
-        }))
-    }, [dispatch, filter])
+        })
+    }, [fetchStreams, filter])
 
     const [activeSort, setActiveSort] = useState(undefined)
 
@@ -257,7 +268,7 @@ const StreamList = () => {
                         </StreamListComponent>
                         <LoadMore
                             hasMoreSearchResults={!fetching && hasMoreResults}
-                            onClick={() => dispatch(getStreams())}
+                            onClick={fetchStreams}
                             preserveSpace
                         />
                     </Fragment>
