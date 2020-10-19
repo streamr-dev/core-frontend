@@ -1,6 +1,6 @@
 // @flow
 
-import type { Stream, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
+import type { StreamId, StreamIdList } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type UserPageStreamsState = {

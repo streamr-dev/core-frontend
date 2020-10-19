@@ -9,7 +9,6 @@ import type { Filter } from '$userpages/flowtype/common-types'
 import type { ResourceId } from '$userpages/flowtype/permission-types'
 
 import Notification from '$shared/utils/Notification'
-import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { NotificationIcon } from '$shared/utils/constants'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
@@ -193,18 +192,6 @@ export const createStream = (options: { name: string, description: ?string }) =>
     dispatch(createStreamRequest())
     return new Promise((resolve, reject) => {
         services.postStream(options)
-            .then((data: Stream) => {
-                Notification.push({
-                    title: 'Stream created successfully!',
-                    icon: NotificationIcon.CHECKMARK,
-                })
-                Activity.push({
-                    action: actionTypes.CREATE,
-                    resourceId: data.id,
-                    resourceType: resourceTypes.STREAM,
-                })
-                return data
-            })
             .then(handleEntities(streamSchema, dispatch))
             .then((id) => {
                 dispatch(createStreamSuccess(id))
@@ -212,10 +199,6 @@ export const createStream = (options: { name: string, description: ?string }) =>
             })
             .catch((e) => {
                 dispatch(createStreamFailure(e))
-                Notification.push({
-                    title: e.message,
-                    icon: NotificationIcon.ERROR,
-                })
                 reject(e)
             })
     })
@@ -342,9 +325,7 @@ export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => 
         }))
         .then(({ config: { fields } }) => {
             if (fields) {
-                updateEditStreamField('config', {
-                    fields,
-                })
+                updateEditStreamField('config.fields', fields)
                 dispatch(getStreamFieldAutodetectSuccess(fields))
                 Notification.push({
                     title: 'Fields autodetected!',

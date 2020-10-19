@@ -420,8 +420,10 @@ msgstr "Partitions"
 msgid "userpages.streams.edit.details.nav.streamPartitions"
 msgstr "Stream partitions"
 
-msgid "userpages.streams.edit.details.name"
-msgstr "Name"
+msgid "userpages.streams.edit.details.info.description"
+msgstr ""
+"All streams require a unique path in the format <strong>domain/pathname</strong>. Choose a unique name, "
+"and create your stream in the default <strong>%{defaultDomain}</strong> domain or register and use your own domain."
 
 msgid "userpages.streams.edit.details.domain"
 msgstr "Domain"

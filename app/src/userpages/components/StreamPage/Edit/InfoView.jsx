@@ -41,6 +41,10 @@ const StyledButton = styled(Button)`
     }
 `
 
+const Description = styled(Translate)`
+    margin-bottom: 3rem;
+`
+
 export const InfoView = ({ stream, disabled }: Props) => {
     const dispatch = useDispatch()
     const { copy, isCopied } = useCopy()
@@ -70,12 +74,6 @@ export const InfoView = ({ stream, disabled }: Props) => {
         dispatch(updateEditStreamField(field, data))
     }, [dispatch])
 
-    const onNameChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-        const name = e.target.value
-        contentChangedRef.current = contentChangedRef.current || name !== (streamRef.current && streamRef.current.name)
-        editField('name', name)
-    }, [editField])
-
     const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
         contentChangedRef.current = contentChangedRef.current || description !== (streamRef.current && streamRef.current.description)
@@ -93,34 +91,12 @@ export const InfoView = ({ stream, disabled }: Props) => {
 
     return (
         <Root>
-            <Row>
-                <Label htmlFor="streamName">
-                    {I18n.t('userpages.streams.edit.details.name')}
-                </Label>
-                <Text
-                    id="streamName"
-                    type="text"
-                    name="name"
-                    value={(stream && stream.name) || ''}
-                    onChange={onNameChange}
-                    disabled={disabled}
-                    autoComplete="off"
-                />
-            </Row>
-            <Row>
-                <Label htmlFor="streamDescription">
-                    {I18n.t('userpages.streams.edit.details.description')}
-                </Label>
-                <Text
-                    type="text"
-                    id="streamDescription"
-                    name="description"
-                    value={(stream && stream.description) || ''}
-                    onChange={onDescriptionChange}
-                    disabled={disabled}
-                    autoComplete="off"
-                />
-            </Row>
+            <Description
+                value="userpages.streams.edit.details.info.description"
+                tag="p"
+                defaultDomain="sandbox"
+                dangerousHTML
+            />
             <Row>
                 <Label htmlFor="streamId">
                     {I18n.t('userpages.streams.edit.details.streamId')}
@@ -136,6 +112,20 @@ export const InfoView = ({ stream, disabled }: Props) => {
                         <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
                     </StyledButton>
                 </StreamInput>
+            </Row>
+            <Row>
+                <Label htmlFor="streamDescription">
+                    {I18n.t('userpages.streams.edit.details.description')}
+                </Label>
+                <Text
+                    type="text"
+                    id="streamDescription"
+                    name="description"
+                    value={(stream && stream.description) || ''}
+                    onChange={onDescriptionChange}
+                    disabled={disabled}
+                    autoComplete="off"
+                />
             </Row>
         </Root>
     )

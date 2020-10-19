@@ -29,6 +29,7 @@ import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import { MEDIUM } from '$shared/utils/styled'
 
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
@@ -77,7 +78,7 @@ const PreviewDescription = styled(Translate)`
     max-width: 660px;
 `
 
-const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
+const UnstyledEdit = ({ stream: streamProp, canShare, disabled, ...props }: any) => {
     const sidebar = useContext(SidebarContext)
     const stream = useMemo(() => ({
         ...streamProp,
@@ -148,6 +149,7 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
 
     return (
         <CoreLayout
+            {...props}
             nav={(
                 <Nav noWide />
             )}
@@ -271,6 +273,12 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
         </CoreLayout>
     )
 }
+
+const Edit = styled(UnstyledEdit)`
+    strong {
+        font-weight: ${MEDIUM};
+    }
+`
 
 export default (props: any) => (
     <SidebarProvider>

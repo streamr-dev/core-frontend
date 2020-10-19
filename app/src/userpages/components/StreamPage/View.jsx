@@ -203,13 +203,18 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
                     <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.details.name')}>
-                            <Text
-                                value={stream.name || ''}
-                                readOnly
-                                disabled
-                                name="name"
-                            />
+                        <Field label={I18n.t('userpages.streams.edit.details.streamId')}>
+                            <StreamId>
+                                <Text
+                                    value={stream.id || ''}
+                                    readOnly
+                                    disabled
+                                    name="streamId"
+                                />
+                                <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
+                                    <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
+                                </StyledButton>
+                            </StreamId>
                         </Field>
                         <Field narrow desktopOnly />
                     </FormGroup>
@@ -226,22 +231,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                             <Field narrow desktopOnly />
                         </FormGroup>
                     )}
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.details.streamId')}>
-                            <StreamId>
-                                <Text
-                                    value={stream.id || ''}
-                                    readOnly
-                                    disabled
-                                    name="streamId"
-                                />
-                                <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
-                                    <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
-                                </StyledButton>
-                            </StreamId>
-                        </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
                 </TOCSection>
                 <TOCSection
                     id="snippets"
