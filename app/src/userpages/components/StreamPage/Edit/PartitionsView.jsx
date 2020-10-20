@@ -1,11 +1,9 @@
 // @flow
 
-import React, { useEffect, useRef, useCallback, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useCallback, useState } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
-import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import type { Stream } from '$shared/flowtype/stream-types'
 import Numeric from '$ui/Numeric'
 import Label from '$ui/Label'
@@ -13,6 +11,7 @@ import Label from '$ui/Label'
 type Props = {
     stream: Stream,
     disabled?: boolean,
+    updateStream?: Function,
 }
 
 const MIN_PARTITIONS = 1
@@ -31,34 +30,7 @@ const Partitions = styled.div`
 
 const PartitionsLabel = styled(Label)``
 
-export const PartitionsView = ({ stream, disabled }: Props) => {
-    const dispatch = useDispatch()
-    const contentChangedRef = useRef(false)
-    const streamRef = useRef()
-    streamRef.current = stream
-
-    useEffect(() => {
-        const handleBeforeunload = (event) => {
-            if (contentChangedRef.current) {
-                const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
-                const evt = (event || window.event)
-                evt.returnValue = message // Gecko + IE
-                return message // Webkit, Safari, Chrome etc.
-            }
-            return ''
-        }
-
-        window.addEventListener('beforeunload', handleBeforeunload)
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeunload)
-        }
-    }, [contentChangedRef])
-
-    const editField = useCallback((field: string, data: any) => {
-        dispatch(updateEditStreamField(field, data))
-    }, [dispatch])
-
+export const PartitionsView = ({ stream, disabled, updateStream }: Props) => {
     const { partitions } = stream
 
     const [partitionsValue, setPartitionsValue] = useState(String(partitions))
@@ -69,8 +41,11 @@ export const PartitionsView = ({ stream, disabled }: Props) => {
         numberValue = Number.isNaN(numberValue) ? partitions : numberValue
         numberValue = Math.max(MIN_PARTITIONS, Math.min(numberValue, MAX_PARTITIONS))
         setPartitionsValue(String(numberValue))
-        editField('partitions', numberValue)
-    }, [editField, partitions, partitionsValue])
+
+        if (typeof updateStream === 'function') {
+            updateStream({ partitions: numberValue })
+        }
+    }, [updateStream, partitions, partitionsValue])
 
     const onPartitionsChange = useCallback((event) => {
         setPartitionsValue(event.target.value)

@@ -1,12 +1,10 @@
 // @flow
 
 import React, { useCallback } from 'react'
-import { useDispatch } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
-import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
 import SvgIcon from '$shared/components/SvgIcon'
 import Slider from './Slider'
 
@@ -15,6 +13,7 @@ import styles from './securityView.pcss'
 type Props = {
     disabled: boolean,
     stream: Stream,
+    updateStream?: Function,
 }
 
 /*
@@ -153,18 +152,16 @@ export function SecurityIcon({
     )
 }
 
-export function SecurityView({ stream, disabled }: Props) {
-    const dispatch = useDispatch()
+export function SecurityView({ stream, disabled, updateStream }: Props) {
     const level = getSecurityLevel(stream) || 'basic'
     const levelIndex = Object.keys(securityLevels).indexOf(level)
     const detail = securityLevels[level]
 
     const onChange = useCallback((event, newLevel) => {
-        dispatch(updateEditStream({
-            ...stream,
-            ...setSecurityLevel(newLevel),
-        }))
-    }, [dispatch, stream])
+        if (typeof updateStream === 'function') {
+            updateStream(setSecurityLevel(newLevel))
+        }
+    }, [updateStream])
 
     return (
         <div className={styles.root}>

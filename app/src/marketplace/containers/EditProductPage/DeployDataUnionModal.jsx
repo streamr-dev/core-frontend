@@ -68,6 +68,10 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const productId = product.id
     const { adminFee = 0 } = product || {}
     const onDeploy = useCallback(async () => {
+        if (!productId) {
+            throw new Error('no product!')
+        }
+
         const { id: joinPartStreamId } = await createJoinPartStream(productId)
 
         if (!isMounted()) { return Promise.resolve() }

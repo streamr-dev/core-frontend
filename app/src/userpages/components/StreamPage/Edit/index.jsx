@@ -1,17 +1,15 @@
 // @flow
 
-import React, { useCallback, useState, useMemo, useContext } from 'react'
+import React, { useCallback, useState, useMemo, useContext, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import { useLocation } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
-import qs from 'query-string'
 import styled from 'styled-components'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
 import StatusLabel from '$shared/components/StatusLabel'
-import { updateStream } from '$userpages/modules/userPageStreams/actions'
+import { updateStream as updateStreamAction, updateEditStream, updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
@@ -78,19 +76,25 @@ const PreviewDescription = styled(Translate)`
     max-width: 660px;
 `
 
-const UnstyledEdit = ({ stream: streamProp, canShare, disabled, ...props }: any) => {
+const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
     const sidebar = useContext(SidebarContext)
-    const stream = useMemo(() => ({
-        ...streamProp,
-        ...(streamProp.config ? {
-            ...streamProp.config,
-            fields: streamProp.config.fields.map(({ id, ...field }) => field),
-        } : {}),
-    }), [streamProp])
-
-    const isNewStream = !!qs.parse(useLocation().search).newStream
+    const streamRef = useRef()
+    streamRef.current = stream
 
     const dispatch = useDispatch()
+
+    const updateStream = useCallback((change, additionalData) => {
+        if (typeof change === 'string') {
+            dispatch(updateEditStreamField(change, additionalData))
+        } else if (typeof change === 'object') {
+            dispatch(updateEditStream({
+                ...streamRef.current,
+                ...change,
+            }))
+        } else {
+            console.warn(`Unknown update, change = ${JSON.stringify(change)}, additionalData = ${JSON.stringify(additionalData)}!`)
+        }
+    }, [dispatch])
 
     const isMounted = useIsMounted()
 
@@ -104,7 +108,7 @@ const UnstyledEdit = ({ stream: streamProp, canShare, disabled, ...props }: any)
         setSpinner(true)
 
         try {
-            await dispatch(updateStream(stream))
+            await dispatch(updateStreamAction(stream))
 
             if (isMounted()) {
                 Notification.push({
@@ -186,12 +190,16 @@ const UnstyledEdit = ({ stream: streamProp, canShare, disabled, ...props }: any)
                 />
             )}
         >
-            <TOCPage title={I18n.t(`userpages.streams.edit.details.pageTitle.${isNewStream ? 'newStream' : 'existingStream'}`)}>
+            <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle')}>
                 <TOCPage.Section
                     id="details"
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
-                    <InfoView stream={stream} disabled={disabled} />
+                    <InfoView
+                        stream={stream}
+                        disabled={disabled}
+                        updateStream={updateStream}
+                    />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="snippets"
@@ -221,14 +229,22 @@ const UnstyledEdit = ({ stream: streamProp, canShare, disabled, ...props }: any)
                     title={I18n.t('userpages.streams.edit.details.nav.security')}
                     onlyDesktop
                 >
-                    <SecurityView stream={stream} disabled={disabled} />
+                    <SecurityView
+                        stream={stream}
+                        disabled={disabled}
+                        updateStream={updateStream}
+                    />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="configure"
                     title={I18n.t('userpages.streams.edit.details.nav.fields')}
                     onlyDesktop
                 >
-                    <ConfigureView stream={stream} disabled={disabled} />
+                    <ConfigureView
+                        stream={stream}
+                        disabled={disabled}
+                        updateStream={updateStream}
+                    />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="status"
@@ -239,7 +255,11 @@ const UnstyledEdit = ({ stream: streamProp, canShare, disabled, ...props }: any)
                     />}
                     onlyDesktop
                 >
-                    <StatusView stream={stream} disabled={disabled} />
+                    <StatusView
+                        stream={stream}
+                        disabled={disabled}
+                        updateStream={updateStream}
+                    />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="preview"
@@ -258,7 +278,11 @@ const UnstyledEdit = ({ stream: streamProp, canShare, disabled, ...props }: any)
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                     onlyDesktop
                 >
-                    <HistoryView stream={stream} disabled={disabled} />
+                    <HistoryView
+                        stream={stream}
+                        disabled={disabled}
+                        updateStream={updateStream}
+                    />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="stream-partitions"
@@ -266,7 +290,11 @@ const UnstyledEdit = ({ stream: streamProp, canShare, disabled, ...props }: any)
                     linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
                     status={(<StatusLabel.Advanced />)}
                 >
-                    <PartitionsView stream={stream} disabled={disabled} />
+                    <PartitionsView
+                        stream={stream}
+                        disabled={disabled}
+                        updateStream={updateStream}
+                    />
                 </TOCPage.Section>
             </TOCPage>
             <StreamPageSidebar stream={stream} />

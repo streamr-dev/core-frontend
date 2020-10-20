@@ -27,9 +27,9 @@ export const getStreamrEngineAddresses = (): Array<string> => {
     return addresses
 }
 
-export const createJoinPartStream = async (productId: ?ProductId = undefined): Promise<Stream> => {
+export const createJoinPartStream = async (productId: ProductId): Promise<Stream> => {
     const newStream: NewStream = {
-        name: productId ? `JoinPart stream for data union ${productId}` : 'JoinPart stream',
+        id: `sandbox/joinPartStream/${productId}`,
         description: 'Automatically created JoinPart stream for data union',
     }
 

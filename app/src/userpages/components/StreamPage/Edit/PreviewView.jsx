@@ -68,11 +68,11 @@ const LOCAL_DATA_LIST_LENGTH = 20
 
 const initialState = Array(PREVIEW_TABLE_LENGTH).fill(undefined)
 
-const UnstyledPreviewView = ({ stream, ...props }) => {
+const UnstyledPreviewView = ({ stream, subscribe = true, ...props }) => {
     const [isRunning, setIsRunning] = useState(true)
     const { api: showPreviewDialog, isOpen: isPreviewDialogOpen } = useModal('userpages.streamPreview')
 
-    const [hasData, setHasData] = useState(false)
+    const [hasData, setHasData] = useState(!subscribe)
     const dataRef = useRef([])
     const [visibleData, setVisibleData] = useState(initialState)
     const [dataReceived, setDataReceived] = useState(false)
@@ -143,17 +143,19 @@ const UnstyledPreviewView = ({ stream, ...props }) => {
 
     return (
         <SubscriptionStatusProvider>
-            <Subscription
-                uiChannel={{
-                    id: stream.id,
-                    partition: activePartition,
-                }}
-                resendLast={LOCAL_DATA_LIST_LENGTH}
-                onSubscribed={onSub}
-                isActive={isRunning}
-                onMessage={onData}
-                onErrorMessage={onError}
-            />
+            {!!subscribe && (
+                <Subscription
+                    uiChannel={{
+                        id: stream.id,
+                        partition: activePartition,
+                    }}
+                    resendLast={LOCAL_DATA_LIST_LENGTH}
+                    onSubscribed={onSub}
+                    isActive={isRunning}
+                    onMessage={onData}
+                    onErrorMessage={onError}
+                />
+            )}
             <Wrapper {...props}>
                 <PreviewTable
                     streamData={visibleData.slice(0, PREVIEW_TABLE_LENGTH)}

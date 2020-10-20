@@ -1,12 +1,10 @@
 // @flow
 
-import React, { useEffect, useRef, useCallback } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useCallback } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Notification from '$shared/utils/Notification'
-import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
 import type { StreamId, Stream } from '$shared/flowtype/stream-types'
@@ -17,6 +15,7 @@ import Button from '$shared/components/Button'
 type Props = {
     stream: Stream,
     disabled?: boolean,
+    updateStream?: Function,
 }
 
 const Root = styled.div``
@@ -45,40 +44,16 @@ const Description = styled(Translate)`
     margin-bottom: 3rem;
 `
 
-export const InfoView = ({ stream, disabled }: Props) => {
-    const dispatch = useDispatch()
+export const InfoView = ({ stream, disabled, updateStream }: Props) => {
     const { copy, isCopied } = useCopy()
-    const contentChangedRef = useRef(false)
-    const streamRef = useRef()
-    streamRef.current = stream
-
-    useEffect(() => {
-        const handleBeforeunload = (event) => {
-            if (contentChangedRef.current) {
-                const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
-                const evt = (event || window.event)
-                evt.returnValue = message // Gecko + IE
-                return message // Webkit, Safari, Chrome etc.
-            }
-            return ''
-        }
-
-        window.addEventListener('beforeunload', handleBeforeunload)
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeunload)
-        }
-    }, [contentChangedRef])
-
-    const editField = useCallback((field: string, data: any) => {
-        dispatch(updateEditStreamField(field, data))
-    }, [dispatch])
 
     const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
-        contentChangedRef.current = contentChangedRef.current || description !== (streamRef.current && streamRef.current.description)
-        editField('description', description)
-    }, [editField])
+
+        if (typeof updateStream === 'function') {
+            updateStream({ description })
+        }
+    }, [updateStream])
 
     const onCopy = useCallback((id: StreamId) => {
         copy(id)

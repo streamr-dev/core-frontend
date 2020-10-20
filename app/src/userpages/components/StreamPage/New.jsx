@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useMemo, useRef, useEffect, useReducer } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -8,9 +8,6 @@ import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
-import Preview from './Edit/PreviewView'
-import { getSecurityLevelConfig } from './Edit/SecurityView'
-import { convertFromStorageDays } from './Edit/HistoryView'
 import routes from '$routes'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import Notification from '$shared/utils/Notification'
@@ -27,36 +24,46 @@ import {
     FormGroup,
     Field,
     Text,
-    HistoricalStorage,
-    StreamPartitions,
 } from './View'
+import Preview from './Edit/PreviewView'
+import SecurityView from './Edit/SecurityView'
 import { StatusView } from './Edit/StatusView'
 import KeyView from './Edit/KeyView'
+import ConfigureView from './Edit/ConfigureView'
+import HistoryView from './Edit/HistoryView'
+import PartitionsView from './Edit/PartitionsView'
 import Select from '$ui/Select'
 
 const Description = styled(Translate)`
     margin-bottom: 3rem;
 `
 
+// this default data is only used for display purposes
 const defaultStreamData = {
+    id: 'newStream',
     config: {
         fields: [],
     },
     storageDays: 365,
     inactivityThresholdHours: 48,
+    partitions: 1,
 }
 
 const DEFAULT_DOMAIN = 'sandbox'
 
 const UnstyledNew = (props) => {
-    const [pathname, setPathname] = useState('')
-    const [description, setDescription] = useState('')
-    const [domain, setDomain] = useState(DEFAULT_DOMAIN)
-    const [loading, setLoading] = useState(false)
-    const streamDataRef = useRef({
-        name: '',
+    const [{ domain, pathname, description }, updateStream] = useReducer((state, changeSet) => ({
+        ...state,
+        ...changeSet,
+    }), {
+        pathname: '',
         description: '',
+        domain: DEFAULT_DOMAIN,
     })
+
+    const [loading, setLoading] = useState(false)
+    const streamDataRef = useRef()
+    const contentChangedRef = useRef(false)
     const dispatch = useDispatch()
 
     const isMounted = useIsMounted()
@@ -66,47 +73,40 @@ const UnstyledNew = (props) => {
         label: DEFAULT_DOMAIN,
     },
         // ... todo: get domains
-    {
+    /* {
         value: undefined,
         label: 'Add new domain',
-    }]), [])
-
-    const currentUser = useSelector(selectUserData)
-
-    const { shortDescription, longDescription } = getSecurityLevelConfig(defaultStreamData)
-    const { amount: storagePeriod, unit } = convertFromStorageDays(defaultStreamData.storageDays)
+    } */]), [])
 
     const onBack = useCallback(() => {
         scrollTop()
 
-        if (currentUser) {
-            dispatch(push(routes.streams.index()))
-        } else {
-            dispatch(push(routes.root()))
-        }
-    }, [dispatch, currentUser])
+        dispatch(push(routes.streams.index()))
+    }, [dispatch])
 
-    const onDomainChange = useCallback(({ value }) => {
-        if (!value) {
-            alert('add new')
+    const onDomainChange = useCallback(({ value: domain }) => {
+        if (!domain) {
+            console.warn('Adding new domains is not implemented!')
         } else {
-            setDomain(value)
+            updateStream({ domain })
         }
-    }, [])
+    }, [updateStream])
 
     const onPathnameChange = useCallback((e) => {
         const pathname = e.target.value
 
-        setPathname(pathname)
-    }, [])
+        updateStream({ pathname })
+    }, [updateStream])
 
     const onDescriptionChange = useCallback((e) => {
         const description = e.target.value
 
-        setDescription(description)
-    }, [])
+        updateStream({ description })
+    }, [updateStream])
 
     const onSave = useCallback(async () => {
+        if (!streamDataRef.current) { return }
+
         setLoading(true)
 
         try {
@@ -143,19 +143,33 @@ const UnstyledNew = (props) => {
 
     useEffect(() => {
         streamDataRef.current = {
-            name: `${domain}/${pathname}`,
+            id: `${domain}/${pathname}`,
             description,
         }
+        contentChangedRef.current = !!(pathname || description)
     }, [domain, pathname, description])
 
-    if (!currentUser) {
-        return (
-            <Layout loading />
-        )
-    }
+    useEffect(() => {
+        const handleBeforeunload = (event) => {
+            if (contentChangedRef.current) {
+                const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
+                const evt = (event || window.event)
+                evt.returnValue = message // Gecko + IE
+                return message // Webkit, Safari, Chrome etc.
+            }
+            return ''
+        }
+
+        window.addEventListener('beforeunload', handleBeforeunload)
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeunload)
+        }
+    }, [])
 
     const saveEnabled = !!(pathname && pathname) && !loading
     const isDisabled = !!loading
+    const isDomainDisabled = isDisabled || domainOptions.length <= 1
 
     return (
         <Layout
@@ -175,7 +189,7 @@ const UnstyledNew = (props) => {
                             kind: 'link',
                             title: I18n.t('userpages.profilePage.toolbar.cancel'),
                             outline: true,
-                            onClick: () => onBack,
+                            onClick: () => onBack(),
                         },
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
@@ -187,7 +201,7 @@ const UnstyledNew = (props) => {
                 />
             )}
         >
-            <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.newStream')}>
+            <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle')}>
                 <TOCSection
                     id="details"
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
@@ -207,7 +221,7 @@ const UnstyledNew = (props) => {
                                 }
                             `}
                         >
-                            {!!isDisabled && (
+                            {!!isDomainDisabled && (
                                 <Text
                                     value={domain || ''}
                                     readOnly
@@ -215,7 +229,7 @@ const UnstyledNew = (props) => {
                                     name="domain"
                                 />
                             )}
-                            {!isDisabled && (
+                            {!isDomainDisabled && (
                                 <Select
                                     options={domainOptions}
                                     value={domainOptions.find((t) => t.value === domain)}
@@ -265,18 +279,20 @@ const UnstyledNew = (props) => {
                     id="security"
                     title={I18n.t('userpages.streams.edit.details.nav.security')}
                 >
-                    <p>
-                        <Translate value={shortDescription} tag="strong" />
-                        {' '}
-                        <Translate value={longDescription} />
-                    </p>
+                    <SecurityView
+                        stream={defaultStreamData}
+                        disabled
+                    />
                 </TOCSection>
                 <TOCPage.Section
                     id="configure"
                     title={I18n.t('userpages.streams.edit.details.nav.fields')}
                     onlyDesktop
                 >
-                    <Translate value="userpages.streams.edit.configure.help" tag="p" />
+                    <ConfigureView
+                        stream={defaultStreamData}
+                        disabled
+                    />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="status"
@@ -287,13 +303,16 @@ const UnstyledNew = (props) => {
                     />}
                     onlyDesktop
                 >
-                    <StatusView disabled stream={defaultStreamData} updateEditStream={() => {}} />
+                    <StatusView disabled stream={defaultStreamData} />
                 </TOCPage.Section>
                 <TOCSection
                     id="preview"
                     title={I18n.t('userpages.streams.edit.details.nav.preview')}
                 >
-                    <Preview currentUser={currentUser} stream={defaultStreamData} />
+                    <Preview
+                        stream={defaultStreamData}
+                        subscribe={false}
+                    />
                 </TOCSection>
                 <TOCPage.Section
                     id="api-access"
@@ -307,25 +326,10 @@ const UnstyledNew = (props) => {
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                 >
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>
-                            <HistoricalStorage>
-                                <Text
-                                    value={storagePeriod}
-                                    readOnly
-                                    disabled
-                                    centered
-                                />
-                                <Text
-                                    value={I18n.t(`shared.date.${unit.replace(/s$/, '')}`, {
-                                        count: defaultStreamData.storageDays,
-                                    })}
-                                    readOnly
-                                    disabled
-                                />
-                            </HistoricalStorage>
-                        </Field>
-                    </FormGroup>
+                    <HistoryView
+                        stream={defaultStreamData}
+                        disabled
+                    />
                 </TOCSection>
                 <TOCPage.Section
                     id="stream-partitions"
@@ -333,18 +337,10 @@ const UnstyledNew = (props) => {
                     linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
                     status={(<StatusLabel.Advanced />)}
                 >
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.partitionsLabel')}>
-                            <StreamPartitions>
-                                <Text
-                                    value={defaultStreamData.partitions || '1'}
-                                    readOnly
-                                    disabled
-                                    centered
-                                />
-                            </StreamPartitions>
-                        </Field>
-                    </FormGroup>
+                    <PartitionsView
+                        stream={defaultStreamData}
+                        disabled
+                    />
                 </TOCPage.Section>
             </TOCPage>
         </Layout>
@@ -365,4 +361,16 @@ const New = styled(UnstyledNew)`
     }
 `
 
-export default New
+const NewStreamViewMaybe = (props) => {
+    const currentUser = useSelector(selectUserData)
+
+    if (!currentUser) {
+        return (
+            <Layout loading />
+        )
+    }
+
+    return <New {...props} />
+}
+
+export default NewStreamViewMaybe

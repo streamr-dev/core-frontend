@@ -31,6 +31,8 @@ import { MD, LG } from '$shared/utils/styled'
 import SnippetDialog from './SnippetDialog'
 import { StreamList as StreamListComponent } from '$shared/components/List'
 import Row from './Row'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 const DesktopOnlyButton = styled(Button)`
     && {

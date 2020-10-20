@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
     closeStream,
     getStream,
-    initEditStream,
     openStream,
 } from '$userpages/modules/userPageStreams/actions'
+import { getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import { NotificationIcon } from '$shared/utils/constants'
 import {
@@ -47,16 +47,32 @@ const StreamPage = (props) => {
 
     const isMounted = useIsMounted()
 
-    const { id } = stream || {}
-
     useEffect(() => {
         const fetch = async () => {
+            const decodedIdProp = decodeURIComponent(idProp)
+
             try {
                 try {
-                    await dispatch(getStream(idProp))
-                    if (isMounted()) {
-                        dispatch(openStream(idProp))
+                    await dispatch(getStream(decodedIdProp))
+
+                    if (!isMounted()) { return }
+
+                    // set the current stream as the editable entity
+                    dispatch(openStream(decodedIdProp))
+
+                    // load API keys
+                    try {
+                        dispatch(getStreamResourceKeys(decodedIdProp))
+                    } catch (e) {
+                        console.warn(e)
+                        Notification.push({
+                            title: 'Loading keys failed.',
+                            icon: NotificationIcon.ERROR,
+                            error: e,
+                        })
                     }
+
+                    if (!isMounted()) { return }
                 } catch (error) {
                     if (canHandleLoadError(error)) {
                         await handleLoadError({
@@ -81,18 +97,6 @@ const StreamPage = (props) => {
             fetch()
         }
     }, [fail, dispatch, idProp, isMounted, permissions])
-
-    useEffect(() => {
-        const initEditing = async () => {
-            if (isMounted()) {
-                dispatch(initEditStream())
-            }
-        }
-
-        if (!readOnly && id) {
-            initEditing()
-        }
-    }, [id, readOnly, dispatch, isMounted])
 
     useEffect(() => () => {
         dispatch(closeStream())

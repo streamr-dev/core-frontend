@@ -1,246 +1,223 @@
 // @flow
 
-import React, { Component, Fragment } from 'react'
-import { connect } from 'react-redux'
-import copy from 'copy-to-clipboard'
+import React, { Fragment, useMemo, useState, useCallback } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { arrayMove } from 'react-sortable-hoc'
 import { I18n, Translate } from 'react-redux-i18n'
 import uuid from 'uuid'
+import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
-import Spinner from '$shared/components/Spinner'
-import type { Stream, StreamId } from '$shared/flowtype/stream-types'
-import type { StoreState } from '$shared/flowtype/store-state'
+import type { Stream } from '$shared/flowtype/stream-types'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
 import Select from '$ui/Select'
-import { updateEditStreamField, updateEditStream, streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import { selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
+import { streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import Text from '$ui/Text'
 import SplitControl from '$userpages/components/SplitControl'
-import WithInputActions from '$shared/components/WithInputActions'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import Label from '$ui/Label'
 
-import styles from './configureView.pcss'
 import NewFieldEditor from './NewFieldEditor'
 
-type OwnProps = {
+type Props = {
     stream: Stream,
     disabled: boolean,
+    updateStream?: Function,
 }
 
-type StateProps = {
-    fieldsAutodetectFetching: boolean,
-}
+const Buttons = styled.div`
+    margin-top: 2rem;
 
-type DispatchProps = {
-    copyStreamId: (string) => void,
-    editField: (string, any) => void,
-    updateEditStream: (data: Stream) => void,
-    streamFieldsAutodetect: (id: StreamId) => Promise<void>,
-}
+    > * + * {
+        margin-left: 1rem;
+    }
+`
 
-type Props = OwnProps & StateProps & DispatchProps
+const Description = styled(Translate)`
+    margin-bottom: 3rem;
+`
 
-type State = {
-    isAddingField: boolean,
-}
+const StyledFieldList = styled(FieldList)`
+    z-index: 1;
+`
 
-export class ConfigureView extends Component<Props, State> {
-    typeOptions: Array<any> = fieldTypes.map((t) => ({
+const isValidFieldname = (value: string, previousFields: any) => (
+    !(value.length === 0 || previousFields.find((field) => field.name === value))
+)
+
+const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
+    const typeOptions: Array<any> = useMemo(() => fieldTypes.map((t) => ({
         value: t,
         label: I18n.t(`userpages.streams.fieldTypes.${t}`),
-    }))
+    })), [])
+    const [isAddingField, setIsAddingField] = useState(false)
+    const fieldsAutodetectFetching = useSelector(selectFieldsAutodetectFetching)
+    const dispatch = useDispatch()
 
-    state = {
-        isAddingField: false,
-    }
+    const streamFields = useMemo(() => {
+        const { config } = stream
 
-    componentDidUpdate(prevProps: Props) {
-        const { config = {} } = this.props.stream || {}
-        const { config: prevConfig = {} } = prevProps.stream || {}
+        return (config && config.fields) || []
+    }, [stream])
 
-        if (config.fields && prevConfig.fields && config.fields !== prevConfig.fields) {
-            const { editField } = this.props
-            const fields = this.getStreamFields()
-            editField('config.fields', fields)
+    const onSortEnd = useCallback(({ newIndex, oldIndex }: { newIndex: number, oldIndex: number }) => {
+        if (typeof updateStream !== 'function') { return }
+
+        const sortedFields = arrayMove(streamFields, oldIndex, newIndex)
+
+        updateStream('config.fields', sortedFields)
+    }, [streamFields, updateStream])
+
+    const onFieldNameChange = useCallback((fieldName: string, value: string) => {
+        if (typeof updateStream !== 'function') { return }
+
+        const index = streamFields.findIndex((field) => field.name === fieldName)
+
+        if (isValidFieldname(value, streamFields)) {
+            updateStream(`config.fields[${index}].name`, value)
         }
-    }
+    }, [streamFields, updateStream])
 
-    getStreamFields = () => {
-        const { stream } = this.props
-        if (stream && stream.config && stream.config.fields) {
-            return this.addTempIdsToStreamFields(stream)
-        }
-        return []
-    }
+    const onFieldTypeChange = useCallback((fieldName: string, value: string) => {
+        if (typeof updateStream !== 'function') { return }
 
-    addTempIdsToStreamFields = (stream: Stream): Array<any> => (
-        (stream.config.fields || []).map((field) => (
-            {
-                ...field,
-                id: field.id ? field.id : uuid(),
-            }
-        ))
-    )
+        const index = streamFields.findIndex((field) => field.name === fieldName)
 
-    onSortEnd = ({ newIndex, oldIndex }: { newIndex: number, oldIndex: number }) => {
-        const { editField } = this.props
-        const fields = [...this.getStreamFields()]
-        const sortedFields = arrayMove(fields, oldIndex, newIndex)
-        editField('config.fields', sortedFields)
-    }
+        updateStream(`config.fields[${index}].type`, value)
+    }, [streamFields, updateStream])
 
-    onFieldNameChange = (fieldName: string, value: string) => {
-        const { editField } = this.props
-        const fields = this.getStreamFields()
-        const index = fields.findIndex((field) => field.name === fieldName)
-        if (this.liveEditIsValid(value, fields)) {
-            editField(`config.fields[${index}].name`, value)
-        }
-    }
+    const addNewField = useCallback(() => {
+        setIsAddingField(true)
+    }, [])
 
-    onFieldTypeChange = (fieldName: string, value: string) => {
-        const { editField } = this.props
-        const fields = this.getStreamFields()
-        const index = fields.findIndex((field) => field.name === fieldName)
-        editField(`config.fields[${index}].type`, value)
-    }
+    const confirmAddField = useCallback((name: string, type: string) => {
+        if (typeof updateStream !== 'function') { return }
 
-    liveEditIsValid = (value: string, previousFields: any) => !(value.length === 0 || previousFields.find((field) => field.name === value))
-
-    addNewField = () => {
-        this.setState({
-            isAddingField: true,
-        })
-    }
-
-    confirmAddField = (name: string, type: string) => {
-        const { editField } = this.props
         const fields = [
-            ...this.getStreamFields(),
+            ...streamFields,
             {
                 name,
                 type,
                 id: uuid(),
             },
         ]
-        editField('config.fields', fields)
+        updateStream('config.fields', fields)
 
-        this.setState({
-            isAddingField: false,
-        })
-    }
+        setIsAddingField(false)
+    }, [streamFields, updateStream])
 
-    cancelAddField = () => {
-        this.setState({
-            isAddingField: false,
-        })
-    }
+    const cancelAddField = useCallback(() => {
+        setIsAddingField(false)
+    }, [])
 
-    deleteField = (name: string) => {
-        const { editField } = this.props
-        const fields = this.getStreamFields().filter((field) => field.name !== name)
-        editField('config.fields', fields)
-    }
+    const deleteField = useCallback((name: string) => {
+        if (typeof updateStream !== 'function') { return }
 
-    autodetectFields = () => {
-        if (this.props.stream && this.props.stream.id) {
-            // $FlowFixMe: "streamFieldsAutodetect is missing in OwnProps or StateProps"
-            return this.props.streamFieldsAutodetect(this.props.stream.id)
+        const fields = streamFields.filter((field) => field.name !== name)
+
+        updateStream('config.fields', fields)
+    }, [streamFields, updateStream])
+
+    const streamId = stream.id
+    const autodetectFields = useCallback(async () => {
+        if (streamId) {
+            try {
+                await dispatch(streamFieldsAutodetect(streamId))
+
+                Notification.push({
+                    title: 'Fields autodetected!',
+                    icon: NotificationIcon.CHECKMARK,
+                })
+            } catch (err) {
+                console.warn(err)
+
+                Notification.push({
+                    title: err.message,
+                    icon: NotificationIcon.ERROR,
+                })
+            }
         }
-    }
+    }, [dispatch, streamId])
 
-    render() {
-        const { stream, disabled } = this.props
-        const { isAddingField } = this.state
+    const isDisabled = !!(disabled || fieldsAutodetectFetching)
 
-        return (
-            <div>
-                <Translate value="userpages.streams.edit.configure.help" tag="p" className={styles.longText} />
-                {stream && stream.config && stream.config.fields && !!stream.config.fields.length &&
-                    <Fragment>
-                        <SplitControl className={styles.fieldHeaderRow}>
-                            <Translate value="userpages.streams.edit.configure.fieldName" />
-                            <Translate value="userpages.streams.edit.configure.dataType" />
-                        </SplitControl>
-                        <FieldList onSortEnd={this.onSortEnd} disabled={disabled}>
-                            {stream.config.fields.map((field, index) => (
-                                <div className={styles.hoverContainer} key={field.id || index} >
-                                    <div className={styles.fieldItem} >
-                                        <FieldItem name={field.name} onDelete={() => this.deleteField(field.name)}>
-                                            <SplitControl>
-                                                <WithInputActions
-                                                    disabled={disabled}
-                                                >
-                                                    <Text
-                                                        value={field.name}
-                                                        onChange={(e) => this.onFieldNameChange(field.name, e.target.value)}
-                                                        disabled={disabled}
-                                                    />
-                                                </WithInputActions>
-                                                <Select
-                                                    className={styles.select}
-                                                    disabled={disabled}
-                                                    options={this.typeOptions}
-                                                    value={this.typeOptions.find((t) => t.value === field.type)}
-                                                    onChange={(o) => this.onFieldTypeChange(field.name, o.value)}
-                                                />
-                                            </SplitControl>
-                                        </FieldItem>
-                                    </div>
-                                </div>
-                            ))}
-                        </FieldList>
-                    </Fragment>}
-                {!isAddingField &&
-                    <React.Fragment>
-                        <Button
-                            kind="secondary"
-                            className={styles.addFieldButton}
-                            onClick={this.addNewField}
-                            disabled={disabled}
-                        >
-                            <Translate value="userpages.streams.edit.configure.addField" />
-                        </Button>
-                        <Button
-                            kind="secondary"
-                            outline
-                            onClick={this.autodetectFields}
-                            disabled={this.props.fieldsAutodetectFetching || disabled}
-                        >
-                            {!this.props.fieldsAutodetectFetching && (
-                                <Translate value="userpages.streams.edit.configure.autodetect" />
-                            )}
-                            {this.props.fieldsAutodetectFetching && (
-                                <Fragment>
-                                    <Translate value="userpages.streams.edit.configure.waiting" />
-                                    <Spinner size="small" className={styles.spinner} color="white" />
-                                </Fragment>
-                            )}
-                        </Button>
-                    </React.Fragment>
-                }
-                {isAddingField &&
-                    <NewFieldEditor
-                        previousFields={this.getStreamFields()}
-                        onConfirm={this.confirmAddField}
-                        onCancel={this.cancelAddField}
-                    />
-                }
-            </div>
-        )
-    }
+    return (
+        <div>
+            <Description
+                value="userpages.streams.edit.configure.help"
+                tag="p"
+            />
+            {!!streamFields && streamFields.length > 0 && (
+                <Fragment>
+                    <SplitControl>
+                        <Label>{I18n.t('userpages.streams.edit.configure.fieldName')}</Label>
+                        <Label>{I18n.t('userpages.streams.edit.configure.dataType')}</Label>
+                    </SplitControl>
+                    <StyledFieldList
+                        onSortEnd={onSortEnd}
+                        disabled={isDisabled || isAddingField}
+                    >
+                        {streamFields.map((field) => (
+                            <FieldItem
+                                key={field.id}
+                                name={field.name}
+                                onDelete={() => deleteField(field.name)}
+                            >
+                                <SplitControl>
+                                    <Text
+                                        value={field.name}
+                                        onChange={(e) => onFieldNameChange(field.name, e.target.value)}
+                                        disabled={isDisabled || isAddingField}
+                                    />
+                                    <Select
+                                        disabled={isDisabled || isAddingField}
+                                        options={typeOptions}
+                                        value={typeOptions.find((t) => t.value === field.type)}
+                                        onChange={(o) => onFieldTypeChange(field.name, o.value)}
+                                    />
+                                </SplitControl>
+                            </FieldItem>
+                        ))}
+                    </StyledFieldList>
+                </Fragment>
+            )}
+            {!isAddingField &&
+                <Buttons>
+                    <Button
+                        kind="secondary"
+                        onClick={addNewField}
+                        disabled={isDisabled}
+                    >
+                        <Translate value="userpages.streams.edit.configure.addField" />
+                    </Button>
+                    <Button
+                        kind="secondary"
+                        outline
+                        onClick={autodetectFields}
+                        disabled={isDisabled}
+                        waiting={fieldsAutodetectFetching}
+                    >
+                        {!fieldsAutodetectFetching && (
+                            <Translate value="userpages.streams.edit.configure.autodetect" />
+                        )}
+                        {!!fieldsAutodetectFetching && (
+                            <Translate value="userpages.streams.edit.configure.waiting" />
+                        )}
+                    </Button>
+                </Buttons>
+            }
+            {!!isAddingField &&
+                <NewFieldEditor
+                    previousFields={streamFields}
+                    onConfirm={confirmAddField}
+                    onCancel={cancelAddField}
+                />
+            }
+        </div>
+    )
 }
 
-const mapStateToProps = (state: StoreState): StateProps => ({
-    fieldsAutodetectFetching: selectFieldsAutodetectFetching(state),
-})
-
-const mapDispatchToProps = (dispatch: Function): DispatchProps => ({
-    copyStreamId: (id) => dispatch(copy(id)),
-    editField: (field: string, data: any) => dispatch(updateEditStreamField(field, data)),
-    updateEditStream: (data: Stream) => dispatch(updateEditStream(data)),
-    streamFieldsAutodetect: (id: StreamId) => dispatch(streamFieldsAutodetect(id)),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(ConfigureView)
+export default ConfigureView

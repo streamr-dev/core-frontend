@@ -1,15 +1,13 @@
 // @flow
 
-import cloneDeep from 'lodash/cloneDeep'
 import set from 'lodash/set'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList } from '$shared/flowtype/stream-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 import type { ResourceId } from '$userpages/flowtype/permission-types'
+import uuid from 'uuid'
 
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
@@ -141,9 +139,29 @@ export const clearStreamsList = () => (dispatch: Function) => (
     dispatch(clearStreamsListAction())
 )
 
+const mapStreamFields = (stream: Stream): Stream => {
+    const { config } = stream
+
+    if (!config || !config.fields) {
+        return stream
+    }
+
+    return {
+        ...stream,
+        config: {
+            ...config,
+            fields: (config.fields || []).map((field) => ({
+                ...field,
+                id: field.id ? field.id : uuid(),
+            })),
+        },
+    }
+}
+
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
     return services.getStream(id)
+        .then(mapStreamFields)
         .then(handleEntities(streamSchema, dispatch))
         .then((id) => dispatch(getStreamSuccess(id)))
         .catch((e) => {
@@ -188,7 +206,7 @@ export const getStreams = ({ replace = false, filter = {} }: GetStreamParams = {
         })
 }
 
-export const createStream = (options: { name: string, description: ?string }) => (dispatch: Function): Promise<StreamId> => {
+export const createStream = (options: { id: string, description: ?string }) => (dispatch: Function): Promise<StreamId> => {
     dispatch(createStreamRequest())
     return new Promise((resolve, reject) => {
         services.postStream(options)
@@ -277,43 +295,6 @@ export const updateEditStreamField = (field: string, data: any) => (dispatch: Fu
     handleEntities(streamSchema, dispatch)(stream)
 }
 
-export const initEditStream = () => (dispatch: Function, getState: Function) => {
-    const stream = selectOpenStream(getState())
-    if (stream) {
-        dispatch(updateEditStream({
-            id: stream.id || '',
-            name: stream.name || '',
-            description: stream.description || '',
-            config: cloneDeep(stream.config) || {},
-            lastUpdated: stream.lastUpdated || 0,
-            autoConfigure: stream.autoConfigure || false,
-            partitions: stream.partitions || 1,
-            requireSignedData: stream.requireSignedData || false,
-            requireEncryptedData: stream.requireEncryptedData || false,
-            inactivityThresholdHours: stream.inactivityThresholdHours || 0,
-            uiChannel: stream.uiChannel || false,
-            storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
-        }))
-    }
-}
-
-export const initNewStream = (initData: ?any) => (dispatch: Function) => {
-    dispatch(updateEditStream(Object.assign({}, {
-        id: '',
-        name: '',
-        description: '',
-        config: {},
-        lastUpdated: 0,
-        autoConfigure: false,
-        partitions: 1,
-        inactivityThresholdHours: 0,
-        requireSignedData: false,
-        requireEncryptedData: false,
-        storageDays: 365,
-        uiChannel: false,
-    }, initData)))
-}
-
 export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamFieldAutodetectRequest())
     return services.autodetectStreamfields(id)
@@ -325,20 +306,13 @@ export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => 
         }))
         .then(({ config: { fields } }) => {
             if (fields) {
-                updateEditStreamField('config.fields', fields)
+                dispatch(updateEditStreamField('config.fields', fields))
                 dispatch(getStreamFieldAutodetectSuccess(fields))
-                Notification.push({
-                    title: 'Fields autodetected!',
-                    icon: NotificationIcon.CHECKMARK,
-                })
             }
         }, (err) => {
             if (err) {
                 dispatch(getStreamFieldAutodetectFailure(err))
-                Notification.push({
-                    title: err.message,
-                    icon: NotificationIcon.ERROR,
-                })
+                throw err
             }
         })
 }
