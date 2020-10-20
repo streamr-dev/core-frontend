@@ -71,7 +71,7 @@
     "transactions": "/core/transactions",
     "streams": {
         "index": "/core/streams",
-        "show": "/core/streams/:id",
+        "show": "/core/streams/:id(.*)",
         "new": "/core/streams/new",
         "public": {
             "show": "<platform>/core/streams/:id"
