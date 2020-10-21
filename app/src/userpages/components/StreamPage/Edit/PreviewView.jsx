@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
 import { useClient } from 'streamr-client-react'
 import Button from '$shared/components/Button'
-import ClientProvider from '$shared/components/StreamrClientProvider'
 import useModal from '$shared/hooks/useModal'
 import Subscription from '$shared/components/Subscription'
 import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
@@ -208,8 +207,4 @@ const PreviewView = styled(UnstyledPreviewView)`
     position: relative;
 `
 
-export default (props) => (
-    <ClientProvider>
-        <PreviewView {...props} />
-    </ClientProvider>
-)
+export default PreviewView

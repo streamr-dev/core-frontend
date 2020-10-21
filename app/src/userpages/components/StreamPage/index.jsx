@@ -25,6 +25,7 @@ import View from './View'
 import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useStreamPermissions from '$userpages/hooks/useStreamPermissions'
+import ClientProvider from '$shared/components/StreamrClientProvider'
 
 const StreamPage = (props) => {
     const { id: idProp } = props.match.params || {}
@@ -117,17 +118,21 @@ const StreamPage = (props) => {
         )
     }
 
-    return readOnly ? (
-        <View
-            stream={stream}
-            currentUser={currentUser}
-        />
-    ) : (
-        <Edit
-            stream={editedStream}
-            canShare={canShare}
-            disabled={updating}
-        />
+    return (
+        <ClientProvider>
+            {readOnly ? (
+                <View
+                    stream={stream}
+                    currentUser={currentUser}
+                />
+            ) : (
+                <Edit
+                    stream={editedStream}
+                    canShare={canShare}
+                    disabled={updating}
+                />
+            )}
+        </ClientProvider>
     )
 }
 
