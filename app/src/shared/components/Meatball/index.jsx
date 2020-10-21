@@ -30,6 +30,7 @@ const Meatball = ({
             [styles.white]: !!white,
             [styles.disabled]: !!disabled,
         })}
+        data-test-hook="meatball"
     >
         <svg
             xmlns="http://www.w3.org/2000/svg"

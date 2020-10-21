@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useReducer } from 'react'
+import { useEffect, useCallback, useReducer, useRef } from 'react'
 import { useClient } from 'streamr-client-react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
@@ -52,51 +52,37 @@ const useLastMessageTimestamp = (streamId) => {
         })
     }, [])
 
+    const refreshKeyRef = useRef(refreshKey)
+
     useEffect(() => {
-        if (!client) {
-            return () => {}
-        }
+        refreshKeyRef.current = refreshKey
 
-        let last
-
-        const onMessage = (_, { messageId: { timestamp: ts } }) => {
-            last = ts
-        }
-
-        const sub = (() => {
+        const attach = async () => {
             try {
-                return client.subscribe({
+                await client.resend({
                     stream: streamId,
                     resend: {
                         last: 1,
                     },
-                }, onMessage)
-            } catch (e) { /**/ }
-
-            return null
-        })()
-
-        const onResendDone = () => {
-            if (isMounted()) {
-                dispatch({
-                    type: SET_TIMESTAMP,
-                    timestamp: last,
+                }, (message, { messageId: { timestamp: ts } }) => {
+                    if (isMounted() && refreshKeyRef.current === refreshKey) {
+                        dispatch({
+                            type: SET_TIMESTAMP,
+                            timestamp: ts,
+                        })
+                    }
                 })
+            } catch (e) {
+                if (isMounted()) {
+                    dispatch({
+                        type: FAIL,
+                    })
+                }
             }
-
-            sub.off('initial_resend_done', onResendDone)
-            client.unsubscribe(sub)
         }
 
-        if (sub) {
-            sub.on('initial_resend_done', onResendDone)
-        }
-
-        return () => {
-            if (sub) {
-                sub.off('initial_resend_done', onResendDone)
-                client.unsubscribe(sub)
-            }
+        if (client) {
+            attach()
         }
     }, [client, streamId, isMounted, refreshKey])
 

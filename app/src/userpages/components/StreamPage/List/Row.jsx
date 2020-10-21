@@ -132,6 +132,9 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
     const [timestamp, refresh, refreshedAt] = useLastMessageTimestamp(stream.id)
 
     useEffect(() => {
+        // Initial status check is not a "refresh" that's why `refreshedAt`
+        // is gonna be undefined. We're taking advantage of it here.
+
         if (refreshedAt) {
             Notification.push({
                 title: I18n.t('userpages.streams.actions.refreshSuccess'),

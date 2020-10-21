@@ -116,13 +116,15 @@ Cypress.Commands.add('connectToClient', (options = {}) => {
 
 Cypress.Commands.add('sendToStream', (streamId, payload) => (
     cy.connectToClient().then(async (client) => {
-        client.publish(streamId, payload)
-
-        await new Promise((resolve) => {
+        const promise = new Promise((resolve) => {
             client.subscribe(streamId, () => {
                 resolve()
             })
         })
+
+        client.publish(streamId, payload)
+
+        await promise
 
         return client.ensureConnected()
     })

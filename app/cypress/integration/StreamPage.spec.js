@@ -18,8 +18,8 @@ describe('Stream listing page', () => {
         cy.location('pathname').should('eq', '/core/streams')
     })
 
-    describe('acivity badge', () => {
-        it('renders inactive streams (when no data is flowing)', () => {
+    describe('activity status', () => {
+        it('renders inactive color when no data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 cy.visit('/core/streams')
@@ -30,7 +30,7 @@ describe('Stream listing page', () => {
             })
         })
 
-        it('renders active streams (when data is flowing)', () => {
+        it('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 cy.sendToStream(streamId, {
@@ -38,6 +38,33 @@ describe('Stream listing page', () => {
                 })
                 cy.visit('/core/streams')
                 cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
+                    cy.get('[data-test-hook="Last message at"]').contains('Just now')
+                    cy.get('[data-test-hook="Status ok"]')
+                })
+            })
+        })
+
+        it('renders active color after a refresh and new data in the meantime', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.visit('/core/streams')
+                cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
+                    cy.get('[data-test-hook="Last message at"]').should('be.empty')
+                    cy.get('[data-test-hook="Status inactive"]').should('exist')
+
+                    cy.sendToStream(streamId, {
+                        key: 'value',
+                    })
+
+                    // It looks like it takes a while for a message to get to the history storage.
+                    // That's why we're waiting 1s below.
+                    // eslint-disable-next-line cypress/no-unnecessary-waiting
+                    cy.wait(1000)
+
+                    cy.get('button').contains('Refresh').click({
+                        force: true,
+                    })
+
                     cy.get('[data-test-hook="Last message at"]').contains('Just now')
                     cy.get('[data-test-hook="Status ok"]')
                 })
@@ -433,6 +460,33 @@ describe('Stream edit page', () => {
                 expect(stream.storageDays).to.eq(360)
                 expect(stream.requireEncryptedData).to.eq(true)
                 expect(stream.requireSignedData).to.eq(true)
+            })
+        })
+    })
+
+    describe.only('activity status', () => {
+        it('renders inactive color when no data is flowing', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.visit(`/core/streams/${streamId}`)
+
+                cy.get('[data-test-hook="TOCSection status"]').within(() => {
+                    cy.get('[data-test-hook="Status inactive"]')
+                })
+            })
+        })
+
+        it('renders active color when data is flowing', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.sendToStream(streamId, {
+                    key: 'value',
+                })
+                cy.visit(`/core/streams/${streamId}`)
+
+                cy.get('[data-test-hook="TOCSection status"]').within(() => {
+                    cy.get('[data-test-hook="Status ok"]')
+                })
             })
         })
     })
