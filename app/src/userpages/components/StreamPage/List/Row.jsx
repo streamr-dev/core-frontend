@@ -5,7 +5,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
-
 import routes from '$routes'
 import {
     deleteOrRemoveStream,
@@ -24,7 +23,8 @@ import { ago } from '$shared/utils/time'
 import { LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
 import { StreamList } from '$shared/components/List'
-import { mapStatus } from '.'
+import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
+import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -147,8 +147,12 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         })
     }, [copy, stream.id])
 
+    const timestamp = useLastMessageTimestamp(stream.id)
+
+    const status = getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
+
     return (
-        <StreamList.Row id={stream.id} onClick={showStream}>
+        <StreamList.Row id={stream.id} onClick={showStream} data-test-hook={`Stream row for ${stream.id}`}>
             <StreamList.Title
                 description={stream.description}
                 moreInfo={stream.lastData && titleize(ago(new Date(stream.lastData)))}
@@ -161,11 +165,11 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
             <StreamList.Item>
                 {stream.lastUpdated && titleize(ago(new Date(stream.lastUpdated)))}
             </StreamList.Item>
-            <StreamList.Item>
-                {stream.lastData && titleize(ago(new Date(stream.lastData)))}
+            <StreamList.Item data-test-hook="Last message at">
+                {timestamp && titleize(ago(new Date(timestamp)))}
             </StreamList.Item>
             <StreamList.Item>
-                <StatusIcon status={mapStatus(stream.streamStatus)} tooltip />
+                <StatusIcon status={status} tooltip />
             </StreamList.Item>
             <StreamList.Actions>
                 <Popover

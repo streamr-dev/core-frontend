@@ -1,6 +1,7 @@
 import StreamrClient from 'streamr-client'
 import { setToken } from '$shared/utils/sessionToken'
 import getAuthorizationHeader from '$shared/utils/getAuthorizationHeader'
+import getClientConfig from '$shared/utils/getClientConfig'
 
 Cypress.Commands.add('login', (username = 'tester1@streamr.com', password = 'tester1TESTER1') => (
     new StreamrClient({
@@ -102,4 +103,27 @@ Cypress.Commands.add('createProduct', (body) => (
             },
         })
         .then(({ body: { id } }) => id)
+))
+
+Cypress.Commands.add('connectToClient', (options = {}) => {
+    const client = new StreamrClient(getClientConfig(Object.assign({
+        restUrl: 'http://localhost/api/v1',
+        url: 'ws://localhost/api/v1/ws',
+    }, options)))
+
+    return client.ensureConnected().then(() => client)
+})
+
+Cypress.Commands.add('sendToStream', (streamId, payload) => (
+    cy.connectToClient().then(async (client) => {
+        client.publish(streamId, payload)
+
+        await new Promise((resolve) => {
+            client.subscribe(streamId, () => {
+                resolve()
+            })
+        })
+
+        return client.ensureConnected()
+    })
 ))

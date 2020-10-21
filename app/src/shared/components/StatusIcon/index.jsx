@@ -29,7 +29,9 @@ const PendingTheme = {
     background: '#FFBC00',
 }
 
-const Icon = styled.div`
+const Icon = styled.div.attrs(({ theme }) => ({
+    'data-test-hook': `Status ${theme.id}`,
+}))`
     position: relative;
     display: inline-block;
     width: 16px;
