@@ -40,7 +40,7 @@ const Icon = styled.div.attrs(({ theme }) => ({
     background-color: ${({ theme }) => theme.background || '#CDCDCD'};
 `
 
-const StatusIcon = ({ status, className, tooltip }) => {
+const StatusIcon = ({ status = StatusIcon.INACTIVE, className, tooltip = false }) => {
     let statusText
 
     if (tooltip) {
@@ -59,10 +59,5 @@ StatusIcon.ERROR = ErrorTheme
 StatusIcon.INACTIVE = InactiveTheme
 StatusIcon.PENDING = PendingTheme
 StatusIcon.REMOVED = RemovedTheme
-
-StatusIcon.defaultProps = {
-    status: StatusIcon.INACTIVE,
-    tooltip: false,
-}
 
 export default StatusIcon

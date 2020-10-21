@@ -143,7 +143,6 @@
             "data": "<api>/streams/:streamId/data/partitions/0/from",
             "index": "<api>/streams",
             "show": "<api>/streams/:id",
-            "status": "<api>/streams/:streamId/status",
             "detectFields": "<api>/streams/:streamId/detectFields",
             "keys": {
                 "index": "<api>/streams/:streamId/keys",

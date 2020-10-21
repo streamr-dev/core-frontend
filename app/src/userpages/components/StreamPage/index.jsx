@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
     closeStream,
     getStream,
-    getStreamStatus,
     initEditStream,
     openStream,
     updateEditStream,
@@ -89,14 +88,6 @@ const StreamPage = (props) => {
 
     useEffect(() => {
         const initEditing = async () => {
-            // Get stream status before copying state to edit stream object.
-            try {
-                // The status query might fail due to cassandra problems. Ignore error to prevent
-                // the stream page from getting stuck while loading
-                await dispatch(getStreamStatus(id))
-            } catch (e) {
-                console.warn(e)
-            }
             if (isMounted()) {
                 dispatch(initEditStream())
             }

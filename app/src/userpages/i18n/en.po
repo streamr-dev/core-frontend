@@ -360,9 +360,6 @@ msgstr "Refresh"
 msgid "userpages.streams.actions.refreshSuccess"
 msgstr "Stream refreshed"
 
-msgid "userpages.streams.actions.refreshError"
-msgstr "Stream refresh failed"
-
 msgid "userpages.streams.actions.delete"
 msgstr "Delete"
 

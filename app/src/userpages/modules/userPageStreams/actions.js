@@ -4,7 +4,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Stream, StreamId, StreamIdList, StreamFieldList, StreamStatus } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId, StreamIdList, StreamFieldList } from '$shared/flowtype/stream-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 import type { ResourceId } from '$userpages/flowtype/permission-types'
 
@@ -173,58 +173,13 @@ export const getStream = (id: StreamId) => (dispatch: Function) => {
         })
 }
 
-export const updateStreamStatus = (id: StreamId) => (dispatch: Function) => (
-    services.getStreamStatus(id)
-        .then(({ ok, date }: StreamStatus) => ({
-            id,
-            streamStatus: ok ? 'ok' : 'error',
-            lastData: date,
-        }))
-        .then(handleEntities(streamSchema, dispatch))
-        .catch((e) => {
-            // not sure if we want to spam the user with errors, for now, console log
-            /* eslint-disable no-console */
-            console.log('stream status issue: ', id)
-            console.log(e)
-            throw e
-        })
-)
-
-export const updateStreamStatuses = (ids: StreamIdList) => (dispatch: Function) => {
-    let cancelled = false
-
-    const fetchStatuses = async () => {
-        for (let index = 0; index < ids.length && !cancelled; index += 1) {
-            try {
-                // eslint-disable-next-line no-await-in-loop
-                await dispatch(updateStreamStatus(ids[index]))
-            } catch (e) {
-                // ignore error and continue, updateStreamStatus() already logs the issue
-            }
-        }
-    }
-
-    fetchStatuses()
-
-    return () => {
-        cancelled = true
-    }
-}
-
-let streamStatusCancel = () => null
-
-export const cancelStreamStatusFetch = () => {
-    streamStatusCancel()
-}
-
 type GetStreamParams = {
     replace?: boolean,
     filter?: Filter,
-    updateStatus?: boolean,
 }
 
 // eslint-disable-next-line max-len
-export const getStreams = ({ replace = false, filter = {}, updateStatus = true }: GetStreamParams = {}) => (dispatch: Function, getState: Function) => {
+export const getStreams = ({ replace = false, filter = {} }: GetStreamParams = {}) => (dispatch: Function, getState: Function) => {
     dispatch(getStreamsRequest())
 
     const state = getState()
@@ -240,22 +195,13 @@ export const getStreams = ({ replace = false, filter = {}, updateStatus = true }
         offset = 0
     }
 
-    streamStatusCancel()
-
     return services.getStreams(params, pageSize, offset)
         .then(({ streams, hasMoreResults }) => {
-            const ids = handleEntities(streamsSchema, dispatch)(streams.map((stream) => ({
-                ...stream,
-                streamStatus: 'inactive',
-            })))
+            const ids = handleEntities(streamsSchema, dispatch)(streams)
             if (replace) {
                 dispatch(clearStreamsListAction())
             }
             dispatch(getStreamsSuccess(ids, hasMoreResults))
-
-            if (updateStatus) {
-                streamStatusCancel = dispatch(updateStreamStatuses(ids))
-            }
         })
         .catch((e) => {
             dispatch(getStreamsFailure(e))
@@ -265,15 +211,6 @@ export const getStreams = ({ replace = false, filter = {}, updateStatus = true }
             })
             throw e
         })
-}
-
-export const getStreamStatus = (id: StreamId) => (dispatch: Function) => {
-    handleEntities(streamSchema, dispatch)({
-        id,
-        streamStatus: 'inactive',
-        lastData: null,
-    })
-    return dispatch(updateStreamStatus(id))
 }
 
 export const createStream = (options: { name: string, description: ?string }) => (dispatch: Function): Promise<StreamId> => {
@@ -433,7 +370,6 @@ export const initEditStream = () => (dispatch: Function, getState: Function) => 
             inactivityThresholdHours: stream.inactivityThresholdHours || 0,
             uiChannel: stream.uiChannel || false,
             storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
-            streamStatus: stream.streamStatus,
         }))
     }
 }

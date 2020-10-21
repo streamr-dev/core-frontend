@@ -10,13 +10,11 @@ import styled from 'styled-components'
 import routes from '$routes'
 import {
     getStreams,
-    cancelStreamStatusFetch,
     clearStreamsList,
 } from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectHasMoreSearchResults } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
-import StatusIcon from '$shared/components/StatusIcon'
 import Layout from '$userpages/components/Layout'
 import Search from '../../Header/Search'
 import { resetResourcePermission } from '$userpages/modules/permission/actions'
@@ -82,19 +80,6 @@ const TabletPopover = styled(Popover)`
     }
 `
 
-export const mapStatus = (state: string) => {
-    switch (state) {
-        case 'ok':
-            return StatusIcon.OK
-        case 'error':
-            return StatusIcon.ERROR
-        case 'pending':
-            return StatusIcon.PENDING
-        default:
-            return StatusIcon.INACTIVE
-    }
-}
-
 function StreamPageSidebar({ stream }) {
     const sidebar = useContext(SidebarContext)
     const dispatch = useDispatch()
@@ -155,7 +140,6 @@ const StreamList = () => {
     const hasMoreResults = useSelector(selectHasMoreSearchResults)
 
     useEffect(() => () => {
-        cancelStreamStatusFetch()
         dispatch(clearStreamsList())
     }, [dispatch])
 

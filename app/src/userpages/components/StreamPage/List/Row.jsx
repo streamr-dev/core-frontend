@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -6,10 +6,7 @@ import { Link } from 'react-router-dom'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
 import routes from '$routes'
-import {
-    deleteOrRemoveStream,
-    getStreamStatus,
-} from '$userpages/modules/userPageStreams/actions'
+import { deleteOrRemoveStream } from '$userpages/modules/userPageStreams/actions'
 import Popover from '$shared/components/Popover'
 import StatusIcon from '$shared/components/StatusIcon'
 import confirmDialog from '$shared/utils/confirm'
@@ -123,21 +120,6 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         })))
     ), [dispatch, stream.id])
 
-    const onRefreshStatus = useCallback(() => {
-        dispatch(getStreamStatus(stream.id))
-            .then(() => {
-                Notification.push({
-                    title: I18n.t('userpages.streams.actions.refreshSuccess'),
-                    icon: NotificationIcon.CHECKMARK,
-                })
-            }, () => {
-                Notification.push({
-                    title: I18n.t('userpages.streams.actions.refreshError'),
-                    icon: NotificationIcon.ERROR,
-                })
-            })
-    }, [dispatch, stream.id])
-
     const onCopyId = useCallback(() => {
         copy(stream.id)
 
@@ -147,7 +129,16 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         })
     }, [copy, stream.id])
 
-    const timestamp = useLastMessageTimestamp(stream.id)
+    const [timestamp, refresh, refreshedAt] = useLastMessageTimestamp(stream.id)
+
+    useEffect(() => {
+        if (refreshedAt) {
+            Notification.push({
+                title: I18n.t('userpages.streams.actions.refreshSuccess'),
+                icon: NotificationIcon.CHECKMARK,
+            })
+        }
+    }, [refreshedAt])
 
     const status = getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
 
@@ -155,7 +146,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         <StreamList.Row id={stream.id} onClick={showStream} data-test-hook={`Stream row for ${stream.id}`}>
             <StreamList.Title
                 description={stream.description}
-                moreInfo={stream.lastData && titleize(ago(new Date(stream.lastData)))}
+                moreInfo={timestamp && titleize(ago(new Date(timestamp)))}
             >
                 {stream.name}
             </StreamList.Title>
@@ -193,7 +184,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                     <Popover.Item disabled={!canBeSharedByCurrentUser} onClick={onShareClick}>
                         <Translate value="userpages.streams.actions.share" />
                     </Popover.Item>
-                    <Popover.Item onClick={onRefreshStatus}>
+                    <Popover.Item onClick={refresh}>
                         <Translate value="userpages.streams.actions.refresh" />
                     </Popover.Item>
                     <Popover.Item onClick={confirmDeleteStream}>
