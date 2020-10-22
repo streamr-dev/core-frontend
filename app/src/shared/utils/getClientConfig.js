@@ -7,7 +7,7 @@ export default function getClientConfig(options = {}) {
         sessionToken,
     }
 
-    return Object.assign({}, {
+    return Object.assign({
         auth,
         autoConnect: true,
         autoDisconnect: false,
