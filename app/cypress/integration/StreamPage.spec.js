@@ -464,7 +464,7 @@ describe('Stream edit page', () => {
         })
     })
 
-    describe.only('activity status', () => {
+    describe('activity status', () => {
         it('renders inactive color when no data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
