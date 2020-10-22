@@ -1,10 +1,11 @@
 // @flow
 
-import React, { useCallback, useState, useMemo, useContext, useRef } from 'react'
+import React, { useCallback, useState, useMemo, useContext, useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
+import cloneDeep from 'lodash/cloneDeep'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
@@ -76,25 +77,63 @@ const PreviewDescription = styled(Translate)`
     max-width: 660px;
 `
 
+const didChange = (original, changed) => {
+    const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = original || {}
+    const { streamStatus: changedStatus, lastData: changedData, ...changedStripped } = changed || {}
+
+    return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
+}
+
 const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
     const sidebar = useContext(SidebarContext)
+    const { id: streamId } = stream
     const streamRef = useRef()
     streamRef.current = stream
+    const originalStreamRef = useRef()
 
     const dispatch = useDispatch()
 
+    useEffect(() => {
+        if (!streamId || !streamRef.current) { return }
+        originalStreamRef.current = {
+            ...streamRef.current,
+            config: cloneDeep(streamRef.current.config),
+        }
+    }, [streamId])
+
     const updateStream = useCallback((change, additionalData) => {
-        if (typeof change === 'string') {
-            dispatch(updateEditStreamField(change, additionalData))
-        } else if (typeof change === 'object') {
-            dispatch(updateEditStream({
-                ...streamRef.current,
-                ...change,
-            }))
-        } else {
-            console.warn(`Unknown update, change = ${JSON.stringify(change)}, additionalData = ${JSON.stringify(additionalData)}!`)
+        try {
+            if (typeof change === 'string') {
+                dispatch(updateEditStreamField(change, additionalData))
+            } else if (typeof change === 'object') {
+                dispatch(updateEditStream({
+                    ...change,
+                }))
+            } else {
+                throw new Error(`Unknown update, change = ${JSON.stringify(change)}, additionalData = ${JSON.stringify(additionalData)}`)
+            }
+        } catch (e) {
+            console.warn(e)
         }
     }, [dispatch])
+
+    useEffect(() => {
+        const handleBeforeunload = (event) => {
+            if (didChange(originalStreamRef.current, streamRef.current)) {
+                const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
+                const evt = (event || window.event)
+                evt.returnValue = message // Gecko + IE
+                return message // Webkit, Safari, Chrome etc.
+            }
+            return ''
+        }
+
+        window.addEventListener('beforeunload', handleBeforeunload)
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeunload)
+        }
+    }, [])
 
     const isMounted = useIsMounted()
 

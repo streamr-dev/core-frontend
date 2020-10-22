@@ -71,8 +71,6 @@ const StreamPage = (props) => {
                             error: e,
                         })
                     }
-
-                    if (!isMounted()) { return }
                 } catch (error) {
                     if (canHandleLoadError(error)) {
                         await handleLoadError({

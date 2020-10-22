@@ -282,8 +282,16 @@ export const deleteOrRemoveStream = (id: StreamId) => async (dispatch: Function)
     return dispatch(removeStream(id, Object.keys(permissionIds)))
 }
 
-export const updateEditStream = (stream: ?Stream) => (dispatch: Function) => {
-    handleEntities(streamSchema, dispatch)(stream)
+export const updateEditStream = (stream: ?Stream) => (dispatch: Function, getState: Function) => {
+    const state = getState()
+    const { id } = selectOpenStream(state) || {}
+
+    if (id) {
+        handleEntities(streamSchema, dispatch)({
+            id,
+            ...stream,
+        })
+    }
 }
 
 export const updateEditStreamField = (field: string, data: any) => (dispatch: Function, getState: Function) => {
