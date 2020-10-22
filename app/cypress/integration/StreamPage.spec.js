@@ -36,6 +36,12 @@ describe('Stream listing page', () => {
                 cy.sendToStream(streamId, {
                     key: 'value',
                 })
+
+                // It looks like it takes a while for a message to get to the history storage.
+                // That's why we're waiting 3s below.
+                // eslint-disable-next-line cypress/no-unnecessary-waiting
+                cy.wait(3000)
+
                 cy.visit('/core/streams')
                 cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
                     cy.get('[data-test-hook="Last message at"]').contains('Just now')
@@ -57,9 +63,9 @@ describe('Stream listing page', () => {
                     })
 
                     // It looks like it takes a while for a message to get to the history storage.
-                    // That's why we're waiting 5s below.
+                    // That's why we're waiting 3s below.
                     // eslint-disable-next-line cypress/no-unnecessary-waiting
-                    cy.wait(5000)
+                    cy.wait(3000)
 
                     cy.get('button').contains('Refresh').click({
                         force: true,
@@ -482,6 +488,12 @@ describe('Stream edit page', () => {
                 cy.sendToStream(streamId, {
                     key: 'value',
                 })
+
+                // It looks like it takes a while for a message to get to the history storage.
+                // That's why we're waiting 3s below.
+                // eslint-disable-next-line cypress/no-unnecessary-waiting
+                cy.wait(3000)
+
                 cy.visit(`/core/streams/${streamId}`)
 
                 cy.get('[data-test-hook="TOCSection status"]').within(() => {
