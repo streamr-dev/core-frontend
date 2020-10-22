@@ -443,8 +443,8 @@ msgstr "Copy Stream ID"
 msgid "userpages.streams.edit.details.copied"
 msgstr "Copied"
 
-msgid "userpages.streams.edit.details.unsavedChanges"
-msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
+msgid "userpages.streams.edit.unsavedChanges"
+msgstr "You have unsaved changes. Are you sure you want to leave?"
 
 msgid "userpages.streams.edit.configure.newFieldEditor.namePlaceholder"
 msgstr "Enter a field name"

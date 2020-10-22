@@ -14,9 +14,9 @@ describe('updateEditStream', () => {
         store = initStore()
     })
 
-    it('can add/remove fields', async () => {
+    it('can add/remove fields', () => {
         const id = uuid()
-        await store.dispatch(actions.updateEditStream({
+        handleEntities(streamSchema, store.dispatch)({
             id,
             name: '',
             description: '',
@@ -29,7 +29,8 @@ describe('updateEditStream', () => {
             requireEncryptedData: false,
             storageDays: 365,
             uiChannel: false,
-        }))
+        })
+        store.dispatch(actions.openStream(id))
 
         let editedStream = selectors.selectOpenStream(store.getState())
         expect(editedStream).toBeTruthy()

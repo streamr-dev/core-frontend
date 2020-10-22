@@ -673,9 +673,15 @@ msgstr "No cover image"
 msgid "modal.confirmSave.title"
 msgstr "You have unsaved changes"
 
-msgid "modal.confirmSave.message"
+msgid "modal.confirmSave.product.message"
 msgstr ""
 "You have made changes to this product."
+"<br />"
+"Do you want to save your changes?"
+
+msgid "modal.confirmSave.stream.message"
+msgstr ""
+"You have made changes to this stream."
 "<br />"
 "Do you want to save your changes?"
 

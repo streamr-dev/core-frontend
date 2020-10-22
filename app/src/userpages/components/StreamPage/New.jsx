@@ -152,7 +152,7 @@ const UnstyledNew = (props) => {
     useEffect(() => {
         const handleBeforeunload = (event) => {
             if (contentChangedRef.current) {
-                const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
+                const message = I18n.t('userpages.streams.edit.unsavedChanges')
                 const evt = (event || window.event)
                 evt.returnValue = message // Gecko + IE
                 return message // Webkit, Safari, Chrome etc.

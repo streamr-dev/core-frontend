@@ -37,6 +37,8 @@ import HistoryView from './HistoryView'
 import PartitionsView from './PartitionsView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
+import ConfirmSaveModal from './ConfirmSaveModal'
+import useModal from '$shared/hooks/useModal'
 
 import styles from './edit.pcss'
 
@@ -90,6 +92,7 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
     const streamRef = useRef()
     streamRef.current = stream
     const originalStreamRef = useRef()
+    const { api: confirmSaveDialog } = useModal('confirmSave')
 
     const dispatch = useDispatch()
 
@@ -120,7 +123,7 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
     useEffect(() => {
         const handleBeforeunload = (event) => {
             if (didChange(originalStreamRef.current, streamRef.current)) {
-                const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
+                const message = I18n.t('userpages.streams.edit.unsavedChanges')
                 const evt = (event || window.event)
                 evt.returnValue = message // Gecko + IE
                 return message // Webkit, Safari, Chrome etc.
@@ -137,13 +140,11 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
 
     const isMounted = useIsMounted()
 
-    const cancel = useCallback(() => {
-        dispatch(push(routes.streams.index()))
-    }, [dispatch])
-
     const [spinner, setSpinner] = useState(false)
 
-    const save = useCallback(async () => {
+    const save = useCallback(async (options = {
+        redirect: true,
+    }) => {
         setSpinner(true)
 
         try {
@@ -154,7 +155,10 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                     title: I18n.t('userpages.streams.actions.saveStreamSuccess'),
                     icon: NotificationIcon.CHECKMARK,
                 })
-                dispatch(push(routes.streams.index()))
+
+                if (options.redirect) {
+                    dispatch(push(routes.streams.index()))
+                }
             }
         } catch (e) {
             console.warn(e)
@@ -170,6 +174,32 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
         }
     }, [stream, dispatch, isMounted])
 
+    const confirmIsSaved = useCallback(async () => {
+        if (!didChange(originalStreamRef.current, streamRef.current)) {
+            return true
+        }
+
+        const { save: saveRequested, proceed: canProceed } = await confirmSaveDialog.open()
+
+        if (!isMounted()) { return false }
+
+        if (saveRequested) {
+            await save({
+                redirect: false,
+            })
+        }
+
+        return !!canProceed
+    }, [confirmSaveDialog, save, isMounted])
+
+    const cancel = useCallback(async () => {
+        const canProceed = await confirmIsSaved()
+
+        if (isMounted() && canProceed) {
+            dispatch(push(routes.streams.index()))
+        }
+    }, [confirmIsSaved, dispatch, isMounted])
+
     const subSnippets = useMemo(() => (
         subscribeSnippets({
             id: stream.id,
@@ -182,9 +212,15 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
         })
     ), [stream.id])
 
-    const openShareDialog = useCallback(() => {
-        sidebar.open('share')
-    }, [sidebar])
+    const openShareDialog = useCallback(async () => {
+        const canProceed = await confirmIsSaved()
+
+        if (isMounted() && canProceed) {
+            sidebar.open('share')
+        }
+    }, [confirmIsSaved, sidebar, isMounted])
+
+    const isDisabled = !!(disabled || sidebar.isOpen())
 
     const [timestamp, error] = useLastMessageTimestamp(stream.id)
 
@@ -205,24 +241,24 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                             title: I18n.t('userpages.profilePage.toolbar.share'),
                             kind: 'primary',
                             outline: true,
-                            onClick: openShareDialog,
-                            disabled: disabled || !canShare,
+                            onClick: () => openShareDialog(),
+                            disabled: isDisabled || !canShare,
                             className: styles.showOnDesktop,
                         },
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
                             kind: 'primary',
                             spinner,
-                            onClick: save,
-                            disabled,
+                            onClick: () => save(),
+                            disabled: isDisabled,
                             className: styles.showOnDesktop,
                         },
                         done: {
                             title: I18n.t('userpages.profilePage.toolbar.done'),
                             kind: 'primary',
                             spinner,
-                            onClick: save,
-                            disabled,
+                            onClick: () => save(),
+                            disabled: isDisabled,
                             className: styles.showOnTablet,
                         },
                     }}
@@ -236,7 +272,7 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                 >
                     <InfoView
                         stream={stream}
-                        disabled={disabled}
+                        disabled={isDisabled}
                         updateStream={updateStream}
                     />
                 </TOCPage.Section>
@@ -270,7 +306,7 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                 >
                     <SecurityView
                         stream={stream}
-                        disabled={disabled}
+                        disabled={isDisabled}
                         updateStream={updateStream}
                     />
                 </TOCPage.Section>
@@ -281,7 +317,7 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                 >
                     <ConfigureView
                         stream={stream}
-                        disabled={disabled}
+                        disabled={isDisabled}
                         updateStream={updateStream}
                     />
                 </TOCPage.Section>
@@ -296,7 +332,7 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                 >
                     <StatusView
                         stream={stream}
-                        disabled={disabled}
+                        disabled={isDisabled}
                         updateStream={updateStream}
                     />
                 </TOCPage.Section>
@@ -319,7 +355,7 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                 >
                     <HistoryView
                         stream={stream}
-                        disabled={disabled}
+                        disabled={isDisabled}
                         updateStream={updateStream}
                     />
                 </TOCPage.Section>
@@ -331,12 +367,13 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                 >
                     <PartitionsView
                         stream={stream}
-                        disabled={disabled}
+                        disabled={isDisabled}
                         updateStream={updateStream}
                     />
                 </TOCPage.Section>
             </TOCPage>
             <StreamPageSidebar stream={stream} />
+            <ConfirmSaveModal />
         </CoreLayout>
     )
 }

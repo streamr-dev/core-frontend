@@ -19,7 +19,6 @@ import { actionsTypes as purchaseActionTypes } from '$mp/containers/ProductPage/
 
 // marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
-import ConfirmSaveDialog from '$mp/components/Modal/ConfirmSaveDialog'
 import PublishComplete from '$mp/components/Modal/PublishComplete'
 import PublishError from '$mp/components/Modal/PublishError'
 import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
@@ -58,6 +57,7 @@ import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletD
 import InstallMetaMaskDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallMetaMaskDialog'
 import InstallMobileApplicationDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallMobileApplicationDialog'
 import InstallSupportedBrowserDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallSupportedBrowserDialog'
+import ConfirmSaveDialog from '$shared/components/ConfirmSaveDialog'
 
 const story = (name) => storiesOf(`Modal/${name}`, module)
     .addDecorator(StoryRouter())
@@ -334,15 +334,6 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.UNPUBLISH}
-        />
-    ))
-
-story('Product Editor/ConfirmSaveDialog')
-    .add('default', () => (
-        <ConfirmSaveDialog
-            onClose={action('onClose')}
-            onContinue={action('onContinue')}
-            onSave={action('onSave')}
         />
     ))
 
@@ -842,6 +833,17 @@ story('Shared/ConfirmDialog')
             onAccept={action('onAccept')}
             onReject={action('onReject')}
         />
+    ))
+
+story('Shared/ConfirmSaveDialog')
+    .add('default', () => (
+        <ConfirmSaveDialog
+            onClose={action('onClose')}
+            onContinue={action('onContinue')}
+            onSave={action('onSave')}
+        >
+            <p>{text('Dialog text', 'Dialog text')}</p>
+        </ConfirmSaveDialog>
     ))
 
 story('Shared/UnlockWalletDialog')

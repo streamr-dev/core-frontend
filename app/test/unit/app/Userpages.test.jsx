@@ -29,7 +29,7 @@ jest.mock('$userpages/components/StreamPage/List', () => ({
         <div>Stream list</div>
     ),
 }))
-jest.mock('$userpages/components/NewStreamPage', () => ({
+jest.mock('$userpages/components/StreamPage/New', () => ({
     __esModule: true,
     default: () => (
         <div>New stream page</div>
