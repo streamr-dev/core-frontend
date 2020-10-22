@@ -56,7 +56,7 @@ jobs:
     if: type IN (pull_request)
     env:
     - DESCRIPTION=VISUAL_TEST
-    - CHROMATIC_APP_CODE=exgpyxh1il5
+    - CHROMATIC_PROJECT_TOKEN=exgpyxh1il5
     - NODE_ENV=production
     - PORT=12345
     - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
