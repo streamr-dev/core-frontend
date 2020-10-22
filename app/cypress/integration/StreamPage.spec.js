@@ -57,9 +57,9 @@ describe('Stream listing page', () => {
                     })
 
                     // It looks like it takes a while for a message to get to the history storage.
-                    // That's why we're waiting 1s below.
+                    // That's why we're waiting 5s below.
                     // eslint-disable-next-line cypress/no-unnecessary-waiting
-                    cy.wait(1000)
+                    cy.wait(5000)
 
                     cy.get('button').contains('Refresh').click({
                         force: true,
