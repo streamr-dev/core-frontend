@@ -25,7 +25,7 @@ describe('Stream listing page', () => {
                 cy.visit('/core/streams')
                 cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
                     cy.get('[data-test-hook="Last message at"]').should('be.empty')
-                    cy.get('[data-test-hook="Status inactive"]').should('exist')
+                    cy.get('[data-test-hook="Status inactive"]')
                 })
             })
         })
@@ -50,7 +50,7 @@ describe('Stream listing page', () => {
                 cy.visit('/core/streams')
                 cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
                     cy.get('[data-test-hook="Last message at"]').should('be.empty')
-                    cy.get('[data-test-hook="Status inactive"]').should('exist')
+                    cy.get('[data-test-hook="Status inactive"]')
 
                     cy.sendToStream(streamId, {
                         key: 'value',
