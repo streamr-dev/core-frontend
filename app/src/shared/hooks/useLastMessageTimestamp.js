@@ -65,6 +65,8 @@ const useLastMessageTimestamp = (streamId) => {
                         last: 1,
                     },
                 }, (message, { messageId: { timestamp: ts } }) => {
+                    // Messages that arrive after unmounting and messages that come from a previous
+                    // refresh are all ignored here.
                     if (isMounted() && refreshKeyRef.current === refreshKey) {
                         dispatch({
                             type: SET_TIMESTAMP,
