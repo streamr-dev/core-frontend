@@ -258,7 +258,7 @@ const UnstyledUserPermissions = ({
                         <Checkbox
                             id={`${userId}-${permission}`}
                             key={permission}
-                            label={startCase(I18n.t(`share.permissions.${permission}`))}
+                            label={I18n.t(`share.permissions.${permission}`)}
                             onChange={() => updatePermission(userId, {
                                 [permission]: !value,
                             })}

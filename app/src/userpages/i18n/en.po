@@ -1149,10 +1149,10 @@ msgid "share.error.currentUserError"
 msgstr "Can not share to self"
 
 msgid "share.permissions.get"
-msgstr "Get"
+msgstr "Get details"
 
 msgid "share.permissions.edit"
-msgstr "Edit"
+msgstr "Edit details"
 
 msgid "share.permissions.delete"
 msgstr "Delete"
@@ -1167,7 +1167,7 @@ msgid "share.permissions.share"
 msgstr "Share"
 
 msgid "share.permissions.startstop"
-msgstr "Start/Stop"
+msgstr "Start / Stop"
 
 msgid "share.permissions.interact"
 msgstr "Interact"
