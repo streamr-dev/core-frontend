@@ -10,7 +10,7 @@ export const CreateJavaClient = 'StreamrClient client = new StreamrClient(new Ap
 export const AuthJavascriptClient =
 `new StreamrClient({
     auth: {
-        provider: web3.currentProvider,
+        provider: window.ethereum,
     }
 })`
 

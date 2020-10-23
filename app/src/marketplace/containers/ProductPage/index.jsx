@@ -96,10 +96,11 @@ const LoadingView = () => (
 
 const EditWrap = () => {
     const product = useProduct()
+    const { hasLoaded } = useController()
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
 
-    if (!product || loadPending || permissionsPending) {
+    if (!hasLoaded || loadPending || permissionsPending) {
         return <LoadingView />
     }
 
