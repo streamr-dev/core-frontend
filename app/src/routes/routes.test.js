@@ -89,11 +89,14 @@ describe('route utils', () => {
             })).toEqual('https://streamr.network/ns/api/resource/13')
         })
 
-        it('customRegex', () => {
+        it('generates a namespaced route using custom regex route', () => {
             expect(routes.customRegex()).toEqual('/resource/:id(.*)')
             expect(routes.customRegex({
-                id: 'plaa/hessu/1',
-            }, undefined, false)).toEqual('/resource/plaa/hessu/1')
+                id: 'path/to/resource/1',
+            }, {
+                encode: false,
+                validate: false,
+            })).toEqual('/resource/path/to/resource/1')
         })
     })
 
@@ -172,14 +175,28 @@ describe('route utils', () => {
         it('does not encode route params if encode = false', () => {
             expect(r('/resource/:path', {
                 path: 'sandbox/path/resource',
-            }, undefined, false)).toEqual('/resource/sandbox/path/resource')
+            }, {
+                encode: false,
+                validate: false,
+            })).toEqual('/resource/sandbox/path/resource')
         })
 
         it('does not encode query string even if encode = false', () => {
             expect(r('/resource/:path', {
                 path: 'sandbox/path/resource',
                 id: 'test/1',
-            }, undefined, false)).toEqual('/resource/sandbox/path/resource?id=test%2F1')
+            }, {
+                encode: false,
+                validate: false,
+            })).toEqual('/resource/sandbox/path/resource?id=test%2F1')
+        })
+
+        it('adds hash to path', () => {
+            expect(r('/resource/:id', {
+                id: '123',
+            }, {
+                hash: 'top',
+            })).toEqual('/resource/123#top')
         })
 
         describe('variables', () => {

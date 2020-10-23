@@ -14,7 +14,6 @@ import { updateStream as updateStreamAction, updateEditStream, updateEditStreamF
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
-import docsLinks from '$shared/../docsLinks'
 import CoreLayout from '$shared/components/Layout/Core'
 import CodeSnippets from '$shared/components/CodeSnippets'
 import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
@@ -73,11 +72,6 @@ function StreamPageSidebar({ stream }) {
         </Sidebar.WithErrorBoundary>
     )
 }
-
-const PreviewDescription = styled(Translate)`
-    margin-bottom: 3.125rem;
-    max-width: 660px;
-`
 
 const didChange = (original, changed) => {
     const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = original || {}
@@ -340,12 +334,6 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                     id="preview"
                     title={I18n.t('userpages.streams.edit.details.nav.preview')}
                 >
-                    <PreviewDescription
-                        value="userpages.streams.edit.preview.description"
-                        tag="p"
-                        dangerousHTML
-                        docsLink={docsLinks.gettingStarted}
-                    />
                     <PreviewView stream={stream} />
                 </TOCPage.Section>
                 <TOCPage.Section

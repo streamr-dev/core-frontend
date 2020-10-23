@@ -12,6 +12,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$mp/components/StreamPreview'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
+import docsLinks from '$shared/../docsLinks'
 
 import PreviewTable from './PreviewTable'
 
@@ -51,6 +52,11 @@ const FullPage = styled.div`
     background-color: rgba(239, 239, 239, 0.98);
     z-index: 1;
     overflow-y: scroll;
+`
+
+const Description = styled(Translate)`
+    margin-bottom: 3.125rem;
+    max-width: 660px;
 `
 
 const StreamPreviewDialog = ({ onClose, ...previewProps }) => (
@@ -156,6 +162,12 @@ const UnstyledPreviewView = ({ stream, subscribe = true, ...props }) => {
                     onErrorMessage={onError}
                 />
             )}
+            <Description
+                value="userpages.streams.edit.preview.description"
+                tag="p"
+                dangerousHTML
+                docsLink={docsLinks.gettingStarted}
+            />
             <Wrapper {...props}>
                 <PreviewTable
                     streamData={visibleData.slice(0, PREVIEW_TABLE_LENGTH)}
