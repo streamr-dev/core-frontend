@@ -50,7 +50,7 @@ const InputContainer = styled.div`
     grid-column-gap: 1rem;
 `
 
-const HistoryView = ({ stream, disabled, updateStream }) => {
+const HistoryView = ({ stream, disabled, updateStream, showStorageOptions = true }) => {
     const [storageAmount, setStorageAmount] = useState(0)
     const [storageUnit, setStorageUnit] = useState(undefined)
     const { id: streamId } = stream
@@ -104,7 +104,9 @@ const HistoryView = ({ stream, disabled, updateStream }) => {
                 value="userpages.streams.edit.historicalStoragePeriod.description"
                 tag="p"
             />
-            <Storage streamId={streamId} />
+            {!!showStorageOptions && (
+                <Storage streamId={streamId} />
+            )}
             {stream && stream.storageDays !== undefined &&
                 <Fragment>
                     <Label htmlFor="storageAmount">

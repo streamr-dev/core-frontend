@@ -329,6 +329,7 @@ const UnstyledNew = (props) => {
                     <HistoryView
                         stream={defaultStreamData}
                         disabled
+                        showStorageOptions={false}
                     />
                 </TOCSection>
                 <TOCPage.Section
