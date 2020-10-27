@@ -15,6 +15,12 @@ import FakeProvider from 'web3-fake-provider'
 declare var ethereum: Web3
 declare var web3: Web3
 
+// Disable automatic reload when network is changed in Metamask,
+// reload is handled in GlobalInfoWatcher component
+if (window.ethereum) {
+    window.ethereum.autoRefreshOnNetworkChange = false
+}
+
 type StreamrWeb3Options = {
     isLegacy?: boolean,
 }
