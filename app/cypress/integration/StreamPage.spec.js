@@ -30,6 +30,25 @@ describe('Stream listing page', () => {
             })
         })
 
+        it('renders error color when fetching fails', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.server({
+                    method: 'GET',
+                    status: 404,
+                    response: {},
+                })
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last`).as('getLastMessage')
+
+                cy.visit('/core/streams')
+                cy.wait('@getLastMessage')
+                cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
+                    cy.get('[data-test-hook="Last message at"]').should('be.empty')
+                    cy.get('[data-test-hook="Status error"]')
+                })
+            })
+        })
+
         it('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
@@ -478,6 +497,25 @@ describe('Stream edit page', () => {
 
                 cy.get('[data-test-hook="TOCSection status"]').within(() => {
                     cy.get('[data-test-hook="Status inactive"]')
+                })
+            })
+        })
+
+        it('renders error color when fetching fails', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.server({
+                    method: 'GET',
+                    status: 404,
+                    response: {},
+                })
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last`).as('getLastMessage')
+
+                cy.visit(`/core/streams/${streamId}`)
+                cy.wait('@getLastMessage')
+
+                cy.get('[data-test-hook="TOCSection status"]').within(() => {
+                    cy.get('[data-test-hook="Status error"]')
                 })
             })
         })

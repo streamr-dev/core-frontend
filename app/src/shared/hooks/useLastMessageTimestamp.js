@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useReducer, useRef } from 'react'
-import { useClient } from 'streamr-client-react'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { get } from '$shared/utils/api'
+import routes from '$routes'
 
 const SET_TIMESTAMP = 'set timestamp'
 
@@ -8,9 +9,8 @@ const REFRESH = 'refresh'
 
 const FAIL = 'fail'
 
-export const INVALID_TIMESTAMP = -1
-
 const initialState = {
+    error: undefined,
     refreshedAt: undefined,
     refreshKey: 0,
     timestamp: undefined,
@@ -30,65 +30,65 @@ const reducer = (state, action) => {
                 timestamp: action.timestamp,
             }
         case FAIL:
-            return reducer(state, {
-                type: SET_TIMESTAMP,
-                timestamp: INVALID_TIMESTAMP,
-            })
+            return {
+                ...state,
+                error: action.error,
+                timestamp: undefined,
+            }
         default:
             return state
     }
 }
 
 const useLastMessageTimestamp = (streamId) => {
-    const client = useClient()
-
-    const [{ timestamp, refreshedAt, refreshKey }, dispatch] = useReducer(reducer, initialState)
+    const [{ timestamp, error, refreshedAt, refreshKey }, dispatch] = useReducer(reducer, initialState)
 
     const isMounted = useIsMounted()
 
+    const isFetchingRef = useRef(true)
+
     const refresh = useCallback(() => {
-        dispatch({
-            type: REFRESH,
-        })
+        // Skip updating `refreshKey` if we're already
+        // in "fetching" mode.
+        if (!isFetchingRef.current) {
+            dispatch({
+                type: REFRESH,
+            })
+            isFetchingRef.current = true
+        }
     }, [])
 
-    const refreshKeyRef = useRef(refreshKey)
-
     useEffect(() => {
-        refreshKeyRef.current = refreshKey
-
         const attach = async () => {
             try {
-                await client.resend({
-                    stream: streamId,
-                    resend: {
-                        last: 1,
-                    },
-                }, (message, { messageId: { timestamp: ts } }) => {
-                    // Messages that arrive after unmounting and messages that come from a previous
-                    // refresh are all ignored here.
-                    if (isMounted() && refreshKeyRef.current === refreshKey) {
-                        dispatch({
-                            type: SET_TIMESTAMP,
-                            timestamp: ts,
-                        })
-                    }
+                const [message] = await get({
+                    url: routes.api.streams.lastMessage({
+                        streamId,
+                        partition: 0,
+                    }),
                 })
+                if (isMounted()) {
+                    dispatch({
+                        type: SET_TIMESTAMP,
+                        timestamp: (message || {}).timestamp,
+                    })
+                }
             } catch (e) {
                 if (isMounted()) {
                     dispatch({
                         type: FAIL,
+                        error: e,
                     })
                 }
+            } finally {
+                isFetchingRef.current = false
             }
         }
 
-        if (client) {
-            attach()
-        }
-    }, [client, streamId, isMounted, refreshKey])
+        attach()
+    }, [streamId, isMounted, refreshKey])
 
-    return [timestamp, refresh, refreshedAt]
+    return [timestamp, error, refresh, refreshedAt]
 }
 
 export default useLastMessageTimestamp

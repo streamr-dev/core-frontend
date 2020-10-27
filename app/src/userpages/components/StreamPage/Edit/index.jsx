@@ -132,9 +132,9 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
         sidebar.open('share')
     }, [sidebar])
 
-    const [timestamp] = useLastMessageTimestamp(stream.id)
+    const [timestamp, error] = useLastMessageTimestamp(stream.id)
 
-    const status = getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
+    const status = error ? StatusIcon.ERROR : getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
 
     return (
         <CoreLayout

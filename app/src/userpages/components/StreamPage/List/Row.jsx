@@ -129,7 +129,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         })
     }, [copy, stream.id])
 
-    const [timestamp, refresh, refreshedAt] = useLastMessageTimestamp(stream.id)
+    const [timestamp, error, refresh, refreshedAt] = useLastMessageTimestamp(stream.id)
 
     useEffect(() => {
         // Initial status check is not a "refresh" that's why `refreshedAt`
@@ -143,7 +143,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         }
     }, [refreshedAt])
 
-    const status = getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
+    const status = error ? StatusIcon.ERROR : getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
 
     return (
         <StreamList.Row id={stream.id} onClick={showStream} data-test-hook={`Stream row for ${stream.id}`}>
