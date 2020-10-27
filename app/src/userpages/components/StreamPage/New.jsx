@@ -28,11 +28,11 @@ import {
 import Preview from './Edit/PreviewView'
 import SecurityView from './Edit/SecurityView'
 import { StatusView } from './Edit/StatusView'
-import KeyView from './Edit/KeyView'
 import ConfigureView from './Edit/ConfigureView'
 import HistoryView from './Edit/HistoryView'
 import PartitionsView from './Edit/PartitionsView'
 import Select from '$ui/Select'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 const Description = styled(Translate)`
     margin-bottom: 3rem;
@@ -51,6 +51,29 @@ const defaultStreamData = {
 
 const DEFAULT_DOMAIN = 'sandbox'
 
+const getValidId = ({ domain, pathname }) => {
+    const id = `${domain}/${pathname}`
+
+    if (pathname.indexOf('/') === 0) {
+        throw new Error('Path name cannot start with a slash')
+    }
+
+    if (/\/\/+/.test(pathname)) {
+        throw new Error('Use a single slash to separate paths.')
+    }
+
+    if (!/\w$/.test(id)) {
+        throw new Error('Path name must end with an alpha-numeric character.')
+    }
+
+    // this matches the backend validation for the full id
+    if (!/^((?:[\w-]+\.?)*\w)\/(?:[\w.-]+\/?)*\w$/.test(id)) {
+        throw new Error('Path may only contain alpha-numeric characters, underscores, and dashes.')
+    }
+
+    return id
+}
+
 const UnstyledNew = (props) => {
     const [{ domain, pathname, description }, updateStream] = useReducer((state, changeSet) => ({
         ...state,
@@ -62,6 +85,7 @@ const UnstyledNew = (props) => {
     })
 
     const [loading, setLoading] = useState(false)
+    const [createAttempted, setCreateAttempted] = useState(false)
     const streamDataRef = useRef()
     const contentChangedRef = useRef(false)
     const dispatch = useDispatch()
@@ -104,13 +128,37 @@ const UnstyledNew = (props) => {
         updateStream({ description })
     }, [updateStream])
 
+    const validationError = useMemo(() => {
+        try {
+            if (pathname) {
+                getValidId({
+                    domain,
+                    pathname,
+                })
+            }
+
+            return undefined
+        } catch (e) {
+            return e.message
+        }
+    }, [domain, pathname])
+
     const onSave = useCallback(async () => {
         if (!streamDataRef.current) { return }
 
         setLoading(true)
+        setCreateAttempted(true)
 
         try {
-            const streamId = await dispatch(createStream(streamDataRef.current))
+            const { domain, pathname, description } = streamDataRef.current
+
+            const streamId = await dispatch(createStream({
+                id: getValidId({
+                    domain,
+                    pathname,
+                }),
+                description,
+            }))
 
             if (!isMounted()) { return }
 
@@ -128,6 +176,8 @@ const UnstyledNew = (props) => {
                 id: streamId,
             })))
         } catch (e) {
+            console.warn(e)
+
             if (!isMounted()) { return }
 
             Notification.push({
@@ -143,7 +193,8 @@ const UnstyledNew = (props) => {
 
     useEffect(() => {
         streamDataRef.current = {
-            id: `${domain}/${pathname}`,
+            domain,
+            pathname,
             description,
         }
         contentChangedRef.current = !!(pathname || description)
@@ -258,6 +309,11 @@ const UnstyledNew = (props) => {
                                 placeholder="Enter a unique stream path name"
                                 name="pathname"
                             />
+                            {!!createAttempted && !!validationError && (
+                                <Errors overlap theme={MarketplaceTheme}>
+                                    {validationError}
+                                </Errors>
+                            )}
                         </Field>
                         <Field narrow desktopOnly />
                     </FormGroup>
@@ -314,14 +370,6 @@ const UnstyledNew = (props) => {
                         subscribe={false}
                     />
                 </TOCSection>
-                <TOCPage.Section
-                    id="api-access"
-                    title={I18n.t('userpages.streams.edit.details.nav.apiAccess')}
-                    status={(<StatusLabel.Deprecated />)}
-                    onlyDesktop
-                >
-                    <KeyView disabled />
-                </TOCPage.Section>
                 <TOCSection
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}

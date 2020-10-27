@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
     closeStream,
     getStream,
     openStream,
 } from '$userpages/modules/userPageStreams/actions'
-import { getStreamResourceKeys } from '$shared/modules/resourceKey/actions'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import { NotificationIcon } from '$shared/utils/constants'
 import {
@@ -26,8 +25,8 @@ import ClientProvider from '$shared/components/StreamrClientProvider'
 
 const StreamPage = (props) => {
     const { id: idProp } = props.match.params || {}
-
-    const permissions = useStreamPermissions(idProp)
+    const decodedIdProp = useMemo(() => decodeURIComponent(idProp), [idProp])
+    const permissions = useStreamPermissions(decodedIdProp)
 
     const fetching = useSelector(selectFetching)
 
@@ -49,8 +48,6 @@ const StreamPage = (props) => {
 
     useEffect(() => {
         const fetch = async () => {
-            const decodedIdProp = decodeURIComponent(idProp)
-
             try {
                 try {
                     await dispatch(getStream(decodedIdProp))
@@ -59,18 +56,6 @@ const StreamPage = (props) => {
 
                     // set the current stream as the editable entity
                     dispatch(openStream(decodedIdProp))
-
-                    // load API keys
-                    try {
-                        dispatch(getStreamResourceKeys(decodedIdProp))
-                    } catch (e) {
-                        console.warn(e)
-                        Notification.push({
-                            title: 'Loading keys failed.',
-                            icon: NotificationIcon.ERROR,
-                            error: e,
-                        })
-                    }
                 } catch (error) {
                     if (canHandleLoadError(error)) {
                         await handleLoadError({
@@ -94,7 +79,7 @@ const StreamPage = (props) => {
         if (permissions) {
             fetch()
         }
-    }, [fail, dispatch, idProp, isMounted, permissions])
+    }, [fail, dispatch, decodedIdProp, isMounted, permissions])
 
     useEffect(() => () => {
         dispatch(closeStream())
