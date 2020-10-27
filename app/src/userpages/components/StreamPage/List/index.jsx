@@ -31,7 +31,6 @@ import { MD, LG } from '$shared/utils/styled'
 import SnippetDialog from './SnippetDialog'
 import { StreamList as StreamListComponent } from '$shared/components/List'
 import Row from './Row'
-import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -248,15 +247,13 @@ const StreamList = () => {
                                     <Translate value="userpages.streams.list.status" />
                                 </StreamListComponent.HeaderItem>
                             </StreamListComponent.Header>
-                            <StreamrClientProvider>
-                                {streams.map((stream) => (
-                                    <Row
-                                        key={stream.id}
-                                        onShareClick={onOpenShareDialog}
-                                        stream={stream}
-                                    />
-                                ))}
-                            </StreamrClientProvider>
+                            {streams.map((stream) => (
+                                <Row
+                                    key={stream.id}
+                                    onShareClick={onOpenShareDialog}
+                                    stream={stream}
+                                />
+                            ))}
                         </StreamListComponent>
                         <LoadMore
                             hasMoreSearchResults={!fetching && hasMoreResults}
