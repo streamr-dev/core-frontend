@@ -20,7 +20,6 @@ export const initialState: EntitiesState = {
     dashboards: {},
     canvases: {},
     integrationKeys: {},
-    resourceKeys: {},
     joinRequests: {},
 }
 

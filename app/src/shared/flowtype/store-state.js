@@ -6,15 +6,14 @@ import type {
     SmartContractProductEntities,
 } from '$mp/flowtype/product-types'
 import type { TransactionEntities } from '$shared/flowtype/web3-types'
-import type { StreamId, StreamEntities } from '$shared/flowtype/stream-types'
+import type { StreamEntities } from '$shared/flowtype/stream-types'
 import type { StoreState as MarketplaceStoreState } from '$mp/flowtype/store-state'
 import type { StoreState as UserPagesStoreState } from '$userpages/flowtype/states/store-state'
-import type { User, UserId } from '$shared/flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { DashboardEntities } from '$userpages/flowtype/dashboard-types'
 import type { CanvasEntities } from '$userpages/flowtype/canvas-types'
 import type { IntegrationKeyEntities, IntegrationKeyIdList, BalanceList } from '$shared/flowtype/integration-key-types'
-import type { ResourceKeyIdList, ResourceKeyEntities } from '$shared/flowtype/resource-key-types'
 
 // entities
 export type EntitiesState = {
@@ -30,7 +29,6 @@ export type EntitiesState = {
     dashboards?: DashboardEntities,
     canvases?: CanvasEntities,
     integrationKeys?: IntegrationKeyEntities,
-    resourceKeys?: ResourceKeyEntities,
 }
 
 // user
@@ -57,17 +55,6 @@ export type IntegrationKeyState = {
     balances: BalanceList
 }
 
-// resource key
-export type StreamResourceKeys = {
-    [StreamId]: ResourceKeyIdList,
-}
-
-export type ResourceKeyState = {
-    streams: StreamResourceKeys,
-    error?: ?ErrorInUi,
-    fetching: boolean
-}
-
 // i18n
 export type Locale = string
 
@@ -90,6 +77,5 @@ export type StoreState = MarketplaceStoreState & UserPagesStoreState & {
     entities: EntitiesState,
     user: UserState,
     integrationKey: IntegrationKeyState,
-    resourceKey: ResourceKeyState,
     i18n: I18nState,
 }

@@ -14,7 +14,6 @@ export type UpdateEntitiesParam = {
         transactions?: {},
         dashboards?: {},
         integrationKeys?: {},
-        resourceKeys?: {},
         joinRequests: {},
     }
 }

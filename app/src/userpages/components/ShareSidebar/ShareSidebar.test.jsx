@@ -1,12 +1,8 @@
 import { setupAuthorizationHeader } from '$editor/shared/tests/utils'
 import * as Services from '$editor/canvas/services'
-import * as StreamServices from '$userpages/modules/userPageStreams/services'
 import { getResourcePermissions } from '$userpages/modules/permission/services'
-import { post } from '$shared/utils/api'
-import routes from '$routes'
 
 import { getUserData } from '$shared/modules/user/services'
-import uid from 'lodash/uniqueId'
 
 import * as State from './state'
 
@@ -247,57 +243,6 @@ describe('ShareSidebar Permission Handling', () => {
                 })
                 expect(State.findPermissionGroupName(resourceType, newPermissions)).toEqual(GROUP_NAME)
                 expect(State.isCustom(resourceType, GROUP_NAME, newPermissions)).toBeTruthy()
-            })
-        })
-    })
-
-    describe('stream with api key', () => {
-        const resourceType = 'STREAM'
-        let stream
-        let permissions
-
-        beforeAll(async () => {
-            const name = uid('test-stream')
-            stream = await StreamServices.postStream({
-                name,
-            })
-
-            // add resource key (this shows up in permissions response)
-            await post({
-                url: routes.api.streams.keys.index({
-                    streamId: stream.id,
-                }),
-                data: {
-                    name: uid(`${name}-stream-api-key`),
-                    permission: 'stream_subscribe',
-                },
-            })
-            permissions = await getResourcePermissions({
-                resourceType,
-                resourceId: stream.id,
-            })
-        })
-
-        afterAll(async () => {
-            if (!stream) { return }
-            await StreamServices.deleteStream(stream.id)
-        })
-
-        it('ignores api key entries', () => {
-            const users = State.usersFromPermissions(resourceType, permissions)
-
-            // should not have 'undefined' users
-            expect(Object.keys(users)).toEqual([user.username, 'anonymous'])
-
-            const diff = State.diffUsersPermissions({
-                oldPermissions: permissions,
-                newUsers: users,
-                resourceType,
-            })
-            // ensure api key entries don't mess with diffing
-            expect(diff).toStrictEqual({
-                added: [],
-                removed: [],
             })
         })
     })
