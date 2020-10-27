@@ -304,7 +304,8 @@ export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolea
     return whitelist
 }
 
-export const isAddressWhitelisted = async (id: ProductId, address: Address) => {
-    const whitelist = await getWhitelistAddresses(id, true)
-    return whitelist.map((item) => item.status !== 'removed' && item.address.toLowerCase()).includes(address.toLowerCase())
+export const isAddressWhitelisted = async (id: ProductId, address: Address, usePublicNode: boolean = true) => {
+    const isWhitelistStatus = await call(contractMethods(usePublicNode).getWhitelistState(getValidId(id), address))
+
+    return !!(isWhitelistStatus === 2)
 }

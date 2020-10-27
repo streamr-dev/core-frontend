@@ -26,9 +26,37 @@ import { ImageTile } from '$shared/components/Tile'
 import { NotificationIcon } from '$shared/utils/constants'
 import Notification from '$shared/utils/Notification'
 import { isAddressWhitelisted } from '$mp/modules/contractProduct/services'
-import useWeb3Status from '$shared/hooks/useWeb3Status'
+import useAccountAddress from '$shared/hooks/useAccountAddress'
+import type { ProductId } from '$mp/flowtype/product-types'
+import { getWeb3, validateWeb3 } from '$shared/web3/web3Provider'
 
 import routes from '$routes'
+
+type WhitelistStatus = {
+    productId: ProductId,
+    validate?: boolean,
+}
+
+const getWhitelistStatus = async ({ productId, validate = false }: WhitelistStatus) => {
+    const web3 = getWeb3()
+
+    try {
+        if (validate) {
+            await validateWeb3({
+                web3,
+                checkNetwork: false, // network check is done later if purchase is possible
+            })
+        }
+        const account = await web3.getDefaultAccount()
+
+        return !!account && isAddressWhitelisted(productId, account)
+    } catch (e) {
+        // log error but ignore otherwise
+        console.warn(e)
+    }
+
+    return false
+}
 
 const Hero = () => {
     const dispatch = useDispatch()
@@ -43,7 +71,7 @@ const Hero = () => {
     const isDataUnion = !!(product && isDataUnionProduct(product))
     const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
     const subscription = useSelector(selectContractSubscription)
-    const { account } = useWeb3Status()
+    const account = useAccountAddress()
 
     const productId = product.id
     const contactEmail = product && product.contact && product.contact.email
@@ -57,11 +85,22 @@ const Hero = () => {
             if (isLoggedIn) {
                 if (isPaid) {
                     if (isWhitelistEnabled && !isWhitelisted) {
-                        await requestAccessDialog.open({
-                            contactEmail,
-                            productName,
+                        // at this point we know either that user has access or Metamask was locked
+                        // do a another check but this time validate web3 which will prompt Metamask
+                        const canPurchase = await getWhitelistStatus({
+                            productId,
+                            validate: true, // prompts metamask if locked
                         })
-                        return
+
+                        if (!isMounted()) { return }
+
+                        if (!canPurchase) {
+                            await requestAccessDialog.open({
+                                contactEmail,
+                                productName,
+                            })
+                            return
+                        }
                     }
 
                     // Paid product has to be bought with Metamask
@@ -116,16 +155,23 @@ const Hero = () => {
     ])
 
     useEffect(() => {
-        const loadWhitelistStatus = async (targetAccount) => {
-            const whitelisted = !isWhitelistEnabled || await isAddressWhitelisted(productId, targetAccount)
+        const loadWhitelistStatus = async () => {
+            // set product as whitelisted if that feature is enabled, and if
+            // 1) metamask is locked -> clicking request access will prompt Metamask
+            // 2) metamask is unlocked and user has access
+            const whitelisted = !isWhitelistEnabled || await getWhitelistStatus({
+                productId,
+            })
 
-            setIsWhitelisted(whitelisted)
+            if (isMounted()) {
+                setIsWhitelisted(whitelisted)
+            }
         }
 
-        if (productId && account) {
-            loadWhitelistStatus(account)
+        if (productId && !isPending) {
+            loadWhitelistStatus()
         }
-    }, [productId, account, isWhitelistEnabled])
+    }, [productId, account, isWhitelistEnabled, isPending, isMounted])
 
     return (
         <HeroComponent

@@ -9,6 +9,7 @@ import { Provider as ValidationContextProvider } from './ValidationContextProvid
 import { Provider as PermissionsProvider } from './useProductPermissions'
 import { usePending } from '$shared/hooks/usePending'
 import { resetProduct } from '$mp/modules/product/actions'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
@@ -23,6 +24,8 @@ import useLoadStreamsCallback from './useLoadStreamsCallback'
 import useClearStreamsCallback from './useClearStreamsCallback'
 
 type ContextProps = {
+    hasLoaded: boolean,
+    setHasLoaded: Function,
     loadProduct: Function,
     loadContractProduct: Function,
     loadContractProductSubscription: Function,
@@ -47,7 +50,9 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectPr
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
     const { match } = useContext(RouterContext.Context)
+    const { setHasLoaded } = useContext(ProductControllerContext)
     const { isPending } = usePending('product.LOAD')
+    const isMounted = useIsMounted()
 
     const { id: urlId } = match.params
 
@@ -58,11 +63,25 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectPr
                 productId: urlId,
                 ignoreUnauthorized,
                 requirePublished,
+            }).then(() => {
+                if (isMounted()) {
+                    setHasLoaded(true)
+                }
             })
             loadContractProduct(urlId)
             setLoadedOnce(true)
         }
-    }, [urlId, loadedOnce, loadProduct, loadContractProduct, isPending, ignoreUnauthorized, requirePublished])
+    }, [
+        urlId,
+        loadedOnce,
+        loadProduct,
+        loadContractProduct,
+        isPending,
+        ignoreUnauthorized,
+        requirePublished,
+        setHasLoaded,
+        isMounted,
+    ])
 }
 
 function ProductEffects({ ignoreUnauthorized, requirePublished }: EffectProps) {
@@ -84,6 +103,7 @@ export function useController() {
 }
 
 function useProductController() {
+    const [hasLoaded, setHasLoaded] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
     const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
@@ -96,6 +116,8 @@ function useProductController() {
     const clearStreams = useClearStreamsCallback()
 
     return useMemo(() => ({
+        hasLoaded,
+        setHasLoaded,
         loadProduct,
         loadContractProduct,
         loadContractProductSubscription,
@@ -107,6 +129,8 @@ function useProductController() {
         loadStreams,
         clearStreams,
     }), [
+        hasLoaded,
+        setHasLoaded,
         loadProduct,
         loadContractProduct,
         loadContractProductSubscription,

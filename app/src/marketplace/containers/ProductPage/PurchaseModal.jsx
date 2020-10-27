@@ -53,7 +53,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
     const contractProductError = useSelector(selectContractProductError)
-    const { load: loadEthIdentities, isLinked, create: createIdentity } = useEthereumIdentities()
+    const { load: loadEthIdentities, isLinked, connect: connectIdentity } = useEthereumIdentities()
     const accessPeriodParams: Ref<AccessPeriod> = useRef({
         time: '1',
         timeUnit: 'hour',
@@ -109,7 +109,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             let succeeded = false
 
             try {
-                await createIdentity(account || 'Account name')
+                await connectIdentity(account || 'Account name')
                 succeeded = true
             } catch (e) {
                 console.warn(e)
@@ -123,7 +123,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 }
             }
         })
-    ), [wrapLinkAccount, account, isMounted, createIdentity])
+    ), [wrapLinkAccount, account, isMounted, connectIdentity])
 
     const onSetAccessPeriod = useCallback(async (accessPeriod: AccessPeriod) => {
         accessPeriodParams.current = accessPeriod

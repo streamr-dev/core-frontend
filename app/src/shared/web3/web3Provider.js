@@ -21,9 +21,11 @@ type StreamrWeb3Options = {
 
 export class StreamrWeb3 extends Web3 {
     isLegacy: boolean
+    metamaskProvider: any
 
     constructor(provider: any, options: StreamrWeb3Options = {}) {
         super(provider)
+        this.metamaskProvider = provider
         this.isLegacy = options && !!options.isLegacy
         // Set number of desired confirmations for transactions.
         // This needs to be 1 for local Ganache chain. Default is 24.

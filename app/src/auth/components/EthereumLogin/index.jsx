@@ -60,9 +60,7 @@ const EthereumLogin = ({ onBackClick }: Props) => {
         const token: ?string = await (async () => {
             try {
                 return await getSessionToken({
-                    // TODO: this is a hack, we pass an instance of the web3 injected by Metamask directly because the wrapped object
-                    // in web3-beta.55 does not work (https://github.com/MetaMask/metamask-extension/issues/6080).
-                    provider: window.web3.currentProvider,
+                    provider: web3.metamaskProvider,
                 })
             } catch (e) {
                 if (mountedRef.current) {
