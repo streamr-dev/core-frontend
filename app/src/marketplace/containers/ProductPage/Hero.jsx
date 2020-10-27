@@ -92,6 +92,8 @@ const Hero = () => {
                             validate: true, // prompts metamask if locked
                         })
 
+                        if (!isMounted()) { return }
+
                         if (!canPurchase) {
                             await requestAccessDialog.open({
                                 contactEmail,
@@ -161,13 +163,15 @@ const Hero = () => {
                 productId,
             })
 
-            setIsWhitelisted(whitelisted)
+            if (isMounted()) {
+                setIsWhitelisted(whitelisted)
+            }
         }
 
         if (productId && !isPending) {
             loadWhitelistStatus()
         }
-    }, [productId, account, isWhitelistEnabled, isPending])
+    }, [productId, account, isWhitelistEnabled, isPending, isMounted])
 
     return (
         <HeroComponent

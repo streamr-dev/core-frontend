@@ -9,6 +9,7 @@ import { Provider as ValidationContextProvider } from './ValidationContextProvid
 import { Provider as PermissionsProvider } from './useProductPermissions'
 import { usePending } from '$shared/hooks/usePending'
 import { resetProduct } from '$mp/modules/product/actions'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
@@ -51,6 +52,7 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectPr
     const { match } = useContext(RouterContext.Context)
     const { setHasLoaded } = useContext(ProductControllerContext)
     const { isPending } = usePending('product.LOAD')
+    const isMounted = useIsMounted()
 
     const { id: urlId } = match.params
 
@@ -61,7 +63,11 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectPr
                 productId: urlId,
                 ignoreUnauthorized,
                 requirePublished,
-            }).then(() => setHasLoaded(true))
+            }).then(() => {
+                if (isMounted()) {
+                    setHasLoaded(true)
+                }
+            })
             loadContractProduct(urlId)
             setLoadedOnce(true)
         }
@@ -74,6 +80,7 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectPr
         ignoreUnauthorized,
         requirePublished,
         setHasLoaded,
+        isMounted,
     ])
 }
 

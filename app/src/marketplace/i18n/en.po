@@ -250,7 +250,7 @@ msgid "editProductPage.sidebar.activeSubscribers"
 msgstr "Active subscribers"
 
 msgid "editProductPage.sidebar.mostRecentSubscription"
-msgstr "Most recent purchase"
+msgstr "Last purchased"
 
 msgid "editProductPage.terms.title"
 msgstr "Set terms of use"
