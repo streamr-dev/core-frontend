@@ -33,6 +33,8 @@ import HistoryView from './Edit/HistoryView'
 import PartitionsView from './Edit/PartitionsView'
 import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
+import useModal from '$shared/hooks/useModal'
+import ConfirmDialog from '$shared/components/ConfirmDialog'
 
 const Description = styled(Translate)`
     margin-bottom: 3rem;
@@ -74,6 +76,23 @@ const getValidId = ({ domain, pathname }) => {
     return id
 }
 
+const ConfirmExitModal = () => {
+    const { api, isOpen } = useModal('confirmExit')
+
+    if (!isOpen) {
+        return null
+    }
+
+    return (
+        <ConfirmDialog
+            title={I18n.t('modal.confirmSave.title')}
+            message={I18n.t('modal.confirmSave.newStream.message')}
+            onAccept={() => api.close({ canProceed: true })}
+            onReject={() => api.close({ canProceed: false })}
+        />
+    )
+}
+
 const UnstyledNew = (props) => {
     const [{ domain, pathname, description }, updateStream] = useReducer((state, changeSet) => ({
         ...state,
@@ -89,6 +108,7 @@ const UnstyledNew = (props) => {
     const streamDataRef = useRef()
     const contentChangedRef = useRef(false)
     const dispatch = useDispatch()
+    const { api: confirmExitDialog } = useModal('confirmExit')
 
     const isMounted = useIsMounted()
 
@@ -102,11 +122,29 @@ const UnstyledNew = (props) => {
         label: 'Add new domain',
     } */]), [])
 
-    const onBack = useCallback(() => {
-        scrollTop()
+    const confirmIsSaved = useCallback(async () => {
+        const { pathname, description } = streamDataRef.current || {}
 
-        dispatch(push(routes.streams.index()))
-    }, [dispatch])
+        if (!pathname && !description) {
+            return true
+        }
+
+        const { canProceed } = await confirmExitDialog.open()
+
+        if (!isMounted()) { return false }
+
+        return !!canProceed
+    }, [confirmExitDialog, isMounted])
+
+    const onBack = useCallback(async () => {
+        const canProceed = await confirmIsSaved()
+
+        if (isMounted() && canProceed) {
+            scrollTop()
+
+            dispatch(push(routes.streams.index()))
+        }
+    }, [confirmIsSaved, dispatch, isMounted])
 
     const onDomainChange = useCallback(({ value: domain }) => {
         if (!domain) {
@@ -218,7 +256,7 @@ const UnstyledNew = (props) => {
         }
     }, [])
 
-    const saveEnabled = !!(pathname && pathname) && !loading
+    const saveEnabled = !!pathname && !loading
     const isDisabled = !!loading
     const isDomainDisabled = isDisabled || domainOptions.length <= 1
 
@@ -392,6 +430,7 @@ const UnstyledNew = (props) => {
                     />
                 </TOCPage.Section>
             </TOCPage>
+            <ConfirmExitModal />
         </Layout>
     )
 }

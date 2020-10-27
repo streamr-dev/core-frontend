@@ -685,6 +685,9 @@ msgstr ""
 "<br />"
 "Do you want to save your changes?"
 
+msgid "modal.confirmSave.newStream.message"
+msgstr "You have made changes to this stream. Do you still want to exit?"
+
 msgid "modal.confirmSave.dontSave"
 msgstr "Don't save"
 
