@@ -335,7 +335,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
 const View = styled(UnstyledView)`
     p {
         line-height: 1.5em;
-        margin: 0;
     }
 
     strong {

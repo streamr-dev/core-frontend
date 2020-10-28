@@ -11,6 +11,7 @@ import type { StreamId, Stream } from '$shared/flowtype/stream-types'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Button from '$shared/components/Button'
+import SvgIcon from '$shared/components/SvgIcon'
 
 type Props = {
     stream: Stream,
@@ -32,6 +33,34 @@ const StreamInput = styled.div`
     display: grid;
     grid-column-gap: 1rem;
     grid-template-columns: 1fr 72px;
+`
+
+const StreamIdWrapper = styled.div`
+    position: relative;
+`
+
+const StreamIdText = styled(Text)`
+    padding: 0 3rem 0 1rem;
+    text-overflow: ellipsis;
+`
+
+const LockIcon = styled.div`
+    width: 40px;
+    height: 40px;
+    color: #989898;
+    position: absolute;
+    top: 0;
+    line-height: 12px;
+    right: 0;
+
+    svg {
+        width: 12px;
+        height: 12px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 `
 
 const StyledButton = styled(Button)`
@@ -77,12 +106,17 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
                     {I18n.t('userpages.streams.edit.details.streamId')}
                 </Label>
                 <StreamInput>
-                    <Text
-                        name="id"
-                        id="streamId"
-                        value={(stream && stream.id) || ''}
-                        readOnly
-                    />
+                    <StreamIdWrapper>
+                        <StreamIdText
+                            name="id"
+                            id="streamId"
+                            value={(stream && stream.id) || ''}
+                            readOnly
+                        />
+                        <LockIcon>
+                            <SvgIcon name="lock" />
+                        </LockIcon>
+                    </StreamIdWrapper>
                     <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
                         <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
                     </StyledButton>

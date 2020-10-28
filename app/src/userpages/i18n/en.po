@@ -420,7 +420,8 @@ msgstr "Stream partitions"
 msgid "userpages.streams.edit.details.info.description"
 msgstr ""
 "All streams require a unique path in the format <strong>domain/pathname</strong>. Choose a unique name, "
-"and create your stream in the default <strong>%{defaultDomain}</strong> domain or register and use your own domain."
+"and create your stream in the default <strong>%{defaultDomain}</strong> domain or "
+"<a href=\"https://ens.domains\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register and use your own domain</a>."
 
 msgid "userpages.streams.edit.details.domain"
 msgstr "Domain"
@@ -436,6 +437,13 @@ msgstr "Stream ID"
 
 msgid "userpages.streams.edit.details.partitions"
 msgstr "Partitions"
+
+msgid "userpages.streams.edit.details.tooltip"
+msgstr ""
+"Stream paths can be single level like<br/>"
+"<strong>sandbox/mycoffeemachine</strong> or structured<br/>"
+"like <strong>crypto/oracles/btcprice</strong>. For more<br/>"
+"information, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages.streams.edit.details.copyStreamId"
 msgstr "Copy Stream ID"

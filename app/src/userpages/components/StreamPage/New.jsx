@@ -20,6 +20,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import Layout from '$shared/components/Layout/Core'
 import StatusIcon from '$shared/components/StatusIcon'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
+import docsLinks from '$shared/../docsLinks'
 import {
     FormGroup,
     Field,
@@ -35,9 +36,66 @@ import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
+import SvgIcon from '$shared/components/SvgIcon'
 
 const Description = styled(Translate)`
     margin-bottom: 3rem;
+`
+
+const PathnameWrapper = styled.div`
+    position: relative;
+`
+
+const Tooltip = styled.div`
+    position: absolute;
+    visibility: hidden;
+    background: #323232;
+    width: 250px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: white;
+    line-height: 1rem;
+    top: 28px;
+    right: 6px;
+
+    strong {
+        font-family: var(--mono);
+        font-weight: var(--medium);
+        font-size: 0.9em;
+    }
+
+    a {
+        color: var(--white);
+        text-decoration: none;
+    }
+`
+
+const QuestionIcon = styled.div`
+    position: absolute;
+    color: #CDCDCD;
+    line-height: 0;
+    top: -30px;
+    right: -6px;
+    width: 32px;
+    height: 32px;
+
+    svg {
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    &:hover {
+        color: #323232;
+
+        ${Tooltip} {
+            visibility: visible;
+        }
+    }
 `
 
 // this default data is only used for display purposes
@@ -340,13 +398,25 @@ const UnstyledNew = (props) => {
                             /
                         </Field>
                         <Field label={I18n.t('userpages.streams.edit.details.pathname')}>
-                            <Text
-                                value={pathname || ''}
-                                onChange={onPathnameChange}
-                                disabled={isDisabled}
-                                placeholder="Enter a unique stream path name"
-                                name="pathname"
-                            />
+                            <PathnameWrapper>
+                                <QuestionIcon>
+                                    <SvgIcon name="outlineQuestionMark" />
+                                    <Tooltip>
+                                        <Translate
+                                            value="userpages.streams.edit.details.tooltip"
+                                            docsLink={docsLinks.streams}
+                                            dangerousHTML
+                                        />
+                                    </Tooltip>
+                                </QuestionIcon>
+                                <Text
+                                    value={pathname || ''}
+                                    onChange={onPathnameChange}
+                                    disabled={isDisabled}
+                                    placeholder="Enter a unique stream path name"
+                                    name="pathname"
+                                />
+                            </PathnameWrapper>
                             {!!createAttempted && !!validationError && (
                                 <Errors overlap theme={MarketplaceTheme}>
                                     {validationError}
@@ -436,6 +506,10 @@ const UnstyledNew = (props) => {
 }
 
 const New = styled(UnstyledNew)`
+    p {
+        line-height: 1.5em;
+    }
+
     strong {
         font-weight: ${MEDIUM};
     }
