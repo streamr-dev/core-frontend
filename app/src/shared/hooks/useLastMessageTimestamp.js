@@ -62,9 +62,10 @@ const useLastMessageTimestamp = (streamId) => {
         const attach = async () => {
             try {
                 const [message] = await get({
-                    url: routes.api.streams.lastMessage({
-                        streamId,
+                    url: routes.api.streams.data.last({
+                        count: 1,
                         partition: 0,
+                        streamId,
                     }),
                 })
                 if (isMounted()) {

@@ -32,8 +32,9 @@ export const getStreams = (params: any): ApiResult<{
 }
 
 export const getStreamData = (streamId: StreamId, fromTimestamp: number): ApiResult<Object> => get({
-    url: routes.api.streams.data({
+    url: routes.api.streams.data.from({
         fromTimestamp,
+        partition: 0,
         streamId,
     }),
 })
