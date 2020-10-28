@@ -34,9 +34,6 @@ export const canvasesSchema = [canvasSchema]
 export const integrationKeySchema = new schema.Entity('integrationKeys')
 export const integrationKeysSchema = [integrationKeySchema]
 
-export const resourceKeySchema = new schema.Entity('resourceKeys')
-export const resourceKeysSchema = [resourceKeySchema]
-
 export const dataUnionSchema = new schema.Entity('dataUnions')
 export const dataUnionsSchema = [dataUnionSchema]
 

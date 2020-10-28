@@ -15,7 +15,6 @@ import categoriesReducer from './marketplace/modules/categories/reducer'
 import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
 import integrationKeyReducer from '$shared/modules/integrationKey/reducer'
-import resourceKeyReducer from '$shared/modules/resourceKey/reducer'
 import streamsReducer from './marketplace/modules/streams/reducer'
 import globalReducer from './marketplace/modules/global/reducer'
 import relatedProductsReducer from './marketplace/modules/relatedProducts/reducer'
@@ -51,7 +50,6 @@ export function initStore() {
             streams: streamsReducer,
             user: userReducer,
             integrationKey: integrationKeyReducer,
-            resourceKey: resourceKeyReducer,
             i18n: i18nReducer,
             relatedProducts: relatedProductsReducer,
             transactions: transactionsReducer,

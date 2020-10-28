@@ -28,7 +28,6 @@ import { resetResourcePermission } from '$userpages/modules/permission/actions'
 import { mapStatus } from '../List'
 
 import InfoView from './InfoView'
-import KeyView from './KeyView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
@@ -235,14 +234,6 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                         docsLink={docsLinks.gettingStarted}
                     />
                     <PreviewView stream={stream} />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="api-access"
-                    title={I18n.t('userpages.streams.edit.details.nav.apiAccess')}
-                    status={(<StatusLabel.Deprecated />)}
-                    onlyDesktop
-                >
-                    <KeyView disabled={disabled || !canShare} />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="historical-data"

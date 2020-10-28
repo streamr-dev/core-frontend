@@ -52,7 +52,6 @@ describe('entities - reducer', () => {
             dashboards: {},
             canvases: {},
             integrationKeys: {},
-            resourceKeys: {},
             joinRequests: {},
         }
 
@@ -124,7 +123,6 @@ describe('entities - reducer', () => {
             dashboards: {},
             canvases: {},
             integrationKeys: {},
-            resourceKeys: {},
             joinRequests: {},
         }
 
