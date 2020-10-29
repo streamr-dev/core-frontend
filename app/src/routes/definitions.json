@@ -128,8 +128,15 @@
             "permissions": {
                 "index": "<api>/canvases/:canvasId/permissions",
                 "show": "<api>/canvases/:canvasId/permissions/:id"
-            }
+            },
+            "start": "<api>/canvases/:id/start",
+            "stop": "<api>/canvases/:id/stop"
         },
+        "modules": {
+            "index": "<api>/modules",
+            "show": "<api>/modules/:id"
+        },
+        "moduleCategories": "<api>/module_categories",
         "categories": "<api>/categories",
         "dashboards": {
             "index": "<api>/dashboards",

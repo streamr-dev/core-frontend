@@ -1,9 +1,8 @@
-import api from '$editor/shared/utils/api'
+import { get, post } from '$shared/utils/api'
 import ModuleError from '$editor/shared/errors/ModuleError'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-
-const getModulesURL = `${process.env.STREAMR_API_URL}/modules`
+import routes from '$routes'
 
 export const getData = ({ data }) => data
 
@@ -15,18 +14,29 @@ export async function send({ data = {}, dashboardId, canvasId, moduleHash }) {
     const dashboardPath = dashboardId ? `/dashboards/${dashboardId}` : ''
     const modulePath = `/canvases/${canvasId}/modules/${moduleHash}`
     const url = `${process.env.STREAMR_API_URL}${dashboardPath}${modulePath}/request`
-    return api().post(url, {
-        ...LOAD_JSON_REQ,
-        ...data,
-    }).then(getData)
+
+    return post({
+        url,
+        data: {
+            ...LOAD_JSON_REQ,
+            ...data,
+        },
+    })
 }
 
 export async function getModules() {
-    return api().get(getModulesURL).then(getData)
+    return get({
+        url: routes.api.modules.index(),
+    })
 }
 
 export async function getModule({ id, configuration } = {}) {
-    return api().post(`${getModulesURL}/${id}`, configuration).then(getData)
+    return post({
+        url: routes.api.modules.show({
+            id,
+        }),
+        data: configuration,
+    })
         .then((data) => {
             if (data.error) {
                 Notification.push({

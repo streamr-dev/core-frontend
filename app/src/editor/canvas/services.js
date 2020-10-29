@@ -3,22 +3,22 @@
  */
 
 import analytics from '$shared/../analytics'
-import api from '$editor/shared/utils/api'
+import { get, post, put, del } from '$shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
 import { emptyCanvas, RunStates, isHistoricalModeSelected } from './state'
 import { link, unlink, getLink } from './state/linking'
-
-const getData = ({ data }) => data
-
-const canvasesUrl = `${process.env.STREAMR_API_URL}/canvases`
-const getModuleCategoriesURL = `${process.env.STREAMR_API_URL}/module_categories`
-const streamsUrl = `${process.env.STREAMR_API_URL}/streams`
+import routes from '$routes'
 
 const AUTOSAVE_DELAY = 500
 
 async function save(canvas) {
-    return api().put(`${canvasesUrl}/${canvas.id}`, canvas).then(getData)
+    return put({
+        url: routes.api.canvases.show({
+            id: canvas.id,
+        }),
+        data: canvas,
+    })
 }
 
 export const autosave = Autosave(save, AUTOSAVE_DELAY)
@@ -33,11 +33,18 @@ export async function saveNow(canvas, ...args) {
 
 export async function loadCanvas({ id } = {}) {
     if (id == null) { throw new TypeError(`loadCanvas missing id: ${id}`) }
-    return api().get(`${canvasesUrl}/${id}`).then(getData)
+
+    return get({
+        url: routes.api.canvases.show({
+            id,
+        }),
+    })
 }
 
 export async function loadCanvases() {
-    return api().get(canvasesUrl).then(getData)
+    return get({
+        url: routes.api.canvases.index(),
+    })
 }
 
 async function getCanvasNames() {
@@ -46,10 +53,13 @@ async function getCanvasNames() {
 }
 
 async function createCanvas(canvas) {
-    return api().post(canvasesUrl, {
-        ...canvas,
-        state: RunStates.Stopped, // always create stopped canvases
-    }).then(getData)
+    return post({
+        url: routes.api.canvases.index(),
+        data: {
+            ...canvas,
+            state: RunStates.Stopped, // always create stopped canvases
+        },
+    })
 }
 
 export async function create(config) {
@@ -71,30 +81,44 @@ export async function duplicateCanvas(canvas) {
 
 export async function deleteCanvas({ id } = {}) {
     await autosave.cancel()
-    return api().delete(`${canvasesUrl}/${id}`).then(getData)
-}
 
-export async function moduleHelp({ id }) {
-    return api().get(`${process.env.STREAMR_API_URL}/modules/${id}/help`).then(getData)
+    return del({
+        url: routes.api.canvases.show({
+            id,
+        }),
+    })
 }
 
 export async function getModuleCategories() {
-    return api().get(getModuleCategoriesURL).then(getData)
+    return get({
+        url: routes.api.moduleCategories(),
+    })
 }
 
 export async function deleteCanvasPermissions({ id, permissionIds }) {
     await autosave.cancel()
-    return Promise.all(permissionIds.map((permissionId) => (
-        api().delete(`${process.env.STREAMR_API_URL}/canvases/${id}/permissions/${permissionId}`)
-    )))
+    return Promise.all(permissionIds.map((permissionId) => del({
+        url: routes.api.canvases.permissions.show({
+            canvasId: id,
+            id: permissionId,
+        }),
+    })))
 }
 
 export async function getStreams(params) {
-    return api().get(`${streamsUrl}`, { params }).then(getData)
+    return get({
+        url: routes.api.streams.index({
+            ...(params || {}),
+        }),
+    })
 }
 
 export async function getStream(id) {
-    return api().get(`${streamsUrl}/${id}`).then(getData)
+    return get({
+        url: routes.api.streams.show({
+            id,
+        }),
+    })
 }
 
 export async function deleteAllCanvases() {
@@ -109,9 +133,14 @@ export async function deleteAllCanvases() {
  * Starts whatever canvasId is passed in
  */
 async function startCanvasId(canvasId, { clearState }) {
-    return api().post(`${canvasesUrl}/${canvasId}/start`, {
-        clearState: !!clearState,
-    }).then(getData)
+    return post({
+        url: routes.api.canvases.start({
+            id: canvasId,
+        }),
+        data: {
+            clearState: !!clearState,
+        },
+    })
 }
 
 /**
@@ -142,9 +171,12 @@ export async function start(canvas, options = {}) {
     return startCanvasId(canvas.id, options)
 }
 
-export async function stop(canvas) {
-    return api().post(`${canvasesUrl}/${canvas.id}/stop`)
-        .then(getData)
+export async function stop({ id }) {
+    return post({
+        url: routes.api.canvases.stop({
+            id,
+        }),
+    })
 }
 
 /**
