@@ -38,7 +38,7 @@ describe('Stream listing page', () => {
                     status: 404,
                     response: {},
                 })
-                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last`).as('getLastMessage')
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
 
                 cy.visit('/core/streams')
                 cy.wait('@getLastMessage')
@@ -509,7 +509,7 @@ describe('Stream edit page', () => {
                     status: 404,
                     response: {},
                 })
-                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last`).as('getLastMessage')
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
 
                 cy.visit(`/core/streams/${streamId}`)
                 cy.wait('@getLastMessage')
