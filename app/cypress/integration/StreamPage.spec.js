@@ -17,6 +17,85 @@ describe('Stream listing page', () => {
         cy.contains('Tester One')
         cy.location('pathname').should('eq', '/core/streams')
     })
+
+    describe('activity status', () => {
+        it('renders inactive color when no data is flowing', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.visit('/core/streams')
+                cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
+                    cy.get('[data-test-hook="Last message at"]').should('be.empty')
+                    cy.get('[data-test-hook="Status inactive"]')
+                })
+            })
+        })
+
+        it('renders error color when fetching fails', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.server({
+                    method: 'GET',
+                    status: 404,
+                    response: {},
+                })
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
+
+                cy.visit('/core/streams')
+                cy.wait('@getLastMessage')
+                cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
+                    cy.get('[data-test-hook="Last message at"]').should('be.empty')
+                    cy.get('[data-test-hook="Status error"]')
+                })
+            })
+        })
+
+        it('renders active color when data is flowing', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.sendToStream(streamId, {
+                    key: 'value',
+                })
+
+                // It looks like it takes a while for a message to get to the history storage.
+                // That's why we're waiting 3s below.
+                // eslint-disable-next-line cypress/no-unnecessary-waiting
+                cy.wait(3000)
+
+                cy.visit('/core/streams')
+                cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
+                    cy.get('[data-test-hook="Last message at"]').contains('Just now')
+                    cy.get('[data-test-hook="Status ok"]')
+                })
+            })
+        })
+
+        it('renders active color after a refresh and new data in the meantime', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.visit('/core/streams')
+                cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
+                    cy.get('[data-test-hook="Last message at"]').should('be.empty')
+                    cy.get('[data-test-hook="Status inactive"]')
+
+                    cy.sendToStream(streamId, {
+                        key: 'value',
+                    })
+
+                    // It looks like it takes a while for a message to get to the history storage.
+                    // That's why we're waiting 3s below.
+                    // eslint-disable-next-line cypress/no-unnecessary-waiting
+                    cy.wait(3000)
+
+                    cy.get('button').contains('Refresh').click({
+                        force: true,
+                    })
+
+                    cy.get('[data-test-hook="Last message at"]').contains('Just now')
+                    cy.get('[data-test-hook="Status ok"]')
+                })
+            })
+        })
+    })
 })
 
 describe('New stream page', () => {
@@ -406,6 +485,58 @@ describe('Stream edit page', () => {
                 expect(stream.storageDays).to.eq(360)
                 expect(stream.requireEncryptedData).to.eq(true)
                 expect(stream.requireSignedData).to.eq(true)
+            })
+        })
+    })
+
+    describe('activity status', () => {
+        it('renders inactive color when no data is flowing', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.visit(`/core/streams/${streamId}`)
+
+                cy.get('[data-test-hook="TOCSection status"]').within(() => {
+                    cy.get('[data-test-hook="Status inactive"]')
+                })
+            })
+        })
+
+        it('renders error color when fetching fails', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.server({
+                    method: 'GET',
+                    status: 404,
+                    response: {},
+                })
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
+
+                cy.visit(`/core/streams/${streamId}`)
+                cy.wait('@getLastMessage')
+
+                cy.get('[data-test-hook="TOCSection status"]').within(() => {
+                    cy.get('[data-test-hook="Status error"]')
+                })
+            })
+        })
+
+        it('renders active color when data is flowing', () => {
+            cy.login()
+            cy.createStream().then((streamId) => {
+                cy.sendToStream(streamId, {
+                    key: 'value',
+                })
+
+                // It looks like it takes a while for a message to get to the history storage.
+                // That's why we're waiting 3s below.
+                // eslint-disable-next-line cypress/no-unnecessary-waiting
+                cy.wait(3000)
+
+                cy.visit(`/core/streams/${streamId}`)
+
+                cy.get('[data-test-hook="TOCSection status"]').within(() => {
+                    cy.get('[data-test-hook="Status ok"]')
+                })
             })
         })
     })

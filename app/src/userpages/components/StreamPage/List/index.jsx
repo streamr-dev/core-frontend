@@ -2,49 +2,35 @@
 
 import React, { Fragment, useEffect, useState, useCallback, useMemo, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
 import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
-import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
-
-import type { Stream, StreamId } from '$shared/flowtype/stream-types'
 
 import routes from '$routes'
 import {
     getStreams,
-    deleteOrRemoveStream,
-    getStreamStatus,
-    cancelStreamStatusFetch,
     clearStreamsList,
 } from '$userpages/modules/userPageStreams/actions'
 import { selectStreams, selectFetching, selectHasMoreSearchResults } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
-import StatusIcon from '$shared/components/StatusIcon'
 import Layout from '$userpages/components/Layout'
 import Search from '../../Header/Search'
-import confirmDialog from '$shared/utils/confirm'
-import { getResourcePermissions, resetResourcePermission } from '$userpages/modules/permission/actions'
-import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
-import { NotificationIcon } from '$shared/utils/constants'
+import { resetResourcePermission } from '$userpages/modules/permission/actions'
 import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
-import Notification from '$shared/utils/Notification'
 import LoadMore from '$mp/components/LoadMore'
 import ListContainer from '$shared/components/Container/List'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
-import useCopy from '$shared/hooks/useCopy'
 import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
-import { ago } from '$shared/utils/time'
 import { MD, LG } from '$shared/utils/styled'
-import useModal from '$shared/hooks/useModal'
 import SnippetDialog from './SnippetDialog'
 import { StreamList as StreamListComponent } from '$shared/components/List'
+import Row from './Row'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -93,23 +79,6 @@ const TabletPopover = styled(Popover)`
     }
 `
 
-export const mapStatus = (state: string) => {
-    switch (state) {
-        case 'ok':
-            return StatusIcon.OK
-        case 'error':
-            return StatusIcon.ERROR
-        case 'pending':
-            return StatusIcon.PENDING
-        default:
-            return StatusIcon.INACTIVE
-    }
-}
-
-type TargetStream = ?Stream
-
-type TargetStreamSetter = [TargetStream, ((TargetStream => TargetStream) | TargetStream) => void]
-
 function StreamPageSidebar({ stream }) {
     const sidebar = useContext(SidebarContext)
     const dispatch = useDispatch()
@@ -142,8 +111,6 @@ function StreamPageSidebar({ stream }) {
     )
 }
 
-type RemoveOrDelete = 'remove' | 'delete'
-
 const StreamList = () => {
     const filters = useMemo(() => getFilters('stream'), [])
     const allSortOptions = useMemo(() => ([
@@ -165,20 +132,13 @@ const StreamList = () => {
         setSort,
         resetFilter,
     } = useFilterSort(allSortOptions)
-    const [dialogTargetStream, setDialogTargetStream]: TargetStreamSetter = useState(null)
+    const [dialogTargetStream, setDialogTargetStream] = useState(null)
     const dispatch = useDispatch()
-    const { copy } = useCopy()
     const streams = useSelector(selectStreams)
     const fetching = useSelector(selectFetching)
-    const fetchingPermissions = useSelector(selectFetchingPermissions)
-    const permissions = useSelector(selectStreamPermissions)
     const hasMoreResults = useSelector(selectHasMoreSearchResults)
-    const { api: snippetDialog } = useModal('userpages.streamSnippet')
-
-    const sidebar = useContext(SidebarContext)
 
     useEffect(() => () => {
-        cancelStreamStatusFetch()
         dispatch(clearStreamsList())
     }, [dispatch])
 
@@ -189,103 +149,14 @@ const StreamList = () => {
         }))
     }, [dispatch, filter])
 
-    const confirmDeleteStream = useCallback(async (stream: Stream, type: RemoveOrDelete) => {
-        const confirmed = await confirmDialog('stream', {
-            title: I18n.t(`userpages.streams.${type}.confirmTitle`),
-            message: I18n.t(`userpages.streams.${type}.confirmMessage`),
-            acceptButton: {
-                title: I18n.t(`userpages.streams.${type}.confirmButton`),
-                kind: 'destructive',
-            },
-            centerButtons: true,
-            dontShowAgain: false,
-        })
+    const [activeSort, setActiveSort] = useState(undefined)
 
-        if (confirmed) {
-            try {
-                await dispatch(deleteOrRemoveStream(stream.id))
+    const sidebar = useContext(SidebarContext)
 
-                Notification.push({
-                    title: I18n.t(`userpages.streams.${type}.notification`),
-                    icon: NotificationIcon.CHECKMARK,
-                })
-            } catch (e) {
-                Notification.push({
-                    title: e.message,
-                    icon: NotificationIcon.ERROR,
-                })
-            }
-        }
-    }, [dispatch])
-
-    const onToggleStreamDropdown = useCallback((streamId: StreamId) => async (open: boolean) => {
-        if (open && !fetchingPermissions && !permissions[streamId]) {
-            try {
-                await dispatch(getResourcePermissions('STREAM', streamId))
-            } catch (e) {
-                // Noop.
-            }
-        }
-    }, [dispatch, fetchingPermissions, permissions])
-
-    const canBeSharedByCurrentUser = useCallback((id: StreamId): boolean => (
-        !fetchingPermissions &&
-        permissions[id] &&
-        permissions[id].includes('stream_share')
-    ), [fetchingPermissions, permissions])
-
-    const canBeDeletedByCurrentUser = useCallback((id: StreamId): boolean => (
-        !fetchingPermissions &&
-        permissions[id] &&
-        permissions[id].includes('stream_delete')
-    ), [fetchingPermissions, permissions])
-
-    const onOpenShareDialog = useCallback((stream: Stream) => {
+    const onOpenShareDialog = useCallback((stream) => {
         setDialogTargetStream(stream)
         sidebar.open('share')
     }, [sidebar])
-
-    const onOpenSnippetDialog = useCallback(async (stream: Stream) => {
-        await snippetDialog.open({
-            streamId: stream.id,
-        })
-    }, [snippetDialog])
-
-    const showStream = useCallback((id: StreamId) => (
-        dispatch(push(routes.streams.show({
-            id,
-        })))
-    ), [dispatch])
-
-    const onStreamRowClick = useCallback((id: StreamId) => {
-        showStream(id)
-    }, [showStream])
-
-    const onRefreshStatus = useCallback((id: StreamId) => {
-        dispatch(getStreamStatus(id))
-            .then(() => {
-                Notification.push({
-                    title: I18n.t('userpages.streams.actions.refreshSuccess'),
-                    icon: NotificationIcon.CHECKMARK,
-                })
-            }, () => {
-                Notification.push({
-                    title: I18n.t('userpages.streams.actions.refreshError'),
-                    icon: NotificationIcon.ERROR,
-                })
-            })
-    }, [dispatch])
-
-    const onCopyId = useCallback((id: StreamId) => {
-        copy(id)
-
-        Notification.push({
-            title: I18n.t('userpages.streams.actions.idCopied'),
-            icon: NotificationIcon.CHECKMARK,
-        })
-    }, [copy])
-
-    const [activeSort, setActiveSort] = useState(undefined)
 
     const onDropdownSort = useCallback((value) => {
         setActiveSort(value)
@@ -306,56 +177,6 @@ const StreamList = () => {
             return nextSort
         })
     }, [setActiveSort, setSort, defaultFilter])
-
-    const getActions = useCallback((stream) => {
-        const removeType = canBeDeletedByCurrentUser(stream.id) ? 'delete' : 'remove'
-
-        return (
-            <Popover
-                title={I18n.t('userpages.streams.actions.title')}
-                type="meatball"
-                noCaret
-                onMenuToggle={onToggleStreamDropdown(stream.id)}
-                menuProps={{
-                    right: true,
-                }}
-            >
-                <Popover.Item onClick={() => showStream(stream.id)}>
-                    <Translate value="userpages.streams.actions.editStream" />
-                </Popover.Item>
-                <Popover.Item onClick={() => onCopyId(stream.id)}>
-                    <Translate value="userpages.streams.actions.copyId" />
-                </Popover.Item>
-                <Popover.Item onClick={() => onOpenSnippetDialog(stream)}>
-                    <Translate value="userpages.streams.actions.copySnippet" />
-                </Popover.Item>
-                <Popover.Item
-                    disabled={!canBeSharedByCurrentUser(stream.id)}
-                    onClick={() => onOpenShareDialog(stream)}
-                >
-                    <Translate value="userpages.streams.actions.share" />
-                </Popover.Item>
-                <Popover.Item onClick={() => onRefreshStatus(stream.id)}>
-                    <Translate value="userpages.streams.actions.refresh" />
-                </Popover.Item>
-                <Popover.Item
-                    onClick={() => confirmDeleteStream(stream, removeType)}
-                >
-                    <Translate value={`userpages.streams.actions.${removeType}`} />
-                </Popover.Item>
-            </Popover>
-        )
-    }, [
-        onToggleStreamDropdown,
-        showStream,
-        onCopyId,
-        onOpenSnippetDialog,
-        canBeSharedByCurrentUser,
-        onOpenShareDialog,
-        onRefreshStatus,
-        canBeDeletedByCurrentUser,
-        confirmDeleteStream,
-    ])
 
     return (
         <Layout
@@ -427,36 +248,11 @@ const StreamList = () => {
                                 </StreamListComponent.HeaderItem>
                             </StreamListComponent.Header>
                             {streams.map((stream) => (
-                                <StreamListComponent.Row
+                                <Row
                                     key={stream.id}
-                                    id={stream.id}
-                                    onClick={() => onStreamRowClick(stream.id)}
-                                >
-                                    <StreamListComponent.Title
-                                        description={stream.description}
-                                        moreInfo={stream.lastData && titleize(ago(new Date(stream.lastData)))}
-                                    >
-                                        {stream.name}
-                                    </StreamListComponent.Title>
-                                    <StreamListComponent.Item truncate title={stream.description}>
-                                        {stream.description}
-                                    </StreamListComponent.Item>
-                                    <StreamListComponent.Item>
-                                        {stream.lastUpdated && titleize(ago(new Date(stream.lastUpdated)))}
-                                    </StreamListComponent.Item>
-                                    <StreamListComponent.Item>
-                                        {stream.lastData && titleize(ago(new Date(stream.lastData)))}
-                                    </StreamListComponent.Item>
-                                    <StreamListComponent.Item>
-                                        <StatusIcon
-                                            status={mapStatus(stream.streamStatus)}
-                                            tooltip
-                                        />
-                                    </StreamListComponent.Item>
-                                    <StreamListComponent.Actions>
-                                        {getActions(stream)}
-                                    </StreamListComponent.Actions>
-                                </StreamListComponent.Row>
+                                    onShareClick={onOpenShareDialog}
+                                    stream={stream}
+                                />
                             ))}
                         </StreamListComponent>
                         <LoadMore

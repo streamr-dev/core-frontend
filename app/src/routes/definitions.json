@@ -140,10 +140,12 @@
             }
         },
         "streams": {
-            "data": "<api>/streams/:streamId/data/partitions/0/from",
+            "data": {
+                "from": "<api>/streams/:streamId/data/partitions/:partition/from",
+                "last": "<api>/streams/:streamId/data/partitions/:partition/last"
+            },
             "index": "<api>/streams",
             "show": "<api>/streams/:id",
-            "status": "<api>/streams/:streamId/status",
             "detectFields": "<api>/streams/:streamId/detectFields",
             "keys": {
                 "index": "<api>/streams/:streamId/keys",

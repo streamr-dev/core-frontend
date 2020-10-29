@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
     closeStream,
     getStream,
-    getStreamStatus,
     initEditStream,
     openStream,
     updateEditStream,
@@ -25,6 +24,7 @@ import View from './View'
 import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useStreamPermissions from '$userpages/hooks/useStreamPermissions'
+import ClientProvider from '$shared/components/StreamrClientProvider'
 
 const StreamPage = (props) => {
     const { id: idProp } = props.match.params || {}
@@ -88,14 +88,6 @@ const StreamPage = (props) => {
 
     useEffect(() => {
         const initEditing = async () => {
-            // Get stream status before copying state to edit stream object.
-            try {
-                // The status query might fail due to cassandra problems. Ignore error to prevent
-                // the stream page from getting stuck while loading
-                await dispatch(getStreamStatus(id))
-            } catch (e) {
-                console.warn(e)
-            }
             if (isMounted()) {
                 dispatch(initEditStream())
             }
@@ -117,17 +109,21 @@ const StreamPage = (props) => {
         )
     }
 
-    return readOnly ? (
-        <View
-            stream={stream}
-            currentUser={currentUser}
-        />
-    ) : (
-        <Edit
-            stream={editedStream}
-            canShare={canShare}
-            disabled={updating}
-        />
+    return (
+        <ClientProvider>
+            {readOnly ? (
+                <View
+                    stream={stream}
+                    currentUser={currentUser}
+                />
+            ) : (
+                <Edit
+                    stream={editedStream}
+                    canShare={canShare}
+                    disabled={updating}
+                />
+            )}
+        </ClientProvider>
     )
 }
 

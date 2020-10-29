@@ -29,7 +29,9 @@ const PendingTheme = {
     background: '#FFBC00',
 }
 
-const Icon = styled.div`
+const Icon = styled.div.attrs(({ theme }) => ({
+    'data-test-hook': `Status ${theme.id}`,
+}))`
     position: relative;
     display: inline-block;
     width: 16px;
@@ -38,7 +40,7 @@ const Icon = styled.div`
     background-color: ${({ theme }) => theme.background || '#CDCDCD'};
 `
 
-const StatusIcon = ({ status, className, tooltip }) => {
+const StatusIcon = ({ status = StatusIcon.INACTIVE, className, tooltip = false }) => {
     let statusText
 
     if (tooltip) {
@@ -57,10 +59,5 @@ StatusIcon.ERROR = ErrorTheme
 StatusIcon.INACTIVE = InactiveTheme
 StatusIcon.PENDING = PendingTheme
 StatusIcon.REMOVED = RemovedTheme
-
-StatusIcon.defaultProps = {
-    status: StatusIcon.INACTIVE,
-    tooltip: false,
-}
 
 export default StatusIcon

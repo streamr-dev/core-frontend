@@ -16,11 +16,6 @@ export type NewStream = {
     description: ?string,
 }
 
-export type StreamStatus = {
-    ok: boolean,
-    date?: Date,
-}
-
 export type Stream = NewStream & {
     id: StreamId,
     config: {
@@ -38,8 +33,6 @@ export type Stream = NewStream & {
     requireSignedData: boolean,
     storageDays: number,
     uiChannel: boolean,
-    streamStatus?: 'ok' | 'error' | 'inactive',
-    lastData?: Date,
     requireSignedData: boolean,
     requireEncryptedData: boolean,
 }

@@ -25,7 +25,8 @@ import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
 import Nav from '$shared/components/Layout/Nav'
 import { resetResourcePermission } from '$userpages/modules/permission/actions'
-import { mapStatus } from '../List'
+import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
+import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
@@ -130,6 +131,10 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
         sidebar.open('share')
     }, [sidebar])
 
+    const [timestamp, error] = useLastMessageTimestamp(stream.id)
+
+    const status = error ? StatusIcon.ERROR : getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
+
     return (
         <CoreLayout
             nav={(
@@ -217,7 +222,7 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                     title={I18n.t('userpages.streams.edit.details.nav.status')}
                     status={<StatusIcon
                         tooltip
-                        status={mapStatus(stream.streamStatus)}
+                        status={status}
                     />}
                     onlyDesktop
                 >

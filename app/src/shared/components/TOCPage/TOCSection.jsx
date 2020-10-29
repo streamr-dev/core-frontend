@@ -55,7 +55,7 @@ export const UnstyledTOCSection = ({
     onlyDesktop,
     ...props
 }: Props) => (
-    <Section {...props} onlyDesktop={onlyDesktop}>
+    <Section {...props} onlyDesktop={onlyDesktop} data-test-hook={`TOCSection ${id}`}>
         {(!!title || !!status) ? (
             <Title>
                 <TOCBusStop name={id} />
