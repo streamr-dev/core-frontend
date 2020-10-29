@@ -270,7 +270,7 @@ const StreamList = () => {
                         </StreamListComponent>
                         <LoadMore
                             hasMoreSearchResults={!fetching && hasMoreResults}
-                            onClick={fetchStreams}
+                            onClick={() => fetchStreams()}
                             preserveSpace
                         />
                     </Fragment>
