@@ -212,25 +212,27 @@ const deprecated_deployDataUnion = (productId: ProductId, adminFee: number): Sma
     return tx
 }
 
-const privateKey = '5e98cce00cff5dea6b454889f359a4ec06b9fa6b88e9d69b86de8e1c81887da0'
+export const createClient = (usePublicNode: boolean = false) => {
+    const web3 = usePublicNode ? undefined : getWeb3()
 
-export const createClient = (usePublicNode: boolean = false) => new StreamrClient({
-    url: process.env.STREAMR_WS_URL,
-    restUrl: process.env.STREAMR_API_URL,
-    factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
-    autoConnect: false,
-    autoDisconnect: false,
-    auth: {
-        sessionToken: getToken(),
-        privateKey,
-    },
-    sidechain: {
-        url: process.env.DATA_UNION_SIDECHAIN_PROVIDER,
-    },
-    mainnet: {
-        url: process.env.WEB3_PUBLIC_HTTP_PROVIDER,
-    },
-})
+    return new StreamrClient({
+        url: process.env.STREAMR_WS_URL,
+        restUrl: process.env.STREAMR_API_URL,
+        factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
+        autoConnect: false,
+        autoDisconnect: false,
+        auth: {
+            sessionToken: getToken(),
+            ethereum: web3 && web3.metamaskProvider,
+        },
+        sidechain: {
+            url: process.env.DATA_UNION_SIDECHAIN_PROVIDER,
+        },
+        mainnet: {
+            url: process.env.WEB3_PUBLIC_HTTP_PROVIDER,
+        },
+    })
+}
 
 export const deployDataUnion2 = (productId: ProductId, adminFee: number): SmartContractTransaction => {
     const web3 = getWeb3()
