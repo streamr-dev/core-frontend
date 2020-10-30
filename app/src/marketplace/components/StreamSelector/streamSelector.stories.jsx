@@ -17,8 +17,7 @@ const stories =
         .addDecorator(withKnobs)
 
 const streamList = [{
-    id: '1',
-    name: 'First',
+    id: 'stream-1',
     description: '',
     autoConfigure: false,
     lastUpdated: 0,
@@ -30,8 +29,7 @@ const streamList = [{
     partitions: 0,
     config: {},
 }, {
-    id: '2',
-    name: 'Second',
+    id: 'stream-2',
     description: '',
     autoConfigure: false,
     lastUpdated: 0,
@@ -43,8 +41,7 @@ const streamList = [{
     partitions: 0,
     config: {},
 }, {
-    id: '3',
-    name: 'Third',
+    id: 'stream-3',
     description: '',
     autoConfigure: false,
     lastUpdated: 0,
@@ -105,8 +102,7 @@ stories.add('1500 streams', () => {
     const longList = Array.from({
         length: 1500,
     }, (v, i) => ({
-        id: i + 1,
-        name: `stream ${i + 1}`,
+        id: `stream-${i + 1}`,
         description: '',
         autoConfigure: false,
         lastUpdated: 0,

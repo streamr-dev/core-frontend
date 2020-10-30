@@ -634,7 +634,7 @@ const StreamPreview = ({
     const { copy, isCopied } = useCopy()
 
     const streamLoaded = !!(stream && stream.id === streamId)
-    const { name, description, partitions } = stream || {}
+    const { description, partitions } = stream || {}
 
     const partitionOptions = useMemo(() => {
         if (!partitions) {
@@ -678,11 +678,11 @@ const StreamPreview = ({
                 )}
                 {!!streamLoaded && (
                     <React.Fragment>
-                        <Title title={name}>
+                        <Title title={description}>
                             {!!titlePrefix && (
                                 <StreamName>{titlePrefix} &rarr; </StreamName>
                             )}
-                            {name}
+                            {streamId}
                         </Title>
                         <Description title={description}>{description}</Description>
                     </React.Fragment>

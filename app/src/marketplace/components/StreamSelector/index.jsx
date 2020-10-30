@@ -52,7 +52,7 @@ export const StreamSelector = (props: Props) => {
     }
 
     const matchingStreams: StreamList = useMemo(() => availableStreams.filter((stream) => (
-        stream.name.toLowerCase().includes(search.toLowerCase())
+        stream.id.toLowerCase().includes(search.toLowerCase())
     )), [availableStreams, search])
 
     const streamSet = useMemo(() => new Set(streams), [streams])
@@ -71,7 +71,7 @@ export const StreamSelector = (props: Props) => {
 
         return sortBy(matchingStreams.map((s) => ({
             ...s,
-            lowerName: s.name.toLowerCase(),
+            lowerName: s.id.toLowerCase(),
             isAdded: -Number(streamSet.has(s.id)),
         })), sortOptions)
     }, [sort, streamSet, matchingStreams])
@@ -176,7 +176,7 @@ export const StreamSelector = (props: Props) => {
                                 className={classNames(styles.stream, {
                                     [styles.selected]: streamSet.has(stream.id),
                                 })}
-                                title={[stream.name, stream.description].filter(Boolean).join('\n\n')}
+                                title={stream.description}
                             >
                                 <button
                                     type="button"
@@ -186,7 +186,7 @@ export const StreamSelector = (props: Props) => {
                                     }}
                                     disabled={!!isDisabled}
                                 >
-                                    {stream.name}
+                                    {stream.id}
                                 </button>
                             </div>
                         ))}

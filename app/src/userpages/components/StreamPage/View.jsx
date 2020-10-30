@@ -220,7 +220,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     </FormGroup>
                     {!!stream.description && (
                         <FormGroup>
-                            <Field label={I18n.t('userpages.streams.edit.details.description')}>
+                            <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
                                 <Text
                                     value={stream.description || ''}
                                     readOnly

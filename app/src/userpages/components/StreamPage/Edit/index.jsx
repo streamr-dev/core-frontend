@@ -63,7 +63,7 @@ function StreamPageSidebar({ stream }) {
             {sidebar.isOpen('share') && (
                 <ShareSidebar
                     sidebarName="share"
-                    resourceTitle={stream && stream.name}
+                    resourceTitle={stream && stream.id}
                     resourceType="STREAM"
                     resourceId={stream && stream.id}
                     onClose={onClose}

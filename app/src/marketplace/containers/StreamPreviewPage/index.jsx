@@ -218,16 +218,21 @@ const PreviewWrap = ({ productId, streamId }) => {
     )
 }
 
-const ProductContainer = withRouter((props) => (
-    <ProductController key={props.match.params.id} ignoreUnauthorized>
-        <ClientProvider>
-            <PreviewWrap
-                productId={props.match.params.id}
-                streamId={props.match.params.streamId}
-            />
-        </ClientProvider>
-    </ProductController>
-))
+const ProductContainer = withRouter((props) => {
+    const idProp = props.match.params.streamId
+    const streamId = useMemo(() => decodeURIComponent(idProp), [idProp])
+
+    return (
+        <ProductController key={streamId} ignoreUnauthorized>
+            <ClientProvider>
+                <PreviewWrap
+                    productId={props.match.params.id}
+                    streamId={streamId}
+                />
+            </ClientProvider>
+        </ProductController>
+    )
+})
 
 export default () => (
     <ProductContainer />

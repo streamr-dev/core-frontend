@@ -325,15 +325,13 @@ stories.add('selectable (mobile)', () => (
 })
 
 const streamList = [{
-    id: '1',
-    title: 'Coffee machine',
+    id: 'sandbox/coffee-machine',
     description: 'Live updates from my coffee machine',
     updated: '',
     lastData: '4 days ago',
     status: StatusIcon.OK,
 }, {
-    id: '2',
-    title: 'JoinPart stream for data union 21aec220f1c0460798828211aa3070f265e261dd9e474405824f6379af7849df',
+    id: 'sandbox/dataUnion/21aec220f1c0460798828211aa3070f265e261dd9e474405824f6379af7849df',
     description: 'Automatically created JoinPart stream for data union',
     updated: '1 week ago',
     lastData: '2 minutes ago',
@@ -344,7 +342,7 @@ const StreamList = () => (
     <Container>
         <StreamListComponent>
             <List.Header>
-                <List.HeaderItem>Title</List.HeaderItem>
+                <List.HeaderItem>Name</List.HeaderItem>
                 <List.HeaderItem>Description</List.HeaderItem>
                 <List.HeaderItem>Updated</List.HeaderItem>
                 <List.HeaderItem>Last Data</List.HeaderItem>
@@ -353,7 +351,6 @@ const StreamList = () => (
             </List.Header>
             {streamList.map(({
                 id,
-                title,
                 description,
                 updated,
                 lastData,
@@ -364,7 +361,7 @@ const StreamList = () => (
                         description={description}
                         moreInfo={lastData}
                     >
-                        {title}
+                        {id}
                     </List.Title>
                     <List.Item truncate>{description}</List.Item>
                     <List.Item>{updated}</List.Item>

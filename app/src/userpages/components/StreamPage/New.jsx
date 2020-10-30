@@ -115,20 +115,20 @@ const getValidId = ({ domain, pathname }) => {
     const id = `${domain}/${pathname}`
 
     if (pathname.indexOf('/') === 0) {
-        throw new Error('Path name cannot start with a slash')
+        throw new Error(I18n.t('userpages.streams.validation.noSlashAtBeginning'))
     }
 
     if (/\/\/+/.test(pathname)) {
-        throw new Error('Use a single slash to separate paths.')
+        throw new Error(I18n.t('userpages.streams.validation.useSingleSlashPathSeparator'))
     }
 
     if (!/\w$/.test(id)) {
-        throw new Error('Path name must end with an alpha-numeric character.')
+        throw new Error(I18n.t('userpages.streams.validation.invalidPathEndCharacter'))
     }
 
     // this matches the backend validation for the full id
     if (!/^((?:[\w-]+\.?)*\w)\/(?:[\w.-]+\/?)*\w$/.test(id)) {
-        throw new Error('Path may only contain alpha-numeric characters, underscores, and dashes.')
+        throw new Error(I18n.t('userpages.streams.validation.invalidPathCharacters'))
     }
 
     return id
@@ -259,7 +259,7 @@ const UnstyledNew = (props) => {
             if (!isMounted()) { return }
 
             Notification.push({
-                title: 'Stream created successfully!',
+                title: I18n.t('userpages.streams.created.notification'),
                 icon: NotificationIcon.CHECKMARK,
             })
             Activity.push({
@@ -361,7 +361,7 @@ const UnstyledNew = (props) => {
                     />
                     <FormGroup>
                         <Field
-                            label={I18n.t('userpages.streams.edit.details.domain')}
+                            label={I18n.t('userpages.streams.edit.details.domain.label')}
                             css={css`
                                 && {
                                     max-width: 176px;
@@ -397,7 +397,7 @@ const UnstyledNew = (props) => {
                         >
                             /
                         </Field>
-                        <Field label={I18n.t('userpages.streams.edit.details.pathname')}>
+                        <Field label={I18n.t('userpages.streams.edit.details.pathname.label')}>
                             <PathnameWrapper>
                                 <QuestionIcon>
                                     <SvgIcon name="outlineQuestionMark" />
@@ -413,7 +413,7 @@ const UnstyledNew = (props) => {
                                     value={pathname || ''}
                                     onChange={onPathnameChange}
                                     disabled={isDisabled}
-                                    placeholder="Enter a unique stream path name"
+                                    placeholder={I18n.t('userpages.streams.edit.details.pathname.placeholder')}
                                     name="pathname"
                                 />
                             </PathnameWrapper>
@@ -426,13 +426,13 @@ const UnstyledNew = (props) => {
                         <Field narrow desktopOnly />
                     </FormGroup>
                     <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.details.description')}>
+                        <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
                             <Text
                                 value={description}
                                 onChange={onDescriptionChange}
                                 disabled={isDisabled}
                                 name="description"
-                                placeholder="Add a brief description"
+                                placeholder={I18n.t('userpages.streams.edit.details.description.placeholder')}
                                 autoComplete="off"
                             />
                         </Field>

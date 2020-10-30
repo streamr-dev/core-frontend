@@ -124,12 +124,13 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
             </Row>
             <Row>
                 <Label htmlFor="streamDescription">
-                    {I18n.t('userpages.streams.edit.details.description')}
+                    {I18n.t('userpages.streams.edit.details.description.label')}
                 </Label>
                 <Text
                     type="text"
                     id="streamDescription"
                     name="description"
+                    placeholder={I18n.t('userpages.streams.edit.details.description.placeholder')}
                     value={(stream && stream.description) || ''}
                     onChange={onDescriptionChange}
                     disabled={disabled}

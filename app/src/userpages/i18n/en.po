@@ -327,14 +327,26 @@ msgstr "Actions"
 msgid "userpages.streams.actions.addToCanvas"
 msgstr "Add to canvas"
 
+msgid "userpages.streams.validation.noSlashAtBeginning"
+msgstr "Path name cannot start with a slash"
+
+msgid "userpages.streams.validation.useSingleSlashPathSeparator"
+msgstr "Use a single slash to separate paths."
+
+msgid "userpages.streams.validation.invalidPathEndCharacter"
+msgstr "Path name must end with an alpha-numeric character."
+
+msgid "userpages.streams.validation.invalidPathCharacters"
+msgstr "Path may only contain alpha-numeric characters, underscores, and dashes."
+
 msgid "userpages.streams.delete.notification"
 msgstr "Stream deleted successfully"
 
 msgid "userpages.streams.remove.notification"
 msgstr "Stream removed successfully"
 
-msgid "userpages.streams.remove.notification"
-msgstr "Stream removed successfully"
+msgid "userpages.streams.created.notification"
+msgstr "Stream created successfully"
 
 msgid "userpages.streams.actions.editStream"
 msgstr "Edit stream"
@@ -423,14 +435,20 @@ msgstr ""
 "and create your stream in the default <strong>%{defaultDomain}</strong> domain or "
 "<a href=\"https://ens.domains\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register and use your own domain</a>."
 
-msgid "userpages.streams.edit.details.domain"
+msgid "userpages.streams.edit.details.domain.label"
 msgstr "Domain"
 
-msgid "userpages.streams.edit.details.pathname"
+msgid "userpages.streams.edit.details.pathname.label"
 msgstr "Path name"
 
-msgid "userpages.streams.edit.details.description"
+msgid "userpages.streams.edit.details.pathname.placeholder"
+msgstr "Enter a unique stream path name"
+
+msgid "userpages.streams.edit.details.description.label"
 msgstr "Description"
+
+msgid "userpages.streams.edit.details.description.placeholder"
+msgstr "Add a brief description"
 
 msgid "userpages.streams.edit.details.streamId"
 msgstr "Stream ID"

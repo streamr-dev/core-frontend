@@ -18,7 +18,6 @@ const stories = storiesOf('Marketplace/StreamPreview', module)
 
 const streamList = [{
     id: 'test-stream-1',
-    name: 'Ruuvi sensor',
     description: 'Short description',
     requireEncryptedData: false,
     requireSignedData: false,
@@ -26,7 +25,6 @@ const streamList = [{
     config: {},
 }, {
     id: 'test-stream-2',
-    name: 'Tram Data',
     description: '',
     requireEncryptedData: true,
     requireSignedData: false,
@@ -34,7 +32,6 @@ const streamList = [{
     config: {},
 }, {
     id: 'test-stream-3',
-    name: 'Third stream',
     description: 'Description that is really long and will break the layout if it goes long enough over the screen',
     requireEncryptedData: false,
     requireSignedData: true,
