@@ -19,19 +19,15 @@ describe('StreamSelector', () => {
             availableStreams: [
                 {
                     id: 'stream-1',
-                    name: 'Stream 1',
                 },
                 {
                     id: 'stream-2',
-                    name: 'Stream 2',
                 },
                 {
                     id: 'stream-3',
-                    name: 'Stream 3',
                 },
                 {
                     id: 'stream-4',
-                    name: 'Stream 4',
                 },
             ],
             translate: (key) => key,
@@ -225,8 +221,8 @@ describe('StreamSelector', () => {
             wrapper.update()
 
             expect(wrapper.find(`.${styles.stream}`).length).toEqual(1)
-            expect(wrapper.find(`.${styles.stream}`).contains('Stream 1')).toEqual(true)
-            expect(wrapper.find(`.${styles.stream}`).contains('Stream 2')).toEqual(false)
+            expect(wrapper.find(`.${styles.stream}`).contains('stream-1')).toEqual(true)
+            expect(wrapper.find(`.${styles.stream}`).contains('stream-2')).toEqual(false)
         })
     })
 })
