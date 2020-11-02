@@ -17,6 +17,7 @@ import TransactionError from '$shared/errors/TransactionError'
 import Web3Poller from '$shared/web3/web3Poller'
 import { useBalances } from '$shared/hooks/useBalances'
 import { selectUserData } from '$shared/modules/user/selectors'
+import type { NumberString } from '$shared/flowtype/common-types'
 
 type Props = {
     children?: Node,
@@ -122,6 +123,27 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
             clearTimeout(balanceTimeout.current)
         }
     }, [dispatch, balancePoll, username])
+
+    // Poll network
+    useEffect(() => {
+        let currentNetworkId
+
+        const onNetworkChange = (networkId: NumberString) => {
+            if (currentNetworkId && networkId && currentNetworkId !== networkId) {
+                window.location.reload()
+            }
+
+            currentNetworkId = networkId
+        }
+
+        Web3Poller.subscribe(Web3Poller.events.NETWORK, onNetworkChange)
+        Web3Poller.subscribe(Web3Poller.events.NETWORK_ERROR, onNetworkChange)
+
+        return () => {
+            Web3Poller.unsubscribe(Web3Poller.events.NETWORK, onNetworkChange)
+            Web3Poller.unsubscribe(Web3Poller.events.NETWORK_ERROR, onNetworkChange)
+        }
+    }, [])
 
     return children || null
 }

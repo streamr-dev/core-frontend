@@ -3,6 +3,7 @@ import { mount } from 'enzyme'
 import sinon from 'sinon'
 import { act } from 'react-dom/test-utils'
 import * as redux from 'react-redux'
+import EventEmitter from 'events'
 
 import * as getWeb3 from '$shared/web3/web3Provider'
 import * as userActions from '$shared/modules/user/actions'
@@ -18,6 +19,18 @@ import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 describe('GlobalInfoWatcher', () => {
     let sandbox
     let clock
+    const { location } = window
+
+    beforeAll(() => {
+        delete window.location
+        window.location = {
+            reload: jest.fn(),
+        }
+    })
+
+    afterAll(() => {
+        window.location = location
+    })
 
     beforeEach(() => {
         sandbox = sinon.createSandbox()
@@ -98,7 +111,7 @@ describe('GlobalInfoWatcher', () => {
         })
 
         expect(clockSpy.callCount).toEqual(5)
-        expect(Web3Poller.unsubscribe.callCount).toEqual(2)
+        expect(Web3Poller.unsubscribe.callCount).toEqual(4)
     })
 
     it('adds pending transactions from storage on mount', () => {
@@ -132,5 +145,36 @@ describe('GlobalInfoWatcher', () => {
         })
 
         expect(addTransactionStub.callCount).toEqual(2)
+    })
+
+    it('reloads page on network change', () => {
+        sandbox.stub(redux, 'useSelector')
+        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
+
+        const emitter = new EventEmitter()
+
+        sandbox.stub(Web3Poller, 'subscribe').callsFake((event, handler) => {
+            emitter.on(event, handler)
+        })
+        sandbox.stub(Web3Poller, 'unsubscribe').callsFake((event, handler) => {
+            emitter.off(event, handler)
+        })
+
+        act(() => {
+            mount(<GlobalInfoWatcher />)
+        })
+        expect(window.location.reload).not.toHaveBeenCalled()
+
+        // defining first time should not reload
+        act(() => {
+            emitter.emit(Web3Poller.events.NETWORK, '8995')
+        })
+        expect(window.location.reload).not.toHaveBeenCalled()
+
+        // should reload if network was defined
+        act(() => {
+            emitter.emit(Web3Poller.events.NETWORK, '5')
+        })
+        expect(window.location.reload).toHaveBeenCalled()
     })
 })

@@ -145,11 +145,7 @@ export default class Web3Poller {
             }, () => {
                 this.web3.getDefaultAccount()
                     .catch((err) => {
-                        if (this.account) {
-                            this.emitter.emit(events.NETWORK_ERROR, err)
-                        } else {
-                            warnOnce(err)
-                        }
+                        this.emitter.emit(events.NETWORK_ERROR, err)
                     })
             })
     )
