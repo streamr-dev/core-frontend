@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
+import { useTransition, animated } from 'react-spring'
+
 import { MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
@@ -58,6 +60,7 @@ const Tooltip = styled.div`
     line-height: 1rem;
     top: 28px;
     right: 6px;
+    z-index: 1;
 
     strong {
         font-family: var(--mono);
@@ -163,6 +166,7 @@ const UnstyledNew = (props) => {
 
     const [loading, setLoading] = useState(false)
     const [createAttempted, setCreateAttempted] = useState(false)
+    const [finished, setFinished] = useState(false)
     const streamDataRef = useRef()
     const contentChangedRef = useRef(false)
     const dispatch = useDispatch()
@@ -258,6 +262,8 @@ const UnstyledNew = (props) => {
 
             if (!isMounted()) { return }
 
+            setFinished(true)
+
             Notification.push({
                 title: I18n.t('userpages.streams.created.notification'),
                 icon: NotificationIcon.CHECKMARK,
@@ -268,9 +274,15 @@ const UnstyledNew = (props) => {
                 resourceType: resourceTypes.STREAM,
             })
 
-            dispatch(push(routes.streams.show({
-                id: streamId,
-            })))
+            // give time for fadeout animation to happen
+            setTimeout(() => {
+                if (isMounted()) {
+                    dispatch(push(routes.streams.show({
+                        id: streamId,
+                        newStream: 1,
+                    })))
+                }
+            }, 300)
         } catch (e) {
             console.warn(e)
 
@@ -318,6 +330,24 @@ const UnstyledNew = (props) => {
     const isDisabled = !!loading
     const isDomainDisabled = isDisabled || domainOptions.length <= 1
 
+    const transitions = useTransition(!finished, null, {
+        config: {
+            tension: 500,
+            friction: 50,
+            clamp: true,
+            duration: 300,
+        },
+        from: {
+            opacity: 1,
+        },
+        enter: {
+            opacity: 1,
+        },
+        leave: {
+            opacity: 0,
+        },
+    })
+
     return (
         <Layout
             {...props}
@@ -348,158 +378,168 @@ const UnstyledNew = (props) => {
                 />
             )}
         >
-            <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle')}>
-                <TOCSection
-                    id="details"
-                    title={I18n.t('userpages.streams.edit.details.nav.details')}
-                >
-                    <Description
-                        value="userpages.streams.edit.details.info.description"
-                        tag="p"
-                        defaultDomain={DEFAULT_DOMAIN}
-                        dangerousHTML
-                    />
-                    <FormGroup>
-                        <Field
-                            label={I18n.t('userpages.streams.edit.details.domain.label')}
-                            css={css`
-                                && {
-                                    max-width: 176px;
-                                }
-                            `}
-                        >
-                            {!!isDomainDisabled && (
-                                <Text
-                                    value={domain || ''}
-                                    readOnly
-                                    disabled
-                                    name="domain"
+            {transitions.map(({ item, key, props: style }) => (
+                item && (
+                    <animated.div
+                        key={key}
+                        style={style}
+                    >
+                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle')}>
+                            <TOCSection
+                                id="details"
+                                title={I18n.t('userpages.streams.edit.details.nav.details')}
+                            >
+                                <Description
+                                    value="userpages.streams.edit.details.info.description"
+                                    tag="p"
+                                    defaultDomain={DEFAULT_DOMAIN}
+                                    dangerousHTML
                                 />
-                            )}
-                            {!isDomainDisabled && (
-                                <Select
-                                    options={domainOptions}
-                                    value={domainOptions.find((t) => t.value === domain)}
-                                    onChange={onDomainChange}
-                                    disabled={isDisabled}
-                                    name="domain"
-                                />
-                            )}
-                        </Field>
-                        <Field
-                            narrow
-                            css={css`
-                                && {
-                                    margin: 0 16px 0 16px;
-                                    width: auto;
-                                }
-                            `}
-                        >
-                            /
-                        </Field>
-                        <Field label={I18n.t('userpages.streams.edit.details.pathname.label')}>
-                            <PathnameWrapper>
-                                <QuestionIcon>
-                                    <SvgIcon name="outlineQuestionMark" />
-                                    <Tooltip>
-                                        <Translate
-                                            value="userpages.streams.edit.details.tooltip"
-                                            docsLink={docsLinks.streams}
-                                            dangerousHTML
+                                <FormGroup>
+                                    <Field
+                                        label={I18n.t('userpages.streams.edit.details.domain.label')}
+                                        css={css`
+                                            && {
+                                                max-width: 176px;
+                                            }
+                                        `}
+                                    >
+                                        {!!isDomainDisabled && (
+                                            <Text
+                                                value={domain || ''}
+                                                readOnly
+                                                disabled
+                                                name="domain"
+                                            />
+                                        )}
+                                        {!isDomainDisabled && (
+                                            <Select
+                                                options={domainOptions}
+                                                value={domainOptions.find((t) => t.value === domain)}
+                                                onChange={onDomainChange}
+                                                disabled={isDisabled}
+                                                name="domain"
+                                            />
+                                        )}
+                                    </Field>
+                                    <Field
+                                        narrow
+                                        css={css`
+                                            && {
+                                                margin: 0 16px 0 16px;
+                                                width: auto;
+                                            }
+                                        `}
+                                    >
+                                        /
+                                    </Field>
+                                    <Field label={I18n.t('userpages.streams.edit.details.pathname.label')}>
+                                        <PathnameWrapper>
+                                            <QuestionIcon>
+                                                <SvgIcon name="outlineQuestionMark" />
+                                                <Tooltip>
+                                                    <Translate
+                                                        value="userpages.streams.edit.details.tooltip"
+                                                        docsLink={docsLinks.streams}
+                                                        dangerousHTML
+                                                    />
+                                                </Tooltip>
+                                            </QuestionIcon>
+                                            <Text
+                                                value={pathname || ''}
+                                                onChange={onPathnameChange}
+                                                disabled={isDisabled}
+                                                placeholder={I18n.t('userpages.streams.edit.details.pathname.placeholder')}
+                                                name="pathname"
+                                                invalid={!!createAttempted && !!validationError}
+                                            />
+                                        </PathnameWrapper>
+                                        {!!createAttempted && !!validationError && (
+                                            <Errors overlap theme={MarketplaceTheme}>
+                                                {validationError}
+                                            </Errors>
+                                        )}
+                                    </Field>
+                                    <Field narrow desktopOnly />
+                                </FormGroup>
+                                <FormGroup>
+                                    <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
+                                        <Text
+                                            value={description}
+                                            onChange={onDescriptionChange}
+                                            disabled={isDisabled}
+                                            name="description"
+                                            placeholder={I18n.t('userpages.streams.edit.details.description.placeholder')}
+                                            autoComplete="off"
                                         />
-                                    </Tooltip>
-                                </QuestionIcon>
-                                <Text
-                                    value={pathname || ''}
-                                    onChange={onPathnameChange}
-                                    disabled={isDisabled}
-                                    placeholder={I18n.t('userpages.streams.edit.details.pathname.placeholder')}
-                                    name="pathname"
+                                    </Field>
+                                    <Field narrow desktopOnly />
+                                </FormGroup>
+                            </TOCSection>
+                            <TOCSection
+                                id="security"
+                                title={I18n.t('userpages.streams.edit.details.nav.security')}
+                            >
+                                <SecurityView
+                                    stream={defaultStreamData}
+                                    disabled
                                 />
-                            </PathnameWrapper>
-                            {!!createAttempted && !!validationError && (
-                                <Errors overlap theme={MarketplaceTheme}>
-                                    {validationError}
-                                </Errors>
-                            )}
-                        </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
-                            <Text
-                                value={description}
-                                onChange={onDescriptionChange}
-                                disabled={isDisabled}
-                                name="description"
-                                placeholder={I18n.t('userpages.streams.edit.details.description.placeholder')}
-                                autoComplete="off"
-                            />
-                        </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
-                </TOCSection>
-                <TOCSection
-                    id="security"
-                    title={I18n.t('userpages.streams.edit.details.nav.security')}
-                >
-                    <SecurityView
-                        stream={defaultStreamData}
-                        disabled
-                    />
-                </TOCSection>
-                <TOCPage.Section
-                    id="configure"
-                    title={I18n.t('userpages.streams.edit.details.nav.fields')}
-                    onlyDesktop
-                >
-                    <ConfigureView
-                        stream={defaultStreamData}
-                        disabled
-                    />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="status"
-                    title={I18n.t('userpages.streams.edit.details.nav.status')}
-                    status={<StatusIcon
-                        tooltip
-                        status="inactive"
-                    />}
-                    onlyDesktop
-                >
-                    <StatusView disabled stream={defaultStreamData} />
-                </TOCPage.Section>
-                <TOCSection
-                    id="preview"
-                    title={I18n.t('userpages.streams.edit.details.nav.preview')}
-                >
-                    <Preview
-                        stream={defaultStreamData}
-                        subscribe={false}
-                    />
-                </TOCSection>
-                <TOCSection
-                    id="historicalData"
-                    title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
-                >
-                    <HistoryView
-                        stream={defaultStreamData}
-                        disabled
-                        showStorageOptions={false}
-                    />
-                </TOCSection>
-                <TOCPage.Section
-                    id="stream-partitions"
-                    title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
-                    linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
-                    status={(<StatusLabel.Advanced />)}
-                >
-                    <PartitionsView
-                        stream={defaultStreamData}
-                        disabled
-                    />
-                </TOCPage.Section>
-            </TOCPage>
+                            </TOCSection>
+                            <TOCPage.Section
+                                id="configure"
+                                title={I18n.t('userpages.streams.edit.details.nav.fields')}
+                                onlyDesktop
+                            >
+                                <ConfigureView
+                                    stream={defaultStreamData}
+                                    disabled
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="status"
+                                title={I18n.t('userpages.streams.edit.details.nav.status')}
+                                status={<StatusIcon
+                                    tooltip
+                                    status="inactive"
+                                />}
+                                onlyDesktop
+                            >
+                                <StatusView disabled stream={defaultStreamData} />
+                            </TOCPage.Section>
+                            <TOCSection
+                                id="preview"
+                                title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                            >
+                                <Preview
+                                    stream={defaultStreamData}
+                                    subscribe={false}
+                                />
+                            </TOCSection>
+                            <TOCSection
+                                id="historicalData"
+                                title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                            >
+                                <HistoryView
+                                    stream={defaultStreamData}
+                                    disabled
+                                    showStorageOptions={false}
+                                />
+                            </TOCSection>
+                            <TOCPage.Section
+                                id="stream-partitions"
+                                title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
+                                linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                                status={(<StatusLabel.Advanced />)}
+                            >
+                                <PartitionsView
+                                    stream={defaultStreamData}
+                                    disabled
+                                />
+                            </TOCPage.Section>
+                        </TOCPage>
+                    </animated.div>
+                )
+            ))}
             <ConfirmExitModal />
         </Layout>
     )

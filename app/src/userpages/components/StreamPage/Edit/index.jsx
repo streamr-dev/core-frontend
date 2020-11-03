@@ -6,6 +6,7 @@ import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
 import cloneDeep from 'lodash/cloneDeep'
+import { useTransition, animated } from 'react-spring'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
@@ -80,7 +81,13 @@ const didChange = (original, changed) => {
     return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
 }
 
-const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
+const UnstyledEdit = ({
+    stream,
+    canShare,
+    disabled,
+    isNewStream,
+    ...props
+}: any) => {
     const sidebar = useContext(SidebarContext)
     const { id: streamId } = stream
     const streamRef = useRef()
@@ -220,6 +227,24 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
 
     const status = error ? StatusIcon.ERROR : getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
 
+    const transitions = useTransition(true, null, {
+        config: {
+            tension: 500,
+            friction: 50,
+            clamp: true,
+            duration: 300,
+        },
+        from: {
+            opacity: 0,
+        },
+        enter: {
+            opacity: 1,
+        },
+        leave: {
+            opacity: 1,
+        },
+    })
+
     return (
         <CoreLayout
             {...props}
@@ -259,107 +284,116 @@ const UnstyledEdit = ({ stream, canShare, disabled, ...props }: any) => {
                 />
             )}
         >
-            <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle')}>
-                <TOCPage.Section
-                    id="details"
-                    title={I18n.t('userpages.streams.edit.details.nav.details')}
-                >
-                    <InfoView
-                        stream={stream}
-                        disabled={isDisabled}
-                        updateStream={updateStream}
-                    />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="snippets"
-                    title={I18n.t('general.codeSnippets')}
-                >
-                    <Translate
-                        value="userpages.streams.edit.codeSnippets.description"
-                        tag="p"
-                    />
-                    <CodeSnippets
-                        items={[
-                            ['javascript', 'Js', subSnippets.javascript],
-                            ['java', 'Java', subSnippets.java],
-                        ]}
-                        title="Subscribe"
-                    />
-                    <CodeSnippets
-                        items={[
-                            ['javascript', 'Js', pubSnippets.javascript],
-                            ['java', 'Java', pubSnippets.java],
-                        ]}
-                        title="Publish"
-                    />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="security"
-                    title={I18n.t('userpages.streams.edit.details.nav.security')}
-                    onlyDesktop
-                >
-                    <SecurityView
-                        stream={stream}
-                        disabled={isDisabled}
-                        updateStream={updateStream}
-                    />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="configure"
-                    title={I18n.t('userpages.streams.edit.details.nav.fields')}
-                    onlyDesktop
-                >
-                    <ConfigureView
-                        stream={stream}
-                        disabled={isDisabled}
-                        updateStream={updateStream}
-                    />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="status"
-                    title={I18n.t('userpages.streams.edit.details.nav.status')}
-                    status={<StatusIcon
-                        tooltip
-                        status={status}
-                    />}
-                    onlyDesktop
-                >
-                    <StatusView
-                        stream={stream}
-                        disabled={isDisabled}
-                        updateStream={updateStream}
-                    />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="preview"
-                    title={I18n.t('userpages.streams.edit.details.nav.preview')}
-                >
-                    <PreviewView stream={stream} />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="historical-data"
-                    title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
-                    onlyDesktop
-                >
-                    <HistoryView
-                        stream={stream}
-                        disabled={isDisabled}
-                        updateStream={updateStream}
-                    />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="stream-partitions"
-                    title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
-                    linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
-                    status={(<StatusLabel.Advanced />)}
-                >
-                    <PartitionsView
-                        stream={stream}
-                        disabled={isDisabled}
-                        updateStream={updateStream}
-                    />
-                </TOCPage.Section>
-            </TOCPage>
+            {transitions.map(({ item, key, props: style }) => (
+                item && (
+                    <animated.div
+                        key={key}
+                        {...(isNewStream ? { style } : {})}
+                    >
+                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle')}>
+                            <TOCPage.Section
+                                id="details"
+                                title={I18n.t('userpages.streams.edit.details.nav.details')}
+                            >
+                                <InfoView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="snippets"
+                                title={I18n.t('general.codeSnippets')}
+                            >
+                                <Translate
+                                    value="userpages.streams.edit.codeSnippets.description"
+                                    tag="p"
+                                />
+                                <CodeSnippets
+                                    items={[
+                                        ['javascript', 'Js', subSnippets.javascript],
+                                        ['java', 'Java', subSnippets.java],
+                                    ]}
+                                    title="Subscribe"
+                                />
+                                <CodeSnippets
+                                    items={[
+                                        ['javascript', 'Js', pubSnippets.javascript],
+                                        ['java', 'Java', pubSnippets.java],
+                                    ]}
+                                    title="Publish"
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="security"
+                                title={I18n.t('userpages.streams.edit.details.nav.security')}
+                                onlyDesktop
+                            >
+                                <SecurityView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="configure"
+                                title={I18n.t('userpages.streams.edit.details.nav.fields')}
+                                onlyDesktop
+                            >
+                                <ConfigureView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="status"
+                                title={I18n.t('userpages.streams.edit.details.nav.status')}
+                                status={<StatusIcon
+                                    tooltip
+                                    status={status}
+                                />}
+                                onlyDesktop
+                            >
+                                <StatusView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="preview"
+                                title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                            >
+                                <PreviewView stream={stream} />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="historical-data"
+                                title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                                onlyDesktop
+                            >
+                                <HistoryView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="stream-partitions"
+                                title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
+                                linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                                status={(<StatusLabel.Advanced />)}
+                            >
+                                <PartitionsView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                        </TOCPage>
+                    </animated.div>
+                )
+            ))}
             <StreamPageSidebar stream={stream} />
             <ConfirmSaveModal />
         </CoreLayout>
