@@ -212,7 +212,15 @@ const deprecated_deployDataUnion = (productId: ProductId, adminFee: number): Sma
     return tx
 }
 
-export const createClient = (usePublicNode: boolean = false) => {
+type CreateClient = {
+    usePublicNode?: boolean,
+}
+
+export const createClient = (options: CreateClient = {}) => {
+    const { usePublicNode } = {
+        usePublicNode: false,
+        ...(options || {}),
+    }
     const web3 = usePublicNode ? undefined : getWeb3()
 
     return new StreamrClient({
@@ -307,12 +315,14 @@ const whitelist = [
     '0x481FaDebf6892461ecF514516f1F7B3597125A5D',
 ].map((s) => s.toLowerCase())
 
-export const getDataUnionVersion = async (address: DataUnionId, usePublicNode: boolean = false) => {
+export const getDataUnionVersion = async (address: DataUnionId, usePublicNode: boolean = true) => {
     if (whitelist.includes(address.toLowerCase())) {
         return 2
     }
 
-    const client = createClient(usePublicNode)
+    const client = createClient({
+        usePublicNode,
+    })
     const version = await client.getDataUnionVersion(address)
 
     return version || 0
@@ -439,10 +449,12 @@ const deprecated_getDataUnionStats = (id: DataUnionId): ApiResult<Object> => get
 })
 
 export const getDataUnionStats = async (id: DataUnionId): ApiResult<Object> => {
-    const version = await getDataUnionVersion(id)
+    const version = await getDataUnionVersion(id, true)
 
     if (version === 2) {
-        const client = createClient()
+        const client = createClient({
+            usePublicNode: true,
+        })
 
         const stats = await client.getDataUnionStats({
             dataUnionAddress: id,
