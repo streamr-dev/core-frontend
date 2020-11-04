@@ -1,8 +1,11 @@
 // @flow
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { getStreamData } from '$mp/modules/streams/services'
+
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
+import ClientProvider from '$shared/components/StreamrClientProvider'
+import Subscription from '$shared/components/Subscription'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type Props = {
     joinPartStreamId: ?string,
@@ -23,27 +26,16 @@ type MessageMetadata = {
 
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
-// Converts raw messages from the HTTP api to match format we get with
-// streamr-client. Contains only payload and needed parts of the metadata.
-const convertAndCallback = (rawMessages: Array<Object>, onMessage) => {
-    rawMessages.forEach((msg) => {
-        const data = JSON.parse(msg[5])
-        const metaData = {
-            messageId: {
-                timestamp: msg[1][2],
-            },
-        }
-        onMessage(data, metaData)
-    })
-}
-
 const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) => {
+    const isMounted = useIsMounted()
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
     const activeAddressesRef = useRef([])
 
     const onMessage = useCallback((data: JoinPartMessage, metadata: MessageMetadata) => {
+        if (!isMounted()) { return }
+
         let diff = 0
         const activeAddresses = activeAddressesRef.current
 
@@ -84,7 +76,7 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
                 entry,
             ])
         }
-    }, [])
+    }, [isMounted])
 
     useEffect(() => {
         memberData.sort((a, b) => b.timestamp - a.timestamp)
@@ -129,23 +121,24 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
         // be resent
         setMemberData([])
         activeAddressesRef.current = []
-
-        const loadStreamData = async (streamId) => {
-            const from = Date.now() - (shownDays * MILLISECONDS_IN_DAY)
-            const rawData = await getStreamData(streamId, from)
-            convertAndCallback(rawData, onMessage)
-        }
-
-        if (joinPartStreamId) {
-            loadStreamData(joinPartStreamId)
-        }
     }, [shownDays, joinPartStreamId, onMessage])
 
     return (
-        <TimeSeriesGraph
-            graphData={graphData}
-            shownDays={shownDays}
-        />
+        <ClientProvider>
+            <Subscription
+                key={`subscription-${shownDays}`}
+                uiChannel={{
+                    id: joinPartStreamId,
+                }}
+                isActive
+                onMessage={onMessage}
+                resendFrom={Date.now() - (shownDays * MILLISECONDS_IN_DAY)}
+            />
+            <TimeSeriesGraph
+                graphData={graphData}
+                shownDays={shownDays}
+            />
+        </ClientProvider>
     )
 }
 
