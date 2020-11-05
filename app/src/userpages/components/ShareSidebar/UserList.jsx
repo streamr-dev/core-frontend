@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import Sidebar from '$shared/components/Sidebar'
 import UserPermissions from './UserPermissions'
 import ErrorMessage from './ErrorMessage'
+import Pagination from './Pagination'
 
 const UnstyledUserList = ({
     currentUser,
@@ -23,13 +24,15 @@ const UnstyledUserList = ({
         }
     }, [onSelect])
 
+    const [subitems, setSubitems] = useState(Pagination.subcollection(items, 0))
+
     return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
         <div
             {...props}
             onClick={onClick}
         >
-            {items.map(([userId, userPermissions]) => (
+            {subitems.map(([userId, userPermissions]) => (
                 <React.Fragment key={userId}>
                     <Sidebar.Container
                         as={UserPermissions}
@@ -51,6 +54,7 @@ const UnstyledUserList = ({
                     )}
                 </React.Fragment>
             ))}
+            <Pagination collection={items} onPage={setSubitems} selectedUserId={selectedUserId} />
         </div>
     )
 }
