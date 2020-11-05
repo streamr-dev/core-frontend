@@ -54,7 +54,7 @@ const UnstyledUserList = ({
                     )}
                 </React.Fragment>
             ))}
-            <Pagination collection={items} onPage={setSubitems} selectedUserId={selectedUserId} />
+            <Pagination collection={items} onPage={setSubitems} onUserSelect={onSelect} selectedUserId={selectedUserId} />
         </div>
     )
 }

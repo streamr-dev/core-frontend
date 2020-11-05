@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { Button } from '@streamr/streamr-layout'
 import styled, { css } from 'styled-components'
 import Sidebar from '$shared/components/Sidebar'
@@ -45,18 +45,32 @@ const subcollection = (collection, startAt) => (
     collection.slice(startAt, startAt + PER_PAGE)
 )
 
-const UnstyledPagination = ({ collection = [], onPage, selectedUserId: selectedId, ...props }) => {
+const UnstyledPagination = ({
+    collection = [],
+    onPage,
+    selectedUserId: selectedId,
+    onUserSelect,
+    ...props
+}) => {
     const [page, setPage] = useState(0)
 
     const maxPage = Math.max(0, Math.ceil(collection.length / PER_PAGE) - 1)
 
+    const unselect = useCallback(() => {
+        if (onUserSelect) {
+            onUserSelect(undefined)
+        }
+    }, [onUserSelect])
+
     const next = useCallback(() => {
+        unselect()
         setPage((current) => Math.min(current + 1, maxPage))
-    }, [maxPage])
+    }, [maxPage, unselect])
 
     const prev = useCallback(() => {
+        unselect()
         setPage((current) => Math.max(0, current - 1))
-    }, [])
+    }, [unselect])
 
     const from = collection.length ? 1 + (page * PER_PAGE) : 0
 
@@ -68,8 +82,6 @@ const UnstyledPagination = ({ collection = [], onPage, selectedUserId: selectedI
         }
     }, [page, onPage, collection])
 
-    const collectionLengthRef = useRef(collection.length)
-
     useEffect(() => {
         if (selectedId != null) {
             const index = collection.findIndex(([id]) => id === selectedId)
@@ -77,12 +89,10 @@ const UnstyledPagination = ({ collection = [], onPage, selectedUserId: selectedI
             if (index !== -1) {
                 setPage(Math.floor(index / PER_PAGE))
             }
-        } else if (collectionLengthRef.current !== collection.length) {
-            setPage(0)
+        } else {
+            setPage(Math.min(page, maxPage))
         }
-
-        collectionLengthRef.current = collection.length
-    }, [collection, selectedId])
+    }, [collection, selectedId, maxPage, page])
 
     return maxPage > 0 && (
         <Sidebar.Container {...props}>
