@@ -110,9 +110,8 @@ describe('New stream page', () => {
     it('takes the user to the new stream page', () => {
         cy.login()
         cy.visit('/core/streams/new')
-        cy.location().should((l) => {
-            expect(l.pathname).to.eq('/core/streams/new')
-        })
+        cy.location('pathname').should('eq', '/core/streams/new')
+
         cy.get('[data-test-hook=TOCPage]').find('h1').contains(/name your stream/i)
         cy.get('[name=domain]').invoke('val').should('eq', 'sandbox')
     })
@@ -139,6 +138,81 @@ describe('New stream page', () => {
         cy.wait(1000) // eslint-disable-line cypress/no-unnecessary-waiting
         cy.get('[data-test-hook=TOCPage]').find('h1').contains(/set up your stream/i)
         cy.get('[name=streamId]').invoke('val').should('eq', streamId)
+    })
+
+    it('does not save until valid path is given', () => {
+        cy.login()
+        cy.visit('/core/streams/new')
+        cy.get('[data-test-hook=Toolbar]').find('button:disabled').contains(/save/i).should('exist')
+
+        cy.get('input[name=pathname]').clear().type('invalid path name')
+
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).should('exist')
+        cy.contains(/path may only contain alpha-numeric characters/i).should('not.exist')
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.contains(/path may only contain alpha-numeric characters/i).should('exist')
+
+        cy.get('input[name=pathname]').clear().type('path/*($)name')
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.contains(/path may only contain alpha-numeric characters/i).should('exist')
+
+        cy.get('input[name=pathname]').clear().type('/path/')
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.contains(/path name cannot start with a slash/i).should('exist')
+
+        cy.get('input[name=pathname]').clear().type('path/')
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.contains(/path name must end with an alpha-numeric character/i).should('exist')
+
+        cy.get('input[name=pathname]').clear().type('path//name')
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.contains(/use a single slash to separate paths/i).should('exist')
+    })
+
+    it('gives an error if a stream with the same name exists', () => {
+        cy.login()
+        cy.createStream().then((streamId) => {
+            const pathname = streamId.replace('sandbox/', '')
+
+            cy.visit('/core/streams/new')
+            cy.get('input[name=pathname]').clear().type(pathname)
+            cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+            cy.contains(`Stream with id ${streamId} already exists`).should('exist')
+        })
+    })
+
+    it('prompts to verify exit if there are unsaved changes', () => {
+        cy.login()
+        cy.visit('/core/streams/new')
+        cy.get('input[name=pathname]').clear().type('mystream')
+
+        // clicking back brings modal prompt
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/back/i).click()
+        cy.contains(/you have unsaved changes/i).should('exist')
+
+        // dismiss with cancel
+        cy.get('#modal-root').find('button').contains(/cancel/i).click()
+        cy.location('pathname').should('eq', '/core/streams/new')
+
+        // click back again to exit
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/back/i).click()
+        cy.get('#modal-root').find('button').contains(/ok/i).click()
+        cy.location('pathname').should('eq', '/core/streams')
+    })
+
+    it('can create a path with dot separator in id', () => {
+        cy.login()
+        cy.visit('/core/streams/new')
+        const path = `${uuid()}/with.dot.separator`
+        const streamId = `sandbox/${path}`
+        cy.get('input[name=pathname]').clear().type(path)
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.location('pathname').should('eq', `/core/streams/${encodeURIComponent(streamId)}`)
+
+        cy.visit('/core/streams')
+        cy.visit(`/core/streams/${encodeURIComponent(streamId)}`)
+        cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
+        cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
     })
 })
 

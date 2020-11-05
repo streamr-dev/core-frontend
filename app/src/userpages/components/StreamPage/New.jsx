@@ -167,6 +167,7 @@ const UnstyledNew = (props) => {
     const [loading, setLoading] = useState(false)
     const [createAttempted, setCreateAttempted] = useState(false)
     const [finished, setFinished] = useState(false)
+    const [validationError, setValidationError] = useState(undefined)
     const streamDataRef = useRef()
     const contentChangedRef = useRef(false)
     const dispatch = useDispatch()
@@ -228,19 +229,21 @@ const UnstyledNew = (props) => {
         updateStream({ description })
     }, [updateStream])
 
-    const validationError = useMemo(() => {
-        try {
-            if (pathname) {
-                getValidId({
-                    domain,
-                    pathname,
-                })
-            }
+    useEffect(() => {
+        setValidationError(() => {
+            try {
+                if (pathname) {
+                    getValidId({
+                        domain,
+                        pathname,
+                    })
+                }
 
-            return undefined
-        } catch (e) {
-            return e.message
-        }
+                return undefined
+            } catch (e) {
+                return e.message
+            }
+        })
     }, [domain, pathname])
 
     const onSave = useCallback(async () => {
@@ -287,6 +290,11 @@ const UnstyledNew = (props) => {
             console.warn(e)
 
             if (!isMounted()) { return }
+
+            // set validation error if another stream with the same id exists
+            if (e.code === 'DUPLICATE_NOT_ALLOWED') {
+                setValidationError(e.message)
+            }
 
             Notification.push({
                 title: e.message,
