@@ -43,7 +43,7 @@ describe('Client', () => {
             done()
         })
 
-        it('creates new client after disconnect', async (done) => {
+        it('holds the same client after disconnect', async (done) => {
             let client
             function Test() {
                 client = useClient()
@@ -72,7 +72,7 @@ describe('Client', () => {
                 await prevClient.ensureDisconnected()
             })
             expect(prevClient.connection.state).toBe('disconnected')
-            expect(client).not.toBe(prevClient)
+            expect(client).toBe(prevClient)
             result.unmount()
             await prevClient.ensureDisconnected()
             await client.ensureDisconnected()
