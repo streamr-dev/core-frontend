@@ -309,17 +309,7 @@ const deprecated_getCommunityContract = (address: DataUnionId, usePublicNode: bo
     }, usePublicNode)
 }
 
-const whitelist = [
-    '0xCe4302EE40D8BA2EfE3D973bd585D1C0ED90b374',
-    '0xaF79F2DE50AC857320098331B09f0b05a5CB5C50',
-    '0x481FaDebf6892461ecF514516f1F7B3597125A5D',
-].map((s) => s.toLowerCase())
-
 export const getDataUnionVersion = async (address: DataUnionId, usePublicNode: boolean = true) => {
-    if (whitelist.includes(address.toLowerCase())) {
-        return 2
-    }
-
     const client = createClient({
         usePublicNode,
     })
