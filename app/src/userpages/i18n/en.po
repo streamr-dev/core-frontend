@@ -396,8 +396,11 @@ msgstr "We couldn't find any streams that match your search."
 msgid "userpages.streams.noStreamsResult.clearFilters"
 msgstr "Clear filters"
 
-msgid "userpages.streams.edit.details.pageTitle"
-msgstr "Edit your Stream"
+msgid "userpages.streams.edit.details.pageTitle.newStream"
+msgstr "Name your Stream"
+
+msgid "userpages.streams.edit.details.pageTitle.editStream"
+msgstr "Set up your Stream"
 
 msgid "userpages.streams.edit.details.pageTitle.readOnlyStream"
 msgstr "Read only stream"

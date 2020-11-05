@@ -290,7 +290,7 @@ const UnstyledEdit = ({
                         key={key}
                         {...(isNewStream ? { style } : {})}
                     >
-                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle')}>
+                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.editStream')}>
                             <TOCPage.Section
                                 id="details"
                                 title={I18n.t('userpages.streams.edit.details.nav.details')}

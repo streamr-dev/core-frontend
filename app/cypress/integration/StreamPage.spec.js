@@ -107,33 +107,38 @@ describe('New stream page', () => {
         })
     })
 
+    it('takes the user to the new stream page', () => {
+        cy.login()
+        cy.visit('/core/streams/new')
+        cy.location().should((l) => {
+            expect(l.pathname).to.eq('/core/streams/new')
+        })
+        cy.get('[data-test-hook=TOCPage]').find('h1').contains(/name your stream/i)
+        cy.get('[name=domain]').invoke('val').should('eq', 'sandbox')
+    })
+
     it('creates a stream and takes the user to the edit page', () => {
         cy.login()
         cy.visit('/core/streams/new')
+
+        const path = uuid()
+        const streamId = `sandbox/test/${path}`
+        cy.get('input[name=pathname]').clear().type(`test/${path}`)
+        cy.get('input[name=description]').clear().type('Lorem ipsum.')
+        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+
         cy.location().should((l) => {
             const { params: { id } } = matchPath(l.pathname, {
                 path: '/core/streams/:id',
             })
-            expect(l.pathname).to.eq(`/core/streams/${id}`)
+            const encodedId = encodeURIComponent(streamId)
+            expect(id).to.eq(encodedId)
+            expect(l.pathname).to.eq(`/core/streams/${encodedId}`)
             expect(l.search).to.eq('?newStream=1')
         })
+        cy.wait(1000) // eslint-disable-line cypress/no-unnecessary-waiting
         cy.get('[data-test-hook=TOCPage]').find('h1').contains(/set up your stream/i)
-        cy.get('[name=name]').invoke('val').should('eq', 'Untitled Stream')
-    })
-
-    it('shows the error page if stream creation fails', () => {
-        cy.ignoreUncaughtError(/failed with status code 422/i)
-
-        cy.login()
-        cy.server({
-            method: 'POST',
-            status: 422,
-            response: {},
-        })
-        cy.route('/api/v1/streams').as('getStreams')
-        cy.visit('/core/streams/new')
-        cy.wait('@getStreams')
-        cy.contains(/something has broken down here/i)
+        cy.get('[name=streamId]').invoke('val').should('eq', streamId)
     })
 })
 
@@ -151,13 +156,15 @@ describe('Stream read-only page (no edit permission)', () => {
 
         cy.login()
         cy.createStream().then((streamId) => {
-            cy.visit(`/core/streams/${streamId}`)
-            cy.get('[data-test-hook=TOCPage]').find('h1').contains('Edit your Stream')
+            const encodedId = encodeURIComponent(streamId)
+
+            cy.visit(`/core/streams/${encodedId}`)
+            cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
-            cy.visit(`/core/streams/${streamId}`)
+            cy.visit(`/core/streams/${encodedId}`)
             cy.contains(/we don.t seem to be able to find/i)
-            cy.location('pathname').should('eq', `/core/streams/${streamId}`)
+            cy.location('pathname').should('eq', `/core/streams/${encodedId}`)
         })
     })
 
@@ -173,8 +180,9 @@ describe('Stream read-only page (no edit permission)', () => {
                 status: 501,
                 response: {},
             })
+            const encodedId = encodeURIComponent(streamId)
             cy.route('GET', `/api/v1/streams/${streamId}`).as('getStream')
-            cy.visit(`/core/streams/${streamId}`)
+            cy.visit(`/core/streams/${encodedId}`)
             cy.wait('@getStream')
             cy.contains(/something has broken down here/i)
         })
@@ -200,11 +208,12 @@ describe('Stream read-only page (no edit permission)', () => {
                 fields: [field1, field2],
             },
         }).then((streamId) => {
+            const encodedId = encodeURIComponent(streamId)
             cy.createStreamPermission(streamId)
             cy.logout()
-            cy.visit(`/core/streams/${streamId}`)
+            cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
+            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
@@ -234,12 +243,13 @@ describe('Stream read-only page (no edit permission)', () => {
                 fields: [field1, field2],
             },
         }).then((streamId) => {
+            const encodedId = encodeURIComponent(streamId)
             cy.createStreamPermission(streamId)
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
-            cy.visit(`/core/streams/${streamId}`)
+            cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
+            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
@@ -269,12 +279,13 @@ describe('Stream read-only page (no edit permission)', () => {
                 fields: [field1, field2],
             },
         }).then((streamId) => {
+            const encodedId = encodeURIComponent(streamId)
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
-            cy.visit(`/core/streams/${streamId}`)
+            cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
+            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
@@ -291,12 +302,13 @@ describe('Stream read-only page (no edit permission)', () => {
                 fields: [],
             },
         }).then((streamId) => {
+            const encodedId = encodeURIComponent(streamId)
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
-            cy.visit(`/core/streams/${streamId}`)
+            cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
+            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
             cy.get('h3').contains('Fields').should('not.exist')
         })
     })
@@ -306,11 +318,12 @@ describe('Stream read-only page (no edit permission)', () => {
         cy.createStream({
             description: '',
         }).then((streamId) => {
+            const encodedId = encodeURIComponent(streamId)
             cy.createStreamPermission(streamId, null, 'stream_get')
             cy.logout()
-            cy.visit(`/core/streams/${streamId}`)
+            cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=name]').invoke('val').should('match', /test stream #\d{4}\/\d{6}/i)
+            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
             cy.get('label').contains('Description').should('not.exist')
         })
     })
@@ -322,9 +335,10 @@ describe('Stream read-only page (no edit permission)', () => {
                 requireSignedData: false,
                 requireEncryptedData: false,
             }).then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId)
                 cy.logout()
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.contains(/no data security enforced/i)
             })
         })
@@ -335,9 +349,10 @@ describe('Stream read-only page (no edit permission)', () => {
                 requireSignedData: true,
                 requireEncryptedData: false,
             }).then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId)
                 cy.logout()
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.contains(/All data will be cryptographically signed/i)
             })
         })
@@ -348,9 +363,10 @@ describe('Stream read-only page (no edit permission)', () => {
                 requireSignedData: true,
                 requireEncryptedData: true,
             }).then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId)
                 cy.logout()
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.contains(/All data will be signed and end-to-end encrypted/i)
             })
         })
@@ -360,10 +376,11 @@ describe('Stream read-only page (no edit permission)', () => {
         it('takes logged in user with no edit permissions to their stream listing page', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
                 cy.logout()
                 cy.login('tester2@streamr.com', 'tester2')
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.get('[data-test-hook=Toolbar]').find('button').contains(/back/i).click()
                 cy.location('pathname').should('eq', '/core/streams')
             })
@@ -372,9 +389,10 @@ describe('Stream read-only page (no edit permission)', () => {
         it('takes not logged in user to "/"', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId)
                 cy.logout()
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.get('[data-test-hook=Toolbar]').find('button').contains(/back/i).click()
                 cy.location('pathname').should('eq', '/')
             })
@@ -385,6 +403,7 @@ describe('Stream read-only page (no edit permission)', () => {
         it('displays disabled UI without checkboxes when unchecked', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
                 cy.logout()
                 cy.login('tester2@streamr.com', 'tester2')
@@ -393,7 +412,7 @@ describe('Stream read-only page (no edit permission)', () => {
 
                 cy.route('GET', `/api/v1/streams/${streamId}/storageNodes`).as('getNodes')
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.wait('@getNodes')
                 cy.get('[data-test-hook="Storage nodes"]').within(() => {
                     cy.get('button:disabled').contains(/local/i).should('exist')
@@ -407,6 +426,7 @@ describe('Stream read-only page (no edit permission)', () => {
         it('displays disabled UI with checkboxes when checked', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
                 cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
                 cy.logout()
@@ -416,7 +436,7 @@ describe('Stream read-only page (no edit permission)', () => {
 
                 cy.route('GET', `/api/v1/streams/${streamId}/storageNodes`).as('getNodes')
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.wait('@getNodes')
                 cy.get('[data-test-hook="Storage nodes"]').within(() => {
                     cy.get('button:disabled').contains(/local/i).should('exist')
@@ -433,32 +453,34 @@ describe('Stream edit page', () => {
     it('shows your streams as editable', () => {
         cy.login()
         cy.createStream().then((streamId) => {
-            cy.visit(`/core/streams/${streamId}`)
-            cy.get('[data-test-hook=TOCPage]').find('h1').contains('Edit your Stream')
-            cy.location('pathname').should('eq', `/core/streams/${streamId}`)
+            const encodedId = encodeURIComponent(streamId)
+            cy.visit(`/core/streams/${encodedId}`)
+            cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
+            cy.location('pathname').should('eq', `/core/streams/${encodedId}`)
         })
     })
 
     it('shows stream shared with you for editing as editable', () => {
         cy.login()
         cy.createStream().then((streamId) => {
+            const encodedId = encodeURIComponent(streamId)
             // Having `edit` permission doesn't mean you can open the stream page w/o a 404. In
             // order to access it at all you need to be able to `get`. :/
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
-            cy.visit(`/core/streams/${streamId}`)
-            cy.get('[data-test-hook=TOCPage]').find('h1').contains('Edit your Stream')
-            cy.location('pathname').should('eq', `/core/streams/${streamId}`)
+            cy.visit(`/core/streams/${encodedId}`)
+            cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
+            cy.location('pathname').should('eq', `/core/streams/${encodedId}`)
         })
     })
 
     it('allows you to save changes', () => {
         cy.login()
         cy.createStream().then((streamId) => {
-            cy.visit(`/core/streams/${streamId}`)
-            cy.get('input[name=name]').clear().type('Lorem ipsum')
+            const encodedId = encodeURIComponent(streamId)
+            cy.visit(`/core/streams/${encodedId}`)
             cy.get('input[name=description]').type('Dolor sit emat.')
             cy.get('input[name=partitions]').clear().type('2')
             cy.get('[data-hook=level-2]').click()
@@ -475,7 +497,6 @@ describe('Stream edit page', () => {
             cy.location('pathname').should('eq', '/core/streams')
             cy.contains('Stream saved successfully')
             cy.getStream(streamId).then((stream) => {
-                expect(stream.name).to.eq('Lorem ipsum')
                 expect(stream.description).to.eq('Dolor sit emat.')
                 expect(stream.partitions).to.eq(2)
                 expect(stream.config.fields).to.have.lengthOf(1)
@@ -493,7 +514,8 @@ describe('Stream edit page', () => {
         it('renders inactive color when no data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
-                cy.visit(`/core/streams/${streamId}`)
+                const encodedId = encodeURIComponent(streamId)
+                cy.visit(`/core/streams/${encodedId}`)
 
                 cy.get('[data-test-hook="TOCSection status"]').within(() => {
                     cy.get('[data-test-hook="Status inactive"]')
@@ -504,6 +526,7 @@ describe('Stream edit page', () => {
         it('renders error color when fetching fails', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.server({
                     method: 'GET',
                     status: 404,
@@ -511,7 +534,7 @@ describe('Stream edit page', () => {
                 })
                 cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.wait('@getLastMessage')
 
                 cy.get('[data-test-hook="TOCSection status"]').within(() => {
@@ -523,6 +546,7 @@ describe('Stream edit page', () => {
         it('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.sendToStream(streamId, {
                     key: 'value',
                 })
@@ -532,7 +556,7 @@ describe('Stream edit page', () => {
                 // eslint-disable-next-line cypress/no-unnecessary-waiting
                 cy.wait(3000)
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
 
                 cy.get('[data-test-hook="TOCSection status"]').within(() => {
                     cy.get('[data-test-hook="Status ok"]')
@@ -545,11 +569,12 @@ describe('Stream edit page', () => {
         it('displays non-disabled UI', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.server()
 
                 cy.route('GET', `/api/v1/streams/${streamId}/storageNodes`).as('getNodes')
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.wait('@getNodes')
                 cy.get('[data-test-hook="Storage nodes"]').within(() => {
                     cy.get('button:not(:disabled)').contains(/local/i)
@@ -561,13 +586,14 @@ describe('Stream edit page', () => {
         it('loads current nodes from the server', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
 
                 cy.server()
 
                 cy.route('GET', `/api/v1/streams/${streamId}/storageNodes`).as('getNodes')
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.wait('@getNodes')
                 cy.get('[data-test-hook="Storage nodes"]').within(() => {
                     cy.get('button [data-test-hook="Checkbox on"]').should('exist')
@@ -578,11 +604,12 @@ describe('Stream edit page', () => {
         it('allows user to enable a storage node', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.server()
 
                 cy.route('POST', `/api/v1/streams/${streamId}/storageNodes`).as('enableNode')
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.get('[data-test-hook="Storage nodes"]').within(() => {
                     cy.get('button [data-test-hook="Checkbox off"]').should('exist')
                     cy.get('button [data-test-hook="Checkbox on"]').should('not.exist')
@@ -597,13 +624,14 @@ describe('Stream edit page', () => {
         it('allows user to disable a storage node', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
 
                 cy.server()
 
                 cy.route('DELETE', `/api/v1/streams/${streamId}/storageNodes/0xde1112f631486CfC759A50196853011528bC5FA0`).as('disableNode')
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
                 cy.get('[data-test-hook="Storage nodes"]').within(() => {
                     cy.get('button [data-test-hook="Checkbox on"]').should('exist')
                     cy.get('button [data-test-hook="Checkbox off"]').should('not.exist')
@@ -618,6 +646,7 @@ describe('Stream edit page', () => {
         it('does not toggle a storage node on network failure', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                const encodedId = encodeURIComponent(streamId)
                 cy.server()
 
                 cy.route('GET', `/api/v1/streams/${streamId}`).as('getStream')
@@ -629,7 +658,7 @@ describe('Stream edit page', () => {
                     url: `/api/v1/streams/${streamId}/storageNodes`,
                 }).as('enableNode')
 
-                cy.visit(`/core/streams/${streamId}`)
+                cy.visit(`/core/streams/${encodedId}`)
 
                 cy.wait('@getStream')
 

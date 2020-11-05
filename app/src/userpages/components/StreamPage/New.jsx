@@ -384,7 +384,7 @@ const UnstyledNew = (props) => {
                         key={key}
                         style={style}
                     >
-                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle')}>
+                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.newStream')}>
                             <TOCSection
                                 id="details"
                                 title={I18n.t('userpages.streams.edit.details.nav.details')}

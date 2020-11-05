@@ -108,7 +108,7 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
                 <StreamInput>
                     <StreamIdWrapper>
                         <StreamIdText
-                            name="id"
+                            name="streamId"
                             id="streamId"
                             value={(stream && stream.id) || ''}
                             readOnly
