@@ -1,6 +1,6 @@
 import { useReducer, useEffect } from 'react'
 import { useSpring } from 'react-spring'
-import useMeasure from '../useMeasure'
+import useMeasure from './useMeasure'
 import usePrevious from './usePrevious'
 
 /**
