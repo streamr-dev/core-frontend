@@ -1,5 +1,5 @@
 import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { animated } from 'react-spring'
@@ -11,6 +11,7 @@ import Label from '$ui/Label'
 import Sidebar from '$shared/components/Sidebar'
 import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
 import useUniqueId from '$shared/hooks/useUniqueId'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
@@ -35,10 +36,9 @@ function unsavedUnloadWarning(event) {
     return confirmationMessage // Webkit, Safari, Chrome etc.
 }
 
-const UnstyledShareSidebar = connect(({ user }) => ({
-    currentUser: user && user.user && user.user.username,
-}))(({ className, ...props }) => {
-    const { currentUser, resourceType, resourceId, onClose } = props
+const UnstyledShareSidebar = (({ className, ...props }) => {
+    const currentUser = (useSelector(selectUserData) || {}).username
+    const { resourceType, resourceId, onClose } = props
     const isMounted = useIsMounted()
     const propsRef = useRef(props)
     propsRef.current = props
