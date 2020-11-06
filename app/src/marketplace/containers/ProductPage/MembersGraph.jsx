@@ -1,9 +1,10 @@
 // @flow
 
-import React, { useEffect, useState, useCallback, useRef } from 'react'
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import ClientProvider from '$shared/components/StreamrClientProvider'
+import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
 import Subscription from '$shared/components/Subscription'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
@@ -33,26 +34,39 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     const [graphData, setGraphData] = useState([])
     const activeAddressesRef = useRef([])
 
+    // Make sure we recreate subscription when day selector changes to trigger
+    // resending of data.
+    const subscriptionKey = useMemo(() => (
+        `subscription-${shownDays}`
+    ), [shownDays])
+
     const onMessage = useCallback((data: JoinPartMessage, metadata: MessageMetadata) => {
         if (!isMounted()) { return }
 
         let diff = 0
         const activeAddresses = activeAddressesRef.current
+        let msgAddresses = data.addresses
+
+        // Sometimes data.addresses is not an array but raw string instead.
+        // Correct this to be an array.
+        if ((data.type === 'join' || data.type === 'part') && !Array.isArray(msgAddresses)) {
+            msgAddresses = [((data.addresses: any): string)]
+        }
 
         // Check if message type is 'join' or 'part' and
         // calculate member count diff based on the type.
         // E.g. 'join' with 3 addresses means +3 diff in member count.
         // JoinPartStream might have duplicate joins/parts for a
         // single address so make sure we skip duplicates.
-        if (data.type === 'join' && data.addresses && data.addresses.length > 0) {
-            data.addresses.forEach((address) => {
+        if (data.type === 'join' && msgAddresses && msgAddresses.length > 0) {
+            msgAddresses.forEach((address) => {
                 if (!activeAddresses.includes(address)) {
                     diff += 1
                     activeAddresses.push(address)
                 }
             })
-        } else if (data.type === 'part' && data.addresses && data.addresses.length > 0) {
-            data.addresses.forEach((address) => {
+        } else if (data.type === 'part' && msgAddresses && msgAddresses.length > 0) {
+            msgAddresses.forEach((address) => {
                 if (activeAddresses.includes(address)) {
                     diff -= 1
                     const addrIndex = activeAddresses.indexOf(address)
@@ -125,19 +139,21 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
 
     return (
         <ClientProvider>
-            <Subscription
-                key={`subscription-${shownDays}`}
-                uiChannel={{
-                    id: joinPartStreamId,
-                }}
-                isActive
-                onMessage={onMessage}
-                resendFrom={Date.now() - (shownDays * MILLISECONDS_IN_DAY)}
-            />
-            <TimeSeriesGraph
-                graphData={graphData}
-                shownDays={shownDays}
-            />
+            <SubscriptionStatusProvider>
+                <Subscription
+                    key={subscriptionKey}
+                    uiChannel={{
+                        id: joinPartStreamId,
+                    }}
+                    isActive
+                    onMessage={onMessage}
+                    resendFrom={Date.now() - (shownDays * MILLISECONDS_IN_DAY)}
+                />
+                <TimeSeriesGraph
+                    graphData={graphData}
+                    shownDays={shownDays}
+                />
+            </SubscriptionStatusProvider>
         </ClientProvider>
     )
 }
