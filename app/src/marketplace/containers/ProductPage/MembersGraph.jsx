@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
-import ClientProvider from '$shared/components/StreamrClientProvider'
+import ClientProvider from 'streamr-client-react'
 import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
 import Subscription from '$shared/components/Subscription'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -33,11 +33,25 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
     const activeAddressesRef = useRef([])
+    const [isActive, setIsActive] = useState(true)
+    const [subscriptionKey, setSubscriptionKey] = useState(`subscription-${shownDays}`)
 
-    // Make sure we recreate subscription when day selector changes to trigger
-    // resending of data.
-    const subscriptionKey = useMemo(() => (
-        `subscription-${shownDays}`
+    useEffect(() => {
+        // NOTE: We need to disable subscription for a while and enable it
+        //       after a short delay because otherwise 'Subscription' component
+        //       will trigger 'unsubscribed' event twice. Once for old and also
+        //       for the newly created subscription. Might be a bug with
+        //       streamr-client.
+        setIsActive(false)
+        setSubscriptionKey(`subscription-${shownDays}`)
+        const timeoutId = setTimeout(() => {
+            setIsActive(true)
+        }, 100)
+        return () => clearTimeout(timeoutId)
+    }, [shownDays])
+
+    const resendFrom = useMemo(() => (
+        Date.now() - (shownDays * MILLISECONDS_IN_DAY)
     ), [shownDays])
 
     const onMessage = useCallback((data: JoinPartMessage, metadata: MessageMetadata) => {
@@ -138,16 +152,16 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     }, [shownDays, joinPartStreamId, onMessage])
 
     return (
-        <ClientProvider>
+        <ClientProvider verifySignatures="never">
             <SubscriptionStatusProvider>
                 <Subscription
                     key={subscriptionKey}
                     uiChannel={{
                         id: joinPartStreamId,
                     }}
-                    isActive
+                    isActive={isActive}
                     onMessage={onMessage}
-                    resendFrom={Date.now() - (shownDays * MILLISECONDS_IN_DAY)}
+                    resendFrom={resendFrom}
                 />
                 <TimeSeriesGraph
                     graphData={graphData}
