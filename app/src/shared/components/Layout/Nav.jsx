@@ -163,10 +163,20 @@ const UnstyledWide = (props) => {
                                 <Menu.Item as={Link} to={routes.profile()}>
                                     <Translate value="general.profile" />
                                 </Menu.Item>
-                                <Menu.Item as={Link} to={routes.profile({}, 'ethereum-accounts')}>
+                                <Menu.Item
+                                    as={Link}
+                                    to={routes.profile({}, {
+                                        hash: 'ethereum-accounts',
+                                    })}
+                                >
                                     <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
                                 </Menu.Item>
-                                <Menu.Item as={Link} to={routes.profile({}, 'private-keys')}>
+                                <Menu.Item
+                                    as={Link}
+                                    to={routes.profile({}, {
+                                        hash: 'private-keys',
+                                    })}
+                                >
                                     <Translate value="userpages.profilePage.ethereumPrivateKeys.linkTitle" />
                                 </Menu.Item>
                                 <Menu.Divider />

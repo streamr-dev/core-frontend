@@ -326,7 +326,9 @@ const PurchaseTile = ({
                         forwardAs={Badge.Link}
                         to={product.id && routes.marketplace.product({
                             id: product.id,
-                        }, 'stats')}
+                        }, {
+                            hash: 'stats',
+                        })}
                     >
                         {numMembers}
                     </IconBadge>
@@ -462,7 +464,9 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                     forwardAs={Badge.Link}
                     to={routes.marketplace.product({
                         id: product.id,
-                    }, 'stats')}
+                    }, {
+                        hash: 'stats',
+                    })}
                 >
                     {product.members}
                 </IconBadge>

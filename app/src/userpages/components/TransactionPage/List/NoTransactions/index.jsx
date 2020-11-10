@@ -29,7 +29,9 @@ const NoTransactionsView = ({ accountsExist, accountLinked }: Props) => (
             <Button
                 kind="special"
                 tag={Link}
-                to={routes.profile({}, 'ethereum-accounts')}
+                to={routes.profile({}, {
+                    hash: 'ethereum-accounts',
+                })}
             >
                 <Translate value="userpages.transactions.noAccountsLinked.linkAccount" />
             </Button>
