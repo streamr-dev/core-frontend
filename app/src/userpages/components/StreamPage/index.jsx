@@ -23,7 +23,6 @@ import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useStreamPermissions from '$userpages/hooks/useStreamPermissions'
 import ClientProvider from '$shared/components/StreamrClientProvider'
-import useNewStreamMode from './useNewStreamMode'
 
 const StreamPage = (props) => {
     const { id: idProp } = props.match.params || {}
@@ -47,8 +46,6 @@ const StreamPage = (props) => {
     const currentUser = useSelector(selectUserData)
 
     const isMounted = useIsMounted()
-
-    const { isNewStream } = useNewStreamMode()
 
     useEffect(() => {
         const fetch = async () => {
@@ -107,7 +104,6 @@ const StreamPage = (props) => {
                     stream={stream}
                     canShare={canShare}
                     disabled={updating}
-                    isNewStream={isNewStream}
                 />
             )}
         </ClientProvider>

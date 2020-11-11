@@ -26,7 +26,7 @@ const EditorNav = () => {
     const productRef = useRef()
     productRef.current = product
     const { isRequired: showConnectEthIdentity } = useIsEthIdentityNeeded()
-    const { isNewProduct } = useNewProductMode()
+    const isNewProduct = useNewProductMode()
 
     const [activeSectionId, setActiveSectionId] = useState(undefined)
 

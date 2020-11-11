@@ -29,7 +29,7 @@ export const getStreamrEngineAddresses = (): Array<string> => {
 
 export const createJoinPartStream = async (productId: ProductId): Promise<Stream> => {
     const newStream: NewStream = {
-        id: `sandbox/joinPartStream/${productId}`,
+        id: `sandbox/dataunions/${productId}/joinPartStream`,
         description: 'Automatically created JoinPart stream for data union',
     }
 

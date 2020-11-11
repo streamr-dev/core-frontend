@@ -29,6 +29,7 @@ import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { MEDIUM } from '$shared/utils/styled'
+import useModal from '$shared/hooks/useModal'
 
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
@@ -38,7 +39,7 @@ import PartitionsView from './PartitionsView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
 import ConfirmSaveModal from './ConfirmSaveModal'
-import useModal from '$shared/hooks/useModal'
+import useNewStreamMode from './useNewStreamMode'
 
 import styles from './edit.pcss'
 
@@ -406,8 +407,12 @@ const Edit = styled(UnstyledEdit)`
     }
 `
 
-export default (props: any) => (
-    <SidebarProvider>
-        <Edit {...props} />
-    </SidebarProvider>
-)
+export default (props: any) => {
+    const isNewStream = useNewStreamMode()
+
+    return (
+        <SidebarProvider>
+            <Edit {...props} isNewStream={isNewStream} />
+        </SidebarProvider>
+    )
+}

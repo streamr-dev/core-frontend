@@ -7,11 +7,8 @@ import { Context as RouterContext } from '$shared/contexts/Router'
 
 function useNewProductMode() {
     const { location } = useContext(RouterContext)
-    const isNewProduct = !!(qs.parse(location.search).newProduct || '')
 
-    return useMemo(() => ({
-        isNewProduct,
-    }), [isNewProduct])
+    return useMemo(() => !!(qs.parse(location.search).newProduct || ''), [location])
 }
 
 export default useNewProductMode

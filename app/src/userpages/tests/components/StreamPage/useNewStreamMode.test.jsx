@@ -3,19 +3,19 @@ import { MemoryRouter } from 'react-router-dom'
 import { mount } from 'enzyme'
 
 import { Provider as RouterContextProvider } from '$shared/contexts/Router'
-import useNewProductMode from '../useNewProductMode'
+import useNewStreamMode from '$userpages/components/StreamPage/Edit/useNewStreamMode'
 
-describe('useNewProductMode', () => {
-    it('returns false if newProduct flag is not defined', () => {
+describe('useNewStreamMode', () => {
+    it('returns false if newStream flag is not defined', () => {
         let result
         function Test() {
-            result = useNewProductMode()
+            result = useNewStreamMode()
             return null
         }
 
         mount((
             <MemoryRouter
-                initialEntries={['/products/1234/edit']}
+                initialEntries={['/streams/1234/edit']}
             >
                 <RouterContextProvider>
                     <Test />
@@ -26,16 +26,16 @@ describe('useNewProductMode', () => {
         expect(result).toBe(false)
     })
 
-    it('returns true if newProduct flag is defined', () => {
+    it('returns true if newStream flag is defined', () => {
         let result
         function Test() {
-            result = useNewProductMode()
+            result = useNewStreamMode()
             return null
         }
 
         mount((
             <MemoryRouter
-                initialEntries={['/products/1234/edit?newProduct=true']}
+                initialEntries={['/streams/1234/edit?newStream=true']}
             >
                 <RouterContextProvider>
                     <Test />

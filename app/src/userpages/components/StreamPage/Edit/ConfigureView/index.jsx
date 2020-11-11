@@ -19,6 +19,7 @@ import SplitControl from '$userpages/components/SplitControl'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import Label from '$ui/Label'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import NewFieldEditor from './NewFieldEditor'
 
@@ -56,6 +57,7 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
     const [isAddingField, setIsAddingField] = useState(false)
     const fieldsAutodetectFetching = useSelector(selectFieldsAutodetectFetching)
     const dispatch = useDispatch()
+    const isMounted = useIsMounted()
 
     const streamFields = useMemo(() => {
         const { config } = stream
@@ -127,12 +129,16 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
             try {
                 await dispatch(streamFieldsAutodetect(streamId))
 
+                if (!isMounted()) { return }
+
                 Notification.push({
-                    title: 'Fields autodetected!',
+                    title: I18n.t('userpages.streams.fieldsAutoDetected.notification'),
                     icon: NotificationIcon.CHECKMARK,
                 })
             } catch (err) {
                 console.warn(err)
+
+                if (!isMounted()) { return }
 
                 Notification.push({
                     title: err.message,
@@ -140,7 +146,7 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
                 })
             }
         }
-    }, [dispatch, streamId])
+    }, [dispatch, streamId, isMounted])
 
     const isDisabled = !!(disabled || fieldsAutodetectFetching)
 

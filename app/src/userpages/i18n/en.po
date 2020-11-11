@@ -348,6 +348,9 @@ msgstr "Stream removed successfully"
 msgid "userpages.streams.created.notification"
 msgstr "Stream created successfully"
 
+msgid "userpages.streams.fieldsAutoDetected.notification"
+msgstr "Fields autodetected"
+
 msgid "userpages.streams.actions.editStream"
 msgstr "Edit stream"
 

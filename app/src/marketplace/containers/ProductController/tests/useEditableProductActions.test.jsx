@@ -38,9 +38,7 @@ jest.mock('react-redux', () => ({
     useDispatch: jest.fn(),
 }))
 jest.mock('../useNewProductMode', () => (
-    jest.fn().mockImplementation(() => ({
-        isNewProduct: false,
-    }))
+    jest.fn().mockImplementation(() => false)
 ))
 jest.mock('../useProduct', () => (
     jest.fn().mockImplementation(() => ({

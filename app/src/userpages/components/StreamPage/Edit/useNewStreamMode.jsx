@@ -6,11 +6,8 @@ import { useLocation } from 'react-router-dom'
 
 function useNewStreamMode() {
     const location = useLocation()
-    const isNewStream = !!(qs.parse(location.search).newStream || '')
 
-    return useMemo(() => ({
-        isNewStream,
-    }), [isNewStream])
+    return useMemo(() => !!(qs.parse(location.search).newStream || ''), [location])
 }
 
 export default useNewStreamMode
