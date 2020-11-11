@@ -16,12 +16,12 @@ const initialState = {
     fetching: false,
 }
 
-const updatePermissions = (state, type, id, newPermissions) => {
+const newPermissions = (state, type, id, nextPermissions) => {
     const prevPermissions = (state.byTypeAndId[type] || {})[id]
 
     return (
-        prevPermissions == null || prevPermissions.join(',') !== newPermissions.join(',') ? (
-            newPermissions
+        prevPermissions == null || prevPermissions.join(',') !== nextPermissions.join(',') ? (
+            nextPermissions
         ) : (
             prevPermissions
         )
@@ -44,7 +44,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
                         [action.resourceId]: (
-                            updatePermissions(
+                            newPermissions(
                                 state,
                                 action.resourceType,
                                 action.resourceId,
@@ -67,7 +67,7 @@ export default function (state: PermissionState = initialState, action: Permissi
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
                         [action.resourceId]: (
-                            updatePermissions(
+                            newPermissions(
                                 state,
                                 action.resourceType,
                                 action.resourceId,
