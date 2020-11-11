@@ -23,7 +23,7 @@ import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/Side
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
 import Nav from '$shared/components/Layout/Nav'
-import { resetResourcePermission } from '$userpages/modules/permission/actions'
+import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Notification from '$shared/utils/Notification'
@@ -53,7 +53,7 @@ function StreamPageSidebar({ stream }) {
         sidebar.close()
 
         if (streamId) {
-            dispatch(resetResourcePermission('STREAM', streamId))
+            dispatch(getResourcePermissions('STREAM', streamId))
         }
     }, [sidebar, dispatch, streamId])
 
