@@ -1,6 +1,7 @@
 import { useMemo, useState, useCallback } from 'react'
 import * as State from '../state'
 import filterPermissions from '../utils/filterPermissions'
+import canShareToUserId from '$shared/utils/sharing/canShareToUserId'
 
 /**
  * Handling of permission state updates, selection & new user list
@@ -15,28 +16,23 @@ export default function useUserPermissionState(props) {
     const [newUserIdList, setNewUserIdList] = useState([]) // users added since last save
     const [selectedUserId, setSelectedUserId] = useState() // currently selected user
 
-    const canShareToUser = useCallback((userId) => (
-        // don't interfere with anonymous/current user
-        State.canShareToUser(userId)
-    ), [])
-
     /* CRUD APIs */
 
     const addUser = useCallback((userId) => {
-        if (!canShareToUser(userId)) { return }
+        if (!canShareToUserId(userId)) { return }
         setSelectedUserId(userId) // select new user on add
         setCurrentUsers((prevUsers) => (
             State.addUser(prevUsers, userId, State.getPermissionsForGroupName(resourceType, 'default'))
         ))
         // add/move user to start of new users. Remove before adding to start if already in array
         setNewUserIdList((ids) => [userId, ...ids.filter((id) => id !== userId)])
-    }, [setCurrentUsers, canShareToUser, resourceType])
+    }, [setCurrentUsers, resourceType])
 
     const removeUser = useCallback((userId) => {
-        if (!canShareToUser(userId)) { return }
+        if (!canShareToUserId(userId)) { return }
         setNewUserIdList((ids) => ids.filter((id) => id !== userId)) // remove user from new users list
         setCurrentUsers((prevUsers) => State.removeUser(prevUsers, userId))
-    }, [setCurrentUsers, canShareToUser])
+    }, [setCurrentUsers])
 
     const updatePermission = useCallback((userId, permissions) => {
         setCurrentUsers((prevUsers) => State.updatePermission(resourceType, prevUsers, userId, permissions))
@@ -55,7 +51,6 @@ export default function useUserPermissionState(props) {
     return useMemo(() => ({
         permissions,
         currentUsers,
-        canShareToUser,
         addUser,
         removeUser,
         updatePermission,
@@ -67,7 +62,6 @@ export default function useUserPermissionState(props) {
     }), [
         permissions,
         currentUsers,
-        canShareToUser,
         addUser,
         removeUser,
         updatePermission,

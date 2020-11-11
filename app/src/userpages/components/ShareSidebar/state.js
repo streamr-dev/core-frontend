@@ -1,6 +1,7 @@
 import groupBy from 'lodash/groupBy'
 import isEqual from 'lodash/isEqual'
 import mapValues from 'lodash/mapValues'
+import isValidUserId from '$shared/utils/sharing/isValidUserId'
 
 // List of all permissions
 // TODO: this should probably come from backend
@@ -174,17 +175,6 @@ export function findPermissionGroupName(resourceType, userPermissions = {}) {
 //
 // CRUD Operations
 //
-
-export function isValidUserId(userId) {
-    if (!userId || typeof userId !== 'string') { return false }
-    userId = userId.trim()
-    if (!userId) { return false }
-    if (userId === 'anonymous') { return true }
-    if (!userId.startsWith('0x') && !userId.includes('@')) {
-        return false
-    }
-    return true
-}
 
 function validateUserId(userId) {
     if (!isValidUserId(userId)) {
@@ -367,12 +357,4 @@ export function toAnonymousPermission(permission) {
     delete anonymousPermission.user
     anonymousPermission.anonymous = true
     return anonymousPermission
-}
-
-/**
- * True for non-empty userIds other than currentUser and anonymous
- */
-
-export function canShareToUser(userId) {
-    return isValidUserId(userId) && userId !== 'anonymous'
 }

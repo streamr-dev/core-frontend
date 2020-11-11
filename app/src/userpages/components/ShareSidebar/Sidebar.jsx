@@ -47,7 +47,6 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
     const {
         permissions,
         currentUsers,
-        canShareToUser,
         addUser,
         removeUser,
         updatePermission,
@@ -209,7 +208,7 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
                     isSearchable={false}
                     controlClassName={styles.anonSelectControl}
                 />
-                <InputNewShare currentUser={currentUser} onChange={addUser} canShareToUser={canShareToUser} />
+                <InputNewShare currentUser={currentUser} onChange={addUser} />
             </Sidebar.Container>
             <UserList
                 items={userEntries}

@@ -6,14 +6,15 @@ import SvgIcon from '$shared/components/SvgIcon'
 import TextInput from '$ui/Text'
 import Errors from '$ui/Errors'
 import Label from '$ui/Label'
-import * as State from './state'
 import styles from './ShareSidebar.pcss'
+import isValidUserId from '$shared/utils/sharing/isValidUserId'
+import canShareToUserId from '$shared/utils/sharing/canShareToUserId'
 
 /**
  * Input for adding new users.
  */
 
-export default function InputNewShare({ currentUser, onChange, canShareToUser }) {
+export default function InputNewShare({ currentUser, onChange }) {
     const [value, setValue] = useState('')
     const onChangeValue = useCallback((e) => {
         setValue(e.target.value.trim())
@@ -26,7 +27,7 @@ export default function InputNewShare({ currentUser, onChange, canShareToUser })
     const uid = useUniqueId('InputNewShare')
 
     function getShareToUserError({ currentUser, userId }) {
-        if (!State.isValidUserId(userId)) { return I18n.t('share.error.invalidUserError') }
+        if (!isValidUserId(userId)) { return I18n.t('share.error.invalidUserError') }
         if (userId === 'anonymous') { return I18n.t('share.error.anonymousUserError') }
         if (userId === currentUser) { return I18n.t('share.error.currentUserError') }
     }
@@ -36,7 +37,7 @@ export default function InputNewShare({ currentUser, onChange, canShareToUser })
         userId: value,
     })
 
-    const isValid = canShareToUser(value)
+    const isValid = canShareToUserId(value)
     const [trySubmit, setTrySubmit] = useState(false)
 
     // only show validation when not focussed
