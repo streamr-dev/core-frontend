@@ -16,6 +16,18 @@ const initialState = {
     fetching: false,
 }
 
+const updatePermissions = (state, type, id, newPermissions) => {
+    const prevPermissions = (state.byTypeAndId[type] || {})[id]
+
+    return (
+        prevPermissions == null || prevPermissions.join(',') !== newPermissions.join(',') ? (
+            newPermissions
+        ) : (
+            prevPermissions
+        )
+    )
+}
+
 export default function (state: PermissionState = initialState, action: PermissionAction): PermissionState {
     switch (action.type) {
         case GET_RESOURCE_PERMISSIONS_REQUEST:
@@ -31,7 +43,14 @@ export default function (state: PermissionState = initialState, action: Permissi
                     ...state.byTypeAndId,
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
-                        [action.resourceId]: action.permissions.map(({ operation }) => operation),
+                        [action.resourceId]: (
+                            updatePermissions(
+                                state,
+                                action.resourceType,
+                                action.resourceId,
+                                action.permissions.map(({ operation }) => operation).sort(),
+                            )
+                        ),
                     },
                 },
                 fetching: false,
@@ -47,7 +66,14 @@ export default function (state: PermissionState = initialState, action: Permissi
                     ...state.byTypeAndId,
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
-                        [action.resourceId]: [],
+                        [action.resourceId]: (
+                            updatePermissions(
+                                state,
+                                action.resourceType,
+                                action.resourceId,
+                                [],
+                            )
+                        ),
                     },
                 },
             }
