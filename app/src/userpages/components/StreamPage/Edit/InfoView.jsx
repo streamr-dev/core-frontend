@@ -1,22 +1,22 @@
 // @flow
 
-import React, { useEffect, useRef, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useCallback } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Notification from '$shared/utils/Notification'
-import { updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
-import type { StreamId } from '$shared/flowtype/stream-types'
+import type { StreamId, Stream } from '$shared/flowtype/stream-types'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Button from '$shared/components/Button'
+import SvgIcon from '$shared/components/SvgIcon'
 
 type Props = {
+    stream: Stream,
     disabled?: boolean,
+    updateStream?: Function,
 }
 
 const Root = styled.div``
@@ -35,53 +35,54 @@ const StreamInput = styled.div`
     grid-template-columns: 1fr 72px;
 `
 
+const StreamIdWrapper = styled.div`
+    position: relative;
+`
+
+const StreamIdText = styled(Text)`
+    padding: 0 3rem 0 1rem;
+    text-overflow: ellipsis;
+`
+
+const LockIcon = styled.div`
+    width: 40px;
+    height: 40px;
+    color: #989898;
+    position: absolute;
+    top: 0;
+    line-height: 12px;
+    right: 0;
+
+    svg {
+        width: 12px;
+        height: 12px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+`
+
 const StyledButton = styled(Button)`
     && {
         padding: 0;
     }
 `
 
-export const InfoView = ({ disabled }: Props) => {
-    const stream = useSelector(selectEditedStream)
-    const dispatch = useDispatch()
+const Description = styled(Translate)`
+    margin-bottom: 3rem;
+`
+
+export const InfoView = ({ stream, disabled, updateStream }: Props) => {
     const { copy, isCopied } = useCopy()
-    const contentChangedRef = useRef(false)
-    const streamRef = useRef()
-    streamRef.current = stream
-
-    useEffect(() => {
-        const handleBeforeunload = (event) => {
-            if (contentChangedRef.current) {
-                const message = I18n.t('userpages.streams.edit.details.unsavedChanges')
-                const evt = (event || window.event)
-                evt.returnValue = message // Gecko + IE
-                return message // Webkit, Safari, Chrome etc.
-            }
-            return ''
-        }
-
-        window.addEventListener('beforeunload', handleBeforeunload)
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeunload)
-        }
-    }, [contentChangedRef])
-
-    const editField = useCallback((field: string, data: any) => {
-        dispatch(updateEditStreamField(field, data))
-    }, [dispatch])
-
-    const onNameChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
-        const name = e.target.value
-        contentChangedRef.current = contentChangedRef.current || name !== (streamRef.current && streamRef.current.name)
-        editField('name', name)
-    }, [editField])
 
     const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
-        contentChangedRef.current = contentChangedRef.current || description !== (streamRef.current && streamRef.current.description)
-        editField('description', description)
-    }, [editField])
+
+        if (typeof updateStream === 'function') {
+            updateStream({ description })
+        }
+    }, [updateStream])
 
     const onCopy = useCallback((id: StreamId) => {
         copy(id)
@@ -94,60 +95,50 @@ export const InfoView = ({ disabled }: Props) => {
 
     return (
         <Root>
+            <Description
+                value="userpages.streams.edit.details.info.description"
+                tag="p"
+                defaultDomain="sandbox"
+                dangerousHTML
+            />
             <Row>
-                <Label htmlFor="streamName">
-                    {I18n.t('userpages.streams.edit.details.name')}
+                <Label htmlFor="streamId">
+                    {I18n.t('userpages.streams.edit.details.streamId')}
                 </Label>
-                <Text
-                    id="streamName"
-                    type="text"
-                    name="name"
-                    value={(stream && stream.name) || ''}
-                    onChange={onNameChange}
-                    disabled={disabled}
-                    autoComplete="off"
-                />
+                <StreamInput>
+                    <StreamIdWrapper>
+                        <StreamIdText
+                            name="streamId"
+                            id="streamId"
+                            value={(stream && stream.id) || ''}
+                            readOnly
+                        />
+                        <LockIcon>
+                            <SvgIcon name="lock" />
+                        </LockIcon>
+                    </StreamIdWrapper>
+                    <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
+                        <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
+                    </StyledButton>
+                </StreamInput>
             </Row>
             <Row>
                 <Label htmlFor="streamDescription">
-                    {I18n.t('userpages.streams.edit.details.description')}
+                    {I18n.t('userpages.streams.edit.details.description.label')}
                 </Label>
                 <Text
                     type="text"
                     id="streamDescription"
                     name="description"
+                    placeholder={I18n.t('userpages.streams.edit.details.description.placeholder')}
                     value={(stream && stream.description) || ''}
                     onChange={onDescriptionChange}
                     disabled={disabled}
                     autoComplete="off"
                 />
             </Row>
-            <Row>
-                <Label htmlFor="streamId">
-                    {I18n.t('userpages.streams.edit.details.streamId')}
-                </Label>
-                <StreamInput>
-                    <Text
-                        name="id"
-                        id="streamId"
-                        value={(stream && stream.id) || ''}
-                        readOnly
-                    />
-                    <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
-                        <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
-                    </StyledButton>
-                </StreamInput>
-            </Row>
         </Root>
     )
 }
 
-function InfoViewMaybe(props: Props) {
-    const stream = useSelector(selectEditedStream)
-
-    // stream initially an empty object
-    if (!stream || !Object.keys(stream).length) { return null }
-    return <InfoView {...props} />
-}
-
-export default InfoViewMaybe
+export default InfoView

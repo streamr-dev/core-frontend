@@ -12,12 +12,14 @@ export type StreamFieldList = Array<StreamField>
 export type StreamId = string
 
 export type NewStream = {
-    name: string,
+    id: string,
     description: ?string,
 }
 
-export type Stream = NewStream & {
+export type Stream = {
     id: StreamId,
+    name: string,
+    description: ?string,
     config: {
         fields?: StreamFieldList
     },

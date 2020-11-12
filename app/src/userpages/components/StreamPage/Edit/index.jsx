@@ -1,21 +1,20 @@
 // @flow
 
-import React, { useCallback, useState, useMemo, useContext } from 'react'
+import React, { useCallback, useState, useMemo, useContext, useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useLocation } from 'react-router-dom'
 import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
-import qs from 'query-string'
 import styled from 'styled-components'
+import cloneDeep from 'lodash/cloneDeep'
+import { useTransition, animated } from 'react-spring'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusIcon from '$shared/components/StatusIcon'
 import StatusLabel from '$shared/components/StatusLabel'
-import { updateStream } from '$userpages/modules/userPageStreams/actions'
+import { updateStream as updateStreamAction, updateEditStream, updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
-import docsLinks from '$shared/../docsLinks'
 import CoreLayout from '$shared/components/Layout/Core'
 import CodeSnippets from '$shared/components/CodeSnippets'
 import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
@@ -27,6 +26,10 @@ import Nav from '$shared/components/Layout/Nav'
 import { resetResourcePermission } from '$userpages/modules/permission/actions'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import { MEDIUM } from '$shared/utils/styled'
+import useModal from '$shared/hooks/useModal'
 
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
@@ -35,6 +38,8 @@ import HistoryView from './HistoryView'
 import PartitionsView from './PartitionsView'
 import SecurityView from './SecurityView'
 import StatusView from './StatusView'
+import ConfirmSaveModal from './ConfirmSaveModal'
+import useNewStreamMode from './useNewStreamMode'
 
 import styles from './edit.pcss'
 
@@ -60,7 +65,7 @@ function StreamPageSidebar({ stream }) {
             {sidebar.isOpen('share') && (
                 <ShareSidebar
                     sidebarName="share"
-                    resourceTitle={stream && stream.name}
+                    resourceTitle={stream && stream.id}
                     resourceType="STREAM"
                     resourceId={stream && stream.id}
                     onClose={onClose}
@@ -70,50 +75,132 @@ function StreamPageSidebar({ stream }) {
     )
 }
 
-const PreviewDescription = styled(Translate)`
-    margin-bottom: 3.125rem;
-    max-width: 660px;
-`
+const didChange = (original, changed) => {
+    const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = original || {}
+    const { streamStatus: changedStatus, lastData: changedData, ...changedStripped } = changed || {}
 
-const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
+    return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
+}
+
+const UnstyledEdit = ({
+    stream,
+    canShare,
+    disabled,
+    isNewStream,
+    ...props
+}: any) => {
     const sidebar = useContext(SidebarContext)
-    const stream = useMemo(() => ({
-        ...streamProp,
-        ...(streamProp.config ? {
-            ...streamProp.config,
-            fields: streamProp.config.fields.map(({ id, ...field }) => field),
-        } : {}),
-    }), [streamProp])
-
-    const isNewStream = !!qs.parse(useLocation().search).newStream
+    const { id: streamId } = stream
+    const streamRef = useRef()
+    streamRef.current = stream
+    const originalStreamRef = useRef()
+    const { api: confirmSaveDialog } = useModal('confirmSave')
 
     const dispatch = useDispatch()
 
-    const isMounted = useIsMounted()
+    useEffect(() => {
+        if (!streamId || !streamRef.current) { return }
+        originalStreamRef.current = {
+            ...streamRef.current,
+            config: cloneDeep(streamRef.current.config),
+        }
+    }, [streamId])
 
-    const cancel = useCallback(() => {
-        dispatch(push(routes.streams.index()))
-    }, [dispatch])
-
-    const [spinner, setSpinner] = useState(false)
-
-    const save = useCallback(async () => {
-        setSpinner(true)
-
+    const updateStream = useCallback((change, additionalData) => {
         try {
-            await dispatch(updateStream(stream))
-
-            if (isMounted()) {
-                dispatch(push(routes.streams.index()))
+            if (typeof change === 'string') {
+                dispatch(updateEditStreamField(change, additionalData))
+            } else if (typeof change === 'object') {
+                dispatch(updateEditStream({
+                    ...change,
+                }))
+            } else {
+                throw new Error(`Unknown update, change = ${JSON.stringify(change)}, additionalData = ${JSON.stringify(additionalData)}`)
             }
         } catch (e) {
             console.warn(e)
+        }
+    }, [dispatch])
+
+    useEffect(() => {
+        const handleBeforeunload = (event) => {
+            if (didChange(originalStreamRef.current, streamRef.current)) {
+                const message = I18n.t('userpages.streams.edit.unsavedChanges')
+                const evt = (event || window.event)
+                evt.returnValue = message // Gecko + IE
+                return message // Webkit, Safari, Chrome etc.
+            }
+            return ''
+        }
+
+        window.addEventListener('beforeunload', handleBeforeunload)
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeunload)
+        }
+    }, [])
+
+    const isMounted = useIsMounted()
+
+    const [spinner, setSpinner] = useState(false)
+
+    const save = useCallback(async (options = {
+        redirect: true,
+    }) => {
+        setSpinner(true)
+
+        try {
+            await dispatch(updateStreamAction(stream))
+
+            if (isMounted()) {
+                Notification.push({
+                    title: I18n.t('userpages.streams.actions.saveStreamSuccess'),
+                    icon: NotificationIcon.CHECKMARK,
+                })
+
+                if (options.redirect) {
+                    dispatch(push(routes.streams.index()))
+                }
+            }
+        } catch (e) {
+            console.warn(e)
+
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
         } finally {
             if (isMounted()) {
                 setSpinner(false)
             }
         }
     }, [stream, dispatch, isMounted])
+
+    const confirmIsSaved = useCallback(async () => {
+        if (!didChange(originalStreamRef.current, streamRef.current)) {
+            return true
+        }
+
+        const { save: saveRequested, proceed: canProceed } = await confirmSaveDialog.open()
+
+        if (!isMounted()) { return false }
+
+        if (saveRequested) {
+            await save({
+                redirect: false,
+            })
+        }
+
+        return !!canProceed
+    }, [confirmSaveDialog, save, isMounted])
+
+    const cancel = useCallback(async () => {
+        const canProceed = await confirmIsSaved()
+
+        if (isMounted() && canProceed) {
+            dispatch(push(routes.streams.index()))
+        }
+    }, [confirmIsSaved, dispatch, isMounted])
 
     const subSnippets = useMemo(() => (
         subscribeSnippets({
@@ -127,16 +214,41 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
         })
     ), [stream.id])
 
-    const openShareDialog = useCallback(() => {
-        sidebar.open('share')
-    }, [sidebar])
+    const openShareDialog = useCallback(async () => {
+        const canProceed = await confirmIsSaved()
+
+        if (isMounted() && canProceed) {
+            sidebar.open('share')
+        }
+    }, [confirmIsSaved, sidebar, isMounted])
+
+    const isDisabled = !!(disabled || sidebar.isOpen())
 
     const [timestamp, error] = useLastMessageTimestamp(stream.id)
 
     const status = error ? StatusIcon.ERROR : getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
 
+    const transitions = useTransition(true, null, {
+        config: {
+            tension: 500,
+            friction: 50,
+            clamp: true,
+            duration: 300,
+        },
+        from: {
+            opacity: 0,
+        },
+        enter: {
+            opacity: 1,
+        },
+        leave: {
+            opacity: 1,
+        },
+    })
+
     return (
         <CoreLayout
+            {...props}
             nav={(
                 <Nav noWide />
             )}
@@ -149,120 +261,158 @@ const Edit = ({ stream: streamProp, canShare, disabled }: any) => {
                             title: I18n.t('userpages.profilePage.toolbar.share'),
                             kind: 'primary',
                             outline: true,
-                            onClick: openShareDialog,
-                            disabled: disabled || !canShare,
+                            onClick: () => openShareDialog(),
+                            disabled: isDisabled || !canShare,
                             className: styles.showOnDesktop,
                         },
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
                             kind: 'primary',
                             spinner,
-                            onClick: save,
-                            disabled,
+                            onClick: () => save(),
+                            disabled: isDisabled,
                             className: styles.showOnDesktop,
                         },
                         done: {
                             title: I18n.t('userpages.profilePage.toolbar.done'),
                             kind: 'primary',
                             spinner,
-                            onClick: save,
-                            disabled,
+                            onClick: () => save(),
+                            disabled: isDisabled,
                             className: styles.showOnTablet,
                         },
                     }}
                 />
             )}
         >
-            <TOCPage title={I18n.t(`userpages.streams.edit.details.pageTitle.${isNewStream ? 'newStream' : 'existingStream'}`)}>
-                <TOCPage.Section
-                    id="details"
-                    title={I18n.t('userpages.streams.edit.details.nav.details')}
-                >
-                    <InfoView disabled={disabled} />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="snippets"
-                    title={I18n.t('general.codeSnippets')}
-                >
-                    <Translate
-                        value="userpages.streams.edit.codeSnippets.description"
-                        tag="p"
-                    />
-                    <CodeSnippets
-                        items={[
-                            ['javascript', 'Js', subSnippets.javascript],
-                            ['java', 'Java', subSnippets.java],
-                        ]}
-                        title="Subscribe"
-                    />
-                    <CodeSnippets
-                        items={[
-                            ['javascript', 'Js', pubSnippets.javascript],
-                            ['java', 'Java', pubSnippets.java],
-                        ]}
-                        title="Publish"
-                    />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="security"
-                    title={I18n.t('userpages.streams.edit.details.nav.security')}
-                    onlyDesktop
-                >
-                    <SecurityView disabled={disabled} />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="configure"
-                    title={I18n.t('userpages.streams.edit.details.nav.fields')}
-                    onlyDesktop
-                >
-                    <ConfigureView disabled={disabled} />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="status"
-                    title={I18n.t('userpages.streams.edit.details.nav.status')}
-                    status={<StatusIcon
-                        tooltip
-                        status={status}
-                    />}
-                    onlyDesktop
-                >
-                    <StatusView disabled={disabled} />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="preview"
-                    title={I18n.t('userpages.streams.edit.details.nav.preview')}
-                >
-                    <PreviewDescription
-                        value="userpages.streams.edit.preview.description"
-                        tag="p"
-                        dangerousHTML
-                        docsLink={docsLinks.gettingStarted}
-                    />
-                    <PreviewView stream={stream} />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="historical-data"
-                    title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
-                    onlyDesktop
-                >
-                    <HistoryView disabled={disabled} streamId={stream.id} />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="stream-partitions"
-                    title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
-                    linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
-                    status={(<StatusLabel.Advanced />)}
-                >
-                    <PartitionsView disabled={disabled} />
-                </TOCPage.Section>
-            </TOCPage>
+            {transitions.map(({ item, key, props: style }) => (
+                item && (
+                    <animated.div
+                        key={key}
+                        {...(isNewStream ? { style } : {})}
+                    >
+                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.editStream')}>
+                            <TOCPage.Section
+                                id="details"
+                                title={I18n.t('userpages.streams.edit.details.nav.details')}
+                            >
+                                <InfoView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="snippets"
+                                title={I18n.t('general.codeSnippets')}
+                            >
+                                <Translate
+                                    value="userpages.streams.edit.codeSnippets.description"
+                                    tag="p"
+                                />
+                                <CodeSnippets
+                                    items={[
+                                        ['javascript', 'Js', subSnippets.javascript],
+                                        ['java', 'Java', subSnippets.java],
+                                    ]}
+                                    title="Subscribe"
+                                />
+                                <CodeSnippets
+                                    items={[
+                                        ['javascript', 'Js', pubSnippets.javascript],
+                                        ['java', 'Java', pubSnippets.java],
+                                    ]}
+                                    title="Publish"
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="security"
+                                title={I18n.t('userpages.streams.edit.details.nav.security')}
+                                onlyDesktop
+                            >
+                                <SecurityView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="configure"
+                                title={I18n.t('userpages.streams.edit.details.nav.fields')}
+                                onlyDesktop
+                            >
+                                <ConfigureView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="status"
+                                title={I18n.t('userpages.streams.edit.details.nav.status')}
+                                status={<StatusIcon
+                                    tooltip
+                                    status={status}
+                                />}
+                                onlyDesktop
+                            >
+                                <StatusView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="preview"
+                                title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                            >
+                                <PreviewView stream={stream} />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="historical-data"
+                                title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                                onlyDesktop
+                            >
+                                <HistoryView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="stream-partitions"
+                                title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
+                                linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                                status={(<StatusLabel.Advanced />)}
+                            >
+                                <PartitionsView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                        </TOCPage>
+                    </animated.div>
+                )
+            ))}
             <StreamPageSidebar stream={stream} />
+            <ConfirmSaveModal />
         </CoreLayout>
     )
 }
 
-export default (props: any) => (
-    <SidebarProvider>
-        <Edit {...props} />
-    </SidebarProvider>
-)
+const Edit = styled(UnstyledEdit)`
+    strong {
+        font-weight: ${MEDIUM};
+    }
+`
+
+export default (props: any) => {
+    const isNewStream = useNewStreamMode()
+
+    return (
+        <SidebarProvider>
+            <Edit {...props} isNewStream={isNewStream} />
+        </SidebarProvider>
+    )
+}

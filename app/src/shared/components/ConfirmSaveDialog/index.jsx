@@ -1,7 +1,7 @@
 // @flow
 
-import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import React, { type Node } from 'react'
+import { I18n } from 'react-redux-i18n'
 
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
@@ -14,9 +14,10 @@ export type Props = {
     onClose: () => void,
     onContinue: () => void,
     onSave: () => void,
+    children?: Node,
 }
 
-const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
+const ConfirmSaveDialog = ({ onSave, onClose, onContinue, children }: Props) => (
     <ModalPortal>
         <Dialog
             title={I18n.t('modal.confirmSave.title')}
@@ -57,11 +58,7 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue }: Props) => (
                 name="discardChanges"
                 alt={I18n.t('modal.confirmSave.title')}
             />
-            <Translate
-                value="modal.confirmSave.message"
-                tag="p"
-                dangerousHTML
-            />
+            {children}
         </Dialog>
     </ModalPortal>
 )

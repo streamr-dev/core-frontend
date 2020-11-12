@@ -2,8 +2,7 @@ import { get, post, put, del } from '$shared/utils/api'
 import routes from '$routes'
 
 export const getDashboards = (params) => get({
-    url: routes.api.dashboards.index(),
-    options: { params },
+    url: routes.api.dashboards.index(params),
 })
 
 export const getDashboard = (id) => get({

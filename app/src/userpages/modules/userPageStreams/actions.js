@@ -1,16 +1,13 @@
 // @flow
 
-import cloneDeep from 'lodash/cloneDeep'
-import { I18n } from 'react-redux-i18n'
+import set from 'lodash/set'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList } from '$shared/flowtype/stream-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 import type { ResourceId } from '$userpages/flowtype/permission-types'
+import uuid from 'uuid'
 
-import Notification from '$shared/utils/Notification'
-import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
-import { NotificationIcon } from '$shared/utils/constants'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
@@ -43,13 +40,7 @@ export const DELETE_STREAM_REQUEST = 'userpages/streams/DELETE_STREAM_REQUEST'
 export const DELETE_STREAM_SUCCESS = 'userpages/streams/DELETE_STREAM_SUCCESS'
 export const DELETE_STREAM_FAILURE = 'userpages/streams/DELETE_STREAM_FAILURE'
 
-export const SAVE_STREAM_FIELDS_REQUEST = 'userpages/streams/SAVE_STREAM_FIELDS_REQUEST'
-export const SAVE_STREAM_FIELDS_SUCCESS = 'userpages/streams/SAVE_STREAM_FIELDS_SUCCESS'
-export const SAVE_STREAM_FIELDS_FAILURE = 'userpages/streams/SAVE_STREAM_FIELDS_FAILURE'
-
 export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
-export const UPDATE_EDIT_STREAM = 'userpages/streams/UPDATE_EDIT_STREAM'
-export const UPDATE_EDIT_STREAM_FIELD = 'userpages/streams/UPDATE_EDIT_STREAM_FIELD'
 
 export const STREAM_FIELD_AUTODETECT_REQUEST = 'userpages/streams/STREAM_FIELD_AUTODETECT_REQUEST'
 export const STREAM_FIELD_AUTODETECT_SUCCESS = 'userpages/streams/STREAM_FIELD_AUTODETECT_SUCCESS'
@@ -95,20 +86,6 @@ const getStreamsSuccess = (streams: StreamIdList, hasMoreResults: boolean) => ({
 
 const getStreamsFailure = (error: ErrorInUi) => ({
     type: GET_STREAM_FAILURE,
-    error,
-})
-
-const saveFieldsRequest = () => ({
-    type: SAVE_STREAM_FIELDS_REQUEST,
-})
-
-const saveFieldsSuccess = (id: StreamId) => ({
-    type: SAVE_STREAM_FIELDS_SUCCESS,
-    id,
-})
-
-const saveFieldsFailure = (error: ErrorInUi) => ({
-    type: SAVE_STREAM_FIELDS_FAILURE,
     error,
 })
 
@@ -162,9 +139,29 @@ export const clearStreamsList = () => (dispatch: Function) => (
     dispatch(clearStreamsListAction())
 )
 
+const mapStreamFields = (stream: Stream): Stream => {
+    const { config } = stream
+
+    if (!config || !config.fields) {
+        return stream
+    }
+
+    return {
+        ...stream,
+        config: {
+            ...config,
+            fields: (config.fields || []).map((field) => ({
+                ...field,
+                id: field.id ? field.id : uuid(),
+            })),
+        },
+    }
+}
+
 export const getStream = (id: StreamId) => (dispatch: Function) => {
     dispatch(getStreamRequest())
     return services.getStream(id)
+        .then(mapStreamFields)
         .then(handleEntities(streamSchema, dispatch))
         .then((id) => dispatch(getStreamSuccess(id)))
         .catch((e) => {
@@ -205,30 +202,14 @@ export const getStreams = ({ replace = false, filter = {} }: GetStreamParams = {
         })
         .catch((e) => {
             dispatch(getStreamsFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }
 
-export const createStream = (options: { name: string, description: ?string }) => (dispatch: Function): Promise<StreamId> => {
+export const createStream = (options: { id: string, description: ?string }) => (dispatch: Function): Promise<StreamId> => {
     dispatch(createStreamRequest())
     return new Promise((resolve, reject) => {
         services.postStream(options)
-            .then((data: Stream) => {
-                Notification.push({
-                    title: 'Stream created successfully!',
-                    icon: NotificationIcon.CHECKMARK,
-                })
-                Activity.push({
-                    action: actionTypes.CREATE,
-                    resourceId: data.id,
-                    resourceType: resourceTypes.STREAM,
-                })
-                return data
-            })
             .then(handleEntities(streamSchema, dispatch))
             .then((id) => {
                 dispatch(createStreamSuccess(id))
@@ -236,10 +217,6 @@ export const createStream = (options: { name: string, description: ?string }) =>
             })
             .catch((e) => {
                 dispatch(createStreamFailure(e))
-                Notification.push({
-                    title: e.message,
-                    icon: NotificationIcon.ERROR,
-                })
                 reject(e)
             })
     })
@@ -251,17 +228,9 @@ export const updateStream = (stream: Stream) => (dispatch: Function) => {
         .then(() => handleEntities(streamSchema, dispatch)(stream))
         .then(() => {
             dispatch(updateStreamSuccess(stream.id))
-            Notification.push({
-                title: I18n.t('userpages.streams.actions.saveStreamSuccess'),
-                icon: NotificationIcon.CHECKMARK,
-            })
         })
         .catch((e) => {
             dispatch(updateStreamFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
             throw e
         })
 }
@@ -313,82 +282,25 @@ export const deleteOrRemoveStream = (id: StreamId) => async (dispatch: Function)
     return dispatch(removeStream(id, Object.keys(permissionIds)))
 }
 
-export const saveFields = (id: StreamId, fields: StreamFieldList) => (dispatch: Function) => {
-    dispatch(saveFieldsRequest())
-    return api.post({
-        url: `${process.env.STREAMR_API_URL}/streams/${id}/fields`,
-        data: fields,
-    })
-        .then((data) => ({
+export const updateEditStream = (stream: ?Stream) => (dispatch: Function, getState: Function) => {
+    const state = getState()
+    const { id } = selectOpenStream(state) || {}
+
+    if (id) {
+        handleEntities(streamSchema, dispatch)({
             id,
-            config: {
-                fields: data,
-            },
-        }))
-        .then(handleEntities(streamSchema, dispatch))
-        .then((id) => {
-            dispatch(saveFieldsSuccess(id))
-            Notification.push({
-                title: 'Fields saved successfully',
-                icon: NotificationIcon.CHECKMARK,
-            })
+            ...stream,
         })
-        .catch((e) => {
-            dispatch(saveFieldsFailure(e))
-            Notification.push({
-                title: e.message,
-                icon: NotificationIcon.ERROR,
-            })
-            throw e
-        })
-}
-
-export const updateEditStream = (stream: ?Stream) => ({
-    type: UPDATE_EDIT_STREAM,
-    stream,
-})
-
-export const updateEditStreamField = (field: string, data: any) => ({
-    type: UPDATE_EDIT_STREAM_FIELD,
-    field,
-    data,
-})
-
-export const initEditStream = () => (dispatch: Function, getState: Function) => {
-    const stream = selectOpenStream(getState())
-    if (stream) {
-        dispatch(updateEditStream({
-            id: stream.id || '',
-            name: stream.name || '',
-            description: stream.description || '',
-            config: cloneDeep(stream.config) || {},
-            lastUpdated: stream.lastUpdated || 0,
-            autoConfigure: stream.autoConfigure || false,
-            partitions: stream.partitions || 1,
-            requireSignedData: stream.requireSignedData || false,
-            requireEncryptedData: stream.requireEncryptedData || false,
-            inactivityThresholdHours: stream.inactivityThresholdHours || 0,
-            uiChannel: stream.uiChannel || false,
-            storageDays: stream.storageDays !== undefined ? stream.storageDays : 365,
-        }))
     }
 }
 
-export const initNewStream = (initData: ?any) => (dispatch: Function) => {
-    dispatch(updateEditStream(Object.assign({}, {
-        id: '',
-        name: '',
-        description: '',
-        config: {},
-        lastUpdated: 0,
-        autoConfigure: false,
-        partitions: 1,
-        inactivityThresholdHours: 0,
-        requireSignedData: false,
-        requireEncryptedData: false,
-        storageDays: 365,
-        uiChannel: false,
-    }, initData)))
+export const updateEditStreamField = (field: string, data: any) => (dispatch: Function, getState: Function) => {
+    const state = getState()
+    const stream = selectOpenStream(state)
+
+    set(stream, field, data)
+
+    handleEntities(streamSchema, dispatch)(stream)
 }
 
 export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => {
@@ -402,19 +314,13 @@ export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => 
         }))
         .then(({ config: { fields } }) => {
             if (fields) {
+                dispatch(updateEditStreamField('config.fields', fields))
                 dispatch(getStreamFieldAutodetectSuccess(fields))
-                Notification.push({
-                    title: 'Fields autodetected!',
-                    icon: NotificationIcon.CHECKMARK,
-                })
             }
         }, (err) => {
             if (err) {
                 dispatch(getStreamFieldAutodetectFailure(err))
-                Notification.push({
-                    title: err.message,
-                    icon: NotificationIcon.ERROR,
-                })
+                throw err
             }
         })
 }

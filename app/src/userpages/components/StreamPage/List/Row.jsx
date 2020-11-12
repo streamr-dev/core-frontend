@@ -151,7 +151,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                 description={stream.description}
                 moreInfo={timestamp && titleize(ago(new Date(timestamp)))}
             >
-                {stream.name}
+                {stream.id}
             </StreamList.Title>
             <StreamList.Item truncate title={stream.description}>
                 {stream.description}

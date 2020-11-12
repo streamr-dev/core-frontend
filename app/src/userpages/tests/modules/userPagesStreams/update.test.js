@@ -14,11 +14,25 @@ describe('updateEditStream', () => {
         store = initStore()
     })
 
-    it('can add/remove fields', async () => {
+    it('can add/remove fields', () => {
         const id = uuid()
-        await store.dispatch(actions.initNewStream({ id }))
+        handleEntities(streamSchema, store.dispatch)({
+            id,
+            name: '',
+            description: '',
+            config: {},
+            lastUpdated: 0,
+            autoConfigure: false,
+            partitions: 1,
+            inactivityThresholdHours: 0,
+            requireSignedData: false,
+            requireEncryptedData: false,
+            storageDays: 365,
+            uiChannel: false,
+        })
+        store.dispatch(actions.openStream(id))
 
-        let editedStream = selectors.selectEditedStream(store.getState())
+        let editedStream = selectors.selectOpenStream(store.getState())
         expect(editedStream).toBeTruthy()
 
         // hack stream id into userPageStreams state
@@ -46,7 +60,7 @@ describe('updateEditStream', () => {
             },
         }))
 
-        editedStream = selectors.selectEditedStream(store.getState())
+        editedStream = selectors.selectOpenStream(store.getState())
         expect(editedStream.config.fields).toEqual([field1, field2])
 
         // update the stored stream
@@ -68,7 +82,7 @@ describe('updateEditStream', () => {
             },
         }))
 
-        editedStream = selectors.selectEditedStream(store.getState())
+        editedStream = selectors.selectOpenStream(store.getState())
 
         expect(editedStream.config.fields).toEqual([field1])
 

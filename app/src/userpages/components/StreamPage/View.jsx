@@ -26,7 +26,7 @@ import StatusLabel from '$shared/components/StatusLabel'
 import Nav from '$shared/components/Layout/Nav'
 import Storage from './shared/Storage'
 
-const Text = styled(UnstyledText)`
+export const Text = styled(UnstyledText)`
     &[disabled] {
         background-color: #efefef;
         color: #525252;
@@ -51,7 +51,7 @@ const UnstyledField = ({
     </div>
 )
 
-const Field = styled(UnstyledField)`
+export const Field = styled(UnstyledField)`
     flex-grow: 1;
 
     & + & {
@@ -78,7 +78,7 @@ const Field = styled(UnstyledField)`
     `}
 `
 
-const FormGroup = styled.div`
+export const FormGroup = styled.div`
     & + & {
         margin-top: 32px;
     }
@@ -117,7 +117,7 @@ const StreamId = styled.div`
     }
 `
 
-const HistoricalStorage = styled.div`
+export const HistoricalStorage = styled.div`
     display: flex;
 
     @media (min-width: ${SM}px) {
@@ -139,7 +139,7 @@ const StyledButton = styled(Button)`
     }
 `
 
-const StreamPartitions = styled.div`
+export const StreamPartitions = styled.div`
     width: 136px;
 `
 
@@ -203,30 +203,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
                     <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.details.name')}>
-                            <Text
-                                value={stream.name || ''}
-                                readOnly
-                                disabled
-                                name="name"
-                            />
-                        </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
-                    {!!stream.description && (
-                        <FormGroup>
-                            <Field label={I18n.t('userpages.streams.edit.details.description')}>
-                                <Text
-                                    value={stream.description || ''}
-                                    readOnly
-                                    disabled
-                                    name="description"
-                                />
-                            </Field>
-                            <Field narrow desktopOnly />
-                        </FormGroup>
-                    )}
-                    <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.details.streamId')}>
                             <StreamId>
                                 <Text
@@ -242,6 +218,19 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                         </Field>
                         <Field narrow desktopOnly />
                     </FormGroup>
+                    {!!stream.description && (
+                        <FormGroup>
+                            <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
+                                <Text
+                                    value={stream.description || ''}
+                                    readOnly
+                                    disabled
+                                    name="description"
+                                />
+                            </Field>
+                            <Field narrow desktopOnly />
+                        </FormGroup>
+                    )}
                 </TOCSection>
                 <TOCSection
                     id="snippets"
@@ -291,7 +280,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="preview"
                     title={I18n.t('userpages.streams.edit.details.nav.preview')}
                 >
-                    <Preview currentUser={currentUser} stream={stream} />
+                    <Preview stream={stream} />
                 </TOCSection>
                 <TOCSection
                     id="historicalData"
@@ -346,7 +335,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
 const View = styled(UnstyledView)`
     p {
         line-height: 1.5em;
-        margin: 0;
     }
 
     strong {

@@ -2,7 +2,7 @@
 
 import pick from 'lodash/pick'
 import qs from 'query-string'
-import p2r from 'path-to-regexp'
+import { parse, compile } from 'path-to-regexp'
 
 import definitions from './definitions'
 
@@ -18,13 +18,19 @@ type Variables = {
     [string]: string,
 }
 
+type DefineOptions = {
+    hash?: string,
+    encode?: boolean,
+    validate?: boolean,
+}
+
 /**
  * Generates a route function.
  * @param pathstr Path format.
  * @param getVariables Variable collection getter.
  * @returns Route function.
  */
-export const define = (pathstr: string, getVariables: () => Variables) => (params: ?Object, hash?: ?string): string => {
+export const define = (pathstr: string, getVariables: () => Variables) => (params: ?Object, options: DefineOptions = {}): string => {
     const route = Object.entries(getVariables()).reduce((acc, [name, value]) => {
         const val: any = value || ''
         const strippedValue: string = val.length > 1 ? val.replace(/\/$/, '') : val
@@ -38,10 +44,22 @@ export const define = (pathstr: string, getVariables: () => Variables) => (param
     }
 
     if (params) {
-        const tokenNames = p2r.parse(route).map((t) => t.name).filter(Boolean)
+        const tokenNames = parse(route).map((t) => t.name).filter(Boolean)
         const queryKeys = Object.keys(params).filter((key) => !tokenNames.includes(key))
+        const { encode, validate, hash } = {
+            encode: true,
+            validate: true,
+            hash: undefined,
+            ...(options || {}),
+        }
 
-        return `${p2r.compile(route)(params)}?${qs.stringify(pick(params, queryKeys))}${hash ? `#${hash}` : ''}`.replace(/\?$/, '')
+        const toPath = compile(route)
+        const uri = `${toPath(params, {
+            encode: (value) => (encode ? encodeURIComponent(value) : value),
+            validate: !!validate,
+        })}?${qs.stringify(pick(params, queryKeys))}`.replace(/\?$/, '')
+
+        return hash ? `${uri}#${hash}` : uri
     }
 
     return route

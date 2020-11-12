@@ -20,6 +20,7 @@ describe('route utils', () => {
                     },
                 },
             },
+            customRegex: '/resource/:id(.*)',
         }, () => ({
             site: 'https://streamr.network',
             slashed: 'https://streamr.network/',
@@ -87,12 +88,22 @@ describe('route utils', () => {
                 id: 13,
             })).toEqual('https://streamr.network/ns/api/resource/13')
         })
+
+        it('generates a namespaced route using custom regex route', () => {
+            expect(routes.customRegex()).toEqual('/resource/:id(.*)')
+            expect(routes.customRegex({
+                id: 'path/to/resource/1',
+            }, {
+                encode: false,
+                validate: false,
+            })).toEqual('/resource/path/to/resource/1')
+        })
     })
 
     describe('define', () => {
-        const r = (pathstr, params) => define(pathstr, () => ({
+        const r = (pathstr, ...args) => define(pathstr, () => ({
             url: 'url',
-        }))(params)
+        }))(...args)
 
         it('renders urls correctly', () => {
             expect(r('https://www.streamr.network/')).toEqual('https://www.streamr.network/')
@@ -143,7 +154,7 @@ describe('route utils', () => {
         it('throws an error for missing params', () => {
             expect(() => {
                 r('/resource/:id', {})
-            }).toThrow(/expected "id" to be defined/i)
+            }).toThrow(/expected "id" to be a string/i)
         })
 
         it('appends outstanding params as query string', () => {
@@ -152,6 +163,40 @@ describe('route utils', () => {
                 param1: 'value1',
                 param2: 'value2',
             })).toEqual('/resource/1?param1=value1&param2=value2')
+        })
+
+        it('encodes params by default', () => {
+            expect(r('/resource/:path', {
+                path: 'sandbox/path/resource',
+                id: 'test/1',
+            })).toEqual('/resource/sandbox%2Fpath%2Fresource?id=test%2F1')
+        })
+
+        it('does not encode route params if encode = false', () => {
+            expect(r('/resource/:path', {
+                path: 'sandbox/path/resource',
+            }, {
+                encode: false,
+                validate: false,
+            })).toEqual('/resource/sandbox/path/resource')
+        })
+
+        it('does not encode query string even if encode = false', () => {
+            expect(r('/resource/:path', {
+                path: 'sandbox/path/resource',
+                id: 'test/1',
+            }, {
+                encode: false,
+                validate: false,
+            })).toEqual('/resource/sandbox/path/resource?id=test%2F1')
+        })
+
+        it('adds hash to path', () => {
+            expect(r('/resource/:id', {
+                id: '123',
+            }, {
+                hash: 'top',
+            })).toEqual('/resource/123#top')
         })
 
         describe('variables', () => {

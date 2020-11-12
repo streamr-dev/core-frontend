@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+
 import {
     closeStream,
     getStream,
-    initEditStream,
     openStream,
-    updateEditStream,
 } from '$userpages/modules/userPageStreams/actions'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -13,7 +12,6 @@ import {
     selectFetching,
     selectUpdating,
     selectOpenStream,
-    selectEditedStream,
 } from '$userpages/modules/userPageStreams/selectors'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Notification from '$shared/utils/Notification'
@@ -28,8 +26,8 @@ import ClientProvider from '$shared/components/StreamrClientProvider'
 
 const StreamPage = (props) => {
     const { id: idProp } = props.match.params || {}
-
-    const permissions = useStreamPermissions(idProp)
+    const decodedIdProp = useMemo(() => decodeURIComponent(idProp), [idProp])
+    const permissions = useStreamPermissions(decodedIdProp)
 
     const fetching = useSelector(selectFetching)
 
@@ -45,22 +43,20 @@ const StreamPage = (props) => {
 
     const stream = useSelector(selectOpenStream)
 
-    const editedStream = useSelector(selectEditedStream)
-
     const currentUser = useSelector(selectUserData)
 
     const isMounted = useIsMounted()
-
-    const { id } = stream || {}
 
     useEffect(() => {
         const fetch = async () => {
             try {
                 try {
-                    await dispatch(getStream(idProp))
-                    if (isMounted()) {
-                        dispatch(openStream(idProp))
-                    }
+                    await dispatch(getStream(decodedIdProp))
+
+                    if (!isMounted()) { return }
+
+                    // set the current stream as the editable entity
+                    dispatch(openStream(decodedIdProp))
                 } catch (error) {
                     if (canHandleLoadError(error)) {
                         await handleLoadError({
@@ -84,26 +80,13 @@ const StreamPage = (props) => {
         if (permissions) {
             fetch()
         }
-    }, [fail, dispatch, idProp, isMounted, permissions])
-
-    useEffect(() => {
-        const initEditing = async () => {
-            if (isMounted()) {
-                dispatch(initEditStream())
-            }
-        }
-
-        if (!readOnly && id) {
-            initEditing()
-        }
-    }, [id, readOnly, dispatch, isMounted])
+    }, [fail, dispatch, decodedIdProp, isMounted, permissions])
 
     useEffect(() => () => {
-        dispatch(updateEditStream(null))
         dispatch(closeStream())
     }, [dispatch])
 
-    if (!permissions || (fetching && !updating) || !stream || (!readOnly && !editedStream)) {
+    if (!permissions || (fetching && !updating) || !stream) {
         return (
             <Layout loading />
         )
@@ -118,7 +101,7 @@ const StreamPage = (props) => {
                 />
             ) : (
                 <Edit
-                    stream={editedStream}
+                    stream={stream}
                     canShare={canShare}
                     disabled={updating}
                 />

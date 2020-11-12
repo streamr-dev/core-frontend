@@ -222,9 +222,9 @@ export const StreamListing = ({
             <Segment.Body>
                 {!fetchingStreams && (
                     <TableBody>
-                        {streams.map(({ id: streamId, name, description }) => (
+                        {streams.map(({ id: streamId, description }) => (
                             <DataRow key={streamId} locked={locked} clickable={!locked && !!showPreview}>
-                                <TitleItem title={name}>{name}</TitleItem>
+                                <TitleItem title={description}>{streamId}</TitleItem>
                                 <DescriptionItem title={description}>{description}</DescriptionItem>
                                 {(!!showPreview || !!showSettings) && (
                                     <RowButtons>

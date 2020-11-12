@@ -2,15 +2,11 @@
  * Dashboard-specific API call wrappers
  */
 
-import api from '$editor/shared/utils/api'
+import { get, put, post, del } from '$shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
 import { emptyDashboard } from './state'
-
-const getData = ({ data }) => data
-
-const dashboardsURL = `${process.env.STREAMR_API_URL}/dashboards`
-const canvasesURL = `${process.env.STREAMR_API_URL}/canvases?adhoc=false&sort=dateCreated&order=desc`
+import routes from '$routes'
 
 const AUTOSAVE_DELAY = 500
 
@@ -19,7 +15,12 @@ async function save(dashboard) {
         ...dashboard,
         layout: JSON.stringify(dashboard.layout || {}), // layout needs to be stringified?
     }
-    return api().put(`${dashboardsURL}/${dashboard.id}`, body).then(getData)
+    return put({
+        url: routes.api.dashboards.show({
+            id: dashboard.id,
+        }),
+        data: body,
+    })
 }
 
 export const autosave = Autosave(save, AUTOSAVE_DELAY)
@@ -34,26 +35,45 @@ export async function saveNow(dashboard, ...args) {
 
 export async function deleteDashboard({ id }) {
     await autosave.cancel()
-    return api().delete(`${dashboardsURL}/${id}`).then(getData)
+    return del({
+        url: routes.api.dashboards.show({
+            id,
+        }),
+    })
 }
 
 export async function deleteDashboardPermissions({ id, permissionIds }) {
     await autosave.cancel()
-    return Promise.all(permissionIds.map((permissionId) => (
-        api().delete(`${dashboardsURL}/${id}/permissions/${permissionId}`)
-    )))
+    return Promise.all(permissionIds.map((permissionId) => del({
+        url: routes.api.dashboards.permissions.show({
+            dashboardId: id,
+            id: permissionId,
+        }),
+    })))
 }
 
 export async function loadDashboard({ id }) {
-    return api().get(`${dashboardsURL}/${id}`).then(getData)
+    return get({
+        url: routes.api.dashboards.show({
+            id,
+        }),
+    })
 }
 
 export async function getCanvases() {
-    return api().get(canvasesURL).then(getData)
+    return get({
+        url: routes.api.canvases.index({
+            adhoc: false,
+            sort: 'dateCreated',
+            order: 'desc',
+        }),
+    })
 }
 
 export async function getDashboards() {
-    return api().get(dashboardsURL).then(getData)
+    return get({
+        url: routes.api.dashboards.index(),
+    })
 }
 
 async function getDashboardNames() {
@@ -62,7 +82,10 @@ async function getDashboardNames() {
 }
 
 async function createDashboard(dashboard) {
-    return api().post(dashboardsURL, dashboard).then(getData)
+    return post({
+        url: routes.api.dashboards.index(),
+        data: dashboard,
+    })
 }
 
 export async function create() {

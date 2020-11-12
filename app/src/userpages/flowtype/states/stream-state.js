@@ -1,6 +1,6 @@
 // @flow
 
-import type { Stream, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
+import type { StreamId, StreamIdList } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type UserPageStreamsState = {
@@ -12,7 +12,6 @@ export type UserPageStreamsState = {
     updating: boolean,
     error?: ?ErrorInUi,
     savingStreamFields: boolean,
-    editedStream: ?Stream,
     autodetectFetching: boolean,
     pageSize: number,
     hasMoreSearchResults: ?boolean,

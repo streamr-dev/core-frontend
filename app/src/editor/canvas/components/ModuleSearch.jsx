@@ -367,11 +367,11 @@ class ModuleSearch extends React.PureComponent<Props, State> {
                         key={index}
                         className={styles.StreamItem}
                         draggable
-                        onDragStart={(e) => { onDragStart(e, STREAM_MODULE_ID, stream.name, stream.id) }}
+                        onDragStart={(e) => { onDragStart(e, STREAM_MODULE_ID, stream.id, stream.id) }}
                         onClick={() => this.addModule(STREAM_MODULE_ID, null, null, stream.id)}
-                        title={[stream.name, stream.description].filter(Boolean).join('\n\n')}
+                        title={stream.description}
                     >
-                        <span className={styles.StreamName}>{stream.name}</span>
+                        <span className={styles.StreamName}>{stream.id}</span>
                         <div className={styles.Description}>{stream.description || 'No description'}</div>
                     </SearchRow>
                 ))}

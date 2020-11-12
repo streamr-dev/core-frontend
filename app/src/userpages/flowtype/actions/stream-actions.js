@@ -12,8 +12,6 @@ import {
     GET_STREAMS_FAILURE,
     OPEN_STREAM,
     DELETE_STREAM_SUCCESS,
-    SAVE_STREAM_FIELDS_SUCCESS,
-    SAVE_STREAM_FIELDS_FAILURE,
     CREATE_STREAM_FAILURE,
     UPDATE_STREAM_FAILURE,
     DELETE_STREAM_FAILURE,
@@ -24,7 +22,6 @@ export type StreamAction = {
         | typeof GET_STREAMS_REQUEST,
 } | {
     type: typeof OPEN_STREAM
-        | typeof SAVE_STREAM_FIELDS_SUCCESS
         | typeof DELETE_STREAM_SUCCESS,
     id: StreamId,
 } | {
@@ -37,7 +34,6 @@ export type StreamAction = {
 } | {
     type: typeof GET_STREAM_FAILURE
         | typeof GET_STREAMS_FAILURE
-        | typeof SAVE_STREAM_FIELDS_FAILURE
         | typeof CREATE_STREAM_FAILURE
         | typeof UPDATE_STREAM_FAILURE
         | typeof DELETE_STREAM_FAILURE,

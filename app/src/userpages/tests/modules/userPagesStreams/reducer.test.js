@@ -12,7 +12,6 @@ const initialState = {
     updating: false,
     deleting: false,
     error: null,
-    editedStream: null,
     autodetectFetching: false,
     streamFieldAutodetectError: null,
     pageSize: 20,
@@ -31,7 +30,6 @@ describe('Stream reducer', () => {
                 actions.CREATE_STREAM_REQUEST,
                 actions.UPDATE_STREAM_REQUEST,
                 actions.DELETE_STREAM_REQUEST,
-                actions.SAVE_STREAM_FIELDS_REQUEST,
             ].forEach((action) => {
                 assert.ok(reducer({
                     fetching: false,
@@ -58,7 +56,6 @@ describe('Stream reducer', () => {
                 [
                     actions.CREATE_STREAM_SUCCESS,
                     actions.GET_STREAM_SUCCESS,
-                    actions.SAVE_STREAM_FIELDS_SUCCESS,
                     actions.CREATE_STREAM_SUCCESS,
                     actions.GET_STREAM_SUCCESS,
                 ].forEach((action) => {
@@ -183,7 +180,6 @@ describe('Stream reducer', () => {
                 actions.CREATE_STREAM_FAILURE,
                 actions.UPDATE_STREAM_FAILURE,
                 actions.DELETE_STREAM_FAILURE,
-                actions.SAVE_STREAM_FIELDS_FAILURE,
             ].forEach((action) => {
                 const error = {
                     message: 'test',

@@ -57,7 +57,7 @@ class FieldList extends React.Component<Props, State> {
                 disabled={disabled}
                 className={cx({
                     [FieldItem.styles.locked]: locked || disabled,
-                })}
+                }, className)}
                 helperClass={FieldItem.styles.helper}
                 lockAxis="y"
                 onSortStart={this.onSortStart}

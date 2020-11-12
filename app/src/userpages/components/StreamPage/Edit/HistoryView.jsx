@@ -1,10 +1,7 @@
 import React, { Fragment, useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
-import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Label from '$ui/Label'
@@ -53,13 +50,12 @@ const InputContainer = styled.div`
     grid-column-gap: 1rem;
 `
 
-const HistoryView = ({ streamId, disabled }) => {
+const HistoryView = ({ stream, disabled, updateStream, showStorageOptions = true }) => {
     const [storageAmount, setStorageAmount] = useState(0)
     const [storageUnit, setStorageUnit] = useState(undefined)
-    const stream = useSelector(selectEditedStream)
+    const { id: streamId } = stream
     const streamRef = useRef(stream)
     streamRef.current = stream
-    const dispatch = useDispatch()
 
     useEffect(() => {
         if (!streamId || !streamRef.current) { return }
@@ -80,13 +76,12 @@ const HistoryView = ({ streamId, disabled }) => {
     }, [])
 
     useEffect(() => {
-        if (!!streamRef.current && storageAmount != null && storageUnit != null) {
-            dispatch(updateEditStream({
-                ...streamRef.current,
+        if (storageAmount !== undefined && storageUnit !== undefined && typeof updateStream === 'function') {
+            updateStream({
                 storageDays: convertToStorageDays(storageAmount, storageUnit),
-            }))
+            })
         }
-    }, [storageAmount, storageUnit, dispatch])
+    }, [storageAmount, storageUnit, updateStream])
 
     const unitOptions = useMemo(() => [
         {
@@ -109,7 +104,9 @@ const HistoryView = ({ streamId, disabled }) => {
                 value="userpages.streams.edit.historicalStoragePeriod.description"
                 tag="p"
             />
-            <Storage streamId={streamId} />
+            {!!showStorageOptions && (
+                <Storage streamId={streamId} />
+            )}
             {stream && stream.storageDays !== undefined &&
                 <Fragment>
                     <Label htmlFor="storageAmount">

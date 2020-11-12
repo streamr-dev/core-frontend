@@ -1,32 +1,20 @@
 // @flow
 
 import React, { useCallback } from 'react'
-import { connect } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
-import type { StoreState } from '$shared/flowtype/store-state'
-import { updateEditStream } from '$userpages/modules/userPageStreams/actions'
-import { selectEditedStream } from '$userpages/modules/userPageStreams/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
 import Slider from './Slider'
 
 import styles from './securityView.pcss'
 
-type OwnProps = {
+type Props = {
     disabled: boolean,
+    stream: Stream,
+    updateStream?: Function,
 }
-
-type StateProps = {
-    stream: ?Stream,
-}
-
-type DispatchProps = {
-    updateEditStream: (Stream) => void,
-}
-
-type Props = OwnProps & StateProps & DispatchProps
 
 /*
  * The security slider manipulates two boolean fields on the Stream object.
@@ -164,20 +152,17 @@ export function SecurityIcon({
     )
 }
 
-export function SecurityView(props: Props) {
-    // $FlowFixMe `updateEditStream` not in OwnProps or StateProps.
-    const { stream, updateEditStream, disabled } = props
+export function SecurityView({ stream, disabled, updateStream }: Props) {
     const level = getSecurityLevel(stream) || 'basic'
     const levelIndex = Object.keys(securityLevels).indexOf(level)
     const detail = securityLevels[level]
+
     const onChange = useCallback((event, newLevel) => {
-        if (stream) {
-            updateEditStream({
-                ...stream,
-                ...setSecurityLevel(newLevel),
-            })
+        if (typeof updateStream === 'function') {
+            updateStream(setSecurityLevel(newLevel))
         }
-    }, [updateEditStream, stream])
+    }, [updateStream])
+
     return (
         <div className={styles.root}>
             <p className={styles.description}>
@@ -222,22 +207,4 @@ export function SecurityView(props: Props) {
     )
 }
 
-/*
- * Renders nothing while stream not set up.
- * Prevents needless complication with hooks.
- */
-
-function SecurityViewMaybe(props: Props) {
-    const { stream } = props
-    // stream initially an empty object
-    if (!stream || !Object.keys(stream).length) { return null }
-    return <SecurityView {...props} />
-}
-
-const mapStateToProps = (state: StoreState): StateProps => ({
-    stream: selectEditedStream(state),
-})
-
-const mapDispatchToProps = { updateEditStream }
-
-export default connect(mapStateToProps, mapDispatchToProps)(SecurityViewMaybe)
+export default SecurityView

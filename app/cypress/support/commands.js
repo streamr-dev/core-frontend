@@ -33,12 +33,12 @@ Cypress.Commands.add('createStream', (body) => (
             url: 'http://localhost/api/v1/streams',
             method: 'POST',
             body: {
-                name: `Test Stream #${(
+                id: `sandbox/test-${(
                     new Date()
                         .toISOString()
                         .replace(/\W/g, '')
                         .substr(4, 11)
-                        .replace(/T/, '/')
+                        .replace(/T/, '-')
                 )}`,
                 ...body,
             },
@@ -49,7 +49,7 @@ Cypress.Commands.add('createStream', (body) => (
 Cypress.Commands.add('enableStorageNode', (streamId, address) => (
     cy
         .authenticatedRequest({
-            url: `http://localhost/api/v1/streams/${streamId}/storageNodes`,
+            url: `http://localhost/api/v1/streams/${encodeURIComponent(streamId)}/storageNodes`,
             method: 'POST',
             body: {
                 address,
@@ -60,7 +60,7 @@ Cypress.Commands.add('enableStorageNode', (streamId, address) => (
 Cypress.Commands.add('getStream', (id) => {
     cy
         .authenticatedRequest({
-            url: `http://localhost/api/v1/streams/${id}`,
+            url: `http://localhost/api/v1/streams/${encodeURIComponent(id)}`,
         })
         .then(({ body }) => body)
 })
@@ -75,7 +75,7 @@ Cypress.Commands.add('ignoreUncaughtError', (messageRegex) => {
 Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'stream_get') => (
     cy
         .authenticatedRequest({
-            url: `http://localhost/api/v1/streams/${streamId}/permissions`,
+            url: `http://localhost/api/v1/streams/${encodeURIComponent(streamId)}/permissions`,
             method: 'POST',
             body: {
                 anonymous: !user,

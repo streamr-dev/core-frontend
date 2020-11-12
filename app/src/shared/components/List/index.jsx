@@ -231,7 +231,7 @@ const TitleDescription = styled.div`
 const Title = ({ description, moreInfo, children }) => (
     <TitleCell>
         <TitleValueAndInfo>
-            <TitleValue title={children}>{children}</TitleValue>
+            <TitleValue title={description}>{children}</TitleValue>
             <TitleMoreInfo>{moreInfo}</TitleMoreInfo>
         </TitleValueAndInfo>
         <TitleDescription>{description}</TitleDescription>

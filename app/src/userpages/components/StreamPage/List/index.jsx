@@ -31,6 +31,8 @@ import { MD, LG } from '$shared/utils/styled'
 import SnippetDialog from './SnippetDialog'
 import { StreamList as StreamListComponent } from '$shared/components/List'
 import Row from './Row'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -101,7 +103,7 @@ function StreamPageSidebar({ stream }) {
             {sidebar.isOpen('share') && (
                 <ShareSidebar
                     sidebarName="share"
-                    resourceTitle={stream && stream.name}
+                    resourceTitle={stream && stream.id}
                     resourceType="STREAM"
                     resourceId={stream && stream.id}
                     onClose={onClose}
@@ -142,12 +144,23 @@ const StreamList = () => {
         dispatch(clearStreamsList())
     }, [dispatch])
 
+    const fetchStreams = useCallback(async (...args) => {
+        try {
+            await dispatch(getStreams(...args))
+        } catch (e) {
+            Notification.push({
+                title: e.message,
+                icon: NotificationIcon.ERROR,
+            })
+        }
+    }, [dispatch])
+
     useEffect(() => {
-        dispatch(getStreams({
+        fetchStreams({
             replace: true,
             filter,
-        }))
-    }, [dispatch, filter])
+        })
+    }, [fetchStreams, filter])
 
     const [activeSort, setActiveSort] = useState(undefined)
 
@@ -257,7 +270,7 @@ const StreamList = () => {
                         </StreamListComponent>
                         <LoadMore
                             hasMoreSearchResults={!fetching && hasMoreResults}
-                            onClick={() => dispatch(getStreams())}
+                            onClick={() => fetchStreams()}
                             preserveSpace
                         />
                     </Fragment>

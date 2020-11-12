@@ -1,6 +1,6 @@
 // @flow
 
-import type { DashboardId, DashboardIdList } from '../dashboard-types'
+import type { DashboardIdList } from '../dashboard-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type DashboardState = {

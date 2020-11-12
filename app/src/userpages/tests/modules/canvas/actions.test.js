@@ -34,12 +34,12 @@ describe('Canvas actions', () => {
 
         const wait = moxios.promiseWait().then(() => {
             const request = moxios.requests.mostRecent()
+
             expect(request.url).toMatch(/canvases/)
-            expect(request.config.params).toEqual({
-                adhoc: false,
-                sortBy: 'lastUpdated',
-                order: 'desc',
-            })
+            expect(request.url.indexOf('adhoc=false')).toBeTruthy()
+            expect(request.url.indexOf('order=desc')).toBeTruthy()
+            expect(request.url.indexOf('sortBy=lastUpdated')).toBeTruthy()
+
             request.respondWith({
                 status: 200,
                 response: [{
@@ -72,11 +72,9 @@ describe('Canvas actions', () => {
         const wait = moxios.promiseWait().then(() => {
             const request = moxios.requests.mostRecent()
             expect(request.url).toMatch(/canvases/)
-            expect(request.config.params).toEqual({
-                adhoc: false,
-                sortBy: 'lastUpdated',
-                order: 'desc',
-            })
+            expect(request.url.indexOf('adhoc=false')).toBeTruthy()
+            expect(request.url.indexOf('order=desc')).toBeTruthy()
+            expect(request.url.indexOf('sortBy=lastUpdated')).toBeTruthy()
             request.respondWith({
                 status: 500,
                 response: {
@@ -112,13 +110,13 @@ describe('Canvas actions', () => {
 
         const wait = moxios.promiseWait().then(() => {
             const request = moxios.requests.mostRecent()
+
             expect(request.url).toMatch(/canvases/)
-            expect(request.config.params).toEqual({
-                adhoc: false,
-                sortBy: 'sortTest',
-                order: 'desc',
-                search: 'searchTest',
-            })
+            expect(request.url.indexOf('adhoc=false')).toBeTruthy()
+            expect(request.url.indexOf('order=desc')).toBeTruthy()
+            expect(request.url.indexOf('sortBy=sortTest')).toBeTruthy()
+            expect(request.url.indexOf('search=searchTest')).toBeTruthy()
+
             request.respondWith({
                 status: 200,
                 response: [{

@@ -26,13 +26,18 @@
   display: block;
 }
 
-.locked .root .handle {
+.locked .root .handle,
+.locked .root .trashIcon {
   display: none;
 }
 
 .helper .inner,
 .root:--enter .inner {
   background: #F5F5F5;
+}
+
+.locked .root .inner {
+  background: none;
 }
 
 .handle:active .inner {

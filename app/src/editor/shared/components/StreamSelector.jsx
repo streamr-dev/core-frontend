@@ -69,7 +69,7 @@ export default class StreamSelector extends React.Component<Props, State> {
         /* eslint-disable-next-line react/no-did-mount-set-state */
         this.setState({
             loadedStream: stream,
-            search: stream.name,
+            search: stream.id,
         })
     }
 
@@ -131,7 +131,7 @@ export default class StreamSelector extends React.Component<Props, State> {
         this.setState(({ search, loadedStream }) => {
             if (!isOpen && loadedStream) {
                 // set search text to stream name on close
-                search = loadedStream.name
+                search = loadedStream.id
             }
 
             return {
@@ -173,9 +173,9 @@ export default class StreamSelector extends React.Component<Props, State> {
                                 key={stream.id}
                                 onMouseDown={() => this.onStreamClick(stream.id)}
                                 tabIndex="0"
-                                title={stream.id}
+                                title={stream.description}
                             >
-                                <div>{stream.name}</div>
+                                <div>{stream.id}</div>
                                 {!!stream.description && (
                                     <div title={stream.description} className={styles.description}>{stream.description}</div>
                                 )}

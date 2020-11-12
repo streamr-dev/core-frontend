@@ -327,14 +327,29 @@ msgstr "Actions"
 msgid "userpages.streams.actions.addToCanvas"
 msgstr "Add to canvas"
 
+msgid "userpages.streams.validation.noSlashAtBeginning"
+msgstr "Path name cannot start with a slash"
+
+msgid "userpages.streams.validation.useSingleSlashPathSeparator"
+msgstr "Use a single slash to separate paths."
+
+msgid "userpages.streams.validation.invalidPathEndCharacter"
+msgstr "Path name must end with an alpha-numeric character."
+
+msgid "userpages.streams.validation.invalidPathCharacters"
+msgstr "Path may only contain alpha-numeric characters, underscores, and dashes."
+
 msgid "userpages.streams.delete.notification"
 msgstr "Stream deleted successfully"
 
 msgid "userpages.streams.remove.notification"
 msgstr "Stream removed successfully"
 
-msgid "userpages.streams.remove.notification"
-msgstr "Stream removed successfully"
+msgid "userpages.streams.created.notification"
+msgstr "Stream created successfully"
+
+msgid "userpages.streams.fieldsAutoDetected.notification"
+msgstr "Fields autodetected"
 
 msgid "userpages.streams.actions.editStream"
 msgstr "Edit stream"
@@ -385,10 +400,10 @@ msgid "userpages.streams.noStreamsResult.clearFilters"
 msgstr "Clear filters"
 
 msgid "userpages.streams.edit.details.pageTitle.newStream"
-msgstr "Set up your Stream"
+msgstr "Name your Stream"
 
-msgid "userpages.streams.edit.details.pageTitle.existingStream"
-msgstr "Edit your Stream"
+msgid "userpages.streams.edit.details.pageTitle.editStream"
+msgstr "Set up your Stream"
 
 msgid "userpages.streams.edit.details.pageTitle.readOnlyStream"
 msgstr "Read only stream"
@@ -420,11 +435,26 @@ msgstr "Partitions"
 msgid "userpages.streams.edit.details.nav.streamPartitions"
 msgstr "Stream partitions"
 
-msgid "userpages.streams.edit.details.name"
-msgstr "Name"
+msgid "userpages.streams.edit.details.info.description"
+msgstr ""
+"All streams require a unique path in the format <strong>domain/pathname</strong>. Choose a unique name, "
+"and create your stream in the default <strong>%{defaultDomain}</strong> domain or "
+"<a href=\"https://ens.domains\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register and use your own domain</a>."
 
-msgid "userpages.streams.edit.details.description"
+msgid "userpages.streams.edit.details.domain.label"
+msgstr "Domain"
+
+msgid "userpages.streams.edit.details.pathname.label"
+msgstr "Path name"
+
+msgid "userpages.streams.edit.details.pathname.placeholder"
+msgstr "Enter a unique stream path name"
+
+msgid "userpages.streams.edit.details.description.label"
 msgstr "Description"
+
+msgid "userpages.streams.edit.details.description.placeholder"
+msgstr "Add a brief description"
 
 msgid "userpages.streams.edit.details.streamId"
 msgstr "Stream ID"
@@ -432,14 +462,21 @@ msgstr "Stream ID"
 msgid "userpages.streams.edit.details.partitions"
 msgstr "Partitions"
 
+msgid "userpages.streams.edit.details.tooltip"
+msgstr ""
+"Stream paths can be single level like<br/>"
+"<strong>sandbox/mycoffeemachine</strong> or structured<br/>"
+"like <strong>crypto/oracles/btcprice</strong>. For more<br/>"
+"information, see the <a href=\"%{docsLink}\">docs</a>."
+
 msgid "userpages.streams.edit.details.copyStreamId"
 msgstr "Copy Stream ID"
 
 msgid "userpages.streams.edit.details.copied"
 msgstr "Copied"
 
-msgid "userpages.streams.edit.details.unsavedChanges"
-msgstr "You have unsaved changes in the details section. Are you sure you want to leave?"
+msgid "userpages.streams.edit.unsavedChanges"
+msgstr "You have unsaved changes. Are you sure you want to leave?"
 
 msgid "userpages.streams.edit.configure.newFieldEditor.namePlaceholder"
 msgstr "Enter a field name"

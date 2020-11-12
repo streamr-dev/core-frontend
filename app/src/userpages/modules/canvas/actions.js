@@ -51,8 +51,7 @@ export const getCanvases = (filter) => (dispatch) => {
     })
 
     return api.get({
-        url: routes.api.canvases.index(),
-        options: { params },
+        url: routes.api.canvases.index(params),
     })
         .then((data) => (
             // filter out adhoc canvases which should be filtered by server
