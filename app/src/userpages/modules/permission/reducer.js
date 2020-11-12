@@ -16,17 +16,15 @@ const initialState = {
     fetching: false,
 }
 
-const newPermissions = (state, type, id, nextPermissions) => {
-    const prevPermissions = (state.byTypeAndId[type] || {})[id]
-
-    return (
+const getNewPermissions = (prevPermissions, nextPermissions) => (
+    (
         prevPermissions == null || prevPermissions.join(',') !== nextPermissions.join(',') ? (
             nextPermissions
         ) : (
             prevPermissions
         )
     )
-}
+)
 
 export default function (state: PermissionState = initialState, action: PermissionAction): PermissionState {
     switch (action.type) {
@@ -44,10 +42,8 @@ export default function (state: PermissionState = initialState, action: Permissi
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
                         [action.resourceId]: (
-                            newPermissions(
-                                state,
-                                action.resourceType,
-                                action.resourceId,
+                            getNewPermissions(
+                                (state.byTypeAndId[action.resourceType] || {})[action.resourceId],
                                 action.permissions.map(({ operation }) => operation).sort(),
                             )
                         ),
@@ -67,10 +63,8 @@ export default function (state: PermissionState = initialState, action: Permissi
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
                         [action.resourceId]: (
-                            newPermissions(
-                                state,
-                                action.resourceType,
-                                action.resourceId,
+                            getNewPermissions(
+                                (state.byTypeAndId[action.resourceType] || {})[action.resourceId],
                                 [],
                             )
                         ),
