@@ -17,12 +17,10 @@ const initialState = {
 }
 
 const getNewPermissions = (prevPermissions, nextPermissions) => (
-    (
-        prevPermissions == null || prevPermissions.join(',') !== nextPermissions.join(',') ? (
-            nextPermissions
-        ) : (
-            prevPermissions
-        )
+    prevPermissions == null || prevPermissions.join(',') !== nextPermissions.join(',') ? (
+        nextPermissions
+    ) : (
+        prevPermissions
     )
 )
 
