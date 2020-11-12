@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node, type Context, useEffect, useState, useMemo, useCallback, useContext, useRef } from 'react'
+import React, { type Node, type Context, useState, useMemo, useCallback, useContext, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
@@ -28,6 +28,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 
 import * as State from '../EditProductPage/state'
 import useModal from '$shared/hooks/useModal'
@@ -64,23 +65,7 @@ function useEditController(product: Product) {
     const [publishAttempted, setPublishAttempted] = useState(false)
     const [preferredCurrency, setPreferredCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
-    useEffect(() => {
-        const handleBeforeunload = (event) => {
-            if (isAnyTouched()) {
-                const confirmationMessage = 'You have unsaved changes'
-                const evt = (event || window.event)
-                evt.returnValue = confirmationMessage // Gecko + IE
-                return confirmationMessage // Webkit, Safari, Chrome etc.
-            }
-            return ''
-        }
-
-        window.addEventListener('beforeunload', handleBeforeunload)
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeunload)
-        }
-    }, [isAnyTouched])
+    usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
 
     const productRef = useRef(product)
     productRef.current = product

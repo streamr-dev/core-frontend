@@ -26,15 +26,9 @@ import UserList from './UserList'
 import Footer from './Footer'
 import ErrorMessage from './ErrorMessage'
 import Md from '$shared/components/Md'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 
 const options = ['onlyInvited', 'withLink']
-
-function unsavedUnloadWarning(event) {
-    const confirmationMessage = 'You have unsaved changes'
-    const evt = (event || window.event)
-    evt.returnValue = confirmationMessage // Gecko + IE
-    return confirmationMessage // Webkit, Safari, Chrome etc.
-}
 
 const UnstyledShareSidebar = (({ className, ...props }) => {
     const currentUser = (useSelector(selectUserData) || {}).username
@@ -153,14 +147,7 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
         setDidTryClose(false)
     }, [setDidTryClose, currentUsers])
 
-    // browser warning if user navigating away before saving complete
-    useEffect(() => {
-        if (!hasChanges && !isSaving) { return }
-        window.addEventListener('beforeunload', unsavedUnloadWarning)
-        return () => {
-            window.removeEventListener('beforeunload', unsavedUnloadWarning)
-        }
-    }, [hasChanges, isSaving])
+    usePreventNavigatingAway('You have unsaved changes', () => hasChanges || isSaving)
 
     const [bindWarningMessages, warningMessagesStyle] = useSlideIn({ isVisible: didTryClose || hasCurrentUserChanges })
 

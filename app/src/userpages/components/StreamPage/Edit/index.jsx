@@ -40,6 +40,7 @@ import SecurityView from './SecurityView'
 import StatusView from './StatusView'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import useNewStreamMode from './useNewStreamMode'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 
 import styles from './edit.pcss'
 
@@ -122,23 +123,10 @@ const UnstyledEdit = ({
         }
     }, [dispatch])
 
-    useEffect(() => {
-        const handleBeforeunload = (event) => {
-            if (didChange(originalStreamRef.current, streamRef.current)) {
-                const message = I18n.t('userpages.streams.edit.unsavedChanges')
-                const evt = (event || window.event)
-                evt.returnValue = message // Gecko + IE
-                return message // Webkit, Safari, Chrome etc.
-            }
-            return ''
-        }
-
-        window.addEventListener('beforeunload', handleBeforeunload)
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeunload)
-        }
-    }, [])
+    usePreventNavigatingAway(
+        I18n.t('userpages.streams.edit.unsavedChanges'),
+        () => didChange(originalStreamRef.current, streamRef.current),
+    )
 
     const isMounted = useIsMounted()
 
