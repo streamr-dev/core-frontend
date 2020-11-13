@@ -200,7 +200,9 @@ describe('New stream page', () => {
         cy.location('pathname').should('eq', '/core/streams')
     })
 
-    it('can create a path with dot separator in id', () => {
+    it.skip('can create a path with dot separator in id', () => {
+        // Althought the client-side routing handles dots quite well the backend infra does
+        // not. Let's un-skip this spec once that is fixed.
         cy.login()
         cy.visit('/core/streams/new')
         const path = `${uuid()}/with.dot.separator`
