@@ -16,6 +16,14 @@ const initialState = {
     fetching: false,
 }
 
+const getNewPermissions = (prevPermissions, nextPermissions) => (
+    prevPermissions == null || prevPermissions.join(',') !== nextPermissions.join(',') ? (
+        nextPermissions
+    ) : (
+        prevPermissions
+    )
+)
+
 export default function (state: PermissionState = initialState, action: PermissionAction): PermissionState {
     switch (action.type) {
         case GET_RESOURCE_PERMISSIONS_REQUEST:
@@ -31,7 +39,12 @@ export default function (state: PermissionState = initialState, action: Permissi
                     ...state.byTypeAndId,
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
-                        [action.resourceId]: action.permissions.map(({ operation }) => operation),
+                        [action.resourceId]: (
+                            getNewPermissions(
+                                (state.byTypeAndId[action.resourceType] || {})[action.resourceId],
+                                action.permissions.map(({ operation }) => operation).sort(),
+                            )
+                        ),
                     },
                 },
                 fetching: false,
@@ -47,7 +60,12 @@ export default function (state: PermissionState = initialState, action: Permissi
                     ...state.byTypeAndId,
                     [(action.resourceType: string)]: {
                         ...(state.byTypeAndId[action.resourceType] || {}),
-                        [action.resourceId]: [],
+                        [action.resourceId]: (
+                            getNewPermissions(
+                                (state.byTypeAndId[action.resourceType] || {})[action.resourceId],
+                                [],
+                            )
+                        ),
                     },
                 },
             }
