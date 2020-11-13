@@ -6,11 +6,9 @@ import { animated } from 'react-spring'
 import styled from 'styled-components'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
-import SelectInput from '$ui/Select'
 import Label from '$ui/Label'
 import Sidebar from '$shared/components/Sidebar'
 import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
-import useUniqueId from '$shared/hooks/useUniqueId'
 import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as State from './state'
@@ -27,8 +25,7 @@ import Footer from './Footer'
 import ErrorMessage from './ErrorMessage'
 import Md from '$shared/components/Md'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-
-const options = ['onlyInvited', 'withLink']
+import AnonAccessSelect, { ALLOW_ONLY_INVITED, ALLOW_WITH_LINK } from './AnonAccessSelect'
 
 const UnstyledShareSidebar = (({ className, ...props }) => {
     const currentUser = (useSelector(selectUserData) || {}).username
@@ -150,16 +147,9 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
 
     const [bindWarningMessages, warningMessagesStyle] = useSlideIn({ isVisible: didTryClose || hasCurrentUserChanges })
 
-    const uid = useUniqueId('ShareSidebar') // for html labels
-
     /* render (no hooks past here) */
 
     if (error) { return error.message } // this shouldn't happen
-
-    const whoHasAccessOptions = options.map((o) => ({
-        label: I18n.t(`modal.shareResource.${o}`),
-        value: o,
-    }))
 
     const anonymousPermissions = currentUsers.anonymous
 
@@ -182,20 +172,14 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
     return (
         <div className={className}>
             <Sidebar.Container>
-                <Label htmlFor={`${uid}AnonAccessSelect`}>
-                    {I18n.t('modal.shareResource.anonymousAccess')}
-                </Label>
-                <SelectInput
-                    inputId={`${uid}AnonAccessSelect`}
-                    name="name"
-                    options={whoHasAccessOptions}
-                    value={anonymousPermissions.get ? whoHasAccessOptions[1] : whoHasAccessOptions[0]}
+                <AnonAccessSelect
                     onChange={onAnonymousAccessChange}
-                    required
-                    isSearchable={false}
-                    controlClassName={styles.anonSelectControl}
+                    value={anonymousPermissions.get ? ALLOW_WITH_LINK : ALLOW_ONLY_INVITED}
                 />
-                <InputNewShare currentUser={currentUser} onChange={addUser} />
+                <InputNewShare
+                    currentUser={currentUser}
+                    onChange={addUser}
+                />
             </Sidebar.Container>
             <UserList
                 items={userEntries}
