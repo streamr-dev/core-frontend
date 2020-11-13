@@ -39,6 +39,7 @@ import Errors, { MarketplaceTheme } from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
 import SvgIcon from '$shared/components/SvgIcon'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 
 const Description = styled(Translate)`
     margin-bottom: 3rem;
@@ -316,23 +317,10 @@ const UnstyledNew = (props) => {
         contentChangedRef.current = !!(pathname || description)
     }, [domain, pathname, description])
 
-    useEffect(() => {
-        const handleBeforeunload = (event) => {
-            if (contentChangedRef.current) {
-                const message = I18n.t('userpages.streams.edit.unsavedChanges')
-                const evt = (event || window.event)
-                evt.returnValue = message // Gecko + IE
-                return message // Webkit, Safari, Chrome etc.
-            }
-            return ''
-        }
-
-        window.addEventListener('beforeunload', handleBeforeunload)
-
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeunload)
-        }
-    }, [])
+    usePreventNavigatingAway(
+        I18n.t('userpages.streams.edit.unsavedChanges'),
+        () => contentChangedRef.current,
+    )
 
     const saveEnabled = !!pathname && !loading
     const isDisabled = !!loading
