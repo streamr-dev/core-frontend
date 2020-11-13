@@ -41,7 +41,6 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
     const {
         permissions,
         currentUsers,
-        canShareToUser,
         addUser,
         removeUser,
         updatePermission,
@@ -168,29 +167,17 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
     const editableUsers = Object.assign({}, currentUsers)
     delete editableUsers.anonymous
 
-    // current user (own permission) is displayed on top
-    let currentUserId = []
+    const userSet = new Set([
+        currentUser,
+        ...newUserIdList,
+        ...Object.keys(editableUsers).sort(),
+    ])
 
-    if (editableUsers[currentUser]) {
-        currentUserId = [currentUser]
+    if (!editableUsers[currentUser]) {
+        userSet.delete(currentUser)
     }
 
-    // users are listed in order:
-    // current user, if exists
-    // new users in order added
-    // old users in alphabetical order
-    const oldUserIdList = Object.keys(editableUsers)
-        .filter((userId) => !newUserIdList.includes(userId) && userId !== currentUser)
-        .sort()
-
-    // remove current user
-    const newUserIdListFiltered = newUserIdList.filter((userId) => userId !== currentUser)
-
-    const userEntries = [
-        ...currentUserId,
-        ...newUserIdListFiltered,
-        ...oldUserIdList,
-    ].map((userId) => [userId, editableUsers[userId]])
+    const userEntries = [...userSet].map((userId) => [userId, editableUsers[userId]])
 
     return (
         <div className={className}>
@@ -208,7 +195,7 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
                     isSearchable={false}
                     controlClassName={styles.anonSelectControl}
                 />
-                <InputNewShare currentUser={currentUser} onChange={addUser} canShareToUser={canShareToUser} />
+                <InputNewShare currentUser={currentUser} onChange={addUser} />
             </Sidebar.Container>
             <UserList
                 items={userEntries}
