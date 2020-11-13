@@ -266,6 +266,7 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: number): SmartC
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee,
+                joinPartAgents: getStreamrEngineAddresses(),
             })
         })
         .then((dataUnion) => {
@@ -330,7 +331,9 @@ export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boo
     const version = await getDataUnionVersion(address, usePublicNode)
 
     if (version === 2) {
-        const client = createClient()
+        const client = createClient({
+            usePublicNode,
+        })
         return client.getAdminAddress({
             dataUnionAddress: address,
         })
@@ -356,11 +359,12 @@ export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean =
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
 
     if (version === 2) {
-        const client = createClient()
-        const dataUnion = await client.getDataUnionContract({
+        const client = createClient({
+            usePublicNode,
+        })
+        const adminFee = await client.getAdminFee({
             dataUnionAddress: address,
         })
-        const adminFee = await dataUnion.adminFeeFraction()
 
         return web3.utils.fromWei(adminFee.toString(), 'ether')
     } else if (version === 1) {

@@ -32,7 +32,7 @@ export type Sendable = {
     }) => PromiEvent,
 }
 
-export const areAddressesEqual = (first: Address, second: Address) => first.toLowerCase() === second.toLowerCase()
+export const areAddressesEqual = (first: Address, second: Address) => (first || '').toLowerCase() === (second || '').toLowerCase()
 
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 

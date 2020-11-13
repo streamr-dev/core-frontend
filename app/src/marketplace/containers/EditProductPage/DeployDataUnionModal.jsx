@@ -115,6 +115,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                 })
                 .onError((e) => {
                     if (!isMounted()) { return }
+                    setAddress(null) // clear beneficiary address
                     setDeployError(e)
                     resolve()
                 })
@@ -128,9 +129,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 
     // Update beneficiary address to product as soon as it changes
     useEffect(() => {
-        if (address) {
-            updateAddress(address)
-        }
+        updateAddress(address)
     }, [address, updateAddress])
 
     if (!checkingWeb3 && web3Error) {

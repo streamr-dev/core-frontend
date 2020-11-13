@@ -14,7 +14,9 @@ const DATA_UNION_SERVER_POLL_INTERVAL_MS = 10000
 
 function useDataUnionStats() {
     const { created, beneficiaryAddress } = useProduct() || {}
-    const { subscriberCount } = useContractProduct() || {}
+    const { subscriberCount } = useContractProduct() || {
+        subscriberCount: 0,
+    }
     const { adminFee } = useDataUnion() || {}
     const { memberCount, totalEarnings } = useSelector(selectDataUnionStats) || {}
     const isMounted = useIsMounted()
