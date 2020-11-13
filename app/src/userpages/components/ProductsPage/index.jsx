@@ -3,8 +3,8 @@
 import React, { useEffect, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import Helmet from 'react-helmet'
 
+import CoreHelmet from '$shared/components/CoreHelmet'
 import Layout from '../Layout'
 import { getFilters } from '../../utils/constants'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
@@ -102,7 +102,7 @@ const ProductsPage = () => {
             }
             loading={fetching}
         >
-            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.products')}`} />
+            <CoreHelmet pageTitle={I18n.t('userpages.title.products')} />
             <ListContainer className={styles.corepageContentContainer}>
                 {!fetching && products && !products.length && (
                     <NoProductsView

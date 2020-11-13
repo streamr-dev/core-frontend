@@ -5,15 +5,15 @@ import { Helmet } from 'react-helmet'
 import { I18n } from 'react-redux-i18n'
 
 type Props = {
-    pageTitle: string,
+    pageTitle?: string,
 }
 
-const description = 'Learn more and explore what you can do with Streamr'
-const image = 'https://streamr.network/resources/social/docs.png'
+const description = 'Your real-time data toolkit. Create a stream, integrate, process and visualise real-time data'
+const image = 'https://streamr.network/resources/social/core.png'
 
-export default function DocsHelmet({ pageTitle, ...props }: Props) {
+export default function CoreHelmet({ pageTitle, ...props }: Props) {
     const title = useMemo(() => {
-        const titleSuffix = I18n.t('docs.title.suffix')
+        const titleSuffix = I18n.t('core.title.suffix')
 
         return !pageTitle ? titleSuffix : `${pageTitle} | ${titleSuffix}`
     }, [pageTitle])

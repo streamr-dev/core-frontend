@@ -146,8 +146,14 @@ msgstr "Telegram"
 msgid "general.terms"
 msgstr "Terms & Conditions"
 
-msgid "general.title.suffix"
+msgid "marketplace.title.suffix"
 msgstr "Streamr Marketplace"
+
+msgid "core.title.suffix"
+msgstr "Streamr Core"
+
+msgid "docs.title.suffix"
+msgstr "Streamr Docs"
 
 msgid "general.trello"
 msgstr "Trello"

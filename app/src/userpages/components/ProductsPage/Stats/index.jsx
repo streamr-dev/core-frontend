@@ -1,12 +1,12 @@
 // @flow
 
 import React, { useEffect, useState } from 'react'
-import Helmet from 'react-helmet'
 import { I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 import styled from 'styled-components'
 
+import CoreHelmet from '$shared/components/CoreHelmet'
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import Header from '../Header'
@@ -85,7 +85,7 @@ const Stats = () => {
             )}
             contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
         >
-            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.stats')}`} />
+            <CoreHelmet pageTitle={I18n.t('userpages.title.stats')} />
             <StyledListContainer>
                 {!!dataUnionDeployed && (
                     <React.Fragment>

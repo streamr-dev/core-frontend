@@ -3,9 +3,8 @@
 import React, { useCallback, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import merge from 'lodash/merge'
-import Helmet from 'react-helmet'
-import { I18n } from 'react-redux-i18n'
 
+import MarketplaceHelmet from '$mp/components/MarketplaceHelmet'
 import ProductsComponent from '$mp/components/Products'
 import ActionBar from '$mp/components/ActionBar'
 import Layout from '$shared/components/Layout'
@@ -82,7 +81,7 @@ const Products = () => {
             innerClassname={styles.productsInner}
             footer={false}
         >
-            <Helmet title={I18n.t('general.title.suffix')} />
+            <MarketplaceHelmet />
             <ActionBar
                 filter={selectedFilter}
                 categories={categories}

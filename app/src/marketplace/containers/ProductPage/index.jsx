@@ -2,12 +2,11 @@
 
 import React, { useEffect, useCallback, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
-import { Helmet } from 'react-helmet'
 import { withRouter } from 'react-router-dom'
-
 import styled from 'styled-components'
 import Layout from '$shared/components/Layout'
+
+import MarketplaceHelmet from '$mp/components/MarketplaceHelmet'
 import type { ProductId } from '$mp/flowtype/product-types'
 import * as RouterContext from '$shared/contexts/Router'
 import ProductController, { useController } from '../ProductController'
@@ -79,7 +78,7 @@ const ProductPage = () => {
 
     return (
         <Layout theme={theme}>
-            <Helmet title={`${product.name} | ${I18n.t('general.title.suffix')}`} />
+            <MarketplaceHelmet productName={product.name} />
             <LoadingIndicator loading={isPending} />
             <Page />
             <PurchaseModal />
@@ -90,6 +89,7 @@ const ProductPage = () => {
 
 const LoadingView = () => (
     <Layout>
+        <MarketplaceHelmet />
         <LoadingIndicator loading />
     </Layout>
 )

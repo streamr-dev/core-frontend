@@ -1,9 +1,9 @@
 // @flow
 
 import * as React from 'react'
-import Helmet from 'react-helmet'
 import styled from 'styled-components'
 
+import CoreHelmet from '$shared/components/CoreHelmet'
 import Footer from '../Footer'
 import Logo from '../Logo'
 import styles from './authLayout.pcss'
@@ -44,7 +44,7 @@ const Panel = styled.div`
 
 const AuthLayout = ({ children }: Props) => (
     <React.Fragment>
-        <Helmet
+        <CoreHelmet
             htmlAttributes={{
                 class: styles.html,
             }}

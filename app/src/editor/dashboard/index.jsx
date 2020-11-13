@@ -1,8 +1,8 @@
 import React, { Component, useContext } from 'react'
 import { withRouter } from 'react-router-dom'
-import { Helmet } from 'react-helmet'
 import { useSelector } from 'react-redux'
 
+import CoreHelmet from '$shared/components/CoreHelmet'
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
@@ -197,7 +197,7 @@ const DashboardEdit = withRouter(class DashboardEdit extends Component {
         const { dashboard, sidebar, hasSharePermission, hasDeletePermission } = this.props
         return (
             <div className={styles.DashboardEdit}>
-                <Helmet title={`${dashboard.name} | Streamr Core`} />
+                <CoreHelmet pageTitle={dashboard.name} />
                 <Dashboard
                     className={styles.Dashboard}
                     dashboard={dashboard}

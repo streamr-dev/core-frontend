@@ -5,18 +5,18 @@ import { Helmet } from 'react-helmet'
 import { I18n } from 'react-redux-i18n'
 
 type Props = {
-    pageTitle: string,
+    productName?: string,
 }
 
-const description = 'Learn more and explore what you can do with Streamr'
-const image = 'https://streamr.network/resources/social/docs.png'
+const description = 'Buy and sell real-time data on the Streamr Marketplace'
+const image = 'https://streamr.network/resources/social/marketplace.png'
 
-export default function DocsHelmet({ pageTitle, ...props }: Props) {
+export default function MarketplaceHelmet({ productName, ...props }: Props) {
     const title = useMemo(() => {
-        const titleSuffix = I18n.t('docs.title.suffix')
+        const titleSuffix = I18n.t('marketplace.title.suffix')
 
-        return !pageTitle ? titleSuffix : `${pageTitle} | ${titleSuffix}`
-    }, [pageTitle])
+        return !productName ? titleSuffix : `${productName} | ${titleSuffix}`
+    }, [productName])
 
     return (
         <Helmet

@@ -1,13 +1,13 @@
 // @flow
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import Helmet from 'react-helmet'
 import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 import { titleize } from '@streamr/streamr-layout'
 import styled, { css } from 'styled-components'
 
+import CoreHelmet from '$shared/components/CoreHelmet'
 import Nav from '$shared/components/Layout/Nav'
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
@@ -320,7 +320,7 @@ const Members = () => {
             loading={fetchingMembers}
             contentClassname={coreLayoutStyles.pad}
         >
-            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.members')}`} />
+            <CoreHelmet pageTitle={I18n.t('userpages.title.members')} />
             <StyledListContainer className={cx(styles.container, {
                 [styles.containerWithSelected]: isAnySelected,
             })}

@@ -3,11 +3,11 @@
 import React, { Fragment, useState, useMemo, useEffect, useCallback, useContext } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
 
+import CoreHelmet from '$shared/components/CoreHelmet'
 import type { Dashboard, DashboardId } from '$userpages/flowtype/dashboard-types'
 import routes from '$routes'
 import { getDashboards, deleteOrRemoveDashboard } from '$userpages/modules/dashboard/actions'
@@ -281,7 +281,7 @@ const DashboardList = () => {
             }
             loading={fetching}
         >
-            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.dashboards')}`} />
+            <CoreHelmet pageTitle={I18n.t('userpages.title.dashboards')} />
             <StyledListContainer>
                 {!fetching && dashboards && dashboards.length <= 0 && (
                     <NoDashboardsView
