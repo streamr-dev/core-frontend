@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import Sidebar from '$shared/components/Sidebar'
-import UserPermissions from './UserPermissions'
+// import UserPermissions from './UserPermissions'
 import ErrorMessage from './ErrorMessage'
+import Share from './Share'
 
 const UnstyledUserList = ({
     items,
@@ -31,6 +32,10 @@ const UnstyledUserList = ({
             {items.map(([userId, userPermissions]) => (
                 <React.Fragment key={userId}>
                     <Sidebar.Container
+                        as={Share}
+                        userId={userId}
+                    />
+                    {/* <Sidebar.Container
                         as={UserPermissions}
                         invalid={!!userErrors[userId]}
                         isSelected={selectedUserId === userId}
@@ -41,7 +46,7 @@ const UnstyledUserList = ({
                         updatePermission={updatePermission}
                         userId={userId}
                         userPermissions={userPermissions}
-                    />
+                    /> */}
                     {!!userErrors[userId] && (
                         <Sidebar.Container as={ErrorMessage}>
                             {userErrors[userId].message}

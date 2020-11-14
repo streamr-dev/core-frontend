@@ -9,6 +9,7 @@ import isValidUserId from '$shared/utils/sharing/isValidUserId'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Errors from '$ui/Errors'
+import { usePermissionsDispatch, ADD_PERMISSION } from '$shared/components/PermissionsProvider'
 
 const Inner = styled.div`
     display: grid;
@@ -28,6 +29,8 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
         if (value === 'anonymous') { return I18n.t('share.error.anonymousUserError') }
     })()
 
+    const dispatch = usePermissionsDispatch()
+
     const onSubmit = useCallback((e) => {
         e.preventDefault()
 
@@ -35,12 +38,17 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
             return
         }
 
+        dispatch({
+            type: ADD_PERMISSION,
+            user: value,
+        })
+
         if (typeof onAdd === 'function') {
             onAdd(value)
         }
 
         setValue('')
-    }, [value, validationError, onAdd])
+    }, [value, validationError, onAdd, dispatch])
 
     const onChange = useCallback((e) => {
         setValue(e.target.value)
