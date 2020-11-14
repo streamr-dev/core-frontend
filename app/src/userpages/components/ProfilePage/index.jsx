@@ -6,7 +6,7 @@ import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
 
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { saveCurrentUser, getUserData } from '$shared/modules/user/actions'
 import Toolbar from '$shared/components/Toolbar'
@@ -108,7 +108,7 @@ export const ProfilePage = () => {
             loading={isLoading}
             loadingClassname={styles.loadingIndicator}
         >
-            <CoreHelmet pageTitle={I18n.t('userpages.title.profile')} />
+            <CoreHelmet title={I18n.t('userpages.title.profile')} />
             <TOCPage title={I18n.t('userpages.profilePage.pageTitle')}>
                 <TOCPage.Section id="profile" title={I18n.t('userpages.profilePage.profile.title')}>
                     <ProfileSettings />

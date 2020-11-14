@@ -6,7 +6,7 @@ import { selectAuthState } from '$shared/modules/user/selectors'
 import SessionContext from '$auth/contexts/Session'
 import cx from 'classnames'
 
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { ErrorPageContent } from '$shared/components/GenericErrorPage'
@@ -406,7 +406,7 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
         const resendTo = settings.endDate
         return (
             <div className={cx(styles.CanvasEdit, cameraControl)} onPaste={this.onPaste}>
-                <CoreHelmet pageTitle={canvas.name} />
+                <CoreHelmet title={canvas.name} />
                 <Subscription
                     uiChannel={canvas.uiChannel}
                     resendFrom={canvas.adhoc ? resendFrom : undefined}

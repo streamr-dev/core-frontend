@@ -7,7 +7,7 @@ import BN from 'bignumber.js'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
 
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
 import * as transactionActions from '$userpages/modules/transactionHistory/actions'
@@ -131,7 +131,7 @@ const TransactionList = () => {
                 <SearchPlaceholder />
             }
         >
-            <CoreHelmet pageTitle={I18n.t('userpages.title.transactions')} />
+            <CoreHelmet title={I18n.t('userpages.title.transactions')} />
             <StyledListContainer>
                 {!isLoading && transactions && transactions.length <= 0 && (
                     <NoTransactionsView

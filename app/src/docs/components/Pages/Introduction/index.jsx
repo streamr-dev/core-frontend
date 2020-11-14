@@ -2,12 +2,12 @@
 
 import React from 'react'
 import DocsLayout from '$docs/components/DocsLayout'
-import DocsHelmet from '$docs/components/DocsHelmet'
+import { DocsHelmet } from '$shared/components/Helmet'
 import IntroductionContent from '$docs/content/introduction/introduction.mdx'
 
 const Introduction = () => (
     <DocsLayout>
-        <DocsHelmet pageTitle="Introduction" />
+        <DocsHelmet title="Introduction" />
         <section>
             <IntroductionContent />
         </section>

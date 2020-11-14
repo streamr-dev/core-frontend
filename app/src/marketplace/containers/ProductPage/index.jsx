@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import Layout from '$shared/components/Layout'
 
-import MarketplaceHelmet from '$mp/components/MarketplaceHelmet'
+import { MarketplaceHelmet } from '$shared/components/Helmet'
 import type { ProductId } from '$mp/flowtype/product-types'
 import * as RouterContext from '$shared/contexts/Router'
 import ProductController, { useController } from '../ProductController'
@@ -78,7 +78,7 @@ const ProductPage = () => {
 
     return (
         <Layout theme={theme}>
-            <MarketplaceHelmet productName={product.name} />
+            <MarketplaceHelmet title={product.name} />
             <LoadingIndicator loading={isPending} />
             <Page />
             <PurchaseModal />

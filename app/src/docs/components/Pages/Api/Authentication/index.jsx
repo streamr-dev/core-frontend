@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import DocsHelmet from '$docs/components/DocsHelmet'
+import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import AuthenticationContent from '$docs/content/api/authentication.mdx'
 
 const Authentication = () => (
     <DocsLayout>
-        <DocsHelmet pageTitle="Authentication" />
+        <DocsHelmet title="Authentication" />
         <section>
             <AuthenticationContent />
         </section>

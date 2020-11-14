@@ -4,7 +4,7 @@ import React, { useMemo, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import Layout from '../Layout'
 import { getFilters } from '../../utils/constants'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
@@ -101,7 +101,7 @@ const PurchasesPage = () => {
             }
             loading={fetching}
         >
-            <CoreHelmet pageTitle={I18n.t('userpages.title.subscriptions')} />
+            <CoreHelmet title={I18n.t('userpages.title.subscriptions')} />
             <ListContainer className={styles.corepageContentContainer} >
                 {!fetching && purchases && !purchases.length && (
                     <NoPurchasesView

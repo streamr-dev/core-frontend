@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import routes from '$routes'
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import {
     getStreams,
     clearStreamsList,
@@ -221,7 +221,7 @@ const StreamList = () => {
             }
             loading={fetching}
         >
-            <CoreHelmet pageTitle={I18n.t('userpages.title.streams')} />
+            <CoreHelmet title={I18n.t('userpages.title.streams')} />
             <StyledListContainer>
                 {!fetching && streams && streams.length <= 0 && (
                     <NoStreamsView

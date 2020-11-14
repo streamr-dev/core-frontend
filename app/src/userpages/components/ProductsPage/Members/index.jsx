@@ -7,7 +7,7 @@ import cx from 'classnames'
 import { titleize } from '@streamr/streamr-layout'
 import styled, { css } from 'styled-components'
 
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import Nav from '$shared/components/Layout/Nav'
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
@@ -320,7 +320,7 @@ const Members = () => {
             loading={fetchingMembers}
             contentClassname={coreLayoutStyles.pad}
         >
-            <CoreHelmet pageTitle={I18n.t('userpages.title.members')} />
+            <CoreHelmet title={I18n.t('userpages.title.members')} />
             <StyledListContainer className={cx(styles.container, {
                 [styles.containerWithSelected]: isAnySelected,
             })}

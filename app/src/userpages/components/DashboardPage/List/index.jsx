@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
 
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import type { Dashboard, DashboardId } from '$userpages/flowtype/dashboard-types'
 import routes from '$routes'
 import { getDashboards, deleteOrRemoveDashboard } from '$userpages/modules/dashboard/actions'
@@ -281,7 +281,7 @@ const DashboardList = () => {
             }
             loading={fetching}
         >
-            <CoreHelmet pageTitle={I18n.t('userpages.title.dashboards')} />
+            <CoreHelmet title={I18n.t('userpages.title.dashboards')} />
             <StyledListContainer>
                 {!fetching && dashboards && dashboards.length <= 0 && (
                     <NoDashboardsView

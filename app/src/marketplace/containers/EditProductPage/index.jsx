@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import * as UndoContext from '$shared/contexts/Undo'
@@ -220,7 +220,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             })}
             loading={isLoading || (isPreview && fetchingAllStreams)}
         >
-            <CoreHelmet pageTitle={product.name} />
+            <CoreHelmet title={product.name} />
             {isPreview && (
                 <Preview />
             )}

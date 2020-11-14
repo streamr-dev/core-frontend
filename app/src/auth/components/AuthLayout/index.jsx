@@ -3,7 +3,7 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
-import CoreHelmet from '$shared/components/CoreHelmet'
+import { CoreHelmet } from '$shared/components/Helmet'
 import Footer from '../Footer'
 import Logo from '../Logo'
 import styles from './authLayout.pcss'

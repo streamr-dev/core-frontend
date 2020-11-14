@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import DocsHelmet from '$docs/components/DocsHelmet'
+import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import IntroToDashboards from '$docs/content/dashboards/introToDashboards.mdx'
 
 const Dashboards = () => (
     <DocsLayout>
-        <DocsHelmet pageTitle="Dashboards" />
+        <DocsHelmet title="Dashboards" />
         <section>
             <section>
                 <IntroToDashboards />
