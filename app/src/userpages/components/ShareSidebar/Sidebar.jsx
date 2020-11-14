@@ -13,7 +13,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as State from './state'
 import styles from './ShareSidebar.pcss'
-import InputNewShare from './InputNewShare'
+import NewShareForm from './NewShareForm'
 import useAsyncCallbackWithState from './hooks/useAsyncCallbackWithState'
 import usePrevious from './hooks/usePrevious'
 import useSlideIn from './hooks/useSlideIn'
@@ -176,10 +176,7 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
                     onChange={onAnonymousAccessChange}
                     value={anonymousPermissions.get ? ALLOW_WITH_LINK : ALLOW_ONLY_INVITED}
                 />
-                <InputNewShare
-                    currentUser={currentUser}
-                    onChange={addUser}
-                />
+                <NewShareForm onAdd={addUser} />
             </Sidebar.Container>
             <UserList
                 items={userEntries}
@@ -241,6 +238,7 @@ const ShareSidebar = styled(UnstyledShareSidebar)`
     height: 100%;
     max-height: stretch;
 
+    ${NewShareForm} ${Label},
     * + ${Label} {
         margin-top: 16px;
     }
