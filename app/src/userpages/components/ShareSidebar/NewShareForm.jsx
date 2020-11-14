@@ -21,7 +21,7 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
 
     const [focused, setFocused] = useState(false)
 
-    const [immediateError, setImmediateError] = useState(false)
+    const [showErrorsImmediately, setShowErrorsImmediately] = useState(false)
 
     const validationError = (() => {
         if (!isValidUserId(value)) { return I18n.t('share.error.invalidUserError') }
@@ -44,7 +44,7 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
 
     const onChange = useCallback((e) => {
         setValue(e.target.value)
-        setImmediateError(false)
+        setShowErrorsImmediately(false)
     }, [])
 
     const onFocus = useCallback(() => {
@@ -53,14 +53,14 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
 
     const onBlur = useCallback(() => {
         setFocused(false)
-        setImmediateError(false)
+        setShowErrorsImmediately(false)
     }, [])
 
     const onKeyDown = useCallback(({ key }) => {
         if (key === 'Enter' && validationError) {
             // Invalid values prevent Enter key from submitting the form. That's why the following
             // is here and not in `onSubmit`.
-            setImmediateError(true)
+            setShowErrorsImmediately(true)
         }
     }, [validationError])
 
@@ -68,7 +68,7 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
 
     const uid = useUniqueId('InputNewShare')
 
-    const showValidationError = (immediateError || (!focused && !!value)) && !!validationError
+    const showValidationError = (showErrorsImmediately || (!focused && !!value)) && !!validationError
 
     return (
         <form className={className} onSubmit={onSubmit}>
