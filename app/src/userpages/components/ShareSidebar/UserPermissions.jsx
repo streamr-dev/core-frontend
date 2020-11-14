@@ -1,4 +1,5 @@
 import React, { useCallback, useReducer, useEffect, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
 import { I18n } from 'react-redux-i18n'
@@ -12,6 +13,7 @@ import * as State from './state'
 import useMeasure from './hooks/useMeasure'
 import usePrevious from './hooks/usePrevious'
 import { MEDIUM } from '$shared/utils/styled'
+import { selectUsername } from '$shared/modules/user/selectors'
 import ErrorMessage from './ErrorMessage'
 
 const noop = () => {}
@@ -190,8 +192,9 @@ const UnstyledUserPermissions = ({
     className,
     onSelect,
     isSelected,
-    isCurrentUser,
 }) => {
+    const currentUserId = useSelector(selectUsername)
+
     const selectedGroupName = State.findPermissionGroupName(resourceType, userPermissions)
     // custom handling:
     // if user edits permissions after clicking a preset, preset will be set to custom (if config doesn't match another preset)
@@ -226,7 +229,7 @@ const UnstyledUserPermissions = ({
                 <div>
                     <h4 title={userId}>
                         {userId}
-                        {!!isCurrentUser && ' (You)'}
+                        {currentUserId === userId && ' (You)'}
                     </h4>
                     <Role visible={!isSelected}>
                         {isCustom ? 'Custom' : startCase(selectedGroupName)}

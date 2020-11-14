@@ -184,7 +184,6 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
                 removeUser={removeUser}
                 updatePermission={updatePermission}
                 permissions={permissions}
-                currentUser={currentUser}
                 userErrors={userErrors}
                 selectedUserId={selectedUserId}
                 onSelect={setSelectedUserId}

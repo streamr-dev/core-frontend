@@ -5,7 +5,6 @@ import UserPermissions from './UserPermissions'
 import ErrorMessage from './ErrorMessage'
 
 const UnstyledUserList = ({
-    currentUser,
     items,
     onSelect,
     permissions,
@@ -34,7 +33,6 @@ const UnstyledUserList = ({
                     <Sidebar.Container
                         as={UserPermissions}
                         invalid={!!userErrors[userId]}
-                        isCurrentUser={currentUser === userId}
                         isSelected={selectedUserId === userId}
                         onSelect={onSelect}
                         permissions={permissions}
