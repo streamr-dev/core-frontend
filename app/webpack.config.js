@@ -290,6 +290,7 @@ module.exports = {
     devServer: {
         historyApiFallback: {
             index: publicPath,
+            disableDotRule: true,
         },
         hot: true,
         inline: true,
