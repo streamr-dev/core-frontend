@@ -40,7 +40,6 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
         onAnonymousAccessChange,
         newUserIdList,
         setNewUserIdList,
-        selectedUserId,
         setSelectedUserId,
     } = useUserPermissionState(props)
 
@@ -166,14 +165,7 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
                 <NewShareForm onAdd={addUser} />
             </Sidebar.Container>
             <UserList
-                items={userEntries}
-                resourceType={resourceType}
-                removeUser={removeUser}
-                updatePermission={updatePermission}
-                permissions={permissions}
                 userErrors={userErrors}
-                selectedUserId={selectedUserId}
-                onSelect={setSelectedUserId}
             />
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
             <ErrorMessage.Overlay

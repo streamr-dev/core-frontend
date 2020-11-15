@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
-import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION } from '$shared/components/PermissionsProvider'
+import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION, REMOVE_PERMISSION } from '$shared/components/PermissionsProvider'
 import * as Groups from '$shared/components/PermissionsProvider/groups'
 import Operations from '$shared/components/PermissionsProvider/operations'
 import { getOperationKeys, lookup } from '$shared/components/PermissionsProvider/packer'
@@ -13,6 +13,7 @@ import useMeasure from './hooks/useMeasure'
 import { MEDIUM } from '$shared/utils/styled'
 import Checkbox from './Checkbox'
 import RadioButtonGroup from './RadioButtonGroup'
+import { isFormElement } from '$shared/utils/isEditableElement'
 
 const noop = () => {}
 
@@ -167,7 +168,22 @@ const DismissBox = styled.div`
     width: 100%;
 `
 
-const UnstyledShare = ({ className, userId }) => {
+const Root = styled.div`
+    ${({ highlight }) => !!highlight && css`
+        background-color: #fdfdfd;
+    `}
+
+    ${({ highlight }) => !highlight && css`
+        :hover ${RemoveButton} {
+            opacity: 1;
+            transition-delay: 0s;
+            visibility: visible;
+        }
+    `}
+
+`
+
+const UnstyledShare = ({ className, userId, onSelect, selected }) => {
     const { resourceType, changeset, permissions } = usePermissionsState()
 
     const currentUserId = useSelector(selectUsername)
@@ -176,22 +192,28 @@ const UnstyledShare = ({ className, userId }) => {
 
     const ownerCombination = Groups[resourceType].owner
 
-    const onClick = useCallback(() => {
-    }, [])
+    const onClick = useCallback((e) => {
+        if (!isFormElement(e.target) && !selected) {
+            onSelect(userId)
+        }
+    }, [selected, onSelect, userId])
 
     const onDismiss = useCallback(() => {
-    }, [])
+        onSelect()
+    }, [onSelect])
+
+    const dispatch = usePermissionsDispatch()
 
     const onRemoveClick = useCallback(() => {
-    }, [])
-
-    const isSelected = false
+        dispatch({
+            type: REMOVE_PERMISSION,
+            user: userId,
+        })
+    }, [dispatch, userId])
 
     const isCustom = false
 
     const group = 'Undefined'
-
-    const dispatch = usePermissionsDispatch()
 
     const onPermissionChange = useCallback((operationKey, enabled) => {
         const value = Operations[operationKey]
@@ -205,14 +227,15 @@ const UnstyledShare = ({ className, userId }) => {
     }, [userId, userCombination, dispatch])
 
     return (
-        <div
+        <Root
             className={className}
             onClick={onClick}
             onKeyDown={noop}
             role="button"
             tabIndex="0"
+            highlight={selected}
         >
-            {false && (
+            {selected && (
                 <DismissBox
                     onClick={onDismiss}
                 />
@@ -223,20 +246,19 @@ const UnstyledShare = ({ className, userId }) => {
                         {userId}
                         {currentUserId === userId && ' (You)'}
                     </h4>
-                    {/* Role */}
-                    <Role visible={!isSelected}>
+                    <Role visible={!selected}>
                         {isCustom ? 'Custom' : group.replace(/^(\w)/, (c) => c.toUpperCase())}
                     </Role>
                 </div>
                 <div>
-                    <Tooltip value="Remove" disabled={isSelected}>
+                    <Tooltip value="Remove" disabled={selected}>
                         <RemoveButton
                             onClick={onRemoveClick}
                         />
                     </Tooltip>
                 </div>
             </Header>
-            <Collapse open>
+            <Collapse open={selected}>
                 <RadioButtonGroup
                     name={`UserPermissions${userId}`}
                     options={[]}
@@ -256,8 +278,7 @@ const UnstyledShare = ({ className, userId }) => {
                     ))}
                 </Checkbox.List>
             </Collapse>
-
-        </div>
+        </Root>
     )
 }
 

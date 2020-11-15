@@ -1,27 +1,21 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import Sidebar from '$shared/components/Sidebar'
-// import UserPermissions from './UserPermissions'
 import ErrorMessage from './ErrorMessage'
 import Share from './Share'
+import { useEditableUserIds } from '$shared/components/PermissionsProvider'
 
-const UnstyledUserList = ({
-    items,
-    onSelect,
-    permissions,
-    removeUser,
-    resourceType,
-    selectedUserId,
-    updatePermission,
-    userErrors,
-    ...props
-}) => {
+const UnstyledUserList = ({ items, userErrors, ...props }) => {
+    const [selectedUserId, setSelectedUserId] = useState()
+
+    const editableUserIds = useEditableUserIds()
+
     const onClick = useCallback((e) => {
         if (e.target === e.currentTarget) {
             // Select none on click background.
-            onSelect()
+            setSelectedUserId()
         }
-    }, [onSelect])
+    }, [])
 
     return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
@@ -29,10 +23,12 @@ const UnstyledUserList = ({
             {...props}
             onClick={onClick}
         >
-            {items.map(([userId, userPermissions]) => (
+            {editableUserIds.map((userId) => (
                 <React.Fragment key={userId}>
                     <Sidebar.Container
                         as={Share}
+                        selected={selectedUserId === userId}
+                        onSelect={setSelectedUserId}
                         userId={userId}
                     />
                     {/* <Sidebar.Container
