@@ -1,13 +1,13 @@
 // @flow
 
 import React from 'react'
-import DocsHelmet from '$docs/components/DocsHelmet'
+import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import ModulesBasicsContent from '$docs/content/canvases/modulesBasics.mdx'
 
 const ModulesBasics = () => (
     <DocsLayout>
-        <DocsHelmet pageTitle="Modules basic" />
+        <DocsHelmet title="Modules basic" />
         <section>
             <ModulesBasicsContent />
         </section>

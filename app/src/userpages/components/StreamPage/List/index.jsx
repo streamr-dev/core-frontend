@@ -3,11 +3,11 @@
 import React, { Fragment, useEffect, useState, useCallback, useMemo, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import Helmet from 'react-helmet'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import routes from '$routes'
+import { CoreHelmet } from '$shared/components/Helmet'
 import {
     getStreams,
     clearStreamsList,
@@ -221,7 +221,7 @@ const StreamList = () => {
             }
             loading={fetching}
         >
-            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.streams')}`} />
+            <CoreHelmet title={I18n.t('userpages.title.streams')} />
             <StyledListContainer>
                 {!fetching && streams && streams.length <= 0 && (
                     <NoStreamsView

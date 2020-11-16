@@ -4,10 +4,10 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
-import Helmet from 'react-helmet'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
 
+import { CoreHelmet } from '$shared/components/Helmet'
 import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
 import * as transactionActions from '$userpages/modules/transactionHistory/actions'
@@ -131,7 +131,7 @@ const TransactionList = () => {
                 <SearchPlaceholder />
             }
         >
-            <Helmet title={`Streamr Core | ${I18n.t('userpages.title.transactions')}`} />
+            <CoreHelmet title={I18n.t('userpages.title.transactions')} />
             <StyledListContainer>
                 {!isLoading && transactions && transactions.length <= 0 && (
                     <NoTransactionsView

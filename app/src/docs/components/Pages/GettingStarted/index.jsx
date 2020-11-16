@@ -1,14 +1,14 @@
 // @flow
 
 import React from 'react'
-import DocsHelmet from '$docs/components/DocsHelmet'
+import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
 import GettingStartedContent from '$docs/content/gettingStarted/gettingStarted.mdx'
 import GetBuilding from '$docs/content/gettingStarted/getBuilding.mdx'
 
 const GettingStarted = () => (
     <DocsLayout>
-        <DocsHelmet pageTitle="Getting Started" />
+        <DocsHelmet title="Getting Started" />
         <section>
             <section>
                 <GettingStartedContent />

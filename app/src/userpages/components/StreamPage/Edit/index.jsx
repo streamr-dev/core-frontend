@@ -30,6 +30,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { MEDIUM } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
+import { CoreHelmet } from '$shared/components/Helmet'
 
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
@@ -273,6 +274,7 @@ const UnstyledEdit = ({
                 />
             )}
         >
+            <CoreHelmet title={stream.id} />
             {transitions.map(({ item, key, props: style }) => (
                 item && (
                     <animated.div

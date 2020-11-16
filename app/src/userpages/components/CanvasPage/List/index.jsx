@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import { Translate, I18n } from 'react-redux-i18n'
-import { Helmet } from 'react-helmet'
 import styled from 'styled-components'
 
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
 
+import { CoreHelmet } from '$shared/components/Helmet'
 import Layout from '$userpages/components/Layout'
 import { getCanvases, deleteOrRemoveCanvas } from '$userpages/modules/canvas/actions'
 import { selectCanvases, selectFetching } from '$userpages/modules/canvas/selectors'
@@ -284,7 +284,7 @@ const CanvasList = () => {
             loading={fetching}
         >
             <StyledListContainer>
-                <Helmet title={`Streamr Core | ${I18n.t('userpages.canvases.title')}`} />
+                <CoreHelmet title={I18n.t('userpages.canvases.title')} />
                 {!fetching && canvases && !canvases.length && (
                     <NoCanvasesView
                         hasFilter={!!filter && (!!filter.search || !!filter.key)}

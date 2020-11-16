@@ -24,6 +24,8 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
 import Nav from '$shared/components/Layout/Nav'
+import { CoreHelmet } from '$shared/components/Helmet'
+
 import Storage from './shared/Storage'
 
 export const Text = styled(UnstyledText)`
@@ -197,6 +199,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                 />
             )}
         >
+            <CoreHelmet title={stream.id} />
             <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.readOnlyStream')}>
                 <TOCSection
                     id="details"
