@@ -172,6 +172,11 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
             })
 
             dispatch(integrationKeysSuccess(ethereumIdentities, privateKeys))
+
+            return {
+                ethereumIdentities,
+                privateKeys,
+            }
         }, (error) => {
             dispatch(integrationKeysError({
                 message: error.message,

@@ -11,13 +11,13 @@ import {
     completeTransaction,
     transactionError,
 } from '$mp/modules/transactions/actions'
-import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
 import { getTransactionsFromSessionStorage } from '$shared/utils/transactions'
 import TransactionError from '$shared/errors/TransactionError'
 import Web3Poller from '$shared/web3/web3Poller'
 import { useBalances } from '$shared/hooks/useBalances'
 import { selectUserData } from '$shared/modules/user/selectors'
 import type { NumberString } from '$shared/flowtype/common-types'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 
 type Props = {
     children?: Node,
@@ -99,6 +99,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     }, [handleTransactionComplete, handleTransactionError])
 
     // Fetch integrations keys and poll balances
+    const { load: loadIntegrationKeys } = useEthereumIdentities()
     const { update: updateBalances } = useBalances()
     const balanceTimeout = useRef()
     const balancePoll = useCallback(() => {
@@ -114,7 +115,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         if (!username) { return () => {} }
 
         // fetch the integration keys first and then start polling for the balance
-        dispatch(fetchIntegrationKeys())
+        loadIntegrationKeys()
             .then(() => {
                 balancePoll()
             })
@@ -122,7 +123,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         return () => {
             clearTimeout(balanceTimeout.current)
         }
-    }, [dispatch, balancePoll, username])
+    }, [loadIntegrationKeys, balancePoll, username])
 
     // Poll network
     useEffect(() => {

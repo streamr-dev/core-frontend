@@ -40,6 +40,9 @@ import useModal from '$shared/hooks/useModal'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
 import SvgIcon from '$shared/components/SvgIcon'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
+import { getEnsDomains } from '$shared/modules/integrationKey/services'
+import Spinner from '$shared/components/Spinner'
 
 const Description = styled(Translate)`
     margin-bottom: 3rem;
@@ -102,6 +105,27 @@ const QuestionIcon = styled.div`
     }
 `
 
+const DisabledDomain = styled.div`
+    background-color: #efefef;
+    color: #525252;
+    border: 1px solid #EFEFEF;
+    border-radius: 4px;
+    font-size: 1rem;
+    height: 40px;
+    line-height: 1;
+    padding: 0 1rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    > span {
+        flex: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+`
+
 // this default data is only used for display purposes
 const defaultStreamData = {
     id: 'newStream',
@@ -114,6 +138,7 @@ const defaultStreamData = {
 }
 
 const DEFAULT_DOMAIN = 'sandbox'
+const ADD_DOMAIN_URL = 'https://ens.domains'
 
 const getValidId = ({ domain, pathname }) => {
     const id = `${domain}/${pathname}`
@@ -173,18 +198,50 @@ const UnstyledNew = (props) => {
     const contentChangedRef = useRef(false)
     const dispatch = useDispatch()
     const { api: confirmExitDialog } = useModal('confirmExit')
-
+    const { load: loadIntegrationKeys, ethereumIdentities } = useEthereumIdentities()
+    const [domains, setDomains] = useState([])
+    const [loadingDomains, setLoadingDomains] = useState(true)
+    const ethereumIdentitiesRef = useRef([])
+    ethereumIdentitiesRef.current = ethereumIdentities
     const isMounted = useIsMounted()
+
+    const loadDomains = useCallback(async () => {
+        const addresses = ethereumIdentitiesRef.current.map(({ json }) => json.address)
+
+        try {
+            const { data } = await getEnsDomains({
+                addresses,
+            })
+
+            if (isMounted() && Array.isArray(data.domains)) {
+                setDomains(data.domains)
+            }
+        } catch (e) {
+            console.warn(e)
+        } finally {
+            if (isMounted()) {
+                setLoadingDomains(false)
+            }
+        }
+    }, [isMounted])
+
+    useEffect(() => {
+        loadIntegrationKeys()
+            .then(loadDomains)
+    }, [loadIntegrationKeys, loadDomains])
 
     const domainOptions = useMemo(() => ([{
         value: DEFAULT_DOMAIN,
         label: DEFAULT_DOMAIN,
     },
-        // ... todo: get domains
-    /* {
+    ...domains.map(({ name }) => ({
+        value: name,
+        label: name,
+    })),
+    {
         value: undefined,
         label: 'Add new domain',
-    } */]), [])
+    }]), [domains])
 
     const confirmIsSaved = useCallback(async () => {
         const { pathname, description } = streamDataRef.current || {}
@@ -212,7 +269,7 @@ const UnstyledNew = (props) => {
 
     const onDomainChange = useCallback(({ value: domain }) => {
         if (!domain) {
-            console.warn('Adding new domains is not implemented!')
+            window.open(ADD_DOMAIN_URL, '_blank', 'noopener noreferrer')
         } else {
             updateStream({ domain })
         }
@@ -324,7 +381,7 @@ const UnstyledNew = (props) => {
 
     const saveEnabled = !!pathname && !loading
     const isDisabled = !!loading
-    const isDomainDisabled = isDisabled || domainOptions.length <= 1
+    const isDomainDisabled = isDisabled || domainOptions.length <= 1 || loadingDomains
 
     const transitions = useTransition(!finished, null, {
         config: {
@@ -389,6 +446,7 @@ const UnstyledNew = (props) => {
                                     value="userpages.streams.edit.details.info.description"
                                     tag="p"
                                     defaultDomain={DEFAULT_DOMAIN}
+                                    addDomainUrl={ADD_DOMAIN_URL}
                                     dangerousHTML
                                 />
                                 <FormGroup>
@@ -401,12 +459,12 @@ const UnstyledNew = (props) => {
                                         `}
                                     >
                                         {!!isDomainDisabled && (
-                                            <Text
-                                                value={domain || ''}
-                                                readOnly
-                                                disabled
-                                                name="domain"
-                                            />
+                                            <DisabledDomain>
+                                                <span>{domain || ''}</span>
+                                                {!!loadingDomains && (
+                                                    <Spinner size="small" color="gray" />
+                                                )}
+                                            </DisabledDomain>
                                         )}
                                         {!isDomainDisabled && (
                                             <Select

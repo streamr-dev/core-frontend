@@ -439,7 +439,7 @@ msgid "userpages.streams.edit.details.info.description"
 msgstr ""
 "All streams require a unique path in the format <strong>domain/pathname</strong>. Choose a unique name, "
 "and create your stream in the default <strong>%{defaultDomain}</strong> domain or "
-"<a href=\"https://ens.domains\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register and use your own domain</a>."
+"<a href=\"%{addDomainUrl}\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register and use your own domain</a>."
 
 msgid "userpages.streams.edit.details.domain.label"
 msgstr "Domain"
