@@ -92,6 +92,8 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     }, [dispatch, loadEthIdentities, loadContractProduct, productId, isMounted])
 
     useEffect(() => {
+        if (!account) { return }
+
         getBalances()
             .then(([eth, data, dai]) => {
                 setBalances({

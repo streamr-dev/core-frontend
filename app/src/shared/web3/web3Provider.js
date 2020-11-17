@@ -88,7 +88,16 @@ export const validateWeb3 = async ({ web3: _web3, checkNetwork = true }: Validat
     // enable metamask
     if (!_web3.isLegacy) {
         try {
-            await ethereum.enable()
+            // ethereum.enable() is deprecated and may be removed in the future.
+            // Prefer 'eth_requestAccounts' RPC method instead
+            if (typeof ethereum.request === 'function') {
+                await ethereum.request({
+                    method: 'eth_requestAccounts',
+                })
+            } else {
+                // ethereum.request is available since MetaMask v. 8, fallback to ethereum.enable()
+                await ethereum.enable()
+            }
         } catch (e) {
             console.warn(e)
             throw new Web3NotEnabledError()
