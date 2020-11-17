@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef, useEffect, useContext } from 'react'
+import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Label from '$ui/Label'
 import Sidebar from '$shared/components/Sidebar'
-import { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as State from './state'
@@ -121,7 +121,7 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
     }, [onClose])
 
     // prevent sidebar closing if unsaved changes
-    const { addTransitionCheck, removeTransitionCheck } = useContext(SidebarContext)
+    const { addTransitionCheck, removeTransitionCheck } = useSidebar()
 
     // true if sidebar can close safely without cancel
     const checkCanClose = useCallback(() => {

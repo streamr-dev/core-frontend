@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useEffect, useMemo, useCallback, useState, useContext } from 'react'
+import React, { Fragment, useEffect, useMemo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { push } from 'connected-react-router'
@@ -30,7 +30,7 @@ import useCopy from '$shared/hooks/useCopy'
 import { CanvasTile } from '$shared/components/Tile'
 import Grid from '$shared/components/Tile/Grid'
 import Sidebar from '$shared/components/Sidebar'
-import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import routes from '$routes'
 import resourceUrl from '$shared/utils/resourceUrl'
@@ -67,7 +67,7 @@ const StyledListContainer = styled(ListContainer)`
 `
 
 function CanvasPageSidebar({ canvas }) {
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
     const dispatch = useDispatch()
 
     const canvasId = canvas && canvas.id
@@ -136,7 +136,7 @@ const CanvasList = () => {
     const fetchingPermissions = useSelector(selectFetchingPermissions)
     const permissions = useSelector(selectCanvasPermissions)
 
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
 
     useEffect(() => {
         dispatch(getCanvases(filter))

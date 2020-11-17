@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Context, type Node } from 'react'
+import React, { type Context, type Node, useContext } from 'react'
 
 type SidebarContextType = {
     open: (string, ?boolean) => void,
@@ -28,6 +28,8 @@ export const SidebarContext: Context<SidebarContextType> = React.createContext({
     addTransitionCheck: notInitialized,
     removeTransitionCheck: notInitialized,
 })
+
+export const useSidebar = () => useContext(SidebarContext)
 
 export type Props = {
     children?: Node,

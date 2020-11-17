@@ -16,7 +16,7 @@ import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { useAnyPending } from '$shared/hooks/usePending'
 import CanvasStyles from '$editor/canvas/index.pcss'
 import Sidebar from '$shared/components/Sidebar'
-import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
 import BodyClass from '$shared/components/BodyClass'
 import DashboardStatus from '$editor/shared/components/Status'
@@ -358,7 +358,7 @@ const DashboardLoader = withRouter(withErrorBoundary(ErrorComponent)(class Dashb
 }))
 
 const DashboardEditWrap = () => {
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
     const { undo, push, replace, state: dashboard } = useContext(UndoContext)
 
     const [{ result: permissions }, loadPermissions] = usePermissionsLoader({

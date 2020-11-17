@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useEffect, useState, useCallback, useMemo, useContext } from 'react'
+import React, { Fragment, useEffect, useState, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
@@ -25,7 +25,7 @@ import ListContainer from '$shared/components/Container/List'
 import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import Sidebar from '$shared/components/Sidebar'
-import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { MD, LG } from '$shared/utils/styled'
 import SnippetDialog from './SnippetDialog'
@@ -82,7 +82,7 @@ const TabletPopover = styled(Popover)`
 `
 
 function StreamPageSidebar({ stream }) {
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
     const dispatch = useDispatch()
 
     const streamId = stream && stream.id
@@ -164,7 +164,7 @@ const StreamList = () => {
 
     const [activeSort, setActiveSort] = useState(undefined)
 
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
 
     const onOpenShareDialog = useCallback((stream) => {
         setDialogTargetStream(stream)

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useState, useMemo, useContext, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
@@ -19,7 +19,7 @@ import CoreLayout from '$shared/components/Layout/Core'
 import CodeSnippets from '$shared/components/CodeSnippets'
 import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
 import Sidebar from '$shared/components/Sidebar'
-import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
 import Nav from '$shared/components/Layout/Nav'
@@ -46,7 +46,7 @@ import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import styles from './edit.pcss'
 
 function StreamPageSidebar({ stream }) {
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
     const dispatch = useDispatch()
 
     const streamId = stream && stream.id
@@ -91,7 +91,7 @@ const UnstyledEdit = ({
     isNewStream,
     ...props
 }: any) => {
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
     const { id: streamId } = stream
     const streamRef = useRef()
     streamRef.current = stream
