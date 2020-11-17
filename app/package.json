@@ -221,7 +221,7 @@
     "react-full-screen": "^0.2.3",
     "react-ga": "^2.5.0",
     "react-grid-layout": "^0.16.6",
-    "react-helmet": "^5.2.0",
+    "react-helmet": "^6.1.0",
     "react-image": "^1.4.0",
     "react-in-viewport": "0.0.36",
     "react-leaflet": "^2.2.0",
