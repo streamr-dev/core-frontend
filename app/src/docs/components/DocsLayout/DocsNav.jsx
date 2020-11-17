@@ -63,7 +63,7 @@ const ProjectMenu = () => (
     </Menu>
 )
 
-const DocsMenu = () => (
+export const DocsMenu = () => (
     <Menu>
         <Menu.Item as={Link} to={docsLinks.gettingStarted}>
             <Translate value="general.gettingStarted" />
@@ -132,7 +132,7 @@ const UnstyledWide = (props) => {
                 highlight
                 toggle={(
                     <Nav.Link>
-                        Docs
+                        <Translate value="general.docs" />
                     </Nav.Link>
                 )}
                 menu={(
