@@ -110,9 +110,6 @@ msgstr "Products"
 msgid "general.dataUnions"
 msgstr "Data Unions"
 
-msgid "general.profile"
-msgstr "Profile"
-
 msgid "general.transactions"
 msgstr "Transactions"
 

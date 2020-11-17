@@ -91,10 +91,6 @@ msgid "general.products"
 msgstr "Produkte"
 
 # missing
-msgid "general.profile"
-msgstr "Profile"
-
-# missing
 msgid "general.transactions"
 msgstr "Transactions"
 

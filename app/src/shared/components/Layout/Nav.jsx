@@ -14,6 +14,22 @@ import SvgIcon from '$shared/components/SvgIcon'
 import User from './User'
 import ActivityList from '$shared/components/ActivityList'
 
+const AvatarlessMenuItem = styled(Menu.Item)`
+    && {
+        padding: 0 4px;
+        margin-bottom: 10px;
+
+        ${User.Avatarless} {
+            text-align: center;
+            background: #F8F8F8;
+            border-radius: 4px;
+            padding: 16px 6px;
+            width: 160px;
+            user-select: none;
+        }
+    }
+`
+
 const UnstyledWide = (props) => {
     const current = useCurrentLocation()
 
@@ -156,18 +172,11 @@ const UnstyledWide = (props) => {
                         )}
                         menu={(
                             <Menu>
-                                <Menu.Item>
+                                <AvatarlessMenuItem>
                                     <User.Avatarless source={currentUser} />
-                                </Menu.Item>
-                                <Menu.Divider />
+                                </AvatarlessMenuItem>
                                 <Menu.Item as={Link} to={routes.profile()}>
-                                    <Translate value="general.profile" />
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.profile({}, 'ethereum-accounts')}>
-                                    <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.profile({}, 'private-keys')}>
-                                    <Translate value="userpages.profilePage.ethereumPrivateKeys.linkTitle" />
+                                    <Translate value="general.settings" />
                                 </Menu.Item>
                                 <Menu.Divider />
                                 <Menu.Item as={Link} to={routes.auth.logout()}>
@@ -226,11 +235,11 @@ const UnstyledNarrow = (props) => {
                 </Nav.Link>
                 {!currentUser ? (
                     <Nav.Link>
-                        Settings
+                        <Translate value="general.settings" />
                     </Nav.Link>
                 ) : (
                     <Nav.Link as={Link} to={routes.profile()}>
-                        Settings
+                        <Translate value="general.settings" />
                     </Nav.Link>
                 )}
             </Nav.Narrow.Body>

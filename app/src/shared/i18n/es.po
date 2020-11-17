@@ -97,10 +97,6 @@ msgid "general.dataUnions"
 msgstr "Data Unions"
 
 # missing
-msgid "general.profile"
-msgstr "Profile"
-
-# missing
 msgid "general.transactions"
 msgstr "Transactions"
 
