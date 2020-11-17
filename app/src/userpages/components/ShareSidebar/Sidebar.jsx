@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Label from '$ui/Label'
 import Sidebar from '$shared/components/Sidebar'
-import { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
+import { useBeforeClose } from '$shared/components/Sidebar/SidebarProvider'
 import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as State from './state'
@@ -121,22 +121,15 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
     }, [onClose])
 
     // prevent sidebar closing if unsaved changes
-    const { addTransitionCheck, removeTransitionCheck } = useSidebar()
+    useBeforeClose(() => {
+        const canClose = !hasChanges || shouldForceCloseRef.current
 
-    // true if sidebar can close safely without cancel
-    const checkCanClose = useCallback(() => {
-        if (!hasChanges) { return true }
-        if (shouldForceCloseRef.current) { return true }
-        setDidTryClose(true)
-        if (isSaving) { return false }
-        return false
-    }, [hasChanges, isSaving, setDidTryClose])
+        if (!canClose) {
+            setDidTryClose(true)
+        }
 
-    // block closing sidebar unless checkCanClose passes
-    useEffect(() => {
-        addTransitionCheck(checkCanClose)
-        return () => removeTransitionCheck(checkCanClose)
-    }, [checkCanClose, addTransitionCheck, removeTransitionCheck])
+        return canClose
+    })
 
     // hide 'save or cancel' warning message after change
     useEffect(() => {

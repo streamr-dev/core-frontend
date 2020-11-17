@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Context, type Node, useContext } from 'react'
+import React, { type Context, type Node, useContext, useRef, useEffect } from 'react'
 
 type SidebarContextType = {
     open: (string, ?boolean) => void,
@@ -30,6 +30,20 @@ export const SidebarContext: Context<SidebarContextType> = React.createContext({
 })
 
 export const useSidebar = () => useContext(SidebarContext)
+
+export const useBeforeClose = (fn: Function) => {
+    const { addTransitionCheck, removeTransitionCheck } = useSidebar()
+
+    const fnRef = useRef(fn)
+
+    fnRef.current = fn
+
+    useEffect(() => {
+        const check = () => fnRef.current()
+        addTransitionCheck(check)
+        return () => removeTransitionCheck(check)
+    }, [addTransitionCheck, removeTransitionCheck])
+}
 
 export type Props = {
     children?: Node,
