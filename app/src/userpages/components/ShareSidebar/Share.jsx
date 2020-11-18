@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
 import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION, REMOVE_PERMISSION } from '$shared/components/PermissionsProvider'
-import * as Groups from '$shared/components/PermissionsProvider/groups'
+import Groups, { NAMES, identify } from '$shared/components/PermissionsProvider/groups'
 import Operations from '$shared/components/PermissionsProvider/operations'
 import { getOperationKeys, lookup } from '$shared/components/PermissionsProvider/packer'
 import { selectUsername } from '$shared/modules/user/selectors'
@@ -14,6 +14,8 @@ import { MEDIUM } from '$shared/utils/styled'
 import Checkbox from './Checkbox'
 import RadioButtonGroup from './RadioButtonGroup'
 import { isFormElement } from '$shared/utils/isEditableElement'
+import ErrorMessage from './ErrorMessage'
+import Sidebar from '$shared/components/Sidebar'
 
 const noop = () => {}
 
@@ -181,10 +183,19 @@ const Root = styled.div`
         }
     `}
 
+    ${({ invalid }) => !invalid && css`
+        border-bottom: 1px solid #efefef;
+    `}
+
+    & + ${ErrorMessage} {
+        border-bottom: 1px solid #efefef;
+    }
 `
 
 const UnstyledShare = ({ className, userId, onSelect, selected }) => {
-    const { resourceType, changeset, permissions } = usePermissionsState()
+    const { resourceType, changeset, permissions, errors } = usePermissionsState()
+
+    const error = errors[userId]
 
     const currentUserId = useSelector(selectUsername)
 
@@ -211,9 +222,11 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
         })
     }, [dispatch, userId])
 
-    const isCustom = false
+    const group = useMemo(() => (
+        identify(resourceType, userCombination)
+    ), [resourceType, userCombination])
 
-    const group = 'Undefined'
+    const isCustom = Groups[resourceType][group] !== userCombination
 
     const onPermissionChange = useCallback((operationKey, enabled) => {
         const value = Operations[operationKey]
@@ -226,59 +239,76 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
         })
     }, [userId, userCombination, dispatch])
 
+    const onGroupClick = useCallback((name) => {
+        dispatch({
+            type: UPDATE_PERMISSION,
+            user: userId,
+            value: Groups[resourceType][name.toLowerCase()],
+        })
+    }, [dispatch, userId, resourceType])
+
     return (
-        <Root
-            className={className}
-            onClick={onClick}
-            onKeyDown={noop}
-            role="button"
-            tabIndex="0"
-            highlight={selected}
-        >
-            {selected && (
-                <DismissBox
-                    onClick={onDismiss}
-                />
+        <Fragment>
+            <Sidebar.Container
+                as={Root}
+                className={className}
+                highlight={selected}
+                invalid={!!error}
+                onClick={onClick}
+                onKeyDown={noop}
+                role="button"
+                tabIndex="0"
+            >
+                {selected && (
+                    <DismissBox
+                        onClick={onDismiss}
+                    />
+                )}
+                <Header>
+                    <div>
+                        <h4 title={userId}>
+                            {userId}
+                            {currentUserId === userId && ' (You)'}
+                        </h4>
+                        <Role visible={!selected}>
+                            {isCustom ? 'Custom' : group.replace(/^(\w)/, (c) => c.toUpperCase())}
+                        </Role>
+                    </div>
+                    <div>
+                        <Tooltip value="Remove" disabled={selected}>
+                            <RemoveButton
+                                onClick={onRemoveClick}
+                            />
+                        </Tooltip>
+                    </div>
+                </Header>
+                <Collapse open={selected}>
+                    <RadioButtonGroup
+                        name={`UserPermissions${userId}`}
+                        options={NAMES[resourceType]}
+                        onChange={onGroupClick}
+                        selectedOption={group}
+                        isCustom={isCustom}
+                    />
+                    <Checkbox.List>
+                        {getOperationKeys(ownerCombination).map((key) => (
+                            <Checkbox
+                                id={`${userId}-${key}`}
+                                key={key}
+                                onChange={onPermissionChange}
+                                operationKey={key}
+                                value={lookup(userCombination, key)}
+                            />
+                        ))}
+                    </Checkbox.List>
+                </Collapse>
+            </Sidebar.Container>
+            {error && (
+                <Sidebar.Container as={ErrorMessage}>
+                    {error.message}
+                </Sidebar.Container>
             )}
-            <Header>
-                <div>
-                    <h4 title={userId}>
-                        {userId}
-                        {currentUserId === userId && ' (You)'}
-                    </h4>
-                    <Role visible={!selected}>
-                        {isCustom ? 'Custom' : group.replace(/^(\w)/, (c) => c.toUpperCase())}
-                    </Role>
-                </div>
-                <div>
-                    <Tooltip value="Remove" disabled={selected}>
-                        <RemoveButton
-                            onClick={onRemoveClick}
-                        />
-                    </Tooltip>
-                </div>
-            </Header>
-            <Collapse open={selected}>
-                <RadioButtonGroup
-                    name={`UserPermissions${userId}`}
-                    options={[]}
-                    onChange={() => {}}
-                    selectedOption={group}
-                    isCustom={isCustom}
-                />
-                <Checkbox.List>
-                    {getOperationKeys(ownerCombination).map((key) => (
-                        <Checkbox
-                            id={`${userId}-${key}`}
-                            key={key}
-                            onChange={onPermissionChange}
-                            operationKey={key}
-                            value={lookup(userCombination, key)}
-                        />
-                    ))}
-                </Checkbox.List>
-            </Collapse>
-        </Root>
+        </Fragment>
     )
 }
 

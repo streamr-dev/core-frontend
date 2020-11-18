@@ -1,7 +1,5 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import Sidebar from '$shared/components/Sidebar'
-import ErrorMessage from './ErrorMessage'
 import Share from './Share'
 import { useEditableUserIds } from '$shared/components/PermissionsProvider'
 
@@ -24,31 +22,12 @@ const UnstyledUserList = ({ items, userErrors, ...props }) => {
             onClick={onClick}
         >
             {editableUserIds.map((userId) => (
-                <React.Fragment key={userId}>
-                    <Sidebar.Container
-                        as={Share}
-                        selected={selectedUserId === userId}
-                        onSelect={setSelectedUserId}
-                        userId={userId}
-                    />
-                    {/* <Sidebar.Container
-                        as={UserPermissions}
-                        invalid={!!userErrors[userId]}
-                        isSelected={selectedUserId === userId}
-                        onSelect={onSelect}
-                        permissions={permissions}
-                        removeUser={removeUser}
-                        resourceType={resourceType}
-                        updatePermission={updatePermission}
-                        userId={userId}
-                        userPermissions={userPermissions}
-                    /> */}
-                    {!!userErrors[userId] && (
-                        <Sidebar.Container as={ErrorMessage}>
-                            {userErrors[userId].message}
-                        </Sidebar.Container>
-                    )}
-                </React.Fragment>
+                <Share
+                    key={userId}
+                    onSelect={setSelectedUserId}
+                    selected={selectedUserId === userId}
+                    userId={userId}
+                />
             ))}
         </div>
     )
