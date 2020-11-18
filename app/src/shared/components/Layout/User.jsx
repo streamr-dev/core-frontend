@@ -27,14 +27,14 @@ const EmptyUser = {
 
 const UnstyledAvatarless = ({ source = EmptyUser, ...props }) => (
     <div {...props}>
-        <Name>
+        <Name title={source.name}>
             {source.name}
             &zwnj;
         </Name>
-        <Username>
+        <Username title={source.username}>
             {isEthereumAddress(source.username) ? (
                 truncate(source.username, {
-                    maxLength: 20,
+                    maxLength: 14,
                 })
             ) : (
                 source.username
