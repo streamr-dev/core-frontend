@@ -48,6 +48,10 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
         onClose()
     }, [onClose])
 
+    const resetFailedToClose = useCallback(() => {
+        setFailedToClose(false)
+    }, [])
+
     usePreventNavigatingAway('You have unsaved changes', () => hasChanges || isSaving)
 
     return (
@@ -60,9 +64,7 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
             <ErrorMessage.Overlay
                 visible={failedToClose}
-                onClick={() => {
-                    setFailedToClose(false)
-                }}
+                onClick={resetFailedToClose}
             />
             <ErrorMessage.Wrapper
                 visible={failedToClose || hasCurrentUserChanges}
