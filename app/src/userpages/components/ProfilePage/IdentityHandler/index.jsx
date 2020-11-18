@@ -116,7 +116,7 @@ const IdentityHandler = () => {
                 integrationKeys={ethereumIdentities || []}
                 truncateValues
                 disabled={isDisabled}
-                activeKeyId={user.username}
+                activeKeyId={user && user.username}
             />
             <ConnectButton
                 type="button"

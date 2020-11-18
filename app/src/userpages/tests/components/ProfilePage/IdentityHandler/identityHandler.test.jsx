@@ -11,6 +11,14 @@ const mockApiOpen = jest.fn(() => ({
 }))
 const mockRemove = jest.fn()
 
+const mockState = {
+    user: {},
+}
+
+jest.mock('react-redux', () => ({
+    useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
+}))
+
 jest.mock('$shared/modules/integrationKey/hooks/useEthereumIdentities', () => (
     jest.fn().mockImplementation(() => ({
         load: mockLoad,

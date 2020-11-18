@@ -85,7 +85,7 @@ export const IntegrationKeyHandler = () => {
                 onEdit={wrappedEdit}
                 truncateValues
                 disabled={isDisabled}
-                activeKeyId={user.username}
+                activeKeyId={user && user.username}
             />
             <Button
                 type="button"
