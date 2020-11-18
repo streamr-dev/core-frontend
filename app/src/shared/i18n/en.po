@@ -188,6 +188,12 @@ msgstr "Docs"
 msgid "general.copy"
 msgstr "Copy"
 
+msgid "general.copyAddress"
+msgstr "Copy address"
+
+msgid "general.copyUsername"
+msgstr "Copy email"
+
 msgid "general.copyToClipboard"
 msgstr "Copy to clipboard"
 

@@ -9,15 +9,44 @@ import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
 import { selectUserData } from '$shared/modules/user/selectors'
-import Avatar from '$shared/components/Avatar'
 import SvgIcon from '$shared/components/SvgIcon'
 import User from './User'
 import ActivityList from '$shared/components/ActivityList'
 
-const AvatarlessMenuItem = styled(Menu.Item)`
-    && {
-        padding: 0 4px;
-        margin-bottom: 10px;
+const CaretDownIcon = styled(SvgIcon)`
+    opacity: 1;
+`
+
+const CaretUpIcon = styled(SvgIcon)`
+    opacity: 0;
+`
+
+const DropdownToggle = styled.div`
+    background: #F8F8F8;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    position: relative;
+
+    svg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        transition: 200ms opacity;
+    }
+`
+
+const SignedInUserMenu = styled(Nav.Wide.Dropdown)`
+    ${Menu} {
+        padding-top: 4px;
+
+        ${Menu.Item}:first-child {
+            padding: 0 4px;
+            margin-bottom: 10px;
+        }
 
         ${User.Avatarless} {
             text-align: center;
@@ -26,6 +55,25 @@ const AvatarlessMenuItem = styled(Menu.Item)`
             padding: 16px 6px;
             width: 160px;
             user-select: none;
+        }
+
+        ${User.Name},
+        ${User.Username} {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+    :hover {
+        ${DropdownToggle} {
+            ${CaretDownIcon} {
+                opacity: 0;
+            }
+
+            ${CaretUpIcon} {
+                opacity: 1;
+            }
         }
     }
 `
@@ -151,30 +199,24 @@ const UnstyledWide = (props) => {
                             )}
                         />
                     </ActivityList>
-                    <Nav.Wide.Dropdown
+                    <User.UsernameCopy username={currentUser.username} />
+                    <SignedInUserMenu
                         edge
                         alignMenu="right"
                         nodeco
                         toggle={(
                             <Nav.Link>
-                                <Avatar
-                                    alt={currentUser.name}
-                                    src={currentUser.imageUrlSmall}
-                                    // eslint-disable-next-line react/jsx-curly-brace-presence
-                                    css={`
-                                        background-color: #efefef;
-                                        border-radius: 50%;
-                                        overflow: hidden;
-                                        width: 32px;
-                                    `}
-                                />
+                                <DropdownToggle>
+                                    <CaretDownIcon name="caretDown" />
+                                    <CaretUpIcon name="caretUp" />
+                                </DropdownToggle>
                             </Nav.Link>
                         )}
                         menu={(
                             <Menu>
-                                <AvatarlessMenuItem>
+                                <Menu.Item>
                                     <User.Avatarless source={currentUser} />
-                                </AvatarlessMenuItem>
+                                </Menu.Item>
                                 <Menu.Item as={Link} to={routes.profile()}>
                                     <Translate value="general.settings" />
                                 </Menu.Item>
@@ -292,6 +334,10 @@ const Wide = styled(UnstyledWide)`
 
     ${User.Username} {
         font-size: 12px;
+    }
+
+    ${User.UsernameCopy} + ${SignedInUserMenu} {
+        margin-left: 0;
     }
 `
 

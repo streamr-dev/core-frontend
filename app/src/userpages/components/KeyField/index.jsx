@@ -14,6 +14,7 @@ import useCopy from '$shared/hooks/useCopy'
 import Label from '$ui/Label'
 import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
+import StatusIcon from '$shared/components/StatusIcon'
 
 import styles from './keyField.pcss'
 
@@ -31,6 +32,7 @@ type Props = {
     labelType: LabelType,
     onToggleEditor?: (boolean) => void,
     labelComponent?: any,
+    active?: boolean,
 }
 
 const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
@@ -49,6 +51,7 @@ const KeyField = ({
     labelType,
     onToggleEditor: onToggleEditorProp,
     labelComponent,
+    active,
 }: Props) => {
     const [waiting, setWaiting] = useState(false)
     const [hidden, setHidden] = useState(!!hideValue)
@@ -161,6 +164,9 @@ const KeyField = ({
             {!editing ? (
                 <div className={styles.keyFieldContainer}>
                     <div className={styles.labelWrapper}>
+                        {!!active && (
+                            <StatusIcon status={StatusIcon.OK} className={styles.status} />
+                        )}
                         <Label htmlFor="keyName" className={styles.label}>
                             &zwnj;
                             <div className={styles.keyNameHolder}>

@@ -45,12 +45,16 @@ const StatusIcon = ({ status = StatusIcon.INACTIVE, className, tooltip = false }
 
     if (tooltip) {
         statusText = (typeof tooltip === 'string') ? tooltip : I18n.t(`shared.status.${status.id || 'inactive'}`)
+
+        return (
+            <Tooltip value={statusText} placement={Tooltip.BOTTOM}>
+                <Icon theme={status} className={className} />
+            </Tooltip>
+        )
     }
 
     return (
-        <Tooltip value={statusText} placement={Tooltip.BOTTOM}>
-            <Icon theme={status} className={className} />
-        </Tooltip>
+        <Icon theme={status} className={className} />
     )
 }
 
