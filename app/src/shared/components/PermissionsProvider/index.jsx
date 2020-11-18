@@ -9,10 +9,12 @@ import { selectUsername } from '$shared/modules/user/selectors'
 const initialState = {
     changeset: {},
     errors: {},
+    locked: true,
     permissions: {},
     raw: {},
     resourceId: undefined,
     resourceType: undefined,
+    fetchCount: 0,
 }
 
 const SET_RESOURCE = 'set resource'
@@ -25,25 +27,51 @@ export const REMOVE_PERMISSION = 'remove permission'
 
 export const UPDATE_PERMISSION = 'update permission'
 
-const SET_ERROR = 'set error'
+export const UNLOCK = 'unlock'
+
+export const PERSIST = 'persist'
+
+export const REFETCH = 'refetch'
 
 const reducer = (state, action) => {
+    // SET_PERMISSIONS and REFETCH are allowed despite the `locked` flag being up. Other actions
+    // are shielded off by the "is locked" check. See below.
     switch (action.type) {
-        case SET_ERROR:
-            if (!action.error) {
-                return {
-                    ...state,
-                    errors: (({ [action.user]: _, ...errors }) => (
-                        errors
-                    ))(state.errors),
-                }
-            }
+        case SET_PERMISSIONS:
+            return Object.entries(state.changeset).reduce((memo, [user, value]) => (
+                reducer(memo, {
+                    type: UPDATE_PERMISSION,
+                    user,
+                    value,
+                })
+            ), {
+                ...state,
+                locked: false,
+                permissions: combineMany(action.permissions),
+                raw: action.permissions,
+            })
 
+        case REFETCH:
             return {
                 ...state,
-                errors: {
-                    [action.user]: action.error,
-                },
+                errors: action.errors,
+                fetchCount: state.fetchCount + 1,
+            }
+
+        default:
+            break
+    }
+
+    // Further actions require "unlocked" state.
+    if (state.locked) {
+        return state
+    }
+
+    switch (action.type) {
+        case PERSIST:
+            return {
+                ...state,
+                locked: true,
             }
 
         case SET_RESOURCE:
@@ -55,15 +83,6 @@ const reducer = (state, action) => {
                 ...initialState,
                 resourceType: action.resourceType,
                 resourceId: action.resourceId,
-            }
-
-        case SET_PERMISSIONS:
-            return {
-                ...state,
-                changeset: {},
-                errors: initialState.errors,
-                permissions: combineMany(action.permissions),
-                raw: action.permissions,
             }
 
         case ADD_PERMISSION:
@@ -229,7 +248,7 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
         }
 
         fetch()
-    }, [resourceType, resourceId, isMounted])
+    }, [resourceType, resourceId, isMounted, state.fetchCount])
 
     return (
         <DispatchContext.Provider value={dispatch}>

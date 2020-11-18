@@ -235,7 +235,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
             type: UPDATE_PERMISSION,
             user: userId,
             // eslint-disable-next-line no-bitwise
-            value: (userCombination | value) - (enabled ? 0 : value),
+            value: (userCombination | value) - (!enabled * value),
         })
     }, [userId, userCombination, dispatch])
 

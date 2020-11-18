@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react'
+import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
@@ -14,15 +14,14 @@ import Md from '$shared/components/Md'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import AnonAccessSelect from './AnonAccessSelect'
 import { usePermissionsState } from '$shared/components/PermissionsProvider'
+import usePersistPermissionDiff from '$shared/components/PermissionsProvider/usePersistPermissionDiff'
 
 const UnstyledShareSidebar = (({ className, onClose }) => {
-    const { changeset } = usePermissionsState()
+    const { changeset, locked } = usePermissionsState()
 
     const hasChanges = Object.keys(changeset).length > 0
 
     const hasCurrentUserChanges = ({}).hasOwnProperty.call(changeset, useSelector(selectUsername))
-
-    const isSaving = false
 
     const dismissedRef = useRef(false)
 
@@ -40,8 +39,11 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
         return canClose
     })
 
+    const persist = usePersistPermissionDiff()
+
     const onSave = useCallback(() => {
-    }, [])
+        persist()
+    }, [persist])
 
     const onCancel = useCallback(() => {
         dismissedRef.current = true
@@ -52,7 +54,11 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
         setFailedToClose(false)
     }, [])
 
-    usePreventNavigatingAway('You have unsaved changes', () => hasChanges || isSaving)
+    useEffect(() => {
+        resetFailedToClose()
+    }, [changeset, resetFailedToClose])
+
+    usePreventNavigatingAway('You have unsaved changes', () => hasChanges)
 
     return (
         <div className={className}>
@@ -61,32 +67,26 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
                 <NewShareForm />
             </Sidebar.Container>
             <UserList />
-            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
-            <ErrorMessage.Overlay
-                visible={failedToClose}
-                onClick={resetFailedToClose}
-            />
-            <ErrorMessage.Wrapper
-                visible={failedToClose || hasCurrentUserChanges}
-            >
-                {isSaving && (
+            <ErrorMessage.Overlay visible={failedToClose} onClick={resetFailedToClose} />
+            <ErrorMessage.Wrapper visible={failedToClose || hasCurrentUserChanges}>
+                {locked && (
                     <Translate value="modal.shareResource.warnSavingChanges" />
                 )}
-                {!isSaving && !!failedToClose && (
+                {!locked && !!failedToClose && (
                     <Md inline>
                         {I18n.t('modal.shareResource.warnUnsavedChanges')}
                     </Md>
                 )}
-                {!isSaving && !failedToClose && !!hasCurrentUserChanges && (
+                {!locked && !failedToClose && !!hasCurrentUserChanges && (
                     <Translate value="modal.shareResource.warnChangingOwnPermission" />
                 )}
             </ErrorMessage.Wrapper>
             <Sidebar.Container
                 as={Footer}
-                disabled={isSaving || !hasChanges}
+                disabled={locked || !hasChanges}
                 onCancel={onCancel}
                 onSave={onSave}
-                waiting={isSaving}
+                waiting={locked}
             />
         </div>
     )
