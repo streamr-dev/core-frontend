@@ -6,7 +6,7 @@ import { Nav, Menu, Button, Link as L } from '@streamr/streamr-layout'
 import { MD as TABLET, LG as DESKTOP, MEDIUM, REGULAR } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import routes from '$routes'
-import docsLinks from '$shared/../docsLinks'
+import { DocsMenu } from '$docs/components/DocsLayout/DocsNav'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Avatar from '$shared/components/Avatar'
@@ -72,26 +72,7 @@ const UnstyledWide = (props) => {
                     </Nav.Link>
                 )}
                 menu={(
-                    <Menu>
-                        <Menu.Item as={Link} to={docsLinks.gettingStarted}>
-                            <Translate value="general.gettingStarted" />
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={docsLinks.streams}>
-                            <Translate value="general.streams" />
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={docsLinks.canvases}>
-                            <Translate value="general.canvases" />
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={docsLinks.dashboards}>
-                            <Translate value="general.dashboards" />
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={docsLinks.products}>
-                            <Translate value="general.products" />
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={docsLinks.dataUnions}>
-                            <Translate value="general.dataUnions" />
-                        </Menu.Item>
-                    </Menu>
+                    <DocsMenu />
                 )}
             />
             {!currentUser && (
