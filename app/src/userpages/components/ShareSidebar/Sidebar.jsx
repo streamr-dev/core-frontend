@@ -1,8 +1,6 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
-import cx from 'classnames'
-import { animated } from 'react-spring'
 import styled from 'styled-components'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -12,11 +10,9 @@ import { useBeforeClose } from '$shared/components/Sidebar/SidebarProvider'
 import { selectUserData } from '$shared/modules/user/selectors'
 
 import * as State from './state'
-import styles from './ShareSidebar.pcss'
 import NewShareForm from './NewShareForm'
 import useAsyncCallbackWithState from './hooks/useAsyncCallbackWithState'
 import usePrevious from './hooks/usePrevious'
-import useSlideIn from './hooks/useSlideIn'
 import useUserPermissionState from './hooks/useUserPermissionState'
 import usePermissionsLoader from './hooks/usePermissionsLoader'
 import savePermissions from './utils/savePermissions'
@@ -138,8 +134,6 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
 
     usePreventNavigatingAway('You have unsaved changes', () => hasChanges || isSaving)
 
-    const [bindWarningMessages, warningMessagesStyle] = useSlideIn({ isVisible: didTryClose || hasCurrentUserChanges })
-
     /* render (no hooks past here) */
 
     if (error) { return error.message } // this shouldn't happen
@@ -182,33 +176,27 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
                 onSelect={setSelectedUserId}
             />
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
-            <div
-                className={cx(styles.errorOverlay, {
-                    [styles.errorOverlayVisible]: didTryClose,
-                })}
-                onClick={() => setDidTryClose(false)}
+            <ErrorMessage.Overlay
+                visible={didTryClose}
+                onClick={() => {
+                    setDidTryClose(false)
+                }}
             />
-            <animated.div
-                className={styles.errorMessageWrapper}
-                style={warningMessagesStyle}
+            <ErrorMessage.Wrapper
+                visible={didTryClose || hasCurrentUserChanges}
             >
-                {/* only shows if trying to close with unsaved changes */}
-                <div {...bindWarningMessages}>
-                    <Sidebar.Container as={ErrorMessage}>
-                        {isSaving && (
-                            <Translate value="modal.shareResource.warnSavingChanges" />
-                        )}
-                        {!isSaving && !!didTryClose && (
-                            <Md inline>
-                                {I18n.t('modal.shareResource.warnUnsavedChanges')}
-                            </Md>
-                        )}
-                        {!isSaving && !didTryClose && !!hasCurrentUserChanges && (
-                            <Translate value="modal.shareResource.warnChangingOwnPermission" />
-                        )}
-                    </Sidebar.Container>
-                </div>
-            </animated.div>
+                {isSaving && (
+                    <Translate value="modal.shareResource.warnSavingChanges" />
+                )}
+                {!isSaving && !!didTryClose && (
+                    <Md inline>
+                        {I18n.t('modal.shareResource.warnUnsavedChanges')}
+                    </Md>
+                )}
+                {!isSaving && !didTryClose && !!hasCurrentUserChanges && (
+                    <Translate value="modal.shareResource.warnChangingOwnPermission" />
+                )}
+            </ErrorMessage.Wrapper>
             <Sidebar.Container
                 as={Footer}
                 disabled={isSaving || !hasChanges}
