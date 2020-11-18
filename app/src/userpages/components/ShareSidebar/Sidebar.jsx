@@ -194,8 +194,6 @@ const UnstyledShareSidebar = (({ className, ...props }) => {
                 disabled={isSaving || !hasChanges}
                 onCancel={onCancel}
                 onSave={onSave}
-                resourceId={resourceId}
-                resourceType={resourceType}
                 waiting={isSaving}
             />
         </div>

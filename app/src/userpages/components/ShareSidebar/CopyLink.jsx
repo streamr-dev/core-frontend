@@ -1,5 +1,3 @@
-// @flow
-
 import React, { useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { Translate } from 'react-redux-i18n'
@@ -7,12 +5,7 @@ import { Translate } from 'react-redux-i18n'
 import useCopy from '$shared/hooks/useCopy'
 import useEmbed from '$userpages/hooks/useEmbed'
 import SvgIcon from '$shared/components/SvgIcon'
-import type { ResourceType, ResourceId } from '$userpages/flowtype/permission-types'
-
-type Props = {
-    resourceType: ResourceType,
-    resourceId: ResourceId,
-}
+import { usePermissionsState } from '$shared/components/PermissionsProvider'
 
 const Button = styled.button`
     align-items: center;
@@ -43,8 +36,10 @@ const Button = styled.button`
     `}
 `
 
-const UnstyledCopyLink = ({ resourceType, resourceId, ...props }: Props) => {
+const UnstyledCopyLink = (props) => {
     const { isCopied, copy } = useCopy()
+
+    const { resourceType, resourceId } = usePermissionsState()
 
     const { link } = useEmbed(resourceType, resourceId)
 

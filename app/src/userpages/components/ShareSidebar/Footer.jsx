@@ -17,17 +17,12 @@ const UnstyledFooter = ({
     disabled,
     onCancel,
     onSave,
-    resourceId,
-    resourceType,
     waiting,
     ...props
 }) => (
     <div {...props}>
         <div>
-            <CopyLink
-                resourceType={resourceType}
-                resourceId={resourceId}
-            />
+            <CopyLink />
         </div>
         <div>
             <CancelButton onClick={onCancel} kind="link">
