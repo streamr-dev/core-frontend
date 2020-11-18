@@ -1,6 +1,6 @@
 // @flow
 
-import React, { Fragment, useState, useMemo, useEffect, useCallback, useContext } from 'react'
+import React, { Fragment, useState, useMemo, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
@@ -27,7 +27,7 @@ import { getResourcePermissions, resetResourcePermission } from '$userpages/modu
 import { selectFetchingPermissions, selectDashboardPermissions } from '$userpages/modules/permission/selectors'
 import Grid from '$shared/components/Tile/Grid'
 import Sidebar from '$shared/components/Sidebar'
-import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -67,7 +67,7 @@ const StyledListContainer = styled(ListContainer)`
 `
 
 function DashboardPageSidebar({ dashboard }) {
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
     const dispatch = useDispatch()
 
     const dashboardId = dashboard && dashboard.id
@@ -133,7 +133,7 @@ const DashboardList = () => {
     const fetchingPermissions = useSelector(selectFetchingPermissions)
     const permissions = useSelector(selectDashboardPermissions)
 
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
     const dispatch = useDispatch()
 
     useEffect(() => {

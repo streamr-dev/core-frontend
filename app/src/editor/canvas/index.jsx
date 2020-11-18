@@ -50,7 +50,7 @@ import CanvasStatus, { CannotSaveStatus } from '$editor/shared/components/Status
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
-import SidebarProvider, { SidebarContext } from '$shared/components/Sidebar/SidebarProvider'
+import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -515,7 +515,7 @@ const CanvasEdit = withRouter((props) => {
     useCanvasNotifications(canvas)
     useCanvasCameraEffects()
     const selection = useCanvasSelection()
-    const sidebar = useContext(SidebarContext)
+    const sidebar = useSidebar()
     const { loadPermissions } = useCanvasPermissions()
 
     return (
