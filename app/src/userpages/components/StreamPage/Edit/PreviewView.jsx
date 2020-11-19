@@ -74,7 +74,7 @@ const LOCAL_DATA_LIST_LENGTH = 20
 
 const initialState = Array(PREVIEW_TABLE_LENGTH).fill(undefined)
 
-const UnstyledPreviewView = ({ stream, subscribe = true, ...props }) => {
+const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true, ...props }) => {
     const [isRunning, setIsRunning] = useState(true)
     const { api: showPreviewDialog, isOpen: isPreviewDialogOpen } = useModal('userpages.streamPreview')
 
@@ -162,12 +162,14 @@ const UnstyledPreviewView = ({ stream, subscribe = true, ...props }) => {
                     onErrorMessage={onError}
                 />
             )}
-            <Description
-                value="userpages.streams.edit.preview.description"
-                tag="p"
-                dangerousHTML
-                docsLink={docsLinks.gettingStarted}
-            />
+            {!!showDescription && (
+                <Description
+                    value="userpages.streams.edit.preview.description"
+                    tag="p"
+                    dangerousHTML
+                    docsLink={docsLinks.gettingStarted}
+                />
+            )}
             <Wrapper {...props}>
                 <PreviewTable
                     streamData={visibleData.slice(0, PREVIEW_TABLE_LENGTH)}

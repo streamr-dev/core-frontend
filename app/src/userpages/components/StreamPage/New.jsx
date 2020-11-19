@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useMemo, useRef, useEffect, useReducer } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { useTransition, animated } from 'react-spring'
@@ -24,6 +24,7 @@ import StatusIcon from '$shared/components/StatusIcon'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import docsLinks from '$shared/../docsLinks'
 import {
+    StreamIdFormGroup,
     FormGroup,
     Field,
     Text,
@@ -43,6 +44,9 @@ import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import { getEnsDomains } from '$shared/modules/integrationKey/services'
 import Spinner from '$shared/components/Spinner'
+import Button from '$shared/components/Button'
+import { truncate } from '$shared/utils/text'
+import { isEthereumAddress } from '$mp/utils/validate'
 
 const Description = styled(Translate)`
     margin-bottom: 3rem;
@@ -126,6 +130,30 @@ const DisabledDomain = styled.div`
     }
 `
 
+const StreamIdText = styled(Text)`
+    padding: 0 3rem 0 1rem;
+    text-overflow: ellipsis;
+`
+
+const LockIcon = styled.div`
+    width: 40px;
+    height: 40px;
+    color: #989898;
+    position: absolute;
+    top: 0;
+    line-height: 16px;
+    right: 0;
+
+    svg {
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+`
+
 // this default data is only used for display purposes
 const defaultStreamData = {
     id: 'newStream',
@@ -137,8 +165,22 @@ const defaultStreamData = {
     partitions: 1,
 }
 
-const DEFAULT_DOMAIN = 'sandbox'
-const ADD_DOMAIN_URL = 'https://ens.domains'
+export const ADD_DOMAIN_URL = 'https://ens.domains'
+const CONNECT_ETH_ACCOUNT = '::eth/connect_account'
+const ADD_ENS_DOMAIN = '::ens/add_domain'
+
+export const PathnameTooltip = () => (
+    <QuestionIcon>
+        <SvgIcon name="outlineQuestionMark" />
+        <Tooltip>
+            <Translate
+                value="userpages.streams.edit.details.tooltip"
+                docsLink={docsLinks.streams}
+                dangerousHTML
+            />
+        </Tooltip>
+    </QuestionIcon>
+)
 
 const getValidId = ({ domain, pathname }) => {
     const id = `${domain}/${pathname}`
@@ -151,12 +193,11 @@ const getValidId = ({ domain, pathname }) => {
         throw new Error(I18n.t('userpages.streams.validation.useSingleSlashPathSeparator'))
     }
 
-    if (!/\w$/.test(id)) {
+    if (!(/\w$/.test(id))) {
         throw new Error(I18n.t('userpages.streams.validation.invalidPathEndCharacter'))
     }
 
-    // this matches the backend validation for the full id
-    if (!/^((?:[\w-]+\.?)*\w)\/(?:[\w.-]+\/?)*\w$/.test(id)) {
+    if (/[^\w.\-/]/.test(id)) {
         throw new Error(I18n.t('userpages.streams.validation.invalidPathCharacters'))
     }
 
@@ -180,14 +221,14 @@ const ConfirmExitModal = () => {
     )
 }
 
-const UnstyledNew = (props) => {
+const UnstyledNew = ({ currentUser, ...props }) => {
     const [{ domain, pathname, description }, updateStream] = useReducer((state, changeSet) => ({
         ...state,
         ...changeSet,
     }), {
         pathname: '',
         description: '',
-        domain: DEFAULT_DOMAIN,
+        domain: undefined,
     })
 
     const [loading, setLoading] = useState(false)
@@ -230,18 +271,58 @@ const UnstyledNew = (props) => {
             .then(loadDomains)
     }, [loadIntegrationKeys, loadDomains])
 
-    const domainOptions = useMemo(() => ([{
-        value: DEFAULT_DOMAIN,
-        label: DEFAULT_DOMAIN,
-    },
-    ...domains.map(({ name }) => ({
-        value: name,
-        label: name,
-    })),
-    {
-        value: undefined,
-        label: 'Add new domain',
-    }]), [domains])
+    const [groupedOptions, domainOptions] = useMemo(() => {
+        const ethAccountOptions = ethereumIdentitiesRef.current.map(({ json }) => ({
+            label: truncate(json.address, { maxLength: 15 }),
+            value: json.address,
+        }))
+
+        if (ethAccountOptions.length < 1) {
+            ethAccountOptions.push({
+                label: 'Connect account',
+                value: CONNECT_ETH_ACCOUNT,
+            })
+        }
+
+        const ensOptions = [
+            ...domains.map(({ name }) => ({
+                value: name,
+                label: name,
+            })),
+            {
+                value: ADD_ENS_DOMAIN,
+                label: 'Add new domain',
+            },
+        ]
+
+        const groupedOptions = [{
+            label: 'ENS domains',
+            options: ensOptions,
+        },
+        {
+            label: 'ETH accounts',
+            options: ethAccountOptions,
+        }]
+
+        const domainOptions = groupedOptions.flatMap((group) => group.options)
+
+        return [groupedOptions, domainOptions]
+    }, [domains])
+
+    // update default domain if undefined
+    useEffect(() => {
+        if (domain) { return }
+
+        if (isEthereumAddress(currentUser.username)) {
+            updateStream({ domain: currentUser.username })
+        } else {
+            const { address } = (ethereumIdentitiesRef.current[0] || {}).json || {}
+
+            if (address) {
+                updateStream({ domain: address })
+            }
+        }
+    }, [domain, currentUser, domainOptions, updateStream])
 
     const confirmIsSaved = useCallback(async () => {
         const { pathname, description } = streamDataRef.current || {}
@@ -268,12 +349,16 @@ const UnstyledNew = (props) => {
     }, [confirmIsSaved, dispatch, isMounted])
 
     const onDomainChange = useCallback(({ value: domain }) => {
-        if (!domain) {
+        if (domain === ADD_ENS_DOMAIN) {
             window.open(ADD_DOMAIN_URL, '_blank', 'noopener noreferrer')
+        } else if (domain === CONNECT_ETH_ACCOUNT) {
+            dispatch(push(routes.profile({}, {
+                hash: 'ethereum-accounts',
+            })))
         } else {
             updateStream({ domain })
         }
-    }, [updateStream])
+    }, [dispatch, updateStream])
 
     const onPathnameChange = useCallback((e) => {
         const pathname = e.target.value
@@ -351,7 +436,7 @@ const UnstyledNew = (props) => {
 
             // set validation error if another stream with the same id exists
             if (e.code === 'DUPLICATE_NOT_ALLOWED') {
-                setValidationError(e.message)
+                setValidationError(I18n.t('userpages.streams.error.duplicateNotAllowed'))
             }
 
             Notification.push({
@@ -424,8 +509,7 @@ const UnstyledNew = (props) => {
                         saveChanges: {
                             title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
                             kind: 'primary',
-                            onClick: () => onSave(),
-                            disabled: !saveEnabled,
+                            disabled: true,
                         },
                     }}
                 />
@@ -445,18 +529,12 @@ const UnstyledNew = (props) => {
                                 <Description
                                     value="userpages.streams.edit.details.info.description"
                                     tag="p"
-                                    defaultDomain={DEFAULT_DOMAIN}
                                     addDomainUrl={ADD_DOMAIN_URL}
                                     dangerousHTML
                                 />
-                                <FormGroup>
+                                <StreamIdFormGroup hasDomain>
                                     <Field
                                         label={I18n.t('userpages.streams.edit.details.domain.label')}
-                                        css={css`
-                                            && {
-                                                max-width: 176px;
-                                            }
-                                        `}
                                     >
                                         {!!isDomainDisabled && (
                                             <DisabledDomain>
@@ -468,38 +546,23 @@ const UnstyledNew = (props) => {
                                         )}
                                         {!isDomainDisabled && (
                                             <Select
-                                                options={domainOptions}
-                                                value={domainOptions.find((t) => t.value === domain)}
+                                                options={groupedOptions}
+                                                value={domainOptions.find(({ value }) => value === domain)}
                                                 onChange={onDomainChange}
                                                 disabled={isDisabled}
                                                 name="domain"
                                             />
                                         )}
                                     </Field>
-                                    <Field
-                                        narrow
-                                        css={css`
-                                            && {
-                                                margin: 0 16px 0 16px;
-                                                width: auto;
-                                            }
-                                        `}
-                                    >
+                                    <Field narrow>
                                         /
                                     </Field>
-                                    <Field label={I18n.t('userpages.streams.edit.details.pathname.label')}>
+                                    <Field
+                                        label={I18n.t('userpages.streams.edit.details.pathname.label')}
+                                    >
                                         <PathnameWrapper>
-                                            <QuestionIcon>
-                                                <SvgIcon name="outlineQuestionMark" />
-                                                <Tooltip>
-                                                    <Translate
-                                                        value="userpages.streams.edit.details.tooltip"
-                                                        docsLink={docsLinks.streams}
-                                                        dangerousHTML
-                                                    />
-                                                </Tooltip>
-                                            </QuestionIcon>
-                                            <Text
+                                            <PathnameTooltip />
+                                            <StreamIdText
                                                 value={pathname || ''}
                                                 onChange={onPathnameChange}
                                                 disabled={isDisabled}
@@ -507,6 +570,9 @@ const UnstyledNew = (props) => {
                                                 name="pathname"
                                                 invalid={!!createAttempted && !!validationError}
                                             />
+                                            <LockIcon>
+                                                <SvgIcon name="clear" />
+                                            </LockIcon>
                                         </PathnameWrapper>
                                         {!!createAttempted && !!validationError && (
                                             <Errors overlap theme={MarketplaceTheme}>
@@ -514,8 +580,16 @@ const UnstyledNew = (props) => {
                                             </Errors>
                                         )}
                                     </Field>
-                                    <Field narrow desktopOnly />
-                                </FormGroup>
+                                    <Field narrow>
+                                        <Button
+                                            kind="secondary"
+                                            onClick={() => onSave()}
+                                            disabled={!saveEnabled}
+                                        >
+                                            Create stream
+                                        </Button>
+                                    </Field>
+                                </StreamIdFormGroup>
                                 <FormGroup>
                                     <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
                                         <Text
@@ -527,7 +601,6 @@ const UnstyledNew = (props) => {
                                             autoComplete="off"
                                         />
                                     </Field>
-                                    <Field narrow desktopOnly />
                                 </FormGroup>
                             </TOCSection>
                             <TOCSection
@@ -626,7 +699,7 @@ const NewStreamViewMaybe = (props) => {
         )
     }
 
-    return <New {...props} />
+    return <New {...props} currentUser={currentUser} />
 }
 
 export default NewStreamViewMaybe

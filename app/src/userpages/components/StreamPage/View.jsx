@@ -25,6 +25,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
 import Nav from '$shared/components/Layout/Nav'
 import Storage from './shared/Storage'
+import useStreamPath from './useStreamPath'
 
 export const Text = styled(UnstyledText)`
     &[disabled] {
@@ -105,18 +106,6 @@ const FieldGroup = styled(FormGroup)`
     }
 `
 
-const StreamId = styled.div`
-    display: flex;
-
-    & > :first-child {
-        flex-grow: 1;
-    }
-
-    & > :last-child {
-        min-width: 72px;
-    }
-`
-
 export const HistoricalStorage = styled.div`
     display: flex;
 
@@ -133,9 +122,53 @@ export const HistoricalStorage = styled.div`
     }
 `
 
-const StyledButton = styled(Button)`
+export const StreamIdFormGroup = styled(FormGroup)`
+    & + ${FormGroup} {
+        margin-top: 32px;
+    }
+
+    ${({ hasDomain }) => !!hasDomain && css`
+        && {
+            ${Field}:nth-child(2) {
+                width: auto;
+                line-height: 38px;
+                display: none;
+            }
+
+            @media (min-width: ${SM}px) {
+                ${Field}:first-child {
+                    max-width: 176px;
+                }
+
+                ${Field}:nth-child(2) {
+                    display: block;
+                }
+            }
+        }
+    `}
+
     && {
-        padding: 0;
+        ${Field}:last-child {
+            width: 128px;
+
+            label {
+                height: 0;
+            }
+
+            button {
+                padding: 0;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: ${SM}px) {
+            ${Field}:last-child {
+                label {
+                    height: auto;
+                }
+            }
+        }
+
     }
 `
 
@@ -143,15 +176,10 @@ export const StreamPartitions = styled.div`
     width: 136px;
 `
 
-const StyledTranslate = styled(Translate)`
-    /* TODO: Get rid of it in a consistency pass. This and "Edit/HistoryView" both define this
-       component */
-    margin-bottom: 3.125rem !important;
-`
-
 const UnstyledView = ({ stream, currentUser, ...props }) => {
     const { copy, isCopied } = useCopy()
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
+    const { domain, pathname } = useStreamPath(stream.id)
 
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
 
@@ -202,22 +230,54 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="details"
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.details.streamId')}>
-                            <StreamId>
+                    <StreamIdFormGroup hasDomain={!!domain}>
+                        {!!domain && (
+                            <React.Fragment>
+                                <Field
+                                    label={I18n.t('userpages.streams.edit.details.domain.label')}
+                                >
+                                    <Text
+                                        value={domain}
+                                        readOnly
+                                        disabled
+                                        name="domain"
+                                    />
+                                </Field>
+                                <Field narrow>
+                                    /
+                                </Field>
+                                <Field
+                                    label={I18n.t('userpages.streams.edit.details.pathname.label')}
+                                >
+                                    <Text
+                                        value={pathname}
+                                        readOnly
+                                        disabled
+                                        name="pathname"
+                                    />
+                                </Field>
+                            </React.Fragment>
+                        )}
+                        {!domain && (
+                            <Field
+                                label={I18n.t('userpages.streams.edit.details.streamId')}
+                            >
                                 <Text
-                                    value={stream.id || ''}
+                                    value={pathname}
                                     readOnly
                                     disabled
                                     name="streamId"
                                 />
-                                <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
-                                    <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
-                                </StyledButton>
-                            </StreamId>
+                            </Field>
+                        )}
+                        <Field
+                            narrow
+                        >
+                            <Button kind="secondary" onClick={() => onCopy(stream.id)}>
+                                <Translate value={`userpages.streams.edit.details.${isCopied ? 'streamIdCopied' : 'copyStreamId'}`} />
+                            </Button>
                         </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
+                    </StreamIdFormGroup>
                     {!!stream.description && (
                         <FormGroup>
                             <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
@@ -228,7 +288,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                                     name="description"
                                 />
                             </Field>
-                            <Field narrow desktopOnly />
                         </FormGroup>
                     )}
                 </TOCSection>
@@ -280,13 +339,12 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="preview"
                     title={I18n.t('userpages.streams.edit.details.nav.preview')}
                 >
-                    <Preview stream={stream} />
+                    <Preview stream={stream} showDescription={false} />
                 </TOCSection>
                 <TOCSection
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                 >
-                    <StyledTranslate tag="p" value="userpages.streams.edit.historicalStoragePeriod.description" />
                     <Storage streamId={stream.id} disabled />
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>

@@ -300,6 +300,9 @@ msgstr "Expired"
 msgid "userpages.streams.createStream"
 msgstr "Create stream"
 
+msgid "userpages.streams.error.duplicateNotAllowed"
+msgstr "That path already exists, please try a different one"
+
 msgid "userpages.streams.filterStreams"
 msgstr "Filter streams"
 
@@ -437,9 +440,9 @@ msgstr "Stream partitions"
 
 msgid "userpages.streams.edit.details.info.description"
 msgstr ""
-"All streams require a unique path in the format <strong>domain/pathname</strong>. Choose a unique name, "
-"and create your stream in the default <strong>%{defaultDomain}</strong> domain or "
-"<a href=\"%{addDomainUrl}\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register and use your own domain</a>."
+"All streams require a unique path in the format <strong>domain/pathname</strong>. Your default domain will "
+"be an Eth address, but you can also use an ENS domain or "
+"<a href=\"%{addDomainUrl}\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register a new one</a>."
 
 msgid "userpages.streams.edit.details.domain.label"
 msgstr "Domain"
@@ -458,6 +461,12 @@ msgstr "Add a brief description"
 
 msgid "userpages.streams.edit.details.streamId"
 msgstr "Stream ID"
+
+msgid "userpages.streams.edit.details.copyStreamId"
+msgstr "Copy Stream ID"
+
+msgid "userpages.streams.edit.details.streamIdCopied"
+msgstr "Copied!"
 
 msgid "userpages.streams.edit.details.partitions"
 msgstr "Partitions"
@@ -528,6 +537,9 @@ msgstr "Enable storage to retain historical data in one or more geographic locat
 
 msgid "userpages.streams.edit.storageNodes.label"
 msgstr "Choose storage nodes (one or more)"
+
+msgid "userpages.streams.view.storageNodes.label"
+msgstr "Storage nodes"
 
 msgid "userpages.streams.edit.configure.historicalStoragePeriod.label"
 msgstr "Store historical data for"
