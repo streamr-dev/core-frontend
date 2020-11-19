@@ -9,7 +9,7 @@ import { getOperationKeys, lookup } from '$shared/components/PermissionsProvider
 import { selectUsername } from '$shared/modules/user/selectors'
 import Tooltip from '$shared/components/Tooltip'
 import SvgIcon from '$shared/components/SvgIcon'
-import useMeasure from './hooks/useMeasure'
+import useMeasure from '$shared/hooks/useMeasure'
 import { MEDIUM } from '$shared/utils/styled'
 import Checkbox from './Checkbox'
 import RadioButtonGroup from './RadioButtonGroup'

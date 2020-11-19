@@ -2,7 +2,7 @@ import React, { useMemo, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { MEDIUM } from '$shared/utils/styled'
 import Sidebar from '$shared/components/Sidebar'
-import useMeasure from './hooks/useMeasure'
+import useMeasure from '$shared/hooks/useMeasure'
 
 const ErrorMessage = styled.div`
     background-color: #fff4f5;
