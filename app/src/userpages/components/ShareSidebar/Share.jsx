@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
 import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION, REMOVE_PERMISSION } from '$shared/components/PermissionsProvider'
-import Groups, { NAMES, identify } from '$shared/components/PermissionsProvider/groups'
-import Operations from '$shared/components/PermissionsProvider/operations'
+import groups from '$shared/components/PermissionsProvider/groups'
+import identifyGroup from '$shared/components/PermissionsProvider/identifyGroup'
+import operations from '$shared/components/PermissionsProvider/operations'
 import { getOperationKeys, lookup } from '$shared/components/PermissionsProvider/packer'
 import { selectUsername } from '$shared/modules/user/selectors'
 import Tooltip from '$shared/components/Tooltip'
@@ -201,7 +202,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
 
     const userCombination = changeset[userId] == null ? permissions[userId] : changeset[userId]
 
-    const ownerCombination = Groups[resourceType].owner
+    const ownerCombination = groups[resourceType].owner
 
     const onClick = useCallback((e) => {
         if (!isFormElement(e.target) && !selected) {
@@ -223,13 +224,13 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
     }, [dispatch, userId])
 
     const group = useMemo(() => (
-        identify(resourceType, userCombination)
+        identifyGroup(resourceType, userCombination)
     ), [resourceType, userCombination])
 
-    const isCustom = Groups[resourceType][group] !== userCombination
+    const isCustom = groups[resourceType][group] !== userCombination
 
     const onPermissionChange = useCallback((operationKey, enabled) => {
-        const value = Operations[operationKey]
+        const value = operations[operationKey]
 
         dispatch({
             type: UPDATE_PERMISSION,
@@ -243,7 +244,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
         dispatch({
             type: UPDATE_PERMISSION,
             user: userId,
-            value: Groups[resourceType][name.toLowerCase()],
+            value: groups[resourceType][name.toLowerCase()],
         })
     }, [dispatch, userId, resourceType])
 
@@ -285,7 +286,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                 <Collapse open={selected}>
                     <RadioButtonGroup
                         name={`UserPermissions${userId}`}
-                        options={NAMES[resourceType]}
+                        options={Object.keys(groups[resourceType])}
                         onChange={onGroupClick}
                         selectedOption={group}
                         isCustom={isCustom}

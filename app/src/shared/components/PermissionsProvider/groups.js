@@ -1,6 +1,5 @@
 /* eslint-disable no-bitwise */
 
-import { count } from './packer'
 import {
     GET,
     EDIT,
@@ -36,21 +35,7 @@ const PRODUCT = {
     owner: GET | EDIT | DELETE | SHARE,
 }
 
-const ALL_GROUPS = {
-    CANVAS,
-    DASHBOARD,
-    PRODUCT,
-    STREAM,
-}
-
-export const NAMES = {
-    CANVAS: Object.keys(CANVAS),
-    DASHBOARD: Object.keys(DASHBOARD),
-    PRODUCT: Object.keys(PRODUCT),
-    STREAM: Object.keys(STREAM),
-}
-
-const DEFAULTS_KEYS = {
+export const DEFAULTS_KEYS = {
     CANVAS: 'user',
     DASHBOARD: 'user',
     PRODUCT: 'viewer',
@@ -64,10 +49,9 @@ export const DEFAULTS = {
     STREAM: STREAM[DEFAULTS_KEYS.STREAM],
 }
 
-export const identify = (resourceType, combination) => (
-    Object.entries(ALL_GROUPS[resourceType]).reduce((memo, [group, groupCombination]) => (
-        count(combination & groupCombination) >= count(groupCombination) ? group : memo
-    ), DEFAULTS_KEYS[resourceType])
-)
-
-export default ALL_GROUPS
+export default {
+    CANVAS,
+    DASHBOARD,
+    PRODUCT,
+    STREAM,
+}
