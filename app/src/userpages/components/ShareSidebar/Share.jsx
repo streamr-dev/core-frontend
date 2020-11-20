@@ -263,9 +263,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                 tabIndex="0"
             >
                 {selected && (
-                    <DismissBox
-                        onClick={onDismiss}
-                    />
+                    <DismissBox onClick={onDismiss} />
                 )}
                 <Header>
                     <div>
@@ -279,9 +277,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                     </div>
                     <div>
                         <Tooltip value="Remove" disabled={selected}>
-                            <RemoveButton
-                                onClick={onRemoveClick}
-                            />
+                            <RemoveButton onClick={onRemoveClick} />
                         </Tooltip>
                     </div>
                 </Header>
