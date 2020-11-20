@@ -10,6 +10,7 @@ export default function useAsyncCallbackWithState(callback) {
     })
 
     const isMounted = useIsMounted()
+
     const { isLoading } = state
 
     const run = useCallback(async () => {
