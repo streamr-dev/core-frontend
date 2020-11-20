@@ -1,5 +1,5 @@
-import groups, { DEFAULTS_KEYS } from './groups'
-import { count } from './packer'
+import groups, { DEFAULTS_KEYS } from '../groups'
+import count from './count'
 
 export default function identifyGroup(resourceType, combination) {
     return (

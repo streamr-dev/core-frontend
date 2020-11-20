@@ -13,25 +13,3 @@ export const STARTSTOP = 0x20
 export const INTERACT = 0x40
 
 export const SHARE = 0x80
-
-const ALL = {
-    GET,
-    EDIT,
-    DELETE,
-    PUBLISH,
-    SUBSCRIBE,
-    STARTSTOP,
-    INTERACT,
-    SHARE,
-}
-
-const REVERSE = Object.keys(ALL).reduce((memo, k) => ({
-    ...memo,
-    [ALL[k]]: k,
-}), [])
-
-export const getReverse = (operationID) => (
-    REVERSE[operationID]
-)
-
-export default ALL

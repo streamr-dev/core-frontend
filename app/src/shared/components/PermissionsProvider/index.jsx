@@ -1,7 +1,7 @@
 import React, { useReducer, createContext, useContext, useEffect, useRef, useMemo } from 'react'
 import { getResourcePermissions } from '$userpages/modules/permission/services'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { combineMany } from './packer'
+import combineMany from './utils/combineMany'
 import { DEFAULTS } from './groups'
 import { useSelector } from 'react-redux'
 import { selectUsername } from '$shared/modules/user/selectors'

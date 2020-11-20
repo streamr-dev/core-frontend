@@ -4,9 +4,10 @@ import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
 import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION, REMOVE_PERMISSION } from '$shared/components/PermissionsProvider'
 import groups from '$shared/components/PermissionsProvider/groups'
-import identifyGroup from '$shared/components/PermissionsProvider/identifyGroup'
-import operations from '$shared/components/PermissionsProvider/operations'
-import { getOperationKeys, lookup } from '$shared/components/PermissionsProvider/packer'
+import identifyGroup from '$shared/components/PermissionsProvider/utils/identifyGroup'
+import getOperationKeys from '$shared/components/PermissionsProvider/utils/getOperationKeys'
+import lookup from '$shared/components/PermissionsProvider/utils/lookup'
+import toOperationId from '$shared/components/PermissionsProvider/utils/toOperationId'
 import { selectUsername } from '$shared/modules/user/selectors'
 import Tooltip from '$shared/components/Tooltip'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -230,7 +231,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
     const isCustom = groups[resourceType][group] !== userCombination
 
     const onPermissionChange = useCallback((operationKey, enabled) => {
-        const value = operations[operationKey]
+        const value = toOperationId(operationKey)
 
         dispatch({
             type: UPDATE_PERMISSION,

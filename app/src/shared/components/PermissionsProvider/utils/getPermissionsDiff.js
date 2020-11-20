@@ -1,5 +1,7 @@
 import groupBy from 'lodash/groupBy'
-import { getOperationKeys, lookup, toOperationName } from '$shared/components/PermissionsProvider/packer'
+import getOperationKeys from './getOperationKeys'
+import lookup from './lookup'
+import toOperationName from './toOperationName'
 
 export default function getPermissionsDiff(resourceType, raw, permissions, changeset) {
     const groupedRaw = groupBy(raw, 'user')
