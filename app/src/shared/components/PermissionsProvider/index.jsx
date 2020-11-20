@@ -226,7 +226,7 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
                     resourceType,
                 })
 
-                if (!isMounted() && mountRef.current !== mountId(resourceType, resourceId)) {
+                if (!isMounted() || mountRef.current !== mountId(resourceType, resourceId)) {
                     return
                 }
 
