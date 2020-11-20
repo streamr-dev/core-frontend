@@ -17,6 +17,8 @@ const initialState = {
     resourceType: undefined,
 }
 
+const ABANDON_CHANGES = 'abandon changes'
+
 const SET_PERMISSIONS = 'set permissions'
 
 const SET_RESOURCE = 'set resource'
@@ -113,12 +115,10 @@ const reducer = (state, action) => {
                 }
             }
 
-            return {
-                ...state,
-                changeset: (({ [action.user]: _, ...changeset }) => (
-                    changeset
-                ))(state.changeset),
-            }
+            return reducer(state, {
+                type: ABANDON_CHANGES,
+                user: action.user,
+            })
 
         case UPDATE_PERMISSION:
             if (action.value == null) {
@@ -129,12 +129,10 @@ const reducer = (state, action) => {
             }
 
             if (action.value === state.permissions[action.user]) {
-                return {
-                    ...state,
-                    changeset: (({ [action.user]: _, ...changeset }) => (
-                        changeset
-                    ))(state.changeset),
-                }
+                return reducer(state, {
+                    type: ABANDON_CHANGES,
+                    user: action.user,
+                })
             }
 
             return {
@@ -144,6 +142,15 @@ const reducer = (state, action) => {
                     [action.user]: action.value,
                 },
             }
+
+        case ABANDON_CHANGES:
+            return {
+                ...state,
+                changeset: (({ [action.user]: _, ...changeset }) => (
+                    changeset
+                ))(state.changeset),
+            }
+
         default:
             return state
     }
