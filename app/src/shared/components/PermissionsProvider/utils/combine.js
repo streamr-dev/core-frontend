@@ -1,6 +1,6 @@
 import toOperationId from './toOperationId'
 
-export default function combineMany(rawPermissions) {
+export default function combine(rawPermissions) {
     const result = {}
 
     rawPermissions.forEach(({ user, anonymous, operation: operationName }) => {

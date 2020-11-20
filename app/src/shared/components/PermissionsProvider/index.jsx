@@ -1,7 +1,7 @@
 import React, { useReducer, createContext, useContext, useEffect, useRef, useMemo } from 'react'
 import { getResourcePermissions } from '$userpages/modules/permission/services'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import combineMany from './utils/combineMany'
+import combine from './utils/combine'
 import { DEFAULTS } from './groups'
 import { useSelector } from 'react-redux'
 import { selectUsername } from '$shared/modules/user/selectors'
@@ -49,7 +49,7 @@ const reducer = (state, action) => {
             ), {
                 ...state,
                 locked: false,
-                permissions: combineMany(action.permissions),
+                permissions: combine(action.permissions),
                 raw: action.permissions,
             })
 
