@@ -4,7 +4,7 @@ import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
-import groups from '$shared/components/PermissionsProvider/groups'
+import groups, { NAMES } from '$shared/components/PermissionsProvider/groups'
 import identifyGroup from '$shared/components/PermissionsProvider/utils/identifyGroup'
 import getOperationKeys from '$shared/components/PermissionsProvider/utils/getOperationKeys'
 import lookup from '$shared/components/PermissionsProvider/utils/lookup'
@@ -285,7 +285,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                 <Collapse open={selected}>
                     <RadioButtonGroup
                         name={`UserPermissions${userId}`}
-                        options={Object.keys(groups[resourceType])}
+                        options={NAMES[resourceType]}
                         onChange={onGroupClick}
                         selectedOption={group}
                         isCustom={isCustom}

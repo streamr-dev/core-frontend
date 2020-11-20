@@ -49,6 +49,13 @@ export const DEFAULTS = {
     STREAM: STREAM[DEFAULTS_KEYS.STREAM],
 }
 
+export const NAMES = {
+    CANVAS: Object.keys(CANVAS),
+    DASHBOARD: Object.keys(DASHBOARD),
+    PRODUCT: Object.keys(PRODUCT),
+    STREAM: Object.keys(STREAM),
+}
+
 export default {
     CANVAS,
     DASHBOARD,
