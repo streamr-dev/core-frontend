@@ -24,19 +24,19 @@ const UnstyledAnonAccessSelect = ({ className }) => {
 
     const { changeset, permissions, resourceType } = usePermissionsState()
 
-    const anonCombination = ({}).hasOwnProperty.call(changeset, 'anonymous') ? changeset.anonymous : permissions.anonymous
-
-    const value = anonCombination ? ALLOW_WITH_LINK : ALLOW_ONLY_INVITED
-
-    const onChange = useCallback(({ value }) => {
+    const onChange = useCallback(({ value: v }) => {
         dispatch({
             type: UPDATE_PERMISSION,
             user: 'anonymous',
-            value: value === ALLOW_WITH_LINK ? DEFAULTS[resourceType] : undefined,
+            value: v === ALLOW_WITH_LINK ? DEFAULTS[resourceType] : undefined,
         })
     }, [dispatch, resourceType])
 
     const id = useUniqueId('ShareSidebar') // for html labels
+
+    const anonCombination = ({}).hasOwnProperty.call(changeset, 'anonymous') ? changeset.anonymous : permissions.anonymous
+
+    const value = anonCombination ? ALLOW_WITH_LINK : ALLOW_ONLY_INVITED
 
     return (
         <Fragment>
