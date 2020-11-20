@@ -550,7 +550,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                     addDomainUrl={ADD_DOMAIN_URL}
                                     dangerousHTML
                                 />
-                                <StreamIdFormGroup hasDomain>
+                                <StreamIdFormGroup hasDomain data-test-hook="StreamId">
                                     <Field
                                         label={I18n.t('userpages.streams.edit.details.domain.label')}
                                     >

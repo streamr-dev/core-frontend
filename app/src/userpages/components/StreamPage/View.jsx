@@ -118,7 +118,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="details"
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
-                    <StreamIdFormGroup hasDomain={!!domain}>
+                    <StreamIdFormGroup hasDomain={!!domain} data-test-hook="StreamId">
                         {!!domain && (
                             <React.Fragment>
                                 <Field

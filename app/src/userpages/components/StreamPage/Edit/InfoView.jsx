@@ -100,7 +100,7 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
                 dangerousHTML
             />
             <Row>
-                <StreamIdFormGroup hasDomain={!!domain}>
+                <StreamIdFormGroup hasDomain={!!domain} data-test-hook="StreamId">
                     {!!domain && (
                         <React.Fragment>
                             <Field

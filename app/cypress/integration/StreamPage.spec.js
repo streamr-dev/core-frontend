@@ -111,9 +111,13 @@ describe('New stream page', () => {
         cy.login()
         cy.visit('/core/streams/new')
         cy.location('pathname').should('eq', '/core/streams/new')
-
         cy.get('[data-test-hook=TOCPage]').find('h1').contains(/name your stream/i)
-        cy.get('[name=domain]').invoke('val').should('eq', 'sandbox')
+
+        // Wait for domains to load
+        // eslint-disable-next-line cypress/no-unnecessary-waiting
+        cy.wait(3000)
+
+        cy.get('[name=domain]').invoke('val').should('match', /^0x[0-9a-f.]+/i)
     })
 
     it('creates a stream and takes the user to the edit page', () => {
@@ -121,62 +125,69 @@ describe('New stream page', () => {
         cy.visit('/core/streams/new')
 
         const path = uuid()
-        const streamId = `sandbox/test/${path}`
-        cy.get('input[name=pathname]').clear().type(`test/${path}`)
-        cy.get('input[name=description]').clear().type('Lorem ipsum.')
-        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.getDefaultEthAccount().then((domain) => {
+            const streamId = `${domain}/test/${path}`
+            cy.get('input[name=pathname]').clear().type(`test/${path}`)
+            cy.get('input[name=description]').clear().type('Lorem ipsum.')
+            cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
 
-        cy.location().should((l) => {
-            const { params: { id } } = matchPath(l.pathname, {
-                path: '/core/streams/:id',
+            cy.location().should((l) => {
+                const { params: { id } } = matchPath(l.pathname, {
+                    path: '/core/streams/:id',
+                })
+                const encodedId = encodeURIComponent(streamId)
+                expect(id).to.eq(encodedId)
+                expect(l.pathname).to.eq(`/core/streams/${encodedId}`)
+                expect(l.search).to.eq('?newStream=1')
             })
-            const encodedId = encodeURIComponent(streamId)
-            expect(id).to.eq(encodedId)
-            expect(l.pathname).to.eq(`/core/streams/${encodedId}`)
-            expect(l.search).to.eq('?newStream=1')
+
+            // Wait for domains to load
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(3000)
+
+            cy.get('[data-test-hook=TOCPage]').find('h1').contains(/set up your stream/i)
+            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('[name=pathname]').invoke('val').should('eq', `test/${path}`)
         })
-        cy.wait(1000) // eslint-disable-line cypress/no-unnecessary-waiting
-        cy.get('[data-test-hook=TOCPage]').find('h1').contains(/set up your stream/i)
-        cy.get('[name=streamId]').invoke('val').should('eq', streamId)
     })
 
     it('does not save until valid path is given', () => {
         cy.login()
         cy.visit('/core/streams/new')
-        cy.get('[data-test-hook=Toolbar]').find('button:disabled').contains(/save/i).should('exist')
+        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('invalid path name')
 
-        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).should('exist')
+        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).should('exist')
         cy.contains(/path may only contain alpha-numeric characters/i).should('not.exist')
-        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
         cy.contains(/path may only contain alpha-numeric characters/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('path/*($)name')
-        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
         cy.contains(/path may only contain alpha-numeric characters/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('/path/')
-        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
         cy.contains(/path name cannot start with a slash/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('path/')
-        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
         cy.contains(/path name must end with an alpha-numeric character/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('path//name')
-        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
         cy.contains(/use a single slash to separate paths/i).should('exist')
     })
 
     it('gives an error if a stream with the same name exists', () => {
         cy.login()
         cy.createStream().then((streamId) => {
-            const pathname = streamId.replace('sandbox/', '')
+            const pathname = streamId.slice(streamId.indexOf('/') + 1)
 
             cy.visit('/core/streams/new')
             cy.get('input[name=pathname]').clear().type(pathname)
-            cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
+            cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
             cy.contains(`Stream with id ${streamId} already exists`).should('exist')
         })
     })
@@ -200,21 +211,30 @@ describe('New stream page', () => {
         cy.location('pathname').should('eq', '/core/streams')
     })
 
-    it.skip('can create a path with dot separator in id', () => {
+    it('can create a path with dot separator in id', () => {
         // Althought the client-side routing handles dots quite well the backend infra does
         // not. Let's un-skip this spec once that is fixed.
         cy.login()
         cy.visit('/core/streams/new')
         const path = `${uuid()}/with.dot.separator`
-        const streamId = `sandbox/${path}`
-        cy.get('input[name=pathname]').clear().type(path)
-        cy.get('[data-test-hook=Toolbar]').find('button').contains(/save/i).click()
-        cy.location('pathname').should('eq', `/core/streams/${encodeURIComponent(streamId)}`)
 
-        cy.visit('/core/streams')
-        cy.visit(`/core/streams/${encodeURIComponent(streamId)}`)
-        cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
-        cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
+        cy.getDefaultEthAccount().then((domain) => {
+            const streamId = `${domain}/${path}`
+            cy.get('input[name=pathname]').clear().type(path)
+            cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+            cy.location('pathname').should('eq', `/core/streams/${encodeURIComponent(streamId)}`)
+
+            cy.visit('/core/streams')
+            cy.visit(`/core/streams/${encodeURIComponent(streamId)}`)
+
+            // Wait for domains to load
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(3000)
+
+            cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
+            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('input[name=pathname]').invoke('val').should('eq', path)
+        })
     })
 })
 
@@ -279,17 +299,23 @@ describe('Stream read-only page (no edit permission)', () => {
 
         cy.login()
         cy.createStream({
-            description: 'Lorem ipsum.',
-            config: {
-                fields: [field1, field2],
+            stream: {
+                description: 'Lorem ipsum.',
+                config: {
+                    fields: [field1, field2],
+                },
             },
         }).then((streamId) => {
             const encodedId = encodeURIComponent(streamId)
+            const pathname = streamId.slice(streamId.indexOf('/') + 1)
+
             cy.createStreamPermission(streamId)
             cy.logout()
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
+
+            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
@@ -314,18 +340,23 @@ describe('Stream read-only page (no edit permission)', () => {
 
         cy.login()
         cy.createStream({
-            description: 'Lorem ipsum.',
-            config: {
-                fields: [field1, field2],
+            stream: {
+                description: 'Lorem ipsum.',
+                config: {
+                    fields: [field1, field2],
+                },
             },
         }).then((streamId) => {
             const encodedId = encodeURIComponent(streamId)
+            const pathname = streamId.slice(streamId.indexOf('/') + 1)
+
             cy.createStreamPermission(streamId)
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
+            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
@@ -350,18 +381,23 @@ describe('Stream read-only page (no edit permission)', () => {
 
         cy.login()
         cy.createStream({
-            description: 'Lorem ipsum.',
-            config: {
-                fields: [field1, field2],
+            stream: {
+                description: 'Lorem ipsum.',
+                config: {
+                    fields: [field1, field2],
+                },
             },
         }).then((streamId) => {
             const encodedId = encodeURIComponent(streamId)
+            const pathname = streamId.slice(streamId.indexOf('/') + 1)
+
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
+            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
             cy.get(`input#name-${field1.id}`).invoke('val').should('eq', 'foo')
@@ -374,17 +410,22 @@ describe('Stream read-only page (no edit permission)', () => {
     it('skips displaying empty Fields section', () => {
         cy.login()
         cy.createStream({
-            config: {
-                fields: [],
+            stream: {
+                config: {
+                    fields: [],
+                },
             },
         }).then((streamId) => {
             const encodedId = encodeURIComponent(streamId)
+            const pathname = streamId.slice(streamId.indexOf('/') + 1)
+
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
             cy.logout()
             cy.login('tester2@streamr.com', 'tester2')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
+            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('h3').contains('Fields').should('not.exist')
         })
     })
@@ -392,14 +433,19 @@ describe('Stream read-only page (no edit permission)', () => {
     it('skips displaying empty description', () => {
         cy.login()
         cy.createStream({
-            description: '',
+            stream: {
+                description: '',
+            },
         }).then((streamId) => {
             const encodedId = encodeURIComponent(streamId)
+            const pathname = streamId.slice(streamId.indexOf('/') + 1)
+
             cy.createStreamPermission(streamId, null, 'stream_get')
             cy.logout()
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('input[name=streamId]').invoke('val').should('eq', streamId)
+            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('label').contains('Description').should('not.exist')
         })
     })
@@ -408,8 +454,10 @@ describe('Stream read-only page (no edit permission)', () => {
         it('displays "basic" level correctly', () => {
             cy.login()
             cy.createStream({
-                requireSignedData: false,
-                requireEncryptedData: false,
+                stream: {
+                    requireSignedData: false,
+                    requireEncryptedData: false,
+                },
             }).then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId)
@@ -422,8 +470,10 @@ describe('Stream read-only page (no edit permission)', () => {
         it('displays "signed" level correctly', () => {
             cy.login()
             cy.createStream({
-                requireSignedData: true,
-                requireEncryptedData: false,
+                stream: {
+                    requireSignedData: true,
+                    requireEncryptedData: false,
+                },
             }).then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId)
@@ -436,8 +486,10 @@ describe('Stream read-only page (no edit permission)', () => {
         it('displays "encrypted" level correctly', () => {
             cy.login()
             cy.createStream({
-                requireSignedData: true,
-                requireEncryptedData: true,
+                stream: {
+                    requireSignedData: true,
+                    requireEncryptedData: true,
+                },
             }).then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId)
