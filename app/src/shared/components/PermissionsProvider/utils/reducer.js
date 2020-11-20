@@ -15,8 +15,6 @@ export const PERSIST = 'persist'
 
 export const REFETCH = 'refetch'
 
-export const UNLOCK = 'unlock'
-
 export const UPDATE_PERMISSION = 'update permission'
 
 export const initialState = {
@@ -139,6 +137,10 @@ export default function reducer(state, action) {
             }
 
         case ABANDON_CHANGES:
+            if (!({}).hasOwnProperty.call(state.changeset, action.user)) {
+                return state
+            }
+
             return {
                 ...state,
                 changeset: (({ [action.user]: _, ...changeset }) => (
