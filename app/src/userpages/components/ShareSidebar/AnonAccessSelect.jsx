@@ -22,7 +22,7 @@ const UnstyledAnonAccessSelect = ({ className }) => {
 
     const dispatch = usePermissionsDispatch()
 
-    const { changeset, permissions, resourceType } = usePermissionsState()
+    const { changeset, combinations, resourceType } = usePermissionsState()
 
     const onChange = useCallback(({ value: v }) => {
         dispatch({
@@ -34,7 +34,7 @@ const UnstyledAnonAccessSelect = ({ className }) => {
 
     const id = useUniqueId('ShareSidebar') // for html labels
 
-    const anonCombination = ({}).hasOwnProperty.call(changeset, 'anonymous') ? changeset.anonymous : permissions.anonymous
+    const anonCombination = ({}).hasOwnProperty.call(changeset, 'anonymous') ? changeset.anonymous : combinations.anonymous
 
     const value = anonCombination ? ALLOW_WITH_LINK : ALLOW_ONLY_INVITED
 

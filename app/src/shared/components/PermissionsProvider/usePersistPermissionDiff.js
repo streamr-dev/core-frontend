@@ -2,10 +2,7 @@ import { useCallback, useEffect, useRef } from 'react'
 import { usePermissionsState, usePermissionsDispatch, PERSIST, REFETCH } from '$shared/components/PermissionsProvider'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import getPermissionsDiff from './utils/getPermissionsDiff'
-import {
-    addResourcePermission,
-    removeResourcePermission,
-} from '$userpages/modules/permission/services'
+import { addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/services'
 
 export default function usePersistPermissionDiff() {
     const dispatch = usePermissionsDispatch()
@@ -15,7 +12,7 @@ export default function usePersistPermissionDiff() {
     const {
         changeset,
         locked,
-        permissions,
+        combinations,
         raw,
         resourceType,
         resourceId,
@@ -26,7 +23,7 @@ export default function usePersistPermissionDiff() {
     const saveRef = useRef(() => {})
 
     saveRef.current = async () => {
-        const changes = getPermissionsDiff(resourceType, raw, permissions, changeset)
+        const changes = getPermissionsDiff(resourceType, raw, combinations, changeset)
 
         const errors = {}
 

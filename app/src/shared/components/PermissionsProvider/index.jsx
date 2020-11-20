@@ -11,7 +11,7 @@ const initialState = {
     errors: {},
     fetchCount: 0,
     locked: true,
-    permissions: {},
+    combinations: {},
     raw: {},
     resourceId: undefined,
     resourceType: undefined,
@@ -49,7 +49,7 @@ const reducer = (state, action) => {
             ), {
                 ...state,
                 locked: false,
-                permissions: combine(action.permissions),
+                combinations: combine(action.permissions),
                 raw: action.permissions,
             })
 
@@ -93,8 +93,8 @@ const reducer = (state, action) => {
                 return state
             }
 
-            if (state.permissions[action.user] && !({}).hasOwnProperty.call(state.changeset, action.user)) {
-                // Don't overwrite pristine permissions.
+            if (state.combinations[action.user] && !({}).hasOwnProperty.call(state.changeset, action.user)) {
+                // Don't overwrite pristine combinations.
                 return state
             }
 
@@ -105,7 +105,7 @@ const reducer = (state, action) => {
             })
 
         case REMOVE_PERMISSION:
-            if (state.permissions[action.user] != null) {
+            if (state.combinations[action.user] != null) {
                 return {
                     ...state,
                     changeset: {
@@ -128,7 +128,7 @@ const reducer = (state, action) => {
                 })
             }
 
-            if (action.value === state.permissions[action.user]) {
+            if (action.value === state.combinations[action.user]) {
                 return reducer(state, {
                     type: ABANDON_CHANGES,
                     user: action.user,
@@ -168,38 +168,38 @@ export const usePermissionsState = () => (
     useContext(StateContext)
 )
 
-const currentUserIds = (currentUserId, permissions, changeset) => (
+const currentUserIds = (currentUserId, combinations, changeset) => (
     (
-        permissions[currentUserId] != null && (!({}).hasOwnProperty.call(changeset, currentUserId) || changeset[currentUserId] != null)
+        combinations[currentUserId] != null && (!({}).hasOwnProperty.call(changeset, currentUserId) || changeset[currentUserId] != null)
     ) || (
-        permissions[currentUserId] == null && changeset[currentUserId] != null
+        combinations[currentUserId] == null && changeset[currentUserId] != null
     ) ? [currentUserId] : []
 )
 
-const newUserIds = (permissions, changeset) => (
-    Object.keys(changeset).filter((userId) => permissions[userId] == null)
+const newUserIds = (combinations, changeset) => (
+    Object.keys(changeset).filter((userId) => combinations[userId] == null)
 )
 
-const remainingUserIds = (permissions, changeset) => (
-    Object.keys(permissions).filter((userId) => !({}).hasOwnProperty.call(changeset, userId) || changeset[userId] != null)
+const remainingUserIds = (combinations, changeset) => (
+    Object.keys(combinations).filter((userId) => !({}).hasOwnProperty.call(changeset, userId) || changeset[userId] != null)
 )
 
 export const useEditableUserIds = () => {
-    const { changeset, permissions } = usePermissionsState()
+    const { changeset, combinations } = usePermissionsState()
 
     const currentUserId = useSelector(selectUsername)
 
     return useMemo(() => {
         const set = new Set([
-            ...currentUserIds(currentUserId, permissions, changeset),
-            ...newUserIds(permissions, changeset),
-            ...remainingUserIds(permissions, changeset),
+            ...currentUserIds(currentUserId, combinations, changeset),
+            ...newUserIds(combinations, changeset),
+            ...remainingUserIds(combinations, changeset),
         ])
 
         set.delete('anonymous')
 
         return [...set]
-    }, [currentUserId, permissions, changeset])
+    }, [currentUserId, combinations, changeset])
 }
 
 const mountId = (resourceType, resourceId) => `${resourceType}/${resourceId}`

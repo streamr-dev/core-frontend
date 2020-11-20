@@ -195,13 +195,13 @@ const Root = styled.div`
 `
 
 const UnstyledShare = ({ className, userId, onSelect, selected }) => {
-    const { resourceType, changeset, permissions, errors } = usePermissionsState()
+    const { resourceType, changeset, combinations, errors } = usePermissionsState()
 
     const error = errors[userId]
 
     const currentUserId = useSelector(selectUsername)
 
-    const userCombination = changeset[userId] == null ? permissions[userId] : changeset[userId]
+    const userCombination = changeset[userId] == null ? combinations[userId] : changeset[userId]
 
     const ownerCombination = groups[resourceType].owner
 

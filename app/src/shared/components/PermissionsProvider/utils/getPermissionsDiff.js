@@ -3,7 +3,7 @@ import getOperationKeys from './getOperationKeys'
 import lookup from './lookup'
 import toOperationName from './toOperationName'
 
-export default function getPermissionsDiff(resourceType, raw, permissions, changeset) {
+export default function getPermissionsDiff(resourceType, raw, combinations, changeset) {
     const groupedRaw = groupBy(raw, 'user')
 
     const result = {
@@ -13,7 +13,7 @@ export default function getPermissionsDiff(resourceType, raw, permissions, chang
 
     Object.entries(changeset).forEach(([userId, combination]) => {
         // eslint-disable-next-line no-bitwise
-        getOperationKeys(permissions[userId] ^ combination).forEach((key) => {
+        getOperationKeys(combinations[userId] ^ combination).forEach((key) => {
             const operationName = toOperationName(resourceType, key)
 
             if (lookup(combination, key)) {
