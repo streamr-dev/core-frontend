@@ -67,7 +67,7 @@ const StreamPartitions = styled.div`
 const UnstyledView = ({ stream, currentUser, ...props }) => {
     const { copy, isCopied } = useCopy()
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
-    const { domain, pathname } = useStreamPath(stream.id)
+    const { truncatedDomain: domain, pathname } = useStreamPath(stream.id)
 
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
 

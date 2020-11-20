@@ -72,7 +72,7 @@ const Description = styled(Translate)`
 export const InfoView = ({ stream, disabled, updateStream }: Props) => {
     const { copy, isCopied } = useCopy()
 
-    const { domain, pathname } = useStreamPath(stream.id)
+    const { truncatedDomain: domain, pathname } = useStreamPath(stream.id)
 
     const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
