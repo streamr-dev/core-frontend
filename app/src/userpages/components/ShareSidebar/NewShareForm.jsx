@@ -9,7 +9,8 @@ import isValidUserId from '$shared/utils/sharing/isValidUserId'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Errors from '$ui/Errors'
-import { usePermissionsDispatch, ADD_PERMISSION } from '$shared/components/PermissionsProvider'
+import { usePermissionsDispatch } from '$shared/components/PermissionsProvider'
+import { ADD_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
 
 const Inner = styled.div`
     display: grid;

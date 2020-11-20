@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { usePermissionsState, usePermissionsDispatch, PERSIST, REFETCH } from '$shared/components/PermissionsProvider'
+import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
+import { PERSIST, REFETCH } from './utils/reducer'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import getPermissionsDiff from './utils/getPermissionsDiff'
 import { addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/services'
