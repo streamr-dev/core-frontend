@@ -9,29 +9,29 @@ import { selectUsername } from '$shared/modules/user/selectors'
 const initialState = {
     changeset: {},
     errors: {},
+    fetchCount: 0,
     locked: true,
     permissions: {},
     raw: {},
     resourceId: undefined,
     resourceType: undefined,
-    fetchCount: 0,
 }
-
-const SET_RESOURCE = 'set resource'
 
 const SET_PERMISSIONS = 'set permissions'
 
+const SET_RESOURCE = 'set resource'
+
 export const ADD_PERMISSION = 'add permission'
-
-export const REMOVE_PERMISSION = 'remove permission'
-
-export const UPDATE_PERMISSION = 'update permission'
-
-export const UNLOCK = 'unlock'
 
 export const PERSIST = 'persist'
 
 export const REFETCH = 'refetch'
+
+export const REMOVE_PERMISSION = 'remove permission'
+
+export const UNLOCK = 'unlock'
+
+export const UPDATE_PERMISSION = 'update permission'
 
 const reducer = (state, action) => {
     // SET_PERMISSIONS and REFETCH are allowed despite the `locked` flag being up. Other actions
@@ -81,8 +81,8 @@ const reducer = (state, action) => {
 
             return {
                 ...initialState,
-                resourceType: action.resourceType,
                 resourceId: action.resourceId,
+                resourceType: action.resourceType,
             }
 
         case ADD_PERMISSION:
@@ -200,16 +200,9 @@ const mountId = (resourceType, resourceId) => `${resourceType}/${resourceId}`
 const PermissionsProvider = ({ resourceType, resourceId, children }) => {
     const [state, dispatch] = useReducer(reducer, {
         ...initialState,
-        resourceType,
         resourceId,
+        resourceType,
     })
-
-    useEffect(() => {
-        // eslint-disable-next-line no-console
-        console.log('ERRORS', state.errors)
-        // eslint-disable-next-line no-console
-        console.log('CHANGESET', state.changeset)
-    }, [state.changeset, state.errors])
 
     const mountRef = useRef(mountId(resourceType, resourceId))
 
@@ -229,8 +222,8 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
         const fetch = async () => {
             try {
                 const result = await getResourcePermissions({
-                    resourceType,
                     resourceId,
+                    resourceType,
                 })
 
                 if (!isMounted() && mountRef.current !== mountId(resourceType, resourceId)) {
@@ -238,8 +231,8 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
                 }
 
                 dispatch({
-                    type: SET_PERMISSIONS,
                     permissions: result,
+                    type: SET_PERMISSIONS,
                 })
             } catch (e) {
                 // eslint-disable-next-line no-console
