@@ -26,7 +26,11 @@ export default function getPermissionsDiff(resourceType, raw, combinations, chan
                     operation: operationName,
                 })
             } else {
-                result.del.push(...groupedRaw[userId].filter(({ operation }) => operation === operationName))
+                const collection = (userId === 'anonymous' ? groupedRaw.undefined : groupedRaw[userId]) || []
+
+                result.del.push(...collection.filter(({ operation, anonymous }) => (
+                    operation === operationName && (userId !== 'anonymous' || anonymous)
+                )))
             }
         })
     })
