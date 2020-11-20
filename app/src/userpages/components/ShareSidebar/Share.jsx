@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, Fragment } from 'react'
 import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
-import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION, REMOVE_PERMISSION } from '$shared/components/PermissionsProvider'
+import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION } from '$shared/components/PermissionsProvider'
 import groups from '$shared/components/PermissionsProvider/groups'
 import identifyGroup from '$shared/components/PermissionsProvider/utils/identifyGroup'
 import getOperationKeys from '$shared/components/PermissionsProvider/utils/getOperationKeys'
@@ -219,8 +219,9 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
 
     const onRemoveClick = useCallback(() => {
         dispatch({
-            type: REMOVE_PERMISSION,
+            type: UPDATE_PERMISSION,
             user: userId,
+            value: undefined,
         })
     }, [dispatch, userId])
 

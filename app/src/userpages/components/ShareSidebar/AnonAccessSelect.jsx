@@ -4,7 +4,7 @@ import { I18n } from 'react-redux-i18n'
 import SelectInput from '$ui/Select'
 import Label from '$ui/Label'
 import useUniqueId from '$shared/hooks/useUniqueId'
-import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION, REMOVE_PERMISSION } from '$shared/components/PermissionsProvider'
+import { usePermissionsState, usePermissionsDispatch, UPDATE_PERMISSION } from '$shared/components/PermissionsProvider'
 import { DEFAULTS } from '$shared/components/PermissionsProvider/groups'
 
 export const ALLOW_ONLY_INVITED = 'onlyInvited'
@@ -29,18 +29,10 @@ const UnstyledAnonAccessSelect = ({ className }) => {
     const value = anonCombination ? ALLOW_WITH_LINK : ALLOW_ONLY_INVITED
 
     const onChange = useCallback(({ value }) => {
-        if (value === ALLOW_WITH_LINK) {
-            dispatch({
-                type: UPDATE_PERMISSION,
-                user: 'anonymous',
-                value: DEFAULTS[resourceType],
-            })
-            return
-        }
-
         dispatch({
-            type: REMOVE_PERMISSION,
+            type: UPDATE_PERMISSION,
             user: 'anonymous',
+            value: value === ALLOW_WITH_LINK ? DEFAULTS[resourceType] : undefined,
         })
     }, [dispatch, resourceType])
 

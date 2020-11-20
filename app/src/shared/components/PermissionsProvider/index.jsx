@@ -19,6 +19,8 @@ const initialState = {
 
 const ABANDON_CHANGES = 'abandon changes'
 
+const REMOVE_PERMISSION = 'remove permission'
+
 const SET_PERMISSIONS = 'set permissions'
 
 const SET_RESOURCE = 'set resource'
@@ -28,8 +30,6 @@ export const ADD_PERMISSION = 'add permission'
 export const PERSIST = 'persist'
 
 export const REFETCH = 'refetch'
-
-export const REMOVE_PERMISSION = 'remove permission'
 
 export const UNLOCK = 'unlock'
 
