@@ -28,7 +28,7 @@ import {
     FormGroup,
     Field,
     Text,
-} from './View'
+} from './shared/FormGroup'
 import Preview from './Edit/PreviewView'
 import SecurityView from './Edit/SecurityView'
 import { StatusView } from './Edit/StatusView'
@@ -114,9 +114,8 @@ const DisabledDomain = styled.div`
     color: #525252;
     border: 1px solid #EFEFEF;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 0.875rem;
     height: 40px;
-    line-height: 1;
     padding: 0 1rem;
     width: 100%;
     display: flex;
@@ -135,7 +134,7 @@ const StreamIdText = styled(Text)`
     text-overflow: ellipsis;
 `
 
-const LockIcon = styled.div`
+const ClearButton = styled.button`
     width: 40px;
     height: 40px;
     color: #989898;
@@ -143,6 +142,14 @@ const LockIcon = styled.div`
     top: 0;
     line-height: 16px;
     right: 0;
+    border: 0;
+    background: none;
+    outline: none;
+    appearance: none;
+
+    :focus {
+        outline: none;
+    }
 
     svg {
         width: 16px;
@@ -151,6 +158,13 @@ const LockIcon = styled.div`
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+    }
+
+    :hover {
+        circle {
+            fill: #525252;
+            stroke: #525252;
+        }
     }
 `
 
@@ -372,6 +386,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         updateStream({ description })
     }, [updateStream])
 
+    const onClearPathname = useCallback(() => {
+        updateStream({ pathname: '' })
+    }, [updateStream])
+
     useEffect(() => {
         setValidationError(() => {
             try {
@@ -464,7 +482,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         () => contentChangedRef.current,
     )
 
-    const saveEnabled = !!pathname && !loading
+    const saveEnabled = !!pathname && !!domain && !loading
     const isDisabled = !!loading
     const isDomainDisabled = isDisabled || domainOptions.length <= 1 || loadingDomains
 
@@ -538,9 +556,14 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                     >
                                         {!!isDomainDisabled && (
                                             <DisabledDomain>
-                                                <span>{domain || ''}</span>
+                                                {!loadingDomains && (
+                                                    <span>{domain || ''}</span>
+                                                )}
                                                 {!!loadingDomains && (
-                                                    <Spinner size="small" color="gray" />
+                                                    <React.Fragment>
+                                                        <Translate value="userpages.streams.edit.details.domain.loading" />
+                                                        <Spinner size="small" color="blue" />
+                                                    </React.Fragment>
                                                 )}
                                             </DisabledDomain>
                                         )}
@@ -570,9 +593,11 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                                 name="pathname"
                                                 invalid={!!createAttempted && !!validationError}
                                             />
-                                            <LockIcon>
-                                                <SvgIcon name="clear" />
-                                            </LockIcon>
+                                            {(pathname || '').length > 0 && (
+                                                <ClearButton type="button" onClick={() => onClearPathname()}>
+                                                    <SvgIcon name="clear" />
+                                                </ClearButton>
+                                            )}
                                         </PathnameWrapper>
                                         {!!createAttempted && !!validationError && (
                                             <Errors overlap theme={MarketplaceTheme}>

@@ -447,6 +447,9 @@ msgstr ""
 msgid "userpages.streams.edit.details.domain.label"
 msgstr "Domain"
 
+msgid "userpages.streams.edit.details.domain.loading"
+msgstr "Loading domains"
+
 msgid "userpages.streams.edit.details.pathname.label"
 msgstr "Path name"
 

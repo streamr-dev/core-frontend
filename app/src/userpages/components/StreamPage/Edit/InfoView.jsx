@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
@@ -11,12 +11,13 @@ import type { StreamId, Stream } from '$shared/flowtype/stream-types'
 import Label from '$ui/Label'
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
+import useStreamPath from '../shared/useStreamPath'
 
 import {
     StreamIdFormGroup,
     Field,
     Text,
-} from '../View'
+} from '../shared/FormGroup'
 import {
     ADD_DOMAIN_URL,
     PathnameTooltip,
@@ -70,20 +71,8 @@ const Description = styled(Translate)`
 
 export const InfoView = ({ stream, disabled, updateStream }: Props) => {
     const { copy, isCopied } = useCopy()
-    const streamId = (stream && stream.id) || ''
 
-    const [domain, pathname] = useMemo(() => {
-        const firstSlashPos = streamId.indexOf('/')
-
-        if (firstSlashPos < 0) {
-            return [undefined, streamId]
-        }
-
-        return [
-            streamId.slice(0, firstSlashPos),
-            streamId.slice(firstSlashPos + 1),
-        ]
-    }, [streamId])
+    const { domain, pathname } = useStreamPath(stream.id)
 
     const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
