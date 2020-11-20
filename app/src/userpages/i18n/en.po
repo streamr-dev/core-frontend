@@ -450,6 +450,18 @@ msgstr "Domain"
 msgid "userpages.streams.edit.details.domain.loading"
 msgstr "Loading domains"
 
+msgid "userpages.streams.edit.details.domain.connectAccount"
+msgstr "Connect account"
+
+msgid "userpages.streams.edit.details.domain.addDomain"
+msgstr "Add new domain"
+
+msgid "userpages.streams.edit.details.domain.ensDomains"
+msgstr "ENS Domains"
+
+msgid "userpages.streams.edit.details.domain.ethAccounts"
+msgstr "Eth Accounts"
+
 msgid "userpages.streams.edit.details.pathname.label"
 msgstr "Path name"
 

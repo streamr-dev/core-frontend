@@ -293,7 +293,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
 
         if (ethAccountOptions.length < 1) {
             ethAccountOptions.push({
-                label: 'Connect account',
+                label: I18n.t('userpages.streams.edit.details.domain.connectAccount'),
                 value: CONNECT_ETH_ACCOUNT,
             })
         }
@@ -305,16 +305,16 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             })),
             {
                 value: ADD_ENS_DOMAIN,
-                label: 'Add new domain',
+                label: I18n.t('userpages.streams.edit.details.domain.addDomain'),
             },
         ]
 
         const groupedOptions = [{
-            label: 'ENS domains',
+            label: I18n.t('userpages.streams.edit.details.domain.ensDomains'),
             options: ensOptions,
         },
         {
-            label: 'ETH accounts',
+            label: I18n.t('userpages.streams.edit.details.domain.ethAccounts'),
             options: ethAccountOptions,
         }]
 
