@@ -21,7 +21,7 @@ export const initialState = {
     changeset: {},
     errors: {},
     fetchCount: 0,
-    locked: true,
+    locked: false,
     combinations: {},
     raw: {},
     resourceId: undefined,
