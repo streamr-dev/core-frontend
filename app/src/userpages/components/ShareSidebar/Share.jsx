@@ -330,4 +330,4 @@ const Share = styled(UnstyledShare)`
     }
 `
 
-export default Share
+export default React.memo(Share)
