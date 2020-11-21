@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, Fragment } from 'react'
+import React, { useCallback, useMemo, Fragment, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
@@ -198,6 +198,23 @@ const Root = styled.div`
 const UnstyledShare = ({ className, userId, onSelect, selected }) => {
     const { resourceType, changeset, combinations, errors } = usePermissionsState()
 
+    const selectedOnceRef = useRef(selected)
+
+    if (selected) {
+        selectedOnceRef.current = true
+    }
+
+    const [hoveredOnce, setHoveredOnce] = useState(false)
+
+    const hoveredOnceRef = useRef(false)
+
+    const onHover = useCallback(() => {
+        if (!hoveredOnceRef.current) {
+            setHoveredOnce(true)
+            hoveredOnceRef.current = true
+        }
+    }, [])
+
     const error = errors[userId]
 
     const currentUserId = useSelector(selectUsername)
@@ -260,6 +277,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                 invalid={!!error}
                 onClick={onClick}
                 onKeyDown={noop}
+                onMouseEnter={onHover}
                 role="button"
                 tabIndex="0"
             >
@@ -277,31 +295,35 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                         </Role>
                     </div>
                     <div>
-                        <Tooltip value="Remove" disabled={selected}>
-                            <RemoveButton onClick={onRemoveClick} />
-                        </Tooltip>
+                        {(hoveredOnce || hoveredOnceRef.current) && (
+                            <Tooltip value="Remove" disabled={selected}>
+                                <RemoveButton onClick={onRemoveClick} />
+                            </Tooltip>
+                        )}
                     </div>
                 </Header>
-                <Collapse open={selected}>
-                    <RadioButtonGroup
-                        name={`UserPermissions${userId}`}
-                        options={NAMES[resourceType]}
-                        onChange={onGroupClick}
-                        selectedOption={group}
-                        isCustom={isCustom}
-                    />
-                    <Checkbox.List>
-                        {getOperationKeys(ownerCombination).map((key) => (
-                            <Checkbox
-                                id={`${userId}-${key}`}
-                                key={key}
-                                onChange={onPermissionChange}
-                                operationKey={key}
-                                value={lookup(userCombination, key)}
-                            />
-                        ))}
-                    </Checkbox.List>
-                </Collapse>
+                {(selected || selectedOnceRef.current) && (
+                    <Collapse open={selected}>
+                        <RadioButtonGroup
+                            name={`UserPermissions${userId}`}
+                            options={NAMES[resourceType]}
+                            onChange={onGroupClick}
+                            selectedOption={group}
+                            isCustom={isCustom}
+                        />
+                        <Checkbox.List>
+                            {getOperationKeys(ownerCombination).map((key) => (
+                                <Checkbox
+                                    id={`${userId}-${key}`}
+                                    key={key}
+                                    onChange={onPermissionChange}
+                                    operationKey={key}
+                                    value={lookup(userCombination, key)}
+                                />
+                            ))}
+                        </Checkbox.List>
+                    </Collapse>
+                )}
             </Sidebar.Container>
             {error && (
                 <Sidebar.Container as={ErrorMessage}>
