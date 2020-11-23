@@ -1,37 +1,59 @@
 // @flow
 
-import React, { type Node } from 'react'
-import cx from 'classnames'
+import React from 'react'
+import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
 import NameAndUsername from './NameAndUsername'
 import AvatarCircle from '$shared/components/AvatarCircle'
-import type { User } from '$shared/flowtype/user-types'
+import { MD } from '$shared/utils/styled'
 
-import styles from './avatar.pcss'
 import routes from '$routes'
 
-type Props = {
-    user: User,
-    className?: string,
-    linkToProfile?: boolean,
-    children?: Node,
-}
+const StyledLink = styled(Link)`
+  text-decoration: none;
 
-const Avatar = ({ user, className, linkToProfile, children }: Props) => (
-    <div className={cx(className, styles.container)}>
+  &:hover,
+  &:focus,
+  &:active {
+    text-decoration: none;
+  }
+`
+
+const StyledAvatarCircle = styled(AvatarCircle)`
+  && {
+    margin-right: 1.5rem;
+    width: 72px;
+    height: 72px;
+    line-height: 5rem;
+    font-size: 2em;
+    overflow: hidden;
+
+    @media (min-width: ${MD}px) {
+        width: 80px;
+        height: 80px;
+    }
+  }
+`
+
+const UnstyledAvatar = ({ user, linkToProfile, children, ...props }) => (
+    <div {...props}>
         {!!linkToProfile && (
-            <Link to={routes.profile()} className={styles.avatarLink}>
-                <AvatarCircle name={user.name} imageUrl={user.imageUrlLarge} className={styles.avatarCircle} />
-            </Link>
+            <StyledLink to={routes.profile()}>
+                <StyledAvatarCircle name={user.name} imageUrl={user.imageUrlLarge} />
+            </StyledLink>
         )}
         {!linkToProfile && (
-            <AvatarCircle name={user.name} imageUrl={user.imageUrlLarge} className={styles.avatarCircle} uploadAvatarPlaceholder />
+            <StyledAvatarCircle name={user.name} imageUrl={user.imageUrlLarge} uploadAvatarPlaceholder />
         )}
-        <NameAndUsername name={user.name} username={user.username}>
+        <NameAndUsername name={user.name}>
             {children}
         </NameAndUsername>
     </div>
 )
+
+const Avatar = styled(UnstyledAvatar)`
+  display: flex;
+`
 
 export default Avatar

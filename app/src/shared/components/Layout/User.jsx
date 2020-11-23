@@ -46,47 +46,6 @@ const UnstyledAvatarless = ({ source = EmptyUser, ...props }) => (
 
 const Avatarless = styled(UnstyledAvatarless)``
 
-const UnstyledUser = ({ source = EmptyUser, ...props }) => (
-    <div {...props}>
-        <Avatar
-            alt={source.name}
-            src={source.imageUrlSmall}
-            css={typeof source.imageUrlSmall === 'undefined' && `
-                visibility: hidden;
-            `}
-        />
-        <Avatarless
-            source={source}
-        />
-    </div>
-)
-
-const User = styled(UnstyledUser)`
-    align-items: center;
-    display: flex;
-
-    ${Avatar} {
-        border-radius: 50%;
-        flex: 0 0 40px;
-        overflow: hidden;
-    }
-
-    ${Avatarless} {
-        flex-grow: 1;
-        margin-left: 16px;
-    }
-
-    @media (min-width: ${TABLET}px) {
-        ${Avatar} {
-            flex-basis: 80px;
-        }
-
-        ${Avatarless} {
-            margin-left: 40px;
-        }
-    }
-`
-
 const UsernameButton = styled.button`
     background-color: #F8F8F8;
     height: 32px;
@@ -145,6 +104,17 @@ const UnstyledUsernameCopy = ({ children, username, ...props }) => {
 }
 
 const UsernameCopy = styled(UnstyledUsernameCopy)`
+`
+
+const UnstyledUser = ({ source = EmptyUser, ...props }) => (
+    <div {...props}>
+        <UsernameCopy username={source.username} />
+    </div>
+)
+
+const User = styled(UnstyledUser)`
+    display: flex;
+    justify-content: flex-end;
 `
 
 Object.assign(User, {

@@ -7,8 +7,6 @@ import Balance from '$userpages/components/Balance'
 import { BalanceType } from '$shared/flowtype/integration-key-types'
 import { useBalances } from '$shared/hooks/useBalances'
 
-import styles from './accountsBalance.pcss'
-
 const AccountsBalance = () => {
     // Use the balances stored in redux state to calculate the combined
     // value of all accounts (including the generated private key accounts).
@@ -32,7 +30,7 @@ const AccountsBalance = () => {
     }, [balances])
 
     return (
-        <Balance className={styles.balance}>
+        <Balance>
             <Balance.Account
                 name="DATA"
                 value={dataBalance}

@@ -345,16 +345,7 @@ const Narrow = styled(UnstyledNarrow)`
     ${User} {
         border-bottom: 1px solid #efefef;
         line-height: 1em;
-        padding: 48px 32px 40px;
-    }
-
-    ${User.Name} {
-        font-size: 16px;
-        margin-bottom: 4px;
-    }
-
-    ${User.Username} {
-        font-size: 14px;
+        padding: 16px 64px 24px 32px;
     }
 
     ${Nav.Link}:not([href]) {
@@ -363,17 +354,7 @@ const Narrow = styled(UnstyledNarrow)`
 
     @media (min-width: ${TABLET}px) {
         ${User} {
-            padding: 56px 64px;
-        }
-
-        ${User.Name} {
-            font-size: 28px;
-            font-weight: ${REGULAR};
-            margin-bottom: 8px;
-        }
-
-        ${User.Username} {
-            font-size: 16px;
+            padding: 16px 64px 48px 64px;
         }
     }
 `
