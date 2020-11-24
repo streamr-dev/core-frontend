@@ -1,23 +1,36 @@
-// @flow
-
 import React from 'react'
 import { Link } from 'react-router-dom'
-import cx from 'classnames'
+import { Logo as StreamrLogo } from '@streamr/streamr-layout'
+import styled from 'styled-components'
+
 import routes from '$routes'
 
-import logo from '../../assets/streamr-logo.svg'
-import styles from './logo.pcss'
+const StyledLink = styled(Link)`
+    display: block;
+    margin: 0 auto;
+    user-select: none;
+    width: 32px;
 
-type Props = {
-    className?: string,
-}
+    svg {
+        color: #FF5C00;
+    }
 
-const Logo = ({ className }: Props) => (
-    <div className={cx(className, styles.root)}>
-        <Link to={routes.root()} className={styles.link} data-logo>
-            <img src={logo} alt="Streamr logo" />
-        </Link>
+    &,
+    &:--enter,
+    &:--idle {
+        outline: 0;
+    }
+`
+
+const UnstyledLogo = ({ className, ...props }) => (
+    <div {...props}>
+        <StyledLink to={routes.root()} data-logo>
+            <StreamrLogo />
+        </StyledLink>
     </div>
 )
+
+const Logo = styled(UnstyledLogo)`
+`
 
 export default Logo

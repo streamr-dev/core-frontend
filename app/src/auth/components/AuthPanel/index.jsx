@@ -1,21 +1,32 @@
-// @flow
-
-import React, { type Node, useContext } from 'react'
+import React, { useContext } from 'react'
+import styled from 'styled-components'
 import { Schema } from 'yup'
 
 import AuthFormContext from '$auth/contexts/AuthForm'
 import AuthPanelNav from '../AuthPanelNav'
-import type { FieldErrorSetter } from '$shared/flowtype/auth-types'
 import styles from './authPanel.pcss'
 
-type Props = {
-    children: Node,
-    onPrev?: ?() => void,
-    onValidationError: FieldErrorSetter,
-    validationSchemas: Array<Schema>,
-}
+const Panel = styled.div`
+    background: #FFFFFF;
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+`
 
-const AuthPanel = ({ children, onPrev, validationSchemas, onValidationError }: Props) => {
+const Header = styled.div`
+  border-bottom: 1px solid #F2F1F1;
+  font-size: 1.125rem;
+  line-height: 80px;
+  text-align: center;
+  user-select: none;
+`
+
+const UnstyledAuthPanel = ({
+    children,
+    onPrev,
+    validationSchemas,
+    onValidationError,
+    ...props
+}) => {
     const {
         form,
         isProcessing,
@@ -28,19 +39,11 @@ const AuthPanel = ({ children, onPrev, validationSchemas, onValidationError }: P
     const child = React.Children.toArray(children)[step]
 
     return (
-        <div className={styles.authPanel}>
-            <AuthPanelNav
-                signin={!!child.props.showSignin}
-                signup={!!child.props.showSignup}
-                onUseEth={child.props.onEthereumClick}
-                onGoBack={child.props.showBack ? (onPrev || prev) : null}
-            />
-            <div className={styles.panel}>
-                <div className={styles.header}>
-                    <span data-title>
-                        {child.props.title}
-                    </span>
-                </div>
+        <div {...props}>
+            <Panel>
+                <Header>
+                    Connect a wallet
+                </Header>
                 <div className={styles.body}>
                     {React.cloneElement(child, {
                         current: true,
@@ -54,9 +57,15 @@ const AuthPanel = ({ children, onPrev, validationSchemas, onValidationError }: P
                         validationSchema: validationSchemas[step],
                     })}
                 </div>
-            </div>
+            </Panel>
         </div>
     )
 }
+
+const AuthPanel = styled(UnstyledAuthPanel)`
+    margin: 0 auto;
+    max-width: 528px;
+    width: 100%;
+`
 
 export default AuthPanel
