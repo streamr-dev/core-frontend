@@ -4,8 +4,7 @@ import { I18n } from 'react-redux-i18n'
 
 import { isEthereumAddress } from '$mp/utils/validate'
 import { truncate } from '$shared/utils/text'
-import { MEDIUM, MD as TABLET } from '$shared/utils/styled'
-import Avatar from '$shared/components/Avatar'
+import { MEDIUM } from '$shared/utils/styled'
 import useCopy from '$shared/hooks/useCopy'
 import Tooltip from '$shared/components/Tooltip'
 

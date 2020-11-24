@@ -3,7 +3,7 @@ import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Nav, Menu, Button, Link as L } from '@streamr/streamr-layout'
-import { MD as TABLET, LG as DESKTOP, MEDIUM, REGULAR } from '$shared/utils/styled'
+import { MD as TABLET, LG as DESKTOP, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
@@ -65,15 +65,13 @@ const SignedInUserMenu = styled(Nav.Wide.Dropdown)`
         }
     }
 
-    :hover {
-        ${DropdownToggle} {
-            ${CaretDownIcon} {
-                opacity: 0;
-            }
+    :hover ${DropdownToggle} {
+        ${CaretDownIcon} {
+            opacity: 0;
+        }
 
-            ${CaretUpIcon} {
-                opacity: 1;
-            }
+        ${CaretUpIcon} {
+            opacity: 1;
         }
     }
 `
@@ -261,11 +259,9 @@ const UnstyledNarrow = (props) => {
                     </SiteSection>
                 </Fragment>
             )}
+            infoComponent={(<User.UsernameCopy username={currentUser.username} />)}
         >
             <Nav.Narrow.Body>
-                <div>
-                    <User source={currentUser || undefined} />
-                </div>
                 <Nav.Link as={Link} to={routes.core()}>
                     <Translate value="general.core" />
                 </Nav.Link>
@@ -342,10 +338,8 @@ const Wide = styled(UnstyledWide)`
 `
 
 const Narrow = styled(UnstyledNarrow)`
-    ${User} {
-        border-bottom: 1px solid #efefef;
-        line-height: 1em;
-        padding: 16px 64px 24px 32px;
+    ${User.UsernameCopy} {
+        margin-right: 16px;
     }
 
     ${Nav.Link}:not([href]) {
