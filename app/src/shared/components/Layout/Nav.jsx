@@ -2,7 +2,7 @@ import React, { Fragment, useContext } from 'react'
 import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
-import { Nav, Menu, Button, Link as L } from '@streamr/streamr-layout'
+import { Nav, Menu, Button } from '@streamr/streamr-layout'
 import { MD as TABLET, LG as DESKTOP, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import routes from '$routes'
@@ -142,11 +142,8 @@ const UnstyledWide = (props) => {
                 <Fragment>
                     <Nav.Wide.Divider />
                     <Button as={Link.Raw} to={routes.auth.login()}>
-                        <Translate value="general.signIn" />
+                        <Translate value="general.useCore" />
                     </Button>
-                    <Button.Outlined as={Link.Raw} to={routes.auth.signUp()}>
-                        <Translate value="general.signUp" />
-                    </Button.Outlined>
                 </Fragment>
             )}
             {!!currentUser && (
@@ -269,26 +266,9 @@ const UnstyledNarrow = (props) => {
                         <Translate value="general.logout" />
                     </Button.Secondary>
                 ) : (
-                    <Fragment>
-                        <Button.Primary as={Link.Raw} to={routes.auth.signUp()}>
-                            <Translate value="general.signUp" />
-                        </Button.Primary>
-                        <div
-                            css={`
-                                margin-top: 20px;
-
-                                @media (min-width: ${TABLET}px) {
-                                    margin: 0 0 0 32px;
-                                }
-                            `}
-                        >
-                            Already have an account?
-                            {' '}
-                            <L.Primary as={Link.Raw} to={routes.auth.login()}>
-                                <Translate value="general.signIn" />
-                            </L.Primary>
-                        </div>
-                    </Fragment>
+                    <Button.Primary as={Link.Raw} to={routes.auth.login()}>
+                        <Translate value="general.useCore" />
+                    </Button.Primary>
                 )}
             </Nav.Narrow.Footer>
         </Nav.Narrow>

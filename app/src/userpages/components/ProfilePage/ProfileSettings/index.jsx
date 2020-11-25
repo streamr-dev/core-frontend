@@ -21,7 +21,6 @@ import { updateCurrentUserName, updateCurrentUserEmail } from '$shared/modules/u
 import { MD, LG } from '$shared/utils/styled'
 import { isEthereumAddress } from '$mp/utils/validate'
 
-import ChangePasswordDialog from './ChangePasswordDialog'
 import EditAvatarDialog from './EditAvatarDialog'
 
 const Root = styled.div`
@@ -73,18 +72,12 @@ const InputRow = styled.div`
     }
 `
 
-const PasswordButton = styled(Button)`
-    margin-top: 2rem;
-`
-
 const ProfileSettings = () => {
     const user = useSelector(selectUserData)
     const dispatch = useDispatch()
     const isMounted = useIsMounted()
     const { isPending } = usePending('user.SAVE')
-    const { wrap: wrapChangePasswordDialog } = usePending('user.CHANGE_PASSWORD_DIALOG')
     const { wrap: wrapUploadAvatarDialog } = usePending('user.UPLOAD_AVATAR_DIALOG')
-    const { api: changePasswordDialog, isOpen: isChangePasswordDialogOpen } = useModal('userpages.changePassword')
     const { api: uploadAvatarDialog, isOpen: isUploadAvatarDialogOpen } = useModal('userpages.uploadAvatar')
 
     const doUpdateUserName = useCallback((name: $ElementType<User, 'name'>) => (
@@ -102,27 +95,6 @@ const ProfileSettings = () => {
     const onEmailChange = useCallback(({ target }: { target: { value: $ElementType<User, 'email'> } }) => {
         doUpdateUserEmail(target.value)
     }, [doUpdateUserEmail])
-
-    const changePassword = useCallback(async () => (
-        wrapChangePasswordDialog(async () => {
-            const { changed, error } = await changePasswordDialog.open()
-
-            if (isMounted()) {
-                if (error) {
-                    Notification.push({
-                        title: I18n.t('modal.changePassword.errorNotification'),
-                        icon: NotificationIcon.ERROR,
-                    })
-                } else if (changed) {
-                    Notification.push({
-                        title: I18n.t('modal.changePassword.successNotification'),
-                        icon: NotificationIcon.CHECKMARK,
-                    })
-                }
-            }
-        })
-
-    ), [wrapChangePasswordDialog, changePasswordDialog, isMounted])
 
     const originalImage = user.imageUrlLarge
     const uploadAvatar = useCallback(async () => (
@@ -199,16 +171,6 @@ const ProfileSettings = () => {
                     placeholder={I18n.t('userpages.profilePage.profileSettings.userEmailPlaceholder')}
                 />
             </InputRow>
-            <PasswordButton
-                kind="secondary"
-                onClick={changePassword}
-                aria-label="Change Password"
-                disabled={isPending || isChangePasswordDialogOpen}
-                waiting={isChangePasswordDialogOpen}
-            >
-                <Translate value="userpages.profilePage.profileSettings.changePassword" />
-            </PasswordButton>
-            <ChangePasswordDialog />
             <EditAvatarDialog />
         </Root>
     )

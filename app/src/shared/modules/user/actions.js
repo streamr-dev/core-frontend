@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { User, PasswordUpdate } from '$shared/flowtype/user-types'
+import type { User } from '$shared/flowtype/user-types'
 import type {
     UserErrorActionCreator,
     UserDataActionCreator,
@@ -23,9 +23,6 @@ import {
     SAVE_CURRENT_USER_SUCCESS,
     SAVE_CURRENT_USER_FAILURE,
     UPDATE_CURRENT_USER,
-    UPDATE_PASSWORD_REQUEST,
-    UPDATE_PASSWORD_SUCCESS,
-    UPDATE_PASSWORD_FAILURE,
     UPDATE_AVATAR_REQUEST,
     UPDATE_AVATAR_SUCCESS,
     UPDATE_AVATAR_FAILURE,
@@ -72,18 +69,6 @@ const updateAvatarSuccess = () => ({
 })
 const updateAvatarFailure = (error: ErrorInUi) => ({
     type: UPDATE_AVATAR_FAILURE,
-    error,
-})
-
-// update password
-const updatePasswordRequest = () => ({
-    type: UPDATE_PASSWORD_REQUEST,
-})
-const updatePasswordSuccess = () => ({
-    type: UPDATE_PASSWORD_SUCCESS,
-})
-const updatePasswordFailure = (error: ErrorInUi) => ({
-    type: UPDATE_PASSWORD_FAILURE,
     error,
 })
 
@@ -176,29 +161,6 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
         })
         .catch((e) => {
             dispatch(saveCurrentUserFailure(e))
-            throw e
-        })
-}
-
-export const updatePassword = (passwordUpdate: PasswordUpdate) => (dispatch: Function, getState: Function): any => {
-    dispatch(updatePasswordRequest())
-
-    const user = selectUserData(getState()) || {}
-
-    return services.postPasswordUpdate(passwordUpdate, user.username)
-        .then((data) => {
-            // fancy magic to parse validation message out of HTML response
-            const parser = new window.DOMParser()
-            const xml = parser.parseFromString(data, 'text/html')
-            const error = xml.querySelector('.has-error .text-danger')
-            if (error) {
-                throw new Error(error.innerText.trim())
-            }
-        })
-        .then(() => {
-            dispatch(updatePasswordSuccess())
-        }, (e) => {
-            dispatch(updatePasswordFailure(e))
             throw e
         })
 }

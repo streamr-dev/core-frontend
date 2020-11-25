@@ -44,7 +44,6 @@ import CropImageModal from '$mp/components/Modal/CropImageModal'
 import SnippetDialog from '$userpages/components/SnippetDialog'
 import AvatarUploadDialog from '$userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/AvatarUploadDialog'
 import CropAvatarDialog from '$userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/CropAvatarDialog'
-import { ChangePasswordDialogComponent } from '$userpages/components/ProfilePage/ProfileSettings/ChangePasswordDialog'
 import { SignatureRequestDialog, DuplicateIdentityDialog } from '$userpages/components/ProfilePage/IdentityHandler/IdentityChallengeDialog'
 import IdentityNameDialog from '$userpages/components/ProfilePage/IdentityHandler/IdentityNameDialog'
 import EthereumAccountCreatedDialog from '$userpages/components/ProfilePage/IdentityHandler/EthereumAccountCreatedDialog'
@@ -982,31 +981,6 @@ story('Profile/CropAvatarDialog')
             waiting
         />
     ))
-
-story('Profile/ChangePasswordDialog')
-    .add('default', () => (
-        <ChangePasswordDialogComponent
-            onSave={action('onSave')}
-            onClose={action('onClose')}
-        />
-    ))
-    .add('waiting', () => (
-        <ChangePasswordDialogComponent
-            onSave={action('onSave')}
-            onClose={action('onClose')}
-            waiting
-        />
-    ))
-    .add('mobile', () => (
-        <ChangePasswordDialogComponent
-            onSave={action('onSave')}
-            onClose={action('onClose')}
-        />
-    ), {
-        viewport: {
-            defaultViewport: 'sm',
-        },
-    })
 
 story('Profile/DeleteAccountDialog')
     .add('default', () => (

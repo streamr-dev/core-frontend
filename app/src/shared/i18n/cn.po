@@ -102,11 +102,9 @@ msgstr "Subscriptions"
 msgid "general.reddit"
 msgstr "Reddit"
 
-msgid "general.signIn"
-msgstr "登录"
-
-msgid "general.signUp"
-msgstr "创建账户"
+# missing
+msgid "general.useCore"
+msgstr ""
 
 msgid "general.streamrSystem"
 msgstr "Streamr 系统"
