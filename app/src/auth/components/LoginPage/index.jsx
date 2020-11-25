@@ -271,7 +271,7 @@ const LoginPage = () => {
                         >
                             <SigninMethod.Title>
                                 {method === METAMASK && !!connecting && 'Connecting...'}
-                                {!!error && method === METAMASK && !connecting && 'Couldn\'t connect with MetaMask'}
+                                {!!error && method === METAMASK && !connecting && 'Couldn\'t connect to MetaMask'}
                                 {(method !== METAMASK || (!connecting && !error)) && 'MetaMask'}
                             </SigninMethod.Title>
                             <SigninMethod.Icon>
@@ -292,7 +292,7 @@ const LoginPage = () => {
                         >
                             <SigninMethod.Title>
                                 {method === WALLET_CONNECT && !!connecting && 'Connecting...'}
-                                {!!error && method === WALLET_CONNECT && !connecting && 'Couldn\'t connect with WalletConnect'}
+                                {!!error && method === WALLET_CONNECT && !connecting && 'Couldn\'t connect to WalletConnect'}
                                 {(method !== WALLET_CONNECT || (!connecting && !error)) && 'WalletConnect'}
                             </SigninMethod.Title>
                             <SigninMethod.Icon>
