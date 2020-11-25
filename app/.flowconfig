@@ -26,6 +26,7 @@ module.name_mapper='\$testUtils' -> '<PROJECT_ROOT>/test/test-utils'
 module.name_mapper='\$utils' -> '<PROJECT_ROOT>/src/utils'
 module.name_mapper='\$editor' -> '<PROJECT_ROOT>/src/editor'
 module.name_mapper='\$ui' -> '<PROJECT_ROOT>/src/shared/components/Ui'
+sharedmemory.hash_table_pow=21
 
 # allow dynamic import()
 module.ignore_non_literal_requires=true
