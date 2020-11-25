@@ -864,9 +864,6 @@ msgstr "Your email address (optional)"
 msgid "userpages.profilePage.profileSettings.userEmailError"
 msgstr "Please enter a valid email address"
 
-msgid "userpages.profilePage.profileSettings.changePassword"
-msgstr "Change Password"
-
 msgid "userpages.profilePage.ethereumAddress.title"
 msgstr "Ethereum Accounts"
 
@@ -1035,33 +1032,6 @@ msgstr "Cancel"
 
 msgid "userpages.keyFieldEditor.permission"
 msgstr "Permission"
-
-msgid "modal.changePassword.defaultTitle"
-msgstr "Change password"
-
-msgid "modal.changePassword.currentPassword"
-msgstr "Current password"
-
-msgid "modal.changePassword.newPassword"
-msgstr "New password"
-
-msgid "modal.changePassword.confirmNewPassword"
-msgstr "Confirm new password"
-
-msgid "modal.changePassword.forgotPassword.desktop"
-msgstr "Forgot password?"
-
-msgid "modal.changePassword.forgotPassword.mobile"
-msgstr "Forgot?"
-
-msgid "modal.changePassword.passwordsDoNotMatch"
-msgstr "The passwords do not match"
-
-msgid "modal.changePassword.errorNotification"
-msgstr "Password not changed"
-
-msgid "modal.changePassword.successNotification"
-msgstr "Password changed"
 
 msgid "modal.signatureRequest.defaultTitle"
 msgstr "Signature request"

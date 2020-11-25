@@ -107,11 +107,9 @@ msgstr "Subscriptions"
 msgid "general.reddit"
 msgstr "Reddit"
 
-msgid "general.signIn"
-msgstr "Inicia sesión"
-
-msgid "general.signUp"
-msgstr "Regístrate"
+# missing
+msgid "general.useCore"
+msgstr ""
 
 msgid "general.streamrSystem"
 msgstr "Streamr System"

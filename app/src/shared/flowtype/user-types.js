@@ -10,9 +10,3 @@ export type User = {
     imageUrlSmall: string,
     imageUrlLarge: string,
 }
-
-export type PasswordUpdate = {
-    currentPassword: string,
-    newPassword: string,
-    confirmNewPassword: string,
-}

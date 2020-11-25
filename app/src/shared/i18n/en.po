@@ -119,11 +119,8 @@ msgstr "Subscriptions"
 msgid "general.reddit"
 msgstr "Reddit"
 
-msgid "general.signIn"
-msgstr "Sign In"
-
-msgid "general.signUp"
-msgstr "Sign Up"
+msgid "general.useCore"
+msgstr "Use Core"
 
 msgid "general.apps"
 msgstr "Apps"
