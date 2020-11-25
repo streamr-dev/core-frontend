@@ -2,7 +2,6 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 import { CoreHelmet } from '$shared/components/Helmet'
-import Footer from '../Footer'
 import Logo from '../Logo'
 import styles from './authLayout.pcss'
 
@@ -16,6 +15,8 @@ const TitleBar = styled.div`
     text-align: center;
 `
 
+const Footer = styled.div``
+
 const UnstyledLayout = ({ children, ...props }) => (
     <React.Fragment>
         <CoreHelmet
@@ -24,12 +25,12 @@ const UnstyledLayout = ({ children, ...props }) => (
             }}
         />
         <div {...props}>
-            <Logo className={styles.logo} />
+            <Logo />
             <TitleBar>Streamr Core</TitleBar>
             <Panel>
                 {children}
             </Panel>
-            <Footer className={styles.footer} mobile />
+            <Footer />
         </div>
     </React.Fragment>
 )
