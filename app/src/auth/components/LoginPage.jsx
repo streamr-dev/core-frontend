@@ -8,19 +8,18 @@ import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import Button from '$shared/components/Button'
 import { getUserData } from '$shared/modules/user/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import docsLinks from '$shared/../docsLinks'
 
-import SessionProvider from '../SessionProvider'
-import AuthLayout from '../AuthLayout'
-import SignInMethod from '../SignInMethod'
-import SessionContext from '../../contexts/Session'
-import metamaskLogo from '../../assets/Metamask.png'
-import metamaskLogo2x from '../../assets/Metamask@2x.png'
-import walletConnectLogo from '../../assets/WalletConnect.png'
-import walletConnectLogo2x from '../../assets/WalletConnect@2x.png'
+import useMetamask from '../hooks/useMetamask'
+import useWalletConnect from '../hooks/useWalletConnect'
+import SessionContext from '../contexts/Session'
+import metamaskLogo from '../assets/Metamask.png'
+import metamaskLogo2x from '../assets/Metamask@2x.png'
+import walletConnectLogo from '../assets/WalletConnect.png'
+import walletConnectLogo2x from '../assets/WalletConnect@2x.png'
 
-import useMetamask from './useMetamask'
-import useWalletConnect from './useWalletConnect'
+import SessionProvider from './SessionProvider'
+import AuthLayout from './AuthLayout'
+import SignInMethod from './SignInMethod'
 
 const Panel = styled.div`
     background: #FFFFFF;
@@ -93,6 +92,20 @@ const handlers = {
     }),
 }
 
+const methods = [{
+    id: METAMASK,
+    title: 'MetaMask',
+    image: metamaskLogo,
+    image2x: metamaskLogo2x,
+    enabled: true,
+}, {
+    id: WALLET_CONNECT,
+    title: 'WalletConnect',
+    image: walletConnectLogo,
+    image2x: walletConnectLogo2x,
+    enabled: false,
+}]
+
 const LoginPage = () => {
     const dispatch = useDispatch()
     const [{ method, connecting, error }, setState] = useReducer((state, action) => (
@@ -104,8 +117,8 @@ const LoginPage = () => {
     })
     const isMounted = useIsMounted()
 
-    const { connect: getMetamaskToken, enabled: isMetamaskEnabled } = useMetamask()
-    const { connect: getWalletConnectToken, enabled: isWalletConnectEnabled } = useWalletConnect()
+    const { connect: getMetamaskToken } = useMetamask()
+    const { connect: getWalletConnectToken } = useWalletConnect()
     const { setSessionToken } = useContext(SessionContext)
 
     const connect = useCallback(async (nextMethod) => {
@@ -162,58 +175,42 @@ const LoginPage = () => {
                     <PanelRow>
                         <Header>{I18n.t('auth.connectWallet')}</Header>
                     </PanelRow>
-                    <PanelRow>
-                        <SignInMethod
-                            disabled={allDisabled || !isMetamaskEnabled}
-                            onClick={() => connect(METAMASK)}
-                            data-active-method={method === METAMASK && !!connecting}
-                            theme={!!error && !connecting && method === METAMASK && SignInMethod.themes.Error}
-                        >
-                            <SignInMethod.Title>
-                                {method === METAMASK && !!connecting && I18n.t('auth.connecting')}
-                                {!!error && method === METAMASK && !connecting && I18n.t('auth.couldNotConnect', {
-                                    method: 'MetaMask',
-                                })}
-                                {(method !== METAMASK || (!connecting && !error)) && 'MetaMask'}
-                            </SignInMethod.Title>
-                            <SignInMethod.Icon>
-                                <img
-                                    src={metamaskLogo}
-                                    srcSet={`${metamaskLogo2x} 2x`}
-                                    alt="MetaMask"
-                                />
-                            </SignInMethod.Icon>
-                        </SignInMethod>
-                    </PanelRow>
-                    <PanelRow>
-                        <SignInMethod
-                            disabled={allDisabled || !isWalletConnectEnabled}
-                            onClick={() => connect(WALLET_CONNECT)}
-                            data-active-method={method === WALLET_CONNECT && !!connecting}
-                            theme={!!error && !connecting && method === WALLET_CONNECT && SignInMethod.themes.Error}
-                        >
-                            <SignInMethod.Title>
-                                {method === WALLET_CONNECT && !!connecting && I18n.t('auth.connecting')}
-                                {!!error && method === WALLET_CONNECT && !connecting && I18n.t('auth.couldNotConnect', {
-                                    method: 'WalletConnect',
-                                })}
-                                {(method !== WALLET_CONNECT || (!connecting && !error)) && 'WalletConnect'}
-                            </SignInMethod.Title>
-                            <SignInMethod.Icon>
-                                <img
-                                    src={walletConnectLogo}
-                                    srcSet={`${walletConnectLogo2x} 2x`}
-                                    alt="WalletConnect"
-                                />
-                            </SignInMethod.Icon>
-                        </SignInMethod>
-                    </PanelRow>
+                    {methods.map(({
+                        id,
+                        title,
+                        image,
+                        image2x,
+                        enabled,
+                    }) => (
+                        <PanelRow key={id}>
+                            <SignInMethod
+                                disabled={allDisabled || !enabled}
+                                onClick={() => connect(id)}
+                                data-active-method={method === id && !!connecting}
+                                theme={!!error && !connecting && method === id && SignInMethod.themes.Error}
+                            >
+                                <SignInMethod.Title>
+                                    {method === id && !!connecting && I18n.t('auth.connecting')}
+                                    {!!error && method === id && !connecting && I18n.t('auth.couldNotConnect', {
+                                        method: title,
+                                    })}
+                                    {(method !== id || (!connecting && !error)) && title}
+                                </SignInMethod.Title>
+                                <SignInMethod.Icon>
+                                    <img
+                                        src={image}
+                                        srcSet={`${image2x} 2x`}
+                                        alt={title}
+                                    />
+                                </SignInMethod.Icon>
+                            </SignInMethod>
+                        </PanelRow>
+                    ))}
                     <PanelRow>
                         <Footer>
                             {!error && !connecting && (
                                 <Translate
                                     value="auth.help.wallet"
-                                    docsLink={docsLinks.gettingStarted}
                                     dangerousHTML
                                 />
                             )}

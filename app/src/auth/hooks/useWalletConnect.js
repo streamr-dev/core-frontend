@@ -7,7 +7,6 @@ const useWalletConnect = () => {
 
     return useMemo(() => ({
         connect,
-        enabled: false,
     }), [
         connect,
     ])

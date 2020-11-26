@@ -20,7 +20,6 @@ const useMetamask = () => {
 
     return useMemo(() => ({
         connect,
-        enabled: true,
     }), [
         connect,
     ])
