@@ -23,7 +23,7 @@ msgstr "Couldn't connect to %{method}"
 msgid "auth.help.wallet"
 msgstr ""
 "Need an Ethereum wallet? "
-"<a href=\"%{docsLink}\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Learn more here</a>"
+"<a href=\"https://ethereum.org/en/wallets/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Learn more here</a>"
 
 msgid "auth.cancel"
 msgstr "Cancel"
