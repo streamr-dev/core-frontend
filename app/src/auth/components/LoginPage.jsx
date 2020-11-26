@@ -103,7 +103,7 @@ const methods = [{
     title: 'WalletConnect',
     image: walletConnectLogo,
     image2x: walletConnectLogo2x,
-    enabled: false,
+    enabled: true,
 }]
 
 const LoginPage = () => {
@@ -143,7 +143,12 @@ const LoginPage = () => {
             if (token) {
                 // This will redirect the user from the login page
                 setSessionToken(token)
-                dispatch(getUserData())
+
+                const user = await dispatch(getUserData())
+
+                if (!user && isMounted()) {
+                    throw new Error('No user data')
+                }
             } else {
                 throw new Error('No token')
             }
@@ -154,7 +159,7 @@ const LoginPage = () => {
 
             setState({
                 type: 'error',
-                error: e.message,
+                error: e && e.message,
             })
         }
     }, [

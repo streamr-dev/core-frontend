@@ -89,6 +89,8 @@ export const getUserData = () => (dispatch: Function) => {
     return services.getUserData()
         .then((user) => {
             dispatch(getUserDataSuccess(user))
+
+            return user
         }, (error) => {
             dispatch(getUserDataError(error))
         })
