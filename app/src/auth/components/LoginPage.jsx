@@ -159,10 +159,12 @@ const LoginPage = () => {
 
             if (!isMounted()) { return }
 
+            cancelPromiseRef.current = undefined
+
             if (token) {
-                // This will redirect the user from the login page
                 setSessionToken(token)
 
+                // This will redirect the user from the login page if succesful
                 const user = await dispatch(getUserData())
 
                 if (!user && isMounted()) {
