@@ -3,7 +3,6 @@
 import React, { useContext, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
-import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 
 import useValidation from '../ProductController/useValidation'
@@ -14,8 +13,7 @@ import Popover from '$shared/components/Popover'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import { selectEthereumIdentities } from '$shared/modules/integrationKey/selectors'
-import { fetchIntegrationKeys } from '$shared/modules/integrationKey/actions'
+import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import { truncate } from '$shared/utils/text'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import Label from '$ui/Label'
@@ -31,8 +29,6 @@ type Props = {
     onFocus?: ?(SyntheticFocusEvent<EventTarget>) => void,
     onBlur?: ?(SyntheticFocusEvent<EventTarget>) => void,
 }
-
-const EMPTY = []
 
 type AddressItemProps = {
     address?: ?string,
@@ -79,13 +75,11 @@ const BeneficiaryAddress = ({
 
     const { copy } = useCopy()
 
-    const dispatch = useDispatch()
-
-    const integrationKeys = useSelector(selectEthereumIdentities) || EMPTY
+    const { ethereumIdentities } = useEthereumIdentities()
 
     const integrationKeysFiltered = useMemo(() => (
-        integrationKeys.filter(({ json }) => json && json.address)
-    ), [integrationKeys])
+        ethereumIdentities.filter(({ json }) => json && json.address)
+    ), [ethereumIdentities])
 
     const onCopy = useCallback(() => {
         if (!addressProp) {
@@ -99,10 +93,6 @@ const BeneficiaryAddress = ({
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy, addressProp])
-
-    useEffect(() => {
-        dispatch(fetchIntegrationKeys())
-    }, [dispatch])
 
     const accountAddress = useAccountAddress()
 

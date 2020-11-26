@@ -1,12 +1,11 @@
 import React, { useCallback, useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { useDispatch } from 'react-redux'
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
-import UnstyledText from '$ui/Text'
-import { SM, XL, MEDIUM } from '$shared/utils/styled'
+import { SM, MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
@@ -27,73 +26,13 @@ import Nav from '$shared/components/Layout/Nav'
 import { CoreHelmet } from '$shared/components/Helmet'
 
 import Storage from './shared/Storage'
-
-export const Text = styled(UnstyledText)`
-    &[disabled] {
-        background-color: #efefef;
-        color: #525252;
-        opacity: 1;
-    }
-
-    ${({ centered }) => !!centered && css`
-        text-align: center;
-    `}
-`
-
-const UnstyledField = ({
-    label,
-    children,
-    narrow,
-    desktopOnly,
-    ...props
-}) => (
-    <div {...props}>
-        <Label>{label}&zwnj;</Label>
-        {children}
-    </div>
-)
-
-export const Field = styled(UnstyledField)`
-    flex-grow: 1;
-
-    & + & {
-        margin-top: 24px;
-    }
-
-    ${({ narrow }) => !!narrow && css`
-        flex-grow: 0;
-        width: 128px;
-    `}
-
-    @media (min-width: ${SM}px) {
-        & + & {
-            margin: 0 0 0 16px;
-        }
-    }
-
-    ${({ desktopOnly }) => !!desktopOnly && css`
-        display: none;
-
-        @media (min-width: ${XL}px) {
-            display: block;
-        }
-    `}
-`
-
-export const FormGroup = styled.div`
-    & + & {
-        margin-top: 32px;
-    }
-
-    @media (min-width: ${SM}px) {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    ${Text} {
-        width: 100%;
-    }
-`
+import useStreamPath from './shared/useStreamPath'
+import {
+    StreamIdFormGroup,
+    FormGroup,
+    Field,
+    Text,
+} from './shared/FormGroup'
 
 const FieldGroup = styled(FormGroup)`
     @media (min-width: ${SM}px) {
@@ -107,19 +46,7 @@ const FieldGroup = styled(FormGroup)`
     }
 `
 
-const StreamId = styled.div`
-    display: flex;
-
-    & > :first-child {
-        flex-grow: 1;
-    }
-
-    & > :last-child {
-        min-width: 72px;
-    }
-`
-
-export const HistoricalStorage = styled.div`
+const HistoricalStorage = styled.div`
     display: flex;
 
     @media (min-width: ${SM}px) {
@@ -135,25 +62,14 @@ export const HistoricalStorage = styled.div`
     }
 `
 
-const StyledButton = styled(Button)`
-    && {
-        padding: 0;
-    }
-`
-
-export const StreamPartitions = styled.div`
+const StreamPartitions = styled.div`
     width: 136px;
-`
-
-const StyledTranslate = styled(Translate)`
-    /* TODO: Get rid of it in a consistency pass. This and "Edit/HistoryView" both define this
-       component */
-    margin-bottom: 3.125rem !important;
 `
 
 const UnstyledView = ({ stream, currentUser, ...props }) => {
     const { copy, isCopied } = useCopy()
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
+    const { truncatedDomain: domain, pathname } = useStreamPath(stream.id)
 
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
 
@@ -205,22 +121,54 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="details"
                     title={I18n.t('userpages.streams.edit.details.nav.details')}
                 >
-                    <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.details.streamId')}>
-                            <StreamId>
+                    <StreamIdFormGroup hasDomain={!!domain} data-test-hook="StreamId">
+                        {!!domain && (
+                            <React.Fragment>
+                                <Field
+                                    label={I18n.t('userpages.streams.edit.details.domain.label')}
+                                >
+                                    <Text
+                                        value={domain}
+                                        readOnly
+                                        disabled
+                                        name="domain"
+                                    />
+                                </Field>
+                                <Field narrow>
+                                    /
+                                </Field>
+                                <Field
+                                    label={I18n.t('userpages.streams.edit.details.pathname.label')}
+                                >
+                                    <Text
+                                        value={pathname}
+                                        readOnly
+                                        disabled
+                                        name="pathname"
+                                    />
+                                </Field>
+                            </React.Fragment>
+                        )}
+                        {!domain && (
+                            <Field
+                                label={I18n.t('userpages.streams.edit.details.streamId')}
+                            >
                                 <Text
-                                    value={stream.id || ''}
+                                    value={pathname}
                                     readOnly
                                     disabled
                                     name="streamId"
                                 />
-                                <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
-                                    <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
-                                </StyledButton>
-                            </StreamId>
+                            </Field>
+                        )}
+                        <Field
+                            narrow
+                        >
+                            <Button kind="secondary" onClick={() => onCopy(stream.id)}>
+                                <Translate value={`userpages.streams.edit.details.${isCopied ? 'streamIdCopied' : 'copyStreamId'}`} />
+                            </Button>
                         </Field>
-                        <Field narrow desktopOnly />
-                    </FormGroup>
+                    </StreamIdFormGroup>
                     {!!stream.description && (
                         <FormGroup>
                             <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
@@ -231,7 +179,6 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                                     name="description"
                                 />
                             </Field>
-                            <Field narrow desktopOnly />
                         </FormGroup>
                     )}
                 </TOCSection>
@@ -283,13 +230,12 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     id="preview"
                     title={I18n.t('userpages.streams.edit.details.nav.preview')}
                 >
-                    <Preview stream={stream} />
+                    <Preview stream={stream} showDescription={false} />
                 </TOCSection>
                 <TOCSection
                     id="historicalData"
                     title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
                 >
-                    <StyledTranslate tag="p" value="userpages.streams.edit.historicalStoragePeriod.description" />
                     <Storage streamId={stream.id} disabled />
                     <FormGroup>
                         <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>

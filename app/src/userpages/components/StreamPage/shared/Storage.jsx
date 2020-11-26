@@ -12,7 +12,7 @@ const UnstyledStorage = ({ streamId, disabled, ...props }) => {
     return (
         <div {...props}>
             <Label>
-                {I18n.t('userpages.streams.edit.storageNodes.label')}
+                {I18n.t(`userpages.streams.${disabled ? 'view' : 'edit'}.storageNodes.label`)}
             </Label>
             <StorageNode.List data-test-hook="Storage nodes">
                 {nodes.map(({ address, name }) => (

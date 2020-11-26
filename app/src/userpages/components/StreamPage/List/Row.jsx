@@ -22,6 +22,7 @@ import useModal from '$shared/hooks/useModal'
 import { StreamList } from '$shared/components/List'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
+import useStreamPath from '../shared/useStreamPath'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -50,6 +51,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
     const fetchingPermissions = useSelector(selectFetchingPermissions)
     const permissions = useSelector(selectStreamPermissions)
     const { api: snippetDialog } = useModal('userpages.streamSnippet')
+    const { truncatedId } = useStreamPath(stream.id)
 
     const canBeDeletedByCurrentUser = (
         !fetchingPermissions &&
@@ -151,7 +153,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                 description={stream.description}
                 moreInfo={timestamp && titleize(ago(new Date(timestamp)))}
             >
-                {stream.id}
+                {truncatedId}
             </StreamList.Title>
             <StreamList.Item truncate title={stream.description}>
                 {stream.description}

@@ -9,9 +9,19 @@ import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
 import type { StreamId, Stream } from '$shared/flowtype/stream-types'
 import Label from '$ui/Label'
-import Text from '$ui/Text'
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
+import useStreamPath from '../shared/useStreamPath'
+
+import {
+    StreamIdFormGroup,
+    Field,
+    Text,
+} from '../shared/FormGroup'
+import {
+    ADD_DOMAIN_URL,
+    PathnameTooltip,
+} from '../New'
 
 type Props = {
     stream: Stream,
@@ -22,17 +32,9 @@ type Props = {
 const Root = styled.div``
 
 const Row = styled.div`
-    max-width: 602px;
-
     & + & {
         margin-top: 2rem;
     }
-`
-
-const StreamInput = styled.div`
-    display: grid;
-    grid-column-gap: 1rem;
-    grid-template-columns: 1fr 72px;
 `
 
 const StreamIdWrapper = styled.div`
@@ -63,18 +65,14 @@ const LockIcon = styled.div`
     }
 `
 
-const StyledButton = styled(Button)`
-    && {
-        padding: 0;
-    }
-`
-
 const Description = styled(Translate)`
     margin-bottom: 3rem;
 `
 
 export const InfoView = ({ stream, disabled, updateStream }: Props) => {
     const { copy, isCopied } = useCopy()
+
+    const { truncatedDomain: domain, pathname } = useStreamPath(stream.id)
 
     const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
@@ -98,29 +96,68 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
             <Description
                 value="userpages.streams.edit.details.info.description"
                 tag="p"
-                defaultDomain="sandbox"
+                addDomainUrl={ADD_DOMAIN_URL}
                 dangerousHTML
             />
             <Row>
-                <Label htmlFor="streamId">
-                    {I18n.t('userpages.streams.edit.details.streamId')}
-                </Label>
-                <StreamInput>
-                    <StreamIdWrapper>
-                        <StreamIdText
-                            name="streamId"
-                            id="streamId"
-                            value={(stream && stream.id) || ''}
-                            readOnly
-                        />
-                        <LockIcon>
-                            <SvgIcon name="lock" />
-                        </LockIcon>
-                    </StreamIdWrapper>
-                    <StyledButton kind="secondary" onClick={() => onCopy(stream.id)}>
-                        <Translate value={`userpages.keyField.${isCopied ? 'copied' : 'copy'}`} />
-                    </StyledButton>
-                </StreamInput>
+                <StreamIdFormGroup hasDomain={!!domain} data-test-hook="StreamId">
+                    {!!domain && (
+                        <React.Fragment>
+                            <Field
+                                label={I18n.t('userpages.streams.edit.details.domain.label')}
+                            >
+                                <Text
+                                    value={domain}
+                                    readOnly
+                                    name="domain"
+                                />
+                            </Field>
+                            <Field narrow>
+                                /
+                            </Field>
+                            <Field
+                                label={I18n.t('userpages.streams.edit.details.pathname.label')}
+                            >
+                                <StreamIdWrapper>
+                                    <PathnameTooltip />
+                                    <StreamIdText
+                                        name="pathname"
+                                        id="pathname"
+                                        value={pathname}
+                                        readOnly
+                                    />
+                                    <LockIcon>
+                                        <SvgIcon name="lock" />
+                                    </LockIcon>
+                                </StreamIdWrapper>
+                            </Field>
+                        </React.Fragment>
+                    )}
+                    {!domain && (
+                        <Field
+                            label={I18n.t('userpages.streams.edit.details.streamId')}
+                        >
+                            <StreamIdWrapper>
+                                <StreamIdText
+                                    name="streamId"
+                                    id="streamId"
+                                    value={pathname}
+                                    readOnly
+                                />
+                                <LockIcon>
+                                    <SvgIcon name="lock" />
+                                </LockIcon>
+                            </StreamIdWrapper>
+                        </Field>
+                    )}
+                    <Field
+                        narrow
+                    >
+                        <Button kind="secondary" onClick={() => onCopy(stream.id)}>
+                            <Translate value={`userpages.streams.edit.details.${isCopied ? 'streamIdCopied' : 'copyStreamId'}`} />
+                        </Button>
+                    </Field>
+                </StreamIdFormGroup>
             </Row>
             <Row>
                 <Label htmlFor="streamDescription">

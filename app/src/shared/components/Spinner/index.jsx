@@ -7,7 +7,7 @@ import { Translate } from 'react-redux-i18n'
 import styles from './spinner.pcss'
 
 export type SpinnerSize = 'small' | 'large'
-export type SpinnerColor = 'green' | 'white' | 'gray'
+export type SpinnerColor = 'green' | 'white' | 'gray' | 'blue'
 
 type Props = {
     size?: SpinnerSize,

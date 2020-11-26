@@ -72,7 +72,9 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
             throw new Error('no product!')
         }
 
-        const { id: joinPartStreamId } = await createJoinPartStream(productId)
+        const web3 = getWeb3()
+        const account = await web3.getDefaultAccount()
+        const { id: joinPartStreamId } = await createJoinPartStream(account, productId)
 
         if (!isMounted()) { return Promise.resolve() }
 
@@ -80,7 +82,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         let blockEstimate = 0
 
         try {
-            blockEstimate = await averageBlockTime(getWeb3())
+            blockEstimate = await averageBlockTime(web3)
         } catch (e) {
             // just log the error if estimate fails, otherwise we can continue
             console.warn(e)

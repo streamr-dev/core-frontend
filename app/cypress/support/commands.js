@@ -27,23 +27,41 @@ Cypress.Commands.add('authenticatedRequest', (options = {}) => (
     })
 ))
 
-Cypress.Commands.add('createStream', (body) => (
+Cypress.Commands.add('getDefaultEthAccount', () => (
     cy
         .authenticatedRequest({
-            url: 'http://localhost/api/v1/streams',
-            method: 'POST',
-            body: {
-                id: `sandbox/test-${(
-                    new Date()
-                        .toISOString()
-                        .replace(/\W/g, '')
-                        .substr(4, 11)
-                        .replace(/T/, '-')
-                )}`,
-                ...body,
-            },
+            url: 'http://localhost/api/v1/integration_keys',
+            method: 'GET',
         })
-        .then(({ body: { id } }) => id)
+        .then(({ body }) => {
+            const { json } = (body || []).find(({ service }) => service === 'ETHEREUM_ID')
+
+            return json && json.address
+        })
+))
+
+Cypress.Commands.add('createStream', ({ domain: customDomain, stream } = {
+    domain: undefined,
+}) => (
+    (!customDomain ? cy.getDefaultEthAccount() : Promise.resolve(customDomain))
+        .then((domain) => (
+            cy
+                .authenticatedRequest({
+                    url: 'http://localhost/api/v1/streams',
+                    method: 'POST',
+                    body: {
+                        id: `${domain}/test-${(
+                            new Date()
+                                .toISOString()
+                                .replace(/\W/g, '')
+                                .substr(4, 11)
+                                .replace(/T/, '-')
+                        )}`,
+                        ...stream,
+                    },
+                })
+                .then(({ body: { id } }) => id)
+        ))
 ))
 
 Cypress.Commands.add('enableStorageNode', (streamId, address) => (
