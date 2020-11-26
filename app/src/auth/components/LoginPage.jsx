@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useContext } from 'react'
+import React, { useCallback, useReducer, useContext, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
@@ -120,6 +120,13 @@ const LoginPage = () => {
     const { connect: getMetamaskToken } = useMetamask()
     const { connect: getWalletConnectToken } = useWalletConnect()
     const { setSessionToken } = useContext(SessionContext)
+    const cancelPromiseRef = useRef(undefined)
+
+    const cancel = useCallback(() => {
+        if (cancelPromiseRef.current) {
+            cancelPromiseRef.current.reject(new Error('User cancelled action'))
+        }
+    }, [])
 
     const connect = useCallback(async (nextMethod) => {
         setState({
@@ -129,11 +136,23 @@ const LoginPage = () => {
 
         try {
             let token
+            const cancelPromise = new Promise((resolve, reject) => {
+                cancelPromiseRef.current = {
+                    resolve,
+                    reject,
+                }
+            })
 
             if (nextMethod === METAMASK) {
-                token = await getMetamaskToken()
+                token = await Promise.race([
+                    getMetamaskToken(),
+                    cancelPromise,
+                ])
             } else if (nextMethod === WALLET_CONNECT) {
-                token = await getWalletConnectToken()
+                token = await Promise.race([
+                    getWalletConnectToken(),
+                    cancelPromise,
+                ])
             } else {
                 throw new Error('Unknow method')
             }
@@ -219,15 +238,15 @@ const LoginPage = () => {
                                     dangerousHTML
                                 />
                             )}
-                            {/* !!connecting && (
+                            {!!connecting && (
                                 <Button
                                     kind="link"
                                     size="mini"
-                                    onClick={() => {}}
+                                    onClick={() => cancel()}
                                 >
                                     {I18n.t('auth.cancel')}
                                 </Button>
-                            ) */}
+                            )}
                             {!!error && !connecting && (
                                 <Button
                                     kind="secondary"
