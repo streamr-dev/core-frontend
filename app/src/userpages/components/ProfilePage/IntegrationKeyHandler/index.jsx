@@ -2,6 +2,7 @@
 
 import React, { Fragment, useCallback, useEffect } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
+import { useSelector } from 'react-redux'
 
 import Description from '../Description'
 
@@ -13,6 +14,7 @@ import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { usePending } from '$shared/hooks/usePending'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 import AddPrivateKeyDialog from './AddPrivateKeyDialog'
 
@@ -29,6 +31,7 @@ export const IntegrationKeyHandler = () => {
     const { wrap, isPending: isAddPrivateKeyDialogPending } = usePending('user.ADD_PRIVATE_KEY_DIALOG')
     const { wrap: wrapPrivateKeyAction } = usePending('user.ADD_PRIVATE_KEY')
     const { isPending: isSavePending } = usePending('user.SAVE')
+    const user = useSelector(selectUserData)
 
     const wrappedEdit = useCallback(async (...args) => (
         wrapPrivateKeyAction(async () => {
@@ -82,6 +85,7 @@ export const IntegrationKeyHandler = () => {
                 onEdit={wrappedEdit}
                 truncateValues
                 disabled={isDisabled}
+                activeKeyId={user && user.username}
             />
             <Button
                 type="button"

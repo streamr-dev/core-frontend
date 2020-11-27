@@ -28,6 +28,15 @@ jest.mock('$shared/components/Layout/User', () => {
 
     User.Avatarless = User
 
+    const Username = ({ source }) => (
+        <div id="Username">
+            {(source || {}).username}
+        </div>
+    )
+
+    User.Avatarless = User
+    User.UsernameCopy = Username
+
     return {
         __esModule: true,
         default: User,

@@ -3,16 +3,78 @@ import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
 import { Nav, Menu, Button, Link as L } from '@streamr/streamr-layout'
-import { MD as TABLET, LG as DESKTOP, MEDIUM, REGULAR } from '$shared/utils/styled'
+import { MD as TABLET, LG as DESKTOP, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import routes from '$routes'
 import { DocsMenu } from '$docs/components/DocsLayout/DocsNav'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
 import { selectUserData } from '$shared/modules/user/selectors'
-import Avatar from '$shared/components/Avatar'
 import SvgIcon from '$shared/components/SvgIcon'
 import User from './User'
 import ActivityList from '$shared/components/ActivityList'
+
+const CaretDownIcon = styled(SvgIcon)`
+    opacity: 1;
+`
+
+const CaretUpIcon = styled(SvgIcon)`
+    opacity: 0;
+`
+
+const DropdownToggle = styled.div`
+    background: #F8F8F8;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    position: relative;
+
+    svg {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 10px;
+        height: 10px;
+        transition: 200ms opacity;
+    }
+`
+
+const SignedInUserMenu = styled(Nav.Wide.Dropdown)`
+    ${Menu} {
+        padding-top: 4px;
+
+        ${Menu.Item}:first-child {
+            padding: 0 4px;
+            margin-bottom: 10px;
+        }
+
+        ${User.Avatarless} {
+            text-align: center;
+            background: #F8F8F8;
+            border-radius: 4px;
+            padding: 16px 6px;
+            width: 160px;
+            user-select: none;
+        }
+
+        ${User.Name},
+        ${User.Username} {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+    :hover ${DropdownToggle} {
+        ${CaretDownIcon} {
+            opacity: 0;
+        }
+
+        ${CaretUpIcon} {
+            opacity: 1;
+        }
+    }
+`
 
 const UnstyledWide = (props) => {
     const current = useCurrentLocation()
@@ -116,23 +178,17 @@ const UnstyledWide = (props) => {
                             )}
                         />
                     </ActivityList>
-                    <Nav.Wide.Dropdown
+                    <User.UsernameCopy username={currentUser.username} />
+                    <SignedInUserMenu
                         edge
                         alignMenu="right"
                         nodeco
                         toggle={(
                             <Nav.Link>
-                                <Avatar
-                                    alt={currentUser.name}
-                                    src={currentUser.imageUrlSmall}
-                                    // eslint-disable-next-line react/jsx-curly-brace-presence
-                                    css={`
-                                        background-color: #efefef;
-                                        border-radius: 50%;
-                                        overflow: hidden;
-                                        width: 32px;
-                                    `}
-                                />
+                                <DropdownToggle>
+                                    <CaretDownIcon name="caretDown" />
+                                    <CaretUpIcon name="caretUp" />
+                                </DropdownToggle>
                             </Nav.Link>
                         )}
                         menu={(
@@ -140,15 +196,8 @@ const UnstyledWide = (props) => {
                                 <Menu.Item>
                                     <User.Avatarless source={currentUser} />
                                 </Menu.Item>
-                                <Menu.Divider />
                                 <Menu.Item as={Link} to={routes.profile()}>
-                                    <Translate value="general.profile" />
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.profile({}, 'ethereum-accounts')}>
-                                    <Translate value="userpages.profilePage.ethereumAddress.linkTitle" />
-                                </Menu.Item>
-                                <Menu.Item as={Link} to={routes.profile({}, 'private-keys')}>
-                                    <Translate value="userpages.profilePage.ethereumPrivateKeys.linkTitle" />
+                                    <Translate value="general.settings" />
                                 </Menu.Item>
                                 <Menu.Divider />
                                 <Menu.Item as={Link} to={routes.auth.logout()}>
@@ -191,11 +240,9 @@ const UnstyledNarrow = (props) => {
                     </SiteSection>
                 </Fragment>
             )}
+            infoComponent={(currentUser && <User.UsernameCopy username={currentUser.username} />)}
         >
             <Nav.Narrow.Body>
-                <div>
-                    <User source={currentUser || undefined} />
-                </div>
                 <Nav.Link as={Link} to={routes.core()}>
                     <Translate value="general.core" />
                 </Nav.Link>
@@ -207,11 +254,11 @@ const UnstyledNarrow = (props) => {
                 </Nav.Link>
                 {!currentUser ? (
                     <Nav.Link>
-                        Settings
+                        <Translate value="general.settings" />
                     </Nav.Link>
                 ) : (
                     <Nav.Link as={Link} to={routes.profile()}>
-                        Settings
+                        <Translate value="general.settings" />
                     </Nav.Link>
                 )}
             </Nav.Narrow.Body>
@@ -265,22 +312,19 @@ const Wide = styled(UnstyledWide)`
     ${User.Username} {
         font-size: 12px;
     }
+
+    ${User.UsernameCopy} + ${SignedInUserMenu} {
+        margin-left: 0;
+    }
 `
 
 const Narrow = styled(UnstyledNarrow)`
-    ${User} {
-        border-bottom: 1px solid #efefef;
-        line-height: 1em;
-        padding: 48px 32px 40px;
+    ${Nav.Narrow.Body} {
+        padding-top: 96px;
     }
 
-    ${User.Name} {
-        font-size: 16px;
-        margin-bottom: 4px;
-    }
-
-    ${User.Username} {
-        font-size: 14px;
+    ${User.UsernameCopy} {
+        margin-right: 16px;
     }
 
     ${Nav.Link}:not([href]) {
@@ -289,17 +333,7 @@ const Narrow = styled(UnstyledNarrow)`
 
     @media (min-width: ${TABLET}px) {
         ${User} {
-            padding: 56px 64px;
-        }
-
-        ${User.Name} {
-            font-size: 28px;
-            font-weight: ${REGULAR};
-            margin-bottom: 8px;
-        }
-
-        ${User.Username} {
-            font-size: 16px;
+            padding: 16px 64px 48px 64px;
         }
     }
 `

@@ -110,9 +110,6 @@ msgstr "Products"
 msgid "general.dataUnions"
 msgstr "Data Unions"
 
-msgid "general.profile"
-msgstr "Profile"
-
 msgid "general.transactions"
 msgstr "Transactions"
 
@@ -190,6 +187,12 @@ msgstr "Docs"
 
 msgid "general.copy"
 msgstr "Copy"
+
+msgid "general.copyAddress"
+msgstr "Copy address"
+
+msgid "general.copyUsername"
+msgstr "Copy email"
 
 msgid "general.copyToClipboard"
 msgstr "Copy to clipboard"

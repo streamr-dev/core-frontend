@@ -15,13 +15,13 @@ import Toolbar from '$shared/components/Toolbar'
 import BodyClass from '$shared/components/BodyClass'
 import FallbackImage from '$shared/components/FallbackImage'
 import Button from '$shared/components/Button'
+import HoverCopy from '$shared/components/HoverCopy'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import { productStates } from '$shared/utils/constants'
-
+import { truncate } from '$shared/utils/text'
 import routes from '$routes'
 
-import avatarStyles from '$userpages/components/Avatar/avatar.pcss'
 import avatarCircleStyles from '$shared/components/AvatarCircle/avatarCircle.pcss'
 import styles from './header.pcss'
 
@@ -62,17 +62,25 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
             />
             <ListContainer className={cx(styles.listTemp, className)}>
                 <div className={styles.profile}>
-                    <div className={cx(avatarStyles.container, styles.avatar)}>
+                    <div className={styles.avatar}>
                         {!imageUrl ? (
-                            <div className={avatarStyles.avatarCircle} />
+                            <div className={styles.avatarCircle} />
                         ) : (
                             <FallbackImage
-                                className={cx(avatarCircleStyles.accountCircle, avatarStyles.avatarCircle)}
+                                className={cx(avatarCircleStyles.accountCircle, styles.avatarCircle)}
                                 src={imageUrl || ''}
                                 alt={name || ''}
                             />
                         )}
-                        <NameAndUsername name={name} username={beneficiaryAddress} />
+                        <NameAndUsername name={name}>
+                            {!!beneficiaryAddress && (
+                                <HoverCopy value={beneficiaryAddress}>
+                                    {truncate(beneficiaryAddress, {
+                                        maxLength: 20,
+                                    })}
+                                </HoverCopy>
+                            )}
+                        </NameAndUsername>
                     </div>
                     <div className={styles.additionalComponent}>
                         <Button

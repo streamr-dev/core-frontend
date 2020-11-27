@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { I18n } from 'react-redux-i18n'
 
 import useCopy from '$shared/hooks/useCopy'
@@ -16,7 +16,7 @@ export type Props = {
 const Container = styled.div``
 
 const Icon = styled(SvgIcon)`
-    display: ${(props) => (props.forceVisible ? 'inline-flex' : 'none')};
+    display: none;
     height: 12px;
     color: #525252;
     margin-bottom: 2px;
@@ -52,7 +52,12 @@ const HoverCopy = ({ value, children }: Props) => {
                     <CopyIcon name="clipboardPlus" onClick={() => copy(value)} />
                 )}
                 {isCopied && (
-                    <CopiedIcon name="clipboardCheck" forceVisible={isCopied} />
+                    <CopiedIcon
+                        name="clipboardCheck"
+                        css={isCopied && css`
+                            display: inline-flex;
+                        `}
+                    />
                 )}
             </Tooltip>
         </Container>

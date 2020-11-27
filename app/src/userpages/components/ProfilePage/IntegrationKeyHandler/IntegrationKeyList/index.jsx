@@ -22,6 +22,7 @@ type CommonProps = {|
     onDelete: (IntegrationKeyId: IntegrationKeyId) => Promise<void>,
     onEdit: (IntegrationKeyId: IntegrationKeyId, keyName: string) => Promise<void>,
     disabled?: boolean,
+    activeKeyId?: IntegrationKeyId,
 |}
 
 type ItemProps = {
@@ -52,6 +53,7 @@ const IntegrationKeyItem = ({
     onDelete,
     onEdit,
     disabled,
+    activeKeyId,
 }: ItemProps) => {
     const [editing, setEditing] = useState(false)
     const address = useMemo(() => (item.json || {}).address || '', [item])
@@ -86,6 +88,7 @@ const IntegrationKeyItem = ({
                         </StyledBalance>
                     </Label>
                 )}
+                active={!!(activeKeyId && (item.json || {}).address === activeKeyId)}
             />
         </KeyFieldWrapper>
     )

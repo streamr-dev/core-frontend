@@ -2,6 +2,7 @@
 
 import React, { useEffect, useCallback } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
 import IntegrationKeyList from '../IntegrationKeyHandler/IntegrationKeyList'
@@ -13,6 +14,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { usePending } from '$shared/hooks/usePending'
 import { LG } from '$shared/utils/styled'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 import Description from '../Description'
 
@@ -47,6 +49,7 @@ const IdentityHandler = () => {
     const { wrap: wrapConnectWalletDialog, isPending: isConnectWalletDialogPending } = usePending('user.CONNECT_WALLET_DIALOG')
     const { wrap: wrapCreateAccountDialog, isPending: isCreateAccountDialogPending } = usePending('user.CREATE_ACCOUNT_DIALOG')
     const { wrap: wrapIdentityAction } = usePending('user.ADD_IDENTITY')
+    const user = useSelector(selectUserData)
 
     const wrappedEdit = useCallback(async (...args) => (
         wrapIdentityAction(async () => {
@@ -113,6 +116,7 @@ const IdentityHandler = () => {
                 integrationKeys={ethereumIdentities || []}
                 truncateValues
                 disabled={isDisabled}
+                activeKeyId={user && user.username}
             />
             <ConnectButton
                 type="button"

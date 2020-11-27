@@ -77,3 +77,11 @@ stories.add('truncated value (editable)', () => {
         />
     )
 })
+
+stories.add('active', () => (
+    <KeyField
+        keyName="Key name"
+        value={text('Value', 'Key value')}
+        active
+    />
+))

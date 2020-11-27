@@ -8,6 +8,14 @@ const mockLoad = jest.fn()
 const mockRemove = jest.fn()
 const mockApiOpen = jest.fn()
 
+const mockState = {
+    user: {},
+}
+
+jest.mock('react-redux', () => ({
+    useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
+}))
+
 jest.mock('$shared/modules/integrationKey/hooks/usePrivateKeys', () => (
     jest.fn().mockImplementation(() => ({
         load: mockLoad,

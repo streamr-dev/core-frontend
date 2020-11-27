@@ -93,9 +93,10 @@ type Props = {
     hideValues?: boolean,
     truncateValues?: boolean,
     disabled?: boolean,
+    activeKeyId?: string,
 }
 
-const IntegrationKeyListController = ({ hideValues, truncateValues, disabled }: Props) => {
+const IntegrationKeyListController = ({ hideValues, truncateValues, disabled, activeKeyId }: Props) => {
     const editAction = action('onEdit')
     const onEdit = (...args) => new Promise((resolve) => {
         editAction(...args)
@@ -112,6 +113,7 @@ const IntegrationKeyListController = ({ hideValues, truncateValues, disabled }: 
             hideValues={hideValues}
             truncateValues={truncateValues}
             disabled={disabled}
+            activeKeyId={activeKeyId}
         />
     )
 }
@@ -130,4 +132,8 @@ stories.add('truncated values', () => (
 
 stories.add('disabled', () => (
     <IntegrationKeyListController truncateValues disabled />
+))
+
+stories.add('active key highlight', () => (
+    <IntegrationKeyListController activeKeyId="0xEE6eEB9547B1E537fB362C79C107Ce38183F7851" />
 ))

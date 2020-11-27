@@ -4,7 +4,17 @@
 }
 
 .avatar {
+  display: flex;
   flex-grow: 1;
+}
+
+.avatarCircle {
+  margin-right: 1.5rem;
+  width: 72px;
+  height: 72px;
+  line-height: 5rem;
+  font-size: 2em;
+  overflow: hidden;
 }
 
 .additionalComponent {
@@ -70,6 +80,11 @@
 @media (--md-up) {
   .profile {
     margin: 24px 0 64px 0;
+  }
+
+  .avatarCircle {
+    width: 80px;
+    height: 80px;
   }
 }
 
