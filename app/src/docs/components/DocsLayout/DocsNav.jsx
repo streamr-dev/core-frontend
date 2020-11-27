@@ -337,6 +337,10 @@ export default styled(N)`
         display: none;
     }
 
+    ${Nav.Narrow.Body} {
+        padding-top: 96px;
+    }
+
     @media (min-width: ${DESKTOP}px) {
         ${Narrow} {
             display: none;

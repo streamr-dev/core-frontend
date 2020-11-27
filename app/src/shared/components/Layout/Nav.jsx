@@ -259,7 +259,7 @@ const UnstyledNarrow = (props) => {
                     </SiteSection>
                 </Fragment>
             )}
-            infoComponent={(<User.UsernameCopy username={currentUser.username} />)}
+            infoComponent={(currentUser && <User.UsernameCopy username={currentUser.username} />)}
         >
             <Nav.Narrow.Body>
                 <Nav.Link as={Link} to={routes.core()}>
@@ -338,6 +338,10 @@ const Wide = styled(UnstyledWide)`
 `
 
 const Narrow = styled(UnstyledNarrow)`
+    ${Nav.Narrow.Body} {
+        padding-top: 96px;
+    }
+
     ${User.UsernameCopy} {
         margin-right: 16px;
     }
