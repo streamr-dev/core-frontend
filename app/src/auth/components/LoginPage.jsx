@@ -94,13 +94,11 @@ const handlers = {
 
 const methods = [{
     id: METAMASK,
-    title: 'MetaMask',
     image: metamaskLogo,
     image2x: metamaskLogo2x,
     enabled: true,
 }, {
     id: WALLET_CONNECT,
-    title: 'WalletConnect',
     image: walletConnectLogo,
     image2x: walletConnectLogo2x,
     enabled: true,
@@ -136,6 +134,7 @@ const LoginPage = () => {
 
         try {
             let token
+
             const cancelPromise = new Promise((resolve, reject) => {
                 cancelPromiseRef.current = {
                     resolve,
@@ -162,7 +161,10 @@ const LoginPage = () => {
             cancelPromiseRef.current = undefined
 
             if (token) {
-                setSessionToken(token)
+                setSessionToken({
+                    token,
+                    method: nextMethod,
+                })
 
                 // This will redirect the user from the login page if succesful
                 const user = await dispatch(getUserData())
@@ -201,37 +203,35 @@ const LoginPage = () => {
                     <PanelRow>
                         <Header>{I18n.t('auth.connectWallet')}</Header>
                     </PanelRow>
-                    {methods.map(({
-                        id,
-                        title,
-                        image,
-                        image2x,
-                        enabled,
-                    }) => (
-                        <PanelRow key={id}>
-                            <SignInMethod
-                                disabled={allDisabled || !enabled}
-                                onClick={() => connect(id)}
-                                data-active-method={method === id && !!connecting}
-                                theme={!!error && !connecting && method === id && SignInMethod.themes.Error}
-                            >
-                                <SignInMethod.Title>
-                                    {method === id && !!connecting && I18n.t('auth.connecting')}
-                                    {!!error && method === id && !connecting && I18n.t('auth.couldNotConnect', {
-                                        method: title,
-                                    })}
-                                    {(method !== id || (!connecting && !error)) && title}
-                                </SignInMethod.Title>
-                                <SignInMethod.Icon>
-                                    <img
-                                        src={image}
-                                        srcSet={`${image2x} 2x`}
-                                        alt={title}
-                                    />
-                                </SignInMethod.Icon>
-                            </SignInMethod>
-                        </PanelRow>
-                    ))}
+                    {methods.map(({ id, image, image2x, enabled }) => {
+                        const title = I18n.t(`auth.loginMethod.${id}`)
+
+                        return (
+                            <PanelRow key={id}>
+                                <SignInMethod
+                                    disabled={allDisabled || !enabled}
+                                    onClick={() => connect(id)}
+                                    data-active-method={method === id && !!connecting}
+                                    theme={!!error && !connecting && method === id && SignInMethod.themes.Error}
+                                >
+                                    <SignInMethod.Title>
+                                        {method === id && !!connecting && I18n.t('auth.connecting')}
+                                        {!!error && method === id && !connecting && I18n.t('auth.couldNotConnect', {
+                                            method: title,
+                                        })}
+                                        {(method !== id || (!connecting && !error)) && title}
+                                    </SignInMethod.Title>
+                                    <SignInMethod.Icon>
+                                        <img
+                                            src={image}
+                                            srcSet={`${image2x} 2x`}
+                                            alt={title}
+                                        />
+                                    </SignInMethod.Icon>
+                                </SignInMethod>
+                            </PanelRow>
+                        )
+                    })}
                     <PanelRow>
                         <Footer>
                             {!error && !connecting && (

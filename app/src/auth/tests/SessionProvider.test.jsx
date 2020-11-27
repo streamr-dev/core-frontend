@@ -5,7 +5,7 @@ import { act } from 'react-dom/test-utils'
 import Context from '$auth/contexts/Session'
 
 import SessionProvider from '$auth/components/SessionProvider'
-import { SESSION_TOKEN_KEY, SESSION_LOGIN_TIME } from '$shared/utils/sessionToken'
+import { SESSION_TOKEN_KEY, SESSION_LOGIN_TIME, SESSION_LOGIN_METHOD } from '$shared/utils/sessionToken'
 
 describe('SessionProvider', () => {
     let realDate
@@ -39,6 +39,7 @@ describe('SessionProvider', () => {
         ))
 
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBeFalsy()
+        expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBeFalsy()
         expect(currentContext.token).toBeFalsy()
     })
 
@@ -174,10 +175,14 @@ describe('SessionProvider', () => {
         expect(currentContext.token).toBeFalsy()
 
         act(() => {
-            currentContext.setSessionToken('myToken')
+            currentContext.setSessionToken({
+                token: 'myToken',
+                method: 'metamask',
+            })
         })
 
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('myToken')
+        expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe('metamask')
         expect(currentContext.token).toBe('myToken')
     })
 
@@ -199,10 +204,14 @@ describe('SessionProvider', () => {
         expect(currentContext.token).toBeFalsy()
 
         act(() => {
-            currentContext.setSessionToken('myToken')
+            currentContext.setSessionToken({
+                token: 'myToken',
+                method: 'metamask',
+            })
         })
 
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('myToken')
+        expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe('metamask')
         expect(currentContext.token).toBe('myToken')
 
         const oldDate = new Date(global.localStorage.getItem(SESSION_LOGIN_TIME))
@@ -210,13 +219,16 @@ describe('SessionProvider', () => {
         await act(async () => {
             await (() => new Promise((resolve) => {
                 setTimeout(() => {
-                    currentContext.setSessionToken('anotherToken')
+                    currentContext.setSessionToken({
+                        token: 'anotherToken',
+                    })
                     resolve()
                 }, 5000)
             }))()
         })
 
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('anotherToken')
+        expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe('metamask')
         expect(currentContext.token).toBe('anotherToken')
         const newDate = new Date(global.localStorage.getItem(SESSION_LOGIN_TIME))
         expect(newDate.getTime()).toBeGreaterThan(oldDate.getTime())

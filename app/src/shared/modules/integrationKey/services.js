@@ -58,6 +58,7 @@ export const createChallenge = (account: Address): ApiResult<Challenge> => post(
     url: routes.api.loginChallenge({
         account,
     }),
+    useAuthorization: false,
 })
 
 export const createEthereumIdentity = (
