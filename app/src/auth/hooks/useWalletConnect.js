@@ -29,6 +29,7 @@ const signChallenge = async ({ connector, address }) => {
                 signature,
                 address,
             },
+            useAuthorization: false,
         })
     } catch (error) {
         console.warn(error)

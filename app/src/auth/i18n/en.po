@@ -33,5 +33,11 @@ msgstr "Try again"
 
 msgid "auth.terms"
 msgstr ""
-"By connecting your wallet and using Streamr<br />"
+"By connecting your wallet and using Streamr <br />"
 "you agree to our <a href=\"%{tosLink}\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Terms of Service</a>"
+
+msgid "auth.loginMethod.metamask"
+msgstr "MetaMask"
+
+msgid "auth.loginMethod.walletConnect"
+msgstr "WalletConnect"

@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from 'react'
 import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
+import { Translate, I18n } from 'react-redux-i18n'
 import { Nav, Menu, Button } from '@streamr/streamr-layout'
 import { MD as TABLET, LG as DESKTOP, MEDIUM } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
@@ -10,8 +10,9 @@ import { DocsMenu } from '$docs/components/DocsLayout/DocsNav'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
-import User from './User'
 import ActivityList from '$shared/components/ActivityList'
+import { getMethod } from '$shared/utils/sessionToken'
+import User from './User'
 
 const CaretDownIcon = styled(SvgIcon)`
     opacity: 1;
@@ -222,6 +223,22 @@ const SiteSection = styled.div`
     }
 `
 
+const ConnectedWith = styled.div`
+    background-color: #F8F8F8;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 4px;
+    font-weight: var(--normal);
+    font-size: 12px;
+    text-align: center;
+    color: #323232;
+    padding: 0 8px;
+
+    strong {
+        font-weight: var(--medium);
+    }
+`
+
 const UnstyledNarrow = (props) => {
     const current = useCurrentLocation()
 
@@ -238,7 +255,15 @@ const UnstyledNarrow = (props) => {
                     </SiteSection>
                 </Fragment>
             )}
-            infoComponent={(currentUser && <User.UsernameCopy username={currentUser.username} />)}
+            infoComponent={(currentUser && (
+                <ConnectedWith>
+                    <Translate
+                        value="general.connectedWith"
+                        method={I18n.t(`auth.loginMethod.${getMethod()}`)}
+                        dangerousHTML
+                    />
+                </ConnectedWith>
+            ))}
         >
             <Nav.Narrow.Body>
                 <Nav.Link as={Link} to={routes.core()}>
@@ -304,7 +329,8 @@ const Narrow = styled(UnstyledNarrow)`
         padding-top: 96px;
     }
 
-    ${User.UsernameCopy} {
+    ${User.UsernameCopy},
+    ${ConnectedWith} {
         margin-right: 16px;
     }
 
