@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback, useLayoutEffect, useEffect, useMemo, useContext } from 'react'
 import { useSpring, animated, interpolate } from 'react-spring'
 import cx from 'classnames'
-import { useThrottled } from '$shared/hooks/wrapCallback'
+import { useDebounced } from '$shared/hooks/wrapCallback'
 
 import * as State from './state'
 import styles from './Camera.pcss'
@@ -25,7 +25,7 @@ const defaultCameraConfig = {
 
 function useCameraSimpleApi(opts) {
     const elRef = useRef()
-    const [state, setActualState] = useState(State.createCamera({
+    const [state, setActualState] = useState(() => State.createCamera({
         ...opts,
         elRef,
     }))
@@ -53,7 +53,7 @@ function useCameraSimpleApi(opts) {
     }, [])
 
     // commit to react state once every 500ms
-    const commitThrottled = useThrottled(useCallback(() => {
+    const commitThrottled = useDebounced(useCallback(() => {
         commit()
     }, [commit]), 500)
 
@@ -63,7 +63,7 @@ function useCameraSimpleApi(opts) {
             x: state.x,
             y: state.y,
             scale: state.scale,
-            onRest: commit,
+            onRest: commitThrottled,
             ...cameraConfig,
         }
     }
