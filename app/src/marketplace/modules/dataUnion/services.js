@@ -453,13 +453,16 @@ export const getDataUnionStats = async (id: DataUnionId): ApiResult<Object> => {
         const stats = await client.getDataUnionStats({
             dataUnionAddress: id,
         })
-        const { memberCount, totalEarnings } = stats
+        const { activeMemberCount, inactiveMemberCount, totalEarnings } = stats
+
+        const active = (activeMemberCount && BN(activeMemberCount.toString()).toNumber()) || 0
+        const inactive = (inactiveMemberCount && BN(inactiveMemberCount.toString()).toNumber()) || 0
 
         return {
             memberCount: {
-                total: memberCount && BN(memberCount.toString()).toNumber(),
-                active: undefined, // todo: missing in contract?
-                inactive: undefined, // todo: missing in contract?
+                active,
+                inactive,
+                total: active + inactive,
             },
             totalEarnings: totalEarnings && BN(totalEarnings.toString()).toNumber(),
         }
