@@ -7,7 +7,8 @@ import styles from './CanvasWindow.pcss'
 
 export const CanvasWindowContext = React.createContext()
 
-export function CanvasWindowProvider({ className, children }) {
+// eslint-disable-next-line prefer-arrow-callback
+export const CanvasWindowProvider = React.memo(function CanvasWindowProvider({ className, children }) {
     const elRef = useRef()
     return (
         <CanvasWindowContext.Provider value={elRef}>
@@ -17,7 +18,7 @@ export function CanvasWindowProvider({ className, children }) {
             </SelectionProvider>
         </CanvasWindowContext.Provider>
     )
-}
+})
 
 function useSelectHandlers({ uid, elRef }) {
     const Selection = useSelectionContext()

@@ -177,6 +177,7 @@ export function zoomOut(state) {
 
 // changes current camera offset i.e. pans camera
 export function pan(state, { x = 0, y = 0 } = {}) {
+    if (Math.abs(x) < 1 && Math.abs(y) < 1) { return state }
     return setState(state, (s) => ({
         ...s,
         x: s.x + x,

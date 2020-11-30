@@ -4,8 +4,39 @@ import orderBy from 'lodash/orderBy'
 
 const EMPTY = []
 
+function memoizeLast(fn) {
+    let lastChanged = new WeakSet()
+    let lastChangedResult = new WeakMap() // pseudo WeakRef, will only hold a single value
+    const name = `memoizeLast(${fn.name})`
+    // wrap in obj so can assign dynamic name
+    const obj = {
+        [name](arg1, arg2, ...args) {
+            if (arg1 && arg2 && lastChanged.has(arg1) && lastChanged.has(arg2) && arg1 !== arg2 && lastChangedResult.has(arg1)) {
+                // cached
+                return lastChangedResult.get(arg1)
+            }
+
+            const result = fn.call(this, arg1, arg2, ...args)
+            if (typeof arg1 !== 'object' || typeof arg2 !== 'object') {
+                return result
+            }
+
+            // only store last 2 refs, so if not found, clear & readd
+            lastChanged = new WeakSet()
+            lastChangedResult = new WeakMap()
+            lastChanged.add(arg1)
+            lastChanged.add(arg2)
+            lastChangedResult.set(arg1, result)
+            return result
+        },
+    }
+
+    return obj[name]
+}
+
 function getIsEqualIgnoring(ignoreKeys = new Set()) {
-    return (objA, objB) => {
+    // eslint-disable-next-line prefer-arrow-callback
+    return function getIsEqualIgnoring(objA, objB) {
         if (objA === objB) { return true }
         const keysA = Object.keys(objA)
         /* eslint-disable no-continue */
@@ -39,7 +70,8 @@ const CANVAS_IGNORE_KEYS = new Set([
 const isEqualModule = getIsEqualIgnoring(MODULE_IGNORE_KEYS)
 const isEqualCanvasCheck = getIsEqualIgnoring(CANVAS_IGNORE_KEYS)
 
-export function changedModules(canvasA, canvasB) {
+// eslint-disable-next-line no-underscore-dangle, prefer-arrow-callback
+export const changedModules = memoizeLast(function changedModules(canvasA, canvasB) {
     if (!canvasA || !canvasB) { return EMPTY }
     if (canvasA === canvasB || canvasA.modules === canvasB.modules) { return EMPTY }
     const modulesA = orderBy(canvasA.modules || [], 'hash')
@@ -54,14 +86,14 @@ export function changedModules(canvasA, canvasB) {
     const result = Array.from(new Set([...AtoB, ...BtoA]))
     if (!result.length) { return EMPTY }
     return result
-}
+})
 
-export function isEqualCanvas(canvasA, canvasB) {
+// eslint-disable-next-line prefer-arrow-callback
+export const isEqualCanvas = memoizeLast(function isEqualCanvas(canvasA, canvasB) {
     if (canvasA === canvasB) { return true }
     if (!canvasA || !canvasB) { return false }
     const hasChangedModules = changedModules(canvasA, canvasB)
     if (hasChangedModules.length) { return false }
     // don't re-check modules, ignore updated time
     return isEqualCanvasCheck(canvasA, canvasB)
-}
-
+})

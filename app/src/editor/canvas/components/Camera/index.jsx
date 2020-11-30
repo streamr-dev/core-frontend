@@ -182,6 +182,16 @@ function useCameraSimpleApi(opts) {
 
 export const CameraContext = React.createContext({})
 
+export function useCameraScale() {
+    const { scale } = useContext(CameraContext)
+    return scale
+}
+
+export function useCameraGetCurrentScale() {
+    const { getCurrentScale } = useContext(CameraContext)
+    return getCurrentScale
+}
+
 export function useCameraState() {
     const { x, y, scale, getCurrentScale } = useContext(CameraContext)
     return useMemo(() => ({
@@ -255,8 +265,8 @@ function usePanControls(elRef) {
             !event.target.classList.contains(styles.cameraControl)
         ) { return }
 
-        if (isPanning) { return }
         event.stopPropagation()
+        if (isPanning) { return }
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
         // find current location on screen
@@ -287,6 +297,9 @@ function usePanControls(elRef) {
 
     const onPan = useCallback((event) => {
         if (!isPanning) { return }
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
         if (event.buttons !== 1) {
             stopPanning(event)
             return
