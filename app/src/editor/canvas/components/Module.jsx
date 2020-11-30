@@ -209,7 +209,8 @@ function ModuleError(props) {
 
 const CanvasModuleWithErrorBoundary = React.memo(withErrorBoundary(ModuleError)(CanvasModule))
 
-export default React.memo(withErrorBoundary(ModuleError)((props) => {
+// eslint-disable-next-line prefer-arrow-callback
+const ModuleWrapMemo = React.memo(withErrorBoundary(ModuleError)(function ModuleWrap(props) {
     const { module } = props
     const { scale } = useCameraState()
     const { moduleNeedsUpdate, moduleJustAdded } = useContext(AutosaveContext)
@@ -221,3 +222,5 @@ export default React.memo(withErrorBoundary(ModuleError)((props) => {
         </ModuleDragger>
     )
 }))
+
+export default ModuleWrapMemo
