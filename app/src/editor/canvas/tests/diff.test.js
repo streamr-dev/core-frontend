@@ -42,6 +42,14 @@ describe('Canvas Diff', () => {
             const savedCanvas2 = State.updateCanvas(await Services.saveNow(savedCanvas1))
             expect(isEqualCanvas(savedCanvas1, savedCanvas2)).toBe(true)
         })
+
+        it('false for missing canvas', async () => {
+            const canvas = State.emptyCanvas()
+            expect(isEqualCanvas(canvas, undefined)).toBe(false)
+            expect(isEqualCanvas(undefined, canvas)).toBe(false)
+            expect(isEqualCanvas(canvas, null)).toBe(false)
+            expect(isEqualCanvas(null, canvas)).toBe(false)
+        })
     })
 
     describe('changedModules', () => {
@@ -77,6 +85,14 @@ describe('Canvas Diff', () => {
             }
             expect(changedModules(canvas, canvas2)).toEqual([])
             expect(changedModules(canvas2, canvas)).toEqual([])
+        })
+
+        it('false for missing canvas', async () => {
+            const canvas = State.emptyCanvas()
+            expect(changedModules(canvas, undefined)).toEqual([])
+            expect(changedModules(undefined, canvas)).toEqual([])
+            expect(changedModules(canvas, null)).toEqual([])
+            expect(changedModules(null, canvas)).toEqual([])
         })
     })
 
