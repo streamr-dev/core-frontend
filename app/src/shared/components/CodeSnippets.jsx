@@ -5,7 +5,7 @@ import useCopy from '$shared/hooks/useCopy'
 import { css } from 'styled-components'
 import { MEDIUM } from '$shared/utils/styled'
 
-const CodeSnippets = ({ items, title, ...props }) => {
+const CodeSnippets = ({ items, title, disabled, ...props }) => {
     const { copy, isCopied } = useCopy()
 
     const [[initial]] = items
@@ -77,7 +77,7 @@ const CodeSnippets = ({ items, title, ...props }) => {
                                 )}
                             </svg>
                         </Button>
-                        <Button kind="secondary" onClick={onCopyClick}>
+                        <Button kind="secondary" onClick={onCopyClick} disabled={!!disabled}>
                             {isCopied ? 'Copied' : 'Copy'}
                         </Button>
                     </div>

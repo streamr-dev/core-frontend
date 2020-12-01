@@ -1,8 +1,13 @@
 // @flow
 
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const Link = styled.a`
+    ${({ disabled }) => !!disabled && css`
+        pointer-events: none;
+        opacity: 0.5;
+    `}
+
     color: #${({ active }) => (active ? '0324ff' : '323232')} !important;
 `
 

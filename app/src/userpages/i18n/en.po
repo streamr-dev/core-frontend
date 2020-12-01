@@ -441,8 +441,11 @@ msgstr "Stream partitions"
 msgid "userpages.streams.edit.details.info.description"
 msgstr ""
 "All streams require a unique path in the format <strong>domain/pathname</strong>. Your default domain will "
-"be an Eth address, but you can also use an ENS domain or "
+"be an Eth address, but you can also use an existing ENS domain or "
 "<a href=\"%{addDomainUrl}\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register a new one</a>."
+
+msgid "userpages.streams.edit.details.info.descriptionNewStream"
+msgstr "Choose your stream name & create it in order to adjust stream settings."
 
 msgid "userpages.streams.edit.details.domain.label"
 msgstr "Domain"
@@ -488,10 +491,10 @@ msgstr "Partitions"
 
 msgid "userpages.streams.edit.details.tooltip"
 msgstr ""
-"Stream paths can be single level like<br/>"
-"<strong>sandbox/mycoffeemachine</strong> or structured<br/>"
-"like <strong>crypto/oracles/btcprice</strong>. For more<br/>"
-"information, see the <a href=\"%{docsLink}\">docs</a>."
+"Stream paths can be single or multi-level.<br/>"
+"Single <strong>streamr.eth/coffeemachine</strong><br/>"
+"Multi <strong>oxd93...52874/oracles/price</strong><br/>"
+"For more information, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages.streams.edit.details.copyStreamId"
 msgstr "Copy Stream ID"
@@ -576,6 +579,9 @@ msgstr "Stop"
 
 msgid "userpages.streams.edit.codeSnippets.description"
 msgstr "You can grab the code (JS & Java) you’ll need to use this stream in your applications below. Everyone can subscribe, but only users with permission can publish."
+
+msgid "userpages.streams.edit.codeSnippets.newStream"
+msgstr "Create your stream above in order to get your code snippet."
 
 msgid "userpages.streams.delete.confirmTitle"
 msgstr "Delete this stream?"
