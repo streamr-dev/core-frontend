@@ -286,6 +286,10 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: number): SmartC
     return tx
 }
 
+export const getDefaultDataUnionVersion = () => (
+    parseInt(process.env.DATAUNION_VERSION, 10) === 2 ? 2 : 1
+)
+
 type DeployDataUnion = {
     productId: ProductId,
     adminFee: number,
