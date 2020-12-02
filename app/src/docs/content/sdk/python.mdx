@@ -2,20 +2,12 @@ import Warning from '$docs/components/Warning'
 import routes from '$routes'
 import { CodeSnippet } from '@streamr/streamr-layout'
 
-import { PythonExample } from '../api/code/api.js'
-
 # Python SDK
 
 The Python client library is available at this <a href="https://github.com/streamr-dev/streamr-client-python" target="_blank">GitHub repo</a>. If you are interested in contributing to this library, feel free to reach out via our <a target="_blank" href={routes.community.devForum()}>community dev forum</a> or submit directly a pull request.
 
 <Warning>
 
-This library is entirely community contributed and still work in progress. Core functionality like authentication via user API key, publish and subscribe data have been implemented. However, there are some other features available in our official libraries mentioned above that are still missing: Ethereum authentication, message verification, end-to-end encryption and historical data request.
+This library is entirely community contributed and is in the process of being phased out.
 
 </Warning>
-
-Here is an example of how to create an authenticated client, publish and subscribe data using the Python library.
-
-<CodeSnippet language="python">
-{PythonExample}
-</CodeSnippet>
