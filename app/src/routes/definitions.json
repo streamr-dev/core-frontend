@@ -65,6 +65,10 @@
         "new": "/core/products/new",
         "stats": "/core/products/:id/stats"
     },
+    "dataunions": {
+        "edit": "/core/dataunions/:id/edit",
+        "index": "/core/dataunions"
+    },
     "whitepaper": "<landingPage>/whitepaper",
     "site": {
         "about": "/about",
