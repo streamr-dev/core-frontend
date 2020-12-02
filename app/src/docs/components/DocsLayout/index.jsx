@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { MDXProvider } from '@mdx-js/react'
 import SimpleReactLightbox from 'simple-react-lightbox'
 import { withRouter } from 'react-router-dom'
@@ -15,15 +15,18 @@ import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
 
 const DocsLayout = ({ nav = <DocsNav />, location, staticContext, ...props }) => {
-    let editFilePath = null
-    Object.values(docsMap).some((doc) => {
-        const found = Object.values(doc).find((subdoc) => subdoc.path === location.pathname)
-        if (found) {
-            editFilePath = found.filePath
-            return true
-        }
-        return false
-    })
+    const editFilePath = useMemo(() => {
+        let path = null
+        Object.values(docsMap).some((doc) => {
+            const found = Object.values(doc).find((subdoc) => subdoc.path === location.pathname)
+            if (found) {
+                path = found.filePath
+                return true
+            }
+            return false
+        })
+        return path
+    }, [location])
 
     return (
         <SimpleReactLightbox>
@@ -48,6 +51,8 @@ const DocsLayout = ({ nav = <DocsNav />, location, staticContext, ...props }) =>
                                     href={`https://github.com/streamr-dev/streamr-platform/edit/development/app/src/docs/content/${editFilePath}`}
                                     kind="secondary"
                                     size="mini"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                 >
                                     <SvgIcon name="github" className={styles.githubIcon} />
                                     Edit on GitHub
