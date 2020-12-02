@@ -2,9 +2,10 @@
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs, text, boolean } from '@storybook/addon-knobs'
-import { action } from '@storybook/addon-actions'
+import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
+
+import Balance from '../Balance'
 
 import Avatar from '.'
 
@@ -16,26 +17,49 @@ const stories =
         }))
         .addDecorator(withKnobs)
 
-const user = {
+const emailUser = {
     email: 'tester1@streamr.com',
-    imageUrlLarge: boolean('showImage', true) ? 'https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg' : '',
+    name: 'Matt Innes',
+    username: 'matt@streamr.com',
+}
+
+const emailUserWithImage = {
+    ...emailUser,
+    imageUrlLarge: 'https://miro.medium.com/fit/c/256/256/1*NfJkA-ChiQtYLRBOLryZxQ.jpeg',
     imageUrlSmall: '',
-    name: text('Name', 'Matt Innes'),
-    username: text('Username', 'matt@streamr.com'),
+}
+
+const ethUser = {
+    name: 'Anonymous User',
+    username: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
 }
 
 stories.add('default', () => (
-    <Avatar
-        user={user}
-        onImageChange={action('onImageChange')}
-    />
+    <Avatar user={emailUser}>
+        {emailUser.username}
+    </Avatar>
 ))
 
 stories.add('default (mobile)', () => (
-    <Avatar
-        user={user}
-        onImageChange={() => Promise.resolve()}
-    />
+    <Avatar user={emailUser}>
+        {emailUser.username}
+    </Avatar>
+), {
+    viewport: {
+        defaultViewport: 'xs',
+    },
+})
+
+stories.add('with image', () => (
+    <Avatar user={emailUserWithImage}>
+        {emailUserWithImage.username}
+    </Avatar>
+))
+
+stories.add('with image (mobile)', () => (
+    <Avatar user={emailUserWithImage}>
+        {emailUserWithImage.username}
+    </Avatar>
 ), {
     viewport: {
         defaultViewport: 'xs',
@@ -43,17 +67,21 @@ stories.add('default (mobile)', () => (
 })
 
 stories.add('eth address', () => (
-    <Avatar
-        user={user}
-        onImageChange={() => Promise.resolve()}
-    />
+    <Avatar user={ethUser}>
+        <Balance>
+            <Balance.Account name="ETH" value="2.123" />
+            <Balance.Account name="DATA" value="3.456" />
+        </Balance>
+    </Avatar>
 ))
 
 stories.add('eth address (mobile)', () => (
-    <Avatar
-        user={user}
-        onImageChange={() => Promise.resolve()}
-    />
+    <Avatar user={ethUser}>
+        <Balance>
+            <Balance.Account name="ETH" value="2.123" />
+            <Balance.Account name="DATA" value="3.456" />
+        </Balance>
+    </Avatar>
 ), {
     viewport: {
         defaultViewport: 'xs',

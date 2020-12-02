@@ -4,7 +4,7 @@ import { I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { resourceTypes } from '$shared/utils/Activity'
-import Avatar from '$shared/components/Avatar'
+import AvatarImage from '$shared/components/AvatarImage'
 import { ago } from '$shared/utils/time'
 import Spinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -40,7 +40,7 @@ const StyledSpinner = styled(Spinner)`
     left: 8px;
 `
 
-const StyledAvatar = styled(Avatar)`
+const StyledAvatarImage = styled(AvatarImage)`
     height: 32px;
     border-radius: ${(props) => (props.circle ? '50%' : '4px')};
     overflow: hidden;
@@ -85,7 +85,7 @@ const ResourceImage = ({ resource, resourceType, isLoading }) => {
     switch (resourceType) {
         case resourceTypes.PRODUCT:
             return resource ? (
-                <StyledAvatar alt={resource.name} src={resource.imageUrl} isLoading={isLoading} />
+                <StyledAvatarImage name={resource.name} src={resource.imageUrl} isLoading={isLoading} />
             ) : (
                 <SvgIcon name="product" />
             )
@@ -95,7 +95,7 @@ const ResourceImage = ({ resource, resourceType, isLoading }) => {
             return <SvgIcon name="stream" />
         default:
             return !!currentUser && (
-                <StyledAvatar alt={currentUser.name} isLoading={isLoading} circle />
+                <StyledAvatarImage name={currentUser.name} isLoading={isLoading} circle />
             )
     }
 }

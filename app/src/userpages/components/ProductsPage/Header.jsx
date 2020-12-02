@@ -5,15 +5,16 @@ import { useDispatch } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
-import cx from 'classnames'
+import styled from 'styled-components'
 
 import Tab from '$userpages/components/Header/Tab'
 import NameAndUsername from '$userpages/components/Avatar/NameAndUsername'
 import ListContainer from '$shared/components/Container/List'
 import BackButton from '$shared/components/BackButton'
-import Toolbar from '$shared/components/Toolbar'
+import UnstyledToolbar from '$shared/components/Toolbar'
 import BodyClass from '$shared/components/BodyClass'
-import FallbackImage from '$shared/components/FallbackImage'
+import AvatarCircle from '$shared/components/AvatarCircle'
+import AvatarImage from '$shared/components/AvatarImage'
 import Button from '$shared/components/Button'
 import HoverCopy from '$shared/components/HoverCopy'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -21,9 +22,88 @@ import useProduct from '$mp/containers/ProductController/useProduct'
 import { productStates } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import routes from '$routes'
+import { MD } from '$shared/utils/styled'
 
-import avatarCircleStyles from '$shared/components/AvatarCircle/avatarCircle.pcss'
-import styles from './header.pcss'
+const Toolbar = styled(UnstyledToolbar)`
+    display: none;
+
+    @media (min-width: ${MD}px) {
+        display: block;
+    }
+`
+
+const ProductInfo = styled.div`
+    display: flex;
+    margin: 24px 0;
+
+    @media (min-width: ${MD}px) {
+        margin: 24px 0 64px 0;
+    }
+`
+
+const Buttons = styled.div`
+    display: none;
+
+    button + button,
+    a + button,
+    button + a {
+        margin-left: 1rem;
+    }
+
+    @media (min-width: ${MD}px) {
+        display: flex;
+        align-items: center;
+    }
+`
+
+const Avatar = styled.div`
+    display: flex;
+    flex-grow: 1;
+
+    ${AvatarCircle} {
+         margin-right: 1.5rem;
+    }
+
+    @media (min-width: ${MD}px) {
+        ${AvatarCircle} {
+            margin-right: 2.5rem;
+        }
+    }
+`
+
+const TabContainer = styled.div`
+    align-items: center;
+    display: flex;
+    height: calc(3.25 * var(--um));
+    justify-content: space-between;
+    position: relative;
+`
+
+const TabBar = styled.div`
+    display: flex;
+    line-height: 32px;
+    overflow-x: auto;
+`
+
+const SearchBar = styled.div`
+    display: flex;
+    margin-right: 36px;
+`
+
+const Tabs = styled.div`
+    display: flex;
+`
+
+const FilterBar = styled.div`
+    /* 36px - height of the dropdown toggle. */
+    height: 36px;
+    right: 16px;
+    display: none;
+
+    @media (min-width: ${MD}px) {
+        display: block;
+    }
+`
 
 type Props = {
     className?: string,
@@ -58,20 +138,16 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
             <Toolbar
                 left={<BackButton onBack={redirectToProductList} />}
                 altMobileLayout
-                className={styles.toolbar}
             />
-            <ListContainer className={cx(styles.listTemp, className)}>
-                <div className={styles.profile}>
-                    <div className={styles.avatar}>
-                        {!imageUrl ? (
-                            <div className={styles.avatarCircle} />
-                        ) : (
-                            <FallbackImage
-                                className={cx(avatarCircleStyles.accountCircle, styles.avatarCircle)}
-                                src={imageUrl || ''}
-                                alt={name || ''}
+            <ListContainer className={className}>
+                <ProductInfo>
+                    <Avatar>
+                        <AvatarCircle>
+                            <AvatarImage
+                                src={imageUrl}
+                                username={beneficiaryAddress}
                             />
-                        )}
+                        </AvatarCircle>
                         <NameAndUsername name={name}>
                             {!!beneficiaryAddress && (
                                 <HoverCopy value={beneficiaryAddress}>
@@ -81,10 +157,9 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                                 </HoverCopy>
                             )}
                         </NameAndUsername>
-                    </div>
-                    <div className={styles.additionalComponent}>
+                    </Avatar>
+                    <Buttons>
                         <Button
-                            className={styles.viewProductButton}
                             outline
                             {...(state === productStates.DEPLOYED ? {
                                 tag: Link,
@@ -100,7 +175,6 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                             <Translate value="userpages.products.viewProduct" />
                         </Button>
                         <Button
-                            className={styles.editProductButton}
                             outline
                             {...(id ? {
                                 tag: Link,
@@ -115,14 +189,14 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                         >
                             <Translate value="userpages.products.settings" />
                         </Button>
-                    </div>
-                </div>
-                <div className={styles.tabContainer} >
-                    <div className={styles.tabBar}>
-                        <div className={styles.searchBar}>
+                    </Buttons>
+                </ProductInfo>
+                <TabContainer>
+                    <TabBar>
+                        <SearchBar>
                             {searchComponent}
-                        </div>
-                        <div className={styles.tabs}>
+                        </SearchBar>
+                        <Tabs>
                             <Tab
                                 to={id ? routes.products.stats({
                                     id,
@@ -137,12 +211,12 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                             >
                                 Members
                             </Tab>
-                        </div>
-                    </div>
-                    <div className={styles.filterBar}>
+                        </Tabs>
+                    </TabBar>
+                    <FilterBar>
                         {filterComponent}
-                    </div>
-                </div>
+                    </FilterBar>
+                </TabContainer>
             </ListContainer>
         </React.Fragment>
     )

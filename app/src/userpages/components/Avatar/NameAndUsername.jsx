@@ -25,7 +25,7 @@ const Username = styled.div`
   line-height: 22px;
 `
 
-const UnstyledNameAndUsername = ({ name, username, children, ...props }) => (
+const UnstyledNameAndUsername = ({ name, children, ...props }) => (
     <div {...props}>
         <Name>{name}</Name>
         <UsernameWrapper>

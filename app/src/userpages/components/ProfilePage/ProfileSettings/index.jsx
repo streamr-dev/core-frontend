@@ -13,6 +13,7 @@ import type { User } from '$shared/flowtype/user-types'
 import { usePending } from '$shared/hooks/usePending'
 import Button from '$shared/components/Button'
 import AvatarCircle from '$shared/components/AvatarCircle'
+import AvatarImage from '$shared/components/AvatarImage'
 import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
@@ -29,23 +30,15 @@ const Root = styled.div`
 const AvatarWrapper = styled.div`
     display: flex;
     margin-bottom: 2.5rem;
-`
 
-const StyledAvatarCircle = styled(AvatarCircle)`
-    && {
-        margin-right: 1.5rem;
-        width: 72px;
-        height: 72px;
-        line-height: 5rem;
-        font-size: 2em;
-        overflow: hidden;
+    ${AvatarCircle} {
+         background: #FFFFFF;
+         margin-right: 1.5rem;
     }
 
     @media (min-width: ${MD}px) {
-        && {
+        ${AvatarCircle} {
             margin-right: 2.5rem;
-            width: 80px;
-            height: 80px;
         }
     }
 `
@@ -125,11 +118,13 @@ const ProfileSettings = () => {
     return (
         <Root>
             <AvatarWrapper>
-                <StyledAvatarCircle
-                    name={user.name}
-                    imageUrl={user.imageUrlLarge}
-                    uploadAvatarPlaceholder
-                />
+                <AvatarCircle>
+                    <AvatarImage
+                        src={user.imageUrlLarge}
+                        username={user.username}
+                        upload
+                    />
+                </AvatarCircle>
                 <UploadWrapper>
                     <Button
                         kind="secondary"
