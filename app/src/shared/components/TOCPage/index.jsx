@@ -76,6 +76,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                                 <Link
                                     active={stop === child.props.id}
                                     href={`#${child.props.id}`}
+                                    disabled={!!child.props.disabled}
                                 >
                                     {child.props.linkTitle || child.props.title}
                                 </Link>

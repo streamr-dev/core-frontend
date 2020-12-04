@@ -47,8 +47,9 @@ import Spinner from '$shared/components/Spinner'
 import Button from '$shared/components/Button'
 import { truncate } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
+import CodeSnippets from '$shared/components/CodeSnippets'
 
-const Description = styled(Translate)`
+const Description = styled.p`
     margin-bottom: 3rem;
 `
 
@@ -482,6 +483,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         () => contentChangedRef.current,
     )
 
+    const newStreamSnippet = useMemo(() => `
+        // ${I18n.t('userpages.streams.edit.codeSnippets.newStream')}
+    `, [])
+
     const saveEnabled = !!pathname && !!domain && !loading
     const isDisabled = !!loading
     const isDomainDisabled = isDisabled || domainOptions.length <= 1 || loadingDomains
@@ -544,12 +549,15 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                 id="details"
                                 title={I18n.t('userpages.streams.edit.details.nav.details')}
                             >
-                                <Description
-                                    value="userpages.streams.edit.details.info.description"
-                                    tag="p"
-                                    addDomainUrl={ADD_DOMAIN_URL}
-                                    dangerousHTML
-                                />
+                                <Description>
+                                    <Translate
+                                        value="userpages.streams.edit.details.info.description"
+                                        addDomainUrl={ADD_DOMAIN_URL}
+                                        dangerousHTML
+                                    />
+                                    &nbsp;
+                                    <Translate value="userpages.streams.edit.details.info.descriptionNewStream" />
+                                </Description>
                                 <StreamIdFormGroup hasDomain data-test-hook="StreamId">
                                     <Field
                                         label={I18n.t('userpages.streams.edit.details.domain.label')}
@@ -629,8 +637,31 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                 </FormGroup>
                             </TOCSection>
                             <TOCSection
+                                id="snippets"
+                                title={I18n.t('general.codeSnippets')}
+                                disabled
+                            >
+                                <CodeSnippets
+                                    items={[
+                                        ['javascript', 'Js', newStreamSnippet],
+                                        ['java', 'Java', newStreamSnippet],
+                                    ]}
+                                    title="Subscribe"
+                                    disabled
+                                />
+                                <CodeSnippets
+                                    items={[
+                                        ['javascript', 'Js', newStreamSnippet],
+                                        ['java', 'Java', newStreamSnippet],
+                                    ]}
+                                    title="Publish"
+                                    disabled
+                                />
+                            </TOCSection>
+                            <TOCSection
                                 id="security"
                                 title={I18n.t('userpages.streams.edit.details.nav.security')}
+                                disabled
                             >
                                 <SecurityView
                                     stream={defaultStreamData}
@@ -641,6 +672,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                 id="configure"
                                 title={I18n.t('userpages.streams.edit.details.nav.fields')}
                                 onlyDesktop
+                                disabled
                             >
                                 <ConfigureView
                                     stream={defaultStreamData}
@@ -655,12 +687,14 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                     status="inactive"
                                 />}
                                 onlyDesktop
+                                disabled
                             >
                                 <StatusView disabled stream={defaultStreamData} />
                             </TOCPage.Section>
                             <TOCSection
                                 id="preview"
                                 title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                                disabled
                             >
                                 <Preview
                                     stream={defaultStreamData}
@@ -670,6 +704,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             <TOCSection
                                 id="historicalData"
                                 title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                                disabled
                             >
                                 <HistoryView
                                     stream={defaultStreamData}
@@ -682,6 +717,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                 title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
                                 linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
                                 status={(<StatusLabel.Advanced />)}
+                                disabled
                             >
                                 <PartitionsView
                                     stream={defaultStreamData}
