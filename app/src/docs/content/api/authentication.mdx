@@ -4,9 +4,11 @@ A session token is required to make requests to the REST API endpoints or over t
 
 <a name="challenge"></a>
 
-### Authenticating with Ethereum
+### Authenticating options
 
-You can use an Ethereum private key to authenticate by signing a challenge with it and providing your Ethereum public address for verification.
+The easiest way to authenticate is through the [Streamr Client](https://github.com/streamr-dev/streamr-client-javascript/) - it will handle the cryptographic signing for you. Client authentication instructions can be found in the [repo readme](https://github.com/streamr-dev/streamr-client-javascript/).
+
+If you prefer to use the REST API directly the you can use an Ethereum private key to authenticate by signing a challenge with it and providing your Ethereum public address for verification.
 
 Use the `POST` endpoint at `/api/v1/login/challenge/YOUR-PUBLIC-ADDRESS` to generate a random text called a challenge, which looks like the following: 
 

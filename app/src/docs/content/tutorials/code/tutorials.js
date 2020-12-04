@@ -118,7 +118,7 @@ export const ClientSub =
 
 // Subscribe to a stream
 streamr.subscribe({
-    stream: '0xb722f00ea9eecdc3d2b990789e62beaa17568123/f',
+    stream: '0xb722f00ea9eecdc3d2b990789e62beaa17568123/my-stream',
 }, (message, metadata) => {
     // Do something with the message here!
     console.log(message)

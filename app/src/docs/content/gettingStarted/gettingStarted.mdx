@@ -14,8 +14,7 @@ import SignatureRequest from './images/signatureRequest.png'
 import SignatureRequest2x from './images/signatureRequest@2x.png'
 
 # Getting Started
-Welcome to Streamr! To get a feel for what Streamr is, check out our <Link to={docsLinks.introduction}>intro docs</Link>.
-The first thing you'll want to get is a Streamr account. You can do that <Link to={routes.auth.login()}>here</Link>. Creating an account requires a Web3 Ethereum wallet, e.g. <a href="https://metamask.io" target="blank">Metamask</a>.
+Welcome to Streamr! To get a feel for what Streamr is, check out our <Link to={docsLinks.introduction}>intro docs</Link>. Your Streamr account is your Ethereum account - so there's no email registration, simply <Link to={routes.auth.login()}>login</Link> with your Web3 Ethereum wallet such as <a href="https://metamask.io" target="blank">Metamask</a>.
 
 <Warning>
 
@@ -24,9 +23,6 @@ The first thing you'll want to get is a Streamr account. You can do that <Link t
 - **Support for email/password authentication will be dropped on December 31st 2020. Cryptographic keys/wallets will be the only supported method.**
 
 </Warning>
-
-### Ethereum identity on Streamr
-You will need to have an Ethereum account on Streamr if you want to publish or buy a paid product on the Marketplace. It is optional, but recommended if you want to enjoy the full Streamr experience.
 
 ### Connect your Ethereum Account
 Checkout our intro docs if you'd like to understand more about what Ethereum is and what it means to have an account on Ethereum.
@@ -43,7 +39,7 @@ The easiest way to get started is through the free and open source Chrome browse
     />
 </div>
 
-Once you have your Ethereum account on Metamask, you can connect it to Streamr. There are two ways to do it, depending whether you already have a Streamr account or not. **If you haven't created an account yet, you can use your Ethereum account to create one**. Simply go to the <Link to={routes.auth.login()}>login page</Link> and click **Sign in with Ethereum**. A popup will ask you to sign a message with your Ethereum account to prove ownership, click **Sign**.
+Once you have your Ethereum account on Metamask, you can connect it to Streamr. A popup will ask you to sign a message with your Ethereum account to prove ownership, click **Sign**.
 
 <Image
   src={SignInWithEth}
