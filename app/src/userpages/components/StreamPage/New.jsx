@@ -269,7 +269,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 addresses,
             })
 
-            if (isMounted() && Array.isArray(data.domains)) {
+            if (isMounted() && data && data.domains && Array.isArray(data.domains)) {
                 setDomains(data.domains)
             }
         } catch (e) {
@@ -287,7 +287,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     }, [loadIntegrationKeys, loadDomains])
 
     const [groupedOptions, domainOptions] = useMemo(() => {
-        const ethAccountOptions = ethereumIdentitiesRef.current.map(({ json }) => ({
+        const ethAccountOptions = ethereumIdentities.map(({ json }) => ({
             label: truncate(json.address, { maxLength: 15 }),
             value: json.address,
         }))
@@ -322,7 +322,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         const domainOptions = groupedOptions.flatMap((group) => group.options)
 
         return [groupedOptions, domainOptions]
-    }, [domains])
+    }, [domains, ethereumIdentities])
 
     // update default domain if undefined
     useEffect(() => {
