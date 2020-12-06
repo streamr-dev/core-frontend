@@ -4,6 +4,7 @@ import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import Image from '$docs/components/Image'
+import Warning from '$docs/components/Warning'
 
 import EthIdentities from './images/gs_eth_id_03_desktop.jpg'
 import EthIdentities2x from './images/gs_eth_id_03_desktop@2x.jpg'
@@ -13,11 +14,17 @@ import SignatureRequest from './images/signatureRequest.png'
 import SignatureRequest2x from './images/signatureRequest@2x.png'
 
 # Getting Started
-Welcome to Streamr! To get a feel for what Streamr is, check out our <Link to={docsLinks.introduction}>intro docs</Link>.
-The first thing you'll want to get is a Streamr account. You can do that <Link to={routes.auth.login()}>here</Link>. Creating an account requires either an Email address or a Web3 Ethereum wallet, e.g. <a href="https://metamask.io" target="blank">Metamask</a>.
+Welcome to Streamr! To get a feel for what Streamr is, check out our <Link to={docsLinks.introduction}>intro docs</Link>. 
 
-### Ethereum identity on Streamr
-You will need to have an Ethereum account on Streamr if you want to publish or buy a paid product on the Marketplace. It is optional, but recommended if you want to enjoy the full Streamr experience.
+To get started, you'll want to login to Streamr. Your Streamr account is your Ethereum account - there's no email registration, simply <Link to={routes.auth.login()}>login</Link> with your Web3 Ethereum wallet such as <a href="https://metamask.io" target="blank">Metamask</a>.
+
+<Warning>
+
+**Upcoming deprecations and breaking changes**
+- **Authenticating with an API key has been deprecated.**
+- **Support for email/password authentication will be dropped on December 31st 2020. Cryptographic keys/wallets will be the only supported method.**
+
+</Warning>
 
 ### Connect your Ethereum Account
 Checkout our intro docs if you'd like to understand more about what Ethereum is and what it means to have an account on Ethereum.
@@ -34,7 +41,7 @@ The easiest way to get started is through the free and open source Chrome browse
     />
 </div>
 
-Once you have your Ethereum account on Metamask, you can connect it to Streamr. There are two ways to do it, depending whether you already have a Streamr account or not. **If you haven't created an account yet, you can use your Ethereum account to create one**. Simply go to the <Link to={routes.auth.login()}>login page</Link> and click **Sign in with Ethereum**. A popup will ask you to sign a message with your Ethereum account to prove ownership, click **Sign**.
+Once you have your Ethereum account on Metamask, you can connect it to Streamr. A popup will ask you to sign a message with your Ethereum account to prove ownership, click **Sign**.
 
 <Image
   src={SignInWithEth}

@@ -1,11 +1,12 @@
 export const CreateJavascriptClient =
-`const client = new StreamrClient({
+`const streamr = new StreamrClient({
     auth: {
-        apiKey: 'your-api-key'
-    }
+        privateKey: 'YOUR-PRIVATE-KEY',
+    },
 })`
 
-export const CreateJavaClient = 'StreamrClient client = new StreamrClient(new ApiKeyAuthenticationMethod(myApiKey));'
+export const CreateJavaClient = `AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY");
+StreamrClient client = new StreamrClient(method);`
 
 export const AuthJavascriptClient =
 `new StreamrClient({
