@@ -282,16 +282,19 @@ const InspectorHeader = styled(HeaderItem)`
     }
 `
 
-const TableItem = styled.div`
-    line-height: 56px;
+const Cell = styled.div`
     font-size: 14px;
+    line-height: normal;
+    max-width: 100%;
     overflow: hidden;
-    white-space: nowrap;
     text-overflow: ellipsis;
+    white-space: nowrap;
 `
 
-const SecurityTableItem = styled(TableItem)`
-    overflow: initial;
+const TableItem = styled.div`
+    align-items: center;
+    display: flex;
+    height: 56px;
 `
 
 const TableRow = styled.div`
@@ -588,10 +591,14 @@ const StreamPreview = ({
                                     onClick={() => setSelectedDataPoint(d)}
                                 >
                                     <TableItem>
-                                        {formatDateTime(metadata && metadata.messageId && metadata.messageId.timestamp, tz)}
+                                        <Cell>
+                                            {formatDateTime(metadata && metadata.messageId && metadata.messageId.timestamp, tz)}
+                                        </Cell>
                                     </TableItem>
                                     <TableItem>
-                                        {JSON.stringify(data)}
+                                        <Cell>
+                                            {JSON.stringify(data)}
+                                        </Cell>
                                     </TableItem>
                                 </TableRow>
                             )
@@ -604,23 +611,36 @@ const StreamPreview = ({
                     <InspectorTable>
                         <TableRow>
                             <TableItem>
-                                <Translate value="streamLivePreview.security" />
+                                <Cell>
+                                    <Translate value="streamLivePreview.security" />
+                                </Cell>
                             </TableItem>
-                            <SecurityTableItem>
-                                <Tooltip value={getSecurityLevelTitle(stream)}>
-                                    <StyledSecurityIcon
-                                        level={getSecurityLevel(stream)}
-                                        mode="small"
-                                    />
+                            <TableItem>
+                                <Tooltip
+                                    value={getSecurityLevelTitle(stream)}
+                                    placement={Tooltip.BOTTOM}
+                                >
+                                    <Cell>
+                                        <StyledSecurityIcon
+                                            level={getSecurityLevel(stream)}
+                                            mode="small"
+                                        />
+                                    </Cell>
                                 </Tooltip>
-                            </SecurityTableItem>
+                            </TableItem>
                         </TableRow>
                         {!!activeTimestamp && (
                             <TableRow>
                                 <TableItem>
-                                    <Translate value="streamLivePreview.timestamp" />
+                                    <Cell>
+                                        <Translate value="streamLivePreview.timestamp" />
+                                    </Cell>
                                 </TableItem>
-                                <TableItem>{formatDateTime(activeTimestamp, tz)}</TableItem>
+                                <TableItem>
+                                    <Cell>
+                                        {formatDateTime(activeTimestamp, tz)}
+                                    </Cell>
+                                </TableItem>
                             </TableRow>
                         )}
                         {selectedDataPoint && selectedDataPoint.data &&
@@ -629,9 +649,15 @@ const StreamPreview = ({
                             const value = formatValue(v)
                             return (
                                 <TableRow key={`${k}${value}`}>
-                                    <TableItem>{k}</TableItem>
                                     <TableItem>
-                                        {value}
+                                        <Cell>
+                                            {k}
+                                        </Cell>
+                                    </TableItem>
+                                    <TableItem>
+                                        <Cell>
+                                            {value}
+                                        </Cell>
                                     </TableItem>
                                 </TableRow>
                             )
