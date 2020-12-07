@@ -54,19 +54,16 @@ const Root = styled.div`
     `}
 `
 
-const Tooltip = ({ value, placement, ...props }) => (
-    <Root tooltip={value} theme={placement} {...props} />
+const UnstyledTooltip = ({ value, placement = TopTheme, ...props }) => (
+    <Root {...props} tooltip={value} theme={placement} />
 )
 
-Tooltip.TOP = TopTheme
-Tooltip.BOTTOM = BottomTheme
-
-Tooltip.defaultProps = {
-    placement: Tooltip.TOP,
-}
+const Tooltip = styled(UnstyledTooltip)``
 
 Object.assign(Tooltip, {
+    BOTTOM: BottomTheme,
     Root,
+    TOP: TopTheme,
 })
 
 export default Tooltip
