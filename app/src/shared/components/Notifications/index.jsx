@@ -56,13 +56,7 @@ class Notifications extends React.Component<Props, State> {
     }
 
     componentDidUpdate() {
-        const { isModalOpen } = this.context
-
-        if (isModalOpen) {
-            this.hideNotifications()
-        } else {
-            this.showNotifications()
-        }
+        [...this.state.notifications].reverse().forEach(this.showNotification)
     }
 
     componentWillUnmount() {
@@ -83,11 +77,7 @@ class Notifications extends React.Component<Props, State> {
                 position: 'bl',
                 level: 'info',
                 onRemove: () => {
-                    // We're checking `this.context.isModalOpen` here because we need the most recent
-                    // value of the flag on every `onRemove` call.
-                    if (!this.context.isModalOpen) {
-                        this.removeNotification(notification.id)
-                    }
+                    this.removeNotification(notification.id)
                 },
                 children: getNotificationComponent(notification),
             })
@@ -101,21 +91,6 @@ class Notifications extends React.Component<Props, State> {
                 ...notifications,
             ],
         }))
-    }
-
-    hideNotifications = () => {
-        const system: ?System = this.system.current
-
-        if (system) {
-            system.clearNotifications()
-        }
-    }
-
-    showNotifications = () => {
-        // Recent notifications are displayed on top and `state.notifications` collecton
-        // respects that (new ones are prepended). We have to revert the order when
-        // we restore entries.
-        [...this.state.notifications].reverse().forEach(this.showNotification)
     }
 
     removeNotification = (id: number): void => {
