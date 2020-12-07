@@ -43,17 +43,6 @@ const ErrorNotice = styled.div`
     }
 `
 
-const FullPage = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(239, 239, 239, 0.98);
-    z-index: 1;
-    overflow-y: scroll;
-`
-
 const Description = styled(Translate)`
     margin-bottom: 3.125rem;
     max-width: 660px;
@@ -61,10 +50,8 @@ const Description = styled(Translate)`
 
 const StreamPreviewDialog = ({ onClose, ...previewProps }) => (
     <ModalPortal>
-        <ModalDialog onClose={onClose}>
-            <FullPage>
-                <StreamPreview {...previewProps} onClose={onClose} />
-            </FullPage>
+        <ModalDialog onClose={onClose} fullpage>
+            <StreamPreview {...previewProps} onClose={onClose} />
         </ModalDialog>
     </ModalPortal>
 )

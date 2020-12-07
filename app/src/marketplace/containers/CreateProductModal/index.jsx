@@ -13,17 +13,6 @@ type Props = {
     api: Object,
 }
 
-const FullPage = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(239, 239, 239, 0.98);
-    z-index: 1;
-    overflow-y: scroll;
-`
-
 const CloseButton = styled.button`
     position: absolute;
     top: 1.5rem;
@@ -62,16 +51,14 @@ const CreateProductModal = ({ api }: Props) => {
 
     return (
         <ModalPortal>
-            <ModalDialog onClose={onClose}>
-                <FullPage>
-                    <CloseButton
-                        type="button"
-                        onClick={onClose}
-                    >
-                        <SvgIcon name="crossMedium" />
-                    </CloseButton>
-                    <StyledProductTypeChooser />
-                </FullPage>
+            <ModalDialog onClose={onClose} fullpage>
+                <CloseButton
+                    type="button"
+                    onClick={onClose}
+                >
+                    <SvgIcon name="crossMedium" />
+                </CloseButton>
+                <StyledProductTypeChooser />
             </ModalDialog>
         </ModalPortal>
     )
