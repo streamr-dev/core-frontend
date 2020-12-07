@@ -9,6 +9,7 @@ import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
+import docsLinks from '$shared/../docsLinks'
 import type { Filter } from '$userpages/flowtype/common-types'
 
 type NoResultsViewProps = {
@@ -29,8 +30,8 @@ const NoDataUnionsView = () => (
             />
         )}
     >
-        <Translate value="userpages.dashboards.noCreatedDashboards.title" />
-        <Translate value="userpages.dashboards.noCreatedDashboards.message" tag="small" />
+        <Translate value="userpages.dataunions.noCreatedDataUnions.title" />
+        <Translate value="userpages.dataunions.noCreatedDataUnions.message" tag="small" dangerousHTML link={docsLinks.dataUnions} />
     </EmptyState>
 )
 
@@ -48,12 +49,12 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.dashboards.noDashboardsResult.clearFilters" />
+                <Translate value="userpages.dataunions.noDataUnionResult.clearFilters" />
             </Button>
         )}
     >
-        <Translate value="userpages.dashboards.noDashboardsResult.title" />
-        <Translate value="userpages.dashboards.noDashboardsResult.message" tag="small" />
+        <Translate value="userpages.dataunions.noDataUnionResult.title" />
+        <Translate value="userpages.dataunions.noDataUnionResult.message" tag="small" />
     </EmptyState>
 )
 

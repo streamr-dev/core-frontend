@@ -84,10 +84,15 @@ function useEditController(product: Product) {
 
     const redirectToProductList = useCallback(() => {
         if (!isMounted()) { return }
-        history.replace(routes.products.index())
+        if (isDataUnionProduct(product)) {
+            history.replace(routes.dataunions.index())
+        } else {
+            history.replace(routes.products.index())
+        }
     }, [
         isMounted,
         history,
+        product,
     ])
 
     const productId = product.id

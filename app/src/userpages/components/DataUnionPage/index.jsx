@@ -4,13 +4,12 @@ import React, { useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
+import { Link } from 'react-router-dom'
 
 import { CoreHelmet } from '$shared/components/Helmet'
 import Layout from '../Layout'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
-import Search from '../Header/Search'
-import NoDataUnionsView from './NoDataUnions'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import { isDataUnionProduct } from '$mp/utils/product'
@@ -19,6 +18,11 @@ import useModal from '$shared/hooks/useModal'
 import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
 import Button from '$shared/components/Button'
 import { MD, LG } from '$shared/utils/styled'
+import routes from '$routes'
+
+import Search from '../Header/Search'
+import NoDataUnionsView from './NoDataUnions'
+import Item from './Item'
 
 const CreateButton = styled(Button)`
     display: none;
@@ -47,19 +51,6 @@ const StyledListContainer = styled(ListContainer)`
     }
 `
 
-export const CreateProductButton = () => {
-    const { api: createProductDialog } = useModal('marketplace.createProduct')
-
-    return (
-        <CreateButton
-            type="button"
-            onClick={() => createProductDialog.open()}
-        >
-            <Translate value="userpages.products.createProduct" />
-        </CreateButton>
-    )
-}
-
 const ProductsPage = () => {
     const { filter, setSearch, resetFilter } = useFilterSort([])
     const allProducts = useSelector(selectMyProductList)
@@ -76,7 +67,16 @@ const ProductsPage = () => {
 
     return (
         <Layout
-            headerAdditionalComponent={<CreateProductButton />}
+            headerAdditionalComponent={
+                <CreateButton
+                    tag={Link}
+                    to={routes.products.new({
+                        type: 'DATAUNION',
+                    })}
+                >
+                    <Translate value="userpages.products.createProduct" />
+                </CreateButton>
+            }
             headerSearchComponent={
                 <Search
                     placeholder={I18n.t('userpages.products.filterProducts')}
@@ -95,7 +95,12 @@ const ProductsPage = () => {
                         onResetFilter={resetFilter}
                     />
                 )}
-                TODO
+                {products.map((product) => (
+                    <Item
+                        key={product.id}
+                        product={product}
+                    />
+                ))}
             </StyledListContainer>
             <DocsShortcuts />
         </Layout>

@@ -58,7 +58,7 @@ const ProductsPage = () => {
         setSort,
         resetFilter,
     } = useFilterSort(sortOptions)
-    const products = useSelector(selectMyProductList)
+    const allProducts = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
     const {
@@ -77,6 +77,10 @@ const ProductsPage = () => {
     useEffect(() => () => {
         resetStats()
     }, [resetStats])
+
+    const products = useMemo(() => (
+        allProducts.filter((p) => !isDataUnionProduct(p))
+    ), [allProducts])
 
     return (
         <Layout
