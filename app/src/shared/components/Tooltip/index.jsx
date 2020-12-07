@@ -23,7 +23,7 @@ const Root = styled.div`
     line-height: 1;
 
     ${({ tooltip, disabled }) => !!tooltip && !disabled && css`
-        &::after {
+        ::after {
             content: "${tooltip}";
             visibility: hidden;
             opacity: 0;
@@ -46,12 +46,10 @@ const Root = styled.div`
             transform: ${({ theme }) => theme.transform};
         }
 
-        &:hover {
-            &::after {
-                transition-delay: 0.5s;
-                visibility: visible;
-                opacity: 1;
-            }
+        :hover::after {
+            transition-delay: 0.5s;
+            visibility: visible;
+            opacity: 1;
         }
     `}
 `
