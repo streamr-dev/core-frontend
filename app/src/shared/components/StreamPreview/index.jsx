@@ -297,7 +297,7 @@ const UnstyledValueCell = ({ value, className }) => {
     const { copy } = useCopy()
 
     return (
-        <Tooltip value="Copy" className={className}>
+        <Tooltip value={'ontouchstart' in window ? 'Tap to copy' : 'Copy'} className={className}>
             <Cell
                 onClick={() => {
                     copy(value)
