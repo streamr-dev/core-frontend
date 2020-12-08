@@ -1,9 +1,9 @@
-import { useMemo, useCallback } from 'react'
+import { useCallback } from 'react'
 import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 import getSessionToken from '$auth/utils/getSessionToken'
 
-const useMetamask = () => {
-    const connect = useCallback(async () => {
+const useMetamask = () => (
+    useCallback(async () => {
         const web3 = getWeb3()
 
         await validateWeb3({
@@ -17,12 +17,6 @@ const useMetamask = () => {
 
         return token
     }, [])
-
-    return useMemo(() => ({
-        connect,
-    }), [
-        connect,
-    ])
-}
+)
 
 export default useMetamask

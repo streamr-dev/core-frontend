@@ -287,8 +287,7 @@
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.10.1",
     "webpack-notifier": "^1.6.0",
-    "yup": "^0.26.10",
-    "zxcvbn": "^4.4.2"
+    "yup": "^0.26.10"
   },
   "#IMPORTANT": "Do not use dev dependencies!",
   "devDependencies": {}

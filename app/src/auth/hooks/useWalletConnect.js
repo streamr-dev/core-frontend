@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useCallback } from 'react'
 import WalletConnect from '@walletconnect/client'
 import QRCodeModal from '@walletconnect/qrcode-modal'
 import { convertUtf8ToHex } from '@walletconnect/utils'
@@ -37,8 +37,8 @@ const signChallenge = async ({ connector, address }) => {
     }
 }
 
-const useWalletConnect = () => {
-    const connect = useCallback(async () => (
+const useWalletConnect = () => (
+    useCallback(async () => (
         new Promise((resolve, reject) => {
             // Create a connector
             let connector = new WalletConnect({
@@ -124,12 +124,6 @@ const useWalletConnect = () => {
             connector.on('disconnect', onDisconnect)
         })
     ), [])
-
-    return useMemo(() => ({
-        connect,
-    }), [
-        connect,
-    ])
-}
+)
 
 export default useWalletConnect
