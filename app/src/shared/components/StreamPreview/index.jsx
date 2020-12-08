@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import stringifyObject from 'stringify-object'
 import moment from 'moment-timezone'
@@ -12,7 +12,9 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Skeleton from '$shared/components/Skeleton'
 import useCopy from '$shared/hooks/useCopy'
 import { formatDateTime } from '$mp/utils/time'
-import { truncate } from '$shared/utils/text'
+import StreamSelector from './StreamSelector'
+import PartitionSelector from './PartitionSelector'
+import IconButton from './IconButton'
 
 import {
     SecurityIcon,
@@ -25,41 +27,6 @@ const Container = styled.div`
     height: 100%;
     background-color: white;
     color: #525252;
-`
-
-const IconButton = styled.button`
-    width: 32px;
-    height: 32px;
-    text-align: center;
-    position: relative;
-    border: none;
-    background: none;
-    appearance: none;
-    border-radius: 2px;
-
-    &:not(:disabled):hover,
-    &:focus {
-        background-color: #EFEFEF;
-        outline: none;
-    }
-
-    &:not(:disabled):active {
-        background-color: #D8D8D8;
-        color: #525252;
-    }
-
-    svg {
-        width: 20px;
-        height: 20px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    & + & {
-        margin-left: 32px;
-    }
 `
 
 const CloseButton = styled(IconButton)`
@@ -178,55 +145,6 @@ const StreamSettingsButton = styled(StyledButton)`
         && {
             display: none;
         }
-    }
-`
-
-const SelectorRoot = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: #525252;
-
-    @media (min-width: ${SM}px) {
-        min-width: 224px;
-    }
-`
-
-const SelectorTitle = styled.div`
-    font-weight: var(--medium);
-    line-height: 24px;
-    min-width: 70px;
-
-    @media (min-width: ${LG})px {
-        flex: 1;
-        min-width: 85px;
-    }
-`
-
-const SelectorIcon = styled(IconButton)`
-    svg {
-        width: 8px;
-        height: 14px;
-        position: absolute;
-
-        ${({ back }) => !!back && css`
-            transform: translate(-60%, -50%);
-        `}
-        ${({ forward }) => !!forward && css`
-            transform: translate(-40%, -50%);
-        `}
-    }
-`
-
-const SelectorPages = styled.div`
-    min-width: 64px;
-    text-align: center;
-    padding: 0 0.5rem;
-
-    strong {
-        font-weight: var(--medium);
     }
 `
 
@@ -499,95 +417,6 @@ const InspectorButton = styled(IconButton)`
     `}
 `
 
-const Selector = ({
-    title,
-    options,
-    active,
-    onChange: onChangeProp,
-    ...rest
-}) => {
-    const current = useMemo(() => {
-        if (!options || options.length <= 0) {
-            return undefined
-        }
-
-        return options.indexOf(active)
-    }, [active, options])
-
-    const onChange = useCallback((target) => {
-        const nextIndex = Math.max(0, Math.min(target, options.length))
-
-        onChangeProp(options[nextIndex])
-    }, [options, onChangeProp])
-
-    if (!options || options.length <= 0) {
-        return null
-    }
-
-    return (
-        <SelectorRoot {...rest}>
-            <SelectorTitle>{title}</SelectorTitle>
-            <SelectorIcon
-                back
-                disabled={current <= 0}
-                onClick={() => onChange(current - 1)}
-            >
-                <SvgIcon name="back" />
-            </SelectorIcon>
-            <SelectorPages>
-                <Translate
-                    value="streamLivePreview.selectorPages"
-                    current={current + 1}
-                    total={options.length}
-                    dangerousHTML
-                />
-            </SelectorPages>
-            <SelectorIcon
-                forward
-                disabled={current >= options.length - 1}
-                onClick={() => onChange(current + 1)}
-            >
-                <SvgIcon name="forward" />
-            </SelectorIcon>
-        </SelectorRoot>
-    )
-}
-
-const StreamSelector = styled(Selector)`
-    position: fixed;
-    left: 24px;
-    top: 150px;
-
-    @media (min-width: ${SM}px) {
-        left: 40px;
-    }
-
-    @media (min-width: ${LG}px) {
-        left: 104px;
-    }
-`
-
-const PartitionSelector = styled(Selector)`
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    z-index: 1;
-
-    @media (min-width: ${SM}px) {
-        left: calc(100% - 504px);
-        top: 150px;
-        bottom: auto;
-        right: auto;
-    }
-
-    @media (min-width: ${LG}px) {
-        left: 360px;
-        top: 150px;
-        bottom: auto;
-        right: auto;
-    }
-`
-
 const ErrorNotice = styled.div`
     flex: 1;
     font-size: 12px;
@@ -683,7 +512,7 @@ const StreamPreview = ({
                             {!!titlePrefix && (
                                 <StreamName>{titlePrefix} &rarr; </StreamName>
                             )}
-                            {truncate(streamId)}
+                            {streamId}
                         </Title>
                         <Description title={description}>{description}</Description>
                     </React.Fragment>
