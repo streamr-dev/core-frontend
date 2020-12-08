@@ -115,8 +115,11 @@ const LoginPage = () => {
     })
     const isMounted = useIsMounted()
 
-    const { connect: getMetamaskToken } = useMetamask()
-    const { connect: getWalletConnectToken } = useWalletConnect()
+    const connectMethods = {
+        [METAMASK]: useMetamask(),
+        [WALLET_CONNECT]: useWalletConnect(),
+    }
+
     const { setSessionToken } = useContext(SessionContext)
     const cancelPromiseRef = useRef(undefined)
 
@@ -133,8 +136,6 @@ const LoginPage = () => {
         })
 
         try {
-            let token
-
             const cancelPromise = new Promise((resolve, reject) => {
                 cancelPromiseRef.current = {
                     resolve,
@@ -142,19 +143,14 @@ const LoginPage = () => {
                 }
             })
 
-            if (nextMethod === METAMASK) {
-                token = await Promise.race([
-                    getMetamaskToken(),
-                    cancelPromise,
-                ])
-            } else if (nextMethod === WALLET_CONNECT) {
-                token = await Promise.race([
-                    getWalletConnectToken(),
-                    cancelPromise,
-                ])
-            } else {
+            const fallbackGetter = async () => {
                 throw new Error('Unknow method')
             }
+
+            const token = await Promise.race([
+                (connectMethods[nextMethod] || fallbackGetter)(),
+                cancelPromise,
+            ])
 
             if (!isMounted()) { return }
 
@@ -186,8 +182,7 @@ const LoginPage = () => {
             })
         }
     }, [
-        getMetamaskToken,
-        getWalletConnectToken,
+        connectMethods,
         setSessionToken,
         dispatch,
         isMounted,

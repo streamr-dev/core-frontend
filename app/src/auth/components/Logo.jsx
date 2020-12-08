@@ -10,21 +10,16 @@ const StyledLink = styled(Link)`
     margin: 0 auto;
     user-select: none;
     width: 32px;
+    outline: 0 !important;
 
     svg {
         color: #FF5C00;
-    }
-
-    &,
-    &:--enter,
-    &:--idle {
-        outline: 0;
     }
 `
 
 const UnstyledLogo = ({ className, ...props }) => (
     <div {...props}>
-        <StyledLink to={routes.root()} data-logo>
+        <StyledLink to={routes.root()}>
             <StreamrLogo />
         </StyledLink>
     </div>

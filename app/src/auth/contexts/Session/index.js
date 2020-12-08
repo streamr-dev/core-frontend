@@ -2,14 +2,14 @@
 
 import React, { type Context } from 'react'
 
-type SetSessionToken = {
+type TokenAndMethod = {
     token?: string,
     method?: string,
 }
 
 export type Props = {
     token: ?string,
-    setSessionToken: ?(?SetSessionToken) => void,
+    setSessionToken: ?(?TokenAndMethod) => void,
 }
 
 const defaultContext: Props = {
