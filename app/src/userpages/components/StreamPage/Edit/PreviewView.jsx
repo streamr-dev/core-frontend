@@ -10,7 +10,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { useThrottled } from '$shared/hooks/wrapCallback'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
-import StreamPreview from '$mp/components/StreamPreview'
+import StreamPreview from '$shared/components/StreamPreview'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 import docsLinks from '$shared/../docsLinks'
 
