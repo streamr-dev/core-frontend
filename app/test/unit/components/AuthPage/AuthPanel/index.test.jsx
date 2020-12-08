@@ -74,11 +74,6 @@ describe(AuthPanel.name, () => {
                 expect(nav.prop('signin')).toBe(false)
             })
 
-            it('sets nav#signup if step#showSignup is set', () => {
-                expect(step.prop('showSignup')).not.toBeDefined()
-                expect(nav.prop('signup')).toBe(false)
-            })
-
             it('passes (undefined) onEthereumClick to nav#onUseEth', () => {
                 expect(step.prop('onEthereumClick')).toBeUndefined()
                 expect(nav.prop('onUseEth')).toBeUndefined()
@@ -98,11 +93,6 @@ describe(AuthPanel.name, () => {
             it('sets nav#signin if step#showSignin is set', () => {
                 expect(step.prop('showSignin')).toBe(true)
                 expect(nav.prop('signin')).toBe(true)
-            })
-
-            it('sets nav#signup if step#showSignup is set', () => {
-                expect(step.prop('showSignup')).toBe(true)
-                expect(nav.prop('signup')).toBe(true)
             })
 
             it('passes given onEthereumClick to nav#onUseEth', () => {
