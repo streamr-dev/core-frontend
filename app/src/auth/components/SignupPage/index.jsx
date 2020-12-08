@@ -2,22 +2,20 @@
 
 import React, { useCallback, useContext } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
+import styled from 'styled-components'
+import { useDispatch } from 'react-redux'
+import { push } from 'connected-react-router'
+
 import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
+import { SM, MD } from '$shared/utils/styled'
 
 import AuthFormProvider from '../AuthFormProvider'
 import AuthFormContext from '../../contexts/AuthForm'
 import AuthPanel from '../AuthPanel'
-import Actions from '../Actions'
-import Button from '../Button'
-import AuthStep from '../AuthStep'
+import UnstyledAuthStep from '../AuthStep'
 import AuthLayout from '../AuthLayout'
-import Text from '$ui/Text'
-import Label from '$ui/Label'
-import Underline from '$ui/Underline'
-import Errors from '$ui/Errors'
 
 import post from '../../utils/post'
-import onInputChange from '../../utils/onInputChange'
 import schemas from '../../schemas/signup'
 import routes from '$routes'
 
@@ -29,15 +27,26 @@ const initialForm: Form = {
     email: '',
 }
 
+const AuthStep = styled(UnstyledAuthStep)`
+    && {
+        text-align: center;
+        line-height: 24px;
+        padding: 34px 2.5rem 50px;
+        font-size: 14px;
+
+        @media (min-width: ${SM}px) {
+            padding: 56px 2.5rem 72px;
+            font-size: 16px;
+        }
+
+        @media (min-width: ${MD}px) {
+            padding: 72px 2.5rem 88px;
+        }
+    }
+`
+
 const SignupPage = () => {
-    const {
-        errors,
-        form,
-        isProcessing,
-        setFieldError,
-        setFormField,
-        step,
-    } = useContext(AuthFormContext)
+    const { form, setFieldError } = useContext(AuthFormContext)
     const { email: username } = form
 
     const onFailure = useCallback((error: Error) => {
@@ -50,6 +59,13 @@ const SignupPage = () => {
         }, false)
     ), [username])
 
+    const dispatch = useDispatch()
+    const onEthereumClick = useCallback(() => {
+        dispatch(push(routes.auth.login({
+            metamask: true,
+        })))
+    }, [dispatch])
+
     return (
         <AuthLayout>
             <AuthPanel
@@ -57,34 +73,16 @@ const SignupPage = () => {
                 onValidationError={setFieldError}
             >
                 <AuthStep
-                    title={I18n.t('general.signUp')}
+                    title="Authentication has changed"
                     onSubmit={submit}
                     onFailure={onFailure}
-                    showSignin
+                    onEthereumClick={onEthereumClick}
                 >
-                    <Label state={errors.email && 'ERROR'}>
-                        <Translate value="auth.labels.email" />
-                    </Label>
-                    <Text
-                        unstyled
-                        type="text"
-                        name="email"
-                        value={form.email}
-                        onChange={onInputChange(setFormField)}
-                        autoComplete="off"
-                        autoFocus
-                    />
-                    <Underline
-                        state={(step === 0 && isProcessing && 'PROCESSING') || (errors.email && 'ERROR')}
-                    />
-                    <Errors>
-                        {errors.email}
-                    </Errors>
-                    <Actions>
-                        <Button disabled={isProcessing}>
-                            <Translate value="auth.next" />
-                        </Button>
-                    </Actions>
+                    <div>
+                        Email and password-based signups have been deprecated.
+                        <br />
+                        Please install MetaMask and authenticate with Ethereum.
+                    </div>
                 </AuthStep>
                 <AuthStep
                     title={I18n.t('auth.signUp.success.title')}
