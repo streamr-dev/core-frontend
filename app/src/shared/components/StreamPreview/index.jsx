@@ -83,7 +83,7 @@ const Title = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    @media (max-width: ${SM}px) {
+    @media (max-width: ${SM - 1}px) {
         ${StreamName} {
             display: none;
         }
@@ -141,7 +141,7 @@ const StyledButton = styled(Button)`
 `
 
 const StreamSettingsButton = styled(StyledButton)`
-    @media (max-width: ${LG}px) {
+    @media (max-width: ${LG - 1}px) {
         && {
             display: none;
         }
@@ -172,7 +172,7 @@ const StreamData = styled.div`
     transition:opacity 300ms linear;
     margin-bottom: 80px;
 
-    @media (max-width: ${SM}px) {
+    @media (max-width: ${SM - 1}px) {
         ${({ inspectorFocused }) => (inspectorFocused ? css`
             opacity: 0;
         ` : `
@@ -198,7 +198,7 @@ const Inspector = styled.div`
     overflow-y: scroll;
     margin-bottom: 80px;
 
-    @media (max-width: ${SM}px) {
+    @media (max-width: ${SM - 1}px) {
         left: calc(100% - 130px);
         right: auto;
         width: 100%;
@@ -250,7 +250,7 @@ const DataHeader = styled(HeaderItem)`
     top: 200px;
     left: 256px;
 
-    @media (max-width: ${LG}px) {
+    @media (max-width: ${LG - 1}px) {
         display: none;
     }
 
@@ -269,7 +269,7 @@ const InspectorHeader = styled(HeaderItem)`
     padding: 0 32px 0 40px;
     transition: left 300ms ease-out;
 
-    @media (max-width: ${SM}px) {
+    @media (max-width: ${SM - 1}px) {
         left: calc(100% - 130px);
         right: auto;
         padding: 0 24px;
@@ -324,7 +324,7 @@ const DataTable = styled.div`
             border-bottom: 0;
         }
 
-        @media (max-width: ${LG}px) {
+        @media (max-width: ${LG - 1}px) {
             ${TableItem}:last-child {
                 display: none;
             }
@@ -357,13 +357,13 @@ const InspectorTable = styled.div`
             text-transform: uppercase;
         }
 
-        @media (max-width: ${LG}px) {
+        @media (max-width: ${LG - 1}px) {
             ${TableItem}:last-child {
                 display: block;
             }
         }
 
-        @media (max-width: ${SM}px) {
+        @media (max-width: ${SM - 1}px) {
             ${TableItem} {
                 padding: 0 24px;
             }
