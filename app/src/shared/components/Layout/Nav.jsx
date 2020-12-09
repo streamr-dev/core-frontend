@@ -27,6 +27,7 @@ const DropdownToggle = styled.div`
     height: 32px;
     border-radius: 4px;
     position: relative;
+    margin-top: 1px;
 
     svg {
         position: absolute;

@@ -1,6 +1,7 @@
 // @flow
 
 import React, { useState, useCallback } from 'react'
+import qs from 'query-string'
 
 import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
 import SessionProvider from '../SessionProvider'
@@ -8,10 +9,12 @@ import AuthLayout from '../AuthLayout'
 import UsernamePasswordLogin from '../UsernamePasswordLogin'
 import EthereumLogin from '../EthereumLogin'
 
-type Props = {}
+type LoginPageProps = {
+    preferEthereum: boolean,
+}
 
-const LoginPage = (props: Props) => {
-    const [useEthereum, setUseEthereum] = useState(false)
+const LoginPage = ({ preferEthereum, ...props }: LoginPageProps) => {
+    const [useEthereum, setUseEthereum] = useState(preferEthereum)
 
     const switchToEthereum = useCallback(() => {
         setUseEthereum(true)
@@ -34,8 +37,19 @@ const LoginPage = (props: Props) => {
 
 export { LoginPage }
 
-export default userIsNotAuthenticated((props: Props) => (
-    <SessionProvider>
-        <LoginPage {...props} />
-    </SessionProvider>
-))
+type Props = {
+    useEthereum?: string,
+    location: {
+        search: string,
+    },
+}
+
+export default userIsNotAuthenticated((props: Props) => {
+    const useEthereum = !!qs.parse(props.location.search).metamask
+
+    return (
+        <SessionProvider>
+            <LoginPage {...props} preferEthereum={useEthereum} />
+        </SessionProvider>
+    )
+})

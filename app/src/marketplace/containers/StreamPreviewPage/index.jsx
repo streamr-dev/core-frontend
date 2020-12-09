@@ -14,7 +14,7 @@ import { Provider as SubscriptionStatusProvider } from '$shared/contexts/Subscri
 import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
-import StreamPreview from '$mp/components/StreamPreview'
+import StreamPreview from '$shared/components/StreamPreview'
 import routes from '$routes'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import {

@@ -110,18 +110,19 @@ public void clearState() {
 }`
 
 export const ClientSub =
-`const sub = client.subscribe(
-    {
-        stream: 'streamId',
-        apiKey: 'secret',       // Optional. If not given, uses the apiKey given at client creation time.
-        partition: 0,           // Optional, defaults to zero. Use for partitioned streams to select partition.
-        // optional resend options here
+`const streamr = new StreamrClient({
+    auth: {
+        privateKey: 'YOUR-PRIVATE-KEY',
     },
-    (message, metadata) => {
-        // This is the message handler which gets called for every incoming message in the Stream.
-        // Do something with the message here!
-    }
-)`
+})
+
+// Subscribe to a stream
+streamr.subscribe({
+    stream: '0xb722f00ea9eecdc3d2b990789e62beaa17568123/my-stream',
+}, (message, metadata) => {
+    // Do something with the message here!
+    console.log(message)
+})`
 
 export const ClientPub =
 `// Here's our example data point

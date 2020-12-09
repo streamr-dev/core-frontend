@@ -1,17 +1,14 @@
 # Authentication
 
-A session token is required to make requests to the REST API endpoints or over the websocket protocol. You can obtain a session token by authenticating with either of these three methods:
-- [Signing a cryptographic challenge using an Ethereum private key](#challenge)
-- [Using a permanent secret API key](#api-key)
-- [Using a username and a password](#username-password)
-
-Once you get a session token using one of the above methods, see the section on [using it](#session-token).
+A session token is required to make requests to the REST API endpoints or over the websocket protocol. You can obtain a session token by signing a cryptographic challenge using an Ethereum private key.
 
 <a name="challenge"></a>
 
-### Authenticating with Ethereum
+### Authenticating options
 
-You can use an Ethereum private key to authenticate by signing a challenge with it and providing your Ethereum public address for verification.
+The easiest way to authenticate is through the [Streamr Client](https://github.com/streamr-dev/streamr-client-javascript/) - it will handle the cryptographic signing for you. Client authentication instructions can be found in the [repo readme](https://github.com/streamr-dev/streamr-client-javascript/).
+
+If you prefer to use the REST API directly the you can use an Ethereum private key to authenticate by signing a challenge with it and providing your Ethereum public address for verification.
 
 Use the `POST` endpoint at `/api/v1/login/challenge/YOUR-PUBLIC-ADDRESS` to generate a random text called a challenge, which looks like the following: 
 
@@ -41,35 +38,6 @@ The signature must follow the convention described [here](https://github.com/eth
 `sign(keccak256("\x19Ethereum Signed Message:\n" + len(challengeText) + challengeText)))`
 
 If the signature is correct, you will receive a [session token](#session-token).
-
-<a name="api-key"></a>
-
-### Authenticating with an API key
-
-Any number of API keys can be attached to your user. You can manage your API keys on your profile page.
-
-When reading from or writing to Streams, you can use a Stream-specific anonymous key instead of your user key to avoid exposing it. Anonymous keys can be managed on the details page of a Stream.
-
-To obtain a [session token](#session-token) using an API key, send a `POST` request to the `/api/v1/login/apikey` endpoint with a JSON body like the one below:
-
-```
-{
-    "apiKey": "YOUR-API-KEY"
-}
-```
-
-<a name="username-password"></a>
-
-### Authenticating with a username and a password
-
-You can manage your username and password from your profile page. To obtain a [session token](#session-token) using your username and your password, send them as a `POST` request to the `/api/v1/login/password` endpoint with a JSON body in the following format:
-
-```
-{
-	"username": "YOUR-USERNAME",
-	"password": "YOUR-PASSWORD"
-}
-```
 
 <a name="session-token"></a>
 
