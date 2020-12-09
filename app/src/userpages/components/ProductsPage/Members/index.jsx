@@ -370,9 +370,7 @@ const Members = () => {
                                     >
                                         <FullAddress>{member.memberAddress}</FullAddress>
                                         <TruncatedAddress>
-                                            {truncate(member.memberAddress, {
-                                                maxLength: 15,
-                                            })}
+                                            {truncate(member.memberAddress)}
                                         </TruncatedAddress>
                                     </MemberList.Title>
                                     <MemberList.Item>

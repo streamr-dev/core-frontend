@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import { SM, LG } from '$shared/utils/styled'
 import Segment from '$shared/components/Segment'
+import { truncate } from '$shared/utils/text'
 
 const StreamCount = styled.span`
     display: inline-block;
@@ -224,7 +225,9 @@ export const StreamListing = ({
                     <TableBody>
                         {streams.map(({ id: streamId, description }) => (
                             <DataRow key={streamId} locked={locked} clickable={!locked && !!showPreview}>
-                                <TitleItem title={description}>{streamId}</TitleItem>
+                                <TitleItem title={description}>
+                                    {truncate(streamId)}
+                                </TitleItem>
                                 <DescriptionItem title={description}>{description}</DescriptionItem>
                                 {(!!showPreview || !!showSettings) && (
                                     <RowButtons>

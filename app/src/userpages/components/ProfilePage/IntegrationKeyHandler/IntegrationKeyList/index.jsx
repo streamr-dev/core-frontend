@@ -18,7 +18,6 @@ import KeyList from '../../KeyList'
 
 type CommonProps = {|
     hideValues?: boolean,
-    truncateValues?: boolean,
     onDelete: (IntegrationKeyId: IntegrationKeyId) => Promise<void>,
     onEdit: (IntegrationKeyId: IntegrationKeyId, keyName: string) => Promise<void>,
     disabled?: boolean,
@@ -49,7 +48,6 @@ const StyledBalance = styled(Balance)`
 const IntegrationKeyItem = ({
     item,
     hideValues,
-    truncateValues,
     onDelete,
     onEdit,
     disabled,
@@ -69,7 +67,6 @@ const IntegrationKeyItem = ({
                 allowDelete={!disabled}
                 allowEdit={!disabled}
                 hideValue={hideValues}
-                truncateValue={truncateValues}
                 onDelete={() => onDelete(item.id)}
                 onSave={(keyName) => onEdit(item.id, keyName || '')}
                 onToggleEditor={setEditing}

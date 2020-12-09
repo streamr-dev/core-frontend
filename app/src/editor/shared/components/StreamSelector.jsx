@@ -4,6 +4,8 @@ import React from 'react'
 import Text from '$editor/canvas/components/Ports/Value/Text'
 import debounce from 'lodash/debounce'
 
+import { truncate } from '$shared/utils/text'
+
 import { getStreams, getStream } from '../../canvas/services'
 
 import styles from './StreamSelector.pcss'
@@ -175,7 +177,7 @@ export default class StreamSelector extends React.Component<Props, State> {
                                 tabIndex="0"
                                 title={stream.description}
                             >
-                                <div>{stream.id}</div>
+                                <div>{truncate(stream.id)}</div>
                                 {!!stream.description && (
                                     <div title={stream.description} className={styles.description}>{stream.description}</div>
                                 )}

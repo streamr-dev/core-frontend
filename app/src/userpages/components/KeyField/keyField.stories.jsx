@@ -52,32 +52,6 @@ stories.add('editable', () => {
     )
 })
 
-stories.add('truncated value', () => (
-    <KeyField
-        keyName="Key name"
-        value={text('Value', 'Long value which will truncate')}
-        truncateValue
-    />
-))
-
-stories.add('truncated value (editable)', () => {
-    const saveAction = action('onSave')
-    const onSave = (...args) => new Promise((resolve) => {
-        saveAction(...args)
-        setTimeout(resolve, 500)
-    })
-
-    return (
-        <KeyField
-            keyName="Key name"
-            value={text('Value', 'Long value which will truncate')}
-            allowEdit
-            onSave={onSave}
-            truncateValue
-        />
-    )
-})
-
 stories.add('active', () => (
     <KeyField
         keyName="Key name"

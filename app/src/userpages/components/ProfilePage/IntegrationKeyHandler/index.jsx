@@ -83,7 +83,6 @@ export const IntegrationKeyHandler = () => {
                 integrationKeys={privateKeys}
                 onDelete={wrappedRemove}
                 onEdit={wrappedEdit}
-                truncateValues
                 disabled={isDisabled}
                 activeKeyId={user && user.username}
             />

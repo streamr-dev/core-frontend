@@ -23,7 +23,6 @@ describe('IntegrationKeyHandler', () => {
                 onDelete={onDelete}
                 onEdit={onEdit}
                 hideValues
-                truncateValues
                 className="extra"
             />)
             const keyFields = el.find('KeyField')

@@ -288,7 +288,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
 
     const [groupedOptions, domainOptions] = useMemo(() => {
         const ethAccountOptions = ethereumIdentities.map(({ json }) => ({
-            label: truncate(json.address, { maxLength: 15 }),
+            label: truncate(json.address),
             value: json.address,
         }))
 

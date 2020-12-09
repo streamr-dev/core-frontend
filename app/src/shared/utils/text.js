@@ -3,27 +3,24 @@
 import { I18n } from 'react-redux-i18n'
 
 type Options = {
-    minLength?: number,
-    maxLength?: number,
+    length: number,
     separator?: string,
 }
 
-export const truncate = (text: string, options: Options = {}) => {
-    const { minLength, maxLength, separator } = {
-        minLength: 20,
-        maxLength: 30,
+export const truncate = (path: string, options: Options = {}) => {
+    const { length, separator } = {
         separator: '...',
+        length: 5,
         ...options,
     }
 
-    if (text.length < minLength) {
-        return text
+    if (typeof path === 'string' && path.indexOf('0x') >= 0) {
+        const search = new RegExp(`0x([A-Fa-f0-9]{${length - 2}})[A-Fa-f0-9]{32,}([A-Fa-f0-9]{${length}})`, 'g')
+
+        return path.replace(search, `0x$1${separator}$2`)
     }
 
-    const maxLengthWithoutSeparator = Math.min(maxLength, text.length) - separator.length
-    const sideLength = Math.floor(maxLengthWithoutSeparator / 2)
-
-    return text.substr(0, sideLength) + separator + text.substr(-sideLength)
+    return path
 }
 
 export const numberToText = (number: number): string => {

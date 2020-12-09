@@ -22,7 +22,6 @@ type Props = {
     keyName: string,
     value?: string,
     hideValue?: boolean,
-    truncateValue?: boolean,
     className?: string,
     allowEdit?: boolean,
     onSave?: (?string, ?string) => Promise<void>,
@@ -41,7 +40,6 @@ const KeyField = ({
     keyName,
     value,
     hideValue,
-    truncateValue,
     className,
     allowEdit,
     onSave: onSaveProp,
@@ -153,12 +151,6 @@ const KeyField = ({
         ...includeIf(!!allowDelete, [deleteAction]),
     ]), [hideValue, revealAction, onCopy, allowEdit, editAction, allowDelete, deleteAction])
 
-    const displayValue = useMemo(() => (
-        value && (!truncateValue ? value : truncate(value, {
-            maxLength: 15,
-        }))
-    ), [truncateValue, value])
-
     return (
         <div className={cx(styles.root, styles.KeyField, className)}>
             {!editing ? (
@@ -179,7 +171,7 @@ const KeyField = ({
                     </div>
                     <WithInputActions actions={inputActions}>
                         <Text
-                            value={displayValue}
+                            value={value && truncate(value)}
                             readOnly
                             type={hidden ? 'password' : 'text'}
                         />

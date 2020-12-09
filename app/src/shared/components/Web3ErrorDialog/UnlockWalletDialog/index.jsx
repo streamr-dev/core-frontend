@@ -45,9 +45,7 @@ const UnlockWalletDialog = ({
                         className={styles.address}
                         title={requiredAddress}
                     >
-                        {truncate(requiredAddress, {
-                            maxLength: 15,
-                        })}
+                        {truncate(requiredAddress)}
                     </span>
                 </div>
             )}

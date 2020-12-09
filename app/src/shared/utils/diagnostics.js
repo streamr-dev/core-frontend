@@ -54,7 +54,7 @@ global.streamr = Object.assign(global.streamr || {}, {
         const [versionNumber, , hash] = version.split('-')
 
         // hash minus leading 'g', not shown on master
-        const displayHash = isMaster ? '' : hash.slice(1)
+        const displayHash = isMaster ? '' : hash && hash.slice(1)
 
         // don't show branch if master
         let displayBranch = branch === 'master' ? '' : branch

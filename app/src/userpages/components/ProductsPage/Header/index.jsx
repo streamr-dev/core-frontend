@@ -75,9 +75,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                         <NameAndUsername name={name}>
                             {!!beneficiaryAddress && (
                                 <HoverCopy value={beneficiaryAddress}>
-                                    {truncate(beneficiaryAddress, {
-                                        maxLength: 20,
-                                    })}
+                                    {truncate(beneficiaryAddress)}
                                 </HoverCopy>
                             )}
                         </NameAndUsername>
