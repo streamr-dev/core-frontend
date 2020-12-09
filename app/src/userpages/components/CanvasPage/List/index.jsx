@@ -257,7 +257,7 @@ const CanvasList = () => {
         <Layout
             headerAdditionalComponent={<CreateCanvasButton />}
             headerSearchComponent={
-                <Search
+                <Search.Active
                     placeholder={I18n.t('userpages.canvases.filterCanvases')}
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}

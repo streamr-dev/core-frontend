@@ -76,7 +76,7 @@ const ProductsPage = () => {
         <Layout
             headerAdditionalComponent={<CreateProductButton />}
             headerSearchComponent={
-                <Search
+                <Search.Active
                     placeholder={I18n.t('userpages.products.filterProducts')}
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}

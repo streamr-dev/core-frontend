@@ -74,10 +74,6 @@ const StyledMemberRow = styled(MemberList.Row)`
     `}
 `
 
-const SearchPlaceholder = styled.div`
-    width: var(--um);
-`
-
 const StyledListContainer = styled(ListContainer)`
     && {
         padding: 0;
@@ -288,13 +284,13 @@ const Members = () => {
             navComponent={(
                 <Header
                     searchComponent={dataUnionDeployed ? (
-                        <Search
+                        <Search.Active
                             placeholder={I18n.t('userpages.members.filterMembers')}
                             value={search || ''}
                             onChange={setSearch}
                         />
                     ) : (
-                        <SearchPlaceholder />
+                        <Search.Disabled />
                     )}
                     filterComponent={!!dataUnionDeployed && (
                         <Popover
@@ -457,7 +453,7 @@ const LoadingView = () => (
         navComponent={(
             <Header
                 searchComponent={
-                    <SearchPlaceholder />
+                    <Search.Disabled />
                 }
             />
         )}

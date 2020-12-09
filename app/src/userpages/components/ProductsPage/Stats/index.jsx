@@ -27,6 +27,7 @@ import Nav from '$shared/components/Layout/Nav'
 import { MD, LG } from '$shared/utils/styled'
 import DaysPopover from '$shared/components/DaysPopover'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
+import Search from '$userpages/components/Header/Search'
 
 import styles from './stats.pcss'
 
@@ -79,7 +80,7 @@ const Stats = () => {
             navComponent={(
                 <Header
                     searchComponent={
-                        <div className={styles.searchPlaceholder} />
+                        <Search.Disabled />
                     }
                 />
             )}
@@ -154,7 +155,7 @@ const LoadingView = () => (
         navComponent={(
             <Header
                 searchComponent={
-                    <div className={styles.searchPlaceholder} />
+                    <Search.Disabled />
                 }
             />
         )}
