@@ -79,7 +79,8 @@ const ProductsPage = () => {
     }, [resetStats])
 
     const products = useMemo(() => (
-        allProducts.filter((p) => !isDataUnionProduct(p))
+        // allProducts.filter((p) => !isDataUnionProduct(p))
+        allProducts
     ), [allProducts])
 
     return (

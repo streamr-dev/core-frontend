@@ -9,7 +9,9 @@ import { Link } from 'react-router-dom'
 import { CoreHelmet } from '$shared/components/Helmet'
 import Layout from '../Layout'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
+import { getAllDataUnions } from '$mp/modules/dataUnion/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
+import { selectDataUnions, selectFetchingDataUnionStats } from '$mp/modules/dataUnion/selectors'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import { isDataUnionProduct } from '$mp/utils/product'
@@ -51,19 +53,31 @@ const StyledListContainer = styled(ListContainer)`
     }
 `
 
-const ProductsPage = () => {
+const DataUnionPage = () => {
     const { filter, setSearch, resetFilter } = useFilterSort([])
     const allProducts = useSelector(selectMyProductList)
-    const fetching = useSelector(selectFetching)
+    const fetchingProducts = useSelector(selectFetching)
+    const stats = useSelector(selectDataUnions)
+    const fetchingDataUnions = useSelector(selectFetchingDataUnionStats)
     const dispatch = useDispatch()
+
+    console.log(stats)
 
     useEffect(() => {
         dispatch(getMyProducts(filter))
     }, [dispatch, filter])
 
+    useEffect(() => {
+        dispatch(getAllDataUnions())
+    }, [dispatch])
+
     const products = useMemo(() => (
         allProducts.filter((p) => isDataUnionProduct(p))
     ), [allProducts])
+
+    const fetching = useMemo(() => (
+        fetchingProducts || fetchingDataUnions
+    ), [fetchingProducts, fetchingDataUnions])
 
     return (
         <Layout
@@ -74,7 +88,7 @@ const ProductsPage = () => {
                         type: 'DATAUNION',
                     })}
                 >
-                    <Translate value="userpages.products.createProduct" />
+                    <Translate value="userpages.dataunions.createDataUnion" />
                 </CreateButton>
             }
             headerSearchComponent={
@@ -86,7 +100,7 @@ const ProductsPage = () => {
             }
             loading={fetching}
         >
-            <CoreHelmet title={I18n.t('userpages.title.products')} />
+            <CoreHelmet title={I18n.t('userpages.title.dataunions')} />
             <StyledListContainer>
                 {!fetching && products && !products.length && (
                     <NoDataUnionsView
@@ -107,4 +121,4 @@ const ProductsPage = () => {
     )
 }
 
-export default ProductsPage
+export default DataUnionPage

@@ -1,11 +1,15 @@
 // @flow
 
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 
 import { ago } from '$shared/utils/time'
 import { productStates } from '$shared/utils/constants'
-import Rect from '$shared/components/Rect'
+import SvgIcon from '$shared/components/SvgIcon'
+import UnstyledPopover from '$shared/components/Popover'
+import { MEDIUM } from '$shared/utils/styled'
+
+import Management from './Management'
 
 const Container = styled.div`
     width: 100%;
@@ -13,39 +17,123 @@ const Container = styled.div`
     border: 1px solid #EFEFEF;
     border-radius: 4px;
     margin-bottom: 1rem;
+    color: #323232;
+
+    &:hover {
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
+    }
 `
 
 const Header = styled.div`
     display: grid;
-    grid-template-columns: 48px 1fr auto;
-    height: 80px;
+    grid-template-columns: 80px 1fr auto;
+    height: 80px;    
 `
 
 const ImageContainer = styled.div`
     overflow: hidden;
     position: relative;
+    padding: 16px;
+    cursor: pointer;
 `
 
 const Image = styled.img`
     display: block;
     object-fit: cover;
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
+    height: 48px;
+    width: 48px;
 `
 
-const Title = styled.div`
+const TitleContainer = styled.div`
+    align-self: center;
+    cursor: pointer;
+`
 
+const Name = styled.div`
+    font-weight: ${MEDIUM};
+    font-size: 16px;
+    line-height: 18px;
+`
+
+const Details = styled.div`
+    line-height: 18px;
+`
+
+const State = styled.span`
+    font-weight: ${MEDIUM};
+    font-size: 12px;
+    line-height: 18px;
+    margin-right: 6px;
+`
+
+const Updated = styled.span`
+    font-size: 12px;
+    line-height: 18px;
+    color: #ADADAD;
 `
 
 const Buttons = styled.div`
+    align-self: center;
+    margin-right: 24px;
+`
 
+const Button = styled.button`
+    margin: 0 4px 0 0;
+    padding: 0;
+    border: none;
+    background: none;
+    outline: none;
+    color: #ADADAD;
+    transition: 200ms ease-in-out color;
+
+    &:hover {
+        color: #323232;
+    }
+
+    &:focus {
+        outline: none;
+    }
+`
+
+const Icon = styled(SvgIcon)`
+    width: 32px;
+    height: 32px;
+`
+
+const Popover = styled(UnstyledPopover)`
+    display: inline-flex;
+    vertical-align: middle;
 `
 
 const Stats = styled.div`
+    border-top: 1px solid #EFEFEF;
+    display: grid;
+    grid-auto-flow: column;
+`
 
+const Stat = styled.div`    
+    border-right: 1px solid #EFEFEF;
+    margin: 16px 0;
+
+    &:last-child {
+        border-right: none;
+    }
+`
+
+const Key = styled.div`
+    display: flex;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 26px;
+    color: #ADADAD;
+`
+
+const Value = styled.div`
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    line-height: 21px;
+    color: #323232;
 `
 
 type Props = {
@@ -53,7 +141,8 @@ type Props = {
 }
 
 const Item = ({ product }: Props) => {
-    console.log(product)
+    const [isOpen, setIsOpen] = useState(true)
+
     const productState = useMemo(() => {
         switch (product.state) {
             case productStates.NOT_DEPLOYED:
@@ -69,25 +158,78 @@ const Item = ({ product }: Props) => {
         }
     }, [product])
 
+    const onHeaderClick = useCallback(() => {
+        setIsOpen(!isOpen)
+    }, [isOpen])
+
     return (
         <Container>
             <Header>
-                <ImageContainer>
+                <ImageContainer onClick={onHeaderClick}>
                     <Image src={product.imageUrl} />
-                    <Rect height={48} ratio="1x1" />
                 </ImageContainer>
-                <Title>
-                    {product.name}
-                    {productState}
-                    Updated {ago(new Date(product.updated))}
-                </Title>
+                <TitleContainer onClick={onHeaderClick}>
+                    <Name>
+                        {product.name}
+                    </Name>
+                    <Details>
+                        <State>
+                            {productState}
+                        </State>
+                        {product.state === productStates.DEPLOYED ? (
+                            product.beneficiaryAddress
+                        ) : (
+                            <Updated>
+                                Updated {ago(new Date(product.updated))}
+                            </Updated>
+                        )}
+                    </Details>
+                </TitleContainer>
                 <Buttons>
-                    todo
+                    <Button onClick={() => console.log('click')}>
+                        <Icon name="externalLink" />
+                    </Button>
+                    <Button onClick={() => console.log('click')}>
+                        <Icon name="pencil" />
+                    </Button>
+                    <Button onClick={() => console.log('click')}>
+                        <Icon name="eye" />
+                    </Button>
+                    <Popover title="Select" noCaret type="meatball">
+                        <Popover.Item onClick={() => console.log('test')}>Unpublish</Popover.Item>
+                        <Popover.Item onClick={() => console.log('test')}>Hide</Popover.Item>
+                    </Popover>
                 </Buttons>
             </Header>
             <Stats>
-                todo
+                <Stat>
+                    <Key>Join requests</Key>
+                    <Value>0</Value>
+                </Stat>
+                <Stat>
+                    <Key>Members</Key>
+                    <Value>12</Value>
+                </Stat>
+                <Stat>
+                    <Key>Revenue</Key>
+                    <Value>123</Value>
+                </Stat>
+                <Stat>
+                    <Key>Admin fees</Key>
+                    <Value>123</Value>
+                </Stat>
+                <Stat>
+                    <Key>Avg user revenue / wk</Key>
+                    <Value>123</Value>
+                </Stat>
+                <Stat>
+                    <Key>Subscribers</Key>
+                    <Value>123</Value>
+                </Stat>
             </Stats>
+            {isOpen && (
+                <Management product={product} />
+            )}
         </Container>
     )
 }
