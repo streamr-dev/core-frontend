@@ -76,6 +76,7 @@ const UsernamePasswordLogin = ({ onEthereumClick }: Props) => {
         >
             <AuthStep
                 title={I18n.t('general.signIn')}
+                showSignup
                 onEthereumClick={onEthereumClick}
                 autoSubmitOnChange={['hiddenPassword']}
             >

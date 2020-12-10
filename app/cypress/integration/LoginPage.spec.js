@@ -48,6 +48,14 @@ describe('Login page', () => {
         })
     })
 
+    describe('Navigation / sign up link', () => {
+        it('takes user to the sign up page', () => {
+            cy.visit('/login')
+            cy.contains(/sign up/i).click()
+            cy.location('pathname').should('eq', '/signup')
+        })
+    })
+
     describe('Navigation / forgot password link', () => {
         it('takes user to the forgot password page', () => {
             cy.visit('/login')
