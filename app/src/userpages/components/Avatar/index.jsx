@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 
 import NameAndUsername from './NameAndUsername'
 import AvatarCircle from '$shared/components/AvatarCircle'
-import { MD } from '$shared/utils/styled'
+import AvatarImage from '$shared/components/AvatarImage'
 
 import routes from '$routes'
 
@@ -20,31 +20,25 @@ const StyledLink = styled(Link)`
   }
 `
 
-const StyledAvatarCircle = styled(AvatarCircle)`
-  && {
-    margin-right: 1.5rem;
-    width: 72px;
-    height: 72px;
-    line-height: 5rem;
-    font-size: 2em;
-    overflow: hidden;
-
-    @media (min-width: ${MD}px) {
-        width: 80px;
-        height: 80px;
-    }
-  }
-`
-
 const UnstyledAvatar = ({ user, linkToProfile, children, ...props }) => (
     <div {...props}>
         {!!linkToProfile && (
             <StyledLink to={routes.profile()}>
-                <StyledAvatarCircle name={user.name} imageUrl={user.imageUrlLarge} />
+                <AvatarCircle>
+                    <AvatarImage
+                        src={user.imageUrlLarge}
+                        username={user.username}
+                    />
+                </AvatarCircle>
             </StyledLink>
         )}
         {!linkToProfile && (
-            <StyledAvatarCircle name={user.name} imageUrl={user.imageUrlLarge} uploadAvatarPlaceholder />
+            <AvatarCircle>
+                <AvatarImage
+                    src={user.imageUrlLarge}
+                    username={user.username}
+                />
+            </AvatarCircle>
         )}
         <NameAndUsername name={user.name}>
             {children}
@@ -53,7 +47,11 @@ const UnstyledAvatar = ({ user, linkToProfile, children, ...props }) => (
 )
 
 const Avatar = styled(UnstyledAvatar)`
-  display: flex;
+    display: flex;
+
+    ${AvatarCircle} {
+        margin-right: 1.5rem;
+    }
 `
 
 export default Avatar

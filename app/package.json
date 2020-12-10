@@ -225,6 +225,7 @@
     "react-ga": "^2.5.0",
     "react-grid-layout": "^0.16.6",
     "react-helmet": "^6.1.0",
+    "react-identicons": "^1.2.4",
     "react-image": "^1.4.0",
     "react-in-viewport": "0.0.36",
     "react-leaflet": "^2.2.0",
