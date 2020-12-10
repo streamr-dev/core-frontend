@@ -31,6 +31,7 @@ const AuthPanel = ({ children, onPrev, validationSchemas, onValidationError }: P
         <div className={styles.authPanel}>
             <AuthPanelNav
                 signin={!!child.props.showSignin}
+                signup={!!child.props.showSignup}
                 onUseEth={child.props.onEthereumClick}
                 onGoBack={child.props.showBack ? (onPrev || prev) : null}
             />
