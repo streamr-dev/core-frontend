@@ -3,10 +3,13 @@
 import React, { useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 
+import { type Product } from '$mp/flowtype/product-types'
 import { ago } from '$shared/utils/time'
 import { productStates } from '$shared/utils/constants'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledPopover from '$shared/components/Popover'
+import Tooltip from '$shared/components/Tooltip'
+import { isEthereumAddress } from '$mp/utils/validate'
 import { MEDIUM } from '$shared/utils/styled'
 
 import Management from './Management'
@@ -47,6 +50,10 @@ const Image = styled.img`
 const TitleContainer = styled.div`
     align-self: center;
     cursor: pointer;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `
 
 const Name = styled.div`
@@ -111,7 +118,7 @@ const Stats = styled.div`
     grid-auto-flow: column;
 `
 
-const Stat = styled.div`    
+const Stat = styled.div`
     border-right: 1px solid #EFEFEF;
     margin: 16px 0;
 
@@ -137,25 +144,18 @@ const Value = styled.div`
 `
 
 type Props = {
-    product: any,
+    product: Product,
 }
 
 const Item = ({ product }: Props) => {
     const [isOpen, setIsOpen] = useState(true)
 
     const productState = useMemo(() => {
-        switch (product.state) {
-            case productStates.NOT_DEPLOYED:
-                return 'Not deployed'
-            case productStates.DEPLOYED:
-                return 'Deployed'
-            case productStates.UNDEPLOYING:
-                return 'Undeploying'
-            case productStates.DEPLOYING:
-                return 'Deploying'
-            default:
-                return 'N/A'
+        if (product.state === productStates.DEPLOYED &&
+            isEthereumAddress(product.beneficiaryAddress)) {
+            return 'Deployed'
         }
+        return 'Draft'
     }, [product])
 
     const onHeaderClick = useCallback(() => {
@@ -180,22 +180,35 @@ const Item = ({ product }: Props) => {
                             product.beneficiaryAddress
                         ) : (
                             <Updated>
-                                Updated {ago(new Date(product.updated))}
+                                Updated {ago(new Date(product.updated || 0))}
                             </Updated>
                         )}
                     </Details>
                 </TitleContainer>
                 <Buttons>
-                    <Button onClick={() => console.log('click')}>
-                        <Icon name="externalLink" />
-                    </Button>
-                    <Button onClick={() => console.log('click')}>
-                        <Icon name="pencil" />
-                    </Button>
-                    <Button onClick={() => console.log('click')}>
-                        <Icon name="eye" />
-                    </Button>
-                    <Popover title="Select" noCaret type="meatball">
+                    <Tooltip value="View on Etherscan">
+                        <Button onClick={() => console.log('click')}>
+                            <Icon name="externalLink" />
+                        </Button>
+                    </Tooltip>
+                    <Tooltip value="Edit product">
+                        <Button onClick={() => console.log('click')}>
+                            <Icon name="pencil" />
+                        </Button>
+                    </Tooltip>
+                    <Tooltip value="View on marketplace">
+                        <Button onClick={() => console.log('click')}>
+                            <Icon name="eye" />
+                        </Button>
+                    </Tooltip>
+                    <Popover
+                        title="Options"
+                        noCaret
+                        type="meatball"
+                        menuProps={{
+                            right: true,
+                        }}
+                    >
                         <Popover.Item onClick={() => console.log('test')}>Unpublish</Popover.Item>
                         <Popover.Item onClick={() => console.log('test')}>Hide</Popover.Item>
                     </Popover>

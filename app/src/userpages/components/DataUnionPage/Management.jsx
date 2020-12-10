@@ -11,6 +11,9 @@ import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import { MEDIUM } from '$shared/utils/styled'
 
+import ManageJoinRequests from './ManageJoinRequests'
+import ManageMembers from './ManageMembers'
+
 const Container = styled.div`
     display: grid;
     padding: 16px;
@@ -52,12 +55,8 @@ const Management = ({ product }: Props) => {
 
     return (
         <Container>
-            <Box>
-                <Heading>Manage join requests</Heading>
-            </Box>
-            <Box>
-                <Heading>Manage members</Heading>
-            </Box>
+            <ManageJoinRequests />
+            <ManageMembers />
             <Box>
                 <Heading>Subscribers</Heading>
             </Box>
