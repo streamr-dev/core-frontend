@@ -11,7 +11,7 @@ import { CanvasWindowProvider } from './CanvasWindow'
 import Cables from './Cables'
 
 import styles from './Canvas.pcss'
-import Camera, { useCameraState, cameraControl } from './Camera'
+import Camera, { useCameraGetCurrentScale, cameraControl } from './Camera'
 
 export default function Canvas(props) {
     const propsRef = useRef()
@@ -129,9 +129,9 @@ const CanvasElements = React.memo(function CanvasElements(props) { /* eslint-dis
     const [positions, setPositions] = useState({})
     const updatePositionsRef = useRef()
 
-    const camera = useCameraState()
+    const getCurrentScale = useCameraGetCurrentScale()
     const getCurrentScaleRef = useRef()
-    getCurrentScaleRef.current = camera.getCurrentScale
+    getCurrentScaleRef.current = getCurrentScale
 
     const updatePositionsNow = useCallback(() => {
         if (updatePositionsRef.current) {

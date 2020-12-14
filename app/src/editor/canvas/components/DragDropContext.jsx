@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unused-state */
 import React from 'react'
 import Draggable from 'react-draggable'
-import { useCameraState } from './Camera'
+import { useCameraScale } from './Camera'
 
 const DragDropContext = React.createContext({})
 
@@ -286,7 +286,7 @@ class EditorDraggable extends React.PureComponent {
 }
 
 function EditorDraggableWithScale(props) {
-    const { scale } = useCameraState()
+    const scale = useCameraScale()
     return (
         <EditorDraggable
             {...props}

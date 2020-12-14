@@ -4,7 +4,7 @@ import React, { useState, useCallback, useMemo, type Node } from 'react'
 import cx from 'classnames'
 import { DraggableCore } from 'react-draggable'
 import { Resizable } from 'react-resizable'
-import { useCameraState } from './Camera'
+import { useCameraScale } from './Camera'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
@@ -83,7 +83,7 @@ export const DraggableCanvasWindow = ({
     onChangeSize,
     children,
 }: CanvasWindowProps) => {
-    const { scale } = useCameraState()
+    const scale = useCameraScale()
     const { position, setPosition, size, setSize } = useLayoutState({
         x,
         y,

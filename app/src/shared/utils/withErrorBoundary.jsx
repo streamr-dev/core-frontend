@@ -12,8 +12,12 @@ type State = {
     error: ?Error,
 }
 
+function getDisplayName(WrappedComponent) {
+    return WrappedComponent.displayName || WrappedComponent.name || 'Component'
+}
+
 const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
-    (OriginalComponent: ComponentType<any>) => (
+    (OriginalComponent: ComponentType<any>) => {
         class ErrorBoundary extends Component<Props, State> {
             state = {
                 error: undefined,
@@ -55,7 +59,9 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (
                 )
             }
         }
-    )
+        ErrorBoundary.displayName = `With${getDisplayName(ErrorComponent)}(${getDisplayName(OriginalComponent)})`
+        return ErrorBoundary
+    }
 )
 
 export default withErrorBoundary

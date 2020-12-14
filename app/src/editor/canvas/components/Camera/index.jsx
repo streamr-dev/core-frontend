@@ -1,7 +1,7 @@
 import React, { useRef, useState, useCallback, useLayoutEffect, useEffect, useMemo, useContext } from 'react'
 import { useSpring, animated, interpolate } from 'react-spring'
 import cx from 'classnames'
-import { useThrottled } from '$shared/hooks/wrapCallback'
+import { useDebounced } from '$shared/hooks/wrapCallback'
 
 import * as State from './state'
 import styles from './Camera.pcss'
@@ -25,7 +25,7 @@ const defaultCameraConfig = {
 
 function useCameraSimpleApi(opts) {
     const elRef = useRef()
-    const [state, setActualState] = useState(State.createCamera({
+    const [state, setActualState] = useState(() => State.createCamera({
         ...opts,
         elRef,
     }))
@@ -53,7 +53,7 @@ function useCameraSimpleApi(opts) {
     }, [])
 
     // commit to react state once every 500ms
-    const commitThrottled = useThrottled(useCallback(() => {
+    const commitThrottled = useDebounced(useCallback(() => {
         commit()
     }, [commit]), 500)
 
@@ -63,7 +63,7 @@ function useCameraSimpleApi(opts) {
             x: state.x,
             y: state.y,
             scale: state.scale,
-            onRest: commit,
+            onRest: commitThrottled,
             ...cameraConfig,
         }
     }
@@ -182,6 +182,16 @@ function useCameraSimpleApi(opts) {
 
 export const CameraContext = React.createContext({})
 
+export function useCameraScale() {
+    const { scale } = useContext(CameraContext)
+    return scale
+}
+
+export function useCameraGetCurrentScale() {
+    const { getCurrentScale } = useContext(CameraContext)
+    return getCurrentScale
+}
+
 export function useCameraState() {
     const { x, y, scale, getCurrentScale } = useContext(CameraContext)
     return useMemo(() => ({
@@ -255,8 +265,8 @@ function usePanControls(elRef) {
             !event.target.classList.contains(styles.cameraControl)
         ) { return }
 
-        if (isPanning) { return }
         event.stopPropagation()
+        if (isPanning) { return }
         const el = elRef.current
         const { left, top } = el.getBoundingClientRect()
         // find current location on screen
@@ -287,6 +297,9 @@ function usePanControls(elRef) {
 
     const onPan = useCallback((event) => {
         if (!isPanning) { return }
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
         if (event.buttons !== 1) {
             stopPanning(event)
             return

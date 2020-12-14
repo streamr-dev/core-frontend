@@ -195,7 +195,7 @@ const ModuleRenderer = React.memo(({
     )
 })
 
-export default (React.memo(({
+const ModuleRendererWrap: any = React.memo(({
     api,
     module,
     canvasEditable: isCanvasEditable,
@@ -225,4 +225,6 @@ export default (React.memo(({
             </ModuleContext.Provider>
         </ModuleApiContext.Provider>
     )
-}): any)
+})
+
+export default ModuleRendererWrap
