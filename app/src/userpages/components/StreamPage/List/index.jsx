@@ -16,9 +16,7 @@ import { selectStreams, selectFetching, selectHasMoreSearchResults } from '$user
 import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
 import Layout from '$userpages/components/Layout'
-import Search from '../../Header/Search'
 import { resetResourcePermission } from '$userpages/modules/permission/actions'
-import NoStreamsView from './NoStreams'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import LoadMore from '$mp/components/LoadMore'
 import ListContainer from '$shared/components/Container/List'
@@ -28,11 +26,16 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { MD, LG } from '$shared/utils/styled'
-import SnippetDialog from './SnippetDialog'
 import { StreamList as StreamListComponent } from '$shared/components/List'
-import Row from './Row'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import { truncate } from '$shared/utils/text'
+
+import Search from '../../Header/Search'
+
+import SnippetDialog from './SnippetDialog'
+import Row from './Row'
+import NoStreamsView from './NoStreams'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -103,7 +106,7 @@ function StreamPageSidebar({ stream }) {
             {sidebar.isOpen('share') && (
                 <ShareSidebar
                     sidebarName="share"
-                    resourceTitle={stream && stream.id}
+                    resourceTitle={stream && truncate(stream.id)}
                     resourceType="STREAM"
                     resourceId={stream && stream.id}
                     onClose={onClose}

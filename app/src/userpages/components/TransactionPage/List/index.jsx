@@ -208,7 +208,7 @@ const TransactionList = () => {
                                         {eventType}
                                     </TransactionListComponent.Item>
                                     <TransactionListComponent.Item title={hash}>
-                                        {truncate(hash, { maxLength: 15 })}
+                                        {truncate(hash, { length: 10 })}
                                     </TransactionListComponent.Item>
                                     <TransactionListComponent.Item>
                                         {timestamp ? titleize(ago(new Date(timestamp))) : '-'}

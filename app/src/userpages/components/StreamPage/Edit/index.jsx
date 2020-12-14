@@ -31,6 +31,8 @@ import { NotificationIcon } from '$shared/utils/constants'
 import { MEDIUM } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
 import { CoreHelmet } from '$shared/components/Helmet'
+import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import { truncate } from '$shared/utils/text'
 
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
@@ -41,7 +43,6 @@ import SecurityView from './SecurityView'
 import StatusView from './StatusView'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import useNewStreamMode from './useNewStreamMode'
-import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 
 import styles from './edit.pcss'
 
@@ -67,7 +68,7 @@ function StreamPageSidebar({ stream }) {
             {sidebar.isOpen('share') && (
                 <ShareSidebar
                     sidebarName="share"
-                    resourceTitle={stream && stream.id}
+                    resourceTitle={stream && truncate(stream.id)}
                     resourceType="STREAM"
                     resourceId={stream && stream.id}
                     onClose={onClose}

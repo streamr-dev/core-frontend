@@ -41,9 +41,7 @@ const UnstyledAddressItem = ({ className, name, address }: AddressItemProps) => 
         <div>{`Fill ${name}`}</div>
         {!!address && (
             <div className="address">
-                {truncate(address, {
-                    maxLength: 15,
-                })}
+                {truncate(address)}
             </div>
         )}
     </div>
@@ -115,9 +113,7 @@ const BeneficiaryAddress = ({
     }, [])
 
     const address: string = useMemo(() => (
-        focused ? ownAddress : truncate(ownAddress, {
-            maxLength: 30,
-        })
+        focused ? ownAddress : truncate(ownAddress)
     ), [focused, ownAddress])
 
     const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {

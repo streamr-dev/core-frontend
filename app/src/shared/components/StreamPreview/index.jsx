@@ -12,6 +12,7 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Skeleton from '$shared/components/Skeleton'
 import useCopy from '$shared/hooks/useCopy'
 import { formatDateTime } from '$mp/utils/time'
+import { truncate } from '$shared/utils/text'
 
 import {
     SecurityIcon,
@@ -682,7 +683,7 @@ const StreamPreview = ({
                             {!!titlePrefix && (
                                 <StreamName>{titlePrefix} &rarr; </StreamName>
                             )}
-                            {streamId}
+                            {truncate(streamId)}
                         </Title>
                         <Description title={description}>{description}</Description>
                     </React.Fragment>

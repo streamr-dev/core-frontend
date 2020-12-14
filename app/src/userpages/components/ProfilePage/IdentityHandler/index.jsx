@@ -114,7 +114,6 @@ const IdentityHandler = () => {
                 onDelete={wrappedRemove}
                 onEdit={wrappedEdit}
                 integrationKeys={ethereumIdentities || []}
-                truncateValues
                 disabled={isDisabled}
                 activeKeyId={user && user.username}
             />

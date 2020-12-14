@@ -31,13 +31,7 @@ const UnstyledAvatarless = ({ source = EmptyUser, ...props }) => (
             &zwnj;
         </Name>
         <Username title={source.username}>
-            {isEthereumAddress(source.username) ? (
-                truncate(source.username, {
-                    maxLength: 14,
-                })
-            ) : (
-                source.username
-            )}
+            {truncate(source.username)}
             &zwnj;
         </Username>
     </div>
@@ -88,13 +82,7 @@ const UnstyledUsernameCopy = ({ children, username, ...props }) => {
                     type="button"
                     onClick={() => copy(username)}
                 >
-                    {isAddress ? (
-                        truncate(username, {
-                            maxLength: 14,
-                        })
-                    ) : (
-                        username
-                    )}
+                    {truncate(username)}
                     &zwnj;
                 </UsernameButton>
             </Tooltip>

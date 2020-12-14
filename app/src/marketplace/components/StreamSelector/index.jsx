@@ -13,6 +13,7 @@ import Popover from '$shared/components/Popover'
 import SvgIcon from '$shared/components/SvgIcon'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
+import { truncate } from '$shared/utils/text'
 
 import routes from '$routes'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
@@ -186,7 +187,7 @@ export const StreamSelector = (props: Props) => {
                                     }}
                                     disabled={!!isDisabled}
                                 >
-                                    {stream.id}
+                                    {truncate(stream.id)}
                                 </button>
                             </div>
                         ))}

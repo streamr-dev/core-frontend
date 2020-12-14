@@ -14,6 +14,7 @@ import useMeasure from './hooks/useMeasure'
 import usePrevious from './hooks/usePrevious'
 import { MEDIUM } from '$shared/utils/styled'
 import { selectUsername } from '$shared/modules/user/selectors'
+import { truncate } from '$shared/utils/text'
 import ErrorMessage from './ErrorMessage'
 
 const noop = () => {}
@@ -228,7 +229,7 @@ const UnstyledUserPermissions = ({
             <Header>
                 <div>
                     <h4 title={userId}>
-                        {userId}
+                        {truncate(userId)}
                         {currentUserId === userId && ' (You)'}
                     </h4>
                     <Role visible={!isSelected}>

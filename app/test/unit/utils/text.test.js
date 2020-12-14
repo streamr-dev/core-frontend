@@ -2,44 +2,61 @@ import * as all from '$shared/utils/text'
 
 describe('text utils', () => {
     describe('truncate', () => {
-        it('does not truncate short string', () => {
-            const str = 'short'
-            expect(all.truncate(str)).toBe(str)
+        it('does not truncate non-strings', () => {
+            expect(all.truncate()).toBe(undefined)
+            expect(all.truncate(123)).toBe(123)
         })
 
-        it('truncates long string', () => {
-            const str = 'really long string that should truncate'
-            const match = /.+\.\.\..+$/
-            expect(match.test(all.truncate(str))).toBe(true)
+        it('does not truncate non-eth address', () => {
+            expect(all.truncate('sandbox/test/my-stream')).toBe('sandbox/test/my-stream')
+            expect(all.truncate('FwhuQBTrtfkddf2542asd')).toBe('FwhuQBTrtfkddf2542asd')
         })
 
-        it('allows changing minimum length', () => {
-            const str = 'really long string that should truncate'
-            expect(all.truncate(str, {
-                minLength: 50,
-            })).toBe(str)
+        it('truncates paths starting with eth address', () => {
+            expect(all.truncate('0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1/test/my-stream')).toBe('0xa3d...47De1/test/my-stream')
+            expect(all.truncate('0xA3D1F77ACFF0060F7213D7BF3C7fEC78DF847DE1/test/my-stream')).toBe('0xA3D...47DE1/test/my-stream')
         })
 
-        it('allows changing maximum length', () => {
-            const str = 'really long string that should truncate'
-            expect(all.truncate(str, {
-                maxLength: 15,
-            })).toBe('really...uncate')
+        it('truncates address in the middle of text', () => {
+            expect(all.truncate('address is 0xA3D1F77ACFF0060F7213D7BF3C7fEC78DF847DE1 inside text'))
+                .toBe('address is 0xA3D...47DE1 inside text')
         })
 
-        it('truncates to minimum length', () => {
-            const str = 'short'
-            expect(all.truncate(str, {
-                minLength: 5,
-            })).toBe('s...t')
+        it('truncates paths with mutiple eth address', () => {
+            expect(all.truncate('0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1/test/0x13581255eE2D20e780B0cD3D07fac018241B5E03/path'))
+                .toBe('0xa3d...47De1/test/0x135...B5E03/path')
         })
 
-        it('allows changing the separator', () => {
-            const str = 'really long string that should truncate'
-            const match = /.+\[separator\].+$/
-            expect(match.test(all.truncate(str, {
-                separator: '[separator]',
-            }))).toBe(true)
+        it('only truncates valid eth addresses', () => {
+            expect(all.truncate('0xa3d1F77ACfF3c7fEC78df847De1/test/my-stream')).toBe('0xa3d1F77ACfF3c7fEC78df847De1/test/my-stream')
+        })
+
+        it('truncates single eth address', () => {
+            expect(all.truncate('0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1')).toBe('0xa3d...47De1')
+            expect(all.truncate('0xA3D1F77ACFF0060F7213D7BF3C7fEC78DF847DE1')).toBe('0xA3D...47DE1')
+        })
+
+        it('truncates using custom separator', () => {
+            expect(all.truncate('0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1/path/to/stream', {
+                separator: '---',
+            })).toBe('0xa3d---47De1/path/to/stream')
+        })
+
+        it('truncates transaction hash', () => {
+            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2c283b6d35cf41fe9c95b1e606ff1'))
+                .toBe('0x8b5...06ff1')
+        })
+
+        it('truncates to custom length', () => {
+            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2c283b6d35cf41fe9c95b1e606ff1', {
+                length: 10,
+            }))
+                .toBe('0x8b549d15...5b1e606ff1')
+
+            expect(all.truncate('address is 0x8b549d1526d0f6168eed061041d6cb5243c2c283b6d35cf41fe9c95b1e606ff1 inside text', {
+                length: 10,
+            }))
+                .toBe('address is 0x8b549d15...5b1e606ff1 inside text')
         })
     })
 

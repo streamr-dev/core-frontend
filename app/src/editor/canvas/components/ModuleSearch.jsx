@@ -18,6 +18,7 @@ import { getModuleCategories, getStreams } from '../services'
 import { moduleSearch } from '../state'
 import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
+import { truncate } from '$shared/utils/text'
 import { useCameraContext } from './Camera'
 
 import styles from './ModuleSearch.pcss'
@@ -371,7 +372,7 @@ class ModuleSearch extends React.PureComponent<Props, State> {
                         onClick={() => this.addModule(STREAM_MODULE_ID, null, null, stream.id)}
                         title={stream.description}
                     >
-                        <span className={styles.StreamName}>{stream.id}</span>
+                        <span className={styles.StreamName}>{truncate(stream.id)}</span>
                         <div className={styles.Description}>{stream.description || 'No description'}</div>
                     </SearchRow>
                 ))}

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { truncate } from '$shared/utils/text'
-import { isEthereumAddress } from '$mp/utils/validate'
 
 export default function useStreamPath(streamId) {
     return useMemo(() => {
@@ -18,13 +17,8 @@ export default function useStreamPath(streamId) {
 
         const domain = streamId.slice(0, firstSlashPos)
         const pathname = streamId.slice(firstSlashPos + 1)
-        let truncatedDomain = domain
-        let truncatedId = streamId
-
-        if (isEthereumAddress(domain)) {
-            truncatedDomain = truncate(domain, { maxLength: 15 })
-            truncatedId = `${truncatedDomain}/${pathname}`
-        }
+        const truncatedDomain = truncate(domain)
+        const truncatedId = [truncatedDomain, pathname].filter(Boolean).join('/')
 
         return {
             domain,
