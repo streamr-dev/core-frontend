@@ -37,6 +37,7 @@ import routes from '$routes'
 import { TransactionList as TransactionListComponent } from '$shared/components/List'
 import StatusIcon from '$shared/components/StatusIcon'
 import { MD, LG } from '$shared/utils/styled'
+import Search from '$userpages/components/Header/Search'
 
 const StyledListContainer = styled(ListContainer)`
     && {
@@ -56,10 +57,6 @@ const StyledListContainer = styled(ListContainer)`
             margin-bottom: 0;
         }
     }
-`
-
-const SearchPlaceholder = styled.div`
-    width: var(--um);
 `
 
 const mapState = (state) => {
@@ -128,7 +125,7 @@ const TransactionList = () => {
         <Layout
             loading={isLoading}
             headerSearchComponent={
-                <SearchPlaceholder />
+                <Search.Disabled />
             }
         >
             <CoreHelmet title={I18n.t('userpages.title.transactions')} />

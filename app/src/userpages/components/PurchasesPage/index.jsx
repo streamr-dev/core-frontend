@@ -74,7 +74,7 @@ const PurchasesPage = () => {
     return (
         <Layout
             headerSearchComponent={
-                <Search
+                <Search.Active
                     placeholder={I18n.t('userpages.subscriptions.filterSubscriptions')}
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}

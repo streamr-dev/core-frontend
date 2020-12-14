@@ -195,7 +195,7 @@ const StreamList = () => {
         <Layout
             headerAdditionalComponent={<CreateStreamButton />}
             headerSearchComponent={
-                <Search
+                <Search.Active
                     placeholder={I18n.t('userpages.streams.filterStreams')}
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}

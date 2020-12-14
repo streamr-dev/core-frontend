@@ -255,7 +255,7 @@ const DashboardList = () => {
         <Layout
             headerAdditionalComponent={<CreateDashboardButton />}
             headerSearchComponent={
-                <Search
+                <Search.Active
                     placeholder={I18n.t('userpages.dashboards.filterDashboards')}
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}
