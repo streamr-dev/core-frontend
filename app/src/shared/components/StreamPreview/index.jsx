@@ -13,8 +13,17 @@ import Skeleton from '$shared/components/Skeleton'
 import useCopy from '$shared/hooks/useCopy'
 import { formatDateTime } from '$mp/utils/time'
 import StreamSelector from './StreamSelector'
+import Selector from './Selector'
 import PartitionSelector from './PartitionSelector'
 import IconButton from './IconButton'
+import Header from './Header'
+import CloseButton from './CloseButton'
+import Inbox from './Inbox'
+import T from './Toy'
+import Inspector from './Inspector'
+import Toolbar from './Toolbar'
+import Columns from './Columns'
+import Feed from './Feed'
 
 import {
     SecurityIcon,
@@ -31,18 +40,6 @@ const Container = styled.div`
     color: #525252;
 `
 
-const CloseButton = styled(IconButton)`
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 1;
-
-    svg {
-        width: 10px;
-        height: 10px;
-    }
-`
-
 const StyledLoadingIndicator = styled(LoadingIndicator)`
     position: fixed;
     top: 200px;
@@ -54,7 +51,7 @@ const StyledSecurityIcon = styled(SecurityIcon)`
     height: 16px;
 `
 
-const Header = styled.div`
+const Header2 = styled.div`
     width: 100%;
     position: fixed;
     height: 200px;
@@ -118,16 +115,6 @@ const DescriptionSkeleton = styled(Skeleton)`
     }
 `
 
-const Buttons = styled.div`
-    position: fixed;
-    right: 32px;
-    top: 150px;
-
-    button + button {
-        margin-left: 16px;
-    }
-`
-
 const StyledButton = styled(Button)`
     && {
         font-size: 12px;
@@ -188,7 +175,7 @@ const StreamData = styled.div`
     }
 `
 
-const Inspector = styled.div`
+const Inspector2 = styled.div`
     position: fixed;
     right: 0;
     top: 257px;
@@ -226,7 +213,7 @@ const HeaderItem = styled.div`
     font-weight: var(--medium);
 `
 
-const Columns = styled.div`
+const Columns2 = styled.div`
     position: fixed;
     top: 200px;
     width: 100%;
@@ -478,7 +465,7 @@ const tz = moment.tz.guess()
 const StreamPreview = ({
     streamId,
     stream,
-    navigableStreamIds,
+    navigableStreamIds = [streamId],
     onChange: onStreamChangeProp,
     titlePrefix,
     onStreamSettings,
@@ -521,169 +508,173 @@ const StreamPreview = ({
         ]
     }, [selectedDataPoint])
 
+    const selection = Object.entries((selectedDataPoint || {}).data || {})
+
+    return (
+        <T.Root>
+            <T.Head>
+                <CloseButton.Wrapper>
+                    <CloseButton onClick={onCloseProp} />
+                </CloseButton.Wrapper>
+                <T.Inner>
+                    <div>
+                        <h1 title={streamId}>
+                            <Skeleton disabled={streamLoaded}>
+                                <span>{titlePrefix}</span>
+                                {streamId}
+                            </Skeleton>
+                        </h1>
+                        <p title={description}>
+                            <Skeleton disabled={streamLoaded}>
+                                {description}
+                            </Skeleton>
+                        </p>
+                    </div>
+                </T.Inner>
+            </T.Head>
+            <Toolbar>
+                <Toolbar.Lhs>
+                    <div>
+                        <Selector
+                            title={I18n.t('streamLivePreview.streams')}
+                            options={navigableStreamIds || []}
+                            active={streamId}
+                            onChange={onStreamChangeProp}
+                        />
+                    </div>
+                    <div>
+                        <Selector
+                            title={I18n.t('streamLivePreview.partitions')}
+                            options={partitionOptions || []}
+                            active={activePartition}
+                            onChange={onPartitionChange}
+                        />
+                    </div>
+                </Toolbar.Lhs>
+                <Toolbar.Rhs>
+                    <div>
+                        {!!linkToStreamSettings && (
+                            <StreamSettingsButton
+                                kind="secondary"
+                                disabled={!streamLoaded}
+                                onClick={() => onStreamSettings(streamId)}
+                            >
+                                <Translate value="streamLivePreview.streamSettings" />
+                            </StreamSettingsButton>
+                        )}
+                        <StyledButton
+                            kind="secondary"
+                            onClick={() => copy(streamId)}
+                            disabled={!streamLoaded}
+                        >
+                            {isCopied ? (
+                                <Translate value="streamLivePreview.streamIdCopied" />
+                            ) : (
+                                <React.Fragment>
+                                    <TabletText value="streamLivePreview.copyStreamId" />
+                                    <MobileText value="streamLivePreview.copyStreamIdMobile" />
+                                </React.Fragment>
+                            )}
+                        </StyledButton>
+                    </div>
+                </Toolbar.Rhs>
+            </Toolbar>
+            <LoadingIndicator loading={!streamLoaded || !!loading} />
+            <Columns>
+                <Columns.Lhs>
+                    <Translate value="streamLivePreview.timestamp" />
+                    <Translate value="streamLivePreview.data" />
+                </Columns.Lhs>
+                <Columns.Rhs>
+                    <Translate value="streamLivePreview.inspector" />
+                </Columns.Rhs>
+            </Columns>
+            <Feed>
+                <Feed.Lhs>
+                    {!!streamLoaded && (streamData || []).map((d) => {
+                        if (!d) {
+                            return null
+                        }
+
+                        const { metadata, data } = d
+
+                        const msgId = JSON.stringify(metadata.messageId)
+
+                        const Tag = activeDataId === msgId ? 'strong' : 'span'
+
+                        return (
+                            <Feed.Row
+                                key={msgId}
+                                active={activeDataId === msgId}
+                                onClick={() => setSelectedDataPoint(d)}
+                            >
+                                <Tag>
+                                    <Feed.Cell>
+                                        {formatDateTime(metadata && metadata.messageId && metadata.messageId.timestamp, tz)}
+                                    </Feed.Cell>
+                                </Tag>
+                                <Tag>
+                                    <Feed.Cell>
+                                        {JSON.stringify(data)}
+                                    </Feed.Cell>
+                                </Tag>
+                            </Feed.Row>
+                        )
+                    })}
+                </Feed.Lhs>
+                <Feed.Rhs>
+                    <Feed.Row>
+                        <div>
+                            <Translate value="streamLivePreview.security" />
+                        </div>
+                        <div>
+                            <Tooltip
+                                value={getSecurityLevelTitle(stream)}
+                                placement={Tooltip.BOTTOM}
+                            >
+                                <StyledSecurityIcon
+                                    level={getSecurityLevel(stream)}
+                                    mode="small"
+                                />
+                            </Tooltip>
+                        </div>
+                    </Feed.Row>
+                    {!!activeTimestamp && (
+                        <Feed.Row>
+                            <div>
+                                <Translate value="streamLivePreview.timestamp" />
+                            </div>
+                            <div>
+                                <Feed.Cell>
+                                    {formatDateTime(activeTimestamp, tz)}
+                                </Feed.Cell>
+                            </div>
+                        </Feed.Row>
+                    )}
+                    {selection.map(([k, v]) => {
+                        const value = formatValue(v)
+
+                        return (
+                            <Feed.Row key={`${k}${value}`}>
+                                <div>
+                                    <Feed.Cell>{k}</Feed.Cell>
+                                </div>
+                                <div>
+                                    <Feed.Cell>{value}</Feed.Cell>
+                                </div>
+                            </Feed.Row>
+                        )
+                    })}
+                </Feed.Rhs>
+            </Feed>
+            <T.Foot />
+        </T.Root>
+    )
+
+    // eslint-disable-next-line no-unreachable
     return (
         <Container>
-            <CloseButton onClick={onCloseProp}>
-                <SvgIcon name="crossMedium" />
-            </CloseButton>
-            <Header>
-                {!streamLoaded && (
-                    <React.Fragment>
-                        <Title>
-                            <TitleSkeleton />
-                        </Title>
-                        <Description>
-                            <DescriptionSkeleton />
-                        </Description>
-                    </React.Fragment>
-                )}
-                {!!streamLoaded && (
-                    <React.Fragment>
-                        <Title title={description}>
-                            {!!titlePrefix && (
-                                <StreamName>{titlePrefix} &rarr; </StreamName>
-                            )}
-                            {streamId}
-                        </Title>
-                        <Description title={description}>{description}</Description>
-                    </React.Fragment>
-                )}
-            </Header>
-            <StyledLoadingIndicator loading={!streamLoaded || !!loading} />
-            {!!navigableStreamIds && navigableStreamIds.length >= 2 && (
-                <StreamSelector
-                    title={I18n.t('streamLivePreview.streams')}
-                    options={navigableStreamIds}
-                    active={streamId}
-                    onChange={onStreamChangeProp}
-                />
-            )}
-            {!!streamLoaded && partitionOptions && partitionOptions.length >= 2 && (
-                <PartitionSelector
-                    title={I18n.t('streamLivePreview.partitions')}
-                    options={partitionOptions}
-                    active={activePartition}
-                    onChange={onPartitionChange}
-                />
-            )}
-            <Buttons>
-                {!!linkToStreamSettings && (
-                    <StreamSettingsButton
-                        kind="secondary"
-                        disabled={!streamLoaded}
-                        onClick={() => onStreamSettings(streamId)}
-                    >
-                        <Translate value="streamLivePreview.streamSettings" />
-                    </StreamSettingsButton>
-                )}
-                <StyledButton
-                    kind="secondary"
-                    onClick={() => copy(streamId)}
-                    disabled={!streamLoaded}
-                >
-                    {!isCopied && (
-                        <React.Fragment>
-                            <TabletText value="streamLivePreview.copyStreamId" />
-                            <MobileText value="streamLivePreview.copyStreamIdMobile" />
-                        </React.Fragment>
-                    )}
-                    {!!isCopied && (
-                        <Translate value="streamLivePreview.streamIdCopied" />
-                    )}
-                </StyledButton>
-            </Buttons>
-            <Columns>
-                <TimestampHeader>
-                    <Translate value="streamLivePreview.timestamp" />
-                </TimestampHeader>
-                <DataHeader>
-                    <Translate value="streamLivePreview.data" />
-                </DataHeader>
-                <InspectorHeader inspectorFocused={inspectorFocused}>
-                    <Translate value="streamLivePreview.inspector" />
-                </InspectorHeader>
-            </Columns>
-            <StreamData inspectorFocused={inspectorFocused}>
-                {!!streamLoaded && !!streamData && streamData.length > 0 && (
-                    <DataTable>
-                        {streamData.map((d) => {
-                            if (!d) {
-                                return null
-                            }
-                            const { metadata, data } = d
-                            const msgId = JSON.stringify(metadata.messageId)
-                            return (
-                                <TableRow
-                                    key={msgId}
-                                    active={activeDataId === msgId}
-                                    onClick={() => setSelectedDataPoint(d)}
-                                >
-                                    <TableItem>
-                                        <Cell>
-                                            {formatDateTime(metadata && metadata.messageId && metadata.messageId.timestamp, tz)}
-                                        </Cell>
-                                    </TableItem>
-                                    <TableItem>
-                                        <Cell>{JSON.stringify(data)}</Cell>
-                                    </TableItem>
-                                </TableRow>
-                            )
-                        })}
-                    </DataTable>
-                )}
-            </StreamData>
             <Inspector inspectorFocused={inspectorFocused}>
-                {!!streamLoaded && (
-                    <InspectorTable>
-                        <TableRow>
-                            <TableItem>
-                                <Cell>
-                                    <Translate value="streamLivePreview.security" />
-                                </Cell>
-                            </TableItem>
-                            <TableItem>
-                                <Tooltip
-                                    value={getSecurityLevelTitle(stream)}
-                                    placement={Tooltip.BOTTOM}
-                                >
-                                    <Cell>
-                                        <StyledSecurityIcon
-                                            level={getSecurityLevel(stream)}
-                                            mode="small"
-                                        />
-                                    </Cell>
-                                </Tooltip>
-                            </TableItem>
-                        </TableRow>
-                        {!!activeTimestamp && (
-                            <TableRow>
-                                <TableItem>
-                                    <Cell>
-                                        <Translate value="streamLivePreview.timestamp" />
-                                    </Cell>
-                                </TableItem>
-                                <TableItem>
-                                    <Cell>{formatDateTime(activeTimestamp, tz)}</Cell>
-                                </TableItem>
-                            </TableRow>
-                        )}
-                        {selectedDataPoint && selectedDataPoint.data &&
-                        typeof selectedDataPoint.data === 'object' &&
-                        Object.entries(selectedDataPoint.data).map(([k, v]) => {
-                            const value = formatValue(v)
-                            return (
-                                <TableRow key={`${k}${value}`}>
-                                    <TableItem>
-                                        <Cell>{k}</Cell>
-                                    </TableItem>
-                                    <TableItem>
-                                        <ValueCell value={value} />
-                                    </TableItem>
-                                </TableRow>
-                            )
-                        })}
-                    </InspectorTable>
-                )}
                 {(!!subscriptionError || dataError) && (
                     <ErrorNotice>
                         {!!subscriptionError && (

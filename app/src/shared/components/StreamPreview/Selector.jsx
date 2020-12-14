@@ -1,62 +1,30 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
-import { MEDIUM, SM, LG } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import IconButton from './IconButton'
 
-const SelectorRoot = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: #525252;
-
-    @media (min-width: ${SM}px) {
-        min-width: 224px;
+const Button = styled(IconButton)`
+    :not(:last-child) {
+        margin-left: 16px;
     }
-`
 
-const SelectorTitle = styled.div`
-    font-weight: ${MEDIUM};
-    line-height: 24px;
-    min-width: 70px;
-
-    @media (min-width: ${LG})px {
-        flex: 1;
-        min-width: 85px;
+    + div {
+        margin: 0 12px;
     }
-`
 
-const SelectorIcon = styled(IconButton)`
     svg {
         width: 8px;
         height: 14px;
-        position: absolute;
-
-        ${({ back }) => !!back && css`
-            transform: translate(-60%, -50%);
-        `}
-
-        ${({ forward }) => !!forward && css`
-            transform: translate(-40%, -50%);
-        `}
     }
 `
 
-const SelectorPages = styled.div`
-    min-width: 64px;
-    text-align: center;
-    padding: 0 0.5rem;
-`
-
-const Selector = ({
+const UnstyledSelector = ({
     active,
     onChange,
     options,
     title,
-    ...rest
+    ...props
 }) => {
     if (!options || options.length <= 0) {
         return null
@@ -73,34 +41,30 @@ const Selector = ({
     }
 
     return (
-        <SelectorRoot {...rest}>
-            <SelectorTitle>
-                {title}
-            </SelectorTitle>
-            <SelectorIcon
-                back
-                disabled={current <= 0}
-                onClick={prev}
-            >
+        <div {...props}>
+            <strong>{title}</strong>
+            <Button disabled={current <= 0} onClick={prev}>
                 <SvgIcon name="back" />
-            </SelectorIcon>
-            <SelectorPages>
-                <Translate
-                    value="streamLivePreview.selectorPages"
-                    current={current + 1}
-                    total={options.length}
-                    dangerousHTML
-                />
-            </SelectorPages>
-            <SelectorIcon
-                forward
-                disabled={current >= options.length - 1}
-                onClick={next}
-            >
+            </Button>
+            <Translate
+                tag="div"
+                value="streamLivePreview.selectorPages"
+                current={current + 1}
+                total={options.length}
+                dangerousHTML
+            />
+            <Button disabled={current >= options.length - 1} onClick={next}>
                 <SvgIcon name="forward" />
-            </SelectorIcon>
-        </SelectorRoot>
+            </Button>
+        </div>
     )
 }
+
+const Selector = styled(UnstyledSelector)`
+    align-items: center;
+    color: #525252;
+    display: flex;
+    font-size: 14px;
+`
 
 export default Selector
