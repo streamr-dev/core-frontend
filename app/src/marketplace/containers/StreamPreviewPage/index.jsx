@@ -29,7 +29,7 @@ import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 
 const PreviewModal = ({ onClose, ...previewProps }) => (
     <ModalPortal>
-        <ModalDialog onClose={onClose} fullpage>
+        <ModalDialog onClose={onClose} fullpage noScroll>
             <StreamPreview {...previewProps} onClose={onClose} />
         </ModalDialog>
     </ModalPortal>

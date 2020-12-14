@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import type { Node } from 'react'
 import ReactModal2 from 'react-modal2'
 
@@ -13,6 +13,7 @@ export type Props = {
     onClose: () => void,
     className?: string,
     backdropClassName?: string,
+    noScroll?: boolean,
 }
 
 export type InternalProps = Props & {
@@ -27,7 +28,10 @@ const Fullpage = styled.div`
     height: 100%;
     background-color: rgba(239, 239, 239, 0.98);
     z-index: 1;
-    overflow-y: scroll;
+
+    ${({ noScroll }) => !noScroll && css`
+        overflow-y: scroll;
+    `}
 `
 
 const ModalDialog = ({
@@ -36,6 +40,7 @@ const ModalDialog = ({
     className,
     backdropClassName,
     fullpage,
+    noScroll = false,
 }: InternalProps) => (
     <ReactModal2
         onClose={onClose}
@@ -43,7 +48,7 @@ const ModalDialog = ({
         modalClassName={className}
     >
         <BodyClass className={NO_SCROLL} />
-        {fullpage ? <Fullpage>{children}</Fullpage> : children}
+        {fullpage ? <Fullpage noScroll={noScroll}>{children}</Fullpage> : children}
     </ReactModal2>
 )
 
