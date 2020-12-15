@@ -204,9 +204,14 @@ const UnstyledStreamPreview = ({
 
     const selection = Object.entries((selectedDataPoint || {}).data || {})
 
+    const [x, setX] = useState(504)
+
     return (
         <div
             className={className}
+            style={{
+                '--LiveDataInspectorWidth': `${x}px`,
+            }}
         >
             <Head>
                 <CloseButton.Wrapper>
@@ -284,6 +289,7 @@ const UnstyledStreamPreview = ({
                 <Columns.Rhs>
                     <Translate value="streamLivePreview.inspector" />
                 </Columns.Rhs>
+                <Columns.Handle onDrag={setX} />
             </Columns>
             <Feed>
                 <Feed.Lhs>

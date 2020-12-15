@@ -23,12 +23,12 @@ const Lhs = styled.div`
     left: 0;
     overflow: auto;
     position: absolute;
-    right: 504px;
+    right: var(--LiveDataInspectorWidth);
     top: 0;
 
     ${Row} {
         grid-template-columns: 360px 1fr;
-        margin-left: calc((100vw - 504px - 1108px - 32px) / 2);
+        margin-left: calc((100vw - var(--LiveDataInspectorWidth) - 1108px - 32px) / 2);
         width: 1108px;
 
     }
@@ -46,7 +46,7 @@ const Rhs = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    width: 504px;
+    width: var(--LiveDataInspectorWidth);
 
     ${Row} {
         grid-template-columns: 164px 1fr;
