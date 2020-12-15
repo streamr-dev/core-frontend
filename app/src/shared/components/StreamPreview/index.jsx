@@ -12,18 +12,14 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Skeleton from '$shared/components/Skeleton'
 import useCopy from '$shared/hooks/useCopy'
 import { formatDateTime } from '$mp/utils/time'
-import StreamSelector from './StreamSelector'
 import Selector from './Selector'
-import PartitionSelector from './PartitionSelector'
 import IconButton from './IconButton'
-import Header from './Header'
 import CloseButton from './CloseButton'
-import Inbox from './Inbox'
-import T from './Toy'
-import Inspector from './Inspector'
 import Toolbar from './Toolbar'
 import Columns from './Columns'
 import Feed from './Feed'
+import Foot from './Foot'
+import Head from './Head'
 
 import {
     SecurityIcon,
@@ -40,79 +36,9 @@ const Container = styled.div`
     color: #525252;
 `
 
-const StyledLoadingIndicator = styled(LoadingIndicator)`
-    position: fixed;
-    top: 200px;
-    z-index: 1;
-`
-
 const StyledSecurityIcon = styled(SecurityIcon)`
     width: 16px;
     height: 16px;
-`
-
-const Header2 = styled.div`
-    width: 100%;
-    position: fixed;
-    height: 200px;
-    border-bottom: 1px solid #EFEFEF;
-    background-color: #FDFDFD;
-    left: 0;
-    top: 0;
-    padding: 65px 24px 16px 24px;
-
-    @media (min-width: ${SM}px) {
-        padding-left: 40px;
-    }
-
-    @media (min-width: ${LG}px) {
-        padding-left: 104px;
-    }
-`
-
-const StreamName = styled.span``
-
-const Title = styled.div`
-    font-family: var(--sans);
-    font-weight: var(--regular);
-    font-size: 18px;
-    line-height: 30px;
-    color: #323232;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    @media (max-width: ${SM - 1}px) {
-        ${StreamName} {
-            display: none;
-        }
-    }
-`
-
-const TitleSkeleton = styled(Skeleton)`
-    height: 18px;
-
-    @media (min-width: ${SM}px) {
-        width: 75%;
-    }
-`
-
-const Description = styled.div`
-    font-size: 12px;
-    color: #A3A3A3;
-    line-height: 30px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-`
-
-const DescriptionSkeleton = styled(Skeleton)`
-    height: 12px;
-    width: 75%;
-
-    @media (min-width: ${SM}px) {
-        width: 50%;
-    }
 `
 
 const StyledButton = styled(Button)`
@@ -151,126 +77,6 @@ const TabletText = styled(Translate)`
     }
 `
 
-const StreamData = styled.div`
-    position: fixed;
-    left: 0;
-    top: 257px;
-    bottom: 0;
-    width: calc(100% - 130px);
-    overflow-y: scroll;
-    transition:opacity 300ms linear;
-    margin-bottom: 80px;
-
-    @media (max-width: ${SM - 1}px) {
-        ${({ inspectorFocused }) => (inspectorFocused ? css`
-            opacity: 0;
-        ` : `
-            opacity: 1;
-        `)}
-    }
-
-    @media (min-width: ${SM}px) {
-        width: calc(100% - 504px);
-        margin-bottom: 0;
-    }
-`
-
-const Inspector2 = styled.div`
-    position: fixed;
-    right: 0;
-    top: 257px;
-    bottom: 0;
-    background-color: #FAFAFA;
-    border-left: 1px solid #EFEFEF;
-    width: 504px;
-    transition: left 300ms ease-out;
-    overflow-y: scroll;
-    margin-bottom: 80px;
-
-    @media (max-width: ${SM - 1}px) {
-        left: calc(100% - 130px);
-        right: auto;
-        width: 100%;
-
-        ${({ inspectorFocused }) => !!inspectorFocused && css`
-            left: 0;
-            transform: none;
-        `}
-    }
-
-    @media (min-width: ${SM}px) {
-        margin-bottom: 0;
-    }
-`
-
-const HeaderItem = styled.div`
-    line-height: 56px;
-    padding: 0 24px;
-    font-size: 14px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-weight: var(--medium);
-`
-
-const Columns2 = styled.div`
-    position: fixed;
-    top: 200px;
-    width: 100%;
-    border-bottom: 1px solid #EFEFEF;
-    height: 57px;
-`
-
-const TimestampHeader = styled(HeaderItem)`
-    position: fixed;
-    top: 200px;
-    left: 0;
-
-    @media (min-width: ${SM}px) {
-        left: 16px;
-    }
-
-    @media (min-width: ${LG}px) {
-        left: 80px;
-    }
-`
-const DataHeader = styled(HeaderItem)`
-    position: fixed;
-    top: 200px;
-    left: 256px;
-
-    @media (max-width: ${LG - 1}px) {
-        display: none;
-    }
-
-    @media (min-width: ${LG}px) {
-        left: 336px;
-    }
-`
-
-const InspectorHeader = styled(HeaderItem)`
-    position: fixed;
-    top: 200px;
-    right: 0;
-    width: 504px;
-    background-color: #FAFAFA;
-    border-left: 1px solid #EFEFEF;
-    padding: 0 32px 0 40px;
-    transition: left 300ms ease-out;
-
-    @media (max-width: ${SM - 1}px) {
-        left: calc(100% - 130px);
-        right: auto;
-        padding: 0 24px;
-        width: 100%;
-
-        ${({ inspectorFocused }) => !!inspectorFocused && css`
-            left: 0;
-            transform: none;
-        `}
-    }
-`
-
 const Cell = styled.div`
     font-size: 14px;
     line-height: normal;
@@ -278,119 +84,6 @@ const Cell = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-`
-
-const UnstyledValueCell = ({ value, className }) => {
-    const { copy } = useCopy()
-
-    return (
-        <Tooltip value={'ontouchstart' in window ? 'Tap to copy' : 'Copy'} className={className}>
-            <Cell
-                onClick={() => {
-                    copy(value)
-
-                    Notification.push({
-                        title: 'Field data copied to clipboard',
-                        icon: NotificationIcon.CHECKMARK,
-                    })
-                }}
-            >
-                {value}
-            </Cell>
-        </Tooltip>
-    )
-}
-
-const ValueCell = styled(UnstyledValueCell)`
-    min-width: 0;
-`
-
-const TableItem = styled.div`
-    align-items: center;
-    display: flex;
-    height: 56px;
-    min-width: 0;
-`
-
-const TableRow = styled.div`
-    border-bottom: 1px solid #EFEFEF;
-    display: grid;
-    grid-template-columns: 1fr;
-
-    ${({ active }) => !!active && css`
-        font-weight: var(--medium);
-    `}
-`
-
-const DataTable = styled.div`
-    @media (min-width: ${LG}px) {
-        margin: 0 80px;
-    }
-
-    ${TableItem} {
-        padding: 0 24px;
-    }
-
-    ${TableRow} {
-        cursor: pointer;
-
-        &:hover {
-            background-color: #FAFAFA;
-        }
-
-        &:last-child {
-            border-bottom: 0;
-        }
-
-        @media (max-width: ${LG - 1}px) {
-            ${TableItem}:last-child {
-                display: none;
-            }
-        }
-
-        @media (min-width: ${SM}px) {
-            ${TableItem} {
-                padding-left: 40px;
-            }
-        }
-
-        @media (min-width: ${LG}px) {
-            grid-template-columns: 256px 1fr;
-
-            ${TableItem} {
-                padding-left: 24px;
-            }
-        }
-    }
-`
-
-const InspectorTable = styled.div`
-    @media (min-width: ${SM}px) {
-        margin: 0 32px 0 40px;
-    }
-
-    ${TableRow} {
-        ${TableItem}:first-child {
-            color: #A3A3A3;
-            text-transform: uppercase;
-        }
-
-        @media (max-width: ${LG - 1}px) {
-            ${TableItem}:last-child {
-                display: block;
-            }
-        }
-
-        @media (max-width: ${SM - 1}px) {
-            ${TableItem} {
-                padding: 0 24px;
-            }
-
-            grid-template-columns: 130px 1fr;
-        }
-
-        grid-template-columns: 164px 1fr;
-    }
 `
 
 const MobileInspectorPanel = styled.div`
@@ -462,7 +155,8 @@ const formatValue = (data) => {
 
 const tz = moment.tz.guess()
 
-const StreamPreview = ({
+const UnstyledStreamPreview = ({
+    className,
     streamId,
     stream,
     navigableStreamIds = [streamId],
@@ -511,12 +205,14 @@ const StreamPreview = ({
     const selection = Object.entries((selectedDataPoint || {}).data || {})
 
     return (
-        <T.Root>
-            <T.Head>
+        <div
+            className={className}
+        >
+            <Head>
                 <CloseButton.Wrapper>
                     <CloseButton onClick={onCloseProp} />
                 </CloseButton.Wrapper>
-                <T.Inner>
+                <Head.Inner>
                     <div>
                         <h1 title={streamId}>
                             <Skeleton disabled={streamLoaded}>
@@ -530,8 +226,8 @@ const StreamPreview = ({
                             </Skeleton>
                         </p>
                     </div>
-                </T.Inner>
-            </T.Head>
+                </Head.Inner>
+            </Head>
             <Toolbar>
                 <Toolbar.Lhs>
                     <div>
@@ -667,14 +363,14 @@ const StreamPreview = ({
                     })}
                 </Feed.Rhs>
             </Feed>
-            <T.Foot />
-        </T.Root>
+            <Foot />
+        </div>
     )
 
     // eslint-disable-next-line no-unreachable
     return (
         <Container>
-            <Inspector inspectorFocused={inspectorFocused}>
+            {/* <Inspector inspectorFocused={inspectorFocused}>
                 {(!!subscriptionError || dataError) && (
                     <ErrorNotice>
                         {!!subscriptionError && (
@@ -685,7 +381,7 @@ const StreamPreview = ({
                         )}
                     </ErrorNotice>
                 )}
-            </Inspector>
+            </Inspector> */}
             <MobileInspectorPanel>
                 <InspectorButton
                     active={!inspectorFocused}
@@ -703,5 +399,13 @@ const StreamPreview = ({
         </Container>
     )
 }
+
+const StreamPreview = styled(UnstyledStreamPreview)`
+    background: #ffffff;
+    color: #323232;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`
 
 export default StreamPreview
