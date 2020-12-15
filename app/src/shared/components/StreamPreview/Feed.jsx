@@ -30,7 +30,6 @@ const Lhs = styled.div`
         grid-template-columns: 360px 1fr;
         margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px - 32px) / 2);
         width: 1108px;
-
     }
 
     ${Row}:hover {

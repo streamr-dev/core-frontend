@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react'
+import React, { Fragment, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { MEDIUM } from '$shared/utils/styled'
+import Layout from './Layout'
 
 const Columns = styled.div`
     border: 1px solid #efefef;
@@ -11,8 +12,10 @@ const Columns = styled.div`
 
 const INSPECTOR_WIDTH = 504
 
-const UnstyledHandle = ({ onDrag, onInit, onReset, ...props }) => {
+const UnstyledHandle = (props) => {
     const xRef = useRef(INSPECTOR_WIDTH)
+
+    const [x, drag] = useState(xRef.current)
 
     const onMouseDown = ({ clientX: x0 }) => {
         const getX = (e) => (
@@ -21,10 +24,7 @@ const UnstyledHandle = ({ onDrag, onInit, onReset, ...props }) => {
 
         const onMove = (e) => {
             e.preventDefault()
-
-            if (typeof onDrag === 'function') {
-                onDrag(getX(e))
-            }
+            drag(getX(e))
         }
 
         const onUp = (e) => {
@@ -39,17 +39,20 @@ const UnstyledHandle = ({ onDrag, onInit, onReset, ...props }) => {
     }
 
     const onDblClick = () => {
-        onDrag(INSPECTOR_WIDTH)
+        drag(INSPECTOR_WIDTH)
         xRef.current = INSPECTOR_WIDTH
     }
 
     return (
-        // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-        <div
-            {...props}
-            onDoubleClick={onDblClick}
-            onMouseDown={onMouseDown}
-        />
+        <Fragment>
+            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+            <div
+                {...props}
+                onDoubleClick={onDblClick}
+                onMouseDown={onMouseDown}
+            />
+            <Layout inspectorWidth={x} />
+        </Fragment>
     )
 }
 

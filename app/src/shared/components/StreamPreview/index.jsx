@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react'
-import styled, { css } from 'styled-components'
+import styled, { css, createGlobalStyle } from 'styled-components'
 import stringifyObject from 'stringify-object'
 import moment from 'moment-timezone'
 import { Translate, I18n } from 'react-redux-i18n'
@@ -204,15 +204,8 @@ const UnstyledStreamPreview = ({
 
     const selection = Object.entries((selectedDataPoint || {}).data || {})
 
-    const [x, setX] = useState(504)
-
     return (
-        <div
-            className={className}
-            style={{
-                '--LiveDataInspectorWidth': `${x}px`,
-            }}
-        >
+        <div className={className}>
             <Head>
                 <CloseButton.Wrapper>
                     <CloseButton onClick={onCloseProp} />
@@ -289,7 +282,7 @@ const UnstyledStreamPreview = ({
                 <Columns.Rhs>
                     <Translate value="streamLivePreview.inspector" />
                 </Columns.Rhs>
-                <Columns.Handle onDrag={setX} />
+                <Columns.Handle />
             </Columns>
             <Feed>
                 <Feed.Lhs>
