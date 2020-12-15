@@ -57,7 +57,7 @@ const Handle = styled(UnstyledHandle)`
     top: 0;
     cursor: col-resize;
     height: 54px;
-    right: var(--LiveDataInspectorWidth);
+    right: var(--LiveDataInspectorWidth, 504px);
     position: absolute;
     transform: translateX(50%);
     width: 16px;
@@ -68,8 +68,8 @@ const Lhs = styled.div`
     display: grid;
     grid-template-columns: 360px 1fr;
     height: 54px; /* 56 - 2 (top/bottom border) */
-    margin-left: calc((100vw - var(--LiveDataInspectorWidth) - 1108px) / 2);
-    padding-right: var(--LiveDataInspectorWidth);
+    margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2);
+    padding-right: var(--LiveDataInspectorWidth, 504px);
 `
 
 const Rhs = styled.div`
@@ -82,7 +82,7 @@ const Rhs = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    width: var(--LiveDataInspectorWidth);
+    width: var(--LiveDataInspectorWidth, 504px);
 `
 
 Object.assign(Columns, {

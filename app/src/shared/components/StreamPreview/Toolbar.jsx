@@ -4,7 +4,7 @@ const Toolbar = styled.div`
     align-items: center;
     display: flex;
     height: 64px;
-    margin-left: calc((100vw - var(--LiveDataInspectorWidth) - 1108px) / 2);
+    margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2);
     padding: 0 16px 0 0;
 `
 

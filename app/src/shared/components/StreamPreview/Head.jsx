@@ -5,7 +5,7 @@ const Inner = styled.div``
 
 const Head = styled.div`
     flex: 0;
-    margin-left: calc((100vw - var(--LiveDataInspectorWidth) - 1108px) / 2);
+    margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2);
     position: relative;
 
     button + button {
