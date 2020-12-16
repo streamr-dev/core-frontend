@@ -4,6 +4,7 @@ import { Translate, I18n } from 'react-redux-i18n'
 import useCopy from '$shared/hooks/useCopy'
 import PrestyledButton from '$shared/components/Button'
 import Selector from './Selector'
+import Layout from './Layout'
 import { SM, LG } from '$shared/utils/styled'
 
 const MobileText = styled(Translate)`
@@ -45,7 +46,7 @@ const SettingsButton = styled(Button)`
 const Lhs = styled.div`
     flex-grow: 1;
     display: grid;
-    grid-template-columns: 360px 1fr;
+    grid-template-columns: auto 360px 1fr;
 `
 
 const Rhs = styled.div`
@@ -72,6 +73,7 @@ const UnstyledToolbar = ({
     return (
         <div className={className}>
             <Lhs>
+                <Layout.Pusher />
                 <div>
                     <Selector
                         title={I18n.t('streamLivePreview.streams')}
@@ -124,7 +126,6 @@ const Toolbar = styled(UnstyledToolbar)`
     align-items: center;
     display: flex;
     height: 64px;
-    /* margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2); */
     padding: 0 16px 0 0;
 `
 

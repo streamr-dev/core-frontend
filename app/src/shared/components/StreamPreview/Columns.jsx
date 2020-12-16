@@ -3,19 +3,14 @@ import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
 import { MEDIUM } from '$shared/utils/styled'
 import Layout from './Layout'
+import Cell from './Cell'
 
 const Lhs = styled.div`
     align-items: center;
     display: grid;
-    grid-template-columns: auto 360px 1fr;
-    height: 54px; /* 56 - 2 (top/bottom border) */
-    /* margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2); */
+    grid-template-columns: auto minmax(auto, 360px) 1fr;
+    height: 54px;
     padding-right: var(--LiveDataInspectorWidth, 504px);
-
-    > div:first-child {
-        min-width: 108px;
-        width: calc(100vw - var(--LiveDataInspectorWidth, 504px) - 1108px);
-    }
 `
 
 const Rhs = styled.div`
@@ -87,15 +82,22 @@ const Handle = styled(UnstyledHandle)`
     width: 16px;
 `
 
+const Inner = styled.div`
+    padding-right: 16px;
+    min-width: 0;
+`
+
 const UnstyledColumns = ({ className }) => (
     <div className={className}>
         <Lhs>
-            <div />
-            <Translate value="streamLivePreview.timestamp" />
-            <Translate value="streamLivePreview.data" />
+            <Layout.Pusher />
+            <Translate tag={Cell} value="streamLivePreview.timestamp" />
+            <Inner>
+                <Translate tag={Cell} value="streamLivePreview.data" />
+            </Inner>
         </Lhs>
         <Rhs>
-            <Translate value="streamLivePreview.inspector" />
+            <Translate tag={Cell} value="streamLivePreview.inspector" />
         </Rhs>
         <Handle />
     </div>

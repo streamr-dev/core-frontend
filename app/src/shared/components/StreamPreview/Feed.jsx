@@ -2,14 +2,16 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
+import { Translate } from 'react-redux-i18n'
 import { formatDateTime } from '$mp/utils/time'
 import Tooltip from '$shared/components/Tooltip'
-import { Translate } from 'react-redux-i18n'
 import {
     SecurityIcon as PrestyledSecurityIcon,
     getSecurityLevel,
     getSecurityLevelTitle,
 } from '$userpages/components/StreamPage/Edit/SecurityView'
+import Layout from './Layout'
+import Cell from './Cell'
 
 const formatValue = (data) => (
     typeof data === 'object' ? (
@@ -24,9 +26,8 @@ const SecurityIcon = styled(PrestyledSecurityIcon)`
     width: 16px;
 `
 
-const Row = styled.div`
+const Inner = styled.div`
     border-bottom: 1px solid #efefef;
-    box-sizing: content-box;
     display: grid;
     line-height: 28px;
     padding: 14px 16px;
@@ -37,6 +38,8 @@ const Row = styled.div`
     }
 `
 
+const Row = styled.div``
+
 const Lhs = styled.div`
     height: 100%;
     left: 0;
@@ -46,13 +49,21 @@ const Lhs = styled.div`
     top: 0;
 
     ${Row} {
-        grid-template-columns: 360px 1fr;
-        /* margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px - 32px) / 2); */
-        width: 1108px;
+        display: grid;
+        grid-template-columns: auto 1fr;
     }
 
-    ${Row}:hover {
+    ${Inner} {
+        grid-template-columns: minmax(0, 360px) 1fr;
+        max-width: 1108px;
+    }
+
+    ${Inner}:hover {
         background: #fafafa;
+    }
+
+    ${Inner} > div {
+        min-width: 0;
     }
 `
 
@@ -66,23 +77,15 @@ const Rhs = styled.div`
     top: 0;
     width: var(--LiveDataInspectorWidth, 504px);
 
-    ${Row} {
+    ${Inner} {
         grid-template-columns: 164px 1fr;
         column-gap: 8px;
         margin: 0 24px;
     }
 
-    ${Row}:hover {
+    ${Inner}:hover {
         background: #f3f3f3;
     }
-`
-
-const Cell = styled.span`
-    display: block;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 `
 
 const tz = moment.tz.guess()
@@ -119,47 +122,50 @@ const UnstyledFeed = ({ className, streamLoaded, streamData, stream }) => {
                             key={msgId}
                             onClick={() => setDatapoint(d)}
                         >
-                            <Tag>
-                                <Cell>
+                            <Layout.Pusher minWidth={92} />
+                            <Inner>
+                                <Cell as={Tag}>
                                     {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
                                 </Cell>
-                            </Tag>
-                            <Tag>
-                                <Cell>
+                                <Cell as={Tag}>
                                     {JSON.stringify(d.data)}
                                 </Cell>
-                            </Tag>
+                            </Inner>
                         </Row>
                     )
                 })}
             </Lhs>
             <Rhs>
                 <Row>
-                    <div>
-                        <Translate value="streamLivePreview.security" />
-                    </div>
-                    <div>
-                        <Tooltip
-                            value={getSecurityLevelTitle(stream)}
-                            placement={Tooltip.BOTTOM}
-                        >
-                            <SecurityIcon
-                                level={getSecurityLevel(stream)}
-                                mode="small"
-                            />
-                        </Tooltip>
-                    </div>
+                    <Inner>
+                        <div>
+                            <Translate value="streamLivePreview.security" />
+                        </div>
+                        <div>
+                            <Tooltip
+                                value={getSecurityLevelTitle(stream)}
+                                placement={Tooltip.BOTTOM}
+                            >
+                                <SecurityIcon
+                                    level={getSecurityLevel(stream)}
+                                    mode="small"
+                                />
+                            </Tooltip>
+                        </div>
+                    </Inner>
                 </Row>
                 {!!selectedTimestamp && (
                     <Row>
-                        <div>
-                            <Translate value="streamLivePreview.timestamp" />
-                        </div>
-                        <div>
-                            <Cell>
-                                {formatDateTime(selectedTimestamp, tz)}
-                            </Cell>
-                        </div>
+                        <Inner>
+                            <div>
+                                <Translate value="streamLivePreview.timestamp" />
+                            </div>
+                            <div>
+                                <Cell>
+                                    {formatDateTime(selectedTimestamp, tz)}
+                                </Cell>
+                            </div>
+                        </Inner>
                     </Row>
                 )}
                 {selection.map(([k, v]) => {
@@ -167,12 +173,14 @@ const UnstyledFeed = ({ className, streamLoaded, streamData, stream }) => {
 
                     return (
                         <Row key={`${k}${value}`}>
-                            <div>
-                                <Cell>{k}</Cell>
-                            </div>
-                            <div>
-                                <Cell>{value}</Cell>
-                            </div>
+                            <Inner>
+                                <div>
+                                    <Cell>{k}</Cell>
+                                </div>
+                                <div>
+                                    <Cell>{value}</Cell>
+                                </div>
+                            </Inner>
                         </Row>
                     )
                 })}
