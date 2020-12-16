@@ -1,13 +1,34 @@
 import React, { Fragment, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { Translate } from 'react-redux-i18n'
 import { MEDIUM } from '$shared/utils/styled'
 import Layout from './Layout'
 
-const Columns = styled.div`
-    border: 1px solid #efefef;
-    border-width: 1px 0;
-    font-weight: ${MEDIUM};
-    position: relative;
+const Lhs = styled.div`
+    align-items: center;
+    display: grid;
+    grid-template-columns: auto 360px 1fr;
+    height: 54px; /* 56 - 2 (top/bottom border) */
+    /* margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2); */
+    padding-right: var(--LiveDataInspectorWidth, 504px);
+
+    > div:first-child {
+        min-width: 108px;
+        width: calc(100vw - var(--LiveDataInspectorWidth, 504px) - 1108px);
+    }
+`
+
+const Rhs = styled.div`
+    align-items: center;
+    background: #fafafa;
+    border-left: 1px solid #efefef;
+    display: flex;
+    height: 100%;
+    padding-left: 40px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: var(--LiveDataInspectorWidth, 504px);
 `
 
 const INSPECTOR_WIDTH = 504
@@ -66,26 +87,25 @@ const Handle = styled(UnstyledHandle)`
     width: 16px;
 `
 
-const Lhs = styled.div`
-    align-items: center;
-    display: grid;
-    grid-template-columns: 360px 1fr;
-    height: 54px; /* 56 - 2 (top/bottom border) */
-    margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2);
-    padding-right: var(--LiveDataInspectorWidth, 504px);
-`
+const UnstyledColumns = ({ className }) => (
+    <div className={className}>
+        <Lhs>
+            <div />
+            <Translate value="streamLivePreview.timestamp" />
+            <Translate value="streamLivePreview.data" />
+        </Lhs>
+        <Rhs>
+            <Translate value="streamLivePreview.inspector" />
+        </Rhs>
+        <Handle />
+    </div>
+)
 
-const Rhs = styled.div`
-    align-items: center;
-    background: #fafafa;
-    border-left: 1px solid #efefef;
-    display: flex;
-    height: 100%;
-    padding-left: 40px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: var(--LiveDataInspectorWidth, 504px);
+const Columns = styled(UnstyledColumns)`
+    border: 1px solid #efefef;
+    border-width: 1px 0;
+    font-weight: ${MEDIUM};
+    position: relative;
 `
 
 Object.assign(Columns, {

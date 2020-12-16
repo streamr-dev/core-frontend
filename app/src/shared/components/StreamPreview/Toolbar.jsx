@@ -1,11 +1,45 @@
+import React from 'react'
 import styled from 'styled-components'
+import { Translate, I18n } from 'react-redux-i18n'
+import useCopy from '$shared/hooks/useCopy'
+import PrestyledButton from '$shared/components/Button'
+import Selector from './Selector'
+import { SM, LG } from '$shared/utils/styled'
 
-const Toolbar = styled.div`
-    align-items: center;
-    display: flex;
-    height: 64px;
-    margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2);
-    padding: 0 16px 0 0;
+const MobileText = styled(Translate)`
+    @media (min-width: ${SM}px) {
+        display: none;
+    }
+`
+
+const TabletText = styled(Translate)`
+    display: none;
+
+    @media (min-width: ${SM}px) {
+        display: inline-block;
+    }
+`
+
+const Button = styled(PrestyledButton)`
+    && {
+        font-size: 12px;
+        height: 32px;
+        min-width: 80px;
+    }
+
+    @media (min-width: ${SM}px) {
+        && {
+            min-width: 125px;
+        }
+    }
+`
+
+const SettingsButton = styled(Button)`
+    @media (max-width: ${LG - 1}px) {
+        && {
+            display: none;
+        }
+    }
 `
 
 const Lhs = styled.div`
@@ -20,6 +54,78 @@ const Rhs = styled.div`
     button + button {
         margin-left: 16px;
     }
+`
+
+const UnstyledToolbar = ({
+    className,
+    onPartitionChange,
+    onSettingsButtonClick,
+    onStreamChange,
+    partition,
+    partitions = [],
+    streamId,
+    streamIds = [streamId],
+    streamLoaded = false,
+}) => {
+    const { copy, isCopied } = useCopy()
+
+    return (
+        <div className={className}>
+            <Lhs>
+                <div>
+                    <Selector
+                        title={I18n.t('streamLivePreview.streams')}
+                        options={streamIds}
+                        active={streamId}
+                        onChange={onStreamChange}
+                    />
+                </div>
+                <div>
+                    <Selector
+                        title={I18n.t('streamLivePreview.partitions')}
+                        options={partitions}
+                        active={partition}
+                        onChange={onPartitionChange}
+                    />
+                </div>
+            </Lhs>
+            <Rhs>
+                <div>
+                    {typeof onSettingsButtonClick === 'function' && (
+                        <SettingsButton
+                            kind="secondary"
+                            disabled={!streamLoaded}
+                            onClick={() => onSettingsButtonClick(streamId)}
+                        >
+                            <Translate value="streamLivePreview.streamSettings" />
+                        </SettingsButton>
+                    )}
+                    <Button
+                        kind="secondary"
+                        onClick={() => copy(streamId)}
+                        disabled={!streamLoaded}
+                    >
+                        {isCopied ? (
+                            <Translate value="streamLivePreview.streamIdCopied" />
+                        ) : (
+                            <React.Fragment>
+                                <TabletText value="streamLivePreview.copyStreamId" />
+                                <MobileText value="streamLivePreview.copyStreamIdMobile" />
+                            </React.Fragment>
+                        )}
+                    </Button>
+                </div>
+            </Rhs>
+        </div>
+    )
+}
+
+const Toolbar = styled(UnstyledToolbar)`
+    align-items: center;
+    display: flex;
+    height: 64px;
+    /* margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2); */
+    padding: 0 16px 0 0;
 `
 
 Object.assign(Toolbar, {

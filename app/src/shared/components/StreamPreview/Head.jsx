@@ -1,11 +1,44 @@
+import React from 'react'
 import styled from 'styled-components'
 import { SM, LG, REGULAR } from '$shared/utils/styled'
+import CloseButton from './CloseButton'
+import Skeleton from '$shared/components/Skeleton'
 
 const Inner = styled.div``
 
-const Head = styled.div`
+const UnstyledHead = ({
+    className,
+    onCloseClick,
+    streamId,
+    skeletonize,
+    titlePrefix,
+    description,
+}) => (
+    <div className={className}>
+        <CloseButton.Wrapper>
+            <CloseButton onClick={onCloseClick} />
+        </CloseButton.Wrapper>
+        <Inner>
+            <div>
+                <h1 title={streamId}>
+                    <Skeleton disabled={!skeletonize}>
+                        <span>{titlePrefix}</span>
+                        {streamId}
+                    </Skeleton>
+                </h1>
+                <p title={description}>
+                    <Skeleton disabled={!skeletonize}>
+                        {description}
+                    </Skeleton>
+                </p>
+            </div>
+        </Inner>
+    </div>
+)
+
+const Head = styled(UnstyledHead)`
     flex: 0;
-    margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2);
+    /* margin-left: calc((100vw - var(--LiveDataInspectorWidth, 504px) - 1108px) / 2); */
     position: relative;
 
     button + button {
@@ -65,7 +98,5 @@ const Head = styled.div`
         }
     }
 `
-
-Head.Inner = Inner
 
 export default Head

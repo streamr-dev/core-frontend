@@ -1,89 +1,20 @@
-import React, { useState, useMemo, useEffect } from 'react'
-import styled, { css, createGlobalStyle } from 'styled-components'
-import stringifyObject from 'stringify-object'
-import moment from 'moment-timezone'
-import { Translate, I18n } from 'react-redux-i18n'
-
-import Button from '$shared/components/Button'
+import React, { useState, useMemo } from 'react'
+import styled, { css } from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
-import { SM, LG } from '$shared/utils/styled'
-import Tooltip from '$shared/components/Tooltip'
+import { SM } from '$shared/utils/styled'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
-import Skeleton from '$shared/components/Skeleton'
-import useCopy from '$shared/hooks/useCopy'
-import { formatDateTime } from '$mp/utils/time'
-import Selector from './Selector'
 import IconButton from './IconButton'
-import CloseButton from './CloseButton'
 import Toolbar from './Toolbar'
 import Columns from './Columns'
 import Feed from './Feed'
 import Foot from './Foot'
 import Head from './Head'
 
-import {
-    SecurityIcon,
-    getSecurityLevel,
-    getSecurityLevelTitle,
-} from '$userpages/components/StreamPage/Edit/SecurityView'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
-
 const Container = styled.div`
     position: relative;
     height: 100%;
     background-color: white;
     color: #525252;
-`
-
-const StyledSecurityIcon = styled(SecurityIcon)`
-    width: 16px;
-    height: 16px;
-`
-
-const StyledButton = styled(Button)`
-    && {
-        font-size: 12px;
-        height: 32px;
-        min-width: 80px;
-    }
-
-    @media (min-width: ${SM}px) {
-        && {
-            min-width: 125px;
-        }
-    }
-`
-
-const StreamSettingsButton = styled(StyledButton)`
-    @media (max-width: ${LG - 1}px) {
-        && {
-            display: none;
-        }
-    }
-`
-
-const MobileText = styled(Translate)`
-    @media (min-width: ${SM}px) {
-        display: none;
-    }
-`
-
-const TabletText = styled(Translate)`
-    display: none;
-
-    @media (min-width: ${SM}px) {
-        display: inline-block;
-    }
-`
-
-const Cell = styled.div`
-    font-size: 14px;
-    line-height: normal;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 `
 
 const MobileInspectorPanel = styled.div`
@@ -144,27 +75,15 @@ const ErrorNotice = styled.div`
     }
 `
 
-const formatValue = (data) => {
-    if (typeof data === 'object') {
-        return stringifyObject(data, {
-            inlineCharacterLimit: Infinity,
-        })
-    }
-    return data.toString()
-}
-
-const tz = moment.tz.guess()
-
 const UnstyledStreamPreview = ({
     className,
     streamId,
     stream,
     navigableStreamIds = [streamId],
-    onChange: onStreamChangeProp,
     titlePrefix,
     onStreamSettings,
     streamData,
-    onClose: onCloseProp,
+    onClose,
     activePartition = 0,
     onPartitionChange,
     loading = false,
@@ -172,10 +91,9 @@ const UnstyledStreamPreview = ({
     dataError,
 }) => {
     const [inspectorFocused, setInspectorFocused] = useState(false)
-    const [selectedDataPoint, setSelectedDataPoint] = useState(undefined)
-    const { copy, isCopied } = useCopy()
 
     const streamLoaded = !!(stream && stream.id === streamId)
+
     const { description, partitions } = stream || {}
 
     const partitionOptions = useMemo(() => {
@@ -186,182 +104,31 @@ const UnstyledStreamPreview = ({
         return [...new Array(partitions)].map((value, index) => index)
     }, [partitions])
 
-    useEffect(() => {
-        setSelectedDataPoint(undefined)
-    }, [streamId])
-
-    const linkToStreamSettings = useMemo(() => (
-        !!onStreamSettings && typeof onStreamSettings === 'function' && onStreamSettings
-    ), [onStreamSettings])
-
-    const [activeDataId, activeTimestamp] = useMemo(() => {
-        const { metadata } = selectedDataPoint || {}
-        return [
-            metadata && JSON.stringify(selectedDataPoint.metadata.messageId),
-            metadata && metadata.messageId.timestamp,
-        ]
-    }, [selectedDataPoint])
-
-    const selection = Object.entries((selectedDataPoint || {}).data || {})
-
     return (
         <div className={className}>
-            <Head>
-                <CloseButton.Wrapper>
-                    <CloseButton onClick={onCloseProp} />
-                </CloseButton.Wrapper>
-                <Head.Inner>
-                    <div>
-                        <h1 title={streamId}>
-                            <Skeleton disabled={streamLoaded}>
-                                <span>{titlePrefix}</span>
-                                {streamId}
-                            </Skeleton>
-                        </h1>
-                        <p title={description}>
-                            <Skeleton disabled={streamLoaded}>
-                                {description}
-                            </Skeleton>
-                        </p>
-                    </div>
-                </Head.Inner>
-            </Head>
-            <Toolbar>
-                <Toolbar.Lhs>
-                    <div>
-                        <Selector
-                            title={I18n.t('streamLivePreview.streams')}
-                            options={navigableStreamIds || []}
-                            active={streamId}
-                            onChange={onStreamChangeProp}
-                        />
-                    </div>
-                    <div>
-                        <Selector
-                            title={I18n.t('streamLivePreview.partitions')}
-                            options={partitionOptions || []}
-                            active={activePartition}
-                            onChange={onPartitionChange}
-                        />
-                    </div>
-                </Toolbar.Lhs>
-                <Toolbar.Rhs>
-                    <div>
-                        {!!linkToStreamSettings && (
-                            <StreamSettingsButton
-                                kind="secondary"
-                                disabled={!streamLoaded}
-                                onClick={() => onStreamSettings(streamId)}
-                            >
-                                <Translate value="streamLivePreview.streamSettings" />
-                            </StreamSettingsButton>
-                        )}
-                        <StyledButton
-                            kind="secondary"
-                            onClick={() => copy(streamId)}
-                            disabled={!streamLoaded}
-                        >
-                            {isCopied ? (
-                                <Translate value="streamLivePreview.streamIdCopied" />
-                            ) : (
-                                <React.Fragment>
-                                    <TabletText value="streamLivePreview.copyStreamId" />
-                                    <MobileText value="streamLivePreview.copyStreamIdMobile" />
-                                </React.Fragment>
-                            )}
-                        </StyledButton>
-                    </div>
-                </Toolbar.Rhs>
-            </Toolbar>
+            <Head
+                description={description}
+                onCloseClick={onClose}
+                skeletonize={!streamLoaded}
+                streamId={streamId}
+                titlePrefix={titlePrefix}
+            />
+            <Toolbar
+                onPartitionChange={onPartitionChange}
+                onSettingsButtonClick={onStreamSettings}
+                partition={activePartition}
+                partitions={partitionOptions || []}
+                streamId={streamId}
+                streamIds={navigableStreamIds || []}
+                streamLoaded={streamLoaded}
+            />
             <LoadingIndicator loading={!streamLoaded || !!loading} />
-            <Columns>
-                <Columns.Lhs>
-                    <Translate value="streamLivePreview.timestamp" />
-                    <Translate value="streamLivePreview.data" />
-                </Columns.Lhs>
-                <Columns.Rhs>
-                    <Translate value="streamLivePreview.inspector" />
-                </Columns.Rhs>
-                <Columns.Handle />
-            </Columns>
-            <Feed>
-                <Feed.Lhs>
-                    {!!streamLoaded && (streamData || []).map((d) => {
-                        if (!d) {
-                            return null
-                        }
-
-                        const { metadata, data } = d
-
-                        const msgId = JSON.stringify(metadata.messageId)
-
-                        const Tag = activeDataId === msgId ? 'strong' : 'span'
-
-                        return (
-                            <Feed.Row
-                                key={msgId}
-                                active={activeDataId === msgId}
-                                onClick={() => setSelectedDataPoint(d)}
-                            >
-                                <Tag>
-                                    <Feed.Cell>
-                                        {formatDateTime(metadata && metadata.messageId && metadata.messageId.timestamp, tz)}
-                                    </Feed.Cell>
-                                </Tag>
-                                <Tag>
-                                    <Feed.Cell>
-                                        {JSON.stringify(data)}
-                                    </Feed.Cell>
-                                </Tag>
-                            </Feed.Row>
-                        )
-                    })}
-                </Feed.Lhs>
-                <Feed.Rhs>
-                    <Feed.Row>
-                        <div>
-                            <Translate value="streamLivePreview.security" />
-                        </div>
-                        <div>
-                            <Tooltip
-                                value={getSecurityLevelTitle(stream)}
-                                placement={Tooltip.BOTTOM}
-                            >
-                                <StyledSecurityIcon
-                                    level={getSecurityLevel(stream)}
-                                    mode="small"
-                                />
-                            </Tooltip>
-                        </div>
-                    </Feed.Row>
-                    {!!activeTimestamp && (
-                        <Feed.Row>
-                            <div>
-                                <Translate value="streamLivePreview.timestamp" />
-                            </div>
-                            <div>
-                                <Feed.Cell>
-                                    {formatDateTime(activeTimestamp, tz)}
-                                </Feed.Cell>
-                            </div>
-                        </Feed.Row>
-                    )}
-                    {selection.map(([k, v]) => {
-                        const value = formatValue(v)
-
-                        return (
-                            <Feed.Row key={`${k}${value}`}>
-                                <div>
-                                    <Feed.Cell>{k}</Feed.Cell>
-                                </div>
-                                <div>
-                                    <Feed.Cell>{value}</Feed.Cell>
-                                </div>
-                            </Feed.Row>
-                        )
-                    })}
-                </Feed.Rhs>
-            </Feed>
+            <Columns />
+            <Feed
+                stream={stream}
+                streamData={streamData}
+                streamLoaded={streamLoaded}
+            />
             <Foot />
         </div>
     )
@@ -369,18 +136,16 @@ const UnstyledStreamPreview = ({
     // eslint-disable-next-line no-unreachable
     return (
         <Container>
-            {/* <Inspector inspectorFocused={inspectorFocused}>
-                {(!!subscriptionError || dataError) && (
-                    <ErrorNotice>
-                        {!!subscriptionError && (
-                            <p>{subscriptionError}</p>
-                        )}
-                        {!!dataError && (
-                            <p>{dataError}</p>
-                        )}
-                    </ErrorNotice>
-                )}
-            </Inspector> */}
+            {(!!subscriptionError || dataError) && (
+                <ErrorNotice>
+                    {!!subscriptionError && (
+                        <p>{subscriptionError}</p>
+                    )}
+                    {!!dataError && (
+                        <p>{dataError}</p>
+                    )}
+                </ErrorNotice>
+            )}
             <MobileInspectorPanel>
                 <InspectorButton
                     active={!inspectorFocused}
