@@ -87,6 +87,17 @@ const Handle = styled(UnstyledHandle)`
         width: 16px;
     }
 
+    > div::after {
+        background: #e0e0e0;
+        content: '';
+        height: 14px;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%) translateX(0.5px);
+        width: 1px;
+    }
+
     > div::before {
         background: #ffffff;
         border: 1px solid #e0e0e0;
