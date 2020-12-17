@@ -10,7 +10,7 @@ const Lhs = styled.div`
     display: grid;
     grid-template-columns: auto minmax(auto, 360px) 1fr;
     height: 54px;
-    min-width: 420px;
+    min-width: var(--LiveDataMinLhsWidth);
     width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
 `
 
@@ -24,7 +24,7 @@ const Rhs = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    max-width: calc(100vw - 428px + 1px);
+    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
     width: var(--LiveDataInspectorWidth, 504px);
 `
 
@@ -34,6 +34,30 @@ const UnstyledHandle = (props) => {
     const ref = useRef(null)
 
     const [x, drag] = useState(INSPECTOR_WIDTH)
+
+    const touch = ({ touches }) => touches[0]
+
+    const onTouchStart = (e) => {
+        const { current: el } = ref
+
+        const width = el.offsetWidth
+
+        const t = touch(e)
+
+        const x0 = t.clientX
+
+        const onMove = (evt) => {
+            drag(Math.max(INSPECTOR_WIDTH, width + (x0 - touch(evt).clientX)))
+        }
+
+        const onUp = () => {
+            window.removeEventListener('touchmove', onMove)
+            window.removeEventListener('touchend', onUp)
+        }
+
+        window.addEventListener('touchmove', onMove)
+        window.addEventListener('touchend', onUp)
+    }
 
     const onMouseDown = ({ clientX: x0 }) => {
         const { current: el } = ref
@@ -64,6 +88,7 @@ const UnstyledHandle = (props) => {
             <div
                 onDoubleClick={onDblClick}
                 onMouseDown={onMouseDown}
+                onTouchStart={onTouchStart}
             />
             <Layout inspectorWidth={x} />
         </div>
@@ -76,7 +101,7 @@ const Handle = styled(UnstyledHandle)`
     right: 0;
     pointer-events: none;
     position: absolute;
-    max-width: calc(100vw - 428px + 1px);
+    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
     width: var(--LiveDataInspectorWidth, 504px);
 
     > div {

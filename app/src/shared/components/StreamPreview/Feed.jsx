@@ -46,7 +46,7 @@ const Lhs = styled.div`
     overflow: auto;
     position: absolute;
     right: 0;
-    min-width: 428px;
+    min-width: var(--LiveDataMinLhsWidth);
     width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
     top: 0;
 
@@ -77,7 +77,7 @@ const Rhs = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    max-width: calc(100vw - 428px + 1px);
+    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
     width: var(--LiveDataInspectorWidth, 504px);
 
     ${Inner} {

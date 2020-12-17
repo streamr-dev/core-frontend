@@ -46,7 +46,13 @@ const SettingsButton = styled(Button)`
 const Lhs = styled.div`
     flex-grow: 1;
     display: grid;
-    grid-template-columns: auto 360px 1fr;
+    grid-template-columns: auto auto 1fr;
+
+    > div:nth-child(2) {
+        min-width: calc(var(--LiveDataMinLhsWidth) - 108px);
+        max-width: 360px;
+        width: calc(100vw - var(--LiveDataInspectorWidth, 504px) - 108px);
+    }
 `
 
 const Rhs = styled.div`

@@ -1,4 +1,5 @@
 import styled, { css, createGlobalStyle } from 'styled-components'
+import { LG } from '$shared/utils/styled'
 
 const Layout = createGlobalStyle`
     ${({ inspectorWidth: iw }) => css`
@@ -6,6 +7,12 @@ const Layout = createGlobalStyle`
             --LiveDataInspectorWidth: ${iw}px;
         }
     `}
+
+    @media (min-width: ${LG}px) {
+        :root {
+            --LiveDataMinLhsWidth: 332px;
+        }
+    }
 `
 
 const Pusher = styled.div`
