@@ -2,9 +2,9 @@ import styled, { css, createGlobalStyle } from 'styled-components'
 import { LG } from '$shared/utils/styled'
 
 const Layout = createGlobalStyle`
-    ${({ inspectorWidth: iw }) => css`
+    ${({ inspectorWidth }) => typeof inspectorWidth === 'number' && css`
         :root {
-            --LiveDataInspectorWidth: ${iw}px;
+            --LiveDataInspectorWidth: ${inspectorWidth}px;
         }
     `}
 
@@ -16,13 +16,10 @@ const Layout = createGlobalStyle`
 `
 
 const Pusher = styled.div`
-    min-width: ${({ minWidth }) => minWidth}px;
-    width: calc((100vw - 1108px - var(--LiveDataInspectorWidth, 504px)) / 2 - (${({ minWidth }) => 108 - minWidth}px));
+    min-width: 92px;
+    max-width: calc((100vw - 504px - 1108px - 32px) / 2);
+    width: calc((100vw - 1108px - var(--LiveDataInspectorWidth, 504px) - 32px) / 2);
 `
-
-Pusher.defaultProps = {
-    minWidth: 108,
-}
 
 Object.assign(Layout, {
     Pusher,

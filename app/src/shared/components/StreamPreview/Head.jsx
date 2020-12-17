@@ -11,6 +11,10 @@ const Inner = styled.div`
     grid-template-columns: auto 1fr;
     height: 72px;
 
+    ${Layout.Pusher} + div {
+        padding: 0 16px;
+    }
+
     h1 {
         font-size: 18px;
         font-weight: ${REGULAR};

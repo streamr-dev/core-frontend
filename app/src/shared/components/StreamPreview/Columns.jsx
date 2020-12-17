@@ -8,9 +8,10 @@ import Cell from './Cell'
 const Lhs = styled.div`
     align-items: center;
     display: grid;
-    grid-template-columns: auto minmax(auto, 360px) 1fr;
+    grid-template-columns: auto 1fr;
     height: 54px;
     min-width: var(--LiveDataMinLhsWidth);
+    max-width: calc(100vw - 504px);
     width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
 `
 
@@ -20,20 +21,19 @@ const Rhs = styled.div`
     border-left: 1px solid #efefef;
     display: flex;
     height: 100%;
+    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
+    min-width: 504px;
     padding-left: 40px;
     position: absolute;
     right: 0;
     top: 0;
-    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
     width: var(--LiveDataInspectorWidth, 504px);
 `
-
-const INSPECTOR_WIDTH = 504
 
 const UnstyledHandle = (props) => {
     const ref = useRef(null)
 
-    const [x, drag] = useState(INSPECTOR_WIDTH)
+    const [x, drag] = useState()
 
     const touch = ({ touches }) => touches[0]
 
@@ -47,7 +47,7 @@ const UnstyledHandle = (props) => {
         const x0 = t.clientX
 
         const onMove = (evt) => {
-            drag(Math.max(INSPECTOR_WIDTH, width + (x0 - touch(evt).clientX)))
+            drag(width + (x0 - touch(evt).clientX))
         }
 
         const onUp = () => {
@@ -66,7 +66,7 @@ const UnstyledHandle = (props) => {
 
         const onMove = (e) => {
             e.preventDefault()
-            drag(Math.max(INSPECTOR_WIDTH, width + (x0 - e.clientX)))
+            drag(width + (x0 - e.clientX))
         }
 
         const onUp = () => {
@@ -79,7 +79,7 @@ const UnstyledHandle = (props) => {
     }
 
     const onDblClick = () => {
-        drag(INSPECTOR_WIDTH)
+        drag(undefined)
     }
 
     return (
@@ -102,6 +102,7 @@ const Handle = styled(UnstyledHandle)`
     pointer-events: none;
     position: absolute;
     max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
+    min-width: 504px;
     width: var(--LiveDataInspectorWidth, 504px);
 
     > div {
@@ -115,7 +116,7 @@ const Handle = styled(UnstyledHandle)`
     > div::after {
         background: #e0e0e0;
         content: '';
-        height: 14px;
+        height: 12px;
         left: 50%;
         position: absolute;
         top: 50%;
@@ -133,21 +134,23 @@ const Handle = styled(UnstyledHandle)`
         position: absolute;
         top: 50%;
         transform: translate(-50%, -50%) translateX(0.5px);
-        width: 6px;
+        width: 8px;
     }
 `
 
 const Inner = styled.div`
-    padding-right: 16px;
+    display: grid;
+    grid-template-columns: minmax(auto, 360px) 1fr;
     min-width: 0;
+    padding: 0 16px;
 `
 
 const UnstyledColumns = ({ className }) => (
     <div className={className}>
         <Lhs>
             <Layout.Pusher />
-            <Translate tag={Cell} value="streamLivePreview.timestamp" />
             <Inner>
+                <Translate tag={Cell} value="streamLivePreview.timestamp" />
                 <Translate tag={Cell} value="streamLivePreview.data" />
             </Inner>
         </Lhs>

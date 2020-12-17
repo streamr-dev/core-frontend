@@ -43,12 +43,13 @@ const Row = styled.div``
 const Lhs = styled.div`
     height: 100%;
     left: 0;
+    max-width: calc(100vw - 504px);
+    min-width: var(--LiveDataMinLhsWidth);
     overflow: auto;
     position: absolute;
     right: 0;
-    min-width: var(--LiveDataMinLhsWidth);
-    width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
     top: 0;
+    width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
 
     ${Row} {
         display: grid;
@@ -73,11 +74,12 @@ const Rhs = styled.div`
     background: #fafafa;
     border-left: 1px solid #efefef;
     height: 100%;
+    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
+    min-width: 504px;
     overflow: auto;
     position: absolute;
     right: 0;
     top: 0;
-    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
     width: var(--LiveDataInspectorWidth, 504px);
 
     ${Inner} {

@@ -46,13 +46,7 @@ const SettingsButton = styled(Button)`
 const Lhs = styled.div`
     flex-grow: 1;
     display: grid;
-    grid-template-columns: auto auto 1fr;
-
-    > div:nth-child(2) {
-        min-width: calc(var(--LiveDataMinLhsWidth) - 108px);
-        max-width: 360px;
-        width: calc(100vw - var(--LiveDataInspectorWidth, 504px) - 108px);
-    }
+    grid-template-columns: auto 1fr;
 `
 
 const Rhs = styled.div`
@@ -60,6 +54,19 @@ const Rhs = styled.div`
 
     button + button {
         margin-left: 16px;
+    }
+`
+
+const Inner = styled.div`
+    display: grid;
+    grid-template-columns: auto 1fr;
+    min-width: 0;
+    padding: 0 16px;
+
+    > div:first-child {
+        min-width: calc(var(--LiveDataMinLhsWidth) - 108px);
+        max-width: 360px;
+        width: calc(100vw - var(--LiveDataInspectorWidth, 504px) - 108px);
     }
 `
 
@@ -80,22 +87,24 @@ const UnstyledToolbar = ({
         <div className={className}>
             <Lhs>
                 <Layout.Pusher />
-                <div>
-                    <Selector
-                        title={I18n.t('streamLivePreview.streams')}
-                        options={streamIds}
-                        active={streamId}
-                        onChange={onStreamChange}
-                    />
-                </div>
-                <div>
-                    <Selector
-                        title={I18n.t('streamLivePreview.partitions')}
-                        options={partitions}
-                        active={partition}
-                        onChange={onPartitionChange}
-                    />
-                </div>
+                <Inner>
+                    <div>
+                        <Selector
+                            title={I18n.t('streamLivePreview.streams')}
+                            options={streamIds}
+                            active={streamId}
+                            onChange={onStreamChange}
+                        />
+                    </div>
+                    <div>
+                        <Selector
+                            title={I18n.t('streamLivePreview.partitions')}
+                            options={partitions}
+                            active={partition}
+                            onChange={onPartitionChange}
+                        />
+                    </div>
+                </Inner>
             </Lhs>
             <Rhs>
                 <div>
