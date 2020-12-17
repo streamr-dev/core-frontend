@@ -91,6 +91,7 @@ const UnstyledHead = ({
 )
 
 const Head = styled(UnstyledHead)`
+    background: #fdfdfd;
     flex: 0;
     position: relative;
 

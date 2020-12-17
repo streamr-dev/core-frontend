@@ -124,6 +124,7 @@ const UnstyledToolbar = ({
 
 const Toolbar = styled(UnstyledToolbar)`
     align-items: center;
+    background: #fdfdfd;
     display: flex;
     height: 64px;
     padding: 0 16px 0 0;
