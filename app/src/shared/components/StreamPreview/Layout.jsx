@@ -1,4 +1,3 @@
-import React from 'react'
 import styled, { css, createGlobalStyle } from 'styled-components'
 
 const Layout = createGlobalStyle`
@@ -9,28 +8,14 @@ const Layout = createGlobalStyle`
     `}
 `
 
-const UnstyledPusher = ({ className, minWidth = 108 }) => (
-    <div className={className}>
-        <div
-            // eslint-disable-next-line react/jsx-curly-brace-presence
-            css={`
-                max-width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
-                width: ${minWidth}px;
-            `}
-        />
-        <div
-            // eslint-disable-next-line react/jsx-curly-brace-presence
-            css={`
-                width: calc((100vw - 1108px - var(--LiveDataInspectorWidth, 504px)) / 2 - ${minWidth}px - ${108 - minWidth}px);
-            `}
-        />
-    </div>
-)
-
-const Pusher = styled(UnstyledPusher)`
-    display: grid;
-    grid-template-columns: auto auto;
+const Pusher = styled.div`
+    min-width: ${({ minWidth }) => minWidth}px;
+    width: calc((100vw - 1108px - var(--LiveDataInspectorWidth, 504px)) / 2 - (${({ minWidth }) => 108 - minWidth}px));
 `
+
+Pusher.defaultProps = {
+    minWidth: 108,
+}
 
 Object.assign(Layout, {
     Pusher,

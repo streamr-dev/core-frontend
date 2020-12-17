@@ -1,4 +1,4 @@
-import React, { Fragment, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
 import { MEDIUM } from '$shared/utils/styled'
@@ -10,7 +10,8 @@ const Lhs = styled.div`
     display: grid;
     grid-template-columns: auto minmax(auto, 360px) 1fr;
     height: 54px;
-    padding-right: var(--LiveDataInspectorWidth, 504px);
+    min-width: 420px;
+    width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
 `
 
 const Rhs = styled.div`
@@ -23,31 +24,30 @@ const Rhs = styled.div`
     position: absolute;
     right: 0;
     top: 0;
+    max-width: calc(100vw - 428px + 1px);
     width: var(--LiveDataInspectorWidth, 504px);
 `
 
 const INSPECTOR_WIDTH = 504
 
 const UnstyledHandle = (props) => {
-    const xRef = useRef(INSPECTOR_WIDTH)
+    const ref = useRef(null)
 
-    const [x, drag] = useState(xRef.current)
+    const [x, drag] = useState(INSPECTOR_WIDTH)
 
     const onMouseDown = ({ clientX: x0 }) => {
-        const getX = (e) => (
-            Math.max(INSPECTOR_WIDTH, xRef.current + (x0 - e.clientX))
-        )
+        const { current: el } = ref
+
+        const width = el.offsetWidth
 
         const onMove = (e) => {
             e.preventDefault()
-            drag(getX(e))
+            drag(Math.max(INSPECTOR_WIDTH, width + (x0 - e.clientX)))
         }
 
-        const onUp = (e) => {
+        const onUp = () => {
             window.removeEventListener('mousemove', onMove)
             window.removeEventListener('mouseup', onUp)
-
-            xRef.current = getX(e)
         }
 
         window.addEventListener('mousemove', onMove)
@@ -56,30 +56,49 @@ const UnstyledHandle = (props) => {
 
     const onDblClick = () => {
         drag(INSPECTOR_WIDTH)
-        xRef.current = INSPECTOR_WIDTH
     }
 
     return (
-        <Fragment>
+        <div {...props} ref={ref}>
             {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
             <div
-                {...props}
                 onDoubleClick={onDblClick}
                 onMouseDown={onMouseDown}
             />
             <Layout inspectorWidth={x} />
-        </Fragment>
+        </div>
     )
 }
 
 const Handle = styled(UnstyledHandle)`
     top: 0;
-    cursor: col-resize;
     height: 54px;
-    right: var(--LiveDataInspectorWidth, 504px);
+    right: 0;
+    pointer-events: none;
     position: absolute;
-    transform: translateX(50%);
-    width: 16px;
+    max-width: calc(100vw - 428px + 1px);
+    width: var(--LiveDataInspectorWidth, 504px);
+
+    > div {
+        cursor: col-resize;
+        height: 100%;
+        pointer-events: auto;
+        transform: translateX(-50%);
+        width: 16px;
+    }
+
+    > div::before {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 1px;
+        content: '';
+        height: 20px;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%) translateX(0.5px);
+        width: 6px;
+    }
 `
 
 const Inner = styled.div`
