@@ -91,6 +91,11 @@ const Rhs = styled.div`
     ${Inner}:hover {
         background: #f3f3f3;
     }
+
+    ${Inner} > div:first-child {
+        color: #a3a3a3;
+        text-transform: uppercase;
+    }
 `
 
 const tz = moment.tz.guess()
