@@ -49,7 +49,7 @@ const Lhs = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
+    width: calc(100vw - var(--LiveDataInspectorWidth));
 
     ${Row} {
         display: grid;
@@ -80,7 +80,7 @@ const Rhs = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    width: var(--LiveDataInspectorWidth, 504px);
+    width: var(--LiveDataInspectorWidth);
 
     ${Inner} {
         grid-template-columns: 164px 1fr;

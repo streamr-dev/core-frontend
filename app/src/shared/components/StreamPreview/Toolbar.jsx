@@ -66,7 +66,7 @@ const Inner = styled.div`
     > div:first-child {
         min-width: calc(var(--LiveDataMinLhsWidth) - 108px);
         max-width: 360px;
-        width: calc(100vw - var(--LiveDataInspectorWidth, 504px) - 108px);
+        width: calc(100vw - var(--LiveDataInspectorWidth) - 108px);
     }
 `
 

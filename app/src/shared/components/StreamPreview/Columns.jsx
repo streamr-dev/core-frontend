@@ -12,7 +12,7 @@ const Lhs = styled.div`
     height: 54px;
     min-width: var(--LiveDataMinLhsWidth);
     max-width: calc(100vw - 504px);
-    width: calc(100vw - var(--LiveDataInspectorWidth, 504px));
+    width: calc(100vw - var(--LiveDataInspectorWidth));
 `
 
 const Rhs = styled.div`
@@ -27,7 +27,7 @@ const Rhs = styled.div`
     position: absolute;
     right: 0;
     top: 0;
-    width: var(--LiveDataInspectorWidth, 504px);
+    width: var(--LiveDataInspectorWidth);
 `
 
 const UnstyledHandle = (props) => {
@@ -103,7 +103,7 @@ const Handle = styled(UnstyledHandle)`
     position: absolute;
     max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
     min-width: 504px;
-    width: var(--LiveDataInspectorWidth, 504px);
+    width: var(--LiveDataInspectorWidth);
 
     > div {
         cursor: col-resize;
