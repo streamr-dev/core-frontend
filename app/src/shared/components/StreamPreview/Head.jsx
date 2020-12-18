@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { SM, LG, REGULAR } from '$shared/utils/styled'
 import CloseButton from './CloseButton'
 import Skeleton from '$shared/components/Skeleton'
+import { truncate } from '$shared/utils/text'
 import Layout from './Layout'
 
 const Inner = styled.div`
@@ -81,7 +82,7 @@ const UnstyledHead = ({
                 <h1 title={streamId}>
                     <Skeleton disabled={!skeletonize}>
                         <span>{titlePrefix}</span>
-                        {streamId}
+                        {truncate(streamId)}
                     </Skeleton>
                 </h1>
                 <p title={description}>
