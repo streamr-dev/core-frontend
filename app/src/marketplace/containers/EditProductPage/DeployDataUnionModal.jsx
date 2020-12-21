@@ -62,7 +62,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     onCloseRef.current = onClose
 
     const productId = product.id
-    const { adminFee = 0 } = product || {}
+    const { adminFee = '0' } = product || {}
     const onDeploy = useCallback(async () => {
         // Set estimate
         let blockEstimate = 0

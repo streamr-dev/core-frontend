@@ -78,7 +78,7 @@ export function useEditableProductActions() {
         setTouched('category')
         setTouched('details')
     }, [commit, setTouched])
-    const updateAdminFee = useCallback((adminFee: number) => {
+    const updateAdminFee = useCallback((adminFee: string) => {
         commit('Update admin fee', (p) => ({
             ...p,
             adminFee,

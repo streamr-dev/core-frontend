@@ -28,7 +28,7 @@ function useAllDataUnionStats() {
 
             return {
                 ...result,
-                [id.toLowerCase()]: memberCount.total,
+                [id.toLowerCase()]: memberCount.active,
             }
         }, {})
     ), [stats])
