@@ -11,7 +11,7 @@ const Lhs = styled.div`
     grid-template-columns: auto 1fr;
     height: 54px;
     min-width: var(--LiveDataMinLhsWidth);
-    max-width: calc(100vw - 504px);
+    max-width: calc(100vw - var(--LiveDataInspectorMinWidth));
     width: calc(100vw - var(--LiveDataInspectorWidth));
 `
 
@@ -22,7 +22,7 @@ const Rhs = styled.div`
     display: flex;
     height: 100%;
     max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
-    min-width: 504px;
+    min-width: var(--LiveDataInspectorMinWidth);
     padding-left: 40px;
     position: absolute;
     right: 0;
@@ -102,7 +102,7 @@ const Handle = styled(UnstyledHandle)`
     pointer-events: none;
     position: absolute;
     max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
-    min-width: 504px;
+    min-width: var(--LiveDataInspectorMinWidth);
     width: var(--LiveDataInspectorWidth);
 
     > div {
@@ -140,7 +140,7 @@ const Handle = styled(UnstyledHandle)`
 
 const Inner = styled.div`
     display: grid;
-    grid-template-columns: minmax(auto, 360px) 1fr;
+    grid-template-columns: minmax(auto, var(--LiveDataTimestampColumnMaxWidth)) 1fr;
     min-width: 0;
     padding: 0 16px;
 `

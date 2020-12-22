@@ -12,6 +12,7 @@ import {
 } from '$userpages/components/StreamPage/Edit/SecurityView'
 import Layout from './Layout'
 import Cell from './Cell'
+import { SM } from '$shared/utils/styled'
 
 const formatValue = (data) => (
     typeof data === 'object' ? (
@@ -43,13 +44,17 @@ const Row = styled.div``
 const Lhs = styled.div`
     height: 100%;
     left: 0;
-    max-width: calc(100vw - 504px);
-    min-width: var(--LiveDataMinLhsWidth);
     overflow: auto;
     position: absolute;
     right: 0;
     top: 0;
-    width: calc(100vw - var(--LiveDataInspectorWidth));
+    width: 224px;
+
+    @media (min-width: ${SM}px) {
+        max-width: calc(100vw - var(--LiveDataInspectorMinWidth));
+        min-width: var(--LiveDataMinLhsWidth);
+        width: calc(100vw - var(--LiveDataInspectorWidth));
+    }
 
     ${Row} {
         display: grid;
@@ -57,7 +62,7 @@ const Lhs = styled.div`
     }
 
     ${Inner} {
-        grid-template-columns: minmax(0, 360px) 1fr;
+        grid-template-columns: minmax(0, var(--LiveDataTimestampColumnMaxWidth)) 1fr;
         max-width: 1108px;
     }
 
@@ -74,13 +79,19 @@ const Rhs = styled.div`
     background: #fafafa;
     border-left: 1px solid #efefef;
     height: 100%;
-    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
-    min-width: 504px;
     overflow: auto;
     position: absolute;
-    right: 0;
+    left: 224px;
     top: 0;
-    width: var(--LiveDataInspectorWidth);
+    width: 100vw;
+
+    @media (min-width: ${SM}px) {
+        max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
+        min-width: var(--LiveDataInspectorMinWidth);
+        left: auto;
+        right: 0;
+        width: var(--LiveDataInspectorWidth);
+    }
 
     ${Inner} {
         grid-template-columns: 164px 1fr;

@@ -64,9 +64,9 @@ const Inner = styled.div`
     padding: 0 16px;
 
     > div:first-child {
-        min-width: calc(var(--LiveDataMinLhsWidth) - 108px);
-        max-width: 360px;
-        width: calc(100vw - var(--LiveDataInspectorWidth) - 108px);
+        min-width: calc(var(--LiveDataMinLhsWidth) - var(--LiveDataMinMargin) - 16px);
+        max-width: calc(var(--LiveDataTimestampColumnMaxWidth));
+        width: calc(100vw - var(--LiveDataInspectorWidth) - var(--LiveDataMinMargin) - 16px);
     }
 `
 
