@@ -1,36 +1,9 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
-import { MEDIUM } from '$shared/utils/styled'
 import Layout from './Layout'
-import Cell from './Cell'
+import { SM } from '$shared/utils/styled'
 
-const Lhs = styled.div`
-    align-items: center;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    height: 54px;
-    min-width: var(--LiveDataMinLhsWidth);
-    max-width: calc(100vw - var(--LiveDataInspectorMinWidth));
-    width: calc(100vw - var(--LiveDataInspectorWidth));
-`
-
-const Rhs = styled.div`
-    align-items: center;
-    background: #fafafa;
-    border-left: 1px solid #efefef;
-    display: flex;
-    height: 100%;
-    max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
-    min-width: var(--LiveDataInspectorMinWidth);
-    padding-left: 40px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: var(--LiveDataInspectorWidth);
-`
-
-const UnstyledHandle = (props) => {
+const UnstyledResizeHandle = (props) => {
     const ref = useRef(null)
 
     const [x, drag] = useState()
@@ -95,7 +68,8 @@ const UnstyledHandle = (props) => {
     )
 }
 
-const Handle = styled(UnstyledHandle)`
+const ResizeHandle = styled(UnstyledResizeHandle)`
+    display: none;
     top: 0;
     height: 54px;
     right: 0;
@@ -136,42 +110,10 @@ const Handle = styled(UnstyledHandle)`
         transform: translate(-50%, -50%) translateX(0.5px);
         width: 8px;
     }
+
+    @media (min-width: ${SM}px) {
+        display: block;
+    }
 `
 
-const Inner = styled.div`
-    display: grid;
-    grid-template-columns: minmax(auto, var(--LiveDataTimestampColumnMaxWidth)) 1fr;
-    min-width: 0;
-    padding: 0 16px;
-`
-
-const UnstyledColumns = ({ className }) => (
-    <div className={className}>
-        <Lhs>
-            <Layout.Pusher />
-            <Inner>
-                <Translate tag={Cell} value="streamLivePreview.timestamp" />
-                <Translate tag={Cell} value="streamLivePreview.data" />
-            </Inner>
-        </Lhs>
-        <Rhs>
-            <Translate tag={Cell} value="streamLivePreview.inspector" />
-        </Rhs>
-        <Handle />
-    </div>
-)
-
-const Columns = styled(UnstyledColumns)`
-    border: 1px solid #efefef;
-    border-width: 1px 0;
-    font-weight: ${MEDIUM};
-    position: relative;
-`
-
-Object.assign(Columns, {
-    Handle,
-    Lhs,
-    Rhs,
-})
-
-export default Columns
+export default ResizeHandle

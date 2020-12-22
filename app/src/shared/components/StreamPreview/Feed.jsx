@@ -5,6 +5,7 @@ import stringifyObject from 'stringify-object'
 import { Translate } from 'react-redux-i18n'
 import { formatDateTime } from '$mp/utils/time'
 import Tooltip from '$shared/components/Tooltip'
+import { SM } from '$shared/utils/styled'
 import {
     SecurityIcon as PrestyledSecurityIcon,
     getSecurityLevel,
@@ -12,7 +13,7 @@ import {
 } from '$userpages/components/StreamPage/Edit/SecurityView'
 import Layout from './Layout'
 import Cell from './Cell'
-import { SM } from '$shared/utils/styled'
+import ResizeHandle from './ResizeHandle'
 
 const formatValue = (data) => (
     typeof data === 'object' ? (
@@ -28,26 +29,49 @@ const SecurityIcon = styled(PrestyledSecurityIcon)`
 `
 
 const Inner = styled.div`
-    border-bottom: 1px solid #efefef;
     display: grid;
     line-height: 28px;
     padding: 14px 16px;
-    transition: 250ms background-color;
-
-    :hover {
-        transition-duration: 25ms;
-    }
 `
 
 const Row = styled.div``
 
-const Lhs = styled.div`
+const Viewport = styled.div`
     height: 100%;
-    left: 0;
     overflow: auto;
+
+    ${Inner} {
+        border-bottom: 1px solid #efefef;
+        transition: 250ms background-color;
+    }
+
+    ${Inner}:hover {
+        transition-duration: 25ms;
+    }
+`
+
+const Header = styled.div`
+    height: 54px;
     position: absolute;
-    right: 0;
     top: 0;
+    width: 100%;
+
+    ${Row} {
+        border-bottom: 1px solid #efefef;
+    }
+`
+
+const Side = styled.div`
+    height: 100%;
+    overflow: hidden;
+    padding-top: 56px;
+    position: absolute;
+    top: 0;
+`
+
+const Lhs = styled(Side)`
+    left: 0;
+    right: 0;
     width: 224px;
 
     @media (min-width: ${SM}px) {
@@ -66,7 +90,7 @@ const Lhs = styled.div`
         max-width: 1108px;
     }
 
-    ${Inner}:hover {
+    ${Viewport} ${Inner}:hover {
         background: #fafafa;
     }
 
@@ -75,14 +99,10 @@ const Lhs = styled.div`
     }
 `
 
-const Rhs = styled.div`
+const Rhs = styled(Side)`
     background: #fafafa;
     border-left: 1px solid #efefef;
-    height: 100%;
-    overflow: auto;
-    position: absolute;
     left: 224px;
-    top: 0;
     width: 100vw;
 
     @media (min-width: ${SM}px) {
@@ -99,11 +119,11 @@ const Rhs = styled.div`
         margin: 0 24px;
     }
 
-    ${Inner}:hover {
+    ${Viewport} ${Inner}:hover {
         background: #f3f3f3;
     }
 
-    ${Inner} > div:first-child {
+    ${Viewport} ${Inner} > div:first-child {
         color: #a3a3a3;
         text-transform: uppercase;
     }
@@ -129,88 +149,120 @@ const UnstyledFeed = ({ className, streamLoaded, streamData, stream }) => {
     return (
         <div className={className}>
             <Lhs>
-                {!!streamLoaded && (streamData || []).map((d) => {
-                    if (!d) {
-                        return null
-                    }
+                <Header>
+                    <Row>
+                        <Layout.Pusher />
+                        <Inner>
+                            <Cell as="strong">
+                                <Translate value="streamLivePreview.timestamp" />
+                            </Cell>
+                            <Cell as="strong">
+                                <Translate value="streamLivePreview.data" />
+                            </Cell>
+                        </Inner>
+                    </Row>
+                </Header>
+                <Viewport>
+                    {!!streamLoaded && (streamData || []).map((d) => {
+                        if (!d) {
+                            return null
+                        }
 
-                    const msgId = JSON.stringify(d.metadata.messageId)
+                        const msgId = JSON.stringify(d.metadata.messageId)
 
-                    const Tag = selectedMsgId === msgId ? 'strong' : 'span'
+                        const Tag = selectedMsgId === msgId ? 'strong' : 'span'
 
-                    return (
-                        <Row
-                            key={msgId}
-                            onClick={() => setDatapoint(d)}
-                        >
-                            <Layout.Pusher minWidth={92} />
-                            <Inner>
-                                <Cell as={Tag}>
-                                    {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
-                                </Cell>
-                                <Cell as={Tag}>
-                                    {JSON.stringify(d.data)}
-                                </Cell>
-                            </Inner>
-                        </Row>
-                    )
-                })}
+                        return (
+                            <Row
+                                key={msgId}
+                                onClick={() => setDatapoint(d)}
+                            >
+                                <Layout.Pusher />
+                                <Inner>
+                                    <Cell as={Tag}>
+                                        {formatDateTime(d.metadata && d.metadata.messageId && d.metadata.messageId.timestamp, tz)}
+                                    </Cell>
+                                    <Cell as={Tag}>
+                                        {JSON.stringify(d.data)}
+                                    </Cell>
+                                </Inner>
+                            </Row>
+                        )
+                    })}
+                </Viewport>
             </Lhs>
             <Rhs>
-                <Row>
-                    <Inner>
-                        <div>
-                            <Translate value="streamLivePreview.security" />
-                        </div>
-                        <div>
-                            <Tooltip
-                                value={getSecurityLevelTitle(stream)}
-                                placement={Tooltip.BOTTOM}
-                            >
-                                <SecurityIcon
-                                    level={getSecurityLevel(stream)}
-                                    mode="small"
-                                />
-                            </Tooltip>
-                        </div>
-                    </Inner>
-                </Row>
-                {!!selectedTimestamp && (
+                <Header>
                     <Row>
                         <Inner>
                             <div>
-                                <Translate value="streamLivePreview.timestamp" />
-                            </div>
-                            <div>
-                                <Cell>
-                                    {formatDateTime(selectedTimestamp, tz)}
-                                </Cell>
+                                <strong>
+                                    <Translate tag={Cell} value="streamLivePreview.inspector" />
+                                </strong>
                             </div>
                         </Inner>
                     </Row>
-                )}
-                {selection.map(([k, v]) => {
-                    const value = formatValue(v)
-
-                    return (
-                        <Row key={`${k}${value}`}>
+                </Header>
+                <Viewport>
+                    <Row>
+                        <Inner>
+                            <div>
+                                <Translate value="streamLivePreview.security" />
+                            </div>
+                            <div>
+                                <Tooltip
+                                    value={getSecurityLevelTitle(stream)}
+                                    placement={Tooltip.BOTTOM}
+                                >
+                                    <SecurityIcon
+                                        level={getSecurityLevel(stream)}
+                                        mode="small"
+                                    />
+                                </Tooltip>
+                            </div>
+                        </Inner>
+                    </Row>
+                    {!!selectedTimestamp && (
+                        <Row>
                             <Inner>
                                 <div>
-                                    <Cell>{k}</Cell>
+                                    <strong>
+                                        <Translate value="streamLivePreview.timestamp" />
+                                    </strong>
                                 </div>
                                 <div>
-                                    <Cell>{value}</Cell>
+                                    <Cell>
+                                        {formatDateTime(selectedTimestamp, tz)}
+                                    </Cell>
                                 </div>
                             </Inner>
                         </Row>
-                    )
-                })}
+                    )}
+                    {selection.map(([k, v]) => {
+                        const value = formatValue(v)
+
+                        return (
+                            <Row key={`${k}${value}`}>
+                                <Inner>
+                                    <div>
+                                        <Cell>{k}</Cell>
+                                    </div>
+                                    <div>
+                                        <Cell>{value}</Cell>
+                                    </div>
+                                </Inner>
+                            </Row>
+                        )
+                    })}
+                </Viewport>
             </Rhs>
+            <ResizeHandle />
         </div>
     )
 }
 
 const Feed = styled(UnstyledFeed)`
+    border: 1px solid #efefef;
     flex-grow: 1;
     position: relative;
 `
