@@ -95,13 +95,13 @@ const UnstyledStreamPreview = ({
 
     const { description, partitions } = stream || {}
 
-    const partitionOptions = useMemo(() => {
-        if (!partitions) {
-            return undefined
-        }
-
-        return [...new Array(partitions)].map((value, index) => index)
-    }, [partitions])
+    const partitionOptions = useMemo(() => (
+        partitions ? (
+            [...new Array(partitions)].map((_, index) => index)
+        ) : (
+            undefined
+        )
+    ), [partitions])
 
     return (
         <div className={className}>
