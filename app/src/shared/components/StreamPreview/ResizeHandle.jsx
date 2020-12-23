@@ -101,7 +101,7 @@ const ResizeHandle = styled(UnstyledResizeHandle)`
     > div::before {
         background: #ffffff;
         border: 1px solid #e0e0e0;
-        border-radius: 1px;
+        border-radius: 4px;
         content: '';
         height: 20px;
         left: 50%;
@@ -111,7 +111,7 @@ const ResizeHandle = styled(UnstyledResizeHandle)`
         width: 8px;
     }
 
-    @media (min-width: ${SM}px) {
+    @media (min-width: 668px) {
         display: block;
     }
 `

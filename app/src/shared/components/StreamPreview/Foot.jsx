@@ -1,11 +1,10 @@
 import styled from 'styled-components'
-import { SM, MD } from '$shared/utils/styled'
 
 const Foot = styled.div`
     background: #ffffff;
     height: 80px;
 
-    @media (min-width: ${MD}px) {
+    @media (min-width: 668px) {
         display: none;
     }
 `

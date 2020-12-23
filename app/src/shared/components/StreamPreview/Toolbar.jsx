@@ -70,6 +70,14 @@ const Inner = styled.div`
     }
 `
 
+const TooNarrow = styled.div`
+    display: none;
+
+    @media (min-width: 668px) {
+        display: block;
+    }
+`
+
 const UnstyledToolbar = ({
     className,
     onPartitionChange,
@@ -96,14 +104,14 @@ const UnstyledToolbar = ({
                             onChange={onStreamChange}
                         />
                     </div>
-                    <div>
+                    <TooNarrow>
                         <Selector
                             title={I18n.t('streamLivePreview.partitions')}
                             options={partitions}
                             active={partition}
                             onChange={onPartitionChange}
                         />
-                    </div>
+                    </TooNarrow>
                 </Inner>
             </Lhs>
             <Rhs>

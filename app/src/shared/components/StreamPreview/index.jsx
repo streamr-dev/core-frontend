@@ -5,7 +5,6 @@ import { SM } from '$shared/utils/styled'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import IconButton from './IconButton'
 import Toolbar from './Toolbar'
-// import Columns from './Columns'
 import Feed from './Feed'
 import Foot from './Foot'
 import Head from './Head'
@@ -123,7 +122,6 @@ const UnstyledStreamPreview = ({
                 streamLoaded={streamLoaded}
             />
             <LoadingIndicator loading={!streamLoaded || !!loading} />
-            {/* <Columns /> */}
             <Feed
                 stream={stream}
                 streamData={streamData}

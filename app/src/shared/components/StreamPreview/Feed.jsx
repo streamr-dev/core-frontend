@@ -74,7 +74,7 @@ const Lhs = styled(Side)`
     right: 0;
     width: 224px;
 
-    @media (min-width: ${SM}px) {
+    @media (min-width: 668px) {
         max-width: calc(100vw - var(--LiveDataInspectorMinWidth));
         min-width: var(--LiveDataMinLhsWidth);
         width: calc(100vw - var(--LiveDataInspectorWidth));
@@ -105,16 +105,8 @@ const Rhs = styled(Side)`
     left: 224px;
     width: 100vw;
 
-    @media (min-width: ${SM}px) {
-        max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
-        min-width: var(--LiveDataInspectorMinWidth);
-        left: auto;
-        right: 0;
-        width: var(--LiveDataInspectorWidth);
-    }
-
     ${Inner} {
-        grid-template-columns: 164px 1fr;
+        grid-template-columns: 128px 1fr;
         column-gap: 8px;
         margin: 0 24px;
     }
@@ -126,6 +118,18 @@ const Rhs = styled(Side)`
     ${Viewport} ${Inner} > div:first-child {
         color: #a3a3a3;
         text-transform: uppercase;
+    }
+
+    @media (min-width: 668px) {
+        max-width: calc(100vw - var(--LiveDataMinLhsWidth) + 1px);
+        min-width: var(--LiveDataInspectorMinWidth);
+        left: auto;
+        right: 0;
+        width: var(--LiveDataInspectorWidth);
+
+        ${Inner} {
+            grid-template-columns: 164px 1fr;
+        }
     }
 `
 
