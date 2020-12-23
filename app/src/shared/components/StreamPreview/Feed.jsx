@@ -5,7 +5,6 @@ import stringifyObject from 'stringify-object'
 import { Translate } from 'react-redux-i18n'
 import { formatDateTime } from '$mp/utils/time'
 import Tooltip from '$shared/components/Tooltip'
-import { SM } from '$shared/utils/styled'
 import {
     SecurityIcon as PrestyledSecurityIcon,
     getSecurityLevel,
@@ -135,7 +134,13 @@ const Rhs = styled(Side)`
 
 const tz = moment.tz.guess()
 
-const UnstyledFeed = ({ className, streamLoaded, streamData, stream }) => {
+const UnstyledFeed = ({
+    className,
+    errorComponent = null,
+    stream,
+    streamData,
+    streamLoaded,
+}) => {
     const [datapoint, setDatapoint] = useState()
 
     useEffect(() => {
@@ -258,6 +263,7 @@ const UnstyledFeed = ({ className, streamLoaded, streamData, stream }) => {
                             </Row>
                         )
                     })}
+                    {errorComponent}
                 </Viewport>
             </Rhs>
             <ResizeHandle />

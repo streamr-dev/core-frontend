@@ -1,7 +1,8 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, Fragment } from 'react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import { SM } from '$shared/utils/styled'
+import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import IconButton from './IconButton'
 import Toolbar from './Toolbar'
@@ -17,17 +18,17 @@ const Container = styled.div`
 `
 
 const MobileInspectorPanel = styled.div`
-    position: fixed;
-    bottom: 0;
-    height: 80px;
-    left: 0;
-    width: 100%;
+    align-items: center;
     background-color: white;
+    bottom: 0;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: row;
-    align-items: center;
+    height: 80px;
+    left: 0;
     padding: 0 24px;
+    position: fixed;
+    width: 100%;
 
     @media (min-width: ${SM}px) {
         display: none;
@@ -58,36 +59,20 @@ const InspectorButton = styled(IconButton)`
     `}
 `
 
-const ErrorNotice = styled.div`
-    flex: 1;
-    font-size: 12px;
-    color: #808080;
-    margin: 16px 24px;
-
-    @media (min-width: ${SM}px) {
-        margin: 16px 32px 16px 40px;
-    }
-
-    p {
-        margin: 0;
-        line-height: 1.5rem;
-    }
-`
-
 const UnstyledStreamPreview = ({
-    className,
-    streamId,
-    stream,
-    navigableStreamIds = [streamId],
-    titlePrefix,
-    onStreamSettings,
-    streamData,
-    onClose,
     activePartition = 0,
-    onPartitionChange,
-    loading = false,
-    subscriptionError,
+    className,
     dataError,
+    loading = false,
+    streamId,
+    navigableStreamIds = [streamId],
+    onClose,
+    onPartitionChange,
+    onStreamSettings,
+    stream,
+    streamData,
+    subscriptionError,
+    titlePrefix,
 }) => {
     const [inspectorFocused, setInspectorFocused] = useState(false)
 
@@ -126,6 +111,16 @@ const UnstyledStreamPreview = ({
                 stream={stream}
                 streamData={streamData}
                 streamLoaded={streamLoaded}
+                errorComponent={(
+                    <Fragment>
+                        {!!subscriptionError && (
+                            <Errors>{subscriptionError}</Errors>
+                        )}
+                        {!!dataError && (
+                            <Errors>{dataError}</Errors>
+                        )}
+                    </Fragment>
+                )}
             />
             <Foot />
         </div>
@@ -134,16 +129,6 @@ const UnstyledStreamPreview = ({
     // eslint-disable-next-line no-unreachable
     return (
         <Container>
-            {(!!subscriptionError || dataError) && (
-                <ErrorNotice>
-                    {!!subscriptionError && (
-                        <p>{subscriptionError}</p>
-                    )}
-                    {!!dataError && (
-                        <p>{dataError}</p>
-                    )}
-                </ErrorNotice>
-            )}
             <MobileInspectorPanel>
                 <InspectorButton
                     active={!inspectorFocused}
@@ -168,6 +153,18 @@ const StreamPreview = styled(UnstyledStreamPreview)`
     display: flex;
     flex-direction: column;
     height: 100%;
+
+    ${Errors} {
+        margin: 20px 40px 0;
+    }
+
+    ${Errors} + ${Errors} {
+        margin-top: 1em;
+    }
+
+    ${Errors}:last-child {
+        padding-bottom: 20px;
+    }
 `
 
 export default StreamPreview

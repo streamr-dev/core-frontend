@@ -31,6 +31,7 @@ const Errors = styled(UnstyledErrors)`
     font-size: 12px;
     line-height: 1.5em;
     margin-top: 6px;
+    word-break: break-word;
 
     ${({ overlap }) => !!overlap && css`
         position: absolute;
