@@ -6,6 +6,13 @@ import Skeleton from '$shared/components/Skeleton'
 import { truncate } from '$shared/utils/text'
 import Layout from './Layout'
 
+const Prefix = styled.span`
+    ::after {
+        content: '→';
+        padding: 0 0.5em;
+    }
+`
+
 const Inner = styled.div`
     align-items: center;
     display: grid;
@@ -30,11 +37,6 @@ const Inner = styled.div`
 
     h1 span:empty {
         display: none;
-    }
-
-    h1 span:not(:last-child)::after {
-        content: '&rarr;';
-        padding: 0 1em;
     }
 
     p {
@@ -81,7 +83,7 @@ const UnstyledHead = ({
             <div>
                 <h1 title={streamId}>
                     <Skeleton disabled={!skeletonize}>
-                        <span>{titlePrefix}</span>
+                        {!skeletonize && <Prefix>{titlePrefix}</Prefix>}
                         {truncate(streamId)}
                     </Skeleton>
                 </h1>

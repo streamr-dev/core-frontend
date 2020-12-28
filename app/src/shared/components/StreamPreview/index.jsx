@@ -42,6 +42,7 @@ const UnstyledStreamPreview = ({
     loading = false,
     streamId,
     navigableStreamIds = [streamId],
+    onChange: onStreamChange,
     onClose,
     onPartitionChange,
     onStreamSettings,
@@ -76,6 +77,7 @@ const UnstyledStreamPreview = ({
             <Toolbar
                 onPartitionChange={onPartitionChange}
                 onSettingsButtonClick={onStreamSettings}
+                onStreamChange={onStreamChange}
                 partition={activePartition}
                 partitions={partitionOptions || []}
                 streamId={streamId}
