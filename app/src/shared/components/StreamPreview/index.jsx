@@ -1,6 +1,7 @@
 import React, { useState, useMemo, Fragment } from 'react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
+import { I18n } from 'react-redux-i18n'
 import { SM } from '$shared/utils/styled'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
@@ -9,6 +10,7 @@ import Toolbar from './Toolbar'
 import Feed from './Feed'
 import Foot from './Foot'
 import Head from './Head'
+import Selector from './Selector'
 
 const Container = styled.div`
     position: relative;
@@ -88,6 +90,8 @@ const UnstyledStreamPreview = ({
         )
     ), [partitions])
 
+    const onStreamChange = () => null
+
     return (
         <div className={className}>
             <Head
@@ -122,28 +126,35 @@ const UnstyledStreamPreview = ({
                     </Fragment>
                 )}
             />
-            <Foot />
+            <Foot>
+                <div>
+                    <InspectorButton
+                        active={!inspectorFocused}
+                        onClick={() => setInspectorFocused(false)}
+                    >
+                        <SvgIcon name="list" />
+                    </InspectorButton>
+                </div>
+                <div>
+                    <InspectorButton
+                        active={!!inspectorFocused}
+                        onClick={() => setInspectorFocused(true)}
+                    >
+                        <SvgIcon name="listInspect" />
+                    </InspectorButton>
+                </div>
+                {!inspectorFocused && (
+                    <div>
+                        <Selector
+                            title={I18n.t('streamLivePreview.partitions')}
+                            options={partitionOptions || []}
+                            active={activePartition}
+                            onChange={onPartitionChange}
+                        />
+                    </div>
+                )}
+            </Foot>
         </div>
-    )
-
-    // eslint-disable-next-line no-unreachable
-    return (
-        <Container>
-            <MobileInspectorPanel>
-                <InspectorButton
-                    active={!inspectorFocused}
-                    onClick={() => setInspectorFocused(false)}
-                >
-                    <SvgIcon name="list" />
-                </InspectorButton>
-                <InspectorButton
-                    active={!!inspectorFocused}
-                    onClick={() => setInspectorFocused(true)}
-                >
-                    <SvgIcon name="listInspect" />
-                </InspectorButton>
-            </MobileInspectorPanel>
-        </Container>
     )
 }
 
