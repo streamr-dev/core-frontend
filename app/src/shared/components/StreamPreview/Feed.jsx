@@ -195,7 +195,9 @@ const UnstyledFeed = ({
                         return (
                             <Row
                                 key={msgId}
-                                onClick={() => setDatapoint(d)}
+                                onClick={() => setDatapoint((current) => (
+                                    d === current ? undefined : d
+                                ))}
                             >
                                 <Layout.Pusher />
                                 <Inner>
