@@ -246,9 +246,7 @@ const UnstyledFeed = ({
                         <Row>
                             <Inner>
                                 <div>
-                                    <strong>
-                                        <Translate value="streamLivePreview.timestamp" />
-                                    </strong>
+                                    <Translate value="streamLivePreview.timestamp" />
                                 </div>
                                 <div>
                                     <Cell>
