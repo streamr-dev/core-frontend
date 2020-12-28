@@ -70,7 +70,7 @@ const Inner = styled.div`
     }
 `
 
-const TooNarrow = styled.div`
+const IfEnoughRoom = styled.div`
     display: none;
 
     @media (min-width: 668px) {
@@ -104,14 +104,14 @@ const UnstyledToolbar = ({
                             onChange={onStreamChange}
                         />
                     </div>
-                    <TooNarrow>
+                    <IfEnoughRoom>
                         <Selector
                             title={I18n.t('streamLivePreview.partitions')}
                             options={partitions}
                             active={partition}
                             onChange={onPartitionChange}
                         />
-                    </TooNarrow>
+                    </IfEnoughRoom>
                 </Inner>
             </Lhs>
             <Rhs>
