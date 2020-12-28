@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
 import Layout from './Layout'
-import { SM } from '$shared/utils/styled'
 
 const UnstyledResizeHandle = (props) => {
     const ref = useRef(null)

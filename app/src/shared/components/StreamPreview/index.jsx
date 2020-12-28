@@ -2,7 +2,6 @@ import React, { useState, useMemo, Fragment } from 'react'
 import styled, { css } from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import { I18n } from 'react-redux-i18n'
-import { SM } from '$shared/utils/styled'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import IconButton from './IconButton'
@@ -11,31 +10,6 @@ import Feed from './Feed'
 import Foot from './Foot'
 import Head from './Head'
 import Selector from './Selector'
-
-const Container = styled.div`
-    position: relative;
-    height: 100%;
-    background-color: white;
-    color: #525252;
-`
-
-const MobileInspectorPanel = styled.div`
-    align-items: center;
-    background-color: white;
-    bottom: 0;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: row;
-    height: 80px;
-    left: 0;
-    padding: 0 24px;
-    position: fixed;
-    width: 100%;
-
-    @media (min-width: ${SM}px) {
-        display: none;
-    }
-`
 
 const InspectorButton = styled(IconButton)`
     width: 32px;
@@ -89,8 +63,6 @@ const UnstyledStreamPreview = ({
             undefined
         )
     ), [partitions])
-
-    const onStreamChange = () => null
 
     return (
         <div className={className}>
