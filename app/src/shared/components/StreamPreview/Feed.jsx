@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
-import { Translate } from 'react-redux-i18n'
+import { I18n, Translate } from 'react-redux-i18n'
 import { formatDateTime } from '$mp/utils/time'
 import Tooltip from '$shared/components/Tooltip'
 import {
@@ -154,9 +154,11 @@ const UnstyledFeed = ({
 }) => {
     const [datapoint, setDatapoint] = useState()
 
+    const streamId = stream ? stream.id : undefined
+
     useEffect(() => {
         setDatapoint(undefined)
-    }, [stream.id])
+    }, [streamId])
 
     const { metadata, data } = datapoint || {}
 
@@ -219,7 +221,9 @@ const UnstyledFeed = ({
                         <Inner>
                             <div>
                                 <strong>
-                                    <Translate tag={Cell} value="streamLivePreview.inspector" />
+                                    <Cell>
+                                        {I18n.t('streamLivePreview.inspector')}
+                                    </Cell>
                                 </strong>
                             </div>
                         </Inner>
@@ -237,7 +241,7 @@ const UnstyledFeed = ({
                                     placement={Tooltip.BOTTOM}
                                 >
                                     <SecurityIcon
-                                        level={getSecurityLevel(stream)}
+                                        level={getSecurityLevel(stream || {})}
                                         mode="small"
                                     />
                                 </Tooltip>
