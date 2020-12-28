@@ -27,7 +27,7 @@ const UnstyledSelector = ({
     title,
     ...props
 }) => {
-    if (!options || options.length <= 0) {
+    if (!options || options.length <= 1) {
         return null
     }
 
