@@ -11,6 +11,7 @@ const Button = styled(IconButton)`
 
     + div {
         margin: 0 12px;
+        white-space: nowrap;
     }
 
     svg {
