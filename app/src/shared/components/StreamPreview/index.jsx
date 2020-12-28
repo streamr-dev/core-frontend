@@ -118,7 +118,7 @@ const UnstyledStreamPreview = ({
                         <SvgIcon name="listInspect" />
                     </InspectorButton>
                 </div>
-                {!inspectorFocused && (
+                {!inspectorFocused && !!streamLoaded && (
                     <div>
                         <Selector
                             title={I18n.t('streamLivePreview.partitions')}

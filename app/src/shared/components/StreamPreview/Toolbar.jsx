@@ -95,24 +95,26 @@ const UnstyledToolbar = ({
         <div className={className}>
             <Lhs>
                 <Layout.Pusher />
-                <Inner>
-                    <div>
-                        <Selector
-                            title={I18n.t('streamLivePreview.streams')}
-                            options={streamIds}
-                            active={streamId}
-                            onChange={onStreamChange}
-                        />
-                    </div>
-                    <IfEnoughRoom>
-                        <Selector
-                            title={I18n.t('streamLivePreview.partitions')}
-                            options={partitions}
-                            active={partition}
-                            onChange={onPartitionChange}
-                        />
-                    </IfEnoughRoom>
-                </Inner>
+                {!!streamLoaded && (
+                    <Inner>
+                        <div>
+                            <Selector
+                                title={I18n.t('streamLivePreview.streams')}
+                                options={streamIds}
+                                active={streamId}
+                                onChange={onStreamChange}
+                            />
+                        </div>
+                        <IfEnoughRoom>
+                            <Selector
+                                title={I18n.t('streamLivePreview.partitions')}
+                                options={partitions}
+                                active={partition}
+                                onChange={onPartitionChange}
+                            />
+                        </IfEnoughRoom>
+                    </Inner>
+                )}
             </Lhs>
             <Rhs>
                 <div>
