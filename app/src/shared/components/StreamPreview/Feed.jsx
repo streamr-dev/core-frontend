@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
 import { Translate } from 'react-redux-i18n'
@@ -31,6 +31,10 @@ const Inner = styled.div`
     display: grid;
     line-height: 28px;
     padding: 14px 16px;
+
+    > div {
+        min-width: 0;
+    }
 `
 
 const Row = styled.div``
@@ -102,7 +106,12 @@ const Rhs = styled(Side)`
     background: #fafafa;
     border-left: 1px solid #efefef;
     left: 224px;
+    transition: 0.2s left;
     width: 100vw;
+
+    ${({ focused }) => !!focused && css`
+        left: 0;
+    `}
 
     ${Inner} {
         grid-template-columns: 128px 1fr;
@@ -124,6 +133,7 @@ const Rhs = styled(Side)`
         min-width: var(--LiveDataInspectorMinWidth);
         left: auto;
         right: 0;
+        transition: none;
         width: var(--LiveDataInspectorWidth);
 
         ${Inner} {
@@ -137,6 +147,7 @@ const tz = moment.tz.guess()
 const UnstyledFeed = ({
     className,
     errorComponent = null,
+    inspectorFocused = false,
     stream,
     streamData,
     streamLoaded,
@@ -200,7 +211,7 @@ const UnstyledFeed = ({
                     })}
                 </Viewport>
             </Lhs>
-            <Rhs>
+            <Rhs focused={inspectorFocused}>
                 <Header>
                     <Row>
                         <Inner>

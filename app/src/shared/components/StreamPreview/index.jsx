@@ -84,6 +84,7 @@ const UnstyledStreamPreview = ({
             />
             <LoadingIndicator loading={!streamLoaded || !!loading} />
             <Feed
+                inspectorFocused={inspectorFocused}
                 stream={stream}
                 streamData={streamData}
                 streamLoaded={streamLoaded}
