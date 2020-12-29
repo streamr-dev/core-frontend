@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
@@ -10,6 +10,9 @@ import {
     getSecurityLevel,
     getSecurityLevelTitle,
 } from '$userpages/components/StreamPage/Edit/SecurityView'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import useCopy from '$shared/hooks/useCopy'
 import Layout from './Layout'
 import Cell from './Cell'
 import ResizeHandle from './ResizeHandle'
@@ -102,6 +105,10 @@ const Lhs = styled(Side)`
     }
 `
 
+const StaticInner = styled(Inner)`
+    background: none !important;
+`
+
 const Rhs = styled(Side)`
     background: #fafafa;
     border-left: 1px solid #efefef;
@@ -168,6 +175,19 @@ const UnstyledFeed = ({
 
     const selection = Object.entries(data || {})
 
+    const { copy } = useCopy()
+
+    const onCopyClick = (value) => () => {
+        if (typeof value === 'string') {
+            copy(value)
+
+            Notification.push({
+                title: 'Field data copied to clipboard',
+                icon: NotificationIcon.CHECKMARK,
+            })
+        }
+    }
+
     return (
         <div className={className}>
             <Lhs>
@@ -231,7 +251,7 @@ const UnstyledFeed = ({
                 </Header>
                 <Viewport>
                     <Row>
-                        <Inner>
+                        <StaticInner>
                             <div>
                                 <Translate value="streamLivePreview.security" />
                             </div>
@@ -246,18 +266,21 @@ const UnstyledFeed = ({
                                     />
                                 </Tooltip>
                             </div>
-                        </Inner>
+                        </StaticInner>
                     </Row>
                     {!!selectedTimestamp && (
                         <Row>
-                            <Inner>
+                            <Inner
+                                as={Tooltip.Parent}
+                                onClick={onCopyClick(formatDateTime(selectedTimestamp, tz))}
+                            >
                                 <div>
                                     <Translate value="streamLivePreview.timestamp" />
                                 </div>
                                 <div>
-                                    <Cell>
-                                        {formatDateTime(selectedTimestamp, tz)}
-                                    </Cell>
+                                    <Tooltip value="Copy" placement={Tooltip.BOTTOM_LEFT}>
+                                        <Cell>{formatDateTime(selectedTimestamp, tz)}</Cell>
+                                    </Tooltip>
                                 </div>
                             </Inner>
                         </Row>
@@ -267,12 +290,17 @@ const UnstyledFeed = ({
 
                         return (
                             <Row key={`${k}${value}`}>
-                                <Inner>
+                                <Inner
+                                    as={Tooltip.Parent}
+                                    onClick={onCopyClick(value)}
+                                >
                                     <div>
                                         <Cell>{k}</Cell>
                                     </div>
                                     <div>
-                                        <Cell>{value}</Cell>
+                                        <Tooltip value="Copy" placement={Tooltip.BOTTOM_LEFT}>
+                                            <Cell>{value}</Cell>
+                                        </Tooltip>
                                     </div>
                                 </Inner>
                             </Row>

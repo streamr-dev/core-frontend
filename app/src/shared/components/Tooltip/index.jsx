@@ -17,6 +17,13 @@ const BottomTheme = {
     transform: 'translateX(-50%)',
 }
 
+const BottomLeftTheme = Object.assign({}, BottomTheme, {
+    left: 0,
+    transform: 'none',
+})
+
+const Parent = styled.div``
+
 const Root = styled.div`
     position: relative;
     display: inline-block;
@@ -46,6 +53,7 @@ const Root = styled.div`
             transform: ${({ theme }) => theme.transform};
         }
 
+        ${Parent}:hover &::after,
         :hover::after {
             transition-delay: 0.5s;
             visibility: visible;
@@ -61,7 +69,9 @@ const UnstyledTooltip = ({ value, placement = TopTheme, ...props }) => (
 const Tooltip = styled(UnstyledTooltip)``
 
 Object.assign(Tooltip, {
+    BOTTOM_LEFT: BottomLeftTheme,
     BOTTOM: BottomTheme,
+    Parent,
     Root,
     TOP: TopTheme,
 })
