@@ -17,11 +17,6 @@ const BottomTheme = {
     transform: 'translateX(-50%)',
 }
 
-const BottomLeftTheme = Object.assign({}, BottomTheme, {
-    left: 0,
-    transform: 'none',
-})
-
 const Parent = styled.div``
 
 const Root = styled.div`
@@ -69,7 +64,6 @@ const UnstyledTooltip = ({ value, placement = TopTheme, ...props }) => (
 const Tooltip = styled(UnstyledTooltip)``
 
 Object.assign(Tooltip, {
-    BOTTOM_LEFT: BottomLeftTheme,
     BOTTOM: BottomTheme,
     Parent,
     Root,

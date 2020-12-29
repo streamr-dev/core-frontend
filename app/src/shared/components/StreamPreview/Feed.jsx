@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
@@ -151,6 +151,12 @@ const Rhs = styled(Side)`
 
 const tz = moment.tz.guess()
 
+const TooltipTheme = Object.assign({}, Tooltip.BottomTheme, {
+    left: 0,
+    top: 'auto',
+    transform: 'none',
+})
+
 const UnstyledFeed = ({
     className,
     errorComponent = null,
@@ -177,15 +183,31 @@ const UnstyledFeed = ({
 
     const { copy } = useCopy()
 
-    const onCopyClick = (value) => () => {
-        if (typeof value === 'string') {
-            copy(value)
+    const rowRef = useRef(null)
 
-            Notification.push({
-                title: 'Field data copied to clipboard',
-                icon: NotificationIcon.CHECKMARK,
-            })
+    const copyText = 'ontouchstart' in window ? 'Tap to copy' : 'Copy'
+
+    const onCopyClick = (value) => (e) => {
+        const prevRow = rowRef.current
+
+        rowRef.current = e.currentTarget
+
+        // Touch screen and "focused" row does not much current row? Do nothing.
+        if ('ontouchstart' in window && prevRow !== e.currentTarget) {
+            return
         }
+
+        // Value is not a string? Do nothing.
+        if (typeof value !== 'string') {
+            return
+        }
+
+        copy(value)
+
+        Notification.push({
+            title: 'Field data copied to clipboard',
+            icon: NotificationIcon.CHECKMARK,
+        })
     }
 
     return (
@@ -278,7 +300,7 @@ const UnstyledFeed = ({
                                     <Translate value="streamLivePreview.timestamp" />
                                 </div>
                                 <div>
-                                    <Tooltip value="Copy" placement={Tooltip.BOTTOM_LEFT}>
+                                    <Tooltip value={copyText} placement={TooltipTheme}>
                                         <Cell>{formatDateTime(selectedTimestamp, tz)}</Cell>
                                     </Tooltip>
                                 </div>
@@ -298,7 +320,7 @@ const UnstyledFeed = ({
                                         <Cell>{k}</Cell>
                                     </div>
                                     <div>
-                                        <Tooltip value="Copy" placement={Tooltip.BOTTOM_LEFT}>
+                                        <Tooltip value={copyText} placement={TooltipTheme}>
                                             <Cell>{value}</Cell>
                                         </Tooltip>
                                     </div>
@@ -318,6 +340,11 @@ const Feed = styled(UnstyledFeed)`
     border: 1px solid #efefef;
     flex-grow: 1;
     position: relative;
+
+    ${Tooltip.Root} {
+        display: inline;
+        line-height: inherit;
+    }
 `
 
 Object.assign(Feed, {
