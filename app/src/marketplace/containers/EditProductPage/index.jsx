@@ -57,6 +57,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadProductStreams,
         loadDataUnion,
         loadDataUnionStats,
+        loadDataUnionSecrets,
         clearStreams,
         loadStreams,
     } = useController()
@@ -107,18 +108,35 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const originalProduct = useProduct()
     const { beneficiaryAddress } = originalProduct
 
-    useEffect(() => {
-        loadEthIdentities()
-        loadDataUnion(beneficiaryAddress)
-        loadDataUnionStats(beneficiaryAddress)
-    }, [beneficiaryAddress, loadDataUnion, loadDataUnionStats, loadEthIdentities])
-
     const isLoading = savePending || publishDialogLoading
     const modalsOpen = !!(isDataUnionDeployDialogOpen || isConfirmSaveDialogOpen || isPublishDialogOpen)
     const isDisabled = isLoading || modalsOpen
     const isDataUnion = isDataUnionProduct(product)
     // TODO: should really check for the contract existance here
     const isDeployed = isDataUnion && isEthereumAddress(product.beneficiaryAddress)
+
+    useEffect(() => {
+        if (isDataUnion) {
+            loadEthIdentities()
+        }
+    }, [
+        isDataUnion,
+        loadEthIdentities,
+    ])
+
+    useEffect(() => {
+        if (isDeployed) {
+            loadDataUnion(beneficiaryAddress)
+            loadDataUnionStats(beneficiaryAddress)
+            loadDataUnionSecrets(beneficiaryAddress)
+        }
+    }, [
+        isDeployed,
+        beneficiaryAddress,
+        loadDataUnion,
+        loadDataUnionStats,
+        loadDataUnionSecrets,
+    ])
 
     const saveAndExitButton = useMemo(() => ({
         title: I18n.t('editProductPage.actionBar.save'),

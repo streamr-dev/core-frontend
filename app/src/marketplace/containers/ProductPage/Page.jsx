@@ -1,10 +1,12 @@
 // @flow
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnionStats from './useDataUnionStats'
+import useDataUnionServerStats from './useDataUnionServerStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
+import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import { isEthereumAddress } from '$mp/utils/validate'
 
 import Hero from './Hero'
@@ -18,14 +20,36 @@ import Segment from '$shared/components/Segment'
 
 const ProductDetailsPage = () => {
     const product = useProduct()
+    const contractProduct = useContractProduct()
+
+    const { subscriberCount } = contractProduct || {}
+    const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
     const isDataUnion = !!(product && isDataUnionProduct(product))
     const isProductFree = !!(product && !isPaidProduct(product))
-    const isDuDeployed = !!isDataUnion && !!product.dataUnionDeployed && isEthereumAddress(product.beneficiaryAddress)
+    const isDuDeployed = !!isDataUnion && !!dataUnionDeployed && isEthereumAddress(beneficiaryAddress)
 
-    const { stats, memberCount } = useDataUnionStats()
+    const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
+    const stats = useDataUnionStats({
+        beneficiaryAddress,
+        created,
+        adminFee,
+        subscriberCount,
+        totalEarnings,
+        memberCount,
+    })
     const dataUnion = useDataUnion()
 
     const { joinPartStreamId } = dataUnion || {}
+
+    useEffect(() => {
+        if (isDataUnion) {
+            startPolling(beneficiaryAddress)
+
+            return () => stopPolling()
+        }
+
+        return () => {}
+    }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress])
 
     return (
         <ProductPage>

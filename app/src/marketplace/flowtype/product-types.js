@@ -162,3 +162,12 @@ export type AccessPeriod = {
     price: ?NumberString,
     approxUsd: ?NumberString,
 }
+
+export type DataUnionSecretId = string
+
+export type DataUnionSecret = {
+    id: DataUnionSecretId,
+    name: string,
+    secret: string,
+    contractAddress: Address,
+}

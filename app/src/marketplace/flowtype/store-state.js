@@ -8,6 +8,7 @@ import type {
     Filter,
     Subscription,
     DataUnionId,
+    DataUnionSecretId,
 } from './product-types'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
@@ -83,6 +84,9 @@ export type DataUnionState = {
     fetchingStats: boolean,
     ids: Array<DataUnionId>,
     statsError: ?ErrorInUi,
+    secrets: Array<DataUnionSecretId>,
+    fetchingSecrets: boolean,
+    secretsError: ?ErrorInUi,
 }
 
 // streams

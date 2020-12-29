@@ -19,6 +19,7 @@ import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
 import useDataUnionLoadCallback from './useDataUnionLoadCallback'
 import useDataUnionStatsLoadCallback from './useDataUnionStatsLoadCallback'
+import useLoadDataUnionSecretsCallback from './useLoadDataUnionSecretsCallback'
 import useRelatedProductsLoadCallback from './useRelatedProductsLoadCallback'
 import useLoadStreamsCallback from './useLoadStreamsCallback'
 import useClearStreamsCallback from './useClearStreamsCallback'
@@ -33,6 +34,7 @@ type ContextProps = {
     loadProductStreams: Function,
     loadDataUnion: Function,
     loadDataUnionStats: Function,
+    loadDataUnionSecrets: Function,
     loadRelatedProducts: Function,
     loadStreams: Function,
     clearStreams: Function,
@@ -111,6 +113,7 @@ function useProductController() {
     const loadProductStreams = useLoadProductStreamsCallback()
     const loadDataUnion = useDataUnionLoadCallback()
     const loadDataUnionStats = useDataUnionStatsLoadCallback()
+    const loadDataUnionSecrets = useLoadDataUnionSecretsCallback()
     const loadRelatedProducts = useRelatedProductsLoadCallback()
     const loadStreams = useLoadStreamsCallback()
     const clearStreams = useClearStreamsCallback()
@@ -125,6 +128,7 @@ function useProductController() {
         loadProductStreams,
         loadDataUnion,
         loadDataUnionStats,
+        loadDataUnionSecrets,
         loadRelatedProducts,
         loadStreams,
         clearStreams,
@@ -138,6 +142,7 @@ function useProductController() {
         loadProductStreams,
         loadDataUnion,
         loadDataUnionStats,
+        loadDataUnionSecrets,
         loadRelatedProducts,
         loadStreams,
         clearStreams,

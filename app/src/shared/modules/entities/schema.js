@@ -39,3 +39,6 @@ export const dataUnionsSchema = [dataUnionSchema]
 
 export const joinRequestSchema = new schema.Entity('joinRequests')
 export const joinRequestsSchema = [joinRequestSchema]
+
+export const dataUnionSecretSchema = new schema.Entity('sharedSecrets')
+export const dataUnionSecretsSchema = [dataUnionSecretSchema]
