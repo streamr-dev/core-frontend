@@ -50,10 +50,19 @@ const Inner = styled.div`
         letter-spacing: 0.01em;
         line-height: normal;
         margin: 0;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
         @media (min-width: ${LG}px) {
             font-size: 14px;
         }
+    }
+
+    h1,
+    p {
+        width: max-content;
     }
 
     p:empty {
@@ -87,13 +96,13 @@ const UnstyledHead = ({
             <Layout.Pusher />
             <div>
                 <h1 title={streamId}>
-                    <Skeleton disabled={!skeletonize}>
+                    <Skeleton disabled={!skeletonize} width="70%">
                         {!skeletonize && <Prefix>{titlePrefix}</Prefix>}
                         {truncate(streamId)}
                     </Skeleton>
                 </h1>
                 <p title={description}>
-                    <Skeleton disabled={!skeletonize}>
+                    <Skeleton disabled={!skeletonize} width="50%">
                         {description}
                     </Skeleton>
                 </p>
