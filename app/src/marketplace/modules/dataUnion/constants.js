@@ -12,6 +12,6 @@ export const GET_ALL_DATA_UNIONS_REQUEST: string = 'marketplace/dataUnion/GET_AL
 export const GET_ALL_DATA_UNIONS_SUCCESS: string = 'marketplace/dataUnion/GET_ALL_DATA_UNIONS_SUCCESS'
 export const GET_ALL_DATA_UNIONS_FAILURE: string = 'marketplace/dataUnion/GET_ALL_DATA_UNIONS_FAILURE'
 
-export const GET_DATA_UNION_SECRETS_REQUEST: string = 'marketplace/dataUnion/GET_DATA_UNION_SECRETS_REQUEST'
-export const GET_DATA_UNION_SECRETS_SUCCESS: string = 'marketplace/dataUnion/GET_DATA_UNION_SECRETS_SUCCESS'
-export const GET_DATA_UNION_SECRETS_FAILURE: string = 'marketplace/dataUnion/GET_DATA_UNION_SECRETS_FAILURE'
+export const SET_DATA_UNION_SECRETS: string = 'marketplace/dataUnion/SET_DATA_UNION_SECRETS'
+export const ADD_DATA_UNION_SECRET: string = 'marketplace/dataUnion/ADD_DATA_UNION_SECRET'
+export const REMOVE_DATA_UNION_SECRET: string = 'marketplace/dataUnion/REMOVE_DATA_UNION_SECRET'

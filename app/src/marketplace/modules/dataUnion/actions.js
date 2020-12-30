@@ -2,15 +2,12 @@
 
 import { createAction } from 'redux-actions'
 
-import { dataUnionSchema, dataUnionsSchema, dataUnionSecretsSchema } from '$shared/modules/entities/schema'
+import { dataUnionSchema, dataUnionsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { DataUnionId, DataUnionSecretId } from '$mp/flowtype/product-types'
 import * as services from './services'
 import {
-    GET_DATA_UNION_SECRETS_REQUEST,
-    GET_DATA_UNION_SECRETS_SUCCESS,
-    GET_DATA_UNION_SECRETS_FAILURE,
     GET_DATA_UNION_REQUEST,
     GET_DATA_UNION_SUCCESS,
     GET_DATA_UNION_FAILURE,
@@ -20,6 +17,9 @@ import {
     GET_ALL_DATA_UNIONS_REQUEST,
     GET_ALL_DATA_UNIONS_SUCCESS,
     GET_ALL_DATA_UNIONS_FAILURE,
+    SET_DATA_UNION_SECRETS,
+    ADD_DATA_UNION_SECRET,
+    REMOVE_DATA_UNION_SECRET,
 } from './constants'
 import type {
     DataUnionIdActionCreator,
@@ -27,6 +27,7 @@ import type {
     DataUnionErrorActionCreator,
     DataUnionsErrorActionCreator,
     DataUnionSecretsActionCreator,
+    DataUnionSecretActionCreator,
 } from './types'
 
 const getDataUnionRequest: DataUnionIdActionCreator = createAction(
@@ -73,26 +74,27 @@ const getDataUnionStatsFailure: DataUnionErrorActionCreator = createAction(
     }),
 )
 
-const getDataUnionSecretsRequest: DataUnionIdActionCreator = createAction(
-    GET_DATA_UNION_SECRETS_REQUEST,
-    (id: DataUnionId) => ({
-        id,
-    }),
-)
-
-const getDataUnionSecretsSuccess: DataUnionSecretsActionCreator = createAction(
-    GET_DATA_UNION_SECRETS_SUCCESS,
+export const setDataUnionSecrets: DataUnionSecretsActionCreator = createAction(
+    SET_DATA_UNION_SECRETS,
     (id: DataUnionId, secrets: Array<DataUnionSecretId>) => ({
         id,
         secrets,
     }),
 )
 
-const getDataUnionSecretsFailure: DataUnionErrorActionCreator = createAction(
-    GET_DATA_UNION_SECRETS_FAILURE,
-    (id: DataUnionId, error: ErrorInUi) => ({
+export const addDataUnionSecret: DataUnionSecretActionCreator = createAction(
+    ADD_DATA_UNION_SECRET,
+    (id: DataUnionId, secret: DataUnionSecretId) => ({
         id,
-        error,
+        secret,
+    }),
+)
+
+export const removeDataUnionSecret: DataUnionSecretActionCreator = createAction(
+    REMOVE_DATA_UNION_SECRET,
+    (id: DataUnionId, secret: DataUnionSecretId) => ({
+        id,
+        secret,
     }),
 )
 
@@ -111,20 +113,6 @@ const getAllDataUnionsFailure: DataUnionsErrorActionCreator = createAction(
         error,
     }),
 )
-
-export const getSecrets = (id: DataUnionId) => async (dispatch: Function) => {
-    dispatch(getDataUnionSecretsRequest(id))
-
-    try {
-        const result = await services.getSecrets({
-            dataUnionId: id,
-        })
-        const ids = handleEntities(dataUnionSecretsSchema, dispatch)(result)
-        dispatch(getDataUnionSecretsSuccess(id, ids))
-    } catch (e) {
-        dispatch(getDataUnionSecretsFailure(id, e))
-    }
-}
 
 export const getDataUnionById = (id: DataUnionId) => async (dispatch: Function) => {
     dispatch(getDataUnionRequest(id))

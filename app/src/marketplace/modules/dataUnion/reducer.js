@@ -5,16 +5,15 @@ import { handleActions } from 'redux-actions'
 import type { DataUnionState } from '../../flowtype/store-state'
 
 import {
-    GET_DATA_UNION_SECRETS_REQUEST,
-    GET_DATA_UNION_SECRETS_SUCCESS,
-    GET_DATA_UNION_SECRETS_FAILURE,
     GET_DATA_UNION_REQUEST,
     GET_DATA_UNION_SUCCESS,
     GET_DATA_UNION_FAILURE,
     GET_ALL_DATA_UNIONS_REQUEST,
     GET_ALL_DATA_UNIONS_SUCCESS,
     GET_ALL_DATA_UNIONS_FAILURE,
-
+    SET_DATA_UNION_SECRETS,
+    ADD_DATA_UNION_SECRET,
+    REMOVE_DATA_UNION_SECRET,
 } from './constants'
 import type {
     DataUnionIdAction,
@@ -22,6 +21,7 @@ import type {
     DataUnionIdsAction,
     DataUnionsErrorAction,
     DataUnionSecretsAction,
+    DataUnionSecretAction,
 } from './types'
 
 export const initialState: DataUnionState = {
@@ -32,30 +32,36 @@ export const initialState: DataUnionState = {
     ids: [],
     statsError: null,
     secrets: [],
-    fetchingSecrets: false,
-    secretsError: null,
 }
 
 const reducer: (DataUnionState) => DataUnionState = handleActions({
-    [GET_DATA_UNION_SECRETS_REQUEST]: (state: DataUnionState) => ({
-        ...state,
-        secrets: [],
-        fetchingSecrets: true,
-        secretsError: null,
-    }),
+    [SET_DATA_UNION_SECRETS]: (state: DataUnionState, action: DataUnionSecretsAction) => {
+        const nextSecrets = new Set(action.payload.secrets)
 
-    [GET_DATA_UNION_SECRETS_SUCCESS]: (state: DataUnionState, action: DataUnionSecretsAction) => ({
-        ...state,
-        secrets: action.payload.secrets,
-        fetchingSecrets: false,
-        secretsError: null,
-    }),
+        return {
+            ...state,
+            secrets: [...nextSecrets],
+        }
+    },
 
-    [GET_DATA_UNION_SECRETS_FAILURE]: (state: DataUnionState, action: DataUnionErrorAction) => ({
-        ...state,
-        fetchingSecrets: false,
-        secretsError: action.payload.error,
-    }),
+    [ADD_DATA_UNION_SECRET]: (state: DataUnionState, action: DataUnionSecretAction) => {
+        const nextSecrets = new Set([...state.secrets, action.payload.secret])
+
+        return {
+            ...state,
+            secrets: [...nextSecrets],
+        }
+    },
+
+    [REMOVE_DATA_UNION_SECRET]: (state: DataUnionState, action: DataUnionSecretAction) => {
+        const nextSecrets = new Set(state.secrets)
+        nextSecrets.delete(action.payload.secret)
+
+        return {
+            ...state,
+            secrets: [...nextSecrets],
+        }
+    },
 
     [GET_DATA_UNION_REQUEST]: (state: DataUnionState, action: DataUnionIdAction) => ({
         ...state,

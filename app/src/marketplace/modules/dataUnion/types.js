@@ -35,3 +35,9 @@ export type DataUnionSecretsAction = PayloadAction<{
     secrets: Array<DataUnionSecretId>,
 }>
 export type DataUnionSecretsActionCreator = (id: DataUnionId, secrets: Array<DataUnionSecretId>) => DataUnionSecretsAction
+
+export type DataUnionSecretAction = PayloadAction<{
+    id: DataUnionId,
+    secret: DataUnionSecretId,
+}>
+export type DataUnionSecretActionCreator = (id: DataUnionId, secret: DataUnionSecretId) => DataUnionSecretAction

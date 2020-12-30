@@ -246,11 +246,11 @@ export const postSecret = ({ dataUnionId, name }: PostSecrect): ApiResult<Secret
 
 type PutSecrect = {
     dataUnionId: DataUnionId,
-    secretId: string,
+    id: string,
     name: string,
 }
 
-export const putSecret = ({ dataUnionId, secretId: id, name }: PutSecrect): ApiResult<Secret> => put({
+export const putSecret = ({ dataUnionId, id, name }: PutSecrect): ApiResult<Secret> => put({
     url: routes.api.dataunions.secrets.show({
         dataUnionId,
         id,
@@ -262,10 +262,10 @@ export const putSecret = ({ dataUnionId, secretId: id, name }: PutSecrect): ApiR
 
 type DeleteSecrect = {
     dataUnionId: DataUnionId,
-    secretId: string,
+    id: string,
 }
 
-export const deleteSecret = ({ dataUnionId, secretId: id }: DeleteSecrect): ApiResult<void> => del({
+export const deleteSecret = ({ dataUnionId, id }: DeleteSecrect): ApiResult<void> => del({
     url: routes.api.dataunions.secrets.show({
         dataUnionId,
         id,

@@ -85,8 +85,6 @@ export type DataUnionState = {
     ids: Array<DataUnionId>,
     statsError: ?ErrorInUi,
     secrets: Array<DataUnionSecretId>,
-    fetchingSecrets: boolean,
-    secretsError: ?ErrorInUi,
 }
 
 // streams

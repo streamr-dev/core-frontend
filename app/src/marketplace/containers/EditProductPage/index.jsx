@@ -23,6 +23,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import useProductPermissions from '../ProductController/useProductPermissions'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
+import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { selectFetchingStreams, selectHasMoreResults } from '$mp/modules/streams/selectors'
 import useModal from '$shared/hooks/useModal'
@@ -57,10 +58,10 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadProductStreams,
         loadDataUnion,
         loadDataUnionStats,
-        loadDataUnionSecrets,
         clearStreams,
         loadStreams,
     } = useController()
+    const { load: loadDataUnionSecrets, reset: resetDataUnionSecrets } = useDataUnionSecrets()
     const fetchingAllStreams = useSelector(selectFetchingStreams)
     const hasMoreResults = useSelector(selectHasMoreResults)
     const [nextPage, setNextPage] = useState(0)
@@ -137,6 +138,11 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadDataUnionStats,
         loadDataUnionSecrets,
     ])
+
+    // clear data union secrets when unmounting
+    useEffect(() => () => {
+        resetDataUnionSecrets()
+    }, [resetDataUnionSecrets])
 
     const saveAndExitButton = useMemo(() => ({
         title: I18n.t('editProductPage.actionBar.save'),
