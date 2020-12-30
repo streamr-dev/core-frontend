@@ -97,7 +97,7 @@ const UnstyledHead = ({
             <div>
                 <h1 title={streamId}>
                     <Skeleton disabled={!skeletonize} width="70%">
-                        {!skeletonize && <Prefix>{titlePrefix}</Prefix>}
+                        <Prefix>{titlePrefix}</Prefix>
                         {truncate(streamId)}
                     </Skeleton>
                 </h1>
