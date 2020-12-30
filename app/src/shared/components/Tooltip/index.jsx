@@ -17,13 +17,15 @@ const BottomTheme = {
     transform: 'translateX(-50%)',
 }
 
+const Parent = styled.div``
+
 const Root = styled.div`
     position: relative;
     display: inline-block;
     line-height: 1;
 
     ${({ tooltip, disabled }) => !!tooltip && !disabled && css`
-        &::after {
+        ::after {
             content: "${tooltip}";
             visibility: hidden;
             opacity: 0;
@@ -46,29 +48,26 @@ const Root = styled.div`
             transform: ${({ theme }) => theme.transform};
         }
 
-        &:hover {
-            &::after {
-                transition-delay: 0.5s;
-                visibility: visible;
-                opacity: 1;
-            }
+        ${Parent}:hover &::after,
+        :hover::after {
+            transition-delay: 0.5s;
+            visibility: visible;
+            opacity: 1;
         }
     `}
 `
 
-const Tooltip = ({ value, placement, ...props }) => (
-    <Root tooltip={value} theme={placement} {...props} />
+const UnstyledTooltip = ({ value, placement = TopTheme, ...props }) => (
+    <Root {...props} tooltip={value} theme={placement} />
 )
 
-Tooltip.TOP = TopTheme
-Tooltip.BOTTOM = BottomTheme
-
-Tooltip.defaultProps = {
-    placement: Tooltip.TOP,
-}
+const Tooltip = styled(UnstyledTooltip)``
 
 Object.assign(Tooltip, {
+    BOTTOM: BottomTheme,
+    Parent,
     Root,
+    TOP: TopTheme,
 })
 
 export default Tooltip

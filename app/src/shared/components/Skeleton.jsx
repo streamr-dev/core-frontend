@@ -17,12 +17,12 @@ const UnstyledSkeleton = ({
     block,
     ...props
 }: Props) => (
-    disabled && children ? (
-        children
+    disabled ? (
+        children || null
     ) : (
-        <div {...props}>
+        <span {...props}>
             &zwnj;
-        </div>
+        </span>
     )
 )
 

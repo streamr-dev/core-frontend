@@ -2,7 +2,6 @@
 
 import React, { useEffect, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
 import { useClient } from 'streamr-client-react'
@@ -28,23 +27,10 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 
-const FullPage = styled.div`
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(239, 239, 239, 0.98);
-    z-index: 1;
-    overflow-y: scroll;
-`
-
 const PreviewModal = ({ onClose, ...previewProps }) => (
     <ModalPortal>
-        <ModalDialog onClose={onClose}>
-            <FullPage>
-                <StreamPreview {...previewProps} onClose={onClose} />
-            </FullPage>
+        <ModalDialog onClose={onClose} fullpage noScroll>
+            <StreamPreview {...previewProps} onClose={onClose} />
         </ModalDialog>
     </ModalPortal>
 )
