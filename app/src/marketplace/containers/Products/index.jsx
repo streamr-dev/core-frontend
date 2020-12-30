@@ -22,7 +22,7 @@ import {
 } from '$mp/modules/productList/actions'
 import { getCategories } from '$mp/modules/categories/actions'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
-import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
+import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 import {
     selectProductList,
     selectProductListError,
@@ -47,7 +47,7 @@ const Products = () => {
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
     const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
-    const { load: loadDataUnions, members } = useMemberStats()
+    const { load: loadDataUnions, members } = useAllDataUnionStats()
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 

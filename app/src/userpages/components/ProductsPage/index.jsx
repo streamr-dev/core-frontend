@@ -18,7 +18,7 @@ import ListContainer from '$shared/components/Container/List'
 import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import useModal from '$shared/hooks/useModal'
-import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
+import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
 import Grid from '$shared/components/Tile/Grid'
@@ -62,7 +62,7 @@ const ProductsPage = () => {
     const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useMemberStats()
+    const { load: loadDataUnionStats, members, fetching: fetchingDataUnionStats } = useAllDataUnionStats()
 
     useEffect(() => {
         dispatch(getMyProducts(filter))

@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getAllDataUnions } from '$mp/modules/dataUnion/actions'
 import { selectDataUnions, selectFetchingDataUnionStats } from '$mp/modules/dataUnion/selectors'
 
-function useMemberStats() {
+function useAllDataUnionStats() {
     const dispatch = useDispatch()
     const load = useCallback(() => {
         dispatch(getAllDataUnions())
@@ -38,4 +38,4 @@ function useMemberStats() {
     ])
 }
 
-export default useMemberStats
+export default useAllDataUnionStats
