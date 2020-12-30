@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { SM, LG, REGULAR } from '$shared/utils/styled'
 import CloseButton from './CloseButton'
 import Skeleton from '$shared/components/Skeleton'
@@ -119,6 +119,13 @@ const Head = styled(UnstyledHead)`
     button + button {
         margin-left: 16px;
     }
+
+    ${({ skeletonize }) => !!skeletonize && css`
+        h1,
+        p {
+            width: auto;
+        }
+    `}
 `
 
 export default Head
