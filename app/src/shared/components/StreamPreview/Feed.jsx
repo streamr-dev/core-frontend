@@ -192,7 +192,7 @@ const UnstyledFeed = ({
 
         rowRef.current = e.currentTarget
 
-        // Touch screen and "focused" row does not much current row? Do nothing.
+        // Using touch screen and "focused" row does not much current row? Do nothing.
         if ('ontouchstart' in window && prevRow !== e.currentTarget) {
             return
         }
@@ -240,6 +240,7 @@ const UnstyledFeed = ({
                             <Row
                                 key={msgId}
                                 onClick={() => setDatapoint((current) => (
+                                    // Same row clicked twice = toggle.
                                     d === current ? undefined : d
                                 ))}
                             >
