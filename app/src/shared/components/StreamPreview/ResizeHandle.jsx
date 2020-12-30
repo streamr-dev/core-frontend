@@ -1,11 +1,20 @@
 import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import Layout from './Layout'
 
 const UnstyledResizeHandle = (props) => {
     const ref = useRef(null)
 
     const [x, drag] = useState()
+
+    const isMounted = useIsMounted()
+
+    const safeDrag = (...args) => {
+        if (isMounted()) {
+            drag(...args)
+        }
+    }
 
     const touch = ({ touches }) => touches[0]
 
@@ -19,7 +28,7 @@ const UnstyledResizeHandle = (props) => {
         const x0 = t.clientX
 
         const onMove = (evt) => {
-            drag(width + (x0 - touch(evt).clientX))
+            safeDrag(width + (x0 - touch(evt).clientX))
         }
 
         const onUp = () => {
@@ -38,7 +47,7 @@ const UnstyledResizeHandle = (props) => {
 
         const onMove = (e) => {
             e.preventDefault()
-            drag(width + (x0 - e.clientX))
+            safeDrag(width + (x0 - e.clientX))
         }
 
         const onUp = () => {
@@ -51,7 +60,7 @@ const UnstyledResizeHandle = (props) => {
     }
 
     const onDblClick = () => {
-        drag(undefined)
+        safeDrag(undefined)
     }
 
     return (
