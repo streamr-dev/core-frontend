@@ -13,6 +13,15 @@ Cypress.Commands.add('login', (username = 'tester1@streamr.com', password = 'tes
     }).session.getSessionToken().then(setToken)
 ))
 
+Cypress.Commands.add('tokenLogin', (sessionToken) => (
+    new StreamrClient({
+        restUrl: 'http://localhost/api/v1',
+        auth: {
+            sessionToken,
+        },
+    }).session.getSessionToken().then(setToken)
+))
+
 Cypress.Commands.add('logout', () => {
     setToken(null)
 })
