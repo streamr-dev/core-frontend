@@ -25,7 +25,7 @@ const EmptyState = ({
                 {image}
             </div>
         )}
-        <p>{children}</p>
+        {children}
         {!!link && (
             <div className={classNames(styles.linkWrapper, {
                 'd-none d-md-block': !linkOnMobile,

@@ -42,8 +42,8 @@ const NoAddedSubscriptionsView = withRouter(({ history }) => {
                 />
             )}
         >
-            <Translate value="userpages.subscriptions.noAddedSubscriptions.title" />
             <div onClick={handleLink}>
+                <Translate value="userpages.subscriptions.noAddedSubscriptions.title" />
                 <Translate
                     value="userpages.subscriptions.noAddedSubscriptions.message"
                     tag="small"
@@ -74,8 +74,10 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
             </Button>
         )}
     >
-        <Translate value="userpages.subscriptions.noSubscriptionsResult.title" />
-        <Translate value="userpages.subscriptions.noSubscriptionsResult.message" tag="small" />
+        <p>
+            <Translate value="userpages.subscriptions.noSubscriptionsResult.title" />
+            <Translate value="userpages.subscriptions.noSubscriptionsResult.message" tag="small" />
+        </p>
     </EmptyState>
 )
 

@@ -32,18 +32,20 @@ const NoCreatedProductsView = () => (
             />
         )}
     >
-        <Translate value="userpages.products.noCreatedProducts.title" />
-        <MediaQuery minWidth={breakpoints.lg.min}>
-            <Translate
-                value="userpages.products.noCreatedProducts.message"
-                docsLink={docsLinks.createProduct}
-                dangerousHTML
-                tag="small"
-            />
-        </MediaQuery>
-        <MediaQuery maxWidth={breakpoints.lg.min}>
-            <Translate value="userpages.products.noCreatedProducts.messageMobile" tag="small" />
-        </MediaQuery>
+        <p>
+            <Translate value="userpages.products.noCreatedProducts.title" />
+            <MediaQuery minWidth={breakpoints.lg.min}>
+                <Translate
+                    value="userpages.products.noCreatedProducts.message"
+                    docsLink={docsLinks.createProduct}
+                    dangerousHTML
+                    tag="small"
+                />
+            </MediaQuery>
+            <MediaQuery maxWidth={breakpoints.lg.min}>
+                <Translate value="userpages.products.noCreatedProducts.messageMobile" tag="small" />
+            </MediaQuery>
+        </p>
     </EmptyState>
 )
 
@@ -65,8 +67,10 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
             </Button>
         )}
     >
-        <Translate value="userpages.products.noProductsResult.title" />
-        <Translate value="userpages.products.noProductsResult.message" tag="small" />
+        <p>
+            <Translate value="userpages.products.noProductsResult.title" />
+            <Translate value="userpages.products.noProductsResult.message" tag="small" />
+        </p>
     </EmptyState>
 )
 

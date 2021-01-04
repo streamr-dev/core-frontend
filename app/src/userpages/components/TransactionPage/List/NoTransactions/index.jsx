@@ -38,25 +38,25 @@ const NoTransactionsView = ({ accountsExist, accountLinked }: Props) => (
         {(() => {
             if (!accountsExist) {
                 return (
-                    <React.Fragment>
+                    <p>
                         <Translate value="userpages.transactions.noAccountsLinked.title" />
                         <Translate value="userpages.transactions.noAccountsLinked.message" tag="small" />
-                    </React.Fragment>
+                    </p>
                 )
             } else if (!accountLinked) {
                 return (
-                    <React.Fragment>
+                    <p>
                         <Translate value="userpages.transactions.currentAccountNotLinked.title" />
                         <Translate value="userpages.transactions.currentAccountNotLinked.message" tag="small" />
-                    </React.Fragment>
+                    </p>
                 )
             }
 
             return (
-                <React.Fragment>
+                <p>
                     <Translate value="userpages.transactions.noTransactions.title" />
                     <Translate value="userpages.transactions.noTransactions.message" tag="small" />
-                </React.Fragment>
+                </p>
             )
         })()}
     </EmptyState>

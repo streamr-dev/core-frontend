@@ -31,11 +31,13 @@ const NoDataUnionMembers = ({ filter }: NoDataUnionMembersProps) => (
             />
         )}
     >
-        <Translate value={`userpages.members.noDataUnionMembers.${(filter && filter.id) || ''}.title`} />
-        <Translate
-            value={`userpages.members.noDataUnionMembers.${(filter && filter.id) || ''}.message`}
-            tag="small"
-        />
+        <p>
+            <Translate value={`userpages.members.noDataUnionMembers.${(filter && filter.id) || ''}.title`} />
+            <Translate
+                value={`userpages.members.noDataUnionMembers.${(filter && filter.id) || ''}.message`}
+                tag="small"
+            />
+        </p>
     </EmptyState>
 )
 
@@ -57,8 +59,10 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
             </Button>
         )}
     >
-        <Translate value="userpages.members.noDataUnionMembersResult.title" />
-        <Translate value="userpages.members.noDataUnionMembersResult.message" tag="small" />
+        <p>
+            <Translate value="userpages.members.noDataUnionMembersResult.title" />
+            <Translate value="userpages.members.noDataUnionMembersResult.message" tag="small" />
+        </p>
     </EmptyState>
 )
 

@@ -31,13 +31,15 @@ const NoCreatedDashboardsView = () => (
             />
         )}
     >
-        <Translate value="userpages.dashboards.noCreatedDashboards.title" />
-        <MediaQuery minWidth={breakpoints.lg.min}>
-            <Translate value="userpages.dashboards.noCreatedDashboards.message" tag="small" />
-        </MediaQuery>
-        <MediaQuery maxWidth={breakpoints.lg.min}>
-            <Translate value="userpages.dashboards.noCreatedDashboards.messageMobile" tag="small" />
-        </MediaQuery>
+        <p>
+            <Translate value="userpages.dashboards.noCreatedDashboards.title" />
+            <MediaQuery minWidth={breakpoints.lg.min}>
+                <Translate value="userpages.dashboards.noCreatedDashboards.message" tag="small" />
+            </MediaQuery>
+            <MediaQuery maxWidth={breakpoints.lg.min}>
+                <Translate value="userpages.dashboards.noCreatedDashboards.messageMobile" tag="small" />
+            </MediaQuery>
+        </p>
     </EmptyState>
 )
 
@@ -59,8 +61,10 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
             </Button>
         )}
     >
-        <Translate value="userpages.dashboards.noDashboardsResult.title" />
-        <Translate value="userpages.dashboards.noDashboardsResult.message" tag="small" />
+        <p>
+            <Translate value="userpages.dashboards.noDashboardsResult.title" />
+            <Translate value="userpages.dashboards.noDashboardsResult.message" tag="small" />
+        </p>
     </EmptyState>
 )
 
