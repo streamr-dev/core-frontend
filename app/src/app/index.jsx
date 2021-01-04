@@ -5,9 +5,8 @@ import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
 
 import React from 'react'
-import { Route as RouterRoute, Switch, Redirect, type Location } from 'react-router-dom'
+import { Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'connected-react-router'
-import qs from 'query-string'
 
 // Marketplace
 import MarketplaceRouter from './Marketplace'
@@ -17,10 +16,6 @@ import Products from '$mp/containers/Products'
 import SessionProvider from '$auth/components/SessionProvider'
 import LoginPage from '$auth/components/LoginPage'
 import LogoutPage from '$auth/components/LogoutPage'
-import SignupPage from '$auth/components/SignupPage'
-import ForgotPasswordPage from '$auth/components/ForgotPasswordPage'
-import ResetPasswordPage from '$auth/components/ResetPasswordPage'
-import RegisterPage from '$auth/components/RegisterPage'
 
 // Userpages
 import UserpagesRouter from './Userpages'
@@ -59,21 +54,18 @@ const DashboardEditorAuth = userIsAuthenticated(DashboardEditor)
 // Wrap each Route to an ErrorBoundary
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
-const forwardTo = (routeFn: Function) => ({ location: { search } }: Location) => (
-    <Redirect to={routeFn(qs.parse(search))} />
-)
-
 const AuthenticationRouter = () => ([
     <Route exact path={routes.auth.login()} component={LoginPage} key="LoginPage" />,
     <Route exact path={routes.auth.logout()} component={LogoutPage} key="LogoutPage" />,
-    <Route path={routes.auth.signUp()} component={SignupPage} key="SignupPage" />,
-    <Route path={routes.auth.forgotPassword()} component={ForgotPasswordPage} key="ForgotPasswordPage" />,
-    <Route path={routes.auth.resetPassword()} component={ResetPasswordPage} key="ResetPasswordPage" />,
-    <Route exact path={routes.auth.register()} component={RegisterPage} key="RegisterPage" />,
+    // Redirect old paths to login
     <Redirect from="/login/auth" to={routes.auth.login()} key="LoginRedirect" />,
-    <Route exact path="/register/register" key="RegisterRedirect" render={forwardTo(routes.auth.register)} />,
-    <Route exact path="/register/resetPassword" key="ResetPasswordRedirect" render={forwardTo(routes.auth.resetPassword)} />,
-    <Redirect from="/register/forgotPassword" to={routes.auth.forgotPassword()} key="ForgotPasswordRedirect" />,
+    <Redirect from="/signup" to={routes.auth.login()} key="SignUpRedirect" />,
+    <Redirect from="/forgotPassword" to={routes.auth.login()} key="ForgotPasswordRedirect" />,
+    <Redirect from="/resetPassword" to={routes.auth.login()} key="ResetPasswordRedirect" />,
+    <Redirect from="/register" to={routes.auth.login()} key="RegisterRedirect" />,
+    <Redirect from="/register/register" to={routes.auth.login()} key="LegacyRegisterRedirect" />,
+    <Redirect from="/register/resetPassword" to={routes.auth.login()} key="LegacyResetPasswordRedirect" />,
+    <Redirect from="/register/forgotPassword" to={routes.auth.login()} key="LegacyForgotPasswordRedirect" />,
 ])
 
 const EditorRouter = () => ([

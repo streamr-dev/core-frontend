@@ -262,8 +262,8 @@ const sources = {
         </svg>
     ),
     emptyAvatarUpload: (
-        <svg width="42" height="42" xmlns="http://www.w3.org/2000/svg">
-            <g transform="translate(1 1)" stroke="#D8D8D8" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
+        <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <g transform="translate(20 20)" stroke="#D8D8D8" strokeWidth="1.5" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M13.817 10.489A11.927 11.927 0 0 0 27.11 13.16" /><circle cx="20" cy="14.13" r="7.174" />
                 <path d="M.435 10.871V3.043A2.609 2.609 0 0 1 3.043.435h7.827M39.565 10.871V3.043A2.609 2.609 0 0 0 36.957.435H29.13M.435 29.13v7.827a2.609 2.609 0 0 0 2.608 2.608h7.827M39.565 29.13v7.827a2.609 2.609 0 0 1-2.608 2.608H29.13M31.02 31.74a11.673 11.673 0 0 0-22.04 0" />
             </g>
@@ -272,7 +272,6 @@ const sources = {
     profileMan: (
         <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
             <g fill="none" fillRule="evenodd">
-                <circle fill="#EFEFEF" fillRule="nonzero" cx="40" cy="40" r="40" />
                 <g opacity="0.5">
                     <ellipse stroke="#525252" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" cx="40.5" cy="28" rx="10.762" ry="10.5" />
                     <path d="M32.813 44.498V46c0 4.142 3.441 7.5 7.687 7.5s7.688-3.358 7.688-7.5v-1.502" stroke="#525252" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

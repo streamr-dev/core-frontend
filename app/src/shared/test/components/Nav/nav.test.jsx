@@ -77,7 +77,6 @@ describe('Nav.Wide', () => {
             expect(el.find({ id: '/marketplace' }).exists()).toBe(true)
             expect(el.find({ id: '/docs/getting-started' }).exists()).toBe(true)
             expect(el.find({ id: '/login' }).exists()).toBe(true)
-            expect(el.find({ id: '/signup' }).exists()).toBe(true)
         })
     })
 
@@ -103,7 +102,6 @@ describe('Nav.Wide', () => {
             expect(el.find({ id: '/marketplace' }).exists()).toBe(true)
             expect(el.find({ id: '/docs/getting-started' }).exists()).toBe(true)
             expect(el.find({ id: '/login' }).exists()).toBe(false)
-            expect(el.find({ id: '/signup' }).exists()).toBe(false)
             expect(el.find({ id: '/logout' }).exists()).toBe(true)
         })
 

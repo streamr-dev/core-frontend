@@ -44,7 +44,6 @@ const UsernameButton = styled.button`
     height: 32px;
     line-height: 32px;
     border-radius: 4px;
-    font-family: var(--medium);
     font-weight: var(--medium);
     font-size: 12px;
     text-align: center;

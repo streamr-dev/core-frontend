@@ -171,7 +171,7 @@ const UnstyledWide = (props) => {
                 )}
             />
             <Button.Outlined as={Link.Raw} to={routes.core()}>
-                Use Core
+                <Translate value="general.useCore" />
             </Button.Outlined>
         </Nav.Wide>
     )
@@ -303,7 +303,7 @@ const UnstyledNarrow = (props) => (
         </Nav.Narrow.Body>
         <Nav.Narrow.Footer>
             <Button.Primary as={Link.Raw} to={routes.core()}>
-                Use Core
+                <Translate value="general.useCore" />
             </Button.Primary>
         </Nav.Narrow.Footer>
     </Nav.Narrow>

@@ -2,11 +2,13 @@ import { isLocalStorageAvailable } from '$shared/utils/storage'
 
 export const SESSION_TOKEN_KEY = 'session.token'
 export const SESSION_LOGIN_TIME = 'session.loginTime'
+export const SESSION_LOGIN_METHOD = 'session.loginMethod'
 export const EXPIRES_AT_VALID_HOURS = 6
 
 const cache = {
     [SESSION_TOKEN_KEY]: null,
     [SESSION_LOGIN_TIME]: null,
+    [SESSION_LOGIN_METHOD]: null,
 }
 
 const storage = isLocalStorageAvailable() ? window.localStorage : {
@@ -33,4 +35,16 @@ const expired = (date) => (
 
 export const getToken = () => (
     (!expired(storage.getItem(SESSION_LOGIN_TIME)) && storage.getItem(SESSION_TOKEN_KEY)) || null
+)
+
+export const setMethod = (method) => {
+    if (method) {
+        storage.setItem(SESSION_LOGIN_METHOD, method)
+    } else {
+        storage.removeItem(SESSION_LOGIN_METHOD)
+    }
+}
+
+export const getMethod = () => (
+    storage.getItem(SESSION_LOGIN_METHOD) || null
 )

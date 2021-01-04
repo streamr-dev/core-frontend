@@ -119,11 +119,8 @@ msgstr "Subscriptions"
 msgid "general.reddit"
 msgstr "Reddit"
 
-msgid "general.signIn"
-msgstr "Sign In"
-
-msgid "general.signUp"
-msgstr "Sign Up"
+msgid "general.useCore"
+msgstr "Use Core"
 
 msgid "general.apps"
 msgstr "Apps"
@@ -199,6 +196,9 @@ msgstr "Copy to clipboard"
 
 msgid "general.copied"
 msgstr "Copied"
+
+msgid "general.connectedWith"
+msgstr "Connected with <strong>%{method}</strong>"
 
 msgid "language.id"
 msgstr "en"

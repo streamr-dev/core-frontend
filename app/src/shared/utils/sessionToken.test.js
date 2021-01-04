@@ -1,4 +1,13 @@
-import { setToken, getToken, SESSION_TOKEN_KEY, SESSION_LOGIN_TIME, EXPIRES_AT_VALID_HOURS } from '$shared/utils/sessionToken'
+import {
+    setToken,
+    getToken,
+    setMethod,
+    getMethod,
+    SESSION_TOKEN_KEY,
+    SESSION_LOGIN_TIME,
+    SESSION_LOGIN_METHOD,
+    EXPIRES_AT_VALID_HOURS,
+} from '$shared/utils/sessionToken'
 import sinon from 'sinon'
 
 describe('session token utility', () => {
@@ -53,6 +62,36 @@ describe('session token utility', () => {
             setToken('token')
             expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('token')
             expect(global.localStorage.getItem(SESSION_LOGIN_TIME)).toBe(new Date().toString())
+        })
+    })
+
+    describe('getToken', () => {
+        it('gives null by default', () => {
+            expect(getToken()).toBe(null)
+        })
+
+        it('gives the stored value', () => {
+            global.localStorage.setItem(SESSION_LOGIN_METHOD, 'metamask')
+            expect(getMethod()).toBe('metamask')
+        })
+
+        it('gives null if stored method is an empty string', () => {
+            global.localStorage.setItem(SESSION_LOGIN_METHOD, '')
+
+            expect(getMethod()).toBe(null)
+        })
+    })
+
+    describe('setMethod', () => {
+        it('puts non-empty value into local storage', () => {
+            setMethod('')
+            expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe(null)
+            setMethod(null)
+            expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe(null)
+            setMethod(undefined)
+            expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe(null)
+            setMethod('metamask')
+            expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe('metamask')
         })
     })
 

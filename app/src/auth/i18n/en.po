@@ -8,86 +8,36 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
-msgid "auth.back"
-msgstr "Back"
+msgid "auth.streamrCore"
+msgstr "Streamr Core"
 
-msgid "auth.go"
-msgstr "Go"
+msgid "auth.connectWallet"
+msgstr "Connect a wallet"
 
-msgid "auth.next"
-msgstr "Next"
+msgid "auth.connecting"
+msgstr "Connecting..."
 
-msgid "auth.finish"
-msgstr "Finish"
+msgid "auth.couldNotConnect"
+msgstr "Couldn't connect to %{method}"
 
-msgid "auth.labels.email"
-msgstr "Email"
+msgid "auth.help.wallet"
+msgstr ""
+"Need an Ethereum wallet? "
+"<a href=\"https://ethereum.org/en/wallets/\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Learn more here</a>"
 
-msgid "auth.labels.address"
-msgstr "Address"
+msgid "auth.cancel"
+msgstr "Cancel"
 
-msgid "auth.labels.password"
-msgstr "Password"
+msgid "auth.tryAgain"
+msgstr "Try again"
 
-msgid "auth.labels.ethereum"
-msgstr "Signing you in, hold tight"
+msgid "auth.terms"
+msgstr ""
+"By connecting your wallet and using Streamr <br />"
+"you agree to our <a href=\"%{tosLink}\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">Terms of Service</a>"
 
-msgid "auth.signInWithEthereum"
-msgstr "Authenticate with Ethereum"
+msgid "auth.loginMethod.metamask"
+msgstr "MetaMask"
 
-msgid "auth.forgotPassword.link.get"
-msgstr "Get a link to reset your password"
-
-msgid "auth.forgotPassword.link.send"
-msgstr "Send"
-
-msgid "auth.forgotPassword.link.sent"
-msgstr "Link sent"
-
-msgid "auth.forgotPassword.successMessage"
-msgstr "If a user with that email exists, we have sent a link to reset the password. Please check your email and click the link — it may be in your spam folder!"
-
-msgid "auth.password.create"
-msgstr "Create a Password"
-
-msgid "auth.password.confirm"
-msgstr "Confirm your password"
-
-msgid "auth.password.strength.weak"
-msgstr "Password is weak"
-
-msgid "auth.password.strength.moderate"
-msgstr "Password is not strong"
-
-msgid "auth.password.strength.strong"
-msgstr "Password is quite strong"
-
-msgid "auth.login.failure"
-msgstr "Login failed"
-
-msgid "auth.login.forgotPassword"
-msgstr "Forgot your password?"
-
-msgid "auth.login.forgotPassword"
-msgstr "Forgot your password?"
-
-msgid "auth.register.name"
-msgstr "Your Name"
-
-msgid "auth.register.terms"
-msgstr "Terms"
-
-msgid "auth.register.agreement"
-msgstr "I agree with the <a href=\"%{terms}\">terms and conditions</a>, and <a href=\"%{privacy}\">privacy policy</a>."
-
-msgid "auth.resetPassword"
-msgstr "Reset password"
-
-msgid "auth.signUp.success.title"
-msgstr "Thanks for signing up!"
-
-msgid "auth.signUp.success.message.line0"
-msgstr "We have sent a sign up link to your email."
-
-msgid "auth.signUp.success.message.line1"
-msgstr "Please click it to finish your registration."
+msgid "auth.loginMethod.walletConnect"
+msgstr "WalletConnect"

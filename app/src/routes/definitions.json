@@ -1,18 +1,11 @@
 {
     "auth": {
         "external": {
-            "forgotPassword": "<streamr>/api/v1/passwords/tokens",
-            "logout": "<streamr>/api/v1/logout",
-            "register": "<streamr>/api/v1/users",
-            "resetPassword": "<streamr>/api/v1/passwords",
-            "signUp": "<streamr>/api/v1/signups"
+            "login": "<streamr>/api/v1/login/response",
+            "logout": "<streamr>/api/v1/logout"
         },
-        "forgotPassword": "/forgotPassword",
         "login": "/login",
-        "logout": "/logout",
-        "register": "/register",
-        "resetPassword": "/resetPassword",
-        "signUp": "/signup"
+        "logout": "/logout"
     },
     "canvases": {
         "edit": "/canvas/editor/:id?",
@@ -118,7 +111,6 @@
         "currentUser": {
             "index": "<api>/users/me",
             "image": "<api>/users/me/image",
-            "changePassword": "<api>/users/me/changePassword",
             "products": "<api>/users/me/products"
         },
         "canvases": {
