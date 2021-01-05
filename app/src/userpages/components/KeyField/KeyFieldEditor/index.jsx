@@ -1,135 +1,134 @@
 // @flow
 
-import React from 'react'
+import React, { useState, useCallback } from 'react'
 import { I18n } from 'react-redux-i18n'
+import styled from 'styled-components'
 
-import Buttons from '$shared/components/Buttons'
+import UnstyledButtons from '$shared/components/Buttons'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Errors from '$ui/Errors'
 
-import styles from './keyFieldEditor.pcss'
-
 export type LabelType = 'apiKey' | 'address' | 'sharedSecret'
+
+const KeyName = styled.div``
+
+const KeyValue = styled.div``
+
+const Buttons = styled(UnstyledButtons)``
 
 type Props = {
     keyName?: string,
     value?: string,
     createNew?: boolean,
-    editValue?: boolean,
-    onCancel?: () => void,
-    onSave: (keyName: string, value: string) => void | Promise<void>,
+    showValue?: boolean,
+    onCancel: () => void,
+    onSave: (keyName: string) => void | Promise<void>,
     waiting?: boolean,
     error?: ?string,
     labelType: LabelType,
 }
 
-type State = {
-    keyName: string,
-    keyId: string,
-}
+const UnstyledKeyFieldEditor = ({
+    onCancel,
+    onSave,
+    createNew,
+    keyName: keyNameProp,
+    value,
+    showValue,
+    waiting,
+    error,
+    labelType,
+    ...props
+}: Props) => {
+    const [keyName, setKeyName] = useState(keyNameProp || '')
 
-class KeyFieldEditor extends React.Component<Props, State> {
-    static defaultProps = {
-        labelType: 'apiKey',
-    }
+    const onKeyNameChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
+        setKeyName(e.target.value)
+    }, [])
 
-    state = {
-        keyName: this.props.keyName || '',
-        keyId: this.props.value || '',
-    }
+    const filled = !!keyName && (createNew || !!value)
 
-    onKeyNameChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setState({
-            keyName: e.target.value,
-        })
-    }
-
-    onValueChange = (e: SyntheticInputEvent<EventTarget>) => {
-        this.setState({
-            keyId: e.target.value,
-        })
-    }
-
-    onSave = () => {
-        const { keyName, keyId } = this.state
-        const { onSave } = this.props
-
-        onSave(keyName, keyId)
-    }
-
-    render = () => {
-        const { keyName, keyId } = this.state
-        const {
-            onCancel,
-            createNew,
-            editValue,
-            waiting,
-            error,
-            labelType,
-        } = this.props
-        const filled = !!keyName && (createNew || !!keyId)
-
-        return (
-            <div className={styles.editor}>
-                <div className={styles.keyName}>
+    return (
+        <div {...props}>
+            <KeyName>
+                <Label
+                    htmlFor="keyName"
+                    state={createNew && !showValue && error && 'ERROR'}
+                >
+                    {I18n.t(`userpages.keyFieldEditor.keyName.${labelType}`)}
+                </Label>
+                <Text
+                    id="keyName"
+                    value={keyName}
+                    onChange={onKeyNameChange}
+                />
+                {createNew && !showValue && error && (
+                    <Errors overlap>
+                        {error}
+                    </Errors>
+                )}
+            </KeyName>
+            {(!createNew || showValue) && (
+                <KeyValue>
                     <Label
-                        htmlFor="keyName"
-                        state={createNew && !editValue && error && 'ERROR'}
+                        htmlFor="keyValue"
+                        state={error && 'ERROR'}
                     >
-                        {I18n.t(`userpages.keyFieldEditor.keyName.${labelType}`)}
+                        {I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`)}
                     </Label>
                     <Text
-                        value={keyName}
-                        onChange={this.onKeyNameChange}
+                        id="keyValue"
+                        value={value}
+                        readOnly
                     />
-                    {createNew && !editValue && error && (
-                        <Errors overlap>
-                            {error}
-                        </Errors>
-                    )}
-                </div>
-                {(!createNew || editValue) && (
-                    <div className={styles.keyValue}>
-                        <Label
-                            htmlFor="keyValue"
-                            state={error && 'ERROR'}
-                        >
-                            {I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`)}
-                        </Label>
-                        <Text
-                            id="keyValue"
-                            value={keyId}
-                            onChange={this.onValueChange}
-                            readOnly={!editValue}
-                        />
-                        <Errors overlap>
-                            {error}
-                        </Errors>
-                    </div>
-                )}
-                <Buttons
-                    className={styles.buttons}
-                    actions={{
-                        save: {
-                            title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
-                            kind: 'secondary',
-                            onClick: this.onSave,
-                            disabled: !filled || waiting,
-                            spinner: waiting,
-                        },
-                        cancel: {
-                            kind: 'link',
-                            className: 'grey-container',
-                            title: I18n.t('userpages.keyFieldEditor.cancel'),
-                            outline: true,
-                            onClick: () => onCancel && onCancel(),
-                        },
-                    }}
-                />
-            </div>
-        )
-    }
+                    <Errors overlap>
+                        {error}
+                    </Errors>
+                </KeyValue>
+            )}
+            <Buttons
+                actions={{
+                    save: {
+                        title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
+                        kind: 'secondary',
+                        onClick: () => onSave(keyName),
+                        disabled: !filled || waiting,
+                        spinner: waiting,
+                    },
+                    cancel: {
+                        kind: 'link',
+                        className: 'grey-container',
+                        title: I18n.t('userpages.keyFieldEditor.cancel'),
+                        outline: true,
+                        onClick: () => onCancel(),
+                    },
+                }}
+            />
+        </div>
+    )
 }
+
+UnstyledKeyFieldEditor.defaultProps = {
+    labelType: 'apiKey',
+}
+
+const KeyFieldEditor = styled(UnstyledKeyFieldEditor)`
+    position: relative;
+    background: #F5F5F5;
+    border-radius: 4px;
+    margin: -1rem -2rem 0 -2rem;
+    padding: 2rem;
+
+    ${Buttons} {
+        justify-content: flex-start;
+        padding: 0;
+        margin-top: 1.875rem;
+    }
+
+    ${KeyValue} {
+        margin-top: 1.7rem;
+    }
+`
 
 export default KeyFieldEditor

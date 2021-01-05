@@ -54,7 +54,7 @@ stories.add('edit value', () => (
         value="value"
         onCancel={action('onCancel')}
         onSave={action('onSave')}
-        editValue
+        showValue
     />
 ))
 
@@ -75,7 +75,7 @@ stories.add('create new with value', () => (
         onCancel={action('onCancel')}
         onSave={action('onSave')}
         createNew
-        editValue
+        showValue
     />
 ))
 
@@ -96,5 +96,16 @@ stories.add('error', () => (
         onCancel={action('onCancel')}
         onSave={action('onSave')}
         error="Something went wrong"
+    />
+))
+
+stories.add(' create error', () => (
+    <KeyFieldEditor
+        keyName="key"
+        value="value"
+        onCancel={action('onCancel')}
+        onSave={action('onSave')}
+        error="Something went wrong"
+        createNew
     />
 ))

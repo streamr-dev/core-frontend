@@ -1,99 +1,77 @@
-// @flow
-
-import React from 'react'
+import React, { useReducer, useCallback } from 'react'
 
 import Button from '$shared/components/Button'
-import KeyFieldEditor, { type LabelType } from '../KeyFieldEditor'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import KeyFieldEditor from '../KeyFieldEditor'
 
-type Props = {
-    label: string,
-    createWithValue?: boolean,
-    onSave: (keyName: string, value: string) => Promise<void>,
-    addKeyFieldAllowed: boolean,
-    labelType?: LabelType,
-}
-
-type State = {
-    editing: boolean,
-    waiting: boolean,
-    error: ?string,
-}
-
-class AddKeyField extends React.Component<Props, State> {
-    state = {
+const AddKeyField = ({ label, addKeyFieldAllowed, labelType, onSave: onSaveProp }) => {
+    const [{ editing, waiting, error }, updateState] = useReducer((state, nextState) => ({
+        ...state,
+        ...nextState,
+    }), {
         editing: false,
         waiting: false,
         error: undefined,
-    }
+    })
+    const isMounted = useIsMounted()
 
-    componentWillUnmount() {
-        this.unmounted = true
-    }
-
-    unmounted: boolean = false
-
-    onEdit = (e: SyntheticInputEvent<EventTarget>) => {
+    const onEdit = useCallback((e) => {
         e.preventDefault()
-        this.setState({
+        updateState({
             editing: true,
         })
-    }
+    }, [updateState])
 
-    onCancel = () => {
-        this.setState({
+    const onCancel = useCallback(() => {
+        updateState({
             editing: false,
             waiting: false,
         })
-    }
+    }, [updateState])
 
-    onSave = (keyName: string, value: string) => {
-        this.setState({
+    const onSave = useCallback(async (keyName) => {
+        updateState({
             waiting: true,
             error: null,
-        }, async () => {
-            try {
-                await this.props.onSave(keyName, value)
-
-                if (!this.unmounted) {
-                    this.setState({
-                        editing: false,
-                        waiting: false,
-                    })
-                }
-            } catch (error) {
-                if (!this.unmounted) {
-                    this.setState({
-                        waiting: false,
-                        error: error.message,
-                    })
-                }
-            }
         })
-    }
 
-    render = () => {
-        const { editing, waiting, error } = this.state
-        const { label, createWithValue, addKeyFieldAllowed, labelType } = this.props
-        return !editing ? (
-            <Button
-                kind="secondary"
-                onClick={this.onEdit}
-                disabled={!addKeyFieldAllowed}
-            >
-                {label}
-            </Button>
-        ) : (
-            <KeyFieldEditor
-                createNew
-                onCancel={this.onCancel}
-                onSave={this.onSave}
-                editValue={createWithValue}
-                waiting={waiting}
-                error={error}
-                labelType={labelType}
-            />
-        )
-    }
+        try {
+            await onSaveProp(keyName)
+
+            if (isMounted()) {
+                updateState({
+                    editing: false,
+                    waiting: false,
+                })
+            }
+        } catch (error) {
+            if (isMounted()) {
+                updateState({
+                    waiting: false,
+                    error: error.message,
+                })
+            }
+        }
+    }, [isMounted, updateState, onSaveProp])
+
+    return !editing ? (
+        <Button
+            kind="secondary"
+            onClick={onEdit}
+            disabled={!addKeyFieldAllowed}
+        >
+            {label}
+        </Button>
+    ) : (
+        <KeyFieldEditor
+            createNew
+            onCancel={onCancel}
+            onSave={onSave}
+            waiting={waiting}
+            error={error}
+            labelType={labelType}
+        />
+    )
 }
 
 export default AddKeyField

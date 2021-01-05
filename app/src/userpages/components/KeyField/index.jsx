@@ -1,8 +1,8 @@
 // @flow
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
-import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
+import styled from 'styled-components'
 
 import Popover from '$shared/components/Popover'
 import { truncate } from '$shared/utils/text'
@@ -14,9 +14,43 @@ import useCopy from '$shared/hooks/useCopy'
 import Label from '$ui/Label'
 import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
-import StatusIcon from '$shared/components/StatusIcon'
+import UnstyledStatusIcon from '$shared/components/StatusIcon'
 
-import styles from './keyField.pcss'
+const KeyFieldContainer = styled.div`
+    position: relative;
+`
+
+const KeyNameHolder = styled.div``
+
+const StatusIcon = styled(UnstyledStatusIcon)``
+
+const LabelWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    ${StatusIcon} {
+        width: 8px;
+        height: 8px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+
+    ${Label} {
+        flex-grow: 1;
+        margin-right: 0.5um;
+        position: relative;
+    }
+
+    ${KeyNameHolder} {
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+`
 
 type Props = {
     keyName: string,
@@ -36,11 +70,10 @@ type Props = {
 
 const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
 
-const KeyField = ({
+const UnstyledKeyField = ({
     keyName,
     value,
     hideValue,
-    className,
     allowEdit,
     onSave: onSaveProp,
     allowDelete,
@@ -50,6 +83,7 @@ const KeyField = ({
     onToggleEditor: onToggleEditorProp,
     labelComponent,
     active,
+    ...props
 }: Props) => {
     const [waiting, setWaiting] = useState(false)
     const [hidden, setHidden] = useState(!!hideValue)
@@ -152,23 +186,23 @@ const KeyField = ({
     ]), [hideValue, revealAction, onCopy, allowEdit, editAction, allowDelete, deleteAction])
 
     return (
-        <div className={cx(styles.root, styles.KeyField, className)}>
+        <div {...props}>
             {!editing ? (
-                <div className={styles.keyFieldContainer}>
-                    <div className={styles.labelWrapper}>
+                <KeyFieldContainer>
+                    <LabelWrapper>
                         {!!active && (
-                            <StatusIcon status={StatusIcon.OK} className={styles.status} />
+                            <StatusIcon status={StatusIcon.OK} />
                         )}
-                        <Label htmlFor="keyName" className={styles.label}>
+                        <Label htmlFor="keyName">
                             &zwnj;
-                            <div className={styles.keyNameHolder}>
+                            <KeyNameHolder>
                                 {keyName}
-                            </div>
+                            </KeyNameHolder>
                         </Label>
                         <div>
                             {labelComponent}
                         </div>
-                    </div>
+                    </LabelWrapper>
                     <WithInputActions actions={inputActions}>
                         <Text
                             value={value && truncate(value)}
@@ -176,7 +210,7 @@ const KeyField = ({
                             type={hidden ? 'password' : 'text'}
                         />
                     </WithInputActions>
-                </div>
+                </KeyFieldContainer>
             ) : (
                 <KeyFieldEditor
                     keyName={keyName}
@@ -192,8 +226,11 @@ const KeyField = ({
     )
 }
 
-KeyField.defaultProps = {
+UnstyledKeyField.defaultProps = {
     labelType: 'apiKey',
 }
+
+const KeyField = styled(UnstyledKeyField)`
+`
 
 export default KeyField

@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { mount } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
@@ -14,55 +14,34 @@ describe('KeyFieldEditor', () => {
 
     describe('basic', () => {
         it('shows text input for key name and value', () => {
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
             />)
 
-            assert(el.exists('.keyName Text'))
-            assert(el.exists('.keyValue Text'))
+            assert(el.exists('#keyName'))
+            expect(el.find('#keyName').hostNodes()).toHaveLength(1)
+            assert(el.exists('#keyValue'))
+            expect(el.find('#keyValue').hostNodes()).toHaveLength(1)
             assert(el.find('Label').at(0).text() === 'apiKey')
             assert(el.find('Label').at(1).text() === 'apiKey')
         })
 
         it('shows correct text for save button', () => {
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
             />)
             assert(el.find('Buttons').prop('actions').save.title === 'save')
         })
 
         it('shows save button as disabled if value is empty', () => {
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
             />)
             assert(el.find('Buttons').prop('actions').save.disabled === true)
-        })
-
-        it('shows save button as disabled unless both values are given', () => {
-            const el = shallow(<KeyFieldEditor
-                onSave={() => {}}
-            />)
-
-            el.setState({
-                keyName: 'name',
-            })
-            assert(el.find('Buttons').prop('actions').save.disabled === true)
-
-            el.setState({
-                keyName: null,
-                keyId: 'value',
-            })
-            assert(el.find('Buttons').prop('actions').save.disabled === true)
-
-            el.setState({
-                keyName: 'name',
-                keyId: 'value',
-            })
-            assert(el.find('Buttons').prop('actions').save.disabled !== true)
         })
 
         it('shows the value as readonly', () => {
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
             />)
 
@@ -71,7 +50,7 @@ describe('KeyFieldEditor', () => {
 
         it('calls onSave prop', () => {
             const spy = sandbox.spy()
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={spy}
             />)
 
@@ -82,7 +61,7 @@ describe('KeyFieldEditor', () => {
 
         it('shows an error as part of the value field', () => {
             const error = 'Something happened'
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
                 error={error}
             />)
@@ -93,7 +72,7 @@ describe('KeyFieldEditor', () => {
 
     describe('createNew', () => {
         it('shows only key name input when createNew flag is set', () => {
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
                 createNew
             />)
@@ -103,7 +82,7 @@ describe('KeyFieldEditor', () => {
         })
 
         it('shows correct text for save button', () => {
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
                 createNew
             />)
@@ -112,7 +91,7 @@ describe('KeyFieldEditor', () => {
 
         it('shows an error as part of the name field', () => {
             const error = 'Something happened'
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
                 createNew
                 error={error}
@@ -122,29 +101,31 @@ describe('KeyFieldEditor', () => {
         })
 
         it('shows save button as disabled unless name is given', () => {
-            const el = shallow(<KeyFieldEditor
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
                 createNew
             />)
 
             assert(el.find('Buttons').prop('actions').save.disabled === true)
 
-            el.setState({
-                keyName: 'name',
+            el.find('#keyName').hostNodes().simulate('change', {
+                target: {
+                    value: 'name',
+                },
             })
             assert(el.find('Buttons').prop('actions').save.disabled !== true)
         })
     })
 
-    describe('editValue', () => {
-        it('allows to edit the value', () => {
-            const el = shallow(<KeyFieldEditor
+    describe('showValue', () => {
+        it('shows the value', () => {
+            const el = mount(<KeyFieldEditor
                 onSave={() => {}}
-                editValue
+                showValue
             />)
 
             assert(el.find('Text').at(1).prop('id') === 'keyValue')
-            assert(el.find('Text').at(1).prop('readOnly') === false)
+            assert(el.find('Text').at(1).prop('readOnly') === true)
         })
     })
 })

@@ -233,16 +233,14 @@ export const getSecrets = ({ dataUnionId }: GetSecrets): ApiResult<Array<Secret>
 type PostSecrect = {
     dataUnionId: DataUnionId,
     name: string,
-    secret: string
 }
 
-export const postSecret = ({ dataUnionId, name, secret }: PostSecrect): ApiResult<Secret> => post({
+export const postSecret = ({ dataUnionId, name }: PostSecrect): ApiResult<Secret> => post({
     url: routes.api.dataunions.secrets.index({
         dataUnionId,
     }),
     data: {
         name,
-        secret,
     },
 })
 

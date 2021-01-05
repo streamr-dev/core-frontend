@@ -111,7 +111,7 @@ const ImageUpload = ({
                 <PngIcon
                     className={styles.icon}
                     name="imageUpload"
-                    alt={I18n.t('imageUpload.coverImage.upload')}
+                    alt=""
                 />
                 <p>
                     {srcImage ? (

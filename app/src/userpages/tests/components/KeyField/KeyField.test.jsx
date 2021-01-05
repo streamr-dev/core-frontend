@@ -1,5 +1,5 @@
 import React from 'react'
-import { shallow } from 'enzyme'
+import { mount } from 'enzyme'
 import assert from 'assert-diff'
 import sinon from 'sinon'
 
@@ -15,7 +15,7 @@ describe('KeyField', () => {
 
     describe('basic', () => {
         it('renders the component', () => {
-            const el = shallow(<KeyField
+            const el = mount(<KeyField
                 keyName="myKey"
                 value="testValue"
             />)
@@ -26,22 +26,22 @@ describe('KeyField', () => {
         })
 
         it('has a copy action', () => {
-            const el = shallow(<KeyField
+            const el = mount(<KeyField
                 keyName="myKey"
                 value="testValue"
             />)
 
             const actions = el.find('WithInputActions').prop('actions').map((action) => (
-                shallow(action)
+                mount(action)
             ))
             assert(actions.length === 1)
-            assert(actions[0].find('Translate').shallow().text() === 'copy')
+            assert(actions[0].find('Translate').text() === 'copy')
         })
     })
 
     describe('hide/reveal', () => {
         it('hides the value', () => {
-            const el = shallow(<KeyField
+            const el = mount(<KeyField
                 keyName="myKey"
                 value="testValue"
                 hideValue
@@ -51,7 +51,7 @@ describe('KeyField', () => {
         })
 
         it('has a menu option to reveal the value', () => {
-            const el = shallow(<KeyField
+            const el = mount(<KeyField
                 keyName="myKey"
                 value="testValue"
                 hideValue
@@ -59,46 +59,46 @@ describe('KeyField', () => {
 
             assert(el.find(Text).prop('type') === 'password')
 
-            const action = shallow(el.find('WithInputActions').prop('actions')[0])
-            assert(action.find('Translate').shallow().text() === 'reveal')
+            const action = mount(el.find('WithInputActions').prop('actions')[0])
+            assert(action.find('Translate').text() === 'reveal')
         })
     })
 
     describe('editing', () => {
         it('has a menu option to edit value', () => {
-            const el = shallow(<KeyField
+            const el = mount(<KeyField
                 keyName="myKey"
                 value="testValue"
                 allowEdit
             />)
 
-            const action = shallow(el.find('WithInputActions').prop('actions')[1])
-            assert(action.find('Translate').shallow().text() === 'edit')
+            const action = mount(el.find('WithInputActions').prop('actions')[1])
+            assert(action.find('Translate').text() === 'edit')
         })
     })
 
     describe('deleting', () => {
         it('has a menu option to remove value', () => {
-            const el = shallow(<KeyField
+            const el = mount(<KeyField
                 keyName="myKey"
                 value="testValue"
                 allowDelete
             />)
 
-            const action = shallow(el.find('WithInputActions').prop('actions')[1])
-            assert(action.find('Translate').shallow().text() === 'delete')
+            const action = mount(el.find('WithInputActions').prop('actions')[1])
+            assert(action.find('Translate').text() === 'delete')
             assert(action.prop('disabled') !== true)
         })
 
         it('disables the delete option', () => {
-            const el = shallow(<KeyField
+            const el = mount(<KeyField
                 keyName="myKey"
                 value="testValue"
                 allowDelete
                 disableDelete
             />)
 
-            const action = shallow(el.find('WithInputActions').prop('actions')[1])
+            const action = mount(el.find('WithInputActions').prop('actions')[1])
             assert(action.prop('disabled') === true)
         })
     })

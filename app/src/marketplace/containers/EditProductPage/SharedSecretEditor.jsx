@@ -78,11 +78,10 @@ const SharedSecretEditor = ({ className, disabled }: Props) => {
                     label={I18n.t('editProductPage.sharedSecrets.addSecret')}
                     addKeyFieldAllowed={!disabled}
                     labelType="sharedSecret"
-                    onSave={async (name, value) => {
+                    onSave={async (name) => {
                         const result = await postSecret({
                             dataUnionId,
                             name,
-                            secret: value,
                         })
                         setSecrets((currentSecrets) => [
                             ...currentSecrets,
