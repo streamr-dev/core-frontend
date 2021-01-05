@@ -54,7 +54,11 @@ const NotFoundPage = () => (
                 )}
                 linkOnMobile
             >
-                <Translate value="notFoundPage.message" dangerousHTML />
+                <Translate
+                    value="notFoundPage.message"
+                    dangerousHTML
+                    tag="p"
+                />
             </EmptyState>
         </Container>
     </Layout>

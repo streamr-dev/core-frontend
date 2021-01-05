@@ -17,8 +17,10 @@ const NoProductsView = () => (
             />
         )}
     >
-        <Translate value="noProductsView.message" />
-        <Translate value="noProductsView.keywordHint" tag="small" />
+        <p>
+            <Translate value="noProductsView.message" />
+            <Translate value="noProductsView.keywordHint" tag="small" />
+        </p>
     </EmptyState>
 )
 

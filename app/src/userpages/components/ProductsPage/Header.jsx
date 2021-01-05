@@ -44,9 +44,7 @@ const ProductInfo = styled.div`
 const Buttons = styled.div`
     display: none;
 
-    button + button,
-    a + button,
-    button + a {
+    * + * {
         margin-left: 1rem;
     }
 

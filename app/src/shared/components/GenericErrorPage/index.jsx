@@ -33,7 +33,11 @@ export const ErrorPageContent = ({ children }: Props) => (
             link={children}
             linkOnMobile
         >
-            <Translate value="genericErrorPage.message" dangerousHTML />
+            <Translate
+                value="genericErrorPage.message"
+                dangerousHTML
+                tag="p"
+            />
         </EmptyState>
     </Container>
 )

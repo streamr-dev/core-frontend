@@ -31,13 +31,15 @@ const NoCreatedCanvasesView = () => (
             />
         )}
     >
-        <Translate value="userpages.canvases.noCreatedCanvases.title" />
-        <MediaQuery minWidth={breakpoints.lg.min}>
-            <Translate value="userpages.canvases.noCreatedCanvases.message" tag="small" />
-        </MediaQuery>
-        <MediaQuery maxWidth={breakpoints.lg.min}>
-            <Translate value="userpages.canvases.noCreatedCanvases.messageMobile" tag="small" />
-        </MediaQuery>
+        <p>
+            <Translate value="userpages.canvases.noCreatedCanvases.title" />
+            <MediaQuery minWidth={breakpoints.lg.min}>
+                <Translate value="userpages.canvases.noCreatedCanvases.message" tag="small" />
+            </MediaQuery>
+            <MediaQuery maxWidth={breakpoints.lg.min}>
+                <Translate value="userpages.canvases.noCreatedCanvases.messageMobile" tag="small" />
+            </MediaQuery>
+        </p>
     </EmptyState>
 )
 
@@ -59,8 +61,10 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
             </Button>
         )}
     >
-        <Translate value="userpages.canvases.noCanvasesResult.title" />
-        <Translate value="userpages.canvases.noCanvasesResult.message" tag="small" />
+        <p>
+            <Translate value="userpages.canvases.noCanvasesResult.title" />
+            <Translate value="userpages.canvases.noCanvasesResult.message" tag="small" />
+        </p>
     </EmptyState>
 )
 
