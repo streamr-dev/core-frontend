@@ -126,13 +126,13 @@ const EditProductPage = ({ product }: { product: Product }) => {
     ])
 
     useEffect(() => {
-        if (isDeployed) {
+        if (isDataUnion && isEthereumAddress(beneficiaryAddress)) {
             loadDataUnion(beneficiaryAddress)
             loadDataUnionStats(beneficiaryAddress)
             loadDataUnionSecrets(beneficiaryAddress)
         }
     }, [
-        isDeployed,
+        isDataUnion,
         beneficiaryAddress,
         loadDataUnion,
         loadDataUnionStats,
