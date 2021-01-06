@@ -302,28 +302,30 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                         )}
                     </div>
                 </Header>
-                {(selected || selectedOnceRef.current) && (
-                    <Collapse open={selected}>
-                        <RadioButtonGroup
-                            name={`UserPermissions${userId}`}
-                            options={NAMES[resourceType]}
-                            onChange={onGroupClick}
-                            selectedOption={group}
-                            isCustom={isCustom}
-                        />
-                        <Checkbox.List>
-                            {getOperationKeys(ownerCombination).map((key) => (
-                                <Checkbox
-                                    id={`${userId}-${key}`}
-                                    key={key}
-                                    onChange={onPermissionChange}
-                                    operationKey={key}
-                                    value={lookup(userCombination, key)}
-                                />
-                            ))}
-                        </Checkbox.List>
-                    </Collapse>
-                )}
+                <Collapse open={selected}>
+                    {(selected || selectedOnceRef.current) && (
+                        <Fragment>
+                            <RadioButtonGroup
+                                name={`UserPermissions${userId}`}
+                                options={NAMES[resourceType]}
+                                onChange={onGroupClick}
+                                selectedOption={group}
+                                isCustom={isCustom}
+                            />
+                            <Checkbox.List>
+                                {getOperationKeys(ownerCombination).map((key) => (
+                                    <Checkbox
+                                        id={`${userId}-${key}`}
+                                        key={key}
+                                        onChange={onPermissionChange}
+                                        operationKey={key}
+                                        value={lookup(userCombination, key)}
+                                    />
+                                ))}
+                            </Checkbox.List>
+                        </Fragment>
+                    )}
+                </Collapse>
             </Sidebar.Container>
             {error && (
                 <Sidebar.Container as={ErrorMessage}>
