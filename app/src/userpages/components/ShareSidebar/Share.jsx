@@ -49,16 +49,6 @@ const Header = styled.div`
     }
 `
 
-const roleAnimation = keyframes`
-    from {
-        transform: translateY(4px);
-    }
-
-    to {
-        transform: translateY(0);
-    }
-`
-
 const Role = styled.div`
     background-color: #efefef;
     border-radius: 2px;
@@ -70,19 +60,18 @@ const Role = styled.div`
     opacity: 0;
     padding: 0 4px;
     position: relative;
+    transform: translateY(4px);
     transition-delay: 0.2s, 0s, 0s;
     transition-duration: 0.2s;
-    transition-property: visibility, opacity;
+    transition-property: visibility, opacity, transform;
     user-select: none;
     visibility: hidden;
     will-change: opacity, transform;
 
     ${({ visible }) => !!visible && css`
-        animation-duration: 0.2s;
-        animation-fill-mode: forwards;
-        animation-name: ${roleAnimation};
         opacity: 1;
-        transition: opacity 0.2s;
+        transform: translateY(0);
+        transition-delay: 0s;
         visibility: visible;
     `}
 `
