@@ -25,7 +25,11 @@ const UnstyledWrapper = ({ visible, className, children }) => {
     }
 
     const style = useMemo(() => (
-        visible ? { height } : {}
+        visible ? {
+            height,
+        } : {
+            transitionDelay: '0.5s',
+        }
     ), [visible, height])
 
     return (
