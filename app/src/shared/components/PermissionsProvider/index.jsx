@@ -91,8 +91,7 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
                     type: SET_PERMISSIONS,
                 })
             } catch (e) {
-                // eslint-disable-next-line no-console
-                console.log('Wholesome error.', e)
+                console.error(e)
             }
         }
 
