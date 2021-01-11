@@ -9,6 +9,7 @@ const ErrorMessage = styled.div`
     color: #ff0f2d;
     font-size: 14px;
     line-height: 20px;
+    word-break: break-word;
 
     strong {
         font-weight: ${MEDIUM};
