@@ -2,7 +2,6 @@ import { GET, EDIT, SUBSCRIBE } from '../operations'
 import r, {
     ADD_PERMISSION,
     PERSIST,
-    REFETCH,
     SET_PERMISSIONS,
     SET_RESOURCE,
     UPDATE_PERMISSION,
@@ -223,25 +222,6 @@ describe('PERSIST', () => {
         expect(r(state, {
             type: PERSIST,
         })).toBe(state)
-    })
-})
-
-describe('REFETCH', () => {
-    it('sets errors', () => {
-        const errors = {}
-
-        expect(r({}, {
-            type: REFETCH,
-            errors,
-        }).errors).toBe(errors)
-    })
-
-    it('increases the fetch count', () => {
-        expect(r({
-            fetchCount: 0,
-        }, {
-            type: REFETCH,
-        }).fetchCount).toBe(1)
     })
 })
 
