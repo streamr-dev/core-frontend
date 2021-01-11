@@ -2,7 +2,7 @@ import qs from 'query-string'
 import { matchPath } from 'react-router-dom'
 import uuid from 'uuid'
 
-it.only('creates a whole bunch of users for a stream', () => {
+it.skip('creates a whole bunch of users for a stream', () => {
     const streamId = '0xa3d1f77acff0060f7213d7bf3c7fec78df847de1/dontcare' // <- has to be set manually
     const howMany = 300
 
