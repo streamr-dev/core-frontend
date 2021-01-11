@@ -78,7 +78,7 @@ const UnstyledNewShareForm = ({ className }) => {
     return (
         <form className={className} onSubmit={onSubmit}>
             <Label htmlFor={uid}>
-                {I18n.t('auth.labels.address')}
+                User ID
             </Label>
             <Inner>
                 <Text
