@@ -1,11 +1,16 @@
 import { useCallback, useRef } from 'react'
+import { useSelector } from 'react-redux'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import getPermissionsDiff from './utils/getPermissionsDiff'
 import { getResourcePermissions, addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/services'
+import { selectUsername } from '$shared/modules/user/selectors'
+import toOperationName from './utils/toOperationName'
 
 export default function usePersistPermissionDiff() {
+    const userId = useSelector(selectUsername)
+
     const dispatch = usePermissionsDispatch()
 
     const isMounted = useIsMounted()
@@ -24,6 +29,12 @@ export default function usePersistPermissionDiff() {
 
     saveRef.current = async (onSuccess) => {
         const changes = getPermissionsDiff(resourceType, raw, combinations, changeset)
+
+        // We have to remove current user's `share` permission last. Otherwise consecutive permission
+        // updates fail, obviously. Let's store it here and remove at the end (if exists).
+        const sharePermission = changes.del.find((p) => (
+            p.user === userId && p.operation === toOperationName(resourceType, 'share')
+        ))
 
         const errors = {}
 
@@ -47,7 +58,17 @@ export default function usePersistPermissionDiff() {
             id,
         }))
 
-        await Promise.all([...changes.add.map(add), ...changes.del.map(del)])
+        await Promise.all([...changes.add.map(add), ...changes.del.map((p) => (
+            p !== sharePermission ? del(p) : Promise.resolve()
+        ))])
+
+        if (!isMounted()) {
+            return
+        }
+
+        if (sharePermission) {
+            await del(sharePermission)
+        }
 
         if (!isMounted()) {
             return
