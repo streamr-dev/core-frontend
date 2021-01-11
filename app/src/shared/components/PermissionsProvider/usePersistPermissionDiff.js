@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
-import { PERSIST, REFETCH } from './utils/reducer'
+import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import getPermissionsDiff from './utils/getPermissionsDiff'
-import { addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/services'
+import { getResourcePermissions, addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/services'
 
 export default function usePersistPermissionDiff() {
     const dispatch = usePermissionsDispatch()
@@ -12,7 +12,6 @@ export default function usePersistPermissionDiff() {
 
     const {
         changeset,
-        locked,
         combinations,
         raw,
         resourceType,
@@ -23,7 +22,7 @@ export default function usePersistPermissionDiff() {
 
     const saveRef = useRef(() => {})
 
-    saveRef.current = async () => {
+    saveRef.current = async (onSuccess) => {
         const changes = getPermissionsDiff(resourceType, raw, combinations, changeset)
 
         const errors = {}
@@ -50,27 +49,52 @@ export default function usePersistPermissionDiff() {
 
         await Promise.all([...changes.add.map(add), ...changes.del.map(del)])
 
-        if (isMounted()) {
-            dispatch({
-                type: REFETCH,
-                errors,
+        if (!isMounted()) {
+            return
+        }
+
+        try {
+            const result = await getResourcePermissions({
+                resourceId,
+                resourceType,
             })
+
+            if (!isMounted()) {
+                return
+            }
+
+            const { changeset: newChangeset } = reducer({
+                changeset,
+            }, {
+                permissions: result,
+                type: SET_PERMISSIONS,
+            })
+
+            if (!Object.keys(newChangeset).length && !Object.keys(errors).length && typeof onSuccess === 'function') {
+                onSuccess()
+            } else {
+                dispatch({
+                    errors,
+                    permissions: result,
+                    type: SET_PERMISSIONS,
+                })
+            }
+        } catch (e) {
+            console.error(e)
         }
     }
 
-    useEffect(() => {
-        if (locked && !busyRef.current) {
-            saveRef.current()
+    return useCallback(async (onSuccess) => {
+        if (busyRef.current) {
+            return
         }
 
-        busyRef.current = locked
-    }, [locked])
-
-    const persist = useCallback(() => {
         dispatch({
             type: PERSIST,
         })
-    }, [dispatch])
 
-    return persist
+        await saveRef.current(onSuccess)
+
+        busyRef.current = false
+    }, [dispatch])
 }

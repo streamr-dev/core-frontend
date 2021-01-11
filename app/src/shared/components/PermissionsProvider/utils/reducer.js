@@ -13,14 +13,11 @@ export const ADD_PERMISSION = 'add permission'
 
 export const PERSIST = 'persist'
 
-export const REFETCH = 'refetch'
-
 export const UPDATE_PERMISSION = 'update permission'
 
 export const initialState = {
     changeset: {},
     errors: {},
-    fetchCount: 0,
     locked: false,
     combinations: {},
     raw: {},
@@ -29,32 +26,22 @@ export const initialState = {
 }
 
 export default function reducer(state, action) {
-    // SET_PERMISSIONS and REFETCH are allowed despite the `locked` flag being up. Other actions
-    // are shielded off by the "is locked" check. See below.
-    switch (action.type) {
-        case SET_PERMISSIONS:
-            return Object.entries(state.changeset).reduce((memo, [user, value]) => (
-                reducer(memo, {
-                    type: UPDATE_PERMISSION,
-                    user,
-                    value,
-                })
-            ), {
-                ...state,
-                locked: false,
-                combinations: combine(action.permissions),
-                raw: action.permissions,
+    // SET_PERMISSIONS is allowed despite the `locked` flag being up. Other actions are shielded off
+    // by the "is locked" check. See below.
+    if (action.type === SET_PERMISSIONS) {
+        return Object.entries(state.changeset).reduce((memo, [user, value]) => (
+            reducer(memo, {
+                type: UPDATE_PERMISSION,
+                user,
+                value,
             })
-
-        case REFETCH:
-            return {
-                ...state,
-                errors: action.errors,
-                fetchCount: state.fetchCount + 1,
-            }
-
-        default:
-            break
+        ), {
+            ...state,
+            combinations: combine(action.permissions),
+            errors: action.errors || {},
+            locked: false,
+            raw: action.permissions,
+        })
     }
 
     // Further actions require "unlocked" state.

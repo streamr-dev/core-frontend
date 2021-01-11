@@ -96,7 +96,7 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
         }
 
         fetch()
-    }, [resourceType, resourceId, isMounted, state.fetchCount])
+    }, [resourceType, resourceId, isMounted])
 
     return (
         <DispatchContext.Provider value={dispatch}>

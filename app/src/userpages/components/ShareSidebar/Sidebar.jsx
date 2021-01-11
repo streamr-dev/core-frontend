@@ -42,9 +42,11 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
     const persist = usePersistPermissionDiff()
 
     const onSave = useCallback(() => {
-        // `persist` locks the state. The lock triggers the actual saving.
-        persist()
-    }, [persist])
+        persist(() => {
+            dismissedRef.current = true
+            onClose()
+        })
+    }, [persist, onClose])
 
     const onCancel = useCallback(() => {
         dismissedRef.current = true
