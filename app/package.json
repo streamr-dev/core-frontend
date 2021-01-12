@@ -6,8 +6,8 @@
   "scripts": {
     "cypress": "cypress run --headless",
     "start": "webpack-dev-server --hot --host 0.0.0.0",
-    "start:ci": "node --max_old_space_size=4096 ./node_modules/.bin/webpack-dev-server --host 0.0.0.0",
-    "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --progress --profile",
+    "start:ci": "node --max_old_space_size=5120 ./node_modules/.bin/webpack-dev-server --host 0.0.0.0",
+    "build": "node --max_old_space_size=5120 ./node_modules/.bin/webpack --progress --profile",
     "test": "NODE_ENV=test jest",
     "flow": "flow",
     "flow-stop": "flow stop",
