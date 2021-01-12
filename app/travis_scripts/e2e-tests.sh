@@ -12,7 +12,7 @@ npx node-static -p 3333 -a 0.0.0.0 ./dist &
 npx wait-on http://localhost:3333
 
 # Wait for e&e
-npx wait-on http://localhost/api/v1/categories
+npx wait-on http-get://localhost/api/v1/categories
 
 npm run cypress
 
