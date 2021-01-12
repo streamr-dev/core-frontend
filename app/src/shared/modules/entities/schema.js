@@ -42,3 +42,8 @@ export const joinRequestsSchema = [joinRequestSchema]
 
 export const dataUnionSecretSchema = new schema.Entity('dataUnionSecrets')
 export const dataUnionSecretsSchema = [dataUnionSecretSchema]
+
+export const whiteListedAddressSchema = new schema.Entity('whitelistedAddresses', undefined, {
+    idAttribute: 'address',
+})
+export const whiteListedAddressesSchema = [whiteListedAddressSchema]

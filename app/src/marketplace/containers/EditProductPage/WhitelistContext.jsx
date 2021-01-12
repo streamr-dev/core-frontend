@@ -29,14 +29,14 @@ const useWhitelistContextCreator = () => {
     const [items, setItems] = useState([])
     const [pendingItems, setPendingItems] = useState([])
 
-    useEffect(() => {
+    /* useEffect(() => {
         const loadWhitelist = async () => {
             const whitelist = await getWhitelistAddresses(productId)
             setItems(whitelist)
         }
 
         loadWhitelist()
-    }, [productId, pendingItems])
+    }, [productId, pendingItems]) */
 
     const addPendingItem = useCallback((txHash, address, type) => {
         const pendingItem: PendingItem = {

@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { I18n } from 'react-redux-i18n'
 
@@ -10,13 +10,16 @@ import Popover from '$shared/components/Popover'
 import useModal from '$shared/hooks/useModal'
 import useCopy from '$shared/hooks/useCopy'
 import StatusIcon from '$shared/components/StatusIcon'
-import { productStates } from '$shared/utils/constants'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
+import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
+import type { Address } from '$shared/flowtype/web3-types'
 
-import useEditableProduct from '../ProductController/useEditableProduct'
-import useWhitelist from './useWhitelist'
-import { Provider as WhitelistContextProvider } from './WhitelistContext'
-import { WhitelistAddModal, WhitelistRemoveModal } from './WhitelistModals'
+import useContractProduct from '$mp/containers/ProductController/useContractProduct'
+import useEditableProduct from '$mp/containers/ProductController/useEditableProduct'
+import useEditableProductActions from '$mp/containers/ProductController/useEditableProductActions'
+import { actionsTypes } from './useUpdateWhitelist'
 
 const MIN_ROWS = 5
 
@@ -108,9 +111,9 @@ type Props = {
     enabled: boolean,
     items: Array<WhitelistItem>,
     onEnableChanged: (boolean) => void,
-    addDialog: any,
-    removeDialog: any,
-    copy: (string) => void,
+    onAdd: () => void,
+    onRemove: (Address) => void,
+    onCopy: (string) => void,
     actionsEnabled: boolean,
 }
 
@@ -146,9 +149,9 @@ export const WhitelistEditorComponent = ({
     enabled,
     items,
     onEnableChanged,
-    addDialog,
-    removeDialog,
-    copy,
+    onAdd,
+    onRemove,
+    onCopy,
     actionsEnabled,
 }: Props) => (
     <Container className={className}>
@@ -177,16 +180,12 @@ export const WhitelistEditorComponent = ({
                                 title="Select"
                                 type="meatball"
                                 noCaret
-                                disabled={disabled}
                             >
-                                <Popover.Item onClick={() => copy(item.address)}>
+                                <Popover.Item onClick={() => onCopy(item.address)}>
                                     {I18n.t('editProductPage.whitelist.copy')}
                                 </Popover.Item>
-                                {item.status !== 'removed' && actionsEnabled && (
-                                    <Popover.Item onClick={() => removeDialog.open({
-                                        address: item.address,
-                                    })}
-                                    >
+                                {item.status !== 'removed' && actionsEnabled && !item.isPending && (
+                                    <Popover.Item onClick={() => onRemove(item.address)}>
                                         {I18n.t('editProductPage.whitelist.remove')}
                                     </Popover.Item>
                                 )}
@@ -202,53 +201,69 @@ export const WhitelistEditorComponent = ({
             <StyledToggle
                 id="whitelist"
                 value={enabled}
-                onChange={(val) => {
-                    onEnableChanged(val)
-                }}
+                onChange={onEnableChanged}
             />
             <Button
                 kind="secondary"
                 size="normal"
                 disabled={!enabled || !actionsEnabled}
-                onClick={() => {
-                    addDialog.open()
-                }}
+                onClick={() => onAdd()}
             >
-                {I18n.t('editProductPage.whitelist.add')}
+                {I18n.t('editProductPage.whitelistEdit.add')}
             </Button>
         </Controls>
     </Container>
 )
 
-export const WhitelistEditorContainer = () => {
-    const { isEnabled, setEnabled, items } = useWhitelist()
-    const { api: addDialog } = useModal('addWhitelistAddress')
-    const { api: removeDialog } = useModal('removeWhitelistAddress')
-    const { copy } = useCopy()
+export const WhitelistEditor = () => {
     const product = useEditableProduct()
+    const contractProduct = useContractProduct()
+    const { items } = useWhitelist()
+    const { updateRequiresWhitelist } = useEditableProductActions()
+    const isEnabled = !!product.requiresWhitelist
+    const actionsEnabled = !!contractProduct
+
+    const { api: whitelistEditDialog } = useModal('whitelistEdit')
+    const { copy } = useCopy()
+
+    const onCopy = useCallback((address: string) => {
+        copy(address)
+
+        Notification.push({
+            title: 'Copied',
+            icon: NotificationIcon.CHECKMARK,
+        })
+    }, [copy])
+
+    const productId = product.id
+
+    const onAdd = useCallback(() => {
+        whitelistEditDialog.open({
+            productId,
+        })
+    }, [productId, whitelistEditDialog])
+
+    const onRemove = useCallback((removedAddress: Address) => {
+        whitelistEditDialog.open({
+            productId,
+            removedAddress,
+        })
+    }, [productId, whitelistEditDialog])
 
     // TODO: Email address must be provided when we enable whitelist!
-    //       Add this validation when we have contact email for products.
+    // Add this validation when we have contact email for products.
 
     return (
         <WhitelistEditorComponent
             items={items}
             enabled={isEnabled}
-            onEnableChanged={(value) => setEnabled(value)}
-            addDialog={addDialog}
-            removeDialog={removeDialog}
-            copy={copy}
-            actionsEnabled={product.state === productStates.DEPLOYED}
+            onEnableChanged={(value) => updateRequiresWhitelist(value)}
+            onAdd={onAdd}
+            onRemove={onRemove}
+            onCopy={onCopy}
+            actionsEnabled={actionsEnabled}
         />
     )
 }
-
-export const WhitelistEditor = () => (
-    <WhitelistContextProvider>
-        <WhitelistEditorContainer />
-        <WhitelistAddModal />
-        <WhitelistRemoveModal />
-    </WhitelistContextProvider>
-)
 
 export default WhitelistEditor

@@ -100,6 +100,14 @@ export type SmartContractProduct = {
     requiresWhitelist: $ElementType<Product, 'requiresWhitelist'>,
 }
 
+export type WhitelistStatus = 'added' | 'removed' | 'subscribed'
+
+export type WhitelistedAddress = {
+    address: Address,
+    status: WhitelistStatus,
+    isPending: boolean,
+}
+
 export type Subscription = {
     productId: ProductId,
     endTimestamp: number

@@ -15,6 +15,7 @@ export type UpdateEntitiesParam = {
         dashboards?: {},
         integrationKeys?: {},
         joinRequests: {},
+        whitelistedAddresses: {},
     }
 }
 

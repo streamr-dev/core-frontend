@@ -529,7 +529,6 @@ describe('usePublish', () => {
                     name: 'New name',
                     description: 'Description',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     pendingChanges: undefined,
                 })).toBe(true)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
@@ -578,8 +577,9 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
+                const createContractProductStub = sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
                 const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -607,6 +607,112 @@ describe('usePublish', () => {
                 ])
 
                 expect(postSetDeployingStub.calledWith('1')).toBe(true)
+                expect(createContractProductStub.calledWith({
+                    id: '1',
+                    name: 'Name',
+                    beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    pricePerSecond: BN(1),
+                    priceCurrency: 'DATA',
+                    minimumSubscriptionInSeconds: '0',
+                    state: 'NOT_DEPLOYED',
+                    ownerAddress: '',
+                    requiresWhitelist: undefined,
+                })).toBe(true)
+                expect(putProductStub.called).toBe(false)
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.PENDING)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
+                expect(finishFn).toHaveBeenCalled()
+            })
+
+            it('publishes an unpublished paid data product with whitelist enabled', async () => {
+                let publish
+                function Test() {
+                    publish = usePublish()
+                    return null
+                }
+
+                mount((
+                    <Test />
+                ))
+
+                const result = await publish.publish({
+                    id: '1',
+                    name: 'Name',
+                    state: 'NOT_DEPLOYED',
+                    isFree: false,
+                    pricePerSecond: BN(1),
+                    ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    priceCurrency: 'DATA',
+                    minimumSubscriptionInSeconds: '0',
+                    pendingChanges: {
+                        requiresWhitelist: true,
+                    },
+                })
+
+                expect(result.mode).toBe(publishModes.PUBLISH)
+                expect(result.queue).toBeTruthy()
+                expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
+                    actionsTypes.PUBLISH_PENDING_CHANGES,
+                    actionsTypes.CREATE_CONTRACT_PRODUCT,
+                ])
+                expect(result.queue.needsWeb3()).toBe(true)
+                expect(result.queue.needsOwner()).toStrictEqual([])
+
+                const emitter = new EventEmitter()
+                const tx = new Transaction(emitter)
+                const hash = 'test'
+                const receipt = {
+                    transactionHash: hash,
+                }
+
+                const createContractProductStub = sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
+
+                const startedFn = jest.fn()
+                const statusFn = jest.fn()
+                const readyFn = jest.fn()
+                const finishFn = jest.fn()
+
+                const txPromise = new Promise((resolve) => {
+                    setTimeout(() => {
+                        emitter.emit('transactionHash', hash)
+                    }, 200)
+                    setTimeout(() => {
+                        emitter.emit('receipt', receipt)
+                        resolve()
+                    }, 400)
+                })
+                result.queue
+                    .subscribe('started', startedFn)
+                    .subscribe('status', statusFn)
+                    .subscribe('ready', readyFn)
+                    .subscribe('finish', finishFn)
+
+                await Promise.all([
+                    txPromise,
+                    result.queue.start(),
+                ])
+
+                expect(postSetDeployingStub.calledWith('1')).toBe(true)
+                expect(createContractProductStub.calledWith({
+                    id: '1',
+                    name: 'Name',
+                    beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    pricePerSecond: BN(1),
+                    priceCurrency: 'DATA',
+                    minimumSubscriptionInSeconds: '0',
+                    state: 'NOT_DEPLOYED',
+                    ownerAddress: '',
+                    requiresWhitelist: true,
+                })).toBe(true)
+                expect(putProductStub.called).toBe(true)
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
@@ -1041,7 +1147,6 @@ describe('usePublish', () => {
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     isFree: false,
                     pricePerSecond: BN(1),
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -1107,8 +1212,8 @@ describe('usePublish', () => {
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
-                    actionsTypes.UPDATE_CONTRACT_PRODUCT,
                     actionsTypes.PUBLISH_PENDING_CHANGES,
+                    actionsTypes.UPDATE_CONTRACT_PRODUCT,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -1151,13 +1256,12 @@ describe('usePublish', () => {
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(addTransactionStub.calledWith(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(putProductStub.calledWith({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     isFree: false,
                     pricePerSecond: BN(1), // contract info will be updated by the backend watcher
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -1622,8 +1726,8 @@ describe('usePublish', () => {
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
-                    actionsTypes.UPDATE_ADMIN_FEE,
                     actionsTypes.PUBLISH_PENDING_CHANGES,
+                    actionsTypes.UPDATE_ADMIN_FEE,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -1654,14 +1758,13 @@ describe('usePublish', () => {
                     result.queue.start(),
                 ])
 
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
 
                 expect(putProductStub.calledWith({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     isFree: false,
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1673,11 +1776,11 @@ describe('usePublish', () => {
                 })).toBe(true)
                 expect(setAdminFeeStub.calledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')).toBe(true)
                 expect(addTransactionStub.calledWith(hash, transactionTypes.UPDATE_ADMIN_FEE)).toBe(true)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(finishFn).toHaveBeenCalled()
             })
 
@@ -1750,9 +1853,9 @@ describe('usePublish', () => {
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
+                    actionsTypes.PUBLISH_PENDING_CHANGES,
                     actionsTypes.UPDATE_ADMIN_FEE,
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                    actionsTypes.PUBLISH_PENDING_CHANGES,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -1789,15 +1892,14 @@ describe('usePublish', () => {
                     result.queue.start(),
                 ])
 
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
 
                 expect(putProductStub.calledWith({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     isFree: false,
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1816,14 +1918,14 @@ describe('usePublish', () => {
                 expect(setAdminFeeStub.calledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')).toBe(true)
                 expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)).toBe(true)
                 expect(addTransactionStub.calledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(finishFn).toHaveBeenCalled()
             })
         })

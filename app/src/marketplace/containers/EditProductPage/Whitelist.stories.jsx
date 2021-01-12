@@ -28,9 +28,9 @@ const WhiteListEditor = ({ items }: Props) => {
             enabled={isEnabled}
             items={items}
             onEnableChanged={(val) => setIsEnabled(val)}
-            addDialog={null}
-            removeDialog={null}
-            copy={action('Copy')}
+            onAdd={action('onAdd')}
+            onRemove={action('onRemove')}
+            onCopy={action('Copy')}
             actionsEnabled
         />
     )

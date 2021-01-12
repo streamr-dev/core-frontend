@@ -74,6 +74,7 @@ export type ContractProductState = {
     id: ?ProductId,
     fetchingContractProduct: boolean,
     contractProductError: ?ErrorInUi,
+    whitelistedAddresses: Array<Address>,
 }
 
 // Data union

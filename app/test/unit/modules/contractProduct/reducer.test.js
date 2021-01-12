@@ -14,6 +14,7 @@ describe('contractProduct - reducer', () => {
                 id: 'test',
                 fetchingContractProduct: true,
                 contractProductError: null,
+                whitelistedAddresses: [],
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -29,6 +30,7 @@ describe('contractProduct - reducer', () => {
                 id: 'test',
                 fetchingContractProduct: false,
                 contractProductError: null,
+                whitelistedAddresses: [],
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -46,6 +48,7 @@ describe('contractProduct - reducer', () => {
                 id: null,
                 fetchingContractProduct: false,
                 contractProductError: error,
+                whitelistedAddresses: [],
             }
 
             assert.deepStrictEqual(reducer(undefined, {
@@ -62,11 +65,13 @@ describe('contractProduct - reducer', () => {
             id: 'test',
             fetchingContractProduct: true,
             contractProductError: 'error',
+            whitelistedAddresses: [],
         }
         const expectedState = {
             id: null,
             fetchingContractProduct: false,
             contractProductError: null,
+            whitelistedAddresses: [],
         }
 
         assert.deepStrictEqual(reducer(state, {

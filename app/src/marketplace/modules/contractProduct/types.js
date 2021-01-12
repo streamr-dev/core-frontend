@@ -1,7 +1,8 @@
 // @flow
 
 import type { ErrorFromApi, PayloadAction } from '$shared/flowtype/common-types'
-import type { ProductId } from '../../flowtype/product-types'
+import type { ProductId, WhitelistStatus } from '../../flowtype/product-types'
+import type { Address } from '$shared/flowtype/web3-types'
 
 export type ProductIdAction = PayloadAction<{
     id: ProductId,
@@ -14,7 +15,17 @@ export type ProductErrorAction = PayloadAction<{
 }>
 export type ProductErrorActionCreator = (id: ProductId, error: ErrorFromApi) => ProductErrorAction
 
-export type WhitelistStatus = 'added' | 'removed' | 'subscribed'
+export type WhiteListedAddressAction = PayloadAction<{
+    id: ProductId,
+    address: Address,
+}>
+export type WhiteListedAddressActionCreator = (ProductId, Address) => WhiteListedAddressAction
+
+export type WhiteListedAddressesAction = PayloadAction<{
+    id: ProductId,
+    addresses: Array<Address>,
+}>
+export type WhiteListedAddressesActionCreator = (ProductId, Array<Address>) => WhiteListedAddressesAction
 
 export type WhitelistItem = {
     address: string,

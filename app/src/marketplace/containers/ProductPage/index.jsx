@@ -14,9 +14,9 @@ import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
 import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
-import { WhitelistRequestAccessModal } from '$mp/containers/EditProductPage/WhitelistModals'
 
 import PurchaseModal from './PurchaseModal'
+import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getToken } from '$shared/utils/sessionToken'
