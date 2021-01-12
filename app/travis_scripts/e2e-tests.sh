@@ -3,7 +3,7 @@
 set -e
 
 # Start the app first so we don't run out of memory for node.
-npm run start:ci
+npm run start:ci &
 
 # Wait for Core
 npx wait-on http://localhost:3333
