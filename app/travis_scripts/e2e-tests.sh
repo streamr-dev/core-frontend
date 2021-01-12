@@ -2,9 +2,11 @@
 
 set -e
 
+npm run build
+
 $(dirname $0)/start-docker-env.sh
 
-npm run start:ci &
+npx node-static -p 3333 -a 0.0.0.0 ./dist
 
 npx wait-on http://localhost:3333
 
