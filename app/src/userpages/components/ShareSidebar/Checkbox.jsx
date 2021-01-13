@@ -1,15 +1,28 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
+import { I18n } from 'react-redux-i18n'
 import SharedCheckbox from '$shared/components/Checkbox'
 
-const UnstyledCheckbox = ({ className, label, id, ...props }) => (
-    <div className={className}>
-        <SharedCheckbox id={id} {...props} />
-        <label htmlFor={id}>
-            {label}
-        </label>
-    </div>
-)
+const UnstyledCheckbox = ({
+    className,
+    id,
+    operationKey,
+    onChange: onChangeProp,
+    ...props
+}) => {
+    const onChange = useCallback((e) => {
+        onChangeProp(operationKey, !!e.target.checked)
+    }, [onChangeProp, operationKey])
+
+    return (
+        <div className={className}>
+            <SharedCheckbox {...props} id={id} onChange={onChange} />
+            <label htmlFor={id}>
+                {I18n.t(`share.permissions.${operationKey.toLowerCase()}`)}
+            </label>
+        </div>
+    )
+}
 
 const Checkbox = styled(UnstyledCheckbox)`
     align-items: center;

@@ -1,26 +1,19 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import Sidebar from '$shared/components/Sidebar'
-import UserPermissions from './UserPermissions'
-import ErrorMessage from './ErrorMessage'
+import Share from './Share'
+import { useEditableUserIds } from '$shared/components/PermissionsProvider'
 
-const UnstyledUserList = ({
-    items,
-    onSelect,
-    permissions,
-    removeUser,
-    resourceType,
-    selectedUserId,
-    updatePermission,
-    userErrors,
-    ...props
-}) => {
+const UnstyledUserList = ({ items, userErrors, ...props }) => {
+    const [selectedUserId, setSelectedUserId] = useState()
+
+    const editableUserIds = useEditableUserIds()
+
     const onClick = useCallback((e) => {
         if (e.target === e.currentTarget) {
             // Select none on click background.
-            onSelect()
+            setSelectedUserId()
         }
-    }, [onSelect])
+    }, [])
 
     return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
@@ -28,26 +21,13 @@ const UnstyledUserList = ({
             {...props}
             onClick={onClick}
         >
-            {items.map(([userId, userPermissions]) => (
-                <React.Fragment key={userId}>
-                    <Sidebar.Container
-                        as={UserPermissions}
-                        invalid={!!userErrors[userId]}
-                        isSelected={selectedUserId === userId}
-                        onSelect={onSelect}
-                        permissions={permissions}
-                        removeUser={removeUser}
-                        resourceType={resourceType}
-                        updatePermission={updatePermission}
-                        userId={userId}
-                        userPermissions={userPermissions}
-                    />
-                    {!!userErrors[userId] && (
-                        <Sidebar.Container as={ErrorMessage}>
-                            {userErrors[userId].message}
-                        </Sidebar.Container>
-                    )}
-                </React.Fragment>
+            {editableUserIds.map((userId) => (
+                <Share
+                    key={userId}
+                    onSelect={setSelectedUserId}
+                    selected={selectedUserId === userId}
+                    userId={userId}
+                />
             ))}
         </div>
     )

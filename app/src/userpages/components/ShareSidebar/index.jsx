@@ -2,8 +2,16 @@ import React from 'react'
 import Sidebar from '$shared/components/Sidebar'
 import { I18n } from 'react-redux-i18n'
 import SidebarContent from './Sidebar'
+import PermissionsProvider from '$shared/components/PermissionsProvider'
 
-export default ({ sidebarName, resourceTitle, onClose, ...props }) => (
+export default ({
+    sidebarName,
+    resourceTitle,
+    onClose,
+    resourceType,
+    resourceId,
+    ...props
+}) => (
     <React.Fragment>
         <Sidebar.Header
             title={I18n.t('modal.shareResource.tabs.share')}
@@ -11,12 +19,19 @@ export default ({ sidebarName, resourceTitle, onClose, ...props }) => (
             subtitle={resourceTitle}
         />
         <Sidebar.Body>
-            <SidebarContent
-                {...props}
-                resourceTitle={resourceTitle}
-                onClose={onClose}
-                allowEmbed
-            />
+            <PermissionsProvider
+                resourceId={resourceId}
+                resourceType={resourceType}
+            >
+                <SidebarContent
+                    {...props}
+                    allowEmbed
+                    onClose={onClose}
+                    resourceId={resourceId}
+                    resourceTitle={resourceTitle}
+                    resourceType={resourceType}
+                />
+            </PermissionsProvider>
         </Sidebar.Body>
     </React.Fragment>
 )

@@ -2,13 +2,14 @@ import React, { useMemo, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { MEDIUM } from '$shared/utils/styled'
 import Sidebar from '$shared/components/Sidebar'
-import useMeasure from './hooks/useMeasure'
+import useMeasure from '$shared/hooks/useMeasure'
 
 const ErrorMessage = styled.div`
     background-color: #fff4f5;
     color: #ff0f2d;
     font-size: 14px;
     line-height: 20px;
+    word-break: break-word;
 
     strong {
         font-weight: ${MEDIUM};
@@ -25,7 +26,11 @@ const UnstyledWrapper = ({ visible, className, children }) => {
     }
 
     const style = useMemo(() => (
-        visible ? { height } : {}
+        visible ? {
+            height,
+        } : {
+            transitionDelay: '0.5s',
+        }
     ), [visible, height])
 
     return (

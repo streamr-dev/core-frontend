@@ -9,6 +9,8 @@ import isValidUserId from '$shared/utils/sharing/isValidUserId'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Errors from '$ui/Errors'
+import { usePermissionsDispatch } from '$shared/components/PermissionsProvider'
+import { ADD_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
 
 const Inner = styled.div`
     display: grid;
@@ -16,7 +18,7 @@ const Inner = styled.div`
     grid-template-columns: 1fr auto;
 `
 
-const UnstyledNewShareForm = ({ className, onAdd }) => {
+const UnstyledNewShareForm = ({ className }) => {
     const [value, setValue] = useState('')
 
     const [focused, setFocused] = useState(false)
@@ -28,6 +30,8 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
         if (value === 'anonymous') { return I18n.t('share.error.anonymousUserError') }
     })()
 
+    const dispatch = usePermissionsDispatch()
+
     const onSubmit = useCallback((e) => {
         e.preventDefault()
 
@@ -35,12 +39,13 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
             return
         }
 
-        if (typeof onAdd === 'function') {
-            onAdd(value)
-        }
+        dispatch({
+            type: ADD_PERMISSION,
+            user: value,
+        })
 
         setValue('')
-    }, [value, validationError, onAdd])
+    }, [value, validationError, dispatch])
 
     const onChange = useCallback((e) => {
         setValue(e.target.value)
@@ -73,7 +78,7 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
     return (
         <form className={className} onSubmit={onSubmit}>
             <Label htmlFor={uid}>
-                {I18n.t('auth.labels.address')}
+                User ID
             </Label>
             <Inner>
                 <Text

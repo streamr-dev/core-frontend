@@ -22,8 +22,8 @@ import BodyClass from '$shared/components/BodyClass'
 import DashboardStatus from '$editor/shared/components/Status'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import ShareSidebar from '$userpages/components/ShareSidebar'
-import usePermissionsLoader from '$userpages/components/ShareSidebar/hooks/usePermissionsLoader'
-import { selectUserData } from '$shared/modules/user/selectors'
+import usePermissionsLoader from '$shared/hooks/usePermissionsLoader'
+import { selectUsername } from '$shared/modules/user/selectors'
 import { getResourcePermissions } from '$userpages/modules/permission/services'
 
 import routes from '$routes'
@@ -366,8 +366,7 @@ const DashboardEditWrap = () => {
         resourceId: dashboard && dashboard.id,
     })
 
-    const currentUser = useSelector(selectUserData)
-    const { username } = currentUser || {}
+    const username = useSelector(selectUsername)
     const hasSharePermission = (permissions || []).find((p) => p.user === username && p.operation === 'dashboard_share')
     const hasDeletePermission = (permissions || []).find((p) => p.user === username && p.operation === 'dashboard_delete')
 

@@ -2,209 +2,94 @@ import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
-
-import useIsMounted from '$shared/hooks/useIsMounted'
 import Label from '$ui/Label'
 import Sidebar from '$shared/components/Sidebar'
 import { useBeforeClose } from '$shared/components/Sidebar/SidebarProvider'
-import { selectUserData } from '$shared/modules/user/selectors'
-
-import * as State from './state'
+import { selectUsername } from '$shared/modules/user/selectors'
 import NewShareForm from './NewShareForm'
-import useAsyncCallbackWithState from './hooks/useAsyncCallbackWithState'
-import usePrevious from './hooks/usePrevious'
-import useUserPermissionState from './hooks/useUserPermissionState'
-import usePermissionsLoader from './hooks/usePermissionsLoader'
-import savePermissions from './utils/savePermissions'
 import UserList from './UserList'
 import Footer from './Footer'
 import ErrorMessage from './ErrorMessage'
 import Md from '$shared/components/Md'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-import AnonAccessSelect, { ALLOW_ONLY_INVITED, ALLOW_WITH_LINK } from './AnonAccessSelect'
+import AnonAccessSelect from './AnonAccessSelect'
+import { usePermissionsState } from '$shared/components/PermissionsProvider'
+import usePersistPermissionDiff from '$shared/components/PermissionsProvider/usePersistPermissionDiff'
 
-const UnstyledShareSidebar = (({ className, ...props }) => {
-    const currentUser = (useSelector(selectUserData) || {}).username
-    const { resourceType, resourceId, onClose } = props
-    const isMounted = useIsMounted()
-    const propsRef = useRef(props)
-    propsRef.current = props
-    const { userErrors, setUserErrors } = props
+const UnstyledShareSidebar = (({ className, onClose }) => {
+    const { changeset, locked } = usePermissionsState()
 
-    const {
-        permissions,
-        currentUsers,
-        addUser,
-        removeUser,
-        updatePermission,
-        onAnonymousAccessChange,
-        newUserIdList,
-        setNewUserIdList,
-        selectedUserId,
-        setSelectedUserId,
-    } = useUserPermissionState(props)
+    const hasChanges = Object.keys(changeset).length > 0
 
-    // i.e. something different between server state and our state
-    const hasChanges = State.hasPermissionsChanges({
-        oldPermissions: permissions,
-        newUsers: currentUsers,
-        resourceType,
-    })
-    const hasCurrentUserChanges = State.hasUserSpecificPermissionsChanges({
-        oldPermissions: permissions,
-        newUsers: currentUsers,
-        resourceType,
-        targetUserId: currentUser,
-    })
+    const hasCurrentUserChanges = ({}).hasOwnProperty.call(changeset, useSelector(selectUsername))
 
-    // should be true when user tries to close sidebar
-    const [didTryClose, setDidTryClose] = useState(false)
+    const dismissedRef = useRef(false)
 
-    /*
-     * Saves permissions by:
-     * issuing updates, loading latest, then restoring state of users with failed updates
-     * note all happens within an useAsyncCallbackWithState so changes are blocked while saving
-     */
+    const [failedToClose, setFailedToClose] = useState(false)
 
-    const [{ isLoading: isSaving, error }, onSave] = useAsyncCallbackWithState(useCallback(async () => {
-        setDidTryClose(false) // hide any 'need to save' errors
-        // issue permission updates
-        const { errors } = await savePermissions(currentUsers, propsRef.current)
-        if (!isMounted()) { return }
-        // load latest permissions
-        // required to set base permissions to whatever changes were successful
-        await propsRef.current.loadPermissions()
-
-        if (!isMounted()) {
-            // close sidebar if permission loading failed
-            propsRef.current.onClose()
-            return
-        }
-
-        setUserErrors(errors) // errors will be empty if no errors
-        setNewUserIdList((prevIds) => (
-            // reset new user list to only include new users that had errors
-            prevIds.filter((id) => Object.keys(errors).includes(id))
-        ))
-
-        // restore state of any users with failed updates
-        Object.keys(errors).forEach((userId) => {
-            updatePermission(userId, currentUsers[userId])
-        })
-    }, [isMounted, currentUsers, setUserErrors, setDidTryClose, updatePermission, setNewUserIdList]))
-
-    const previousIsSaving = usePrevious(isSaving) // note previous isSaving state so we know when we just finished saving
-    const hasUserError = !!Object.keys(userErrors).length
-
-    // was just successful in saving users
-    const isSuccessful = !!(previousIsSaving && !isSaving && !error && !hasUserError)
-
-    const shouldForceCloseRef = useRef(false)
-
-    // close sidebar if successful
-    useEffect(() => {
-        if (isSuccessful) {
-            shouldForceCloseRef.current = true
-            onClose()
-        }
-    }, [isSuccessful, onClose])
-
-    // user clicked cancel button
-    const onCancel = useCallback(() => {
-        shouldForceCloseRef.current = true // use ref as we don't need to trigger render
-        // no need to unset shouldForceCloseRef since cancel will lead to unmount anyway
-        onClose()
-    }, [onClose])
-
-    // prevent sidebar closing if unsaved changes
     useBeforeClose(() => {
-        const canClose = !hasChanges || shouldForceCloseRef.current
+        // Disallow closing the sidebar unless the state is pristine (empty changeset)
+        // or it's been explicitly dismissed.
+        const canClose = !hasChanges || dismissedRef.current
 
         if (!canClose) {
-            setDidTryClose(true)
+            setFailedToClose(true)
         }
 
         return canClose
     })
 
-    // hide 'save or cancel' warning message after change
+    const persist = usePersistPermissionDiff()
+
+    const onSave = useCallback(() => {
+        persist(() => {
+            dismissedRef.current = true
+            onClose()
+        })
+    }, [persist, onClose])
+
+    const onCancel = useCallback(() => {
+        dismissedRef.current = true
+        onClose()
+    }, [onClose])
+
+    const resetFailedToClose = useCallback(() => {
+        setFailedToClose(false)
+    }, [])
+
     useEffect(() => {
-        setDidTryClose(false)
-    }, [setDidTryClose, currentUsers])
+        resetFailedToClose()
+    }, [changeset, resetFailedToClose])
 
-    usePreventNavigatingAway('You have unsaved changes', () => hasChanges || isSaving)
-
-    /* render (no hooks past here) */
-
-    if (error) { return error.message } // this shouldn't happen
-
-    const anonymousPermissions = currentUsers.anonymous
-
-    // anonymous user is not directly editable
-    const editableUsers = Object.assign({}, currentUsers)
-    delete editableUsers.anonymous
-
-    const userSet = new Set([
-        currentUser,
-        ...newUserIdList,
-        ...Object.keys(editableUsers).sort(),
-    ])
-
-    if (!editableUsers[currentUser]) {
-        userSet.delete(currentUser)
-    }
-
-    const userEntries = [...userSet].map((userId) => [userId, editableUsers[userId]])
+    usePreventNavigatingAway('You have unsaved changes', () => hasChanges)
 
     return (
         <div className={className}>
             <Sidebar.Container>
-                <AnonAccessSelect
-                    onChange={onAnonymousAccessChange}
-                    value={anonymousPermissions.get ? ALLOW_WITH_LINK : ALLOW_ONLY_INVITED}
-                />
-                <NewShareForm onAdd={addUser} />
+                <AnonAccessSelect />
+                <NewShareForm />
             </Sidebar.Container>
-            <UserList
-                items={userEntries}
-                resourceType={resourceType}
-                removeUser={removeUser}
-                updatePermission={updatePermission}
-                permissions={permissions}
-                userErrors={userErrors}
-                selectedUserId={selectedUserId}
-                onSelect={setSelectedUserId}
-            />
-            {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events */}
-            <ErrorMessage.Overlay
-                visible={didTryClose}
-                onClick={() => {
-                    setDidTryClose(false)
-                }}
-            />
-            <ErrorMessage.Wrapper
-                visible={didTryClose || hasCurrentUserChanges}
-            >
-                {isSaving && (
+            <UserList />
+            <ErrorMessage.Overlay visible={failedToClose} onClick={resetFailedToClose} />
+            <ErrorMessage.Wrapper visible={failedToClose || hasCurrentUserChanges}>
+                {locked && (
                     <Translate value="modal.shareResource.warnSavingChanges" />
                 )}
-                {!isSaving && !!didTryClose && (
+                {!locked && !!failedToClose && (
                     <Md inline>
                         {I18n.t('modal.shareResource.warnUnsavedChanges')}
                     </Md>
                 )}
-                {!isSaving && !didTryClose && !!hasCurrentUserChanges && (
+                {!locked && !failedToClose && !!hasCurrentUserChanges && (
                     <Translate value="modal.shareResource.warnChangingOwnPermission" />
                 )}
             </ErrorMessage.Wrapper>
             <Sidebar.Container
                 as={Footer}
-                disabled={isSaving || !hasChanges}
+                disabled={locked || !hasChanges}
                 onCancel={onCancel}
                 onSave={onSave}
-                resourceId={resourceId}
-                resourceType={resourceType}
-                waiting={isSaving}
+                waiting={locked}
             />
         </div>
     )
@@ -224,27 +109,4 @@ const ShareSidebar = styled(UnstyledShareSidebar)`
     }
 `
 
-export default (props) => {
-    const { resourceType, resourceId } = props
-
-    const [{ isLoading, error, result: permissions }, loadPermissions] = usePermissionsLoader({
-        resourceType,
-        resourceId,
-    })
-
-    const [userErrors, setUserErrors] = useState({})
-
-    if (!permissions) { return null }
-
-    return (
-        <ShareSidebar
-            {...props}
-            isLoading={isLoading}
-            error={error}
-            permissions={permissions}
-            loadPermissions={loadPermissions}
-            userErrors={userErrors}
-            setUserErrors={setUserErrors}
-        />
-    )
-}
+export default ShareSidebar

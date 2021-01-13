@@ -3,7 +3,7 @@
 import React, { useState, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import styled from 'styled-components'
-import startCase from 'lodash/startCase'
+import { titleize } from '@streamr/streamr-layout'
 import { SANS } from '$shared/utils/styled'
 
 import styles from './RadioButtonGroup.pcss'
@@ -79,7 +79,7 @@ const UnstyledRadioButtonGroup = ({
                                 htmlFor={`${name}-${index}`}
                                 className={styles.label}
                             >
-                                {startCase(option)}
+                                {titleize(option)}
                             </label>
                         </div>
                     ))}
