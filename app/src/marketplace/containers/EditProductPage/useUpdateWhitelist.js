@@ -11,6 +11,8 @@ import { addTransaction } from '$mp/modules/transactions/actions'
 import { transactionTypes, transactionStates } from '$shared/utils/constants'
 import ActionQueue from '$mp/utils/actionQueue'
 import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
+import useEntities from '$shared/hooks/useEntities'
+import { productSchema } from '$shared/modules/entities/schema'
 
 export const actionsTypes = {
     SET_REQUIRES_WHITELIST: 'setRequiresWhitelist',
@@ -21,6 +23,7 @@ export const actionsTypes = {
 export function useUpdateWhitelist() {
     const dispatch = useDispatch()
     const { add: addToWhitelist, edit: editInWhitelist, remove: removeFromWhitelist } = useWhitelist()
+    const { update: updateEntities } = useEntities()
 
     const updateWhitelist = useCallback(async ({ productId, setWhitelist, addresses }) => {
         if (!addresses || addresses.length < 1) {
@@ -42,6 +45,13 @@ export function useUpdateWhitelist() {
                             done()
                         })
                         .onTransactionComplete(() => {
+                            updateEntities({
+                                data: {
+                                    id: productId,
+                                    requiresWhitelist: true,
+                                },
+                                schema: productSchema,
+                            })
                             update(transactionStates.CONFIRMED)
                         })
                         .onError((error) => {

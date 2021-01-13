@@ -82,6 +82,11 @@ export default function useProductLoadCallback() {
                 const contractProduct = await getProductFromContract(productId, true)
                 // eslint-disable-next-line prefer-destructuring
                 requiresWhitelist = contractProduct.requiresWhitelist
+
+                // remove from pending changes if whitelist setting is correct
+                if (product.pendingChanges && requiresWhitelist === product.pendingChanges.requiresWhitelist) {
+                    delete product.pendingChanges.requiresWhitelist
+                }
             } catch (e) {
                 // ignore error, assume product is not published
                 // eslint-disable-next-line prefer-destructuring

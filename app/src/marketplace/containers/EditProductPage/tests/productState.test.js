@@ -121,6 +121,64 @@ describe('Product State', () => {
                 streams: ['1', '3'],
             })
         })
+
+        it('returns the changed fields for contact details', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.NOT_DEPLOYED,
+                contact: {
+                    email: 'tester1@streamr.com',
+                    url: 'http://streamr.network',
+                },
+            }
+            expect(State.getChangeObject(product, {
+                id: '2',
+                name: 'New Name',
+                state: 'DEPLOYED',
+                contact: {
+                    email: 'tester2@streamr.com',
+                    url: 'http://streamr.network',
+                },
+            })).toMatchObject({
+                name: 'New Name',
+                contact: {
+                    email: 'tester2@streamr.com',
+                },
+            })
+        })
+
+        it('returns the changed fields for contact details if they are not in the same order', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.NOT_DEPLOYED,
+                contact: {
+                    social1: 'twitter',
+                    url: 'http://streamr.network',
+                    email: 'tester1@streamr.com',
+                },
+            }
+            debugger
+            expect(State.getChangeObject(product, {
+                id: '2',
+                name: 'New Name',
+                state: 'DEPLOYED',
+                contact: {
+                    email: 'tester2@streamr.com',
+                    url: 'http://streamr.network',
+                    social1: 'facebook',
+                },
+            })).toMatchObject({
+                name: 'New Name',
+                contact: {
+                    social1: 'facebook',
+                    email: 'tester2@streamr.com',
+                },
+            })
+        })
     })
 
     describe('update', () => {

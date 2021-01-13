@@ -89,7 +89,7 @@ describe('validation context', () => {
 
             expect(currentContext.touched).toStrictEqual({})
             act(() => {
-                currentContext.touch('myField')
+                currentContext.setTouched('myField')
             })
             expect(currentContext.touched).toStrictEqual({
                 myField: true,
@@ -111,7 +111,7 @@ describe('validation context', () => {
 
             expect(currentContext.touched).toStrictEqual({})
             act(() => {
-                currentContext.touch('myField')
+                currentContext.setTouched('myField')
             })
             expect(currentContext.isTouched('myField')).toBe(true)
             expect(currentContext.isTouched('anotherField')).toBe(false)
@@ -132,7 +132,7 @@ describe('validation context', () => {
 
             expect(currentContext.isAnyTouched()).toBe(false)
             act(() => {
-                currentContext.touch('myField')
+                currentContext.setTouched('myField')
             })
             expect(currentContext.isAnyTouched()).toBe(true)
         })
@@ -152,8 +152,8 @@ describe('validation context', () => {
 
             expect(currentContext.isAnyTouched()).toBe(false)
             act(() => {
-                currentContext.touch('myField')
-                currentContext.touch('anotherField')
+                currentContext.setTouched('myField')
+                currentContext.setTouched('anotherField')
             })
             expect(currentContext.isAnyTouched()).toBe(true)
 
@@ -805,9 +805,9 @@ describe('validation context', () => {
             expect(currentContext.isAnyChangePending()).toBe(false)
 
             act(() => {
-                currentContext.touch('name')
-                currentContext.touch('description')
-                currentContext.touch('streams')
+                currentContext.setTouched('name')
+                currentContext.setTouched('description')
+                currentContext.setTouched('streams')
             })
 
             act(() => {
@@ -851,7 +851,7 @@ describe('validation context', () => {
             expect(currentContext.isAnyChangePending()).toBe(false)
 
             act(() => {
-                currentContext.touch('imageUrl')
+                currentContext.setTouched('imageUrl')
             })
 
             act(() => {
@@ -892,9 +892,9 @@ describe('validation context', () => {
             expect(currentContext.isAnyChangePending()).toBe(false)
 
             act(() => {
-                currentContext.touch('name')
-                currentContext.touch('description')
-                currentContext.touch('streams')
+                currentContext.setTouched('name')
+                currentContext.setTouched('description')
+                currentContext.setTouched('streams')
             })
 
             act(() => {
@@ -936,9 +936,9 @@ describe('validation context', () => {
             expect(currentContext.isAnyChangePending()).toBe(false)
 
             act(() => {
-                currentContext.touch('name')
-                currentContext.touch('description')
-                currentContext.touch('streams')
+                currentContext.setTouched('name')
+                currentContext.setTouched('description')
+                currentContext.setTouched('streams')
             })
 
             act(() => {

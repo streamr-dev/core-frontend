@@ -27,7 +27,7 @@ type SocialLinks = {
 export function useEditableProductActions() {
     const { updateProduct: commit } = useEditableProductUpdater()
     const { undo } = useContext(UndoContext)
-    const { touch } = useContext(ValidationContext)
+    const { setTouched } = useContext(ValidationContext)
 
     const updateProduct = useCallback((product: Object, msg: string = 'Update product') => {
         commit(msg, (p) => ({
@@ -40,59 +40,59 @@ export function useEditableProductActions() {
             ...p,
             name,
         }))
-        touch('name')
-    }, [commit, touch])
+        setTouched('name')
+    }, [commit, setTouched])
     const updateDescription = useCallback((description: $ElementType<Product, 'description'>) => {
         commit('Update description', (p) => ({
             ...p,
             description,
         }))
-        touch('description')
-    }, [commit, touch])
+        setTouched('description')
+    }, [commit, setTouched])
     const updateImageUrl = useCallback((image: $ElementType<Product, 'imageUrl'>) => {
         commit('Update image url', (p) => ({
             ...p,
             imageUrl: image,
         }))
-        touch('imageUrl')
-    }, [commit, touch])
+        setTouched('imageUrl')
+    }, [commit, setTouched])
     const updateImageFile = useCallback((image: File) => {
         commit('Update image file', ({ imageUrl, ...p }) => ({
             ...p,
             newImageToUpload: image,
         }))
-        touch('imageUrl')
-    }, [commit, touch])
+        setTouched('imageUrl')
+    }, [commit, setTouched])
     const updateStreams = useCallback((streams: StreamIdList) => {
         commit('Update streams', (p) => ({
             ...p,
             streams,
         }))
-        touch('streams')
-    }, [commit, touch])
+        setTouched('streams')
+    }, [commit, setTouched])
     const updateCategory = useCallback((category: $ElementType<Product, 'category'>) => {
         commit('Update category', (p) => ({
             ...p,
             category,
         }))
-        touch('category')
-        touch('details')
-    }, [commit, touch])
+        setTouched('category')
+        setTouched('details')
+    }, [commit, setTouched])
     const updateAdminFee = useCallback((adminFee: number) => {
         commit('Update admin fee', (p) => ({
             ...p,
             adminFee,
         }))
-        touch('adminFee')
-        touch('details')
-    }, [commit, touch])
-    const updateRequiresWhitelist = useCallback((requiresWhitelist: boolean) => {
+        setTouched('adminFee')
+        setTouched('details')
+    }, [commit, setTouched])
+    const updateRequiresWhitelist = useCallback((requiresWhitelist: boolean, touched: boolean = true) => {
         commit('Update whitelist enabled', (p) => ({
             ...p,
             requiresWhitelist,
         }))
-        touch('requiresWhitelist')
-    }, [commit, touch])
+        setTouched('requiresWhitelist', touched)
+    }, [commit, setTouched])
     const updateIsFree = useCallback((isFree: $ElementType<Product, 'isFree'>) => {
         commit('Update is free', (p) => {
             // Switching product from free to paid also changes its price from 0 (only
@@ -106,8 +106,8 @@ export function useEditableProductActions() {
                 pricePerSecond: getPricePerSecond(isFree, price, p.timeUnit),
             }
         })
-        touch('pricePerSecond')
-    }, [commit, touch])
+        setTouched('pricePerSecond')
+    }, [commit, setTouched])
     const updatePrice = useCallback((
         price: $ElementType<Product, 'price'>,
         priceCurrency: $ElementType<Product, 'priceCurrency'>,
@@ -120,29 +120,29 @@ export function useEditableProductActions() {
             pricePerSecond: getPricePerSecond(p.isFree, price, timeUnit),
             timeUnit,
         }))
-        touch('pricePerSecond')
-    }, [commit, touch])
+        setTouched('pricePerSecond')
+    }, [commit, setTouched])
     const updateBeneficiaryAddress = useCallback((beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>) => {
         commit('Update beneficiary address', (p) => ({
             ...p,
             beneficiaryAddress,
         }))
-        touch('beneficiaryAddress')
-    }, [commit, touch])
+        setTouched('beneficiaryAddress')
+    }, [commit, setTouched])
     const updateType = useCallback((type: $ElementType<Product, 'type'>) => {
         commit('Update type', (p) => ({
             ...p,
             type,
         }))
-        touch('type')
-    }, [commit, touch])
+        setTouched('type')
+    }, [commit, setTouched])
     const updateTermsOfUse = useCallback((termsOfUse: $ElementType<Product, 'termsOfUse'>) => {
         commit('Update terms of use', (p) => ({
             ...p,
             termsOfUse,
         }))
-        touch('termsOfUse')
-    }, [commit, touch])
+        setTouched('termsOfUse')
+    }, [commit, setTouched])
     const updateContactUrl = useCallback((url: $ElementType<ContactDetails, 'url'>) => {
         commit('Update contact url', (p) => ({
             ...p,
@@ -151,8 +151,8 @@ export function useEditableProductActions() {
                 url,
             },
         }))
-        touch('url')
-    }, [commit, touch])
+        setTouched('url')
+    }, [commit, setTouched])
     const updateContactEmail = useCallback((email: $ElementType<ContactDetails, 'email'>) => {
         commit('Update contact email', (p) => ({
             ...p,
@@ -161,8 +161,8 @@ export function useEditableProductActions() {
                 email,
             },
         }))
-        touch('email')
-    }, [commit, touch])
+        setTouched('email')
+    }, [commit, setTouched])
     const updateSocialLinks = useCallback(({ social1, social2, social3, social4 }: SocialLinks) => {
         commit('Update social links', (p) => ({
             ...p,
@@ -183,8 +183,8 @@ export function useEditableProductActions() {
                 }),
             },
         }))
-        touch('socialLinks')
-    }, [commit, touch])
+        setTouched('socialLinks')
+    }, [commit, setTouched])
 
     return useMemo(() => ({
         undo,

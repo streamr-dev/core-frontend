@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Translate } from 'react-redux-i18n'
 
 import useModal from '$shared/hooks/useModal'
@@ -20,7 +20,7 @@ import RemoveWhitelistedAddressDialog from '$mp/components/Modal/RemoveWhitelist
 import WhitelistEditProgressDialog from '$mp/components/Modal/WhitelistEditProgressDialog'
 import WhitelistEditErrorDialog from '$mp/components/Modal/WhitelistEditErrorDialog'
 
-import useUpdateWhitelist from './useUpdateWhitelist'
+import useUpdateWhitelist, { actionsTypes } from './useUpdateWhitelist'
 
 export type AddModalProps = {
     onClose: () => void,
@@ -43,6 +43,8 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
     const [finished, setFinished] = useState(false)
     const [currentAction, setCurrentAction] = useState(undefined)
     const [status, setStatus] = useState({})
+    const statusRef = useRef(status)
+    statusRef.current = status
     const [modalError, setModalError] = useState(null)
     const [web3Actions, setWeb3Actions] = useState(new Set([]))
     const { web3Error, checkingWeb3, account } = useWeb3Status()
@@ -109,24 +111,32 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
     const allSucceeded = useMemo(() => Object.values(status).every((value) => (
         value === transactionStates.CONFIRMED
     )), [status])
-    const allCompleted = useMemo(() => Object.values(status).every((value) => (
-        value === transactionStates.CONFIRMED || value === transactionStates.FAILED
-    )), [status])
 
     useEffect(() => {
-        if (!started || !allCompleted) { return }
+        if (!started || !allSucceeded) { return }
 
         setTimeout(() => {
             setFinished(true)
         }, 500)
-    }, [started, allCompleted])
+    }, [started, allSucceeded])
 
     const onClose = useCallback(() => {
+        const didEnableWhitelist = !!(
+            !!statusRef.current &&
+            !!statusRef.current[actionsTypes.SET_REQUIRES_WHITELIST] &&
+            statusRef.current[actionsTypes.SET_REQUIRES_WHITELIST] === transactionStates.CONFIRMED
+        )
+
         api.close({
-            started,
-            succeeded: allSucceeded,
+            didEnableWhitelist,
         })
-    }, [api, started, allSucceeded])
+    }, [api])
+
+    useEffect(() => {
+        if (finished) {
+            onClose()
+        }
+    }, [finished, onClose])
 
     const onStart = useCallback(async (address: Address, remove = false) => {
         try {

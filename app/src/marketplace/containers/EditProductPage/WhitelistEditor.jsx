@@ -19,7 +19,6 @@ import type { Address } from '$shared/flowtype/web3-types'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import useEditableProduct from '$mp/containers/ProductController/useEditableProduct'
 import useEditableProductActions from '$mp/containers/ProductController/useEditableProductActions'
-import { actionsTypes } from './useUpdateWhitelist'
 
 const MIN_ROWS = 5
 
@@ -111,8 +110,8 @@ type Props = {
     enabled: boolean,
     items: Array<WhitelistItem>,
     onEnableChanged: (boolean) => void,
-    onAdd: () => void,
-    onRemove: (Address) => void,
+    onAdd: () => Promise<void>,
+    onRemove: (Address) => Promise<void>,
     onCopy: (string) => void,
     actionsEnabled: boolean,
 }
@@ -221,7 +220,7 @@ export const WhitelistEditor = () => {
     const { items } = useWhitelist()
     const { updateRequiresWhitelist } = useEditableProductActions()
     const isEnabled = !!product.requiresWhitelist
-    const actionsEnabled = !!contractProduct
+    const actionsEnabled = !!contractProduct && isEnabled
 
     const { api: whitelistEditDialog } = useModal('whitelistEdit')
     const { copy } = useCopy()
@@ -230,25 +229,35 @@ export const WhitelistEditor = () => {
         copy(address)
 
         Notification.push({
-            title: 'Copied',
+            title: I18n.t('general.copied'),
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])
 
     const productId = product.id
 
-    const onAdd = useCallback(() => {
-        whitelistEditDialog.open({
+    const onAdd = useCallback(async () => {
+        const { didEnableWhitelist } = await whitelistEditDialog.open({
             productId,
         })
-    }, [productId, whitelistEditDialog])
 
-    const onRemove = useCallback((removedAddress: Address) => {
-        whitelistEditDialog.open({
+        // reset white list enabled marker in nav if it was updated to contract
+        if (didEnableWhitelist) {
+            updateRequiresWhitelist(true, false)
+        }
+    }, [productId, whitelistEditDialog, updateRequiresWhitelist])
+
+    const onRemove = useCallback(async (removedAddress: Address) => {
+        const { didEnableWhitelist } = await whitelistEditDialog.open({
             productId,
             removedAddress,
         })
-    }, [productId, whitelistEditDialog])
+
+        // reset white list enabled marker in nav if it was updated to contract
+        if (didEnableWhitelist) {
+            updateRequiresWhitelist(true, false)
+        }
+    }, [productId, whitelistEditDialog, updateRequiresWhitelist])
 
     // TODO: Email address must be provided when we enable whitelist!
     // Add this validation when we have contact email for products.

@@ -5,6 +5,7 @@ import { isDataUnionProduct } from '$mp/utils/product'
 import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
 import get from 'lodash/get'
+import isEqual from 'lodash/isEqual'
 import type { Product, PendingChanges } from '$mp/flowtype/product-types'
 
 export const PENDING_CHANGE_FIELDS = [
@@ -44,7 +45,7 @@ export const getPendingObject = (product: Product | PendingChanges): Object => {
 }
 
 export const getChangeObject = (original: Product, next: Product): Object => (
-    Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => JSON.stringify(value) !== JSON.stringify(original[key])))
+    Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => !isEqual(value, original[key])))
 )
 
 export function getPendingChanges(product: Product): Object {
