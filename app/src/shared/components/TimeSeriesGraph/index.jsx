@@ -90,9 +90,9 @@ const UnstyledTimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: 
         let max = Math.max(...dataValues)
         let min = Math.min(...dataValues)
 
-        // If we provide a domain with same min and max, react-vis
+        // If we provide a domain with small difference, react-vis
         // shows seemingly random scale for y-axis
-        if (max === min) {
+        if (Math.abs(max - min) < 2) {
             min -= 2
             max += 2
         }
