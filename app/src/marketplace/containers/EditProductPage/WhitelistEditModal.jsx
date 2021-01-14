@@ -22,12 +22,6 @@ import WhitelistEditErrorDialog from '$mp/components/Modal/WhitelistEditErrorDia
 
 import useUpdateWhitelist, { actionsTypes } from './useUpdateWhitelist'
 
-export type AddModalProps = {
-    onClose: () => void,
-    onSave: (string) => void,
-    requiredOwner: string,
-}
-
 type Props = {
     productId: ProductId,
     removedAddress: Address,

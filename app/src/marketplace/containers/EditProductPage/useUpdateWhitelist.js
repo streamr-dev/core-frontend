@@ -32,7 +32,7 @@ export function useUpdateWhitelist() {
 
         const queue = new ActionQueue()
 
-        // enable white list before any action if not enabled in contract,
+        // Enable white list before any action if not enabled in contract,
         // otherwise removing or adding will fail
         if (setWhitelist) {
             queue.add({
@@ -45,6 +45,7 @@ export function useUpdateWhitelist() {
                             done()
                         })
                         .onTransactionComplete(() => {
+                            // update the loaded product with the new value
                             updateEntities({
                                 data: {
                                     id: productId,
@@ -140,7 +141,7 @@ export function useUpdateWhitelist() {
         })
 
         return queue
-    }, [dispatch, addToWhitelist, editInWhitelist, removeFromWhitelist])
+    }, [dispatch, updateEntities, addToWhitelist, editInWhitelist, removeFromWhitelist])
 
     return useMemo(() => ({
         updateWhitelist,

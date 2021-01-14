@@ -44,6 +44,7 @@ import AddWhitelistedAddressDialog from '$mp/components/Modal/AddWhitelistedAddr
 import RemoveWhitelistedAddressDialog from '$mp/components/Modal/RemoveWhitelistedAddressDialog'
 import WhitelistEditProgressDialog from '$mp/components/Modal/WhitelistEditProgressDialog'
 import WhitelistEditErrorDialog from '$mp/components/Modal/WhitelistEditErrorDialog'
+import WhitelistRequestAccessDialog from '$mp/components/Modal/WhitelistRequestAccessDialog'
 
 // userpages
 import SnippetDialog from '$userpages/components/SnippetDialog'
@@ -840,6 +841,15 @@ story('Product Editor/WhitelistEditErrorDialog')
             />
         )
     })
+
+story('Marketplace/WhitelistRequestAccessDialog')
+    .add('default', () => (
+        <WhitelistRequestAccessDialog
+            contactEmail="tester1@streamr.com"
+            productName="Test Product"
+            onClose={action('onClose')}
+        />
+    ))
 
 story('Streams/SnippetDialog')
     .add('default', () => (

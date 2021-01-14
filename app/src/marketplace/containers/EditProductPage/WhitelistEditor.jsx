@@ -112,7 +112,6 @@ type Props = {
     onEnableChanged: (boolean) => void,
     onAdd: () => Promise<void>,
     onRemove: (Address) => Promise<void>,
-    onCopy: (string) => void,
     actionsEnabled: boolean,
 }
 
@@ -150,79 +149,8 @@ export const WhitelistEditorComponent = ({
     onEnableChanged,
     onAdd,
     onRemove,
-    onCopy,
     actionsEnabled,
-}: Props) => (
-    <Container className={className}>
-        <Rows rowCount={MIN_ROWS}>
-            <TableHeaderRow>
-                <TableHeaderColumn>{I18n.t('editProductPage.whitelist.header.address')}</TableHeaderColumn>
-                <TableHeaderColumn>{I18n.t('editProductPage.whitelist.header.status')}</TableHeaderColumn>
-                <TableHeaderColumn />
-            </TableHeaderRow>
-            {items.map((item) => {
-                const disabled = !enabled || item.isPending
-
-                return (
-                    <TableRow key={item.address}>
-                        <TableColumn disabled={disabled}>
-                            <span>{item.address}</span>
-                        </TableColumn>
-                        <TableColumn disabled={disabled} center>
-                            <StatusIcon
-                                status={statusIconTheme(disabled, item.status)}
-                                tooltip={!disabled && I18n.t(`editProductPage.whitelist.status.${item.status}`)}
-                            />
-                        </TableColumn>
-                        <TableColumn disabled={disabled} center>
-                            <StyledPopover
-                                title="Select"
-                                type="meatball"
-                                noCaret
-                            >
-                                <Popover.Item onClick={() => onCopy(item.address)}>
-                                    {I18n.t('editProductPage.whitelist.copy')}
-                                </Popover.Item>
-                                {item.status !== 'removed' && actionsEnabled && !item.isPending && (
-                                    <Popover.Item onClick={() => onRemove(item.address)}>
-                                        {I18n.t('editProductPage.whitelist.remove')}
-                                    </Popover.Item>
-                                )}
-                            </StyledPopover>
-                        </TableColumn>
-                    </TableRow>
-                )
-            })}
-            {padWithEmptyRows(items)}
-        </Rows>
-        <Controls>
-            <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
-            <StyledToggle
-                id="whitelist"
-                value={enabled}
-                onChange={onEnableChanged}
-            />
-            <Button
-                kind="secondary"
-                size="normal"
-                disabled={!enabled || !actionsEnabled}
-                onClick={() => onAdd()}
-            >
-                {I18n.t('editProductPage.whitelistEdit.add')}
-            </Button>
-        </Controls>
-    </Container>
-)
-
-export const WhitelistEditor = () => {
-    const product = useEditableProduct()
-    const contractProduct = useContractProduct()
-    const { items } = useWhitelist()
-    const { updateRequiresWhitelist } = useEditableProductActions()
-    const isEnabled = !!product.requiresWhitelist
-    const actionsEnabled = !!contractProduct && isEnabled
-
-    const { api: whitelistEditDialog } = useModal('whitelistEdit')
+}: Props) => {
     const { copy } = useCopy()
 
     const onCopy = useCallback((address: string) => {
@@ -233,6 +161,79 @@ export const WhitelistEditor = () => {
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])
+
+    return (
+        <Container className={className}>
+            <Rows rowCount={MIN_ROWS}>
+                <TableHeaderRow>
+                    <TableHeaderColumn>{I18n.t('editProductPage.whitelist.header.address')}</TableHeaderColumn>
+                    <TableHeaderColumn>{I18n.t('editProductPage.whitelist.header.status')}</TableHeaderColumn>
+                    <TableHeaderColumn />
+                </TableHeaderRow>
+                {items.map((item) => {
+                    const disabled = !enabled || item.isPending
+
+                    return (
+                        <TableRow key={item.address}>
+                            <TableColumn disabled={disabled}>
+                                <span>{item.address}</span>
+                            </TableColumn>
+                            <TableColumn disabled={disabled} center>
+                                <StatusIcon
+                                    status={statusIconTheme(disabled, item.status)}
+                                    tooltip={!disabled && I18n.t(`editProductPage.whitelist.status.${item.status}`)}
+                                />
+                            </TableColumn>
+                            <TableColumn disabled={disabled} center>
+                                <StyledPopover
+                                    title="Select"
+                                    type="meatball"
+                                    noCaret
+                                >
+                                    <Popover.Item onClick={() => onCopy(item.address)}>
+                                        {I18n.t('editProductPage.whitelist.copy')}
+                                    </Popover.Item>
+                                    {item.status !== 'removed' && actionsEnabled && !item.isPending && (
+                                        <Popover.Item onClick={() => onRemove(item.address)}>
+                                            {I18n.t('editProductPage.whitelist.remove')}
+                                        </Popover.Item>
+                                    )}
+                                </StyledPopover>
+                            </TableColumn>
+                        </TableRow>
+                    )
+                })}
+                {padWithEmptyRows(items)}
+            </Rows>
+            <Controls>
+                <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
+                <StyledToggle
+                    id="whitelist"
+                    value={enabled}
+                    onChange={onEnableChanged}
+                />
+                <Button
+                    kind="secondary"
+                    size="normal"
+                    disabled={!enabled || !actionsEnabled}
+                    onClick={() => onAdd()}
+                >
+                    {I18n.t('editProductPage.whitelistEdit.add')}
+                </Button>
+            </Controls>
+        </Container>
+    )
+}
+
+export const WhitelistEditor = () => {
+    const product = useEditableProduct()
+    const contractProduct = useContractProduct()
+    const { items } = useWhitelist()
+    const { updateRequiresWhitelist } = useEditableProductActions()
+    const isEnabled = !!product.requiresWhitelist
+    const actionsEnabled = !!contractProduct && isEnabled
+
+    const { api: whitelistEditDialog } = useModal('whitelistEdit')
 
     const productId = product.id
 
@@ -269,7 +270,6 @@ export const WhitelistEditor = () => {
             onEnableChanged={(value) => updateRequiresWhitelist(value)}
             onAdd={onAdd}
             onRemove={onRemove}
-            onCopy={onCopy}
             actionsEnabled={actionsEnabled}
         />
     )

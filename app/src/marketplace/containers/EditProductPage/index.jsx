@@ -150,7 +150,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         resetDataUnionSecrets()
     }, [resetDataUnionSecrets])
 
-    // clear data union secrets when unmounting
+    // clear whitelisted addresses when unmounting
     useEffect(() => () => {
         resetWhiteWhitelistedAdresses(productId)
     }, [resetWhiteWhitelistedAdresses, productId])
