@@ -20,7 +20,6 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { updateCurrentUserName, updateCurrentUserEmail } from '$shared/modules/user/actions'
 import { MD, LG } from '$shared/utils/styled'
-import { isEthereumAddress } from '$mp/utils/validate'
 
 import EditAvatarDialog from './EditAvatarDialog'
 
@@ -113,8 +112,6 @@ const ProfileSettings = () => {
 
     ), [wrapUploadAvatarDialog, uploadAvatarDialog, isMounted, originalImage])
 
-    const isEthereumUser = !!isEthereumAddress(user.username)
-
     return (
         <Root>
             <AvatarWrapper>
@@ -161,8 +158,6 @@ const ProfileSettings = () => {
                     id="userEmail"
                     value={user.email || ''}
                     onChange={onEmailChange}
-                    disabled={isPending || !isEthereumUser}
-                    readOnly={!isEthereumUser}
                     placeholder={I18n.t('userpages.profilePage.profileSettings.userEmailPlaceholder')}
                 />
             </InputRow>
