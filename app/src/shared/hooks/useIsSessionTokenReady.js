@@ -6,5 +6,5 @@ export default function useIsSessionTokenReady() {
     const sessionToken = getToken()
     const { isAuthenticating, authenticationFailed, isAuthenticated } = useSelector(selectAuthState)
 
-    return !!sessionToken || (!isAuthenticating && !!authenticationFailed) || !isAuthenticated
+    return !!sessionToken || (!isAuthenticating && (!!authenticationFailed || !isAuthenticated))
 }
