@@ -17,7 +17,9 @@ import usePending from '$shared/hooks/usePending'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
+import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
+import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import ProductStat from '$shared/components/ProductStat'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
@@ -54,12 +56,33 @@ const StyledListContainer = styled(ListContainer)`
 const Stats = () => {
     const { loadDataUnion } = useController()
     const product = useProduct()
-    const { stats, memberCount } = useDataUnionStats()
+    const contractProduct = useContractProduct()
+
+    const { subscriberCount } = contractProduct || {}
+    const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
+
+    const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
+    const stats = useDataUnionStats({
+        beneficiaryAddress,
+        created,
+        adminFee,
+        subscriberCount,
+        totalEarnings,
+        memberCount,
+    })
     const dataUnion = useDataUnion()
 
     const { joinPartStreamId } = dataUnion || {}
 
-    const { dataUnionDeployed, beneficiaryAddress } = product
+    useEffect(() => {
+        if (beneficiaryAddress) {
+            startPolling(beneficiaryAddress)
+
+            return () => stopPolling()
+        }
+
+        return () => {}
+    }, [beneficiaryAddress, startPolling, stopPolling])
 
     useEffect(() => {
         if (dataUnionDeployed && beneficiaryAddress) {
@@ -88,16 +111,16 @@ const Stats = () => {
         >
             <CoreHelmet title={I18n.t('userpages.title.stats')} />
             <StyledListContainer>
+                <div className={styles.statBox}>
+                    {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
+                        <DataUnionPending />
+                    )}
+                    {!!dataUnionDeployed && stats && (
+                        <ProductStat.List items={stats} />
+                    )}
+                </div>
                 {!!dataUnionDeployed && (
                     <React.Fragment>
-                        <div className={styles.statBox}>
-                            {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
-                                <DataUnionPending />
-                            )}
-                            {!!dataUnionDeployed && stats && (
-                                <ProductStat.List items={stats} />
-                            )}
-                        </div>
                         <div className={styles.graphs}>
                             <div className={styles.memberCount}>
                                 {!!dataUnionDeployed && memberCount && (
@@ -166,10 +189,11 @@ const LoadingView = () => (
 
 const StatsWrap = () => {
     const product = useProduct()
+    const { hasLoaded } = useController()
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
 
-    if (!product || loadPending || permissionsPending) {
+    if (!hasLoaded || loadPending || permissionsPending) {
         return <LoadingView />
     }
 

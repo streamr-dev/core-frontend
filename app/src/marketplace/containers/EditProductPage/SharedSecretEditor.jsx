@@ -1,97 +1,98 @@
 // @flow
 
-import React, { useEffect, useCallback, useState } from 'react'
-import cx from 'classnames'
+import React, { useCallback } from 'react'
+import styled from 'styled-components'
 import { I18n } from 'react-redux-i18n'
 
-import KeyField from '$userpages/components/KeyField'
+import UnstyledKeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
 import useProduct from '../ProductController/useProduct'
-import { getSecrets, postSecret, putSecret, deleteSecret } from '$mp/modules/dataUnion/services'
+import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import type { Secret } from '$mp/modules/dataUnion/types'
+import { usePending } from '$shared/hooks/usePending'
 
-import styles from './sharedSecretEditor.pcss'
+const KeyField = styled(UnstyledKeyField)``
+const AddKeyFieldWrapper = styled.div``
 
 type Props = {
-    className?: string,
     disabled?: boolean,
 }
 
-const SharedSecretEditor = ({ className, disabled }: Props) => {
+const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
     const product = useProduct()
-    const [secrets, setSecrets] = useState([])
+    const { secrets, edit, add, remove } = useDataUnionSecrets()
     const dataUnionId = (product && product.beneficiaryAddress) || ''
+    const { isPending: isAddPending, wrap: wrapAddSecret } = usePending('product.ADD_SECRET')
+    const { isPending: isEditPending, wrap: wrapEditSecret } = usePending('product.EDIT_SECRET')
+    const { isPending: isRemovePending, wrap: wrapRemoveSecret } = usePending('product.REMOVE_SECRET')
 
-    const fetchSecrets = useCallback(async () => {
-        try {
-            const result = await getSecrets({
+    const addSecret = useCallback(async (name) => (
+        wrapAddSecret(async () => {
+            await add({
                 dataUnionId,
+                name,
             })
-            setSecrets(result)
-        } catch (e) {
-            console.error('Could not load shared secrets', e)
-        }
-    }, [dataUnionId])
+        })
+    ), [wrapAddSecret, dataUnionId, add])
 
-    useEffect(() => {
-        if (dataUnionId) {
-            fetchSecrets()
-        }
-    }, [dataUnionId, fetchSecrets])
+    const editSecret = useCallback(async (id, name) => (
+        wrapEditSecret(async () => {
+            await edit({
+                dataUnionId,
+                id,
+                name,
+            })
+        })
+    ), [wrapEditSecret, dataUnionId, edit])
+
+    const removeSecret = useCallback(async (id) => (
+        wrapRemoveSecret(async () => {
+            await remove({
+                dataUnionId,
+                id,
+            })
+        })
+    ), [wrapRemoveSecret, dataUnionId, remove])
+
+    const isDisabled = !!(disabled || isAddPending || isEditPending || isRemovePending)
 
     return (
-        <div className={cx(className)}>
+        <div {...props}>
             {secrets.map((s: Secret) => (
                 <KeyField
                     key={s.id}
                     keyName={s.name}
                     value={s.secret}
                     hideValue
-                    allowEdit={!disabled}
-                    allowDelete={!disabled}
-                    onSave={async (name) => {
-                        if (name) {
-                            const result = await putSecret({
-                                dataUnionId,
-                                secretId: s.id,
-                                name,
-                            })
-                            setSecrets((currentSecrets) => [
-                                ...currentSecrets.filter((secret) => secret.id !== s.id),
-                                result,
-                            ])
-                        }
-                    }}
-                    onDelete={async () => {
-                        await deleteSecret({
-                            dataUnionId,
-                            secretId: s.id,
-                        })
-                        setSecrets((currentSecrets) => currentSecrets.filter((secret) => secret.id !== s.id))
-                    }}
+                    allowEdit={!isDisabled}
+                    allowDelete={!isDisabled}
+                    onSave={async (name) => editSecret(s.id, name)}
+                    onDelete={async () => removeSecret(s.id)}
                     labelType="sharedSecret"
-                    className={styles.keyField}
                 />
             ))}
-            <div className={styles.addButton}>
+            <AddKeyFieldWrapper>
                 <AddKeyField
                     label={I18n.t('editProductPage.sharedSecrets.addSecret')}
-                    addKeyFieldAllowed={!disabled}
+                    addKeyFieldAllowed={!isDisabled}
                     labelType="sharedSecret"
-                    onSave={async (name) => {
-                        const result = await postSecret({
-                            dataUnionId,
-                            name,
-                        })
-                        setSecrets((currentSecrets) => [
-                            ...currentSecrets,
-                            result,
-                        ])
-                    }}
+                    onSave={async (name) => addSecret(name)}
                 />
-            </div>
+            </AddKeyFieldWrapper>
         </div>
     )
 }
+
+const SharedSecretEditor = styled(UnstyledSharedSecretEditor)`
+    margin-top: 2rem;
+
+    ${KeyField} + ${KeyField} {
+        margin-top: 1.5rem;
+    }
+
+    ${AddKeyFieldWrapper} {
+        margin-top: 2rem;
+    }
+`
 
 export default SharedSecretEditor

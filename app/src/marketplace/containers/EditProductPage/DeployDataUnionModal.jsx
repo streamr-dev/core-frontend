@@ -74,7 +74,16 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 
         const web3 = getWeb3()
         const account = await web3.getDefaultAccount()
-        const { id: joinPartStreamId } = await createJoinPartStream(account, productId)
+
+        let joinPartStreamId
+
+        try {
+            const joinPartStream = await createJoinPartStream(account, productId)
+            joinPartStreamId = joinPartStream.id
+        } catch (e) {
+            setDeployError(e)
+            throw e
+        }
 
         if (!isMounted()) { return Promise.resolve() }
 

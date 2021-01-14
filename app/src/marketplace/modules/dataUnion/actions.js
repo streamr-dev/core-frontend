@@ -5,7 +5,7 @@ import { createAction } from 'redux-actions'
 import { dataUnionSchema, dataUnionsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { DataUnionId } from '$mp/flowtype/product-types'
+import type { DataUnionId, DataUnionSecretId } from '$mp/flowtype/product-types'
 import * as services from './services'
 import {
     GET_DATA_UNION_REQUEST,
@@ -17,12 +17,17 @@ import {
     GET_ALL_DATA_UNIONS_REQUEST,
     GET_ALL_DATA_UNIONS_SUCCESS,
     GET_ALL_DATA_UNIONS_FAILURE,
+    SET_DATA_UNION_SECRETS,
+    ADD_DATA_UNION_SECRET,
+    REMOVE_DATA_UNION_SECRET,
 } from './constants'
 import type {
     DataUnionIdActionCreator,
     DataUnionIdsActionCreator,
     DataUnionErrorActionCreator,
     DataUnionsErrorActionCreator,
+    DataUnionSecretsActionCreator,
+    DataUnionSecretActionCreator,
 } from './types'
 
 const getDataUnionRequest: DataUnionIdActionCreator = createAction(
@@ -66,6 +71,30 @@ const getDataUnionStatsFailure: DataUnionErrorActionCreator = createAction(
     (id: DataUnionId, error: ErrorInUi) => ({
         id,
         error,
+    }),
+)
+
+export const setDataUnionSecrets: DataUnionSecretsActionCreator = createAction(
+    SET_DATA_UNION_SECRETS,
+    (id: DataUnionId, secrets: Array<DataUnionSecretId>) => ({
+        id,
+        secrets,
+    }),
+)
+
+export const addDataUnionSecret: DataUnionSecretActionCreator = createAction(
+    ADD_DATA_UNION_SECRET,
+    (id: DataUnionId, secret: DataUnionSecretId) => ({
+        id,
+        secret,
+    }),
+)
+
+export const removeDataUnionSecret: DataUnionSecretActionCreator = createAction(
+    REMOVE_DATA_UNION_SECRET,
+    (id: DataUnionId, secret: DataUnionSecretId) => ({
+        id,
+        secret,
     }),
 )
 

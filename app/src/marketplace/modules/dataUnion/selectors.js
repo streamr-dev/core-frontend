@@ -5,10 +5,10 @@ import { denormalize } from 'normalizr'
 
 import type { DataUnionState, StoreState } from '../../flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
-import type { DataUnionId, DataUnion } from '../../flowtype/product-types'
+import type { DataUnionId, DataUnion, DataUnionSecretId, DataUnionSecret } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
-import { dataUnionSchema, dataUnionsSchema } from '$shared/modules/entities/schema'
+import { dataUnionSchema, dataUnionsSchema, dataUnionSecretsSchema } from '$shared/modules/entities/schema'
 
 const selectDataUnionState = (state: StoreState): DataUnionState => state.dataUnion
 
@@ -47,4 +47,15 @@ export const selectDataUnions: (StoreState) => Array<DataUnion> = createSelector
 export const selectFetchingDataUnionStats: (StoreState) => boolean = createSelector(
     selectDataUnionState,
     (subState: DataUnionState): boolean => subState.fetchingStats,
+)
+
+export const selectDataUnionSecretIds: (StoreState) => Array<DataUnionSecretId> = createSelector(
+    selectDataUnionState,
+    (subState: DataUnionState): Array<DataUnionSecretId> => subState.secrets,
+)
+
+export const selectDataUnionSecrets: (StoreState) => Array<DataUnionSecret> = createSelector(
+    selectDataUnionSecretIds,
+    selectEntities,
+    (ids: Array<DataUnionSecretId>, entities: EntitiesState): Array<DataUnionSecret> => denormalize(ids, dataUnionSecretsSchema, entities),
 )

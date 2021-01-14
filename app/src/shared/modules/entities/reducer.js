@@ -21,6 +21,7 @@ export const initialState: EntitiesState = {
     canvases: {},
     integrationKeys: {},
     joinRequests: {},
+    dataUnionSecrets: {},
 }
 
 // Arrays do not replace the destination value by default, use customizer to handle

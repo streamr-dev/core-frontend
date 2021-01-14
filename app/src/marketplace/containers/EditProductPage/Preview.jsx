@@ -22,6 +22,7 @@ import StreamListing from '$mp/components/ProductPage/StreamListing'
 import Terms from '$mp/components/ProductPage/Terms'
 import ProductPageDataUnionStats from '$mp/containers/ProductPage/DataUnionStats'
 import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
+import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import usePending from '$shared/hooks/usePending'
@@ -106,15 +107,34 @@ const Description = () => {
 
 const DataUnionStats = () => {
     const product = useEditableProduct()
+    const contractProduct = useContractProduct()
 
-    const { created, adminFee } = product
+    const { subscriberCount } = contractProduct || {}
+    const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
 
-    const isDataUnion = !!(product && isDataUnionProduct(product))
-    const isDuDeployed = !!isDataUnion && !!product.dataUnionDeployed && isEthereumAddress(product.beneficiaryAddress)
+    const isDuDeployed = !!dataUnionDeployed && isEthereumAddress(beneficiaryAddress)
 
-    const { stats, memberCount } = useDataUnionStats()
+    const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
+    const stats = useDataUnionStats({
+        beneficiaryAddress,
+        created,
+        adminFee,
+        subscriberCount,
+        totalEarnings,
+        memberCount,
+    })
     const dataUnion = useDataUnion()
     const { joinPartStreamId } = dataUnion || {}
+
+    useEffect(() => {
+        if (beneficiaryAddress) {
+            startPolling(beneficiaryAddress)
+
+            return () => stopPolling()
+        }
+
+        return () => {}
+    }, [startPolling, stopPolling, beneficiaryAddress])
 
     const statsProps = useMemo(() => {
         if (isDuDeployed) {
@@ -141,9 +161,9 @@ const DataUnionStats = () => {
                 id: 'subscribers',
                 value: '0',
             }, {
-                id: 'adminFee',
+                id: 'revenueShare',
                 unit: '%',
-                value: adminFee ? (adminFee * 100).toFixed(0) : '0',
+                value: adminFee ? ((1 - adminFee) * 100).toFixed(0) : '0',
             }, {
                 id: 'created',
                 value: created ? new Date(created).toLocaleDateString() : '-',
