@@ -4,7 +4,7 @@ import { selectAuthState } from '$shared/modules/user/selectors'
 
 export default function useIsSessionTokenReady() {
     const sessionToken = getToken()
-    const { isAuthenticating, authenticationFailed } = useSelector(selectAuthState)
+    const { isAuthenticating, authenticationFailed, isAuthenticated } = useSelector(selectAuthState)
 
-    return !!sessionToken || (!isAuthenticating && !!authenticationFailed)
+    return !!sessionToken || (!isAuthenticating && !!authenticationFailed) || !isAuthenticated
 }
