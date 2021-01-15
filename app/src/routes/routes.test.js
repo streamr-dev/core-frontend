@@ -103,6 +103,7 @@ describe('route utils', () => {
     describe('define', () => {
         const r = (pathstr, ...args) => define(pathstr, () => ({
             url: 'url',
+            urlWithPort: 'http://localhost:80',
         }))(...args)
 
         it('renders urls correctly', () => {
@@ -211,6 +212,12 @@ describe('route utils', () => {
                 expect(() => r('<var1>/<var2>/resource/:id', {
                     id: 1,
                 })).toThrow(/expected "var1", "var2" variable\(s\) to be defined/i)
+            })
+
+            it('returns a route with port in variable', () => {
+                expect(r('<urlWithPort>/resource/:id', {
+                    id: 1,
+                })).toEqual('http://localhost:80/resource/1')
             })
         })
     })
