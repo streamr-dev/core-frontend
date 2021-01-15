@@ -14,6 +14,7 @@ const UnstyledAddWhitelistedAddressDialog = ({ onClose, onContinue, ...props }) 
     return (
         <ModalPortal>
             <Dialog
+                {...props}
                 title={I18n.t('modal.whitelistEdit.addAddressTitle')}
                 onClose={() => onClose()}
                 actions={{
@@ -29,13 +30,12 @@ const UnstyledAddWhitelistedAddressDialog = ({ onClose, onContinue, ...props }) 
                         disabled: !isEthereumAddress(address),
                     },
                 }}
-                {...props}
             >
                 <Label>
                     <Translate value="modal.whitelistEdit.addressLabel" />
                 </Label>
                 <Text
-                    onCommit={(val) => setAddress(val)}
+                    onCommit={setAddress}
                     placeholder={I18n.t('modal.whitelistEdit.addressPlaceholder')}
                 />
             </Dialog>

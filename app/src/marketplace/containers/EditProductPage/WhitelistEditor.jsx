@@ -10,12 +10,14 @@ import WhitelistEditorComponent from '$mp/components/WhitelistEditor'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import useEditableProduct from '$mp/containers/ProductController/useEditableProduct'
 import useEditableProductActions from '$mp/containers/ProductController/useEditableProductActions'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 export const WhitelistEditor = () => {
     const product = useEditableProduct()
     const contractProduct = useContractProduct()
     const { items } = useWhitelist()
     const { updateRequiresWhitelist } = useEditableProductActions()
+    const isMounted = useIsMounted()
     const isEnabled = !!product.requiresWhitelist
     const actionsEnabled = !!contractProduct && isEnabled
 
@@ -29,10 +31,10 @@ export const WhitelistEditor = () => {
         })
 
         // reset white list enabled marker in nav if it was updated to contract
-        if (didEnableWhitelist) {
+        if (didEnableWhitelist && isMounted()) {
             updateRequiresWhitelist(true, false)
         }
-    }, [productId, whitelistEditDialog, updateRequiresWhitelist])
+    }, [productId, whitelistEditDialog, updateRequiresWhitelist, isMounted])
 
     const onRemove = useCallback(async (removedAddress: Address) => {
         const { didEnableWhitelist } = await whitelistEditDialog.open({
@@ -41,10 +43,10 @@ export const WhitelistEditor = () => {
         })
 
         // reset white list enabled marker in nav if it was updated to contract
-        if (didEnableWhitelist) {
+        if (didEnableWhitelist && isMounted()) {
             updateRequiresWhitelist(true, false)
         }
-    }, [productId, whitelistEditDialog, updateRequiresWhitelist])
+    }, [productId, whitelistEditDialog, updateRequiresWhitelist, isMounted])
 
     // TODO: Email address must be provided when we enable whitelist!
     // Add this validation when we have contact email for products.

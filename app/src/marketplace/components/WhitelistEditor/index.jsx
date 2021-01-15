@@ -88,6 +88,10 @@ const TableHeaderRow = styled(TableRow)`
         font-weight: 500;
         letter-spacing: 0px;
     }
+
+    :hover {
+        background-color: inherit;
+    }
 `
 
 const Controls = styled.div`
@@ -131,10 +135,14 @@ type RowProps = CommonProps & {
 
 const padWithEmptyRows = (rows: Array<WhitelistItem>) => {
     if (rows.length < MIN_ROWS) {
-        const empties = new Array(MIN_ROWS - rows.length).fill(null)
-        return empties.map((item, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <TableRow key={index}>
+        return [...Array(MIN_ROWS - rows.length)].map((_, index) => (
+            <TableRow
+                // eslint-disable-next-line react/no-array-index-key
+                key={index}
+                theme={{
+                    disabled: true,
+                }}
+            >
                 <TableColumn />
                 <TableColumn />
                 <TableColumn />
@@ -197,7 +205,7 @@ const TableRowItem = ({ item, enabled, actionsEnabled, onRemove }: RowProps) => 
                     <Popover.Item onClick={() => onCopy(item.address)}>
                         {I18n.t('editProductPage.whitelist.copy')}
                     </Popover.Item>
-                    {item.status !== 'removed' && actionsEnabled && !disabled && (
+                    {item.status !== 'removed' && !!actionsEnabled && !disabled && (
                         <Popover.Item onClick={() => onRemove(item.address)}>
                             {I18n.t('editProductPage.whitelist.remove')}
                         </Popover.Item>

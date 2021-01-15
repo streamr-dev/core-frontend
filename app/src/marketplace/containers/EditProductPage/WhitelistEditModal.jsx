@@ -13,6 +13,7 @@ import { transactionStates } from '$shared/utils/constants'
 import type { Address } from '$shared/flowtype/web3-types'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import AddWhitelistedAddressDialog from '$mp/components/Modal/AddWhitelistedAddressDialog'
@@ -29,7 +30,8 @@ type Props = {
 }
 
 export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: Props) => {
-    const { updateWhitelist } = useUpdateWhitelist()
+    const updateWhitelist = useUpdateWhitelist()
+    const isMounted = useIsMounted()
 
     const [queue, setQueue] = useState(undefined)
     const [contractProduct, setContractProduct] = useState(undefined)
@@ -42,40 +44,33 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
     const [modalError, setModalError] = useState(null)
     const [web3Actions, setWeb3Actions] = useState(new Set([]))
     const { web3Error, checkingWeb3, account } = useWeb3Status()
-    const { isPending, start: startPending, end: endPending } = usePending('product.WHITELIST')
+    const { isPending, wrap: wrapPending } = usePending('product.WHITELIST')
 
     const { ownerAddress, requiresWhitelist } = contractProduct || {}
 
-    const setActionStatus = useCallback((name, s) => {
-        setStatus((prevStatus) => ({
-            ...prevStatus,
-            [name]: s,
-        }))
-    }, [setStatus])
+    const load = useCallback(async () => (
+        wrapPending(async () => {
+            try {
+                if (!productId) {
+                    throw new Error('No product id')
+                }
+
+                const nextContractProduct = await getProductFromContract(productId)
+
+                if (isMounted()) {
+                    setContractProduct(nextContractProduct)
+                }
+            } catch (e) {
+                if (isMounted()) {
+                    setModalError(e)
+                }
+            }
+        })
+    ), [productId, wrapPending, isMounted])
 
     useEffect(() => {
-        try {
-            startPending()
-
-            if (!productId) {
-                throw new Error('No product id')
-            }
-
-            getProductFromContract(productId)
-                .then(
-                    (nextContractProduct) => {
-                        setContractProduct(nextContractProduct)
-                    },
-                    (e) => {
-                        setModalError(e)
-                    },
-                )
-        } catch (e) {
-            setModalError(e)
-        } finally {
-            endPending()
-        }
-    }, [productId, startPending, endPending])
+        load()
+    }, [load])
 
     useEffect(() => {
         if (!queue) { return () => {} }
@@ -88,16 +83,26 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
 
         queue
             .subscribe('started', (id) => {
-                setCurrentAction(id)
+                if (isMounted()) {
+                    setCurrentAction(id)
+                }
             })
             .subscribe('status', (id, nextStatus) => {
-                setActionStatus(id, nextStatus)
+                if (isMounted()) {
+                    setStatus((prevStatus) => ({
+                        ...prevStatus,
+                        [id]: nextStatus,
+                    }))
+                }
             })
+            .start()
+
+        setStarted(true)
 
         return () => {
             queue.unsubscribeAll()
         }
-    }, [setActionStatus, queue])
+    }, [queue, isMounted])
 
     const somePending = useMemo(() => Object.values(status).some((value) => (
         value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED
@@ -110,9 +115,11 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
         if (!started || !allSucceeded) { return }
 
         setTimeout(() => {
-            setFinished(true)
+            if (isMounted()) {
+                setFinished(true)
+            }
         }, 500)
-    }, [started, allSucceeded])
+    }, [started, allSucceeded, isMounted])
 
     const onClose = useCallback(() => {
         const didEnableWhitelist = !!(
@@ -132,9 +139,9 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
         }
     }, [finished, onClose])
 
-    const onStart = useCallback(async (address: Address, remove = false) => {
+    const onStart = useCallback((address: Address, remove = false) => {
         try {
-            const nextQueue = await updateWhitelist({
+            const nextQueue = updateWhitelist({
                 productId,
                 setWhitelist: !requiresWhitelist,
                 addresses: [{
@@ -142,9 +149,8 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
                     remove,
                 }],
             })
+
             setQueue(nextQueue)
-            setStarted(true)
-            nextQueue.start()
         } catch (e) {
             setModalError(e)
         }

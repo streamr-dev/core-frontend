@@ -785,7 +785,7 @@ story('Product Editor/CropImageModal')
         />
     ))
 
-story('Product Editor/AddWhitelistedAddress')
+story('Product Editor/Whitelist/AddWhitelistedAddress')
     .add('default', () => (
         <AddWhitelistedAddressDialog
             onClose={action('onClose')}
@@ -793,7 +793,7 @@ story('Product Editor/AddWhitelistedAddress')
         />
     ))
 
-story('Product Editor/RemoveWhitelistedAddressDialog')
+story('Product Editor/Whitelist/RemoveWhitelistedAddressDialog')
     .add('default', () => (
         <RemoveWhitelistedAddressDialog
             onClose={action('onClose')}
@@ -801,7 +801,7 @@ story('Product Editor/RemoveWhitelistedAddressDialog')
         />
     ))
 
-story('Product Editor/WhitelistEditProgressDialog')
+story('Product Editor/Whitelist/WhitelistEditProgressDialog')
     .add('default', () => {
         const setWhitelistStatus = select('Enable whitelist', options, transactionStates.STARTED)
         const addWhitelistedAddressStatus = select('Add whitelisted address', options, transactionStates.STARTED)
@@ -822,7 +822,7 @@ story('Product Editor/WhitelistEditProgressDialog')
         )
     })
 
-story('Product Editor/WhitelistEditErrorDialog')
+story('Product Editor/Whitelist/WhitelistEditErrorDialog')
     .add('default', () => {
         const setWhitelistStatus = select('Enable whitelist', options, transactionStates.STARTED)
         const addWhitelistedAddressStatus = select('Add whitelisted address', options, transactionStates.STARTED)

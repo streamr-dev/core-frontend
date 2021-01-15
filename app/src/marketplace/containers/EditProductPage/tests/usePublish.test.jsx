@@ -40,24 +40,10 @@ describe('usePublish', () => {
     })
 
     describe('publish mode', () => {
-        it('returns undefined if publish not called', () => {
-            let result
-            function Test() {
-                result = usePublish()
-                return null
-            }
-
-            mount((
-                <Test />
-            ))
-
-            expect(result.publishMode).toBeFalsy()
-        })
-
         it('throws an error if there is no product', async () => {
-            let result
+            let publish
             function Test() {
-                result = usePublish()
+                publish = usePublish()
                 return null
             }
 
@@ -67,7 +53,7 @@ describe('usePublish', () => {
 
             await act(async () => {
                 try {
-                    await result.publish()
+                    await publish()
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
                     expect(e).toBeTruthy()
@@ -104,7 +90,7 @@ describe('usePublish', () => {
 
             let result
             await act(async () => {
-                result = await publish.publish(product)
+                result = await publish(product)
             })
 
             expect(result.mode).toBe(publishModes.UNPUBLISH)
@@ -142,7 +128,7 @@ describe('usePublish', () => {
 
             let result
             await act(async () => {
-                result = await publish.publish(product)
+                result = await publish(product)
             })
 
             expect(result.mode).toBe(publishModes.REPUBLISH)
@@ -177,7 +163,7 @@ describe('usePublish', () => {
 
             let result
             await act(async () => {
-                result = await publish.publish(product)
+                result = await publish(product)
             })
 
             expect(result.mode).toBe(publishModes.PUBLISH)
@@ -212,7 +198,7 @@ describe('usePublish', () => {
 
             let result
             await act(async () => {
-                result = await publish.publish(product)
+                result = await publish(product)
             })
 
             expect(result.mode).toBe(publishModes.REDEPLOY)
@@ -242,7 +228,7 @@ describe('usePublish', () => {
             let result
             await act(async () => {
                 try {
-                    result = await publish.publish({
+                    result = await publish({
                         id: '1',
                         name: 'Name',
                         state: 'DEPLOYING',
@@ -258,7 +244,7 @@ describe('usePublish', () => {
 
             await act(async () => {
                 try {
-                    result = await publish.publish({
+                    result = await publish({
                         id: '1',
                         name: 'Name',
                         state: 'UNDEPLOYING',
@@ -287,7 +273,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -333,7 +319,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -390,7 +376,7 @@ describe('usePublish', () => {
 
                 let result
                 await act(async () => {
-                    result = await publish.publish(product)
+                    result = await publish(product)
                 })
 
                 expect(result.mode).toBe(publishModes.UNPUBLISH)
@@ -440,7 +426,7 @@ describe('usePublish', () => {
 
                 let result
                 await act(async () => {
-                    result = await publish.publish(product)
+                    result = await publish(product)
                 })
 
                 expect(result.mode).toBe(publishModes.UNPUBLISH)
@@ -499,7 +485,7 @@ describe('usePublish', () => {
 
                 let result
                 await act(async () => {
-                    result = await publish.publish(product)
+                    result = await publish(product)
                 })
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
@@ -550,7 +536,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -637,7 +623,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -740,7 +726,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                 }))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'DEPLOYED',
@@ -826,7 +812,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                 }))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -924,7 +910,7 @@ describe('usePublish', () => {
                     pricePerSecond: BN(2),
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
                 expect(result.queue).toBeTruthy()
@@ -1018,7 +1004,7 @@ describe('usePublish', () => {
                     pricePerSecond: BN(2),
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
                 expect(result.queue).toBeTruthy()
@@ -1080,7 +1066,7 @@ describe('usePublish', () => {
                 }))
                 const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     streams: ['1', '3'],
@@ -1207,7 +1193,7 @@ describe('usePublish', () => {
                         streams: ['2', '3', '4'],
                     },
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()
@@ -1290,7 +1276,7 @@ describe('usePublish', () => {
                 sandbox.stub(dataUnionServices, 'getDataUnionOwner')
                     .callsFake(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -1391,7 +1377,7 @@ describe('usePublish', () => {
                 const postSetUndeployingStub = sandbox.stub(productServices, 'postSetUndeploying').callsFake(() => Promise.resolve())
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'DEPLOYED',
@@ -1494,7 +1480,7 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     type: 'DATAUNION',
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
                 expect(result.queue).toBeTruthy()
@@ -1603,7 +1589,7 @@ describe('usePublish', () => {
                         adminFee: '0.2',
                     },
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
                 expect(result.queue).toBeTruthy()
@@ -1721,7 +1707,7 @@ describe('usePublish', () => {
                     },
                 }
 
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()
@@ -1848,7 +1834,7 @@ describe('usePublish', () => {
                     },
                 }
 
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()

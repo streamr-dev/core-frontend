@@ -77,7 +77,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
             >
                 <PublishProgress>
                     <PendingTasks isPrompted={isPrompted}>
-                        {pending && pending.length > 0 && pending.map((key) => (
+                        {pending.length > 0 && pending.map((key) => (
                             I18n.t(`modal.publishProgress.${key}.pending`)
                         )).join(', ')}
                     </PendingTasks>

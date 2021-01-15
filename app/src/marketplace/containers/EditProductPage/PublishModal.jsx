@@ -8,6 +8,7 @@ import { transactionStates } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
 import { areAddressesEqual } from '$mp/utils/smartContract'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
@@ -26,9 +27,10 @@ type Props = {
 }
 
 export const PublishOrUnpublishModal = ({ product, api }: Props) => {
-    const { publish } = usePublish()
+    const publish = usePublish()
     const publishRef = useRef(publish)
     publishRef.current = publish
+    const isMounted = useIsMounted()
 
     const [queue, setQueue] = useState(undefined)
     const [mode, setMode] = useState(null)
@@ -42,14 +44,6 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [web3Actions, setWeb3Actions] = useState(new Set([]))
     const { web3Error, checkingWeb3, account } = useWeb3Status(requireWeb3)
     const { isPending, start: startPending, end: endPending } = usePending('product.PUBLISH_DIALOG_LOAD')
-
-    const setActionStatus = useCallback((name, s) => {
-        setStatus((prevStatus) => ({
-            ...prevStatus,
-            [name]: s,
-        }))
-    }, [setStatus])
-
     const productId = product.id
 
     useEffect(() => {
@@ -91,16 +85,23 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
         queue
             .subscribe('started', (id) => {
-                setCurrentAction(id)
+                if (isMounted()) {
+                    setCurrentAction(id)
+                }
             })
             .subscribe('status', (id, nextStatus) => {
-                setActionStatus(id, nextStatus)
+                if (isMounted()) {
+                    setStatus((prevStatus) => ({
+                        ...prevStatus,
+                        [id]: nextStatus,
+                    }))
+                }
             })
 
         return () => {
             queue.unsubscribeAll()
         }
-    }, [setActionStatus, queue])
+    }, [queue, isMounted])
 
     const somePending = useMemo(() => Object.values(status).some((value) => (
         value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED
@@ -116,9 +117,11 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         if (!started || !allCompleted) { return }
 
         setTimeout(() => {
-            setFinished(true)
+            if (isMounted()) {
+                setFinished(true)
+            }
         }, 500)
-    }, [started, allCompleted])
+    }, [started, allCompleted, isMounted])
 
     const onClose = useCallback(({ showPublishedProduct = false }: { showPublishedProduct?: boolean } = {}) => {
         api.close({

@@ -62,19 +62,12 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         approxUsd: undefined,
     })
     const [balances, setBalances] = useState({})
-    const { purchase } = usePurchase()
+    const purchase = usePurchase()
     const [queue, setQueue]: UseStateTuple<any> = useState(undefined)
     const [currentAction, setCurrentAction] = useState(undefined)
     const [status, setStatus] = useState({})
     const [purchaseStarted, setPurchaseStarted] = useState(false)
     const [purchaseTransaction, setPurchaseTransaction] = useState(undefined)
-
-    const setActionStatus = useCallback((name, s) => {
-        setStatus((prevStatus) => ({
-            ...prevStatus,
-            [name]: s,
-        }))
-    }, [setStatus])
 
     // Check if current metamask account is linked to Streamr account
     const accountLinked = useMemo(() => !!account && isLinked(account), [isLinked, account])
@@ -115,7 +108,9 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 succeeded = true
             } catch (e) {
                 console.warn(e)
-                setPurchaseError(e)
+                if (isMounted()) {
+                    setPurchaseError(e)
+                }
             } finally {
                 if (isMounted()) {
                     // continue with purchase
@@ -156,7 +151,9 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 }
             } catch (e) {
                 console.warn(e)
-                setPurchaseError(e)
+                if (isMounted()) {
+                    setPurchaseError(e)
+                }
             }
         })
     ), [wrapPurchase, purchase, contractProduct, dataPerUsd, isMounted])
@@ -173,13 +170,20 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
         queue
             .subscribe('started', (id) => {
-                setCurrentAction(id)
+                if (isMounted()) {
+                    setCurrentAction(id)
+                }
             })
             .subscribe('status', (id, nextStatus, hash) => {
-                setActionStatus(id, nextStatus)
+                if (isMounted()) {
+                    setStatus((prevStatus) => ({
+                        ...prevStatus,
+                        [id]: nextStatus,
+                    }))
 
-                if (id === actionsTypes.SUBSCRIPTION && nextStatus === transactionStates.PENDING && !!hash) {
-                    setPurchaseTransaction(hash)
+                    if (id === actionsTypes.SUBSCRIPTION && nextStatus === transactionStates.PENDING && !!hash) {
+                        setPurchaseTransaction(hash)
+                    }
                 }
             })
             .start()
@@ -187,7 +191,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         return () => {
             queue.unsubscribeAll()
         }
-    }, [setActionStatus, queue])
+    }, [queue, isMounted])
 
     const allSucceeded = useMemo(() => Object.values(status).every((value) => (
         value === transactionStates.CONFIRMED
@@ -200,9 +204,11 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         if (!purchaseStarted || !allCompleted) { return }
 
         setTimeout(() => {
-            setStep(purchaseFlowSteps.COMPLETE)
+            if (isMounted()) {
+                setStep(purchaseFlowSteps.COMPLETE)
+            }
         }, 500)
-    }, [purchaseStarted, allCompleted])
+    }, [purchaseStarted, allCompleted, isMounted])
 
     const onClose = useCallback(({ viewInCore = false }: { viewInCore?: boolean } = {}) => {
         api.close({

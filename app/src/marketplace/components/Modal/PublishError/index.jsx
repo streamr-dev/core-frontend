@@ -29,18 +29,15 @@ const PublishError = ({ publishMode, status, onClose }: Props) => {
         const keys = Object.keys(status)
         const failed = keys.filter((key) => status[key] === transactionStates.FAILED)
 
-        let mode
-
         if (failed.length === keys.length) {
-            mode = 'allFailed'
+            return 'allFailed'
         } else if (failed.length === 1) {
-            const [firstFailed] = failed
-            mode = firstFailed
+            return failed[0]
         } else if (failed.length > 1) {
-            mode = 'someFailed'
+            return 'someFailed'
         }
 
-        return mode
+        return undefined
     }, [status])
 
     return (

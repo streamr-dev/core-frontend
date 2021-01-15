@@ -23,10 +23,10 @@ const PendingTasksWrapper = styled.div`
 
 const PendingTasks = ({ isPrompted, children, ...props }) => (
     <PendingTasksWrapper
+        {...props}
         theme={{
             isPrompted: !!isPrompted,
         }}
-        {...props}
     >
         {!!isPrompted && (
             I18n.t('modal.pendingTasks.confirmTransaction')

@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 
 import {
@@ -25,7 +25,7 @@ export function useUpdateWhitelist() {
     const { add: addToWhitelist, edit: editInWhitelist, remove: removeFromWhitelist } = useWhitelist()
     const { update: updateEntities } = useEntities()
 
-    const updateWhitelist = useCallback(async ({ productId, setWhitelist, addresses }) => {
+    return useCallback(({ productId, setWhitelist, addresses }) => {
         if (!addresses || addresses.length < 1) {
             throw new Error('No addresses given.')
         }
@@ -142,12 +142,6 @@ export function useUpdateWhitelist() {
 
         return queue
     }, [dispatch, updateEntities, addToWhitelist, editInWhitelist, removeFromWhitelist])
-
-    return useMemo(() => ({
-        updateWhitelist,
-    }), [
-        updateWhitelist,
-    ])
 }
 
 export default useUpdateWhitelist

@@ -16,26 +16,23 @@ const UnstyledWhitelistEditErrorDialog = ({ publishMode, status, onClose, ...pro
         const keys = Object.keys(status)
         const failed = keys.filter((key) => status[key] === transactionStates.FAILED)
 
-        let mode
-
         if (failed.length === keys.length) {
-            mode = 'allFailed'
+            return 'allFailed'
         } else if (failed.length === 1) {
-            const [firstFailed] = failed
-            mode = firstFailed
+            return failed[0]
         } else if (failed.length > 1) {
-            mode = 'someFailed'
+            return 'someFailed'
         }
 
-        return mode
+        return undefined
     }, [status])
 
     return (
         <ModalPortal>
             <Dialog
+                {...props}
                 onClose={onClose}
                 title={I18n.t(`modal.whiteListEdit.${failedAction === 'allFailed' ? 'allFailed' : 'someFailed'}.title`)}
-                {...props}
             >
                 <div>
                     <StyledPngIcon

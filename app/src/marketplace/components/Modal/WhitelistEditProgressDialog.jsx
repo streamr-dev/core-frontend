@@ -44,6 +44,7 @@ const UnstyledWhitelistEditProgressDialog = ({ onCancel, status, isPrompted, ...
     return (
         <ModalPortal>
             <Dialog
+                {...props}
                 onClose={onCancel}
                 title={I18n.t('modal.whiteListEdit.title')}
                 actions={{
@@ -60,11 +61,10 @@ const UnstyledWhitelistEditProgressDialog = ({ onCancel, status, isPrompted, ...
                         onClick: () => onCancel(),
                     },
                 }}
-                {...props}
             >
                 <PublishProgress>
                     <PendingTasks isPrompted={isPrompted}>
-                        {pending && pending.length > 0 && pending.map((key) => (
+                        {pending.length > 0 && pending.map((key) => (
                             I18n.t(`modal.whiteListEdit.actions.${key}.pending`)
                         )).join(', ')}
                     </PendingTasks>

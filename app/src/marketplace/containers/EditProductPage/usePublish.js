@@ -1,6 +1,6 @@
 // @flow
 
-import { useMemo, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 
 import type { Product } from '$mp/flowtype/product-types'
@@ -55,7 +55,7 @@ export type PublishMode = $Values<typeof publishModes>
 export default function usePublish() {
     const dispatch = useDispatch()
 
-    const publish = useCallback(async (product: Product) => {
+    return useCallback(async (product: Product) => {
         if (!product) {
             throw new Error('no product')
         }
@@ -446,10 +446,4 @@ export default function usePublish() {
             queue,
         }
     }, [dispatch])
-
-    return useMemo(() => ({
-        publish,
-    }), [
-        publish,
-    ])
 }

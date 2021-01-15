@@ -8,6 +8,7 @@ import Dialog from '$shared/components/Dialog'
 const UnstyledRemoveWhitelistedAddressDialog = ({ onClose, onContinue, ...props }) => (
     <ModalPortal>
         <Dialog
+            {...props}
             title={I18n.t('modal.whitelistEdit.removeAddressTitle')}
             onClose={onClose}
             actions={{
@@ -22,7 +23,6 @@ const UnstyledRemoveWhitelistedAddressDialog = ({ onClose, onContinue, ...props 
                     onClick: () => onContinue(),
                 },
             }}
-            {...props}
         >
             <Translate value="modal.whitelistEdit.removeMessage" dangerousHTML />
         </Dialog>

@@ -29,7 +29,7 @@ export function useWhitelist() {
         }
     }, [dispatch, update])
 
-    const add = useCallback(async ({ productId, address, status, isPending }) => {
+    const add = useCallback(({ productId, address, status, isPending }) => {
         try {
             const result = update({
                 data: {
@@ -46,7 +46,7 @@ export function useWhitelist() {
         }
     }, [dispatch, update])
 
-    const edit = useCallback(async ({ address, status, isPending }) => {
+    const edit = useCallback(({ address, status, isPending }) => {
         try {
             update({
                 data: {
@@ -62,7 +62,7 @@ export function useWhitelist() {
         }
     }, [update])
 
-    const remove = useCallback(async ({ productId, address }) => {
+    const remove = useCallback(({ productId, address }) => {
         try {
             const result = update({
                 data: {
@@ -78,7 +78,7 @@ export function useWhitelist() {
         }
     }, [dispatch, update])
 
-    const reset = useCallback(async (productId) => {
+    const reset = useCallback((productId) => {
         dispatch(setWhiteListedAddresses(productId, []))
     }, [dispatch])
 
