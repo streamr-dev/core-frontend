@@ -159,6 +159,7 @@ const ProfileSettings = () => {
                     value={user.email || ''}
                     onChange={onEmailChange}
                     placeholder={I18n.t('userpages.profilePage.profileSettings.userEmailPlaceholder')}
+                    disabled={isPending}
                 />
             </InputRow>
             <EditAvatarDialog />
