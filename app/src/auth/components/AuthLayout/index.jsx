@@ -56,7 +56,7 @@ const AuthLayout = styled(UnstyledLayout)`
     flex-direction: column;
     flex-grow: 0.8;
     justify-content: center;
-    padding: 0 2em;
+    padding: 0 1em;
     margin: 48px auto 88px;
     color: #323232;
 
