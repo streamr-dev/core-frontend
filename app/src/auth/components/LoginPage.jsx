@@ -8,6 +8,7 @@ import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import Button from '$shared/components/Button'
 import { getUserData } from '$shared/modules/user/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { SM } from '$shared/utils/styled'
 
 import useMetamask from '../hooks/useMetamask'
 import useWalletConnect from '../hooks/useWalletConnect'
@@ -57,12 +58,17 @@ const AuthPanel = styled.div`
     ${PanelRow} + ${PanelRow} {
         border-top: 1px solid #F2F1F1;
     }
+
+    @media (max-width: ${SM}px) {
+        max-width: 328px;
+    }
 `
 
 const Footer = styled.div`
     font-size: 14px;
     flex-grow: 1;
-    margin: auto 32px;
+    margin-left: 32px;
+    margin-right: 16px;
 
     button {
         float: right;
