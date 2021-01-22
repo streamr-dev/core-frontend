@@ -31,20 +31,10 @@ type DefineOptions = {
  * @returns Route function.
  */
 export const define = (pathstr: string, getVariables: () => Variables) => (params: ?Object, options: DefineOptions = {}): string => {
-    const route = Object.entries(getVariables()).reduce((acc, [name, value]) => {
-        const val: any = value || ''
-        const strippedValue: string = val.length > 1 ? val.replace(/\/$/, '') : val
-        return acc.replace(new RegExp(`<${name}>`, 'g'), strippedValue)
-    }, pathstr)
-
-    const unsetVariableNames = (route.match(/<[^>]+>/g) || []).map((s) => s.replace(/[<>]/g, ''))
-
-    if (unsetVariableNames.length) {
-        throw new Error(`Expected ${unsetVariableNames.map((s) => `"${s}"`).join(', ')} variable(s) to be defined`)
-    }
+    let path = pathstr
 
     if (params) {
-        const tokenNames = parse(route).map((t) => t.name).filter(Boolean)
+        const tokenNames = parse(path).map((t) => t.name).filter(Boolean)
         const queryKeys = Object.keys(params).filter((key) => !tokenNames.includes(key))
         const { encode, validate, hash } = {
             encode: true,
@@ -53,13 +43,25 @@ export const define = (pathstr: string, getVariables: () => Variables) => (param
             ...(options || {}),
         }
 
-        const toPath = compile(route)
+        const toPath = compile(path)
         const uri = `${toPath(params, {
             encode: (value) => (encode ? encodeURIComponent(value) : value),
             validate: !!validate,
         })}?${qs.stringify(pick(params, queryKeys))}`.replace(/\?$/, '')
 
-        return hash ? `${uri}#${hash}` : uri
+        path = hash ? `${uri}#${hash}` : uri
+    }
+
+    const route = Object.entries(getVariables()).reduce((acc, [name, value]) => {
+        const val: any = value || ''
+        const strippedValue: string = val.length > 1 ? val.replace(/\/$/, '') : val
+        return acc.replace(new RegExp(`<${name}>`, 'g'), strippedValue)
+    }, path)
+
+    const unsetVariableNames = (route.match(/<[^>]+>/g) || []).map((s) => s.replace(/[<>]/g, ''))
+
+    if (unsetVariableNames.length) {
+        throw new Error(`Expected ${unsetVariableNames.map((s) => `"${s}"`).join(', ')} variable(s) to be defined`)
     }
 
     return route
