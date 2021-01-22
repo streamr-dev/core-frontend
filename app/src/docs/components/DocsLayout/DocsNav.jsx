@@ -170,9 +170,9 @@ const UnstyledWide = (props) => {
                     </Menu>
                 )}
             />
-            <Button.Outlined as={Link.Raw} to={routes.core()}>
+            <Button tag="a" href={routes.core()} size="mini" outline>
                 <Translate value="general.useCore" />
-            </Button.Outlined>
+            </Button>
         </Nav.Wide>
     )
 }
@@ -302,9 +302,9 @@ const UnstyledNarrow = (props) => (
             </Nav.Narrow.Dropdown>
         </Nav.Narrow.Body>
         <Nav.Narrow.Footer>
-            <Button.Primary as={Link.Raw} to={routes.core()}>
+            <Button tag="a" href={routes.core()}>
                 <Translate value="general.useCore" />
-            </Button.Primary>
+            </Button>
         </Nav.Narrow.Footer>
     </Nav.Narrow>
 )

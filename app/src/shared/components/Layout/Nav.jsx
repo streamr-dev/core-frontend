@@ -142,7 +142,7 @@ const UnstyledWide = (props) => {
             {!currentUser && (
                 <Fragment>
                     <Nav.Wide.Divider />
-                    <Button as={Link.Raw} to={routes.auth.login()}>
+                    <Button tag="a" href={routes.auth.login()} kind="primary" size="mini" outline>
                         <Translate value="general.useCore" />
                     </Button>
                 </Fragment>
@@ -287,13 +287,13 @@ const UnstyledNarrow = (props) => {
             </Nav.Narrow.Body>
             <Nav.Narrow.Footer>
                 {currentUser ? (
-                    <Button.Secondary as={Link.Raw} to={routes.auth.logout()}>
+                    <Button tag="a" href={routes.auth.logout()} kind="secondary" size="normal">
                         <Translate value="general.logout" />
-                    </Button.Secondary>
+                    </Button>
                 ) : (
-                    <Button.Primary as={Link.Raw} to={routes.auth.login()}>
+                    <Button tag="a" href={routes.auth.login()} kind="primary" size="normal">
                         <Translate value="general.useCore" />
-                    </Button.Primary>
+                    </Button>
                 )}
             </Nav.Narrow.Footer>
         </Nav.Narrow>
@@ -348,7 +348,6 @@ const Narrow = styled(UnstyledNarrow)`
 const lightTheme = {
     backgroundColor: '#ffffff',
     color: '#323232',
-    buttonColor: '#0324ff',
 }
 
 const UnstyledN = ({ noWide, noNarrow, ...props }) => {

@@ -77,7 +77,7 @@ const Role = styled.div`
 `
 
 const UnstyledRemoveButton = (props) => (
-    <LayoutButton {...props} type="button">
+    <LayoutButton {...props} type="button" kind="secondary">
         <SvgIcon name="trash" />
     </LayoutButton>
 )
@@ -85,10 +85,13 @@ const UnstyledRemoveButton = (props) => (
 const RemoveButton = styled(UnstyledRemoveButton)`
     height: 24px;
     opacity: 0;
+    padding: 0;
     transition-delay: 0.2s, 0s, 0s, 0s;
     transition-property: visibility, background-color, border-color, opacity;
     visibility: hidden;
     width: 24px;
+    background-color: transparent;
+    border-color: transparent;
 
     :hover {
         background-color: #f8f8f8;
