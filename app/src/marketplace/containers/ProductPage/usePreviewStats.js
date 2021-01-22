@@ -170,9 +170,7 @@ function usePreviewStats({
         }
     }, [totalEarnings, created, totalMembers])
 
-    return useMemo(() => ({
-        stats: statsArray,
-    }), [
+    return useMemo(() => statsArray, [
         statsArray,
     ])
 }

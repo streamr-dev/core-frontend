@@ -3,20 +3,21 @@
 import React, { useEffect } from 'react'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useProduct from '$mp/containers/ProductController/useProduct'
+import useDataUnionServerStats from './useDataUnionServerStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import { isEthereumAddress } from '$mp/utils/validate'
-import Terms from '$mp/components/ProductPage/Terms'
-import ProductPage from '$shared/components/ProductPage'
-import Segment from '$shared/components/Segment'
-import useDataUnionStats from './useDataUnionStats'
-import useDataUnionServerStats from './useDataUnionServerStats'
 
 import Hero from './Hero'
 import Description from './Description'
 import DataUnionStats from './DataUnionStats'
 import Streams from './Streams'
 import RelatedProducts from './RelatedProducts'
+import Terms from '$mp/components/ProductPage/Terms'
+import ProductPage from '$shared/components/ProductPage'
+import Segment from '$shared/components/Segment'
+
+import usePreviewStats from './usePreviewStats'
 
 const ProductDetailsPage = () => {
     const product = useProduct()
@@ -29,7 +30,7 @@ const ProductDetailsPage = () => {
     const isDuDeployed = !!isDataUnion && !!dataUnionDeployed && isEthereumAddress(beneficiaryAddress)
 
     const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
-    const stats = useDataUnionStats({
+    const stats = usePreviewStats({
         beneficiaryAddress,
         created,
         adminFee,

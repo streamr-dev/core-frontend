@@ -50,7 +50,7 @@ describe('usePreviewStats', () => {
             <Test />
         ))
 
-        expect(result.stats).toStrictEqual(initialState)
+        expect(result).toStrictEqual(initialState)
     })
 
     it('updates subscriber count', () => {
@@ -63,7 +63,7 @@ describe('usePreviewStats', () => {
             <Test />
         ))
 
-        expect(result.stats).toStrictEqual(initialState)
+        expect(result).toStrictEqual(initialState)
 
         act(() => {
             el.setProps({
@@ -71,7 +71,7 @@ describe('usePreviewStats', () => {
             })
         })
 
-        expect(result.stats).toStrictEqual([{
+        expect(result).toStrictEqual([{
             id: 'revenue',
             unit: 'DATA',
             loading: true,
@@ -106,7 +106,7 @@ describe('usePreviewStats', () => {
             <Test />
         ))
 
-        expect(result.stats).toStrictEqual(initialState)
+        expect(result).toStrictEqual(initialState)
 
         act(() => {
             el.setProps({
@@ -114,7 +114,7 @@ describe('usePreviewStats', () => {
             })
         })
 
-        expect(result.stats).toStrictEqual([{
+        expect(result).toStrictEqual([{
             id: 'revenue',
             unit: 'DATA',
             loading: true,
@@ -149,7 +149,7 @@ describe('usePreviewStats', () => {
             <Test />
         ))
 
-        expect(result.stats).toStrictEqual(initialState)
+        expect(result).toStrictEqual(initialState)
 
         act(() => {
             el.setProps({
@@ -157,7 +157,7 @@ describe('usePreviewStats', () => {
             })
         })
 
-        expect(result.stats).toStrictEqual([{
+        expect(result).toStrictEqual([{
             id: 'revenue',
             unit: 'DATA',
             loading: true,
@@ -192,7 +192,7 @@ describe('usePreviewStats', () => {
             <Test />
         ))
 
-        expect(result.stats).toStrictEqual(initialState)
+        expect(result).toStrictEqual(initialState)
 
         act(() => {
             el.setProps({
@@ -200,7 +200,7 @@ describe('usePreviewStats', () => {
             })
         })
 
-        expect(result.stats).toStrictEqual([{
+        expect(result).toStrictEqual([{
             id: 'revenue',
             value: '123',
             unit: 'DATA',
@@ -235,7 +235,7 @@ describe('usePreviewStats', () => {
             <Test />
         ))
 
-        expect(result.stats).toStrictEqual(initialState)
+        expect(result).toStrictEqual(initialState)
 
         act(() => {
             el.setProps({
@@ -245,7 +245,7 @@ describe('usePreviewStats', () => {
             })
         })
 
-        expect(result.stats).toStrictEqual([{
+        expect(result).toStrictEqual([{
             id: 'revenue',
             unit: 'DATA',
             loading: true,
@@ -280,7 +280,7 @@ describe('usePreviewStats', () => {
             <Test />
         ))
 
-        expect(result.stats).toStrictEqual(initialState)
+        expect(result).toStrictEqual(initialState)
 
         act(() => {
             el.setProps({
@@ -293,7 +293,7 @@ describe('usePreviewStats', () => {
             })
         })
 
-        expect(result.stats).toStrictEqual([{
+        expect(result).toStrictEqual([{
             id: 'revenue',
             value: '123',
             unit: 'DATA',

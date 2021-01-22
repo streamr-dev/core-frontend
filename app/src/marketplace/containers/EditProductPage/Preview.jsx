@@ -118,7 +118,7 @@ const DataUnionStats = () => {
     const { subscriberCount } = contractProduct || {
         subscriberCount: 0,
     }
-    const { stats } = usePreviewStats({
+    const stats = usePreviewStats({
         created,
         adminFee,
         memberCount,

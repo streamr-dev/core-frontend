@@ -14,7 +14,7 @@ import ProductController, { useController } from '$mp/containers/ProductControll
 import usePending from '$shared/hooks/usePending'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
-import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
+import usePreviewStats from '$mp/containers/ProductPage/usePreviewStats'
 import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
@@ -58,11 +58,13 @@ const Stats = () => {
     const { id: productId } = product
     const contractProduct = useContractProduct()
 
-    const { subscriberCount } = contractProduct || {}
+    const { subscriberCount } = contractProduct || {
+        subscriberCount: 0,
+    }
     const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
 
     const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
-    const stats = useDataUnionStats({
+    const stats = usePreviewStats({
         beneficiaryAddress,
         created,
         adminFee,

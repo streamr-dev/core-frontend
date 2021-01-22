@@ -11,7 +11,7 @@ StreamrClient client = new StreamrClient(method);`
 export const AuthJavascriptClient =
 `new StreamrClient({
     auth: {
-        provider: window.ethereum,
+        ethereum: window.ethereum,
     }
 })`
 
