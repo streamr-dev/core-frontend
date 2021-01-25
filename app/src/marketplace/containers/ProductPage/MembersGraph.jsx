@@ -35,7 +35,6 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     const activeAddressesRef = useRef([])
     const [isActive, setIsActive] = useState(true)
     const [subscriptionKey, setSubscriptionKey] = useState(`subscription-${shownDays}`)
-    const [processedIndex, setProcessedIndex] = useState(0)
 
     useEffect(() => {
         // NOTE: We need to disable subscription for a while and enable it
