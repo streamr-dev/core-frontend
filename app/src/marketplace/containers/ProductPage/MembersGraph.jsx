@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
-import ClientProvider from 'streamr-client-react'
+import ClientProvider from '$shared/components/StreamrClientProvider'
 import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
 import Subscription from '$shared/components/Subscription'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -119,23 +119,29 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
         // Because we cannot read the whole joinPartStream, we have to
         // work backwards from the initial state and calculate graph points
         // using the member count diff.
-        const data = memberData.reduce((acc, element, index) => {
+        const data = memberData.reduce((acc, element) => {
+            const latestValue = acc[acc.length - 1]
+            // Add a superficial datapoint with "old" count
+            // to happen 1ms before actual one to form a
+            // "staircase" graph
+            acc.push({
+                x: element.timestamp + 1,
+                y: latestValue.y,
+            })
             acc.push({
                 x: element.timestamp,
-                y: acc[index].y - element.diff,
+                y: latestValue.y - element.diff,
             })
             return acc
         }, initialData)
 
-        // If there's only 1 data point, "extrapolate"
-        // data to have 2 points so that we can draw
-        // a line between them.
-        if (data.length === 1) {
-            data.push({
-                x: data[0].x - (shownDays * MILLISECONDS_IN_DAY),
-                y: data[0].y,
-            })
-        }
+        const latestMemberCount = data[data.length - 1].y
+
+        // Make sure we fill the whole date range
+        data.push({
+            x: Date.now() - (shownDays * MILLISECONDS_IN_DAY),
+            y: latestMemberCount,
+        })
         setGraphData(data)
     }, [memberData, memberCount, memberCountUpdatedAt, shownDays])
 
@@ -152,7 +158,7 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     }, [shownDays, joinPartStreamId, onMessage])
 
     return (
-        <ClientProvider verifySignatures="never">
+        <ClientProvider>
             <SubscriptionStatusProvider>
                 <Subscription
                     key={subscriptionKey}
