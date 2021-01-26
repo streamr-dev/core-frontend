@@ -17,8 +17,9 @@ import type { Address } from '$shared/flowtype/web3-types'
 const MIN_ROWS = 5
 
 const Rows = styled.div`
-    max-height: ${({ theme }) => (((theme.rowCount) * 56) - 1)}px; /* +1 for header, -1 for bottom border */
+    max-height: ${({ theme }) => (((theme.rowCount + 1) * 56) - 1)}px; /* +1 for header, -1 for bottom border */
     overflow: auto;
+    position: relative;
 `
 
 const Popover = styled(UnstyledPopover)`
@@ -83,6 +84,10 @@ const TableRow = styled.div`
 const TableHeaderRow = styled(TableRow)`
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
 
     ${TableColumn} {
         font-weight: 500;
@@ -90,7 +95,7 @@ const TableHeaderRow = styled(TableRow)`
     }
 
     :hover {
-        background-color: inherit;
+        background-color: white;
     }
 `
 
@@ -226,15 +231,15 @@ export const UnstyledWhitelistEditor = ({
     ...props
 }: EditorProps) => (
     <div {...props}>
-        <TableHeaderRow>
-            <TableColumn>{I18n.t('editProductPage.whitelist.header.address')}</TableColumn>
-            <TableColumn>{I18n.t('editProductPage.whitelist.header.status')}</TableColumn>
-            <TableColumn />
-        </TableHeaderRow>
         <Rows theme={{
             rowCount: MIN_ROWS,
         }}
         >
+            <TableHeaderRow>
+                <TableColumn>{I18n.t('editProductPage.whitelist.header.address')}</TableColumn>
+                <TableColumn>{I18n.t('editProductPage.whitelist.header.status')}</TableColumn>
+                <TableColumn />
+            </TableHeaderRow>
             {items.map((item) => (
                 <TableRowItem
                     key={item.address}

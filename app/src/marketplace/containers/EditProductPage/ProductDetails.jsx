@@ -218,7 +218,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             onChange={(value) => updateContactEmail(value)}
                             placeholder={I18n.t('editProductPage.productDetails.placeholder.email')}
                             disabled={!!disabled}
-                            optional
+                            optional={!product.requiresWhitelist}
                             error={publishAttempted && !isContactEmailValid ? contactEmailMessage : undefined}
                         />
                     </Row>
