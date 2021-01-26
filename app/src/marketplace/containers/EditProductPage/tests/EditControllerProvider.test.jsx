@@ -240,7 +240,7 @@ describe('EditControllerProvider', () => {
             expect(props.location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
-                await validationContext.touch('name')
+                await validationContext.setTouched('name')
             })
 
             await act(async () => {
@@ -291,7 +291,7 @@ describe('EditControllerProvider', () => {
             expect(props.location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
-                await validationContext.touch('name')
+                await validationContext.setTouched('name')
             })
 
             await act(async () => {
@@ -351,7 +351,7 @@ describe('EditControllerProvider', () => {
             expect(props.location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
-                await validationContext.touch('name')
+                await validationContext.setTouched('name')
             })
 
             await act(async () => {

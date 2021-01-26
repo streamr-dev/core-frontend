@@ -26,6 +26,7 @@ import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEther
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { selectFetchingStreams, selectHasMoreResults } from '$mp/modules/streams/selectors'
+import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
 import useModal from '$shared/hooks/useModal'
 
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
@@ -36,6 +37,7 @@ import ConfirmSaveModal from './ConfirmSaveModal'
 import DeployDataUnionModal from './DeployDataUnionModal'
 import PublishModal from './PublishModal'
 import CropImageModal from './CropImageModal'
+import WhitelistEditModal from './WhitelistEditModal'
 
 import styles from './editProductPage.pcss'
 
@@ -61,7 +63,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
         clearStreams,
         loadStreams,
     } = useController()
+
     const { load: loadDataUnionSecrets, reset: resetDataUnionSecrets } = useDataUnionSecrets()
+    const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
     const fetchingAllStreams = useSelector(selectFetchingStreams)
     const hasMoreResults = useSelector(selectHasMoreResults)
     const [nextPage, setNextPage] = useState(0)
@@ -87,6 +91,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadContractProductSubscription(productId)
         loadCategories()
         loadProductStreams(productId)
+        loadWhiteWhitelistedAdresses(productId)
         doLoadStreams()
     }, [
         loadCategories,
@@ -95,6 +100,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         productId,
         clearStreams,
         doLoadStreams,
+        loadWhiteWhitelistedAdresses,
     ])
 
     // Load more streams if we didn't get all in the initial load
@@ -143,6 +149,11 @@ const EditProductPage = ({ product }: { product: Product }) => {
     useEffect(() => () => {
         resetDataUnionSecrets()
     }, [resetDataUnionSecrets])
+
+    // clear whitelisted addresses when unmounting
+    useEffect(() => () => {
+        resetWhiteWhitelistedAdresses(productId)
+    }, [resetWhiteWhitelistedAdresses, productId])
 
     const saveAndExitButton = useMemo(() => ({
         title: I18n.t('editProductPage.actionBar.save'),
@@ -255,6 +266,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             <DeployDataUnionModal />
             <PublishModal />
             <CropImageModal />
+            <WhitelistEditModal />
         </CoreLayout>
     )
 }

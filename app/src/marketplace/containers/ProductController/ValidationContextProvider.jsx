@@ -27,7 +27,7 @@ type ContextProps = {
     isValid: (string) => boolean,
     validate: (Object) => void,
     touched: Object,
-    touch: (string) => void,
+    setTouched: (string, ?boolean) => void,
     isTouched: (string) => boolean,
     isAnyTouched: () => boolean,
     resetTouched: () => void,
@@ -46,21 +46,21 @@ const emailValidator = yup.string().trim().email()
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const [pendingChanges, setPendingChanges] = useState({})
-    const [touched, setTouched] = useState({})
+    const [touched, setTouchedState] = useState({})
     const originalProduct = useProduct()
     const { isRequired: isEthIdentityRequired } = useIsEthIdentityNeeded()
 
-    const touch = useCallback((name: string) => {
-        setTouched((existing) => ({
+    const setTouched = useCallback((name: string, value = true) => {
+        setTouchedState((existing) => ({
             ...existing,
-            [name]: true,
+            [name]: !!value,
         }))
-    }, [setTouched])
+    }, [setTouchedState])
     const isTouched = useCallback((name: string) => !!touched[name], [touched])
 
     const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
 
-    const resetTouched = useCallback(() => setTouched({}), [])
+    const resetTouched = useCallback(() => setTouchedState({}), [])
 
     const isMounted = useIsMounted()
 
@@ -214,6 +214,8 @@ function useValidationContext(): ContextProps {
 
         if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
             setStatus('contact.email', ERROR, 'Email address is required')
+        } else if (!product.requiresWhitelist) {
+            clearStatus('contact.email')
         }
 
         // Set pending fields, a change is marked pending if there was a saved pending change or
@@ -233,7 +235,7 @@ function useValidationContext(): ContextProps {
         clearStatus,
         isValid,
         touched,
-        touch,
+        setTouched,
         isTouched,
         isAnyTouched,
         resetTouched,
@@ -247,7 +249,7 @@ function useValidationContext(): ContextProps {
         setStatus,
         isValid,
         touched,
-        touch,
+        setTouched,
         isTouched,
         isAnyTouched,
         resetTouched,

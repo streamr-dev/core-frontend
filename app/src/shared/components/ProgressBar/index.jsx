@@ -14,7 +14,6 @@ const ProgressBackground = styled.div`
 `
 
 const ProgressIndicator = styled.div`
-    width: ${({ value }) => Math.ceil(Math.min(100, Math.max(0, value)))}%;
     height: 2px;
     background-color: #0324FF;
     transition: width 0.3s ease;
@@ -22,7 +21,10 @@ const ProgressIndicator = styled.div`
 
 const ProgressBar = ({ value }: Props) => (
     <ProgressBackground>
-        <ProgressIndicator value={value} />
+        <ProgressIndicator style={{
+            width: `${Math.ceil(Math.min(100, Math.max(0, value)))}%`,
+        }}
+        />
     </ProgressBackground>
 )
 

@@ -48,9 +48,9 @@ describe('usePurchase', () => {
 
     describe('input errors', () => {
         it('throws an error if contract product not found', async () => {
-            let result
+            let purchase
             function Test() {
-                result = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -60,7 +60,7 @@ describe('usePurchase', () => {
 
             await act(async () => {
                 try {
-                    await result.purchase()
+                    await purchase()
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
                     expect(e).toBeTruthy()
@@ -70,9 +70,9 @@ describe('usePurchase', () => {
         })
 
         it('throws an error if dataPerUsd is not defined', async () => {
-            let result
+            let purchase
             function Test() {
-                result = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -91,7 +91,7 @@ describe('usePurchase', () => {
 
             await act(async () => {
                 try {
-                    await result.purchase({
+                    await purchase({
                         contractProduct,
                     })
                     expect(true).toBe(false) // shouldn't come here
@@ -103,9 +103,9 @@ describe('usePurchase', () => {
         })
 
         it('throws an error if access period is not defined', async () => {
-            let result
+            let purchase
             function Test() {
-                result = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -124,7 +124,7 @@ describe('usePurchase', () => {
 
             await act(async () => {
                 try {
-                    await result.purchase({
+                    await purchase({
                         contractProduct,
                         dataPerUsd: '10',
                     })
@@ -137,9 +137,9 @@ describe('usePurchase', () => {
         })
 
         it('throws an error if currency is DATA and price cannot be calculated', async () => {
-            let result
+            let purchase
             function Test() {
-                result = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -164,7 +164,7 @@ describe('usePurchase', () => {
 
             await act(async () => {
                 try {
-                    await result.purchase({
+                    await purchase({
                         contractProduct,
                         accessPeriod,
                         dataPerUsd: '10',
@@ -178,9 +178,9 @@ describe('usePurchase', () => {
         })
 
         it('throws an error if currency is ETH or DAI and price not defined', async () => {
-            let result
+            let purchase
             function Test() {
-                result = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -199,7 +199,7 @@ describe('usePurchase', () => {
 
             await act(async () => {
                 try {
-                    await result.purchase({
+                    await purchase({
                         contractProduct,
                         accessPeriod: {
                             time: 1,
@@ -217,7 +217,7 @@ describe('usePurchase', () => {
 
             await act(async () => {
                 try {
-                    await result.purchase({
+                    await purchase({
                         contractProduct,
                         accessPeriod: {
                             time: 1,
@@ -235,9 +235,9 @@ describe('usePurchase', () => {
         })
 
         it('throws an error if no balance available', async () => {
-            let result
+            let purchase
             function Test() {
-                result = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -265,7 +265,7 @@ describe('usePurchase', () => {
 
             await act(async () => {
                 try {
-                    await result.purchase({
+                    await purchase({
                         contractProduct,
                         accessPeriod,
                         dataPerUsd: '10',
@@ -281,9 +281,9 @@ describe('usePurchase', () => {
 
     describe('DATA Purchase actions', () => {
         it('purchases the product, resets existing allowance & sets allowance', async () => {
-            let publish
+            let purchase
             function Test() {
-                publish = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -317,7 +317,7 @@ describe('usePurchase', () => {
             sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(20)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
 
-            const result = await publish.purchase({
+            const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd,
@@ -426,9 +426,9 @@ describe('usePurchase', () => {
         })
 
         it('purchases the product & sets allowance', async () => {
-            let publish
+            let purchase
             function Test() {
-                publish = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -462,7 +462,7 @@ describe('usePurchase', () => {
             sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(0)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
 
-            const result = await publish.purchase({
+            const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd,
@@ -542,9 +542,9 @@ describe('usePurchase', () => {
         })
 
         it('purchases the product when there is enough allowance', async () => {
-            let publish
+            let purchase
             function Test() {
-                publish = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -578,7 +578,7 @@ describe('usePurchase', () => {
             sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(5000)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
 
-            const result = await publish.purchase({
+            const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd,
@@ -642,9 +642,9 @@ describe('usePurchase', () => {
 
     describe('DAI Purchase actions', () => {
         it('purchases the product, resets existing allowance & sets allowance', async () => {
-            let publish
+            let purchase
             function Test() {
-                publish = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -670,7 +670,7 @@ describe('usePurchase', () => {
             sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(20)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
 
-            const result = await publish.purchase({
+            const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd: '10',
@@ -779,9 +779,9 @@ describe('usePurchase', () => {
         })
 
         it('purchases the product & sets allowance', async () => {
-            let publish
+            let purchase
             function Test() {
-                publish = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -807,7 +807,7 @@ describe('usePurchase', () => {
             sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(0)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
 
-            const result = await publish.purchase({
+            const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd: '10',
@@ -887,9 +887,9 @@ describe('usePurchase', () => {
         })
 
         it('purchases the product when there is enough allowance', async () => {
-            let publish
+            let purchase
             function Test() {
-                publish = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -915,7 +915,7 @@ describe('usePurchase', () => {
             sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(5000)))
             const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
 
-            const result = await publish.purchase({
+            const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd: '10',
@@ -979,9 +979,9 @@ describe('usePurchase', () => {
 
     describe('ETH Purchase actions', () => {
         it('purchases the product', async () => {
-            let publish
+            let purchase
             function Test() {
-                publish = usePurchase()
+                purchase = usePurchase()
                 return null
             }
 
@@ -1006,7 +1006,7 @@ describe('usePurchase', () => {
 
             sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
 
-            const result = await publish.purchase({
+            const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd: '10',

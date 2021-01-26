@@ -16,6 +16,7 @@ import PngIcon from '$shared/components/PngIcon'
 import croppedImage from '$mp/assets/product_standard.png'
 import { publishModes, actionsTypes as publishActionTypes } from '$mp/containers/EditProductPage/usePublish'
 import { actionsTypes as purchaseActionTypes } from '$mp/containers/ProductPage/usePurchase'
+import { actionsTypes as whitelistActionTypes } from '$mp/containers/EditProductPage/useUpdateWhitelist'
 
 // marketplace
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
@@ -39,6 +40,11 @@ import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAddressDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
+import AddWhitelistedAddressDialog from '$mp/components/Modal/AddWhitelistedAddressDialog'
+import RemoveWhitelistedAddressDialog from '$mp/components/Modal/RemoveWhitelistedAddressDialog'
+import WhitelistEditProgressDialog from '$mp/components/Modal/WhitelistEditProgressDialog'
+import WhitelistEditErrorDialog from '$mp/components/Modal/WhitelistEditErrorDialog'
+import WhitelistRequestAccessDialog from '$mp/components/Modal/WhitelistRequestAccessDialog'
 
 // userpages
 import SnippetDialog from '$userpages/components/SnippetDialog'
@@ -776,6 +782,72 @@ story('Product Editor/CropImageModal')
             imageUrl={croppedImage}
             onClose={action('onClose')}
             onSave={action('onSave')}
+        />
+    ))
+
+story('Product Editor/Whitelist/AddWhitelistedAddress')
+    .add('default', () => (
+        <AddWhitelistedAddressDialog
+            onClose={action('onClose')}
+            onContinue={action('onContinue')}
+        />
+    ))
+
+story('Product Editor/Whitelist/RemoveWhitelistedAddressDialog')
+    .add('default', () => (
+        <RemoveWhitelistedAddressDialog
+            onClose={action('onClose')}
+            onContinue={action('onContinue')}
+        />
+    ))
+
+story('Product Editor/Whitelist/WhitelistEditProgressDialog')
+    .add('default', () => {
+        const setWhitelistStatus = select('Enable whitelist', options, transactionStates.STARTED)
+        const addWhitelistedAddressStatus = select('Add whitelisted address', options, transactionStates.STARTED)
+        const removeWhitelistedAddressStatus = select('Remove whitelisted address', options, transactionStates.STARTED)
+
+        const statuses = {
+            [whitelistActionTypes.SET_REQUIRES_WHITELIST]: setWhitelistStatus,
+            [whitelistActionTypes.ADD_WHITELIST_ADDRESS]: addWhitelistedAddressStatus,
+            [whitelistActionTypes.REMOVE_WHITELIST_ADDRESS]: removeWhitelistedAddressStatus,
+        }
+
+        return (
+            <WhitelistEditProgressDialog
+                onCancel={action('onCancel')}
+                status={statuses}
+                isPrompted={boolean('Prompted', false)}
+            />
+        )
+    })
+
+story('Product Editor/Whitelist/WhitelistEditErrorDialog')
+    .add('default', () => {
+        const setWhitelistStatus = select('Enable whitelist', options, transactionStates.STARTED)
+        const addWhitelistedAddressStatus = select('Add whitelisted address', options, transactionStates.STARTED)
+        const removeWhitelistedAddressStatus = select('Remove whitelisted address', options, transactionStates.STARTED)
+
+        const statuses = {
+            [whitelistActionTypes.SET_REQUIRES_WHITELIST]: setWhitelistStatus,
+            [whitelistActionTypes.ADD_WHITELIST_ADDRESS]: addWhitelistedAddressStatus,
+            [whitelistActionTypes.REMOVE_WHITELIST_ADDRESS]: removeWhitelistedAddressStatus,
+        }
+
+        return (
+            <WhitelistEditErrorDialog
+                onClose={action('onClose')}
+                status={statuses}
+            />
+        )
+    })
+
+story('Marketplace/WhitelistRequestAccessDialog')
+    .add('default', () => (
+        <WhitelistRequestAccessDialog
+            contactEmail="tester1@streamr.com"
+            productName="Test Product"
+            onClose={action('onClose')}
         />
     ))
 

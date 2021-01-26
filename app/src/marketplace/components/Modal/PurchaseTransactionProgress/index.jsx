@@ -12,6 +12,8 @@ import { actionsTypes } from '$mp/containers/ProductPage/usePurchase'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
 import routes from '$routes'
 
+import PendingTasks from '../PendingTasks'
+
 export type Status = {
     [string]: string,
 }
@@ -24,23 +26,6 @@ export type Props = {
 
 const PurchaseProgress = styled.div`
     width: 100%;
-`
-
-const PendingTasks = styled.div`
-    color: #A3A3A3;
-    font-size: 1rem;
-    line-height: 1.5rem;
-    width: 100%;
-    min-height: 1.5rem;
-    margin-bottom: 0.5rem;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    &:not(:empty)::after {
-        content: '...';
-    }
 `
 
 type PromptProps = {

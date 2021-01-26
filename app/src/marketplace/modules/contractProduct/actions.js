@@ -1,23 +1,28 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { normalize } from 'normalizr'
 
 import { contractProductSchema } from '$shared/modules/entities/schema'
-import { updateEntities } from '$shared/modules/entities/actions'
 import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
+import { handleEntities } from '$shared/utils/entities'
+import type { Address } from '$shared/flowtype/web3-types'
 
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    SET_WHITELISTED_ADDRESSES,
+    ADD_WHITELISTED_ADDRESS,
+    REMOVE_WHITELISTED_ADDRESS,
     CLEAR_CONTRACT_PRODUCT,
 } from './constants'
 import * as services from './services'
 import type {
     ProductIdActionCreator,
     ProductErrorActionCreator,
+    WhiteListedAddressActionCreator,
+    WhiteListedAddressesActionCreator,
 } from './types'
 
 const getProductFromContractRequest: ProductIdActionCreator = createAction(
@@ -42,21 +47,38 @@ const getProductFromContractFailure: ProductErrorActionCreator = createAction(
     }),
 )
 
-const handleEntities = (id: ProductId, schema: any, dispatch: Function) => (data) => {
-    // id is not returned in the smart contract response so add it here to help the normalizing
-    const { result, entities } = normalize({
+export const setWhiteListedAddresses: WhiteListedAddressesActionCreator = createAction(
+    SET_WHITELISTED_ADDRESSES,
+    (id: ProductId, addresses: Array<Address>) => ({
         id,
-        ...data,
-    }, schema)
-    dispatch(updateEntities(entities))
-    return result
-}
+        addresses,
+    }),
+)
+
+export const addWhiteListedAddress: WhiteListedAddressActionCreator = createAction(
+    ADD_WHITELISTED_ADDRESS,
+    (id: ProductId, address: Address) => ({
+        id,
+        address,
+    }),
+)
+
+export const removeWhiteListedAddress: WhiteListedAddressActionCreator = createAction(
+    REMOVE_WHITELISTED_ADDRESS,
+    (id: ProductId, address: Address) => ({
+        id,
+        address,
+    }),
+)
 
 export const getProductFromContract = (id: ProductId) => (dispatch: Function) => {
     dispatch(getProductFromContractRequest(id))
     return services
         .getProductFromContract(id)
-        .then(handleEntities(id, contractProductSchema, dispatch))
+        .then((data) => handleEntities(contractProductSchema, dispatch)({
+            id,
+            ...data,
+        }))
         .then((result) => {
             dispatch(getProductFromContractSuccess(result))
         }, (error) => {
@@ -70,13 +92,11 @@ export const loadSubscriptionDataFromContract = (id: ProductId) => async (dispat
     const subscriberCount = await services.getSubscriberCount(id)
     const purchaseTimestamp = await services.getMostRecentPurchaseTimestamp(id)
 
-    const { entities } = normalize({
+    return handleEntities(contractProductSchema, dispatch)({
         id,
         subscriberCount,
         purchaseTimestamp,
-    }, contractProductSchema)
-
-    return dispatch(updateEntities(entities))
+    })
 }
 
 export const clearContractProduct: ReduxActionCreator = createAction(CLEAR_CONTRACT_PRODUCT)

@@ -1,6 +1,6 @@
 // @flow
 
-import { useMemo, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
@@ -39,7 +39,7 @@ type Purchase = {
 export default function usePurchase() {
     const dispatch = useDispatch()
 
-    const purchase = useCallback(async ({ contractProduct, accessPeriod, dataPerUsd }: Purchase = {}) => {
+    return useCallback(async ({ contractProduct, accessPeriod, dataPerUsd }: Purchase = {}) => {
         if (!contractProduct) {
             throw new Error('no product')
         }
@@ -245,10 +245,4 @@ export default function usePurchase() {
             queue,
         }
     }, [dispatch])
-
-    return useMemo(() => ({
-        purchase,
-    }), [
-        purchase,
-    ])
 }

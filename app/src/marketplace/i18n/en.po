@@ -309,7 +309,7 @@ msgstr "Remove"
 msgid "editProductPage.whitelist.enable"
 msgstr "Enable whitelist"
 
-msgid "editProductPage.whitelist.add"
+msgid "editProductPage.whitelistEdit.add"
 msgstr "Add to whitelist"
 
 msgid "editProductPage.whitelist.status.subscribed"
@@ -539,9 +539,6 @@ msgstr "Updating product failed"
 msgid "modal.publishProgress.setRequiresWhitelist.failed"
 msgstr "Updating whitelist status failed"
 
-msgid "modal.publishProgress.confirmTransaction"
-msgstr "Please confirm transaction"
-
 msgid "modal.publishError.publishModes.publish"
 msgstr "Publishing"
 
@@ -624,6 +621,9 @@ msgid "modal.unpublishComplete.message"
 msgstr ""
 "This product is unpublished now, <br/>"
 "but you still can see in your <a href=\"%{productLink}\">core product</a>"
+
+msgid "modal.pendingTasks.confirmTransaction"
+msgstr "Please confirm transaction"
 
 msgid "modal.purchaseComplete.title"
 msgstr "Transaction completed"
@@ -1073,29 +1073,65 @@ msgstr ""
 msgid "modal.deployDataUnion.deploying.estimatedDeploymentTime"
 msgstr "Estimated deployment time"
 
-msgid "modal.whitelistAdd.title"
+msgid "modal.whiteListEdit.title"
+msgstr "Updating whitelist..."
+
+msgid "modal.whitelistEdit.addAddressTitle"
 msgstr "Add a buyer to the whitelist"
 
-msgid "modal.whitelistAdd.add"
+msgid "modal.whitelistEdit.add"
 msgstr "Add"
 
-msgid "modal.whitelistAdd.addressLabel"
+msgid "modal.whitelistEdit.addressLabel"
 msgstr "Ethereum Address"
 
-msgid "modal.whitelistAdd.addressPlaceholder"
+msgid "modal.whitelistEdit.addressPlaceholder"
 msgstr "0x..."
 
-msgid "modal.whitelistRemove.title"
+msgid "modal.whitelistEdit.removeAddressTitle"
 msgstr "Remove from whitelist?"
 
-msgid "modal.whitelistRemove.message"
+msgid "modal.whitelistEdit.removeMessage"
 msgstr ""
 "If you remove this buyer from your whitelist they will "
 "<br />"
 "not be able to resubscribe. Do you want to continue?"
 
-msgid "modal.whitelistRemove.remove"
+msgid "modal.whitelistEdit.remove"
 msgstr "Remove"
+
+msgid "modal.whiteListEdit.actions.setRequiresWhitelist.pending"
+msgstr "Enabling whitelist"
+
+msgid "modal.whiteListEdit.actions.addWhiteListAddress.pending"
+msgstr "Adding address"
+
+msgid "modal.whiteListEdit.actions.removeWhiteListAddress.pending"
+msgstr "Removing address"
+
+msgid "modal.whiteListEdit.someFailed.title"
+msgstr "Whitelist update did not complete"
+
+msgid "modal.whiteListEdit.allFailed.title"
+msgstr "Whitelist update failed"
+
+msgid "modal.whiteListEdit.errors.setRequiresWhitelist"
+msgstr "There was a problem enabling the whitelist."
+
+msgid "modal.whiteListEdit.errors.addWhiteListAddress"
+msgstr "There was a problem adding the address."
+
+msgid "modal.whiteListEdit.errors.removeWhiteListAddress"
+msgstr "There was a problem removing the address."
+
+msgid "modal.whiteListEdit.errors.allFailed"
+msgstr "Failed to update whitelist."
+
+msgid "modal.whiteListEdit.errors.someFailed"
+msgstr "More than one transaction failed."
+
+msgid "modal.whiteListEdit.errors.checkWallet"
+msgstr "Please check your wallet or other settings and try again."
 
 msgid "modal.whitelistRequestAccess.title"
 msgstr "Enquire about product access"

@@ -1,30 +1,17 @@
-// @flow
-
 import React, { useMemo } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
-import { type PublishMode } from '$mp/containers/EditProductPage/usePublish'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import PngIcon from '$shared/components/PngIcon'
 import { transactionStates } from '$shared/utils/constants'
 
-export type Status = {
-    [string]: string,
-}
-
-export type Props = {
-    onClose: () => void,
-    publishMode: PublishMode,
-    status: Status,
-}
-
 const StyledPngIcon = styled(PngIcon)`
     margin: 0.5rem 0 2.5rem;
 `
 
-const PublishError = ({ publishMode, status, onClose }: Props) => {
+const UnstyledWhitelistEditErrorDialog = ({ publishMode, status, onClose, ...props }) => {
     const failedAction = useMemo(() => {
         const keys = Object.keys(status)
         const failed = keys.filter((key) => status[key] === transactionStates.FAILED)
@@ -43,22 +30,21 @@ const PublishError = ({ publishMode, status, onClose }: Props) => {
     return (
         <ModalPortal>
             <Dialog
+                {...props}
                 onClose={onClose}
-                title={I18n.t(`modal.publishError.${failedAction === 'allFailed' ? 'allFailed' : 'someFailed'}.title`, {
-                    publishMode: I18n.t(`modal.publishError.publishModes.${publishMode}`),
-                })}
+                title={I18n.t(`modal.whiteListEdit.${failedAction === 'allFailed' ? 'allFailed' : 'someFailed'}.title`)}
             >
                 <div>
                     <StyledPngIcon
-                        name="publishFailed"
-                        alt={I18n.t('error.publishFailed')}
+                        name="txFailed"
+                        alt={I18n.t('error.txFailed')}
                     />
                     <p>
                         {!!failedAction && (
-                            <Translate value={`modal.publishError.actions.${failedAction}`} />
+                            <Translate value={`modal.whiteListEdit.errors.${failedAction}`} />
                         )}
                         &nbsp;
-                        <Translate value="modal.publishError.actions.checkWallet" />
+                        <Translate value="modal.whiteListEdit.errors.checkWallet" />
                     </p>
                 </div>
             </Dialog>
@@ -66,4 +52,6 @@ const PublishError = ({ publishMode, status, onClose }: Props) => {
     )
 }
 
-export default PublishError
+const WhitelistEditErrorDialog = styled(UnstyledWhitelistEditErrorDialog)``
+
+export default WhitelistEditErrorDialog

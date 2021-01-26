@@ -1,6 +1,6 @@
 // @flow
 
-import { useMemo, useCallback } from 'react'
+import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 
 import type { Product } from '$mp/flowtype/product-types'
@@ -55,7 +55,7 @@ export type PublishMode = $Values<typeof publishModes>
 export default function usePublish() {
     const dispatch = useDispatch()
 
-    const publish = useCallback(async (product: Product) => {
+    return useCallback(async (product: Product) => {
         if (!product) {
             throw new Error('no product')
         }
@@ -92,7 +92,11 @@ export default function usePublish() {
         } = pendingChanges || {}
         const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
         const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChanges)
-        const hasRequireWhitelistChanged = !!contractProduct && requiresWhitelist != null && contractProduct.requiresWhitelist !== requiresWhitelist
+        const hasRequireWhitelistChanged = !!(
+            !!contractProduct &&
+            requiresWhitelist !== undefined &&
+            contractProduct.requiresWhitelist !== requiresWhitelist
+        )
         const hasPendingChanges = Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasPriceChanged || hasRequireWhitelistChanged
 
         let nextMode
@@ -108,6 +112,36 @@ export default function usePublish() {
         }
 
         const queue = new ActionQueue()
+
+        // update product data if needed
+        if (nextMode === publishModes.REPUBLISH || (nextMode === publishModes.PUBLISH && Object.keys(pendingChanges).length > 0)) {
+            const nextProduct = {
+                ...product,
+                ...productDataChanges,
+                pendingChanges: undefined,
+            }
+            delete nextProduct.state
+
+            queue.add({
+                id: actionsTypes.PUBLISH_PENDING_CHANGES,
+                handler: (update, done) => {
+                    try {
+                        return putProduct(nextProduct, product.id || '').then(() => {
+                            update(transactionStates.CONFIRMED)
+                            done()
+                        }, (error) => {
+                            update(transactionStates.FAILED, error)
+                            done()
+                        })
+                    } catch (e) {
+                        update(transactionStates.FAILED, e)
+                        done()
+                    }
+
+                    return null
+                },
+            })
+        }
 
         // update admin fee if it has changed
         if ([publishModes.REPUBLISH, publishModes.REDEPLOY, publishModes.PUBLISH].includes(nextMode)) {
@@ -407,42 +441,9 @@ export default function usePublish() {
             }
         }
 
-        // finally update product data
-        if (nextMode === publishModes.REPUBLISH) {
-            queue.add({
-                id: actionsTypes.PUBLISH_PENDING_CHANGES,
-                handler: (update, done) => {
-                    try {
-                        return putProduct({
-                            ...product,
-                            ...productDataChanges,
-                            pendingChanges: undefined,
-                        }, product.id || '').then(() => {
-                            update(transactionStates.CONFIRMED)
-                            done()
-                        }, (error) => {
-                            update(transactionStates.FAILED, error)
-                            done()
-                        })
-                    } catch (e) {
-                        update(transactionStates.FAILED, e)
-                        done()
-                    }
-
-                    return null
-                },
-            })
-        }
-
         return {
             mode: nextMode,
             queue,
         }
     }, [dispatch])
-
-    return useMemo(() => ({
-        publish,
-    }), [
-        publish,
-    ])
 }

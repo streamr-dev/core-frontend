@@ -9,16 +9,22 @@ import {
     GET_PRODUCT_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_FROM_CONTRACT_SUCCESS,
     CLEAR_CONTRACT_PRODUCT,
+    SET_WHITELISTED_ADDRESSES,
+    ADD_WHITELISTED_ADDRESS,
+    REMOVE_WHITELISTED_ADDRESS,
 } from './constants'
 import type {
     ProductIdAction,
     ProductErrorAction,
+    WhiteListedAddressAction,
+    WhiteListedAddressesAction,
 } from './types'
 
 export const initialState: ContractProductState = {
     id: null,
     fetchingContractProduct: false,
     contractProductError: null,
+    whitelistedAddresses: [],
 }
 
 const reducer: (ContractProductState) => ContractProductState = handleActions({
@@ -49,6 +55,33 @@ const reducer: (ContractProductState) => ContractProductState = handleActions({
         contractProductError: null,
     }),
 
+    [SET_WHITELISTED_ADDRESSES]: (state: ContractProductState, action: WhiteListedAddressesAction) => {
+        const nextAddresses = new Set(action.payload.addresses)
+
+        return {
+            ...state,
+            whitelistedAddresses: [...nextAddresses],
+        }
+    },
+
+    [ADD_WHITELISTED_ADDRESS]: (state: ContractProductState, action: WhiteListedAddressAction) => {
+        const nextAddresses = new Set([...state.whitelistedAddresses, action.payload.address])
+
+        return {
+            ...state,
+            whitelistedAddresses: [...nextAddresses],
+        }
+    },
+
+    [REMOVE_WHITELISTED_ADDRESS]: (state: ContractProductState, action: WhiteListedAddressAction) => {
+        const nextAddresses = new Set(state.whitelistedAddresses)
+        nextAddresses.delete(action.payload.address)
+
+        return {
+            ...state,
+            whitelistedAddresses: [...nextAddresses],
+        }
+    },
 }, initialState)
 
 export default reducer

@@ -299,6 +299,7 @@ export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolea
     const whitelist: Array<WhitelistItem> = Array.from(addresses.values()).map((item) => ({
         address: item.address,
         status: (item.approved && (isActiveSubscription(item.address) ? 'subscribed' : 'added')) || 'removed',
+        isPending: false,
     }))
 
     return whitelist

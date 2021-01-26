@@ -20,7 +20,7 @@ type Props = {
     outline?: boolean,
     disabled?: boolean,
     waiting?: boolean,
-    onClick?: (e: SyntheticInputEvent<EventTarget>) => void | Promise<void>,
+    onClick?: (e: SyntheticInputEvent<EventTarget>) => void | Promise<any>,
     children?: Node,
     external?: boolean,
     href?: string,

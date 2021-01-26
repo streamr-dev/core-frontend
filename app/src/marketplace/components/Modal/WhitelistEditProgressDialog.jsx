@@ -1,5 +1,3 @@
-// @flow
-
 import React, { useMemo } from 'react'
 import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
@@ -8,26 +6,14 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import ProgressBar from '$shared/components/ProgressBar'
 import { transactionStates } from '$shared/utils/constants'
-import type { PublishMode } from '$mp/containers/EditProductPage/usePublish'
 
-import PendingTasks from '../PendingTasks'
-
-export type Status = {
-    [string]: string,
-}
-
-export type Props = {
-    publishMode: PublishMode,
-    status: Status,
-    onCancel: () => void,
-    isPrompted?: boolean,
-}
+import PendingTasks from './PendingTasks'
 
 const PublishProgress = styled.div`
     width: 100%;
 `
 
-const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted }: Props) => {
+const UnstyledWhitelistEditProgressDialog = ({ onCancel, status, isPrompted, ...props }) => {
     const { pending, progress } = useMemo(() => Object.keys(status).reduce((result, key) => {
         const value = status[key]
 
@@ -58,8 +44,9 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
     return (
         <ModalPortal>
             <Dialog
+                {...props}
                 onClose={onCancel}
-                title={I18n.t(`modal.publishProgress.${publishMode}.title`)}
+                title={I18n.t('modal.whiteListEdit.title')}
                 actions={{
                     cancel: {
                         title: I18n.t('modal.common.cancel'),
@@ -78,7 +65,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
                 <PublishProgress>
                     <PendingTasks isPrompted={isPrompted}>
                         {pending.length > 0 && pending.map((key) => (
-                            I18n.t(`modal.publishProgress.${key}.pending`)
+                            I18n.t(`modal.whiteListEdit.actions.${key}.pending`)
                         )).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={((progress + 1) / ((Object.keys(status).length * 2) + 1)) * 100} />
@@ -88,4 +75,6 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
     )
 }
 
-export default PublishTransactionProgress
+const WhitelistEditProgressDialog = styled(UnstyledWhitelistEditProgressDialog)``
+
+export default WhitelistEditProgressDialog

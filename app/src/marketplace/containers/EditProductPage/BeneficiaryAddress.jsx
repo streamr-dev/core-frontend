@@ -87,7 +87,7 @@ const BeneficiaryAddress = ({
         copy(addressProp)
 
         Notification.push({
-            title: 'Copied',
+            title: I18n.t('general.copied'),
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy, addressProp])

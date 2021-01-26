@@ -22,6 +22,7 @@ export const initialState: EntitiesState = {
     integrationKeys: {},
     joinRequests: {},
     dataUnionSecrets: {},
+    whitelistedAddresses: {},
 }
 
 // Arrays do not replace the destination value by default, use customizer to handle

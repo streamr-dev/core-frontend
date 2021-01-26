@@ -54,6 +54,7 @@ describe('entities - reducer', () => {
             integrationKeys: {},
             joinRequests: {},
             dataUnionSecrets: {},
+            whitelistedAddresses: {},
         }
 
         let state = reducer(undefined, {
@@ -126,6 +127,7 @@ describe('entities - reducer', () => {
             integrationKeys: {},
             joinRequests: {},
             dataUnionSecrets: {},
+            whitelistedAddresses: {},
         }
 
         assert.deepStrictEqual(reducer(undefined, {

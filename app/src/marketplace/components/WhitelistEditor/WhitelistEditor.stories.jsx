@@ -6,7 +6,7 @@ import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import { withKnobs } from '@storybook/addon-knobs'
 
-import { WhitelistEditorComponent } from './WhitelistEditor'
+import WhitelistEditor from '.'
 
 const stories = storiesOf('Marketplace/ProductEditor/Whitelist', module)
     .addDecorator(styles({
@@ -24,13 +24,12 @@ const WhiteListEditor = ({ items }: Props) => {
     const [isEnabled, setIsEnabled] = useState(true)
 
     return (
-        <WhitelistEditorComponent
+        <WhitelistEditor
             enabled={isEnabled}
             items={items}
             onEnableChanged={(val) => setIsEnabled(val)}
-            addDialog={null}
-            removeDialog={null}
-            copy={action('Copy')}
+            onAdd={action('onAdd')}
+            onRemove={action('onRemove')}
             actionsEnabled
         />
     )
@@ -86,6 +85,37 @@ stories.add('long', () => {
             name: 'Test 7',
             address: '0x991919191818189182',
             status: 'added',
+        },
+    ]
+
+    return (
+        <WhiteListEditor items={items} />
+    )
+})
+
+stories.add('some pending', () => {
+    const items = [
+        {
+            name: 'Test 1',
+            address: '0x123123213234234231',
+            status: 'added',
+            isPending: true,
+        },
+        {
+            name: 'Test 2',
+            address: '0x123123223423231232',
+            status: 'added',
+        },
+        {
+            name: 'Test 3',
+            address: '0x123123423423424132',
+            status: 'removed',
+            isPending: true,
+        },
+        {
+            name: 'Test 4',
+            address: '0x919921123123333123',
+            status: 'subscribed',
         },
     ]
 

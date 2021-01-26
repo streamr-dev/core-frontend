@@ -40,24 +40,10 @@ describe('usePublish', () => {
     })
 
     describe('publish mode', () => {
-        it('returns undefined if publish not called', () => {
-            let result
-            function Test() {
-                result = usePublish()
-                return null
-            }
-
-            mount((
-                <Test />
-            ))
-
-            expect(result.publishMode).toBeFalsy()
-        })
-
         it('throws an error if there is no product', async () => {
-            let result
+            let publish
             function Test() {
-                result = usePublish()
+                publish = usePublish()
                 return null
             }
 
@@ -67,7 +53,7 @@ describe('usePublish', () => {
 
             await act(async () => {
                 try {
-                    await result.publish()
+                    await publish()
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
                     expect(e).toBeTruthy()
@@ -104,7 +90,7 @@ describe('usePublish', () => {
 
             let result
             await act(async () => {
-                result = await publish.publish(product)
+                result = await publish(product)
             })
 
             expect(result.mode).toBe(publishModes.UNPUBLISH)
@@ -142,7 +128,7 @@ describe('usePublish', () => {
 
             let result
             await act(async () => {
-                result = await publish.publish(product)
+                result = await publish(product)
             })
 
             expect(result.mode).toBe(publishModes.REPUBLISH)
@@ -177,7 +163,7 @@ describe('usePublish', () => {
 
             let result
             await act(async () => {
-                result = await publish.publish(product)
+                result = await publish(product)
             })
 
             expect(result.mode).toBe(publishModes.PUBLISH)
@@ -212,7 +198,7 @@ describe('usePublish', () => {
 
             let result
             await act(async () => {
-                result = await publish.publish(product)
+                result = await publish(product)
             })
 
             expect(result.mode).toBe(publishModes.REDEPLOY)
@@ -242,7 +228,7 @@ describe('usePublish', () => {
             let result
             await act(async () => {
                 try {
-                    result = await publish.publish({
+                    result = await publish({
                         id: '1',
                         name: 'Name',
                         state: 'DEPLOYING',
@@ -258,7 +244,7 @@ describe('usePublish', () => {
 
             await act(async () => {
                 try {
-                    result = await publish.publish({
+                    result = await publish({
                         id: '1',
                         name: 'Name',
                         state: 'UNDEPLOYING',
@@ -287,7 +273,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -333,7 +319,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -390,7 +376,7 @@ describe('usePublish', () => {
 
                 let result
                 await act(async () => {
-                    result = await publish.publish(product)
+                    result = await publish(product)
                 })
 
                 expect(result.mode).toBe(publishModes.UNPUBLISH)
@@ -440,7 +426,7 @@ describe('usePublish', () => {
 
                 let result
                 await act(async () => {
-                    result = await publish.publish(product)
+                    result = await publish(product)
                 })
 
                 expect(result.mode).toBe(publishModes.UNPUBLISH)
@@ -499,7 +485,7 @@ describe('usePublish', () => {
 
                 let result
                 await act(async () => {
-                    result = await publish.publish(product)
+                    result = await publish(product)
                 })
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
@@ -529,7 +515,6 @@ describe('usePublish', () => {
                     name: 'New name',
                     description: 'Description',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     pendingChanges: undefined,
                 })).toBe(true)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
@@ -551,7 +536,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -578,8 +563,9 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
+                const createContractProductStub = sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
                 const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -607,6 +593,112 @@ describe('usePublish', () => {
                 ])
 
                 expect(postSetDeployingStub.calledWith('1')).toBe(true)
+                expect(createContractProductStub.calledWith({
+                    id: '1',
+                    name: 'Name',
+                    beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    pricePerSecond: BN(1),
+                    priceCurrency: 'DATA',
+                    minimumSubscriptionInSeconds: '0',
+                    state: 'NOT_DEPLOYED',
+                    ownerAddress: '',
+                    requiresWhitelist: undefined,
+                })).toBe(true)
+                expect(putProductStub.called).toBe(false)
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.PENDING)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
+                expect(finishFn).toHaveBeenCalled()
+            })
+
+            it('publishes an unpublished paid data product with whitelist enabled', async () => {
+                let publish
+                function Test() {
+                    publish = usePublish()
+                    return null
+                }
+
+                mount((
+                    <Test />
+                ))
+
+                const result = await publish({
+                    id: '1',
+                    name: 'Name',
+                    state: 'NOT_DEPLOYED',
+                    isFree: false,
+                    pricePerSecond: BN(1),
+                    ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    priceCurrency: 'DATA',
+                    minimumSubscriptionInSeconds: '0',
+                    pendingChanges: {
+                        requiresWhitelist: true,
+                    },
+                })
+
+                expect(result.mode).toBe(publishModes.PUBLISH)
+                expect(result.queue).toBeTruthy()
+                expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
+                    actionsTypes.PUBLISH_PENDING_CHANGES,
+                    actionsTypes.CREATE_CONTRACT_PRODUCT,
+                ])
+                expect(result.queue.needsWeb3()).toBe(true)
+                expect(result.queue.needsOwner()).toStrictEqual([])
+
+                const emitter = new EventEmitter()
+                const tx = new Transaction(emitter)
+                const hash = 'test'
+                const receipt = {
+                    transactionHash: hash,
+                }
+
+                const createContractProductStub = sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
+                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
+
+                const startedFn = jest.fn()
+                const statusFn = jest.fn()
+                const readyFn = jest.fn()
+                const finishFn = jest.fn()
+
+                const txPromise = new Promise((resolve) => {
+                    setTimeout(() => {
+                        emitter.emit('transactionHash', hash)
+                    }, 200)
+                    setTimeout(() => {
+                        emitter.emit('receipt', receipt)
+                        resolve()
+                    }, 400)
+                })
+                result.queue
+                    .subscribe('started', startedFn)
+                    .subscribe('status', statusFn)
+                    .subscribe('ready', readyFn)
+                    .subscribe('finish', finishFn)
+
+                await Promise.all([
+                    txPromise,
+                    result.queue.start(),
+                ])
+
+                expect(postSetDeployingStub.calledWith('1')).toBe(true)
+                expect(createContractProductStub.calledWith({
+                    id: '1',
+                    name: 'Name',
+                    beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                    pricePerSecond: BN(1),
+                    priceCurrency: 'DATA',
+                    minimumSubscriptionInSeconds: '0',
+                    state: 'NOT_DEPLOYED',
+                    ownerAddress: '',
+                    requiresWhitelist: true,
+                })).toBe(true)
+                expect(putProductStub.called).toBe(true)
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
@@ -634,7 +726,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                 }))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'DEPLOYED',
@@ -720,7 +812,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                 }))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -818,7 +910,7 @@ describe('usePublish', () => {
                     pricePerSecond: BN(2),
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
                 expect(result.queue).toBeTruthy()
@@ -912,7 +1004,7 @@ describe('usePublish', () => {
                     pricePerSecond: BN(2),
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
                 expect(result.queue).toBeTruthy()
@@ -974,7 +1066,7 @@ describe('usePublish', () => {
                 }))
                 const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     streams: ['1', '3'],
@@ -1041,7 +1133,6 @@ describe('usePublish', () => {
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     isFree: false,
                     pricePerSecond: BN(1),
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -1102,13 +1193,13 @@ describe('usePublish', () => {
                         streams: ['2', '3', '4'],
                     },
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
-                    actionsTypes.UPDATE_CONTRACT_PRODUCT,
                     actionsTypes.PUBLISH_PENDING_CHANGES,
+                    actionsTypes.UPDATE_CONTRACT_PRODUCT,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -1151,13 +1242,12 @@ describe('usePublish', () => {
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(addTransactionStub.calledWith(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(putProductStub.calledWith({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     isFree: false,
                     pricePerSecond: BN(1), // contract info will be updated by the backend watcher
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -1186,7 +1276,7 @@ describe('usePublish', () => {
                 sandbox.stub(dataUnionServices, 'getDataUnionOwner')
                     .callsFake(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
@@ -1287,7 +1377,7 @@ describe('usePublish', () => {
                 const postSetUndeployingStub = sandbox.stub(productServices, 'postSetUndeploying').callsFake(() => Promise.resolve())
                 const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
 
-                const result = await publish.publish({
+                const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'DEPLOYED',
@@ -1390,7 +1480,7 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     type: 'DATAUNION',
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
                 expect(result.queue).toBeTruthy()
@@ -1499,7 +1589,7 @@ describe('usePublish', () => {
                         adminFee: '0.2',
                     },
                 }
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
                 expect(result.queue).toBeTruthy()
@@ -1617,13 +1707,13 @@ describe('usePublish', () => {
                     },
                 }
 
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
-                    actionsTypes.UPDATE_ADMIN_FEE,
                     actionsTypes.PUBLISH_PENDING_CHANGES,
+                    actionsTypes.UPDATE_ADMIN_FEE,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -1654,14 +1744,13 @@ describe('usePublish', () => {
                     result.queue.start(),
                 ])
 
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
 
                 expect(putProductStub.calledWith({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     isFree: false,
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1673,11 +1762,11 @@ describe('usePublish', () => {
                 })).toBe(true)
                 expect(setAdminFeeStub.calledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')).toBe(true)
                 expect(addTransactionStub.calledWith(hash, transactionTypes.UPDATE_ADMIN_FEE)).toBe(true)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(finishFn).toHaveBeenCalled()
             })
 
@@ -1745,14 +1834,14 @@ describe('usePublish', () => {
                     },
                 }
 
-                const result = await publish.publish(product)
+                const result = await publish(product)
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
+                    actionsTypes.PUBLISH_PENDING_CHANGES,
                     actionsTypes.UPDATE_ADMIN_FEE,
                     actionsTypes.UPDATE_CONTRACT_PRODUCT,
-                    actionsTypes.PUBLISH_PENDING_CHANGES,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
                 expect(result.queue.needsOwner()).toStrictEqual(['0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'])
@@ -1789,15 +1878,14 @@ describe('usePublish', () => {
                     result.queue.start(),
                 ])
 
+                expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
 
                 expect(putProductStub.calledWith({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
-                    state: 'DEPLOYED',
                     isFree: false,
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1816,14 +1904,14 @@ describe('usePublish', () => {
                 expect(setAdminFeeStub.calledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')).toBe(true)
                 expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)).toBe(true)
                 expect(addTransactionStub.calledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
+                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
+                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(finishFn).toHaveBeenCalled()
             })
         })
