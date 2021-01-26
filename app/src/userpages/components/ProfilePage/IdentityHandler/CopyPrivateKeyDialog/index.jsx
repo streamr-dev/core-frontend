@@ -46,7 +46,7 @@ const CopyPrivateKeyDialog = ({ onClose: onCloseProp, privateKey }: Props) => {
 
     const onKeyCopy = useCallback(() => {
         setCopiedOnce(true)
-        copy(privateKey)
+        copy(privateKey.slice(2))
     }, [copy, privateKey])
 
     const onClose = useCallback(() => {
