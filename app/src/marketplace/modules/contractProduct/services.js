@@ -16,7 +16,7 @@ import {
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
-import { contractCurrencies as currencies, gasLimits } from '$shared/utils/constants'
+import { contractCurrencies as currencies } from '$shared/utils/constants'
 
 const contractMethods = (usePublicNode: boolean = false) => getContract(getConfig().marketplace, usePublicNode).methods
 
@@ -165,9 +165,7 @@ const createContractProductWithoutWhitelist = (product: SmartContractProduct): S
         currencyIndex,
         minimumSubscriptionInSeconds,
     )
-    return send(methodToSend, {
-        gas: gasLimits.CREATE_PRODUCT,
-    })
+    return send(methodToSend)
 }
 
 const createContractProductWithWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
@@ -191,9 +189,7 @@ const createContractProductWithWhitelist = (product: SmartContractProduct): Smar
         currencyIndex,
         minimumSubscriptionInSeconds,
     )
-    return send(methodToSend, {
-        gas: gasLimits.CREATE_PRODUCT,
-    })
+    return send(methodToSend)
 }
 
 export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
@@ -225,15 +221,11 @@ export const updateContractProduct = (product: SmartContractProduct, redeploy: b
         minimumSubscriptionInSeconds,
         redeploy,
     )
-    return send(methodToSend, {
-        gas: gasLimits.UPDATE_PRODUCT,
-    })
+    return send(methodToSend)
 }
 
 export const deleteProduct = (id: ProductId): SmartContractTransaction => (
-    send(contractMethods().deleteProduct(getValidId(id)), {
-        gas: gasLimits.DELETE_PRODUCT,
-    })
+    send(contractMethods().deleteProduct(getValidId(id)))
 )
 
 export const redeployProduct = (id: ProductId): SmartContractTransaction => (
@@ -241,27 +233,19 @@ export const redeployProduct = (id: ProductId): SmartContractTransaction => (
 )
 
 export const setRequiresWhitelist = (id: ProductId, requiresWhitelist: boolean): SmartContractTransaction => (
-    send(contractMethods(false).setRequiresWhitelist(getValidId(id), requiresWhitelist), {
-        gas: gasLimits.SET_REQUIRES_WHITELIST,
-    })
+    send(contractMethods(false).setRequiresWhitelist(getValidId(id), requiresWhitelist))
 )
 
 export const whitelistApprove = (id: ProductId, address: Address): SmartContractTransaction => (
-    send(contractMethods(false).whitelistApprove(getValidId(id), address), {
-        gas: gasLimits.WHITELIST_OPERATION,
-    })
+    send(contractMethods(false).whitelistApprove(getValidId(id), address))
 )
 
 export const whitelistReject = (id: ProductId, address: Address): SmartContractTransaction => (
-    send(contractMethods(false).whitelistReject(getValidId(id), address), {
-        gas: gasLimits.WHITELIST_OPERATION,
-    })
+    send(contractMethods(false).whitelistReject(getValidId(id), address))
 )
 
 export const whitelistRequest = (id: ProductId, address: Address): SmartContractTransaction => (
-    send(contractMethods(false).whitelistRequest(getValidId(id), address), {
-        gas: gasLimits.WHITELIST_OPERATION,
-    })
+    send(contractMethods(false).whitelistRequest(getValidId(id), address))
 )
 
 export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolean = true): Promise<Array<WhitelistItem>> => {

@@ -154,7 +154,6 @@ export const buyProduct = (
                 subscriptionInSeconds.toString(),
                 ONE_DAY,
             ), {
-                gas: gasLimits.BUY_PRODUCT_WITH_ETH,
                 value: web3.utils.toWei(price.toString()).toString(),
             })
         case paymentCurrencies.DAI:
@@ -169,9 +168,7 @@ export const buyProduct = (
             })
 
         default: // Pay with DATA
-            return send(marketplaceContractMethods().buy(getValidId(id), subscriptionInSeconds.toString()), {
-                gas: gasLimits.BUY_PRODUCT,
-            })
+            return send(marketplaceContractMethods().buy(getValidId(id), subscriptionInSeconds.toString()))
     }
 }
 
@@ -188,9 +185,7 @@ export const setMyDataAllowance = (amount: string | BN): SmartContractTransactio
     }
 
     const method = dataTokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
-    return send(method, {
-        gas: gasLimits.APPROVE,
-    })
+    return send(method)
 }
 
 export const getMyDaiAllowance = (): SmartContractCall<BN> => {
@@ -206,7 +201,5 @@ export const setMyDaiAllowance = (amount: string | BN): SmartContractTransaction
     }
 
     const method = daiTokenContractMethods().approve(process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS, toAtto(amount).toFixed(0))
-    return send(method, {
-        gas: gasLimits.APPROVE,
-    })
+    return send(method)
 }
