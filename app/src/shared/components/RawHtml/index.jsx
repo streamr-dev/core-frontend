@@ -5,7 +5,7 @@ import React from 'react'
 
 type Props = {
     children: any,
-    className: any,
+    className?: any,
 }
 
 const RawHtml = ({ children, className = '' }: Props) => (
