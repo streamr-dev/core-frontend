@@ -441,7 +441,7 @@ msgstr "Stream partitions"
 msgid "userpages.streams.edit.details.info.description"
 msgstr ""
 "All streams require a unique path in the format <strong>domain/pathname</strong>. Your default domain will "
-"be an Eth address, but you can also use an existing ENS domain or "
+"be an Ethereum address, but you can also use an existing ENS domain or "
 "<a href=\"%{addDomainUrl}\" target=\"_blank\" rel=\"nofollow noopener noreferrer\">register a new one</a>."
 
 msgid "userpages.streams.edit.details.info.descriptionNewStream"
@@ -536,7 +536,7 @@ msgid "userpages.streams.edit.configure.addField"
 msgstr "Add field"
 
 msgid "userpages.streams.edit.configure.help"
-msgstr "You can configure your stream’s fields and data types here. If you’re planning to add historical data, you can choose to have Streamr try to autoconfigure fields or you can edit them yourself."
+msgstr "You can configure your stream’s fields and data types here. If there already are stored messages in the stream, you can autoconfigure the fields based on the latest message."
 
 msgid "userpages.streams.edit.configure.autoConfigure"
 msgstr "Always try to autoconfigure field names and types"
@@ -564,8 +564,7 @@ msgstr "Store historical data for"
 
 msgid "userpages.streams.edit.preview.description"
 msgstr ""
-"You can configure your stream’s fields and preview the live data here. Use the Inspector to view details, "
-"and the transport controls to check the data is flowing correctly. "
+"Live data in this stream is displayed below. For a more detailed view, you can open the Inspector."
 "If you need help pushing data to your stream, see the <a href=\"%{docsLink}\">docs</a>."
 
 msgid "userpages.streams.edit.preview.inspect"
@@ -578,7 +577,7 @@ msgid "userpages.streams.edit.preview.stop"
 msgstr "Stop"
 
 msgid "userpages.streams.edit.codeSnippets.description"
-msgstr "You can grab the code (JS & Java) you’ll need to use this stream in your applications below. Everyone can subscribe, but only users with permission can publish."
+msgstr "You can grab the code (JS & Java) you’ll need to use this stream in your applications below. Only users with appropriate permissions can publish or subscribe to the stream."
 
 msgid "userpages.streams.edit.codeSnippets.newStream"
 msgstr "Create your stream above in order to get your code snippet."
@@ -612,14 +611,14 @@ msgstr "Add new key"
 
 msgid "userpages.streams.edit.streamPartitions.description"
 msgstr ""
-"Partitioning enables high-volume streams to scale beyond what one subscriber can handle. "
+"Partitioning enables high-volume streams to scale beyond what a typical node can handle. "
 "If you’re not sure if your stream needs partitions, leave it set to 1."
 
 msgid "userpages.streams.partitionsLabel"
 msgstr "Partitions"
 
 msgid "userpages.streams.inactivityDescription"
-msgstr "If no new data is published to this stream, it will be shown as inactive on the marketplace after this period of time. Adjust the threshold to an appropriate period for your stream's frequency."
+msgstr "If no new data is published to this stream, it will be shown as inactive after this period of time. Adjust the threshold to an appropriate period for your stream's frequency."
 
 msgid "userpages.streams.inactivityHours"
 msgstr "Hours"
