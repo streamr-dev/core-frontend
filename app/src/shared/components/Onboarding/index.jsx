@@ -1,9 +1,9 @@
 // @flow
 
 import React, { type Element as ReactElement, type ChildrenArray, useState, useCallback, useRef, useMemo } from 'react'
+import cx from 'classnames'
 import useGlobalEventWithin from '$shared/hooks/useGlobalEventWithin'
 import useKeyDown from '$shared/hooks/useKeyDown'
-import cx from 'classnames'
 import { type Ref } from '$shared/flowtype/common-types'
 import Link from '$shared/components/Link'
 import SvgIcon from '$shared/components/SvgIcon'

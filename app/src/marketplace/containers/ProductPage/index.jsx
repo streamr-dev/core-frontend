@@ -9,17 +9,17 @@ import Layout from '$shared/components/Layout'
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import type { ProductId } from '$mp/flowtype/product-types'
 import * as RouterContext from '$shared/contexts/Router'
-import ProductController, { useController } from '../ProductController'
 import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
 import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
 
-import PurchaseModal from './PurchaseModal'
-import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getToken } from '$shared/utils/sessionToken'
+import ProductController, { useController } from '../ProductController'
+import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
+import PurchaseModal from './PurchaseModal'
 
 import Page from './Page'
 

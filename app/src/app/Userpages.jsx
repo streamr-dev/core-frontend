@@ -5,7 +5,6 @@ import { Route as RouterRoute, Redirect } from 'react-router-dom'
 
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
-import routes from '$routes'
 
 import ErrorPage from '$shared/components/ErrorPage'
 
@@ -22,6 +21,7 @@ import ProductsPage from '$userpages/components/ProductsPage'
 import StatsPage from '$userpages/components/ProductsPage/Stats'
 import MembersPage from '$userpages/components/ProductsPage/Members'
 import EditProductPage from '$mp/containers/EditProductPage'
+import routes from '$routes'
 
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 

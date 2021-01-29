@@ -8,10 +8,10 @@ import { Translate, I18n } from 'react-redux-i18n'
 import BodyClass, { PAGE_SECONDARY } from '$shared/components/BodyClass'
 import EmptyState from '$shared/components/EmptyState'
 import Layout from '$shared/components/Layout'
-import routes from '$routes'
 import appCrashedImage from '$shared/assets/images/app_crashed.png'
 import appCrashedImage2x from '$shared/assets/images/app_crashed@2x.png'
 import Button from '$shared/components/Button'
+import routes from '$routes'
 
 import styles from './genericErrorPage.pcss'
 

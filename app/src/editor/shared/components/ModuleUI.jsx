@@ -4,6 +4,9 @@
 
 import React from 'react'
 
+import useModule from '$editor/canvas/components/ModuleRenderer/useModule'
+import useIsCanvasRunning from '$editor/canvas/hooks/useIsCanvasRunning'
+import useModuleApi from '$editor/canvas/components/ModuleRenderer/useModuleApi'
 import TableModule from './modules/Table'
 import ChartModule from './modules/Chart'
 import StreamrButton from './modules/Button'
@@ -20,9 +23,6 @@ import ExportCSVModule from './modules/ExportCSV'
 import SchedulerModule from './modules/Scheduler'
 import CustomModule from './modules/Custom'
 import SolidityModule from './modules/Solidity'
-import useModule from '$editor/canvas/components/ModuleRenderer/useModule'
-import useIsCanvasRunning from '$editor/canvas/hooks/useIsCanvasRunning'
-import useModuleApi from '$editor/canvas/components/ModuleRenderer/useModuleApi'
 
 // Set by module.jsModule
 const Modules = {

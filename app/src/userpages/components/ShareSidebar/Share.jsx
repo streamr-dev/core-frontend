@@ -14,11 +14,11 @@ import Tooltip from '$shared/components/Tooltip'
 import SvgIcon from '$shared/components/SvgIcon'
 import useMeasure from '$shared/hooks/useMeasure'
 import { MEDIUM } from '$shared/utils/styled'
+import { isFormElement } from '$shared/utils/isEditableElement'
+import Sidebar from '$shared/components/Sidebar'
 import Checkbox from './Checkbox'
 import RadioButtonGroup from './RadioButtonGroup'
-import { isFormElement } from '$shared/utils/isEditableElement'
 import ErrorMessage from './ErrorMessage'
-import Sidebar from '$shared/components/Sidebar'
 
 const noop = () => {}
 

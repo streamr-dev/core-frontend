@@ -7,7 +7,6 @@ import { isHex } from 'web3-utils'
 import { generateAddress, bufferToHex } from 'ethereumjs-util'
 import BN from 'bignumber.js'
 
-import { arePricesEqual } from '../utils/price'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
@@ -20,12 +19,13 @@ import type {
     SmartContractDeployTransaction,
     SmartContractMetadata,
 } from '$shared/flowtype/web3-types'
-import type { Product, SmartContractProduct } from '../flowtype/product-types'
 import type { NumberString } from '$shared/flowtype/common-types'
 
 import Transaction from '$shared/utils/Transaction'
 import DeployTransaction from '$shared/utils/DeployTransaction'
 import { gasLimits } from '$shared/utils/constants'
+import type { Product, SmartContractProduct } from '../flowtype/product-types'
+import { arePricesEqual } from '../utils/price'
 
 export type Callable = {
     call: () => SmartContractCall<*>,

@@ -1,11 +1,11 @@
 // @flow
 
-import { productStates } from '$shared/utils/constants'
-import { isDataUnionProduct } from '$mp/utils/product'
 import pick from 'lodash/pick'
 import pickBy from 'lodash/pickBy'
 import get from 'lodash/get'
 import isEqual from 'lodash/isEqual'
+import { isDataUnionProduct } from '$mp/utils/product'
+import { productStates } from '$shared/utils/constants'
 import type { Product, PendingChanges } from '$mp/flowtype/product-types'
 
 export const PENDING_CHANGE_FIELDS = [

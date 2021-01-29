@@ -7,11 +7,11 @@ import * as redux from 'react-redux'
 
 import * as UndoContext from '$shared/contexts/Undo'
 import * as usePending from '$shared/hooks/usePending'
-import useProductLoadCallback from '../useProductLoadCallback'
 import * as productServices from '$mp/modules/product/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
 import * as loginInterceptor from '$auth/utils/loginInterceptor'
 import * as entitiesUtils from '$shared/utils/entities'
+import useProductLoadCallback from '../useProductLoadCallback'
 
 describe('useProductLoadCallback', () => {
     let sandbox

@@ -5,9 +5,9 @@ import { Nav, Menu, Button, useBlogPosts } from '@streamr/streamr-layout'
 import { Translate } from 'react-redux-i18n'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import docsLinks from '$shared/../docsLinks'
-import routes from '$routes'
 import SharedNav from '$shared/components/Layout/Nav'
+import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
 
 const ghostContentApi = new GhostContentAPI({
     url: 'https://streamr.ghost.io',

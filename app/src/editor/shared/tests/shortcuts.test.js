@@ -1,5 +1,5 @@
-import UserAgents from '$shared/../../test/unit/utils/useragents'
 import { getShortcutChord, SHORTCUT_CHORDS } from '$editor/shared/utils/shortcuts'
+import UserAgents from '$shared/../../test/unit/utils/useragents'
 
 describe('getShortcutChord', () => {
     test('mac desktop chrome', () => {

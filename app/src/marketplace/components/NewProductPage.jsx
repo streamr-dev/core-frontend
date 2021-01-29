@@ -8,12 +8,12 @@ import { useDispatch } from 'react-redux'
 import { replace } from 'connected-react-router'
 import { postEmptyProduct } from '$mp/modules/product/services'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
-import routes from '$routes'
 import { type ProductType } from '$mp/flowtype/product-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { productTypes } from '$mp/utils/constants'
 import useFailure from '$shared/hooks/useFailure'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
+import routes from '$routes'
 
 type Props = {
     className?: ?string,

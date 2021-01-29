@@ -1,6 +1,6 @@
 import React from 'react'
-import ActivityList from '$shared/components/ActivityList'
 import { mount } from 'enzyme'
+import ActivityList from '$shared/components/ActivityList'
 
 jest.mock('$shared/components/StreamrClientProvider', () => ({
     __esModule: true,

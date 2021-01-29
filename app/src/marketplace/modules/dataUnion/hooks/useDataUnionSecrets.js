@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import { dataUnionSecretSchema, dataUnionSecretsSchema } from '$shared/modules/entities/schema'
 
+import useEntities from '$shared/hooks/useEntities'
 import { setDataUnionSecrets, addDataUnionSecret, removeDataUnionSecret } from '../actions'
 import { selectDataUnionSecrets } from '../selectors'
 import { getSecrets, postSecret, putSecret, deleteSecret } from '../services'
-import useEntities from '$shared/hooks/useEntities'
 
 function useDataUnionSecrets() {
     const dispatch = useDispatch()

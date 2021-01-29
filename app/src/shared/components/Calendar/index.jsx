@@ -3,8 +3,8 @@
 import React from 'react'
 import ReactCalendar, { CalendarProps } from 'react-calendar/dist/entry.nostyle'
 
-import Arrow from '../CalendarArrowIcon'
 import dateFormatter from '$utils/dateFormatter'
+import Arrow from '../CalendarArrowIcon'
 import styles from './calendar.pcss'
 
 type Props = CalendarProps & {

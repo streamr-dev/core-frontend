@@ -4,12 +4,12 @@ import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
-import type { ContractProductState, StoreState } from '../../flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { ProductId, SmartContractProduct, WhitelistedAddress } from '$mp/flowtype/product-types'
 import { contractProductSchema, whiteListedAddressesSchema } from '$shared/modules/entities/schema'
 import type { Address } from '$shared/flowtype/web3-types'
+import type { ContractProductState, StoreState } from '../../flowtype/store-state'
 
 const selectContractProductState = (state: StoreState): ContractProductState => state.contractProduct
 

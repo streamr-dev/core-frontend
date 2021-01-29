@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 import { titleize } from '@streamr/streamr-layout'
 import Segment from '$shared/components/Segment'
-import useEditableProduct from '../ProductController/useEditableProduct'
 import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
@@ -28,6 +27,7 @@ import useContractProduct from '$mp/containers/ProductController/useContractProd
 import usePending from '$shared/hooks/usePending'
 import ProductPage from '$shared/components/ProductPage'
 import { MD, XL } from '$shared/utils/styled'
+import useEditableProduct from '../ProductController/useEditableProduct'
 
 const Hero = () => {
     const product = useEditableProduct()

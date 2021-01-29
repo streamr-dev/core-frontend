@@ -2,7 +2,6 @@
 
 import { productStates } from '$shared/utils/constants'
 import { productTypes } from '$mp/utils/constants'
-import type { CategoryId } from './category-types'
 import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
 import type {
     ContractCurrency,
@@ -11,6 +10,7 @@ import type {
     TimeUnit,
 } from '$shared/flowtype/common-types'
 import type { Address } from '$shared/flowtype/web3-types'
+import type { CategoryId } from './category-types'
 
 export type ProductId = string
 export type ProductState = $Keys<typeof productStates>

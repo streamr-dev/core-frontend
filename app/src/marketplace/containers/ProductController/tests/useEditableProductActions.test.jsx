@@ -4,9 +4,9 @@ import { act } from 'react-dom/test-utils'
 import BN from 'bignumber.js'
 
 import * as UndoContext from '$shared/contexts/Undo'
+import { timeUnits, contractCurrencies } from '$shared/utils/constants'
 import { Provider as ValidationContextProvider, Context as ValidationContext } from '../ValidationContextProvider'
 import useEditableProductActions from '../useEditableProductActions'
-import { timeUnits, contractCurrencies } from '$shared/utils/constants'
 
 const mockState = {
     global: {

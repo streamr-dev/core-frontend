@@ -1,6 +1,6 @@
-import * as State from '../state'
 import { productStates } from '$shared/utils/constants'
 import { productTypes } from '$mp/utils/constants'
+import * as State from '../state'
 
 describe('Product State', () => {
     describe('isPublished', () => {
@@ -161,7 +161,7 @@ describe('Product State', () => {
                     email: 'tester1@streamr.com',
                 },
             }
-            debugger
+
             expect(State.getChangeObject(product, {
                 id: '2',
                 name: 'New Name',

@@ -23,12 +23,12 @@ import {
 } from '$mp/modules/product/services'
 
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
-import { getPendingChanges, withPendingChanges } from './state'
 import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
 import ActionQueue from '$mp/utils/actionQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
+import { getPendingChanges, withPendingChanges } from './state'
 
 export const actionsTypes = {
     UPDATE_ADMIN_FEE: 'updateAdminFee',

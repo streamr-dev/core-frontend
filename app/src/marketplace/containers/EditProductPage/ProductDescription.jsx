@@ -4,14 +4,13 @@ import React, { useContext } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
+import MarkdownEditor from '$mp/components/MarkdownEditor'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
-import MarkdownEditor from '$mp/components/MarkdownEditor'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import docsLinks from '$shared/../docsLinks'
-
 import styles from './productDescription.pcss'
+import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     disabled?: boolean,

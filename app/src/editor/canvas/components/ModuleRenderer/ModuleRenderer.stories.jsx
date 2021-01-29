@@ -1,8 +1,8 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
+import { LEVELS } from '$editor/canvas/state/messages'
 import * as modules from './modules'
 import ModuleRenderer from '.'
-import { LEVELS } from '$editor/canvas/state/messages'
 
 const stories = storiesOf('Editor/ModuleRenderer', module)
 

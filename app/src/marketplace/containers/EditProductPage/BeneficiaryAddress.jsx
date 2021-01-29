@@ -5,7 +5,6 @@ import cx from 'classnames'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
-import useValidation from '../ProductController/useValidation'
 import Text from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import WithInputActions from '$shared/components/WithInputActions'
@@ -17,6 +16,7 @@ import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEther
 import { truncate } from '$shared/utils/text'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import Label from '$ui/Label'
+import useValidation from '../ProductController/useValidation'
 import { Context as EditControllerContext } from './EditControllerProvider'
 
 import styles from './beneficiaryAddress.pcss'

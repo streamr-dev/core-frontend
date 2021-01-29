@@ -30,9 +30,8 @@ import ConnectEthereumAddressDialog from '$mp/components/Modal/ConnectEthereumAd
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import type { Ref, UseStateTuple } from '$shared/flowtype/common-types'
-import usePurchase, { actionsTypes } from './usePurchase'
-
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
+import usePurchase, { actionsTypes } from './usePurchase'
 
 type Props = {
     productId: ProductId,

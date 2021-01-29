@@ -4,14 +4,14 @@ import { useMemo, useCallback, useContext } from 'react'
 import BN from 'bignumber.js'
 
 import { Context as UndoContext } from '$shared/contexts/Undo'
-import { Context as ValidationContext } from './ValidationContextProvider'
 
-import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
 import { pricePerSecondFromTimeUnit } from '$mp/utils/price'
 import { timeUnits } from '$shared/utils/constants'
 
 import type { Product, ContactDetails } from '$mp/flowtype/product-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
+import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
+import { Context as ValidationContext } from './ValidationContextProvider'
 
 const getPricePerSecond = (isFree, price, timeUnit) => (
     isFree ? BN(0) : pricePerSecondFromTimeUnit(BN(price || 0), timeUnit || timeUnits.hour)

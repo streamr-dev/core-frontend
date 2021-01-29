@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react'
-import Text from '$editor/canvas/components/Ports/Value/Text'
 import debounce from 'lodash/debounce'
+import Text from '$editor/canvas/components/Ports/Value/Text'
 
 import { truncate } from '$shared/utils/text'
 

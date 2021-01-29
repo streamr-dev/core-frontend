@@ -6,10 +6,10 @@ import classNames from 'classnames'
 import { Container } from 'reactstrap'
 import { Translate, I18n } from 'react-redux-i18n'
 
+import Button from '$shared/components/Button'
 import type { Filter, SearchFilter, CategoryFilter, SortByFilter } from '../../flowtype/product-types'
 import type { Category } from '../../flowtype/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
-import Button from '$shared/components/Button'
 
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'

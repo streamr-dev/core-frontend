@@ -3,8 +3,8 @@
 import React, { type Node } from 'react'
 import styled from 'styled-components'
 
-import Handle from '../Handle'
 import SvgIcon from '$shared/components/SvgIcon'
+import Handle from '../Handle'
 import styles from './fieldItem.pcss'
 
 const Trash = styled.button`

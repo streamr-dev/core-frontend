@@ -2,12 +2,11 @@
 
 import React, { useCallback } from 'react'
 import ContextMenu from '$shared/components/ContextMenu'
+import useCopy from '$shared/hooks/useCopy'
 import useModuleApi from '../../ModuleRenderer/useModuleApi'
 import useModule from '../../ModuleRenderer/useModule'
 import { disconnectAllFromPort, isPortConnected, getPortValue } from '../../../state'
 import styles from './menu.pcss'
-
-import useCopy from '$shared/hooks/useCopy'
 
 type Props = {
     dismiss: () => void,

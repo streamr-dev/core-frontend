@@ -7,12 +7,12 @@ import BN from 'bignumber.js'
 
 import Transaction from '$shared/utils/Transaction'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
-import usePurchase, { actionsTypes } from '../usePurchase'
 import * as priceUtils from '$mp/utils/price'
 import * as web3Utils from '$mp/utils/web3'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as productServices from '$mp/modules/product/services'
 import * as productActions from '$mp/modules/product/actions'
+import usePurchase, { actionsTypes } from '../usePurchase'
 
 const mockState = {
     global: {

@@ -7,10 +7,6 @@ import { Translate } from 'react-redux-i18n'
 import uniqBy from 'lodash/uniqBy'
 
 import StreamSelectorComponent from '$mp/components/StreamSelector'
-import useEditableProduct from '../ProductController/useEditableProduct'
-import useValidation from '../ProductController/useValidation'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
-import { Context as EditControllerContext } from './EditControllerProvider'
 import {
     selectStreams as selectAllStreams,
     selectFetchingStreams,
@@ -19,9 +15,12 @@ import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
 } from '$mp/modules/product/selectors'
-import docsLinks from '$shared/../docsLinks'
-
+import useEditableProduct from '../ProductController/useEditableProduct'
+import useValidation from '../ProductController/useValidation'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
+import { Context as EditControllerContext } from './EditControllerProvider'
 import styles from './productStreams.pcss'
+import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     disabled?: boolean,

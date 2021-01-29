@@ -1,9 +1,9 @@
 import React, { useReducer, createContext, useContext, useEffect, useRef, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { getResourcePermissions } from '$userpages/modules/permission/services'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import reducer, { initialState, SET_RESOURCE, SET_PERMISSIONS } from './utils/reducer'
-import { useSelector } from 'react-redux'
 import { selectUsername } from '$shared/modules/user/selectors'
+import reducer, { initialState, SET_RESOURCE, SET_PERMISSIONS } from './utils/reducer'
 
 const DispatchContext = createContext(() => {})
 

@@ -3,13 +3,13 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { StreamsState, StoreState } from '../../flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
 import type { StreamList, StreamIdList } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { streamsSchema } from '$shared/modules/entities/schema'
+import type { StreamsState, StoreState } from '../../flowtype/store-state'
 
 const selectStreamsState = (state: StoreState): StreamsState => state.streams
 

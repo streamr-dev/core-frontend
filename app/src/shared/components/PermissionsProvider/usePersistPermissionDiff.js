@@ -1,11 +1,11 @@
 import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
-import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import getPermissionsDiff from './utils/getPermissionsDiff'
 import { getResourcePermissions, addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/services'
 import { selectUsername } from '$shared/modules/user/selectors'
+import getPermissionsDiff from './utils/getPermissionsDiff'
+import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
 import toOperationName from './utils/toOperationName'
 
 export default function usePersistPermissionDiff() {

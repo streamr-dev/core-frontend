@@ -5,10 +5,10 @@ import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, text, boolean } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
-import Toolbar from '.'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import { SM, MD, LG, XL } from '$shared/utils/styled'
+import Toolbar from '.'
 
 const Content = styled.div`
     height: 1000px;

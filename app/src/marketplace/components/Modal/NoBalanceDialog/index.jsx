@@ -3,15 +3,14 @@
 import React from 'react'
 import BN from 'bignumber.js'
 
+import { paymentCurrencies } from '$shared/utils/constants'
+import type { PaymentCurrency } from '$shared/flowtype/common-types'
+import type { Required, Balances } from '$mp/errors/NoBalanceError'
 import GetCryptoDialog from '../GetCryptoDialog'
 import GetDataTokensDialog from '../GetDataTokensDialog'
 import InsufficientDataDialog from '../InsufficientDataDialog'
 import InsufficientDaiDialog from '../InsufficientDaiDialog'
 import InsufficientEthDialog from '../InsufficientEthDialog'
-
-import { paymentCurrencies } from '$shared/utils/constants'
-import type { PaymentCurrency } from '$shared/flowtype/common-types'
-import type { Required, Balances } from '$mp/errors/NoBalanceError'
 
 export type Props = {
     onCancel: () => void,

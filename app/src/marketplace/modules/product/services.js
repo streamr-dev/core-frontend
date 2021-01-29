@@ -1,11 +1,10 @@
 // @flow
 
-import { get, put, post } from '$shared/utils/api'
-import { getContract, call, send } from '../../utils/smartContract'
-import getConfig from '$shared/web3/config'
 import BN from 'bignumber.js'
-import getWeb3 from '$shared/web3/web3Provider'
 import { I18n } from 'react-redux-i18n'
+import getConfig from '$shared/web3/config'
+import getWeb3 from '$shared/web3/web3Provider'
+import { get, put, post } from '$shared/utils/api'
 
 import type { SmartContractTransaction, SmartContractCall, Hash } from '$shared/flowtype/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
@@ -16,6 +15,7 @@ import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi 
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto, toAtto } from '$mp/utils/math'
 import routes from '$routes'
+import { getContract, call, send } from '../../utils/smartContract'
 
 const marketplaceContractMethods = () => getContract(getConfig().marketplace).methods
 const uniswapAdaptorContractMethods = () => getContract(getConfig().uniswapAdaptor).methods

@@ -12,9 +12,8 @@ import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
-import docsLinks from '$shared/../docsLinks'
-
 import PreviewTable from './PreviewTable'
+import docsLinks from '$shared/../docsLinks'
 
 const Wrapper = styled.div`
     border: 1px solid #ebebeb;

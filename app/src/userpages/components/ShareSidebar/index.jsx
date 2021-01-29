@@ -1,8 +1,8 @@
 import React from 'react'
-import Sidebar from '$shared/components/Sidebar'
 import { I18n } from 'react-redux-i18n'
-import SidebarContent from './Sidebar'
+import Sidebar from '$shared/components/Sidebar'
 import PermissionsProvider from '$shared/components/PermissionsProvider'
+import SidebarContent from './Sidebar'
 
 export default ({
     sidebarName,

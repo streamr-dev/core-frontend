@@ -8,15 +8,13 @@ import { Responsive, WidthProvider } from 'react-grid-layout'
 import ModuleHeader from '$editor/shared/components/ModuleHeader'
 import ModuleUI from '$editor/shared/components/ModuleUI'
 
-import dashboardConfig from '../config'
-
 import { SelectionContext } from '$shared/hooks/useSelection'
-
-import Background from './Background'
 
 import 'react-grid-layout/css/styles.css'
 import ModuleStyles from '$editor/shared/components/Module.pcss'
 import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
+import dashboardConfig from '../config'
+import Background from './Background'
 import styles from './Dashboard.pcss'
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive)

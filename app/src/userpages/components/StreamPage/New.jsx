@@ -10,7 +10,6 @@ import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
-import routes from '$routes'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -22,19 +21,6 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import Layout from '$shared/components/Layout/Core'
 import StatusIcon from '$shared/components/StatusIcon'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
-import docsLinks from '$shared/../docsLinks'
-import {
-    StreamIdFormGroup,
-    FormGroup,
-    Field,
-    Text,
-} from './shared/FormGroup'
-import Preview from './Edit/PreviewView'
-import SecurityView from './Edit/SecurityView'
-import { StatusView } from './Edit/StatusView'
-import ConfigureView from './Edit/ConfigureView'
-import HistoryView from './Edit/HistoryView'
-import PartitionsView from './Edit/PartitionsView'
 import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
@@ -48,6 +34,20 @@ import Button from '$shared/components/Button'
 import { truncate } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
 import CodeSnippets from '$shared/components/CodeSnippets'
+import routes from '$routes'
+import PartitionsView from './Edit/PartitionsView'
+import HistoryView from './Edit/HistoryView'
+import ConfigureView from './Edit/ConfigureView'
+import { StatusView } from './Edit/StatusView'
+import SecurityView from './Edit/SecurityView'
+import Preview from './Edit/PreviewView'
+import {
+    StreamIdFormGroup,
+    FormGroup,
+    Field,
+    Text,
+} from './shared/FormGroup'
+import docsLinks from '$shared/../docsLinks'
 
 const Description = styled.p`
     margin-bottom: 3rem;

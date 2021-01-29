@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
-import IconButton from './IconButton'
 import { SM } from '$shared/utils/styled'
+import IconButton from './IconButton'
 
 const UnstyledCloseButton = (props) => (
     <IconButton {...props}>

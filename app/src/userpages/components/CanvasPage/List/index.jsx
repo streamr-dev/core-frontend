@@ -15,9 +15,7 @@ import { getCanvases, deleteOrRemoveCanvas } from '$userpages/modules/canvas/act
 import { selectCanvases, selectFetching } from '$userpages/modules/canvas/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
-import Search from '../../Header/Search'
 import confirmDialog from '$shared/utils/confirm'
-import NoCanvasesView from './NoCanvases'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import { getResourcePermissions, resetResourcePermission } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectCanvasPermissions } from '$userpages/modules/permission/selectors'
@@ -32,9 +30,11 @@ import Grid from '$shared/components/Tile/Grid'
 import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
-import routes from '$routes'
 import resourceUrl from '$shared/utils/resourceUrl'
 import { MD, LG } from '$shared/utils/styled'
+import routes from '$routes'
+import Search from '../../Header/Search'
+import NoCanvasesView from './NoCanvases'
 
 const DesktopOnlyButton = styled(Button)`
      && {

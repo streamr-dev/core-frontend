@@ -1,27 +1,20 @@
 // @flow
 
-import '$shared/assets/stylesheets'
-import '@ibm/plex/css/ibm-plex.css'
-import '$utils/setupSnippets'
-
 import React from 'react'
 import { Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
 import { ConnectedRouter } from 'connected-react-router'
 
+import '$shared/assets/stylesheets'
+import '@ibm/plex/css/ibm-plex.css'
+import '$utils/setupSnippets'
+
 // Marketplace
-import MarketplaceRouter from './Marketplace'
 import Products from '$mp/containers/Products'
 
 // Auth
 import SessionProvider from '$auth/components/SessionProvider'
 import LoginPage from '$auth/components/LoginPage'
 import LogoutPage from '$auth/components/LogoutPage'
-
-// Userpages
-import UserpagesRouter from './Userpages'
-
-// Docs
-import DocsRouter from './Docs'
 
 // Editor
 import CanvasEditor from '$editor/canvas'
@@ -33,8 +26,6 @@ import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
 import Notifications from '$shared/components/Notifications'
 import ActivityResourceProvider from '$shared/components/ActivityList/ActivityResourceProvider'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
-import history from '../history'
-import '../analytics'
 
 import LocaleSetter from '$mp/containers/LocaleSetter'
 import NotFoundPage from '$shared/components/NotFoundPage'
@@ -45,6 +36,16 @@ import ErrorPage from '$shared/components/ErrorPage'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
 import routes from '$routes'
+
+import history from '../history'
+import '../analytics'
+
+// Userpages
+import UserpagesRouter from './Userpages'
+
+// Docs
+import DocsRouter from './Docs'
+import MarketplaceRouter from './Marketplace'
 
 // Wrap authenticated components here instead of render() method
 

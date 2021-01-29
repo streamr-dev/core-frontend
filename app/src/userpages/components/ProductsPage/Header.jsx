@@ -21,8 +21,8 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import { productStates } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
-import routes from '$routes'
 import { MD } from '$shared/utils/styled'
+import routes from '$routes'
 
 const Toolbar = styled(UnstyledToolbar)`
     display: none;

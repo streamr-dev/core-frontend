@@ -6,7 +6,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import routes from '$routes'
 import { CoreHelmet } from '$shared/components/Helmet'
 import {
     getStreams,
@@ -30,6 +29,7 @@ import { StreamList as StreamListComponent } from '$shared/components/List'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
+import routes from '$routes'
 
 import Search from '../../Header/Search'
 

@@ -2,8 +2,8 @@
 
 import React from 'react'
 import qs from 'query-string'
-import { applyLocale, getDefaultLocale } from '$shared/utils/locale'
 import { withRouter } from 'react-router-dom'
+import { applyLocale, getDefaultLocale } from '$shared/utils/locale'
 
 import withI18n, { type I18nProps } from '$shared/containers/WithI18n'
 import i18n from '../../i18n'

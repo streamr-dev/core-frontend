@@ -3,8 +3,8 @@ import thunk from 'redux-thunk'
 import moxios from 'moxios'
 import sinon from 'sinon'
 
-import * as actions from '../../../modules/canvas/actions'
 import * as entitiesActions from '$shared/modules/entities/actions'
+import * as actions from '../../../modules/canvas/actions'
 
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)

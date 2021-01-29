@@ -4,9 +4,6 @@ import React, { Fragment, useCallback, useEffect } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 
-import Description from '../Description'
-
-import IntegrationKeyList from './IntegrationKeyList'
 import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -15,6 +12,8 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { usePending } from '$shared/hooks/usePending'
 import { selectUserData } from '$shared/modules/user/selectors'
+import Description from '../Description'
+import IntegrationKeyList from './IntegrationKeyList'
 
 import AddPrivateKeyDialog from './AddPrivateKeyDialog'
 

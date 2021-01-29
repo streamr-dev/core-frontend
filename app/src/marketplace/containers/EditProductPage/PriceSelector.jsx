@@ -15,17 +15,17 @@ import Toggle from '$shared/components/Toggle'
 import SvgIcon from '$shared/components/SvgIcon'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 
+import { convert } from '$mp/utils/price'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import docsLinks from '$shared/../docsLinks'
-import { convert } from '$mp/utils/price'
 
 import BeneficiaryAddress from './BeneficiaryAddress'
 
 import styles from './PriceSelector.pcss'
+import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     disabled?: boolean,

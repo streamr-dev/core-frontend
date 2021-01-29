@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
+import ModuleStyles from '$editor/shared/components/Module.pcss'
 import { updateModulePosition } from '../state'
 import { Draggable } from './DragDropContext'
-import ModuleStyles from '$editor/shared/components/Module.pcss'
 import styles from './Module.pcss'
 
 const EMPTY = {}

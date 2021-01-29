@@ -8,10 +8,10 @@ import NoBalanceError from '$mp/errors/NoBalanceError'
 import { getPublicWeb3, getWeb3 } from '$shared/web3/web3Provider'
 import getConfig from '$shared/web3/config'
 import type { SmartContractCall, Address } from '$shared/flowtype/web3-types'
-import { getContract, call } from '../utils/smartContract'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
-import { fromAtto } from './math'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
+import { getContract, call } from '../utils/smartContract'
+import { fromAtto } from './math'
 
 declare var ethereum: Web3
 

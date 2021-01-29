@@ -3,10 +3,10 @@
 import React, { type Context, type Node, useMemo, useCallback, useState, useEffect, useContext } from 'react'
 
 import usePending from '$shared/hooks/usePending'
-import useProduct from './useProduct'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { getResourcePermissions } from '$userpages/modules/permission/services'
+import useProduct from './useProduct'
 
 type ContextProps = {
     hasPermissions: boolean,

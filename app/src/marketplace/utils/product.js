@@ -3,13 +3,13 @@
 import BN from 'bignumber.js'
 
 import type { NumberString } from '$shared/flowtype/common-types'
+import { contractCurrencies as currencies, productStates } from '$shared/utils/constants'
+import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import type { Product, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
 
-import { contractCurrencies as currencies, productStates } from '$shared/utils/constants'
 import { productTypes } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
-import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 
 export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
 

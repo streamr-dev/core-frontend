@@ -2,10 +2,10 @@
 
 import React, { useContext, useEffect, type ComponentType } from 'react'
 import cx from 'classnames'
+import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
 import useModule from '../ModuleRenderer/useModule'
 import useModuleApi from '../ModuleRenderer/useModuleApi'
 
-import Probe from '$editor/canvas/components/Resizable/SizeConstraintProvider/Probe'
 import { Context as SizeConstraintContext } from '../Resizable/SizeConstraintProvider'
 import Port from './Port'
 import styles from './ports.pcss'

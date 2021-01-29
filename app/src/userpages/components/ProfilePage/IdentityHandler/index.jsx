@@ -5,7 +5,6 @@ import { Translate, I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
-import IntegrationKeyList from '../IntegrationKeyHandler/IntegrationKeyList'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -15,6 +14,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import { usePending } from '$shared/hooks/usePending'
 import { LG } from '$shared/utils/styled'
 import { selectUserData } from '$shared/modules/user/selectors'
+import IntegrationKeyList from '../IntegrationKeyHandler/IntegrationKeyList'
 
 import Description from '../Description'
 

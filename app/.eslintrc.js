@@ -1,10 +1,11 @@
 const path = require('path')
 
-module.exports = exports = {
+module.exports = {
     extends: [
         'streamr',
         'plugin:cypress/recommended',
     ],
+    parser: 'babel-eslint',
     settings: {
         'import/resolver': {
             webpack: {
@@ -28,5 +29,46 @@ module.exports = exports = {
         'no-unreachable': 'warn',
         'object-curly-newline': 'warn',
         'no-trailing-spaces': 'warn',
-    }
+        // these promise/atomic rules should probably be turned on
+        'promise/catch-or-return': 'off',
+        'promise/always-return': 'off',
+        'require-atomic-updates': 'off',
+        'react/sort-comp': 0,
+        'import/order': ['error', {
+            groups: [
+                'builtin',
+                'external',
+                'internal',
+                'parent',
+                'sibling',
+                'index',
+                'object',
+            ],
+            pathGroups: [
+                {
+                    pattern: '$*/**',
+                    group: 'internal',
+                    position: 'after',
+                },
+                {
+                    pattern: '@*/**',
+                    group: 'internal',
+                    position: 'after',
+                },
+                {
+                    pattern: '@*',
+                    group: 'internal',
+                    position: 'after',
+                },
+                {
+                    pattern: '$*',
+                    group: 'internal',
+                    position: 'after',
+                },
+            ],
+        }],
+    },
+    overrides: [{
+        files: ['*.jsx', '*.js'],
+    }],
 }

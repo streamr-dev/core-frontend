@@ -3,12 +3,12 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { DataUnionState, StoreState } from '../../flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
-import type { DataUnionId, DataUnion, DataUnionSecretId, DataUnionSecret } from '../../flowtype/product-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { dataUnionSchema, dataUnionsSchema, dataUnionSecretsSchema } from '$shared/modules/entities/schema'
+import type { DataUnionId, DataUnion, DataUnionSecretId, DataUnionSecret } from '../../flowtype/product-types'
+import type { DataUnionState, StoreState } from '../../flowtype/store-state'
 
 const selectDataUnionState = (state: StoreState): DataUnionState => state.dataUnion
 

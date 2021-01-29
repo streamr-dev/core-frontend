@@ -2,10 +2,10 @@
 
 import React, { useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { MenuItem } from '$shared/components/Tile/Menu'
 import { Translate } from 'react-redux-i18n'
-import routes from '$routes'
+import { MenuItem } from '$shared/components/Tile/Menu'
 import useCopy from '$shared/hooks/useCopy'
+import routes from '$routes'
 
 // wrap link to avoid validation error in MenuItem
 const MenuLink = (props) => (

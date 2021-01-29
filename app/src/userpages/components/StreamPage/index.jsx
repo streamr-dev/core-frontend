@@ -17,12 +17,12 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import Notification from '$shared/utils/Notification'
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
-import Edit from './Edit'
-import View from './View'
 import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useStreamPermissions from '$userpages/hooks/useStreamPermissions'
 import ClientProvider from '$shared/components/StreamrClientProvider'
+import View from './View'
+import Edit from './Edit'
 
 const StreamPage = (props) => {
     const { id: idProp } = props.match.params || {}

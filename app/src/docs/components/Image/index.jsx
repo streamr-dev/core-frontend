@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { SRLWrapper } from 'simple-react-lightbox'
-import SvgIcon from '$shared/components/SvgIcon'
 import cx from 'classnames'
+import SvgIcon from '$shared/components/SvgIcon'
 
 import imageStyles from './image.pcss'
 

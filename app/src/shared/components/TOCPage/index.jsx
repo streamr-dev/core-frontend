@@ -3,9 +3,9 @@
 import React, { type Node } from 'react'
 import styled from 'styled-components'
 import { MD, LG, XL, REGULAR } from '$shared/utils/styled'
+import BusLine, { useBusLine } from '$shared/components/BusLine'
 import TOCSection from './TOCSection'
 import TOCNav, { Link } from './TOCNav'
-import BusLine, { useBusLine } from '$shared/components/BusLine'
 
 type Props = {
     title?: string,

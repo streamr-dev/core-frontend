@@ -8,7 +8,6 @@ import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
 
 import { CoreHelmet } from '$shared/components/Helmet'
-import NoTransactionsView from './NoTransactions'
 import Layout from '$userpages/components/Layout'
 import * as transactionActions from '$userpages/modules/transactionHistory/actions'
 import {
@@ -33,11 +32,12 @@ import Notification from '$shared/utils/Notification'
 import { formatDecimals } from '$mp/utils/price'
 import { transactionTypes, paymentCurrencies, NotificationIcon } from '$shared/utils/constants'
 import { fromAtto } from '$mp/utils/math'
-import routes from '$routes'
 import { TransactionList as TransactionListComponent } from '$shared/components/List'
 import StatusIcon from '$shared/components/StatusIcon'
 import { MD, LG } from '$shared/utils/styled'
 import Search from '$userpages/components/Header/Search'
+import routes from '$routes'
+import NoTransactionsView from './NoTransactions'
 
 const StyledListContainer = styled(ListContainer)`
     && {

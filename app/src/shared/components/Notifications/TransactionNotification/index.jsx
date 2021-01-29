@@ -6,14 +6,15 @@ import { Translate } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
-import styles from '../BasicNotification/basic.pcss'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import type { StoreState } from '$shared/flowtype/store-state'
 import type { TransactionState } from '$shared/flowtype/common-types'
 import type { Hash, TransactionEntity } from '$shared/flowtype/web3-types'
 import { makeSelectTransaction } from '$mp/modules/transactions/selectors'
+import styles from '../BasicNotification/basic.pcss'
 
 type OwnProps = {
+    // eslint-disable-next-line react/no-unused-prop-types
     txHash: Hash,
 }
 

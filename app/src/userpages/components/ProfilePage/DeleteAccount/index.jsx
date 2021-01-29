@@ -5,9 +5,6 @@ import { useDispatch } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
-import Description from '../Description'
-
-import DeleteAccountDialog from './DeleteAccountDialog'
 import Button from '$shared/components/Button'
 import useModal from '$shared/hooks/useModal'
 import usePending from '$shared/hooks/usePending'
@@ -16,6 +13,8 @@ import { logout } from '$shared/modules/user/actions'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { MD, LG } from '$shared/utils/styled'
+import Description from '../Description'
+import DeleteAccountDialog from './DeleteAccountDialog'
 
 const RemoveButton = styled(Button)`
     @media (min-width: ${MD}px) {

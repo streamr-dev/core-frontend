@@ -1,7 +1,6 @@
 // @flow
 
 import { get, post, put, del } from '$shared/utils/api'
-import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type {
     StreamId,
@@ -9,6 +8,7 @@ import type {
     StreamList,
     NewStream,
 } from '$shared/flowtype/stream-types'
+import routes from '$routes'
 
 export const getStream = (id: StreamId): ApiResult<Stream> => get({
     url: routes.api.streams.show({

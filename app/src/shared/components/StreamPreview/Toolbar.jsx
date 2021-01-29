@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import { Translate, I18n } from 'react-redux-i18n'
 import useCopy from '$shared/hooks/useCopy'
 import PrestyledButton from '$shared/components/Button'
+import { SM, LG } from '$shared/utils/styled'
 import Selector from './Selector'
 import Layout from './Layout'
-import { SM, LG } from '$shared/utils/styled'
 
 const MobileText = styled(Translate)`
     @media (min-width: ${SM}px) {

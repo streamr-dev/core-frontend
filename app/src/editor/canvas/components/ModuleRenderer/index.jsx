@@ -2,6 +2,13 @@
 
 import React, { useCallback, useMemo, useContext, useEffect } from 'react'
 import cx from 'classnames'
+import ModuleHeader from '$editor/shared/components/ModuleHeader'
+import ModuleHeaderButton from '$editor/shared/components/ModuleHeaderButton'
+import ModuleStyles from '$editor/shared/components/Module.pcss'
+import ModuleUI from '$editor/shared/components/ModuleUI'
+import { type Ref } from '$shared/flowtype/common-types'
+import { UiEmitter } from '$editor/shared/components/RunStateLoader'
+import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
 import Resizable from '../Resizable'
 import Probe from '../Resizable/SizeConstraintProvider/Probe'
 import Ports from '../Ports'
@@ -11,14 +18,6 @@ import { MessageIcon } from '../ConsoleSidebar'
 import useIsCanvasRunning from '../../hooks/useIsCanvasRunning'
 import useModule, { ModuleContext } from './useModule'
 import useModuleApi, { ModuleApiContext } from './useModuleApi'
-
-import ModuleHeader from '$editor/shared/components/ModuleHeader'
-import ModuleHeaderButton from '$editor/shared/components/ModuleHeaderButton'
-import ModuleStyles from '$editor/shared/components/Module.pcss'
-import ModuleUI from '$editor/shared/components/ModuleUI'
-import { type Ref } from '$shared/flowtype/common-types'
-import { UiEmitter } from '$editor/shared/components/RunStateLoader'
-import { Context as SizeConstraintContext } from '$editor/canvas/components/Resizable/SizeConstraintProvider'
 
 type Props = {
     // TODO: Update types

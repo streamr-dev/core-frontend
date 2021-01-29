@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
-import CopyLink from './CopyLink'
 import SharedButton from '$shared/components/Button'
+import CopyLink from './CopyLink'
 
 const Button = styled(SharedButton)``
 

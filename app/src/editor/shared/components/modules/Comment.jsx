@@ -1,8 +1,8 @@
 import React from 'react'
 import cx from 'classnames'
 
-import UiSizeConstraint from '../UiSizeConstraint'
 import Text from '$ui/Text'
+import UiSizeConstraint from '../UiSizeConstraint'
 import styles from './Comment.pcss'
 
 export default class CommentModule extends React.PureComponent {
