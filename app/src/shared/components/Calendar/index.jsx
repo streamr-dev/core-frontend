@@ -11,14 +11,27 @@ type Props = CalendarProps & {
     onChange?: (Date) => void,
 }
 
+const formatShortWeekday = (() => {
+    const fn = dateFormatter('dd')
+    return (locale, ...args) => fn(...args)
+})()
+
+const formatMonth = (() => {
+    const fn = dateFormatter('MMM')
+    return (locale, ...args) => fn(...args)
+})()
+
+const prevLabel = <Arrow left />
+const nextLabel = <Arrow />
+
 const Calendar = (props: Props) => (
     <ReactCalendar
         className={styles.calendar}
         minDetail="decade"
-        formatShortWeekday={dateFormatter('dd')}
-        formatMonth={dateFormatter('MMM')}
-        prevLabel={<Arrow left />}
-        nextLabel={<Arrow />}
+        formatShortWeekday={formatShortWeekday}
+        formatMonth={formatMonth}
+        prevLabel={prevLabel}
+        nextLabel={nextLabel}
         {...props}
         next2Label={null}
         prev2Label={null}
