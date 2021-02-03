@@ -3,6 +3,7 @@ import { MDXProvider } from '@mdx-js/react'
 import SimpleReactLightbox from 'simple-react-lightbox'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
+import { I18n } from 'react-redux-i18n'
 
 import { LG } from '$shared/utils/styled'
 import Layout from '$shared/components/Layout'
@@ -224,7 +225,9 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
                                     onClick={() => toggleOverlay()}
                                 >
                                     <SvgIcon name="search" />
-                                    <SearchButtonText>Search</SearchButtonText>
+                                    <SearchButtonText>
+                                        {I18n.t('docs.search.button')}
+                                    </SearchButtonText>
                                     <Key>⌘</Key>
                                     <Key>K</Key>
                                 </DesktopSearchButton>
@@ -243,7 +246,7 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
                                         rel="noopener noreferrer"
                                     >
                                         <SvgIcon name="github" />
-                                        Edit on GitHub
+                                        {I18n.t('docs.content.editOnGithub')}
                                     </Button>
                                 )}
                             </EditButtonWrapper>

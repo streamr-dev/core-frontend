@@ -1,6 +1,9 @@
 msgid "docs.search.noResults"
 msgstr "Please try a different search or ask on our"
 
+msgid "docs.search.button"
+msgstr "Search"
+
 msgid "docs.search.placeholder"
 msgstr "Search..."
 
@@ -14,3 +17,6 @@ msgid "docs.search.noResults"
 msgstr "Please try a different search or ask on our "
 "<br />"
 "<a rel='noopener noreferrer' target='_blank' href='%{url}'>Community Dev Forum</a> instead."
+
+msgid "docs.content.editOnGithub"
+msgstr "Edit on GitHub"
