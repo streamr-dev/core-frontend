@@ -57,7 +57,7 @@ jobs:
     env:
     - DESCRIPTION=VISUAL_TEST
     - CHROMATIC_PROJECT_TOKEN=exgpyxh1il5
-    - NODE_ENV=production
+    - NODE_ENV=development
     - PORT=12345
     - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
     - SENTRY_ENVIRONMENT=pr

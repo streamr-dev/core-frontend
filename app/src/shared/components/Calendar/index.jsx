@@ -11,6 +11,7 @@ type Props = CalendarProps & {
     onChange?: (Date) => void,
 }
 
+// wrap format functions as react-calendar now passes locale as first param
 const formatShortWeekday = (() => {
     const fn = dateFormatter('dd')
     return (locale, ...args) => fn(...args)
