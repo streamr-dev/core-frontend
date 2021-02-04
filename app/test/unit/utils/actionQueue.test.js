@@ -208,7 +208,7 @@ describe('Action queue', () => {
 
         // don't show error as console.error
         jest.spyOn(console, 'error')
-        console.error.mockImplementation((...args) => console.warn(...args))
+        console.error.mockImplementation(() => {})
         await queue.start()
         console.error.mockRestore()
 
@@ -249,7 +249,7 @@ describe('Action queue', () => {
 
         // don't show error as console.error
         jest.spyOn(console, 'error')
-        console.error.mockImplementation((...args) => console.warn(...args))
+        console.error.mockImplementation(() => {})
         await queue.start()
         console.error.mockRestore()
 
