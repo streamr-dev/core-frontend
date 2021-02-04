@@ -4,13 +4,6 @@ import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
 import type { EntitiesState } from '$shared/flowtype/store-state'
-import type {
-    DataUnionId,
-    DataUnion,
-    DataUnionSecretId,
-    DataUnionSecret,
-    DataUnionStat,
-} from '../../flowtype/product-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import {
     dataUnionSchema,
@@ -18,6 +11,13 @@ import {
     dataUnionStatSchema,
     dataUnionStatsSchema,
 } from '$shared/modules/entities/schema'
+import type {
+    DataUnionId,
+    DataUnion,
+    DataUnionSecretId,
+    DataUnionSecret,
+    DataUnionStat,
+} from '../../flowtype/product-types'
 
 const selectDataUnionState = (state: StoreState): DataUnionState => state.dataUnion
 

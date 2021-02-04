@@ -8,9 +8,9 @@ import { handleEntities } from '$shared/utils/entities'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { DataUnionId, DataUnionSecretId, ProductIdList } from '$mp/flowtype/product-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
-import * as services from './services'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
+import * as services from './services'
 import {
     GET_DATA_UNION_REQUEST,
     GET_DATA_UNION_SUCCESS,

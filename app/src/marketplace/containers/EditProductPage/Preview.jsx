@@ -25,9 +25,8 @@ import useContractProduct from '$mp/containers/ProductController/useContractProd
 import usePending from '$shared/hooks/usePending'
 import ProductPage from '$shared/components/ProductPage'
 import { MD, XL } from '$shared/utils/styled'
-import useEditableProduct from '../ProductController/useEditableProduct'
-
 import usePreviewStats from '$mp/containers/ProductPage/usePreviewStats'
+import useEditableProduct from '../ProductController/useEditableProduct'
 
 const Hero = () => {
     const product = useEditableProduct()

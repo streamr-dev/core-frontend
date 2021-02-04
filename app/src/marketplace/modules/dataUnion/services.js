@@ -1,13 +1,13 @@
 // @flow
 
 import EventEmitter from 'events'
+import StreamrClient from 'streamr-client'
 import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
-import StreamrClient from 'streamr-client'
-import { getToken } from '$shared/utils/sessionToken'
-
 import { getContract, call, calculateContractAddress } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
+import { getToken } from '$shared/utils/sessionToken'
+
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import type { Stream, NewStream } from '$shared/flowtype/stream-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
