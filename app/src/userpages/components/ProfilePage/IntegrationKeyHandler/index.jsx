@@ -46,7 +46,7 @@ export const IntegrationKeyHandler = () => {
 
     const addPrivateKey = useCallback(async () => (
         wrap(async () => {
-            const { added, error } = await addPrivateKeyDialog.open()
+            const { added, error } = (await addPrivateKeyDialog.open()) || {}
 
             if (isMounted()) {
                 if (error) {

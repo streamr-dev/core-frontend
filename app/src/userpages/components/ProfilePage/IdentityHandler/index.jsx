@@ -64,9 +64,9 @@ const IdentityHandler = () => {
     ), [wrapIdentityAction, remove])
 
     const addIdentity = useCallback(async (createAccount: boolean = false) => {
-        const { added, error } = await addIdentityDialog.open({
+        const { added, error } = (await addIdentityDialog.open({
             createAccount,
-        })
+        })) || {}
 
         if (isMounted()) {
             if (error) {
