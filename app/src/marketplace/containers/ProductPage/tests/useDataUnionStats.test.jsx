@@ -237,7 +237,7 @@ describe('useDataUnionStats', () => {
         }, {
             id: 'created',
             loading: false,
-            value: '12/29/2020',
+            value: new Date('12/29/2020').toLocaleDateString(),
         }])
     })
 
@@ -326,7 +326,7 @@ describe('useDataUnionStats', () => {
         }, {
             id: 'created',
             loading: false,
-            value: '12/29/2019',
+            value: new Date('12/29/2019').toLocaleDateString(),
         }])
     })
 })
