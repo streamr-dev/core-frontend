@@ -16,6 +16,3 @@ streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 
 # start everything except the frontend
 $streamr_docker_dev start --except platform --wait
-
-# temporary hack to get around broker initialization timing bug
-$streamr_docker_dev restart broker-node-no-storage-1 broker-node-no-storage-2 broker-node-storage-1 --wait
