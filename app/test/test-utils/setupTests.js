@@ -1,3 +1,4 @@
+import { format } from 'util'
 import { configure } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import moxios from 'moxios'
@@ -16,3 +17,9 @@ configure({
 window.requestAnimationFrame = (callback) => {
     setTimeout(callback, 0)
 }
+
+// ensure unhandled rejections are logged
+process.on('unhandledRejection', (err) => {
+    process.stderr.write(`${format(err)}\n`)
+    throw err
+})
