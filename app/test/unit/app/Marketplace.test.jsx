@@ -9,31 +9,31 @@ import MarketplaceRouter from '$mp/../app/Marketplace'
 jest.mock('$mp/containers/Products', () => ({
     __esModule: true,
     default: () => (
-        <div>Main page</div>
+        'Main page'
     ),
 }))
 jest.mock('$mp/containers/ProductPage', () => ({
     __esModule: true,
     default: ({ match }) => (
-        <div>Product {match.params.id} page</div>
+        `Product ${match.params.id} page`
     ),
 }))
 jest.mock('$mp/containers/StreamPreviewPage', () => ({
     __esModule: true,
     default: ({ match }) => (
-        <div>Product {match.params.id} preview</div>
+        `Product ${match.params.id} preview`
     ),
 }))
 jest.mock('$mp/components/NewProductPage', () => ({
     __esModule: true,
     default: () => (
-        <div>New product</div>
+        'New product'
     ),
 }))
 jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
     default: () => (
-        <div>Error page</div>
+        'Error page'
     ),
 }))
 /* eslint-enable react/prop-types */

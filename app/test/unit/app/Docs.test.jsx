@@ -9,101 +9,101 @@ import DocsRouter from '$mp/../app/Docs'
 jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
     default: () => (
-        <div>Error page</div>
+        'Error page'
     ),
 }))
 
 jest.mock('$docs/components/Pages/Introduction', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/introduction</div>
+        '/docs/introduction'
     ),
 }))
 jest.mock('$docs/components/Pages/GettingStarted', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/getting-started</div>
+        '/docs/getting-started'
     ),
 }))
 jest.mock('$docs/components/Pages/Streams/IntroToStreams', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/streams
             /docs/streams/intro-to-streams
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Streams/UsingStreamsInCore', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/streams/using-streams-in-core</div>
+        '/docs/streams/using-streams-in-core'
     ),
 }))
 jest.mock('$docs/components/Pages/Streams/UsingStreamsViaApi', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/streams/using-streams-via-api
             /docs/api/using-streams-via-api
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Streams/UsingStreamsViaSdk', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/streams/using-streams-via-sdk</div>
+        '/docs/streams/using-streams-via-sdk'
     ),
 }))
 jest.mock('$docs/components/Pages/Streams/Partitioning', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/streams/partitioning</div>
+        '/docs/streams/partitioning'
     ),
 }))
 jest.mock('$docs/components/Pages/Streams/IntegrationPatterns', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/streams/integration-patterns</div>
+        '/docs/streams/integration-patterns'
     ),
 }))
 jest.mock('$docs/components/Pages/Streams/EndToEndEncryption', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/streams/end-to-end-encryption</div>
+        '/docs/streams/end-to-end-encryption'
     ),
 }))
 jest.mock('$docs/components/Pages/Streams/DataSigningAndVerification', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/streams/data-signing-and-verification</div>
+        '/docs/streams/data-signing-and-verification'
     ),
 }))
 jest.mock('$docs/components/Pages/Canvases/IntroToCanvases', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/canvases
             /docs/canvases/intro-to-canvases
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Canvases/ModulesBasics', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/canvases/modules-basics</div>
+        '/docs/canvases/modules-basics'
     ),
 }))
 jest.mock('$docs/components/Pages/Canvases/ModulesAdvanced', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/canvases/modules-advanced</div>
+        '/docs/canvases/modules-advanced'
     ),
 }))
 jest.mock('$docs/components/Pages/ModuleReference/HelpModules', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/module-reference
             /docs/module-reference/boolean
             /docs/module-reference/custom-modules
@@ -117,172 +117,172 @@ jest.mock('$docs/components/Pages/ModuleReference/HelpModules', () => ({
             /docs/module-reference/time-series
             /docs/module-reference/utils
             /docs/module-reference/visualizations
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Dashboards', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/dashboards</div>
+        '/docs/dashboards'
     ),
 }))
 jest.mock('$docs/components/Pages/Products/CreateProduct', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/products
             /docs/products/create-product
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/DataUnions/IntroToDataUnions', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/data-unions
             /docs/data-unions/intro-to-data-unions
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/DataUnions/DataUnionsCore', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/create-data-union-with-core</div>
+        '/docs/data-unions/create-data-union-with-core'
     ),
 }))
 jest.mock('$docs/components/Pages/DataUnions/FrameworkRoles', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/framework-roles</div>
+        '/docs/data-unions/framework-roles'
     ),
 }))
 jest.mock('$docs/components/Pages/DataUnions/AuthAndIdentity', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/auth-and-identity</div>
+        '/docs/data-unions/auth-and-identity'
     ),
 }))
 jest.mock('$docs/components/Pages/DataUnions/CreateAndMonitor', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/create-and-monitor</div>
+        '/docs/data-unions/create-and-monitor'
     ),
 }))
 jest.mock('$docs/components/Pages/DataUnions/JoinAndWithdraw', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/join-and-withdraw</div>
+        '/docs/data-unions/join-and-withdraw'
     ),
 }))
 jest.mock('$docs/components/Pages/DataUnions/UXBestPractices', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-unions/ux-best-practices</div>
+        '/docs/data-unions/ux-best-practices'
     ),
 }))
 jest.mock('$docs/components/Pages/Tutorials/BuildingPubSub', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/tutorials
             /docs/tutorials/building-pub-sub
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Tutorials/BuildingCustomModule', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/tutorials/building-custom-canvas-module</div>
+        '/docs/tutorials/building-custom-canvas-module'
     ),
 }))
 jest.mock('$docs/components/Pages/DataToken', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/data-token</div>
+        '/docs/data-token'
     ),
 }))
 jest.mock('$docs/components/Pages/Core/IntroToCore', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/core
             /docs/core/intro-to-core
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Core/UsingCanvasesInCore', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/canvases/using-canvases-in-core</div>
+        '/docs/canvases/using-canvases-in-core'
     ),
 }))
 jest.mock('$docs/components/Pages/Marketplace/IntroToMarketplace', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/marketplace
             /docs/marketplace/introduction-marketplace
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Sdk/Overview', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/sdk
             /docs/sdk/overview
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Sdk/Javascript', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/sdk/javascript-sdk
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Sdk/Java', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/sdk/java-sdk
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Sdk/Python', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/sdk/python-sdk
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Api/Overview', () => ({
     __esModule: true,
     default: () => (
-        <div>
+        `
             /docs/api
             /docs/api/api-overview
-        </div>
+        `
     ),
 }))
 jest.mock('$docs/components/Pages/Api/Authentication', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/api/authentication</div>
+        '/docs/api/authentication'
     ),
 }))
 jest.mock('$docs/components/Pages/ApiExplorer', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/API-explorer</div>
+        '/docs/API-explorer'
     ),
 }))
 jest.mock('$docs/components/Pages/TechnicalNotes', () => ({
     __esModule: true,
     default: () => (
-        <div>/docs/technical-notes</div>
+        '/docs/technical-notes'
     ),
 }))
 

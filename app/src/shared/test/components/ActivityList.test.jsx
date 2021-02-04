@@ -4,7 +4,7 @@ import ActivityList from '$shared/components/ActivityList'
 
 jest.mock('$shared/components/StreamrClientProvider', () => ({
     __esModule: true,
-    default: ({ children }) => <div>{children}</div>,
+    default: ({ children }) => children,
 }))
 
 jest.mock('$shared/components/Subscription', () => ({

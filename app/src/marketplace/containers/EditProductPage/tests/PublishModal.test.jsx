@@ -14,19 +14,15 @@ import { PublishOrUnpublishModal } from '../PublishModal'
 jest.mock('react-redux', () => ({
     useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
+
 jest.mock('$shared/components/ModalPortal', () => ({
     __esModule: true,
     default: ({ children }) => children || null,
 }))
 
-// eslint-disable-next-line react/prop-types
-function MockDialog({ children }) {
-    return <div>{children}</div>
-}
-
 jest.mock('$shared/components/Dialog', () => ({
     __esModule: true,
-    default: (props) => <MockDialog {...props} />,
+    default: ({ children }) => children,
 }))
 
 describe('Publish modal', () => {

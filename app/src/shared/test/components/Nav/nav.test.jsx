@@ -3,45 +3,10 @@ import { MemoryRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 import mockStore from '$testUtils/mockStoreProvider'
+import User from '$shared/components/Layout/User'
+
+// eslint-disable-next-line import/order
 import Nav from '$shared/components/Layout/Nav'
-
-/* eslint-disable react/prop-types */
-jest.mock('$shared/components/Link', () => {
-    const Link = ({ to, href, children }) => (
-        <div id={href || to}>{children}</div>
-    )
-
-    Link.Raw = Link
-
-    return {
-        __esModule: true,
-        default: Link,
-    }
-})
-
-jest.mock('$shared/components/Layout/User', () => {
-    const User = ({ source }) => (
-        <div id="User">
-            {(source || {}).username}
-        </div>
-    )
-
-    User.Avatarless = User
-
-    const Username = ({ source }) => (
-        <div id="Username">
-            {(source || {}).username}
-        </div>
-    )
-
-    User.Avatarless = User
-    User.UsernameCopy = Username
-
-    return {
-        __esModule: true,
-        default: User,
-    }
-})
 
 /* eslint-disable object-curly-newline */
 describe('Nav.Wide', () => {
@@ -73,10 +38,10 @@ describe('Nav.Wide', () => {
                 </MemoryRouter>
             ))
 
-            expect(el.find({ id: '/core/streams' }).exists()).toBe(true)
-            expect(el.find({ id: '/marketplace' }).exists()).toBe(true)
-            expect(el.find({ id: '/docs/getting-started' }).exists()).toBe(true)
-            expect(el.find({ id: '/login' }).exists()).toBe(true)
+            expect(el.find({ href: '/core/streams' }).exists()).toBe(true)
+            expect(el.find({ href: '/marketplace' }).exists()).toBe(true)
+            expect(el.find({ href: '/docs/getting-started' }).exists()).toBe(true)
+            expect(el.find({ href: '/login' }).exists()).toBe(true)
         })
     })
 
@@ -98,11 +63,11 @@ describe('Nav.Wide', () => {
                 </MemoryRouter>
             ))
 
-            expect(el.find({ id: '/core/streams' }).exists()).toBe(true)
-            expect(el.find({ id: '/marketplace' }).exists()).toBe(true)
-            expect(el.find({ id: '/docs/getting-started' }).exists()).toBe(true)
-            expect(el.find({ id: '/login' }).exists()).toBe(false)
-            expect(el.find({ id: '/logout' }).exists()).toBe(true)
+            expect(el.find({ href: '/core/streams' }).exists()).toBe(true)
+            expect(el.find({ href: '/marketplace' }).exists()).toBe(true)
+            expect(el.find({ href: '/docs/getting-started' }).exists()).toBe(true)
+            expect(el.find({ href: '/login' }).exists()).toBe(false)
+            expect(el.find({ href: '/logout' }).exists()).toBe(true)
         })
 
         it('renders the user avatar', () => {
@@ -122,8 +87,8 @@ describe('Nav.Wide', () => {
                 </MemoryRouter>
             ))
 
-            expect(el.find({ id: 'User' }).exists()).toBe(true)
-            expect(el.find({ id: 'User' }).text()).toMatch(/tester1@streamr\.com/)
+            expect(el.find('User__Avatarless').exists()).toBe(true)
+            expect(el.find('User__UsernameCopy').text()).toMatch(/tester1@streamr\.com/)
         })
     })
 })
