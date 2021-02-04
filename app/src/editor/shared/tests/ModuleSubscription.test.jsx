@@ -72,7 +72,7 @@ describe('Canvas Subscriptions', () => {
                     </ClientProvider>
                 </Provider>
             ))
-        }, 20000)
+        }, 30000)
 
         describe('after a restart', () => {
             beforeEach(async () => {
@@ -111,7 +111,7 @@ describe('Canvas Subscriptions', () => {
                         </ClientProvider>
                     </Provider>
                 ))
-            }, 20000)
+            }, 60000)
         })
     })
 })
