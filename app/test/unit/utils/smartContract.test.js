@@ -305,10 +305,12 @@ describe('smartContract utils', () => {
 
         describe('gasLimit', () => {
             it('it must use the value given in options', (done) => {
+                const emitter = PromiEvent()
                 const method = {
                     send: (options) => {
                         assert.equal(options.gas, 123321)
                         done()
+                        return emitter
                     },
                 }
                 all.send(method, {
@@ -316,10 +318,12 @@ describe('smartContract utils', () => {
                 })
             })
             it('it must use the default gas limit if none is given', (done) => {
+                const emitter = PromiEvent()
                 const method = {
                     send: (options) => {
                         assert.equal(options.gas, 300000)
                         done()
+                        return emitter
                     },
                 }
                 all.send(method)
