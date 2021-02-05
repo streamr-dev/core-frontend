@@ -27,7 +27,7 @@ npm run build
 $(dirname $0)/build-storybook.sh
 
 echo "Code Deploy setup"
-mkdir $TRAVIS_BUILD_DIR/build
+mkdir -p $TRAVIS_BUILD_DIR/build
 cp $TRAVIS_BUILD_DIR/app/dist/index.html $TRAVIS_BUILD_DIR/build
 # Set .appspec in root
 mv $TRAVIS_BUILD_DIR/.codedeploy/.appspec.yml $TRAVIS_BUILD_DIR/build/appspec.yml
