@@ -39,6 +39,12 @@ const buttonTitle = (product: Product, isValidSubscription: boolean, isWhitelist
         I18n.t('productPage.productDetails.subscribe')
 }
 
+const TWO_DAYS = 2 * 24 * 60 * 60 * 1000
+
+const shouldShowCounter = (endTimestamp: number) => (
+    (Date.now() - (endTimestamp * 1000)) < TWO_DAYS
+)
+
 const ProductDetails = ({
     product,
     isValidSubscription,
@@ -71,7 +77,7 @@ const ProductDetails = ({
                         </React.Fragment>
                     )}
                 </div>
-                {productSubscription != null && !!productSubscription.endTimestamp && (
+                {productSubscription != null && !!productSubscription.endTimestamp && shouldShowCounter(productSubscription.endTimestamp) && (
                     <ExpirationCounter expiresAt={new Date(productSubscription.endTimestamp * 1000)} />
                 )}
             </div>
