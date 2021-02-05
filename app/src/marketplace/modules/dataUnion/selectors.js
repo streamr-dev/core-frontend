@@ -18,6 +18,7 @@ import type {
     DataUnionSecret,
     DataUnionStat,
 } from '../../flowtype/product-types'
+import type { DataUnionState, StoreState } from '../../flowtype/store-state'
 
 const selectDataUnionState = (state: StoreState): DataUnionState => state.dataUnion
 
