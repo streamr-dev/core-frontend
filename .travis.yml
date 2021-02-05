@@ -51,7 +51,7 @@ jobs:
     script: "travis_retry $TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
     after_failure:
       - docker ps
-      - $TRAVIS_BUILD_DIR/streamr-docker-dev/streamr-docker-dev/bin.sh log --all
+      - $TRAVIS_BUILD_DIR/streamr-docker-dev/streamr-docker-dev/bin.sh log
   - stage: Platform tests
     if: type IN (pull_request)
     env:
