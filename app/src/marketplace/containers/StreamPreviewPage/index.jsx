@@ -3,16 +3,14 @@
 import React, { useEffect, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { useClient } from 'streamr-client-react'
+import { useClient, useSubscription } from 'streamr-client-react'
 import { Context as RouterContext } from '$shared/contexts/Router'
-import ClientProvider from '$shared/components/StreamrClientProvider'
-import Subscription from '$shared/components/Subscription'
-import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
 import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
 import useProduct from '$mp/containers/ProductController/useProduct'
+import ClientProvider from '$shared/components/StreamrClientProvider'
 import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
@@ -20,6 +18,7 @@ import {
 } from '$mp/modules/product/selectors'
 import { useThrottled } from '$shared/hooks/wrapCallback'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { Message } from '$shared/utils/SubscriptionEvents'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
@@ -50,8 +49,27 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
         setVisibleData([...data])
     }, []), 100)
 
+    const onError = useCallback(() => {
+        if (isMounted()) {
+            setDataError(true)
+        }
+    }, [isMounted])
+
     const onData = useCallback((data, metadata) => {
         if (!isMounted()) { return }
+        switch (data.type) {
+            case Message.Done:
+            case Message.Notification:
+            case Message.Warning: {
+                // ignore
+                return
+            }
+            case Message.Error: {
+                onError()
+                return
+            }
+            default: // continue
+        }
 
         const dataPoint = {
             data,
@@ -61,7 +79,7 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
         dataRef.current.unshift(dataPoint)
         dataRef.current.length = Math.min(dataRef.current.length, LOCAL_DATA_LIST_LENGTH)
         updateDataToState(dataRef.current)
-    }, [dataRef, updateDataToState, isMounted])
+    }, [dataRef, updateDataToState, isMounted, onError])
 
     const onSub = useCallback(() => {
         if (isMounted()) {
@@ -70,12 +88,6 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
             setVisibleData([])
             dataRef.current = []
             setSubscribed(true)
-        }
-    }, [isMounted])
-
-    const onError = useCallback(() => {
-        if (isMounted()) {
-            setDataError(true)
         }
     }, [isMounted])
 
@@ -88,31 +100,29 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
         setVisibleData([])
     }, [activePartition])
 
+    useSubscription({
+        stream: streamId,
+        partition: activePartition,
+        resend: {
+            last: LOCAL_DATA_LIST_LENGTH,
+        },
+    }, {
+        onMessage: onData,
+        onSubscribed: onSub,
+    })
+
     return (
-        <SubscriptionStatusProvider>
-            <Subscription
-                uiChannel={{
-                    id: streamId,
-                    partition: activePartition,
-                }}
-                resendLast={LOCAL_DATA_LIST_LENGTH}
-                onSubscribed={onSub}
-                isActive
-                onMessage={onData}
-                onErrorMessage={onError}
-            />
-            <PreviewModal
-                {...previewProps}
-                streamId={streamId}
-                stream={stream}
-                streamData={visibleData}
-                activePartition={activePartition}
-                onPartitionChange={setActivePartition}
-                loading={!hasLoaded || !subscribed}
-                subscriptionError={hasLoaded && !client && ('Error: Unable to process the stream data.')}
-                dataError={!!dataError && 'Data'}
-            />
-        </SubscriptionStatusProvider>
+        <PreviewModal
+            {...previewProps}
+            streamId={streamId}
+            stream={stream}
+            streamData={visibleData}
+            activePartition={activePartition}
+            onPartitionChange={setActivePartition}
+            loading={!hasLoaded || !subscribed}
+            subscriptionError={hasLoaded && !client && ('Error: Unable to process the stream data.')}
+            dataError={!!dataError && 'Data'}
+        />
     )
 }
 
@@ -209,17 +219,17 @@ const ProductContainer = withRouter((props) => {
 
     return (
         <ProductController key={streamId} ignoreUnauthorized>
-            <ClientProvider>
-                <PreviewWrap
-                    productId={props.match.params.id}
-                    streamId={streamId}
-                />
-            </ClientProvider>
+            <PreviewWrap
+                productId={props.match.params.id}
+                streamId={streamId}
+            />
         </ProductController>
     )
 })
 
 export default () => (
-    <ProductContainer />
+    <ClientProvider>
+        <ProductContainer />
+    </ClientProvider>
 )
 
