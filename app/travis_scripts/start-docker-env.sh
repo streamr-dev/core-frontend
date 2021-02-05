@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -e
+trap "kill -- -$$" EXIT
 ##
 ## Pulls down streamr-docker-dev and starts the stack except the frontend ##
 ##
@@ -18,4 +19,6 @@ fi
 streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 
 # start everything except the frontend
-$streamr_docker_dev start --except platform --wait
+$streamr_docker_dev start --except platform &
+$streamr_docker_dev log -f engine-and-editor &
+$streamr_docker_dev wait
