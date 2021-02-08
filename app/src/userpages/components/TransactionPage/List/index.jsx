@@ -234,7 +234,7 @@ const TransactionList = () => {
                                             menuProps={{
                                                 right: true,
                                             }}
-                                            noCaret
+                                            caret={false}
                                         >
                                             <Popover.Item onClick={() => openInEtherscan(hash)}>
                                                 <Translate value="userpages.transactions.actions.viewOnEtherscan" />

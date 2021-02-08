@@ -136,15 +136,18 @@ export type CategoryFilter = CategoryId
 
 export type SortByFilter = string
 
+export type ProductTypeFilter = string
+
 export type MaxPriceFilter = NumberString
 
-export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter
+export type AnyFilter = SearchFilter | CategoryFilter | SortByFilter | ProductTypeFilter
 
 export type Filter = {
-    search: ?SearchFilter,
-    categories: ?CategoryFilter,
-    sortBy: ?SortByFilter,
-    maxPrice: ?MaxPriceFilter,
+    search?: ?SearchFilter,
+    categories?: ?CategoryFilter,
+    sortBy?: ?SortByFilter,
+    maxPrice?: ?MaxPriceFilter,
+    type?: ?ProductTypeFilter,
 }
 
 export type DataUnionId = $ElementType<Product, 'beneficiaryAddress'>

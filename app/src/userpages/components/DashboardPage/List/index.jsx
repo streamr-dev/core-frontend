@@ -265,6 +265,7 @@ const DashboardList = () => {
                 <Popover
                     title={I18n.t('userpages.filter.sortBy')}
                     type="uppercase"
+                    caret="svg"
                     menuProps={{
                         right: true,
                     }}

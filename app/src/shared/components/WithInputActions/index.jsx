@@ -40,7 +40,7 @@ const UnstyledWithInputActions = ({ actions, disabled, children = null, ...props
                         right: true,
                     }}
                     onMenuToggle={setOpen}
-                    noCaret
+                    caret={false}
                 >
                     {actions}
                 </Popover>

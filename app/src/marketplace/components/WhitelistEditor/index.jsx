@@ -204,7 +204,7 @@ const TableRowItem = ({ item, enabled, actionsEnabled, onRemove }: RowProps) => 
                 <Popover
                     title="Select"
                     type="meatball"
-                    noCaret
+                    caret={false}
                     onMenuToggle={setMenuOpen}
                 >
                     <Popover.Item onClick={() => onCopy(item.address)}>

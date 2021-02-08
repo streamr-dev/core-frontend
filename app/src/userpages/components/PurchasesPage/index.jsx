@@ -87,6 +87,7 @@ const PurchasesPage = () => {
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                     type="uppercase"
+                    caret="svg"
                     activeTitle
                     menuProps={{
                         right: true,
