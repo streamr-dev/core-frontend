@@ -39,17 +39,17 @@ describe('Canvas Subscriptions', () => {
             const clockDateOut = State.findModulePort(canvas, clock.hash, (p) => p.name === 'date')
             const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in1')
             canvas = State.updateCanvas(State.connectPorts(canvas, clockDateOut.id, tableIn1.id))
-        }, 10000)
+        }, 20000)
 
         beforeEach(async () => {
             canvas = State.updateCanvas(await Services.start(canvas))
             runningTable = canvas.modules.find((m) => m.name === 'Table')
-        }, 10001)
+        }, 20001)
 
         afterEach(async () => {
             if (!canvas) { return }
             await Services.stop(canvas)
-        }, 20002)
+        }, 40002)
 
         afterEach(async () => {
             if (result) {
@@ -98,17 +98,17 @@ describe('Canvas Subscriptions', () => {
                 ))
                 await p
             })
-        }, 30000)
+        }, 60000)
 
         describe('after a restart', () => {
             beforeEach(async () => {
                 // canvas is running at this point, see `beforeEach` above.
                 canvas = State.updateCanvas(await Services.stop(canvas))
-            }, 10000)
+            }, 20000)
 
             beforeEach(async () => {
                 canvas = State.updateCanvas(await Services.start(canvas))
-            }, 10000)
+            }, 20000)
 
             it('receives the messages', async () => {
                 let resolver
@@ -138,7 +138,7 @@ describe('Canvas Subscriptions', () => {
                     ))
                     await p
                 })
-            }, 60000)
+            }, 90000)
         })
     })
 })
