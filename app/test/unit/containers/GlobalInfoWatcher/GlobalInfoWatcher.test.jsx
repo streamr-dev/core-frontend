@@ -1,9 +1,9 @@
+import EventEmitter from 'events'
 import React from 'react'
 import { mount } from 'enzyme'
 import sinon from 'sinon'
 import { act } from 'react-dom/test-utils'
 import * as redux from 'react-redux'
-import EventEmitter from 'events'
 
 import * as getWeb3 from '$shared/web3/web3Provider'
 import * as userActions from '$shared/modules/user/actions'

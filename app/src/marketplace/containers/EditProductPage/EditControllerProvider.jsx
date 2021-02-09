@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux'
 import { I18n } from 'react-redux-i18n'
 
 import { Context as RouterContext } from '$shared/contexts/Router'
-import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
@@ -22,16 +21,17 @@ import {
     dataUnionMemberLimit,
 } from '$shared/utils/constants'
 import { numberToText } from '$shared/utils/text'
-import routes from '$routes'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
-import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 
-import * as State from '../EditProductPage/state'
 import useModal from '$shared/hooks/useModal'
+import routes from '$routes'
+import * as State from '../EditProductPage/state'
+import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
+import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 
 type ContextProps = {
     isPreview: boolean,

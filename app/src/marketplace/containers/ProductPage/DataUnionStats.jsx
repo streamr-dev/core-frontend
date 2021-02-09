@@ -9,9 +9,9 @@ import DonutChart from '$shared/components/DonutChart'
 import Segment from '$shared/components/Segment'
 import ProductStat from '$shared/components/ProductStat'
 import DaysPopover from '$shared/components/DaysPopover'
-import MembersGraph from './MembersGraph'
 import { SM } from '$shared/utils/styled'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
+import MembersGraph from './MembersGraph'
 
 type Props = {
     stats: Array<Object>,

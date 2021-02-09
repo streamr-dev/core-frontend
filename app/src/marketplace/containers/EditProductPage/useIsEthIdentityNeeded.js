@@ -2,12 +2,12 @@
 
 import { useMemo } from 'react'
 
-import useProduct from '../ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
+import useProduct from '../ProductController/useProduct'
 
 export function useIsEthIdentityNeeded() {
     const product = useProduct()

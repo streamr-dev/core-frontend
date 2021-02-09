@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useRef } from 'react'
 import { I18n, Translate } from 'react-redux-i18n'
+import { CodeSnippet, titleize } from '@streamr/streamr-layout'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Popover from '$shared/components/Popover'
-import { CodeSnippet, titleize } from '@streamr/streamr-layout'
 
 import { StreamrClientRepositories } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'

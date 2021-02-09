@@ -1,6 +1,6 @@
 // @flow
 
-import { Component } from 'react'
+import { useEffect } from 'react'
 import { connectedRouterRedirect } from 'redux-auth-wrapper/history4/redirect'
 import locationHelperBuilder from 'redux-auth-wrapper/history4/locationHelper'
 
@@ -14,22 +14,12 @@ type Props = {
     redirectPath: string,
 }
 
-class FailureComponent extends Component<Props> {
-    componentWillMount() {
-        this.redirect()
-    }
+function FailureComponent(props: Props) {
+    useEffect(() => {
+        props.redirect(props, props.redirectPath)
+    }, [props])
 
-    componentDidUpdate() {
-        this.redirect()
-    }
-
-    redirect() {
-        this.props.redirect(this.props, this.props.redirectPath)
-    }
-
-    render() {
-        return null
-    }
+    return null
 }
 
 export const userIsAuthenticated = connectedRouterRedirect({

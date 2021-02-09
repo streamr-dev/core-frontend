@@ -3,4 +3,4 @@ set -e
 echo "Run eslint"
 npx eslint src
 echo "Run stylinglint"
-npx stylelint **/*.css **/*.[ps]css
+npx stylelint ./**/*.css ./**/*.[ps]css

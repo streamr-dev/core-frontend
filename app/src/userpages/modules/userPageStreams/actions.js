@@ -2,19 +2,19 @@
 
 import set from 'lodash/set'
 
+import uuid from 'uuid'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Stream, StreamId, StreamIdList, StreamFieldList } from '$shared/flowtype/stream-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 import type { ResourceId } from '$userpages/flowtype/permission-types'
-import uuid from 'uuid'
 
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import * as api from '$shared/utils/api'
 import { getParamsForFilter } from '$userpages/utils/filters'
-import routes from '$routes'
 import { removeResourcePermissions } from '$userpages/modules/permission/actions'
 import { getResourcePermissions } from '$userpages/modules/permission/services'
+import routes from '$routes'
 
 import * as services from './services'
 import { selectOpenStream, selectPageSize, selectOffset } from './selectors'

@@ -7,7 +7,6 @@ import { isHex } from 'web3-utils'
 import { generateAddress, bufferToHex } from 'ethereumjs-util'
 import BN from 'bignumber.js'
 
-import { arePricesEqual } from '../utils/price'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
@@ -20,12 +19,13 @@ import type {
     SmartContractDeployTransaction,
     SmartContractMetadata,
 } from '$shared/flowtype/web3-types'
-import type { Product, SmartContractProduct } from '../flowtype/product-types'
 import type { NumberString } from '$shared/flowtype/common-types'
 
 import Transaction from '$shared/utils/Transaction'
 import DeployTransaction from '$shared/utils/DeployTransaction'
 import { gasLimits } from '$shared/utils/constants'
+import type { Product, SmartContractProduct } from '../flowtype/product-types'
+import { arePricesEqual } from '../utils/price'
 
 export type Callable = {
     call: () => SmartContractCall<*>,
@@ -83,8 +83,9 @@ export const send = (method: Sendable, options?: {
 }): SmartContractTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
+    // NOTE: looks like there's double handling of errors happening here
+    // i.e. .catch + on('error')
     const errorHandler = (error: Error) => {
-        console.warn(error)
         emitter.emit('error', error)
     }
     const tx = new Transaction(emitter)
@@ -92,7 +93,7 @@ export const send = (method: Sendable, options?: {
         web3.getDefaultAccount(),
         checkEthereumNetworkIsCorrect(web3),
     ])
-        .then(([account]) => {
+        .then(([account]) => (
             method.send({
                 gas: (options && options.gas) || gasLimits.DEFAULT,
                 from: account,
@@ -115,8 +116,7 @@ export const send = (method: Sendable, options?: {
                         emitter.emit('receipt', receipt)
                     }
                 })
-                .catch(errorHandler)
-        }, errorHandler)
+        ), errorHandler)
 
     return tx
 }
@@ -126,6 +126,8 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
 }): SmartContractDeployTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
+    // NOTE: looks like there's double handling of errors happening here
+    // i.e. .catch + on('error')
     const errorHandler = (error: Error) => {
         emitter.emit('error', error)
     }
@@ -146,7 +148,7 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
                 data: contract.bytecode,
                 arguments: args,
             })
-            deployer
+            return deployer
                 .send({
                     gas: (options && options.gas) || gasLimits.DEPLOY_DATA_UNION,
                     from: account,

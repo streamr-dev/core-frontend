@@ -19,17 +19,17 @@ import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 
 import Layout from '$shared/components/Layout'
 import CoreLayout from '$shared/components/Layout/Core'
-import ProfileSettings from './ProfileSettings'
-import IntegrationKeyHandler from './IntegrationKeyHandler'
-import IdentityHandler from './IdentityHandler/index'
-import DeleteAccount from './DeleteAccount'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import Nav from '$shared/components/Layout/Nav'
+import routes from '$routes'
+import ProfileSettings from './ProfileSettings'
+import IntegrationKeyHandler from './IntegrationKeyHandler'
+import IdentityHandler from './IdentityHandler/index'
+import DeleteAccount from './DeleteAccount'
 
 import styles from './profilePage.pcss'
-import routes from '$routes'
 
 export const ProfilePage = () => {
     const { isPending: isSavePending, wrap } = usePending('user.SAVE')

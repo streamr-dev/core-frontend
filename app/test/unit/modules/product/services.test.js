@@ -4,12 +4,11 @@ import moxios from 'moxios'
 import { cloneDeep } from 'lodash'
 import moment from 'moment'
 
-import { existingProduct } from './mockData'
-
 import * as all from '$mp/modules/product/services'
 import * as utils from '$mp/utils/smartContract'
 import * as getWeb3 from '$shared/web3/web3Provider'
 import * as productUtils from '$mp/utils/product'
+import { existingProduct } from './mockData'
 
 const mockFile = new File(['test'], 'test.jpg', {
     type: 'image/jpeg',

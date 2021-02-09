@@ -63,7 +63,7 @@ export function ListOption({
         }
     }, [elRef])
 
-    const [isSelected, setIsSelected] = useState(listContext.isSelected(id))
+    const [isSelected, setIsSelected] = useState(() => listContext.isSelected(id))
     // need to reconfigure isSelected state after render
     // otherwise it will be reading element ordering from the stale list
     useLayoutEffect(() => {

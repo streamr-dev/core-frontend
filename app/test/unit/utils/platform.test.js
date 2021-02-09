@@ -1,5 +1,5 @@
-import * as all from '$shared/utils/platform'
 import startCase from 'lodash/startCase'
+import * as all from '$shared/utils/platform'
 
 import UserAgents from './useragents'
 

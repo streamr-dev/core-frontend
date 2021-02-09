@@ -1,9 +1,9 @@
 // @flow
 
 import { get } from '$shared/utils/api'
-import { mapProductFromApi } from '../../utils/product'
-import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
+import routes from '$routes'
+import { mapProductFromApi } from '../../utils/product'
 import type { ProductSubscription } from '../../flowtype/product-types'
 
 const mapProductSubscriptions = (subscriptions: Array<ProductSubscription>): Array<ProductSubscription> =>

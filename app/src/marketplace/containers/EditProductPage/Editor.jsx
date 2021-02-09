@@ -4,8 +4,8 @@ import React from 'react'
 import cx from 'classnames'
 
 import DetailsContainer from '$shared/components/Container/Details'
-import useEditableProduct from '../ProductController/useEditableProduct'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import useIsEthIdentityNeeded from './useIsEthIdentityNeeded'
 
 import EditorNav from './EditorNav'

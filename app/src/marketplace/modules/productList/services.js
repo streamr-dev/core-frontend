@@ -1,9 +1,9 @@
 // @flow
 
 import { get } from '$shared/utils/api'
+import type { ApiResult } from '$shared/flowtype/common-types'
 import routes from '$routes'
 
-import type { ApiResult } from '$shared/flowtype/common-types'
 import type { Filter, ProductListPageWrapper } from '../../flowtype/product-types'
 import { mapProductFromApi } from '../../utils/product'
 

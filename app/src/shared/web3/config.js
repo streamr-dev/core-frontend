@@ -1,11 +1,10 @@
 // @flow
 
+import type { SmartContractConfig, SmartContractMetadata } from '$shared/flowtype/web3-types'
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
 import uniswapAdaptorAbi from './abis/uniswapAdaptor'
 import communityProductMetadata from './contracts/communityProduct'
-
-import type { SmartContractConfig, SmartContractMetadata } from '$shared/flowtype/web3-types'
 
 type Config = {
     networkId: string,

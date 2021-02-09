@@ -1,6 +1,6 @@
 // @flow
 
-import { Component } from 'react'
+import { useEffect } from 'react'
 import { withRouter, type Location } from 'react-router-dom'
 import ReactGA from 'react-ga'
 
@@ -10,25 +10,24 @@ type Props = {
     location: Location,
 }
 
-class GoogleAnalyticsTracker extends Component<Props> {
-    constructor(props: Props) {
-        super(props)
-        // Must call window.ga('create', gaId) instead of ReactGA.initialize(gaId) since we don't want to inject the ga script to DOM again
+export default withRouter(({ location = {} }: Props) => {
+    if (!gaId) {
+        return null
+    }
+
+    const { pathname = '' } = location
+
+    // run once
+    useEffect(() => {
+        // Must call window.ga('create', gaId) instead of ReactGA.initialize(gaId)
+        // since we don't want to inject the ga script to DOM again
         window.ga('create', gaId)
-        this.logPageview(this.props.location.pathname)
-    }
+    }, [])
 
-    componentWillReceiveProps(newProps: Props) {
-        if (newProps.location && (!this.props.location || newProps.location.pathname !== this.props.location.pathname)) {
-            this.logPageview(newProps.location.pathname)
-        }
-    }
+    useEffect(() => {
+        if (!pathname) { return }
+        ReactGA.pageview(pathname)
+    }, [pathname])
 
-    logPageview = (page) => {
-        ReactGA.pageview(page)
-    }
-
-    render = () => null
-}
-
-export default withRouter(GoogleAnalyticsTracker)
+    return null
+})

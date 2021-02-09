@@ -2,8 +2,8 @@
 
 import React from 'react'
 import { storiesOf } from '@storybook/react'
-import UseState from '$shared/components/UseState'
 import styles from '@sambego/storybook-styles'
+import UseState from '$shared/components/UseState'
 import Resizeable from '.'
 
 const stories =

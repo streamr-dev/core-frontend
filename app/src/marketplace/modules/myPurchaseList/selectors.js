@@ -3,19 +3,19 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 
-import type { MyPurchaseListState, StoreState } from '../../flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
+import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Filter } from '$userpages/flowtype/common-types'
+
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
 import type {
     ProductIdList,
     ProductList,
     ProductSubscriptionList,
     ProductSubscriptionIdList,
 } from '../../flowtype/product-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Filter } from '$userpages/flowtype/common-types'
-
-import { selectEntities } from '$shared/modules/entities/selectors'
-import { productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
+import type { MyPurchaseListState, StoreState } from '../../flowtype/store-state'
 
 const selectMyPurchaseListState = (state: StoreState): MyPurchaseListState => state.myPurchaseList
 

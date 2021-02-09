@@ -1,3 +1,4 @@
+import sinon from 'sinon'
 import {
     setToken,
     getToken,
@@ -8,7 +9,6 @@ import {
     SESSION_LOGIN_METHOD,
     EXPIRES_AT_VALID_HOURS,
 } from '$shared/utils/sessionToken'
-import sinon from 'sinon'
 
 describe('session token utility', () => {
     let clock

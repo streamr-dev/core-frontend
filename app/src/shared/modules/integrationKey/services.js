@@ -2,7 +2,6 @@
 
 import { getPublicWeb3 } from '$shared/web3/web3Provider'
 import { get, post, del, put } from '$shared/utils/api'
-import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import {
     BalanceType,
@@ -20,6 +19,7 @@ import {
     CreateIdentityFailedError,
     IdentityExistsError,
 } from '$shared/errors/Web3'
+import routes from '$routes'
 
 const GRAPH_API_URL = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
 

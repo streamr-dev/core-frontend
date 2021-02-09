@@ -4,10 +4,10 @@ import React from 'react'
 import cx from 'classnames'
 import throttle from 'lodash/throttle'
 
+import Text from '$ui/Text'
 import UiSizeConstraint from '../UiSizeConstraint'
 import ModuleSubscription from '../ModuleSubscription'
 
-import Text from '$ui/Text'
 import styles from './TextField.pcss'
 
 export default class TextFieldModule extends React.Component {

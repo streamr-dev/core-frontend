@@ -3,8 +3,8 @@
  */
 
 import { connect } from 'react-redux'
-import { selectUserData } from '$shared/modules/user/selectors'
 import * as Sentry from '@sentry/browser'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 export const mapStateToProps = (state) => ({
     user: selectUserData(state),

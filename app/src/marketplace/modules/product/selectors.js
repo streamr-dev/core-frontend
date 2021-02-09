@@ -4,16 +4,16 @@ import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
 import moment from 'moment'
 
-import type { ProductState, StoreState } from '../../flowtype/store-state'
 import type { EntitiesState } from '$shared/flowtype/store-state'
-import type { ProductId, Product, Subscription } from '../../flowtype/product-types'
 import type { StreamIdList, StreamList } from '$shared/flowtype/stream-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { Category } from '$mp/flowtype/category-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
-import { selectSubscriptions } from '../myPurchaseList/selectors'
 import { productSchema, streamsSchema, categorySchema } from '$shared/modules/entities/schema'
 import { isActive } from '$mp/utils/time'
+import { selectSubscriptions } from '../myPurchaseList/selectors'
+import type { ProductId, Product, Subscription } from '../../flowtype/product-types'
+import type { ProductState, StoreState } from '../../flowtype/store-state'
 
 const selectProductState = (state: StoreState): ProductState => state.product
 

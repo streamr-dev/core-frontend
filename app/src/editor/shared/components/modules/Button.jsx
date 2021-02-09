@@ -2,9 +2,9 @@ import React from 'react'
 import cx from 'classnames'
 import throttle from 'lodash/throttle'
 
+import ButtonStyles from '$shared/components/Button/button.pcss'
 import ModuleSubscription from '../ModuleSubscription'
 
-import ButtonStyles from '$shared/components/Button/button.pcss'
 import styles from './Button.pcss'
 
 function getModuleButtonName(module) {

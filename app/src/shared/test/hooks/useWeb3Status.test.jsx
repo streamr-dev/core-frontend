@@ -1,8 +1,8 @@
+import EventEmitter from 'events'
 import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import sinon from 'sinon'
-import EventEmitter from 'events'
 
 import * as web3Provider from '$shared/web3/web3Provider'
 import Web3Poller from '$shared/web3/web3Poller'

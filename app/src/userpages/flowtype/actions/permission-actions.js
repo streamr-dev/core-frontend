@@ -1,7 +1,7 @@
 // @flow
 
-import type { Permission, ResourceType, ResourceId } from '../permission-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { Permission, ResourceType, ResourceId } from '../permission-types'
 
 import {
     GET_RESOURCE_PERMISSIONS_REQUEST,

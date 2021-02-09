@@ -4,8 +4,8 @@ import throttle from 'lodash/throttle'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Chart from '$editor/shared/components/Chart'
 import ModuleSubscription from '$editor/shared/components/ModuleSubscription'
-import UiSizeConstraint from '../UiSizeConstraint'
 import useOnceEffect from '$shared/hooks/useOnceEffect'
+import UiSizeConstraint from '../UiSizeConstraint'
 
 const updateSeriesCollection = (seriesCollection, { idx: id, ...series }) => {
     seriesCollection[id] = {

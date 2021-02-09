@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useContext, createContext, useRef } from 'react'
 import debounce from 'lodash/debounce'
-import ActivityStreamHandler from './ActivityStreamHandler'
 import { ResourceType } from '$shared/utils/resourceUrl'
-import routes from '$routes'
 import { get } from '$shared/utils/api'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import routes from '$routes'
+import ActivityStreamHandler from './ActivityStreamHandler'
 
 const initialState = {}
 

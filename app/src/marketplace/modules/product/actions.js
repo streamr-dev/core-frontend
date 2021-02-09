@@ -4,12 +4,12 @@ import { createAction } from 'redux-actions'
 
 import { productSchema, streamsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
-import { getMyPurchases } from '../myPurchaseList/actions'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
-import type { ProductId, Subscription } from '../../flowtype/product-types'
 import type { ReduxActionCreator, ErrorInUi } from '$shared/flowtype/common-types'
-import type { StoreState } from '../../flowtype/store-state'
 import { productStates } from '$shared/utils/constants'
+import { getMyPurchases } from '../myPurchaseList/actions'
+import type { ProductId, Subscription } from '../../flowtype/product-types'
+import type { StoreState } from '../../flowtype/store-state'
 
 import { selectProduct } from './selectors'
 import {

@@ -1,8 +1,8 @@
 // @flow
 
 import type { ErrorInUi, PayloadAction } from '$shared/flowtype/common-types'
-import type { ProductId, ProductIdList } from '../../flowtype/product-types'
 import type { Filter } from '$userpages/flowtype/common-types'
+import type { ProductId, ProductIdList } from '../../flowtype/product-types'
 
 export type MyProductIdAction = PayloadAction<{
     id: ProductIdList,

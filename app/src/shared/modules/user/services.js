@@ -1,9 +1,9 @@
 // @flow
 
 import { get, post, put, del } from '$shared/utils/api'
-import routes from '$routes'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import type { User } from '$shared/flowtype/user-types'
+import routes from '$routes'
 
 export const getUserData = (): ApiResult<User> => get({
     url: routes.api.currentUser.index({

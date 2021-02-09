@@ -11,11 +11,11 @@ import { transactionSchema } from '$shared/modules/entities/schema'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import type TransactionError from '$shared/errors/TransactionError'
 
+import { addTransactionToSessionStorage, removeTransactionFromSessionStorage } from '$shared/utils/transactions'
 import {
     ADD_TRANSACTION,
     COMPLETE_TRANSACTION,
 } from './constants'
-import { addTransactionToSessionStorage, removeTransactionFromSessionStorage } from '$shared/utils/transactions'
 import type { TransactionIdActionCreator } from './types'
 
 const addTransactionRequest: TransactionIdActionCreator = createAction(

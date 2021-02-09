@@ -18,8 +18,8 @@ import PublishError from '$mp/components/Modal/PublishError'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
-import usePublish, { publishModes } from './usePublish'
 import usePending from '$shared/hooks/usePending'
+import usePublish, { publishModes } from './usePublish'
 
 type Props = {
     product: Product,

@@ -14,11 +14,11 @@ import type { Stream } from '$shared/flowtype/stream-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { type Ref } from '$shared/flowtype/common-types'
 
-import { getModuleCategories, getStreams } from '../services'
-import { moduleSearch } from '../state'
 import CanvasStyles from '$editor/canvas/components/Canvas.pcss'
 import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
 import { truncate } from '$shared/utils/text'
+import { moduleSearch } from '../state'
+import { getModuleCategories, getStreams } from '../services'
 import { useCameraContext } from './Camera'
 
 import styles from './ModuleSearch.pcss'

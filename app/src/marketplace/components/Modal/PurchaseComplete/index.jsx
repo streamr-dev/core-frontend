@@ -7,8 +7,8 @@ import styled from 'styled-components'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import useCopy from '$shared/hooks/useCopy'
-import routes from '$routes'
 import type { Address } from '$shared/flowtype/web3-types'
+import routes from '$routes'
 
 export type Props = {
     onClose: () => void,

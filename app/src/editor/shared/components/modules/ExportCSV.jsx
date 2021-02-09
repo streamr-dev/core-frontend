@@ -6,8 +6,8 @@ import throttle from 'lodash/throttle'
 import { saveAs } from 'file-saver'
 
 import { get } from '$shared/utils/api'
-import ModuleSubscription from '../ModuleSubscription'
 import routes from '$routes'
+import ModuleSubscription from '../ModuleSubscription'
 
 import styles from './ExportCSV.pcss'
 

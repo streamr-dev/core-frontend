@@ -3,8 +3,8 @@
 import React, { type Node, useEffect, useCallback, useRef, useState } from 'react'
 import cx from 'classnames'
 import styled from 'styled-components'
-import { MEDIUM, SANS } from '$shared/utils/styled'
 import { Collapse as RsCollapse } from 'reactstrap'
+import { MEDIUM, SANS } from '$shared/utils/styled'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import isEditableElement from '$shared/utils/isEditableElement'

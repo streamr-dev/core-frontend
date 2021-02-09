@@ -5,9 +5,9 @@ import { storiesOf } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 
-import TimeSeriesGraph from '.'
 import DaysPopover from '$shared/components/DaysPopover'
 import ProductStat from '$shared/components/ProductStat'
+import TimeSeriesGraph from '.'
 
 const stories =
     storiesOf('Shared/TimeSeriesGraph', module)

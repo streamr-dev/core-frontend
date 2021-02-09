@@ -3,11 +3,11 @@ import sinon from 'sinon'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import * as UndoContext from '$shared/contexts/Undo'
+import Select from '$ui/Select'
+import Toggle from '$shared/components/Toggle'
 import { Provider as ValidationContextProvider } from '../ProductController/ValidationContextProvider'
 import * as BeneficiaryAddress from './BeneficiaryAddress'
 import PriceSelector from './PriceSelector'
-import Select from '$ui/Select'
-import Toggle from '$shared/components/Toggle'
 import { Context as EditControllerContext } from './EditControllerProvider'
 
 const mockState = {

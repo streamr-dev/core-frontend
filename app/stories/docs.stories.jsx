@@ -35,7 +35,7 @@ story('Navigation')
                 }
             }
             >
-            * Only visible in Desktop resolution
+                * Only visible in Desktop resolution
             </span>
             <Navigation />
         </div>
@@ -48,7 +48,7 @@ story('Navigation')
                 }
             }
             >
-            * Only visible in mobile/table resolution
+                * Only visible in mobile/table resolution
             </span>
             <Navigation responsive />
         </div>

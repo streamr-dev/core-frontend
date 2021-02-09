@@ -1,9 +1,9 @@
 import React, { useMemo, useCallback, useState, useEffect, useContext } from 'react'
 import useIsMountedRef from '$shared/hooks/useIsMountedRef'
 import usePending from '$shared/hooks/usePending'
+import { getResourcePermissions } from '$userpages/modules/permission/services'
 import useCanvas from './useCanvas'
 import useEmbedMode from './useEmbedMode'
-import { getResourcePermissions } from '$userpages/modules/permission/services'
 
 const PermissionContext = React.createContext({
     permissions: [],

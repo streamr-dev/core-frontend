@@ -4,17 +4,17 @@ import React, { useContext, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
-import useEditableProduct from '../ProductController/useEditableProduct'
-import useValidation from '../ProductController/useValidation'
-import useEditableProductActions from '../ProductController/useEditableProductActions'
 import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
+import useEditableProductActions from '../ProductController/useEditableProductActions'
+import useValidation from '../ProductController/useValidation'
+import useEditableProduct from '../ProductController/useEditableProduct'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import docsLinks from '$shared/../docsLinks'
 
 import styles from './coverImage.pcss'
+import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     disabled?: boolean,

@@ -15,10 +15,10 @@ import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { truncate } from '$shared/utils/text'
 
-import routes from '$routes'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
 
 import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtype/stream-types'
+import routes from '$routes'
 
 import styles from './streamSelector.pcss'
 

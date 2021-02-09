@@ -3,12 +3,12 @@
 import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 
-import type { Product } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import { productsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
 import type { Filter } from '$userpages/flowtype/common-types'
 import { getParamsForFilter } from '$userpages/utils/filters'
+import type { Product } from '../../flowtype/product-types'
 
 import * as api from './services'
 import {

@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useRef } from 'react'
 import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
+import { css } from 'styled-components'
 import Button from '$shared/components/Button'
 import useCopy from '$shared/hooks/useCopy'
-import { css } from 'styled-components'
 import { MEDIUM } from '$shared/utils/styled'
 
 const CodeSnippets = ({ items, title, disabled, ...props }) => {

@@ -8,9 +8,9 @@ import remove from 'lodash/remove'
 import L from 'leaflet'
 import type { LatLngBounds } from 'react-leaflet'
 
+import { isRunning } from '$editor/canvas/state'
 import Map, { type Marker, type TracePoint } from '../Map/Map'
 import ModuleSubscription from '../ModuleSubscription'
-import { isRunning } from '$editor/canvas/state'
 
 import styles from './Map.pcss'
 

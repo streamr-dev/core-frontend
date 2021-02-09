@@ -8,73 +8,73 @@ import UserpagesRouter from '$mp/../app/Userpages'
 jest.mock('$userpages/components/DashboardPage/List', () => ({
     __esModule: true,
     default: () => (
-        <div>Dashboard list</div>
+        'Dashboard list'
     ),
 }))
 jest.mock('$userpages/components/CanvasPage/List', () => ({
     __esModule: true,
     default: () => (
-        <div>Canvas list</div>
+        'Canvas list'
     ),
 }))
 jest.mock('$userpages/components/StreamPage', () => ({
     __esModule: true,
     default: ({ match }) => (
-        <div>Stream {match.params.id} view/edit page</div>
+        `Stream ${match.params.id} view/edit page`
     ),
 }))
 jest.mock('$userpages/components/StreamPage/List', () => ({
     __esModule: true,
     default: () => (
-        <div>Stream list</div>
+        'Stream list'
     ),
 }))
 jest.mock('$userpages/components/StreamPage/New', () => ({
     __esModule: true,
     default: () => (
-        <div>New stream page</div>
+        'New stream page'
     ),
 }))
 jest.mock('$userpages/components/TransactionPage/List', () => ({
     __esModule: true,
     default: () => (
-        <div>Transaction list</div>
+        'Transaction list'
     ),
 }))
 jest.mock('$userpages/components/ProfilePage', () => ({
     __esModule: true,
     default: () => (
-        <div>Profile page</div>
+        'Profile page'
     ),
 }))
 jest.mock('$userpages/components/PurchasesPage', () => ({
     __esModule: true,
     default: () => (
-        <div>Subscriptions</div>
+        'Subscriptions'
     ),
 }))
 jest.mock('$userpages/components/ProductsPage', () => ({
     __esModule: true,
     default: () => (
-        <div>Products list</div>
+        'Products list'
     ),
 }))
 jest.mock('$userpages/components/ProductsPage/Stats', () => ({
     __esModule: true,
     default: ({ match }) => (
-        <div>Product {match.params.id} stats</div>
+        `Product ${match.params.id} stats`
     ),
 }))
 jest.mock('$userpages/components/ProductsPage/Members', () => ({
     __esModule: true,
     default: ({ match }) => (
-        <div>Product {match.params.id} members</div>
+        `Product ${match.params.id} members`
     ),
 }))
 jest.mock('$mp/containers/EditProductPage', () => ({
     __esModule: true,
     default: ({ match }) => (
-        <div>Product {match.params.id} editor</div>
+        `Product ${match.params.id} editor`
     ),
 }))
 jest.mock('$auth/utils/userAuthenticated', () => ({

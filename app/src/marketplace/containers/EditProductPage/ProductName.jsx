@@ -4,12 +4,12 @@ import React, { useContext, useCallback } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
+import Text, { SpaciousTheme } from '$ui/Text'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as EditControllerContext } from './EditControllerProvider'
-import Text, { SpaciousTheme } from '$ui/Text'
-import Errors, { MarketplaceTheme } from '$ui/Errors'
 
 import styles from './productName.pcss'
 

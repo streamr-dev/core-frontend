@@ -2,16 +2,15 @@ import cx from 'classnames'
 import React, { useContext } from 'react'
 import { Translate } from 'react-redux-i18n'
 
-import ModuleHeader from '../../shared/components/ModuleHeader'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { UiEmitter } from '$editor/shared/components/RunStateLoader'
+import ModuleStyles from '$editor/shared/components/Module.pcss'
+import { getModuleMessages, getMaxLevel } from '$editor/canvas/state/messages'
+import ModuleHeader from '../../shared/components/ModuleHeader'
 
 import ModuleDragger from './ModuleDragger'
 import * as RunController from './CanvasController/Run'
 import { useCameraState } from './Camera'
-
-import ModuleStyles from '$editor/shared/components/Module.pcss'
-import { getModuleMessages, getMaxLevel } from '$editor/canvas/state/messages'
 
 import styles from './Module.pcss'
 import ModuleRenderer from './ModuleRenderer'

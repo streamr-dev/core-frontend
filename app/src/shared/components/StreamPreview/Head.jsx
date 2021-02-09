@@ -1,9 +1,9 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 import { SM, LG, REGULAR } from '$shared/utils/styled'
-import CloseButton from './CloseButton'
 import Skeleton from '$shared/components/Skeleton'
 import { truncate } from '$shared/utils/text'
+import CloseButton from './CloseButton'
 import Layout from './Layout'
 
 const Prefix = styled.span`

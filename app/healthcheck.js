@@ -1,5 +1,7 @@
 const axios = require('axios')
 
+/* eslint-disable no-console */
+
 const checkUrl = async (url) => {
     try {
         const response = await axios({

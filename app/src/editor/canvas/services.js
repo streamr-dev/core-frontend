@@ -2,13 +2,13 @@
  * Canvas-specific API call wrappers
  */
 
-import analytics from '$shared/../analytics'
 import { get, post, put, del } from '$shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
+import routes from '$routes'
 import { emptyCanvas, RunStates, isHistoricalModeSelected } from './state'
 import { link, unlink, getLink } from './state/linking'
-import routes from '$routes'
+import analytics from '$shared/../analytics'
 
 const AUTOSAVE_DELAY = 500
 

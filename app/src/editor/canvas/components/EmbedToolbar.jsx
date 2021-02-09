@@ -1,9 +1,9 @@
 import React from 'react'
 
-import styles from './EmbedToolbar.pcss'
 import LogoItem from '$shared/components/Logo'
 
 import routes from '$routes'
+import styles from './EmbedToolbar.pcss'
 
 function inIframe() {
     try {

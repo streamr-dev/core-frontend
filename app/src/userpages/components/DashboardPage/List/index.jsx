@@ -9,7 +9,6 @@ import styled from 'styled-components'
 
 import { CoreHelmet } from '$shared/components/Helmet'
 import type { Dashboard, DashboardId } from '$userpages/flowtype/dashboard-types'
-import routes from '$routes'
 import { getDashboards, deleteOrRemoveDashboard } from '$userpages/modules/dashboard/actions'
 import { selectDashboards, selectFetching } from '$userpages/modules/dashboard/selectors'
 import Layout from '$userpages/components/Layout'
@@ -33,6 +32,7 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { MD, LG } from '$shared/utils/styled'
 import resourceUrl from '$shared/utils/resourceUrl'
+import routes from '$routes'
 
 import NoDashboardsView from './NoDashboards'
 

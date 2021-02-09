@@ -3,10 +3,10 @@ import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import sinon from 'sinon'
 
-import usePermissionContext, { Provider as PermissionContextProvider } from '../useProductPermissions'
 import * as permissionServices from '$userpages/modules/permission/services'
-import * as useProduct from '../useProduct'
 import * as usePending from '$shared/hooks/usePending'
+import usePermissionContext, { Provider as PermissionContextProvider } from '../useProductPermissions'
+import * as useProduct from '../useProduct'
 
 describe('PermissionContext', () => {
     let sandbox

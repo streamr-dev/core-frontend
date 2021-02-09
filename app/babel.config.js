@@ -38,9 +38,8 @@ module.exports = function BabelConfig(api) {
             }],
         ],
         plugins: [
-            api.env('production')
-                ? '@babel/plugin-transform-flow-strip-types'
-                : '@babel/transform-flow-comments',
+            '@babel/plugin-syntax-flow',
+            '@babel/plugin-transform-flow-strip-types',
             ['@babel/plugin-transform-destructuring', {
                 // Use loose mode for performance:
                 // https://github.com/facebook/create-react-app/issues/5602

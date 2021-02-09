@@ -5,11 +5,11 @@ import { useDispatch } from 'react-redux'
 
 import * as RouterContext from '$shared/contexts/Router'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
-import { Provider as ValidationContextProvider } from './ValidationContextProvider'
-import { Provider as PermissionsProvider } from './useProductPermissions'
 import { usePending } from '$shared/hooks/usePending'
 import { resetProduct } from '$mp/modules/product/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { Provider as PermissionsProvider } from './useProductPermissions'
+import { Provider as ValidationContextProvider } from './ValidationContextProvider'
 
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'

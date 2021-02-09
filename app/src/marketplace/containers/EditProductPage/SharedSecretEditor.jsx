@@ -6,10 +6,10 @@ import { I18n } from 'react-redux-i18n'
 
 import UnstyledKeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
-import useProduct from '../ProductController/useProduct'
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import type { Secret } from '$mp/modules/dataUnion/types'
 import { usePending } from '$shared/hooks/usePending'
+import useProduct from '../ProductController/useProduct'
 
 const KeyField = styled(UnstyledKeyField)``
 const AddKeyFieldWrapper = styled.div``

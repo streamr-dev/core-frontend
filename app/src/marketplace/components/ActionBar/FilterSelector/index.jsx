@@ -3,8 +3,8 @@
 import React, { Component, type Node } from 'react'
 import cx from 'classnames'
 import MediaQuery from 'react-responsive'
-import breakpoints from '$app/scripts/breakpoints'
 import { Dropdown } from 'reactstrap'
+import breakpoints from '$app/scripts/breakpoints'
 
 import type { AnyFilter } from '$mp/flowtype/product-types'
 import { StyledDropdownToggle, Caret } from '$shared/components/Popover'

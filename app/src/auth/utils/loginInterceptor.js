@@ -3,10 +3,10 @@
  */
 
 import axios from 'axios'
-import routes from '$routes'
 import { matchPath } from 'react-router-dom'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
+import routes from '$routes'
 
 function shouldRedirect(error) {
     // ignore redirect to login logic for login route

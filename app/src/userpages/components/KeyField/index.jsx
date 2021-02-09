@@ -6,7 +6,6 @@ import styled from 'styled-components'
 
 import Popover from '$shared/components/Popover'
 import { truncate } from '$shared/utils/text'
-import KeyFieldEditor, { type LabelType } from './KeyFieldEditor'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -15,6 +14,7 @@ import Label from '$ui/Label'
 import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 import UnstyledStatusIcon from '$shared/components/StatusIcon'
+import KeyFieldEditor, { type LabelType } from './KeyFieldEditor'
 
 const KeyFieldContainer = styled.div`
     position: relative;

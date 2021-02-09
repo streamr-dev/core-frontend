@@ -4,12 +4,12 @@ import React, { useMemo } from 'react'
 import cx from 'classnames'
 import { Translate } from 'react-redux-i18n'
 
-import useProduct from '../ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
-import SharedSecretEditor from './SharedSecretEditor'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
+import useProduct from '../ProductController/useProduct'
+import SharedSecretEditor from './SharedSecretEditor'
 
 import styles from './productStreams.pcss'
 

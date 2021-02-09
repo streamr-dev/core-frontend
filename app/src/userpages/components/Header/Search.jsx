@@ -1,9 +1,9 @@
 // @flow
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { type Ref } from '$shared/flowtype/common-types'
 import debounce from 'lodash/debounce'
 import styled, { css } from 'styled-components'
+import { type Ref } from '$shared/flowtype/common-types'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import useIsMounted from '$shared/hooks/useIsMounted'

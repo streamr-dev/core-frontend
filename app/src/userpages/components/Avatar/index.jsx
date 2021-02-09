@@ -4,11 +4,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
-import NameAndUsername from './NameAndUsername'
 import AvatarCircle from '$shared/components/AvatarCircle'
 import AvatarImage from '$shared/components/AvatarImage'
 
 import routes from '$routes'
+import NameAndUsername from './NameAndUsername'
 
 const StyledLink = styled(Link)`
   text-decoration: none;

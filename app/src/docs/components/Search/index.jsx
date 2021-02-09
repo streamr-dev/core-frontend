@@ -4,7 +4,6 @@ import React, { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Translate } from 'react-redux-i18n'
 
-import routes from '$routes'
 import SvgIcon from '$shared/components/SvgIcon'
 
 import SearchInput from '$mp/components/ActionBar/SearchInput'
@@ -12,6 +11,7 @@ import useLunr from '$docs/hooks/useLunr'
 import useGetIndexStore from '$docs/hooks/useGetIndexStore'
 import RawHtml from '$shared/components/RawHtml'
 import BodyClass from '$shared/components/BodyClass'
+import routes from '$routes'
 import { formatSearchResults } from './searchUtils'
 
 import styles from './search.pcss'

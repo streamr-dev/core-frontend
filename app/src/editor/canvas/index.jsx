@@ -2,17 +2,16 @@ import React, { PureComponent, useContext } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Translate } from 'react-redux-i18n'
+import cx from 'classnames'
+import copyToClipboard from 'copy-to-clipboard'
+
 import { selectAuthState } from '$shared/modules/user/selectors'
 import SessionContext from '$auth/contexts/Session'
-import cx from 'classnames'
 
 import { CoreHelmet } from '$shared/components/Helmet'
 import Layout from '$shared/components/Layout'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { ErrorPageContent } from '$shared/components/GenericErrorPage'
-import copyToClipboard from 'copy-to-clipboard'
-
-import routes from '$routes'
 
 import { findNonOverlappingPositionForModule } from '$editor/shared/utils/bounds'
 import isEditableElement from '$shared/utils/isEditableElement'
@@ -24,16 +23,21 @@ import Subscription from '$shared/components/Subscription'
 import * as SubscriptionStatus from '$shared/contexts/SubscriptionStatus'
 import ClientProvider from '$shared/components/StreamrClientProvider'
 import * as sharedServices from '$editor/shared/services'
+
 import BodyClass from '$shared/components/BodyClass'
 import Sidebar from '$shared/components/Sidebar'
+import ShareSidebar from '$userpages/components/ShareSidebar'
+import CanvasStatus, { CannotSaveStatus } from '$editor/shared/components/Status'
+import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
+import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
+import routes from '$routes'
+
 import { useCanvasSelection, SelectionProvider } from './components/CanvasController/useCanvasSelection'
 import ModuleSidebar from './components/ModuleSidebar'
 import ConsoleSidebar from './components/ConsoleSidebar'
-import ShareSidebar from '$userpages/components/ShareSidebar'
 import KeyboardShortcutsSidebar from './components/KeyboardShortcutsSidebar'
 import { CameraProvider, cameraControl } from './components/Camera'
 import { useCanvasCameraEffects } from './hooks/useCanvasCamera'
-
 import * as CanvasController from './components/CanvasController'
 import * as RunController from './components/CanvasController/Run'
 import useCanvas from './components/CanvasController/useCanvas'
@@ -46,11 +50,8 @@ import useCanvasPermissions from './components/CanvasController/useCanvasPermiss
 import PendingLoadingIndicator from './components/PendingLoadingIndicator'
 import Canvas from './components/Canvas'
 import CanvasToolbar from './components/Toolbar'
-import CanvasStatus, { CannotSaveStatus } from '$editor/shared/components/Status'
 import ModuleSearch from './components/ModuleSearch'
 import EmbedToolbar from './components/EmbedToolbar'
-import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
-import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 
 import useCanvasNotifications, { pushErrorNotification, pushWarningNotification } from './hooks/useCanvasNotifications'
 
@@ -100,8 +101,6 @@ const CanvasEditComponent = class CanvasEdit extends PureComponent {
 
     selectModule = async ({ hash } = {}) => {
         const noSelection = hash == null
-
-        this.setState({ selectedModuleHash: hash })
 
         if (noSelection) {
             this.closeSidebar()

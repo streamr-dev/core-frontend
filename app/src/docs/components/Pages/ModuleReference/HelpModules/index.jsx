@@ -4,8 +4,8 @@ import React from 'react'
 import { DocsHelmet } from '$shared/components/Helmet'
 import CanvasModuleHelp from '$docs/components/CanvasModuleHelp'
 import DocsLayout from '$docs/components/DocsLayout'
-import { canvasModulesCategorised } from '../data'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import { canvasModulesCategorised } from '../data'
 import styles from './helpModules.pcss'
 
 type Props = {

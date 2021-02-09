@@ -5,12 +5,6 @@ import { normalize } from 'normalizr'
 import orderBy from 'lodash/orderBy'
 import get from 'lodash/get'
 
-import type {
-    ProductSubscription,
-    ProductIdList,
-    ProductSubscriptionIdList,
-    ProductSubscriptionList,
-} from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import { subscriptionsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
@@ -18,6 +12,12 @@ import type { StoreState } from '$shared/flowtype/store-state'
 import type { Filter } from '$userpages/flowtype/common-types'
 import { getFilters } from '$userpages/utils/constants'
 import { isActive } from '$mp/utils/time'
+import type {
+    ProductSubscription,
+    ProductIdList,
+    ProductSubscriptionIdList,
+    ProductSubscriptionList,
+} from '../../flowtype/product-types'
 
 import * as api from './services'
 import {

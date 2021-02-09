@@ -5,8 +5,8 @@
 import { get, put, post, del } from '$shared/utils/api'
 import Autosave from '$editor/shared/utils/autosave'
 import { nextUniqueName, nextUniqueCopyName } from '$editor/shared/utils/uniqueName'
-import { emptyDashboard } from './state'
 import routes from '$routes'
+import { emptyDashboard } from './state'
 
 const AUTOSAVE_DELAY = 500
 

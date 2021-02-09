@@ -1,7 +1,7 @@
 import keythereum from 'keythereum'
 import StreamrClient from 'streamr-client'
-import * as Services from '../services'
 import { setToken } from '$shared/utils/sessionToken'
+import * as Services from '../services'
 
 /**
  * Creates a client for a new, generated user.

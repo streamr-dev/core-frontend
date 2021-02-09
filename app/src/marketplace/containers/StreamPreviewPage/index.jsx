@@ -6,7 +6,6 @@ import { withRouter } from 'react-router-dom'
 import { I18n } from 'react-redux-i18n'
 import { useClient } from 'streamr-client-react'
 import { Context as RouterContext } from '$shared/contexts/Router'
-import ProductController, { useController } from '../ProductController'
 import ClientProvider from '$shared/components/StreamrClientProvider'
 import Subscription from '$shared/components/Subscription'
 import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
@@ -14,7 +13,6 @@ import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
-import routes from '$routes'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import {
     selectStreams as selectProductStreams,
@@ -26,6 +24,8 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
+import routes from '$routes'
+import ProductController, { useController } from '../ProductController'
 
 const PreviewModal = ({ onClose, ...previewProps }) => (
     <ModalPortal>

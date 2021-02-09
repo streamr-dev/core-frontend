@@ -4,18 +4,18 @@ import { createAction } from 'redux-actions'
 import BN from 'bignumber.js'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type {
-    IntegrationKeyIdActionCreator,
-    IntegrationKeysActionCreator,
-    IntegrationKeysErrorActionCreator,
-    SetBalanceActionCreator,
-} from './types'
 import type { IntegrationKeyId, IntegrationKeyIdList, Balances, CreateIdentity } from '$shared/flowtype/integration-key-types'
 import { integrationKeysSchema, integrationKeySchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
 import { integrationKeyServices } from '$shared/utils/constants'
 import type { Address } from '$shared/flowtype/web3-types'
 import { BalanceType } from '$shared/flowtype/integration-key-types'
+import type {
+    IntegrationKeyIdActionCreator,
+    IntegrationKeysActionCreator,
+    IntegrationKeysErrorActionCreator,
+    SetBalanceActionCreator,
+} from './types'
 
 import * as services from './services'
 import { selectEthereumIdentities, selectPrivateKeys } from './selectors'

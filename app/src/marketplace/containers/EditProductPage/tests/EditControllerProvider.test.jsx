@@ -6,8 +6,6 @@ import { MemoryRouter, withRouter } from 'react-router-dom'
 
 import Notification from '$shared/utils/Notification'
 
-import { Provider as EditControllerProvider, Context as EditControllerContext } from '../EditControllerProvider'
-import { Provider as ValidationContextProvider, Context as ValidationContext } from '../../ProductController/ValidationContextProvider'
 import { Provider as RouterContextProvider } from '$shared/contexts/Router'
 import * as UndoContext from '$shared/contexts/Undo'
 import * as useModal from '$shared/hooks/useModal'
@@ -15,6 +13,8 @@ import * as usePending from '$shared/hooks/usePending'
 import * as productServices from '$mp/modules/product/services'
 import * as useEditableProductUpdater from '$mp/containers/ProductController/useEditableProductUpdater'
 import * as sharedConstants from '$shared/utils/constants'
+import { Provider as ValidationContextProvider, Context as ValidationContext } from '../../ProductController/ValidationContextProvider'
+import { Provider as EditControllerProvider, Context as EditControllerContext } from '../EditControllerProvider'
 
 const mockState = {
     product: {

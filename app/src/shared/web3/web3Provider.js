@@ -2,6 +2,7 @@
 
 import Web3 from 'web3'
 
+import FakeProvider from 'web3-fake-provider'
 import getConfig from '$shared/web3/config'
 import type { Address } from '$shared/flowtype/web3-types'
 import {
@@ -10,7 +11,6 @@ import {
     WalletLockedError,
 } from '$shared/errors/Web3/index'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
-import FakeProvider from 'web3-fake-provider'
 
 declare var ethereum: Web3
 declare var web3: Web3

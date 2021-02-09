@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import Share from './Share'
 import { useEditableUserIds } from '$shared/components/PermissionsProvider'
+import Share from './Share'
 
 const UnstyledUserList = ({ items, userErrors, ...props }) => {
     const [selectedUserId, setSelectedUserId] = useState()

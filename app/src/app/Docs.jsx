@@ -3,8 +3,6 @@
 import React from 'react'
 import { Route as RouterRoute, Redirect } from 'react-router-dom'
 
-import links from '$shared/../docsLinks'
-
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 
@@ -61,6 +59,7 @@ import Authentication from '$docs/components/Pages/Api/Authentication'
 import ApiExplorer from '$docs/components/Pages/ApiExplorer'
 // Technical Notes Docs
 import TechnicalNotes from '$docs/components/Pages/TechnicalNotes'
+import links from '$shared/../docsLinks'
 
 const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 

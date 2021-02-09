@@ -5,9 +5,9 @@ import { Provider } from 'react-redux'
 import StoryRouter from 'storybook-react-router'
 import { storiesOf } from '@storybook/react'
 
+import Products from '$mp/components/Products'
 import store from './utils/i18nStore'
 
-import Products from '$mp/components/Products'
 import exampleProductList from './exampleProductList'
 
 const story = (name) => storiesOf(`Marketplace/${name}`, module)

@@ -4,13 +4,13 @@ import React, { useState, useCallback, useMemo, type Node } from 'react'
 import cx from 'classnames'
 import { DraggableCore } from 'react-draggable'
 import { Resizable } from 'react-resizable'
-import { useCameraScale } from './Camera'
 
 import SvgIcon from '$shared/components/SvgIcon'
 
-import CanvasWindow from './CanvasWindow'
 import { type Bounds } from '$editor/shared/utils/bounds'
 import { type UseStateTuple } from '$shared/flowtype/common-types'
+import CanvasWindow from './CanvasWindow'
+import { useCameraScale } from './Camera'
 
 import styles from './DraggableCanvasWindow.pcss'
 

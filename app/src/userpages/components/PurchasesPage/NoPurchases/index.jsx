@@ -4,7 +4,6 @@ import React, { useCallback } from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 
-import routes from '$routes'
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
@@ -12,6 +11,7 @@ import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
+import routes from '$routes'
 
 type NoResultsViewProps = {
     onResetFilter: Function,

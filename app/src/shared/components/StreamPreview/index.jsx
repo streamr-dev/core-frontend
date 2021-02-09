@@ -1,7 +1,7 @@
 import React, { useState, useMemo, Fragment } from 'react'
 import styled, { css } from 'styled-components'
-import SvgIcon from '$shared/components/SvgIcon'
 import { I18n } from 'react-redux-i18n'
+import SvgIcon from '$shared/components/SvgIcon'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import IconButton from './IconButton'

@@ -1,7 +1,10 @@
 // @flow
 
 import TransactionError from '$shared/errors/TransactionError'
-import type { CategoryIdList } from './category-types'
+import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
+import type { StreamIdList } from '$shared/flowtype/stream-types'
+import type { ErrorInUi, NumberString } from '$shared/flowtype/common-types'
+import type { Filter as UserpagesFilter } from '$userpages/flowtype/common-types'
 import type {
     ProductId,
     ProductIdList,
@@ -10,10 +13,7 @@ import type {
     DataUnionId,
     DataUnionSecretId,
 } from './product-types'
-import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
-import type { StreamIdList } from '$shared/flowtype/stream-types'
-import type { ErrorInUi, NumberString } from '$shared/flowtype/common-types'
-import type { Filter as UserpagesFilter } from '$userpages/flowtype/common-types'
+import type { CategoryIdList } from './category-types'
 
 // categories
 export type CategoryState = {

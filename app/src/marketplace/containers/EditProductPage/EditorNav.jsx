@@ -3,9 +3,9 @@
 import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } from 'react'
 import { I18n } from 'react-redux-i18n'
 
+import Scrollspy from 'react-scrollspy'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
-import Scrollspy from 'react-scrollspy'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useNewProductMode from '../ProductController/useNewProductMode'

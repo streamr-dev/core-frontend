@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '10'
+- '14'
 sudo: true
 branches:
   only:
@@ -12,7 +12,7 @@ before_install:
 - sudo apt-get -y install expect
 - pip install awscli --upgrade --user
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-- npm i -g npm@^6.14.4
+- npm i -g npm@lts
 - cd app
 install:
 - npm ci
@@ -51,13 +51,13 @@ jobs:
     script: "travis_retry $TRAVIS_BUILD_DIR/app/travis_scripts/unit-tests.sh"
     after_failure:
       - docker ps
-      - $TRAVIS_BUILD_DIR/streamr-docker-dev/streamr-docker-dev/bin.sh log --all
+      - $TRAVIS_BUILD_DIR/streamr-docker-dev/streamr-docker-dev/bin.sh log
   - stage: Platform tests
     if: type IN (pull_request)
     env:
     - DESCRIPTION=VISUAL_TEST
     - CHROMATIC_PROJECT_TOKEN=exgpyxh1il5
-    - NODE_ENV=production
+    - NODE_ENV=development
     - PORT=12345
     - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
     - SENTRY_ENVIRONMENT=pr

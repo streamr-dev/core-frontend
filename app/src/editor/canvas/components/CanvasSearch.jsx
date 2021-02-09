@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom'
 import cx from 'classnames'
 import startCase from 'lodash/startCase'
 
-import routes from '$routes'
 import { getCanvases } from '$userpages/modules/canvas/actions'
 import { selectCanvases } from '$userpages/modules/canvas/selectors'
 
 import SearchPanel, { SearchRow } from '$editor/shared/components/SearchPanel'
+import routes from '$routes'
 import styles from './CanvasSearch.pcss'
 
 export default connect((state) => ({

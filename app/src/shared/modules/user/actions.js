@@ -7,12 +7,13 @@ import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { User } from '$shared/flowtype/user-types'
+import { selectUserData } from '$shared/modules/user/selectors'
+import { clearStorage } from '$shared/utils/storage'
+import routes from '$routes'
 import type {
     UserErrorActionCreator,
     UserDataActionCreator,
 } from './types'
-import { selectUserData } from '$shared/modules/user/selectors'
-import routes from '$routes'
 
 import * as services from './services'
 import {
@@ -31,7 +32,6 @@ import {
     DELETE_USER_ACCOUNT_SUCCESS,
     DELETE_USER_ACCOUNT_FAILURE,
 } from './constants'
-import { clearStorage } from '$shared/utils/storage'
 
 // Logout
 export const resetUserData: ReduxActionCreator = createAction(RESET_USER_DATA)

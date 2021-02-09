@@ -3,11 +3,11 @@
 import React, { type Node } from 'react'
 import NotificationSystem from 'react-notification-system'
 
-import BasicNotification from './BasicNotification'
-import TransactionNotification from './TransactionNotification'
 import { Context as ModalContext } from '$shared/contexts/ModalPortal'
 import { type Ref } from '$shared/flowtype/common-types'
 import Notification from '$shared/utils/Notification'
+import TransactionNotification from './TransactionNotification'
+import BasicNotification from './BasicNotification'
 import styles from './notificationStyles'
 import wrapperStyles from './Notifications.pcss'
 

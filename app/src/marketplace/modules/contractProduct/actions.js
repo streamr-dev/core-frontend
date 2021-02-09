@@ -3,10 +3,10 @@
 import { createAction } from 'redux-actions'
 
 import { contractProductSchema } from '$shared/modules/entities/schema'
-import type { ProductId } from '../../flowtype/product-types'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import { handleEntities } from '$shared/utils/entities'
 import type { Address } from '$shared/flowtype/web3-types'
+import type { ProductId } from '../../flowtype/product-types'
 
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,

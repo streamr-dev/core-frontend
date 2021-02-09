@@ -8,11 +8,11 @@ import { Translate } from 'react-redux-i18n'
 import type { User } from '$shared/flowtype/user-types'
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
+import Avatar from '$userpages/components/Avatar'
+import ListContainer from '$shared/components/Container/List'
 import routes from '$routes'
 import Tab from './Tab'
 import AccountsBalance from './AccountsBalance'
-import Avatar from '$userpages/components/Avatar'
-import ListContainer from '$shared/components/Container/List'
 import styles from './header.pcss'
 
 type OwnProps = {
