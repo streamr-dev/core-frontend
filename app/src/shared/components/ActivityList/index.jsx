@@ -1,10 +1,11 @@
 import React, { useRef, useCallback, useReducer, useEffect, createContext } from 'react'
 import { useSelector } from 'react-redux'
+import { useSubscription } from 'streamr-client-react'
+
 import { selectPendingTransactions } from '$mp/modules/transactions/selectors'
 import Activity, { actionTypes } from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import ClientProvider from '$shared/components/StreamrClientProvider'
-import Subscription from '$shared/components/Subscription'
 import { useFetchResource } from './ActivityResourceProvider'
 import Items from './Items'
 
@@ -72,39 +73,45 @@ const ActivityList = ({ children = <Items /> }) => {
         })
     }, [state.category, touchCount])
 
-    const fetch = useFetchResource()
+    const fetchResource = useFetchResource()
 
     const onMessage = useCallback((msg) => {
         const activity = Activity.deserialize(msg)
 
         itemsRef.current = [activity, ...itemsRef.current]
 
-        fetch(activity.resourceType, activity.resourceId)
+        fetchResource(activity.resourceType, activity.resourceId)
 
         touch()
-    }, [fetch])
+    }, [fetchResource])
+
+    useSubscription({
+        stream: streamId,
+        resend: {
+            from: ACTIVITY_FROM,
+        },
+    }, {
+        isActive: !!streamId,
+        onMessage,
+    })
 
     return !!streamId && (
         <DispatchContext.Provider value={dispatch}>
             <StateContext.Provider value={state}>
-                <ClientProvider>
-                    <Subscription
-                        uiChannel={{
-                            id: streamId,
-                        }}
-                        isActive
-                        onMessage={onMessage}
-                        resendFrom={ACTIVITY_FROM}
-                    />
-                    {children}
-                </ClientProvider>
+                {children}
             </StateContext.Provider>
         </DispatchContext.Provider>
     )
 }
 
-Object.assign(ActivityList, {
+export default function ActivityListWrapper(props) {
+    return (
+        <ClientProvider>
+            <ActivityList {...props} />
+        </ClientProvider>
+    )
+}
+
+Object.assign(ActivityListWrapper, {
     Items,
 })
-
-export default ActivityList
