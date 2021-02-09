@@ -29,25 +29,29 @@ export type OwnProps = {
     header?: string,
 }
 
-const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
+export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
     margin-top: 16px;
 `
 
+export const MarketplaceProductRow = styled(Row)``
+
+export const MarketplaceProductCol = styled(Col)``
+
 const listProducts = (products, cols, isFetching: ?boolean) => (
-    <Row
+    <MarketplaceProductRow
         className={classnames(styles.productsRow, {
             [styles.fetching]: isFetching,
         })}
     >
         {products.map((product) => (
-            <Col {...cols} key={product.key || product.id} >
+            <MarketplaceProductCol {...cols} key={product.key || product.id} >
                 <MarketplaceProductTile
                     product={product}
                     showDataUnionBadge={isDataUnionProduct(product.type)}
                 />
-            </Col>
+            </MarketplaceProductCol>
         ))}
-    </Row>
+    </MarketplaceProductRow>
 )
 
 const Container = styled(RsContainer)`

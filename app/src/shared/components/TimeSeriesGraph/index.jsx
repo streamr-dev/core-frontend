@@ -27,6 +27,13 @@ const Container = styled.div`
     position: relative;
 `
 
+const SpinnerContainer = styled.div`
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+`
+
 const xAxisStyle = {
     ticks: {
         fontSize: '12px',
@@ -106,18 +113,10 @@ const UnstyledTimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: 
 
     return (
         <Container {...props}>
-            {isLoading && (
-                <Spinner
-                    size="large"
-                    color="white"
-                    // eslint-disable-next-line react/jsx-curly-brace-presence
-                    css={`
-                        position: absolute;
-                        left: 50%;
-                        top: 50%;
-                        transform: translate(-50%, -50%);
-                    `}
-                />
+            {!!isLoading && (
+                <SpinnerContainer>
+                    <Spinner size="large" color="white" />
+                </SpinnerContainer>
             )}
             {!isLoading && (
                 <PlotContainer>

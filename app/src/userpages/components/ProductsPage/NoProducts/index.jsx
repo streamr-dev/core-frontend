@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
-import MediaQuery from 'react-responsive'
+import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
@@ -11,7 +11,7 @@ import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
-import breakpoints from '$app/scripts/breakpoints'
+import { LG } from '$shared/utils/styled'
 import docsLinks from '$shared/../docsLinks'
 
 type NoResultsViewProps = {
@@ -21,6 +21,26 @@ type NoResultsViewProps = {
 type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
+
+const Message = styled(Translate)`
+    && {
+        display: none;
+
+        @media (min-width: ${LG}px) {
+            display: block;
+        }
+    }
+`
+
+const MobileMessage = styled(Translate)`
+    && {
+        display: block;
+
+        @media (min-width: ${LG}px) {
+            display: none;
+        }
+    }
+`
 
 const NoCreatedProductsView = () => (
     <EmptyState
@@ -34,17 +54,13 @@ const NoCreatedProductsView = () => (
     >
         <p>
             <Translate value="userpages.products.noCreatedProducts.title" />
-            <MediaQuery minWidth={breakpoints.lg.min}>
-                <Translate
-                    value="userpages.products.noCreatedProducts.message"
-                    docsLink={docsLinks.createProduct}
-                    dangerousHTML
-                    tag="small"
-                />
-            </MediaQuery>
-            <MediaQuery maxWidth={breakpoints.lg.min}>
-                <Translate value="userpages.products.noCreatedProducts.messageMobile" tag="small" />
-            </MediaQuery>
+            <Message
+                value="userpages.products.noCreatedProducts.message"
+                docsLink={docsLinks.createProduct}
+                dangerousHTML
+                tag="small"
+            />
+            <MobileMessage value="userpages.products.noCreatedProducts.messageMobile" tag="small" />
         </p>
     </EmptyState>
 )

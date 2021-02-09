@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Translate, I18n } from 'react-redux-i18n'
-import MediaQuery from 'react-responsive'
+import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
@@ -11,7 +11,7 @@ import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
-import breakpoints from '$app/scripts/breakpoints'
+import { LG } from '$shared/utils/styled'
 
 type NoResultsViewProps = {
     onResetFilter: Function,
@@ -20,6 +20,26 @@ type NoResultsViewProps = {
 type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
+
+const Message = styled(Translate)`
+    && {
+        display: none;
+
+        @media (min-width: ${LG}px) {
+            display: block;
+        }
+    }
+`
+
+const MobileMessage = styled(Translate)`
+    && {
+        display: block;
+
+        @media (min-width: ${LG}px) {
+            display: none;
+        }
+    }
+`
 
 const NoCreatedStreamsView = () => (
     <EmptyState
@@ -33,12 +53,8 @@ const NoCreatedStreamsView = () => (
     >
         <p>
             <Translate value="userpages.streams.noCreatedStreams.title" />
-            <MediaQuery minWidth={breakpoints.lg.min}>
-                <Translate value="userpages.streams.noCreatedStreams.message" tag="small" />
-            </MediaQuery>
-            <MediaQuery maxWidth={breakpoints.lg.min}>
-                <Translate value="userpages.streams.noCreatedStreams.messageMobile" tag="small" />
-            </MediaQuery>
+            <Message value="userpages.streams.noCreatedStreams.message" tag="small" />
+            <MobileMessage value="userpages.streams.noCreatedStreams.messageMobile" tag="small" />
         </p>
     </EmptyState>
 )
