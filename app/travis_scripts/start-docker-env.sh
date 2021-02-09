@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-trap "kill -- -$$" EXIT
+trap 'kill -- -$$' EXIT
 ##
 ## Pulls down streamr-docker-dev and starts the stack except the frontend ##
 ##
