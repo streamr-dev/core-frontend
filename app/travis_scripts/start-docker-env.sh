@@ -19,3 +19,6 @@ streamr_docker_dev='streamr-docker-dev/streamr-docker-dev/bin.sh'
 
 # start everything except the frontend
 $streamr_docker_dev start --except platform --wait
+
+# maybe needs some magic wait time?
+sleep 30
