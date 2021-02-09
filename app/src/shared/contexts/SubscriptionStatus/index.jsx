@@ -95,49 +95,72 @@ function useSubscriptionStatus() {
     const [onAllReady, allReady] = useAllReady(subscriptions)
 
     const unregister = useCallback((uid) => {
-        if (subscriptions[uid] == null || !isMounted()) { return }
-        const nextState = {
-            ...subscriptions,
-        }
-        delete nextState[uid]
-        setSubscriptions(nextState)
-    }, [subscriptions, setSubscriptions, isMounted])
+        if (!isMounted()) { return }
+        setSubscriptions((currentSubscriptions) => {
+            if (currentSubscriptions[uid] == null) { return currentSubscriptions }
+            const nextState = {
+                ...currentSubscriptions,
+            }
+            delete nextState[uid]
+            return nextState
+        })
+    }, [setSubscriptions, isMounted])
 
     const register = useCallback((uid) => {
         // noop if already have subscription
-        if (subscriptions[uid] != null || !isMounted()) { return }
-        setSubscriptions({
-            ...subscriptions,
-            [uid]: false,
+        if (!isMounted()) { return }
+
+        setSubscriptions((currentSubscriptions) => {
+            if (currentSubscriptions[uid] != null) { return currentSubscriptions }
+            return {
+                ...currentSubscriptions,
+                [uid]: false,
+            }
         })
-    }, [subscriptions, setSubscriptions, isMounted])
+    }, [setSubscriptions, isMounted])
 
     const unsubscribed = useCallback((uid) => {
         // noop if don't have subscription or already unsubscribed
-        if (!subscriptions[uid] || !isMounted()) { return }
-        setSubscriptions({
-            ...subscriptions,
-            [uid]: false,
+        if (!isMounted()) { return }
+
+        setSubscriptions((currentSubscriptions) => {
+            if (!currentSubscriptions[uid]) { return currentSubscriptions }
+            return {
+                ...currentSubscriptions,
+                [uid]: false,
+            }
         })
-    }, [subscriptions, setSubscriptions, isMounted])
+    }, [setSubscriptions, isMounted])
 
     const subscribed = useCallback((uid) => {
         // noop if already subscribed
-        if (subscriptions[uid] || !isMounted()) { return }
-        setSubscriptions({
-            ...subscriptions,
-            [uid]: true,
+        if (!isMounted()) { return }
+        setSubscriptions((currentSubscriptions) => {
+            if (currentSubscriptions[uid]) { return currentSubscriptions }
+            return {
+                ...currentSubscriptions,
+                [uid]: true,
+            }
         })
-    }, [subscriptions, setSubscriptions, isMounted])
+    }, [setSubscriptions, isMounted])
+    const subStateRef = useRef(subscriptions)
+    useEffect(() => {
+        subStateRef.current = subscriptions
+    }, [subscriptions])
+
+    const getSubscriptions = useCallback(() => (
+        subStateRef.current
+    ), [])
 
     return useMemo(() => ({
+        getSubscriptions,
         onAllReady,
         allReady,
         register,
         unregister,
         subscribed,
         unsubscribed,
-    }), [onAllReady, allReady, register, unregister, subscribed, unsubscribed])
+    }), [getSubscriptions, onAllReady, allReady, register, unregister, subscribed, unsubscribed])
 }
 
 type Props = {
