@@ -177,7 +177,7 @@ describe('usePreviewStats', () => {
             loading: true,
         }, {
             id: 'created',
-            value: '2/6/2020',
+            value: new Date('2/6/2020').toLocaleDateString(),
             loading: false,
         }])
     })
@@ -316,7 +316,7 @@ describe('usePreviewStats', () => {
             loading: true,
         }, {
             id: 'created',
-            value: '2/6/2020',
+            value: new Date('2/6/2020').toLocaleDateString(),
             loading: false,
         }])
     })
