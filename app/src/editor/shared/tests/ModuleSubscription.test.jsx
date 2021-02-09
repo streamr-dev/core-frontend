@@ -1,5 +1,6 @@
 import React from 'react'
 import { mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 import { Provider } from 'react-redux'
 import { useClient } from 'streamr-client-react'
 import mockStore from '$testUtils/mockStoreProvider'
@@ -23,6 +24,8 @@ describe('Canvas Subscriptions', () => {
     describe('message reception', () => {
         let canvas
         let runningTable
+        let result
+        let client
 
         beforeEach(async () => {
             canvas = await Services.create()
@@ -48,36 +51,53 @@ describe('Canvas Subscriptions', () => {
             await Services.stop(canvas)
         }, 20002)
 
-        it('receives the messages', (done) => {
-            let client
-
-            const ClientCatcher = () => {
-                client = useClient()
-                return null
+        afterEach(async () => {
+            if (result) {
+                const r = result
+                result = undefined
+                r.unmount()
             }
 
+            if (client) {
+                const currentClient = client
+                client = undefined
+                await currentClient.disconnect()
+            }
+        })
+
+        function ClientCatcher() {
+            client = useClient()
+            return null
+        }
+
+        it('receives the messages', async () => {
+            let resolver
+            const p = new Promise((resolve) => {
+                resolver = resolve
+            })
             const store = {
                 user: {},
             }
 
-            const result = mount((
-                <Provider store={mockStore(store)}>
-                    <ClientProvider>
-                        <ClientCatcher />
-                        <ModuleSubscription
-                            module={runningTable}
-                            onMessage={async ({ nr }) => {
-                                if (nr) {
-                                    result.unmount()
-                                    await client.ensureDisconnected()
-                                    done()
-                                }
-                            }}
-                            isSubscriptionActive
-                        />
-                    </ClientProvider>
-                </Provider>
-            ))
+            await act(async () => {
+                result = mount((
+                    <Provider store={mockStore(store)}>
+                        <ClientProvider>
+                            <ClientCatcher />
+                            <ModuleSubscription
+                                module={runningTable}
+                                onMessage={async ({ nr }) => {
+                                    if (nr) {
+                                        resolver()
+                                    }
+                                }}
+                                isSubscriptionActive
+                            />
+                        </ClientProvider>
+                    </Provider>
+                ))
+                await p
+            })
         }, 30000)
 
         describe('after a restart', () => {
@@ -90,36 +110,34 @@ describe('Canvas Subscriptions', () => {
                 canvas = State.updateCanvas(await Services.start(canvas))
             }, 10000)
 
-            it('receives the messages', (done) => {
-                let client
-
-                const ClientCatcher = () => {
-                    client = useClient()
-                    return null
-                }
-
+            it('receives the messages', async () => {
+                let resolver
+                const p = new Promise((resolve) => {
+                    resolver = resolve
+                })
                 const store = {
                     user: {},
                 }
 
-                const result = mount((
-                    <Provider store={mockStore(store)}>
-                        <ClientProvider>
-                            <ClientCatcher />
-                            <ModuleSubscription
-                                module={runningTable}
-                                onMessage={async ({ nr }) => {
-                                    if (nr) {
-                                        result.unmount()
-                                        await client.ensureDisconnected()
-                                        done()
-                                    }
-                                }}
-                                isSubscriptionActive
-                            />
-                        </ClientProvider>
-                    </Provider>
-                ))
+                await act(async () => {
+                    result = mount((
+                        <Provider store={mockStore(store)}>
+                            <ClientProvider>
+                                <ClientCatcher />
+                                <ModuleSubscription
+                                    module={runningTable}
+                                    onMessage={async ({ nr }) => {
+                                        if (nr) {
+                                            resolver()
+                                        }
+                                    }}
+                                    isSubscriptionActive
+                                />
+                            </ClientProvider>
+                        </Provider>
+                    ))
+                    await p
+                })
             }, 60000)
         })
     })
