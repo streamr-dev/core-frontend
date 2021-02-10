@@ -415,12 +415,12 @@ const TransactionList = styled(List)`
 
         @media (min-width: ${LG}px) {
             grid-template-columns:
-                minmax(200px, 2fr)
-                minmax(auto, 1fr)
-                minmax(auto, 1fr)
-                minmax(auto, 1fr)
-                minmax(auto, 1fr)
-                minmax(auto, 1fr)
+                minmax(130px, 2fr)
+                minmax(80px, 1fr)
+                minmax(120px, 1fr)
+                minmax(100px, 1fr)
+                minmax(160px, 1fr)
+                minmax(120px, 1fr)
                 minmax(68px, 1fr)
                 32px;
         }
