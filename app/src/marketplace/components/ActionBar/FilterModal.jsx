@@ -1,17 +1,16 @@
 // @flow
 
 import React, { type Node, useCallback } from 'react'
-import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 import { Dropdown } from 'reactstrap'
-
-import { type Options } from './FilterSelector'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import useModal from '$shared/hooks/useModal'
 import Popover from '$shared/components/Popover'
 import type { AnyFilter } from '$mp/flowtype/product-types'
+
+import { type Options } from './FilterSelector'
 
 type Props = {
     title: Node,
@@ -53,15 +52,10 @@ const Button = styled.button`
 
 const CloseButton = styled(Button)`
     font-size: 16px;
-    text-align: left;
-    padding: 21px 0 0 32px;
-`
-
-const ClearButton = styled(Button)`
-    font-size: 16px;
-    color: var(--greyLight) !important;
     text-align: right;
-    padding: 18px 32px 0 0;
+    padding-right: 22px;
+    padding-top: 2px;
+    text-align: right;
 `
 
 const Title = styled.span`
@@ -70,6 +64,7 @@ const Title = styled.span`
     font-size: 16px;
     font-weight: var(--semiBold);
     padding-top: 18px;
+    margin-left: 64px;
 `
 
 const FilterModal = ({
@@ -79,10 +74,6 @@ const FilterModal = ({
     onClose,
     selected,
 }: Props) => {
-    const onClear = useCallback(() => {
-        onChange(undefined)
-    }, [onChange])
-
     const onClick = useCallback((value) => {
         onChange(value)
     }, [onChange])
@@ -92,15 +83,12 @@ const FilterModal = ({
             <ModalDialog onClose={onClose} fullpage>
                 <ModalContainer>
                     <Header>
-                        <CloseButton type="button" onClick={onClose}>
-                            <span className="icon-cross" />
-                        </CloseButton>
                         <Title>
                             {title}
                         </Title>
-                        <ClearButton type="button" onClick={onClear}>
-                            <Translate value="actionBar.clear" />
-                        </ClearButton>
+                        <CloseButton type="button" onClick={onClose}>
+                            <span className="icon-cross" />
+                        </CloseButton>
                     </Header>
                     <Body>
                         <Dropdown isOpen toggle={() => {}}>
