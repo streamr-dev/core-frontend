@@ -44,6 +44,9 @@ msgstr "Free products only"
 msgid "actionBar.sortOptions.pricePerSecond"
 msgstr "Price, low to high"
 
+msgid "actionBar.sortOptions.latest"
+msgstr "Latest"
+
 msgid "actionsDropdown.edit"
 msgstr "Edit"
 

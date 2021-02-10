@@ -25,7 +25,7 @@ export type Props = {
     onCreateProduct: () => void,
 }
 
-const sortByOptions = ['pricePerSecond', 'free']
+const sortByOptions = ['pricePerSecond', 'free', 'latest']
 
 const Filters = styled.div`
     background-color: white;
@@ -106,11 +106,19 @@ const UnstyledActionBar = ({
             onFilterChangeProp({
                 sortBy: undefined,
                 maxPrice: '0',
+                order: undefined,
+            })
+        } else if (sortBy === 'latest') {
+            onFilterChangeProp({
+                maxPrice: undefined,
+                sortBy: 'dateCreated',
+                order: 'desc',
             })
         } else {
             onFilterChangeProp({
                 maxPrice: undefined,
                 sortBy,
+                order: 'asc',
             })
         }
         filterModal.close()
