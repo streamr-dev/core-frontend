@@ -11,6 +11,7 @@ import RawHtml from '$shared/components/RawHtml'
 import BodyClass from '$shared/components/BodyClass'
 import { SM, LG } from '$shared/utils/styled'
 import routes from '$routes'
+
 import { formatSearchResults } from './searchUtils'
 import SearchInput from './SearchInput'
 

@@ -17,7 +17,6 @@ import SvgIcon from '$shared/components/SvgIcon'
 import isEditableElement from '$shared/utils/isEditableElement'
 
 import Search from '../Search'
-
 import styles from './docsLayout.pcss'
 import Navigation from './Navigation'
 import DocsNav from './DocsNav'
@@ -167,30 +166,30 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
         setIsSearching((wasSearching) => !wasSearching)
     }, [])
 
-    const onKeyDown = useCallback((event) => {
-        // ignore if event from form element
-        if (isEditableElement(event.target || event.srcElement)) { return }
-
-        if (event.key === 'Escape') {
-            event.preventDefault()
-            event.stopPropagation()
-            setIsSearching(false)
-        }
-
-        if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
-            event.preventDefault()
-            event.stopPropagation()
-            setIsSearching(true)
-        }
-    }, [])
-
     // Listen to key combination
     useEffect(() => {
+        const onKeyDown = (event) => {
+            // ignore if event from form element, allow esc
+            if (isEditableElement(event.target || event.srcElement) && event.key !== 'Escape') { return }
+
+            if (event.key === 'Escape') {
+                event.preventDefault()
+                event.stopPropagation()
+                setIsSearching(false)
+            }
+
+            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+                event.preventDefault()
+                event.stopPropagation()
+                setIsSearching(true)
+            }
+        }
+
         window.addEventListener('keydown', onKeyDown)
         return () => {
             window.removeEventListener('keydown', onKeyDown)
         }
-    }, [onKeyDown])
+    }, [])
 
     return (
         <SimpleReactLightbox>
@@ -207,7 +206,7 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
                 )}
                 <MobileSearchButton
                     type="button"
-                    onClick={() => toggleOverlay()}
+                    onClick={toggleOverlay}
                 >
                     <SvgIcon name="search" />
                 </MobileSearchButton>
@@ -222,7 +221,7 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
                             <DesktopNavInner>
                                 <DesktopSearchButton
                                     type="button"
-                                    onClick={() => toggleOverlay()}
+                                    onClick={toggleOverlay}
                                 >
                                     <SvgIcon name="search" />
                                     <SearchButtonText>

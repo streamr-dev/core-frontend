@@ -1,14 +1,14 @@
 // @flow
 
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useReducer } from 'react'
 import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledEditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
-import type { SearchFilter } from '$mp/flowtype/product-types'
 import { SM, MD, LG } from '$shared/utils/styled'
+import type { SearchFilter } from '$mp/flowtype/product-types'
 
 type Props = {
     value: ?SearchFilter,
@@ -160,11 +160,11 @@ const ClearButton = styled(ButtonBase)`
 
 const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
     // use the counter to re-render input in order to focus after clearing
-    const [refreshCounter, setRefreshCounter] = useState(0)
+    const [refreshCounter, incrementRefreshCounter] = useReducer((x) => x + 1, 0)
 
     const onClear = useCallback(() => {
         onChange('')
-        setRefreshCounter((counter) => counter + 1)
+        incrementRefreshCounter()
     }, [onChange])
 
     return (
@@ -197,7 +197,7 @@ const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
                     <ClearButtonWrapper>
                         <ClearButton
                             type="button"
-                            onClick={() => onClear()}
+                            onClick={onClear}
                         >
                             {I18n.t('docs.search.clear')}
                         </ClearButton>
@@ -213,11 +213,6 @@ const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
             </Inner>
         </div>
     )
-}
-
-UnstyledSearchInput.defaultProps = {
-    value: '',
-    onChange: () => {},
 }
 
 const SearchInput = styled(UnstyledSearchInput)`

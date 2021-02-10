@@ -8,6 +8,7 @@ import scrollTo from '$shared/utils/scrollTo'
 import UnstyledElevatedContainer from '$shared/components/ElevatedContainer'
 import SvgIcon from '$shared/components/SvgIcon'
 import { MD } from '$shared/utils/styled'
+
 import docsMap from '$docs/docsMap'
 
 type TocProps = {
@@ -216,21 +217,17 @@ const UnstyledResponsive = (props: Props) => {
         return topLevelTitle
     }, [secondLevelTitle, topLevelTitle])
 
-    const scrollTop = useCallback(() => {
-        scrollTo(document.getElementById('root'))
-    }, [])
-
     const toggleExpand = useCallback(() => {
-        scrollTop()
+        scrollTo(document.getElementById('root'))
 
         setCompressed((wasCompressed) => !wasCompressed)
-    }, [scrollTop])
+    }, [])
 
     return (
         <ElevatedContainer
             {...props}
             offset="64"
-            onClick={() => toggleExpand()}
+            onClick={toggleExpand}
             theme={{
                 compressed,
             }}
