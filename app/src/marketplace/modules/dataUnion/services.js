@@ -11,7 +11,7 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import { gasLimits } from '$shared/utils/constants'
 
 import { post, del, get, put } from '$shared/utils/api'
-import { postStream } from '$userpages/modules/userPageStreams/services'
+import { postStream, getStream } from '$userpages/modules/userPageStreams/services'
 import {
     getResourcePermissions,
     addResourcePermission,
@@ -35,9 +35,15 @@ export const createJoinPartStream = async (account: Address, productId: ProductI
 
     let stream
     try {
-        stream = await postStream(newStream)
+        try {
+            stream = await getStream(newStream.id)
+        } finally {
+            if (stream == null || stream.id == null) {
+                stream = await postStream(newStream)
+            }
+        }
     } catch (e) {
-        console.error('Could not create JoinPart stream', e)
+        console.error('Could not create a new JoinPart stream or get an existing one', e)
         throw e
     }
 
