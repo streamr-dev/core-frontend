@@ -241,6 +241,9 @@ const UnstyledNarrow = (props) => (
                             <Menu.Item as={Link} href={routes.community.youtube()}>
                                 Youtube
                             </Menu.Item>
+                            <Menu.Item as={Link} href={routes.community.trello()}>
+                                Trello
+                            </Menu.Item>
                         </MenuColumn>
                         <MenuColumn>
                             <Menu.Item as={Link} href={routes.community.reddit()}>
@@ -254,9 +257,6 @@ const UnstyledNarrow = (props) => (
                             </Menu.Item>
                             <Menu.Item as={Link} href={routes.community.linkedin()}>
                                 Linkedin
-                            </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.trello()}>
-                                Trello
                             </Menu.Item>
                         </MenuColumn>
                     </MenuInner>
