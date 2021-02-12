@@ -107,7 +107,7 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
                                                 <Meatball alt="Select" />
                                             </R.Button>
                                         }
-                                        noCaret
+                                        caret={false}
                                         className={styles.DropdownMenu}
                                         menuProps={{
                                             className: styles.DropdownMenuMenu,

@@ -86,6 +86,7 @@ const ProductsPage = () => {
                 <Popover
                     title={I18n.t('userpages.filter.sortBy')}
                     type="uppercase"
+                    caret="svg"
                     activeTitle
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}

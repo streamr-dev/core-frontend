@@ -8,6 +8,9 @@ msgstr ""
 "POT-Creation-Date: 2018-09-26T12:51:00.805Z\n"
 "PO-Revision-Date: 2018-09-26T12:51:00.805Z\n"
 
+msgid "actionBar.productType"
+msgstr "Product type"
+
 msgid "actionBar.category"
 msgstr "Category"
 
@@ -23,11 +26,26 @@ msgstr "Search the Marketplace for"
 msgid "actionBar.sortBy"
 msgstr "Sort by"
 
+msgid "actionBar.productTypes.all"
+msgstr "All products"
+
+msgid "actionBar.productTypes.normal"
+msgstr "Data Products"
+
+msgid "actionBar.productTypes.dataunion"
+msgstr "Data Unions"
+
+msgid "actionBar.categories.all"
+msgstr "Everything"
+
 msgid "actionBar.sortOptions.free"
 msgstr "Free products only"
 
 msgid "actionBar.sortOptions.pricePerSecond"
 msgstr "Price, low to high"
+
+msgid "actionBar.sortOptions.latest"
+msgstr "Latest"
 
 msgid "actionsDropdown.edit"
 msgstr "Edit"

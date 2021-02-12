@@ -1,28 +1,32 @@
 import React from 'react'
-import { useMediaQuery } from 'react-responsive'
 import { I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
+import styled from 'styled-components'
 
 import { selectRelatedProductList } from '$mp/modules/relatedProducts/selectors'
-import { XL } from '$shared/utils/styled'
+import { SM, LG } from '$shared/utils/styled'
 
-import Products from '$mp/components/Products'
+import Products, { MarketplaceProductCol } from '$mp/components/Products'
+
+const RelatedProductsContainer = styled(Products)`
+    @media (min-width: ${SM}px) and (max-width: ${LG}px) {
+        ${MarketplaceProductCol}:last-child {
+            display: none;
+        }
+    }
+`
 
 const RelatedProducts = () => {
-    const isLargeScreen = useMediaQuery({
-        minWidth: XL,
-    })
-
     const relatedProducts = useSelector(selectRelatedProductList)
 
     if (!relatedProducts || relatedProducts.length < 1) {
         return null
     }
 
-    const products = isLargeScreen ? relatedProducts : relatedProducts.slice(0, 2)
+    const products = relatedProducts.slice(0, 3)
 
     return (
-        <Products
+        <RelatedProductsContainer
             header={I18n.t('productPage.relatedProducts')}
             products={products}
             type="relatedProducts"

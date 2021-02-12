@@ -12,7 +12,7 @@ import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 
-import type { Filter } from '$mp/flowtype/product-types'
+import type { Filter, SearchFilter } from '$mp/flowtype/product-types'
 
 import {
     getProducts,
@@ -56,8 +56,10 @@ const Products = () => {
         dispatch(getProducts(true))
     }, [dispatch])
 
-    const onSearchChange = useCallback((filter: Filter) => {
-        dispatch(updateFilter(filter))
+    const onSearchChange = useCallback((search: SearchFilter) => {
+        dispatch(updateFilter({
+            search,
+        }))
         dispatch(getProductsDebounced(true))
     }, [dispatch])
 
@@ -85,8 +87,7 @@ const Products = () => {
             <ActionBar
                 filter={selectedFilter}
                 categories={categories}
-                onCategoryChange={onFilterChange}
-                onSortChange={onFilterChange}
+                onFilterChange={onFilterChange}
                 onSearchChange={onSearchChange}
                 onCreateProduct={() => createProductModal.open()}
             />

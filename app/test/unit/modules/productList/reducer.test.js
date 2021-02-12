@@ -26,7 +26,7 @@ describe('productList - reducer', () => {
             ids: [1, 2, 3],
             fetching: false,
             offset: 3,
-            error: null,
+            error: undefined,
             hasMoreSearchResults: false,
         }
         const reducerState = reducer(undefined, {
@@ -61,13 +61,18 @@ describe('productList - reducer', () => {
     it('updates filter', () => {
         const expectedState = {
             ...initialState,
-            filter: 'foo',
+            filter: {
+                ...initialState.filter,
+                search: 'foo',
+            },
         }
 
         const reducerState = reducer(undefined, {
             type: constants.UPDATE_FILTER,
             payload: {
-                filter: 'foo',
+                filter: {
+                    search: 'foo',
+                },
             },
         })
         assert.deepStrictEqual(reducerState, expectedState)
@@ -93,10 +98,10 @@ describe('productList - reducer', () => {
     it('clears product list', () => {
         const expectedState = {
             ...initialState,
-            error: null,
+            error: undefined,
             ids: [],
             offset: 0,
-            hasMoreSearchResults: null,
+            hasMoreSearchResults: undefined,
         }
 
         const mockState = {

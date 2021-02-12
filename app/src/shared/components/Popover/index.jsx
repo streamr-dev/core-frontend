@@ -13,9 +13,9 @@ import Item from './Item'
 type Props = {
     title: Node,
     type: 'normal' | 'uppercase' | 'meatball' | 'grayMeatball' | 'whiteMeatball',
-    children: Node,
+    children?: Node,
     className?: string,
-    noCaret?: boolean,
+    caret?: false | 'arrow' | 'svg',
     activeTitle?: boolean,
     selectedItem?: ?string,
     toggleProps: {
@@ -29,6 +29,7 @@ type Props = {
     direction?: string,
     disabled?: boolean,
     onChange?: (string) => void,
+    leftTick?: boolean,
 }
 
 const UppercaseTitle = styled.span`
@@ -114,6 +115,7 @@ const TextCaret = styled.span`
     display: inline-block;
     height: 9px;
     line-height: 6px;
+    transition: transform 180ms ease-in-out;
 
     &.open {
         transform: rotate(180deg);
@@ -123,6 +125,7 @@ const TextCaret = styled.span`
 const SvgCaret = styled(SvgIcon)`
     width: 11px;
     margin-left: 0.5em;
+    transition: transform 180ms ease-in-out;
 
     &.open {
         transform: rotate(180deg);
@@ -163,7 +166,7 @@ const Popover = ({
     onMenuToggle,
     children,
     className,
-    noCaret,
+    caret = 'arrow',
     activeTitle,
     selectedItem,
     toggleProps: { className: toggleClassName, ...toggleProps },
@@ -171,6 +174,7 @@ const Popover = ({
     direction,
     disabled,
     onChange,
+    leftTick,
 }: Props) => {
     const [open, setOpen] = useState(false)
 
@@ -218,9 +222,14 @@ const Popover = ({
         }
     }, [titleString, type, disabled])
 
-    const caretComponent = useMemo(() => (
-        <Caret open={open} svg={type === 'uppercase'} />
-    ), [type, open])
+    const caretComponent = useMemo(() => {
+        if (!caret) {
+            return null
+        }
+        return (
+            <Caret open={open} svg={caret === 'svg'} />
+        )
+    }, [caret, open])
 
     const onClick = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         e.preventDefault()
@@ -264,17 +273,20 @@ const Popover = ({
                 disabled={!!disabled}
             >
                 <ToggleLabel>{titleComponent}</ToggleLabel>
-                {!noCaret && caretComponent}
+                {caretComponent}
             </StyledDropdownToggle>
-            <StyledDropdownMenu
-                {...menuProps}
-                className={menuClassName}
-            >
-                {React.Children.map(children, (child, index) => child && React.cloneElement(child, {
-                    active: !!child.props.value && child.props.value === selectedItem,
-                    onClick: getOnItemClick(index, child.props.onClick),
-                }))}
-            </StyledDropdownMenu>
+            {childrenArray.length > 0 && (
+                <StyledDropdownMenu
+                    {...menuProps}
+                    className={menuClassName}
+                >
+                    {React.Children.map(children, (child, index) => child && React.cloneElement(child, {
+                        active: !!child.props.value && child.props.value === selectedItem,
+                        onClick: getOnItemClick(index, child.props.onClick),
+                        leftTick: !!leftTick,
+                    }))}
+                </StyledDropdownMenu>
+            )}
         </StyledDropdown>
     )
 }

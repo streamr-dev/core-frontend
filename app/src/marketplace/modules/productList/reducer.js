@@ -23,22 +23,23 @@ export const initialState: ProductListState = {
     ids: [],
     filter: {
         search: '',
-        categories: null,
-        sortBy: null,
-        maxPrice: null,
+        categories: undefined,
+        sortBy: undefined,
+        maxPrice: undefined,
+        type: undefined,
     },
     fetching: false,
-    error: null,
+    error: undefined,
     pageSize: productListPageSize,
     offset: 0,
-    hasMoreSearchResults: null,
+    hasMoreSearchResults: undefined,
 }
 
 const reducer: (ProductListState) => ProductListState = handleActions({
     [GET_PRODUCTS_REQUEST]: (state: ProductListState): ProductListState => ({
         ...state,
         fetching: true,
-        error: null,
+        error: undefined,
     }),
 
     [GET_PRODUCTS_SUCCESS]: (state: ProductListState, action: ProductsAction) => ({
@@ -57,7 +58,10 @@ const reducer: (ProductListState) => ProductListState = handleActions({
 
     [UPDATE_FILTER]: (state: ProductListState, action: FilterAction): ProductListState => ({
         ...state,
-        filter: action.payload.filter,
+        filter: {
+            ...state.filter,
+            ...action.payload.filter,
+        },
     }),
 
     [CLEAR_FILTERS]: (state: ProductListState) => ({
@@ -67,10 +71,10 @@ const reducer: (ProductListState) => ProductListState = handleActions({
 
     [CLEAR_PRODUCT_LIST]: (state: ProductListState) => ({
         ...state,
-        error: null,
+        error: undefined,
         ids: [],
         offset: 0,
-        hasMoreSearchResults: null,
+        hasMoreSearchResults: undefined,
     }),
 
 }, initialState)

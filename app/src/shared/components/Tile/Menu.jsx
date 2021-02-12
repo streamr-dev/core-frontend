@@ -17,7 +17,7 @@ const UnstyledMenu = ({ children, onToggle, ...props }: Props) => (
         title="Select"
         type="whiteMeatball"
         direction="down"
-        noCaret
+        caret={false}
         onMenuToggle={onToggle}
         menuProps={{
             right: true,

@@ -39,7 +39,7 @@ function ZoomControls({ className, canvas }) {
         <div className={cx(className, styles.ZoomControls)}>
             <Popover
                 className={cx(styles.ZoomMenu, styles.DropdownMenu)}
-                noCaret
+                caret={false}
                 menuProps={{
                     className: styles.DropdownMenuMenu,
                 }}
@@ -210,7 +210,7 @@ export default withErrorBoundary(ErrorComponentView)(class CanvasToolbar extends
                                                 <Meatball alt="Select" />
                                             </R.Button>
                                         }
-                                        noCaret
+                                        caret={false}
                                         disabled={!canEdit}
                                         className={styles.DropdownMenu}
                                         menuProps={{

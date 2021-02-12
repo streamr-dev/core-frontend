@@ -1,8 +1,6 @@
 // @flow
 
 import React, { useEffect, useState } from 'react'
-import MediaQuery from 'react-responsive'
-import { lg } from '$app/scripts/breakpoints'
 import { getSubscribedEvents } from '$mp/modules/contractProduct/services'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -95,18 +93,11 @@ const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
     }, [subscriptionData, shownDays])
 
     return (
-        // TODO(mariusz): MediaQuery really needed!?
-        <MediaQuery maxWidth={lg.max}>
-            {(isTabletOrMobile: boolean) => (
-                <TimeSeriesGraph
-                    graphData={graphData}
-                    shownDays={shownDays}
-                    width={isTabletOrMobile ? 380 : 540}
-                    height={200}
-                    isLoading={isLoading}
-                />
-            )}
-        </MediaQuery>
+        <TimeSeriesGraph
+            graphData={graphData}
+            shownDays={shownDays}
+            isLoading={isLoading}
+        />
     )
 }
 

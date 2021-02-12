@@ -171,7 +171,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                 <Popover
                     title={I18n.t('userpages.streams.actions.title')}
                     type="meatball"
-                    noCaret
+                    caret={false}
                     onMenuToggle={onToggleStreamDropdown}
                     menuProps={{
                         right: true,

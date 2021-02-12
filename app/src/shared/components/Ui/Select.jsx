@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import ReactSelect, { components } from 'react-select'
 import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -122,23 +122,21 @@ const IconOption = (props) => (
     </components.Option>
 )
 
-type CaretProps = {
-    up?: boolean,
-}
-
-const UnstyledCaret = ({ up, ...props }: CaretProps) => (
-    <SvgIcon {...props} name={up ? 'caretUp' : 'caretDown'} />
-)
-
-const Caret = styled(UnstyledCaret)`
-  height: 8px;
-  width: 10px;
+const Caret = styled(SvgIcon)`
+    height: 8px;
+    width: 10px;
+    transition: transform 180ms ease-in-out;
 `
 
 const DropdownIndicator = (props) => (
     components.DropdownIndicator && (
         <components.DropdownIndicator {...props}>
-            <Caret up={!!props.selectProps.menuIsOpen} />
+            <Caret
+                name="caretDown"
+                css={props.selectProps.menuIsOpen ? css`
+                    transform: rotate(180deg);
+                ` : undefined}
+            />
         </components.DropdownIndicator>
     )
 )

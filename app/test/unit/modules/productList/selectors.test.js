@@ -51,7 +51,7 @@ describe('productList - selectors', () => {
     })
 
     it('selects error', () => {
-        assert.deepStrictEqual(all.selectProductListError(state), null)
+        assert.deepStrictEqual(all.selectProductListError(state), undefined)
     })
 
     it('selects page size', () => {

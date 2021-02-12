@@ -39,10 +39,18 @@ stories.add('basic (right menu align)', () => (
     </Popover>
 ))
 
+stories.add('basic (svg caret)', () => (
+    <Popover title="Select" caret="svg">
+        <Popover.Item onClick={action('Click me')}>Click me</Popover.Item>
+        <Popover.Item onClick={action('Another option')}>Another option</Popover.Item>
+    </Popover>
+))
+
 stories.add('uppercase', () => (
     <Popover
         title="Select"
         type="uppercase"
+        caret="svg"
         menuProps={{
             right: true,
         }}
@@ -53,21 +61,21 @@ stories.add('uppercase', () => (
 ))
 
 stories.add('basic (no caret)', () => (
-    <Popover title="Select" noCaret>
+    <Popover title="Select" caret={false}>
         <Popover.Item onClick={action('Click me')}>Click me</Popover.Item>
         <Popover.Item onClick={action('Another option')}>Another option</Popover.Item>
     </Popover>
 ))
 
 stories.add('meatball', () => (
-    <Popover title="Select" noCaret type="meatball">
+    <Popover title="Select" caret={false} type="meatball">
         <Popover.Item onClick={action('Click me')}>Click me</Popover.Item>
         <Popover.Item onClick={action('Another option')}>Another option</Popover.Item>
     </Popover>
 ))
 
 stories.add('meatball (gray)', () => (
-    <Popover title="Select" noCaret type="grayMeatball">
+    <Popover title="Select" caret={false} type="grayMeatball">
         <Popover.Item onClick={action('Click me')}>Click me</Popover.Item>
         <Popover.Item onClick={action('Another option')}>Another option</Popover.Item>
     </Popover>
@@ -80,7 +88,7 @@ const BlackPaddedContainer = styled.div`
 
 stories.add('meatball (white)', () => (
     <BlackPaddedContainer>
-        <Popover title="Select" noCaret type="whiteMeatball">
+        <Popover title="Select" caret={false} type="whiteMeatball">
             <Popover.Item onClick={action('Click me')}>Click me</Popover.Item>
             <Popover.Item onClick={action('Another option')}>Another option</Popover.Item>
         </Popover>
@@ -96,9 +104,10 @@ stories.add('with value', () => (
 
 type WithActiveItemProps = {
     activeTitle?: boolean,
+    leftTick?: boolean,
 }
 
-const WithActiveItem = ({ activeTitle }: WithActiveItemProps) => {
+const WithActiveItem = ({ activeTitle, leftTick = false }: WithActiveItemProps) => {
     const [selected, setSelected] = useState(undefined)
     const changeAction = action('onChange')
 
@@ -113,6 +122,7 @@ const WithActiveItem = ({ activeTitle }: WithActiveItemProps) => {
             onChange={onChange}
             selectedItem={selected}
             activeTitle={activeTitle}
+            leftTick={leftTick}
         >
             <Popover.Item value="1">Value 1</Popover.Item>
             <Popover.Item value="2">Value 2</Popover.Item>
@@ -123,3 +133,5 @@ const WithActiveItem = ({ activeTitle }: WithActiveItemProps) => {
 stories.add('with value and active item', () => <WithActiveItem />)
 
 stories.add('with value, active item & title', () => <WithActiveItem activeTitle />)
+
+stories.add('active item, left tick position', () => <WithActiveItem activeTitle leftTick />)

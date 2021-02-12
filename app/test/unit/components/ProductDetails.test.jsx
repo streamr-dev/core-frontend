@@ -46,16 +46,38 @@ describe('Product Details', () => {
         expect(wrapper.find(ExpirationCounter)).toHaveLength(0)
     })
 
-    it('must show the ExpirationCounter when the product has been bought by the logged in user and that subscription is in the past ', () => {
+    it('must show the ExpirationCounter when the product has been bought by the logged in user and that subscription is less than 2 days old', () => {
+        const dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => 1549312452000)
+
         props = {
             ...props,
             productSubscription: {
                 productId: 'product-1',
-                endTimestamp: 123,
+                endTimestamp: 1549146852,
             },
         }
         wrapper = shallow(<ProductDetails {...props} />)
         expect(wrapper.find(ExpirationCounter)).toHaveLength(1)
+
+        dateNowSpy.mockReset()
+        dateNowSpy.mockRestore()
+    })
+
+    it('must not show the ExpirationCounter when the product has been bought by the logged in user and that subscription is in the past', () => {
+        const dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => 1549312452000)
+
+        props = {
+            ...props,
+            productSubscription: {
+                productId: 'product-1',
+                endTimestamp: 1548966852,
+            },
+        }
+        wrapper = shallow(<ProductDetails {...props} />)
+        expect(wrapper.find(ExpirationCounter)).toHaveLength(0)
+
+        dateNowSpy.mockReset()
+        dateNowSpy.mockRestore()
     })
 
     it('must show the ExpirationCounter when the product has been bought by the logged in user and has an active subscription', () => {
