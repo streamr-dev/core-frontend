@@ -28,8 +28,8 @@ const DocsShortcuts = () => (
             <Translate value="general.dataUnions" />
         </Link>
         {null}
-        <Link href={routes.community.telegram()} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.telegramGroup" />
+        <Link href={routes.community.discord()} target="_blank" rel="noopener noreferrer">
+            Discord
         </Link>
         <Link href={routes.giveFeedback()} target="_blank" rel="noopener noreferrer">
             <Translate value="general.giveFeedback" />

@@ -20,7 +20,7 @@ stories.add('default', () => (
         <Link href="#" onClick={onClick}>Marketplace</Link>
         <Link href="#" onClick={onClick}>Streamr API</Link>
         {null}
-        <Link href="#" onClick={onClick}>Telegram Group</Link>
+        <Link href="#" onClick={onClick}>Discord</Link>
         <Link href="#" onClick={onClick}>Dev Chat</Link>
     </Onboarding>
 ))

@@ -134,9 +134,6 @@ msgstr "Stream"
 msgid "general.streams"
 msgstr "Streams"
 
-msgid "general.telegram"
-msgstr "Telegram"
-
 msgid "general.terms"
 msgstr "Terms & Conditions"
 
@@ -354,9 +351,6 @@ msgstr "Engine"
 
 msgid "general.streamrApi"
 msgstr "Streamr API"
-
-msgid "general.telegramGroup"
-msgstr "Telegram Group"
 
 msgid "general.giveFeedback"
 msgstr "Give feedback"

@@ -170,7 +170,7 @@ const UnstyledSearch = ({ toggleOverlay, nav, ...props }: Props) => {
                                 <MoreInfoText
                                     value="docs.search.noResults"
                                     tag="p"
-                                    url={routes.community.devForum()}
+                                    url={routes.community.discord()}
                                     dangerousHTML
                                 />
                             </React.Fragment>
