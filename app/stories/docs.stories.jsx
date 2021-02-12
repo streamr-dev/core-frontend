@@ -37,7 +37,7 @@ story('Navigation')
             >
                 * Only visible in Desktop resolution
             </span>
-            <Navigation />
+            <Navigation.TableOfContents />
         </div>
     ))
     .add('mobile', () => (
@@ -50,7 +50,7 @@ story('Navigation')
             >
                 * Only visible in mobile/table resolution
             </span>
-            <Navigation responsive />
+            <Navigation.Responsive />
         </div>
     ), {
         viewport: {

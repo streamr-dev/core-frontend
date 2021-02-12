@@ -156,12 +156,18 @@ const MobileHeader = styled(NavListItem)`
     && {
         margin-top: 0.5em;
         margin-bottom: 2.5em;
+        cursor: pointer;
 
         a {
         width: calc(100% - 60px);
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
+        }
+
+        :empty::after {
+            content: ' ';
+            white-space: pre;
         }
     }
 `
@@ -234,9 +240,7 @@ const UnstyledResponsive = (props: Props) => {
         >
             <TableOfContents>
                 <MobileHeader>
-                    <Link to="#">
-                        {mobileHeader}
-                    </Link>
+                    {mobileHeader}
                 </MobileHeader>
             </TableOfContents>
             <DropdownCaret name="back" />
