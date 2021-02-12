@@ -168,7 +168,7 @@ export const getCommunityContract = (address: DataUnionId, usePublicNode: boolea
 
 export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
     const contract = getCommunityContract(address, usePublicNode)
-    const owner = await call(contract.methods.owner)
+    const owner = await call(contract.methods.owner())
 
     return owner
 }
@@ -180,7 +180,7 @@ export const isDataUnionDeployed = async (address: DataUnionId, usePublicNode: b
 export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean = false) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     const contract = getCommunityContract(address, usePublicNode)
-    const adminFee = await call(contract.methods.adminFee)
+    const adminFee = await call(contract.methods.adminFee())
 
     return web3.utils.fromWei(web3.utils.toBN(adminFee), 'ether')
 }
