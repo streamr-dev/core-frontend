@@ -182,8 +182,7 @@ const TransactionList = () => {
                             const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
 
                             let displayPayment = ''
-                            if ((paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) &&
-                                paymentValue && paymentCurrency) {
+                            if ((paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && paymentValue) {
                                 displayPayment = ` (${formatDecimals(fromAtto(paymentValue), paymentCurrency)} ${paymentCurrency})`
                             }
 
