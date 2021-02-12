@@ -179,17 +179,11 @@ const TransactionList = () => {
                             const eventType = (!!type && I18n.t(`userpages.transactions.type.${type}`)) || ''
                             const price = BN(value)
                             const pricePrefix = type === transactionTypes.SUBSCRIPTION ? '-' : '+'
+                            const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
 
-                            let displayPrice = ''
                             let displayPayment = ''
-                            if (paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) {
-                                displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
-
-                                if (paymentValue && paymentCurrency) {
-                                    displayPayment = `${formatDecimals(fromAtto(paymentValue), paymentCurrency)} ${paymentCurrency}`
-                                }
-                            } else {
-                                displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
+                            if ((paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && paymentValue) {
+                                displayPayment = ` (${formatDecimals(fromAtto(paymentValue), paymentCurrency)} ${paymentCurrency})`
                             }
 
                             return (
@@ -199,7 +193,7 @@ const TransactionList = () => {
                                 >
                                     <TransactionListComponent.Title
                                         /* eslint-disable-next-line max-len */
-                                        description={`${eventType} ${pricePrefix}${displayPrice}${displayPayment} (gas: ${gasUsed} / ${gasPrice})`}
+                                        description={`${eventType} ${pricePrefix}${displayPrice} ${displayPayment} (Gas: ${gasUsed} / ${gasPrice})`}
                                         moreInfo={timestamp ? titleize(ago(new Date(timestamp))) : '-'}
                                     >
                                         {productTitle}
@@ -208,7 +202,7 @@ const TransactionList = () => {
                                         {eventType}
                                     </TransactionListComponent.Item>
                                     <TransactionListComponent.Item title={hash}>
-                                        {truncate(hash, { length: 10 })}
+                                        {truncate(hash)}
                                     </TransactionListComponent.Item>
                                     <TransactionListComponent.Item>
                                         {timestamp ? titleize(ago(new Date(timestamp))) : '-'}
