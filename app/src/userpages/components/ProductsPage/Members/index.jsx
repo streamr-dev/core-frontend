@@ -314,7 +314,7 @@ const Members = () => {
                 />
             )}
             loading={fetchingMembers}
-            contentClassname={coreLayoutStyles.pad}
+            contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
         >
             <CoreHelmet title={I18n.t('userpages.title.members')} />
             <StyledListContainer className={cx(styles.container, {

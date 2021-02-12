@@ -1,33 +1,58 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Translate } from 'react-redux-i18n'
-import DeploySpinner from '$shared/components/DeploySpinner'
+import UnstyledDeploySpinner from '$shared/components/DeploySpinner'
+import { MD } from '$shared/utils/styled'
 
 const Heading = styled.div`
-    font-size: 30px;
     letter-spacing: 0;
-    line-height: 32px;
+    font-size: 1rem;
+    line-height: 1rem;
+`
+
+const DeploySpinner = styled(UnstyledDeploySpinner)``
+
+const DeploySpinnerWrapper = styled.div`
 `
 
 const UnstyledDataUnionPending = (props) => (
     <div {...props}>
-        <div>
+        <DeploySpinnerWrapper>
             <DeploySpinner isRunning showCounter={false} />
-        </div>
-        <div>
-            <Heading>
-                <Translate value="productPage.dataUnionPending.title" />
-            </Heading>
-        </div>
+        </DeploySpinnerWrapper>
+        <Heading>
+            <Translate value="productPage.dataUnionPending.title" />
+        </Heading>
     </div>
 )
 
 const DataUnionPending = styled(UnstyledDataUnionPending)`
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    display: grid;
-    grid-column-gap: 4em;
-    grid-template-columns: 160px 500px;
     justify-content: center;
+
+    ${DeploySpinnerWrapper} {
+        max-width: 160px;
+    }
+
+    ${DeploySpinnerWrapper} + ${Heading} {
+        margin-top: 1rem;
+    }
+
+    @media (min-width: ${MD}px) {
+        flex-direction: row;
+
+        ${Heading} {
+            font-size: 30px;
+            line-height: 32px;
+        }
+
+        ${DeploySpinnerWrapper} + ${Heading} {
+            margin-top: 0;
+            margin-left: 4rem;
+        }
+    }
 `
 
 Object.assign(DataUnionPending, {

@@ -24,6 +24,16 @@ const getTermStrings = (ids: Array<string>) => (
     }).join('')
 )
 
+const Body = styled(Segment.Body)`
+    p {
+        margin: 0;
+    }
+
+    p + p {
+        margin-top: 1rem;
+    }
+`
+
 const UnstyledTerms = ({ product, ...props }: Props) => {
     const terms = product.termsOfUse || {}
     const entries = Object.entries(terms)
@@ -41,28 +51,30 @@ const UnstyledTerms = ({ product, ...props }: Props) => {
             <Segment.Header>
                 <Translate value="productPage.termsOfUse.title" />
             </Segment.Header>
-            <Segment.Body pad>
-                <strong>
-                    <Translate value="productPage.termsOfUse.basic" />
-                </strong>
-                {' '}
-                {permitted.length > 0 && (
-                    <React.Fragment>
-                        {I18n.t('productPage.termsOfUse.permitted', {
-                            count: permitted.length,
-                            permissions: permittedStr,
-                        })}
-                        {' '}
-                    </React.Fragment>
-                )}
-                {notPermitted.length > 0 && I18n.t('productPage.termsOfUse.notPermitted', {
-                    count: notPermitted.length,
-                    permissions: notPermittedStr,
-                })}
-                {permitted.length === 0 && ` ${I18n.t('productPage.termsOfUse.postfix')}`}
-                {notPermitted.length > 0 && '.'}
+            <Body pad>
+                <p>
+                    <strong>
+                        <Translate value="productPage.termsOfUse.basic" />
+                    </strong>
+                    {' '}
+                    {permitted.length > 0 && (
+                        <React.Fragment>
+                            {I18n.t('productPage.termsOfUse.permitted', {
+                                count: permitted.length,
+                                permissions: permittedStr,
+                            })}
+                            {' '}
+                        </React.Fragment>
+                    )}
+                    {notPermitted.length > 0 && I18n.t('productPage.termsOfUse.notPermitted', {
+                        count: notPermitted.length,
+                        permissions: notPermittedStr,
+                    })}
+                    {permitted.length === 0 && ` ${I18n.t('productPage.termsOfUse.postfix')}`}
+                    {notPermitted.length > 0 && '.'}
+                </p>
                 {!!terms.termsUrl && (
-                    <React.Fragment>
+                    <p>
                         <strong>
                             <Translate value="productPage.termsOfUse.detailed" />
                         </strong>
@@ -72,9 +84,9 @@ const UnstyledTerms = ({ product, ...props }: Props) => {
                                 {terms.termsName != null && terms.termsName.length > 0 ? terms.termsName : terms.termsUrl}
                             </a>
                         </strong>
-                    </React.Fragment>
+                    </p>
                 )}
-            </Segment.Body>
+            </Body>
         </Segment>
     )
 }
