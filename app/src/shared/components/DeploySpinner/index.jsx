@@ -122,9 +122,10 @@ const SpinnerSvg = () => (
 export type Props = {
     isRunning: boolean,
     showCounter: boolean,
+    className?: string,
 }
 
-const DeploySpinner = ({ isRunning, showCounter }: Props) => {
+const DeploySpinner = ({ isRunning, showCounter, className }: Props) => {
     const [elapsedSecs, setElapsedSecs] = useState(0)
 
     useInterval(() => {
@@ -142,7 +143,7 @@ const DeploySpinner = ({ isRunning, showCounter }: Props) => {
         <div
             className={cx(styles.root, {
                 [styles.isRunning]: !!isRunning,
-            })}
+            }, className)}
         >
             <SpinnerSvg />
             {showCounter && (

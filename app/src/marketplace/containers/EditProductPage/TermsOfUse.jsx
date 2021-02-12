@@ -21,18 +21,6 @@ const Section = styled.section`
     background: none;
 `
 
-const CheckboxContainer = styled.div`
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-gap: 16px;
-    margin: 40px 0;
-`
-
-const CheckboxLabel = styled.label`
-    display: flex;
-    margin: 0;
-`
-
 const DetailsContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -44,8 +32,14 @@ const StyledCheckbox = styled(Checkbox)`
     height: 24px !important;
 `
 
-const TermCheckbox = ({ id, product, updateTermsOfUse, disabled }: { id: string, product: any, updateTermsOfUse: any, disabled: boolean }) => (
-    <CheckboxLabel htmlFor={id}>
+const UnstyledTermCheckbox = ({
+    id,
+    product,
+    updateTermsOfUse,
+    disabled,
+    ...props
+}: { id: string, product: any, updateTermsOfUse: any, disabled: boolean }) => (
+    <label {...props} htmlFor={id}>
         <StyledCheckbox
             id={id}
             name={id}
@@ -62,8 +56,26 @@ const TermCheckbox = ({ id, product, updateTermsOfUse, disabled }: { id: string,
             value={`editProductPage.terms.${id}`}
             dangerousHTML
         />
-    </CheckboxLabel>
+    </label>
 )
+
+const TermCheckbox = styled(UnstyledTermCheckbox)`
+    display: flex;
+    margin: 0;
+`
+
+const CheckboxContainer = styled.div`
+    margin: 40px 0;
+    background: #F1F1F1;
+    border-radius: 4px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+
+    ${TermCheckbox} + ${TermCheckbox} {
+        margin-left: 1rem;
+    }
+`
 
 const TermsOfUse = ({ className, disabled }: Props) => {
     const product = useEditableProduct()
