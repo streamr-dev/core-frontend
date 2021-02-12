@@ -1,5 +1,5 @@
 .docsLayout {
-  padding: 7rem 0 5rem;
+  padding: 2.5rem 0 5rem;
   color: #323232;
   word-break: break-word;
 
@@ -311,6 +311,8 @@
 
 .content {
   overflow: auto;
+  margin: -1rem;
+  padding: 1rem;
 }
 
 .hideOnMobile {
@@ -319,24 +321,6 @@
 
 .showOnMobile {
   display: none !important;
-}
-
-.githubIcon {
-  height: 12px;
-  width: 12px;
-  margin-right: 6px;
-}
-
-.editButton {
-  position: absolute;
-  top: 8rem;
-  overflow: none;
-}
-
-@media (--md-down) {
-  .editButton {
-    display: none;
-  }
 }
 
 @media (--md-down) {
@@ -412,7 +396,6 @@
       overflow: scroll !important;
 
       code {
-        margin-left: -2rem;
         display: block;
       }
     }
@@ -443,11 +426,5 @@
   .grid {
     grid-template-columns: auto 736px;
     grid-column-gap: 2rem;
-  }
-}
-
-@media (--xl) {
-  .grid > div:nth-child(1) {
-    margin-left: -2rem;
   }
 }

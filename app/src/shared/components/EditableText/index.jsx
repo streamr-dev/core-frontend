@@ -26,6 +26,7 @@ type Props = {
     setEditing: (boolean) => void,
     hidePlaceholderOnFocus?: boolean,
     immediateCommit?: boolean,
+    theme?: Object,
 }
 
 function isBlank(str) {
@@ -50,6 +51,7 @@ const EditableText = ({
     title,
     hidePlaceholderOnFocus,
     immediateCommit,
+    theme,
     ...props
 }: Props) => {
     const children = (childrenProp == null) ? EditableText.defaultProps.children : childrenProp
