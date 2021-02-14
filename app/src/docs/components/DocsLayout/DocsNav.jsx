@@ -148,11 +148,8 @@ const UnstyledWide = (props) => {
                 menu={(
                     <Menu>
                         <Menu.Group>
-                            <Menu.Item as={Link} href={routes.community.devForum()}>
-                                Dev Forum
-                            </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.telegram()}>
-                                Telegram
+                            <Menu.Item as={Link} href={routes.community.discord()}>
+                                Discord
                             </Menu.Item>
                             <Menu.Item as={Link} href={routes.community.twitter()}>
                                 Twitter
@@ -232,20 +229,20 @@ const UnstyledNarrow = (props) => (
                 <Menu>
                     <MenuInner>
                         <MenuColumn>
-                            <Menu.Item as={Link} href={routes.community.telegram()}>
-                                Telegram
+                            <Menu.Item as={Link} href={routes.community.discord()}>
+                                Discord
                             </Menu.Item>
                             <Menu.Item as={Link} href={routes.community.twitter()}>
                                 Twitter
-                            </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.devForum()}>
-                                Dev forum
                             </Menu.Item>
                             <Menu.Item as={Link} href={routes.community.github()}>
                                 Github
                             </Menu.Item>
                             <Menu.Item as={Link} href={routes.community.youtube()}>
                                 Youtube
+                            </Menu.Item>
+                            <Menu.Item as={Link} href={routes.community.trello()}>
+                                Trello
                             </Menu.Item>
                         </MenuColumn>
                         <MenuColumn>
@@ -260,9 +257,6 @@ const UnstyledNarrow = (props) => (
                             </Menu.Item>
                             <Menu.Item as={Link} href={routes.community.linkedin()}>
                                 Linkedin
-                            </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.trello()}>
-                                Trello
                             </Menu.Item>
                         </MenuColumn>
                     </MenuInner>
