@@ -3,7 +3,7 @@ import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
 import { Translate, I18n } from 'react-redux-i18n'
 import { Nav, Menu, Button } from '@streamr/streamr-layout'
-import { MD as TABLET, LG as DESKTOP, MEDIUM } from '$shared/utils/styled'
+import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import { DocsMenu } from '$docs/components/DocsLayout/DocsNav'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
@@ -13,6 +13,7 @@ import ActivityList from '$shared/components/ActivityList'
 import { getMethod } from '$shared/utils/sessionToken'
 import routes from '$routes'
 import User from './User'
+import SiteSection from './SiteSection'
 
 const CaretDownIcon = styled(SvgIcon)`
     opacity: 1;
@@ -210,18 +211,6 @@ const UnstyledWide = (props) => {
         </Nav.Wide>
     )
 }
-
-const SiteSection = styled.div`
-    font-size: 14px;
-    font-weight: ${MEDIUM};
-    line-height: 1em;
-    margin-left: 16px;
-    text-transform: uppercase;
-
-    @media (min-width: ${TABLET}px) {
-        margin-left: 24px;
-    }
-`
 
 const ConnectedWith = styled.div`
     background-color: #F8F8F8;

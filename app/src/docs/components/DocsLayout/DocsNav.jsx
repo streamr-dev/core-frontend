@@ -5,7 +5,7 @@ import { Nav, Menu, Button, useBlogPosts } from '@streamr/streamr-layout'
 import { Translate } from 'react-redux-i18n'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import SharedNav from '$shared/components/Layout/Nav'
+import SiteSection from '$shared/components/Layout/SiteSection'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
@@ -197,9 +197,9 @@ const UnstyledNarrow = (props) => (
         logoComponent={(
             <React.Fragment>
                 <Nav.LogoItem href={routes.root()} />
-                <SharedNav.SiteSection>
+                <SiteSection>
                     Docs
-                </SharedNav.SiteSection>
+                </SiteSection>
             </React.Fragment>
         )}
     >
