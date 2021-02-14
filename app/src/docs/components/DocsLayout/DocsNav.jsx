@@ -202,6 +202,9 @@ const UnstyledNarrow = (props) => (
                 </SiteSection>
             </React.Fragment>
         )}
+        altLogoComponent={(
+            <Nav.LogoItem href={routes.root()} />
+        )}
     >
         <Nav.Narrow.Body>
             <Nav.Link as={Link} to={routes.root()}>

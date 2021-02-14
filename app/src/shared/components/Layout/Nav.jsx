@@ -244,6 +244,9 @@ const UnstyledNarrow = (props) => {
                     </SiteSection>
                 </Fragment>
             )}
+            altLogoComponent={(
+                <Nav.LogoItem href={routes.root()} />
+            )}
             infoComponent={(currentUser && (
                 <ConnectedWith>
                     <Translate
