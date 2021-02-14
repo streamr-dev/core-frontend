@@ -14,6 +14,13 @@ import { getMethod } from '$shared/utils/sessionToken'
 import routes from '$routes'
 import User from './User'
 import SiteSection from './SiteSection'
+import MetamaskIcon from './metamask.svg'
+import WalletconnectIcon from './walletConnect.svg'
+
+const icons = {
+    metamask: MetamaskIcon,
+    walletConnect: WalletconnectIcon,
+}
 
 const CaretDownIcon = styled(SvgIcon)`
     opacity: 1;
@@ -214,6 +221,7 @@ const UnstyledWide = (props) => {
 
 const ConnectedWith = styled.div`
     background-color: #F8F8F8;
+    display: none;
     height: 32px;
     line-height: 32px;
     border-radius: 4px;
@@ -223,8 +231,46 @@ const ConnectedWith = styled.div`
     color: #323232;
     padding: 0 8px;
 
+    img {
+        width: 1em;
+    }
+
     strong {
-        font-weight: var(--medium);
+        display: none;
+    }
+
+    @media (min-width: 268px) {
+        display: block;
+    }
+
+    @media (min-width: 310px) {
+        span {
+            margin-right: 0.1em;
+        }
+
+        span::before {
+            content: 'Using ';
+        }
+    }
+
+    @media (min-width: 346px) {
+        span::before {
+            content: 'Connected with ';
+        }
+    }
+
+    @media (min-width: 424px) {
+        span {
+            margin-right: 0;
+        }
+
+        img {
+            display: none;
+        }
+
+        strong {
+            display: inline;
+        }
     }
 `
 
@@ -232,6 +278,8 @@ const UnstyledNarrow = (props) => {
     const current = useCurrentLocation()
 
     const currentUser = useSelector(selectUserData)
+
+    const method = getMethod()
 
     return (
         <Nav.Narrow
@@ -249,11 +297,11 @@ const UnstyledNarrow = (props) => {
             )}
             infoComponent={(currentUser && (
                 <ConnectedWith>
-                    <Translate
-                        value="general.connectedWith"
-                        method={I18n.t(`auth.loginMethod.${getMethod()}`)}
-                        dangerousHTML
-                    />
+                    <span>&zwnj;</span>
+                    <img src={icons[method]} alt="" />
+                    <strong>
+                        {I18n.t(`auth.loginMethod.${method}`)}
+                    </strong>
                 </ConnectedWith>
             ))}
         >

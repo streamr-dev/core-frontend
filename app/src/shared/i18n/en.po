@@ -194,9 +194,6 @@ msgstr "Copy to clipboard"
 msgid "general.copied"
 msgstr "Copied"
 
-msgid "general.connectedWith"
-msgstr "Connected with <strong>%{method}</strong>"
-
 msgid "language.id"
 msgstr "en"
 
