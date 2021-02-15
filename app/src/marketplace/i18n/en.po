@@ -440,8 +440,8 @@ msgstr "Connect your Ethereum address"
 
 msgid "modal.connectEthereumAddress.description"
 msgstr ""
-"Connect your Ethereum address to your Streamr account so your subscriptions are visible. "
-"Confirm this transaction in your wallet to proceed."
+"Connect your Ethereum address to see your subscriptions.<br/>"
+"Sign this step in your wallet to proceed."
 
 msgid "modal.common.save"
 msgstr "Save"
