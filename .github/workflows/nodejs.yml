@@ -1,6 +1,9 @@
 name: Eslint and test
-
 on: [push]
+
+defaults:
+  run:
+    working-directory: app
 
 jobs:
   test:
