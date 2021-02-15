@@ -58,6 +58,35 @@ describe('text utils', () => {
             }))
                 .toBe('address is 0x8b549d15...5b1e606ff1 inside text')
         })
+
+        it('truncates to custom length (40 characters vs less)', () => {
+            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
+                length: 12,
+            }))
+                .toBe('0x8b549d1526...cb5243c2cf40')
+
+            expect(all.truncate('address is 0x8b549d1526d0f6168eed061041d6cb5243c2cf40 inside text', {
+                length: 12,
+            }))
+                .toBe('address is 0x8b549d1526...cb5243c2cf40 inside text')
+
+            // 39 characters
+            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2c39', {
+                length: 12,
+            }))
+                .toBe('0x8b549d1526d0f6168eed061041d6cb5243c2c39')
+
+            expect(all.truncate('address is 0x8b549d1526d0f6168eed061041d6cb5243c2c39 inside text', {
+                length: 12,
+            }))
+                .toBe('address is 0x8b549d1526d0f6168eed061041d6cb5243c2c39 inside text')
+        })
+
+        it('respects the implicit maximum length', () => {
+            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
+                length: 100,
+            })).toBe('0x8b549d1526d0f6168...61041d6cb5243c2cf40')
+        })
     })
 
     describe('numberToText', () => {

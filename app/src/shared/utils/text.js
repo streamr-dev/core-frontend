@@ -8,19 +8,13 @@ type Options = {
 }
 
 export const truncate = (path: string, options: Options = {}) => {
-    const { length, separator } = {
-        separator: '...',
-        length: 5,
-        ...options,
-    }
+    const { length = 5, separator = '...' } = options
 
-    if (typeof path === 'string' && path.indexOf('0x') >= 0) {
-        const search = new RegExp(`0x([A-Fa-f0-9]{${length - 2}})[A-Fa-f0-9]{32,}([A-Fa-f0-9]{${length}})`, 'g')
+    return typeof path !== 'string' ? path : path.replace(/0x[a-f\d]{40,}/ig, (match) => {
+        const l = Math.min(length, Math.floor((match.length - separator.length) / 2))
 
-        return path.replace(search, `0x$1${separator}$2`)
-    }
-
-    return path
+        return match.substr(0, l) + separator + match.substring(match.length - l)
+    })
 }
 
 export const numberToText = (number: number): string => {
