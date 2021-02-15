@@ -87,6 +87,12 @@ describe('text utils', () => {
                 length: 100,
             })).toBe('0x8b549d1526d0f6168...61041d6cb5243c2cf40')
         })
+
+        it('respects the implicit minimum length of 3', () => {
+            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
+                length: 0,
+            })).toBe('0x8...f40')
+        })
     })
 
     describe('numberToText', () => {
