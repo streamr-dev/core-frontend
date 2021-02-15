@@ -94,7 +94,7 @@ export const send = (method: Sendable, options?: {
     ])
         .then(([account]) => (
             method.send({
-                gas: (options && options.gas) || undefined,
+                gas: (options && options.gas),
                 from: account,
                 value: options && options.value,
             })
@@ -149,7 +149,7 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
             })
             return deployer
                 .send({
-                    gas: (options && options.gas) || undefined,
+                    gas: (options && options.gas),
                     from: account,
                 })
                 .on('error', errorHandler)
