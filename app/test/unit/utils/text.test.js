@@ -84,7 +84,11 @@ describe('text utils', () => {
 
         it('respects the implicit maximum length', () => {
             expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
-                length: 100,
+                length: 20,
+            })).toBe('0x8b549d1526d0f6168eed061041d6cb5243c2cf40')
+
+            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
+                length: 19,
             })).toBe('0x8b549d1526d0f6168...61041d6cb5243c2cf40')
         })
 
