@@ -8,7 +8,6 @@ import type { Stream, NewStream } from '$shared/flowtype/stream-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
-import { gasLimits } from '$shared/utils/constants'
 
 import { post, del, get, put } from '$shared/utils/api'
 import { postStream, getStream } from '$userpages/modules/userPageStreams/services'
@@ -186,9 +185,7 @@ export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean =
 }
 
 export const setAdminFee = (address: DataUnionId, adminFee: number): SmartContractTransaction => (
-    send(getCommunityContract(address).methods.setAdminFee(getAdminFeeInEther(adminFee)), {
-        gas: gasLimits.UPDATE_ADMIN_FEE,
-    })
+    send(getCommunityContract(address).methods.setAdminFee(getAdminFeeInEther(adminFee)))
 )
 
 export const getJoinPartStreamId = (address: DataUnionId, usePublicNode: boolean = false) =>
