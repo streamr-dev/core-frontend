@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, Fragment, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { Button as LayoutButton } from '@streamr/streamr-layout'
+import { truncate } from '$shared/utils/text'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
 import groups, { NAMES } from '$shared/components/PermissionsProvider/groups'
@@ -279,7 +280,9 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                 <Header>
                     <div>
                         <h4 title={userId}>
-                            {userId}
+                            {truncate(userId, {
+                                length: 10,
+                            })}
                             {currentUserId === userId && ' (You)'}
                         </h4>
                         <Role visible={!selected}>
