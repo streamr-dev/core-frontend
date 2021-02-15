@@ -10,6 +10,7 @@ import Md from '$shared/components/Md'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import { usePermissionsState } from '$shared/components/PermissionsProvider'
 import usePersistPermissionDiff from '$shared/components/PermissionsProvider/usePersistPermissionDiff'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import NewShareForm from './NewShareForm'
 import UserList from './UserList'
 import Footer from './Footer'
@@ -65,11 +66,22 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
 
     const [selectedUserId, setSelectedUserId] = useState()
 
+    const isMounted = useIsMounted()
+
+    const onAdd = useCallback((userId) => {
+        // Delayed selecting of the newly added entries make it feel more natural.
+        setTimeout(() => {
+            if (isMounted()) {
+                setSelectedUserId(userId)
+            }
+        }, 100)
+    }, [isMounted])
+
     return (
         <div className={className}>
             <Sidebar.Container>
                 <AnonAccessSelect />
-                <NewShareForm onAdd={setSelectedUserId} />
+                <NewShareForm onAdd={onAdd} />
             </Sidebar.Container>
             <UserList selectedUserId={selectedUserId} setSelectedUserId={setSelectedUserId} />
             <ErrorMessage.Overlay visible={failedToClose} onClick={resetFailedToClose} />

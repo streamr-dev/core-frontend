@@ -11,7 +11,6 @@ import Text from '$ui/Text'
 import Errors from '$ui/Errors'
 import { usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import { ADD_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
-import useIsMounted from '$shared/hooks/useIsMounted'
 
 const Inner = styled.div`
     display: grid;
@@ -33,8 +32,6 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
 
     const dispatch = usePermissionsDispatch()
 
-    const isMounted = useIsMounted()
-
     const onSubmit = useCallback((e) => {
         e.preventDefault()
 
@@ -47,14 +44,12 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
             user: value,
         })
 
-        setTimeout(() => {
-            if (typeof onAdd === 'function' && isMounted()) {
-                onAdd(value)
-            }
-        }, 100)
+        if (typeof onAdd === 'function') {
+            onAdd(value)
+        }
 
         setValue('')
-    }, [value, validationError, dispatch, onAdd, isMounted])
+    }, [value, validationError, dispatch, onAdd])
 
     const onChange = useCallback((e) => {
         setValue(e.target.value)
