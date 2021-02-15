@@ -63,13 +63,15 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
 
     usePreventNavigatingAway('You have unsaved changes', () => hasChanges)
 
+    const [selectedUserId, setSelectedUserId] = useState()
+
     return (
         <div className={className}>
             <Sidebar.Container>
                 <AnonAccessSelect />
-                <NewShareForm />
+                <NewShareForm onAdd={setSelectedUserId} />
             </Sidebar.Container>
-            <UserList />
+            <UserList selectedUserId={selectedUserId} setSelectedUserId={setSelectedUserId} />
             <ErrorMessage.Overlay visible={failedToClose} onClick={resetFailedToClose} />
             <ErrorMessage.Wrapper visible={failedToClose || hasCurrentUserChanges}>
                 {locked && (

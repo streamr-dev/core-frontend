@@ -1,11 +1,15 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { useEditableUserIds } from '$shared/components/PermissionsProvider'
 import Share from './Share'
 
-const UnstyledUserList = ({ items, userErrors, ...props }) => {
-    const [selectedUserId, setSelectedUserId] = useState()
-
+const UnstyledUserList = ({
+    items,
+    selectedUserId,
+    setSelectedUserId,
+    userErrors,
+    ...props
+}) => {
     const editableUserIds = useEditableUserIds()
 
     const onClick = useCallback((e) => {
@@ -13,7 +17,7 @@ const UnstyledUserList = ({ items, userErrors, ...props }) => {
             // Select none on click background.
             setSelectedUserId()
         }
-    }, [])
+    }, [setSelectedUserId])
 
     return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
