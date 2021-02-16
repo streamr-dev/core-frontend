@@ -18,7 +18,7 @@ const Inner = styled.div`
     grid-template-columns: 1fr auto;
 `
 
-const UnstyledNewShareForm = ({ className }) => {
+const UnstyledNewShareForm = ({ className, onAdd }) => {
     const [value, setValue] = useState('')
 
     const [focused, setFocused] = useState(false)
@@ -44,8 +44,12 @@ const UnstyledNewShareForm = ({ className }) => {
             user: value,
         })
 
+        if (typeof onAdd === 'function') {
+            onAdd(value)
+        }
+
         setValue('')
-    }, [value, validationError, dispatch])
+    }, [value, validationError, dispatch, onAdd])
 
     const onChange = useCallback((e) => {
         setValue(e.target.value)
