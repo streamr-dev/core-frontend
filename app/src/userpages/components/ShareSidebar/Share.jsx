@@ -280,9 +280,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                 <Header>
                     <div>
                         <h4 title={userId}>
-                            {truncate(userId, {
-                                length: 10,
-                            })}
+                            {truncate(userId)}
                             {currentUserId === userId && ' (You)'}
                         </h4>
                         <Role visible={!selected}>

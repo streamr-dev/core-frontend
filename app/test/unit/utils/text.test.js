@@ -7,6 +7,13 @@ describe('text utils', () => {
             expect(all.truncate(123)).toBe(123)
         })
 
+        it('does not truncate hashes that are too short', () => {
+            expect(all.truncate('0x0123456789abcdef0123456789abcdef01234567'))
+                .toBe('0x012...34567')
+            expect(all.truncate('0x0123456789abcdef0123456789abcdef0123456'))
+                .toBe('0x0123456789abcdef0123456789abcdef0123456')
+        })
+
         it('does not truncate non-eth address', () => {
             expect(all.truncate('sandbox/test/my-stream')).toBe('sandbox/test/my-stream')
             expect(all.truncate('FwhuQBTrtfkddf2542asd')).toBe('FwhuQBTrtfkddf2542asd')
@@ -36,66 +43,9 @@ describe('text utils', () => {
             expect(all.truncate('0xA3D1F77ACFF0060F7213D7BF3C7fEC78DF847DE1')).toBe('0xA3D...47DE1')
         })
 
-        it('truncates using custom separator', () => {
-            expect(all.truncate('0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1/path/to/stream', {
-                separator: '---',
-            })).toBe('0xa3d---47De1/path/to/stream')
-        })
-
         it('truncates transaction hash', () => {
             expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2c283b6d35cf41fe9c95b1e606ff1'))
                 .toBe('0x8b5...06ff1')
-        })
-
-        it('truncates to custom length', () => {
-            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2c283b6d35cf41fe9c95b1e606ff1', {
-                length: 10,
-            }))
-                .toBe('0x8b549d15...5b1e606ff1')
-
-            expect(all.truncate('address is 0x8b549d1526d0f6168eed061041d6cb5243c2c283b6d35cf41fe9c95b1e606ff1 inside text', {
-                length: 10,
-            }))
-                .toBe('address is 0x8b549d15...5b1e606ff1 inside text')
-        })
-
-        it('truncates to custom length (40 characters vs less)', () => {
-            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
-                length: 12,
-            }))
-                .toBe('0x8b549d1526...cb5243c2cf40')
-
-            expect(all.truncate('address is 0x8b549d1526d0f6168eed061041d6cb5243c2cf40 inside text', {
-                length: 12,
-            }))
-                .toBe('address is 0x8b549d1526...cb5243c2cf40 inside text')
-
-            // 39 characters
-            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2c39', {
-                length: 12,
-            }))
-                .toBe('0x8b549d1526d0f6168eed061041d6cb5243c2c39')
-
-            expect(all.truncate('address is 0x8b549d1526d0f6168eed061041d6cb5243c2c39 inside text', {
-                length: 12,
-            }))
-                .toBe('address is 0x8b549d1526d0f6168eed061041d6cb5243c2c39 inside text')
-        })
-
-        it('respects the implicit maximum length', () => {
-            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
-                length: 20,
-            })).toBe('0x8b549d1526d0f6168eed061041d6cb5243c2cf40')
-
-            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
-                length: 19,
-            })).toBe('0x8b549d1526d0f6168...61041d6cb5243c2cf40')
-        })
-
-        it('respects the implicit minimum length of 3', () => {
-            expect(all.truncate('0x8b549d1526d0f6168eed061041d6cb5243c2cf40', {
-                length: 0,
-            })).toBe('0x8...f40')
         })
     })
 

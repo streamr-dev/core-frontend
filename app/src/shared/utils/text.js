@@ -2,24 +2,11 @@
 
 import { I18n } from 'react-redux-i18n'
 
-type Options = {
-    length: number,
-    separator?: string,
-}
-
-export const truncate = (path: string, options: Options = {}) => {
-    const { length = 5, separator = '...' } = options
-
-    return typeof path !== 'string' ? path : path.replace(/0x[a-f\d]{40,}/ig, (match) => {
-        if (length > Math.floor((match.length - separator.length) / 2)) {
-            return match
-        }
-
-        const l = Math.max(3, length)
-
-        return match.substr(0, l) + separator + match.substring(match.length - l)
-    })
-}
+export const truncate = (path: string) => (
+    typeof path !== 'string' ? path : path.replace(/0x[a-f\d]{40,}/ig, (match) => (
+        `${match.substr(0, 5)}...${match.substring(match.length - 5)}`
+    ))
+)
 
 export const numberToText = (number: number): string => {
     const numberStr = String(number)
