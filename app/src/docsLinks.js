@@ -47,6 +47,7 @@ export default {
     dataToken: '/docs/data-token',
     core: '/docs/core',
     introToCore: '/docs/core/intro-to-core',
+    sharingResourcesInCore: '/docs/core/sharing-resources-in-core',
     marketplace: '/docs/marketplace',
     introToMarketplace: '/docs/marketplace/introduction-marketplace',
     marketplaceDataunions: '/docs/marketplace/data-unions',

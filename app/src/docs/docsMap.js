@@ -272,6 +272,12 @@ export const generateMap = () => ({
             title: 'Intro to Core',
             filePath: 'core/introToCore.mdx',
         },
+        'Sharing resources in Core': {
+            path: docsLinks.sharingResourcesInCore,
+            section: 'Core',
+            title: 'Sharing resources in Core',
+            filePath: 'core/sharingResourcesInCore.mdx',
+        },
     },
     Marketplace: {
         root: {
