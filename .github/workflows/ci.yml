@@ -36,7 +36,6 @@ jobs:
           projectToken: exgpyxh1il5
           exitZeroOnChanges: true
           workingDir: app
-          storybookBuildDir: 'app/storybook-static'
       - name: Build app
         run: npm run build --if-present
       - name: Start Streamr Docker Stack
