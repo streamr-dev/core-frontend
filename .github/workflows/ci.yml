@@ -51,4 +51,4 @@ jobs:
         with:
           browser: chrome
           headless: true
-          project: ./app
+          working-directory: app
