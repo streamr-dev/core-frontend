@@ -33,7 +33,7 @@ jobs:
         uses: chromaui/action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          projectToken: exgpyxh1il5
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           exitZeroOnChanges: true
           workingDir: app
       - name: Build app
@@ -49,4 +49,4 @@ jobs:
         with:
           browser: chrome
           headless: true
-          project: app
+          project: ./app
