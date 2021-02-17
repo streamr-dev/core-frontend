@@ -1,14 +1,22 @@
 import StreamrClient from 'streamr-client'
+import Web3 from 'web3'
+
 import { setToken } from '$shared/utils/sessionToken'
 import getAuthorizationHeader from '$shared/utils/getAuthorizationHeader'
 import getClientConfig from '$shared/utils/getClientConfig'
 
-Cypress.Commands.add('login', (username = 'tester1@streamr.com', password = 'tester1TESTER1') => (
+const generatePrivateKey = (username) => {
+    const web3 = new Web3()
+    const { privateKey } = web3.eth.accounts.create(username)
+
+    return privateKey
+}
+
+Cypress.Commands.add('login', (username = 'tester1@streamr.com') => (
     new StreamrClient({
         restUrl: 'http://localhost/api/v1',
         auth: {
-            username,
-            password,
+            privateKey: generatePrivateKey(username),
         },
     }).session.getSessionToken().then(setToken)
 ))
