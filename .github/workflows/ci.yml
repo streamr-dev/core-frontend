@@ -28,7 +28,7 @@ jobs:
       - name: Run Stylelint
         run: npm run stylelint
       - name: Build storybook
-        run: npm run build-storybook
+        run: npm run build-storybook --output-dir storybook-static
       - name: Publish storybook to Chromatic
         uses: chromaui/action@v1
         with:
@@ -36,6 +36,8 @@ jobs:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           exitZeroOnChanges: true
           workingDir: app
+          # Use output folder from previous step
+          storybookBuildDir: storybook-static
       - name: Build app
         run: npm run build --if-present
       - name: Start Streamr Docker Stack
