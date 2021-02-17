@@ -44,6 +44,8 @@ export const createJoinPartStream = async (account: Address, productId: ProductI
     try {
         try {
             stream = await getStream(newStream.id)
+        } catch (e) {
+            // ignore error
         } finally {
             if (stream == null || stream.id == null) {
                 stream = await postStream(newStream)
@@ -327,7 +329,7 @@ export const getDataUnionVersion = async (address: DataUnionId, usePublicNode: b
 // eslint-disable-next-line camelcase
 const deprecated_getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
     const contract = deprecated_getCommunityContract(address, usePublicNode)
-    const owner = await call(contract.methods.owner)
+    const owner = await call(contract.methods.owner())
 
     return owner
 }
