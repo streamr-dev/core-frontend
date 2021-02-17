@@ -4,7 +4,6 @@ import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import Image from '$docs/components/Image'
-import Warning from '$docs/components/Warning'
 
 import EthIdentities from './images/gs_eth_id_03_desktop.jpg'
 import EthIdentities2x from './images/gs_eth_id_03_desktop@2x.jpg'
@@ -18,17 +17,7 @@ Welcome to Streamr! To get a feel for what Streamr is, check out our <Link to={d
 
 To get started, you'll want to login to Streamr. Your Streamr account is your Ethereum account - there's no email registration, simply <Link to={routes.auth.login()}>login</Link> with your Web3 Ethereum wallet such as <a href="https://metamask.io" target="blank">Metamask</a>.
 
-<Warning>
-
-**Upcoming deprecations and breaking changes**
-- **Authenticating with an API key has been deprecated.**
-- **Support for email/password authentication will be dropped on December 31st 2020. Cryptographic keys/wallets will be the only supported method.**
-
-</Warning>
-
 ### Connect your Ethereum Account
-Checkout our intro docs if you'd like to understand more about what Ethereum is and what it means to have an account on Ethereum.
-
 The easiest way to get started is through the free and open source Chrome browser extension, Metamask. Metamask is also available on Android and Apple mobile devices. The explainer video below will help you understand how to use Metamask.
 
 <div className={docsStyles.playerWrapper}>
