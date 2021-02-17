@@ -49,3 +49,4 @@ jobs:
         with:
           browser: chrome
           headless: true
+          project: app
