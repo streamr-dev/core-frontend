@@ -15,6 +15,10 @@ import StreamPreview from './images/core_streams_04_desktop.jpg'
 import StreamPreview2x from './images/core_streams_04_desktop@2x.jpg'
 import StreamApiAccess from './images/core_streams_05_desktop.jpg'
 import StreamApiAccess2x from './images/core_streams_05_desktop@2x.jpg'
+import StreamPath from './images/stream_path_desktop.png'
+import StreamPath2x from './images/stream_path_desktop@2x.png'
+import StreamStorage from './images/stream_storage_desktop.png'
+import StreamStorage2x from './images/stream_storage_desktop@2x.png'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import streamsStyles from '$docs/components/Pages/Streams/streamsStyles.pcss'
@@ -32,9 +36,31 @@ Head over to the <Link to={routes.streams.index()}>Streams page</Link> to see an
   alt="Stream Listing"
 />
 
-This stream listing page gives an indication for when data was last pushed to each stream and uses traffic light indicators show the health of each stream, at a glance. Green shows a stream receiving data, while red indicates no data flowing. Clicking on a stream will open the stream editor. You may only edit streams that you have created or have explicit permission to edit.
+This stream listing page displays all streams the current user has a right to publish or subscribe to. Clicking on a stream will open the stream editor. You may only edit streams that you have created or have explicit permission to edit.
 
 By clicking on the more options icon you may access advanced features for each stream, such as stream sharing and code snippets. A new stream can be created by the clicking the Create Stream button.
+
+### Creating streams
+Streams are identified by a stream ID, which is an Ethereum address plus a user-given path, just like an Internet URL. The Ethereum address is referred to as the domain and is either the Ethereum address of the logged in user, or it can also be the ENS (Ethereum Name Service) name owned by the Ethereum address of the logged in user. All streams require a unique path in the format of domain/pathname and can contain single or multi-level paths.
+
+ENS names allow for completely human readable names, for example `mydomain.eth/traffic/helsinki`. If you haven’t used an ENS name before, you can easily create one with a small amount of ETH on <Link to={routes.misc.ensDomains()}>ENS Domains</Link>. Your purchased addresses will automatically appear in the stream editor for immediate usage. At a future date the Stream registry will live on the blockchain.
+
+Please remember, you may need to escape the pathname slash depending on your coding environment.
+
+<Image
+  border
+  src={StreamPath}
+  highResSrc={StreamPath2x}
+  alt="Stream path naming"
+/>
+
+### Stream status
+Traffic light indicators can show you when data was last pushed to each stream, at a glance. 
+- Green: The stream is active 
+- Grey: The stream is inactive
+- Red: There is a problem with the stream
+
+The criteria for an inactive stream is defined in the stream editor.
 
 ### Editing a stream
 The stream editor provides basic tools for setting up, inspecting and editing your stream. Below is a run-down of each stream editor section.
@@ -72,5 +98,14 @@ This section is used to preview data flowing into the stream. Use the live inspe
   alt="Stream Preview"
 />
 
-### Historical Data
-This section contains the stream's historical data storage settings. The historical data storage period determines how many days your data is retained before it will be removed automatically from the Streamr network. The default period is 365 days.
+### Data storage
+On the Streamr Network data is stored in storage nodes. You can enable data storage on your streams to retain historical data in one or more geographic locations of your choice. You can also choose how long to store your stream’s historical data before auto-deletion.
+
+<Image
+  border
+  src={StreamStorage}
+  highResSrc={StreamStorage2x}
+  alt="Stream storage"
+/>
+
+By default, no storage nodes are selected. You can opt-in to storage by selecting a storage node. At the moment there is only one option shown: Streamr Germany, however new options will be added as they become available.
