@@ -61,18 +61,18 @@ const Footer = ({ topBorder = false }) => (
                     <Translate value="general.blog" />
                 </a>
             </FooterColumn>
-            <FooterColumn title={I18n.t('general.docs')}>
+            <FooterColumn title="Docs">
                 <a href={docsLinks.streams}>
-                    <Translate value="general.streams" />
+                    Streams
                 </a>
                 <a href={docsLinks.canvases}>
-                    <Translate value="general.canvases" />
+                    Canvases
                 </a>
                 <a href={docsLinks.dashboards}>
-                    <Translate value="general.dashboards" />
+                    Dashboards
                 </a>
                 <a href={docsLinks.products}>
-                    <Translate value="general.products" />
+                    Products
                 </a>
             </FooterColumn>
             <FooterColumn title={I18n.t('general.contact')}>

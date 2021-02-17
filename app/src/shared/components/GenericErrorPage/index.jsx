@@ -59,7 +59,7 @@ const GenericErrorPage = () => (
                 to={routes.products.index()}
                 className="d-none d-md-flex"
             >
-                <Translate value="general.products" />
+                Products
             </Button>
         </ErrorPageContent>
     </Layout>

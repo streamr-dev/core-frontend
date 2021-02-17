@@ -10,22 +10,22 @@ import docsLinks from '$shared/../docsLinks'
 const DocsShortcuts = () => (
     <Onboarding title="Docs">
         <Link to={docsLinks.gettingStarted} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.gettingStarted" />
+            Getting started
         </Link>
         <Link to={docsLinks.streams} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.streams" />
+            Streams
         </Link>
         <Link to={docsLinks.canvases} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.canvases" />
+            Canvases
         </Link>
         <Link to={docsLinks.dashboards} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.dashboards" />
+            Dashboards
         </Link>
         <Link to={docsLinks.products} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.products" />
+            Products
         </Link>
         <Link to={docsLinks.dataUnions} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.dataUnions" />
+            Data Unions
         </Link>
         {null}
         <Link href={routes.community.discord()} target="_blank" rel="noopener noreferrer">

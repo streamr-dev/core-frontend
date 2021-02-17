@@ -6,7 +6,6 @@ import sharedI18n from '$shared/i18n'
 import userpagesI18n from '$userpages/i18n'
 import authI18n from '$auth/i18n'
 import editorI18n from '$editor/i18n'
-import docsI18n from '$docs/i18n'
 
 import en from './en.po'
 
@@ -21,5 +20,4 @@ export default pick(merge(
     authI18n,
     editorI18n,
     localI18n,
-    docsI18n,
 ), Object.keys(localI18n))

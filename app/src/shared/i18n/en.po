@@ -29,9 +29,6 @@ msgstr "Browse"
 msgid "general.canvas"
 msgstr "Canvas"
 
-msgid "general.canvases"
-msgstr "Canvases"
-
 msgid "general.company"
 msgstr "Company"
 
@@ -40,9 +37,6 @@ msgstr "Contact"
 
 msgid "general.contributionSummary"
 msgstr "Contribution Summary"
-
-msgid "general.dashboards"
-msgstr "Dashboards"
 
 msgid "general.documents"
 msgstr "Documents"
@@ -104,12 +98,6 @@ msgstr "Privacy"
 msgid "general.product"
 msgstr "Product"
 
-msgid "general.products"
-msgstr "Products"
-
-msgid "general.dataUnions"
-msgstr "Data Unions"
-
 msgid "general.transactions"
 msgstr "Transactions"
 
@@ -119,9 +107,6 @@ msgstr "Subscriptions"
 msgid "general.reddit"
 msgstr "Reddit"
 
-msgid "general.useCore"
-msgstr "Use Core"
-
 msgid "general.apps"
 msgstr "Apps"
 
@@ -130,9 +115,6 @@ msgstr "Streamr System"
 
 msgid "general.stream"
 msgstr "Stream"
-
-msgid "general.streams"
-msgstr "Streams"
 
 msgid "general.terms"
 msgstr "Terms & Conditions"
@@ -328,9 +310,6 @@ msgstr "was unpublished"
 msgid "shared.action.deploy"
 msgstr "was deployed"
 
-msgid "general.docs"
-msgstr "Docs"
-
 msgid "general.settings"
 msgstr "Settings"
 
@@ -339,9 +318,6 @@ msgstr "Learn"
 
 msgid "general.introduction"
 msgstr "Introduction"
-
-msgid "general.gettingStarted"
-msgstr "Getting started"
 
 msgid "general.engine"
 msgstr "Engine"

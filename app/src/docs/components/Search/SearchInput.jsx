@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useCallback, useReducer } from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import SvgIcon from '$shared/components/SvgIcon'
@@ -176,7 +175,7 @@ const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
                 <UseState initialValue={false} key={refreshCounter}>
                     {(editing, setEditing) => (
                         <EditableText
-                            placeholder={I18n.t('docs.search.placeholder')}
+                            placeholder="Search..."
                             value={value}
                             onChange={onChange}
                             editOnFocus
@@ -199,7 +198,7 @@ const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
                             type="button"
                             onClick={onClear}
                         >
-                            {I18n.t('docs.search.clear')}
+                            Clear
                         </ClearButton>
                         <Separator />
                     </ClearButtonWrapper>
