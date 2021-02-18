@@ -1,22 +1,29 @@
 import StreamrClient from 'streamr-client'
-import Web3 from 'web3'
+import { mnemonicToSeedSync } from 'bip39'
+import { hdkey } from 'ethereumjs-wallet'
 
 import { setToken } from '$shared/utils/sessionToken'
 import getAuthorizationHeader from '$shared/utils/getAuthorizationHeader'
 import getClientConfig from '$shared/utils/getClientConfig'
 
-const generatePrivateKey = (username) => {
-    const web3 = new Web3()
-    const { privateKey } = web3.eth.accounts.create(username)
+const cache = {}
 
-    return privateKey
+const generatePrivateKey = (mnemonic) => {
+    if (!cache[mnemonic]) {
+        const hdwallet = hdkey.fromMasterSeed(mnemonicToSeedSync(mnemonic))
+        const wallet = hdwallet.derivePath("m/44'/60'/0'/0").getWallet()
+
+        cache[mnemonic] = wallet.getPrivateKey().toString('hex')
+    }
+
+    return cache[mnemonic]
 }
 
-Cypress.Commands.add('login', (username = 'tester1@streamr.com') => (
+Cypress.Commands.add('login', (mnemonic = 'tester one') => (
     new StreamrClient({
         restUrl: 'http://localhost/api/v1',
         auth: {
-            privateKey: generatePrivateKey(username),
+            privateKey: generatePrivateKey(`auto generated user ${mnemonic}`),
         },
     }).session.getSessionToken().then(setToken)
 ))

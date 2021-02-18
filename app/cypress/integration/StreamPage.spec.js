@@ -267,7 +267,7 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
             cy.logout()
-            cy.login('tester2@streamr.com')
+            cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
             cy.contains(/we don.t seem to be able to find/i)
             cy.location('pathname').should('eq', `/core/streams/${encodedId}`)
@@ -362,7 +362,7 @@ describe('Stream read-only page (no edit permission)', () => {
 
             cy.createStreamPermission(streamId)
             cy.logout()
-            cy.login('tester2@streamr.com')
+            cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
             cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
@@ -403,7 +403,7 @@ describe('Stream read-only page (no edit permission)', () => {
 
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
             cy.logout()
-            cy.login('tester2@streamr.com')
+            cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
             cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
@@ -431,7 +431,7 @@ describe('Stream read-only page (no edit permission)', () => {
 
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
             cy.logout()
-            cy.login('tester2@streamr.com')
+            cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
             cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
@@ -517,7 +517,7 @@ describe('Stream read-only page (no edit permission)', () => {
                 const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
                 cy.logout()
-                cy.login('tester2@streamr.com')
+                cy.login('tester two')
                 cy.visit(`/core/streams/${encodedId}`)
                 cy.get('[data-test-hook=Toolbar]').find('button').contains(/back/i).click()
                 cy.location('pathname').should('eq', '/core/streams')
@@ -544,7 +544,7 @@ describe('Stream read-only page (no edit permission)', () => {
                 const encodedId = encodeURIComponent(streamId)
                 cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
                 cy.logout()
-                cy.login('tester2@streamr.com')
+                cy.login('tester two')
 
                 cy.server()
 
@@ -568,7 +568,7 @@ describe('Stream read-only page (no edit permission)', () => {
                 cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
                 cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
                 cy.logout()
-                cy.login('tester2@streamr.com')
+                cy.login('tester two')
 
                 cy.server()
 
@@ -607,7 +607,7 @@ describe('Stream edit page', () => {
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
             cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
             cy.logout()
-            cy.login('tester2@streamr.com')
+            cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
             cy.location('pathname').should('eq', `/core/streams/${encodedId}`)
