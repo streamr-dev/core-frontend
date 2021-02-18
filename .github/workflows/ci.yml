@@ -52,6 +52,6 @@ jobs:
           browser: chrome
           headless: true
           working-directory: app
-          start: npm start
+          start: npx serve dist --listen 3333 --single
           wait-on: 'http://localhost'
-          wait-on-timeout: 420
+          wait-on-timeout: 120
