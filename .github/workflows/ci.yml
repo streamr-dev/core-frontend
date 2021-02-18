@@ -54,3 +54,4 @@ jobs:
           working-directory: app
           start: npm start
           wait-on: 'http://localhost'
+          wait-on-timeout: 420
