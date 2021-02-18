@@ -104,8 +104,7 @@
     },
     "misc": {
         "cliTool": "https://github.com/streamr-dev/cli-tools",
-        "decentralizedWeb": "https://blockchainhub.net/web3-decentralized-web/",
-        "ensDomains": "https://ens.domains"
+        "decentralizedWeb": "https://blockchainhub.net/web3-decentralized-web/"
     },
     "api": {
         "currentUser": {
