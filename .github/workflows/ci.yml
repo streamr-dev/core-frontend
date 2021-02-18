@@ -52,3 +52,5 @@ jobs:
           browser: chrome
           headless: true
           working-directory: app
+          start: npm start
+          wait-on: 'http://localhost'
