@@ -52,6 +52,7 @@ jobs:
           browser: chrome
           headless: true
           working-directory: app
+          # Start serving 'dist' folder from previous build step
           start: npx serve dist --listen 3333 --single
           wait-on: 'http://localhost'
           wait-on-timeout: 120
