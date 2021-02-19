@@ -1,7 +1,6 @@
 // @flow
 
 import EventEmitter from 'events'
-import { I18n } from 'react-redux-i18n'
 
 import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
 import type { StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
@@ -200,7 +199,7 @@ export default class Web3Poller {
                     this.emitter.emit(
                         events.TRANSACTION_ERROR,
                         txHash,
-                        new TransactionError(I18n.t('error.txFailed'), receipt),
+                        new TransactionError('Transaction failed', receipt),
                     )
                 }
             }

@@ -29,7 +29,7 @@ const SharedSecrets = ({ className, disabled }: Props) => {
 
     return (
         <section id="shared-secrets" className={cx(styles.root, className)}>
-            <Translate tag="h1" value="editProductPage.sharedSecrets.title" />
+            <h1>Add a shared secret</h1>
             <Translate
                 value={`editProductPage.sharedSecrets.${isDeployed ? 'deployed' : 'notDeployed'}.description`}
                 tag="p"

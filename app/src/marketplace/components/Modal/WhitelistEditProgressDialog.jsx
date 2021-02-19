@@ -46,10 +46,10 @@ const UnstyledWhitelistEditProgressDialog = ({ onCancel, status, isPrompted, ...
             <Dialog
                 {...props}
                 onClose={onCancel}
-                title={I18n.t('modal.whiteListEdit.title')}
+                title="Updating whitelist..."
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: 'Cancel',
                         onClick: () => onCancel(),
                         kind: 'link',
                         disabled: true,

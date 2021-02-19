@@ -1,6 +1,5 @@
 import React, { useState, useMemo, Fragment } from 'react'
 import styled, { css } from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 import SvgIcon from '$shared/components/SvgIcon'
 import Errors from '$ui/Errors'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
@@ -121,7 +120,7 @@ const UnstyledStreamPreview = ({
                 {!inspectorFocused && !!streamLoaded && (
                     <div>
                         <Selector
-                            title={I18n.t('streamLivePreview.partitions')}
+                            title="Partitions"
                             options={partitionOptions || []}
                             active={activePartition}
                             onChange={onPartitionChange}

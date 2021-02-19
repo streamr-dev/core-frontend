@@ -163,10 +163,14 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
                 <Controls>
                     <ErrorNotice>
                         {hasLoaded && !client && (
-                            <Translate value="streamLivePreview.subscriptionErrorNotice" tag="p" />
+                            <p>
+                                Error: Unable to process the stream data.
+                            </p>
                         )}
                         {dataError && (
-                            <Translate value="streamLivePreview.dataErrorNotice" tag="p" />
+                            <p>
+                                Error: Some messages in the stream have invalid content and are not shown.
+                            </p>
                         )}
                     </ErrorNotice>
                     <Button

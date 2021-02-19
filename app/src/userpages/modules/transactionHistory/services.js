@@ -1,6 +1,5 @@
 // @flow
 
-import { I18n } from 'react-redux-i18n'
 import abiDecoder from 'abi-decoder'
 
 import { transactionTypes, paymentCurrencies } from '$shared/utils/constants'
@@ -193,7 +192,7 @@ export const getTransactionsFromEvents = (events: EventLogList): Promise<Transac
             if (receipt.status === true) {
                 rest.receipt = receipt
             } else {
-                rest.error = new TransactionError(I18n.t('error.txFailed'), receipt)
+                rest.error = new TransactionError('Transaction failed', receipt)
             }
 
             let inputValues

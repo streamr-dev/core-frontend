@@ -51,7 +51,7 @@ const PublishError = ({ publishMode, status, onClose }: Props) => {
                 <div>
                     <StyledPngIcon
                         name="publishFailed"
-                        alt={I18n.t('error.publishFailed')}
+                        alt="Publish failed"
                     />
                     <p>
                         {!!failedAction && (

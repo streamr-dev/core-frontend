@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { MEDIUM } from '$shared/utils/styled'
@@ -49,34 +49,29 @@ const UnstyledTerms = ({ product, ...props }: Props) => {
     return (
         <Segment {...props}>
             <Segment.Header>
-                <Translate value="productPage.termsOfUse.title" />
+                Terms and conditions
             </Segment.Header>
             <Body pad>
                 <p>
                     <strong>
-                        <Translate value="productPage.termsOfUse.basic" />
+                        Basic terms
                     </strong>
                     {' '}
                     {permitted.length > 0 && (
                         <React.Fragment>
-                            {I18n.t('productPage.termsOfUse.permitted', {
-                                count: permitted.length,
-                                permissions: permittedStr,
-                            })}
-                            {' '}
+                            {permittedStr}
+                            {permitted.length === 1 ? ' is permitted.' : ' are permitted.'}
                         </React.Fragment>
                     )}
-                    {notPermitted.length > 0 && I18n.t('productPage.termsOfUse.notPermitted', {
-                        count: notPermitted.length,
-                        permissions: notPermittedStr,
-                    })}
-                    {permitted.length === 0 && ` ${I18n.t('productPage.termsOfUse.postfix')}`}
+                    {notPermittedStr}
+                    {notPermitted.length === 1 ? ' is not' : 'are not'}
+                    {permitted.length === 0 && ' permitted'}
                     {notPermitted.length > 0 && '.'}
                 </p>
                 {!!terms.termsUrl && (
                     <p>
                         <strong>
-                            <Translate value="productPage.termsOfUse.detailed" />
+                            Detailed terms
                         </strong>
                         {' '}
                         <strong>

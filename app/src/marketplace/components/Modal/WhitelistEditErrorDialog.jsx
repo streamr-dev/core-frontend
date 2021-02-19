@@ -37,14 +37,14 @@ const UnstyledWhitelistEditErrorDialog = ({ publishMode, status, onClose, ...pro
                 <div>
                     <StyledPngIcon
                         name="txFailed"
-                        alt={I18n.t('error.txFailed')}
+                        alt="Transaction failed"
                     />
                     <p>
                         {!!failedAction && (
                             <Translate value={`modal.whiteListEdit.errors.${failedAction}`} />
                         )}
                         &nbsp;
-                        <Translate value="modal.whiteListEdit.errors.checkWallet" />
+                        Please check your wallet or other settings and try again.
                     </p>
                 </div>
             </Dialog>

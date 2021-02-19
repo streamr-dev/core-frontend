@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -28,7 +27,7 @@ const LoadMore = ({ onClick, hasMoreSearchResults, preserveSpace, className }: P
     return (
         <StyledContainer className={className}>
             <Button kind="special" variant="dark" onClick={onClick}>
-                <Translate value="productList.viewMore" />
+                View more
             </Button>
         </StyledContainer>
     )

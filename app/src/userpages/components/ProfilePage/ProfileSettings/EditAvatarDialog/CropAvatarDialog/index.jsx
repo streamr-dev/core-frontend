@@ -39,7 +39,7 @@ const CropAvatarDialog = ({ originalImage, onClose, onSave: onSaveProp, waiting 
                 onClose={onClose}
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: 'Cancel',
                         outline: true,
                         kind: 'link',
                         onClick: () => onClose(),

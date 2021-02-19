@@ -3,7 +3,6 @@
 import React, { useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 import { titleize } from '@streamr/streamr-layout'
 import Segment from '$shared/components/Segment'
 import { selectStreams, selectFetchingStreams } from '$mp/modules/streams/selectors'
@@ -80,17 +79,17 @@ const Description = () => {
 
     const sidebar = useMemo(() => ({
         category: {
-            title: I18n.t('editProductPage.sidebar.category'),
+            title: 'Product category',
             value: (category && category.name) || '-',
         },
         ...(!isProductFree ? {
             subscriberCount: {
-                title: I18n.t('editProductPage.sidebar.activeSubscribers'),
+                title: 'Active subscribers',
                 loading: isPending,
                 value: subscriberCount || 0,
             },
             purchaseTimestamp: {
-                title: I18n.t('editProductPage.sidebar.mostRecentSubscription'),
+                title: 'Last purchased',
                 loading: isPending,
                 value: purchaseTimestamp != null ? titleize(ago(new Date(purchaseTimestamp))) : '-',
             },

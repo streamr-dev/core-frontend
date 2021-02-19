@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -36,9 +36,7 @@ const DeployingDataUnionDialog = ({
     <ModalPortal>
         <Dialog
             className={cx(styles.root, styles.DeployingDataUnionDialog)}
-            title={I18n.t('modal.deployDataUnion.deploying.title', {
-                name: product.name,
-            })}
+            title={`Deploying ${product.name}`}
             onClose={onClose}
             contentClassName={cx({
                 [styles.content]: !minimized,
@@ -55,7 +53,7 @@ const DeployingDataUnionDialog = ({
                             <React.Fragment>
                                 <span className={styles.estimatedTime}>{formatSeconds(estimate)}</span>
                                 &nbsp;
-                                <Translate value="modal.deployDataUnion.deploying.estimatedDeploymentTime" />
+                                Estimated deployment time
                             </React.Fragment>
                         )}
                     </div>
@@ -76,11 +74,9 @@ const DeployingDataUnionDialog = ({
             </div>
             {!minimized && (
                 <div className={styles.description}>
-                    <Translate
-                        value="modal.deployDataUnion.deploying.description"
-                        time={formatSeconds(estimate)}
-                        dangerousHTML
-                    />
+                    Estimated deployment time is {formatSeconds(estimate)}. You can wait or close
+                    <br />
+                    this dialogue and get notified when your product is ready.
                 </div>
             )}
         </Dialog>

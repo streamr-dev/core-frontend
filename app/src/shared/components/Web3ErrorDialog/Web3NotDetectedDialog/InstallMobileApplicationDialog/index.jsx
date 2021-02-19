@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import PngIcon from '$shared/components/PngIcon'
@@ -20,7 +19,7 @@ const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
         <Dialog
             {...props}
             onClose={onClose}
-            title={I18n.t('modal.web3.installmobileapplication.title')}
+            title="No wallet found"
             renderActions={() => (
                 <div className={styles.buttonContainer}>
                     <Button
@@ -29,7 +28,7 @@ const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
                         href="https://metamask.io"
                         target="_blank"
                     >
-                        <Translate value="modal.web3.installsupportedbrowser.metamask" />
+                        Metamask
                     </Button>
                     <Button
                         kind="secondary"
@@ -37,7 +36,7 @@ const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
                         href="https://brave.com"
                         target="_blank"
                     >
-                        <Translate value="modal.web3.installsupportedbrowser.brave" />
+                        Brave
                     </Button>
                     <Button
                         kind="secondary"
@@ -45,7 +44,7 @@ const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
                         href="https://www.opera.com/download"
                         target="_blank"
                     >
-                        <Translate value="modal.web3.installsupportedbrowser.opera" />
+                        Opera
                     </Button>
                 </div>
             )}
@@ -53,9 +52,13 @@ const InstallMobileApplicationDialog = ({ onClose, ...props }: Props) => (
             <PngIcon
                 className={styles.icon}
                 name="txFailed"
-                alt={I18n.t('error.txFailed')}
+                alt="Transaction failed"
             />
-            <Translate value="modal.web3.installmobileapplication.message" tag="p" dangerousHTML />
+            <p>
+                We couldn&apos;t find your wallet.
+                <br />
+                Please get one and try again
+            </p>
         </Dialog>
     </ModalPortal>
 )

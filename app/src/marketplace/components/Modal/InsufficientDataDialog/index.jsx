@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import PngIcon from '$shared/components/PngIcon'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -16,15 +15,19 @@ export type Props = {
 const InsufficientDataDialog = ({ onCancel }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.insufficientDataDialog.title')}
+            title="Insufficient DATA"
             onClose={onCancel}
         >
             <PngIcon
                 className={styles.icon}
                 name="walletNoData"
-                alt={I18n.t('modal.insufficientDataDialog.title')}
+                alt="Insufficient DATA"
             />
-            <Translate tag="p" dangerousHTML value="modal.insufficientDataDialog.message" className={styles.message} />
+            <p className={styles.message}>
+                You don&apos;t have enough DATA to subscribe
+                <br />
+                to this product. Please get some and try again
+            </p>
         </Dialog>
     </ModalPortal>
 )

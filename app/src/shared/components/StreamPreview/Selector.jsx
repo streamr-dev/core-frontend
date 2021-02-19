@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 import SvgIcon from '$shared/components/SvgIcon'
 import IconButton from './IconButton'
 
@@ -47,13 +46,9 @@ const UnstyledSelector = ({
             <Button disabled={current <= 0} onClick={prev}>
                 <SvgIcon name="back" />
             </Button>
-            <Translate
-                tag="div"
-                value="streamLivePreview.selectorPages"
-                current={current + 1}
-                total={options.length}
-                dangerousHTML
-            />
+            <div>
+                <strong>{current + 1}</strong> of <strong>{options.length}</strong>
+            </div>
             <Button disabled={current >= options.length - 1} onClick={next}>
                 <SvgIcon name="forward" />
             </Button>

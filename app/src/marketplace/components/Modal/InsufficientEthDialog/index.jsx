@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import WalletNoEthPng from '$shared/assets/images/wallet_no_eth.png'
@@ -17,11 +16,15 @@ export type Props = {
 const InsufficientEthDialog = ({ onCancel }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.insufficientEthDialog.title')}
+            title="Insufficient ETH"
             onClose={onCancel}
         >
-            <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt={I18n.t('error.wallet')} />
-            <Translate value="modal.insufficientEthDialog.message" className={styles.message} tag="p" dangerousHTML />
+            <img className={styles.icon} src={WalletNoEthPng} srcSet={`${WalletNoEthPng2x} 2x`} alt="Wallet error" />
+            <p className={styles.message}>
+                You don&apos;t have enough ETH to subscribe
+                <br />
+                to this product. Please get some and try again
+            </p>
         </Dialog>
     </ModalPortal>
 )

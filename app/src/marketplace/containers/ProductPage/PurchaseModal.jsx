@@ -2,7 +2,6 @@
 
 import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 
 import type { ProductId, AccessPeriod } from '$mp/flowtype/product-types'
 
@@ -134,7 +133,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const onApprovePurchase = useCallback(async () => (
         wrapPurchase(async () => {
             if (!accessPeriodParams.current) {
-                throw new Error(I18n.t('error.noProductOrAccess'))
+                throw new Error('Product and access data should be defined!')
             }
 
             try {
@@ -256,7 +255,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
         return (
             <ErrorDialog
-                title={I18n.t('purchaseDialog.errorTitle')}
+                title="An error occurred"
                 message={(purchaseError || contractProductError).message}
                 onClose={onClose}
             />

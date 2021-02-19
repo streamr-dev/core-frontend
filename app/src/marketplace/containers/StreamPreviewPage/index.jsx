@@ -3,7 +3,6 @@
 import React, { useEffect, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { I18n } from 'react-redux-i18n'
 import { useClient } from 'streamr-client-react'
 import { Context as RouterContext } from '$shared/contexts/Router'
 import ClientProvider from '$shared/components/StreamrClientProvider'
@@ -110,8 +109,8 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
                 activePartition={activePartition}
                 onPartitionChange={setActivePartition}
                 loading={!hasLoaded || !subscribed}
-                subscriptionError={hasLoaded && !client && (I18n.t('streamLivePreview.subscriptionErrorNotice'))}
-                dataError={!!dataError && (I18n.t('streamLivePreview.dataErrorNotice'))}
+                subscriptionError={hasLoaded && !client && ('Error: Unable to process the stream data.')}
+                dataError={!!dataError && 'Data'}
             />
         </SubscriptionStatusProvider>
     )

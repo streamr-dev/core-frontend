@@ -1,5 +1,4 @@
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled, { css } from 'styled-components'
 
 const PendingTasksWrapper = styled.div`
@@ -29,7 +28,7 @@ const PendingTasks = ({ isPrompted, children, ...props }) => (
         }}
     >
         {!!isPrompted && (
-            I18n.t('modal.pendingTasks.confirmTransaction')
+            <span>Please confirm transaction</span>
         )}
         {!isPrompted && children}
     </PendingTasksWrapper>

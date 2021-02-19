@@ -2,7 +2,6 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import BN from 'bignumber.js'
-import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import Buttons from '$shared/components/Buttons'
@@ -157,12 +156,12 @@ export const ChooseAccessPeriodDialog = ({
 
     const actions = {
         cancel: {
-            title: I18n.t('modal.common.cancel'),
+            title: 'Cancel',
             onClick: () => onCancel(),
             kind: 'link',
         },
         next: {
-            title: I18n.t('modal.common.next'),
+            title: 'Next',
             kind: 'primary',
             outline: true,
             onClick: () => onNext({
@@ -182,8 +181,12 @@ export const ChooseAccessPeriodDialog = ({
                 onClose={onCancel}
                 title={(
                     <React.Fragment>
-                        <Translate value="modal.chooseAccessPeriod.title" className={styles.title} />
-                        <Translate value="modal.chooseAccessPeriod.mobileTitle" className={styles.mobileTitle} />
+                        <span className={styles.title}>
+                            Choose your access period &amp; payment token
+                        </span>
+                        <span className={styles.mobileTitle}>
+                            Choose your access period
+                        </span>
                     </React.Fragment>
                 )}
                 actions={actions}
@@ -193,12 +196,9 @@ export const ChooseAccessPeriodDialog = ({
                     })}
                     >
                         {paymentCurrency !== paymentCurrencies.DATA && (
-                            <Translate
-                                value="modal.chooseAccessPeriod.uniswap"
-                                className={styles.uniswapFooter}
-                                tag="span"
-                                dangerousHTML
-                            />
+                            <span className={styles.uniswapFooter}>
+                                Exchange via Uniswap
+                            </span>
                         )}
                         <Buttons
                             actions={actions}
@@ -231,47 +231,29 @@ export const ChooseAccessPeriodDialog = ({
                         currentPrice !== '-' && // prevent false positives during load
                         (
                             <Errors theme={MarketplaceTheme} className={styles.uniswapErrors}>
-                                {!isValidTime &&
-                                    <React.Fragment>
-                                        <Translate
-                                            value="modal.chooseAccessPeriod.invalidTime"
-                                            className={styles.invalidInputDesktop}
-                                            tag="p"
-                                            dangerousHTML
-                                        />
-                                    </React.Fragment>
-                                }
-
+                                {!isValidTime && (
+                                    <p className={styles.invalidInputDesktop}>
+                                        Access period must be a number
+                                    </p>
+                                )}
                                 {!isValidPrice && Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD &&
                                     <React.Fragment>
-                                        <Translate
-                                            value="modal.chooseAccessPeriod.lowPriceDesktop"
-                                            className={styles.invalidInputDesktop}
-                                            tag="p"
-                                            dangerousHTML
-                                        />
-                                        <Translate
-                                            value="modal.chooseAccessPeriod.lowPriceMobile"
-                                            className={styles.invalidInputMobile}
-                                            tag="p"
-                                            dangerousHTML
-                                        />
+                                        <p className={styles.invalidInputDesktop}>
+                                            Transaction too small for Uniswap. Please try a longer period.
+                                        </p>
+                                        <p className={styles.invalidInputMobile}>
+                                            Transaction too small. Please try a longer period.
+                                        </p>
                                     </React.Fragment>
                                 }
                                 {!isValidPrice && Number(priceInUsd) > MIN_UNISWAP_AMOUNT_USD &&
                                     <React.Fragment>
-                                        <Translate
-                                            value="modal.chooseAccessPeriod.highPriceDesktop"
-                                            className={styles.invalidInputDesktop}
-                                            tag="p"
-                                            dangerousHTML
-                                        />
-                                        <Translate
-                                            value="modal.chooseAccessPeriod.highPriceMobile"
-                                            className={styles.invalidInputMobile}
-                                            tag="p"
-                                            dangerousHTML
-                                        />
+                                        <p className={styles.invalidInputDesktop}>
+                                            Transaction too large for Uniswap. Please try a shorter period.
+                                        </p>
+                                        <p className={styles.invalidInputMobile}>
+                                            Transaction too large. Please try a shorter period.
+                                        </p>
                                     </React.Fragment>
                                 }
                             </Errors>
@@ -283,7 +265,7 @@ export const ChooseAccessPeriodDialog = ({
                                 {currentBalance}
                             </span>
                             <span className={styles.balanceLabel}>
-                                {I18n.t('modal.chooseAccessPeriod.balance')}
+                                Balance
                             </span>
                         </span>
                         <span className={styles.priceValue}>
@@ -293,7 +275,7 @@ export const ChooseAccessPeriodDialog = ({
                             </span>
                         </span>
                         <span className={styles.usdEquiv}>
-                            {I18n.t('modal.chooseAccessPeriod.approx')} {displayApproxUsd} {contractCurrencies.USD}
+                            Approx {displayApproxUsd} {contractCurrencies.USD}
                         </span>
                     </div>
                     <LoadingIndicator loading={!!loading} className={styles.loadingIndicator} />
@@ -302,12 +284,9 @@ export const ChooseAccessPeriodDialog = ({
                         paymentCurrency={paymentCurrency}
                     />
                     {paymentCurrency !== paymentCurrencies.DATA && (
-                        <Translate
-                            value="modal.chooseAccessPeriod.uniswap"
-                            className={styles.uniswapMsg}
-                            tag="p"
-                            dangerousHTML
-                        />
+                        <p className={styles.uniswapMsg}>
+                            Exchange via Uniswap
+                        </p>
                     )}
                 </div>
             </Dialog>

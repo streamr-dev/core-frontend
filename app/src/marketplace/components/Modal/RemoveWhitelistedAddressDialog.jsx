@@ -1,5 +1,4 @@
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -9,22 +8,26 @@ const UnstyledRemoveWhitelistedAddressDialog = ({ onClose, onContinue, ...props 
     <ModalPortal>
         <Dialog
             {...props}
-            title={I18n.t('modal.whitelistEdit.removeAddressTitle')}
+            title="Remove from whitelist?"
             onClose={onClose}
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.cancel'),
+                    title: 'Cancel',
                     onClick: () => onClose(),
                     kind: 'link',
                 },
                 remove: {
-                    title: I18n.t('modal.whitelistEdit.remove'),
+                    title: 'Remove',
                     kind: 'destructive',
                     onClick: () => onContinue(),
                 },
             }}
         >
-            <Translate value="modal.whitelistEdit.removeMessage" dangerousHTML />
+            <p>
+                If you remove this buyer from your whitelist they will
+                <br />
+                not be able to resubscribe. Do you want to continue?
+            </p>
         </Dialog>
     </ModalPortal>
 )

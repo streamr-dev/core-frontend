@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react'
 import styled from 'styled-components'
-import { Translate, I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Item from './Item'
@@ -110,7 +110,7 @@ const Items = () => {
                         <img
                             src={emptyStateIcon}
                             srcSet={`${emptyStateIcon2x} 2x`}
-                            alt={I18n.t('error.notFound')}
+                            alt="Not found"
                         />
                         {category === 'activity' && (
                             <React.Fragment>

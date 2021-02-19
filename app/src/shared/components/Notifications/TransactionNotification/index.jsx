@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 
 import Spinner from '$shared/components/Spinner'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -32,7 +31,9 @@ const renderPublishComponent = (state: ?TransactionState, isPublish: boolean) =>
             return (
                 <div className={styles.container}>
                     <Spinner size="small" className={styles.icon} />
-                    <Translate value="notifications.waiting" className={styles.title} />
+                    <span className={styles.title}>
+                        Waiting for the blockchain...
+                    </span>
                 </div>
             )
 
@@ -40,10 +41,11 @@ const renderPublishComponent = (state: ?TransactionState, isPublish: boolean) =>
             return (
                 <div className={styles.container}>
                     <SvgIcon name="checkmark" size="small" className={styles.icon} />
-                    {isPublish ?
-                        <Translate value="notifications.published" className={styles.title} /> :
-                        <Translate value="notifications.unpublished" className={styles.title} />
-                    }
+                    <span className={styles.title}>
+                        Your product has been
+                        {' '}
+                        {isPublish ? 'published' : 'unpublished'}
+                    </span>
                 </div>
             )
 
@@ -51,10 +53,13 @@ const renderPublishComponent = (state: ?TransactionState, isPublish: boolean) =>
             return (
                 <div className={styles.container}>
                     <span className={styles.error} />
-                    {isPublish ?
-                        <Translate value="notifications.publishError" className={styles.title} /> :
-                        <Translate value="notifications.unpublishError" className={styles.title} />
-                    }
+                    <span className={styles.title}>
+                        There was an error
+                        {' '}
+                        {isPublish ? 'publishing' : 'unpublishing'}
+                        {' '}
+                        your product
+                    </span>
                 </div>
             )
 
@@ -69,7 +74,9 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <Spinner size="small" className={styles.icon} />
-                    <Translate value="notifications.waiting" className={styles.title} />
+                    <span className={styles.title}>
+                        Waiting for the blockchain...
+                    </span>
                 </div>
             )
 
@@ -77,7 +84,9 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <SvgIcon name="checkmark" size="small" className={styles.icon} />
-                    <Translate value="notifications.purchaseComplete" className={styles.title} />
+                    <span className={styles.title}>
+                        Product subscription completed
+                    </span>
                 </div>
             )
 
@@ -85,7 +94,9 @@ const renderPurchaseComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <span className={styles.error} />
-                    <Translate value="notifications.purchaseError" className={styles.title} />
+                    <span className={styles.title}>
+                        There was an error subscribing to a product
+                    </span>
                 </div>
             )
 
@@ -100,7 +111,9 @@ const renderUpdateComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <Spinner size="small" className={styles.icon} />
-                    <Translate value="notifications.waiting" className={styles.title} />
+                    <span className={styles.title}>
+                        Waiting for the blockchain...
+                    </span>
                 </div>
             )
 
@@ -108,7 +121,9 @@ const renderUpdateComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <SvgIcon name="checkmark" size="small" className={styles.icon} />
-                    <Translate value="notifications.productUpdated" className={styles.title} />
+                    <span className={styles.title}>
+                        Your product has been updated
+                    </span>
                 </div>
             )
 
@@ -116,7 +131,9 @@ const renderUpdateComponent = (state: ?TransactionState) => {
             return (
                 <div className={styles.container}>
                     <span className={styles.error} />
-                    <Translate value="notifications.updateError" className={styles.title} />
+                    <span className={styles.title}>
+                        There was an error updating your product
+                    </span>
                 </div>
             )
 

@@ -2,7 +2,6 @@
 
 import React from 'react'
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 
 import WhitelistEditor from './WhitelistEditor'
 
@@ -16,12 +15,12 @@ const Section = styled.section`
 
 const Whitelist = ({ className }: Props) => (
     <Section id="whitelist" className={className}>
-        <Translate tag="h1" value="editProductPage.whitelist.title" />
-        <Translate
-            value="editProductPage.whitelist.description"
-            tag="p"
-            dangerousHTML
-        />
+        <h1>Limit product access</h1>
+        <p>
+            If you want to restrict sales of your product to approved buyers, you can enable whitelisting.
+            Only buyers whose Ethereum addresses have been whitelisted will be able to subscribe to your product.
+            Other buyers will be able to ask for access.
+        </p>
         <WhitelistEditor />
     </Section>
 )

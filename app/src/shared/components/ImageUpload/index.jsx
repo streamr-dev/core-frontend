@@ -3,7 +3,6 @@
 import React, { Fragment, useState, useCallback, useMemo } from 'react'
 import { useDropzone } from 'react-dropzone'
 import cx from 'classnames'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import { maxFileSizeForImageUpload } from '$shared/utils/constants'
 import PngIcon from '$shared/components/PngIcon'
@@ -69,9 +68,7 @@ const ImageUpload = ({
 
         if (file.size > maxFileSizeForImageUpload) {
             Notification.push({
-                title: I18n.t('imageUpload.fileSize.error', {
-                    limit: Math.floor(maxFileSizeForImageUpload / 1e6),
-                }),
+                title: `Image file size must be less than ${Math.floor(maxFileSizeForImageUpload / 1e6)}MB`,
             })
         }
 
@@ -115,24 +112,20 @@ const ImageUpload = ({
                 />
                 <p>
                     {srcImage ? (
-                        <Translate value="imageUpload.coverImage.replace" dangerousHTML />
+                        <span>
+                            Drag &amp; drop to replace your cover image <br /> or click to browse for one
+                        </span>
                     ) : (
                         <Fragment>
-                            <Translate
-                                value="imageUpload.coverImage.upload"
-                                className={cx(styles.uploadAdvice, styles.uploadAdviceDesktop)}
-                                dangerousHTML
-                            />
-                            <Translate
-                                value="imageUpload.coverImage.tabletUpload"
-                                className={cx(styles.uploadAdvice, styles.uploadAdviceTablet)}
-                                dangerousHTML
-                            />
-                            <Translate
-                                value="imageUpload.coverImage.mobileUpload"
-                                className={cx(styles.uploadAdvice, styles.uploadAdviceMobile)}
-                                dangerousHTML
-                            />
+                            <span className={cx(styles.uploadAdvice, styles.uploadAdviceDesktop)}>
+                                Drag &amp; drop to upload a cover image <br /> or click to browse for one
+                            </span>
+                            <span className={cx(styles.uploadAdvice, styles.uploadAdviceTablet)}>
+                                Tap to take a photo or browse for one
+                            </span>
+                            <span className={cx(styles.uploadAdvice, styles.uploadAdviceMobile)}>
+                                Tap to take a photo<br />or browse for one
+                            </span>
                         </Fragment>
                     )}
                 </p>
@@ -141,7 +134,7 @@ const ImageUpload = ({
                 <img
                     className={styles.previewImage}
                     src={srcImage}
-                    alt={I18n.t('imageUpload.imageCaption')}
+                    alt="Uploaded"
                 />
             )}
         </div>

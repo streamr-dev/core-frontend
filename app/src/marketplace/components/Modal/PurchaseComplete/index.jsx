@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -16,7 +16,7 @@ export type Props = {
     txHash: ?Address,
 }
 
-const TranslatedText = styled(Translate)`
+const TranslatedText = styled.p`
     text-align: left;
     width: 100%;
 `
@@ -64,20 +64,18 @@ const PurchaseComplete = ({ onContinue, onClose, txHash }: Props) => {
         <ModalPortal>
             <Dialog
                 onClose={onClose}
-                title={I18n.t('modal.purchaseComplete.title')}
+                title="Transaction completed"
                 actions={{
                     viewInCore: {
-                        title: I18n.t('modal.purchaseComplete.viewInCore'),
+                        title: 'View in Core',
                         kind: 'primary',
                         onClick: () => onContinue(),
                     },
                 }}
             >
-                <TranslatedText
-                    value="modal.purchaseComplete.message"
-                    dangerousHTML
-                    tag="p"
-                />
+                <TranslatedText>
+                    Verify your transaction on Etherscan
+                </TranslatedText>
                 <ProductLinkContainer>
                     <ProductLink>
                         {productLink}

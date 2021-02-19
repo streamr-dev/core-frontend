@@ -3,7 +3,7 @@
 import React, { useMemo, useContext } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { I18n, Translate } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import SelectField from '$mp/components/SelectField'
@@ -157,17 +157,12 @@ const ProductDetails = ({ disabled }: Props) => {
     return (
         <section id="details" className={cx(styles.root, styles.ProductDetails)}>
             <div>
-                <Translate
-                    tag="h1"
-                    value="editProductPage.productDetails.title"
-                />
+                <h1>Add some more details</h1>
                 <Details>
                     <Row>
-                        <Label
-                            as={Translate}
-                            value="editProductPage.productDetails.category"
-                            tag="div"
-                        />
+                        <Label>
+                            Choose a product category
+                        </Label>
                         {!fetching && (
                             <SelectField
                                 name="name"
@@ -182,11 +177,9 @@ const ProductDetails = ({ disabled }: Props) => {
                         )}
                     </Row>
                     <Row hide={!isDataUnionProduct(product)}>
-                        <Label
-                            as={Translate}
-                            value="editProductPage.productDetails.adminFee"
-                            tag="div"
-                        />
+                        <Label>
+                            Set your admin fee
+                        </Label>
                         <SelectField
                             name="adminFee"
                             options={adminFeeOptions}
@@ -204,7 +197,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             label="editProductPage.productDetails.url"
                             defaultValue={product.contact && product.contact.url}
                             onChange={(value) => updateContactUrl(value)}
-                            placeholder={I18n.t('editProductPage.productDetails.placeholder.url')}
+                            placeholder="http://siteinfo.com"
                             disabled={!!disabled}
                             optional
                             error={publishAttempted && !isContactUrlValid ? contactUrlMessage : undefined}
@@ -216,7 +209,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             label="editProductPage.productDetails.email"
                             defaultValue={product.contact && product.contact.email}
                             onChange={(value) => updateContactEmail(value)}
-                            placeholder={I18n.t('editProductPage.productDetails.placeholder.email')}
+                            placeholder="owner@example.com"
                             disabled={!!disabled}
                             optional={!product.requiresWhitelist}
                             error={publishAttempted && !isContactEmailValid ? contactEmailMessage : undefined}
@@ -231,7 +224,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             label="editProductPage.productDetails.socialMediaLink"
                             defaultValue={product.contact && product.contact.social1}
                             onChange={(value) => updateSocialLinks({ social1: value })}
-                            placeholder={I18n.t('editProductPage.productDetails.placeholder.reddit')}
+                            placeholder="e.g. http://reddit.com/r/streamr"
                             disabled={!!disabled}
                             optional
                             error={publishAttempted && !isSocial1Valid ? social1Message : undefined}
@@ -243,7 +236,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             label="editProductPage.productDetails.socialMediaLink"
                             defaultValue={product.contact && product.contact.social2}
                             onChange={(value) => updateSocialLinks({ social2: value })}
-                            placeholder={I18n.t('editProductPage.productDetails.placeholder.telegram')}
+                            placeholder="e.g. http://telegram.co/streamr"
                             disabled={!!disabled}
                             optional
                             error={publishAttempted && !isSocial2Valid ? social2Message : undefined}
@@ -255,7 +248,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             label="editProductPage.productDetails.socialMediaLink"
                             defaultValue={product.contact && product.contact.social3}
                             onChange={(value) => updateSocialLinks({ social3: value })}
-                            placeholder={I18n.t('editProductPage.productDetails.placeholder.twitter')}
+                            placeholder="e.g. http://twitter.com/streamr"
                             disabled={!!disabled}
                             optional
                             error={publishAttempted && !isSocial3Valid ? social3Message : undefined}
@@ -267,7 +260,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             label="editProductPage.productDetails.socialMediaLink"
                             defaultValue={product.contact && product.contact.social4}
                             onChange={(value) => updateSocialLinks({ social4: value })}
-                            placeholder={I18n.t('editProductPage.productDetails.placeholder.linkedin')}
+                            placeholder="e.g. http://linkedin.com/streamr"
                             disabled={!!disabled}
                             optional
                             error={publishAttempted && !isSocial4Valid ? social4Message : undefined}

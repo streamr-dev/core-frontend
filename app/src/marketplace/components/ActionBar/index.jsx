@@ -3,7 +3,7 @@
 import React, { useMemo, useCallback } from 'react'
 import BN from 'bignumber.js'
 import { Container as UnstyledContainer } from 'reactstrap'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -138,21 +138,21 @@ const UnstyledActionBar = ({
     const productTypeOptions = useMemo(() => ([{
         id: 'all',
         value: undefined,
-        title: I18n.t('actionBar.productTypes.all'),
+        title: 'All products',
     }, {
         id: 'normal',
         value: 'normal',
-        title: I18n.t('actionBar.productTypes.normal'),
+        title: 'Data Products',
     }, {
         id: 'dataunion',
         value: 'dataunion',
-        title: I18n.t('actionBar.productTypes.dataunion'),
+        title: 'Data Unions',
     }]), [])
 
     const categoryOptions = useMemo(() => ([{
         id: '__all',
         value: '__all',
-        title: I18n.t('actionBar.categories.all'),
+        title: 'Everything',
     },
     ...(categories ? categories.map((c) => ({
         id: c.id,
@@ -191,7 +191,7 @@ const UnstyledActionBar = ({
                     <ul>
                         <li>
                             <FilterSelector
-                                title={I18n.t('actionBar.productType')}
+                                title="Product type"
                                 selected={type}
                                 onChange={onProductTypeChange}
                                 options={productTypeOptions}
@@ -199,7 +199,7 @@ const UnstyledActionBar = ({
                         </li>
                         <li>
                             <FilterSelector
-                                title={I18n.t('actionBar.category')}
+                                title="Category"
                                 selected={category}
                                 onChange={onCategoryChange}
                                 options={categoryOptions}
@@ -207,7 +207,7 @@ const UnstyledActionBar = ({
                         </li>
                         <li>
                             <FilterSelector
-                                title={I18n.t('actionBar.sortBy')}
+                                title="Sort by"
                                 selected={currentSortByFilter}
                                 onChange={onSortByChange}
                                 options={sortOptions}
@@ -219,7 +219,7 @@ const UnstyledActionBar = ({
                                 type="button"
                                 onClick={() => onCreateProduct()}
                             >
-                                <Translate value="actionBar.create" />
+                                Create a Product
                             </Button>
                         </li>
                     </ul>

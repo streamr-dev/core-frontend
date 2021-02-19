@@ -105,9 +105,7 @@ const UnstyledKeyField = ({
 
     const notify = useCallback(() => {
         Notification.push({
-            title: I18n.t('notifications.valueCopied', {
-                value: I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`),
-            }),
+            title: `${I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`)} copied`,
             icon: NotificationIcon.CHECKMARK,
         })
     }, [labelType])

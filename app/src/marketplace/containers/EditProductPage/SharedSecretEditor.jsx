@@ -2,7 +2,6 @@
 
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 
 import UnstyledKeyField from '$userpages/components/KeyField'
 import AddKeyField from '$userpages/components/KeyField/AddKeyField'
@@ -73,7 +72,7 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
             ))}
             <AddKeyFieldWrapper>
                 <AddKeyField
-                    label={I18n.t('editProductPage.sharedSecrets.addSecret')}
+                    label="Add shared secret"
                     addKeyFieldAllowed={!isDisabled}
                     labelType="sharedSecret"
                     onSave={async (name) => addSecret(name)}

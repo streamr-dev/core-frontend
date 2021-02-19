@@ -62,7 +62,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
                 title={I18n.t(`modal.publishProgress.${publishMode}.title`)}
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: 'Cancel',
                         onClick: () => onCancel(),
                         kind: 'link',
                         disabled: true,

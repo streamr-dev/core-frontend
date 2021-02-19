@@ -47,14 +47,14 @@ const PurchaseError = ({ status, onClose }: Props) => {
                 <div>
                     <StyledPngIcon
                         name="txFailed"
-                        alt={I18n.t('error.subscriptionFailed')}
+                        alt="Subscription failed"
                     />
                     <p>
                         {!!failedAction && (
                             <Translate value={`modal.purchaseError.actions.${failedAction}`} />
                         )}
                         &nbsp;
-                        <Translate value="modal.purchaseError.actions.checkWallet" />
+                        Please check your wallet or other settings and try again
                     </p>
                 </div>
             </Dialog>

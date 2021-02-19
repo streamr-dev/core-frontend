@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
@@ -27,7 +27,7 @@ const NoDataUnionMembers = ({ filter }: NoDataUnionMembersProps) => (
             <img
                 src={emptyStateIcon}
                 srcSet={`${emptyStateIcon2x} 2x`}
-                alt={I18n.t('error.notFound')}
+                alt="Not found"
             />
         )}
     >
@@ -47,7 +47,7 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
             <img
                 src={noResultIcon}
                 srcSet={`${noResultemptyStateIcon2x} 2x`}
-                alt={I18n.t('error.notFound')}
+                alt="Not found"
             />
         )}
         link={(

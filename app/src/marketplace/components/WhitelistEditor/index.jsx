@@ -208,11 +208,11 @@ const TableRowItem = ({ item, enabled, actionsEnabled, onRemove }: RowProps) => 
                     onMenuToggle={setMenuOpen}
                 >
                     <Popover.Item onClick={() => onCopy(item.address)}>
-                        {I18n.t('editProductPage.whitelist.copy')}
+                        Copy address
                     </Popover.Item>
                     {item.status !== 'removed' && !!actionsEnabled && !disabled && (
                         <Popover.Item onClick={() => onRemove(item.address)}>
-                            {I18n.t('editProductPage.whitelist.remove')}
+                            Remove
                         </Popover.Item>
                     )}
                 </Popover>
@@ -236,8 +236,8 @@ export const UnstyledWhitelistEditor = ({
         }}
         >
             <TableHeaderRow>
-                <TableColumn>{I18n.t('editProductPage.whitelist.header.address')}</TableColumn>
-                <TableColumn>{I18n.t('editProductPage.whitelist.header.status')}</TableColumn>
+                <TableColumn>Ethereum Address</TableColumn>
+                <TableColumn>Status</TableColumn>
                 <TableColumn />
             </TableHeaderRow>
             {items.map((item) => (
@@ -252,7 +252,7 @@ export const UnstyledWhitelistEditor = ({
             {padWithEmptyRows(items)}
         </Rows>
         <Controls>
-            <Label htmlFor="whitelist">{I18n.t('editProductPage.whitelist.enable')}</Label>
+            <Label htmlFor="whitelist">Enable whitelist</Label>
             <Toggle
                 id="whitelist"
                 value={enabled}
@@ -264,7 +264,7 @@ export const UnstyledWhitelistEditor = ({
                 disabled={!enabled || !actionsEnabled}
                 onClick={() => onAdd()}
             >
-                {I18n.t('editProductPage.whitelistEdit.add')}
+                Add to whitelist
             </Button>
         </Controls>
     </div>

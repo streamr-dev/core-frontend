@@ -3,7 +3,7 @@
 import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 import uniqBy from 'lodash/uniqBy'
 
 import StreamSelectorComponent from '$mp/components/StreamSelector'
@@ -46,16 +46,12 @@ const ProductStreams = ({ disabled }: Props) => {
     return (
         <section id="streams" className={cx(styles.root, styles.StreamSelector)}>
             <div>
-                <Translate
-                    tag="h1"
-                    value="editProductPage.streams.title"
-                />
-                <Translate
-                    tag="p"
-                    value="editProductPage.streams.description"
-                    docsLink={docsLinks.createProduct}
-                    dangerousHTML
-                />
+                <h1>Add streams</h1>
+                <p>
+                    Products can contain a range of streams, or a single &quot;firehose&quot; type stream, it&#39;s up to you.
+                    If you haven&#39;t made any streams yet, you can create one here. For help creating streams,
+                    see the <Link to={docsLinks.createProduct}>docs</Link>.
+                </p>
                 <StreamSelectorComponent
                     availableStreams={availableStreams}
                     fetchingStreams={fetchingProductStreams || fetchingAllStreams}

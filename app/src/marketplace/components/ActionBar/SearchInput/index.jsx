@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
@@ -26,7 +25,7 @@ const SearchInput = ({
     value,
     onChange,
     onClear,
-    placeholder = I18n.t('actionBar.searchInput.placeholder'),
+    placeholder = 'Search the Marketplace for',
     className,
     hideClearButton,
     hidePlaceholderOnFocus,

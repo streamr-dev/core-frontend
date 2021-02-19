@@ -2,7 +2,6 @@
 
 import EventEmitter from 'events'
 import type { PromiEvent } from 'web3'
-import { I18n } from 'react-redux-i18n'
 import { isHex } from 'web3-utils'
 import { generateAddress, bufferToHex } from 'ethereumjs-util'
 import BN from 'bignumber.js'
@@ -110,7 +109,7 @@ export const send = (method: Sendable, options?: {
                 })
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
-                        errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                        errorHandler(new TransactionError('Transaction failed', receipt))
                     } else {
                         emitter.emit('receipt', receipt)
                     }
@@ -158,7 +157,7 @@ export const deploy = (contract: SmartContractMetadata, args: Array<any>, option
                 })
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
-                        errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                        errorHandler(new TransactionError('Transaction failed', receipt))
                     } else {
                         emitter.emit('receipt', receipt)
                     }

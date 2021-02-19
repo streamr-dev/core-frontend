@@ -51,24 +51,22 @@ const ConfirmDeployDataUnionDialog = ({
         <ModalPortal>
             <Dialog
                 className={cx(styles.root, styles.ConfirmDeployDataUnionDialog)}
-                title={I18n.t('modal.deployDataUnion.confirm.title', {
-                    name: product.name,
-                })}
+                title={`Deploy ${product.name}`}
                 onClose={onClose}
                 contentClassName={styles.content}
                 renderActions={() => (
                     <div className={styles.footer}>
                         <div className={styles.footerText}>
-                            {I18n.t('modal.deployDataUnion.confirm.learnAbout')}
+                            Learn about
                             &nbsp;
                             <a href="#" onClick={onShowGuidedDialog}>
-                                {I18n.t('modal.deployDataUnion.confirm.deployingDrafts')}
+                                deploying drafts
                             </a>
                         </div>
                         <Buttons
                             actions={{
                                 cancel: {
-                                    title: I18n.t('modal.common.cancel'),
+                                    title: 'Cancel',
                                     onClick: onClose,
                                     kind: 'link',
                                     disabled: waitingOnContinue,

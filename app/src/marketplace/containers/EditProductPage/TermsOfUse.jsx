@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Checkbox from '$shared/components/Checkbox'
@@ -84,12 +84,12 @@ const TermsOfUse = ({ className, disabled }: Props) => {
 
     return (
         <Section id="terms" className={className}>
-            <Translate tag="h1" value="editProductPage.terms.title" />
-            <Translate
-                value="editProductPage.terms.description"
-                tag="p"
-                dangerousHTML
-            />
+            <h1>Set terms of use</h1>
+            <p>
+                You can indicate the terms of use you prefer for data subscribers, either by checking boxes
+                below to show permitted usage types, or give more detail by providing a link to your own terms
+                of use document.
+            </p>
             <CheckboxContainer>
                 <TermCheckbox id="redistribution" product={product} updateTermsOfUse={updateTermsOfUse} disabled={!!disabled} />
                 <TermCheckbox id="commercialUse" product={product} updateTermsOfUse={updateTermsOfUse} disabled={!!disabled} />
@@ -98,11 +98,9 @@ const TermsOfUse = ({ className, disabled }: Props) => {
             </CheckboxContainer>
             <DetailsContainer>
                 <div>
-                    <Label
-                        as={Translate}
-                        value="editProductPage.terms.link.title"
-                        tag="div"
-                    />
+                    <Label>
+                        Link to detailed terms
+                    </Label>
                     <Text
                         defaultValue={product.termsOfUse.termsUrl}
                         onCommit={(text) => {
@@ -111,7 +109,7 @@ const TermsOfUse = ({ className, disabled }: Props) => {
                                 termsUrl: text,
                             })
                         }}
-                        placeholder={I18n.t('editProductPage.terms.link.placeholder')}
+                        placeholder="Add a URL here"
                         disabled={!!disabled}
                         selectAllOnFocus
                         smartCommit
@@ -124,11 +122,9 @@ const TermsOfUse = ({ className, disabled }: Props) => {
                     )}
                 </div>
                 <div>
-                    <Label
-                        as={Translate}
-                        value="editProductPage.terms.displayName.title"
-                        tag="div"
-                    />
+                    <Label>
+                        Display name for link
+                    </Label>
                     <Text
                         defaultValue={product.termsOfUse.termsName}
                         onCommit={(text) => {
@@ -137,7 +133,7 @@ const TermsOfUse = ({ className, disabled }: Props) => {
                                 termsName: text,
                             })
                         }}
-                        placeholder={I18n.t('editProductPage.terms.displayName.placeholder')}
+                        placeholder="Add a display name"
                         disabled={!!disabled}
                         selectAllOnFocus
                         smartCommit

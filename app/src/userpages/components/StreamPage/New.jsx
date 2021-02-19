@@ -228,8 +228,8 @@ const ConfirmExitModal = () => {
 
     return (
         <ConfirmDialog
-            title={I18n.t('modal.confirmSave.title')}
-            message={I18n.t('modal.confirmSave.newStream.message')}
+            title="You have unsaved changes"
+            message="You have made changes to this stream. Do you still want to exit?"
             onAccept={() => api.close({ canProceed: true })}
             onReject={() => api.close({ canProceed: false })}
         />

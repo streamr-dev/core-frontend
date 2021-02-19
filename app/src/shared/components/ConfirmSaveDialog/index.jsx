@@ -1,7 +1,6 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { I18n } from 'react-redux-i18n'
 
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
@@ -20,7 +19,7 @@ export type Props = {
 const ConfirmSaveDialog = ({ onSave, onClose, onContinue, children }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.confirmSave.title')}
+            title="You have unsaved changes"
             contentClassName={styles.content}
             onClose={onClose}
             renderActions={() => (
@@ -29,7 +28,7 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue, children }: Props) => 
                         className={styles.footerText}
                         actions={{
                             dontSave: {
-                                title: I18n.t('modal.confirmSave.dontSave'),
+                                title: 'Don\'t save',
                                 kind: 'primary',
                                 outline: true,
                                 onClick: onContinue,
@@ -39,12 +38,12 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue, children }: Props) => 
                     <Buttons
                         actions={{
                             cancel: {
-                                title: I18n.t('modal.common.cancel'),
+                                title: 'Cancel',
                                 onClick: onClose,
                                 kind: 'link',
                             },
                             continue: {
-                                title: I18n.t('modal.common.save'),
+                                title: 'Save',
                                 kind: 'primary',
                                 onClick: onSave,
                             },
@@ -56,7 +55,7 @@ const ConfirmSaveDialog = ({ onSave, onClose, onContinue, children }: Props) => 
             <PngIcon
                 className={styles.icon}
                 name="discardChanges"
-                alt={I18n.t('modal.confirmSave.title')}
+                alt="You have unsaved changes"
             />
             {children}
         </Dialog>

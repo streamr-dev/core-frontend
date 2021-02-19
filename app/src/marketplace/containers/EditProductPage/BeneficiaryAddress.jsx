@@ -138,11 +138,9 @@ const BeneficiaryAddress = ({
                 htmlFor="beneficiaryAddress"
                 className={cx(styles.root, className)}
             >
-                <Label
-                    as={Translate}
-                    value="editProductPage.setPrice.setRecipientEthAddress"
-                    tag="div"
-                />
+                <Label>
+                    Set recipient ETH address
+                </Label>
                 <WithInputActions
                     disabled={disabled}
                     actions={[
@@ -177,7 +175,7 @@ const BeneficiaryAddress = ({
                         value={address}
                         onCommit={onChange}
                         onChange={onOwnAddressChange}
-                        placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
+                        placeholder="Enter ETH address"
                         invalid={invalid}
                         disabled={disabled}
                         selectAllOnFocus

@@ -2,7 +2,6 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import { isPaidProduct } from '$mp/utils/product'
@@ -26,17 +25,17 @@ type Props = {
 const buttonTitle = (product: Product, isValidSubscription: boolean, isWhitelisted: ?boolean) => {
     if (isPaidProduct(product)) {
         if (product.requiresWhitelist && isWhitelisted === false) {
-            return I18n.t('productPage.productDetails.requestAccess')
+            return 'Request Access'
         }
 
         return isValidSubscription ?
-            I18n.t('productPage.productDetails.renew') :
-            I18n.t('productPage.productDetails.subscribe')
+            'Renew' :
+            'Subscribe'
     }
 
     return isValidSubscription ?
-        I18n.t('productPage.productDetails.saved') :
-        I18n.t('productPage.productDetails.subscribe')
+        'Saved to my subscriptions' :
+        'Subscribe'
 }
 
 const TWO_DAYS = 2 * 24 * 60 * 60 * 1000
@@ -64,7 +63,7 @@ const ProductDetails = ({
             </h2>
             <div className={styles.offer}>
                 <div className={styles.paymentRate}>
-                    {product.isFree ? I18n.t('productPage.productDetails.free') : (
+                    {product.isFree ? 'Free' : (
                         <React.Fragment>
                             <span className={styles.priceHeading}>Price</span>
                             &nbsp;

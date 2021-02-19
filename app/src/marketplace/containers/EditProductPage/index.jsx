@@ -3,7 +3,7 @@
 import React, { useContext, useMemo, useEffect, useCallback, useState, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { I18n, Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -165,7 +165,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const previewButton = useMemo(() => {
         if (isPreview) {
             return {
-                title: I18n.t('editProductPage.actionBar.edit'),
+                title: 'Edit',
                 outline: true,
                 onClick: () => setIsPreview(false),
                 disabled: isDisabled,
@@ -223,10 +223,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const toolbarMiddle = useMemo(() => {
         if (isPreview) {
             return (
-                <Translate
-                    value="editProductPage.preview"
-                    className={styles.toolbarMiddle}
-                />
+                <span className={styles.toolbarMiddle}>
+                    This is a preview of how your product will appear when published
+                </span>
             )
         }
 

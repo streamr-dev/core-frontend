@@ -3,7 +3,6 @@
 import React, { Fragment, useState, useCallback, useContext } from 'react'
 import cx from 'classnames'
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 
 import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -60,7 +59,9 @@ const ConnectEthIdentity = ({ className, disabled }: Props) => {
     return (
         <section id="connect-eth-identity" className={cx(styles.root, className)}>
             <H1>
-                <Translate value="editProductPage.connectEthIdentity.title" />
+                <span>
+                    Connect an Ethereum identity
+                </span>
                 {!isValid && publishAttempted && (
                     <ValidationError theme={MarketplaceTheme}>
                         {message}
@@ -68,19 +69,17 @@ const ConnectEthIdentity = ({ className, disabled }: Props) => {
                 )}
             </H1>
             {walletLocked && (
-                <Translate
-                    value="editProductPage.connectEthIdentity.web3Locked"
-                    tag="p"
-                    dangerousHTML
-                />
+                <p>
+                    In order to manage your data union, you need to unlock your wallet and
+                    connect an Ethereum address to your Streamr account before deploying your product.
+                </p>
             )}
             {!walletLocked && isRequired && (
                 <Fragment>
-                    <Translate
-                        value="editProductPage.connectEthIdentity.identityNotLinked"
-                        tag="p"
-                        dangerousHTML
-                    />
+                    <p>
+                        You haven&#39;t connected your Ethereum address to your Streamr account yet.
+                        In order to manage your data union, you need to do this before deploying your product.
+                    </p>
                     <Button
                         kind="secondary"
                         disabled={isOpen || !!disabled}
@@ -89,7 +88,7 @@ const ConnectEthIdentity = ({ className, disabled }: Props) => {
                         })}
                         waiting={waiting}
                     >
-                        <Translate value="editProductPage.connectEthIdentity.addNewAddress" />
+                        Add ETH address
                     </Button>
                 </Fragment>
             )}

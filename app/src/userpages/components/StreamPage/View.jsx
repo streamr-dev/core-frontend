@@ -95,7 +95,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
         copy(id)
 
         Notification.push({
-            title: I18n.t('notifications.streamIdCopied'),
+            title: 'Stream ID copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])
