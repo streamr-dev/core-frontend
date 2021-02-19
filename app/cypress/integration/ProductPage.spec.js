@@ -13,7 +13,7 @@ describe('Product listing page', () => {
     it('renders products', () => {
         cy.login()
         cy.visit('/core/products')
-        cy.contains('Tester One')
+        cy.contains('Anonymous User')
         cy.location('pathname').should('eq', '/core/products')
     })
 })
@@ -95,7 +95,7 @@ describe('Edit product', () => {
             cy.location('pathname').should('eq', `/core/products/${productId}/edit`)
             cy.get('[name=name]').invoke('val').should('match', /test product #\d{4}\/\d{6}/i)
             cy.logout()
-            cy.login('tester2@streamr.com', 'tester2')
+            cy.login('tester two')
             cy.visit(`/core/products/${productId}/edit`)
             cy.contains(/we don.t seem to be able to find/i)
             cy.location('pathname').should('eq', `/core/products/${productId}/edit`)
