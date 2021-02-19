@@ -155,6 +155,7 @@ export const buyProduct = (
                 ONE_DAY,
             ), {
                 value: web3.utils.toWei(price.toString()).toString(),
+                gas: gasLimits.BUY_PRODUCT_WITH_ETH,
             })
         case paymentCurrencies.DAI:
             return send(uniswapAdaptorContractMethods().buyWithERC20(
@@ -168,7 +169,9 @@ export const buyProduct = (
             })
 
         default: // Pay with DATA
-            return send(marketplaceContractMethods().buy(getValidId(id), subscriptionInSeconds.toString()))
+            return send(marketplaceContractMethods().buy(getValidId(id), subscriptionInSeconds.toString()), {
+                gas: gasLimits.BUY_PRODUCT,
+            })
     }
 }
 
