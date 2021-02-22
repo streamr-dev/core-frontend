@@ -77,7 +77,7 @@ const ConnectEthIdentity = ({ className, disabled }: Props) => {
             {!walletLocked && isRequired && (
                 <Fragment>
                     <p>
-                        You haven&#39;t connected your Ethereum address to your Streamr account yet.
+                        You haven&apos;t connected your Ethereum address to your Streamr account yet.
                         In order to manage your data union, you need to do this before deploying your product.
                     </p>
                     <Button
