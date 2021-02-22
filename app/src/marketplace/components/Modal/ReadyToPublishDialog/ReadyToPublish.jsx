@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState } from 'react'
-import { I18n } from 'react-redux-i18n'
 import { Label } from 'reactstrap'
 import styled from 'styled-components'
 
@@ -48,6 +47,14 @@ const StyledLabel = styled(Label)`
     }
 `
 
+const publishModes = {
+    publish: 'Publish',
+    republish: 'Republish',
+    redeploy: 'Publish',
+    unpublish: '',
+    error: '',
+}
+
 const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: Props) => {
     const [termsAccepted, setTermsAccepted] = useState(false)
 
@@ -55,7 +62,7 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: P
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
-                title={I18n.t(`modal.readyToPublish.${publishMode}.title`)}
+                title={`${publishModes[publishMode]} your product`}
                 disabled={disabled}
                 renderActions={() => (
                     <Footer>
@@ -66,8 +73,10 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: P
                                     onChange={(e: SyntheticInputEvent<HTMLInputElement>) => setTermsAccepted(e.currentTarget.checked)}
                                 />
                                 &nbsp;
-                                I have the right to publish this<br />
-                                data as specified in the <a href={routes.publisherTerms()} target="_blank" rel="noopener noreferrer">Terms</a>.
+                                <span>
+                                    I have the right to publish this<br />
+                                    data as specified in the <a href={routes.publisherTerms()} target="_blank" rel="noopener noreferrer">Terms</a>.
+                                </span>
                             </StyledLabel>
                         </FooterText>
                         <Buttons
@@ -78,7 +87,7 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: P
                                     kind: 'link',
                                 },
                                 publish: {
-                                    title: I18n.t(`modal.readyToPublish.${publishMode}.action`),
+                                    title: publishModes[publishMode],
                                     kind: 'primary',
                                     onClick: () => onContinue(),
                                     disabled: !termsAccepted,

@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { MEDIUM } from '$shared/utils/styled'
@@ -13,15 +12,22 @@ type Props = {
     product: Product,
 }
 
+const termNames = {
+    redistribution: 'Redistribution',
+    commercialUse: 'Commercial use',
+    reselling: 'Reselling',
+    storage: 'Storage',
+}
+
 const getTermStrings = (ids: Array<string>) => (
-    ids.map((id, index) => {
-        const term = I18n.t(`editProductPage.terms.${id}`)
+    ids.reduce((result, id, index) => {
+        const term = termNames[id]
         if (index !== 0) {
             const separator = (index === ids.length - 1) ? ' & ' : ', '
-            return `${separator}${term.toLowerCase()}`
+            return `${result}${separator}${term.toLowerCase()}`
         }
         return term
-    }).join('')
+    }, '')
 )
 
 const Body = styled(Segment.Body)`
@@ -61,10 +67,15 @@ const UnstyledTerms = ({ product, ...props }: Props) => {
                         <React.Fragment>
                             {permittedStr}
                             {permitted.length === 1 ? ' is permitted.' : ' are permitted.'}
+                            {' '}
                         </React.Fragment>
                     )}
-                    {notPermittedStr}
-                    {notPermitted.length === 1 ? ' is not' : 'are not'}
+                    {notPermitted.length > 0 && (
+                        <React.Fragment>
+                            {notPermittedStr}
+                            {notPermitted.length === 1 ? ' is not' : ' are not'}
+                        </React.Fragment>
+                    )}
                     {permitted.length === 0 && ' permitted'}
                     {notPermitted.length > 0 && '.'}
                 </p>

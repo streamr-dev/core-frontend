@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Checkbox from '$shared/components/Checkbox'
@@ -32,6 +31,13 @@ const StyledCheckbox = styled(Checkbox)`
     height: 24px !important;
 `
 
+const terms = {
+    redistribution: 'Redistribution',
+    commercialUse: 'Commercial use',
+    reselling: 'Reselling',
+    storage: 'Storage',
+}
+
 const UnstyledTermCheckbox = ({
     id,
     product,
@@ -52,10 +58,7 @@ const UnstyledTermCheckbox = ({
             }}
             disabled={disabled}
         />&nbsp;
-        <Translate
-            value={`editProductPage.terms.${id}`}
-            dangerousHTML
-        />
+        {terms[id]}
     </label>
 )
 

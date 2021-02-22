@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -85,7 +84,7 @@ const PurchaseComplete = ({ onContinue, onClose, txHash }: Props) => {
                             type="button"
                             onClick={() => copy(productLink)}
                         >
-                            {I18n.t(`modal.purchaseComplete.${isCopied ? 'linkCopied' : 'copyLink'}`)}
+                            {isCopied ? 'Copied' : 'Copy link'}
                         </button>
                     </Copy>
                 </ProductLinkContainer>

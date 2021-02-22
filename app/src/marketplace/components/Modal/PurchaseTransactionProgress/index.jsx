@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -148,6 +147,14 @@ const PurchasePrompt = ({ onCancel }: PromptProps) => (
     </ModalPortal>
 )
 
+const purchaseProgress = {
+    setDaiAllowance: 'Setting allowance',
+    resetDaiAllowance: 'Resetting allowance',
+    setDataAllowance: 'Setting allowance',
+    resetDataAllowance: 'Resetting allowance',
+    subscription: 'Subscribing to the product',
+}
+
 const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
     const { pending, progress } = useMemo(() => Object.keys(status).reduce((result, key) => {
         const value = status[key]
@@ -221,7 +228,7 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
                         disabled: true,
                     },
                     close: {
-                        title: I18n.t('modal.common.working'),
+                        title: 'Working',
                         kind: 'primary',
                         disabled: true,
                         onClick: () => onCancel(),
@@ -230,9 +237,7 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
             >
                 <PurchaseProgress>
                     <PendingTasks>
-                        {pending && pending.length > 0 && pending.map((key) => (
-                            I18n.t(`modal.purchaseProgress.${key}.pending`)
-                        )).join(', ')}
+                        {pending && pending.length > 0 && pending.map((key) => purchaseProgress[key]).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={((progress + 1) / ((Object.keys(status).length * 2) + 1)) * 100} />
                 </PurchaseProgress>

@@ -206,12 +206,6 @@ msgstr "OK"
 msgid "modal.common.waiting"
 msgstr "Waiting"
 
-msgid "modal.common.working"
-msgstr "Working"
-
-msgid "modal.common.close"
-msgstr "Close"
-
 msgid "modal.common.confirm"
 msgstr "Confirm"
 

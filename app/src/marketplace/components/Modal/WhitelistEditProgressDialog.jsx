@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -12,6 +11,12 @@ import PendingTasks from './PendingTasks'
 const PublishProgress = styled.div`
     width: 100%;
 `
+
+const actions = {
+    setRequiresWhitelist: 'Enabling whitelist',
+    addWhiteListAddress: 'Adding address',
+    removeWhiteListAddress: 'Removing address',
+}
 
 const UnstyledWhitelistEditProgressDialog = ({ onCancel, status, isPrompted, ...props }) => {
     const { pending, progress } = useMemo(() => Object.keys(status).reduce((result, key) => {
@@ -55,7 +60,7 @@ const UnstyledWhitelistEditProgressDialog = ({ onCancel, status, isPrompted, ...
                         disabled: true,
                     },
                     close: {
-                        title: I18n.t('modal.common.working'),
+                        title: 'Working',
                         kind: 'primary',
                         disabled: true,
                         onClick: () => onCancel(),
@@ -64,9 +69,7 @@ const UnstyledWhitelistEditProgressDialog = ({ onCancel, status, isPrompted, ...
             >
                 <PublishProgress>
                     <PendingTasks isPrompted={isPrompted}>
-                        {pending.length > 0 && pending.map((key) => (
-                            I18n.t(`modal.whiteListEdit.actions.${key}.pending`)
-                        )).join(', ')}
+                        {pending.length > 0 && pending.map((key) => actions[key]).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={((progress + 1) / ((Object.keys(status).length * 2) + 1)) * 100} />
                 </PublishProgress>

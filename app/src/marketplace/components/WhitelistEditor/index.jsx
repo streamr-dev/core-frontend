@@ -2,7 +2,6 @@
 
 import React, { useCallback, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import UnstyledToggle from '$shared/components/Toggle'
@@ -169,6 +168,12 @@ const statusIconTheme = (disabled, status) => {
     return StatusIcon.OK
 }
 
+const statuses = {
+    subscribed: 'Subscribed',
+    added: 'Whitelisted',
+    removed: 'Removed',
+}
+
 const TableRowItem = ({ item, enabled, actionsEnabled, onRemove }: RowProps) => {
     const [menuOpen, setMenuOpen] = useState(false)
     const disabled = !enabled || item.isPending
@@ -179,7 +184,7 @@ const TableRowItem = ({ item, enabled, actionsEnabled, onRemove }: RowProps) => 
         copy(address)
 
         Notification.push({
-            title: I18n.t('general.copied'),
+            title: 'Copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])
@@ -197,7 +202,7 @@ const TableRowItem = ({ item, enabled, actionsEnabled, onRemove }: RowProps) => 
             <TableColumn>
                 <StatusIcon
                     status={statusIconTheme(disabled, item.status)}
-                    tooltip={!disabled && I18n.t(`editProductPage.whitelist.status.${item.status}`)}
+                    tooltip={!disabled && statuses[item.status]}
                 />
             </TableColumn>
             <TableColumn>

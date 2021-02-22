@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
 import { Input } from 'reactstrap'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import Popover from '$shared/components/Popover'
@@ -118,7 +117,7 @@ export const StreamSelector = (props: Props) => {
                                 className={styles.input}
                                 onChange={onSearchChange}
                                 value={search}
-                                placeholder={I18n.t('streamSelector.typeToSearch')}
+                                placeholder="Type to search & select streams or click to select individually"
                                 disabled={!!isDisabled}
                             />
                             <button
@@ -158,7 +157,12 @@ export const StreamSelector = (props: Props) => {
                     >
                         {!fetchingStreams && !sortedStreams.length && (
                             <div className={styles.noAvailableStreams}>
-                                <Translate value={`streamSelector.${search ? 'noStreamResults' : 'noStreams'}`} tag="p" />
+                                {!!search && (
+                                    <p>We couldn&apos;t find anything to match your search.</p>
+                                )}
+                                {!search && (
+                                    <p>You haven&apos;t created any streams yet.</p>
+                                )}
                                 {!search && (
                                     <Button
                                         tag="a"
@@ -198,7 +202,7 @@ export const StreamSelector = (props: Props) => {
                     <div className={styles.footer}>
                         <div className={styles.selectedCount}>
                             {streamSet.size}
-                            {streamSet.size !== 1 ? ' stream ' : ' streams '}
+                            {streamSet.size === 1 ? ' stream ' : ' streams '}
                             selected
                         </div>
                         <Button

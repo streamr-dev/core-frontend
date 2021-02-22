@@ -2,7 +2,6 @@
 
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 
 import type { SmartContractProduct, AccessPeriod } from '$mp/flowtype/product-types'
@@ -51,7 +50,7 @@ export default function usePurchase() {
         const { paymentCurrency, time, timeUnit, price } = accessPeriod || {}
 
         if (!accessPeriod || !time || !timeUnit || !paymentCurrency) {
-            throw new Error(I18n.t('no access period'))
+            throw new Error('no access period')
         }
 
         const isEthPurchase = !!(paymentCurrency === paymentCurrencies.ETH)
@@ -78,7 +77,7 @@ export default function usePurchase() {
             )
 
             if (!purchasePrice) {
-                throw new Error(I18n.t('could not calculate price'))
+                throw new Error('could not calculate price')
             }
         }
 

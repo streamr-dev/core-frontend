@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -26,6 +25,26 @@ export type Props = {
 const PublishProgress = styled.div`
     width: 100%;
 `
+
+const modalTitles = {
+    publish: 'Publishing',
+    redeploy: 'Publishing',
+    republish: 'Republishing',
+    unpublish: 'Unpublishing',
+    error: 'Error',
+}
+
+const pendingTitles = {
+    updateContractProduct: 'Updating product',
+    createContractProduct: 'Publishing',
+    publishPaid: 'Republishing',
+    updateAdminFee: 'Updating data union',
+    undeployContractProduct: 'Unpublishing',
+    publishFree: 'Publishing',
+    unpublishFree: 'Unpublishing',
+    publishPendingChanges: 'Updating product',
+    setRequiresWhitelist: 'Updating whitelist status',
+}
 
 const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted }: Props) => {
     const { pending, progress } = useMemo(() => Object.keys(status).reduce((result, key) => {
@@ -59,7 +78,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
-                title={I18n.t(`modal.publishProgress.${publishMode}.title`)}
+                title={publishMode && modalTitles[publishMode]}
                 actions={{
                     cancel: {
                         title: 'Cancel',
@@ -68,7 +87,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
                         disabled: true,
                     },
                     close: {
-                        title: I18n.t('modal.common.working'),
+                        title: 'Working',
                         kind: 'primary',
                         disabled: true,
                         onClick: () => onCancel(),
@@ -77,9 +96,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
             >
                 <PublishProgress>
                     <PendingTasks isPrompted={isPrompted}>
-                        {pending.length > 0 && pending.map((key) => (
-                            I18n.t(`modal.publishProgress.${key}.pending`)
-                        )).join(', ')}
+                        {pending.length > 0 && pending.map((key) => pendingTitles[key]).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={((progress + 1) / ((Object.keys(status).length * 2) + 1)) * 100} />
                 </PublishProgress>

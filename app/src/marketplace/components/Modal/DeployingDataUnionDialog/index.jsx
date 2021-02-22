@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -60,7 +59,7 @@ const DeployingDataUnionDialog = ({
                     <Buttons
                         actions={{
                             continue: {
-                                title: I18n.t('modal.common.close'),
+                                title: 'Close',
                                 outline: true,
                                 onClick: () => onContinue(),
                             },

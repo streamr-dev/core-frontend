@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -49,6 +48,14 @@ const Copy = styled.div`
     }
 `
 
+const publishModes = {
+    republish: 'Republish',
+    redeploy: 'Publish',
+    publish: 'Publish',
+    unpublish: '',
+    error: '',
+}
+
 const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props) => {
     const { copy, isCopied } = useCopy()
     const productLink = routes.marketplace.public.product({
@@ -59,7 +66,7 @@ const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props)
         <ModalPortal>
             <Dialog
                 onClose={onClose}
-                title={I18n.t(`modal.publishComplete.${publishMode}.title`)}
+                title={`${publishModes[publishMode]} completed`}
                 actions={{
                     publish: {
                         title: 'View Product',
@@ -80,7 +87,7 @@ const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props)
                             type="button"
                             onClick={() => copy(productLink)}
                         >
-                            {I18n.t(`modal.publishComplete.${isCopied ? 'linkCopied' : 'copyLink'}`)}
+                            {isCopied ? 'Copied' : 'Copy link'}
                         </button>
                     </Copy>
                 </ProductLinkContainer>

@@ -3,7 +3,6 @@
 import React, { useMemo, useContext } from 'react'
 import cx from 'classnames'
 import { useSelector } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import SelectField from '$mp/components/SelectField'
@@ -75,17 +74,9 @@ const TextField = ({
 }: TextFieldProps) => (
     <StyledLabel htmlFor={id}>
         <LabelContainer>
-            <Label
-                as={Translate}
-                value={label}
-                tag="div"
-            />
+            <Label>{label}</Label>
             {optional && (
-                <OptionalLabel
-                    as={Translate}
-                    value="optional"
-                    tag="div"
-                />
+                <OptionalLabel>optional</OptionalLabel>
             )}
         </LabelContainer>
         <Text
@@ -194,7 +185,7 @@ const ProductDetails = ({ disabled }: Props) => {
                     <Row>
                         <TextField
                             id="url"
-                            label="editProductPage.productDetails.url"
+                            label="Add a site URL"
                             defaultValue={product.contact && product.contact.url}
                             onChange={(value) => updateContactUrl(value)}
                             placeholder="http://siteinfo.com"
@@ -206,7 +197,7 @@ const ProductDetails = ({ disabled }: Props) => {
                     <Row>
                         <TextField
                             id="email"
-                            label="editProductPage.productDetails.email"
+                            label="Add a contact email"
                             defaultValue={product.contact && product.contact.email}
                             onChange={(value) => updateContactEmail(value)}
                             placeholder="owner@example.com"
@@ -221,7 +212,7 @@ const ProductDetails = ({ disabled }: Props) => {
                     <Row>
                         <TextField
                             id="social_1"
-                            label="editProductPage.productDetails.socialMediaLink"
+                            label="Social media link"
                             defaultValue={product.contact && product.contact.social1}
                             onChange={(value) => updateSocialLinks({ social1: value })}
                             placeholder="e.g. http://reddit.com/r/streamr"
@@ -233,7 +224,7 @@ const ProductDetails = ({ disabled }: Props) => {
                     <Row>
                         <TextField
                             id="social_2"
-                            label="editProductPage.productDetails.socialMediaLink"
+                            label="Social media link"
                             defaultValue={product.contact && product.contact.social2}
                             onChange={(value) => updateSocialLinks({ social2: value })}
                             placeholder="e.g. http://telegram.co/streamr"
@@ -245,7 +236,7 @@ const ProductDetails = ({ disabled }: Props) => {
                     <Row>
                         <TextField
                             id="social_3"
-                            label="editProductPage.productDetails.socialMediaLink"
+                            label="Social media link"
                             defaultValue={product.contact && product.contact.social3}
                             onChange={(value) => updateSocialLinks({ social3: value })}
                             placeholder="e.g. http://twitter.com/streamr"
@@ -257,7 +248,7 @@ const ProductDetails = ({ disabled }: Props) => {
                     <Row>
                         <TextField
                             id="social_4"
-                            label="editProductPage.productDetails.socialMediaLink"
+                            label="Social media link"
                             defaultValue={product.contact && product.contact.social4}
                             onChange={(value) => updateSocialLinks({ social4: value })}
                             placeholder="e.g. http://linkedin.com/streamr"

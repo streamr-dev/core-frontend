@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useCallback } from 'react'
-import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { ThemeProvider } from 'styled-components'
 
@@ -72,7 +71,7 @@ const ConfirmDeployDataUnionDialog = ({
                                     disabled: waitingOnContinue,
                                 },
                                 continue: {
-                                    title: I18n.t('modal.common.deploy'),
+                                    title: 'Deploy',
                                     kind: 'primary',
                                     onClick: onContinue,
                                     spinner: waitingOnContinue,

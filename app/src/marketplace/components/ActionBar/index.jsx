@@ -3,7 +3,6 @@
 import React, { useMemo, useCallback } from 'react'
 import BN from 'bignumber.js'
 import { Container as UnstyledContainer } from 'reactstrap'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -25,7 +24,16 @@ export type Props = {
     onCreateProduct: () => void,
 }
 
-const sortByOptions = ['pricePerSecond', 'free', 'dateCreated']
+const sortByOptions = [{
+    id: 'pricePerSecond',
+    title: 'Price, low to high',
+}, {
+    id: 'free',
+    title: 'Free products only',
+}, {
+    id: 'dateCreated',
+    title: 'Latest',
+}]
 
 const Filters = styled.div`
     background-color: white;
@@ -161,20 +169,20 @@ const UnstyledActionBar = ({
     })) : []),
     ]), [categories])
 
-    const sortOptions = useMemo(() => sortByOptions.map((option) => ({
-        id: option,
-        value: option,
-        title: I18n.t(`actionBar.sortOptions.${option}`),
+    const sortOptions = useMemo(() => sortByOptions.map(({ id, title }) => ({
+        id,
+        value: id,
+        title,
     })), [])
 
     const { categories: category, maxPrice, sortBy, type } = filter
 
     const currentSortByFilter = useMemo(() => {
-        const opt = BN(maxPrice).isEqualTo('0') ?
-            sortByOptions.find((o) => o === 'free') :
-            sortByOptions.find((o) => o === sortBy)
+        const { id: currentId } = (BN(maxPrice).isEqualTo('0') ?
+            sortByOptions.find(({ id }) => id === 'free') :
+            sortByOptions.find(({ id }) => id === sortBy)) || {}
 
-        return opt
+        return currentId
     }, [maxPrice, sortBy])
 
     return (

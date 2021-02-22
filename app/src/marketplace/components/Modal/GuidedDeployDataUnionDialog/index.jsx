@@ -1,7 +1,6 @@
 // @flow
 
 import React, { type Node, useState, useCallback, useMemo } from 'react'
-import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
 import { ThemeProvider } from 'styled-components'
@@ -199,7 +198,7 @@ const GuidedDeployDataUnionDialog = ({
                                     disabled: waitingOnContinue,
                                 },
                                 continue: isLastStep ? {
-                                    title: I18n.t('modal.common.deploy'),
+                                    title: 'Deploy',
                                     kind: 'primary',
                                     onClick: onContinue,
                                     spinner: waitingOnContinue,

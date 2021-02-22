@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -66,7 +65,7 @@ export const PurchaseSummaryDialog = ({
                 <p className={styles.purchaseInfo}>
                     <strong>{name}</strong>
                     <span className={styles.time}>
-                        {time} {I18n.t(`common.timeUnit.${timeUnit}`)}
+                        {time} {`${timeUnit}${time !== '1' ? 's' : ''}`}
                     </span>
                 </p>
                 <div>

@@ -177,7 +177,7 @@ const UnstyledKeyField = ({
     const inputActions = useMemo(() => ([
         ...includeIf(!!hideValue, [revealAction]),
         <Popover.Item key="copy" onClick={onCopy}>
-            <Translate value="userpages.keyField.copy" />
+            Copy
         </Popover.Item>,
         ...includeIf(!!allowEdit, [editAction]),
         ...includeIf(!!allowDelete, [deleteAction]),
