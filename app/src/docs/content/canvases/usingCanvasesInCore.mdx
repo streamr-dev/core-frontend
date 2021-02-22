@@ -1,5 +1,8 @@
 import cx from 'classnames'
+import { Link } from 'react-router-dom'
+
 import Image from '$docs/components/Image'
+import docsLinks from '$shared/../docsLinks'
 
 import CanvasListing from './images/using_canvases_01_desktop_border.jpg'
 import CanvasListing2x from './images/using_canvases_01_desktop_border@2x.jpg'
@@ -80,3 +83,6 @@ The playback starts when you press the <span className={docsStyles.greenHighligh
 You can easily reuse a canvas as a component of another canvas. This is done via abstraction, where you encapsulate a canvas as a module. You can then use the new module when you build additional canvases.
 
 To create an abstraction, you'll need to expose — or export — inputs and outputs. The exported endpoints will show up as endpoints of the abstracted canvas.
+
+### Sharing
+Read more about <Link to={docsLinks.sharingResourcesInCore}>sharing resources in Core</Link>.

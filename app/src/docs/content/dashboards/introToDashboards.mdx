@@ -1,6 +1,7 @@
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
 
 import Image from '$docs/components/Image'
 
@@ -48,3 +49,6 @@ To create a new dashboard, click on <span className={docsStyles.streamrHighlight
 On the <Link to={routes.dashboards.index()}>dashboards page</Link> you'll see preview tiles of your dashboards which you can search and sort by their name. Dashboards don't have a running state, the modules inside the dashboard will instead reflect the real-time data flow of the canvas modules inside it. When there is no real-time data, the dashboard modules will appear empty.
 
 As with canvases, click the + icon to hide or show the module browser. You can also drag to resize each dashboard module to your liking. Hide or show dashboard modules by clicking them in the module browser. When you're happy with your dashboard, you can embed live dashboard modules in external web pages.
+
+### Sharing
+Read more about <Link to={docsLinks.sharingResourcesInCore}>sharing resources in Core</Link>.
