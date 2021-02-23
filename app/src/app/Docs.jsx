@@ -21,6 +21,7 @@ import EndToEndEncryption from '$docs/components/Pages/Streams/EndToEndEncryptio
 import DataSigningAndVerification from '$docs/components/Pages/Streams/DataSigningAndVerification'
 // Canvases Docs
 import IntroToCanvases from '$docs/components/Pages/Canvases/IntroToCanvases'
+import UsingCanvasesInCore from '$docs/components/Pages/Canvases/UsingCanvasesInCore'
 import ModulesBasics from '$docs/components/Pages/Canvases/ModulesBasics'
 import ModulesAdvanced from '$docs/components/Pages/Canvases/ModulesAdvanced'
 // Module Reference Docs
@@ -44,7 +45,7 @@ import BuildingCustomModule from '$docs/components/Pages/Tutorials/BuildingCusto
 import DataToken from '$docs/components/Pages/DataToken'
 // Core Docs
 import IntroToCore from '$docs/components/Pages/Core/IntroToCore'
-import UsingCanvasesInCore from '$docs/components/Pages/Core/UsingCanvasesInCore'
+import SharingResourcesInCore from '$docs/components/Pages/Core/SharingResourcesInCore'
 // Marketplace Docs
 import IntroToMarketplace from '$docs/components/Pages/Marketplace/IntroToMarketplace'
 // SDK Docs
@@ -181,6 +182,7 @@ const DocsRouter = () => ([
     // Core routes
     <Route exact path={links.introToCore} component={IntroToCore} key="IntroToCore" />,
     <Redirect exact from={links.core} to={links.introToCore} key="CoreRoot" />,
+    <Route exact path={links.sharingResourcesInCore} component={SharingResourcesInCore} key="SharingResourcesInCore" />,
     // Marketplace routes
     <Route exact path={links.introToMarketplace} component={IntroToMarketplace} key="IntroToMarketplace" />,
     <Redirect exact from={links.marketplace} to={links.introToMarketplace} key="MarketplaceRoot" />,
