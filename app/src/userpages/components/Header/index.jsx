@@ -60,16 +60,16 @@ const Header = ({
                     </div>
                     <div className={styles.tabs}>
                         <Tab to={routes.streams.index()}>
-                            <Translate value="general.streams" />
+                            Streams
                         </Tab>
                         <Tab to={routes.canvases.index()}>
-                            <Translate value="general.canvases" />
+                            Canvases
                         </Tab>
                         <Tab to={routes.dashboards.index()}>
-                            <Translate value="general.dashboards" />
+                            Dashboards
                         </Tab>
                         <Tab to={routes.products.index()}>
-                            <Translate value="general.products" />
+                            Products
                         </Tab>
                         <Tab to={routes.subscriptions()}>
                             <Translate value="general.subscriptions" />

@@ -108,16 +108,16 @@ const UnstyledWide = (props) => {
                 menu={(
                     <Menu>
                         <Menu.Item as={Link} to={routes.streams.index()}>
-                            <Translate value="general.streams" />
+                            Streams
                         </Menu.Item>
                         <Menu.Item as={Link} to={routes.canvases.index()}>
-                            <Translate value="general.canvases" />
+                            Canvases
                         </Menu.Item>
                         <Menu.Item as={Link} to={routes.dashboards.index()}>
-                            <Translate value="general.dashboards" />
+                            Dashboards
                         </Menu.Item>
                         <Menu.Item as={Link} to={routes.products.index()}>
-                            <Translate value="general.products" />
+                            Products
                         </Menu.Item>
                         <Menu.Item as={Link} to={routes.subscriptions()}>
                             <Translate value="general.subscriptions" />
@@ -140,7 +140,7 @@ const UnstyledWide = (props) => {
                 highlight={current === 'docs'}
                 toggle={(
                     <Nav.Link>
-                        <Translate value="general.docs" />
+                        Docs
                     </Nav.Link>
                 )}
                 menu={(
@@ -151,7 +151,7 @@ const UnstyledWide = (props) => {
                 <Fragment>
                     <Nav.Wide.Divider />
                     <Button tag="a" href={routes.auth.login()} kind="primary" size="mini" outline>
-                        <Translate value="general.useCore" />
+                        Use Core
                     </Button>
                 </Fragment>
             )}
@@ -313,7 +313,7 @@ const UnstyledNarrow = (props) => {
                     <Translate value="general.marketplace" />
                 </Nav.Link>
                 <Nav.Link as={Link} to="/docs">
-                    <Translate value="general.docs" />
+                    Docs
                 </Nav.Link>
                 {!currentUser ? (
                     <Nav.Link>
@@ -332,7 +332,7 @@ const UnstyledNarrow = (props) => {
                     </Button>
                 ) : (
                     <Button tag="a" href={routes.auth.login()} kind="primary" size="normal">
-                        <Translate value="general.useCore" />
+                        Use Core
                     </Button>
                 )}
             </Nav.Narrow.Footer>

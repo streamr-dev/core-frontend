@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import styled, { ThemeProvider, ThemeContext } from 'styled-components'
 import GhostContentAPI from '@tryghost/content-api'
 import { Nav, Menu, Button, useBlogPosts } from '@streamr/streamr-layout'
-import { Translate } from 'react-redux-i18n'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import SiteSection from '$shared/components/Layout/SiteSection'
@@ -66,22 +65,22 @@ const ProjectMenu = () => (
 export const DocsMenu = () => (
     <Menu>
         <Menu.Item as={Link} to={docsLinks.gettingStarted}>
-            <Translate value="general.gettingStarted" />
+            Getting started
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.streams}>
-            <Translate value="general.streams" />
+            Streams
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.canvases}>
-            <Translate value="general.canvases" />
+            Canvases
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.dashboards}>
-            <Translate value="general.dashboards" />
+            Dashboards
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.products}>
-            <Translate value="general.products" />
+            Products
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.dataUnions}>
-            <Translate value="general.dataUnions" />
+            Data Unions
         </Menu.Item>
     </Menu>
 )
@@ -132,7 +131,7 @@ const UnstyledWide = (props) => {
                 highlight
                 toggle={(
                     <Nav.Link>
-                        <Translate value="general.docs" />
+                        Docs
                     </Nav.Link>
                 )}
                 menu={(
@@ -168,7 +167,7 @@ const UnstyledWide = (props) => {
                 )}
             />
             <Button tag="a" href={routes.core()} size="mini" outline>
-                <Translate value="general.useCore" />
+                Use Core
             </Button>
         </Nav.Wide>
     )
@@ -300,7 +299,7 @@ const UnstyledNarrow = (props) => (
         </Nav.Narrow.Body>
         <Nav.Narrow.Footer>
             <Button tag="a" href={routes.core()}>
-                <Translate value="general.useCore" />
+                Use Core
             </Button>
         </Nav.Narrow.Footer>
     </Nav.Narrow>

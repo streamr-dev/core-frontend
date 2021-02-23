@@ -2,7 +2,6 @@
 
 import React, { useState, type Node } from 'react'
 import { Link } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import useLunr from '$docs/hooks/useLunr'
@@ -71,7 +70,7 @@ const ResultSection = styled.span`
     font-size: 12px;
 `
 
-const NoResultsText = styled(Translate)`
+const NoResultsText = styled.p`
     color: rgb(50, 50, 50);
     font-family: var(--sans);
     letter-spacing: 0;
@@ -85,7 +84,7 @@ const NoResultsText = styled(Translate)`
     }
 `
 
-const MoreInfoText = styled(Translate)`
+const MoreInfoText = styled.p`
     color: rgb(50, 50, 50);
     font-family: var(--sans);
     letter-spacing: 0;
@@ -161,18 +160,22 @@ const UnstyledSearch = ({ toggleOverlay, nav, ...props }: Props) => {
                         ))}
                         {!searchResults.length && !!query.length && (
                             <React.Fragment>
-                                <NoResultsText
-                                    value="docs.search.noResultsFoundFor"
-                                    query={query}
-                                    tag="p"
-                                    dangerousHTML
-                                />
-                                <MoreInfoText
-                                    value="docs.search.noResults"
-                                    tag="p"
-                                    url={routes.community.discord()}
-                                    dangerousHTML
-                                />
+                                <NoResultsText>
+                                    No results found for <strong>{query}</strong>
+                                </NoResultsText>
+                                <MoreInfoText>
+                                    Please try a different search or ask on our
+                                    {' '}
+                                    <a
+                                        rel="noopener noreferrer"
+                                        target="_blank"
+                                        href={routes.community.discord()}
+                                    >
+                                        Discord
+                                    </a>
+                                    {' '}
+                                    instead.
+                                </MoreInfoText>
                             </React.Fragment>
                         )}
                     </ul>
