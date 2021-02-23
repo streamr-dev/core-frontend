@@ -292,7 +292,7 @@ describe('smartContract utils', () => {
                     })
                     .onError((e) => {
                         assert(e instanceof TransactionError)
-                        assert.equal('txFailed', e.message)
+                        assert.equal('Transaction failed', e.message)
                         assert.equal(receipt, e.getReceipt())
                         done()
                     })
