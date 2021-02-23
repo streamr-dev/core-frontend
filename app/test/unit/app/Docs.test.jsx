@@ -88,6 +88,12 @@ jest.mock('$docs/components/Pages/Canvases/IntroToCanvases', () => ({
         `
     ),
 }))
+jest.mock('$docs/components/Pages/Canvases/UsingCanvasesInCore', () => ({
+    __esModule: true,
+    default: () => (
+        '/docs/canvases/using-canvases-in-core'
+    ),
+}))
 jest.mock('$docs/components/Pages/Canvases/ModulesBasics', () => ({
     __esModule: true,
     default: () => (
@@ -210,10 +216,10 @@ jest.mock('$docs/components/Pages/Core/IntroToCore', () => ({
         `
     ),
 }))
-jest.mock('$docs/components/Pages/Core/UsingCanvasesInCore', () => ({
+jest.mock('$docs/components/Pages/Core/SharingResourcesInCore', () => ({
     __esModule: true,
     default: () => (
-        '/docs/canvases/using-canvases-in-core'
+        '/docs/core/sharing-resources-in-core'
     ),
 }))
 jest.mock('$docs/components/Pages/Marketplace/IntroToMarketplace', () => ({
