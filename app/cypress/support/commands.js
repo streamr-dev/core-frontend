@@ -21,15 +21,6 @@ const generatePrivateKey = (mnemonic) => {
     return cache[mnemonic]
 }
 
-const getAddress = (mnemonic = 'tester one') => {
-    if (!cache[mnemonic]) {
-        generatePrivateKey(mnemonic)
-    }
-
-    const wallet = getWallet(mnemonic)
-    return wallet.getAddressString()
-}
-
 Cypress.Commands.add('login', (mnemonic = 'tester one') => (
     new StreamrClient({
         restUrl: 'http://localhost/api/v1',
@@ -134,7 +125,7 @@ Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation
                 anonymous: !user,
                 new: true,
                 operation,
-                user: user != null ? getAddress(user) : null,
+                user: user != null ? getWallet(user).getAddressString() : null,
             },
         })
 ))
