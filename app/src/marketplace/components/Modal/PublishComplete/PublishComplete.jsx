@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -11,7 +10,7 @@ import routes from '$routes'
 
 import type { Props } from '.'
 
-const TranslatedText = styled(Translate)`
+const TranslatedText = styled.p`
     text-align: left;
     width: 100%;
 `
@@ -49,6 +48,14 @@ const Copy = styled.div`
     }
 `
 
+const publishModes = {
+    republish: 'Republish',
+    redeploy: 'Publish',
+    publish: 'Publish',
+    unpublish: '',
+    error: '',
+}
+
 const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props) => {
     const { copy, isCopied } = useCopy()
     const productLink = routes.marketplace.public.product({
@@ -59,20 +66,18 @@ const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props)
         <ModalPortal>
             <Dialog
                 onClose={onClose}
-                title={I18n.t(`modal.publishComplete.${publishMode}.title`)}
+                title={`${publishModes[publishMode]} completed`}
                 actions={{
                     publish: {
-                        title: I18n.t('modal.publishComplete.viewProduct'),
+                        title: 'View Product',
                         kind: 'primary',
                         onClick: () => onContinue(),
                     },
                 }}
             >
-                <TranslatedText
-                    value="modal.publishComplete.message"
-                    dangerousHTML
-                    tag="p"
-                />
+                <TranslatedText>
+                    View on the Marketplace or get a link to share
+                </TranslatedText>
                 <ProductLinkContainer>
                     <ProductLink>
                         {productLink}
@@ -82,7 +87,7 @@ const PublishComplete = ({ onContinue, onClose, publishMode, productId }: Props)
                             type="button"
                             onClick={() => copy(productLink)}
                         >
-                            {I18n.t(`modal.publishComplete.${isCopied ? 'linkCopied' : 'copyLink'}`)}
+                            {isCopied ? 'Copied' : 'Copy link'}
                         </button>
                     </Copy>
                 </ProductLinkContainer>

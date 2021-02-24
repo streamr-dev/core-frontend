@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 
 import Button from '$shared/components/Button'
@@ -22,7 +22,7 @@ const NoTransactionsView = ({ accountsExist, accountLinked }: Props) => (
             <img
                 src={emptyStateIcon}
                 srcSet={`${emptyStateIcon2x} 2x`}
-                alt={I18n.t('error.notFound')}
+                alt="Not found"
             />
         )}
         link={(!accountsExist || !accountLinked) && (

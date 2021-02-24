@@ -1,19 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Translate, I18n } from 'react-redux-i18n'
 import useCopy from '$shared/hooks/useCopy'
 import PrestyledButton from '$shared/components/Button'
 import { SM, LG } from '$shared/utils/styled'
 import Selector from './Selector'
 import Layout from './Layout'
 
-const MobileText = styled(Translate)`
+const MobileText = styled.span`
     @media (min-width: ${SM}px) {
         display: none;
     }
 `
 
-const TabletText = styled(Translate)`
+const TabletText = styled.span`
     display: none;
 
     @media (min-width: ${SM}px) {
@@ -99,7 +98,7 @@ const UnstyledToolbar = ({
                     <Inner>
                         <div>
                             <Selector
-                                title={I18n.t('streamLivePreview.streams')}
+                                title="Streams"
                                 options={streamIds}
                                 active={streamId}
                                 onChange={onStreamChange}
@@ -107,7 +106,7 @@ const UnstyledToolbar = ({
                         </div>
                         <IfEnoughRoom>
                             <Selector
-                                title={I18n.t('streamLivePreview.partitions')}
+                                title="Partitions"
                                 options={partitions}
                                 active={partition}
                                 onChange={onPartitionChange}
@@ -124,7 +123,7 @@ const UnstyledToolbar = ({
                             disabled={!streamLoaded}
                             onClick={() => onSettingsButtonClick(streamId)}
                         >
-                            <Translate value="streamLivePreview.streamSettings" />
+                            Stream Settings
                         </SettingsButton>
                     )}
                     <Button
@@ -133,11 +132,11 @@ const UnstyledToolbar = ({
                         disabled={!streamLoaded}
                     >
                         {isCopied ? (
-                            <Translate value="streamLivePreview.streamIdCopied" />
+                            'Copied!'
                         ) : (
                             <React.Fragment>
-                                <TabletText value="streamLivePreview.copyStreamId" />
-                                <MobileText value="streamLivePreview.copyStreamIdMobile" />
+                                <TabletText>Copy Stream ID</TabletText>
+                                <MobileText>Copy Id</MobileText>
                             </React.Fragment>
                         )}
                     </Button>

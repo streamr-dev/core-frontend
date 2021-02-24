@@ -2,8 +2,6 @@
 
 import React from 'react'
 
-import { Translate, I18n } from 'react-redux-i18n'
-
 import Dialog from '$shared/components/Dialog'
 import ModalPortal from '$shared/components/ModalPortal'
 import MailPng from '$mp/assets/mail.png'
@@ -17,26 +15,26 @@ export type RequestAccessModalProps = {
 
 const WhitelistRequestAccessDialog = ({ onClose, contactEmail, productName }: RequestAccessModalProps) => {
     const address = encodeURIComponent(contactEmail)
-    const subject = encodeURIComponent(I18n.t('modal.whitelistRequestAccess.mailtoSubject', {
-        productName,
-    }))
-    const body = encodeURIComponent(I18n.t('modal.whitelistRequestAccess.mailtoBody', {
-        productName,
-    }))
+    const subject = encodeURIComponent(`Streamr Marketplace access request for ${productName}`)
+    const body = encodeURIComponent(`Hi,
+
+I'd like to request access to your data product, ${productName}.
+My ethereum address is as follows:
+`)
 
     return (
         <ModalPortal>
             <Dialog
-                title={I18n.t('modal.whitelistRequestAccess.title')}
+                title="Enquire about product access"
                 onClose={onClose}
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: 'Cancel',
                         onClick: () => onClose(),
                         kind: 'link',
                     },
                     send: {
-                        title: I18n.t('modal.whitelistRequestAccess.sendEmail'),
+                        title: 'Send email',
                         kind: 'primary',
                         href: `mailto:${address}?subject=${subject}&body=${body}`,
                     },
@@ -45,9 +43,13 @@ const WhitelistRequestAccessDialog = ({ onClose, contactEmail, productName }: Re
                 <img
                     src={MailPng}
                     srcSet={`${MailPng2x} 2x`}
-                    alt={I18n.t('modal.whitelistRequestAccess.imageAlt')}
+                    alt="Mailbox"
                 />
-                <Translate value="modal.whitelistRequestAccess.message" dangerousHTML />
+                <span>
+                    The seller has restricted access to this product.
+                    <br />
+                    Please click below to contact them via email.
+                </span>
             </Dialog>
         </ModalPortal>
     )

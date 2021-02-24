@@ -2,7 +2,6 @@
 
 import React, { useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
 import { MenuItem } from '$shared/components/Tile/Menu'
 import useCopy from '$shared/hooks/useCopy'
 import routes from '$routes'
@@ -19,7 +18,7 @@ export const Edit = ({ id }: any) => (
             id,
         })}
     >
-        <Translate value="actionsDropdown.edit" />
+        Edit
     </MenuItem>
 )
 
@@ -35,7 +34,7 @@ export const View = ({ id, disabled }: any) => {
             disabled={disabled}
             onClick={onClick}
         >
-            <Translate value="actionsDropdown.viewProduct" />
+            View product
         </MenuItem>
     )
 }
@@ -47,7 +46,7 @@ export const ViewStats = ({ id }: any) => (
             id,
         })}
     >
-        <Translate value="actionsDropdown.viewStats" />
+        View stats
     </MenuItem>
 )
 
@@ -58,7 +57,7 @@ export const ViewDataUnion = ({ id }: any) => (
             id,
         })}
     >
-        <Translate value="actionsDropdown.viewDataUnion" />
+        View members
     </MenuItem>
 )
 
@@ -76,7 +75,7 @@ export const Copy = ({ id, disabled }: any) => {
             onClick={onClick}
             disabled={disabled}
         >
-            <Translate value="actionsDropdown.copyUrl" />
+            Copy URL
         </MenuItem>
     )
 }
@@ -93,7 +92,7 @@ export const CopyContractAddress = ({ disabled, address }: any) => {
             onClick={onClick}
             disabled={disabled}
         >
-            <Translate value="actionsDropdown.copyContractAddress" />
+            Copy ETH address
         </MenuItem>
     )
 }

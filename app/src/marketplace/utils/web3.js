@@ -2,7 +2,6 @@
 
 import BN from 'bignumber.js'
 import Web3 from 'web3'
-import { I18n } from 'react-redux-i18n'
 
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import { getPublicWeb3, getWeb3 } from '$shared/web3/web3Provider'
@@ -172,7 +171,7 @@ export const validateBalanceForPurchase = async ({
             const requiredEth = BN(ethPrice).plus(requiredGas)
             if (ethBalance.isLessThan(requiredEth)) {
                 throw new NoBalanceError({
-                    message: I18n.t('error.noBalance'),
+                    message: 'It looks like you don’t have enough balance to subscribe to this product.',
                     required: {
                         gas: requiredGas,
                         eth: requiredEth,
@@ -187,7 +186,7 @@ export const validateBalanceForPurchase = async ({
         case paymentCurrencies.DATA: {
             if (ethBalance.isLessThan(requiredGas) || dataBalance.isLessThan(price)) {
                 throw new NoBalanceError({
-                    message: I18n.t('error.noBalance'),
+                    message: 'It looks like you don’t have enough balance to subscribe to this product.',
                     required: {
                         gas: requiredGas,
                         data: price,
@@ -204,7 +203,7 @@ export const validateBalanceForPurchase = async ({
             const daiPrice = await uniswapDATAtoDAI(price.toString())
             if (ethBalance.isLessThan(requiredGas) || daiBalance.isLessThan(daiPrice)) {
                 throw new NoBalanceError({
-                    message: I18n.t('error.noBalance'),
+                    message: 'It looks like you don’t have enough balance to subscribe to this product.',
                     required: {
                         gas: requiredGas,
                         dai: price,

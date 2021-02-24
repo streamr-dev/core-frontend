@@ -46,13 +46,13 @@ const IdentityNameDialog = ({
                 onClose={onClose}
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: 'Cancel',
                         kind: 'link',
                         outline: true,
                         onClick: () => onCancel(),
                     },
                     save: {
-                        title: I18n.t('modal.common.next'),
+                        title: 'Next',
                         kind: 'primary',
                         onClick: () => onSave(),
                         disabled: !name || !!waiting,

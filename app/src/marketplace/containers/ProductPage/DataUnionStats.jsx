@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import AutoScrollHook from '$shared/components/AutoScrollHook'
@@ -67,7 +66,7 @@ const UnstyledDataUnionStats = ({
         <Segment {...props}>
             <AutoScrollHook hash="stats" />
             <Segment.Header>
-                <Translate value="productPage.stats.title" />
+                Overview
             </Segment.Header>
             {!!showDeploying && (
                 <Segment.Body>
@@ -103,7 +102,7 @@ const UnstyledDataUnionStats = ({
                         <GroupedMembers>
                             <TimeSeriesGraph.Header>
                                 <ProductStat.Title>
-                                    <Translate value="productPage.stats.membersDonut" />
+                                    Members by status
                                 </ProductStat.Title>
                             </TimeSeriesGraph.Header>
                             <TimeSeriesGraph.Body>
@@ -111,12 +110,12 @@ const UnstyledDataUnionStats = ({
                                     strokeWidth={3}
                                     data={[
                                         {
-                                            title: I18n.t('productPage.stats.activeMembers'),
+                                            title: 'Active',
                                             value: memberCount.active || 0,
                                             color: '#0324FF',
                                         },
                                         {
-                                            title: I18n.t('productPage.stats.inactiveMembers'),
+                                            title: 'Inactive',
                                             value: memberCount.inactive || 0,
                                             color: '#FB0606',
                                         },

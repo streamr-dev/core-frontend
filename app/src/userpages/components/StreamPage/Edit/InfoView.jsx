@@ -86,7 +86,7 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
         copy(id)
 
         Notification.push({
-            title: I18n.t('notifications.streamIdCopied'),
+            title: 'Stream ID copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])

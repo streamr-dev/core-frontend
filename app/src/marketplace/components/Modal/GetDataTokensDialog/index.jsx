@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import NoDataPng from '$shared/assets/images/wallet_no_data.png'
@@ -19,7 +18,7 @@ export type Props = {
 const GetDataTokensDialog = ({ onCancel }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.getDataTokensDialog.title')}
+            title="No DATA balance"
             onClose={onCancel}
             renderActions={() => (
                 <div className={styles.buttonContainer}>
@@ -29,7 +28,7 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
                         href="https://uniswap.io"
                         target="_blank"
                     >
-                        <Translate value="modal.getCryptoDialog.link.uniswap" />
+                        Uniswap
                     </Button>
                     <Button
                         kind="secondary"
@@ -37,7 +36,7 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
                         href="https://www.bancor.network/"
                         target="_blank"
                     >
-                        <Translate value="modal.getDataTokensDialog.link.bancor" />
+                        Bancor
                     </Button>
                     <Button
                         kind="secondary"
@@ -45,14 +44,22 @@ const GetDataTokensDialog = ({ onCancel }: Props) => (
                         href="https://binance.com"
                         target="_blank"
                     >
-                        <Translate value="modal.getCryptoDialog.link.binance" />
+                        Binance
                     </Button>
                 </div>
             )}
         >
-            <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt={I18n.t('error.wallet')} />
-            <Translate value="modal.getDataTokensDialog.message" tag="p" dangerousHTML className={styles.message} />
-            <Translate value="modal.getDataTokensDialog.mobileMessage" tag="p" dangerousHTML className={styles.mobileMessage} />
+            <img className={styles.icon} src={NoDataPng} srcSet={`${NoDataPng2x} 2x`} alt="Wallet error" />
+            <p className={styles.message}>
+                DATA is currently required to subscribe to products on the Marketplace. Please purchase some and try again
+            </p>
+            <p className={styles.mobileMessage}>
+                DATA is currently required to subscribe
+                <br />
+                to products on the Marketplace.
+                <br />
+                Please purchase some and try again
+            </p>
         </Dialog>
     </ModalPortal>
 )

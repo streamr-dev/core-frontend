@@ -1,7 +1,6 @@
 // @flow
 
 import BN from 'bignumber.js'
-import { I18n } from 'react-redux-i18n'
 import getConfig from '$shared/web3/config'
 import getWeb3 from '$shared/web3/web3Provider'
 import { get, put, post } from '$shared/utils/api'
@@ -184,7 +183,7 @@ export const getMyDataAllowance = (): SmartContractCall<BN> => {
 
 export const setMyDataAllowance = (amount: string | BN): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
-        throw new Error(I18n.t('error.negativeAmount'))
+        throw new Error('Amount must be non-negative!')
     }
 
     const method = dataTokenContractMethods().approve(marketplaceContract().options.address, toAtto(amount).toFixed(0))
@@ -200,7 +199,7 @@ export const getMyDaiAllowance = (): SmartContractCall<BN> => {
 
 export const setMyDaiAllowance = (amount: string | BN): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
-        throw new Error(I18n.t('error.negativeAmount'))
+        throw new Error('Amount must be non-negative!')
     }
 
     const method = daiTokenContractMethods().approve(process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS, toAtto(amount).toFixed(0))

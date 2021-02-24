@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { Translate } from 'react-redux-i18n'
 import styled, { css } from 'styled-components'
 
 import SvgIcon from '$shared/components/SvgIcon'
@@ -205,18 +204,18 @@ export const StreamListing = ({
             <Segment.Header>
                 <HeaderRow>
                     <TitleItem>
-                        <Translate value="productPage.streamListing.streams" />
+                        Streams
                         {!fetchingStreams && (
                             <StreamCount>{streams.length}</StreamCount>
                         )}
                         {!!locked && (
                             <LockedNotice>
-                                <Translate value="productPage.streamListing.subscribe" />
+                                Subscribe to unlock
                             </LockedNotice>
                         )}
                     </TitleItem>
                     <DescriptionItem>
-                        <Translate value="productPage.streamListing.description" />
+                        Description
                     </DescriptionItem>
                 </HeaderRow>
             </Segment.Header>
@@ -253,14 +252,14 @@ export const StreamListing = ({
                 {!!fetchingStreams && (
                     <DataRow locked={locked}>
                         <RowItem>
-                            <Translate value="productPage.streamListing.loading" />
+                            Loading streams...
                         </RowItem>
                     </DataRow>
                 )}
                 {!fetchingStreams && streams.length === 0 && (
                     <DataRow locked={locked}>
                         <RowItem>
-                            <Translate value="productPage.streamListing.noStreams" />
+                            No streams found.
                         </RowItem>
                     </DataRow>
                 )}

@@ -553,7 +553,7 @@ describe('product - services', () => {
             try {
                 all.setMyDataAllowance(-100)
             } catch (e) {
-                assert.equal('negativeAmount', e.message)
+                assert.equal('Amount must be non-negative!', e.message)
                 done()
             }
         })

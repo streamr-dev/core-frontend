@@ -1,7 +1,6 @@
 // @flow
 
 import React, { type Node } from 'react'
-import { I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -17,7 +16,7 @@ export type Props = {
 const ErrorDialog = ({ title, message, waiting, onClose }: Props) => (
     <ModalPortal>
         <Dialog
-            title={title || I18n.t('modal.errorDialog.defaultTitle')}
+            title={title || 'Error'}
             waiting={waiting}
             onClose={onClose}
         >

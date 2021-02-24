@@ -1,7 +1,5 @@
 // @flow
 
-import { I18n } from 'react-redux-i18n'
-
 import { getContract, call, send, hexEqualsZero } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 import type { SmartContractProduct, ProductId } from '$mp/flowtype/product-types'
@@ -24,9 +22,7 @@ export const getProductFromContract = async (id: ProductId, usePublicNode: boole
     call(contractMethods(usePublicNode).getProduct(getValidId(id)))
         .then((result) => {
             if (!result || hexEqualsZero(result.owner)) {
-                throw new Error(I18n.t('error.productNotFound', {
-                    id,
-                }))
+                throw new Error(`No product found with id ${id}`)
             }
             return mapProductFromContract(id, result)
         })

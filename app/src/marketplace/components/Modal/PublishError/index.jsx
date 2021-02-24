@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import { type PublishMode } from '$mp/containers/EditProductPage/usePublish'
@@ -24,6 +23,28 @@ const StyledPngIcon = styled(PngIcon)`
     margin: 0.5rem 0 2.5rem;
 `
 
+const publishModes = {
+    publish: 'Publishing',
+    republish: 'Republishing',
+    redeploy: 'Publishing',
+    unpublish: 'Unpublishing',
+    error: '',
+}
+
+const actions = {
+    updateAdminFee: 'The admin fee failed to update.',
+    updateContractProduct: 'The product data failed to update.',
+    createContractProduct: 'Failed to publish product.',
+    publishPaid: 'Failed to publish product.',
+    publishFree: 'Failed to publish product.',
+    publishPendingChanges: 'Failed to publish product changes.',
+    setRequiresWhitelist: 'Failed to publish product whitelist status.',
+    unpublishFree: 'Failed to unpublish product.',
+    undeployContractProduct: 'Failed to unpublish product.',
+    allFailed: 'The product failed to update.',
+    someFailed: 'More than one transaction failed.',
+}
+
 const PublishError = ({ publishMode, status, onClose }: Props) => {
     const failedAction = useMemo(() => {
         const keys = Object.keys(status)
@@ -44,21 +65,17 @@ const PublishError = ({ publishMode, status, onClose }: Props) => {
         <ModalPortal>
             <Dialog
                 onClose={onClose}
-                title={I18n.t(`modal.publishError.${failedAction === 'allFailed' ? 'allFailed' : 'someFailed'}.title`, {
-                    publishMode: I18n.t(`modal.publishError.publishModes.${publishMode}`),
-                })}
+                title={`${publishModes[publishMode]} ${failedAction === 'allFailed' ? 'failed' : 'did not complete'}`}
             >
                 <div>
                     <StyledPngIcon
                         name="publishFailed"
-                        alt={I18n.t('error.publishFailed')}
+                        alt="Publish failed"
                     />
                     <p>
-                        {!!failedAction && (
-                            <Translate value={`modal.publishError.actions.${failedAction}`} />
-                        )}
+                        {!!failedAction && actions[failedAction]}
                         &nbsp;
-                        <Translate value="modal.publishError.actions.checkWallet" />
+                        Please check your wallet or other settings and try again
                     </p>
                 </div>
             </Dialog>

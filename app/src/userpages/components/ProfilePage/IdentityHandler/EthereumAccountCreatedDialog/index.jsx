@@ -52,7 +52,7 @@ const EthereumAccountCreatedDialog = ({ onBack, onSave, name, address }: Props) 
                     onClick: () => onBack(),
                 },
                 save: {
-                    title: I18n.t('modal.common.next'),
+                    title: 'Next',
                     kind: 'primary',
                     onClick: () => onSave(),
                 },

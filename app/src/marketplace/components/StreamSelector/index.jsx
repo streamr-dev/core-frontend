@@ -6,7 +6,6 @@ import classNames from 'classnames'
 import uniq from 'lodash/uniq'
 import sortBy from 'lodash/sortBy'
 import { Input } from 'reactstrap'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import Popover from '$shared/components/Popover'
@@ -118,7 +117,7 @@ export const StreamSelector = (props: Props) => {
                                 className={styles.input}
                                 onChange={onSearchChange}
                                 value={search}
-                                placeholder={I18n.t('streamSelector.typeToSearch')}
+                                placeholder="Type to search & select streams or click to select individually"
                                 disabled={!!isDisabled}
                             />
                             <button
@@ -134,7 +133,7 @@ export const StreamSelector = (props: Props) => {
                             className={classNames(styles.sortDropdown, styles.dropdown)}
                             title={
                                 <span className={styles.sortDropdownTitle}>
-                                    <Translate value="streamSelector.sort" />
+                                    Sort by
                                     &nbsp;
                                     {sort}
                                 </span>
@@ -142,13 +141,13 @@ export const StreamSelector = (props: Props) => {
                             disabled={!!isDisabled}
                         >
                             <Popover.Item onClick={() => setSort(SORT_BY_NAME)}>
-                                <Translate value="streamSelector.sortByName" />
+                                Name
                             </Popover.Item>
                             <Popover.Item onClick={() => setSort(SORT_BY_CREATED)}>
-                                <Translate value="streamSelector.sortByCreated" />
+                                Created
                             </Popover.Item>
                             <Popover.Item onClick={() => setSort(SORT_BY_ADDED)}>
-                                <Translate value="streamSelector.sortByAdded" />
+                                Added
                             </Popover.Item>
                         </Popover>
                     </div>
@@ -158,7 +157,12 @@ export const StreamSelector = (props: Props) => {
                     >
                         {!fetchingStreams && !sortedStreams.length && (
                             <div className={styles.noAvailableStreams}>
-                                <Translate value={`streamSelector.${search ? 'noStreamResults' : 'noStreams'}`} tag="p" />
+                                {!!search && (
+                                    <p>We couldn&apos;t find anything to match your search.</p>
+                                )}
+                                {!search && (
+                                    <p>You haven&apos;t created any streams yet.</p>
+                                )}
                                 {!search && (
                                     <Button
                                         tag="a"
@@ -166,7 +170,7 @@ export const StreamSelector = (props: Props) => {
                                         kind="special"
                                         variant="light"
                                     >
-                                        <Translate value="streamSelector.create" />
+                                        Create a Stream
                                     </Button>
                                 )}
                             </div>
@@ -197,10 +201,9 @@ export const StreamSelector = (props: Props) => {
                     </div>
                     <div className={styles.footer}>
                         <div className={styles.selectedCount}>
-                            {streamSet.size !== 1 ?
-                                <Translate value="streamSelector.selectedStreams" streamCount={streamSet.size} /> :
-                                <Translate value="streamSelector.selectedStream" streamCount={streamSet.size} />
-                            }
+                            {streamSet.size}
+                            {streamSet.size === 1 ? ' stream ' : ' streams '}
+                            selected
                         </div>
                         <Button
                             kind="secondary"
@@ -216,8 +219,8 @@ export const StreamSelector = (props: Props) => {
                             disabled={!!isDisabled}
                         >
                             {!allVisibleStreamsSelected
-                                ? <Translate value="streamSelector.selectAll" />
-                                : <Translate value="streamSelector.selectNone" />
+                                ? 'Select all'
+                                : 'Select none'
                             }
                         </Button>
                     </div>

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -13,21 +13,20 @@ const UnpublishComplete = ({ onClose }: Props) => (
     <ModalPortal>
         <Dialog
             onClose={onClose}
-            title={I18n.t('modal.unpublishComplete.title')}
+            title="Unpublish completed"
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.close'),
+                    title: 'Close',
                     onClick: () => onClose(),
                     kind: 'primary',
                 },
             }}
         >
-            <Translate
-                value="modal.unpublishComplete.message"
-                dangerousHTML
-                tag="p"
-                productLink={routes.products.index()}
-            />
+            <p>
+                This product is unpublished now,
+                <br />
+                but you still can see in your <Link to={routes.products.index()}>core product</Link>
+            </p>
         </Dialog>
     </ModalPortal>
 )

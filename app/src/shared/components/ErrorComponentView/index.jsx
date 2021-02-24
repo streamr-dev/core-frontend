@@ -1,10 +1,9 @@
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 const UnstyledErrorComponentView = (props) => (
     <div {...props}>
-        <Translate value="error.general" />
+        Oops. Something has broken down here.
     </div>
 )
 

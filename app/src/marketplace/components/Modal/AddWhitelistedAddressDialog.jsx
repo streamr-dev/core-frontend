@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -15,16 +14,16 @@ const UnstyledAddWhitelistedAddressDialog = ({ onClose, onContinue, ...props }) 
         <ModalPortal>
             <Dialog
                 {...props}
-                title={I18n.t('modal.whitelistEdit.addAddressTitle')}
+                title="Add a buyer to the whitelist"
                 onClose={() => onClose()}
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: 'Cancel',
                         onClick: () => onClose(),
                         kind: 'link',
                     },
                     add: {
-                        title: I18n.t('modal.whitelistEdit.add'),
+                        title: 'Add',
                         kind: 'primary',
                         onClick: () => onContinue(address),
                         disabled: !isEthereumAddress(address),
@@ -32,11 +31,11 @@ const UnstyledAddWhitelistedAddressDialog = ({ onClose, onContinue, ...props }) 
                 }}
             >
                 <Label>
-                    <Translate value="modal.whitelistEdit.addressLabel" />
+                    Ethereum Address
                 </Label>
                 <Text
                     onCommit={setAddress}
-                    placeholder={I18n.t('modal.whitelistEdit.addressPlaceholder')}
+                    placeholder="0x..."
                 />
             </Dialog>
         </ModalPortal>

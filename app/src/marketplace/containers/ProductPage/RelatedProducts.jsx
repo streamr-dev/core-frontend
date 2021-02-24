@@ -1,5 +1,4 @@
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
@@ -27,7 +26,7 @@ const RelatedProducts = () => {
 
     return (
         <RelatedProductsContainer
-            header={I18n.t('productPage.relatedProducts')}
+            header="Related products"
             products={products}
             type="relatedProducts"
         />

@@ -975,12 +975,6 @@ msgstr "Save & Apply"
 msgid "modal.avatar.successNotification"
 msgstr "Avatar updated"
 
-msgid "modal.cropImage.title"
-msgstr "Scale and crop your image"
-
-msgid "modal.cropImage.apply"
-msgstr "Apply"
-
 msgid "userpages.keyField.options"
 msgstr "Select"
 
@@ -989,9 +983,6 @@ msgstr "Reveal"
 
 msgid "userpages.keyField.conceal"
 msgstr "Conceal"
-
-msgid "userpages.keyField.copy"
-msgstr "Copy"
 
 msgid "userpages.keyField.copied"
 msgstr "Copied!"

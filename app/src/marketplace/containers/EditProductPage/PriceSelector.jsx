@@ -2,8 +2,8 @@
 
 import React, { useCallback, useContext } from 'react'
 import { useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import cx from 'classnames'
-import { Translate } from 'react-redux-i18n'
 
 import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
@@ -71,16 +71,13 @@ const PriceSelector = ({ disabled }: Props) => {
     return (
         <section id="price" className={cx(styles.root, styles.PriceSelector)}>
             <div>
-                <Translate
-                    tag="h1"
-                    value="editProductPage.setPrice.title"
-                />
-                <Translate
-                    tag="p"
-                    value="editProductPage.setPrice.description"
-                    docsLink={docsLinks.createProduct}
-                    dangerousHTML
-                />
+                <h1>Set a price</h1>
+                <p>
+                    Set the price for your product here. Note that once published,
+                    you will not be able to make a free product into a paid one or vice versa.
+                    But you can edit this while your product is a draft. For help,
+                    see the <Link to={docsLinks.createProduct}>docs</Link>.
+                </p>
                 <RadioButtonGroup
                     name="productPriceType"
                     options={['Paid', 'Free']}
@@ -120,11 +117,14 @@ const PriceSelector = ({ disabled }: Props) => {
                         )}
                         <div className={styles.fixPrice}>
                             <label htmlFor="fixPrice">
-                                <Translate value={`editProductPage.setPrice.${isDataUnion ? 'dataUnion' : 'dataProduct'}.fixPrice`} />
+                                <span>
+                                    Fix price in fiat
+                                    {!!isDataUnion && ' for protection against shifts in the DATA price'}
+                                </span>
                                 <div className={styles.tooltipContainer}>
                                     <SvgIcon name="outlineQuestionMark" className={styles.helpIcon} />
                                     <div className={styles.tooltip}>
-                                        <Translate value="modal.setPrice.fixedPriceSelector.tooltip" />
+                                        Fixing the price in fiat can give you protection against shifts in the DATA price
                                     </div>
                                 </div>
                             </label>

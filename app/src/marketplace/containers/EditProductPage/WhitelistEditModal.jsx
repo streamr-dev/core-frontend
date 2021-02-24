@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { Translate } from 'react-redux-i18n'
 
 import useModal from '$shared/hooks/useModal'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
@@ -177,10 +176,9 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
     if (!checkingWeb3 && (!account || !areAddressesEqual(account, ownerAddress))) {
         return (
             <UnlockWalletDialog onClose={onClose} requiredAddress={ownerAddress}>
-                <Translate
-                    value="unlockWalletDialog.message"
-                    tag="p"
-                />
+                <p>
+                    Please select the account with address
+                </p>
             </UnlockWalletDialog>
         )
     }

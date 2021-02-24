@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
-import { Translate } from 'react-redux-i18n'
 
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
@@ -147,10 +146,9 @@ const AddIdentityDialog = ({ api, requiredAddress, createAccount }: Props) => {
     if (!checkingWeb3 && !!requiredAddress && (!walletAddress || !areAddressesEqual(walletAddress, requiredAddress))) {
         return (
             <UnlockWalletDialog onClose={onClose} requiredAddress={requiredAddress}>
-                <Translate
-                    value="unlockWalletDialog.message"
-                    tag="p"
-                />
+                <p>
+                    Please select the account with address
+                </p>
             </UnlockWalletDialog>
         )
     }

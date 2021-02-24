@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 import { titleize } from '@streamr/streamr-layout'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
@@ -26,18 +25,18 @@ const Description = ({ isProductFree }: Props) => {
 
     const sidebar = useMemo(() => ({
         category: {
-            title: I18n.t('editProductPage.sidebar.category'),
+            title: 'Product category',
             loading: !category,
             value: category && category.name,
         },
         ...(!isProductFree ? { // Temporarily hide active subscribers info for free products while the backend does not support it.
             subscriberCount: {
-                title: I18n.t('editProductPage.sidebar.activeSubscribers'),
+                title: 'Active subscribers',
                 loading: isPending,
                 value: subscriberCount || 0,
             },
             purchaseTimestamp: {
-                title: I18n.t('editProductPage.sidebar.mostRecentSubscription'),
+                title: 'Last purchased',
                 loading: isPending,
                 value: purchaseTimestamp != null ? titleize(ago(new Date(purchaseTimestamp))) : '-',
             },

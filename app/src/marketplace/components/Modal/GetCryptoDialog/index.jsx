@@ -1,15 +1,28 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import PngIcon from '$shared/components/PngIcon'
 import Dialog from '$shared/components/Dialog'
 import Button from '$shared/components/Button'
 import Link from '$shared/components/Link'
+import { MD } from '$shared/utils/styled'
 
 import styles from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/web3NotDetectedDialog.pcss'
+
+const Message = styled.p`
+    span {
+        display: block;
+    }
+
+    @media (min-width: ${MD}px) {
+        span {
+            display: inline;
+        }
+    }
+`
 
 export type Props = {
     onCancel: () => void,
@@ -18,7 +31,7 @@ export type Props = {
 const GetCryptoDialog = ({ onCancel }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.getCryptoDialog.title')}
+            title="No Ether balance"
             onClose={onCancel}
             renderActions={() => (
                 <div className={styles.buttonContainer}>
@@ -28,7 +41,7 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                         href="https://coinbase.com"
                         target="_blank"
                     >
-                        <Translate value="modal.getCryptoDialog.link.coinbase" />
+                        Coinbase
                     </Button>
                     <Button
                         kind="secondary"
@@ -36,7 +49,7 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                         href="https://binance.com"
                         target="_blank"
                     >
-                        <Translate value="modal.getCryptoDialog.link.binance" />
+                        Binance
                     </Button>
                     <Button
                         kind="secondary"
@@ -44,7 +57,7 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                         href="https://uniswap.io"
                         target="_blank"
                     >
-                        <Translate value="modal.getCryptoDialog.link.uniswap" />
+                        Uniswap
                     </Button>
                 </div>
             )}
@@ -52,10 +65,15 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
             <PngIcon
                 className={styles.icon}
                 name="walletNoEth"
-                alt={I18n.t('modal.getCryptoDialog.title')}
+                alt="No Ether balance"
             />
-            <Translate value="modal.getCryptoDialog.message" tag="p" dangerousHTML className={styles.message} />
-            <Translate value="modal.getCryptoDialog.mobileMessage" tag="p" dangerousHTML className={styles.mobileMessage} />
+            <Message>
+                <span>Ether is needed for gas, </span>
+                <span>but you don&apos;t have any. </span>
+            </Message>
+            <p>
+                Please get some and try again
+            </p>
         </Dialog>
     </ModalPortal>
 )

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
-import { I18n, Translate } from 'react-redux-i18n'
 import { formatDateTime } from '$mp/utils/time'
 import Tooltip from '$shared/components/Tooltip'
 import {
@@ -218,10 +217,10 @@ const UnstyledFeed = ({
                         <Layout.Pusher />
                         <Inner>
                             <Cell as="strong">
-                                <Translate value="streamLivePreview.timestamp" />
+                                Timestamp
                             </Cell>
                             <Cell as="strong">
-                                <Translate value="streamLivePreview.data" />
+                                Data
                             </Cell>
                         </Inner>
                     </Row>
@@ -265,7 +264,7 @@ const UnstyledFeed = ({
                             <div>
                                 <strong>
                                     <Cell>
-                                        {I18n.t('streamLivePreview.inspector')}
+                                        Inspector
                                     </Cell>
                                 </strong>
                             </div>
@@ -276,7 +275,7 @@ const UnstyledFeed = ({
                     <Row>
                         <StaticInner>
                             <div>
-                                <Translate value="streamLivePreview.security" />
+                                Security
                             </div>
                             <div>
                                 <Tooltip
@@ -298,7 +297,7 @@ const UnstyledFeed = ({
                                 onClick={onCopyClick(formatDateTime(selectedTimestamp, tz))}
                             >
                                 <div>
-                                    <Translate value="streamLivePreview.timestamp" />
+                                    Timestamp
                                 </div>
                                 <div>
                                     <Tooltip value={copyText} placement={TooltipTheme}>

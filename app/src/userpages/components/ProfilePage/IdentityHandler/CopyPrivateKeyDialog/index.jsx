@@ -66,7 +66,7 @@ const CopyPrivateKeyDialog = ({ onClose: onCloseProp, privateKey }: Props) => {
                 onClose={onClose}
                 actions={{
                     close: {
-                        title: I18n.t('modal.common.close'),
+                        title: 'Close',
                         kind: 'primary',
                         outline: true,
                         onClick: () => onClose(),

@@ -1,7 +1,6 @@
 import React from 'react'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
-import { Translate } from 'react-redux-i18n'
 import styled, { css } from 'styled-components'
 
 import { formatDateTime } from '$mp/utils/time'
@@ -76,16 +75,10 @@ const PreviewTable = ({ streamData }) => (
         <DataTable>
             <Row>
                 <Column>
-                    <Translate
-                        value="streamLivePreview.timestamp"
-                        tag="strong"
-                    />
+                    <strong>Timestamp</strong>
                 </Column>
                 <Column>
-                    <Translate
-                        value="streamLivePreview.data"
-                        tag="strong"
-                    />
+                    <strong>Data</strong>
                 </Column>
             </Row>
             {(streamData || []).map((d, index) => {

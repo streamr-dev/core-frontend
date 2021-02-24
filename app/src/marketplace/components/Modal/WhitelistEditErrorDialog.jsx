@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -10,6 +9,14 @@ import { transactionStates } from '$shared/utils/constants'
 const StyledPngIcon = styled(PngIcon)`
     margin: 0.5rem 0 2.5rem;
 `
+
+const actions = {
+    setRequiresWhitelist: 'There was a problem enabling the whitelist.',
+    addWhiteListAddress: 'There was a problem adding the address.',
+    removeWhiteListAddress: 'There was a problem removing the address.',
+    allFailed: 'Failed to update whitelist.',
+    someFailed: 'More than one transaction failed.',
+}
 
 const UnstyledWhitelistEditErrorDialog = ({ publishMode, status, onClose, ...props }) => {
     const failedAction = useMemo(() => {
@@ -32,19 +39,17 @@ const UnstyledWhitelistEditErrorDialog = ({ publishMode, status, onClose, ...pro
             <Dialog
                 {...props}
                 onClose={onClose}
-                title={I18n.t(`modal.whiteListEdit.${failedAction === 'allFailed' ? 'allFailed' : 'someFailed'}.title`)}
+                title={`Whitelist update ${failedAction === 'allFailed' ? 'failed' : 'did not complete'}`}
             >
                 <div>
                     <StyledPngIcon
                         name="txFailed"
-                        alt={I18n.t('error.txFailed')}
+                        alt="Transaction failed"
                     />
                     <p>
-                        {!!failedAction && (
-                            <Translate value={`modal.whiteListEdit.errors.${failedAction}`} />
-                        )}
+                        {!!failedAction && actions[failedAction]}
                         &nbsp;
-                        <Translate value="modal.whiteListEdit.errors.checkWallet" />
+                        Please check your wallet or other settings and try again.
                     </p>
                 </div>
             </Dialog>

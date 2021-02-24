@@ -2,7 +2,7 @@
 
 import React, { useContext, useCallback, useEffect } from 'react'
 import cx from 'classnames'
-import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 
 import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
@@ -51,16 +51,13 @@ const CoverImage = ({ disabled }: Props) => {
     return (
         <section id="cover-image" className={cx(styles.root, styles.CoverImage)}>
             <div>
-                <Translate
-                    tag="h1"
-                    value="editProductPage.coverImage.title"
-                />
-                <Translate
-                    tag="p"
-                    value="editProductPage.coverImage.description"
-                    docsLink={docsLinks.createProduct}
-                    dangerousHTML
-                />
+                <h1>Add a cover image</h1>
+                <p>
+                    This image will be shown as the tile image in the Marketplace browse view,
+                    and also as the main image on your product page. For best quality,
+                    an image size of around 1000 x 800px is recommended. PNG or JPEG format. Need images?
+                    See the <Link to={docsLinks.createProduct}>docs</Link>
+                </p>
                 <ImageUpload
                     setImageToUpload={onUpload}
                     originalImage={preview || product.imageUrl}

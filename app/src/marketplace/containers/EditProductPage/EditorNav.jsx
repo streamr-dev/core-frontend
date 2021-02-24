@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } from 'react'
-import { I18n } from 'react-redux-i18n'
 
 import Scrollspy from 'react-scrollspy'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
@@ -133,46 +132,46 @@ const EditorNav = () => {
     const sections = useMemo(() => {
         const nextSections = [{
             id: 'product-name',
-            heading: I18n.t('editProductPage.navigation.name'),
+            heading: 'Name',
             status: getStatus('name'),
         }, {
             id: 'cover-image',
-            heading: I18n.t('editProductPage.navigation.coverImage'),
+            heading: 'Cover image',
             status: getStatus('imageUrl'),
         }, {
             id: 'description',
-            heading: I18n.t('editProductPage.navigation.description'),
+            heading: 'Description',
             status: getStatus('description'),
         }, {
             id: 'streams',
-            heading: I18n.t('editProductPage.navigation.streams'),
+            heading: 'Streams',
             status: getStatus('streams'),
         }, {
             id: 'price',
-            heading: I18n.t('editProductPage.navigation.price'),
+            heading: 'Set price',
             status: priceStatus,
         }, {
             id: 'details',
-            heading: I18n.t('editProductPage.navigation.details'),
+            heading: 'Details',
             status: detailsStatus,
         },
         ...includeIf(!!isPaid, [{
             id: 'whitelist',
-            heading: I18n.t('editProductPage.navigation.whitelist'),
+            heading: 'Whitelist',
             status: getStatus('requiresWhitelist'),
         }]),
         ...includeIf(!!showConnectEthIdentity, [{
             id: 'connect-eth-identity',
-            heading: I18n.t('editProductPage.navigation.connectEthIdentity'),
+            heading: 'Ethereum identity',
             status: ethIdentityStatus,
         }]), {
             id: 'terms',
-            heading: I18n.t('editProductPage.navigation.terms'),
+            heading: 'Terms',
             status: getStatus('termsOfUse'),
         },
         ...includeIf(!!isDataUnion, [{
             id: 'shared-secrets',
-            heading: I18n.t('editProductPage.navigation.sharedSecrets'),
+            heading: 'Shared secrets',
             status: sharedSecretStatus,
         }])]
 

@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node, useState } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
 
@@ -68,14 +68,14 @@ const ConfirmDialog = (props: Props) => {
 
     const actions = {
         cancel: {
-            title: I18n.t('modal.common.cancel'),
+            title: 'Cancel',
             onClick: onReject,
             kind: 'link',
             outline: true,
             ...cancelButtonProps,
         },
         save: {
-            title: I18n.t('modal.common.ok'),
+            title: 'OK',
             onClick: (event) => onAccept(event, checked),
             kind: 'primary',
             ...acceptButtonProps,

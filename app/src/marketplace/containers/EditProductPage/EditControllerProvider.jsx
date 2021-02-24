@@ -2,7 +2,6 @@
 
 import React, { type Node, type Context, useState, useMemo, useCallback, useContext, useRef } from 'react'
 import { useSelector } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 
 import { Context as RouterContext } from '$shared/contexts/Router'
 import type { Product } from '$mp/flowtype/product-types'
@@ -177,10 +176,10 @@ function useEditController(product: Product) {
 
             if (!dataUnion || (activeMembers || 0) < dataUnionMemberLimit) {
                 Notification.push({
-                    title: I18n.t('notifications.notEnoughMembers', {
-                        count: dataUnionMemberLimit,
-                        memberLimit: numberToText(dataUnionMemberLimit),
-                    }),
+                    title: `The minimum community size for a Data Union is ${dataUnionMemberLimit === 1 ?
+                        'one member' :
+                        `${numberToText(dataUnionMemberLimit)} members`
+                    }.`,
                     icon: NotificationIcon.ERROR,
                 })
                 return false

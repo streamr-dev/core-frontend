@@ -2,7 +2,6 @@
 
 import React, { useContext, useCallback } from 'react'
 import cx from 'classnames'
-import { Translate } from 'react-redux-i18n'
 
 import Text, { SpaciousTheme } from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
@@ -31,10 +30,7 @@ const ProductName = ({ disabled }: Props) => {
     return (
         <section id="product-name" className={cx(styles.root, styles.ProductName)}>
             <div>
-                <Translate
-                    tag="h1"
-                    value="editProductPage.productName.title"
-                />
+                <h1>Name your product</h1>
                 <Text
                     defaultValue={product.name}
                     onChange={onChange}

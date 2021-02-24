@@ -1,6 +1,5 @@
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import { REGULAR, SANS, MD, XL } from '$shared/utils/styled'
@@ -35,13 +34,24 @@ const Unit = styled.span`
     margin-left: 0.4em;
 `
 
+const statLabels = {
+    revenue: 'Total product revenue',
+    members: 'Active Members',
+    averageRevenue: 'Avg rev member / month',
+    subscribers: 'Subscribers',
+    revenueShare: 'Revenue share',
+    created: 'Product created',
+    membersGraph: 'Members',
+    adminFee: 'Admin fee',
+}
+
 const UnstyledList = ({ items, ...props }) => (
     <div {...props}>
         {items.map(({ id, ...item }) => (
             <ProductStat
                 {...item}
                 key={id}
-                title={!!id && I18n.t(`productPage.stats.${id}`)}
+                title={!!id && statLabels[id]}
             />
         ))}
     </div>

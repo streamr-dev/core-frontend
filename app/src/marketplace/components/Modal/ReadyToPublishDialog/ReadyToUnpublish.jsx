@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -12,22 +11,24 @@ const ReadyToUnpublishDialog = ({ onCancel, onContinue, disabled }: Props) => (
     <ModalPortal>
         <Dialog
             onClose={onCancel}
-            title={I18n.t('modal.readyToUnpublish.title')}
+            title="Unpublish product"
             disabled={disabled}
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.cancel'),
+                    title: 'Cancel',
                     onClick: () => onCancel(),
                     kind: 'link',
                 },
                 unpublish: {
-                    title: I18n.t('modal.readyToUnpublish.unpublish'),
+                    title: 'Unpublish',
                     kind: 'primary',
                     onClick: () => onContinue(),
                 },
             }}
         >
-            <Translate value="modal.readyToUnpublish.message" dangerousHTML />
+            <p>
+                Do you want to unpublish this product?
+            </p>
         </Dialog>
     </ModalPortal>
 )

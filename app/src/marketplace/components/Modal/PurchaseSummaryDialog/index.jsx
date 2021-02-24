@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -45,16 +44,16 @@ export const PurchaseSummaryDialog = ({
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
-                title={I18n.t('modal.purchaseSummary.title')}
+                title="Complete your subscription"
                 actions={{
                     back: {
-                        title: I18n.t('modal.purchaseSummary.back'),
+                        title: 'Back',
                         kind: 'link',
                         onClick: () => onBack(),
                         disabled: !!waiting,
                     },
                     next: {
-                        title: I18n.t('modal.purchaseSummary.payNow'),
+                        title: 'Pay now',
                         kind: 'primary',
                         onClick: () => onPay(),
                         spinner: !!waiting,
@@ -65,12 +64,9 @@ export const PurchaseSummaryDialog = ({
             >
                 <p className={styles.purchaseInfo}>
                     <strong>{name}</strong>
-                    <Translate
-                        value="modal.purchaseSummary.time"
-                        time={time}
-                        timeUnit={I18n.t(`common.timeUnit.${timeUnit}`)}
-                        className={styles.time}
-                    />
+                    <span className={styles.time}>
+                        {time} {`${timeUnit}${time !== '1' ? 's' : ''}`}
+                    </span>
                 </p>
                 <div>
                     <span className={styles.priceValue}>
@@ -80,7 +76,7 @@ export const PurchaseSummaryDialog = ({
                         </span>
                     </span>
                     <p className={styles.usdEquiv}>
-                        {I18n.t('modal.chooseAccessPeriod.approx')} {approxUsd} {contractCurrencies.USD}
+                        Approx {approxUsd} {contractCurrencies.USD}
                     </p>
                 </div>
             </Dialog>

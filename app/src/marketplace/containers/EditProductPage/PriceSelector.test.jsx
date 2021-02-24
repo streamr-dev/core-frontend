@@ -2,6 +2,8 @@ import React, { useContext, useMemo, useState } from 'react'
 import sinon from 'sinon'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
+import { MemoryRouter } from 'react-router-dom'
+
 import * as UndoContext from '$shared/contexts/Undo'
 import Select from '$ui/Select'
 import Toggle from '$shared/components/Toggle'
@@ -97,13 +99,15 @@ describe('PriceSelector', () => {
         }
 
         const el = mount((
-            <EditContextWrap>
-                <UndoContext.Provider>
-                    <ValidationContextProvider>
-                        <WrappedPriceSelector />
-                    </ValidationContextProvider>
-                </UndoContext.Provider>
-            </EditContextWrap>
+            <MemoryRouter>
+                <EditContextWrap>
+                    <UndoContext.Provider>
+                        <ValidationContextProvider>
+                            <WrappedPriceSelector />
+                        </ValidationContextProvider>
+                    </UndoContext.Provider>
+                </EditContextWrap>
+            </MemoryRouter>
         ))
 
         await act(async () => {

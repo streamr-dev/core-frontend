@@ -1,7 +1,6 @@
 // @flow
 
 import * as React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -56,7 +55,7 @@ const Product = styled.div`
     }
 `
 
-const ProductTitle = styled(Translate)`
+const ProductTitle = styled.div`
     height: 80px;
     line-height: 80px;
     text-align: center;
@@ -94,24 +93,25 @@ const ProductText = styled.div`
 const ProductTypeChooser = ({ className }: Props) => (
     <Root className={className}>
         <PageTitle>
-            <Translate value="productTypeChooser.title" />
+            Choose your product type
         </PageTitle>
         <ProductChoices>
             <Product>
-                <ProductTitle tag="div" value="productTypeChooser.standard.title" />
+                <ProductTitle>
+                    Data Product
+                </ProductTitle>
                 <ProductImage>
                     <img
                         src={standardProductImage}
                         srcSet={`${standardProductImage2x} 2x`}
-                        alt={I18n.t('productTypeChooser.standard.title')}
+                        alt="Data Product"
                     />
                 </ProductImage>
                 <ProductText>
-                    <Translate
-                        value="productTypeChooser.standard.description"
-                        docsLink={docsLinks.streams}
-                        dangerousHTML
-                    />
+                    <span>
+                        Add your own data stream or group of streams to a product and publish it on the Marketplace.
+                        For help creating streams, see the <Link to={docsLinks.streams}>docs</Link>.
+                    </span>
                     <Button
                         kind="primary"
                         outline
@@ -120,21 +120,25 @@ const ProductTypeChooser = ({ className }: Props) => (
                             type: productTypes.NORMAL,
                         })}
                     >
-                        <Translate value="productTypeChooser.standard.linkTitle" />
+                        Create Data Product
                     </Button>
                 </ProductText>
             </Product>
             <Product>
-                <ProductTitle tag="div" value="productTypeChooser.dataUnion.title" />
+                <ProductTitle>
+                    Data Union
+                </ProductTitle>
                 <ProductImage>
                     <img
                         src={dataUnionImage}
                         srcSet={`${dataUnionImage2x} 2x`}
-                        alt={I18n.t('productTypeChooser.dataUnion.title')}
+                        alt="Data Union"
                     />
                 </ProductImage>
                 <ProductText>
-                    <Translate value="productTypeChooser.dataUnion.description" />
+                    <span>
+                        Gather members via your own app and crowdsell the data they provide. You take a cut, and the rest is distributed to members.
+                    </span>
                     <Button
                         kind="primary"
                         outline
@@ -143,7 +147,7 @@ const ProductTypeChooser = ({ className }: Props) => (
                             type: productTypes.DATAUNION,
                         })}
                     >
-                        <Translate value="productTypeChooser.dataUnion.linkTitle" />
+                        Create Data Union
                     </Button>
                 </ProductText>
             </Product>

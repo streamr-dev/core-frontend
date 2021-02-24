@@ -3,7 +3,6 @@
 import React, { useContext, useMemo, useEffect, useCallback, useState, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { I18n, Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -156,7 +155,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     }, [resetWhiteWhitelistedAdresses, productId])
 
     const saveAndExitButton = useMemo(() => ({
-        title: I18n.t('editProductPage.actionBar.save'),
+        title: 'Save & Exit',
         kind: 'link',
         onClick: () => save(),
         disabled: isDisabled,
@@ -165,7 +164,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const previewButton = useMemo(() => {
         if (isPreview) {
             return {
-                title: I18n.t('editProductPage.actionBar.edit'),
+                title: 'Edit',
                 outline: true,
                 onClick: () => setIsPreview(false),
                 disabled: isDisabled,
@@ -173,7 +172,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         }
 
         return {
-            title: I18n.t('editProductPage.actionBar.preview'),
+            title: 'Preview',
             outline: true,
             onClick: () => setIsPreview(true),
             disabled: isDisabled,
@@ -183,9 +182,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const productState = product.state
     const publishButton = useMemo(() => {
         const titles = {
-            [productStates.DEPLOYING]: 'publishing',
-            [productStates.UNDEPLOYING]: 'unpublishing',
-            continue: 'continue',
+            [productStates.DEPLOYING]: 'Publishing',
+            [productStates.UNDEPLOYING]: 'Unpublishing',
+            continue: 'Continue',
         }
 
         const tmpState: any = [
@@ -194,7 +193,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         ].includes(productState) ? productState : 'continue'
 
         return {
-            title: (productState && I18n.t(`editProductPage.actionBar.${titles[tmpState]}`)) || '',
+            title: (productState && titles[tmpState]) || '',
             kind: 'primary',
             onClick: publish,
             disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isDisabled,
@@ -204,7 +203,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const deployButton = useMemo(() => {
         if (isDataUnion && !isDeployed) {
             return {
-                title: I18n.t('editProductPage.actionBar.continue'),
+                title: 'Continue',
                 kind: 'primary',
                 onClick: deployDataUnion,
                 disabled: isDisabled,
@@ -223,10 +222,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const toolbarMiddle = useMemo(() => {
         if (isPreview) {
             return (
-                <Translate
-                    value="editProductPage.preview"
-                    className={styles.toolbarMiddle}
-                />
+                <span className={styles.toolbarMiddle}>
+                    This is a preview of how your product will appear when published
+                </span>
             )
         }
 

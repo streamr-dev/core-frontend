@@ -9,7 +9,7 @@ import styles from '@sambego/storybook-styles'
 import BN from 'bignumber.js'
 import { Translate } from 'react-redux-i18n'
 
-import { transactionStates } from '$shared/utils/constants'
+import { transactionStates, timeUnits } from '$shared/utils/constants'
 import { subscribeSnippets } from '$utils/streamSnippets'
 import PngIcon from '$shared/components/PngIcon'
 
@@ -345,7 +345,7 @@ story('Product Editor/ReadyToPublishDialog')
 story('Product Editor/GuidedDeployDataUnionDialog')
     .add('default', () => (
         <GuidedDeployDataUnionDialog
-            // $FlowFixMe
+            // $FlowFixMe missing properties are fine here
             product={{
                 id: '1',
                 name: 'Example product',
@@ -359,7 +359,7 @@ story('Product Editor/GuidedDeployDataUnionDialog')
 story('Product Editor/ConfirmDeployDataUnionDialog')
     .add('default', () => (
         <ConfirmDeployDataUnionDialog
-            // $FlowFixMe
+            // $FlowFixMe missing properties are fine here
             product={{
                 id: '1',
                 name: 'Example product',
@@ -374,7 +374,7 @@ story('Product Editor/ConfirmDeployDataUnionDialog')
 story('Product Editor/DeployingCommunityDialog')
     .add('default', () => (
         <DeployingDataUnionDialog
-            // $FlowFixMe
+            // $FlowFixMe missing properties are fine here
             product={{
                 id: '1',
                 name: 'Example product',
@@ -387,7 +387,7 @@ story('Product Editor/DeployingCommunityDialog')
     ))
     .add('minimized', () => (
         <DeployingDataUnionDialog
-            // $FlowFixMe
+            // $FlowFixMe missing properties are fine here
             product={{
                 id: '1',
                 name: 'Example product',
@@ -613,8 +613,8 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
-            time="24"
-            timeUnit="hour"
+            time={text('Time', '24')}
+            timeUnit={select('Time unit', timeUnits, 'hour')}
             approxUsd="0.11"
             onBack={action('onBack')}
             onCancel={action('onCancel')}

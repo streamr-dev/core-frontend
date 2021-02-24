@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -21,6 +20,16 @@ export type Props = {
 const StyledPngIcon = styled(PngIcon)`
     margin: 0.5rem 0 2.5rem;
 `
+
+const actions = {
+    setDaiAllowance: 'The allowance failed to update.',
+    resetDaiAllowance: 'Resetting the allowance failed to update.',
+    setDataAllowance: 'The allowance failed to update.',
+    resetDataAllowance: 'Resetting the allowance failed to update.',
+    subscription: 'Failed to subscribe to the product.',
+    allFailed: 'Failed to subscribe to the product.',
+    someFailed: 'More than one transaction failed.',
+}
 
 const PurchaseError = ({ status, onClose }: Props) => {
     const failedAction = useMemo(() => {
@@ -42,19 +51,17 @@ const PurchaseError = ({ status, onClose }: Props) => {
         <ModalPortal>
             <Dialog
                 onClose={onClose}
-                title={I18n.t(`modal.purchaseError.${failedAction === 'allFailed' ? 'allFailed' : 'someFailed'}.title`)}
+                title={`Subscription ${failedAction === 'allFailed' ? 'failed' : 'did not complete'}`}
             >
                 <div>
                     <StyledPngIcon
                         name="txFailed"
-                        alt={I18n.t('error.subscriptionFailed')}
+                        alt="Subscription failed"
                     />
                     <p>
-                        {!!failedAction && (
-                            <Translate value={`modal.purchaseError.actions.${failedAction}`} />
-                        )}
+                        {!!failedAction && actions[failedAction]}
                         &nbsp;
-                        <Translate value="modal.purchaseError.actions.checkWallet" />
+                        Please check your wallet or other settings and try again
                     </p>
                 </div>
             </Dialog>

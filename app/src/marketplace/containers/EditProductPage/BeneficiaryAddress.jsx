@@ -2,7 +2,6 @@
 
 import React, { useContext, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Text from '$ui/Text'
@@ -87,7 +86,7 @@ const BeneficiaryAddress = ({
         copy(addressProp)
 
         Notification.push({
-            title: I18n.t('general.copied'),
+            title: 'Copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy, addressProp])
@@ -138,11 +137,9 @@ const BeneficiaryAddress = ({
                 htmlFor="beneficiaryAddress"
                 className={cx(styles.root, className)}
             >
-                <Label
-                    as={Translate}
-                    value="editProductPage.setPrice.setRecipientEthAddress"
-                    tag="div"
-                />
+                <Label>
+                    Set recipient ETH address
+                </Label>
                 <WithInputActions
                     disabled={disabled}
                     actions={[
@@ -166,7 +163,7 @@ const BeneficiaryAddress = ({
                             disabled={!addressProp}
                             onClick={onCopy}
                         >
-                            <Translate value="userpages.keyField.copy" />
+                            Copy
                         </Popover.Item>,
                     ]}
                 >
@@ -177,7 +174,7 @@ const BeneficiaryAddress = ({
                         value={address}
                         onCommit={onChange}
                         onChange={onOwnAddressChange}
-                        placeholder={I18n.t('editProductPage.setPrice.placeholder.enterEthAddress')}
+                        placeholder="Enter ETH address"
                         invalid={invalid}
                         disabled={disabled}
                         selectAllOnFocus

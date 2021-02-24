@@ -1,7 +1,6 @@
 // @flow
 
 import React, { type Node, useState, useCallback, useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
 import { ThemeProvider } from 'styled-components'
@@ -110,7 +109,9 @@ const GuidedDeployDataUnionDialog = ({
                         />
                     </ThemeProvider>
                     <TextContainer>
-                        <Translate value="modal.deployDataUnion.guide.step1" dangerousHTML />
+                        Deploying your product&apos;s smart contract will allow
+                        <br />
+                        your users to join the Data Union via your app.
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -124,7 +125,9 @@ const GuidedDeployDataUnionDialog = ({
                         />
                     </PreviewContainer>
                     <TextContainer>
-                        <Translate value="modal.deployDataUnion.guide.step2" dangerousHTML />
+                        Once deployed, your product is not published, but will appear as
+                        <br />
+                        a Draft in Core &gt; Products. Publish when it has enough members.
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -138,12 +141,13 @@ const GuidedDeployDataUnionDialog = ({
                         />
                     </PreviewContainer>
                     <TextContainer>
-                        <Translate
-                            value="modal.deployDataUnion.guide.step3"
-                            dangerousHTML
-                            count={dataUnionMemberLimit}
-                            memberLimit={numberToText(dataUnionMemberLimit)}
-                        />
+                        A minimum of
+                        {' '}
+                        {dataUnionMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionMemberLimit)} members`}
+                        {' '}
+                        is needed to publish the product.
+                        <br />
+                        In Core, Data Union size is shown on the members badge.
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -153,7 +157,9 @@ const GuidedDeployDataUnionDialog = ({
                         <img src={dataUnionStats} alt="" className={styles.highlightStats} />
                     </PreviewContainer>
                     <TextContainer>
-                        <Translate value="modal.deployDataUnion.guide.step4" dangerousHTML />
+                        View analytics and manually manage your Data Union
+                        <br />
+                        by clicking the members badge on the product tile.
                     </TextContainer>
                 </React.Fragment>
             )}
@@ -164,9 +170,7 @@ const GuidedDeployDataUnionDialog = ({
         <ModalPortal>
             <Dialog
                 className={cx(styles.root, styles.GuidedDeployDataUnionDialog)}
-                title={I18n.t('modal.deployDataUnion.guide.title', {
-                    name: product.name,
-                })}
+                title={`Deploy ${product.name}`}
                 onClose={onClose}
                 contentClassName={styles.content}
                 containerClassname={styles.dialogContainer}
@@ -181,26 +185,26 @@ const GuidedDeployDataUnionDialog = ({
                                             setSkipped(e.target.checked)
                                         }}
                                     />
-                                    <Translate value="modal.deployDataUnion.guide.dontShowAgain" />
+                                    Don&apos;t show this guide again
                                 </Label>
                             </FormGroup>
                         </div>
                         <Buttons
                             actions={{
                                 cancel: {
-                                    title: I18n.t('modal.common.cancel'),
+                                    title: 'Cancel',
                                     onClick: onClose,
                                     kind: 'link',
                                     disabled: waitingOnContinue,
                                 },
                                 continue: isLastStep ? {
-                                    title: I18n.t('modal.common.deploy'),
+                                    title: 'Deploy',
                                     kind: 'primary',
                                     onClick: onContinue,
                                     spinner: waitingOnContinue,
                                     disabled: waitingOnContinue,
                                 } : {
-                                    title: I18n.t('modal.common.next'),
+                                    title: 'Next',
                                     outline: true,
                                     onClick: onContinue,
                                 },

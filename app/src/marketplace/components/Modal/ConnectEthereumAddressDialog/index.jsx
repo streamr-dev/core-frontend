@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -16,15 +15,15 @@ const ConnectEthereumAddressDialog = ({ onCancel, onSet, waiting }: Props) => (
     <ModalPortal>
         <Dialog
             onClose={onCancel}
-            title={I18n.t('modal.connectEthereumAddress.title')}
+            title="Connect your Ethereum address"
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.cancel'),
+                    title: 'Cancel',
                     kind: 'link',
                     onClick: onCancel,
                 },
                 next: {
-                    title: I18n.t('modal.common.next'),
+                    title: 'Next',
                     outline: true,
                     onClick: () => onSet(),
                     disabled: !!waiting,
@@ -32,7 +31,11 @@ const ConnectEthereumAddressDialog = ({ onCancel, onSet, waiting }: Props) => (
                 },
             }}
         >
-            <Translate value="modal.connectEthereumAddress.description" dangerousHTML tag="p" />
+            <p>
+                Connect your Ethereum address to see your subscriptions.
+                <br />
+                Sign this step in your wallet to proceed.
+            </p>
         </Dialog>
     </ModalPortal>
 )

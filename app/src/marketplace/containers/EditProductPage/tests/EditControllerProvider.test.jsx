@@ -153,7 +153,7 @@ describe('EditControllerProvider', () => {
             expect(result).toBe(false)
             expect(notificationStub.callCount).toBe(1)
             expect(notificationStub.calledWith({
-                title: 'notEnoughMembers',
+                title: 'The minimum community size for a Data Union is ten members.',
                 icon: 'error',
             })).toBe(true)
         })

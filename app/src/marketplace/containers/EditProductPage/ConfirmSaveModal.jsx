@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 
 import useModal from '$shared/hooks/useModal'
 
@@ -29,11 +28,11 @@ export default () => {
                 redirect: false,
             })}
         >
-            <Translate
-                value="modal.confirmSave.product.message"
-                tag="p"
-                dangerousHTML
-            />
+            <p>
+                You have made changes to this product.
+                <br />
+                Do you want to save your changes?
+            </p>
         </ConfirmSaveDialog>
     )
 }

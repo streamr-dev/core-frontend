@@ -30,7 +30,7 @@ const UnstyledFooter = ({
         </div>
         <div>
             <CancelButton onClick={onCancel} kind="link">
-                <Translate value="modal.common.cancel" />
+                Cancel
             </CancelButton>
             <SaveButton onClick={onSave} disabled={disabled} waiting={waiting}>
                 <Translate value="modal.shareResource.save" />

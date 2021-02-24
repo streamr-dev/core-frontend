@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { Translate } from 'react-redux-i18n'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { transactionStates } from '$shared/utils/constants'
@@ -164,10 +163,9 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     if (!checkingWeb3 && !!requireWeb3 && !!requiredOwner && (!account || !areAddressesEqual(account, requiredOwner))) {
         return (
             <UnlockWalletDialog onClose={onClose} requiredAddress={requiredOwner}>
-                <Translate
-                    value="unlockWalletDialog.message"
-                    tag="p"
-                />
+                <p>
+                    Please select the account with address
+                </p>
             </UnlockWalletDialog>
         )
     }

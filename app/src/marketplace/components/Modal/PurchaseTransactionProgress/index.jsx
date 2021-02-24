@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -32,40 +31,45 @@ type PromptProps = {
     onCancel: () => void,
 }
 
-const StyledHelpTextTranslate = styled(Translate)`
+const Helptext = styled.p`
     && {
         margin-bottom: 2rem;
     }
 `
-
 const ReplaceAllowancePrompt = ({ onCancel }: PromptProps) => (
     <ModalPortal>
         <Dialog
             onClose={onCancel}
-            title={I18n.t('modal.setAllowance.title')}
+            title="Set Marketplace Allowance"
             helpText={(
-                <StyledHelpTextTranslate
-                    value="modal.replaceAllowance.helpText"
-                    resetAllowanceLink={routes.resetAllowanceInfo()}
-                    dangerousHTML
-                    tag="p"
-                />
+                <Helptext>
+                    You have an allowance set for the marketplace, but it is not enough to make
+                    the subscription. To fix it, we need to make two transactions: First set
+                    allowance to zero, then continue normally by setting it to the target
+                    value.
+                    <br />
+                    <a href={routes.resetAllowanceInfo()} target="_blank" rel="noopener noreferrer">
+                        More information
+                    </a>
+                </Helptext>
             )}
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.cancel'),
+                    title: 'Cancel',
                     kind: 'link',
                     disabled: true,
                 },
                 next: {
-                    title: I18n.t('modal.common.waiting'),
+                    title: 'Waiting',
                     kind: 'primary',
                     disabled: true,
                     spinner: true,
                 },
             }}
         >
-            <Translate value="modal.replaceAllowance.message" dangerousHTML tag="p" />
+            <p>
+                Due to an issue with ERC-20 allowance, we need to reset your allowance before proceeding.
+            </p>
         </Dialog>
     </ModalPortal>
 )
@@ -78,34 +82,37 @@ const SetAllowancePrompt = ({ onCancel, paymentCurrency }: SetAllowancePromptPro
     <ModalPortal>
         <Dialog
             onClose={onCancel}
-            title={I18n.t('modal.setAllowance.title')}
+            title="Set Marketplace Allowance"
             helpText={(
-                <StyledHelpTextTranslate
-                    value="modal.setAllowance.helpText"
-                    allowanceLink={routes.allowanceInfo()}
-                    dangerousHTML
-                />
+                <Helptext>
+                    Allowance is a requirement of ERC-20 token transfers,
+                    <br />
+                    designed to increase security and efficiency.
+                    <br />
+                    For more about allowances, see this
+                    {' '}
+                    <a href={routes.allowanceInfo()} target="_blank" rel="noopener noreferrer">page</a>.
+                </Helptext>
             )}
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.cancel'),
+                    title: 'Cancel',
                     kind: 'link',
                     disabled: true,
                 },
                 next: {
-                    title: I18n.t('modal.common.waiting'),
+                    title: 'Waiting',
                     kind: 'primary',
                     disabled: true,
                     spinner: true,
                 },
             }}
         >
-            <Translate
-                value="modal.setAllowance.description"
-                currency={paymentCurrency}
-                dangerousHTML
-                tag="p"
-            />
+            <p>
+                This step allows the marketplace to
+                <br />
+                transfer the required amount of {paymentCurrency}.
+            </p>
         </Dialog>
     </ModalPortal>
 )
@@ -114,15 +121,15 @@ const PurchasePrompt = ({ onCancel }: PromptProps) => (
     <ModalPortal>
         <Dialog
             onClose={onCancel}
-            title={I18n.t('modal.purchaseSummary.started.title')}
+            title="Subscription confirmation"
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.cancel'),
+                    title: 'Cancel',
                     kind: 'link',
                     disabled: true,
                 },
                 next: {
-                    title: I18n.t('modal.common.waiting'),
+                    title: 'Waiting',
                     kind: 'primary',
                     disabled: true,
                     spinner: true,
@@ -130,11 +137,23 @@ const PurchasePrompt = ({ onCancel }: PromptProps) => (
             }}
         >
             <div>
-                <Translate value="modal.purchaseSummary.started.message" dangerousHTML tag="p" />
+                <p>
+                    You need to confirm the transaction
+                    <br />
+                    in your wallet to subscribe to this product.
+                </p>
             </div>
         </Dialog>
     </ModalPortal>
 )
+
+const purchaseProgress = {
+    setDaiAllowance: 'Setting allowance',
+    resetDaiAllowance: 'Resetting allowance',
+    setDataAllowance: 'Setting allowance',
+    resetDataAllowance: 'Resetting allowance',
+    subscription: 'Subscribing to the product',
+}
 
 const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
     const { pending, progress } = useMemo(() => Object.keys(status).reduce((result, key) => {
@@ -200,16 +219,16 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
-                title={I18n.t('modal.purchaseProgress.title')}
+                title="Subscribing to the product"
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: 'Cancel',
                         onClick: () => onCancel(),
                         kind: 'link',
                         disabled: true,
                     },
                     close: {
-                        title: I18n.t('modal.common.working'),
+                        title: 'Working',
                         kind: 'primary',
                         disabled: true,
                         onClick: () => onCancel(),
@@ -218,9 +237,7 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
             >
                 <PurchaseProgress>
                     <PendingTasks>
-                        {pending && pending.length > 0 && pending.map((key) => (
-                            I18n.t(`modal.purchaseProgress.${key}.pending`)
-                        )).join(', ')}
+                        {pending && pending.length > 0 && pending.map((key) => purchaseProgress[key]).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={((progress + 1) / ((Object.keys(status).length * 2) + 1)) * 100} />
                 </PurchaseProgress>

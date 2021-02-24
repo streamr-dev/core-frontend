@@ -3,7 +3,6 @@
 import React, { useMemo, useCallback } from 'react'
 import BN from 'bignumber.js'
 import { Container as UnstyledContainer } from 'reactstrap'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -25,7 +24,16 @@ export type Props = {
     onCreateProduct: () => void,
 }
 
-const sortByOptions = ['pricePerSecond', 'free', 'dateCreated']
+const sortByOptions = [{
+    id: 'pricePerSecond',
+    title: 'Price, low to high',
+}, {
+    id: 'free',
+    title: 'Free products only',
+}, {
+    id: 'dateCreated',
+    title: 'Latest',
+}]
 
 const Filters = styled.div`
     background-color: white;
@@ -138,21 +146,21 @@ const UnstyledActionBar = ({
     const productTypeOptions = useMemo(() => ([{
         id: 'all',
         value: undefined,
-        title: I18n.t('actionBar.productTypes.all'),
+        title: 'All products',
     }, {
         id: 'normal',
         value: 'normal',
-        title: I18n.t('actionBar.productTypes.normal'),
+        title: 'Data Products',
     }, {
         id: 'dataunion',
         value: 'dataunion',
-        title: I18n.t('actionBar.productTypes.dataunion'),
+        title: 'Data Unions',
     }]), [])
 
     const categoryOptions = useMemo(() => ([{
         id: '__all',
         value: '__all',
-        title: I18n.t('actionBar.categories.all'),
+        title: 'Everything',
     },
     ...(categories ? categories.map((c) => ({
         id: c.id,
@@ -161,20 +169,20 @@ const UnstyledActionBar = ({
     })) : []),
     ]), [categories])
 
-    const sortOptions = useMemo(() => sortByOptions.map((option) => ({
-        id: option,
-        value: option,
-        title: I18n.t(`actionBar.sortOptions.${option}`),
+    const sortOptions = useMemo(() => sortByOptions.map(({ id, title }) => ({
+        id,
+        value: id,
+        title,
     })), [])
 
     const { categories: category, maxPrice, sortBy, type } = filter
 
     const currentSortByFilter = useMemo(() => {
-        const opt = BN(maxPrice).isEqualTo('0') ?
-            sortByOptions.find((o) => o === 'free') :
-            sortByOptions.find((o) => o === sortBy)
+        const { id: currentId } = (BN(maxPrice).isEqualTo('0') ?
+            sortByOptions.find(({ id }) => id === 'free') :
+            sortByOptions.find(({ id }) => id === sortBy)) || {}
 
-        return opt
+        return currentId
     }, [maxPrice, sortBy])
 
     return (
@@ -191,7 +199,7 @@ const UnstyledActionBar = ({
                     <ul>
                         <li>
                             <FilterSelector
-                                title={I18n.t('actionBar.productType')}
+                                title="Product type"
                                 selected={type}
                                 onChange={onProductTypeChange}
                                 options={productTypeOptions}
@@ -199,7 +207,7 @@ const UnstyledActionBar = ({
                         </li>
                         <li>
                             <FilterSelector
-                                title={I18n.t('actionBar.category')}
+                                title="Category"
                                 selected={category}
                                 onChange={onCategoryChange}
                                 options={categoryOptions}
@@ -207,7 +215,7 @@ const UnstyledActionBar = ({
                         </li>
                         <li>
                             <FilterSelector
-                                title={I18n.t('actionBar.sortBy')}
+                                title="Sort by"
                                 selected={currentSortByFilter}
                                 onChange={onSortByChange}
                                 options={sortOptions}
@@ -219,7 +227,7 @@ const UnstyledActionBar = ({
                                 type="button"
                                 onClick={() => onCreateProduct()}
                             >
-                                <Translate value="actionBar.create" />
+                                Create a Product
                             </Button>
                         </li>
                     </ul>

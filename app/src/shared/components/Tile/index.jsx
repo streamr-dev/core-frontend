@@ -484,7 +484,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                         maxDigits={4}
                     />
                 ) : (
-                    <Translate value="productTile.free" />
+                    'Free'
                 )}
             />
         </Link>

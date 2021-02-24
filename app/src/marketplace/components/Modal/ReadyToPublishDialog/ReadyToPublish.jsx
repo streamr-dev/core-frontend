@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import { Label } from 'reactstrap'
 import styled from 'styled-components'
 
@@ -48,6 +47,14 @@ const StyledLabel = styled(Label)`
     }
 `
 
+const publishModes = {
+    publish: 'Publish',
+    republish: 'Republish',
+    redeploy: 'Publish',
+    unpublish: '',
+    error: '',
+}
+
 const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: Props) => {
     const [termsAccepted, setTermsAccepted] = useState(false)
 
@@ -55,7 +62,7 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: P
         <ModalPortal>
             <Dialog
                 onClose={onCancel}
-                title={I18n.t(`modal.readyToPublish.${publishMode}.title`)}
+                title={`${publishModes[publishMode]} your product`}
                 disabled={disabled}
                 renderActions={() => (
                     <Footer>
@@ -64,19 +71,23 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: P
                                 <Checkbox
                                     value={termsAccepted}
                                     onChange={(e: SyntheticInputEvent<HTMLInputElement>) => setTermsAccepted(e.currentTarget.checked)}
-                                />&nbsp;
-                                <Translate value="modal.readyToPublish.terms" publisherTermsLink={routes.publisherTerms()} dangerousHTML />
+                                />
+                                &nbsp;
+                                <span>
+                                    I have the right to publish this<br />
+                                    data as specified in the <a href={routes.publisherTerms()} target="_blank" rel="noopener noreferrer">Terms</a>.
+                                </span>
                             </StyledLabel>
                         </FooterText>
                         <Buttons
                             actions={{
                                 cancel: {
-                                    title: I18n.t('modal.common.cancel'),
+                                    title: 'Cancel',
                                     onClick: () => onCancel(),
                                     kind: 'link',
                                 },
                                 publish: {
-                                    title: I18n.t(`modal.readyToPublish.${publishMode}.action`),
+                                    title: publishModes[publishMode],
                                     kind: 'primary',
                                     onClick: () => onContinue(),
                                     disabled: !termsAccepted,
@@ -86,11 +97,11 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: P
                     </Footer>
                 )}
             >
-                <Translate
-                    value="modal.readyToPublish.message"
-                    dangerousHTML
-                    tag="p"
-                />
+                <p>
+                    You&apos;re about to publish to the Marketplace.
+                    <br />
+                    Paid products require an Eth balance for gas fees.
+                </p>
             </Dialog>
         </ModalPortal>
     )

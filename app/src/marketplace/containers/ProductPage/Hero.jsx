@@ -4,7 +4,6 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { replace } from 'connected-react-router'
 import moment from 'moment'
-import { I18n } from 'react-redux-i18n'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useModal from '$shared/hooks/useModal'
@@ -126,7 +125,7 @@ const Hero = () => {
                     if (!isMounted()) { return }
 
                     Notification.push({
-                        title: I18n.t('notifications.productSaved'),
+                        title: 'Saved to your subscriptions',
                         icon: NotificationIcon.CHECKMARK,
                     })
 

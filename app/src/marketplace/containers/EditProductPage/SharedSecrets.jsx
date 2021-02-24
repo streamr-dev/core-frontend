@@ -2,7 +2,6 @@
 
 import React, { useMemo } from 'react'
 import cx from 'classnames'
-import { Translate } from 'react-redux-i18n'
 
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
@@ -29,12 +28,21 @@ const SharedSecrets = ({ className, disabled }: Props) => {
 
     return (
         <section id="shared-secrets" className={cx(styles.root, className)}>
-            <Translate tag="h1" value="editProductPage.sharedSecrets.title" />
-            <Translate
-                value={`editProductPage.sharedSecrets.${isDeployed ? 'deployed' : 'notDeployed'}.description`}
-                tag="p"
-                dangerousHTML
-            />
+            <h1>Add a shared secret</h1>
+            {!!isDeployed && (
+                <p>
+                    Shared secrets are the access control for your product.
+                    {' '}
+                    Create, name and revoke shared secrets from here.
+                </p>
+            )}
+            {!isDeployed && (
+                <p>
+                    These settings are only available once you have deployed your product, and provides access control for your product.
+                    {' '}
+                    Create, name and revoke shared secrets them from here.
+                </p>
+            )}
             <SharedSecretEditor disabled={!!disabled || !isDeployed || !ownerLinked} />
         </section>
     )

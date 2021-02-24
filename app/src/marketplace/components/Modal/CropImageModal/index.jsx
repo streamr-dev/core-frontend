@@ -2,7 +2,6 @@
 
 import React, { useState, useCallback, useRef } from 'react'
 import AvatarEditor from 'react-avatar-editor'
-import { I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -70,16 +69,16 @@ const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
     return (
         <ModalPortal>
             <Dialog
-                title={I18n.t('modal.cropImage.title')}
+                title="Scale and crop your image"
                 onClose={onClose}
                 actions={{
                     cancel: {
-                        title: I18n.t('modal.common.cancel'),
+                        title: 'Cancel',
                         kind: 'link',
                         onClick: onClose,
                     },
                     save: {
-                        title: I18n.t('modal.cropImage.apply'),
+                        title: 'Apply',
                         kind: 'primary',
                         onClick: onSave,
                     },

@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 import UnstyledDeploySpinner from '$shared/components/DeploySpinner'
 import { MD } from '$shared/utils/styled'
 
@@ -21,7 +20,7 @@ const UnstyledDataUnionPending = (props) => (
             <DeploySpinner isRunning showCounter={false} />
         </DeploySpinnerWrapper>
         <Heading>
-            <Translate value="productPage.dataUnionPending.title" />
+            Deploying your Data Union
         </Heading>
     </div>
 )
