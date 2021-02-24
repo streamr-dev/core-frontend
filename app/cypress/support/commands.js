@@ -8,14 +8,16 @@ import getClientConfig from '$shared/utils/getClientConfig'
 
 const cache = {}
 
+const getWallet = (mnemonic) => {
+    const hdwallet = hdkey.fromMasterSeed(mnemonicToSeedSync(mnemonic))
+    return hdwallet.derivePath("m/44'/60'/0'/0").getWallet()
+}
+
 const generatePrivateKey = (mnemonic) => {
     if (!cache[mnemonic]) {
-        const hdwallet = hdkey.fromMasterSeed(mnemonicToSeedSync(mnemonic))
-        const wallet = hdwallet.derivePath("m/44'/60'/0'/0").getWallet()
-
+        const wallet = getWallet(mnemonic)
         cache[mnemonic] = wallet.getPrivateKey().toString('hex')
     }
-
     return cache[mnemonic]
 }
 
@@ -23,7 +25,7 @@ Cypress.Commands.add('login', (mnemonic = 'tester one') => (
     new StreamrClient({
         restUrl: 'http://localhost/api/v1',
         auth: {
-            privateKey: generatePrivateKey(`auto generated user ${mnemonic}`),
+            privateKey: generatePrivateKey(mnemonic),
         },
     }).session.getSessionToken().then(setToken)
 ))
@@ -123,7 +125,7 @@ Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation
                 anonymous: !user,
                 new: true,
                 operation,
-                user,
+                user: user != null ? getWallet(user).getAddressString() : null,
             },
         })
 ))

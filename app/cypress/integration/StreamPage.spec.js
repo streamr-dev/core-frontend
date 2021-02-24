@@ -2,6 +2,9 @@ import qs from 'query-string'
 import { matchPath } from 'react-router-dom'
 import uuid from 'uuid'
 
+// This is needed to get around missing regeneratorRuntime
+require('@babel/polyfill')
+
 it.skip('creates a whole bunch of users for a stream', () => {
     const streamId = '0xa3d1f77acff0060f7213d7bf3c7fec78df847de1/dontcare' // <- has to be set manually
     const howMany = 300
@@ -398,10 +401,11 @@ describe('Stream read-only page (no edit permission)', () => {
                 },
             },
         }).then((streamId) => {
+            cy.log('Created stream', streamId)
             const encodedId = encodeURIComponent(streamId)
             const pathname = streamId.slice(streamId.indexOf('/') + 1)
 
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+            cy.createStreamPermission(streamId, 'tester two', 'stream_get')
             cy.logout()
             cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
@@ -429,7 +433,7 @@ describe('Stream read-only page (no edit permission)', () => {
             const encodedId = encodeURIComponent(streamId)
             const pathname = streamId.slice(streamId.indexOf('/') + 1)
 
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+            cy.createStreamPermission(streamId, 'tester two', 'stream_get')
             cy.logout()
             cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
@@ -515,7 +519,7 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
-                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+                cy.createStreamPermission(streamId, 'tester two', 'stream_get')
                 cy.logout()
                 cy.login('tester two')
                 cy.visit(`/core/streams/${encodedId}`)
@@ -542,7 +546,7 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
-                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+                cy.createStreamPermission(streamId, 'tester two', 'stream_get')
                 cy.logout()
                 cy.login('tester two')
 
@@ -566,7 +570,7 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
                 cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
-                cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
+                cy.createStreamPermission(streamId, 'tester two', 'stream_get')
                 cy.logout()
                 cy.login('tester two')
 
@@ -604,8 +608,8 @@ describe('Stream edit page', () => {
             const encodedId = encodeURIComponent(streamId)
             // Having `edit` permission doesn't mean you can open the stream page w/o a 404. In
             // order to access it at all you need to be able to `get`. :/
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_get')
-            cy.createStreamPermission(streamId, 'tester2@streamr.com', 'stream_edit')
+            cy.createStreamPermission(streamId, 'tester two', 'stream_get')
+            cy.createStreamPermission(streamId, 'tester two', 'stream_edit')
             cy.logout()
             cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
