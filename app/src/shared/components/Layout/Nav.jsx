@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from 'react'
 import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
+import { Translate } from 'react-redux-i18n'
 import { Nav, Menu, Button } from '@streamr/streamr-layout'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
@@ -274,6 +274,11 @@ const ConnectedWith = styled.div`
     }
 `
 
+const methods = {
+    metamask: 'MetaMask',
+    walletConnect: 'WalletConnect',
+}
+
 const UnstyledNarrow = (props) => {
     const current = useCurrentLocation()
 
@@ -300,7 +305,7 @@ const UnstyledNarrow = (props) => {
                     <span>&zwnj;</span>
                     <img src={icons[method]} alt="" />
                     <strong>
-                        {I18n.t(`auth.loginMethod.${method}`)}
+                        {methods[method]}
                     </strong>
                 </ConnectedWith>
             ))}

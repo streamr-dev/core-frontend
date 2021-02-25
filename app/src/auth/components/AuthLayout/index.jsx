@@ -1,6 +1,5 @@
 import * as React from 'react'
 import styled from 'styled-components'
-import { I18n, Translate } from 'react-redux-i18n'
 
 import { CoreHelmet } from '$shared/components/Helmet'
 import { MD } from '$shared/utils/styled'
@@ -36,16 +35,19 @@ const UnstyledLayout = ({ children, ...props }) => (
         />
         <div {...props}>
             <Logo />
-            <TitleBar>{I18n.t('auth.streamrCore')}</TitleBar>
+            <TitleBar>Streamr Core</TitleBar>
             <Panel>
                 {children}
             </Panel>
             <Footer>
-                <Translate
-                    value="auth.terms"
-                    dangerousHTML
-                    tosLink={routes.tos()}
-                />
+                <span>
+                    By connecting your wallet and using Streamr <br />
+                    you agree to our
+                    {' '}
+                    <a href={routes.tos()} target="_blank" rel="nofollow noopener noreferrer">
+                        Terms of Service
+                    </a>
+                </span>
             </Footer>
         </div>
     </React.Fragment>
