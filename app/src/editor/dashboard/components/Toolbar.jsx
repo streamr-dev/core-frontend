@@ -1,7 +1,6 @@
 import React from 'react'
 import * as R from 'reactstrap'
 import cx from 'classnames'
-import { I18n } from 'react-redux-i18n'
 
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
@@ -44,12 +43,11 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
     }, [setDashboard])
 
     const deleteDashboard = React.useCallback(async (hasDeletePermission) => {
-        const type = hasDeletePermission ? 'delete' : 'remove'
         const confirmed = await confirmDialog('dashboard', {
-            title: I18n.t(`userpages.dashboards.${type}.confirmTitle`),
-            message: I18n.t(`userpages.dashboards.${type}.confirmMessage`),
+            title: `${hasDeletePermission ? 'Delete' : 'Remove'} this dashboard?`,
+            message: 'This is an unrecoverable action. Please confirm this is what you want before you proceed.',
             acceptButton: {
-                title: I18n.t(`userpages.dashboards.${type}.confirmButton`),
+                title: `Yes, ${hasDeletePermission ? 'delete' : 'remove'}`,
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -61,7 +59,7 @@ export default withErrorBoundary(ErrorComponentView)((props) => {
                 await deleteDashboardProp()
 
                 Notification.push({
-                    title: I18n.t(`userpages.dashboards.${type}.notification`),
+                    title: `Dashboard ${hasDeletePermission ? 'deleted' : 'removed'} successfully!`,
                     icon: NotificationIcon.CHECKMARK,
                 })
             } catch (e) {

@@ -2,7 +2,6 @@
 
 import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
-import { I18n } from 'react-redux-i18n'
 import SvgIcon from '$shared/components/SvgIcon'
 import AutosizedSelect from '$shared/components/AutosizedSelect'
 import styles from './rangeSelect.pcss'
@@ -46,6 +45,23 @@ type Props = {
     value?: Range,
 }
 
+const rangeLabels = {
+    all: 'All',
+    '2592000000': '1 month',
+    '604800000': '1 week',
+    '86400000': '1 day',
+    '43200000': '12 hours',
+    '28800000': '8 hours',
+    '14400000': '4 hours',
+    '7200000': '2 hours',
+    '3600000': '1 hour',
+    '1800000': '30 minutes',
+    '900000': '15 minutes',
+    '60000': '1 minute',
+    '15000': '15 seconds',
+    '1000': '1 second',
+}
+
 const RangeSelect = ({ className, value, onChange: onChangeProp }: Props) => {
     const onChange = useCallback((value: string) => {
         if (onChangeProp) {
@@ -73,7 +89,7 @@ const RangeSelect = ({ className, value, onChange: onChangeProp }: Props) => {
                 {ranges.map((range) => (
                     <option key={range} value={range}>
                         {/* AutosizedSelect's children have to be strings. */}
-                        {I18n.t(`editor.timeRange.${range}`)}
+                        {rangeLabels[range]}
                     </option>
                 ))}
             </AutosizedSelect>
