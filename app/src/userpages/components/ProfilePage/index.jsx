@@ -2,7 +2,6 @@
 
 import React, { useCallback, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
 
@@ -52,7 +51,7 @@ export const ProfilePage = () => {
 
                 if (isMounted()) {
                     Notification.push({
-                        title: I18n.t('userpages.profilePage.save.successNotification'),
+                        title: 'Your settings have been saved',
                         icon: NotificationIcon.CHECKMARK,
                     })
 
@@ -89,12 +88,12 @@ export const ProfilePage = () => {
                     altMobileLayout
                     actions={{
                         cancel: {
-                            title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                            title: 'Cancel',
                             kind: 'link',
                             linkTo: routes.core(),
                         },
                         saveChanges: {
-                            title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
+                            title: 'Save & Exit',
                             kind: 'primary',
                             onClick: onSave,
                             disabled: isSavePending,
@@ -106,29 +105,29 @@ export const ProfilePage = () => {
             loading={isLoading}
             loadingClassname={styles.loadingIndicator}
         >
-            <CoreHelmet title={I18n.t('userpages.title.profile')} />
-            <TOCPage title={I18n.t('userpages.profilePage.pageTitle')}>
-                <TOCPage.Section id="profile" title={I18n.t('userpages.profilePage.profile.title')}>
+            <CoreHelmet title="Profile" />
+            <TOCPage title="Settings">
+                <TOCPage.Section id="profile" title="Profile">
                     <ProfileSettings />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="ethereum-accounts"
-                    title={I18n.t('userpages.profilePage.ethereumAddress.title')}
-                    linkTitle={I18n.t('userpages.profilePage.ethereumAddress.linkTitle')}
+                    title="Ethereum Accounts"
+                    linkTitle="ETH Accounts"
                 >
                     <IdentityHandler />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="private-keys"
-                    title={I18n.t('userpages.profilePage.ethereumPrivateKeys.title')}
-                    linkTitle={I18n.t('userpages.profilePage.ethereumPrivateKeys.linkTitle')}
+                    title="Ethereum keys for canvases"
+                    linkTitle="ETH canvas keys"
                 >
                     <IntegrationKeyHandler />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="delete-account"
-                    title={I18n.t('userpages.profilePage.deleteAccount.title')}
-                    linkTitle={I18n.t('userpages.profilePage.deleteAccount.linkTitle')}
+                    title="Delete Streamr Account"
+                    linkTitle="Delete account"
                 >
                     <DeleteAccount />
                 </TOCPage.Section>

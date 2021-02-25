@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 import { titleize } from '@streamr/streamr-layout'
@@ -107,6 +106,12 @@ const mapStatus = (state) => {
     }
 }
 
+const statusLabels = {
+    ACCEPTED: 'Accepted',
+    REJECTED: 'Rejected',
+    PENDING: 'Pending',
+}
+
 const Members = () => {
     const { loadDataUnion } = useController()
     const product = useProduct()
@@ -203,16 +208,16 @@ const Members = () => {
         setRemoving(true)
 
         const confirmed = await confirmDialog('members', {
-            title: I18n.t('userpages.members.confirmTitle'),
+            title: 'Are you sure?',
             message: (
-                <Translate
-                    value="userpages.members.confirmMessage"
-                    dangerousHTML
-                    tag="p"
-                />
+                <p>
+                    This is an unrecoverable action. It will permanently
+                    <br />
+                    remove the selected members from your data union.
+                </p>
             ),
             acceptButton: {
-                title: I18n.t('userpages.members.confirmButton'),
+                title: 'Yes, remove',
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -285,7 +290,7 @@ const Members = () => {
                 <Header
                     searchComponent={dataUnionDeployed ? (
                         <Search.Active
-                            placeholder={I18n.t('userpages.members.filterMembers')}
+                            placeholder="Filter members"
                             value={search || ''}
                             onChange={setSearch}
                         />
@@ -294,7 +299,7 @@ const Members = () => {
                     )}
                     filterComponent={!!dataUnionDeployed && (
                         <Popover
-                            title={I18n.t('userpages.filter.sortBy')}
+                            title="Sort by"
                             type="uppercase"
                             caret="svg"
                             activeTitle
@@ -317,7 +322,7 @@ const Members = () => {
             loading={fetchingMembers}
             contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
         >
-            <CoreHelmet title={I18n.t('userpages.title.members')} />
+            <CoreHelmet title="Members" />
             <StyledListContainer className={cx(styles.container, {
                 [styles.containerWithSelected]: isAnySelected,
             })}
@@ -338,16 +343,16 @@ const Members = () => {
                     <MemberList>
                         <MemberList.Header>
                             <MemberList.HeaderItem>
-                                <Translate value="userpages.members.table.ethereumAddress" />
+                                Ethereum address
                             </MemberList.HeaderItem>
                             <MemberList.HeaderItem>
-                                <Translate value="userpages.members.table.joinedRequested" />
+                                Joined / requested
                             </MemberList.HeaderItem>
                             <MemberList.HeaderItem>
-                                <Translate value="userpages.members.table.lastUpdated" />
+                                Last updated
                             </MemberList.HeaderItem>
                             <MemberList.HeaderItem>
-                                <Translate value="userpages.members.table.status" />
+                                Status
                             </MemberList.HeaderItem>
                         </MemberList.Header>
                         {filteredMembers.map((member) => {
@@ -379,7 +384,7 @@ const Members = () => {
                                     <MemberList.Item>
                                         <StatusIcon
                                             status={mapStatus(member.state)}
-                                            tooltip={I18n.t(`userpages.members.status.${(member.state || '').toLowerCase()}`)}
+                                            tooltip={statusLabels[member.state]}
                                         />
                                     </MemberList.Item>
                                 </StyledMemberRow>
@@ -394,12 +399,7 @@ const Members = () => {
             >
                 <ListContainer className={styles.selectedToolbarInner}>
                     <div className={styles.numberOfSelected}>
-                        {isAnySelected && (
-                            <Translate
-                                value="userpages.members.applicantsSelected"
-                                count={selection.size()}
-                            />
-                        )}
+                        {isAnySelected && `${selection.size()} applicant${selection.size() === 1 ? '' : 's'} selected`}
                     </div>
                     <div className={styles.actionButtons}>
                         <Button
@@ -410,7 +410,7 @@ const Members = () => {
                             onClick={toggleSelectAll}
                             className={styles.selectButton}
                         >
-                            <Translate value={`userpages.members.actions.${areAllSelected ? 'deselectAll' : 'selectAll'}`} />
+                            {areAllSelected ? 'Deselect' : 'Select'} all
                         </Button>
                         {isApprovalView && (
                             <Button
@@ -421,7 +421,7 @@ const Members = () => {
                                 waiting={approving}
                                 className={styles.approveButton}
                             >
-                                <Translate value="userpages.members.actions.approve" />
+                                Approve
                             </Button>
                         )}
                         {!isApprovalView && (
@@ -433,7 +433,7 @@ const Members = () => {
                                 waiting={removing}
                                 className={styles.approveButton}
                             >
-                                <Translate value="userpages.members.actions.remove" />
+                                Remove
                             </Button>
                         )}
                     </div>

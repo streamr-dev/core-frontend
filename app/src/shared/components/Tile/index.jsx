@@ -4,7 +4,6 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { titleize } from '@streamr/streamr-layout'
 import ReactImage from 'react-image'
-import { Translate, I18n } from 'react-redux-i18n'
 import { ago } from '$shared/utils/time'
 import Logo from '$shared/components/Logo'
 import Skeleton from '$shared/components/Skeleton'
@@ -285,13 +284,7 @@ const ExpirationLabel = ({ expiresAt, now }: any) => {
 
     return (
         <Label mood={mood}>
-            {secondsLeft > 0 ? (
-                I18n.t('userpages.subscriptions.expiresIn', {
-                    time: formatRemainingTime(secondsLeft),
-                })
-            ) : (
-                I18n.t('userpages.subscriptions.expired')
-            )}
+            {secondsLeft > 0 ? `Expires in ${formatRemainingTime(secondsLeft)}` : 'Expired'}
         </Label>
     )
 }
@@ -418,15 +411,9 @@ const ProductTile = ({
                 description={touchedAgo(product)}
                 label={(
                     <Label mood={published && HAPPY}>
-                        {!!published && (
-                            <Translate value="userpages.products.published" />
-                        )}
-                        {!published && !!deployed && (
-                            <Translate value="userpages.products.deployed" />
-                        )}
-                        {!published && !deployed && (
-                            <Translate value="userpages.products.draft" />
-                        )}
+                        {!!published && 'Published'}
+                        {!published && !!deployed && 'Deployed'}
+                        {!published && !deployed && 'Draft'}
                     </Label>
                 )}
             />

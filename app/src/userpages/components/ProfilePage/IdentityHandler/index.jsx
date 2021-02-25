@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useEffect, useCallback } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 
@@ -71,13 +70,13 @@ const IdentityHandler = () => {
         if (isMounted()) {
             if (error) {
                 Notification.push({
-                    title: I18n.t('modal.newIdentity.errorNotification'),
+                    title: 'There was an error while adding an Ethereum address',
                     icon: NotificationIcon.ERROR,
                     error,
                 })
             } else if (added) {
                 Notification.push({
-                    title: I18n.t('modal.newIdentity.successNotification'),
+                    title: 'Ethereum address added',
                     icon: NotificationIcon.CHECKMARK,
                 })
             }
@@ -105,11 +104,13 @@ const IdentityHandler = () => {
 
     return (
         <Wrapper>
-            <Description
-                tag="p"
-                value="userpages.profilePage.ethereumAddress.description"
-                dangerousHTML
-            />
+            <Description>
+                Ethereum accounts are used for decentralized identity, calling smart contracts,
+                <br />
+                and signing data in streams. Connect your wallet accounts to use them in Core
+                <br />
+                and Marketplace, or create new accounts to be used in scripts.
+            </Description>
             <IntegrationKeyList
                 onDelete={wrappedRemove}
                 onEdit={wrappedEdit}
@@ -124,7 +125,7 @@ const IdentityHandler = () => {
                 onClick={connectWallet}
                 waiting={isConnectWalletDialogPending}
             >
-                <Translate value="userpages.profilePage.ethereumAddress.connectWallet" />
+                Connect wallet
             </ConnectButton>
             <Button
                 type="button"
@@ -133,7 +134,7 @@ const IdentityHandler = () => {
                 onClick={createAccount}
                 waiting={isCreateAccountDialogPending}
             >
-                <Translate value="userpages.profilePage.ethereumAddress.createAccount" />
+                Create account
             </Button>
             <AddIdentityDialog />
         </Wrapper>

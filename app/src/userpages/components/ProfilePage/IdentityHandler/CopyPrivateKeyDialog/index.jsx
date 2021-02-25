@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useCallback, useState } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -14,7 +13,7 @@ type Props = {
     privateKey: string,
 }
 
-const Description = styled(Translate)`
+const Description = styled.p`
     strong {
         font-weight: var(--medium);
     }
@@ -62,7 +61,7 @@ const CopyPrivateKeyDialog = ({ onClose: onCloseProp, privateKey }: Props) => {
     return (
         <ModalPortal>
             <Dialog
-                title={I18n.t('modal.copyPrivateKey.defaultTitle')}
+                title="Your private key"
                 onClose={onClose}
                 actions={{
                     close: {
@@ -73,24 +72,36 @@ const CopyPrivateKeyDialog = ({ onClose: onCloseProp, privateKey }: Props) => {
                         disabled: !securelyStored || !copiedOnce,
                     },
                     copy: {
-                        title: I18n.t(`modal.copyPrivateKey.${isCopied ? 'keyCopied' : 'copyKey'}`),
+                        title: isCopied ? 'Copied!' : 'Copy key',
                         kind: 'primary',
                         onClick: () => onKeyCopy(),
                         disabled: !securelyStored,
                     },
                 }}
             >
-                <Description
-                    value={`modal.copyPrivateKey.${copiedOnce ? 'descriptionAfterKeyCopiedOnce' : 'defaultDescription'}`}
-                    dangerousHTML
-                    tag="p"
-                />
+                {!copiedOnce && (
+                    <Description>
+                        Your private key will be <strong>given to you once only</strong>,
+                        <br />
+                        so ensure that you copy and store it securely.
+                    </Description>
+                )}
+                {!!copiedOnce && (
+                    <Description>
+                        Be careful with your private key, as
+                        {' '}
+                        <strong>
+                            anyone with your key
+                            <br />
+                            controls your tokens
+                        </strong>. Please check the box to continue.
+                    </Description>
+                )}
                 <Label>
                     <StyledCheckbox value={securelyStored} onChange={onSecurelyStoredToggle} />
-                    <Translate
-                        value="modal.copyPrivateKey.checkboxLabel"
-                        tag="div"
-                    />
+                    <div>
+                        I will securely store my private key
+                    </div>
                 </Label>
             </Dialog>
         </ModalPortal>

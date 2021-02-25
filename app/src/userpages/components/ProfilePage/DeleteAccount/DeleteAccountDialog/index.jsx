@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useCallback } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import { useDispatch } from 'react-redux'
 
 import ConfirmDialog from '$shared/components/ConfirmDialog'
@@ -23,15 +22,17 @@ export const DeleteAccountDialogComponent = ({ waiting, onClose, onSave }: Props
 
     return (
         <ConfirmDialog
-            title={I18n.t('modal.deleteAccount.defaultTitle')}
+            title="Are you sure?"
             onReject={onClose}
             onAccept={onSave}
             message={(
                 <div>
-                    <Translate value="modal.deleteAccount.content" tag="p" className={styles.deleteWarning} />
+                    <p className={styles.deleteWarning}>
+                        This is an unrecoverable action. Please check the box to confirm you want to delete your account.
+                    </p>
                     <ConfirmCheckbox
-                        title={I18n.t('modal.deleteAccount.confirmCheckbox.title')}
-                        subtitle={I18n.t('modal.deleteAccount.confirmCheckbox.subtitle')}
+                        title="I’m sure, go ahead and delete my account"
+                        subtitle="Streamr cannot recover it once deleted"
                         onToggle={setConfirmed}
                         className={styles.confirmCheckbox}
                         disabled={!!waiting}
@@ -39,7 +40,7 @@ export const DeleteAccountDialogComponent = ({ waiting, onClose, onSave }: Props
                 </div>
             )}
             acceptButton={{
-                title: I18n.t('modal.deleteAccount.save'),
+                title: 'Delete account',
                 kind: 'destructive',
                 disabled: !confirmed || !!waiting,
                 spinner: !!waiting,

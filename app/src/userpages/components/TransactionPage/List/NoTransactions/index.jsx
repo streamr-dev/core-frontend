@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 
 import Button from '$shared/components/Button'
@@ -31,7 +30,7 @@ const NoTransactionsView = ({ accountsExist, accountLinked }: Props) => (
                 tag={Link}
                 to={routes.profile({}, 'ethereum-accounts')}
             >
-                <Translate value="userpages.transactions.noAccountsLinked.linkAccount" />
+                Link account
             </Button>
         )}
     >
@@ -39,23 +38,29 @@ const NoTransactionsView = ({ accountsExist, accountLinked }: Props) => (
             if (!accountsExist) {
                 return (
                     <p>
-                        <Translate value="userpages.transactions.noAccountsLinked.title" />
-                        <Translate value="userpages.transactions.noAccountsLinked.message" tag="small" />
+                        <span>Account not linked.</span>
+                        <small>
+                            You need to link an Ethereum account to see your transaction history.
+                        </small>
                     </p>
                 )
             } else if (!accountLinked) {
                 return (
                     <p>
-                        <Translate value="userpages.transactions.currentAccountNotLinked.title" />
-                        <Translate value="userpages.transactions.currentAccountNotLinked.message" tag="small" />
+                        <span>Account not linked.</span>
+                        <small>
+                            You need to link the current Ethereum account to see your transaction history.
+                        </small>
                     </p>
                 )
             }
 
             return (
                 <p>
-                    <Translate value="userpages.transactions.noTransactions.title" />
-                    <Translate value="userpages.transactions.noTransactions.message" tag="small" />
+                    <span>No transactions.</span>
+                    <small>
+                        You haven&apos;t made any transactions yet.
+                    </small>
                 </p>
             )
         })()}

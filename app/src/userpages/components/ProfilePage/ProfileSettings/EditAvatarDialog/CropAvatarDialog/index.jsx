@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useRef, useState, useCallback } from 'react'
-import { I18n } from 'react-redux-i18n'
 import AvatarEditor from 'react-avatar-editor'
 
 import ModalPortal from '$shared/components/ModalPortal'
@@ -35,7 +34,7 @@ const CropAvatarDialog = ({ originalImage, onClose, onSave: onSaveProp, waiting 
     return (
         <ModalPortal>
             <Dialog
-                title={I18n.t('modal.avatar.cropYourImage')}
+                title="Crop your image"
                 onClose={onClose}
                 actions={{
                     cancel: {
@@ -45,7 +44,7 @@ const CropAvatarDialog = ({ originalImage, onClose, onSave: onSaveProp, waiting 
                         onClick: () => onClose(),
                     },
                     save: {
-                        title: I18n.t('modal.avatar.saveAndApplyAvatar'),
+                        title: 'Save & Apply',
                         kind: 'primary',
                         onClick: () => onSave(),
                         disabled: !!waiting,

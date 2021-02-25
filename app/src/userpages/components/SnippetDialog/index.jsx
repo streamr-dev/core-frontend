@@ -1,5 +1,4 @@
 import React, { useState, useCallback, useRef } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
 import { CodeSnippet, titleize } from '@streamr/streamr-layout'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -26,7 +25,7 @@ const SnippetDialog = ({ snippets, onClose }) => {
         <ModalPortal>
             <Dialog
                 contentClassName={styles.content}
-                title={I18n.t('modal.copySnippet.defaultTitle')}
+                title="Copy Snippet"
                 onClose={onClose}
                 showCloseIcon
                 renderActions={() => (selectedLanguage ? (
@@ -54,7 +53,7 @@ const SnippetDialog = ({ snippets, onClose }) => {
                                 target="_blank"
                                 rel="nofollow noopener noreferrer"
                             >
-                                <Translate value="modal.copySnippet.goToLibrary" />
+                                Go to Library
                             </a>
                         </div>
                         <div className={styles.buttons}>
@@ -62,7 +61,7 @@ const SnippetDialog = ({ snippets, onClose }) => {
                                 className={styles.noPadding}
                                 actions={{
                                     copy: {
-                                        title: I18n.t(`modal.copySnippet.${isCopied ? 'copied' : 'copy'}`),
+                                        title: isCopied ? 'Copied' : 'Copy',
                                         onClick: onCopy,
                                     },
                                 }}

@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Text from '$ui/Text'
@@ -36,7 +36,7 @@ const convertToStorageDays = (amount, unit) => {
 
 const Root = styled.div``
 
-const StyledTranslate = styled(Translate)`
+const Description = styled.p`
     margin-bottom: 3.125rem;
 `
 
@@ -100,17 +100,18 @@ const HistoryView = ({ stream, disabled, updateStream, showStorageOptions = true
 
     return (
         <Root>
-            <StyledTranslate
-                value="userpages.streams.edit.historicalStoragePeriod.description"
-                tag="p"
-            />
+            <Description>
+                Enable storage to retain historical data in one or more geographic locations of your choice.
+                {' '}
+                You can also choose how long to store your stream’s historical data before auto-deletion.
+            </Description>
             {!!showStorageOptions && (
                 <Storage streamId={streamId} />
             )}
             {stream && stream.storageDays !== undefined &&
                 <Fragment>
                     <Label htmlFor="storageAmount">
-                        {I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}
+                        Store historical data for
                     </Label>
                     <InputContainer>
                         <StyledText

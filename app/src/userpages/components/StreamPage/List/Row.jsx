@@ -41,7 +41,7 @@ export const CreateStreamButton = () => (
         tag={Link}
         to={routes.streams.new()}
     >
-        <Translate value="userpages.streams.createStream" />
+        Create stream
     </DesktopOnlyButton>
 )
 
@@ -59,14 +59,12 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         permissions[stream.id].includes('stream_delete')
     )
 
-    const removeType = canBeDeletedByCurrentUser ? 'delete' : 'remove'
-
     const confirmDeleteStream = useCallback(async () => {
         const confirmed = await confirmDialog('stream', {
-            title: I18n.t(`userpages.streams.${removeType}.confirmTitle`),
-            message: I18n.t(`userpages.streams.${removeType}.confirmMessage`),
+            title: `${canBeDeletedByCurrentUser ? 'Delete' : 'Remove'} this stream?`,
+            message: 'This is an unrecoverable action. Please confirm this is what you want before you proceed.',
             acceptButton: {
-                title: I18n.t(`userpages.streams.${removeType}.confirmButton`),
+                title: `Yes, ${canBeDeletedByCurrentUser ? 'delete' : 'remove'}`,
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -78,7 +76,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                 await dispatch(deleteOrRemoveStream(stream.id))
 
                 Notification.push({
-                    title: I18n.t(`userpages.streams.${removeType}.notification`),
+                    title: `Stream ${canBeDeletedByCurrentUser ? 'deleted' : 'removed'} successfully`,
                     icon: NotificationIcon.CHECKMARK,
                 })
             } catch (e) {
@@ -88,7 +86,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                 })
             }
         }
-    }, [dispatch, stream.id, removeType])
+    }, [dispatch, stream.id, canBeDeletedByCurrentUser])
 
     const onToggleStreamDropdown = useCallback(async (open) => {
         if (open && !fetchingPermissions && !permissions[stream.id]) {
@@ -169,7 +167,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
             </StreamList.Item>
             <StreamList.Actions>
                 <Popover
-                    title={I18n.t('userpages.streams.actions.title')}
+                    title="Actions"
                     type="meatball"
                     caret={false}
                     onMenuToggle={onToggleStreamDropdown}
@@ -193,7 +191,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                         <Translate value="userpages.streams.actions.refresh" />
                     </Popover.Item>
                     <Popover.Item onClick={confirmDeleteStream}>
-                        <Translate value={`userpages.streams.actions.${removeType}`} />
+                        {canBeDeletedByCurrentUser ? 'Delete' : 'Remove'}
                     </Popover.Item>
                 </Popover>
             </StreamList.Actions>

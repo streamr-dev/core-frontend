@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 import { useClient } from 'streamr-client-react'
+import { Link } from 'react-router-dom'
+
 import Button from '$shared/components/Button'
 import useModal from '$shared/hooks/useModal'
 import Subscription from '$shared/components/Subscription'
@@ -42,7 +43,7 @@ const ErrorNotice = styled.div`
     }
 `
 
-const Description = styled(Translate)`
+const Description = styled.p`
     margin-bottom: 3.125rem;
     max-width: 660px;
 `
@@ -149,12 +150,13 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
                 />
             )}
             {!!showDescription && (
-                <Description
-                    value="userpages.streams.edit.preview.description"
-                    tag="p"
-                    dangerousHTML
-                    docsLink={docsLinks.gettingStarted}
-                />
+                <Description>
+                    Live data in this stream is displayed below. For a more detailed view, you can open the Inspector.
+                    {' '}
+                    If you need help pushing data to your stream, see the
+                    {' '}
+                    <Link to={docsLinks.gettingStarted}>docs</Link>.
+                </Description>
             )}
             <Wrapper {...props}>
                 <PreviewTable
@@ -178,17 +180,14 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
                         onClick={onToggleRun}
                         disabled={!hasData}
                     >
-                        {!isRunning ?
-                            <Translate value="userpages.streams.edit.preview.start" /> :
-                            <Translate value="userpages.streams.edit.preview.stop" />
-                        }
+                        {!isRunning ? 'Start' : 'Stop'}
                     </Button>
                     <Button
                         kind="secondary"
                         onClick={() => showPreview(stream.id, stream)}
                         disabled={!hasData}
                     >
-                        <Translate value="userpages.streams.edit.preview.inspect" />
+                        Inspect data
                     </Button>
                 </Controls>
             </Wrapper>

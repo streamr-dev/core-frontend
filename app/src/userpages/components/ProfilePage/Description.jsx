@@ -1,9 +1,8 @@
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 
 import { MD } from '$shared/utils/styled'
 
-const Description = styled(Translate)`
+const Description = styled.p`
     line-height: 24px;
     display: none;
 

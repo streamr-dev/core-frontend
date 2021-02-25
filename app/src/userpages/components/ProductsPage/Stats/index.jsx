@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useEffect, useState } from 'react'
-import { I18n } from 'react-redux-i18n'
 import { withRouter } from 'react-router-dom'
 import cx from 'classnames'
 import styled from 'styled-components'
@@ -109,7 +108,7 @@ const Stats = () => {
             )}
             contentClassname={cx(styles.contentArea, coreLayoutStyles.pad)}
         >
-            <CoreHelmet title={I18n.t('userpages.title.stats')} />
+            <CoreHelmet title="Overview" />
             <StyledListContainer>
                 <div className={styles.statBox}>
                     {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (

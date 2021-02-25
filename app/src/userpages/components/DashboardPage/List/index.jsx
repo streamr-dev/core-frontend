@@ -2,7 +2,6 @@
 
 import React, { Fragment, useState, useMemo, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
@@ -104,11 +103,9 @@ const CreateDashboardButton = () => (
             id: null,
         })}
     >
-        <Translate value="userpages.dashboards.createDashboard" />
+        Create dashboard
     </DesktopOnlyButton>
 )
-
-type RemoveOrDelete = 'remove' | 'delete'
 
 const DashboardList = () => {
     const sortOptions = useMemo(() => {
@@ -140,12 +137,12 @@ const DashboardList = () => {
         dispatch(getDashboards(filter))
     }, [dispatch, filter])
 
-    const deleteDashboardAndNotify = useCallback(async (id: DashboardId, type: RemoveOrDelete) => {
+    const deleteDashboardAndNotify = useCallback(async (id: DashboardId, hasDeletePermission: boolean) => {
         try {
-            await dispatch(deleteOrRemoveDashboard(id, type))
+            await dispatch(deleteOrRemoveDashboard(id))
 
             Notification.push({
-                title: I18n.t(`userpages.dashboards.${type}.notification`),
+                title: `Dashboard ${hasDeletePermission ? 'deleted' : 'removed'} successfully!`,
                 icon: NotificationIcon.CHECKMARK,
             })
         } catch (e) {
@@ -156,12 +153,12 @@ const DashboardList = () => {
         }
     }, [dispatch])
 
-    const confirmDeleteOrRemoveDashboard = useCallback(async (id: DashboardId, type: RemoveOrDelete) => {
+    const confirmDeleteOrRemoveDashboard = useCallback(async (id: DashboardId, hasDeletePermission: boolean) => {
         const confirmed = await confirmDialog('dashboard', {
-            title: I18n.t(`userpages.dashboards.${type}.confirmTitle`),
-            message: I18n.t(`userpages.dashboards.${type}.confirmMessage`),
+            title: `${hasDeletePermission ? 'Delete' : 'Remove'} this dashboard?`,
+            message: 'This is an unrecoverable action. Please confirm this is what you want before you proceed.',
             acceptButton: {
-                title: I18n.t(`userpages.dashboards.${type}.confirmButton`),
+                title: `Yes, ${hasDeletePermission ? 'delete' : 'remove'}`,
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -169,7 +166,7 @@ const DashboardList = () => {
         })
 
         if (confirmed) {
-            deleteDashboardAndNotify(id, type)
+            deleteDashboardAndNotify(id, hasDeletePermission)
         }
     }, [deleteDashboardAndNotify])
 
@@ -183,7 +180,7 @@ const DashboardList = () => {
         copy(resourceUrl('DASHBOARD', id))
 
         Notification.push({
-            title: I18n.t('userpages.dashboards.menu.copyUrlNotification'),
+            title: 'Dashboard URL copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])
@@ -213,7 +210,7 @@ const DashboardList = () => {
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
 
     const getActions = useCallback((dashboard) => {
-        const removeType = canBeDeletedByCurrentUser(dashboard.id) ? 'delete' : 'remove'
+        const hasDeletePermission = canBeDeletedByCurrentUser(dashboard.id)
 
         return (
             <Fragment>
@@ -222,23 +219,23 @@ const DashboardList = () => {
                         id: dashboard.id,
                     }))}
                 >
-                    <Translate value="userpages.dashboards.menu.edit" />
+                    Edit
                 </Popover.Item>
                 <Popover.Item
                     disabled={!canBeSharedByCurrentUser(dashboard.id)}
                     onClick={() => onOpenShareDialog(dashboard)}
                 >
-                    <Translate value="userpages.dashboards.menu.share" />
+                    Share
                 </Popover.Item>
                 <Popover.Item
                     onClick={() => onCopyUrl(dashboard.id)}
                 >
-                    <Translate value="userpages.dashboards.menu.copyUrl" />
+                    Copy URL
                 </Popover.Item>
                 <Popover.Item
-                    onClick={() => confirmDeleteOrRemoveDashboard(dashboard.id, removeType)}
+                    onClick={() => confirmDeleteOrRemoveDashboard(dashboard.id, hasDeletePermission)}
                 >
-                    <Translate value={`userpages.dashboards.menu.${removeType}`} />
+                    {hasDeletePermission ? 'Delete' : 'Remove'}
                 </Popover.Item>
             </Fragment>
         )
@@ -256,14 +253,14 @@ const DashboardList = () => {
             headerAdditionalComponent={<CreateDashboardButton />}
             headerSearchComponent={
                 <Search.Active
-                    placeholder={I18n.t('userpages.dashboards.filterDashboards')}
+                    placeholder="Filter dashboards"
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}
                 />
             }
             headerFilterComponent={
                 <Popover
-                    title={I18n.t('userpages.filter.sortBy')}
+                    title="Sort by"
                     type="uppercase"
                     caret="svg"
                     menuProps={{
@@ -282,7 +279,7 @@ const DashboardList = () => {
             }
             loading={fetching}
         >
-            <CoreHelmet title={I18n.t('userpages.title.dashboards')} />
+            <CoreHelmet title="Dashboards" />
             <StyledListContainer>
                 {!fetching && dashboards && dashboards.length <= 0 && (
                     <NoDashboardsView

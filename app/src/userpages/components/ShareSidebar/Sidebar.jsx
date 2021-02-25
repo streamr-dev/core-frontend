@@ -1,12 +1,10 @@
 import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import Label from '$ui/Label'
 import Sidebar from '$shared/components/Sidebar'
 import { useBeforeClose } from '$shared/components/Sidebar/SidebarProvider'
 import { selectUsername } from '$shared/modules/user/selectors'
-import Md from '$shared/components/Md'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import { usePermissionsState } from '$shared/components/PermissionsProvider'
 import usePersistPermissionDiff from '$shared/components/PermissionsProvider/usePersistPermissionDiff'
@@ -86,16 +84,18 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
             <UserList selectedUserId={selectedUserId} setSelectedUserId={setSelectedUserId} />
             <ErrorMessage.Overlay visible={failedToClose} onClick={resetFailedToClose} />
             <ErrorMessage.Wrapper visible={failedToClose || hasCurrentUserChanges}>
-                {locked && (
-                    <Translate value="modal.shareResource.warnSavingChanges" />
-                )}
+                {locked && 'Please wait while saving changes.'}
                 {!locked && !!failedToClose && (
-                    <Md inline>
-                        {I18n.t('modal.shareResource.warnUnsavedChanges')}
-                    </Md>
+                    <span>
+                        To update your permissions please <strong>save</strong> your changes.
+                        {' '}
+                        To discard them, click <strong>cancel</strong>.
+                    </span>
                 )}
                 {!locked && !failedToClose && !!hasCurrentUserChanges && (
-                    <Translate value="modal.shareResource.warnChangingOwnPermission" />
+                    <span>
+                        Changing your own permissions may result in loss of access rights. Please proceed with care.
+                    </span>
                 )}
             </ErrorMessage.Wrapper>
             <Sidebar.Container

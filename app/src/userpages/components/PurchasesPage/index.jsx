@@ -2,7 +2,6 @@
 
 import React, { useMemo, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 
 import { CoreHelmet } from '$shared/components/Helmet'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
@@ -75,7 +74,7 @@ const PurchasesPage = () => {
         <Layout
             headerSearchComponent={
                 <Search.Active
-                    placeholder={I18n.t('userpages.subscriptions.filterSubscriptions')}
+                    placeholder="Filter subscriptions"
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}
                     debounceTime={0}
@@ -83,7 +82,7 @@ const PurchasesPage = () => {
             }
             headerFilterComponent={
                 <Popover
-                    title={I18n.t('userpages.filter.sortBy')}
+                    title="Sort by"
                     onChange={setSort}
                     selectedItem={(filter && filter.id) || (defaultFilter && defaultFilter.id)}
                     type="uppercase"
@@ -102,7 +101,7 @@ const PurchasesPage = () => {
             }
             loading={fetching}
         >
-            <CoreHelmet title={I18n.t('userpages.title.subscriptions')} />
+            <CoreHelmet title="Subscriptions" />
             <ListContainer className={styles.corepageContentContainer} >
                 {!fetching && purchases && !purchases.length && (
                     <NoPurchasesView

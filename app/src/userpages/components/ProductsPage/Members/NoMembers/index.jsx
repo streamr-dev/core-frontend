@@ -55,13 +55,15 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.members.noDataUnionMembers.clearFilters" />
+                Clear filters
             </Button>
         )}
     >
         <p>
-            <Translate value="userpages.members.noDataUnionMembersResult.title" />
-            <Translate value="userpages.members.noDataUnionMembersResult.message" tag="small" />
+            <span>Nope, sorry!</span>
+            <small>
+                We couldn&apos;t find any members that match your search.
+            </small>
         </p>
     </EmptyState>
 )

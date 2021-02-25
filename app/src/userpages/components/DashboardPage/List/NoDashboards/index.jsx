@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -21,7 +20,7 @@ type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
 
-const Message = styled(Translate)`
+const Message = styled.small`
     && {
         display: none;
 
@@ -31,7 +30,7 @@ const Message = styled(Translate)`
     }
 `
 
-const MobileMessage = styled(Translate)`
+const MobileMessage = styled.small`
     && {
         display: block;
 
@@ -52,9 +51,13 @@ const NoCreatedDashboardsView = () => (
         )}
     >
         <p>
-            <Translate value="userpages.dashboards.noCreatedDashboards.title" />
-            <Message value="userpages.dashboards.noCreatedDashboards.message" tag="small" />
-            <MobileMessage value="userpages.dashboards.noCreatedDashboards.messageMobile" tag="small" />
+            <span>You haven&apos;t created any dashboards yet.</span>
+            <Message>
+                Click the button above to create one.
+            </Message>
+            <MobileMessage>
+                Use the desktop app to make one.
+            </MobileMessage>
         </p>
     </EmptyState>
 )
@@ -73,13 +76,15 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.dashboards.noDashboardsResult.clearFilters" />
+                Clear filters
             </Button>
         )}
     >
         <p>
-            <Translate value="userpages.dashboards.noDashboardsResult.title" />
-            <Translate value="userpages.dashboards.noDashboardsResult.message" tag="small" />
+            <span>No results.</span>
+            <small>
+                We couldn&apos;t find any dashboards that match your search.
+            </small>
         </p>
     </EmptyState>
 )

@@ -2,7 +2,6 @@
 
 import React, { Fragment, useEffect, useState, useCallback, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -54,7 +53,7 @@ export const CreateStreamButton = () => (
         tag={Link}
         to={routes.streams.new()}
     >
-        <Translate value="userpages.streams.createStream" />
+        Create stream
     </DesktopOnlyButton>
 )
 
@@ -199,14 +198,14 @@ const StreamList = () => {
             headerAdditionalComponent={<CreateStreamButton />}
             headerSearchComponent={
                 <Search.Active
-                    placeholder={I18n.t('userpages.streams.filterStreams')}
+                    placeholder="Filter streams"
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}
                 />
             }
             headerFilterComponent={
                 <TabletPopover
-                    title={I18n.t('userpages.filter.sortBy')}
+                    title="Sort by"
                     type="uppercase"
                     caret="svg"
                     activeTitle
@@ -225,7 +224,7 @@ const StreamList = () => {
             }
             loading={fetching}
         >
-            <CoreHelmet title={I18n.t('userpages.title.streams')} />
+            <CoreHelmet title="Streams" />
             <StyledListContainer>
                 {!fetching && streams && streams.length <= 0 && (
                     <NoStreamsView
@@ -244,10 +243,10 @@ const StreamList = () => {
                                     active={activeSort}
                                     onClick={onHeaderSortUpdate}
                                 >
-                                    <Translate value="userpages.streams.list.name" />
+                                    Name
                                 </StreamListComponent.HeaderItem>
                                 <StreamListComponent.HeaderItem>
-                                    <Translate value="userpages.streams.list.description" />
+                                    Description
                                 </StreamListComponent.HeaderItem>
                                 <StreamListComponent.HeaderItem
                                     asc={filters.RECENT_ASC.filter.id}
@@ -255,13 +254,13 @@ const StreamList = () => {
                                     active={activeSort}
                                     onClick={onHeaderSortUpdate}
                                 >
-                                    <Translate value="userpages.streams.list.updated" />
+                                    Updated
                                 </StreamListComponent.HeaderItem>
                                 <StreamListComponent.HeaderItem>
-                                    <Translate value="userpages.streams.list.lastData" />
+                                    Last Data
                                 </StreamListComponent.HeaderItem>
                                 <StreamListComponent.HeaderItem center>
-                                    <Translate value="userpages.streams.list.status" />
+                                    Status
                                 </StreamListComponent.HeaderItem>
                             </StreamListComponent.Header>
                             {streams.map((stream) => (

@@ -42,7 +42,7 @@ const UnstyledAnonAccessSelect = ({ className }) => {
     return (
         <Fragment>
             <Label htmlFor={`${id}AnonAccessSelect`}>
-                {I18n.t('modal.shareResource.anonymousAccess')}
+                Who can access this?
             </Label>
             <SelectInput
                 inputId={`${id}AnonAccessSelect`}

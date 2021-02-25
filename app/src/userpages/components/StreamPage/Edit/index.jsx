@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { I18n, Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
 import cloneDeep from 'lodash/cloneDeep'
@@ -126,7 +126,7 @@ const UnstyledEdit = ({
     }, [dispatch])
 
     usePreventNavigatingAway(
-        I18n.t('userpages.streams.edit.unsavedChanges'),
+        'You have unsaved changes. Are you sure you want to leave?',
         () => didChange(originalStreamRef.current, streamRef.current),
     )
 
@@ -248,7 +248,7 @@ const UnstyledEdit = ({
                     left={<BackButton onBack={cancel} />}
                     actions={{
                         share: {
-                            title: I18n.t('userpages.profilePage.toolbar.share'),
+                            title: 'Share',
                             kind: 'primary',
                             outline: true,
                             onClick: () => openShareDialog(),
@@ -256,7 +256,7 @@ const UnstyledEdit = ({
                             className: styles.showOnDesktop,
                         },
                         saveChanges: {
-                            title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
+                            title: 'Save & Exit',
                             kind: 'primary',
                             spinner,
                             onClick: () => save(),
@@ -264,7 +264,7 @@ const UnstyledEdit = ({
                             className: styles.showOnDesktop,
                         },
                         done: {
-                            title: I18n.t('userpages.profilePage.toolbar.done'),
+                            title: 'Done',
                             kind: 'primary',
                             spinner,
                             onClick: () => save(),
@@ -282,10 +282,10 @@ const UnstyledEdit = ({
                         key={key}
                         {...(isNewStream ? { style } : {})}
                     >
-                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.editStream')}>
+                        <TOCPage title="Set up your Stream">
                             <TOCPage.Section
                                 id="details"
-                                title={I18n.t('userpages.streams.edit.details.nav.details')}
+                                title="Details"
                             >
                                 <InfoView
                                     stream={stream}
@@ -297,10 +297,11 @@ const UnstyledEdit = ({
                                 id="snippets"
                                 title={I18n.t('general.codeSnippets')}
                             >
-                                <Translate
-                                    value="userpages.streams.edit.codeSnippets.description"
-                                    tag="p"
-                                />
+                                <p>
+                                    You can grab the code (JS &amp; Java) you’ll need to use this stream in your applications below.
+                                    {' '}
+                                    Only users with appropriate permissions can publish or subscribe to the stream.
+                                </p>
                                 <CodeSnippets
                                     items={[
                                         ['javascript', 'Js', subSnippets.javascript],
@@ -318,7 +319,7 @@ const UnstyledEdit = ({
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="security"
-                                title={I18n.t('userpages.streams.edit.details.nav.security')}
+                                title="Security"
                                 onlyDesktop
                             >
                                 <SecurityView
@@ -329,7 +330,7 @@ const UnstyledEdit = ({
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="configure"
-                                title={I18n.t('userpages.streams.edit.details.nav.fields')}
+                                title="Fields"
                                 onlyDesktop
                             >
                                 <ConfigureView
@@ -340,7 +341,7 @@ const UnstyledEdit = ({
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="status"
-                                title={I18n.t('userpages.streams.edit.details.nav.status')}
+                                title="Status"
                                 status={<StatusIcon
                                     tooltip
                                     status={status}
@@ -355,13 +356,13 @@ const UnstyledEdit = ({
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="preview"
-                                title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                                title="Preview"
                             >
                                 <PreviewView stream={stream} />
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="historical-data"
-                                title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                                title="Data storage"
                                 onlyDesktop
                             >
                                 <HistoryView
@@ -372,8 +373,8 @@ const UnstyledEdit = ({
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="stream-partitions"
-                                title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
-                                linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                                title="Stream partitions"
+                                linkTitle="Partitions"
                                 status={(<StatusLabel.Advanced />)}
                             >
                                 <PartitionsView

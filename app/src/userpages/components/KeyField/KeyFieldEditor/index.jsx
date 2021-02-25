@@ -90,7 +90,7 @@ const UnstyledKeyFieldEditor = ({
             <Buttons
                 actions={{
                     save: {
-                        title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
+                        title: createNew ? 'Add' : 'Save',
                         kind: 'secondary',
                         onClick: () => onSave(keyName),
                         disabled: !filled || waiting,
@@ -99,7 +99,7 @@ const UnstyledKeyFieldEditor = ({
                     cancel: {
                         kind: 'link',
                         className: 'grey-container',
-                        title: I18n.t('userpages.keyFieldEditor.cancel'),
+                        title: 'Cancel',
                         outline: true,
                         onClick: () => onCancel(),
                     },

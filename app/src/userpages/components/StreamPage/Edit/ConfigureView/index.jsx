@@ -3,7 +3,7 @@
 import React, { Fragment, useMemo, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { arrayMove } from 'react-sortable-hoc'
-import { I18n, Translate } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import uuid from 'uuid'
 import styled from 'styled-components'
 
@@ -37,7 +37,7 @@ const Buttons = styled.div`
     }
 `
 
-const Description = styled(Translate)`
+const Description = styled.p`
     margin-bottom: 3rem;
 `
 
@@ -152,15 +152,18 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
 
     return (
         <div>
-            <Description
-                value="userpages.streams.edit.configure.help"
-                tag="p"
-            />
+            <Description>
+                You can configure your stream’s fields and data types here.
+                {' '}
+                If there already are stored messages in the stream,
+                {' '}
+                you can autoconfigure the fields based on the latest message.
+            </Description>
             {!!streamFields && streamFields.length > 0 && (
                 <Fragment>
                     <SplitControl>
-                        <Label>{I18n.t('userpages.streams.edit.configure.fieldName')}</Label>
-                        <Label>{I18n.t('userpages.streams.edit.configure.dataType')}</Label>
+                        <Label>Field name</Label>
+                        <Label>Data type</Label>
                     </SplitControl>
                     <StyledFieldList
                         onSortEnd={onSortEnd}
@@ -197,7 +200,7 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
                         onClick={addNewField}
                         disabled={isDisabled}
                     >
-                        <Translate value="userpages.streams.edit.configure.addField" />
+                        Add field
                     </Button>
                     <Button
                         kind="secondary"
@@ -206,12 +209,8 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
                         disabled={isDisabled}
                         waiting={fieldsAutodetectFetching}
                     >
-                        {!fieldsAutodetectFetching && (
-                            <Translate value="userpages.streams.edit.configure.autodetect" />
-                        )}
-                        {!!fieldsAutodetectFetching && (
-                            <Translate value="userpages.streams.edit.configure.waiting" />
-                        )}
+                        {!fieldsAutodetectFetching && 'Autodetect fields'}
+                        {!!fieldsAutodetectFetching && 'Waiting...'}
                     </Button>
                 </Buttons>
             }

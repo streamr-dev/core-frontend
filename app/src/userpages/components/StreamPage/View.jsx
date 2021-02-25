@@ -116,16 +116,16 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
             )}
         >
             <CoreHelmet title={stream.id} />
-            <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.readOnlyStream')}>
+            <TOCPage title="Read only stream">
                 <TOCSection
                     id="details"
-                    title={I18n.t('userpages.streams.edit.details.nav.details')}
+                    title="Details"
                 >
                     <StreamIdFormGroup hasDomain={!!domain} data-test-hook="StreamId">
                         {!!domain && (
                             <React.Fragment>
                                 <Field
-                                    label={I18n.t('userpages.streams.edit.details.domain.label')}
+                                    label="Domain"
                                 >
                                     <Text
                                         value={domain}
@@ -138,7 +138,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                                     /
                                 </Field>
                                 <Field
-                                    label={I18n.t('userpages.streams.edit.details.pathname.label')}
+                                    label="Path name"
                                 >
                                     <Text
                                         value={pathname}
@@ -151,7 +151,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                         )}
                         {!domain && (
                             <Field
-                                label={I18n.t('userpages.streams.edit.details.streamId')}
+                                label="Stream ID"
                             >
                                 <Text
                                     value={pathname}
@@ -165,13 +165,14 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                             narrow
                         >
                             <Button kind="secondary" onClick={() => onCopy(stream.id)}>
-                                <Translate value={`userpages.streams.edit.details.${isCopied ? 'streamIdCopied' : 'copyStreamId'}`} />
+                                {!isCopied && 'Copy Stream ID'}
+                                {!!isCopied && 'Copied!'}
                             </Button>
                         </Field>
                     </StreamIdFormGroup>
                     {!!stream.description && (
                         <FormGroup>
-                            <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
+                            <Field label="Description">
                                 <Text
                                     value={stream.description || ''}
                                     readOnly
@@ -196,7 +197,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                 </TOCSection>
                 <TOCSection
                     id="security"
-                    title={I18n.t('userpages.streams.edit.details.nav.security')}
+                    title="Security"
                 >
                     <p>
                         <Translate value={shortDescription} tag="strong" />
@@ -207,14 +208,14 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                 {!!stream.config.fields.length && (
                     <TOCSection
                         id="fields"
-                        title={I18n.t('userpages.streams.edit.details.nav.fields')}
+                        title="Fields"
                     >
                         {stream.config.fields.map(({ name, type, id }) => (
                             <FieldGroup key={name}>
-                                <Field label={I18n.t('userpages.streams.edit.configure.fieldName')}>
+                                <Field label="Field name">
                                     <Text id={`name-${id}`} disabled value={name} readOnly />
                                 </Field>
-                                <Field label={I18n.t('userpages.streams.edit.configure.dataType')} narrow>
+                                <Field label="Data type" narrow>
                                     <Text
                                         id={`type-${id}`}
                                         disabled
@@ -228,17 +229,17 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                 )}
                 <TOCSection
                     id="preview"
-                    title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                    title="Preview"
                 >
                     <Preview stream={stream} showDescription={false} />
                 </TOCSection>
                 <TOCSection
                     id="historicalData"
-                    title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                    title="Data storage"
                 >
                     <Storage streamId={stream.id} disabled />
                     <FormGroup>
-                        <Field label={I18n.t('userpages.streams.edit.configure.historicalStoragePeriod.label')}>
+                        <Field label="Store historical data for">
                             <HistoricalStorage>
                                 <Text
                                     value={storagePeriod}
@@ -259,12 +260,12 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                 </TOCSection>
                 <TOCPage.Section
                     id="stream-partitions"
-                    title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
-                    linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                    title="Stream partitions"
+                    linkTitle="Partitions"
                     status={(<StatusLabel.Advanced />)}
                 >
                     <FormGroup>
-                        <Field label={I18n.t('userpages.streams.partitionsLabel')}>
+                        <Field label="Partitions">
                             <StreamPartitions>
                                 <Text
                                     value={stream.partitions || '1'}

@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import type { Address } from '$shared/flowtype/web3-types'
@@ -42,7 +42,7 @@ const EthAddress = styled.div`
 const EthereumAccountCreatedDialog = ({ onBack, onSave, name, address }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.ethereumAccountCreated.defaultTitle')}
+            title="Ethereum account created"
             onClose={() => {}}
             actions={{
                 cancel: {
@@ -58,11 +58,11 @@ const EthereumAccountCreatedDialog = ({ onBack, onSave, name, address }: Props) 
                 },
             }}
         >
-            <Translate
-                value="modal.ethereumAccountCreated.description"
-                dangerousHTML
-                tag="p"
-            />
+            <p>
+                Your account has been created and the address
+                <br />
+                is shown below. Click next to get your private key.
+            </p>
             <AddressWrapper>
                 <Name>{name}</Name>
                 <EthAddress>{address}</EthAddress>

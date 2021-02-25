@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Popover from '$shared/components/Popover'
@@ -158,19 +158,19 @@ const UnstyledKeyField = ({
 
     const revealAction = useMemo(() => (
         <Popover.Item key="reveal" onClick={toggleHidden}>
-            <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
+            {hidden ? 'Reveal' : 'Conceal'}
         </Popover.Item>
     ), [toggleHidden, hidden])
 
     const editAction = useMemo(() => (
         <Popover.Item key="edit" onClick={onEdit}>
-            <Translate value="userpages.keyField.edit" />
+            Edit
         </Popover.Item>
     ), [onEdit])
 
     const deleteAction = useMemo(() => (
         <Popover.Item key="delete" onClick={onDelete} disabled={disableDelete}>
-            <Translate value="userpages.keyField.delete" />
+            Delete
         </Popover.Item>
     ), [onDelete, disableDelete])
 

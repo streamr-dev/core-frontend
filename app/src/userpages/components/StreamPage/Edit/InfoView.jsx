@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useCallback } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Notification from '$shared/utils/Notification'
@@ -65,7 +64,7 @@ const LockIcon = styled.div`
     }
 `
 
-const Description = styled(Translate)`
+const Description = styled.p`
     margin-bottom: 3rem;
 `
 
@@ -93,18 +92,21 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
 
     return (
         <Root>
-            <Description
-                value="userpages.streams.edit.details.info.description"
-                tag="p"
-                addDomainUrl={ADD_DOMAIN_URL}
-                dangerousHTML
-            />
+            <Description>
+                All streams require a unique path in the format <strong>domain/pathname</strong>.
+                {' '}
+                Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
+                {' '}
+                <a href={ADD_DOMAIN_URL} target="_blank" rel="nofollow noopener noreferrer">
+                    register a new one
+                </a>.
+            </Description>
             <Row>
                 <StreamIdFormGroup hasDomain={!!domain} data-test-hook="StreamId">
                     {!!domain && (
                         <React.Fragment>
                             <Field
-                                label={I18n.t('userpages.streams.edit.details.domain.label')}
+                                label="Domain"
                             >
                                 <Text
                                     value={domain}
@@ -116,7 +118,7 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
                                 /
                             </Field>
                             <Field
-                                label={I18n.t('userpages.streams.edit.details.pathname.label')}
+                                label="Path name"
                             >
                                 <StreamIdWrapper>
                                     <PathnameTooltip />
@@ -135,7 +137,7 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
                     )}
                     {!domain && (
                         <Field
-                            label={I18n.t('userpages.streams.edit.details.streamId')}
+                            label="Stream ID"
                         >
                             <StreamIdWrapper>
                                 <StreamIdText
@@ -154,20 +156,21 @@ export const InfoView = ({ stream, disabled, updateStream }: Props) => {
                         narrow
                     >
                         <Button kind="secondary" onClick={() => onCopy(stream.id)}>
-                            <Translate value={`userpages.streams.edit.details.${isCopied ? 'streamIdCopied' : 'copyStreamId'}`} />
+                            {!isCopied && 'Copy Stream ID'}
+                            {!!isCopied && 'Copied!'}
                         </Button>
                     </Field>
                 </StreamIdFormGroup>
             </Row>
             <Row>
                 <Label htmlFor="streamDescription">
-                    {I18n.t('userpages.streams.edit.details.description.label')}
+                    Description
                 </Label>
                 <Text
                     type="text"
                     id="streamDescription"
                     name="description"
-                    placeholder={I18n.t('userpages.streams.edit.details.description.placeholder')}
+                    placeholder="Add a brief description"
                     value={(stream && stream.description) || ''}
                     onChange={onDescriptionChange}
                     disabled={disabled}
