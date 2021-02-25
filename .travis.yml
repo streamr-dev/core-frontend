@@ -99,38 +99,6 @@ jobs:
       region: eu-west-1
       on:
         branch: development
-  - stage: Deploy Pull Request
-    if: type IN (pull_request)
-    env:
-    - NODE_ENV=production
-    - PORT=12345
-    - VERSION=$TRAVIS_PULL_REQUEST_BRANCH
-    - SENTRY_ENVIRONMENT=pr
-    - BUNDLE_ANALYSIS=1
-    - STREAMR_API_URL=https://staging.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
-    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
-    - STREAMR_URL=https://staging.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://streamr-marketplace-pr-$TRAVIS_PULL_REQUEST_SHA.s3-eu-west-1.amazonaws.com
-    - GOOGLE_ANALYTICS_ID=55331565-5
-    - STORYBOOK_BASE_PATH=storybook
-    - MARKETPLACE_CONTRACT_ADDRESS=0x438229f341AEa22f18E69D98c2bE5997bc62d578
-    - DATA_TOKEN_CONTRACT_ADDRESS=0x67a9fda28c4df570d1d5350acfa345194f4d4100
-    - DAI_TOKEN_CONTRACT_ADDRESS=0x4CEed45382203e84d2eAB4A9F37D4F141e79A574
-    - UNISWAP_ADAPTOR_CONTRACT_ADDRESS=0xE4d8C9d64404FE44cb44eb2a5886a07269E72bd6
-    - WEB3_REQUIRED_NETWORK_ID=8995
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://staging.streamr.com:8540
-    - WEB3_PUBLIC_WS_PROVIDER=wss://staging.streamr.com:8540/ws
-    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
-    - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
-    - DATA_UNION_PUBLISH_MEMBER_LIMIT=0
-    - STREAMR_ENGINE_NODE_ADDRESSES=0xFCAd0B19bB29D4674531d6f115237E16AfCE377c
-    - DATA_UNION_OPERATOR_ADDRESS=0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1
-    - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
-    - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
-    - NO_TEST_HOOKS=1
-    - STORAGE_NODES="Staging Storage:0xde1112f631486CfC759A50196853011528bC5FA0"
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/deploy-pr.sh"
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
     env:
