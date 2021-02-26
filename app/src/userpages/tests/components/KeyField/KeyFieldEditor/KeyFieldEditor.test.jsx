@@ -22,15 +22,15 @@ describe('KeyFieldEditor', () => {
             expect(el.find('#keyName').hostNodes()).toHaveLength(1)
             assert(el.exists('#keyValue'))
             expect(el.find('#keyValue').hostNodes()).toHaveLength(1)
-            assert(el.find('Label').at(0).text() === 'apiKey')
-            assert(el.find('Label').at(1).text() === 'apiKey')
+            assert(el.find('Label').at(0).text() === 'Key name')
+            assert(el.find('Label').at(1).text() === 'API key')
         })
 
         it('shows correct text for save button', () => {
             const el = mount(<KeyFieldEditor
                 onSave={() => {}}
             />)
-            assert(el.find('Buttons').prop('actions').save.title === 'save')
+            assert(el.find('Buttons').prop('actions').save.title === 'Save')
         })
 
         it('shows save button as disabled if value is empty', () => {
@@ -78,7 +78,7 @@ describe('KeyFieldEditor', () => {
             />)
 
             assert(el.find('Text').length === 1)
-            assert(el.find('Label').text() === 'apiKey')
+            assert(el.find('Label').text() === 'Key name')
         })
 
         it('shows correct text for save button', () => {
@@ -86,7 +86,7 @@ describe('KeyFieldEditor', () => {
                 onSave={() => {}}
                 createNew
             />)
-            assert(el.find('Buttons').prop('actions').save.title === 'add')
+            assert(el.find('Buttons').prop('actions').save.title === 'Add')
         })
 
         it('shows an error as part of the name field', () => {

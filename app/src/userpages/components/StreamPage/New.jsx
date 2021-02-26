@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useMemo, useRef, useEffect, useReducer } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { useTransition, animated } from 'react-spring'
 import { Link } from 'react-router-dom'
@@ -433,7 +432,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             setFinished(true)
 
             Notification.push({
-                title: I18n.t('userpages.streams.created.notification'),
+                title: 'Stream created successfully',
                 icon: NotificationIcon.CHECKMARK,
             })
             Activity.push({
@@ -645,7 +644,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             </TOCSection>
                             <TOCSection
                                 id="snippets"
-                                title={I18n.t('general.codeSnippets')}
+                                title="Code Snippets"
                                 disabled
                             >
                                 <CodeSnippets

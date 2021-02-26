@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { push } from 'connected-react-router'
-import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
@@ -124,7 +123,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         copy(stream.id)
 
         Notification.push({
-            title: I18n.t('userpages.streams.actions.idCopied'),
+            title: 'Stream ID copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy, stream.id])
@@ -137,7 +136,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
 
         if (refreshedAt) {
             Notification.push({
-                title: I18n.t('userpages.streams.actions.refreshSuccess'),
+                title: 'Stream refreshed',
                 icon: NotificationIcon.CHECKMARK,
             })
         }
@@ -176,19 +175,19 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                     }}
                 >
                     <Popover.Item onClick={showStream}>
-                        <Translate value="userpages.streams.actions.editStream" />
+                        Edit stream
                     </Popover.Item>
                     <Popover.Item onClick={onCopyId}>
-                        <Translate value="userpages.streams.actions.copyId" />
+                        Copy ID
                     </Popover.Item>
                     <Popover.Item onClick={onOpenSnippetDialog}>
-                        <Translate value="userpages.streams.actions.copySnippet" />
+                        Copy Snippet
                     </Popover.Item>
                     <Popover.Item disabled={!canBeSharedByCurrentUser} onClick={onShareClick}>
-                        <Translate value="userpages.streams.actions.share" />
+                        Share
                     </Popover.Item>
                     <Popover.Item onClick={refresh}>
-                        <Translate value="userpages.streams.actions.refresh" />
+                        Refresh
                     </Popover.Item>
                     <Popover.Item onClick={confirmDeleteStream}>
                         {canBeDeletedByCurrentUser ? 'Delete' : 'Remove'}

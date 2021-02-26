@@ -11,7 +11,14 @@ import type { Stream, StreamList, StreamId, StreamIdList } from '$shared/flowtyp
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { streamsSchema, streamSchema } from '$shared/modules/entities/schema'
 
-export const fieldTypes = ['number', 'boolean', 'map', 'list', 'string', 'timestamp']
+export const fieldTypes = {
+    number: 'Number',
+    boolean: 'Boolean',
+    map: 'Object',
+    list: 'List',
+    string: 'String',
+    timestamp: 'Timestamp',
+}
 
 const selectUserPageStreamsState = (state: StoreState): UserPageStreamsState => state.userPageStreams
 

@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Popover from '$shared/components/Popover'
@@ -14,7 +13,7 @@ import Label from '$ui/Label'
 import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 import UnstyledStatusIcon from '$shared/components/StatusIcon'
-import KeyFieldEditor, { type LabelType } from './KeyFieldEditor'
+import KeyFieldEditor, { type LabelType, keyValues } from './KeyFieldEditor'
 
 const KeyFieldContainer = styled.div`
     position: relative;
@@ -105,7 +104,7 @@ const UnstyledKeyField = ({
 
     const notify = useCallback(() => {
         Notification.push({
-            title: `${I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`)} copied`,
+            title: `${keyValues[labelType]} copied`,
             icon: NotificationIcon.CHECKMARK,
         })
     }, [labelType])

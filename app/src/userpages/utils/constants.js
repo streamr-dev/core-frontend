@@ -1,6 +1,5 @@
 // @flow
 
-import { I18n } from 'react-redux-i18n'
 import type { SortOption } from '$userpages/flowtype/common-types'
 
 export const defaultColumns = {
@@ -26,7 +25,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         RECENT_ASC: {
-            displayName: I18n.t('userpages.filter.oldest'),
+            displayName: 'Oldest',
             filter: {
                 id: 'oldest',
                 sortBy: 'lastUpdated',

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import { Translate, I18n } from 'react-redux-i18n'
+import startCase from 'lodash/startCase'
 import { push } from 'connected-react-router'
 import { useDispatch } from 'react-redux'
 import Layout from '$shared/components/Layout/Core'
@@ -20,6 +20,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
 import Nav from '$shared/components/Layout/Nav'
 import { CoreHelmet } from '$shared/components/Helmet'
+import { fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import routes from '$routes'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
@@ -185,7 +186,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                 </TOCSection>
                 <TOCSection
                     id="snippets"
-                    title={I18n.t('general.codeSnippets')}
+                    title="Code Snippets"
                 >
                     <CodeSnippets
                         items={[
@@ -200,9 +201,9 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                     title="Security"
                 >
                     <p>
-                        <Translate value={shortDescription} tag="strong" />
+                        <strong>{shortDescription}</strong>
                         {' '}
-                        <Translate value={longDescription} />
+                        {longDescription}
                     </p>
                 </TOCSection>
                 {!!stream.config.fields.length && (
@@ -219,7 +220,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                                     <Text
                                         id={`type-${id}`}
                                         disabled
-                                        value={I18n.t(`userpages.streams.fieldTypes.${type}`)}
+                                        value={fieldTypes[type]}
                                         readOnly
                                     />
                                 </Field>
@@ -248,9 +249,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
                                     centered
                                 />
                                 <Text
-                                    value={I18n.t(`shared.date.${unit.replace(/s$/, '')}`, {
-                                        count: stream.storageDays,
-                                    })}
+                                    value={startCase(`${unit.replace(/s$/, '')}${storagePeriod === 1 ? '' : 's'}`)}
                                     readOnly
                                     disabled
                                 />

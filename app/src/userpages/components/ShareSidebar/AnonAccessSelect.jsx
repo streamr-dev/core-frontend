@@ -1,6 +1,5 @@
-import React, { useMemo, Fragment, useCallback } from 'react'
+import React, { Fragment, useCallback } from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 import SelectInput from '$ui/Select'
 import Label from '$ui/Label'
 import useUniqueId from '$shared/hooks/useUniqueId'
@@ -8,19 +7,22 @@ import { usePermissionsState, usePermissionsDispatch } from '$shared/components/
 import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
 import { DEFAULTS } from '$shared/components/PermissionsProvider/groups'
 
-export const ALLOW_ONLY_INVITED = 'onlyInvited'
+export const ALLOW_ONLY_INVITED = {
+    id: 'onlyInvited',
+    title: 'Private — only people you’ve invited',
+}
 
-export const ALLOW_WITH_LINK = 'withLink'
+export const ALLOW_WITH_LINK = {
+    id: 'withLink',
+    title: 'Public — anyone with link or via API',
+}
+
+const options = [ALLOW_ONLY_INVITED, ALLOW_WITH_LINK].map(({ id, title }) => ({
+    label: title,
+    value: id,
+}))
 
 const UnstyledAnonAccessSelect = ({ className }) => {
-    // We keep this inside the component cause of i18n.
-    const options = useMemo(() => (
-        [ALLOW_ONLY_INVITED, ALLOW_WITH_LINK].map((o) => ({
-            label: I18n.t(`modal.shareResource.${o}`),
-            value: o,
-        }))
-    ), [])
-
     const dispatch = usePermissionsDispatch()
 
     const { changeset, combinations, resourceType } = usePermissionsState()
@@ -29,7 +31,7 @@ const UnstyledAnonAccessSelect = ({ className }) => {
         dispatch({
             type: UPDATE_PERMISSION,
             user: 'anonymous',
-            value: v === ALLOW_WITH_LINK ? DEFAULTS[resourceType] : undefined,
+            value: v === ALLOW_WITH_LINK.id ? DEFAULTS[resourceType] : undefined,
         })
     }, [dispatch, resourceType])
 
@@ -37,7 +39,7 @@ const UnstyledAnonAccessSelect = ({ className }) => {
 
     const anonCombination = ({}).hasOwnProperty.call(changeset, 'anonymous') ? changeset.anonymous : combinations.anonymous
 
-    const value = anonCombination ? ALLOW_WITH_LINK : ALLOW_ONLY_INVITED
+    const value = anonCombination ? ALLOW_WITH_LINK.id : ALLOW_ONLY_INVITED.id
 
     return (
         <Fragment>

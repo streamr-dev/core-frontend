@@ -1,7 +1,17 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 import SharedCheckbox from '$shared/components/Checkbox'
+
+const permissionLabels = {
+    GET: 'Get details',
+    EDIT: 'Edit details',
+    DELETE: 'Delete',
+    PUBLISH: 'Publish',
+    SUBSCRIBE: 'Subscribe',
+    SHARE: 'Share',
+    STARTSTOP: 'Start / Stop',
+    INTERACT: 'Interact',
+}
 
 const UnstyledCheckbox = ({
     className,
@@ -18,7 +28,7 @@ const UnstyledCheckbox = ({
         <div className={className}>
             <SharedCheckbox {...props} id={id} onChange={onChange} />
             <label htmlFor={id}>
-                {I18n.t(`share.permissions.${operationKey.toLowerCase()}`)}
+                {permissionLabels[operationKey]}
             </label>
         </div>
     )

@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
@@ -68,6 +67,21 @@ const mapState = (state) => {
         default:
             return StatusIcon.INACTIVE
     }
+}
+
+const statusLabels = {
+    pending: 'Pending',
+    ok: 'Confirmed',
+    error: 'Failed',
+}
+
+const eventTypes = {
+    createContractProduct: 'Publish',
+    undeployProduct: 'Unpublish',
+    redeployProduct: 'Republish',
+    subscription: 'Subscription',
+    payment: 'Payment',
+    updateContractProduct: 'Update',
 }
 
 const TransactionList = () => {
@@ -176,7 +190,7 @@ const TransactionList = () => {
                         }) => {
                             const productTitle = (id && productId && products[productId]) ?
                                 products[productId].name : '-'
-                            const eventType = (!!type && I18n.t(`userpages.transactions.type.${type}`)) || ''
+                            const eventType = (!!type && eventTypes[type]) || ''
                             const price = BN(value)
                             const pricePrefix = type === transactionTypes.SUBSCRIPTION ? '-' : '+'
                             const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
@@ -218,7 +232,7 @@ const TransactionList = () => {
                                     <TransactionListComponent.Item>
                                         <StatusIcon
                                             status={mapState(state)}
-                                            tooltip={I18n.t(`userpages.transactions.status.${state}`)}
+                                            tooltip={statusLabels[state]}
                                         />
                                     </TransactionListComponent.Item>
                                     <TransactionListComponent.Actions>

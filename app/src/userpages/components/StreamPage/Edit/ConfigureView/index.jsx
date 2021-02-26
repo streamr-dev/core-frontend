@@ -3,7 +3,6 @@
 import React, { Fragment, useMemo, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { arrayMove } from 'react-sortable-hoc'
-import { I18n } from 'react-redux-i18n'
 import uuid from 'uuid'
 import styled from 'styled-components'
 
@@ -50,9 +49,9 @@ const isValidFieldname = (value: string, previousFields: any) => (
 )
 
 const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
-    const typeOptions: Array<any> = useMemo(() => fieldTypes.map((t) => ({
+    const typeOptions: Array<any> = useMemo(() => Object.keys(fieldTypes).map((t) => ({
         value: t,
-        label: I18n.t(`userpages.streams.fieldTypes.${t}`),
+        label: fieldTypes[t],
     })), [])
     const [isAddingField, setIsAddingField] = useState(false)
     const fieldsAutodetectFetching = useSelector(selectFieldsAutodetectFetching)
@@ -132,7 +131,7 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
                 if (!isMounted()) { return }
 
                 Notification.push({
-                    title: I18n.t('userpages.streams.fieldsAutoDetected.notification'),
+                    title: 'Fields autodetected',
                     icon: NotificationIcon.CHECKMARK,
                 })
             } catch (err) {

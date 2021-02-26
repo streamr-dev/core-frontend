@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useCallback } from 'react'
-import { I18n } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import type { Stream } from '$shared/flowtype/stream-types'
@@ -36,9 +35,11 @@ type Props = {
 
 const securityLevels = {
     basic: {
-        title: 'userpages.streams.security.basic.title',
-        shortDescription: 'userpages.streams.security.basic.shortDescription',
-        longDescription: 'userpages.streams.security.basic.longDescription',
+        title: 'Basic',
+        shortDescription: 'No data security enforced.',
+        longDescription: `This setting is flexible, but doesn’t give subscribers any guarantees about data authenticity.
+Network nodes can read any unencrypted data. This setting is suitable for testing,
+unimportant data, or if publishers cannot use cryptography.`,
         icons: {
             normal: 'lock',
             selected: 'lock',
@@ -51,9 +52,10 @@ const securityLevels = {
         },
     },
     signed: {
-        title: 'userpages.streams.security.signed.title',
-        shortDescription: 'userpages.streams.security.signed.shortDescription',
-        longDescription: 'userpages.streams.security.signed.longDescription',
+        title: 'Signed',
+        shortDescription: 'All data will be cryptographically signed.',
+        longDescription: `Unsigned data will be rejected. This setting enables subscribers to validate all data in the stream.
+Network nodes can still read any unencrypted data. Recommended setting for public streams.`,
         icons: {
             normal: 'checkBadgeOutline',
             selected: 'checkBadge',
@@ -66,9 +68,11 @@ const securityLevels = {
         },
     },
     encrypted: {
-        title: 'userpages.streams.security.encrypted.title',
-        shortDescription: 'userpages.streams.security.encrypted.shortDescription',
-        longDescription: 'userpages.streams.security.encrypted.longDescription',
+        title: 'Encrypted',
+        shortDescription: 'All data will be signed and end-to-end encrypted.',
+        longDescription: `Unsigned or unencrypted data will be rejected.
+This is the strongest security setting and ensures that no unauthorized party can read your data,
+including the network nodes brokering the data.`,
         icons: {
             normal: 'lockOutline',
             selected: 'lock',
@@ -110,7 +114,7 @@ export function getSecurityLevelTitle(stream: Stream) {
     if (!level) { return '' }
     const config = securityLevels[level]
     if (!config) { return '' }
-    return I18n.t(config.title)
+    return config.title
 }
 
 /**
@@ -145,7 +149,7 @@ export function SecurityIcon({
     return (
         <SvgIcon
             {...props}
-            title={I18n.t(securityLevels[level].title)}
+            title={securityLevels[level].title}
             className={cx(styles.SecurityIcon, className, styles[level])}
             name={icons[mode]}
         />
@@ -166,8 +170,8 @@ export function SecurityView({ stream, disabled, updateStream }: Props) {
     return (
         <div className={styles.root}>
             <p className={styles.description}>
-                <strong>{I18n.t(detail.shortDescription)}</strong>&nbsp;
-                {I18n.t(detail.longDescription)}
+                <strong>{detail.shortDescription}</strong>&nbsp;
+                {detail.longDescription}
             </p>
             <div className={cx(styles.SecurityOptions, styles[level])}>
                 <Slider index={levelIndex} selector="input[type=radio]" />
@@ -198,7 +202,7 @@ export function SecurityView({ stream, disabled, updateStream }: Props) {
                                 level={key}
                                 mode={mode}
                             />
-                            <span className={styles.Title}>{I18n.t(securityLevels[key].title)}</span>
+                            <span className={styles.Title}>{securityLevels[key].title}</span>
                         </label>
                     )
                 })}

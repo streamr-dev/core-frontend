@@ -2,7 +2,6 @@
 
 import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import styled from 'styled-components'
 import cloneDeep from 'lodash/cloneDeep'
@@ -144,7 +143,7 @@ const UnstyledEdit = ({
 
             if (isMounted()) {
                 Notification.push({
-                    title: I18n.t('userpages.streams.actions.saveStreamSuccess'),
+                    title: 'Stream saved successfully',
                     icon: NotificationIcon.CHECKMARK,
                 })
 
@@ -295,7 +294,7 @@ const UnstyledEdit = ({
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="snippets"
-                                title={I18n.t('general.codeSnippets')}
+                                title="Code Snippets"
                             >
                                 <p>
                                     You can grab the code (JS &amp; Java) you’ll need to use this stream in your applications below.

@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import Link from '$shared/components/Link'
 import Onboarding from '$shared/components/Onboarding'
 import routes from '$routes'
@@ -32,7 +31,7 @@ const DocsShortcuts = () => (
             Discord
         </Link>
         <Link href={routes.giveFeedback()} target="_blank" rel="noopener noreferrer">
-            <Translate value="general.giveFeedback" />
+            Give feedback
         </Link>
     </Onboarding>
 )

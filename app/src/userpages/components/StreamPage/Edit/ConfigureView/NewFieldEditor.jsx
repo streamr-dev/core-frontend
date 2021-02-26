@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo, useReducer, useState, useCallback, useEffect, useRef } from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -50,16 +49,16 @@ const Buttons = styled.div`
 `
 
 const NewFieldEditor = ({ previousFields, onConfirm: onConfirmProp, onCancel: onCancelProp }: Props) => {
-    const typeOptions: Array<any> = useMemo(() => fieldTypes.map((t) => ({
+    const typeOptions: Array<any> = useMemo(() => Object.keys(fieldTypes).map((t) => ({
         value: t,
-        label: I18n.t(`userpages.streams.fieldTypes.${t}`),
+        label: fieldTypes[t],
     })), [])
     const [field, updateField] = useReducer((prevField: Field, changeSet: ChangeSet) => ({
         ...prevField,
         ...changeSet,
     }), {
         name: '',
-        type: fieldTypes[0],
+        type: Object.keys(fieldTypes)[0],
         touched: false,
     })
     const fieldRef = useRef(field)

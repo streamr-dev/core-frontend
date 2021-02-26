@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react'
 import styled, { css } from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 
 import useCopy from '$shared/hooks/useCopy'
-import useEmbed from '$userpages/hooks/useEmbed'
 import SvgIcon from '$shared/components/SvgIcon'
 import { usePermissionsState } from '$shared/components/PermissionsProvider'
+import resourceUrl from '$shared/utils/resourceUrl'
 
 const Button = styled.button`
     align-items: center;
@@ -41,11 +40,9 @@ const UnstyledCopyLink = (props) => {
 
     const { resourceType, resourceId } = usePermissionsState()
 
-    const { link } = useEmbed(resourceType, resourceId)
-
     const onClick = useCallback(() => {
-        copy(link)
-    }, [copy, link])
+        copy(resourceUrl(resourceType, resourceId))
+    }, [copy, resourceType, resourceId])
 
     return (
         <Button
@@ -53,12 +50,10 @@ const UnstyledCopyLink = (props) => {
             copied={isCopied}
             onClick={onClick}
         >
-            {!isCopied && (
-                <Translate value="modal.shareResource.copyLink" />
-            )}
+            {!isCopied && 'Copy link'}
             {!!isCopied && (
                 <React.Fragment>
-                    <Translate value="modal.shareResource.linkCopied" />
+                    <span>Link copied</span>
                     <SvgIcon name="tick" />
                 </React.Fragment>
             )}

@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import type { Address } from '$shared/flowtype/web3-types'
@@ -46,7 +45,7 @@ const EthereumAccountCreatedDialog = ({ onBack, onSave, name, address }: Props) 
             onClose={() => {}}
             actions={{
                 cancel: {
-                    title: I18n.t('modal.common.back'),
+                    title: 'Back',
                     kind: 'link',
                     outline: true,
                     onClick: () => onBack(),

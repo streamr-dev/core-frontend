@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Text from '$ui/Text'
@@ -86,15 +85,15 @@ const HistoryView = ({ stream, disabled, updateStream, showStorageOptions = true
     const unitOptions = useMemo(() => [
         {
             value: 'days',
-            label: I18n.t('shared.date.day', { count: storageAmount }),
+            label: `Day${storageAmount === 1 ? '' : 's'}`,
         },
         {
             value: 'weeks',
-            label: I18n.t('shared.date.week', { count: storageAmount }),
+            label: `Week${storageAmount === 1 ? '' : 's'}`,
         },
         {
             value: 'months',
-            label: I18n.t('shared.date.month', { count: storageAmount }),
+            label: `Month${storageAmount === 1 ? '' : 's'}`,
         },
     ], [storageAmount])
 
