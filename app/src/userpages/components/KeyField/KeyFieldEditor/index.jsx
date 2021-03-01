@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useCallback } from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import UnstyledButtons from '$shared/components/Buttons'
@@ -27,6 +26,18 @@ type Props = {
     waiting?: boolean,
     error?: ?string,
     labelType: LabelType,
+}
+
+export const keyValues = {
+    apiKey: 'API key',
+    address: 'Address',
+    sharedSecret: 'Shared secret',
+}
+
+export const keyNames = {
+    apiKey: 'Key name',
+    address: 'Account name',
+    sharedSecret: 'Secret name',
 }
 
 const UnstyledKeyFieldEditor = ({
@@ -56,7 +67,7 @@ const UnstyledKeyFieldEditor = ({
                     htmlFor="keyName"
                     state={createNew && !showValue && error && 'ERROR'}
                 >
-                    {I18n.t(`userpages.keyFieldEditor.keyName.${labelType}`)}
+                    {keyNames[labelType]}
                 </Label>
                 <Text
                     id="keyName"
@@ -75,7 +86,7 @@ const UnstyledKeyFieldEditor = ({
                         htmlFor="keyValue"
                         state={error && 'ERROR'}
                     >
-                        {I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`)}
+                        {keyValues[labelType]}
                     </Label>
                     <Text
                         id="keyValue"
@@ -90,7 +101,7 @@ const UnstyledKeyFieldEditor = ({
             <Buttons
                 actions={{
                     save: {
-                        title: I18n.t(`userpages.keyFieldEditor.${createNew ? 'add' : 'save'}`),
+                        title: createNew ? 'Add' : 'Save',
                         kind: 'secondary',
                         onClick: () => onSave(keyName),
                         disabled: !filled || waiting,
@@ -99,7 +110,7 @@ const UnstyledKeyFieldEditor = ({
                     cancel: {
                         kind: 'link',
                         className: 'grey-container',
-                        title: I18n.t('userpages.keyFieldEditor.cancel'),
+                        title: 'Cancel',
                         outline: true,
                         onClick: () => onCancel(),
                     },

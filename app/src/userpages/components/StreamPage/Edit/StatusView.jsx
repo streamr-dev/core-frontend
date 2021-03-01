@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useCallback, useState, useEffect, useRef, useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import type { Stream } from '$shared/flowtype/stream-types'
@@ -27,7 +26,7 @@ function getUnits(value) {
     return (value !== 0 && value % 24 === 0) ? 'days' : 'hours'
 }
 
-const Description = styled(Translate)`
+const Description = styled.p`
     margin-bottom: 3rem;
 `
 
@@ -49,11 +48,11 @@ export function StatusView({ disabled, stream, updateStream }: Props) {
     const unitOptions: Array<any> = useMemo(() => ([
         {
             value: 'days',
-            label: I18n.t('userpages.streams.inactivityDays'),
+            label: 'Days',
         },
         {
             value: 'hours',
-            label: I18n.t('userpages.streams.inactivityHours'),
+            label: 'Hours',
         },
     ]), [])
 
@@ -87,12 +86,13 @@ export function StatusView({ disabled, stream, updateStream }: Props) {
 
     return (
         <div>
-            <Description
-                value="userpages.streams.inactivityDescription"
-                tag="p"
-            />
+            <Description>
+                If no new data is published to this stream, it will be shown as inactive after this period of time.
+                {' '}
+                Adjust the threshold to an appropriate period for your stream&apos;s frequency.
+            </Description>
             <Label htmlFor="inactivityValue">
-                {I18n.t('userpages.streams.inactivityLabel')}
+                Inactivity threshold
             </Label>
             <InputContainer>
                 <Text

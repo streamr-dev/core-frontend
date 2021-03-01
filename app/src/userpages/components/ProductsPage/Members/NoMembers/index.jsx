@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
@@ -21,6 +20,21 @@ type Props = NoResultsViewProps & NoDataUnionMembersProps & {
     hasFilter: boolean,
 }
 
+const messages = {
+    approve: {
+        title: 'No one is waiting to join at the moment.',
+        message: 'Get out there and promote it 🚀',
+    },
+    remove: {
+        title: 'No one has joined yet.',
+        message: 'Get out there and promote it 🚀',
+    },
+    rejected: {
+        title: 'You haven\'t rejected any approvals yet.',
+        message: 'Keep up the good work 👍',
+    },
+}
+
 const NoDataUnionMembers = ({ filter }: NoDataUnionMembersProps) => (
     <EmptyState
         image={(
@@ -31,13 +45,14 @@ const NoDataUnionMembers = ({ filter }: NoDataUnionMembersProps) => (
             />
         )}
     >
-        <p>
-            <Translate value={`userpages.members.noDataUnionMembers.${(filter && filter.id) || ''}.title`} />
-            <Translate
-                value={`userpages.members.noDataUnionMembers.${(filter && filter.id) || ''}.message`}
-                tag="small"
-            />
-        </p>
+        {!!filter && filter.id && messages[filter.id] && (
+            <p>
+                <span>{messages[filter.id].title}</span>
+                <small>
+                    {messages[filter.id].message}
+                </small>
+            </p>
+        )}
     </EmptyState>
 )
 
@@ -55,13 +70,15 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.members.noDataUnionMembers.clearFilters" />
+                Clear filters
             </Button>
         )}
     >
         <p>
-            <Translate value="userpages.members.noDataUnionMembersResult.title" />
-            <Translate value="userpages.members.noDataUnionMembersResult.message" tag="small" />
+            <span>Nope, sorry!</span>
+            <small>
+                We couldn&apos;t find any members that match your search.
+            </small>
         </p>
     </EmptyState>
 )

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { push } from 'connected-react-router'
-import { Translate, I18n } from 'react-redux-i18n'
 import { Link } from 'react-router-dom'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
@@ -41,7 +40,7 @@ export const CreateStreamButton = () => (
         tag={Link}
         to={routes.streams.new()}
     >
-        <Translate value="userpages.streams.createStream" />
+        Create stream
     </DesktopOnlyButton>
 )
 
@@ -59,14 +58,12 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         permissions[stream.id].includes('stream_delete')
     )
 
-    const removeType = canBeDeletedByCurrentUser ? 'delete' : 'remove'
-
     const confirmDeleteStream = useCallback(async () => {
         const confirmed = await confirmDialog('stream', {
-            title: I18n.t(`userpages.streams.${removeType}.confirmTitle`),
-            message: I18n.t(`userpages.streams.${removeType}.confirmMessage`),
+            title: `${canBeDeletedByCurrentUser ? 'Delete' : 'Remove'} this stream?`,
+            message: 'This is an unrecoverable action. Please confirm this is what you want before you proceed.',
             acceptButton: {
-                title: I18n.t(`userpages.streams.${removeType}.confirmButton`),
+                title: `Yes, ${canBeDeletedByCurrentUser ? 'delete' : 'remove'}`,
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -78,7 +75,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                 await dispatch(deleteOrRemoveStream(stream.id))
 
                 Notification.push({
-                    title: I18n.t(`userpages.streams.${removeType}.notification`),
+                    title: `Stream ${canBeDeletedByCurrentUser ? 'deleted' : 'removed'} successfully`,
                     icon: NotificationIcon.CHECKMARK,
                 })
             } catch (e) {
@@ -88,7 +85,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                 })
             }
         }
-    }, [dispatch, stream.id, removeType])
+    }, [dispatch, stream.id, canBeDeletedByCurrentUser])
 
     const onToggleStreamDropdown = useCallback(async (open) => {
         if (open && !fetchingPermissions && !permissions[stream.id]) {
@@ -126,7 +123,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
         copy(stream.id)
 
         Notification.push({
-            title: I18n.t('userpages.streams.actions.idCopied'),
+            title: 'Stream ID copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy, stream.id])
@@ -139,7 +136,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
 
         if (refreshedAt) {
             Notification.push({
-                title: I18n.t('userpages.streams.actions.refreshSuccess'),
+                title: 'Stream refreshed',
                 icon: NotificationIcon.CHECKMARK,
             })
         }
@@ -169,7 +166,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
             </StreamList.Item>
             <StreamList.Actions>
                 <Popover
-                    title={I18n.t('userpages.streams.actions.title')}
+                    title="Actions"
                     type="meatball"
                     caret={false}
                     onMenuToggle={onToggleStreamDropdown}
@@ -178,22 +175,22 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                     }}
                 >
                     <Popover.Item onClick={showStream}>
-                        <Translate value="userpages.streams.actions.editStream" />
+                        Edit stream
                     </Popover.Item>
                     <Popover.Item onClick={onCopyId}>
-                        <Translate value="userpages.streams.actions.copyId" />
+                        Copy ID
                     </Popover.Item>
                     <Popover.Item onClick={onOpenSnippetDialog}>
-                        <Translate value="userpages.streams.actions.copySnippet" />
+                        Copy Snippet
                     </Popover.Item>
                     <Popover.Item disabled={!canBeSharedByCurrentUser} onClick={onShareClick}>
-                        <Translate value="userpages.streams.actions.share" />
+                        Share
                     </Popover.Item>
                     <Popover.Item onClick={refresh}>
-                        <Translate value="userpages.streams.actions.refresh" />
+                        Refresh
                     </Popover.Item>
                     <Popover.Item onClick={confirmDeleteStream}>
-                        <Translate value={`userpages.streams.actions.${removeType}`} />
+                        {canBeDeletedByCurrentUser ? 'Delete' : 'Remove'}
                     </Popover.Item>
                 </Popover>
             </StreamList.Actions>

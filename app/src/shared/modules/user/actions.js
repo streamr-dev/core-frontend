@@ -3,7 +3,6 @@
 import { createAction } from 'redux-actions'
 import { push } from 'connected-react-router'
 import * as yup from 'yup'
-import { I18n } from 'react-redux-i18n'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { User } from '$shared/flowtype/user-types'
@@ -154,7 +153,7 @@ export const saveCurrentUser = () => async (dispatch: Function, getState: Functi
     }
 
     if (!!user.email && !emailValidator.isValidSync(user.email)) {
-        throw new Error(I18n.t('userpages.profilePage.profileSettings.userEmailError'))
+        throw new Error('Please enter a valid email address')
     }
 
     return services.putUser(user)

@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Popover from '$shared/components/Popover'
@@ -14,7 +13,7 @@ import Label from '$ui/Label'
 import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
 import UnstyledStatusIcon from '$shared/components/StatusIcon'
-import KeyFieldEditor, { type LabelType } from './KeyFieldEditor'
+import KeyFieldEditor, { type LabelType, keyValues } from './KeyFieldEditor'
 
 const KeyFieldContainer = styled.div`
     position: relative;
@@ -105,7 +104,7 @@ const UnstyledKeyField = ({
 
     const notify = useCallback(() => {
         Notification.push({
-            title: `${I18n.t(`userpages.keyFieldEditor.keyValue.${labelType}`)} copied`,
+            title: `${keyValues[labelType]} copied`,
             icon: NotificationIcon.CHECKMARK,
         })
     }, [labelType])
@@ -158,19 +157,19 @@ const UnstyledKeyField = ({
 
     const revealAction = useMemo(() => (
         <Popover.Item key="reveal" onClick={toggleHidden}>
-            <Translate value={`userpages.keyField.${hidden ? 'reveal' : 'conceal'}`} />
+            {hidden ? 'Reveal' : 'Conceal'}
         </Popover.Item>
     ), [toggleHidden, hidden])
 
     const editAction = useMemo(() => (
         <Popover.Item key="edit" onClick={onEdit}>
-            <Translate value="userpages.keyField.edit" />
+            Edit
         </Popover.Item>
     ), [onEdit])
 
     const deleteAction = useMemo(() => (
         <Popover.Item key="delete" onClick={onDelete} disabled={disableDelete}>
-            <Translate value="userpages.keyField.delete" />
+            Delete
         </Popover.Item>
     ), [onDelete, disableDelete])
 

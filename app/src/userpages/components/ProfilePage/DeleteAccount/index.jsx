@@ -2,7 +2,6 @@
 
 import React, { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -40,12 +39,12 @@ const DeleteAccount = () => {
             if (isMounted()) {
                 if (error) {
                     Notification.push({
-                        title: I18n.t('modal.deleteAccount.errorNotification'),
+                        title: 'Account not disabled',
                         icon: NotificationIcon.ERROR,
                     })
                 } else if (deleted) {
                     Notification.push({
-                        title: I18n.t('modal.deleteAccount.successNotification'),
+                        title: 'Account disabled!',
                         icon: NotificationIcon.CHECKMARK,
                     })
                     setTimeout(() => {
@@ -60,18 +59,21 @@ const DeleteAccount = () => {
 
     return (
         <div>
-            <Description
-                value="userpages.profilePage.deleteAccount.description"
-                tag="p"
-            />
+            <Description>
+                Unlike other companies that deactivate your account but retain your data,
+                {' '}
+                if you delete your Streamr account, all your data is deleted from our servers and will be unrecoverable.
+                {' '}
+                Please proceed with caution.
+            </Description>
             <RemoveButton
                 kind="destructive"
                 onClick={deleteAccount}
                 disabled={isOpen || isSavePending}
-                aria-label={I18n.t('userpages.profilePage.deleteAccount.button')}
+                aria-label="Delete account"
                 waiting={isDeleteDialogPending}
             >
-                <Translate value="userpages.profilePage.deleteAccount.button" />
+                Delete account
             </RemoveButton>
             <DeleteAccountDialog />
         </div>

@@ -1,8 +1,7 @@
 // @flow
 
 import React, { useCallback } from 'react'
-import { Translate } from 'react-redux-i18n'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
@@ -43,13 +42,12 @@ const NoAddedSubscriptionsView = withRouter(({ history }) => {
             )}
         >
             <div onClick={handleLink}>
-                <Translate value="userpages.subscriptions.noAddedSubscriptions.title" />
-                <Translate
-                    value="userpages.subscriptions.noAddedSubscriptions.message"
-                    tag="small"
-                    marketPlaceLink={routes.marketplace.index()}
-                    dangerousHTML
-                />
+                <span>
+                    You haven&apos;t subscribed to any products yet
+                </span>
+                <small>
+                    Visit the <Link to={routes.marketplace.index()}>Marketplace</Link> to get started.
+                </small>
             </div>
         </EmptyState>
         /* eslint-enable jsx-a11y/no-static-element-interactions,jsx-a11y/click-events-have-key-events */
@@ -70,13 +68,15 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.subscriptions.noSubscriptionsResult.clearFilters" />
+                Clear filters
             </Button>
         )}
     >
         <p>
-            <Translate value="userpages.subscriptions.noSubscriptionsResult.title" />
-            <Translate value="userpages.subscriptions.noSubscriptionsResult.message" tag="small" />
+            <span>No results.</span>
+            <small>
+                We couldn&apos;t find any products that match your search.
+            </small>
         </p>
     </EmptyState>
 )

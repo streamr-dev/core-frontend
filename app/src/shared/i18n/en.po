@@ -98,12 +98,6 @@ msgstr "Privacy"
 msgid "general.product"
 msgstr "Product"
 
-msgid "general.transactions"
-msgstr "Transactions"
-
-msgid "general.subscriptions"
-msgstr "Subscriptions"
-
 msgid "general.reddit"
 msgstr "Reddit"
 
@@ -319,9 +313,6 @@ msgstr "Engine"
 msgid "general.streamrApi"
 msgstr "Streamr API"
 
-msgid "general.giveFeedback"
-msgstr "Give feedback"
-
 msgid "general.labels.dataUnion"
 msgstr "Data Union"
 
@@ -375,9 +366,6 @@ msgid "activityQueue.notifications.empty.message"
 msgstr ""
 "You'll be notified about payments, <br />"
 "sharing and permissions."
-
-msgid "general.codeSnippets"
-msgstr "Code Snippets"
 
 msgid "number.zero"
 msgstr "zero"

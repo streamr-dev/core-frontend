@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import { CoreHelmet } from '$shared/components/Helmet'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
@@ -36,7 +35,7 @@ export const CreateProductButton = () => {
             className={styles.createProductButton}
             onClick={() => createProductDialog.open()}
         >
-            <Translate value="userpages.products.createProduct" />
+            Create
         </Button>
     )
 }
@@ -77,14 +76,14 @@ const ProductsPage = () => {
             headerAdditionalComponent={<CreateProductButton />}
             headerSearchComponent={
                 <Search.Active
-                    placeholder={I18n.t('userpages.products.filterProducts')}
+                    placeholder="Filter products"
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}
                 />
             }
             headerFilterComponent={
                 <Popover
-                    title={I18n.t('userpages.filter.sortBy')}
+                    title="Sort by"
                     type="uppercase"
                     caret="svg"
                     activeTitle
@@ -103,7 +102,7 @@ const ProductsPage = () => {
             }
             loading={fetching}
         >
-            <CoreHelmet title={I18n.t('userpages.title.products')} />
+            <CoreHelmet title="Products" />
             <ListContainer className={styles.corepageContentContainer}>
                 {!fetching && products && !products.length && (
                     <NoProductsView

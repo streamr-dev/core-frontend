@@ -4,7 +4,6 @@ import React, { Fragment, useEffect, useMemo, useCallback, useState } from 'reac
 import { useDispatch, useSelector } from 'react-redux'
 import { Link as RouterLink } from 'react-router-dom'
 import { push } from 'connected-react-router'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
@@ -104,11 +103,9 @@ const CreateCanvasButton = () => (
             id: null,
         })}
     >
-        <Translate value="userpages.canvases.createCanvas" />
+        Create canvas
     </DesktopOnlyButton>
 )
-
-type RemoveOrDelete = 'remove' | 'delete'
 
 const CanvasList = () => {
     const sortOptions = useMemo(() => {
@@ -142,12 +139,12 @@ const CanvasList = () => {
         dispatch(getCanvases(filter))
     }, [dispatch, filter])
 
-    const deleteCanvasAndNotify = useCallback(async (id: CanvasId, type: RemoveOrDelete) => {
+    const deleteCanvasAndNotify = useCallback(async (id: CanvasId, hasDeletePermission: boolean) => {
         try {
             await dispatch(deleteOrRemoveCanvas(id))
 
             Notification.push({
-                title: I18n.t(`userpages.canvases.${type}.notification`),
+                title: `Canvas ${hasDeletePermission ? 'deleted' : 'removed'} successfully`,
                 icon: NotificationIcon.CHECKMARK,
             })
         } catch (e) {
@@ -158,12 +155,12 @@ const CanvasList = () => {
         }
     }, [dispatch])
 
-    const confirmDeleteOrRemoveCanvas = useCallback(async (id: CanvasId, type: RemoveOrDelete) => {
+    const confirmDeleteOrRemoveCanvas = useCallback(async (id: CanvasId, hasDeletePermission: boolean) => {
         const confirmed = await confirmDialog('canvas', {
-            title: I18n.t(`userpages.canvases.${type}.confirmTitle`),
-            message: I18n.t(`userpages.canvases.${type}.confirmMessage`),
+            title: `${hasDeletePermission ? 'Delete' : 'Remove'} this canvas?`,
+            message: 'This is an unrecoverable action. Please confirm this is what you want before you proceed.',
             acceptButton: {
-                title: I18n.t(`userpages.canvases.${type}.confirmButton`),
+                title: `Yes, ${hasDeletePermission ? 'delete' : 'remove'}`,
                 kind: 'destructive',
             },
             centerButtons: true,
@@ -171,7 +168,7 @@ const CanvasList = () => {
         })
 
         if (confirmed) {
-            deleteCanvasAndNotify(id, type)
+            deleteCanvasAndNotify(id, hasDeletePermission)
         }
     }, [deleteCanvasAndNotify])
 
@@ -185,7 +182,7 @@ const CanvasList = () => {
         copy(resourceUrl('CANVAS', id))
 
         Notification.push({
-            title: I18n.t('userpages.canvases.menu.copyUrlNotification'),
+            title: 'Canvas URL copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])
@@ -215,7 +212,7 @@ const CanvasList = () => {
     const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
 
     const getActions = useCallback((canvas) => {
-        const removeType = canBeDeletedByCurrentUser(canvas.id) ? 'delete' : 'remove'
+        const hasDeletePermission = canBeDeletedByCurrentUser(canvas.id)
 
         return (
             <Fragment>
@@ -224,23 +221,23 @@ const CanvasList = () => {
                         id: canvas.id,
                     }))}
                 >
-                    <Translate value="userpages.canvases.menu.edit" />
+                    Edit
                 </Popover.Item>
                 <Popover.Item
                     disabled={!canBeSharedByCurrentUser(canvas.id)}
                     onClick={() => onOpenShareDialog(canvas)}
                 >
-                    <Translate value="userpages.canvases.menu.share" />
+                    Share
                 </Popover.Item>
                 <Popover.Item
                     onClick={() => onCopyUrl(canvas.id)}
                 >
-                    <Translate value="userpages.canvases.menu.copyUrl" />
+                    Copy URL
                 </Popover.Item>
                 <Popover.Item
-                    onClick={() => confirmDeleteOrRemoveCanvas(canvas.id, removeType)}
+                    onClick={() => confirmDeleteOrRemoveCanvas(canvas.id, hasDeletePermission)}
                 >
-                    <Translate value={`userpages.canvases.menu.${removeType}`} />
+                    {hasDeletePermission ? 'Delete' : 'Remove'}
                 </Popover.Item>
             </Fragment>
         )
@@ -258,14 +255,14 @@ const CanvasList = () => {
             headerAdditionalComponent={<CreateCanvasButton />}
             headerSearchComponent={
                 <Search.Active
-                    placeholder={I18n.t('userpages.canvases.filterCanvases')}
+                    placeholder="Filter canvases"
                     value={(filter && filter.search) || ''}
                     onChange={setSearch}
                 />
             }
             headerFilterComponent={
                 <Popover
-                    title={I18n.t('userpages.filter.sortBy')}
+                    title="Sort by"
                     type="uppercase"
                     caret="svg"
                     activeTitle
@@ -285,7 +282,7 @@ const CanvasList = () => {
             loading={fetching}
         >
             <StyledListContainer>
-                <CoreHelmet title={I18n.t('userpages.canvases.title')} />
+                <CoreHelmet title="Canvases" />
                 {!fetching && canvases && !canvases.length && (
                     <NoCanvasesView
                         hasFilter={!!filter && (!!filter.search || !!filter.key)}

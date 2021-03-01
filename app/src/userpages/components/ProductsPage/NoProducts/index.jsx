@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -22,7 +22,7 @@ type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
 
-const Message = styled(Translate)`
+const Message = styled.small`
     && {
         display: none;
 
@@ -32,7 +32,7 @@ const Message = styled(Translate)`
     }
 `
 
-const MobileMessage = styled(Translate)`
+const MobileMessage = styled.small`
     && {
         display: block;
 
@@ -53,14 +53,15 @@ const NoCreatedProductsView = () => (
         )}
     >
         <p>
-            <Translate value="userpages.products.noCreatedProducts.title" />
-            <Message
-                value="userpages.products.noCreatedProducts.message"
-                docsLink={docsLinks.createProduct}
-                dangerousHTML
-                tag="small"
-            />
-            <MobileMessage value="userpages.products.noCreatedProducts.messageMobile" tag="small" />
+            <span>You haven&apos;t created any Data Products or Data Unions yet.</span>
+            <Message>
+                Click the Create button above to get started.
+                <br />
+                If you need help, see the <Link to={docsLinks.createProduct}>docs</Link>.
+            </Message>
+            <MobileMessage>
+                Use the app in a desktop browser to create one.
+            </MobileMessage>
         </p>
     </EmptyState>
 )
@@ -79,13 +80,15 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.products.noProductsResult.clearFilters" />
+                Clear filters
             </Button>
         )}
     >
         <p>
-            <Translate value="userpages.products.noProductsResult.title" />
-            <Translate value="userpages.products.noProductsResult.message" tag="small" />
+            <span>No results.</span>
+            <small>
+                We couldn&apos;t find any products that match your search.
+            </small>
         </p>
     </EmptyState>
 )

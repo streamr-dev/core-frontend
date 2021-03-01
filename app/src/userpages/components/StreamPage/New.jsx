@@ -1,9 +1,9 @@
 import React, { useCallback, useState, useMemo, useRef, useEffect, useReducer } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { Translate, I18n } from 'react-redux-i18n'
 import { push } from 'connected-react-router'
 import { useTransition, animated } from 'react-spring'
+import { Link } from 'react-router-dom'
 
 import { MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
@@ -188,11 +188,13 @@ export const PathnameTooltip = () => (
     <QuestionIcon>
         <SvgIcon name="outlineQuestionMark" />
         <Tooltip>
-            <Translate
-                value="userpages.streams.edit.details.tooltip"
-                docsLink={docsLinks.streams}
-                dangerousHTML
-            />
+            Stream paths can be single or multi-level.
+            <br />
+            Single <strong>streamr.eth/coffeemachine</strong>
+            <br />
+            Multi <strong>oxd93...52874/oracles/price</strong>
+            <br />
+            For more information, see the <Link to={docsLinks.streams}>docs</Link>.
         </Tooltip>
     </QuestionIcon>
 )
@@ -201,19 +203,19 @@ const getValidId = ({ domain, pathname }) => {
     const id = `${domain}/${pathname}`
 
     if (pathname.indexOf('/') === 0) {
-        throw new Error(I18n.t('userpages.streams.validation.noSlashAtBeginning'))
+        throw new Error('Path name cannot start with a slash')
     }
 
     if (/\/\/+/.test(pathname)) {
-        throw new Error(I18n.t('userpages.streams.validation.useSingleSlashPathSeparator'))
+        throw new Error('Use a single slash to separate paths.')
     }
 
     if (!(/\w$/.test(id))) {
-        throw new Error(I18n.t('userpages.streams.validation.invalidPathEndCharacter'))
+        throw new Error('Path name must end with an alpha-numeric character.')
     }
 
     if (/[^\w.\-/]/.test(id)) {
-        throw new Error(I18n.t('userpages.streams.validation.invalidPathCharacters'))
+        throw new Error('Path may only contain alpha-numeric characters, underscores, and dashes.')
     }
 
     return id
@@ -294,7 +296,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
 
         if (ethAccountOptions.length < 1) {
             ethAccountOptions.push({
-                label: I18n.t('userpages.streams.edit.details.domain.connectAccount'),
+                label: 'Connect account',
                 value: CONNECT_ETH_ACCOUNT,
             })
         }
@@ -306,16 +308,16 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             })),
             {
                 value: ADD_ENS_DOMAIN,
-                label: I18n.t('userpages.streams.edit.details.domain.addDomain'),
+                label: 'Add new domain',
             },
         ]
 
         const groupedOptions = [{
-            label: I18n.t('userpages.streams.edit.details.domain.ensDomains'),
+            label: 'ENS Domains',
             options: ensOptions,
         },
         {
-            label: I18n.t('userpages.streams.edit.details.domain.ethAccounts'),
+            label: 'Eth Accounts',
             options: ethAccountOptions,
         }]
 
@@ -430,7 +432,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             setFinished(true)
 
             Notification.push({
-                title: I18n.t('userpages.streams.created.notification'),
+                title: 'Stream created successfully',
                 icon: NotificationIcon.CHECKMARK,
             })
             Activity.push({
@@ -455,7 +457,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
 
             // set validation error if another stream with the same id exists
             if (e.code === 'DUPLICATE_NOT_ALLOWED') {
-                setValidationError(I18n.t('userpages.streams.error.duplicateNotAllowed'))
+                setValidationError('That path already exists, please try a different one')
             }
 
             Notification.push({
@@ -479,12 +481,12 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     }, [domain, pathname, description])
 
     usePreventNavigatingAway(
-        I18n.t('userpages.streams.edit.unsavedChanges'),
+        'You have unsaved changes. Are you sure you want to leave?',
         () => contentChangedRef.current,
     )
 
     const newStreamSnippet = useMemo(() => `
-        // ${I18n.t('userpages.streams.edit.codeSnippets.newStream')}
+        // Create your stream above in order to get your code snippet.
     `, [])
 
     const saveEnabled = !!pathname && !!domain && !loading
@@ -525,12 +527,12 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                     actions={{
                         cancel: {
                             kind: 'link',
-                            title: I18n.t('userpages.profilePage.toolbar.cancel'),
+                            title: 'Cancel',
                             outline: true,
                             onClick: () => onBack(),
                         },
                         saveChanges: {
-                            title: I18n.t('userpages.profilePage.toolbar.saveAndExit'),
+                            title: 'Save & Exit',
                             kind: 'primary',
                             disabled: true,
                         },
@@ -544,23 +546,27 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                         key={key}
                         style={style}
                     >
-                        <TOCPage title={I18n.t('userpages.streams.edit.details.pageTitle.newStream')}>
+                        <TOCPage title="Name your Stream">
                             <TOCSection
                                 id="details"
-                                title={I18n.t('userpages.streams.edit.details.nav.details')}
+                                title="Details"
                             >
                                 <Description>
-                                    <Translate
-                                        value="userpages.streams.edit.details.info.description"
-                                        addDomainUrl={ADD_DOMAIN_URL}
-                                        dangerousHTML
-                                    />
-                                    &nbsp;
-                                    <Translate value="userpages.streams.edit.details.info.descriptionNewStream" />
+                                    <span>
+                                        All streams require a unique path in the format <strong>domain/pathname</strong>.
+                                        {' '}
+                                        Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
+                                        {' '}
+                                        <a href={ADD_DOMAIN_URL} target="_blank" rel="nofollow noopener noreferrer">
+                                            register a new one
+                                        </a>.
+                                        {' '}
+                                        Choose your stream name &amp; create it in order to adjust stream settings.
+                                    </span>
                                 </Description>
                                 <StreamIdFormGroup hasDomain data-test-hook="StreamId">
                                     <Field
-                                        label={I18n.t('userpages.streams.edit.details.domain.label')}
+                                        label="Domain"
                                     >
                                         {!!isDomainDisabled && (
                                             <DisabledDomain>
@@ -569,7 +575,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                                 )}
                                                 {!!loadingDomains && (
                                                     <React.Fragment>
-                                                        <Translate value="userpages.streams.edit.details.domain.loading" />
+                                                        <span>Loading domains</span>
                                                         <Spinner size="small" color="blue" />
                                                     </React.Fragment>
                                                 )}
@@ -589,7 +595,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                         /
                                     </Field>
                                     <Field
-                                        label={I18n.t('userpages.streams.edit.details.pathname.label')}
+                                        label="Path name"
                                     >
                                         <PathnameWrapper>
                                             <PathnameTooltip />
@@ -597,7 +603,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                                 value={pathname || ''}
                                                 onChange={onPathnameChange}
                                                 disabled={isDisabled}
-                                                placeholder={I18n.t('userpages.streams.edit.details.pathname.placeholder')}
+                                                placeholder="Enter a unique stream path name"
                                                 name="pathname"
                                                 invalid={!!createAttempted && !!validationError}
                                             />
@@ -624,13 +630,13 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                     </Field>
                                 </StreamIdFormGroup>
                                 <FormGroup>
-                                    <Field label={I18n.t('userpages.streams.edit.details.description.label')}>
+                                    <Field label="Description">
                                         <Text
                                             value={description}
                                             onChange={onDescriptionChange}
                                             disabled={isDisabled}
                                             name="description"
-                                            placeholder={I18n.t('userpages.streams.edit.details.description.placeholder')}
+                                            placeholder="Add a brief description"
                                             autoComplete="off"
                                         />
                                     </Field>
@@ -638,7 +644,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             </TOCSection>
                             <TOCSection
                                 id="snippets"
-                                title={I18n.t('general.codeSnippets')}
+                                title="Code Snippets"
                                 disabled
                             >
                                 <CodeSnippets
@@ -660,7 +666,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             </TOCSection>
                             <TOCSection
                                 id="security"
-                                title={I18n.t('userpages.streams.edit.details.nav.security')}
+                                title="Security"
                                 disabled
                             >
                                 <SecurityView
@@ -670,7 +676,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             </TOCSection>
                             <TOCPage.Section
                                 id="configure"
-                                title={I18n.t('userpages.streams.edit.details.nav.fields')}
+                                title="Fields"
                                 onlyDesktop
                                 disabled
                             >
@@ -681,7 +687,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             </TOCPage.Section>
                             <TOCPage.Section
                                 id="status"
-                                title={I18n.t('userpages.streams.edit.details.nav.status')}
+                                title="Status"
                                 status={<StatusIcon
                                     tooltip
                                     status="inactive"
@@ -693,7 +699,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             </TOCPage.Section>
                             <TOCSection
                                 id="preview"
-                                title={I18n.t('userpages.streams.edit.details.nav.preview')}
+                                title="Preview"
                                 disabled
                             >
                                 <Preview
@@ -703,7 +709,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             </TOCSection>
                             <TOCSection
                                 id="historicalData"
-                                title={I18n.t('userpages.streams.edit.details.nav.historicalData')}
+                                title="Data storage"
                                 disabled
                             >
                                 <HistoryView
@@ -714,8 +720,8 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             </TOCSection>
                             <TOCPage.Section
                                 id="stream-partitions"
-                                title={I18n.t('userpages.streams.edit.details.nav.streamPartitions')}
-                                linkTitle={I18n.t('userpages.streams.edit.details.nav.partitions')}
+                                title="Stream partitions"
+                                linkTitle="Partitions"
                                 status={(<StatusLabel.Advanced />)}
                                 disabled
                             >

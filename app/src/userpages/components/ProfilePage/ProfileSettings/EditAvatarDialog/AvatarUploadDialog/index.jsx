@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -19,7 +18,7 @@ const AvatarUploadDialog = ({ originalImage, onClose, onUpload }: Props) => (
     <ModalPortal>
         <Dialog
             contentClassName={styles.content}
-            title={originalImage ? I18n.t('modal.avatar.updateTitle') : I18n.t('modal.avatar.defaultTitle')}
+            title={originalImage ? 'Avatar update' : 'Avatar upload'}
             onClose={onClose}
         >
             <ImageUpload

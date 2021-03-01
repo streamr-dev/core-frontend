@@ -4,7 +4,6 @@ import React, { type Node, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Link } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Tab from '$userpages/components/Header/Tab'
@@ -168,7 +167,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                                 disabled: true,
                             })}
                         >
-                            <Translate value="userpages.products.viewProduct" />
+                            View on Marketplace
                         </Button>
                         <Button
                             outline
@@ -183,7 +182,7 @@ const Header = ({ className, searchComponent, filterComponent }: Props) => {
                                 disabled: true,
                             })}
                         >
-                            <Translate value="userpages.products.settings" />
+                            Edit product
                         </Button>
                     </Buttons>
                 </ProductInfo>

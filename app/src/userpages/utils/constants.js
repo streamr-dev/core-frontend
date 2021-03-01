@@ -1,6 +1,5 @@
 // @flow
 
-import { I18n } from 'react-redux-i18n'
 import type { SortOption } from '$userpages/flowtype/common-types'
 
 export const defaultColumns = {
@@ -18,7 +17,7 @@ export const getFilters = (resourceType: ResourceType): {
 } => {
     return {
         RECENT_DESC: {
-            displayName: I18n.t('userpages.filter.recent'),
+            displayName: 'Recent',
             filter: {
                 id: 'recent',
                 sortBy: 'lastUpdated',
@@ -26,7 +25,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         RECENT_ASC: {
-            displayName: I18n.t('userpages.filter.oldest'),
+            displayName: 'Oldest',
             filter: {
                 id: 'oldest',
                 sortBy: 'lastUpdated',
@@ -34,7 +33,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         RUNNING: {
-            displayName: I18n.t('userpages.filter.running'),
+            displayName: 'Running',
             filter: {
                 id: 'running',
                 key: 'state',
@@ -43,7 +42,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         STOPPED: {
-            displayName: I18n.t('userpages.filter.stopped'),
+            displayName: 'Stopped',
             filter: {
                 id: 'stopped',
                 key: 'state',
@@ -52,7 +51,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         PUBLISHED: {
-            displayName: I18n.t('userpages.filter.published'),
+            displayName: 'Published',
             filter: {
                 id: 'published',
                 key: 'states',
@@ -62,7 +61,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         DRAFTS: {
-            displayName: I18n.t('userpages.filter.drafts'),
+            displayName: 'Drafts',
             filter: {
                 id: 'draft',
                 key: 'states',
@@ -72,7 +71,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         ACTIVE: {
-            displayName: I18n.t('userpages.filter.active'),
+            displayName: 'Active',
             filter: {
                 id: 'active',
                 key: 'subscription',
@@ -81,7 +80,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         EXPIRED: {
-            displayName: I18n.t('userpages.filter.expired'),
+            displayName: 'Expired',
             filter: {
                 id: 'expired',
                 key: 'subscription',
@@ -90,7 +89,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         SHARED: {
-            displayName: I18n.t('userpages.filter.shared'),
+            displayName: 'Shared',
             filter: {
                 id: 'shared',
                 key: 'operation',
@@ -99,7 +98,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         MINE: {
-            displayName: I18n.t('userpages.filter.mine'),
+            displayName: 'Mine',
             filter: {
                 id: 'mine',
                 key: 'operation',
@@ -108,7 +107,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         NAME_ASC: {
-            displayName: I18n.t('userpages.filter.az'),
+            displayName: 'A to Z',
             filter: {
                 id: 'az',
                 sortBy: 'name',
@@ -116,7 +115,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         NAME_DESC: {
-            displayName: I18n.t('userpages.filter.za'),
+            displayName: 'Z to A',
             filter: {
                 id: 'za',
                 sortBy: 'name',
@@ -124,7 +123,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         APPROVE: {
-            displayName: I18n.t('userpages.filter.approve'),
+            displayName: 'Approve',
             filter: {
                 id: 'approve',
                 key: 'state',
@@ -133,7 +132,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         REMOVE: {
-            displayName: I18n.t('userpages.filter.remove'),
+            displayName: 'Remove',
             filter: {
                 id: 'remove',
                 key: 'state',
@@ -142,7 +141,7 @@ export const getFilters = (resourceType: ResourceType): {
             },
         },
         REJECTED: {
-            displayName: I18n.t('userpages.filter.rejected'),
+            displayName: 'Rejected',
             filter: {
                 id: 'rejected',
                 key: 'state',

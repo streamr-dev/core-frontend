@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 import useUniqueId from '$shared/hooks/useUniqueId'
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -26,8 +25,8 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
     const [showErrorsImmediately, setShowErrorsImmediately] = useState(false)
 
     const validationError = (() => {
-        if (!isValidUserId(value)) { return I18n.t('share.error.invalidUserError') }
-        if (value === 'anonymous') { return I18n.t('share.error.anonymousUserError') }
+        if (!isValidUserId(value)) { return 'Invalid User ID' }
+        if (value === 'anonymous') { return 'Can not share to anonymous' }
     })()
 
     const dispatch = usePermissionsDispatch()
@@ -93,7 +92,7 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
                     onChange={onChange}
                     onFocus={onFocus}
                     onKeyDown={onKeyDown}
-                    placeholder={I18n.t('modal.shareResource.enterEmailAddress')}
+                    placeholder="Enter email or Ethereum address"
                     value={value}
                 />
                 <Button

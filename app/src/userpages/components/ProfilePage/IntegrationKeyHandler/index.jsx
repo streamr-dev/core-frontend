@@ -1,7 +1,6 @@
 // @flow
 
 import React, { Fragment, useCallback, useEffect } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 
 import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
@@ -51,13 +50,13 @@ export const IntegrationKeyHandler = () => {
             if (isMounted()) {
                 if (error) {
                     Notification.push({
-                        title: I18n.t('modal.privateKey.errorNotification'),
+                        title: 'There was an error while adding an Ethereum account',
                         icon: NotificationIcon.ERROR,
                         error,
                     })
                 } else if (added) {
                     Notification.push({
-                        title: I18n.t('modal.privateKey.successNotification'),
+                        title: 'Ethereum account added',
                         icon: NotificationIcon.CHECKMARK,
                     })
                 }
@@ -73,11 +72,13 @@ export const IntegrationKeyHandler = () => {
 
     return (
         <Fragment>
-            <Description
-                value="userpages.profilePage.ethereumPrivateKeys.description"
-                tag="p"
-                dangerousHTML
-            />
+            <Description>
+                These Ethereum accounts can be used on canvases to build data-driven interactions
+                <br />
+                with Ethereum. Even though the private keys are securely stored server-side,
+                <br />
+                <strong>we do not recommend</strong> having significant amounts of value on these accounts.
+            </Description>
             <IntegrationKeyList
                 integrationKeys={privateKeys}
                 onDelete={wrappedRemove}
@@ -92,9 +93,8 @@ export const IntegrationKeyHandler = () => {
                 onClick={addPrivateKey}
                 waiting={isAddPrivateKeyDialogPending}
             >
-                <Translate
-                    value={`userpages.profilePage.ethereumPrivateKeys.${privateKeys && privateKeys[0] ? 'addAddress' : 'addNewAddress'}`}
-                />
+                {!!(privateKeys && privateKeys[0]) && 'Add account'}
+                {!(privateKeys && privateKeys[0]) && 'Add new account'}
             </Button>
             <AddPrivateKeyDialog />
         </Fragment>

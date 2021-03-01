@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useMemo, useReducer, useState, useCallback, useEffect, useRef } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -50,16 +49,16 @@ const Buttons = styled.div`
 `
 
 const NewFieldEditor = ({ previousFields, onConfirm: onConfirmProp, onCancel: onCancelProp }: Props) => {
-    const typeOptions: Array<any> = useMemo(() => fieldTypes.map((t) => ({
+    const typeOptions: Array<any> = useMemo(() => Object.keys(fieldTypes).map((t) => ({
         value: t,
-        label: I18n.t(`userpages.streams.fieldTypes.${t}`),
+        label: fieldTypes[t],
     })), [])
     const [field, updateField] = useReducer((prevField: Field, changeSet: ChangeSet) => ({
         ...prevField,
         ...changeSet,
     }), {
         name: '',
-        type: fieldTypes[0],
+        type: Object.keys(fieldTypes)[0],
         touched: false,
     })
     const fieldRef = useRef(field)
@@ -87,10 +86,10 @@ const NewFieldEditor = ({ previousFields, onConfirm: onConfirmProp, onCancel: on
         let error = null
 
         if (name.length === 0) {
-            error = I18n.t('userpages.streams.edit.configure.newFieldEditor.error.emptyName')
+            error = 'Name cannot be empty'
         }
         if (previousFields.find((field) => field.name === name)) {
-            error = I18n.t('userpages.streams.edit.configure.newFieldEditor.error.duplicateName')
+            error = 'Name cannot be duplicate'
         }
 
         setError(error)
@@ -116,7 +115,7 @@ const NewFieldEditor = ({ previousFields, onConfirm: onConfirmProp, onCancel: on
                         htmlFor="newFieldName"
                         state={error && 'ERROR'}
                     >
-                        {I18n.t('userpages.streams.edit.configure.newFieldEditor.namePlaceholder')}
+                        Enter a field name
                     </Label>
                     <Text
                         id="newFieldName"
@@ -132,7 +131,7 @@ const NewFieldEditor = ({ previousFields, onConfirm: onConfirmProp, onCancel: on
                 </div>
                 <div>
                     <Label htmlFor="newFieldType">
-                        {I18n.t('userpages.streams.edit.configure.dataType')}
+                        Data type
                     </Label>
                     <Select
                         id="newFieldType"
@@ -149,13 +148,13 @@ const NewFieldEditor = ({ previousFields, onConfirm: onConfirmProp, onCancel: on
                     disabled={error !== null}
                     onClick={onConfirm}
                 >
-                    <Translate value="userpages.streams.edit.configure.newFieldEditor.add" />
+                    Add
                 </Button>
                 <Button
                     kind="link"
                     onClick={onCancelProp}
                 >
-                    <Translate value="userpages.streams.edit.configure.newFieldEditor.cancel" />
+                    Cancel
                 </Button>
             </Buttons>
         </Container>

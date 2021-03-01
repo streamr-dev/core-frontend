@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useState, useCallback, useRef } from 'react'
-import { I18n } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -42,7 +41,7 @@ const IdentityNameDialog = ({
     return (
         <ModalPortal>
             <Dialog
-                title={I18n.t('modal.newIdentity.defaultTitle')}
+                title="Add a name to this Ethereum account"
                 onClose={onClose}
                 actions={{
                     cancel: {
@@ -63,10 +62,10 @@ const IdentityNameDialog = ({
             >
                 <div className={styles.textField}>
                     <Label>
-                        {I18n.t('modal.newIdentity.label')}
+                        Account name
                     </Label>
                     <Text
-                        placeholder={I18n.t('modal.newIdentity.placeholder')}
+                        placeholder="eg. Main Eth Address"
                         value={name}
                         onChange={onNameChange}
                         disabled={!!waiting}

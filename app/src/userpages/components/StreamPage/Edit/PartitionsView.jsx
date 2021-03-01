@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useCallback, useState } from 'react'
-import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import type { Stream } from '$shared/flowtype/stream-types'
@@ -19,7 +18,7 @@ const MAX_PARTITIONS = 99
 
 const Root = styled.div``
 
-const Description = styled(Translate)`
+const Description = styled.p`
     margin-bottom: 3.125rem;
     max-width: 660px;
 `
@@ -53,14 +52,14 @@ export const PartitionsView = ({ stream, disabled, updateStream }: Props) => {
 
     return (
         <Root>
-            <Description
-                value="userpages.streams.edit.streamPartitions.description"
-                dangerousHTML
-                tag="p"
-            />
+            <Description>
+                Partitioning enables high-volume streams to scale beyond what a typical node can handle.
+                {' '}
+                If you’re not sure if your stream needs partitions, leave it set to 1.
+            </Description>
             <Partitions>
                 <PartitionsLabel>
-                    {I18n.t('userpages.streams.partitionsLabel')}
+                    Partitions
                 </PartitionsLabel>
                 <Numeric
                     min={MIN_PARTITIONS}

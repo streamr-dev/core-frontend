@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Translate, I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
@@ -70,6 +69,21 @@ const mapState = (state) => {
     }
 }
 
+const statusLabels = {
+    pending: 'Pending',
+    ok: 'Confirmed',
+    error: 'Failed',
+}
+
+const eventTypes = {
+    createContractProduct: 'Publish',
+    undeployProduct: 'Unpublish',
+    redeployProduct: 'Republish',
+    subscription: 'Subscription',
+    payment: 'Payment',
+    updateContractProduct: 'Update',
+}
+
 const TransactionList = () => {
     const dispatch = useDispatch()
 
@@ -81,7 +95,7 @@ const TransactionList = () => {
         copy(text)
 
         Notification.push({
-            title: I18n.t('userpages.transactions.actions.txHashCopied'),
+            title: 'TX hash copied',
             icon: NotificationIcon.CHECKMARK,
         })
     }, [copy])
@@ -128,7 +142,7 @@ const TransactionList = () => {
                 <Search.Disabled />
             }
         >
-            <CoreHelmet title={I18n.t('userpages.title.transactions')} />
+            <CoreHelmet title="Transactions" />
             <StyledListContainer>
                 {!isLoading && transactions && transactions.length <= 0 && (
                     <NoTransactionsView
@@ -140,25 +154,25 @@ const TransactionList = () => {
                     <TransactionListComponent>
                         <TransactionListComponent.Header>
                             <TransactionListComponent.HeaderItem>
-                                <Translate value="userpages.transactions.list.name" />
+                                Name
                             </TransactionListComponent.HeaderItem>
                             <TransactionListComponent.HeaderItem>
-                                <Translate value="userpages.transactions.list.type" />
+                                Type
                             </TransactionListComponent.HeaderItem>
                             <TransactionListComponent.HeaderItem>
-                                <Translate value="userpages.transactions.list.transaction" />
+                                Transaction
                             </TransactionListComponent.HeaderItem>
                             <TransactionListComponent.HeaderItem>
-                                <Translate value="userpages.transactions.list.when" />
+                                When
                             </TransactionListComponent.HeaderItem>
                             <TransactionListComponent.HeaderItem>
-                                <Translate value="userpages.transactions.list.value" />
+                                Value
                             </TransactionListComponent.HeaderItem>
                             <TransactionListComponent.HeaderItem>
-                                <Translate value="userpages.transactions.list.gas" />
+                                Gas
                             </TransactionListComponent.HeaderItem>
                             <TransactionListComponent.HeaderItem center>
-                                <Translate value="userpages.transactions.list.status" />
+                                Status
                             </TransactionListComponent.HeaderItem>
                         </TransactionListComponent.Header>
                         {transactions.map(({
@@ -176,7 +190,7 @@ const TransactionList = () => {
                         }) => {
                             const productTitle = (id && productId && products[productId]) ?
                                 products[productId].name : '-'
-                            const eventType = (!!type && I18n.t(`userpages.transactions.type.${type}`)) || ''
+                            const eventType = (!!type && eventTypes[type]) || ''
                             const price = BN(value)
                             const pricePrefix = type === transactionTypes.SUBSCRIPTION ? '-' : '+'
                             const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
@@ -218,12 +232,12 @@ const TransactionList = () => {
                                     <TransactionListComponent.Item>
                                         <StatusIcon
                                             status={mapState(state)}
-                                            tooltip={I18n.t(`userpages.transactions.status.${state}`)}
+                                            tooltip={statusLabels[state]}
                                         />
                                     </TransactionListComponent.Item>
                                     <TransactionListComponent.Actions>
                                         <Popover
-                                            title={I18n.t('userpages.transactions.actions.title')}
+                                            title="Actions"
                                             type="meatball"
                                             menuProps={{
                                                 right: true,
@@ -231,10 +245,10 @@ const TransactionList = () => {
                                             caret={false}
                                         >
                                             <Popover.Item onClick={() => openInEtherscan(hash)}>
-                                                <Translate value="userpages.transactions.actions.viewOnEtherscan" />
+                                                View on Etherscan
                                             </Popover.Item>
                                             <Popover.Item onClick={() => copyToClipboard(hash)}>
-                                                <Translate value="userpages.transactions.actions.copyTxHash" />
+                                                Copy TX hash
                                             </Popover.Item>
                                         </Popover>
                                     </TransactionListComponent.Actions>

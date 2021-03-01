@@ -40,15 +40,15 @@ describe('updateEditStream', () => {
             type: actions.GET_STREAMS_SUCCESS,
             streams: [editedStream.id],
         })
-
+        const fieldKeys = Object.keys(selectors.fieldTypes)
         const field1 = {
             name: 'field1',
-            type: selectors.fieldTypes[0],
+            type: fieldKeys[0],
             id: uuid(),
         }
         const field2 = {
             name: 'field2',
-            type: selectors.fieldTypes[1],
+            type: fieldKeys[1],
             id: uuid(),
         }
 

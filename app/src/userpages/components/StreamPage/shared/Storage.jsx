@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 import StorageNode from '$shared/components/StorageNode'
 import Label from '$ui/Label'
 import nodes from '$shared/utils/storageNodes'
@@ -12,7 +11,8 @@ const UnstyledStorage = ({ streamId, disabled, ...props }) => {
     return (
         <div {...props}>
             <Label>
-                {I18n.t(`userpages.streams.${disabled ? 'view' : 'edit'}.storageNodes.label`)}
+                {!disabled && 'Choose storage nodes (one or more)'}
+                {!!disabled && 'Storage nodes'}
             </Label>
             <StorageNode.List data-test-hook="Storage nodes">
                 {nodes.map(({ address, name }) => (

@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { I18n, Translate } from 'react-redux-i18n'
 
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -19,7 +18,7 @@ type Props = {
 export const SignatureRequestDialog = ({ onClose }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.signatureRequest.defaultTitle')}
+            title="Signature request"
             onClose={onClose}
             contentClassName={styles.dialogContent}
         >
@@ -27,11 +26,9 @@ export const SignatureRequestDialog = ({ onClose }: Props) => (
                 name="metamask"
                 className={styles.icon}
             />
-            <Translate
-                tag="p"
-                value="modal.signatureRequest.description"
-                className={styles.text}
-            />
+            <p className={styles.text}>
+                Please sign the challenge in MetaMask
+            </p>
         </Dialog>
     </ModalPortal>
 )
@@ -39,7 +36,7 @@ export const SignatureRequestDialog = ({ onClose }: Props) => (
 export const DuplicateIdentityDialog = ({ onClose }: Props) => (
     <ModalPortal>
         <Dialog
-            title={I18n.t('modal.duplicateIdentity.defaultTitle')}
+            title="Account already connected"
             onClose={onClose}
             contentClassName={styles.dialogContent}
         >
@@ -47,12 +44,11 @@ export const DuplicateIdentityDialog = ({ onClose }: Props) => (
                 name="metamask"
                 className={styles.icon}
             />
-            <Translate
-                tag="p"
-                value="modal.duplicateIdentity.description"
-                dangerousHTML
-                className={styles.text}
-            />
+            <p className={styles.text}>
+                This account is already connected.
+                <br />
+                Please choose another account from Metamask to connect.
+            </p>
         </Dialog>
     </ModalPortal>
 )

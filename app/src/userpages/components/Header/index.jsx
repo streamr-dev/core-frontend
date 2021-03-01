@@ -3,7 +3,6 @@
 import React, { type Node } from 'react'
 import { connect } from 'react-redux'
 import cx from 'classnames'
-import { Translate } from 'react-redux-i18n'
 
 import type { User } from '$shared/flowtype/user-types'
 import type { StoreState } from '$shared/flowtype/store-state'
@@ -72,10 +71,10 @@ const Header = ({
                             Products
                         </Tab>
                         <Tab to={routes.subscriptions()}>
-                            <Translate value="general.subscriptions" />
+                            Subscriptions
                         </Tab>
                         <Tab to={routes.transactions()}>
-                            <Translate value="general.transactions" />
+                            Transactions
                         </Tab>
                     </div>
                 </div>

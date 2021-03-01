@@ -2,7 +2,6 @@
 
 import React, { useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { I18n, Translate } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Label from '$ui/Label'
@@ -50,7 +49,7 @@ const UploadWrapper = styled.div`
     margin-top: 0.5em;
 `
 
-const UploadHelpText = styled(Translate)`
+const UploadHelpText = styled.p`
     margin-top: 1rem;
 `
 
@@ -103,7 +102,7 @@ const ProfileSettings = () => {
                     })
                 } else if (uploaded) {
                     Notification.push({
-                        title: I18n.t('modal.avatar.successNotification'),
+                        title: 'Avatar updated',
                         icon: NotificationIcon.CHECKMARK,
                     })
                 }
@@ -129,17 +128,16 @@ const ProfileSettings = () => {
                         onClick={() => uploadAvatar()}
                         waiting={isUploadAvatarDialogOpen}
                     >
-                        <Translate value={user.imageUrlLarge ? 'userpages.profile.settings.update' : 'userpages.profile.settings.upload'} />
+                        {user.imageUrlLarge ? 'Update' : 'Upload'}
                     </Button>
-                    <UploadHelpText
-                        value="userpages.profile.settings.uploadHelpText"
-                        tag="p"
-                    />
+                    <UploadHelpText>
+                        JPG or PNG, at least 256px
+                    </UploadHelpText>
                 </UploadWrapper>
             </AvatarWrapper>
             <InputRow>
                 <Label htmlFor="userFullname">
-                    <Translate value="userpages.profilePage.profileSettings.userFullname" />
+                    Your Name
                 </Label>
                 <Text
                     id="userFullname"
@@ -152,13 +150,13 @@ const ProfileSettings = () => {
             </InputRow>
             <InputRow>
                 <Label htmlFor="userEmail">
-                    <Translate value="userpages.profilePage.profileSettings.userEmail" />
+                    Email
                 </Label>
                 <Text
                     id="userEmail"
                     value={user.email || ''}
                     onChange={onEmailChange}
-                    placeholder={I18n.t('userpages.profilePage.profileSettings.userEmailPlaceholder')}
+                    placeholder="Your email address (optional)"
                     disabled={isPending}
                 />
             </InputRow>

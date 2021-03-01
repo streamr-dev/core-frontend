@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 import SharedButton from '$shared/components/Button'
 import CopyLink from './CopyLink'
 
@@ -33,7 +32,7 @@ const UnstyledFooter = ({
                 Cancel
             </CancelButton>
             <SaveButton onClick={onSave} disabled={disabled} waiting={waiting}>
-                <Translate value="modal.shareResource.save" />
+                Save
             </SaveButton>
         </div>
     </div>

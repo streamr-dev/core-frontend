@@ -60,7 +60,7 @@ describe('KeyField', () => {
             assert(el.find(Text).prop('type') === 'password')
 
             const action = mount(el.find('WithInputActions').prop('actions')[0])
-            assert(action.text() === 'reveal')
+            assert(action.text() === 'Reveal')
         })
     })
 
@@ -73,7 +73,7 @@ describe('KeyField', () => {
             />)
 
             const action = mount(el.find('WithInputActions').prop('actions')[1])
-            assert(action.text() === 'edit')
+            assert(action.text() === 'Edit')
         })
     })
 
@@ -86,7 +86,7 @@ describe('KeyField', () => {
             />)
 
             const action = mount(el.find('WithInputActions').prop('actions')[1])
-            assert(action.text() === 'delete')
+            assert(action.text() === 'Delete')
             assert(action.prop('disabled') !== true)
         })
 
