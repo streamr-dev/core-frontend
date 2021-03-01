@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 
 import SvgIcon from '$shared/components/SvgIcon'
@@ -24,7 +23,7 @@ const BackButton = ({ onBack, className }: Props) => (
         >
             <SvgIcon name="back" className={styles.backIcon} />
             <span>
-                <Translate value="general.back" />
+                Back
             </span>
         </button>
     </div>

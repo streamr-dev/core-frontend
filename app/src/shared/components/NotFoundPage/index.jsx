@@ -3,7 +3,6 @@
 import React from 'react'
 import { Container } from 'reactstrap'
 import { Link } from 'react-router-dom'
-import { Translate } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '$shared/components/BodyClass'
 import EmptyState from '$shared/components/EmptyState'
@@ -34,31 +33,31 @@ const NotFoundPage = () => (
                             tag={Link}
                             to={routes.core()}
                         >
-                            <Translate value="notFoundPage.coreApp" />
+                            Go to core app
                         </Button>
                         <Button
                             kind="special"
                             tag={Link}
                             to={routes.marketplace.index()}
                         >
-                            <Translate value="notFoundPage.top" />
+                            Go to marketplace
                         </Button>
                         <Button
                             kind="special"
                             tag={Link}
                             to={routes.root()}
                         >
-                            <Translate value="notFoundPage.publicSite" />
+                            Go to public site
                         </Button>
                     </React.Fragment>
                 )}
                 linkOnMobile
             >
-                <Translate
-                    value="notFoundPage.message"
-                    dangerousHTML
-                    tag="p"
-                />
+                <p>
+                    Whoops! We don&apos;t seem to be able to find your data.
+                    <br />
+                    <small>Something might have been moved around or changed.</small>
+                </p>
             </EmptyState>
         </Container>
     </Layout>

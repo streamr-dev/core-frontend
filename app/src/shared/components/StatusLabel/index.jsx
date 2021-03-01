@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 
 export const DarkGrayTheme = {
     background: '#323232',
@@ -26,11 +25,11 @@ const Label = styled.div`
 `
 
 export const Deprecated = () => (
-    <Label theme={DarkGrayTheme}>{I18n.t('shared.statusLabel.deprecated')}</Label>
+    <Label theme={DarkGrayTheme}>Deprecated</Label>
 )
 
 export const Advanced = () => (
-    <Label theme={LightGrayTheme}>{I18n.t('shared.statusLabel.advanced')}</Label>
+    <Label theme={LightGrayTheme}>Advanced</Label>
 )
 
 Label.Deprecated = Deprecated

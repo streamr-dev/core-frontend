@@ -2,7 +2,6 @@
 
 import React, { type Node } from 'react'
 import styled, { css } from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 
 import useCopy from '$shared/hooks/useCopy'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -41,13 +40,11 @@ const CopiedIcon = styled(Icon)`
 
 const HoverCopy = ({ value, children }: Props) => {
     const { copy, isCopied } = useCopy()
-    const copyText = I18n.t('general.copyToClipboard')
-    const copiedText = I18n.t('general.copied')
 
     return (
         <Container>
             {children}
-            <Tooltip value={isCopied ? copiedText : copyText}>
+            <Tooltip value={isCopied ? 'Copied' : 'Copy to clipboard'}>
                 {!isCopied && (
                     <CopyIcon name="clipboardPlus" onClick={() => copy(value)} />
                 )}

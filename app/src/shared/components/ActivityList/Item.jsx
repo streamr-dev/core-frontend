@@ -146,18 +146,12 @@ const Item = ({ activity }) => {
                             color: #323232;
                         `}
                     >
-                        {resourceType === resourceTypes.PRODUCT && resource && resource.type === productTypes.DATAUNION && (
-                            I18n.t('general.dataUnion')
-                        )}
-                        {resourceType === resourceTypes.PRODUCT && resource && resource.type === productTypes.NORMAL && (
-                            I18n.t('general.dataProduct')
-                        )}
-                        {resourceType === resourceTypes.CANVAS && (
-                            I18n.t('general.canvas')
-                        )}
-                        {resourceType === resourceTypes.STREAM && (
-                            I18n.t('general.stream')
-                        )}
+                        {resourceType === resourceTypes.PRODUCT && resource &&
+                        resource.type === productTypes.DATAUNION && 'Data Union'}
+                        {resourceType === resourceTypes.PRODUCT &&
+                        resource && resource.type === productTypes.NORMAL && 'Data Product'}
+                        {resourceType === resourceTypes.CANVAS && 'Canvas'}
+                        {resourceType === resourceTypes.STREAM && 'Stream'}
                     </span>
                     {' '}
                     {!!timestamp && ago(new Date(timestamp))}

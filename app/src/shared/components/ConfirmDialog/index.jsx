@@ -1,7 +1,6 @@
 // @flow
 
 import React, { type Node, useState } from 'react'
-import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
 
@@ -106,7 +105,9 @@ const ConfirmDialog = (props: Props) => {
                                                 setChecked(e.target.checked)
                                             }}
                                         />
-                                        <Translate value="modal.confirm.dontShowAgain" />
+                                        <span>
+                                            Don&apos;t show this again
+                                        </span>
                                     </Label>
                                 </FormGroup>
                             </div>

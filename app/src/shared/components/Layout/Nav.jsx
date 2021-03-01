@@ -1,7 +1,6 @@
 import React, { Fragment, useContext } from 'react'
 import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import { Nav, Menu, Button } from '@streamr/streamr-layout'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
@@ -102,7 +101,7 @@ const UnstyledWide = (props) => {
                 highlight={current === 'core'}
                 toggle={(
                     <Nav.Link>
-                        <Translate value="general.core" />
+                        Core
                     </Nav.Link>
                 )}
                 menu={(
@@ -132,7 +131,7 @@ const UnstyledWide = (props) => {
                 highlight={current === 'marketplace'}
                 toggle={(
                     <Nav.Link as={Link} to={routes.marketplace.index()}>
-                        <Translate value="general.marketplace" />
+                        Marketplace
                     </Nav.Link>
                 )}
             />
@@ -204,11 +203,11 @@ const UnstyledWide = (props) => {
                                     <User.Avatarless source={currentUser} />
                                 </Menu.Item>
                                 <Menu.Item as={Link} to={routes.profile()}>
-                                    <Translate value="general.settings" />
+                                    Settings
                                 </Menu.Item>
                                 <Menu.Divider />
                                 <Menu.Item as={Link} to={routes.auth.logout()}>
-                                    <Translate value="general.logout" />
+                                    Sign out
                                 </Menu.Item>
                             </Menu>
                         )}
@@ -312,28 +311,28 @@ const UnstyledNarrow = (props) => {
         >
             <Nav.Narrow.Body>
                 <Nav.Link as={Link} to={routes.core()}>
-                    <Translate value="general.core" />
+                    Core
                 </Nav.Link>
                 <Nav.Link as={Link} to={routes.marketplace.index()}>
-                    <Translate value="general.marketplace" />
+                    Marketplace
                 </Nav.Link>
                 <Nav.Link as={Link} to="/docs">
                     Docs
                 </Nav.Link>
                 {!currentUser ? (
                     <Nav.Link>
-                        <Translate value="general.settings" />
+                        Settings
                     </Nav.Link>
                 ) : (
                     <Nav.Link as={Link} to={routes.profile()}>
-                        <Translate value="general.settings" />
+                        Settings
                     </Nav.Link>
                 )}
             </Nav.Narrow.Body>
             <Nav.Narrow.Footer>
                 {currentUser ? (
                     <Button tag="a" href={routes.auth.logout()} kind="secondary" size="normal">
-                        <Translate value="general.logout" />
+                        Sign out
                     </Button>
                 ) : (
                     <Button tag="a" href={routes.auth.login()} kind="primary" size="normal">

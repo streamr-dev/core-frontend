@@ -3,7 +3,6 @@
 import React, { type Node } from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'
-import { Translate, I18n } from 'react-redux-i18n'
 
 import BodyClass, { PAGE_SECONDARY } from '$shared/components/BodyClass'
 import EmptyState from '$shared/components/EmptyState'
@@ -27,17 +26,19 @@ export const ErrorPageContent = ({ children }: Props) => (
                     className={styles.image}
                     src={appCrashedImage}
                     srcSet={`${appCrashedImage2x} 2x`}
-                    alt={I18n.t('genericErrorPage.imageCaption')}
+                    alt="App crashed"
                 />
             )}
             link={children}
             linkOnMobile
         >
-            <Translate
-                value="genericErrorPage.message"
-                dangerousHTML
-                tag="p"
-            />
+            <p>
+                Oops. Something has broken down here.
+                <br />
+                Please try one of the links below
+                <br />
+                to get things back on track.
+            </p>
         </EmptyState>
     </Container>
 )
@@ -51,7 +52,7 @@ const GenericErrorPage = () => (
                 tag={Link}
                 to={routes.marketplace.index()}
             >
-                <Translate value="genericErrorPage.top" />
+                Marketplace top
             </Button>
             <Button
                 kind="special"
