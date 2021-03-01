@@ -1,5 +1,4 @@
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import {
     Footer as LayoutFooter,
@@ -50,7 +49,7 @@ const Footer = ({ topBorder = false }) => (
                     Core
                 </a>
             </FooterColumn>
-            <FooterColumn title={I18n.t('general.project')}>
+            <FooterColumn title="Project">
                 <a href={routes.site.about()}>
                     About
                 </a>
