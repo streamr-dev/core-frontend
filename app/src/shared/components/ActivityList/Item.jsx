@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 import { useSelector } from 'react-redux'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { resourceTypes } from '$shared/utils/Activity'
@@ -100,6 +99,16 @@ const ResourceImage = ({ resource, resourceType, isLoading }) => {
     }
 }
 
+const actionVerbs = {
+    ADD: 'was added',
+    CREATE: 'was created',
+    UPDATE: 'was updated',
+    SUBSCRIPTION: 'was subscribed',
+    PUBLISH: 'was published',
+    UNPUBLISH: 'was unpublished',
+    DEPLOY: 'was deployed',
+}
+
 const Item = ({ activity }) => {
     const { resourceType, resourceId, timestamp } = activity
 
@@ -131,7 +140,7 @@ const Item = ({ activity }) => {
                         resourceId || ''
                     )}
                     {' '}
-                    {I18n.t(`shared.action.${activity.action.toLowerCase()}`)}
+                    {actionVerbs[activity.action]}
                 </Text>
                 <div
                     // eslint-disable-next-line react/jsx-curly-brace-presence

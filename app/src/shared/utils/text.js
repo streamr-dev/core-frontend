@@ -1,7 +1,5 @@
 // @flow
 
-import { I18n } from 'react-redux-i18n'
-
 export const truncate = (path: string) => (
     typeof path !== 'string' ? path : path.replace(/0x[a-f\d]{40,}/ig, (match) => (
         `${match.substr(0, 5)}...${match.substring(match.length - 5)}`
@@ -27,15 +25,15 @@ export const numberToText = (number: number): string => {
         '8': 'eight',
         '9': 'nine',
         '10': 'ten',
-        '100': 'hundred',
-        '1000': 'thousand',
-        '10000': 'tenThousand',
-        '100000': 'hundredThousand',
-        '1000000': 'million',
+        '100': 'a hundred',
+        '1000': 'a thousand',
+        '10000': 'ten thousand',
+        '100000': 'a hundred thousand',
+        '1000000': 'a million',
     }
 
     if (translatedNumbers[numberStr]) {
-        return I18n.t(`number.${translatedNumbers[numberStr]}`)
+        return translatedNumbers[numberStr]
     }
 
     return numberStr

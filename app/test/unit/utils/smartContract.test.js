@@ -188,7 +188,7 @@ describe('smartContract utils', () => {
                 estimateGas: () => Promise.resolve(0),
             })
                 .onError((e) => {
-                    assert.equal('incorrectEthereumNetwork', e.message)
+                    assert.equal('Please switch to the Mainnet network in your Ethereum wallet. It\'s currently #2.', e.message)
                     done()
                 })
         })

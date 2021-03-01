@@ -1,5 +1,4 @@
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 
 import Tooltip from '$shared/components/Tooltip'
@@ -40,11 +39,19 @@ const Icon = styled.div.attrs(({ theme }) => ({
     background-color: ${({ theme }) => theme.background || '#CDCDCD'};
 `
 
+const statusLabels = {
+    ok: 'Active',
+    inactive: 'Inactive',
+    error: 'Inactive',
+    pending: 'Pending',
+    removed: 'Removed',
+}
+
 const StatusIcon = ({ status = StatusIcon.INACTIVE, className, tooltip = false }) => {
     let statusText
 
     if (tooltip) {
-        statusText = (typeof tooltip === 'string') ? tooltip : I18n.t(`shared.status.${status.id || 'inactive'}`)
+        statusText = (typeof tooltip === 'string') ? tooltip : statusLabels[status.id || 'inactive']
 
         return (
             <Tooltip value={statusText} placement={Tooltip.BOTTOM}>

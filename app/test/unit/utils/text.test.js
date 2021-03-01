@@ -66,11 +66,11 @@ describe('text utils', () => {
             expect(all.numberToText(8)).toBe('eight')
             expect(all.numberToText(9)).toBe('nine')
             expect(all.numberToText(10)).toBe('ten')
-            expect(all.numberToText(100)).toBe('hundred')
-            expect(all.numberToText(1000)).toBe('thousand')
-            expect(all.numberToText(10000)).toBe('tenThousand')
-            expect(all.numberToText(100000)).toBe('hundredThousand')
-            expect(all.numberToText(1000000)).toBe('million')
+            expect(all.numberToText(100)).toBe('a hundred')
+            expect(all.numberToText(1000)).toBe('a thousand')
+            expect(all.numberToText(10000)).toBe('ten thousand')
+            expect(all.numberToText(100000)).toBe('a hundred thousand')
+            expect(all.numberToText(1000000)).toBe('a million')
         })
 
         it('doesnt translate specific numbers', () => {
