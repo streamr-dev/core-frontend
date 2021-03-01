@@ -27,7 +27,6 @@ import Notifications from '$shared/components/Notifications'
 import ActivityResourceProvider from '$shared/components/ActivityList/ActivityResourceProvider'
 import { userIsAuthenticated } from '$auth/utils/userAuthenticated'
 
-import LocaleSetter from '$mp/containers/LocaleSetter'
 import NotFoundPage from '$shared/components/NotFoundPage'
 import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
 import isProduction from '$mp/utils/isProduction'
@@ -87,7 +86,6 @@ const App = () => (
             <ModalPortalProvider>
                 <ModalProvider>
                     <ActivityResourceProvider>
-                        <LocaleSetter />
                         <Analytics />
                         <Switch>
                             {AuthenticationRouter()}
