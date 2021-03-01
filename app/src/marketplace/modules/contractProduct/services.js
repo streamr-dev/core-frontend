@@ -18,6 +18,8 @@ import { contractCurrencies as currencies } from '$shared/utils/constants'
 
 const contractMethods = (usePublicNode: boolean = false) => getContract(getConfig().marketplace, usePublicNode).methods
 
+const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
+
 export const getProductFromContract = async (id: ProductId, usePublicNode: boolean = false): SmartContractCall<SmartContractProduct> => (
     call(contractMethods(usePublicNode).getProduct(getValidId(id)))
         .then((result) => {
@@ -43,7 +45,7 @@ export const getMarketplaceEvents = async (id: ProductId, eventName: string, fro
 export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean = true) => {
     const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode)
     const validSubs = events.filter((e) => (
-        e.returnValues && e.returnValues.endTimestamp && ((e.returnValues.endTimestamp.toNumber() * 1000) > Date.now())
+        e.returnValues && e.returnValues.endTimestamp && (parseTimestamp(e.returnValues.endTimestamp) > Date.now())
     ))
     return validSubs.length
 }
@@ -132,7 +134,7 @@ export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, 
         if (block && block.timestamp) {
             subscriptions.push({
                 start: block.timestamp * 1000,
-                end: e.returnValues && e.returnValues.endTimestamp && (e.returnValues.endTimestamp.toNumber() * 1000),
+                end: e.returnValues && e.returnValues.endTimestamp && parseTimestamp(e.returnValues.endTimestamp),
             })
         }
     }
@@ -265,7 +267,7 @@ export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolea
             e.returnValues &&
             e.returnValues.subscriber === address &&
             e.returnValues.endTimestamp &&
-            ((e.returnValues.endTimestamp.toNumber() * 1000) > Date.now())
+            (parseTimestamp(e.returnValues.endTimestamp) > Date.now())
         ))
         return activeSubs.length > 0
     }
