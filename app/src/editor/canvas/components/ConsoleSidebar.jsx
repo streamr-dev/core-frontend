@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react'
 import cx from 'classnames'
 import groupBy from 'lodash/groupBy'
 import sortBy from 'lodash/sortBy'
-import { Translate } from 'react-redux-i18n'
 import scrollTo from '$shared/utils/scrollTo'
 
 import SvgIcon from '$shared/components/SvgIcon'
@@ -40,14 +39,10 @@ function MessageRow({ msg }) {
             <MessageIcon level={msg.level} className={styles.messageIcon} />
             <div className={styles.messageRhs}>
                 <div className={styles.messageTitle}>
-                    {!msg.translate ? msg.title : (
-                        <Translate value={msg.title} {...msg.details} dangerousHTML />
-                    )}
+                    {msg.title}
                 </div>
                 <div className={styles.messageContent}>
-                    {!msg.translate ? msg.content : (
-                        <Translate value={msg.content} {...msg.details} dangerousHTML />
-                    )}
+                    {msg.content}
                 </div>
             </div>
         </div>

@@ -2,7 +2,6 @@
 
 import React, { useCallback } from 'react'
 import cx from 'classnames'
-import { I18n, Translate } from 'react-redux-i18n'
 import styles from './option.pcss'
 
 type Props = {
@@ -11,6 +10,17 @@ type Props = {
     disabled?: boolean,
     onToggle?: ?(string) => void,
     name: 'drivingInput' | 'noRepeat',
+}
+
+const options = {
+    drivingInput: {
+        name: 'Driving Input',
+        abbr: 'DI',
+    },
+    noRepeat: {
+        name: 'No Repeat',
+        abbr: 'NR',
+    },
 }
 
 const Option = ({
@@ -37,10 +47,10 @@ const Option = ({
                 <button
                     disabled={!!disabled}
                     onClick={onClick}
-                    title={`${I18n.t(`editor.module.portOption.${name}.name`)}: ${activated ? I18n.t('general.on') : I18n.t('general.off')}`}
+                    title={`${options[name].name}: ${activated ? 'On' : 'Off'}`}
                     type="button"
                 >
-                    <Translate value={`editor.module.portOption.${name}.abbr`} />
+                    {options[name].abbr}
                 </button>
             </div>
         </div>

@@ -1,6 +1,5 @@
 import cx from 'classnames'
 import React, { useContext } from 'react'
-import { Translate } from 'react-redux-i18n'
 
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import { UiEmitter } from '$editor/shared/components/RunStateLoader'
@@ -193,7 +192,7 @@ function ModuleError(props) {
             </div>
             <div className={cx(styles.canvasModuleUI, styles.ModuleErrorContent)}>
                 <div>
-                    <Translate value="editor.module.error" />
+                    Whoops. Something has broken down. Please delete the module and try again.
                 </div>
                 {!!errorMessage && (
                     <div className={styles.errorMessage}>

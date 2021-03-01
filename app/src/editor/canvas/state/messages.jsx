@@ -1,3 +1,5 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
 import startCase from 'lodash/startCase'
 import sortBy from 'lodash/sortBy'
 
@@ -19,14 +21,18 @@ function NoFieldsConfiguredMessage(canvas, moduleHash) {
     const streamLink = routes.streams.show({ id: streamId })
     return {
         level: 'warn',
-        translate: true,
-        title: 'editor.canvas.msg.NoFieldsConfiguredTitle',
-        content: 'editor.canvas.msg.NoFieldsConfiguredMessage',
+        title: 'No fields configured.',
+        content: (
+            <React.Fragment>
+                The selected stream should have fields configured.
+                {' '}
+                <Link to={streamLink}>
+                    Configure Fields
+                </Link>
+            </React.Fragment>
+        ),
         canvasId: canvas.id,
         moduleHash,
-        details: {
-            streamLink,
-        },
     }
 }
 

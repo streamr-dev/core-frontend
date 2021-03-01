@@ -1,7 +1,6 @@
 import React, { PureComponent, useContext } from 'react'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Translate } from 'react-redux-i18n'
 import cx from 'classnames'
 import copyToClipboard from 'copy-to-clipboard'
 
@@ -580,7 +579,7 @@ const CanvasErrorBoundary = ({ error }) => {
                     window.location.reload()
                 }}
             >
-                <Translate value="editor.error.refresh" />
+                Refresh
             </Button>
             <Button
                 kind="special"
@@ -588,7 +587,7 @@ const CanvasErrorBoundary = ({ error }) => {
                 to={routes.canvases.index()}
                 className="d-none d-md-inline-flex"
             >
-                <Translate value="editor.general.backToCanvases" />
+                Back to Canvases
             </Button>
         </ErrorPageContent>
     )
