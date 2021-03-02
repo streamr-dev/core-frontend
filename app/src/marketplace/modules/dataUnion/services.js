@@ -230,6 +230,7 @@ export const createClient = (options: CreateClient = {}) => {
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
         factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
+        factorySidechainAddress: process.env.DATA_UNION_FACTORY_SIDECHAIN_ADDRESS,
         autoConnect: false,
         autoDisconnect: false,
         auth: {
@@ -260,7 +261,15 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: string): SmartC
         checkEthereumNetworkIsCorrect(web3),
         client.ensureConnected(),
     ])
-        .then(([account]) => client.calculateDataUnionMainnetAddress(productId, account))
+        .then(([account]) => {
+            // eslint-disable-next-line no-underscore-dangle
+            const dataUnion = client._getDataUnionFromName({
+                dataUnionName: productId,
+                deployerAddress: account,
+            })
+
+            return dataUnion.getAddress()
+        })
         .then((futureAddress) => {
             // send calculated contract address as the transaction hash,
             // streamr-client doesn't tell us the actual tx hash
@@ -273,14 +282,11 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: string): SmartC
             })
         })
         .then((dataUnion) => {
-            const receipt = dataUnion.deployTxReceipt
-
-            if (parseInt(receipt.status, 16) === 0) {
-                errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+            if (!dataUnion || !dataUnion.contractAddress) {
+                errorHandler(new TransactionError(I18n.t('error.txFailed')))
             } else {
                 emitter.emit('receipt', {
-                    ...receipt,
-                    contractAddress: dataUnion.address,
+                    contractAddress: dataUnion.getAddress(),
                 })
             }
         }, errorHandler)
@@ -321,9 +327,9 @@ export const getDataUnionVersion = async (address: DataUnionId, usePublicNode: b
     const client = createClient({
         usePublicNode,
     })
-    const version = await client.getDataUnionVersion(address)
+    const dataUnion = await client.getDataUnion(address)
 
-    return version || 0
+    return (dataUnion && dataUnion.getVersion()) || 0
 }
 
 // eslint-disable-next-line camelcase
@@ -341,9 +347,9 @@ export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boo
         const client = createClient({
             usePublicNode,
         })
-        return client.getAdminAddress({
-            dataUnionAddress: address,
-        })
+        const dataUnion = client.getDataUnion(address)
+
+        return dataUnion.getAdminAddress()
     } else if (version === 1) {
         return deprecated_getDataUnionOwner(address, usePublicNode)
     }
@@ -368,9 +374,8 @@ export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean =
         const client = createClient({
             usePublicNode,
         })
-        const adminFee = await client.getAdminFee({
-            dataUnionAddress: address,
-        })
+        const dataUnion = client.getDataUnion(address)
+        const adminFee = await dataUnion.getAdminFee()
 
         return `${adminFee}`
     } else if (version === 1) {
@@ -396,12 +401,11 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
         .then(([account, version]) => {
             if (version === 2) {
                 const client = createClient()
+                const dataUnion = client.getDataUnion(address)
 
                 emitter.emit('transactionHash')
 
-                client.setAdminFee(+adminFee, {
-                    dataUnionAddress: address,
-                })
+                dataUnion.setAdminFee(+adminFee)
                     .then((receipt) => {
                         if (parseInt(receipt.status, 16) === 0) {
                             errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
@@ -455,10 +459,9 @@ export const getDataUnionStats = async (id: DataUnionId): ApiResult<Object> => {
         const client = createClient({
             usePublicNode: true,
         })
+        const dataUnion = client.getDataUnion(id)
 
-        const stats = await client.getDataUnionStats({
-            dataUnionAddress: id,
-        })
+        const stats = await dataUnion.getStats()
         const { activeMemberCount, inactiveMemberCount, totalEarnings } = stats
 
         const active = (activeMemberCount && BN(activeMemberCount.toString()).toNumber()) || 0
