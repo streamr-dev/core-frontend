@@ -14,7 +14,7 @@ For example, if you are an IoT device manufacturer, you could add support for St
 
 Various industrial data sources usually have good configurability for connecting the data anywhere you need to. However, consumer grade devices such as connected cars, phones, Fitbits, and others often force you to send your data to the manufacturer’s cloud, from where they might serve it back to you via an API. In these cases, you can use one of the bridging patterns in this post (see options two and three).
 
-For a real-world example, here’s how to connect measurements from any number of <a target="_blank" href="https://ruuvi.com">Ruuvi</a> IoT tags to Streamr. The devices transmit data over Bluetooth Low Energy to a gateway computer which runs this node.js script. A separate stream is created for each found Ruuvi device, and the measurements are produced to the appropriate stream as they occur.
+For a real-world example, here’s how to connect measurements from any number of <a target="_blank" rel="noopener noreferrer" href="https://ruuvi.com">Ruuvi</a> IoT tags to Streamr. The devices transmit data over Bluetooth Low Energy to a gateway computer which runs this node.js script. A separate stream is created for each found Ruuvi device, and the measurements are produced to the appropriate stream as they occur.
 
 ### Bridging from a streaming source
 **Medium** Simplicity <br />
@@ -37,4 +37,4 @@ It’s not an optimal way to serve real-time data, because:
 - It places an unnecessary load on the API server, as requests are made “just in case” regardless of whether the data has actually changed or not.
 - An average latency of half the polling interval is introduced.
 
-For more information and examples on using these integration patters, please see this deep dive <a target="_blank" href="https://medium.com/streamrblog/three-patterns-for-integrating-your-data-to-streamr-2-of-3-38027dc91f9e">blog post</a>. Please note that the examples used an older version of `streamr-client` and you should confirm with the <a target="_blank" href="https://github.com/streamr-dev/streamr-client-javascript">official docs</a> on the best practices. 
+For more information and examples on using these integration patters, please see this deep dive <a target="_blank" rel="noopener noreferrer" href="https://medium.com/streamrblog/three-patterns-for-integrating-your-data-to-streamr-2-of-3-38027dc91f9e">blog post</a>. Please note that the examples used an older version of `streamr-client` and you should confirm with the <a target="_blank" rel="noopener noreferrer" href="https://github.com/streamr-dev/streamr-client-javascript">official docs</a> on the best practices. 

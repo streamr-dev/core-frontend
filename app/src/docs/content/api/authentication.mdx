@@ -6,7 +6,7 @@ A session token is required to make requests to the REST API endpoints or over t
 
 ### Authenticating options
 
-The easiest way to authenticate is through the [Streamr Client](https://github.com/streamr-dev/streamr-client-javascript/) - it will handle the cryptographic signing for you. Client authentication instructions can be found in the [repo readme](https://github.com/streamr-dev/streamr-client-javascript/).
+The easiest way to authenticate is through the <a href="https://github.com/streamr-dev/streamr-client-javascript/" target="_blank" rel="noopener noreferrer">Streamr Client</a> - it will handle the cryptographic signing for you. Client authentication instructions can be found in the <a href="https://github.com/streamr-dev/streamr-client-javascript/" target="_blank" rel="noopener noreferrer">repo readme</a>.
 
 If you prefer to use the REST API directly the you can use an Ethereum private key to authenticate by signing a challenge with it and providing your Ethereum public address for verification.
 
@@ -33,7 +33,7 @@ To authenticate, you must provide a response before the challenge expires. You c
 }
 ```
 
-The signature must follow the convention described [here](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md). The secp256k1 ECDSA algorithm is applied on the keccak256 hash of a string derived from the challenge text:
+The signature must follow the convention described <a href="https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md" target="_blank" rel="noopener noreferrer">here</a>. The secp256k1 ECDSA algorithm is applied on the keccak256 hash of a string derived from the challenge text:
 
 `sign(keccak256("\x19Ethereum Signed Message:\n" + len(challengeText) + challengeText)))`
 
