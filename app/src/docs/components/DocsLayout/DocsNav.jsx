@@ -283,7 +283,7 @@ const UnstyledNarrow = (props) => (
             <Nav.Narrow.Dropdown label="Documents">
                 <Menu>
                     <Menu.Item as={Link} href="https://streamr.network/governance-whitepaper">
-                        Decentralised governance
+                        Decentralized governance
                     </Menu.Item>
                     <Menu.Item as={Link} href="https://streamr.network/whitepaper">
                         Streamr Whitepaper
