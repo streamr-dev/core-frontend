@@ -120,8 +120,10 @@ function getFileInfos() {
     const fileInfos = []
     Object.keys(docsMap).forEach((section) => {
         if (section !== 'Module Reference') {
-            Object.keys(docsMap[section]).forEach((page) => {
-                if (page !== 'root') {
+            const pages = Object.keys(docsMap[section])
+            pages.forEach((page) => {
+                // Include root page only if it's the only available page
+                if (pages.length <= 1 || page !== 'root') {
                     fileInfos.push({
                         filePath: docsMap[section][page].filePath,
                         path: docsMap[section][page].path,
