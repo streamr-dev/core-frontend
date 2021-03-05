@@ -1,0 +1,64 @@
+name: Deploy to production
+on:
+  push:
+    branches: [master]
+
+defaults:
+  run:
+    working-directory: app
+
+jobs:  
+  deploy:
+    name: Run eslint, stylelint and tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [ 14.x ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm ci
+      - name: Build app
+        env:
+          NODE_ENV=production
+          VERSION=$TRAVIS_TAG
+          PORT=12345
+          SENTRY_ENVIRONMENT=production
+          STREAMR_API_URL=https://streamr.network/api/v1
+          STREAMR_WS_URL=wss://streamr.network/api/v1/ws
+          PLATFORM_ORIGIN_URL=https://streamr.network
+          PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
+          STREAMR_URL=https://streamr.network
+          GOOGLE_ANALYTICS_ID=UA-55331565-5
+          MARKETPLACE_CONTRACT_ADDRESS=0x2b3F2887c697B3f4f8D9F818c95482e1a3A759A5
+          DATA_TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
+          DAI_TOKEN_CONTRACT_ADDRESS=0x6B175474E89094C44Da98b954EedeAC495271d0F
+          UNISWAP_ADAPTOR_CONTRACT_ADDRESS=0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307
+          WEB3_REQUIRED_NETWORK_ID=1
+          WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
+          WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
+          SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
+          STREAMR_ENGINE_NODE_ADDRESSES=0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a
+          DATA_UNION_OPERATOR_ADDRESS=0xc0aa4dC0763550161a6B59fa430361b5a26df28C
+          DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
+          DATA_UNION_PUBLISH_MEMBER_LIMIT=1
+          WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
+          NO_TEST_HOOKS=1
+          STORAGE_NODES="Streamr Germany:0xc3075C2556A1FD30c67530F1ac5ddAE618762CAa"
+        run: npm run build --if-present
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: Deploy to S3
+        run: |
+          aws s3 sync dist/. s3://eu-west-1-streamr-cdn --acl private --dryrun
+      - name: Invalidate Cloudfront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID_PROD }} --paths "/*"
