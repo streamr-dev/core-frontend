@@ -51,7 +51,7 @@ const Widgets = {
 const ModuleUI = ({
     canvasId, dashboardId, moduleHash, autoSize, ...props
 }) => {
-    const { module: mod, canvas } = useModule()
+    const { module: originalModule, canvas } = useModule()
     const { items } = canvas
     const isDashboard = !!items
     const api = useModuleApi()
@@ -61,13 +61,15 @@ const ModuleUI = ({
     return (
         <RunStateLoader
             {...props}
-            moduleHash={mod.hash || moduleHash}
+            moduleHash={originalModule.hash || moduleHash}
             isActive={isRunning}
             canvasId={canvasId || canvas.id}
             dashboardId={dashboardId}
         >
             {(props) => {
-                const { module: loadedModule } = props
+                const { module: runtimeModule } = props
+                const loadedModule = runtimeModule || originalModule
+
                 if (!loadedModule) {
                     return null
                 }
