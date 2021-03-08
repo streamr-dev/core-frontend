@@ -12,7 +12,7 @@ const useMetamask = () => (
         })
 
         const token = await getSessionToken({
-            provider: web3.metamaskProvider,
+            ethereum: web3.metamaskProvider,
         })
 
         return token

@@ -1,5 +1,6 @@
 import React from 'react'
 import { mount } from 'enzyme'
+import { act } from 'react-dom/test-utils'
 import { Provider } from 'react-redux'
 import { useClient } from 'streamr-client-react'
 import mockStore from '$testUtils/mockStoreProvider'
@@ -23,6 +24,8 @@ describe('Canvas Subscriptions', () => {
     describe('message reception', () => {
         let canvas
         let runningTable
+        let result
+        let client
 
         beforeEach(async () => {
             canvas = await Services.create()
@@ -36,73 +39,48 @@ describe('Canvas Subscriptions', () => {
             const clockDateOut = State.findModulePort(canvas, clock.hash, (p) => p.name === 'date')
             const tableIn1 = State.findModulePort(canvas, table.hash, (p) => p.displayName === 'in1')
             canvas = State.updateCanvas(State.connectPorts(canvas, clockDateOut.id, tableIn1.id))
-        }, 10000)
+        }, 20000)
 
         beforeEach(async () => {
             canvas = State.updateCanvas(await Services.start(canvas))
             runningTable = canvas.modules.find((m) => m.name === 'Table')
-        }, 10001)
+        }, 20001)
 
         afterEach(async () => {
             if (!canvas) { return }
             await Services.stop(canvas)
-        }, 20002)
+        }, 40002)
 
-        it('receives the messages', (done) => {
-            let client
-
-            const ClientCatcher = () => {
-                client = useClient()
-                return null
+        afterEach(async () => {
+            if (result) {
+                const r = result
+                result = undefined
+                r.unmount()
             }
 
+            if (client) {
+                const currentClient = client
+                client = undefined
+                await currentClient.disconnect()
+            }
+        })
+
+        function ClientCatcher() {
+            client = useClient()
+            return null
+        }
+
+        it('receives the messages', async () => {
+            let resolver
+            const p = new Promise((resolve) => {
+                resolver = resolve
+            })
             const store = {
                 user: {},
             }
 
-            const result = mount((
-                <Provider store={mockStore(store)}>
-                    <ClientProvider>
-                        <ClientCatcher />
-                        <ModuleSubscription
-                            module={runningTable}
-                            onMessage={async ({ nr }) => {
-                                if (nr) {
-                                    result.unmount()
-                                    await client.ensureDisconnected()
-                                    done()
-                                }
-                            }}
-                            isSubscriptionActive
-                        />
-                    </ClientProvider>
-                </Provider>
-            ))
-        }, 30000)
-
-        describe('after a restart', () => {
-            beforeEach(async () => {
-                // canvas is running at this point, see `beforeEach` above.
-                canvas = State.updateCanvas(await Services.stop(canvas))
-            }, 10000)
-
-            beforeEach(async () => {
-                canvas = State.updateCanvas(await Services.start(canvas))
-            }, 10000)
-
-            it('receives the messages', (done) => {
-                let client
-
-                const ClientCatcher = () => {
-                    client = useClient()
-                    return null
-                }
-
-                const store = {
-                    user: {},
-                }
-
-                const result = mount((
+            await act(async () => {
+                result = mount((
                     <Provider store={mockStore(store)}>
                         <ClientProvider>
                             <ClientCatcher />
@@ -110,9 +88,7 @@ describe('Canvas Subscriptions', () => {
                                 module={runningTable}
                                 onMessage={async ({ nr }) => {
                                     if (nr) {
-                                        result.unmount()
-                                        await client.ensureDisconnected()
-                                        done()
+                                        resolver()
                                     }
                                 }}
                                 isSubscriptionActive
@@ -120,7 +96,49 @@ describe('Canvas Subscriptions', () => {
                         </ClientProvider>
                     </Provider>
                 ))
-            }, 60000)
+                await p
+            })
+        }, 60000)
+
+        describe('after a restart', () => {
+            beforeEach(async () => {
+                // canvas is running at this point, see `beforeEach` above.
+                canvas = State.updateCanvas(await Services.stop(canvas))
+            }, 20000)
+
+            beforeEach(async () => {
+                canvas = State.updateCanvas(await Services.start(canvas))
+            }, 20000)
+
+            it('receives the messages', async () => {
+                let resolver
+                const p = new Promise((resolve) => {
+                    resolver = resolve
+                })
+                const store = {
+                    user: {},
+                }
+
+                await act(async () => {
+                    result = mount((
+                        <Provider store={mockStore(store)}>
+                            <ClientProvider>
+                                <ClientCatcher />
+                                <ModuleSubscription
+                                    module={runningTable}
+                                    onMessage={async ({ nr }) => {
+                                        if (nr) {
+                                            resolver()
+                                        }
+                                    }}
+                                    isSubscriptionActive
+                                />
+                            </ClientProvider>
+                        </Provider>
+                    ))
+                    await p
+                })
+            }, 90000)
         })
     })
 })

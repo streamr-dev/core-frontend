@@ -5,6 +5,7 @@
 .*/node_modules/@streamr/streamr-layout/.*
 .*/node_modules/react-leaflet/.*
 .*/node_modules/react-select/.*
+.*/node_modules/react-grid-layout/.*
 
 [libs]
 ./src/marketplace/flowtype/global-types.js

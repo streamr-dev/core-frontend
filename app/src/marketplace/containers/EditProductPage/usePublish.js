@@ -155,7 +155,9 @@ export default function usePublish() {
                             return setAdminFee(product.beneficiaryAddress, adminFee)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
-                                    dispatch(addTransaction(hash, transactionTypes.UPDATE_ADMIN_FEE))
+                                    if (hash) {
+                                        dispatch(addTransaction(hash, transactionTypes.UPDATE_ADMIN_FEE))
+                                    }
                                     done()
                                 })
                                 .onTransactionComplete(() => {

@@ -78,7 +78,7 @@ export function useEditableProductActions() {
         setTouched('category')
         setTouched('details')
     }, [commit, setTouched])
-    const updateAdminFee = useCallback((adminFee: number) => {
+    const updateAdminFee = useCallback((adminFee: string) => {
         commit('Update admin fee', (p) => ({
             ...p,
             adminFee,
@@ -122,13 +122,18 @@ export function useEditableProductActions() {
         }))
         setTouched('pricePerSecond')
     }, [commit, setTouched])
-    const updateBeneficiaryAddress = useCallback((beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>) => {
-        commit('Update beneficiary address', (p) => ({
-            ...p,
-            beneficiaryAddress,
-        }))
-        setTouched('beneficiaryAddress')
-    }, [commit, setTouched])
+    const updateBeneficiaryAddress = useCallback(
+        (beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>, didTouch: boolean = true) => {
+            commit('Update beneficiary address', (p) => ({
+                ...p,
+                beneficiaryAddress,
+            }))
+            if (didTouch) {
+                setTouched('beneficiaryAddress')
+            }
+        },
+        [commit, setTouched],
+    )
     const updateType = useCallback((type: $ElementType<Product, 'type'>) => {
         commit('Update type', (p) => ({
             ...p,

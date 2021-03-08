@@ -13,6 +13,11 @@ export default function useModuleLoadCallback() {
             if (module.hash) {
                 module = merge({}, CanvasState.getModule(canvas, module.hash), module)
             }
+
+            if (canvas.adhoc) {
+                return module
+            }
+
             return sharedServices.getModule({
                 id: module.id,
                 configuration: module,

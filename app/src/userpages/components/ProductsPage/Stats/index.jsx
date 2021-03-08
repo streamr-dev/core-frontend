@@ -14,7 +14,7 @@ import ProductController, { useController } from '$mp/containers/ProductControll
 import usePending from '$shared/hooks/usePending'
 import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
-import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
+import usePreviewStats from '$mp/containers/ProductPage/usePreviewStats'
 import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
@@ -53,15 +53,18 @@ const StyledListContainer = styled(ListContainer)`
 `
 
 const Stats = () => {
-    const { loadDataUnion } = useController()
+    const { loadDataUnion, loadContractProductSubscription } = useController()
     const product = useProduct()
+    const { id: productId } = product
     const contractProduct = useContractProduct()
 
-    const { subscriberCount } = contractProduct || {}
+    const { subscriberCount } = contractProduct || {
+        subscriberCount: 0,
+    }
     const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
 
     const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
-    const stats = useDataUnionStats({
+    const stats = usePreviewStats({
         beneficiaryAddress,
         created,
         adminFee,
@@ -82,6 +85,12 @@ const Stats = () => {
 
         return () => {}
     }, [beneficiaryAddress, startPolling, stopPolling])
+
+    useEffect(() => {
+        if (productId) {
+            loadContractProductSubscription(productId)
+        }
+    }, [productId, loadContractProductSubscription])
 
     useEffect(() => {
         if (dataUnionDeployed && beneficiaryAddress) {
@@ -110,19 +119,21 @@ const Stats = () => {
         >
             <CoreHelmet title="Overview" />
             <StyledListContainer>
-                <div className={styles.statBox}>
-                    {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
+                {!dataUnionDeployed && isEthereumAddress(beneficiaryAddress) && (
+                    <div className={styles.statBox}>
                         <DataUnionPending />
-                    )}
-                    {!!dataUnionDeployed && stats && (
-                        <ProductStat.List items={stats} />
-                    )}
-                </div>
+                    </div>
+                )}
                 {!!dataUnionDeployed && (
                     <React.Fragment>
+                        <div className={styles.statBox}>
+                            {stats && (
+                                <ProductStat.List items={stats} />
+                            )}
+                        </div>
                         <div className={styles.graphs}>
                             <div className={styles.memberCount}>
-                                {!!dataUnionDeployed && memberCount && (
+                                {!!memberCount && (
                                     <React.Fragment>
                                         <TimeSeriesGraph.Header>
                                             <ProductStat.Title>
@@ -142,7 +153,7 @@ const Stats = () => {
                                 )}
                             </div>
                             <div className={styles.graphBox}>
-                                {!!dataUnionDeployed && product && (
+                                {product && (
                                     <React.Fragment>
                                         <TimeSeriesGraph.Header>
                                             <ProductStat.Title>
@@ -192,7 +203,7 @@ const StatsWrap = () => {
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
 
-    if (!hasLoaded || loadPending || permissionsPending) {
+    if (!hasLoaded || !product || loadPending || permissionsPending) {
         return <LoadingView />
     }
 

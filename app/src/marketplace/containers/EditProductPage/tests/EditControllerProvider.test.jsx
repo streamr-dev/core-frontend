@@ -35,6 +35,11 @@ const mockState = {
         dataUnions: {
             dataUnionId: {
                 id: 'dataUnionId',
+            },
+        },
+        dataUnionStats: {
+            dataUnionId: {
+                id: 'dataUnionId',
                 memberCount: {
                     active: 0,
                 },

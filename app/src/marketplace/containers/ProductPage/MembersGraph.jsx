@@ -1,11 +1,10 @@
 // @flow
 
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react'
+import { useSubscription } from 'streamr-client-react'
 
-import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import ClientProvider from '$shared/components/StreamrClientProvider'
-import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
-import Subscription from '$shared/components/Subscription'
+import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 type Props = {
@@ -34,7 +33,6 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     const [graphData, setGraphData] = useState([])
     const activeAddressesRef = useRef([])
     const [isActive, setIsActive] = useState(true)
-    const [subscriptionKey, setSubscriptionKey] = useState(`subscription-${shownDays}`)
 
     useEffect(() => {
         // NOTE: We need to disable subscription for a while and enable it
@@ -43,7 +41,6 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
         //       for the newly created subscription. Might be a bug with
         //       streamr-client.
         setIsActive(false)
-        setSubscriptionKey(`subscription-${shownDays}`)
         const timeoutId = setTimeout(() => {
             setIsActive(true)
         }, 100)
@@ -157,25 +154,28 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
         activeAddressesRef.current = []
     }, [shownDays, joinPartStreamId, onMessage])
 
+    useSubscription({
+        stream: joinPartStreamId,
+        resend: {
+            from: resendFrom,
+        },
+    }, {
+        isActive,
+        onMessage,
+    })
+
     return (
-        <ClientProvider>
-            <SubscriptionStatusProvider>
-                <Subscription
-                    key={subscriptionKey}
-                    uiChannel={{
-                        id: joinPartStreamId,
-                    }}
-                    isActive={isActive}
-                    onMessage={onMessage}
-                    resendFrom={resendFrom}
-                />
-                <TimeSeriesGraph
-                    graphData={graphData}
-                    shownDays={shownDays}
-                />
-            </SubscriptionStatusProvider>
-        </ClientProvider>
+        <TimeSeriesGraph
+            graphData={graphData}
+            shownDays={shownDays}
+        />
     )
 }
 
-export default MembersGraph
+export default function MembersGraphWrapper(props: Props) {
+    return (
+        <ClientProvider>
+            <MembersGraph {...props} />
+        </ClientProvider>
+    )
+}

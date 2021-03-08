@@ -39,7 +39,7 @@ describe('Client', () => {
             ))
             expect(client).toBeTruthy()
             result.unmount()
-            await client.ensureDisconnected()
+            await client.disconnect()
             done()
         })
 
@@ -64,18 +64,18 @@ describe('Client', () => {
             expect(client).toBeTruthy()
 
             const prevClient = client
-            await prevClient.ensureConnected()
-            expect(prevClient.connection.state).toBe('connected')
+            await prevClient.connect()
+            expect(prevClient.connection.getState()).toBe('connected')
             await act(async () => {
                 // act required as we're triggering
                 // context update outside a render/mount
-                await prevClient.ensureDisconnected()
+                await prevClient.disconnect()
             })
-            expect(prevClient.connection.state).toBe('disconnected')
+            expect(prevClient.connection.getState()).toBe('disconnected')
             expect(client).toBe(prevClient)
             result.unmount()
-            await prevClient.ensureDisconnected()
-            await client.ensureDisconnected()
+            await prevClient.disconnect()
+            await client.disconnect()
             done()
         })
 
@@ -103,8 +103,8 @@ describe('Client', () => {
             result.mount()
             expect(client).not.toBe(prevClient)
             result.unmount()
-            await prevClient.ensureDisconnected()
-            await client.ensureDisconnected()
+            await prevClient.disconnect()
+            await client.disconnect()
             done()
         })
 
@@ -132,7 +132,7 @@ describe('Client', () => {
                 done()
             })
 
-            await client.ensureConnected()
+            await client.connect()
             result.unmount()
         })
     })
@@ -163,8 +163,8 @@ describe('Client', () => {
         result.mount()
         expect(client).not.toBe(prevClient)
         result.unmount()
-        await prevClient.ensureDisconnected()
-        await client.ensureDisconnected()
+        await prevClient.disconnect()
+        await client.disconnect()
         done()
     })
 })

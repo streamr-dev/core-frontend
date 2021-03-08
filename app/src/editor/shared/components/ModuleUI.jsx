@@ -48,15 +48,33 @@ const Widgets = {
     StreamrSwitcher,
 }
 
-export default ({ autoSize, ...props }) => {
-    const { module, canvas: { id: canvasId } } = useModule()
+const ModuleUI = ({
+    canvasId, dashboardId, moduleHash, autoSize, ...props
+}) => {
+    const { module: originalModule, canvas } = useModule()
+    const { items } = canvas
+    const isDashboard = !!items
     const api = useModuleApi()
-    const isRunning = useIsCanvasRunning()
+    const canvasIsRunning = useIsCanvasRunning()
+    const isRunning = isDashboard || canvasIsRunning
 
     return (
-        <RunStateLoader {...props} moduleHash={module.hash} isActive={isRunning} canvasId={canvasId}>
+        <RunStateLoader
+            {...props}
+            moduleHash={originalModule.hash || moduleHash}
+            isActive={isRunning}
+            canvasId={canvasId || canvas.id}
+            dashboardId={dashboardId}
+        >
             {(props) => {
-                const Module = module.widget ? Widgets[module.widget] : Modules[module.jsModule]
+                const { module: runtimeModule } = props
+                const loadedModule = runtimeModule || originalModule
+
+                if (!loadedModule) {
+                    return null
+                }
+
+                const Module = loadedModule.widget ? Widgets[loadedModule.widget] : Modules[loadedModule.jsModule]
 
                 if (!Module) {
                     return null
@@ -65,8 +83,8 @@ export default ({ autoSize, ...props }) => {
                 return (
                     <Module
                         {...props}
-                        moduleHash={module.hash}
-                        module={module}
+                        moduleHash={loadedModule.hash}
+                        module={loadedModule}
                         api={api}
                     />
                 )
@@ -74,3 +92,5 @@ export default ({ autoSize, ...props }) => {
         </RunStateLoader>
     )
 }
+
+export default ModuleUI

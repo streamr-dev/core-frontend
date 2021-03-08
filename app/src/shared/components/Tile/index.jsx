@@ -324,7 +324,7 @@ const PurchaseTile = ({
                         {numMembers}
                     </IconBadge>
                 )}
-                {!!showDeployingBadge && !!showDataUnionBadge && typeof numMembers === 'undefined' && (
+                {!!showDeployingBadge && (
                     <DeployingBadge bottom right />
                 )}
             </Link>

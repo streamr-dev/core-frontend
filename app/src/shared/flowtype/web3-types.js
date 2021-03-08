@@ -1,7 +1,6 @@
 // @flow
 
 import type Transaction from '$shared/utils/Transaction'
-import type DeployTransaction from '$shared/utils/DeployTransaction'
 import { StreamrWeb3 } from '$shared/web3/web3Provider'
 import type TransactionError from '$shared/errors/TransactionError'
 import type { ProductId } from '$mp/flowtype/product-types'
@@ -37,7 +36,6 @@ export type SmartContractMetadata = {
 export type SmartContractCall<T> = Promise<T>
 
 export type SmartContractTransaction = Transaction
-export type SmartContractDeployTransaction = DeployTransaction
 
 export type HashList = Array<Hash>
 

@@ -18,7 +18,7 @@ export type ProductState = $Keys<typeof productStates>
 export type ProductType = $Values<typeof productTypes>
 
 export type PendingChanges = {
-    adminFee?: number,
+    adminFee?: string,
     requiresWhitelist?: boolean,
 }
 
@@ -41,7 +41,7 @@ export type ContactDetails = {
 }
 
 export type Product = {
-    adminFee?: number,
+    adminFee?: string,
     key?: string,
     id: ?ProductId,
     name: string,
@@ -163,7 +163,12 @@ export type DataUnion = {
     adminFee: number | string,
     joinPartStreamId: StreamId,
     owner: Address,
-    memberCount?: MemberCount,
+}
+
+export type DataUnionStat = {
+    id: DataUnionId,
+    memberCount: MemberCount,
+    totalEarnings: number,
 }
 
 export type AccessPeriod = {

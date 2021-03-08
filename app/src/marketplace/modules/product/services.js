@@ -13,6 +13,8 @@ import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto, toAtto } from '$mp/utils/math'
+import { getDefaultDataUnionVersion } from '$mp/modules/dataUnion/services'
+import { productTypes } from '$mp/utils/constants'
 import routes from '$routes'
 import { getContract, call, send } from '../../utils/smartContract'
 
@@ -63,8 +65,15 @@ export const postProduct = (product: Product): ApiResult<Product> => post({
     .then(mapProductFromApi)
 
 export const postEmptyProduct = (type: ProductType): ApiResult<Product> => {
-    const product = {
+    let product = {
         type,
+    }
+
+    if (type === productTypes.DATAUNION) {
+        product = {
+            ...product,
+            dataUnionVersion: getDefaultDataUnionVersion(),
+        }
     }
 
     return post({

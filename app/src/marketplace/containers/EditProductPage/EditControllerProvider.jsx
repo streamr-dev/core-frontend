@@ -8,7 +8,7 @@ import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/product/services'
-import { selectDataUnion } from '$mp/modules/dataUnion/selectors'
+import { selectDataUnionStats } from '$mp/modules/dataUnion/selectors'
 import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
@@ -60,7 +60,7 @@ function useEditController(product: Product) {
     const { updateBeneficiaryAddress } = useEditableProductActions()
     const originalProduct = useSelector(selectProduct)
     const { replaceProduct } = useEditableProductUpdater()
-    const dataUnion = useSelector(selectDataUnion)
+    const dataUnion = useSelector(selectDataUnionStats)
     const [publishAttempted, setPublishAttempted] = useState(false)
     const [preferredCurrency, setPreferredCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
@@ -228,8 +228,8 @@ function useEditController(product: Product) {
 
     const updateBeneficiary = useCallback(async (address) => {
         const { beneficiaryAddress } = productRef.current
-        if (!!address && isEthereumAddress(address) && (!beneficiaryAddress || !areAddressesEqual(beneficiaryAddress, address))) {
-            updateBeneficiaryAddress(address)
+        if ((!address || isEthereumAddress(address)) && (!beneficiaryAddress || !areAddressesEqual(beneficiaryAddress, address))) {
+            updateBeneficiaryAddress(address, false)
         }
     }, [updateBeneficiaryAddress])
 

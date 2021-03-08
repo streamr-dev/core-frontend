@@ -3,7 +3,6 @@ import { MemoryRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { mount } from 'enzyme'
 import mockStore from '$testUtils/mockStoreProvider'
-import User from '$shared/components/Layout/User'
 
 // eslint-disable-next-line import/order
 import Nav from '$shared/components/Layout/Nav'

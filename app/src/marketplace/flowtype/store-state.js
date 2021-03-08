@@ -81,10 +81,9 @@ export type ContractProductState = {
 export type DataUnionState = {
     id: ?DataUnionId,
     fetching: boolean,
-    error: ?ErrorInUi,
-    fetchingStats: boolean,
-    ids: Array<DataUnionId>,
-    statsError: ?ErrorInUi,
+    requested: Array<DataUnionId>,
+    ready: Array<DataUnionId>,
+    fetchingStats: Array<DataUnionId>,
     secrets: Array<DataUnionSecretId>,
 }
 

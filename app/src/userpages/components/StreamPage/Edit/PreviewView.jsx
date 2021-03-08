@@ -1,18 +1,16 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import styled from 'styled-components'
-import { useClient } from 'streamr-client-react'
 import { Link } from 'react-router-dom'
-
+import { useClient, useSubscription } from 'streamr-client-react'
 import Button from '$shared/components/Button'
 import useModal from '$shared/hooks/useModal'
-import Subscription from '$shared/components/Subscription'
-import { Provider as SubscriptionStatusProvider } from '$shared/contexts/SubscriptionStatus'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { useThrottled } from '$shared/hooks/wrapCallback'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
+import { Message } from '$shared/utils/SubscriptionEvents'
 import PreviewTable from './PreviewTable'
 import docsLinks from '$shared/../docsLinks'
 
@@ -36,7 +34,7 @@ const ErrorNotice = styled.div`
     flex: 1;
     font-size: 12px;
     color: #808080;
-    
+
     p {
         margin: 0;
         line-height: 1.5rem;
@@ -72,9 +70,9 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
     const [dataError, setDataError] = useState(false)
     const hasLoaded = useIsSessionTokenReady()
     const client = useClient()
+    window.streamrClient = client
     const [activePartition, setActivePartition] = useState(0)
     const isMounted = useIsMounted()
-
     const updateDataToState = useThrottled(useCallback((data) => {
         setDataReceived(true)
         setVisibleData([...data])
@@ -86,8 +84,27 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
         }
     }, [dataReceived])
 
+    const onError = useCallback(() => {
+        if (isMounted()) {
+            setDataError(true)
+        }
+    }, [isMounted])
+
     const onData = useCallback((data, metadata) => {
         if (!isMounted()) { return }
+        switch (data.type) {
+            case Message.Done:
+            case Message.Notification:
+            case Message.Warning: {
+                // ignore
+                return
+            }
+            case Message.Error: {
+                onError()
+                return
+            }
+            default: // continue
+        }
 
         const dataPoint = {
             data,
@@ -97,7 +114,7 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
         dataRef.current.unshift(dataPoint)
         dataRef.current.length = Math.min(dataRef.current.length, LOCAL_DATA_LIST_LENGTH)
         updateDataToState(dataRef.current)
-    }, [dataRef, updateDataToState, isMounted])
+    }, [dataRef, updateDataToState, isMounted, onError])
 
     const onSub = useCallback(() => {
         if (isMounted()) {
@@ -106,12 +123,6 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
             setVisibleData([...initialState])
             dataRef.current = [...initialState]
             setDataReceived(false)
-        }
-    }, [isMounted])
-
-    const onError = useCallback(() => {
-        if (isMounted()) {
-            setDataError(true)
         }
     }, [isMounted])
 
@@ -130,25 +141,24 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
         })
     }, [showPreviewDialog])
 
+    useSubscription({
+        stream: stream && stream.id,
+        partition: activePartition,
+        resend: {
+            last: LOCAL_DATA_LIST_LENGTH,
+        },
+    }, {
+        onMessage: onData,
+        onSubscribed: onSub,
+        isActive: !!(stream && stream.id && subscribe && isRunning),
+    })
+
     if (!stream || !stream.id) {
         return null
     }
 
     return (
-        <SubscriptionStatusProvider>
-            {!!subscribe && (
-                <Subscription
-                    uiChannel={{
-                        id: stream.id,
-                        partition: activePartition,
-                    }}
-                    resendLast={LOCAL_DATA_LIST_LENGTH}
-                    onSubscribed={onSub}
-                    isActive={isRunning}
-                    onMessage={onData}
-                    onErrorMessage={onError}
-                />
-            )}
+        <React.Fragment>
             {!!showDescription && (
                 <Description>
                     Live data in this stream is displayed below. For a more detailed view, you can open the Inspector.
@@ -201,7 +211,7 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
                     onClose={() => showPreviewDialog.close()}
                 />
             )}
-        </SubscriptionStatusProvider>
+        </React.Fragment>
     )
 }
 

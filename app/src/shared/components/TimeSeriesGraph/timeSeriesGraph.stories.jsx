@@ -49,6 +49,10 @@ stories.add('default', () => (
     <TimeSeriesGraph graphData={graphData} shownDays={7} />
 ))
 
+stories.add('loading', () => (
+    <TimeSeriesGraph graphData={graphData} shownDays={7} isLoading />
+))
+
 const WithShownDays = ({ data }) => {
     const [days, setDays] = useState(7)
 

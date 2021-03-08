@@ -7,11 +7,6 @@ jest.mock('$shared/components/StreamrClientProvider', () => ({
     default: ({ children }) => children,
 }))
 
-jest.mock('$shared/components/Subscription', () => ({
-    __esModule: true,
-    default: () => null,
-}))
-
 describe('ActivityList', () => {
     afterEach(() => {
         delete process.env.ACTIVITY_QUEUE
