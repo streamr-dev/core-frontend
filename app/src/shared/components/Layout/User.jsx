@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { I18n } from 'react-redux-i18n'
 
 import { isEthereumAddress } from '$mp/utils/validate'
 import { truncate } from '$shared/utils/text'
@@ -71,12 +70,11 @@ const UsernameButton = styled.button`
 const UnstyledUsernameCopy = ({ children, username, ...props }) => {
     const { copy, isCopied } = useCopy()
     const isAddress = isEthereumAddress(username)
-    const copyText = isAddress ? I18n.t('general.copyAddress') : I18n.t('general.copyUsername')
-    const copiedText = I18n.t('general.copied')
+    const copyText = isAddress ? 'Copy address' : 'Copy email'
 
     return (
         <div {...props}>
-            <Tooltip value={isCopied ? copiedText : copyText} placement={Tooltip.BOTTOM}>
+            <Tooltip value={isCopied ? 'Copied' : copyText} placement={Tooltip.BOTTOM}>
                 <UsernameButton
                     type="button"
                     onClick={() => copy(username)}

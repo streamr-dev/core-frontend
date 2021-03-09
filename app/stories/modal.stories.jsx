@@ -7,7 +7,6 @@ import { withKnobs, select, text, number, boolean } from '@storybook/addon-knobs
 import { action } from '@storybook/addon-actions'
 import styles from '@sambego/storybook-styles'
 import BN from 'bignumber.js'
-import { Translate } from 'react-redux-i18n'
 
 import { transactionStates, timeUnits } from '$shared/utils/constants'
 import { subscribeSnippets } from '$utils/streamSnippets'
@@ -938,10 +937,7 @@ story('Shared/UnlockWalletDialog')
             onClose={action('onClose')}
             requiredAddress="0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0"
         >
-            <Translate
-                value="unlockWalletDialog.message"
-                tag="p"
-            />
+            {text('Dialog text', 'Please unlock your wallet')}
         </UnlockWalletDialog>
     ))
     .add('with address (iPhone)', () => (
@@ -950,10 +946,7 @@ story('Shared/UnlockWalletDialog')
             onClose={action('onClose')}
             requiredAddress="0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0"
         >
-            <Translate
-                value="unlockWalletDialog.message"
-                tag="p"
-            />
+            {text('Dialog text', 'Please unlock your wallet')}
         </UnlockWalletDialog>
     ), {
         viewport: {

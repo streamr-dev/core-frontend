@@ -3,7 +3,6 @@
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
-import { loadTranslations, syncTranslationWithStore, i18nReducer } from 'react-redux-i18n'
 
 import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
@@ -23,7 +22,6 @@ import userpagesReducers from './userpages/reducers'
 
 import history from './history'
 import analytics from './analytics'
-import translations from './marketplace/i18n'
 
 const middleware = [thunk, routerMiddleware(history), ...analytics.getMiddlewares()]
 const toBeComposed = [applyMiddleware(...middleware)]
@@ -50,7 +48,6 @@ export function initStore() {
             streams: streamsReducer,
             user: userReducer,
             integrationKey: integrationKeyReducer,
-            i18n: i18nReducer,
             relatedProducts: relatedProductsReducer,
             transactions: transactionsReducer,
             ...userpagesReducers,
@@ -58,9 +55,6 @@ export function initStore() {
         compose(...toBeComposed),
     )
 
-    syncTranslationWithStore(store)
-
-    store.dispatch(loadTranslations(translations))
     return store
 }
 

@@ -1,7 +1,6 @@
 // @flow
 
 import React from 'react'
-import { I18n } from 'react-redux-i18n'
 import { Helmet as ReactHelmet } from 'react-helmet'
 
 type Props = {
@@ -44,7 +43,7 @@ export const MarketplaceHelmet = ({
         {...props}
         description={description}
         image={image}
-        suffix={suffix || I18n.t('marketplace.title.suffix')}
+        suffix={suffix || 'Streamr Marketplace'}
         title={title}
     />
 )
@@ -61,7 +60,7 @@ export const CoreHelmet = ({
         title={title}
         image={image}
         description={description}
-        suffix={suffix || I18n.t('core.title.suffix')}
+        suffix={suffix || 'Streamr Core'}
     />
 )
 
@@ -77,7 +76,7 @@ export const DocsHelmet = ({
         title={title}
         image={image}
         description={description}
-        suffix={suffix || I18n.t('docs.title.suffix')}
+        suffix={suffix || 'Streamr Docs'}
     />
 )
 

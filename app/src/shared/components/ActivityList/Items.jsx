@@ -1,6 +1,5 @@
 import React, { useCallback, useContext } from 'react'
 import styled from 'styled-components'
-import { Translate } from 'react-redux-i18n'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import Item from './Item'
@@ -95,13 +94,13 @@ const Items = () => {
                     active={category === 'activity'}
                     onClick={onActivitiesClick}
                 >
-                    <Translate value="activityQueue.tab.activity" />
+                    Activity
                 </Tab>
                 <Tab
                     active={category === 'notifications'}
                     onClick={onNotificationsClick}
                 >
-                    <Translate value="activityQueue.tab.notifications" />
+                    Notifications
                 </Tab>
             </Tabs>
             <Activities>
@@ -114,14 +113,24 @@ const Items = () => {
                         />
                         {category === 'activity' && (
                             <React.Fragment>
-                                <Translate value="activityQueue.activities.empty.title" tag="h1" />
-                                <Translate value="activityQueue.activities.empty.message" tag="span" dangerousHTML />
+                                <h1>
+                                    No activity yet.
+                                </h1>
+                                <span>
+                                    Create, deploy, publish or update something!
+                                </span>
                             </React.Fragment>
                         )}
                         {category === 'notifications' && (
                             <React.Fragment>
-                                <Translate value="activityQueue.notifications.empty.title" tag="h1" />
-                                <Translate value="activityQueue.notifications.empty.message" tag="span" dangerousHTML />
+                                <h1>
+                                    No notifications yet.
+                                </h1>
+                                <span>
+                                    You&apos;ll be notified about payments,
+                                    <br />
+                                    sharing and permissions.
+                                </span>
                             </React.Fragment>
                         )}
                     </EmptyState>

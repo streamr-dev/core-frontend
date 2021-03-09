@@ -1,7 +1,5 @@
 // @flow
 
-import { I18n } from 'react-redux-i18n'
-
 export const ErrorCodes = {
     WEB3_NOT_SUPPORTED: 'WEB3/NOT_SUPPORTED',
     WEB3_NOT_ENABLED: 'WEB3/NOT_ENABLED',
@@ -32,7 +30,7 @@ export class Web3NotSupportedError extends Error {
 export class Web3NotEnabledError extends Error {
     code: string
 
-    constructor(message: string = I18n.t('shared.errors.web3NotEnabled'), ...args: any[]) {
+    constructor(message: string = 'Please unlock your wallet or enable access to your account', ...args: any[]) {
         super(message, ...args)
 
         this.code = ErrorCodes.WEB3_NOT_ENABLED
@@ -48,7 +46,7 @@ export class Web3NotEnabledError extends Error {
 export class WalletLockedError extends Error {
     code: string
 
-    constructor(message: string = I18n.t('shared.errors.unlockWallet'), ...args: any[]) {
+    constructor(message: string = 'Please unlock your wallet', ...args: any[]) {
         super(message, ...args)
 
         this.code = ErrorCodes.WALLET_LOCKED
@@ -65,10 +63,10 @@ export class WrongNetworkSelectedError extends Error {
     code: string
 
     constructor(requiredNetworkName: string, currentNetworkName: string, ...args: any[]) {
-        super(I18n.t('shared.errors.incorrectEthereumNetwork', {
-            requiredNetworkName,
-            currentNetworkName,
-        }), ...args)
+        super(
+            `Please switch to the ${requiredNetworkName} network in your Ethereum wallet. It's currently ${currentNetworkName}.`,
+            ...args,
+        )
 
         this.code = ErrorCodes.WRONG_NETWORK_SELECTED
 
@@ -83,7 +81,7 @@ export class WrongNetworkSelectedError extends Error {
 export class ChallengeFailedError extends Error {
     code: string
 
-    constructor(message: string = I18n.t('shared.errors.challengeFailed'), ...args: any[]) {
+    constructor(message: string = 'Challenge failed', ...args: any[]) {
         super(message, ...args)
 
         this.code = ErrorCodes.CHALLENGE_FAILED
@@ -99,7 +97,7 @@ export class ChallengeFailedError extends Error {
 export class CreateIdentityFailedError extends Error {
     code: string
 
-    constructor(message: string = I18n.t('shared.errors.createIdentityFailed'), ...args: any[]) {
+    constructor(message: string = 'Create identity failed', ...args: any[]) {
         super(message, ...args)
 
         this.code = ErrorCodes.CREATE_IDENTITY_FAILED
@@ -115,7 +113,7 @@ export class CreateIdentityFailedError extends Error {
 export class IdentityExistsError extends Error {
     code: string
 
-    constructor(message: string = I18n.t('shared.errors.identityExists'), ...args: any[]) {
+    constructor(message: string = 'Identity exists', ...args: any[]) {
         super(message, ...args)
 
         this.code = ErrorCodes.IDENTITY_EXISTS

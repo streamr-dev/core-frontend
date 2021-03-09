@@ -1,5 +1,4 @@
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
 import styled from 'styled-components'
 import {
     Footer as LayoutFooter,
@@ -28,37 +27,37 @@ const FooterColumns = styled(UnstyledFooterColumns)`
 const Footer = ({ topBorder = false }) => (
     <LayoutFooter>
         <FooterColumns separate={topBorder}>
-            <FooterColumn title={I18n.t('general.learn')}>
+            <FooterColumn title="Learn">
                 <a href={routes.root()}>
-                    <Translate value="general.top" />
+                    Top
                 </a>
                 <a href={routes.site.discover.network()}>
-                    <Translate value="general.network" />
+                    Network
                 </a>
                 <a href={routes.site.discover.marketplace()}>
-                    <Translate value="general.marketplace" />
+                    Marketplace
                 </a>
                 <a href={routes.site.discover.core()}>
-                    <Translate value="general.core" />
+                    Core
                 </a>
             </FooterColumn>
-            <FooterColumn title={I18n.t('general.apps')}>
+            <FooterColumn title="Apps">
                 <a href={routes.marketplace.index()}>
-                    <Translate value="general.marketplace" />
+                    Marketplace
                 </a>
                 <a href={routes.core()}>
-                    <Translate value="general.core" />
+                    Core
                 </a>
             </FooterColumn>
-            <FooterColumn title={I18n.t('general.project')}>
+            <FooterColumn title="Project">
                 <a href={routes.site.about()}>
-                    <Translate value="general.aboutUs" />
+                    About
                 </a>
                 <a href={routes.site.design()}>
-                    <Translate value="general.designAssets" />
+                    Design Assets
                 </a>
                 <a href={routes.community.medium()}>
-                    <Translate value="general.blog" />
+                    Blog
                 </a>
             </FooterColumn>
             <FooterColumn title="Docs">
@@ -75,32 +74,32 @@ const Footer = ({ topBorder = false }) => (
                     Products
                 </a>
             </FooterColumn>
-            <FooterColumn title={I18n.t('general.contact')}>
+            <FooterColumn title="Contact">
                 <a href={routes.contact.general()}>
-                    <Translate value="general.general" />
+                    General
                 </a>
                 <a href={routes.contact.media()}>
-                    <Translate value="general.media" />
+                    Media
                 </a>
                 <a href={routes.contact.jobs()}>
-                    <Translate value="general.jobs" />
+                    Jobs
                 </a>
                 <a href={routes.contact.labs()}>
-                    <Translate value="general.labs" />
+                    Business
                 </a>
             </FooterColumn>
-            <FooterColumn title={I18n.t('general.documents')}>
-                <a href={I18n.t('urls.whitepaper')}>
-                    <Translate value="general.whitepaper" />
+            <FooterColumn title="Documents">
+                <a href="https://streamr.network/whitepaper">
+                    Whitepaper
                 </a>
                 <a href={routes.contributionSummary()}>
-                    <Translate value="general.contributionSummary" />
+                    Contribution Summary
                 </a>
                 <a href={routes.tos()}>
-                    <Translate value="general.terms" />
+                    Terms &amp; Conditions
                 </a>
                 <a href={routes.privacyPolicy()}>
-                    <Translate value="general.privacy" />
+                    Privacy
                 </a>
             </FooterColumn>
         </FooterColumns>
