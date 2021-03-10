@@ -70,6 +70,7 @@ const ProductDetailsPage = () => {
                         stats={stats}
                         memberCount={memberCount}
                         joinPartStreamId={joinPartStreamId}
+                        dataUnion={dataUnion}
                     />
                 )}
                 <Streams />

@@ -113,6 +113,7 @@ const DataUnionStats = () => {
 
     const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
     const dataUnion = useDataUnion()
+    console.log(dataUnion)
     const contractProduct = useContractProduct()
     const { subscriberCount } = contractProduct || {
         subscriberCount: 0,
@@ -142,6 +143,7 @@ const DataUnionStats = () => {
                 stats,
                 memberCount,
                 joinPartStreamId,
+                dataUnion,
             }
         }
 
@@ -174,7 +176,7 @@ const DataUnionStats = () => {
                 inactive: 0,
             },
         }
-    }, [isDuDeployed, stats, memberCount, joinPartStreamId, created, adminFee])
+    }, [isDuDeployed, stats, memberCount, joinPartStreamId, created, adminFee, dataUnion])
 
     return (
         <ProductPageDataUnionStats {...statsProps} />

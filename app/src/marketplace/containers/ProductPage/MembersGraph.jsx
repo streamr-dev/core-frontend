@@ -32,20 +32,6 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
     const activeAddressesRef = useRef([])
-    const [isActive, setIsActive] = useState(true)
-
-    useEffect(() => {
-        // NOTE: We need to disable subscription for a while and enable it
-        //       after a short delay because otherwise 'Subscription' component
-        //       will trigger 'unsubscribed' event twice. Once for old and also
-        //       for the newly created subscription. Might be a bug with
-        //       streamr-client.
-        setIsActive(false)
-        const timeoutId = setTimeout(() => {
-            setIsActive(true)
-        }, 100)
-        return () => clearTimeout(timeoutId)
-    }, [shownDays])
 
     const resendFrom = useMemo(() => (
         Date.now() - (shownDays * MILLISECONDS_IN_DAY)
@@ -157,10 +143,11 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     useSubscription({
         stream: joinPartStreamId,
         resend: {
-            from: resendFrom,
+            from: {
+                timestamp: resendFrom,
+            },
         },
     }, {
-        isActive,
         onMessage,
     })
 
