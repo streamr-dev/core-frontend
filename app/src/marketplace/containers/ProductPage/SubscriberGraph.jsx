@@ -89,6 +89,12 @@ const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
             })
         })
 
+        // Make sure we fill the whole time range
+        data.unshift({
+            x: Date.now() - (shownDays * MILLISECONDS_IN_DAY),
+            y: data[0].y,
+        })
+
         setGraphData(data)
     }, [subscriptionData, shownDays])
 

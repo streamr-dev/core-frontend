@@ -15,7 +15,7 @@ import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
-import { calculateBlockNumber } from '$mp/modules/contractProduct/services'
+import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
 import { post, del, get, put } from '$shared/utils/api'
 import { postStream, getStream } from '$userpages/modules/userPageStreams/services'
@@ -557,11 +557,9 @@ const getSidechainEvents = async (address: string, eventName: string, fromBlock:
 
 export const getJoinsAndParts = async (address: string, fromTimestamp: number) => {
     const web3 = getSidechainWeb3()
-    const fromBlock = 0 // await calculateBlockNumber(web3, fromTimestamp)
+    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
     const joins = await getSidechainEvents(address, 'MemberJoined', fromBlock)
     const parts = await getSidechainEvents(address, 'MemberParted', fromBlock)
-    console.log('Calculated block', fromBlock, 'to match timestamp', fromTimestamp)
-
     const result = []
 
     // eslint-disable-next-line no-restricted-syntax
@@ -588,7 +586,7 @@ export const getJoinsAndParts = async (address: string, fromTimestamp: number) =
         }
     }
 
-    result.sort((a, b) => a.timestamp - b.timestamp)
+    result.sort((a, b) => b.timestamp - a.timestamp)
     return result
 }
 

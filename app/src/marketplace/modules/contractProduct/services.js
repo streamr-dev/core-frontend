@@ -12,6 +12,7 @@ import {
     validateContractProductPricePerSecond,
 } from '$mp/utils/product'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
+import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
@@ -67,63 +68,9 @@ export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNod
     return null
 }
 
-// Seeks blocks starting from 'initialBlockNumberGuess' and checks block timestamps
-// until 'targetTimestampMs' is matched.
-// Returns best guess when 'maxTries' is reached.
-export const seekBlockWithTimestamp = async (
-    web3: any,
-    initialBlockNumberGuess: number,
-    targetTimestampMs: number,
-    blockTime: number,
-    maxTries: number = 20,
-) => {
-    let block = await web3.eth.getBlock(initialBlockNumberGuess)
-    if (block == null) {
-        block = await web3.eth.getBlock('latest')
-    }
-
-    const diff = block.timestamp - (targetTimestampMs / 1000)
-
-    // Check if this is close enough block
-    if (Math.abs(diff) <= blockTime) {
-        return block.number
-    }
-
-    // Abort if block cannot be found
-    if (maxTries <= 0) {
-        return block.number
-    }
-
-    // Try to find a closer block
-    const blocksToSeek = Math.floor(Math.abs(diff) / blockTime)
-    let nextBlock = diff < 0 ? block.number + blocksToSeek : block.number - blocksToSeek
-    if (nextBlock < 0) {
-        nextBlock = 0
-    }
-
-    return seekBlockWithTimestamp(web3, nextBlock, targetTimestampMs, blockTime, maxTries - 1)
-}
-
-export const calculateBlockNumber = async (web3: any, timestampMs: number) => {
-    const latestBlock = await web3.eth.getBlock('latest')
-    const firstBlock = await web3.eth.getBlock(1)
-    const blockTime = (latestBlock.timestamp - firstBlock.timestamp) / (latestBlock.number - firstBlock.number)
-    const secondsBetween = (latestBlock.timestamp - (timestampMs / 1000))
-    const blocksToRewind = Math.floor(secondsBetween / blockTime)
-    let predictedBlock = latestBlock.number - blocksToRewind
-
-    if (predictedBlock < 0) {
-        predictedBlock = 0
-    }
-
-    // Predicted block will not probably be right so make sure we get the right block
-    // corresponding to given timestamp
-    return seekBlockWithTimestamp(web3, predictedBlock, timestampMs, blockTime)
-}
-
 export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = true) => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-    const fromBlock = await calculateBlockNumber(web3, fromTimestamp)
+    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
     const events = await getMarketplaceEvents(id, 'Subscribed', fromBlock, usePublicNode)
     const subscriptions = []
 

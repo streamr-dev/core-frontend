@@ -113,7 +113,6 @@ const DataUnionStats = () => {
 
     const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
     const dataUnion = useDataUnion()
-    console.log(dataUnion)
     const contractProduct = useContractProduct()
     const { subscriberCount } = contractProduct || {
         subscriberCount: 0,
