@@ -109,7 +109,6 @@ jobs:
     - NODE_ENV=production
     - VERSION=$TRAVIS_TAG
     - PORT=12345
-    - VERSION=$TRAVIS_TAG
     - SENTRY_ENVIRONMENT=production
     - STREAMR_API_URL=https://streamr.network/api/v1
     - STREAMR_WS_URL=wss://streamr.network/api/v1/ws
