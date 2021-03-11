@@ -2,7 +2,6 @@
 
 import EventEmitter from 'events'
 import StreamrClient from 'streamr-client'
-import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 import { getContract, call, calculateContractAddress } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
@@ -204,7 +203,7 @@ const deprecated_deployDataUnion = (productId: ProductId, adminFee: string): Sma
                 })
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
-                        errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                        errorHandler(new TransactionError('Transaction failed', receipt))
                     } else {
                         emitter.emit('receipt', receipt)
                     }
@@ -229,8 +228,14 @@ export const createClient = (options: CreateClient = {}) => {
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
-        factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
-        factorySidechainAddress: process.env.DATA_UNION_FACTORY_SIDECHAIN_ADDRESS,
+        tokenAddress: process.env.DATA_TOKEN_CONTRACT_ADDRESS,
+        tokenAddressSidechain: process.env.DATA_TOKEN_SIDECHAIN_ADDRESS,
+        dataUnion: {
+            factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
+            factorySidechainAddress: process.env.DATA_UNION_FACTORY_SIDECHAIN_ADDRESS,
+            templateMainnetAddress: process.env.DATA_UNION_TEMPLATE_MAINNET_ADDRESS,
+            templateSidechainAddress: process.env.DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS,
+        },
         autoConnect: false,
         autoDisconnect: false,
         auth: {
@@ -283,7 +288,7 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: string): SmartC
         })
         .then((dataUnion) => {
             if (!dataUnion || !dataUnion.contractAddress) {
-                errorHandler(new TransactionError(I18n.t('error.txFailed')))
+                errorHandler(new TransactionError('Transaction failed'))
             } else {
                 emitter.emit('receipt', {
                     contractAddress: dataUnion.getAddress(),
@@ -408,7 +413,7 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
                 dataUnion.setAdminFee(+adminFee)
                     .then((receipt) => {
                         if (parseInt(receipt.status, 16) === 0) {
-                            errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                            errorHandler(new TransactionError('Transaction failed', receipt))
                         } else {
                             emitter.emit('receipt', receipt)
                         }
@@ -430,7 +435,7 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
                     })
                     .on('receipt', (receipt) => {
                         if (parseInt(receipt.status, 16) === 0) {
-                            errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                            errorHandler(new TransactionError('Transaction failed', receipt))
                         } else {
                             emitter.emit('receipt', receipt)
                         }
