@@ -228,10 +228,14 @@ export const createClient = (options: CreateClient = {}) => {
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
         restUrl: process.env.STREAMR_API_URL,
-        factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
-        factorySidechainAddress: process.env.DATA_UNION_FACTORY_SIDECHAIN_ADDRESS,
-        templateMainnetAddress: process.env.DATA_UNION_TEMPLATE_MAINNET_ADDRESS,
-        templateSidechainAddress: process.env.DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS,
+        tokenAddress: process.env.DATA_TOKEN_CONTRACT_ADDRESS,
+        tokenAddressSidechain: process.env.DATA_TOKEN_SIDECHAIN_ADDRESS,
+        dataUnion: {
+            factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
+            factorySidechainAddress: process.env.DATA_UNION_FACTORY_SIDECHAIN_ADDRESS,
+            templateMainnetAddress: process.env.DATA_UNION_TEMPLATE_MAINNET_ADDRESS,
+            templateSidechainAddress: process.env.DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS,
+        },
         autoConnect: false,
         autoDisconnect: false,
         auth: {
