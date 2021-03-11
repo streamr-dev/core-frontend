@@ -35,74 +35,6 @@ import:
  - source: streamr-dev/travis-ci:docker-secrets.yml@master
 jobs:
   include:
-  - stage: Platform Build Staging
-    if: NOT type IN (pull_request)
-    env:
-    - NODE_ENV=production
-    - PORT=12345
-    - VERSION=$TRAVIS_BRANCH
-    - SENTRY_ENVIRONMENT=staging
-    - BUNDLE_ANALYSIS=1
-    - STREAMR_API_URL=https://staging.streamr.com/api/v1
-    - STREAMR_WS_URL=wss://staging.streamr.com/api/v1/ws
-    - PLATFORM_ORIGIN_URL=https://staging.streamr.com
-    - STREAMR_URL=https://staging.streamr.com
-    - PLATFORM_PUBLIC_PATH=https://marketplace-staging.streamr.com
-    - GOOGLE_ANALYTICS_ID=55331565-5
-    - STORYBOOK_BASE_PATH=storybook
-    - MARKETPLACE_CONTRACT_ADDRESS=0xF1371c0f40528406dc4f4cAf89924eA9Da49E866
-    - DATA_TOKEN_CONTRACT_ADDRESS=0xbAA81A0179015bE47Ad439566374F2Bae098686F
-    - DAI_TOKEN_CONTRACT_ADDRESS=0x4CEed45382203e84d2eAB4A9F37D4F141e79A574
-    - UNISWAP_ADAPTOR_CONTRACT_ADDRESS=0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3
-    - WEB3_REQUIRED_NETWORK_ID=8995
-    - WEB3_PUBLIC_HTTP_PROVIDER=https://staging.streamr.com:8540
-    - WEB3_PUBLIC_WS_PROVIDER=wss://staging.streamr.com:8540/ws
-    - SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@sentry.io/1203154
-    - LOGROCKET_SLUG=et0uhu/streamr-frontend-local
-    - DATA_UNION_PUBLISH_MEMBER_LIMIT=0
-    - STREAMR_ENGINE_NODE_ADDRESSES=0xFCAd0B19bB29D4674531d6f115237E16AfCE377c
-    - DATA_UNION_OPERATOR_ADDRESS=0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1
-    - DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
-    - WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
-    - DATA_UNION_FACTORY_MAINNET_ADDRESS=0x4bbcBeFBEC587f6C4AF9AF9B48847caEa1Fe81dA
-    - DATA_UNION_FACTORY_SIDECHAIN_ADDRESS=0x4A4c4759eb3b7ABee079f832850cD3D0dC48D927
-    - DATAUNION_VERSION=2
-    - DATA_UNION_SIDECHAIN_PROVIDER=https://new-staging.streamr.network/sidechain-rpc/http/
-    - NO_TEST_HOOKS=1
-    - STORAGE_NODES="Staging Storage:0xde1112f631486CfC759A50196853011528bC5FA0"
-    script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app-stg.sh"
-    deploy:
-    - provider: s3
-      access_key_id: $ACCESS_KEY_STG
-      secret_access_key: $SECRET_ACCESS_KEY_STG
-      bucket: eu-west-1-stg-streamr-marketplace
-      local-dir: "$TRAVIS_BUILD_DIR/app/dist"
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        branch: development
-    - provider: s3
-      access_key_id: $ACCESS_KEY_STG
-      secret_access_key: $SECRET_ACCESS_KEY_STG
-      bucket: eu-west-1-stg-streamr-vault
-      local-dir: "$TRAVIS_BUILD_DIR/build"
-      upload-dir: marketplace/releases
-      acl: private
-      region: eu-west-1
-      skip_cleanup: true
-      on:
-        branch: development
-    - provider: codedeploy
-      access_key_id: $ACCESS_KEY_STG
-      secret_access_key: $SECRET_ACCESS_KEY_STG
-      bucket: eu-west-1-stg-streamr-vault
-      key: marketplace/releases/marketplace.tar
-      application: eu-west-1-stg-marketplace-codedeploy
-      deployment_group: eu-west-1-stg-marketplace-deployment-group
-      region: eu-west-1
-      on:
-        branch: development
   - stage: Platform Build Production
     if: NOT type IN (pull_request)
     env:
@@ -134,7 +66,9 @@ jobs:
     - NO_TEST_HOOKS=1
     - STORAGE_NODES="Streamr Germany:0xc3075C2556A1FD30c67530F1ac5ddAE618762CAa"
     - DATA_UNION_FACTORY_MAINNET_ADDRESS=0x7d55f9981d4E10A193314E001b96f72FCc901e40
+    - DATA_UNION_TEMPLATE_MAINNET_ADDRESS=0x5FE790E3751dd775Cb92e9086Acd34a2adeB8C7b
     - DATA_UNION_FACTORY_SIDECHAIN_ADDRESS=0x1b55587Beea0b5Bc96Bb2ADa56bD692870522e9f
+    - DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS=0xf1E9d6E254BeA3f0129018AcA1A50AEcb7D528be
     - DATA_UNION_SIDECHAIN_PROVIDER=https://rpc.xdaichain.com/
     script: "$TRAVIS_BUILD_DIR/app/travis_scripts/build-app.sh"
     deploy:
