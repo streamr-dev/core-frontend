@@ -2,7 +2,6 @@
 
 import EventEmitter from 'events'
 import StreamrClient from 'streamr-client'
-import { I18n } from 'react-redux-i18n'
 import BN from 'bignumber.js'
 import { getContract, call, calculateContractAddress } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
@@ -204,7 +203,7 @@ const deprecated_deployDataUnion = (productId: ProductId, adminFee: string): Sma
                 })
                 .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
-                        errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                        errorHandler(new TransactionError('Transaction failed', receipt))
                     } else {
                         emitter.emit('receipt', receipt)
                     }
@@ -283,7 +282,7 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: string): SmartC
         })
         .then((dataUnion) => {
             if (!dataUnion || !dataUnion.contractAddress) {
-                errorHandler(new TransactionError(I18n.t('error.txFailed')))
+                errorHandler(new TransactionError('Transaction failed'))
             } else {
                 emitter.emit('receipt', {
                     contractAddress: dataUnion.getAddress(),
@@ -408,7 +407,7 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
                 dataUnion.setAdminFee(+adminFee)
                     .then((receipt) => {
                         if (parseInt(receipt.status, 16) === 0) {
-                            errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                            errorHandler(new TransactionError('Transaction failed', receipt))
                         } else {
                             emitter.emit('receipt', receipt)
                         }
@@ -430,7 +429,7 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
                     })
                     .on('receipt', (receipt) => {
                         if (parseInt(receipt.status, 16) === 0) {
-                            errorHandler(new TransactionError(I18n.t('error.txFailed'), receipt))
+                            errorHandler(new TransactionError('Transaction failed', receipt))
                         } else {
                             emitter.emit('receipt', receipt)
                         }
