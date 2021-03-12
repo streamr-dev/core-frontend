@@ -8,69 +8,61 @@ import docsLinks from '$shared/../docsLinks'
 
 A Data Union is created in the Core app. See <Link to={docsLinks.dataUnionsInCore}>Creating a Data Union with Core</Link> for more details. It can also be achieved programmatically, via a client library.
 
+To get a DataUnion instance, call streamr.getDataUnion(address).
 ```
-const dataUnion = await client.deployDataUnion()
-```
-
-To get a DataUnion instance, call streamr.getDataUnion(address). To deploy a new DataUnion, call deployDataUnion(options)
-```
-const dataUnion = await client.getDataUnion(address)
+const dataUnion = await streamr.getDataUnion(address)
 ```
 
-A Data Union is identified by the address of its smart contract on the Ethereum Mainnet. After the smart contract has been created, the admin may choose to create an app secret (`dataunionAddress` is the smart contract address):
+To deploy a new DataUnion, call deployDataUnion()
+```
+const dataUnion = await streamr.deployDataUnion()
+```
+
+A Data Union is identified by the address of its smart contract on the Ethereum Mainnet. After the smart contract has been created, the admin may choose to create an app secret:
 
 ```
-const { secret } = await streamr.createSecret(name)
+const secret = await dataUnion.createSecret(name)
 ```
 
-If the secret is not provided, it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Admin of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
+If a name is not provided, it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Admin of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
 
 The idea of an app secret is that it allows new members to join the Data Union without explicit approval from the Data Union admin, to streamline the on-ramp process.
 
-After the DataunionVault is set up, it’s time to create the actual product. This is most easily done using Streamr Core, but can also be done through the <Link to={docsLinks.api}>HTTP API</Link>.
+After the Data Union is set up, it’s time to create the actual product. This is most easily done using Streamr Core, but can also be done through the <Link to={docsLinks.api}>HTTP API</Link>.
 
-To create a Data Union product instead of a regular one, add `“type”: “dataunion”` to the `POST /products` body.
+To create a Data Union product instead of a regular one, add `“type”: "DATAUNION"` to the `POST /products` body.
 
 ### Observing Data Unions
 
-The admin UI might need info on what’s going on in the Data Union
+The admin UI might need info on what’s going on in the Data Union:
 
 ```
-const stats = await streamr.getDataunionStats(dataunionAddress)
+const stats = await dataUnion.getStats()
 ```
 
 The returned stats object would look something like:
 
 ```
 {
-  "memberCount": {
-    "total": 0,
-    "active": 0,
-    "inactive": 0
-  },
-  "totalEarnings": "0",
-  "latestBlock": {
-    "blockNumber": 0,
-    "timestamp": 0,
-    "memberCount": 0,
-    "totalEarnings": 0
-  },
-  "latestWithdrawableBlock": {
-    "blockNumber": 0,
-    "timestamp": 0,
-    "memberCount": 0,
-    "totalEarnings": 0
-  },
-  "joinPartStreamId": "qwertyui"
+  "activeMemberCount": BigNumber(0),
+  "inactiveMemberCount": BigNumber(0),
+  "joinPartAgentCount": BigNumber,
+  "lifetimeMemberEarnings": BigNumber(0),
+  "totalEarnings": BigNumber(0),
+  "totalWithdrawable": BigNumber(0),
 }
 ```
 
 Other relevant query functions:
 
 ```
-await streamr.getMembers(dataunionAddress)
-await streamr.getMemberStats(dataunionAddress, memberAddress)
-await streamr.getBalance(dataunionAddress, memberAddress)
+await dataUnion.getAddress()
+await dataUnion.getAdminAddress()
+await dataUnion.getSidechainAddress()
+await dataUnion.getAdminFee()
+await dataUnion.getMemberStats(memberAddress)
+await dataUnion.getBalance(memberAddress)
+await dataUnion.getWithdrawableEarnings(memberAddress)
 ```
 
 The Streamr Core app also provides monitoring functions for Admins, showing subscriber numbers, total revenue, join requests and more. <Link to={docsLinks.dataUnionsInCore}>Create a Data Union with Core</Link> provides more information.
