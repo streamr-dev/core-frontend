@@ -145,18 +145,18 @@ const Stats = () => {
                                                 selectedItem={`${membersDays}`}
                                             />
                                         </TimeSeriesGraph.Header>
+                                        {dataUnion && dataUnion.version && dataUnion.version === 1 && joinPartStreamId && (
+                                            <MembersGraph
+                                                joinPartStreamId={joinPartStreamId}
+                                                memberCount={memberCount.total}
+                                                shownDays={membersDays}
+                                            />
+                                        )}
                                         {dataUnion && dataUnion.version && dataUnion.version === 2 && (
                                             <MembersGraphV2
                                                 memberCount={memberCount.total}
                                                 shownDays={membersDays}
                                                 dataUnionAddress={dataUnion.id}
-                                            />
-                                        )}
-                                        {joinPartStreamId && (
-                                            <MembersGraph
-                                                joinPartStreamId={joinPartStreamId}
-                                                memberCount={memberCount.total}
-                                                shownDays={membersDays}
                                             />
                                         )}
                                     </React.Fragment>

@@ -95,18 +95,18 @@ const UnstyledDataUnionStats = ({
                                 />
                             </TimeSeriesGraph.Header>
                             <TimeSeriesGraph.Body>
+                                {dataUnion && dataUnion.version && dataUnion.version === 1 && joinPartStreamId && (
+                                    <MembersGraph
+                                        joinPartStreamId={joinPartStreamId}
+                                        memberCount={memberCount.total}
+                                        shownDays={days}
+                                    />
+                                )}
                                 {dataUnion && dataUnion.version && dataUnion.version === 2 && (
                                     <MembersGraphV2
                                         memberCount={memberCount.total}
                                         shownDays={days}
                                         dataUnionAddress={dataUnion.id}
-                                    />
-                                )}
-                                {joinPartStreamId && (
-                                    <MembersGraph
-                                        joinPartStreamId={joinPartStreamId}
-                                        memberCount={memberCount.total}
-                                        shownDays={days}
                                     />
                                 )}
                             </TimeSeriesGraph.Body>
