@@ -5,9 +5,10 @@ import docsLinks from '$shared/../docsLinks'
 # Joining and withdrawing funds
 
 ### Joining a Data Union
-Joining a Data Union requires not require a user transaction. Join the Data Union (if a valid secret is given, the promise waits until the automatic join request has been processed).
+Joining a Data Union does not require a user transaction. Join the Data Union (if a valid secret is given, the promise waits until the automatic join request has been processed):
 ```
-await streamr.dataUnion.join(secret)
+const dataUnion = await streamr.getDataUnion(address)
+await dataUnion.join(secret)
 ```
 
 The correct secret allows the member to join without manual approval from the Data Union admin. If the secret is omitted, the admin must login, find pending joinRequests in the Data Union admin view of the product, and approve the requests manually.
@@ -15,32 +16,23 @@ The correct secret allows the member to join without manual approval from the Da
 Similar to `deployDataunion`, you should wait until the member has joined before querying the member’s stats. The Data Union member can check their earnings (minus earlier withdrawals) in every Data Union:
 
 ```
-const {total, withdrawable} = await streamr.getBalance(dataunionAddress)
+const amount = await dataUnion.getWithdrawableEarnings()
 ```
-
-The two numbers refer to the number of tokens actually `withdrawable` right now, and the total number of tokens that will be `withdrawable` after the Operator commits the earnings to the blockchain.
 
 Also other interesting stats are available from the server:
 
 ```
-await streamr.memberStats(dataunionAddress)
+await dataUnion.memberStats()
 ```
 
 Response would be something like:
 
 ```
 {
-    address: "0xdC353aA3d81fC3d67Eb49F443df258029B01D8aB",
-    earnings: "333333333333333333",
-    active: true,
-    proof: [
-        "0xd92d93e1a5532affe4f635cc97c555c39413ceecea690323cbd2d21b0d5acb8d",
-        "0x6cfa6f3735edabee127ccb3ad7dc4a9aba79993664eead578e3544b7dc58c515"
-    ],
-    recordedEarnings: "333333333333333333",
-    withdrawableEarnings: "333333333333333333",
-    frozenEarnings: "0",
-    withdrawableBlockNumber: 7
+    earningsBeforeLastJoin: BigNumber(333333333333333333),
+    status: "ACTIVE",
+    totalEarnings: BigNumber(333333333333333333),
+    withdrawableEarnings: BigNumber(333333333333333333),
 }
 ```
 
@@ -48,10 +40,9 @@ Response would be something like:
 When the member wants to withdraw their earnings, that happens through an Ethereum transaction to the smart contract:
 
 ```
-streamr.dataUnion.withdraw(dataunionAddress)
+await dataUnion.withdrawAll()
 ```
 
 DATA tokens can be withdrawn and used on the sidechain, (currently <a href="https://www.xdaichain.com" target="_blank" rel="noopener noreferrer">xDai</a>) – for example swapped to some other tokens using a DEX present on that sidechain. The transaction fees on sidechains are orders of magnitude cheaper than on Ethereum mainnet, making it much more feasible to move around even small amounts of value. On xDai, transactions currently cost only fractions of a cent, compared to transactions costing tens or even hundreds of dollars on mainnet. 
 
 The Data Unions framework also support gasless withdrawals via metatransactions. This means that Data Union admins can optionally pay the transaction fees on behalf of members, potentially enabling a better user experience. DATA tokens can also to be directly deposited to a particular member’s balance in the Data Union, allowing Data Union Admins to run referral campaigns that pay out personalised rewards (as opposed to the equal revenue sharing among members, the core feature of Data Unions).
-
