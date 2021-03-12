@@ -4,26 +4,26 @@ import docsLinks from '$shared/../docsLinks'
 
 # Create and monitor Data Unions
 
-### Creating a Data Union product
+### Creating a Data Union
 
-Creating a Data Union product is most easily handled by using the Core app. See <Link to={docsLinks.dataUnionsInCore}>Creating a Data Union with Core</Link> for more details. Otherwise, it can be handled this way, but it is somewhat complicated.
-
-Start by deploying the `DataunionVault` smart contract. This is done by the Data Union admin who then becomes the owner of the contract as well.
+A Data Union is created in the Core app. See <Link to={docsLinks.dataUnionsInCore}>Creating a Data Union with Core</Link> for more details. It can also be achieved programmatically, via a client library.
 
 ```
-const contract = await streamr.deployDataunion()
-await contract.isReady()
+const dataUnion = await client.deployDataUnion()
 ```
 
-The reason for the await is that deployDataunion returns when the `DataunionVault` deploy transaction is sent, but not yet mined. `await contract.deployed()` can be used to wait until mining is done, `await contract.isReady()` will wait until Data Union Server has noticed the contract and it’s actually ready to use through StreamrClient.
-
-A Data Union is identified by the address of its smart contract. After the smart contract has been created, the admin may choose to create an app secret (`dataunionAddress` is the smart contract address):
-
+To get a DataUnion instance, call streamr.getDataUnion(address). To deploy a new DataUnion, call deployDataUnion(options)
 ```
-const {secret} = await streamr.createSecret(dataunionAddress)
+const dataUnion = await client.getDataUnion(address)
 ```
 
-If the secret is not provided, it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Administrator of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
+A Data Union is identified by the address of its smart contract on the Ethereum Mainnet. After the smart contract has been created, the admin may choose to create an app secret (`dataunionAddress` is the smart contract address):
+
+```
+const { secret } = await streamr.createSecret(name)
+```
+
+If the secret is not provided, it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Admin of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
 
 The idea of an app secret is that it allows new members to join the Data Union without explicit approval from the Data Union admin, to streamline the on-ramp process.
 
