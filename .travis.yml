@@ -16,6 +16,7 @@ before_install:
 - cd app
 install:
 - npm ci
+- npm rebuild node-sass
 - true
 cache:
   directories:
