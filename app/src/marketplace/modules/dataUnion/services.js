@@ -3,6 +3,8 @@
 import EventEmitter from 'events'
 import StreamrClient from 'streamr-client'
 import BN from 'bignumber.js'
+import Web3 from 'web3'
+
 import { getContract, call, calculateContractAddress } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 import { getToken } from '$shared/utils/sessionToken'
@@ -13,6 +15,7 @@ import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
+import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
 import { post, del, get, put } from '$shared/utils/api'
 import { postStream, getStream } from '$userpages/modules/userPageStreams/services'
@@ -528,6 +531,63 @@ export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = tru
     }
 
     throw new Error('Unknow DU version')
+}
+
+const getSidechainWeb3 = () => new Web3(new Web3.providers.HttpProvider(process.env.DATA_UNION_SIDECHAIN_PROVIDER))
+
+const getSidechainContract = async (dataUnionId: string) => {
+    const client = createClient({
+        usePublicNode: true,
+    })
+    const dataUnion = client.getDataUnion(dataUnionId)
+    const address = await dataUnion.getSidechainAddress()
+
+    const web3 = getSidechainWeb3()
+    return new web3.eth.Contract(getConfig().dataUnionAbi, address)
+}
+
+const getSidechainEvents = async (address: string, eventName: string, fromBlock: number = 0) => {
+    const contract = await getSidechainContract(address)
+    const events = await contract.getPastEvents(eventName, {
+        fromBlock,
+        toBlock: 'latest',
+    })
+    return events
+}
+
+export const getJoinsAndParts = async (address: string, fromTimestamp: number) => {
+    const web3 = getSidechainWeb3()
+    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
+    const joins = await getSidechainEvents(address, 'MemberJoined', fromBlock)
+    const parts = await getSidechainEvents(address, 'MemberParted', fromBlock)
+    const result = []
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const e of joins) {
+        // eslint-disable-next-line no-await-in-loop
+        const block = await web3.eth.getBlock(e.blockHash)
+        if (block && block.timestamp) {
+            result.push({
+                timestamp: block.timestamp * 1000,
+                diff: 1,
+            })
+        }
+    }
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const e of parts) {
+        // eslint-disable-next-line no-await-in-loop
+        const block = await web3.eth.getBlock(e.blockHash)
+        if (block && block.timestamp) {
+            result.push({
+                timestamp: block.timestamp * 1000,
+                diff: -1,
+            })
+        }
+    }
+
+    result.sort((a, b) => b.timestamp - a.timestamp)
+    return result
 }
 
 type GetSecrets = {

@@ -20,6 +20,7 @@ import DataUnionPending from '$mp/components/ProductPage/DataUnionPending'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import ProductStat from '$shared/components/ProductStat'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
+import MembersGraphV2 from '$mp/containers/ProductPage/MembersGraphV2'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { isDataUnionProduct } from '$mp/utils/product'
@@ -144,11 +145,20 @@ const Stats = () => {
                                                 selectedItem={`${membersDays}`}
                                             />
                                         </TimeSeriesGraph.Header>
-                                        <MembersGraph
-                                            joinPartStreamId={joinPartStreamId}
-                                            memberCount={memberCount.total}
-                                            shownDays={membersDays}
-                                        />
+                                        {dataUnion && dataUnion.version && dataUnion.version === 1 && joinPartStreamId && (
+                                            <MembersGraph
+                                                joinPartStreamId={joinPartStreamId}
+                                                memberCount={memberCount.total}
+                                                shownDays={membersDays}
+                                            />
+                                        )}
+                                        {dataUnion && dataUnion.version && dataUnion.version === 2 && (
+                                            <MembersGraphV2
+                                                memberCount={memberCount.total}
+                                                shownDays={membersDays}
+                                                dataUnionAddress={dataUnion.id}
+                                            />
+                                        )}
                                     </React.Fragment>
                                 )}
                             </div>

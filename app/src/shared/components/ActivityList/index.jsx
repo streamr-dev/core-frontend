@@ -88,7 +88,9 @@ const ActivityList = ({ children = <Items /> }) => {
     useSubscription({
         stream: streamId,
         resend: {
-            from: ACTIVITY_FROM,
+            from: {
+                timestamp: ACTIVITY_FROM,
+            },
         },
     }, {
         isActive: !!streamId,

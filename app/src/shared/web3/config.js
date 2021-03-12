@@ -4,6 +4,7 @@ import type { SmartContractConfig, SmartContractMetadata } from '$shared/flowtyp
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
 import uniswapAdaptorAbi from './abis/uniswapAdaptor'
+import dataUnionAbi from './abis/dataunion'
 import communityProductMetadata from './contracts/communityProduct'
 
 type Config = {
@@ -16,6 +17,7 @@ type Config = {
     daiToken: SmartContractConfig,
     communityProduct: SmartContractMetadata,
     uniswapAdaptor: SmartContractConfig,
+    dataUnionAbi: string,
 }
 
 const getConfig = (): Config => ({
@@ -43,6 +45,7 @@ const getConfig = (): Config => ({
         abi: uniswapAdaptorAbi,
         address: process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS || '',
     },
+    dataUnionAbi,
 })
 
 export default getConfig

@@ -142,6 +142,7 @@ const DataUnionStats = () => {
                 stats,
                 memberCount,
                 joinPartStreamId,
+                dataUnion,
             }
         }
 
@@ -174,7 +175,7 @@ const DataUnionStats = () => {
                 inactive: 0,
             },
         }
-    }, [isDuDeployed, stats, memberCount, joinPartStreamId, created, adminFee])
+    }, [isDuDeployed, stats, memberCount, joinPartStreamId, created, adminFee, dataUnion])
 
     return (
         <ProductPageDataUnionStats {...statsProps} />

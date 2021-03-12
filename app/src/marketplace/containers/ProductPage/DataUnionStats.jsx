@@ -11,6 +11,7 @@ import DaysPopover from '$shared/components/DaysPopover'
 import { SM } from '$shared/utils/styled'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import MembersGraph from './MembersGraph'
+import MembersGraphV2 from './MembersGraphV2'
 
 type Props = {
     stats: Array<Object>,
@@ -21,6 +22,7 @@ type Props = {
     },
     joinPartStreamId?: ?string,
     showDeploying?: boolean,
+    dataUnion: any,
 }
 
 const Members = styled.div`
@@ -58,6 +60,7 @@ const UnstyledDataUnionStats = ({
     memberCount,
     joinPartStreamId,
     showDeploying,
+    dataUnion,
     ...props
 }: Props) => {
     const [days, setDays] = useState(7)
@@ -92,11 +95,20 @@ const UnstyledDataUnionStats = ({
                                 />
                             </TimeSeriesGraph.Header>
                             <TimeSeriesGraph.Body>
-                                <MembersGraph
-                                    joinPartStreamId={joinPartStreamId}
-                                    memberCount={memberCount.total}
-                                    shownDays={days}
-                                />
+                                {dataUnion && dataUnion.version && dataUnion.version === 1 && joinPartStreamId && (
+                                    <MembersGraph
+                                        joinPartStreamId={joinPartStreamId}
+                                        memberCount={memberCount.total}
+                                        shownDays={days}
+                                    />
+                                )}
+                                {dataUnion && dataUnion.version && dataUnion.version === 2 && (
+                                    <MembersGraphV2
+                                        memberCount={memberCount.total}
+                                        shownDays={days}
+                                        dataUnionAddress={dataUnion.id}
+                                    />
+                                )}
                             </TimeSeriesGraph.Body>
                         </Members>
                         <GroupedMembers>
