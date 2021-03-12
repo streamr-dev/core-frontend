@@ -1,17 +1,14 @@
 # Data Unions Framework Roles
-
-Each Data Union has one Admin (owner), and `n` data producing members.
+Each Data Union has one Admin (owner), and `n` (many) data producing members.
 
 ### Admin
-
 Admins have the power to add and remove members. They are responsible for maintaining their Data Unions, including ensuring good data quality and removing members that are not contributing data as they're expected to.
 
-The Admins are incentivized to perform this work by the `adminFee`, a fraction of the incoming Data Union revenue. Admins can set the `adminFee`, and members agree to it by joining the Data Union. Previous earnings are not affected by changes in the `adminFee`.
+The Admins are incentivized to perform this work by the Admin fee parameter, a fraction of the incoming Data Union revenue. Admins have control over this fee parameter, and members agree to it by joining the Data Union. Previous earnings are not affected by changes in the Admin fee.
 
 Typically, Admins are initially the creators of the data-producing application and the Data Union, though this role can be assigned to someone else or even performed by the members themselves via a DAO.
 
 ### Members
-
 Members are the people and devices that produce data (via the data-producing application) into the data streams associated with the Data Union. After joining, they start receiving a share of revenue from the Marketplace subscriptions. 
 
 Members are identified by an Ethereum address, and they join the Data Union by doing a simple HTTP request as described in the Work with Data Unions page.

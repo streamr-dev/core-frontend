@@ -2,18 +2,15 @@ import { Link } from 'react-router-dom'
 
 import docsLinks from '$shared/../docsLinks'
 
-# Join and withdraw funds from Data Unions
+# Joining and withdrawing funds
 
-### Joining Data Unions
-
-Joining the Data Union requires no transaction. The request must be authenticated with their Ethereum address, see <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
-
+### Joining a Data Union
+Joining a Data Union requires not require a user transaction. Join the Data Union (if a valid secret is given, the promise waits until the automatic join request has been processed).
 ```
-await streamr.joinDataUnion(dataunionAddress, secret)
-await streamr.hasJoined(dataunionAddress)
+await streamr.dataUnion.join(secret)
 ```
 
-The correct secret allows the member to join without manual approval from the Data Union admin. If the secret is omitted, the admin must log in, find pending joinRequests in the Data Union admin view of the product, and approve the requests manually.
+The correct secret allows the member to join without manual approval from the Data Union admin. If the secret is omitted, the admin must login, find pending joinRequests in the Data Union admin view of the product, and approve the requests manually.
 
 Similar to `deployDataunion`, you should wait until the member has joined before querying the member’s stats. The Data Union member can check their earnings (minus earlier withdrawals) in every Data Union:
 
