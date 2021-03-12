@@ -44,18 +44,14 @@ Response would be something like:
 }
 ```
 
-Here the earnings refer to “total lifetime earnings”. `recordedEarnings` are those that the Operator has committed to the smart contract, and `frozenEarnings` are those that are not yet available for withdraw (giving Validators time to validate new blocks). The difference of the two is  `withdrawableEarnings`, which doesn’t account for earlier withdrawals. The `earnings` figure is the most current number, and the difference of `earnings` and `recordedEarnings` are the newest revenue share that is still in the hand of the Operator, not yet committed.
-
 ### Withdrawing earnings
 When the member wants to withdraw their earnings, that happens through an Ethereum transaction to the smart contract:
 
 ```
-streamr.withdraw(dataunionAddress)
+streamr.dataUnion.withdraw(dataunionAddress)
 ```
 
-Before withdrawing (or in the UI) it may be interesting to show also that the proof provided by the server has been verified from the DataunionVault contract in blockchain. This verification doesn’t require making a transaction, so it should be as fast as making 
-a couple HTTP calls:
+DATA tokens can be withdrawn and used on the sidechain, (currently <a href="https://www.xdaichain.com" target="_blank" rel="noopener noreferrer">xDai</a>) – for example swapped to some other tokens using a DEX present on that sidechain. The transaction fees on sidechains are orders of magnitude cheaper than on Ethereum mainnet, making it much more feasible to move around even small amounts of value. On xDai, transactions currently cost only fractions of a cent, compared to transactions costing tens or even hundreds of dollars on mainnet. 
 
-```
-const isOk = await streamr.validateProof(dataunionAddress)
-```
+The Data Unions framework also support gasless withdrawals via metatransactions. This means that Data Union admins can optionally pay the transaction fees on behalf of members, potentially enabling a better user experience. DATA tokens can also to be directly deposited to a particular member’s balance in the Data Union, allowing Data Union Admins to run referral campaigns that pay out personalised rewards (as opposed to the equal revenue sharing among members, the core feature of Data Unions).
+

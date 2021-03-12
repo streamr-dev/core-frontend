@@ -13,7 +13,6 @@ import Deploy from './videos/data_unions_in_core_02_deploy.mp4'
 import Managing from './videos/data_unions_in_core_03_managing.mp4'
 
 # Build a Data Union with Core
-
 To create a Data Union in Core, go to Core > Products, click <span className={docsStyles.streamrHighlight}>Create</span> and choose Data Union as the product type. Other than the sections below, the process is similar to creating a Data Product. If you haven’t made one before, please check out <Link to={docsLinks.products}>Creating a Data Product</Link> before proceeding with this article.
 
 <Image
@@ -22,13 +21,8 @@ To create a Data Union in Core, go to Core > Products, click <span className={do
   alt="Build a Data Union with Core"
 />
 
-### Shared secrets
-
-Shared secrets allow new members to join the Data Union without explicit approval from the Data Union admin, in order to streamline the on-ramp process. Users may still join the Data Union without a secret but they will have to be manually accepted. They are only available once you have deployed your Data Union.
-
 ### Deploying a Data Union
-
-Creating a Data Union starts with deploying the Data Union smart contract. A Data Union is identified by the address of its smart contract. This smart contract is on the Ethereum mainnet. The admin who deployes the contract is also the owner of the contract. Once all the required fields have been filled and the draft Data Union is ready to be deployed, click Continue to deploy the Data Union. The deploy dialogue will walk you through the deploy process.
+Creating a Data Union starts with deploying the Data Union smart contract. A Data Union is identified by the address of its smart contract. While the deployment transaction is an Ethereum mainnet transaction, the Data Union smart contract is deployed to the sidechain - currently xDai. The account that deploys the contract is also the owner of that contract. Once all the required fields have been filled and the draft Data Union is ready to be deployed, click Continue to deploy the Data Union. The deploy dialogue will walk you through the deploy process.
 
 For the contract deployment transaction, you'll need a web3 wallet, and a small amount of Ethereum for gas fees. The Data Union deployment might take a moment to register once the transaction has been mined. The progress indicator will show an estimate of the remaining time. You can either close the dialog and move on or wait for the process to complete after which you will be automatically redirected.
 
@@ -38,14 +32,15 @@ For the contract deployment transaction, you'll need a web3 wallet, and a small 
     </video>
 </figure>
 
-### Publishing a Data Union
+### Member authentication via shared secrets
+Shared secrets allow new members to join the Data Union without explicit approval from the Data Union admin, in order to streamline the on-ramp process. Users may still join the Data Union without a secret but they will have to be manually accepted. Shared secret generation becomes available in the Data Union editor once you have deployed your Data Union.
 
+### Publishing to the Marketplace
 A minimum of <span dangerouslySetInnerHTML={{
     __html: (dataUnionMemberLimit === 1) ? 'one member' : `${numberToText(dataUnionMemberLimit)} members`
-}} /> is needed to publish the Data union. Once enough members have joined the Data Union, you can publish the Data Union by clicking Publish from the action bar. Your Data Union will be published on the Marketplace once the Ethereum blockchain has confirmed your transaction.
+}} /> is needed to publish the Data union to the Marketplace. Once enough members have joined, you can publish the Data Union by clicking Publish from the action bar. Your Data Union will be published on the Marketplace once the Ethereum blockchain has confirmed your transaction.
 
 ### Managing the Data Union
-
 Data Unions are listed along with Data products in Core > Products. Data Unions are marked by a Data Union badge and a Members badge showing the current amount of approved members. Click the tile menu to access the Data Union stats and manage members.
 
 The Stats view provides an overview of the Data Union as well as it's members and subscribers over time, while the Members view allows you to manage join requests.
@@ -57,5 +52,4 @@ The Stats view provides an overview of the Data Union as well as it's members an
 </figure>
 
 ### Admin fee
-
 Admins are responsible for maintaining the Data Unions, including ensuring good data quality and removing members that are not contributing data as expected. They are incentivized by receiving an admin fee, a percentage of incoming revenue. Members agree to it by joining the Data Union.
