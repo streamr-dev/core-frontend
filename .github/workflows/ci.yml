@@ -26,6 +26,7 @@ jobs:
           npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
           npm i -g npm@lts
           npm ci
+          npm rebuild node-sass
       - name: Run ESlint
         run: npm run eslint
       - name: Run Stylelint
