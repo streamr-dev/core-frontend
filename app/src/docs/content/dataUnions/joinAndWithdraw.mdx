@@ -13,7 +13,7 @@ await streamr.joinDataUnion(dataunionAddress, secret)
 await streamr.hasJoined(dataunionAddress)
 ```
 
-The correct secret allows the member to join without manual approval from the Data Union administrator. If the secret is omitted, the admin must log in, find pending joinRequests in the Data Union admin view of the product, and approve the requests manually.
+The correct secret allows the member to join without manual approval from the Data Union admin. If the secret is omitted, the admin must log in, find pending joinRequests in the Data Union admin view of the product, and approve the requests manually.
 
 Similar to `deployDataunion`, you should wait until the member has joined before querying the member’s stats. The Data Union member can check their earnings (minus earlier withdrawals) in every Data Union:
 

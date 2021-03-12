@@ -31,14 +31,14 @@ const SharedSecrets = ({ className, disabled }: Props) => {
             <h1>Add a shared secret</h1>
             {!!isDeployed && (
                 <p>
-                    Shared secrets are the access control for your product.
+                    Shared secrets are the access control for your Data Union.
                     {' '}
                     Create, name and revoke shared secrets from here.
                 </p>
             )}
             {!isDeployed && (
                 <p>
-                    These settings are only available once you have deployed your product, and provides access control for your product.
+                    These settings are only available once you have deployed your Data Union, and provides access control for your Data Union.
                     {' '}
                     Create, name and revoke shared secrets them from here.
                 </p>
