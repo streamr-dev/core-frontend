@@ -5,7 +5,7 @@ defaults:
   run:
     working-directory: app
 
-jobs:  
+jobs:
   ci:
     name: Run eslint, stylelint and tests
     runs-on: ubuntu-18.04
@@ -17,12 +17,6 @@ jobs:
         with:
           # Chromatic needs full history
           fetch-depth: 0
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cache/Cypress
-            node_modules
-          key: my-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -30,9 +24,9 @@ jobs:
       - name: Install dependencies
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          npm i -g npm@lts
+          npm i -g npm@6
           npm ci
-          npm rebuild node-sass
+          npm rebuild
       - name: Run ESlint
         run: npm run eslint
       - name: Run Stylelint
@@ -49,7 +43,7 @@ jobs:
           # Use output folder from previous step
           storybookBuildDir: storybook-static
       - name: Build app
-        run: npm run build --if-present
+        run: npm run build
       - name: Start Streamr Docker Stack
         uses: streamr-dev/streamr-docker-dev-action@v1.0.0-alpha.2
         with:
