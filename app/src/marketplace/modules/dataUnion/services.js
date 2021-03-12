@@ -247,6 +247,7 @@ export const createClient = (options: CreateClient = {}) => {
         },
         sidechain: {
             url: process.env.DATA_UNION_SIDECHAIN_PROVIDER,
+            chainId: process.env.DATA_UNION_SIDECHAIN_ID,
         },
         mainnet: {
             url: process.env.WEB3_PUBLIC_HTTP_PROVIDER,

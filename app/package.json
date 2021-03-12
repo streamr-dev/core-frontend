@@ -268,7 +268,7 @@
     "smooth-scroll-into-view-if-needed": "^1.1.29",
     "storybook-addon-jsx": "^5.4.0",
     "storybook-react-router": "^1.0.8",
-    "streamr-client": "^5.0.0-alpha.7",
+    "streamr-client": "^5.0.0-beta.10",
     "streamr-client-react": "^2.0.0-beta.1",
     "stringify-object": "^3.3.0",
     "style-loader": "^0.23.1",
@@ -289,6 +289,5 @@
     "webpack-notifier": "^1.12.0",
     "yup": "^0.32.8"
   },
-  "#IMPORTANT": "Do not use dev dependencies!",
-  "devDependencies": {}
+  "#IMPORTANT": "Do not use dev dependencies!"
 }
