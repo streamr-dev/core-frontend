@@ -2,5 +2,9 @@
     "baseUrl": "http://localhost",
     "integrationFolder": "cypress/integration",
     "testFiles": "**/*.spec.js",
-    "video": false
+    "video": false,
+    "retries": {
+        "runMode": 2,
+        "openMode": 0
+    }
 }

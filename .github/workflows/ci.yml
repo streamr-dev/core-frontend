@@ -90,7 +90,7 @@ jobs:
           key: cypress-${{ runner.os }}-cypress-${{ hashFiles('**/package.json') }}
           restore-keys: |
             cypress-${{ runner.os }}-cypress-
-            # job specific steps
+      # job specific steps
       - name: Build app
         run: npm run build
       - name: Start Streamr Docker Stack
@@ -102,8 +102,7 @@ jobs:
         with:
           browser: chrome
           headless: true
-          working-directory:
-            app
+          working-directory: app
           # Start serving 'dist' folder from previous build step
           start: npx serve dist --listen 3333 --single
           wait-on: "http://localhost"
