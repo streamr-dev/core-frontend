@@ -24,9 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          npm i -g npm@6
-          cd app && npm ci
-          cd app && npm rebuild
+          npm ci
       - name: Run ESlint
         run: npm run eslint
       - name: Run Stylelint
