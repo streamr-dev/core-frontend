@@ -60,7 +60,7 @@ jobs:
 
   cypress:
     name: Cypress Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04 # cypress needs older version? https://github.com/cypress-io/github-action/issues/65
     strategy:
       matrix:
         node-version: [14.x]
