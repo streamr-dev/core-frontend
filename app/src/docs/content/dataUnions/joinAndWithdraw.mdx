@@ -5,17 +5,18 @@ import docsLinks from '$shared/../docsLinks'
 # Joining and withdrawing funds
 
 ### Joining a Data Union
-A member can join a Data Union by calling `join` in the Streamr client library. This call is answered by a Streamr's backend service, but can be replaced by your own gatekeeping service if you wish. Joining will not cost any gas for the member. 
+A member can join a Data Union by calling `join` in one of the <Link to={docsLinks.sdk}>Streamr Client libraries</Link>. This call is answered by a centralized gatekeeping service, currently run by Streamr, but can be replaced by your own gatekeeping service. Joining does not incur a gas fee if the default client settings are used. 
 
-The typical way for a device or member to join the Data Union is via the Shared Secret. Calling join with a valid secret will allow the member to join successfully:
+The typical way for a device or member to join the Data Union is via the Shared Secret. See <Link to={docsLinks.createAndMonitor}>Create and monitor Data Unions</Link> for details on creating a Shared Secret. Calling `join` with a valid secret will allow the member to join immediately:
+
 ```
 const dataUnion = await streamr.getDataUnion(address)
 await dataUnion.join(secret)
 ```
 
-Membership inside a Data Union offers a revenue share of funds that accumulate in the contract as well as data publishing rights to the collection of streams inside the Data Union.  
+Membership inside a Data Union offers a revenue share of funds that accumulate in the Data Union contract as well as data publishing rights to the collection of streams inside the Data Union.
 
-The correct secret allows the member to join without manual approval from the Data Union admin. If the secret is omitted, the admin must login, find pending joinRequests in the Data Union admin view of the product, and approve the requests manually.
+The correct secret allows the member to join without manual approval from the Data Union admin. If the secret is omitted, the admin must login, find pending join requests in the Data Union admin view of the product, and approve the requests manually.
 
 Similar to `deployDataunion`, you should wait until the member has joined before querying the member’s stats. The Data Union member can check their earnings (minus earlier withdrawals) in every Data Union:
 
@@ -29,7 +30,7 @@ Also other interesting stats are available from the server:
 await dataUnion.memberStats()
 ```
 
-Response would be something like:
+The response would be something like:
 
 ```
 {
@@ -47,6 +48,8 @@ When the member wants to withdraw their earnings, that happens through an Ethere
 await dataUnion.withdrawAll()
 ```
 
-DATA tokens can be withdrawn to the mainnet or sidechain, (currently <a href="https://www.xdaichain.com" target="_blank" rel="noopener noreferrer">xDai</a>). Withdrawing to the sidechain is recommended and from here the tokens can be swapped to some other tokens using a DEX present on that sidechain. The transaction fees on sidechains are orders of magnitude cheaper than on Ethereum mainnet, making it much more feasible to move around even small amounts of value. On xDai, transactions currently cost only fractions of a cent, compared to transactions costing tens or even hundreds of dollars on mainnet. 
+DATA tokens can be withdrawn to the mainnet or sidechain, (currently <a href="https://www.xdaichain.com" target="_blank" rel="noopener noreferrer">xDai</a>). Withdrawing to the sidechain is recommended and from here the tokens can be swapped to some other tokens using a DEX (decentralized token exchange) present on that sidechain. The transaction fees on sidechains are orders of magnitude cheaper than on Ethereum mainnet, making it much more feasible to move around even small amounts of value. On xDai, transactions currently cost only fractions of a cent, compared to transactions costing tens or even hundreds of dollars on mainnet. 
 
 The Data Unions framework also support gasless withdrawals via metatransactions. This means that Data Union admins can optionally pay the transaction fees on behalf of members, potentially enabling a better user experience. DATA tokens can also to be directly deposited to a particular member’s balance in the Data Union, allowing Data Union Admins to run referral campaigns that pay out personalised rewards (as opposed to the equal revenue sharing among members, the core feature of Data Unions).
+
+Members of Data Unions that require support with withdrawing should reach out to the Data Union Admin and not Streamr as the Admin is best positioned to assist in all matters of the Data Union. Data Union Admins are encouraged to reach out for support from Streamr. Currently, the best way is on the Dev channel, inside our <a href="https://discord.gg/gZAm8P7hK8" target="_blank" rel="noopener noreferrer">Discord</a>.
