@@ -219,9 +219,9 @@ module.exports = {
         }),
         new ImageminPlugin({
             disable: !isProduction(), // Disable during development
-            pngquant: {
-                quality: '50-75',
-            },
+            // pngquant: {
+            //     quality: '50-75',
+            // },
         }),
     ] : [
         // Dev plugins
