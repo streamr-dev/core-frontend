@@ -13,7 +13,8 @@ import { purchaseFlowSteps } from '$mp/utils/constants'
 import { selectProduct } from '$mp/modules/product/selectors'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
-import { transactionStates, DEFAULT_CURRENCY, paymentCurrencies } from '$shared/utils/constants'
+import { transactionStates, DEFAULT_CURRENCY, paymentCurrencies, gasLimits } from '$shared/utils/constants'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import { IdentityExistsError } from '$shared/errors/Web3'
 import { getBalances } from '$mp/utils/web3'
@@ -30,6 +31,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import type { Ref, UseStateTuple } from '$shared/flowtype/common-types'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
+import { isDataUnionProduct } from '$mp/utils/product'
 import usePurchase, { actionsTypes } from './usePurchase'
 
 type Props = {
@@ -66,6 +68,10 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const [status, setStatus] = useState({})
     const [purchaseStarted, setPurchaseStarted] = useState(false)
     const [purchaseTransaction, setPurchaseTransaction] = useState(undefined)
+    const dataUnion = useDataUnion()
+    const dataUnionRef = useRef()
+    const isDataUnion = !!(product && isDataUnionProduct(product))
+    dataUnionRef.current = isDataUnion ? dataUnion : undefined
 
     // Check if current metamask account is linked to Streamr account
     const accountLinked = useMemo(() => !!account && isLinked(account), [isLinked, account])
@@ -137,10 +143,14 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             }
 
             try {
+                const { version } = dataUnionRef.current || {}
+
                 const { queue: nextQueue } = await purchase({
                     contractProduct,
                     accessPeriod: accessPeriodParams.current,
                     dataPerUsd,
+                    // Buying a DU2 product requires more gas
+                    gasIncrease: version === 2 ? gasLimits.BUY_PRODUCT_DU2_INCREASE : 0,
                 })
 
                 if (isMounted()) {

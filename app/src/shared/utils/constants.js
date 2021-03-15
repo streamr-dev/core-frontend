@@ -77,6 +77,7 @@ export const gasLimits = {
     BUY_PRODUCT: 3e5,
     BUY_PRODUCT_WITH_ETH: 5e5,
     BUY_PRODUCT_WITH_ERC20: 6e5,
+    BUY_PRODUCT_DU2_INCREASE: 25e4,
     APPROVE: 7e4,
 }
 

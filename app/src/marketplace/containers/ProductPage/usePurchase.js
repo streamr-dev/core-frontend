@@ -33,12 +33,13 @@ type Purchase = {
     contractProduct: SmartContractProduct,
     accessPeriod: AccessPeriod,
     dataPerUsd: NumberString,
+    gasIncrease?: number,
 }
 
 export default function usePurchase() {
     const dispatch = useDispatch()
 
-    return useCallback(async ({ contractProduct, accessPeriod, dataPerUsd }: Purchase = {}) => {
+    return useCallback(async ({ contractProduct, accessPeriod, dataPerUsd, gasIncrease }: Purchase = {}) => {
         if (!contractProduct) {
             throw new Error('no product')
         }
@@ -217,7 +218,7 @@ export default function usePurchase() {
             id: actionsTypes.SUBSCRIPTION,
             handler: (update, done) => {
                 try {
-                    return buyProduct(contractProduct.id, subscriptionInSeconds, paymentCurrency, purchasePrice)
+                    return buyProduct(contractProduct.id, subscriptionInSeconds, paymentCurrency, purchasePrice, gasIncrease)
                         .onTransactionHash((hash) => {
                             update(transactionStates.PENDING, hash)
                             dispatch(addTransaction(hash, transactionTypes.SUBSCRIPTION))
