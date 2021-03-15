@@ -4,73 +4,63 @@ import docsLinks from '$shared/../docsLinks'
 
 # Create and monitor Data Unions
 
-### Creating a Data Union product
+### Creating a Data Union
+A Data Union is typically created in the Core app. See <Link to={docsLinks.dataUnionsInCore}>Creating a Data Union with Core</Link> for more details. It can also be achieved programmatically, via a client library. Deploying a Data Union requires gas.
 
-Creating a Data Union product is most easily handled by using the Core app. See <Link to={docsLinks.dataUnionsInCore}>Creating a Data Union with Core</Link> for more details. Otherwise, it can be handled this way, but it is somewhat complicated.
-
-Start by deploying the `DataunionVault` smart contract. This is done by the Data Union admin who then becomes the owner of the contract as well.
-
+To get a DataUnion instance, call streamr.getDataUnion(address).
 ```
-const contract = await streamr.deployDataunion()
-await contract.isReady()
+const dataUnion = await streamr.getDataUnion(address)
 ```
 
-The reason for the await is that deployDataunion returns when the `DataunionVault` deploy transaction is sent, but not yet mined. `await contract.deployed()` can be used to wait until mining is done, `await contract.isReady()` will wait until Data Union Server has noticed the contract and it’s actually ready to use through StreamrClient.
-
-A Data Union is identified by the address of its smart contract. After the smart contract has been created, the admin may choose to create an app secret (`dataunionAddress` is the smart contract address):
-
+To deploy a new DataUnion, call deployDataUnion()
 ```
-const {secret} = await streamr.createSecret(dataunionAddress)
+const dataUnion = await streamr.deployDataUnion()
 ```
 
-If the secret is not provided, it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Administrator of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
+A Data Union is identified by the address of its smart contract on the Ethereum Mainnet. After the smart contract has been created, the admin may choose to create an shared secret:
 
-The idea of an app secret is that it allows new members to join the Data Union without explicit approval from the Data Union admin, to streamline the on-ramp process.
+```
+const secret = await dataUnion.createSecret(name)
+```
 
-After the DataunionVault is set up, it’s time to create the actual product. This is most easily done using Streamr Core, but can also be done through the <Link to={docsLinks.api}>HTTP API</Link>.
+`name` is simply an identifier for the secret, if it is not provided, then it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Admin of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
 
-To create a Data Union product instead of a regular one, add `“type”: “dataunion”` to the `POST /products` body.
+The shared secret allows new members to join the Data Union without explicit approval from the Data Union admin, to streamline the member joining process.
+
+After the Data Union is deployed, it’s time to list it on the Marketplace. This is typically done using <Link to={docsLinks.dataUnionsInCore}>Core</Link>, but can also be done through the <Link to={docsLinks.api}>HTTP API</Link>.
+
+To create a Data Union product instead of a regular one, add `“type”: "DATAUNION"` to the `POST /products` body.
 
 ### Observing Data Unions
-
-The admin UI might need info on what’s going on in the Data Union
+The Admin can make requests through the Data Unions <Link to={docsLinks.sdk}>client libraries</Link> to understand what’s going on in the Data Union:
 
 ```
-const stats = await streamr.getDataunionStats(dataunionAddress)
+const stats = await dataUnion.getStats()
 ```
 
 The returned stats object would look something like:
 
 ```
 {
-  "memberCount": {
-    "total": 0,
-    "active": 0,
-    "inactive": 0
-  },
-  "totalEarnings": "0",
-  "latestBlock": {
-    "blockNumber": 0,
-    "timestamp": 0,
-    "memberCount": 0,
-    "totalEarnings": 0
-  },
-  "latestWithdrawableBlock": {
-    "blockNumber": 0,
-    "timestamp": 0,
-    "memberCount": 0,
-    "totalEarnings": 0
-  },
-  "joinPartStreamId": "qwertyui"
+  "activeMemberCount": BigNumber(0),
+  "inactiveMemberCount": BigNumber(0),
+  "joinPartAgentCount": BigNumber,
+  "lifetimeMemberEarnings": BigNumber(0),
+  "totalEarnings": BigNumber(0),
+  "totalWithdrawable": BigNumber(0),
 }
 ```
 
 Other relevant query functions:
 
 ```
-await streamr.getMembers(dataunionAddress)
-await streamr.getMemberStats(dataunionAddress, memberAddress)
-await streamr.getBalance(dataunionAddress, memberAddress)
+await dataUnion.getAddress()
+await dataUnion.getAdminAddress()
+await dataUnion.getSidechainAddress()
+await dataUnion.getAdminFee()
+await dataUnion.getMemberStats(memberAddress)
+await dataUnion.getBalance(memberAddress)
+await dataUnion.getWithdrawableEarnings(memberAddress)
 ```
 
 The Streamr Core app also provides monitoring functions for Admins, showing subscriber numbers, total revenue, join requests and more. <Link to={docsLinks.dataUnionsInCore}>Create a Data Union with Core</Link> provides more information.

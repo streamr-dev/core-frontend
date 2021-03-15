@@ -2,63 +2,54 @@ import { Link } from 'react-router-dom'
 
 import docsLinks from '$shared/../docsLinks'
 
-# Join and withdraw funds from Data Unions
+# Joining and withdrawing funds
 
-### Joining Data Unions
+### Joining a Data Union
+A member can join a Data Union by calling `join` in one of the <Link to={docsLinks.sdk}>Streamr Client libraries</Link>. This call is answered by a centralized gatekeeping service, currently run by Streamr, but can be replaced by your own gatekeeping service. Joining does not incur a gas fee if the default client settings are used. 
 
-Joining the Data Union requires no transaction. The request must be authenticated with their Ethereum address, see <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
+The typical way for a device or member to join the Data Union is via the Shared Secret. See <Link to={docsLinks.createAndMonitor}>Create and monitor Data Unions</Link> for details on creating a Shared Secret. Calling `join` with a valid secret will allow the member to join immediately:
 
 ```
-await streamr.joinDataUnion(dataunionAddress, secret)
-await streamr.hasJoined(dataunionAddress)
+const dataUnion = await streamr.getDataUnion(address)
+await dataUnion.join(secret)
 ```
 
-The correct secret allows the member to join without manual approval from the Data Union administrator. If the secret is omitted, the admin must log in, find pending joinRequests in the Data Union admin view of the product, and approve the requests manually.
+Membership inside a Data Union offers a revenue share of funds that accumulate in the Data Union contract as well as data publishing rights to the collection of streams inside the Data Union.
+
+The correct secret allows the member to join without manual approval from the Data Union admin. If the secret is omitted, the admin must login, find pending join requests in the Data Union admin view of the product, and approve the requests manually.
 
 Similar to `deployDataunion`, you should wait until the member has joined before querying the member’s stats. The Data Union member can check their earnings (minus earlier withdrawals) in every Data Union:
 
 ```
-const {total, withdrawable} = await streamr.getBalance(dataunionAddress)
+const amount = await dataUnion.getWithdrawableEarnings()
 ```
-
-The two numbers refer to the number of tokens actually `withdrawable` right now, and the total number of tokens that will be `withdrawable` after the Operator commits the earnings to the blockchain.
 
 Also other interesting stats are available from the server:
 
 ```
-await streamr.memberStats(dataunionAddress)
+await dataUnion.memberStats()
 ```
 
-Response would be something like:
+The response would be something like:
 
 ```
 {
-    address: "0xdC353aA3d81fC3d67Eb49F443df258029B01D8aB",
-    earnings: "333333333333333333",
-    active: true,
-    proof: [
-        "0xd92d93e1a5532affe4f635cc97c555c39413ceecea690323cbd2d21b0d5acb8d",
-        "0x6cfa6f3735edabee127ccb3ad7dc4a9aba79993664eead578e3544b7dc58c515"
-    ],
-    recordedEarnings: "333333333333333333",
-    withdrawableEarnings: "333333333333333333",
-    frozenEarnings: "0",
-    withdrawableBlockNumber: 7
+    earningsBeforeLastJoin: BigNumber(333333333333333333),
+    status: "ACTIVE",
+    totalEarnings: BigNumber(333333333333333333),
+    withdrawableEarnings: BigNumber(333333333333333333),
 }
 ```
-
-Here the earnings refer to “total lifetime earnings”. `recordedEarnings` are those that the Operator has committed to the smart contract, and `frozenEarnings` are those that are not yet available for withdraw (giving Validators time to validate new blocks). The difference of the two is  `withdrawableEarnings`, which doesn’t account for earlier withdrawals. The `earnings` figure is the most current number, and the difference of `earnings` and `recordedEarnings` are the newest revenue share that is still in the hand of the Operator, not yet committed.
 
 ### Withdrawing earnings
 When the member wants to withdraw their earnings, that happens through an Ethereum transaction to the smart contract:
 
 ```
-streamr.withdraw(dataunionAddress)
+await dataUnion.withdrawAll()
 ```
 
-Before withdrawing (or in the UI) it may be interesting to show also that the proof provided by the server has been verified from the DataunionVault contract in blockchain. This verification doesn’t require making a transaction, so it should be as fast as making 
-a couple HTTP calls:
+DATA tokens can be withdrawn to the mainnet or sidechain, (currently <a href="https://www.xdaichain.com" target="_blank" rel="noopener noreferrer">xDai</a>). Withdrawing to the sidechain is recommended and from here the tokens can be swapped to some other tokens using a DEX (decentralized token exchange) present on that sidechain. The transaction fees on sidechains are orders of magnitude cheaper than on Ethereum mainnet, making it much more feasible to move around even small amounts of value. On xDai, transactions currently cost only fractions of a cent, compared to transactions costing tens or even hundreds of dollars on mainnet. 
 
-```
-const isOk = await streamr.validateProof(dataunionAddress)
-```
+The Data Unions framework also support gasless withdrawals via metatransactions. This means that Data Union admins can optionally pay the transaction fees on behalf of members, potentially enabling a better user experience. DATA tokens can also to be directly deposited to a particular member’s balance in the Data Union, allowing Data Union Admins to run referral campaigns that pay out personalised rewards (as opposed to the equal revenue sharing among members, the core feature of Data Unions).
+
+Members of Data Unions that require support with withdrawing should reach out to the Data Union Admin and not Streamr as the Admin is best positioned to assist in all matters of the Data Union. Data Union Admins are encouraged to reach out for support from Streamr. Currently, the best way is on the Dev channel, inside our <a href="https://discord.gg/gZAm8P7hK8" target="_blank" rel="noopener noreferrer">Discord</a>.

@@ -1,34 +1,17 @@
-# Data Unions Framework Roles
+import { Link } from 'react-router-dom'
+import docsLinks from '$shared/../docsLinks'
 
-The Data Union framework allows app developers to aggregate and monetise the real-time data their app users create whilst sharing revenue with them. The data from many different users are pooled into products offered on the Streamr Marketplace. 
+# Roles and responsibilities
+Each Data Union has one Admin (owner), and `n` (many) data producing members.
 
-This process is called crowdselling. When someone subscribes to the product, the revenues, in DATA, are automatically distributed among the Data Union members — the individual data producers. The framework defines various roles, which we’ll describe next.
+### Admin
+Admins have the power to add and remove members. They are responsible for maintaining their Data Unions, including ensuring good data quality and removing members that are not contributing data as they're expected to.
+
+Admins are incentivized to perform this work by the Admin fee parameter, a fraction of the incoming Data Union revenue. Admins have control over this fee parameter, and members agree to it by joining the Data Union. Previous earnings are not affected by changes in the Admin fee.
+
+Typically, Admins are initially the creators of the user application and the Data Union, though this role can be assigned to someone else or even performed by the members themselves via a DAO.
 
 ### Members
-Members are the people and devices that produce data (via the data-producing application) into the data streams associated with the Data Union. After joining, they  start receiving a share of revenue from the Data Union Products sold on the Marketplace. 
+Members are the people and/or devices that produce data into the data streams contained inside the Data Union. After joining, they start receiving a share of the revenue that accumulates in the Data Union contract. The main source of this revenue is likely to come from Marketplace subscriptions.
 
-Members are identified by an Ethereum address, and they join the Data Union by doing a simple HTTP request as described in the Work with Data Unions page.
-
-### Administrator
-Administrators have the power to add and remove members. They are responsible for maintaining the products on the Marketplace, including ensuring good data quality and removing members that are not contributing data as they're expected to. 
-
-The Administrators are incentivized to perform this work by the `adminFee`, a fraction of incoming revenue. Administrators can set the `adminFee`, and members agree to it by joining the Data Union. Already incurred earnings are of course not affected by changes in the `adminFee`.
-
-Typically, Administrators are initially the creators of the data-producing application and the Data Union Product, though this role can be assigned to someone else or even performed by the members themselves via a DAO.
-
-### Operator and Validators
-
-Technically, the scalable revenue sharing used in Data Unions is based on Monoplasma, an off-chain token distribution system. Each Data Union has a corresponding Operator,  who runs a particular piece of software to keep track of balances. This is similar to Ethereum clients doing the bookkeeping for the DATA tokens in the blockchain.
-
-Operators watch the Ethereum blockchain to detect token transfers into the Data Union contract. They also watch a Streamr stream to keep track of members joining/parting the Data Union. The actions of the Operator are fully transparent and can be verified by Validators, and anyone can run a Validator.
-
-### Smart Contract
-The `DataunionVault` smart contract holds the incoming revenue. It releases the revenues belonging to a member requesting them with a proof of earnings. A member can query its earnings (and the proof) from the Operator or any of the Validators. Getting the proof and validating is fast, no transactions needed.
-
-The `DataunionVault` holds all the out-standing revenue shares belonging to the Data Union members, and anyone following the Ethereum blockchain and the public Streamr stream (the Operator and the Validators) can know how those tokens are distributed among members, as well as produce proofs.
-
-To withdraw tokens from the `DataunionVault` onto their own on-chain account, a member can query a proof from the Operator (or a Validator) and submit it to the smart contract by doing a normal Ethereum transaction (which requires ETH to pay for the gas). The smart contract verifies the proof and releases the tokens.
-
-The Streamr API provides an easy way to query the Operator of each Data Union, although any Validator could be queried instead.
-
-The Administrator is the owner of the smart contract as well as the Marketplace product.
+Members are identified by an Ethereum address, and they join the Data Union using one of the <Link to={docsLinks.sdk}>Streamr Client libraries</Link> or by doing a <Link to={docsLinks.api}>simple HTTP request</Link> as described in the <Link to={docsLinks.joinAndWithdraw}>Join & Withdraw guide</Link>.

@@ -13,12 +13,22 @@ import RevenueAndDataMobile from './images/intro_to_data_unions_01_revenue_and_d
 import RevenueAndDataMobile2x from './images/intro_to_data_unions_01_revenue_and_data_mobile@2x.jpg'
 
 # Introduction to Data Unions
+The Data Union framework is a data crowdsourcing/crowdselling solution. Working in tandem with the Streamr Network and Ethereum, the framework powers apps that enable people to earn by sharing valuable data.
 
-As a general concept, a Data Union is a structure that allows separate entities who generate data to pool their data in order to achieve a common goal, typically to increase its value. Data Unions may differ from each other based on the membership model, use cases, revenue structure and governance, but also share some common components: a group of members contributing their data, an entity providing the application layer to manage the data and a discovery mechanism or marketplace for the data.
+Data Unions are like <Link to={docsLinks.products}>Data Products</Link> in the way that contained inside, is a bundle of real-time <Link to={docsLinks.streams}>data streams</Link>. The Data Union is listed on the Streamr Marketplace as a type of data product for sale. When a buyer subscribes to the product, the revenues, in DATA token, are automatically distributed among all of the data producers. The product can be bridged or exported to other data marketplaces at any time, usually as a static files. 
 
-Streamr implements this idea with its Data Unions Framework, which allows admins to create crowdsourced data products that combine real-time data from many members into a single, more valuable dataset. 
+Data Unions may differ from each other based on the membership model, use cases, revenue structure and governance, but also share some common components: a group of members contributing their data, an entity providing the application layer to manage the data and a discovery mechanism or marketplace for the data.
 
-A Data Union Product is an Ethereum smart contract, created and deployed via the Core app and published on the Marketplace. Most revenue from a Data Union flows to its members, but the admin can set a percentage fee they receive in return for creating and managing the union. For more information on structure, see <Link to={docsLinks.frameworkRoles}>Data Union Framework Roles</Link>.
+The most valuable Data Unions will incentivize collection of datasets otherwise difficult to source. Some examples include real-time health data, web user data, pollution monitoring, smart city data and more. <a href="https://swashapp.io/" target="_blank" rel="noopener noreferrer">Swash</a> is the world's first Data Union - a browser extension that monetizes your browsing data.
+
+Streamr supports new Data Unions through the <a href="https://streamr.network/fund/" target="_blank" rel="noopener noreferrer">Data Fund</a>.
+
+### Smart Contracts
+Data Unions are fully on-chain, currently on xDai, with a conduit to the Ethereum mainnet. Data Unions are typically deployed via the Core app and subsequently published on the <a href="https://streamr.network/marketplace" target="_blank" rel="noopener noreferrer">Marketplace</a>. They can run on any Ethereum-compatible sidechain for scalability and affordable cost of operation. The first supported sidechain is <a href="https://www.xdaichain.com" target="_blank" rel="noopener noreferrer">xDai</a>, and other options may be added in the future.
+
+There are numerous benefits of having Data Unions fully on-chain. First of all, the security of the system becomes as strong as the security of the underlying blockchain itself. Secondly, Data Union members and builders get to benefit from composability, network effects, and services available on the same blockchain, particularly DeFi platforms.
+
+The underlying smart contracts are all open source and a more technical explanation of the framework can be found on the <a href="https://github.com/streamr-dev/data-union-solidity" target="_blank" rel="noopener noreferrer">Data Unions GitHub repository</a>.
 
 <Image
   lightbox
@@ -30,19 +40,15 @@ A Data Union Product is an Ethereum smart contract, created and deployed via the
 />
 
 ### What you’ll need
+Creating a Data Union requires an Ethereum address, to create, manage and receive revenue from the underlying smart contract. It also requires some sort of host application that enables your users to join and provide real-time data. This can be a browser extension, a mobile app, or a publishing script on a hardware device, for example.
 
-Creating a Data Union requires a Streamr account, with a connected Ethereum address, to create, manage and receive revenue from the underlying smart contract. It also requires a host application that enables your users to join and provide real-time data. 
-
-Once the product is published, you can view revenue and community size and manage members via the Core app. Revenue from marketplace subscriptions will be paid out to members in the Streamr token, DATA, once it has accumulated in the smart contract.
-
-The most valuable Data Unions will incentivize collection of datasets otherwise difficult to source. Some examples could include real-time health data, web user data, pollution monitoring, smart city data and more. 
+Once the product is published, you can view revenue and community metrics, as well as manage members via the Core app. Revenue from the marketplace subscriptions will be paid out to members in DATA tokens, once they have begun accumulating in the Data Union smart contract.
 
 ### Pre-flight Checklist
 
 <div className={docsStyles.checklist}>
 
-- Created a Streamr account
-- Connected an Ethereum address to your account
+- Login to Streamr with your Ethereum account
 - Have an ETH balance at that address to deploy and publish the product
 - Created a name, description and cover image for the Marketplace listing
 - Have an app with a community of users who will provide real-time data
@@ -50,16 +56,13 @@ The most valuable Data Unions will incentivize collection of datasets otherwise 
 </div>
 
 ### General Flow
-
 - Use the Core app to create and deploy a draft Data Union smart contract
-- Connect the smart contract to your app
-- Add users and publish to the Marketplace
-- You must have a minimum of <span dangerouslySetInnerHTML={{
+- Integrate the Data Unions Framework into your your app via one of our <Link to={docsLinks.sdkOverview}>client libraries</Link>
+- Allow users to join the Data Union - You must have a minimum of <span dangerouslySetInnerHTML={{
     __html: (dataUnionMemberLimit === 1) ? 'one user' : `${numberToText(dataUnionMemberLimit)} users`
-}} /> to publish, but the larger the number<br />
-  of members, the more valuable your product is likely to be
+}} /> to publish, but the larger the number of members, the more valuable your product is likely to be
+- Publish the Data Union to the Marketplace
 - Manage users and view revenue via the Core app
 
 ### Get Started
-
-If you want to get started now, you should learn how to <Link to={docsLinks.dataUnionsInCore}>Build a Data Union with Core</Link>. If this is your first time, learn how to <Link to={docsLinks.products}>Create a Product with Core</Link> first. For an in-depth guide to connecting your app to a Data Union, check out our <Link to={docsLinks.joinAndWithdraw}>Data Unions Integration Guide</Link>.
+If you want to get started now, you should learn how to <Link to={docsLinks.dataUnionsInCore}>Build a Data Union with Core</Link>. If this is your first time, you might want to start by <Link to={docsLinks.products}>Creating a free Product in Core</Link>. For an in-depth guide to connecting your app to a Data Union, check out our <Link to={docsLinks.joinAndWithdraw}>Data Unions Integration Guide</Link>.
