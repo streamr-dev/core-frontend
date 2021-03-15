@@ -12,12 +12,11 @@ before_install:
 - sudo apt-get -y install expect
 - pip install awscli --upgrade --user
 - npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-- npm i -g npm@lts
+- npm i -g npm@6.14.11
 - cd app
 install:
 - npm ci
 - npm rebuild node-sass
-- true
 cache:
   directories:
   - "$HOME/.npm"
