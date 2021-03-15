@@ -7,9 +7,9 @@ import docsLinks from '$shared/../docsLinks'
 ### Creating a Data Union
 A Data Union is typically created in the Core app. See <Link to={docsLinks.dataUnionsInCore}>Creating a Data Union with Core</Link> for more details. It can also be achieved programmatically, via a client library. Deploying a Data Union requires gas.
 
-To get a DataUnion instance, call streamr.getDataUnion(address).
+To get a DataUnion instance, call streamr.getDataUnion(dataUnionAddress).
 ```
-const dataUnion = await streamr.getDataUnion(address)
+const dataUnion = await streamr.getDataUnion(dataUnionAddress)
 ```
 
 To deploy a new DataUnion, call deployDataUnion()
@@ -64,3 +64,5 @@ await dataUnion.getWithdrawableEarnings(memberAddress)
 ```
 
 The Streamr Core app also provides monitoring functions for Admins, showing subscriber numbers, total revenue, join requests and more. <Link to={docsLinks.dataUnionsInCore}>Create a Data Union with Core</Link> provides more information.
+
+Automatically generated API documentation is also available <a href="https://streamr-dev.github.io/streamr-client-javascript" target="_blank" rel="noopener noreferrer">here</a>. These docs are generated from the repository TypeScript source code.
