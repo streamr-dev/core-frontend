@@ -42,7 +42,7 @@ The response would be something like:
 ```
 
 ### Withdrawing earnings
-When a member wants to withdraw their earnings, that happens through an Ethereum transaction to the smart contract:
+Earnings in DATA token accumulate on the Data Union smart contract. Every active member has a claim to a fraction of these funds, as determined by their join date and the parameters of the Data Union smart contract. That claim is asserted when they make a withdrawal transaction.
 
 ```
 await dataUnion.withdrawAll([withdrawOptions])
