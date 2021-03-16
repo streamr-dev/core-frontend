@@ -17,19 +17,19 @@ To deploy a new DataUnion, call deployDataUnion()
 const dataUnion = await streamr.deployDataUnion()
 ```
 
-A Data Union is identified by the address of its smart contract on the Ethereum Mainnet. After the smart contract has been created, the admin may choose to create an shared secret:
+A Data Union is identified by the address of its smart contract on the Ethereum Mainnet. After the smart contract has been created, the Admin may choose to create an shared secret:
 
 ```
 const secret = await dataUnion.createSecret(name)
 ```
 
-`name` is simply an identifier for the secret, if it is not provided, then it will be randomly generated. Note that the request must be authenticated using the Ethereum address of the Admin of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
+The `name` parameter is simply an identifier for the secret. If it is not provided, a randomly generated one will be used. Note that the request must be authenticated using the Ethereum address of the Admin of the Data Union, as described in <Link to={docsLinks.authAndIdentity}>Data Unions Auth & Identity</Link>.
 
-The shared secret allows new members to join the Data Union without explicit approval from the Data Union admin, to streamline the member joining process.
+The shared secret allows new members to join the Data Union without explicit approval from the Data Union Admin, to streamline the member joining process.
 
 After the Data Union is deployed, it’s time to list it on the Marketplace. This is typically done using <Link to={docsLinks.dataUnionsInCore}>Core</Link>, but can also be done through the <Link to={docsLinks.api}>HTTP API</Link>.
 
-To create a Data Union product instead of a regular one, add `“type”: "DATAUNION"` to the `POST /products` body.
+To create a Data Union instead of a regular Data Product, add `“type”: "DATAUNION"` to the `POST /products` body.
 
 ### Observing Data Unions
 The Admin can make requests through the Data Unions <Link to={docsLinks.sdk}>client libraries</Link> to understand what’s going on in the Data Union:
