@@ -13,9 +13,9 @@ import RevenueAndDataMobile from './images/intro_to_data_unions_01_revenue_and_d
 import RevenueAndDataMobile2x from './images/intro_to_data_unions_01_revenue_and_data_mobile@2x.jpg'
 
 # Introduction to Data Unions
-The Data Union framework is a data crowdsourcing/crowdselling solution. Working in tandem with the Streamr Network and Ethereum, the framework powers apps that enable people to earn by sharing valuable data.
+The Data Union framework is a data crowdsourcing and crowdselling solution. Working in tandem with the Streamr Network and Ethereum, the framework powers applications that enable people to earn by sharing valuable data.
 
-Data Unions are like <Link to={docsLinks.products}>Data Products</Link> in the way that contained inside, is a bundle of real-time data <Link to={docsLinks.streams}>streams</Link>. The Data Union is listed on the Streamr Marketplace as a type of data product for sale. When a buyer subscribes to the product, the revenues, in DATA token, are automatically distributed among all of the data producers. The product can be bridged or exported to other data marketplaces at any time, usually as a static files. 
+Data Unions are like <Link to={docsLinks.products}>Data Products</Link> as they contain a bundle of real-time data <Link to={docsLinks.streams}>streams</Link>. The Data Union is listed on the Streamr Marketplace as a type of data product for sale. When a buyer subscribes to the product, the DATA revenue is automatically distributed among all of the data producers. The product can be bridged or exported to other data marketplaces at any time, usually as a static file. 
 
 Data Unions may differ from each other based on the membership model, use cases, revenue structure and governance, but also share some common components: a group of members contributing their data, an entity providing the application layer to manage the data and a discovery mechanism or marketplace for the data.
 
@@ -56,7 +56,7 @@ Once the product is published, you can view revenue and community metrics, as we
 ### General Flow
 - Use the Core app to create and deploy a draft Data Union smart contract
 - Integrate the Data Unions Framework into your your app via one of our <Link to={docsLinks.sdkOverview}>client libraries</Link>
-- Allow users to join the Data Union - You must have a minimum of <span dangerouslySetInnerHTML={{
+- Allow users to join the Data Union. You must have a minimum of <span dangerouslySetInnerHTML={{
     __html: (dataUnionMemberLimit === 1) ? 'one user' : `${numberToText(dataUnionMemberLimit)} users`
 }} /> to publish, but the larger the number of members, the more valuable your product is likely to be
 - Publish the Data Union to the Marketplace
