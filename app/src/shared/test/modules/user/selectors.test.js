@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import BN from 'bignumber.js'
 import set from 'lodash/fp/set'
 import * as all from '$shared/modules/user/selectors'
@@ -67,18 +66,18 @@ const state = {
 
 describe('user - selectors', () => {
     it('selects user data error', () => {
-        assert.deepStrictEqual(all.selectUserDataError(state), null)
+        expect(all.selectUserDataError(state)).toStrictEqual(null)
         const err = new Error()
         const errorState = set('user.userDataError', err, state)
-        assert.strictEqual(all.selectUserDataError(errorState), err)
+        expect(all.selectUserDataError(errorState)).toStrictEqual(err)
     })
 
     it('selects user data fetching status', () => {
-        assert.deepStrictEqual(all.selectFetchingUserData(state), false)
+        expect(all.selectFetchingUserData(state)).toStrictEqual(false)
     })
 
     it('selects user data', () => {
-        assert.deepStrictEqual(all.selectUserData(state), state.user.user)
+        expect(all.selectUserData(state)).toStrictEqual(state.user.user)
     })
 
     describe('isAuthenticating', () => {

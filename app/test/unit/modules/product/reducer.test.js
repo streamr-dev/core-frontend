@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$mp/modules/product/reducer'
 import * as constants from '$mp/modules/product/constants'
 
 describe('product - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     describe('getProductById', () => {
@@ -16,12 +14,12 @@ describe('product - reducer', () => {
                 fetchingProduct: true,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_PRODUCT_BY_ID_REQUEST,
                 payload: {
                     id: 1,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -30,9 +28,9 @@ describe('product - reducer', () => {
                 fetchingProduct: false,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_PRODUCT_BY_ID_SUCCESS,
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -50,7 +48,7 @@ describe('product - reducer', () => {
                     error,
                 },
             })
-            assert.deepStrictEqual(state, expectedState)
+            expect(state).toStrictEqual(expectedState)
         })
     })
 
@@ -63,9 +61,9 @@ describe('product - reducer', () => {
                 streams: [],
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_STREAMS_BY_PRODUCT_ID_REQUEST,
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -82,12 +80,12 @@ describe('product - reducer', () => {
                 streams,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
                 payload: {
                     streams,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -99,12 +97,12 @@ describe('product - reducer', () => {
                 streamsError: error,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_STREAMS_BY_PRODUCT_ID_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 
@@ -115,9 +113,9 @@ describe('product - reducer', () => {
                 fetchingContractSubscription: true,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -131,12 +129,12 @@ describe('product - reducer', () => {
                 contractSubscription: subscription,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
                 payload: {
                     subscription,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -149,12 +147,12 @@ describe('product - reducer', () => {
                 contractSubscriptionError: error,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 })

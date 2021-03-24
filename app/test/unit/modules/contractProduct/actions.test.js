@@ -1,6 +1,4 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
-import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
 import * as actions from '$mp/modules/contractProduct/actions'
@@ -10,14 +8,12 @@ import * as services from '$mp/modules/contractProduct/services'
 import { contractProductSchema } from '$shared/modules/entities/schema'
 
 describe('contractProduct - actions', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getProductFromContract', () => {
@@ -31,7 +27,7 @@ describe('contractProduct - actions', () => {
             }
             const { result, entities } = normalize(product, contractProductSchema)
 
-            sandbox.stub(services, 'getProductFromContract').callsFake((id) => Promise.resolve({
+            jest.spyOn(services, 'getProductFromContract').mockImplementation((id) => Promise.resolve({
                 ...product,
                 id,
             }))
@@ -57,13 +53,13 @@ describe('contractProduct - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('responds to errors', async () => {
             const store = mockStore()
 
-            sandbox.stub(services, 'getProductFromContract').callsFake(() => Promise.reject(new Error('test error')))
+            jest.spyOn(services, 'getProductFromContract').mockImplementation(() => Promise.reject(new Error('test error')))
             const product = {
                 id: 'test',
             }
@@ -88,7 +84,7 @@ describe('contractProduct - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -102,7 +98,7 @@ describe('contractProduct - actions', () => {
                     type: constants.CLEAR_CONTRACT_PRODUCT,
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 })

@@ -1,5 +1,3 @@
-import assert from 'assert-diff'
-
 import * as all from '$shared/modules/entities/selectors'
 
 const state = {
@@ -32,6 +30,6 @@ const state = {
 
 describe('entities - selectors', () => {
     it('selects entities', () => {
-        assert.deepStrictEqual(all.selectEntities(state), state.entities)
+        expect(all.selectEntities(state)).toStrictEqual(state.entities)
     })
 })

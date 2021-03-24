@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import {
@@ -43,18 +42,18 @@ const state = {
 
 describe('myProductList - selectors', () => {
     it('selects myProductList product ids', () => {
-        assert.deepStrictEqual(selectMyProductListIds(state), myProductList.ids)
+        expect(selectMyProductListIds(state)).toStrictEqual(myProductList.ids)
     })
 
     it('selects all myProductList products', () => {
-        assert.deepStrictEqual(selectMyProductList(state), products)
+        expect(selectMyProductList(state)).toStrictEqual(products)
     })
 
     it('selects fetching status for myProductList', () => {
-        assert.deepStrictEqual(selectFetchingMyProductList(state), myProductList.fetching)
+        expect(selectFetchingMyProductList(state)).toStrictEqual(myProductList.fetching)
     })
 
     it('selects error', () => {
-        assert.deepStrictEqual(selectMyProductListError(state), myProductList.error)
+        expect(selectMyProductListError(state)).toStrictEqual(myProductList.error)
     })
 })

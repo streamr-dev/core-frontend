@@ -1,5 +1,3 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
 import { normalize } from 'normalizr'
 
 import * as actions from '$mp/modules/relatedProducts/actions'
@@ -11,7 +9,6 @@ import { productsSchema } from '$shared/modules/entities/schema'
 import mockStore from '$testUtils/mockStoreProvider'
 
 describe('relatedProducts - actions', () => {
-    let sandbox
     const productId = '123'
     const relatedProducts = [
         {
@@ -25,15 +22,15 @@ describe('relatedProducts - actions', () => {
     ]
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     it('gets related products', async () => {
-        sandbox.stub(services, 'getRelatedProducts').callsFake(() => Promise.resolve(relatedProducts))
+        jest.spyOn(services, 'getRelatedProducts').mockImplementation(() => Promise.resolve(relatedProducts))
         const store = mockStore()
         await store.dispatch(actions.getRelatedProducts(productId))
         const { result, entities } = normalize(relatedProducts, productsSchema)
@@ -56,12 +53,12 @@ describe('relatedProducts - actions', () => {
             },
         ]
 
-        assert.deepStrictEqual(store.getActions(), expectedActions)
+        expect(store.getActions()).toStrictEqual(expectedActions)
     })
 
     it('responds to errors', async () => {
         const error = new Error('Error')
-        sandbox.stub(services, 'getRelatedProducts').callsFake(() => Promise.reject(error))
+        jest.spyOn(services, 'getRelatedProducts').mockImplementation(() => Promise.reject(error))
         const store = mockStore()
         await store.dispatch(actions.getRelatedProducts(productId))
 
@@ -76,6 +73,6 @@ describe('relatedProducts - actions', () => {
             },
         ]
 
-        assert.deepStrictEqual(store.getActions(), expectedActions)
+        expect(store.getActions()).toStrictEqual(expectedActions)
     })
 })

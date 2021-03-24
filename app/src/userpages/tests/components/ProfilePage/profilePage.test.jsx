@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import assert from 'assert-diff'
 
 import { ProfilePage } from '../../../components/ProfilePage'
 
@@ -25,19 +24,19 @@ describe('ProfilePageHandler', () => {
     describe('render', () => {
         it('should have a ProfileSettings', () => {
             const el = shallow(<ProfilePage />)
-            assert(el.find('ProfileSettings'))
+            expect(el.find('ProfileSettings')).toBeTruthy()
         })
         it('should have a APICredentials', () => {
             const el = shallow(<ProfilePage />)
-            assert(el.find('APICredentials'))
+            expect(el.find('APICredentials')).toBeTruthy()
         })
         it('should have a IntegrationKeyHandler', () => {
             const el = shallow(<ProfilePage />)
-            assert(el.find('IntegrationKeyHandler'))
+            expect(el.find('IntegrationKeyHandler')).toBeTruthy()
         })
         it('should have a IdentityHandler', () => {
             const el = shallow(<ProfilePage />)
-            assert(el.find('IdentityHandler'))
+            expect(el.find('IdentityHandler')).toBeTruthy()
         })
     })
 })

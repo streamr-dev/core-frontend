@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { normalize } from 'normalizr'
@@ -75,7 +74,7 @@ describe('productList - actions', () => {
                 },
             ]
             const resultActions = store.getActions()
-            assert.deepStrictEqual(resultActions, expectedActions)
+            expect(resultActions).toStrictEqual(expectedActions)
         })
     })
 })

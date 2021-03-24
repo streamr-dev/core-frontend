@@ -1,6 +1,5 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import assert from 'assert-diff'
 import sinon from 'sinon'
 
 import SchedulerModule, { RuleComponent } from '$editor/shared/components/modules/Scheduler'
@@ -27,12 +26,12 @@ describe('Scheduler', () => {
 
         it('should render a default value input', () => {
             const el = shallow(<SchedulerModule module={module} />)
-            assert(el.find('ValueInput').exists())
+            expect(el.find('ValueInput').exists()).toBe(true)
         })
 
         it('should render an add button', () => {
             const el = shallow(<SchedulerModule module={module} />)
-            assert(el.find('button').exists())
+            expect(el.find('button').exists()).toBe(true)
         })
 
         it('should render a sortable list of rules', () => {
@@ -56,14 +55,14 @@ describe('Scheduler', () => {
             const el = shallow(<SchedulerModule module={nextModule} />)
             const sortableList = el.find(SortableList)
 
-            assert(sortableList.exists())
-            assert(sortableList.children().length === 2)
+            expect(sortableList.exists()).toBe(true)
+            expect(sortableList.children().length).toBe(2)
         })
 
         it('should add one rule by default', () => {
             const el = shallow(<SchedulerModule module={module} />)
 
-            assert(el.state('rules').length === 1)
+            expect(el.state('rules').length).toBe(1)
         })
 
         it('should update the default value', () => {
@@ -76,16 +75,16 @@ describe('Scheduler', () => {
                     updateModule: updateSpy,
                 }}
             />)
-            assert(el.state('defaultValue') === 0)
+            expect(el.state('defaultValue')).toBe(0)
 
             el.instance().onDefaultValueChange(20)
-            assert(el.state('defaultValue') === 20)
-            assert(updateSpy.calledOnce)
-            assert(updateSpy.calledWith(moduleHash, {
+            expect(el.state('defaultValue')).toBe(20)
+            expect(updateSpy.calledOnce).toBe(true)
+            expect(updateSpy.calledWith(moduleHash, {
                 schedule: {
                     ...el.state(),
                 },
-            }))
+            })).toBe(true)
         })
 
         it('should update a rule value', () => {
@@ -118,8 +117,8 @@ describe('Scheduler', () => {
             const rulesWithIds = el.state('rules')
 
             el.instance().onChangeRule(rulesWithIds[0].id, { value: 20 })
-            assert(updateSpy.calledOnce)
-            assert(updateSpy.calledWith(moduleHash))
+            expect(updateSpy.calledOnce).toBe(true)
+            expect(updateSpy.calledWith(moduleHash)).toBe(true)
         })
 
         it('should add a rule', () => {
@@ -149,12 +148,12 @@ describe('Scheduler', () => {
                     updateModule: updateSpy,
                 }}
             />)
-            assert(el.state('rules').length === 2)
+            expect(el.state('rules').length).toBe(2)
 
             el.instance().onAddRule()
-            assert(el.state('rules').length === 3)
-            assert(updateSpy.calledOnce)
-            assert(updateSpy.calledWith(moduleHash))
+            expect(el.state('rules').length).toBe(3)
+            expect(updateSpy.calledOnce).toBe(true)
+            expect(updateSpy.calledWith(moduleHash)).toBe(true)
         })
 
         it('should remove a rule', () => {
@@ -185,12 +184,12 @@ describe('Scheduler', () => {
                 }}
             />)
             const rulesWithIds = el.state('rules')
-            assert(el.state('rules').length === 2)
+            expect(el.state('rules').length).toBe(2)
 
             el.instance().onRemoveRule(rulesWithIds[0].id)
-            assert(el.state('rules').length === 1)
-            assert(updateSpy.calledOnce)
-            assert(updateSpy.calledWith(moduleHash))
+            expect(el.state('rules').length).toBe(1)
+            expect(updateSpy.calledOnce).toBe(true)
+            expect(updateSpy.calledWith(moduleHash)).toBe(true)
         })
     })
 
@@ -260,41 +259,41 @@ describe('Scheduler', () => {
 
         it('should render a value input and interval selector', () => {
             const el = shallow(<RuleComponent rule={hourRule} />)
-            assert(el.find('ValueInput').exists())
-            assert(el.find('Select').exists())
-            assert(el.find('Select').children().length === 5)
+            expect(el.find('ValueInput').exists()).toBe(true)
+            expect(el.find('Select').exists()).toBe(true)
+            expect(el.find('Select').children().length).toBe(5)
         })
 
         it('should render HourControl', () => {
             const el = shallow(<RuleComponent rule={hourRule} />)
-            assert(el.find('HourControl').exists())
+            expect(el.find('HourControl').exists()).toBe(true)
         })
 
         it('should render DayControl', () => {
             const el = shallow(<RuleComponent rule={dayRule} />)
-            assert(el.find('DayControl').exists())
+            expect(el.find('DayControl').exists()).toBe(true)
         })
 
         it('should render WeekControl', () => {
             const el = shallow(<RuleComponent rule={weekRule} />)
-            assert(el.find('WeekControl').exists())
+            expect(el.find('WeekControl').exists()).toBe(true)
         })
 
         it('should render MonthControl', () => {
             const el = shallow(<RuleComponent rule={monthRule} />)
-            assert(el.find('MonthControl').exists())
+            expect(el.find('MonthControl').exists()).toBe(true)
         })
 
         it('should render YearControl', () => {
             const el = shallow(<RuleComponent rule={yearRule} />)
-            assert(el.find('YearControl').exists())
+            expect(el.find('YearControl').exists()).toBe(true)
         })
 
         it('should show remove button when hovering', () => {
             const el = shallow(<RuleComponent rule={yearRule} />)
-            assert(el.find('button').exists() === false)
+            expect(el.find('button').exists()).toBe(false)
             el.setProps({ isHovered: true })
-            assert(el.find('button').exists())
+            expect(el.find('button').exists()).toBe(true)
         })
 
         it('should set default date when interval changes', () => {
@@ -314,11 +313,11 @@ describe('Scheduler', () => {
                 onChange={onChangeSpy}
             />)
 
-            assert.deepEqual(el.instance().props.rule, nextRule)
+            expect(el.instance().props.rule).toStrictEqual(nextRule)
 
             el.instance().onIntervalChange(2)
-            assert(onChangeSpy.calledOnce)
-            assert(onChangeSpy.calledWith(nextRule.id, {
+            expect(onChangeSpy.calledOnce).toBe(true)
+            expect(onChangeSpy.calledWith(nextRule.id, {
                 startDate: {
                     weekday: 1,
                     hour: 0,
@@ -330,7 +329,7 @@ describe('Scheduler', () => {
                     minute: 0,
                 },
                 intervalType: 2,
-            }))
+            })).toBe(true)
         })
 
         it('calls onRemove', () => {
@@ -345,8 +344,8 @@ describe('Scheduler', () => {
             />)
             el.instance().onRemove(nextRule.id)
 
-            assert(onRemoveSpy.calledOnce)
-            assert(onRemoveSpy.calledWith(nextRule.id))
+            expect(onRemoveSpy.calledOnce).toBe(true)
+            expect(onRemoveSpy.calledWith(nextRule.id)).toBe(true)
         })
 
         it('updates the value', () => {
@@ -362,10 +361,10 @@ describe('Scheduler', () => {
             />)
             el.instance().onValueChange(newValue)
 
-            assert(onChangeSpy.calledOnce)
-            assert(onChangeSpy.calledWith(nextRule.id, {
+            expect(onChangeSpy.calledOnce).toBe(true)
+            expect(onChangeSpy.calledWith(nextRule.id, {
                 value: newValue,
-            }))
+            })).toBe(true)
         })
 
         it('updates the dates', () => {
@@ -382,10 +381,10 @@ describe('Scheduler', () => {
                 startDate: { minute: 20 },
             })
 
-            assert(onChangeSpy.calledOnce)
-            assert(onChangeSpy.calledWith(nextRule.id, {
+            expect(onChangeSpy.calledOnce).toBe(true)
+            expect(onChangeSpy.calledWith(nextRule.id, {
                 startDate: { minute: 20 },
-            }))
+            })).toBe(true)
         })
     })
 })

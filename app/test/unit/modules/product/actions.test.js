@@ -1,5 +1,3 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
 import { normalize } from 'normalizr'
 
 import mockStore from '$testUtils/mockStoreProvider'
@@ -24,14 +22,12 @@ jest.mock('$mp/modules/myPurchaseList/actions', () => (
 ))
 
 describe('product - actions', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getStreamsByProductId', () => {
@@ -51,7 +47,7 @@ describe('product - actions', () => {
             ]
             const { result, entities } = normalize(streams, streamsSchema)
 
-            sandbox.stub(services, 'getStreamsByProductId').callsFake(() => Promise.resolve(streams))
+            jest.spyOn(services, 'getStreamsByProductId').mockImplementation(() => Promise.resolve(streams))
 
             const store = mockStore()
             await store.dispatch(actions.getStreamsByProductId(productId))
@@ -77,13 +73,13 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('responds to errors', async () => {
             const productId = '234'
             const error = new Error('Error')
-            sandbox.stub(services, 'getStreamsByProductId').callsFake(() => Promise.reject(error))
+            jest.spyOn(services, 'getStreamsByProductId').mockImplementation(() => Promise.reject(error))
 
             const store = mockStore()
             await store.dispatch(actions.getStreamsByProductId(productId))
@@ -103,7 +99,7 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -125,7 +121,7 @@ describe('product - actions', () => {
             }
             const { result, entities } = normalize(product, productSchema)
 
-            sandbox.stub(services, 'getProductById').callsFake(() => Promise.resolve(product))
+            jest.spyOn(services, 'getProductById').mockImplementation(() => Promise.resolve(product))
 
             const store = mockStore({
                 product: {
@@ -162,7 +158,7 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('responds to errors', async () => {
@@ -172,7 +168,7 @@ describe('product - actions', () => {
                 code: 'test',
                 statusCode: 123,
             }
-            sandbox.stub(services, 'getProductById').callsFake(() => Promise.reject(error))
+            jest.spyOn(services, 'getProductById').mockImplementation(() => Promise.reject(error))
 
             const store = mockStore({
                 product: {
@@ -204,7 +200,7 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -216,7 +212,7 @@ describe('product - actions', () => {
                 endTimestamp: 12345,
             }
 
-            sandbox.stub(services, 'getMyProductSubscription').callsFake(() => Promise.resolve(productSubscription))
+            jest.spyOn(services, 'getMyProductSubscription').mockImplementation(() => Promise.resolve(productSubscription))
 
             const store = mockStore({
                 product: initialState,
@@ -241,13 +237,13 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('responds to errors', async () => {
             const productId = '1012309'
             const error = new Error('Test error message')
-            sandbox.stub(services, 'getMyProductSubscription').callsFake(() => Promise.reject(error))
+            jest.spyOn(services, 'getMyProductSubscription').mockImplementation(() => Promise.reject(error))
 
             const store = mockStore({
                 product: initialState,
@@ -274,7 +270,7 @@ describe('product - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 })

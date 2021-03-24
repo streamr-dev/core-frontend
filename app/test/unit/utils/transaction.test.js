@@ -1,5 +1,4 @@
 import EventEmitter from 'events'
-import assert from 'assert-diff'
 
 import Transaction from '$shared/utils/Transaction'
 
@@ -16,25 +15,25 @@ describe('Transaction', () => {
     })
 
     it('uses the emitter it gets in constructor', () => {
-        assert.equal(tx.emitter, emitter)
+        expect(tx.emitter).toStrictEqual(emitter)
     })
     it('reacts to onTransactionHash', (done) => {
         tx.onTransactionHash((hash) => {
-            assert.equal('test', hash)
+            expect('test').toBe(hash)
             done()
         })
         emitter.emit('transactionHash', 'test')
     })
     it('reacts to onTransactionComplete', (done) => {
         tx.onTransactionComplete((receipt) => {
-            assert.equal('test', receipt)
+            expect('test').toBe(receipt)
             done()
         })
         emitter.emit('receipt', 'test')
     })
     it('reacts to onError', (done) => {
         tx.onError((error) => {
-            assert.equal('test', error)
+            expect('test').toBe(error)
             done()
         })
         emitter.emit('error', 'test')

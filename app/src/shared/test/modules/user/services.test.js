@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import moxios from 'moxios'
 import sinon from 'sinon'
 
@@ -31,6 +30,8 @@ describe('user - services', () => {
 
     afterEach(() => {
         sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
         process.env.STREAMR_URL = oldStreamrUrl
         moxios.uninstall()
@@ -50,12 +51,12 @@ describe('user - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, '/users/me?noCache=1337')
+                expect(request.config.method).toBe('get')
+                expect(request.config.url).toBe('/users/me?noCache=1337')
             })
 
             const result = await services.getUserData()
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -74,13 +75,13 @@ describe('user - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'put')
-                assert.equal(request.config.url, '/users/me')
-                assert.equal(request.headers['Content-Type'], 'application/json')
+                expect(request.config.method).toBe('put')
+                expect(request.config.url).toBe('/users/me')
+                expect(request.headers['Content-Type']).toBe('application/json')
             })
 
             const result = await services.putUser(data)
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -92,8 +93,8 @@ describe('user - services', () => {
                     status: 204,
                 })
 
-                assert.equal(request.config.method, 'delete')
-                assert.equal(request.config.url, '/users/me')
+                expect(request.config.method).toBe('delete')
+                expect(request.config.url).toBe('/users/me')
             })
 
             await services.deleteUserAccount()
@@ -121,13 +122,13 @@ describe('user - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, '/users/me/image')
-                assert.equal(request.headers['Content-Type'], 'multipart/form-data')
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe('/users/me/image')
+                expect(request.headers['Content-Type']).toBe('multipart/form-data')
             })
 
             const result = await services.uploadProfileAvatar(imageToUpload)
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 })

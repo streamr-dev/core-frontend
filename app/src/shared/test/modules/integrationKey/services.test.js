@@ -1,6 +1,4 @@
-import assert from 'assert-diff'
 import moxios from 'moxios'
-import sinon from 'sinon'
 
 import * as services from '$shared/modules/integrationKey/services'
 import * as getWeb3 from '$shared/web3/web3Provider'
@@ -11,12 +9,10 @@ import { integrationKeyServices } from '$shared/utils/constants'
 import { ChallengeFailedError } from '$shared/errors/Web3'
 
 describe('integrationKey - services', () => {
-    let sandbox
     let oldStreamrApiUrl
     let oldStreamrUrl
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
         oldStreamrUrl = process.env.STREAMR_URL
@@ -25,10 +21,11 @@ describe('integrationKey - services', () => {
     })
 
     afterEach(() => {
-        sandbox.restore()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
         process.env.STREAMR_URL = oldStreamrUrl
         moxios.uninstall()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getIntegrationKeys', () => {
@@ -52,12 +49,12 @@ describe('integrationKey - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, '/integration_keys')
+                expect(request.config.method).toBe('get')
+                expect(request.config.url).toBe('/integration_keys')
             })
 
             const result = await services.getIntegrationKeys()
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -77,7 +74,7 @@ describe('integrationKey - services', () => {
                 },
             }
 
-            const createStub = sandbox.stub().callsFake(() => account)
+            const createStub = jest.fn(() => account)
             const publicWeb3Stub = {
                 eth: {
                     accounts: {
@@ -85,7 +82,7 @@ describe('integrationKey - services', () => {
                     },
                 },
             }
-            sandbox.stub(getWeb3, 'getPublicWeb3').callsFake(() => publicWeb3Stub)
+            jest.spyOn(getWeb3, 'getPublicWeb3').mockImplementation(jest.fn(() => publicWeb3Stub))
 
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
@@ -94,10 +91,10 @@ describe('integrationKey - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, '/integration_keys')
-                assert.equal(request.headers['Content-Type'], 'application/json')
-                assert.equal(request.config.data, JSON.stringify({
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe('/integration_keys')
+                expect(request.headers['Content-Type']).toBe('application/json')
+                expect(request.config.data).toBe(JSON.stringify({
                     name,
                     service: integrationKeyServices.PRIVATE_KEY,
                     json: {
@@ -107,8 +104,8 @@ describe('integrationKey - services', () => {
             })
 
             const result = await services.createPrivateKey(name)
-            assert.deepStrictEqual(result, data)
-            assert(createStub.calledOnce)
+            expect(result).toStrictEqual(data)
+            expect(createStub).toBeCalled()
         })
     })
 
@@ -128,13 +125,13 @@ describe('integrationKey - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, `/login/challenge/${account}`)
-                assert.equal(request.headers['Content-Type'], 'application/x-www-form-urlencoded')
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe(`/login/challenge/${account}`)
+                expect(request.headers['Content-Type']).toBe('application/x-www-form-urlencoded')
             })
 
             const result = await services.createChallenge(account)
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -164,10 +161,10 @@ describe('integrationKey - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, '/integration_keys')
-                assert.equal(request.headers['Content-Type'], 'application/json')
-                assert.equal(request.config.data, JSON.stringify({
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe('/integration_keys')
+                expect(request.headers['Content-Type']).toBe('application/json')
+                expect(request.config.data).toBe(JSON.stringify({
                     name,
                     service: integrationKeyServices.ETHEREREUM_IDENTITY,
                     challenge,
@@ -177,7 +174,7 @@ describe('integrationKey - services', () => {
             })
 
             const result = await services.createEthereumIdentity(name, account, challenge, signature)
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -189,7 +186,10 @@ describe('integrationKey - services', () => {
                 status: 401,
             })
 
-            const signChallenge = sandbox.stub().callsFake(() => Promise.resolve(signature))
+            // don't show error as console.error
+            jest.spyOn(console, 'warn').mockImplementation(jest.fn())
+
+            const signChallenge = jest.fn(() => Promise.resolve(signature))
 
             try {
                 await services.createIdentity({
@@ -198,7 +198,7 @@ describe('integrationKey - services', () => {
                     signChallenge,
                 })
             } catch (e) {
-                assert.equal(e instanceof ChallengeFailedError, true)
+                expect(e instanceof ChallengeFailedError).toBe(true)
             }
         })
 
@@ -213,6 +213,8 @@ describe('integrationKey - services', () => {
                 status: 200,
                 response: challenge,
             })
+            // don't show error as console.error
+            jest.spyOn(console, 'warn').mockImplementation(jest.fn())
 
             try {
                 await services.createIdentity({
@@ -220,7 +222,7 @@ describe('integrationKey - services', () => {
                     address,
                 })
             } catch (e) {
-                assert.equal(e instanceof ChallengeFailedError, true)
+                expect(e instanceof ChallengeFailedError).toBe(true)
             }
         })
 
@@ -238,6 +240,8 @@ describe('integrationKey - services', () => {
             const signChallenge = () => {
                 throw new Error('something went wrong')
             }
+            // don't show error as console.error
+            jest.spyOn(console, 'warn').mockImplementation(jest.fn())
 
             try {
                 await services.createIdentity({
@@ -246,14 +250,14 @@ describe('integrationKey - services', () => {
                     signChallenge,
                 })
             } catch (e) {
-                assert.equal(e instanceof ChallengeFailedError, true)
+                expect(e instanceof ChallengeFailedError).toBe(true)
             }
         })
 
         it('sends a POST request with the signed challenge', async () => {
             const address = '0x876EabF441B2EE5B5b0554Fd502a8E0600950cFa'
             const signature = 'signature'
-            const signChallenge = sandbox.stub().callsFake(() => Promise.resolve(signature))
+            const signChallenge = jest.fn(() => Promise.resolve(signature))
             const challenge = {
                 expires: '2018-12-11T09:55:26Z',
                 challenge: 'This is a challenge created by Streamr',
@@ -283,8 +287,8 @@ describe('integrationKey - services', () => {
                 address,
                 signChallenge,
             })
-            assert.deepStrictEqual(result, data)
-            assert.equal(signChallenge.calledWith(challenge.challenge), true)
+            expect(result).toStrictEqual(data)
+            expect(signChallenge).toBeCalledWith(challenge.challenge)
         })
     })
 
@@ -298,18 +302,18 @@ describe('integrationKey - services', () => {
                     response: null,
                 })
 
-                assert.equal(request.config.method, 'delete')
-                assert.equal(request.config.url, `/integration_keys/${id}`)
+                expect(request.config.method).toBe('delete')
+                expect(request.config.url).toBe(`/integration_keys/${id}`)
             })
 
             const result = await services.deleteIntegrationKey(id)
-            assert.deepStrictEqual(result, null)
+            expect(result).toBe(null)
         })
     })
 
     describe('getBalance', () => {
         it('gets ETH balance', async () => {
-            sandbox.stub(utils, 'getEthBalance').callsFake(() => '123')
+            jest.spyOn(utils, 'getEthBalance').mockImplementation(jest.fn(() => '123'))
 
             const balance = await services.getBalance({
                 address: 'testAccount',
@@ -320,7 +324,7 @@ describe('integrationKey - services', () => {
         })
 
         it('gets token balance', async () => {
-            sandbox.stub(utils, 'getDataTokenBalance').callsFake(() => '123')
+            jest.spyOn(utils, 'getDataTokenBalance').mockImplementation(jest.fn(() => '123'))
 
             const balance = await services.getBalance({
                 address: 'testAccount',

@@ -1,18 +1,10 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import assert from 'assert-diff'
-import sinon from 'sinon'
 
 import KeyField from '$userpages/components/KeyField'
 import Text from '$ui/Text'
 
 describe('KeyField', () => {
-    const sandbox = sinon.createSandbox()
-
-    afterEach(() => {
-        sandbox.restore()
-    })
-
     describe('basic', () => {
         it('renders the component', () => {
             const el = mount(<KeyField
@@ -20,9 +12,9 @@ describe('KeyField', () => {
                 value="testValue"
             />)
 
-            assert(el.find('Label').text().replace(/\u200c/g, '') === 'myKey') // get rid of invisible &zwnj;
-            assert(el.find(Text).prop('value') === 'testValue')
-            assert(el.find(Text).prop('type') === 'text')
+            expect(el.find('Label').text().replace(/\u200c/g, '')).toBe('myKey') // get rid of invisible &zwnj;
+            expect(el.find(Text).prop('value')).toBe('testValue')
+            expect(el.find(Text).prop('type')).toBe('text')
         })
 
         it('has a copy action', () => {
@@ -34,8 +26,8 @@ describe('KeyField', () => {
             const actions = el.find('WithInputActions').prop('actions').map((action) => (
                 mount(action)
             ))
-            assert(actions.length === 1)
-            assert(actions[0].text() === 'Copy')
+            expect(actions.length).toBe(1)
+            expect(actions[0].text()).toBe('Copy')
         })
     })
 
@@ -47,7 +39,7 @@ describe('KeyField', () => {
                 hideValue
             />)
 
-            assert(el.find(Text).prop('type') === 'password')
+            expect(el.find(Text).prop('type')).toBe('password')
         })
 
         it('has a menu option to reveal the value', () => {
@@ -57,10 +49,10 @@ describe('KeyField', () => {
                 hideValue
             />)
 
-            assert(el.find(Text).prop('type') === 'password')
+            expect(el.find(Text).prop('type')).toBe('password')
 
             const action = mount(el.find('WithInputActions').prop('actions')[0])
-            assert(action.text() === 'Reveal')
+            expect(action.text()).toBe('Reveal')
         })
     })
 
@@ -73,7 +65,7 @@ describe('KeyField', () => {
             />)
 
             const action = mount(el.find('WithInputActions').prop('actions')[1])
-            assert(action.text() === 'Edit')
+            expect(action.text()).toBe('Edit')
         })
     })
 
@@ -86,8 +78,8 @@ describe('KeyField', () => {
             />)
 
             const action = mount(el.find('WithInputActions').prop('actions')[1])
-            assert(action.text() === 'Delete')
-            assert(action.prop('disabled') !== true)
+            expect(action.text()).toBe('Delete')
+            expect(action.prop('disabled')).toBeFalsy()
         })
 
         it('disables the delete option', () => {
@@ -99,7 +91,7 @@ describe('KeyField', () => {
             />)
 
             const action = mount(el.find('WithInputActions').prop('actions')[1])
-            assert(action.prop('disabled') === true)
+            expect(action.prop('disabled')).toBeTruthy()
         })
     })
 })

@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$shared/modules/integrationKey/reducer'
 import * as constants from '$shared/modules/integrationKey/constants'
 
 describe('integrationKey - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     describe('INTEGRATION_KEYS', () => {
@@ -15,10 +13,10 @@ describe('integrationKey - reducer', () => {
                 fetchingIntegrationKeys: true,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.INTEGRATION_KEYS_REQUEST,
                 payload: {},
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -31,13 +29,13 @@ describe('integrationKey - reducer', () => {
                 fetchingIntegrationKeys: false,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.INTEGRATION_KEYS_SUCCESS,
                 payload: {
                     ethereumIdentities,
                     privateKeys,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -49,12 +47,12 @@ describe('integrationKey - reducer', () => {
                 integrationKeysError: error,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.INTEGRATION_KEYS_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 
@@ -65,10 +63,10 @@ describe('integrationKey - reducer', () => {
                 creatingIntegrationKey: true,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CREATE_INTEGRATION_KEY_REQUEST,
                 payload: {},
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -78,12 +76,12 @@ describe('integrationKey - reducer', () => {
                 creatingIntegrationKey: false,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CREATE_INTEGRATION_KEY_SUCCESS,
                 payload: {
                     id: 'test1',
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -95,12 +93,12 @@ describe('integrationKey - reducer', () => {
                 creatingIntegrationKeyError: error,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CREATE_INTEGRATION_KEY_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 
@@ -111,10 +109,10 @@ describe('integrationKey - reducer', () => {
                 creatingIdentity: true,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CREATE_IDENTITY_REQUEST,
                 payload: {},
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -124,12 +122,12 @@ describe('integrationKey - reducer', () => {
                 creatingIdentity: false,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CREATE_IDENTITY_SUCCESS,
                 payload: {
                     id: 'test1',
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -141,12 +139,12 @@ describe('integrationKey - reducer', () => {
                 creatingIdentityError: error,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CREATE_IDENTITY_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 
@@ -157,10 +155,10 @@ describe('integrationKey - reducer', () => {
                 removingIntegrationKey: true,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.DELETE_INTEGRATION_KEY_REQUEST,
                 payload: {},
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success for ethereum identity', () => {
@@ -177,12 +175,12 @@ describe('integrationKey - reducer', () => {
                 removingIntegrationKey: false,
             }
 
-            assert.deepStrictEqual(reducer(nextState, {
+            expect(reducer(nextState, {
                 type: constants.DELETE_INTEGRATION_KEY_SUCCESS,
                 payload: {
                     id: 'test1',
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success for private key', () => {
@@ -199,12 +197,12 @@ describe('integrationKey - reducer', () => {
                 removingIntegrationKey: false,
             }
 
-            assert.deepStrictEqual(reducer(nextState, {
+            expect(reducer(nextState, {
                 type: constants.DELETE_INTEGRATION_KEY_SUCCESS,
                 payload: {
                     id: 'test3',
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -216,12 +214,12 @@ describe('integrationKey - reducer', () => {
                 removingIntegrationError: error,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.DELETE_INTEGRATION_KEY_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 })

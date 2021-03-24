@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import moxios from 'moxios'
 
 import * as services from '$mp/modules/categories/services'
@@ -34,13 +33,13 @@ describe('categories - services', () => {
                 response: data,
             })
 
-            assert.equal(request.config.method, 'get')
-            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/categories?includeEmpty=true`)
+            expect(request.config.method).toBe('get')
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/categories?includeEmpty=true`)
             done()
         })
 
         const result = await services.getCategories(true)
-        assert.deepStrictEqual(result, data)
+        expect(result).toStrictEqual(data)
     })
 
     it('gets categories without empty', async (done) => {
@@ -63,12 +62,12 @@ describe('categories - services', () => {
                 response: data,
             })
 
-            assert.equal(request.config.method, 'get')
-            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/categories?includeEmpty=false`)
+            expect(request.config.method).toBe('get')
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/categories?includeEmpty=false`)
             done()
         })
 
         const result = await services.getCategories(false)
-        assert.deepStrictEqual(result, data)
+        expect(result).toStrictEqual(data)
     })
 })

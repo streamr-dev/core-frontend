@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$mp/modules/contractProduct/reducer'
 import * as constants from '$mp/modules/contractProduct/constants'
 
 describe('contractProduct - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     describe('GET_PRODUCT_FROM_CONTRACT', () => {
@@ -17,12 +15,12 @@ describe('contractProduct - reducer', () => {
                 whitelistedAddresses: [],
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_PRODUCT_FROM_CONTRACT_REQUEST,
                 payload: {
                     id: 'test',
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -33,12 +31,12 @@ describe('contractProduct - reducer', () => {
                 whitelistedAddresses: [],
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_PRODUCT_FROM_CONTRACT_SUCCESS,
                 payload: {
                     id: 'test',
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -51,12 +49,12 @@ describe('contractProduct - reducer', () => {
                 whitelistedAddresses: [],
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_PRODUCT_FROM_CONTRACT_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 
@@ -74,8 +72,8 @@ describe('contractProduct - reducer', () => {
             whitelistedAddresses: [],
         }
 
-        assert.deepStrictEqual(reducer(state, {
+        expect(reducer(state, {
             type: constants.CLEAR_CONTRACT_PRODUCT,
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 })

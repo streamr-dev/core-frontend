@@ -1,5 +1,3 @@
-import assert from 'assert-diff'
-
 import * as all from '$shared/modules/integrationKey/selectors'
 import { integrationKeyServices } from '$shared/utils/constants'
 
@@ -54,26 +52,26 @@ const state = {
 
 describe('integrationKey - selectors', () => {
     it('selects integration keys fetching status', () => {
-        assert.deepStrictEqual(all.selectFetchingIntegrationKeys(state), false)
+        expect(all.selectFetchingIntegrationKeys(state)).toBe(false)
     })
 
     it('selects ethereum identity ids', () => {
-        assert.deepStrictEqual(all.selectEthereumIdentityIds(state), state.integrationKey.ethereumIdentities)
+        expect(all.selectEthereumIdentityIds(state)).toStrictEqual(state.integrationKey.ethereumIdentities)
     })
 
     it('selects ethereum identities', () => {
-        assert.deepStrictEqual(all.selectEthereumIdentities(state), [service1, service2])
+        expect(all.selectEthereumIdentities(state)).toStrictEqual([service1, service2])
     })
 
     it('selects private key ids', () => {
-        assert.deepStrictEqual(all.selectPrivateKeyIds(state), state.integrationKey.privateKeys)
+        expect(all.selectPrivateKeyIds(state)).toStrictEqual(state.integrationKey.privateKeys)
     })
 
     it('select private keys', () => {
-        assert.deepStrictEqual(all.selectPrivateKeys(state), [service3])
+        expect(all.selectPrivateKeys(state)).toStrictEqual([service3])
     })
 
     it('selects integration keys error', () => {
-        assert.deepStrictEqual(all.selectIntegrationKeysError(state), state.integrationKey.integrationKeysError)
+        expect(all.selectIntegrationKeysError(state)).toStrictEqual(state.integrationKey.integrationKeysError)
     })
 })

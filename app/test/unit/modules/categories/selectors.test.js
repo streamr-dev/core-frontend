@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/categories/selectors'
@@ -34,18 +33,18 @@ const state = {
 
 describe('categories - selectors', () => {
     it('selects category ids', () => {
-        assert.deepStrictEqual(all.selectCategoryIds(state), state.categories.ids)
+        expect(all.selectCategoryIds(state)).toStrictEqual(state.categories.ids)
     })
 
     it('selects all categories', () => {
-        assert.deepStrictEqual(all.selectAllCategories(state), categories)
+        expect(all.selectAllCategories(state)).toStrictEqual(categories)
     })
 
     it('selects fetching status for categories', () => {
-        assert.deepStrictEqual(all.selectFetchingCategories(state), false)
+        expect(all.selectFetchingCategories(state)).toStrictEqual(false)
     })
 
     it('selects error', () => {
-        assert.deepStrictEqual(all.selectCategoriesError(state), null)
+        expect(all.selectCategoriesError(state)).toStrictEqual(null)
     })
 })

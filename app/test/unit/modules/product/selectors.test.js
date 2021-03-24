@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 import merge from 'lodash/merge'
 
@@ -104,54 +103,54 @@ const state = {
 
 describe('product - selectors', () => {
     it('selects product fetching status', () => {
-        assert.equal(all.selectFetchingProduct(state), true)
+        expect(all.selectFetchingProduct(state)).toBe(true)
     })
 
     it('selects product id', () => {
-        assert.equal(all.selectProductId(state), '1337')
+        expect(all.selectProductId(state)).toBe('1337')
     })
 
     it('selects product', () => {
-        assert.deepStrictEqual(all.selectProduct(state), products[0])
+        expect(all.selectProduct(state)).toStrictEqual(products[0])
     })
 
     it('selects product error', () => {
-        assert.equal(all.selectProductError(state), null)
+        expect(all.selectProductError(state)).toBe(null)
     })
 
     it('selects product streams', () => {
-        assert.equal(all.selectFetchingStreams(state), true)
+        expect(all.selectFetchingStreams(state)).toBe(true)
     })
 
     it('selects product stream ids', () => {
-        assert.deepStrictEqual(all.selectStreamIds(state), [1, 2])
+        expect(all.selectStreamIds(state)).toStrictEqual([1, 2])
     })
 
     it('selects product streams', () => {
-        assert.deepStrictEqual(all.selectStreams(state), streams)
+        expect(all.selectStreams(state)).toStrictEqual(streams)
     })
 
     it('selects category', () => {
-        assert.deepStrictEqual(all.selectCategory(state), categories[0])
+        expect(all.selectCategory(state)).toStrictEqual(categories[0])
     })
 
     it('selects streams error', () => {
-        assert.equal(all.selectStreamsError(state), null)
+        expect(all.selectStreamsError(state)).toBe(null)
     })
 
     it('selects contract subscription', () => {
-        assert.equal(all.selectContractSubscription(state), state.product.contractSubscription)
+        expect(all.selectContractSubscription(state)).toBe(state.product.contractSubscription)
     })
 
     it('selects contract subscription validity status', () => {
-        assert.equal(all.selectContractSubscriptionIsValid(state), false)
+        expect(all.selectContractSubscriptionIsValid(state)).toBe(false)
     })
 
     it('selects product purchased status', () => {
-        assert.equal(all.selectProductIsPurchased(state), true)
+        expect(all.selectProductIsPurchased(state)).toBe(true)
     })
 
     it('selects subscription validity status', () => {
-        assert.equal(all.selectSubscriptionIsValid(state), true)
+        expect(all.selectSubscriptionIsValid(state)).toBe(true)
     })
 })

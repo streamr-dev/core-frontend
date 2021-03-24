@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as actions from '$shared/modules/entities/actions'
@@ -51,7 +50,7 @@ describe('entities - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 })

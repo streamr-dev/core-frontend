@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import reducer from '$userpages/modules/userPageStreams/reducer'
 import * as actions from '$userpages/modules/userPageStreams/actions'
 
@@ -20,7 +19,7 @@ const initialState = {
 
 describe('Stream reducer', () => {
     it('should return the initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     describe('REQUEST actions', () => {
@@ -31,22 +30,22 @@ describe('Stream reducer', () => {
                 actions.UPDATE_STREAM_REQUEST,
                 actions.DELETE_STREAM_REQUEST,
             ].forEach((action) => {
-                assert.ok(reducer({
+                expect(reducer({
                     fetching: false,
                 }, {
                     type: action,
-                }).fetching, action)
+                }).fetching).toBe(true)
             })
         })
     })
 
     describe(actions.UPDATE_STREAM_REQUEST, () => {
         it('raises the `updating` flag', () => {
-            assert.ok(reducer({
+            expect(reducer({
                 updating: false,
             }, {
                 type: actions.UPDATE_STREAM_REQUEST,
-            }).updating, actions.UPDATE_STREAM_REQUEST)
+            }).updating).toBe(true)
         })
     })
 
@@ -63,12 +62,12 @@ describe('Stream reducer', () => {
                         id: 'moi',
                         field: 'hei',
                     }
-                    assert.deepStrictEqual(reducer({
+                    expect(reducer({
                         ids: [],
                     }, {
                         type: action,
                         stream: stream.id,
-                    }), {
+                    })).toStrictEqual({
                         ids: [],
                         fetching: false,
                         error: null,
@@ -82,12 +81,12 @@ describe('Stream reducer', () => {
                     field: 'hei',
                 }
 
-                assert.deepStrictEqual(reducer({
+                expect(reducer({
                     ids: [],
                 }, {
                     type: actions.UPDATE_STREAM_SUCCESS,
                     stream: stream.id,
-                }), {
+                })).toStrictEqual({
                     ids: [],
                     fetching: false,
                     updating: false,
@@ -115,7 +114,7 @@ describe('Stream reducer', () => {
                     hasMoreResults: true,
                 })
 
-                assert.deepStrictEqual(reducerState, expectedState)
+                expect(reducerState).toStrictEqual(expectedState)
             })
 
             it('clears product list', () => {
@@ -137,17 +136,17 @@ describe('Stream reducer', () => {
                     type: actions.CLEAR_STREAM_LIST,
                 })
 
-                assert.deepStrictEqual(reducerState, expectedState)
+                expect(reducerState).toStrictEqual(expectedState)
             })
         })
 
         describe(actions.UPDATE_STREAM_SUCCESS, () => {
             it('lowers the `updating` flag', () => {
-                assert.ok(!reducer({
+                expect(reducer({
                     updating: true,
                 }, {
                     type: actions.UPDATE_STREAM_SUCCESS,
-                }).updating, actions.UPDATE_STREAM_SUCCESS)
+                }).updating).toBe(false)
             })
         })
 
@@ -160,12 +159,12 @@ describe('Stream reducer', () => {
                 id: 'moi2',
                 field: 'moi2',
             }
-            assert.deepStrictEqual(reducer({
+            expect(reducer({
                 ids: [stream.id, stream2.id],
             }, {
                 type: actions.DELETE_STREAM_SUCCESS,
                 id: stream.id,
-            }), {
+            })).toStrictEqual({
                 ids: [stream2.id],
                 fetching: false,
                 error: null,
@@ -195,18 +194,18 @@ describe('Stream reducer', () => {
                     error,
                 })
 
-                assert.ok(!result.fetching)
-                assert.deepEqual(error, result.error)
+                expect(result.fetching).toBe(false)
+                expect(error).toStrictEqual(result.error)
             })
         })
 
         describe(actions.UPDATE_STREAM_FAILURE, () => {
             it('lowers the `updating` flag', () => {
-                assert.ok(!reducer({
+                expect(reducer({
                     updating: true,
                 }, {
                     type: actions.UPDATE_STREAM_FAILURE,
-                }).updating, actions.UPDATE_STREAM_FAILURE)
+                }).updating).toBe(false)
             })
         })
     })

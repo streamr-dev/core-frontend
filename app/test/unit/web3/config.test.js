@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import getConfig from '$shared/web3/config'
 
 jest.mock('$shared/web3/abis/token', () => (['t_test', 't_values', 't_only']))
@@ -36,7 +35,7 @@ describe('config', () => {
             process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS = 1337
             process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS = 'uniAddress'
 
-            assert.deepStrictEqual(getConfig(), {
+            expect(getConfig()).toStrictEqual({
                 networkId: '1',
                 publicNodeAddress: 'https://dummy',
                 websocketAddress: 'wss://dummy/ws',

@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$mp/modules/myPurchaseList/reducer'
 import * as constants from '$mp/modules/myPurchaseList/constants'
 
 describe('myPurchaseList - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     it('handles request', () => {
@@ -15,10 +13,10 @@ describe('myPurchaseList - reducer', () => {
             error: null,
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.GET_MY_PURCHASES_REQUEST,
             payload: {},
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('handles success', () => {
@@ -34,7 +32,7 @@ describe('myPurchaseList - reducer', () => {
                 subscriptions: [1, 2, 3],
             },
         })
-        assert.deepStrictEqual(reducerState, expectedState)
+        expect(reducerState).toStrictEqual(expectedState)
     })
 
     it('handles failure', () => {
@@ -53,6 +51,6 @@ describe('myPurchaseList - reducer', () => {
                 error,
             },
         })
-        assert.deepStrictEqual(reducerState, expectedState)
+        expect(reducerState).toStrictEqual(expectedState)
     })
 })

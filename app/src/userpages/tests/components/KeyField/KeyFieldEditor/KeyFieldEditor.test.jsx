@@ -1,43 +1,35 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import assert from 'assert-diff'
-import sinon from 'sinon'
 
 import KeyFieldEditor from '$userpages/components/KeyField/KeyFieldEditor'
 
 describe('KeyFieldEditor', () => {
-    const sandbox = sinon.createSandbox()
-
-    afterEach(() => {
-        sandbox.restore()
-    })
-
     describe('basic', () => {
         it('shows text input for key name and value', () => {
             const el = mount(<KeyFieldEditor
                 onSave={() => {}}
             />)
 
-            assert(el.exists('#keyName'))
+            expect(el.exists('#keyName')).toBe(true)
             expect(el.find('#keyName').hostNodes()).toHaveLength(1)
-            assert(el.exists('#keyValue'))
+            expect(el.exists('#keyValue')).toBe(true)
             expect(el.find('#keyValue').hostNodes()).toHaveLength(1)
-            assert(el.find('Label').at(0).text() === 'Key name')
-            assert(el.find('Label').at(1).text() === 'API key')
+            expect(el.find('Label').at(0).text()).toBe('Key name')
+            expect(el.find('Label').at(1).text()).toBe('API key')
         })
 
         it('shows correct text for save button', () => {
             const el = mount(<KeyFieldEditor
                 onSave={() => {}}
             />)
-            assert(el.find('Buttons').prop('actions').save.title === 'Save')
+            expect(el.find('Buttons').prop('actions').save.title).toBe('Save')
         })
 
         it('shows save button as disabled if value is empty', () => {
             const el = mount(<KeyFieldEditor
                 onSave={() => {}}
             />)
-            assert(el.find('Buttons').prop('actions').save.disabled === true)
+            expect(el.find('Buttons').prop('actions').save.disabled).toBeTruthy()
         })
 
         it('shows the value as readonly', () => {
@@ -45,18 +37,18 @@ describe('KeyFieldEditor', () => {
                 onSave={() => {}}
             />)
 
-            assert(el.find('Text').at(1).prop('readOnly') === true)
+            expect(el.find('Text').at(1).prop('readOnly')).toBe(true)
         })
 
         it('calls onSave prop', () => {
-            const spy = sandbox.spy()
+            const spy = jest.fn()
             const el = mount(<KeyFieldEditor
                 onSave={spy}
             />)
 
             el.find('Buttons').prop('actions').save.onClick()
 
-            assert(spy.calledOnce)
+            expect(spy).toHaveBeenCalledTimes(1)
         })
 
         it('shows an error as part of the value field', () => {
@@ -66,7 +58,7 @@ describe('KeyFieldEditor', () => {
                 error={error}
             />)
 
-            assert(el.find('Errors').text() === error)
+            expect(el.find('Errors').text()).toBe(error)
         })
     })
 
@@ -77,8 +69,8 @@ describe('KeyFieldEditor', () => {
                 createNew
             />)
 
-            assert(el.find('Text').length === 1)
-            assert(el.find('Label').text() === 'Key name')
+            expect(el.find('Text').length).toBe(1)
+            expect(el.find('Label').text()).toBe('Key name')
         })
 
         it('shows correct text for save button', () => {
@@ -86,7 +78,7 @@ describe('KeyFieldEditor', () => {
                 onSave={() => {}}
                 createNew
             />)
-            assert(el.find('Buttons').prop('actions').save.title === 'Add')
+            expect(el.find('Buttons').prop('actions').save.title).toBe('Add')
         })
 
         it('shows an error as part of the name field', () => {
@@ -97,7 +89,7 @@ describe('KeyFieldEditor', () => {
                 error={error}
             />)
 
-            assert(el.find('Errors').text() === error)
+            expect(el.find('Errors').text()).toBe(error)
         })
 
         it('shows save button as disabled unless name is given', () => {
@@ -106,14 +98,14 @@ describe('KeyFieldEditor', () => {
                 createNew
             />)
 
-            assert(el.find('Buttons').prop('actions').save.disabled === true)
+            expect(el.find('Buttons').prop('actions').save.disabled).toBeTruthy()
 
             el.find('#keyName').hostNodes().simulate('change', {
                 target: {
                     value: 'name',
                 },
             })
-            assert(el.find('Buttons').prop('actions').save.disabled !== true)
+            expect(el.find('Buttons').prop('actions').save.disabled).toBeFalsy()
         })
     })
 
@@ -124,8 +116,8 @@ describe('KeyFieldEditor', () => {
                 showValue
             />)
 
-            assert(el.find('Text').at(1).prop('id') === 'keyValue')
-            assert(el.find('Text').at(1).prop('readOnly') === true)
+            expect(el.find('Text').at(1).prop('id')).toBe('keyValue')
+            expect(el.find('Text').at(1).prop('readOnly')).toBe(true)
         })
     })
 })

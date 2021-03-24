@@ -1,5 +1,4 @@
 import React from 'react'
-import assert from 'assert-diff'
 import { shallow } from 'enzyme'
 import BN from 'bignumber.js'
 
@@ -24,7 +23,7 @@ describe('NoBalanceDialog', () => {
                 paymentCurrency="DATA"
                 onCancel={() => null}
             />)
-            assert(wrapper.is(GetCryptoDialog))
+            expect(wrapper.is(GetCryptoDialog)).toBe(true)
         })
 
         it('must render GetCryptoDialog when the Payment currency is DATA and when ETH balance is not enough for transaction gas', async () => {
@@ -38,7 +37,7 @@ describe('NoBalanceDialog', () => {
                 paymentCurrency="DATA"
                 onCancel={() => null}
             />)
-            assert(wrapper.is(GetCryptoDialog))
+            expect(wrapper.is(GetCryptoDialog)).toBe(true)
         })
 
         it('must render GetDataTokensDialog when the Payment currency is DATA and the DATA balance is zero', async () => {
@@ -54,7 +53,7 @@ describe('NoBalanceDialog', () => {
                 paymentCurrency="DATA"
                 onCancel={() => null}
             />)
-            assert(wrapper.is(GetDataTokensDialog))
+            expect(wrapper.is(GetDataTokensDialog)).toBe(true)
         })
 
         it('must render InsufficientData when the Payment currency is DATA and the DATA balance is not enough', async () => {
@@ -70,7 +69,7 @@ describe('NoBalanceDialog', () => {
                 paymentCurrency="DATA"
                 onCancel={() => null}
             />)
-            assert(wrapper.is(InsufficientDataDialog))
+            expect(wrapper.is(InsufficientDataDialog)).toBe(true)
         })
 
         // eslint-disable-next-line max-len
@@ -87,7 +86,7 @@ describe('NoBalanceDialog', () => {
                 paymentCurrency="DAI"
                 onCancel={() => null}
             />)
-            assert(wrapper.is(InsufficientDaiDialog))
+            expect(wrapper.is(InsufficientDaiDialog)).toBe(true)
         })
 
         // eslint-disable-next-line max-len
@@ -104,7 +103,7 @@ describe('NoBalanceDialog', () => {
                 paymentCurrency="DAI"
                 onCancel={() => null}
             />)
-            assert(wrapper.is(InsufficientDaiDialog))
+            expect(wrapper.is(InsufficientDaiDialog)).toBe(true)
         })
 
         it('must render InsufficientEthDialog when the Payment currency is ETH and ETH balance is not enough', async () => {
@@ -119,7 +118,7 @@ describe('NoBalanceDialog', () => {
                 paymentCurrency="ETH"
                 onCancel={() => null}
             />)
-            assert(wrapper.is(InsufficientEthDialog))
+            expect(wrapper.is(InsufficientEthDialog)).toBe(true)
         })
     })
 })

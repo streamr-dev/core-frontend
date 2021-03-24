@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import sinon from 'sinon'
 
 import * as storageUtils from '$shared/utils/storage'
@@ -19,13 +18,13 @@ describe('purchase - services', () => {
         it('gets empty transactions object if session storage is available', async () => {
             sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => true)
 
-            assert.deepStrictEqual(all.getTransactionsFromSessionStorage(), {})
+            expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
         })
 
         it('gets empty transactions object if session storage is not available', async () => {
             sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => false)
 
-            assert.deepStrictEqual(all.getTransactionsFromSessionStorage(), {})
+            expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
         })
 
         it('gets transactions if session storage is available and transactions exist', async () => {
@@ -35,7 +34,7 @@ describe('purchase - services', () => {
             sessionStorage.setItem('pendingTransactions', JSON.stringify(transactions))
             sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => true)
 
-            assert.deepStrictEqual(all.getTransactionsFromSessionStorage(), transactions)
+            expect(all.getTransactionsFromSessionStorage()).toStrictEqual(transactions)
         })
 
         it('gets empty transactions object if session storage is not available and transactions exist', async () => {
@@ -45,7 +44,7 @@ describe('purchase - services', () => {
             sessionStorage.setItem('pendingTransactions', JSON.stringify(transactions))
             sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => false)
 
-            assert.deepStrictEqual(all.getTransactionsFromSessionStorage(), {})
+            expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
         })
     })
 
@@ -55,7 +54,7 @@ describe('purchase - services', () => {
 
             all.addTransactionToSessionStorage('hash', 'type')
 
-            assert.deepStrictEqual(all.getTransactionsFromSessionStorage(), {
+            expect(all.getTransactionsFromSessionStorage()).toStrictEqual({
                 hash: 'type',
             })
         })
@@ -64,7 +63,7 @@ describe('purchase - services', () => {
             sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => false)
 
             all.addTransactionToSessionStorage('hash', 'type')
-            assert.deepStrictEqual(all.getTransactionsFromSessionStorage(), {})
+            expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
         })
     })
 
@@ -78,7 +77,7 @@ describe('purchase - services', () => {
             sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => true)
 
             all.removeTransactionFromSessionStorage('hash2')
-            assert.deepStrictEqual(all.getTransactionsFromSessionStorage(), {
+            expect(all.getTransactionsFromSessionStorage()).toStrictEqual({
                 hash1: 'setAllowance',
             })
         })
@@ -92,7 +91,7 @@ describe('purchase - services', () => {
             sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => false)
 
             all.removeTransactionFromSessionStorage('hash2')
-            assert.deepStrictEqual(all.getTransactionsFromSessionStorage(), {})
+            expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
         })
     })
 })
