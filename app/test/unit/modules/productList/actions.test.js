@@ -2,7 +2,6 @@ import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { normalize } from 'normalizr'
 
-import sinon from 'sinon'
 import * as actions from '$mp/modules/productList/actions'
 import * as constants from '$mp/modules/productList/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
@@ -15,16 +14,6 @@ const mockStore = configureMockStore(middlewares)
 jest.mock('$mp/modules/productList/services')
 
 describe('productList - actions', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
-    afterEach(() => {
-        sandbox.restore()
-    })
-
     describe('getProducts', () => {
         it('gets products succesfully', async () => {
             const products = [
@@ -43,7 +32,7 @@ describe('productList - actions', () => {
             ]
             const { result, entities } = normalize(products, productsSchema)
 
-            sandbox.stub(services, 'getProducts').callsFake(() => Promise.resolve({
+            jest.spyOn(services, 'getProducts').mockImplementation(() => Promise.resolve({
                 products,
                 hasMoreProducts: false,
             }))

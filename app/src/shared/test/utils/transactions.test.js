@@ -1,28 +1,21 @@
-import sinon from 'sinon'
-
 import * as storageUtils from '$shared/utils/storage'
 import * as all from '$shared/utils/transactions'
 
 describe('purchase - services', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getTransactionsFromSessionStorage', () => {
         it('gets empty transactions object if session storage is available', async () => {
-            sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => true)
+            jest.spyOn(storageUtils, 'isSessionStorageAvailable').mockImplementation(() => true)
 
             expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
         })
 
         it('gets empty transactions object if session storage is not available', async () => {
-            sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => false)
+            jest.spyOn(storageUtils, 'isSessionStorageAvailable').mockImplementation(() => false)
 
             expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
         })
@@ -32,7 +25,7 @@ describe('purchase - services', () => {
                 hash: 'setAllowance',
             }
             sessionStorage.setItem('pendingTransactions', JSON.stringify(transactions))
-            sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => true)
+            jest.spyOn(storageUtils, 'isSessionStorageAvailable').mockImplementation(() => true)
 
             expect(all.getTransactionsFromSessionStorage()).toStrictEqual(transactions)
         })
@@ -42,7 +35,7 @@ describe('purchase - services', () => {
                 hash: 'setAllowance',
             }
             sessionStorage.setItem('pendingTransactions', JSON.stringify(transactions))
-            sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => false)
+            jest.spyOn(storageUtils, 'isSessionStorageAvailable').mockImplementation(() => false)
 
             expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
         })
@@ -50,7 +43,7 @@ describe('purchase - services', () => {
 
     describe('addTransactionToSessionStorage', () => {
         it('adds transactions to session storage if available', () => {
-            sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => true)
+            jest.spyOn(storageUtils, 'isSessionStorageAvailable').mockImplementation(() => true)
 
             all.addTransactionToSessionStorage('hash', 'type')
 
@@ -60,7 +53,7 @@ describe('purchase - services', () => {
         })
 
         it('it does nothing if session storage is not available', () => {
-            sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => false)
+            jest.spyOn(storageUtils, 'isSessionStorageAvailable').mockImplementation(() => false)
 
             all.addTransactionToSessionStorage('hash', 'type')
             expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})
@@ -74,7 +67,7 @@ describe('purchase - services', () => {
                 hash2: 'purchase',
             }
             sessionStorage.setItem('pendingTransactions', JSON.stringify(transactions))
-            sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => true)
+            jest.spyOn(storageUtils, 'isSessionStorageAvailable').mockImplementation(() => true)
 
             all.removeTransactionFromSessionStorage('hash2')
             expect(all.getTransactionsFromSessionStorage()).toStrictEqual({
@@ -88,7 +81,7 @@ describe('purchase - services', () => {
                 hash2: 'purchase',
             }
             sessionStorage.setItem('pendingTransactions', JSON.stringify(transactions))
-            sandbox.stub(storageUtils, 'isSessionStorageAvailable').callsFake(() => false)
+            jest.spyOn(storageUtils, 'isSessionStorageAvailable').mockImplementation(() => false)
 
             all.removeTransactionFromSessionStorage('hash2')
             expect(all.getTransactionsFromSessionStorage()).toStrictEqual({})

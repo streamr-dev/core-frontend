@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { shallow, mount } from 'enzyme'
-import sinon from 'sinon'
 import { Input } from 'reactstrap'
 import { act } from 'react-dom/test-utils'
 
@@ -10,10 +9,8 @@ import styles from '$mp/components/StreamSelector/streamSelector.pcss'
 describe('StreamSelector', () => {
     let wrapper
     let props
-    let sandbox
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
         props = {
             streams: ['stream-1', 'stream-2'],
             availableStreams: [
@@ -32,10 +29,6 @@ describe('StreamSelector', () => {
             ],
             translate: (key) => key,
         }
-    })
-
-    afterEach(() => {
-        sandbox.restore()
     })
 
     describe('Rendering', () => {

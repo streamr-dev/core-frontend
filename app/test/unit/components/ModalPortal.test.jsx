@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { shallow, mount } from 'enzyme'
-import sinon from 'sinon'
 
 import { Context as ModalPortalContext, Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ModalPortal from '$shared/components/ModalPortal'
@@ -21,6 +20,8 @@ describe(ModalPortalProvider, () => {
 
     afterEach(() => {
         body.removeChild(modalRoot)
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     it('renders #app', () => {
@@ -38,7 +39,7 @@ describe(ModalPortalProvider, () => {
     })
 
     it('provides current modal root to context consumers', () => {
-        const consume = sinon.spy()
+        const consume = jest.fn()
         expect(mount((
             <ModalPortalProvider>
                 <ModalPortalContext.Consumer>
@@ -46,13 +47,13 @@ describe(ModalPortalProvider, () => {
                 </ModalPortalContext.Consumer>
             </ModalPortalProvider>
         )))
-        sinon.assert.alwaysCalledWith(consume, sinon.match.has('isModalOpen', false))
-        sinon.assert.alwaysCalledWith(consume, sinon.match.has('registerModal', sinon.match.instanceOf(Function)))
-        sinon.assert.alwaysCalledWith(consume, sinon.match.has('unregisterModal', sinon.match.instanceOf(Function)))
+        expect(consume.mock.calls[0][0].isModalOpen).toBe(false)
+        expect(consume.mock.calls[0][0].registerModal).toBeInstanceOf(Function)
+        expect(consume.mock.calls[0][0].unregisterModal).toBeInstanceOf(Function)
     })
 
     it('provides a flag indicating that a modal is open', () => {
-        const consume = sinon.spy()
+        const consume = jest.fn()
         const el = mount((
             <ModalPortalProvider>
                 <React.Fragment>
@@ -65,13 +66,13 @@ describe(ModalPortalProvider, () => {
             </ModalPortalProvider>
         ))
         expect(el.instance().count).toEqual(2)
-        sinon.assert.calledTwice(consume)
-        sinon.assert.calledWith(consume.firstCall, sinon.match.has('isModalOpen', false))
-        sinon.assert.calledWith(consume.secondCall, sinon.match.has('isModalOpen', true))
+        expect(consume).toHaveBeenCalledTimes(2)
+        expect(consume.mock.calls[0][0].isModalOpen).toBe(false)
+        expect(consume.mock.calls[1][0].isModalOpen).toBe(true)
     })
 
     it('resets the flag indicating that the modal is open when modals are gone', () => {
-        const consume = sinon.spy()
+        const consume = jest.fn()
         const el = mount((
             <ModalPortalProvider>
                 <React.Fragment>
@@ -83,9 +84,9 @@ describe(ModalPortalProvider, () => {
             </ModalPortalProvider>
         ))
         expect(el.instance().count).toEqual(1)
-        sinon.assert.calledTwice(consume)
-        sinon.assert.calledWith(consume.firstCall, sinon.match.has('isModalOpen', false))
-        sinon.assert.calledWith(consume.lastCall, sinon.match.has('isModalOpen', true))
+        expect(consume).toHaveBeenCalledTimes(2)
+        expect(consume.mock.calls[0][0].isModalOpen).toBe(false)
+        expect(consume.mock.calls[1][0].isModalOpen).toBe(true)
         el.setProps({
             children: (
                 <React.Fragment>
@@ -96,10 +97,10 @@ describe(ModalPortalProvider, () => {
             ),
         })
         expect(el.instance().count).toEqual(0)
-        sinon.assert.callCount(consume, 4)
+        expect(consume).toHaveBeenCalledTimes(4)
         // Before being unmounted…
-        sinon.assert.calledWith(consume.thirdCall, sinon.match.has('isModalOpen', true))
+        expect(consume.mock.calls[2][0].isModalOpen).toBe(true)
         // After being unmounted…
-        sinon.assert.calledWith(consume.lastCall, sinon.match.has('isModalOpen', false))
+        expect(consume.mock.calls[3][0].isModalOpen).toBe(false)
     })
 })

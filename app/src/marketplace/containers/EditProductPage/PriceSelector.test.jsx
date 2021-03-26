@@ -1,5 +1,4 @@
 import React, { useContext, useMemo, useState } from 'react'
-import sinon from 'sinon'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import { MemoryRouter } from 'react-router-dom'
@@ -64,15 +63,13 @@ jest.mock('react-redux', () => ({
 }))
 
 describe('PriceSelector', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
-        sandbox.stub(BeneficiaryAddress, 'default').callsFake(() => null)
+        jest.spyOn(BeneficiaryAddress, 'default').mockImplementation(() => null)
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     // eslint-disable-next-line react/prop-types

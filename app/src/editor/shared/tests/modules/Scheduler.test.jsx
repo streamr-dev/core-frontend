@@ -1,19 +1,13 @@
 import React from 'react'
 import { shallow } from 'enzyme'
-import sinon from 'sinon'
 
 import SchedulerModule, { RuleComponent } from '$editor/shared/components/modules/Scheduler'
 import SortableList from '$shared/components/SortableList'
 
 describe('Scheduler', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('SchedulerModule', () => {
@@ -66,7 +60,7 @@ describe('Scheduler', () => {
         })
 
         it('should update the default value', () => {
-            const updateSpy = sandbox.spy()
+            const updateSpy = jest.fn()
             const moduleHash = 'test'
             const el = shallow(<SchedulerModule
                 module={module}
@@ -79,16 +73,16 @@ describe('Scheduler', () => {
 
             el.instance().onDefaultValueChange(20)
             expect(el.state('defaultValue')).toBe(20)
-            expect(updateSpy.calledOnce).toBe(true)
-            expect(updateSpy.calledWith(moduleHash, {
+            expect(updateSpy).toHaveBeenCalledTimes(1)
+            expect(updateSpy).toBeCalledWith(moduleHash, {
                 schedule: {
                     ...el.state(),
                 },
-            })).toBe(true)
+            })
         })
 
         it('should update a rule value', () => {
-            const updateSpy = sandbox.spy()
+            const updateSpy = jest.fn()
             const moduleHash = 'test'
             const nextModule = {
                 ...module,
@@ -117,12 +111,12 @@ describe('Scheduler', () => {
             const rulesWithIds = el.state('rules')
 
             el.instance().onChangeRule(rulesWithIds[0].id, { value: 20 })
-            expect(updateSpy.calledOnce).toBe(true)
-            expect(updateSpy.calledWith(moduleHash)).toBe(true)
+            expect(updateSpy).toHaveBeenCalledTimes(1)
+            expect(updateSpy.mock.calls[0][0]).toBe('test')
         })
 
         it('should add a rule', () => {
-            const updateSpy = sandbox.spy()
+            const updateSpy = jest.fn()
             const moduleHash = 'test'
             const nextModule = {
                 ...module,
@@ -152,12 +146,12 @@ describe('Scheduler', () => {
 
             el.instance().onAddRule()
             expect(el.state('rules').length).toBe(3)
-            expect(updateSpy.calledOnce).toBe(true)
-            expect(updateSpy.calledWith(moduleHash)).toBe(true)
+            expect(updateSpy).toHaveBeenCalledTimes(1)
+            expect(updateSpy.mock.calls[0][0]).toBe('test')
         })
 
         it('should remove a rule', () => {
-            const updateSpy = sandbox.spy()
+            const updateSpy = jest.fn()
             const moduleHash = 'test'
             const nextModule = {
                 ...module,
@@ -188,8 +182,8 @@ describe('Scheduler', () => {
 
             el.instance().onRemoveRule(rulesWithIds[0].id)
             expect(el.state('rules').length).toBe(1)
-            expect(updateSpy.calledOnce).toBe(true)
-            expect(updateSpy.calledWith(moduleHash)).toBe(true)
+            expect(updateSpy).toHaveBeenCalledTimes(1)
+            expect(updateSpy.mock.calls[0][0]).toBe('test')
         })
     })
 
@@ -307,7 +301,7 @@ describe('Scheduler', () => {
                 },
                 id: 'test',
             }
-            const onChangeSpy = sandbox.spy()
+            const onChangeSpy = jest.fn()
             const el = shallow(<RuleComponent
                 rule={nextRule}
                 onChange={onChangeSpy}
@@ -316,8 +310,8 @@ describe('Scheduler', () => {
             expect(el.instance().props.rule).toStrictEqual(nextRule)
 
             el.instance().onIntervalChange(2)
-            expect(onChangeSpy.calledOnce).toBe(true)
-            expect(onChangeSpy.calledWith(nextRule.id, {
+            expect(onChangeSpy).toHaveBeenCalledTimes(1)
+            expect(onChangeSpy).toBeCalledWith(nextRule.id, {
                 startDate: {
                     weekday: 1,
                     hour: 0,
@@ -329,7 +323,7 @@ describe('Scheduler', () => {
                     minute: 0,
                 },
                 intervalType: 2,
-            })).toBe(true)
+            })
         })
 
         it('calls onRemove', () => {
@@ -337,15 +331,15 @@ describe('Scheduler', () => {
                 ...hourRule,
                 id: 'test',
             }
-            const onRemoveSpy = sandbox.spy()
+            const onRemoveSpy = jest.fn()
             const el = shallow(<RuleComponent
                 rule={nextRule}
                 onRemove={onRemoveSpy}
             />)
             el.instance().onRemove(nextRule.id)
 
-            expect(onRemoveSpy.calledOnce).toBe(true)
-            expect(onRemoveSpy.calledWith(nextRule.id)).toBe(true)
+            expect(onRemoveSpy).toHaveBeenCalledTimes(1)
+            expect(onRemoveSpy).toBeCalledWith(nextRule.id)
         })
 
         it('updates the value', () => {
@@ -354,17 +348,17 @@ describe('Scheduler', () => {
                 id: 'test',
             }
             const newValue = 20
-            const onChangeSpy = sandbox.spy()
+            const onChangeSpy = jest.fn()
             const el = shallow(<RuleComponent
                 rule={nextRule}
                 onChange={onChangeSpy}
             />)
             el.instance().onValueChange(newValue)
 
-            expect(onChangeSpy.calledOnce).toBe(true)
-            expect(onChangeSpy.calledWith(nextRule.id, {
+            expect(onChangeSpy).toHaveBeenCalledTimes(1)
+            expect(onChangeSpy).toBeCalledWith(nextRule.id, {
                 value: newValue,
-            })).toBe(true)
+            })
         })
 
         it('updates the dates', () => {
@@ -372,7 +366,7 @@ describe('Scheduler', () => {
                 ...hourRule,
                 id: 'test',
             }
-            const onChangeSpy = sandbox.spy()
+            const onChangeSpy = jest.fn()
             const el = shallow(<RuleComponent
                 rule={nextRule}
                 onChange={onChangeSpy}
@@ -381,10 +375,10 @@ describe('Scheduler', () => {
                 startDate: { minute: 20 },
             })
 
-            expect(onChangeSpy.calledOnce).toBe(true)
-            expect(onChangeSpy.calledWith(nextRule.id, {
+            expect(onChangeSpy).toHaveBeenCalledTimes(1)
+            expect(onChangeSpy).toBeCalledWith(nextRule.id, {
                 startDate: { minute: 20 },
-            })).toBe(true)
+            })
         })
     })
 })

@@ -1,10 +1,8 @@
 import moxios from 'moxios'
-import sinon from 'sinon'
 
 import * as services from '$shared/modules/user/services'
 
 describe('user - services', () => {
-    let sandbox
     let dateNowSpy
     let oldStreamrApiUrl
     let oldStreamrUrl
@@ -20,7 +18,6 @@ describe('user - services', () => {
     })
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
         oldStreamrUrl = process.env.STREAMR_URL
@@ -29,7 +26,6 @@ describe('user - services', () => {
     })
 
     afterEach(() => {
-        sandbox.restore()
         jest.clearAllMocks()
         jest.restoreAllMocks()
         process.env.STREAMR_API_URL = oldStreamrApiUrl

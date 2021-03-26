@@ -1,25 +1,14 @@
-import sinon from 'sinon'
 import Notification from '$shared/utils/Notification'
 
 describe(Notification, () => {
     describe('id', () => {
-        let clock
-
-        beforeEach(() => {
-            clock = sinon.useFakeTimers(new Date())
-        })
-
-        afterEach(() => {
-            clock.restore()
-        })
-
         it('generates unique IDs', () => {
             expect(new Notification({}).id).not.toEqual(new Notification({}).id)
         })
     })
 
     it('subscribes to PUSH events; emits PUSH event; unsubscribes from PUSH event', () => {
-        const handler = sinon.spy()
+        const handler = jest.fn()
         Notification.subscribe(handler)
         Notification.push({
             title: 'Title',
@@ -28,9 +17,9 @@ describe(Notification, () => {
         Notification.push({
             title: 'Title 2',
         })
-        sinon.assert.calledOnce(handler)
-        sinon.assert.calledWith(handler, sinon.match.instanceOf(Notification))
-        sinon.assert.calledWith(handler, sinon.match.has('title', 'Title'))
+        expect(handler).toHaveBeenCalledTimes(1)
+        expect(handler.mock.calls[0][0]).toBeInstanceOf(Notification)
+        expect(handler.mock.calls[0][0].title).toBe('Title')
     })
 
     it('determines correct autoDismissAfter based on the autoDismiss flag parameter', () => {

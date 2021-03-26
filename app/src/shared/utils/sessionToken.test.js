@@ -1,4 +1,3 @@
-import sinon from 'sinon'
 import {
     setToken,
     getToken,
@@ -7,22 +6,16 @@ import {
     SESSION_TOKEN_KEY,
     SESSION_LOGIN_TIME,
     SESSION_LOGIN_METHOD,
-    EXPIRES_AT_VALID_HOURS,
 } from '$shared/utils/sessionToken'
 
 describe('session token utility', () => {
-    let clock
-    let sandbox
-
     beforeEach(() => {
         global.localStorage.clear()
-        clock = sinon.useFakeTimers(new Date())
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        clock.restore()
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getToken', () => {
@@ -32,11 +25,18 @@ describe('session token utility', () => {
 
         it('gives the stored value before its expiration', () => {
             global.localStorage.setItem(SESSION_TOKEN_KEY, 'token')
-            global.localStorage.setItem(SESSION_LOGIN_TIME, new Date())
+            global.localStorage.setItem(SESSION_LOGIN_TIME, '2020-03-26T14:00:00.000Z')
+
+            jest.spyOn(Date, 'now').mockImplementationOnce(() => new Date('2020-03-26T15:00:00.000Z').getTime())
+
             expect(getToken()).toBe('token')
-            clock.tick(((EXPIRES_AT_VALID_HOURS * 3600) - 60) * 1000) // 60s before expiration
+
+            // 60s before expiration
+            jest.spyOn(Date, 'now').mockImplementationOnce(() => new Date('2020-03-26T19:59:00.000Z').getTime())
             expect(getToken()).toBe('token')
-            clock.tick(120 * 1000) // 60s after expiration
+
+            // 60s after expiration
+            jest.spyOn(Date, 'now').mockImplementationOnce(() => new Date('2020-03-26T20:01:00.000Z').getTime())
             expect(getToken()).toBe(null)
         })
 
@@ -116,11 +116,26 @@ describe('session token utility', () => {
         })
 
         it('stores and expires a token', () => {
+            const currentDate = new Date('2020-03-26T14:00:00.000Z')
+            const realDate = Date
+
+            global.Date = class extends Date {
+                constructor() {
+                    return currentDate
+                }
+            }
             setToken2('token')
+            global.Date = realDate
+
+            jest.spyOn(Date, 'now').mockImplementationOnce(() => new Date('2020-03-26T15:00:00.000Z').getTime())
             expect(getToken2()).toBe('token')
-            clock.tick(((EXPIRES_AT_VALID_HOURS * 3600) - 60) * 1000) // 60s before expiration
+
+            // 60s before expiration
+            jest.spyOn(Date, 'now').mockImplementationOnce(() => new Date('2020-03-26T19:59:00.000Z').getTime())
             expect(getToken2()).toBe('token')
-            clock.tick(120 * 1000) // 60s after expiration
+
+            // 60s after expiration
+            jest.spyOn(Date, 'now').mockImplementationOnce(() => new Date('2020-03-26T20:01:00.000Z').getTime())
             expect(getToken2()).toBe(null)
         })
 

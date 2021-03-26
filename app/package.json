@@ -263,7 +263,6 @@
     "resize-observer-polyfill": "^1.5.1",
     "sass-loader": "^7.3.1",
     "simple-react-lightbox": "^3.5.5",
-    "sinon": "^6.3.5",
     "smooth-scroll-into-view-if-needed": "^1.1.29",
     "storybook-addon-jsx": "^5.4.0",
     "storybook-react-router": "^1.0.8",
