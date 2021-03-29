@@ -1,65 +1,61 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
-
 import * as all from '$mp/modules/global/services'
 import * as smartContractUtils from '$mp/utils/smartContract'
 import * as getWeb3 from '$shared/web3/web3Provider'
 import * as web3Utils from '$shared/utils/web3'
 
 describe('global - services', () => {
-    let sandbox
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.reset()
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getDataPerUsd', () => {
         it('must call the correct method', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
-            const balanceStub = sandbox.stub().callsFake(() => ({
+            const balanceStub = jest.fn(() => ({
                 call: () => Promise.resolve('10000'),
             }))
-            const getContractStub = sandbox.stub(smartContractUtils, 'getContract').callsFake(() => ({
+            const getContractStub = jest.fn(() => ({
                 methods: {
                     dataPerUsd: balanceStub,
                 },
             }))
+            jest.spyOn(smartContractUtils, 'getContract').mockImplementation(getContractStub)
             await all.getDataPerUsd()
-            assert(getContractStub.calledOnce)
-            assert(getContractStub.getCall(0).args[0].abi.find((f) => f.name === 'dataPerUsd'))
-            assert(balanceStub.calledOnce)
+            expect(getContractStub).toHaveBeenCalledTimes(1)
+            expect(getContractStub.mock.calls[0][0].abi.find((f) => f.name === 'dataPerUsd')).toBeTruthy()
+            expect(balanceStub).toHaveBeenCalledTimes(1)
         })
 
         it('must transform the result from attoUnit to unit', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
-            const dataPerUsdStub = sandbox.stub().callsFake(() => ({
+            const dataPerUsdStub = jest.fn(() => ({
                 call: () => Promise.resolve(('209000000000000000000').toString()),
             }))
-            sandbox.stub(smartContractUtils, 'getContract').callsFake(() => ({
+            jest.spyOn(smartContractUtils, 'getContract').mockImplementation(() => ({
                 methods: {
                     dataPerUsd: dataPerUsdStub,
                 },
             }))
             const result = await all.getDataPerUsd()
-            assert.equal(209, result)
+            expect(result).toBe('209')
         })
     })
 
     describe('checkEthereumNetworkIsCorrect', () => {
         it('must call checkEthereumNetworkIsCorrect util', () => {
-            sandbox.stub(getWeb3, 'default').callsFake()
-            const getContractStub = sandbox.stub(web3Utils, 'checkEthereumNetworkIsCorrect').callsFake(() => {})
+            jest.spyOn(getWeb3, 'default').mockImplementation(jest.fn())
+            const getContractStub = jest.spyOn(web3Utils, 'checkEthereumNetworkIsCorrect').mockImplementation(() => {})
 
             all.checkEthereumNetworkIsCorrect()
-            assert(getContractStub.calledOnce)
+            expect(getContractStub).toHaveBeenCalledTimes(1)
         })
     })
 })

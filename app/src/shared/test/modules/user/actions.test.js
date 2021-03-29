@@ -1,5 +1,3 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
 import * as actions from '$shared/modules/user/actions'
@@ -7,17 +5,16 @@ import * as constants from '$shared/modules/user/constants'
 import * as services from '$shared/modules/user/services'
 
 describe('user - actions', () => {
-    let sandbox
     let oldStreamrApiUrl
 
     beforeEach(() => {
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
@@ -28,11 +25,11 @@ describe('user - actions', () => {
                 username: 'tester1@streamr.com',
             }
 
-            const serviceStub = sandbox.stub(services, 'getUserData').callsFake(() => Promise.resolve(data))
+            const serviceStub = jest.spyOn(services, 'getUserData').mockImplementation(() => Promise.resolve(data))
 
             const store = mockStore()
             await store.dispatch(actions.getUserData())
-            assert(serviceStub.calledOnce)
+            expect(serviceStub).toHaveBeenCalledTimes(1)
 
             const expectedActions = [
                 {
@@ -45,16 +42,16 @@ describe('user - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('calls services.getUserData and handles error', async () => {
             const error = new Error('error')
-            const serviceStub = sandbox.stub(services, 'getUserData').callsFake(() => Promise.reject(error))
+            const serviceStub = jest.spyOn(services, 'getUserData').mockImplementation(() => Promise.reject(error))
 
             const store = mockStore()
             await store.dispatch(actions.getUserData())
-            assert(serviceStub.calledOnce)
+            expect(serviceStub).toHaveBeenCalledTimes(1)
 
             const expectedActions = [
                 {
@@ -66,7 +63,7 @@ describe('user - actions', () => {
                     payload: error,
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -92,7 +89,7 @@ describe('user - actions', () => {
                     },
                 },
             }]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -116,7 +113,7 @@ describe('user - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -132,7 +129,7 @@ describe('user - actions', () => {
                     user,
                 },
             })
-            const serviceStub = sandbox.stub(services, 'putUser').callsFake(() => Promise.resolve(user))
+            const serviceStub = jest.spyOn(services, 'putUser').mockImplementation(() => Promise.resolve(user))
 
             const expectedActions = [{
                 type: constants.SAVE_CURRENT_USER_REQUEST,
@@ -144,9 +141,9 @@ describe('user - actions', () => {
             }]
 
             await store.dispatch(actions.saveCurrentUser())
-            assert(serviceStub.calledOnce)
+            expect(serviceStub).toHaveBeenCalledTimes(1)
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('creates SAVE_CURRENT_USER_FAILURE when saving user failed', async () => {
@@ -161,7 +158,7 @@ describe('user - actions', () => {
                 },
             })
             const error = new Error('error')
-            const serviceStub = sandbox.stub(services, 'putUser').callsFake(() => Promise.reject(error))
+            const serviceStub = jest.spyOn(services, 'putUser').mockImplementation(() => Promise.reject(error))
 
             const expectedActions = [{
                 type: constants.SAVE_CURRENT_USER_REQUEST,
@@ -174,8 +171,8 @@ describe('user - actions', () => {
             try {
                 await store.dispatch(actions.saveCurrentUser())
             } catch (e) {
-                assert(serviceStub.calledOnce)
-                assert.deepStrictEqual(store.getActions(), expectedActions)
+                expect(serviceStub).toHaveBeenCalledTimes(1)
+                expect(store.getActions()).toStrictEqual(expectedActions)
             }
         })
     })

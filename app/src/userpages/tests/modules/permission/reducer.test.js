@@ -1,10 +1,9 @@
-import assert from 'assert-diff'
 import reducer from '../../../modules/permission/reducer'
 import * as actions from '../../../modules/permission/actions'
 
 describe('Permission reducer', () => {
     it('should return the initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), {
+        expect(reducer(undefined, {})).toStrictEqual({
             byTypeAndId: {},
             error: null,
             fetching: false,
@@ -13,9 +12,9 @@ describe('Permission reducer', () => {
 
     describe('GET_RESOURCE_PERMISSIONS', () => {
         it('should set fetching = true on GET_RESOURCE_PERMISSIONS_REQUEST', () => {
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: actions.GET_RESOURCE_PERMISSIONS_REQUEST,
-            }), {
+            })).toStrictEqual({
                 fetching: true,
                 error: null,
                 byTypeAndId: {},
@@ -23,7 +22,7 @@ describe('Permission reducer', () => {
         })
 
         it('should add the permission to the resource on GET_RESOURCE_PERMISSIONS_SUCCESS', () => {
-            assert.deepStrictEqual(reducer({
+            expect(reducer({
                 byTypeAndId: {},
             }, {
                 type: actions.GET_RESOURCE_PERMISSIONS_SUCCESS,
@@ -34,7 +33,7 @@ describe('Permission reducer', () => {
                 }, {
                     operation: 'test2',
                 }],
-            }), {
+            })).toStrictEqual({
                 byTypeAndId: {
                     testResourceType: {
                         testResourceId: ['test', 'test2'],
@@ -46,12 +45,12 @@ describe('Permission reducer', () => {
         })
 
         it('should handle the error on GET_RESOURCE_PERMISSIONS_FAILURE', () => {
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: actions.GET_RESOURCE_PERMISSIONS_FAILURE,
                 error: new Error('test-error'),
                 resourceId: 'testResourceId',
                 resourceType: 'testResourceType',
-            }), {
+            })).toStrictEqual({
                 fetching: false,
                 error: new Error('test-error'),
                 byTypeAndId: {

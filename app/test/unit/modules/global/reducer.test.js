@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$mp/modules/global/reducer'
 import * as constants from '$mp/modules/global/constants'
 
 describe('global - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     describe('GET_DATA_USD_RATE', () => {
@@ -15,10 +13,10 @@ describe('global - reducer', () => {
                 fetchingDataPerUsdRate: true,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_DATA_USD_RATE_REQUEST,
                 payload: {},
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -29,12 +27,12 @@ describe('global - reducer', () => {
                 dataPerUsdRateError: null,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_DATA_USD_RATE_SUCCESS,
                 payload: {
                     dataPerUsd,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -49,14 +47,14 @@ describe('global - reducer', () => {
                 },
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.GET_DATA_USD_RATE_FAILURE,
                 payload: {
                     error: {
                         message: errorMessage,
                     },
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 
@@ -69,10 +67,10 @@ describe('global - reducer', () => {
                 ethereumNetworkError: null,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CHECK_ETHEREUM_NETWORK_REQUEST,
                 payload: {},
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -83,10 +81,10 @@ describe('global - reducer', () => {
                 ethereumNetworkError: null,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CHECK_ETHEREUM_NETWORK_SUCCESS,
                 payload: {},
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -101,14 +99,14 @@ describe('global - reducer', () => {
                 },
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.CHECK_ETHEREUM_NETWORK_FAILURE,
                 payload: {
                     error: {
                         message: errorMessage,
                     },
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
     })
 })

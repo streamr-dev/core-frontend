@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/productList/selectors'
@@ -35,34 +34,34 @@ const state = {
 
 describe('productList - selectors', () => {
     it('selects fetching product list status', () => {
-        assert.deepStrictEqual(all.selectFetchingProductList(state), false)
+        expect(all.selectFetchingProductList(state)).toStrictEqual(false)
     })
 
     it('selects product list ids', () => {
-        assert.deepStrictEqual(all.selectProductListIds(state), state.productList.ids)
+        expect(all.selectProductListIds(state)).toStrictEqual(state.productList.ids)
     })
 
     it('selects product list', () => {
-        assert.deepStrictEqual(all.selectProductList(state), products)
+        expect(all.selectProductList(state)).toStrictEqual(products)
     })
 
     it('selects filter', () => {
-        assert.deepStrictEqual(all.selectFilter(state), state.productList.filter)
+        expect(all.selectFilter(state)).toStrictEqual(state.productList.filter)
     })
 
     it('selects error', () => {
-        assert.deepStrictEqual(all.selectProductListError(state), undefined)
+        expect(all.selectProductListError(state)).toStrictEqual(undefined)
     })
 
     it('selects page size', () => {
-        assert.deepStrictEqual(all.selectPageSize(state), productListPageSize)
+        expect(all.selectPageSize(state)).toStrictEqual(productListPageSize)
     })
 
     it('selects offset', () => {
-        assert.deepStrictEqual(all.selectOffset(state), state.productList.offset)
+        expect(all.selectOffset(state)).toStrictEqual(state.productList.offset)
     })
 
     it('selects has more results', () => {
-        assert.deepStrictEqual(all.selectHasMoreSearchResults(state), false)
+        expect(all.selectHasMoreSearchResults(state)).toStrictEqual(false)
     })
 })

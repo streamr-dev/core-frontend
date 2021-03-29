@@ -1,6 +1,5 @@
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
-import sinon from 'sinon'
 import moxios from 'moxios'
 
 import * as actions from '$userpages/modules/userPageStreams/actions'
@@ -11,14 +10,12 @@ const mockStore = configureMockStore(middlewares)
 
 describe('Stream actions', () => {
     let store
-    let sandbox
     let oldStreamrApiUrl
 
     beforeEach(() => {
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
         moxios.install()
-        sandbox = sinon.createSandbox()
         store = mockStore({
             ids: [],
             openStream: {
@@ -30,7 +27,8 @@ describe('Stream actions', () => {
 
     afterEach(() => {
         moxios.uninstall()
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
         store.clearActions()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
@@ -45,7 +43,7 @@ describe('Stream actions', () => {
                 status: 200,
                 response: stream,
             })
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                 type: 'updateEntities',
             }))
 
@@ -103,7 +101,7 @@ describe('Stream actions', () => {
                     name: 'test',
                 },
             })
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                 type: 'updateEntities',
             }))
 
@@ -158,7 +156,7 @@ describe('Stream actions', () => {
                 status: 200,
                 response: stream,
             })
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                 type: 'updateEntities',
             }))
 

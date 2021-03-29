@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import reducer, { initialState } from '$shared/modules/entities/reducer'
@@ -7,7 +6,7 @@ import * as schemas from '$shared/modules/entities/schema'
 
 describe('entities - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     it('handles entities', () => {
@@ -71,7 +70,7 @@ describe('entities - reducer', () => {
             },
         })
 
-        assert.deepStrictEqual(state, expectedState)
+        expect(state).toStrictEqual(expectedState)
     })
 
     it('handles subscriptions', () => {
@@ -132,11 +131,11 @@ describe('entities - reducer', () => {
             whitelistedAddresses: {},
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.UPDATE_ENTITIES,
             payload: {
                 entities,
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 })

@@ -2,7 +2,6 @@ import EventEmitter from 'events'
 import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import sinon from 'sinon'
 
 import * as web3Provider from '$shared/web3/web3Provider'
 import Web3Poller from '$shared/web3/web3Poller'
@@ -10,14 +9,9 @@ import Web3Poller from '$shared/web3/web3Poller'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 
 describe('useWeb3Status', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     it('does nothing if requireWeb3 parameter is false', () => {
@@ -44,20 +38,19 @@ describe('useWeb3Status', () => {
 
         const account = '0x123'
 
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
-
-        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
+        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
         }))
-        const validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3')
+        const validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
 
         await act(async () => {
             mount(<Test />)
         })
 
         expect(result.account).toBe(account)
-        expect(defaultAccountStub.calledOnce).toBe(true)
-        expect(validateWeb3Stub.calledOnce).toBe(true)
+        expect(defaultAccountStub).toHaveBeenCalledTimes(1)
+        expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(false)
     })
 
@@ -69,12 +62,12 @@ describe('useWeb3Status', () => {
         }
 
         const account = '0x123'
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
+        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
         }))
-        const validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
+        const validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => {
             throw new Error('unlocked')
         })
 
@@ -85,8 +78,8 @@ describe('useWeb3Status', () => {
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
         expect(result.web3Error.message).toBe('unlocked')
-        expect(defaultAccountStub.calledOnce).toBe(false)
-        expect(validateWeb3Stub.calledOnce).toBe(true)
+        expect(defaultAccountStub).not.toBeCalled()
+        expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(true)
     })
 
@@ -97,14 +90,14 @@ describe('useWeb3Status', () => {
             return null
         }
 
-        const defaultAccountStub = sandbox.stub().callsFake(() => {
+        const defaultAccountStub = jest.fn(() => {
             throw new Error('no account')
         })
 
-        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
         }))
-        const validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3')
+        const validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
 
         await act(async () => {
             mount(<Test />)
@@ -113,13 +106,13 @@ describe('useWeb3Status', () => {
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
         expect(result.web3Error.message).toBe('no account')
-        expect(defaultAccountStub.calledOnce).toBe(true)
-        expect(validateWeb3Stub.calledOnce).toBe(true)
+        expect(defaultAccountStub).toHaveBeenCalledTimes(1)
+        expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(true)
     })
 
     it('subscribes to listen to account changes on mount', async () => {
-        const subscribeStub = sandbox.stub(Web3Poller, 'subscribe')
+        const subscribeStub = jest.spyOn(Web3Poller, 'subscribe')
 
         let result
         const Test = () => {
@@ -127,7 +120,7 @@ describe('useWeb3Status', () => {
             return null
         }
 
-        sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
+        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => {
             throw new Error('unlocked')
         })
 
@@ -137,12 +130,12 @@ describe('useWeb3Status', () => {
 
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
-        expect(subscribeStub.calledOnce).toBe(true)
+        expect(subscribeStub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(true)
     })
 
     it('unsubscribes on unmount', async () => {
-        const unsubscribeStub = sandbox.stub(Web3Poller, 'unsubscribe')
+        const unsubscribeStub = jest.spyOn(Web3Poller, 'unsubscribe')
 
         let result
         const Test = () => {
@@ -150,7 +143,7 @@ describe('useWeb3Status', () => {
             return null
         }
 
-        sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
+        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => {
             throw new Error('unlocked')
         })
 
@@ -167,7 +160,7 @@ describe('useWeb3Status', () => {
             el.unmount()
         })
 
-        expect(unsubscribeStub.calledOnce).toBe(true)
+        expect(unsubscribeStub).toHaveBeenCalledTimes(1)
     })
 
     it('returns the next account when new account is detected', async () => {
@@ -176,7 +169,7 @@ describe('useWeb3Status', () => {
         // subscribe is called twice, once for ACCOUNT and ACCOUNT_ERROR event
         // save handlers to differentiate between them
         const handlers = {}
-        const subscribeStub = sandbox.stub(Web3Poller, 'subscribe').callsFake((event, handler) => {
+        const subscribeStub = jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
             handlers[event] = handler
             emitter.on(event, handler)
         })
@@ -187,7 +180,7 @@ describe('useWeb3Status', () => {
             return null
         }
 
-        let validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
+        let validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => {
             throw new Error('unlocked')
         })
 
@@ -198,27 +191,27 @@ describe('useWeb3Status', () => {
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
         expect(result.web3Error.message).toBe('unlocked')
-        expect(validateWeb3Stub.calledOnce).toBe(true)
+        expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(true)
 
         const account = '0x123'
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
+        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
         }))
 
-        validateWeb3Stub.restore()
-        validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3')
+        validateWeb3Stub.mockRestore()
+        validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
         await act(async () => {
             emitter.emit(Web3Poller.events.ACCOUNT, account)
         })
 
         expect(result.account).toBe(account)
         expect(result.web3Error).toBeFalsy()
-        expect(subscribeStub.calledWithExactly(Web3Poller.events.ACCOUNT, handlers[Web3Poller.events.ACCOUNT])).toBe(true)
+        expect(subscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT, handlers[Web3Poller.events.ACCOUNT])
         expect(result.isLocked).toBe(false)
-        expect(validateWeb3Stub.calledOnce).toBe(true)
+        expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
     })
 
     it('does not overwrite the error state when new account is received', async () => {
@@ -226,7 +219,7 @@ describe('useWeb3Status', () => {
 
         // subscribe is called twice, once for ACCOUNT and ACCOUNT_ERROR event
         // save handlers to differentiate between them
-        sandbox.stub(Web3Poller, 'subscribe').callsFake((event, handler) => {
+        jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
             emitter.on(event, handler)
         })
 
@@ -236,7 +229,7 @@ describe('useWeb3Status', () => {
             return null
         }
 
-        const validateWeb3Stub = sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
+        const validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => {
             throw new Error('wrong network')
         })
 
@@ -247,13 +240,13 @@ describe('useWeb3Status', () => {
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
         expect(result.web3Error.message).toBe('wrong network')
-        expect(validateWeb3Stub.calledOnce).toBe(true)
+        expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(true)
 
         const account = '0x123'
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
+        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
         }))
 
@@ -263,20 +256,20 @@ describe('useWeb3Status', () => {
 
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy() // validate should still return error
-        expect(validateWeb3Stub.calledTwice).toBe(true)
+        expect(validateWeb3Stub).toHaveBeenCalledTimes(2)
         expect(result.isLocked).toBe(true)
     })
 
     it('subscribes to listen to account error when an account is received', async () => {
         const account = '0x123'
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
+        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
         }))
-        sandbox.stub(web3Provider, 'validateWeb3')
+        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
         const handlers = {}
-        const subscribeStub = sandbox.stub(Web3Poller, 'subscribe').callsFake((event, handler) => {
+        const subscribeStub = jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
             handlers[event] = handler
         })
 
@@ -291,18 +284,18 @@ describe('useWeb3Status', () => {
 
         expect(result.account).toBe(account)
         expect(result.web3Error).toBeFalsy()
-        expect(subscribeStub.calledWithExactly(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])).toBe(true)
+        expect(subscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])
         expect(result.isLocked).toBe(false)
     })
 
     it('returns an error if account lock is detected & unsubscribes error listener', async () => {
         const emitter = new EventEmitter()
 
-        sandbox.stub(Web3Poller, 'subscribe').callsFake((event, handler) => {
+        jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
             emitter.on(event, handler)
         })
         const handlers = {}
-        const unsubscribeStub = sandbox.stub(Web3Poller, 'unsubscribe').callsFake((event, handler) => {
+        const unsubscribeStub = jest.spyOn(Web3Poller, 'unsubscribe').mockImplementation((event, handler) => {
             handlers[event] = handler
         })
 
@@ -313,12 +306,12 @@ describe('useWeb3Status', () => {
         }
 
         const account = '0x123'
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
+        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
         }))
-        sandbox.stub(web3Provider, 'validateWeb3')
+        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
 
         await act(async () => {
             mount(<Test />)
@@ -335,12 +328,12 @@ describe('useWeb3Status', () => {
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
         expect(result.isLocked).toBe(true)
-        expect(unsubscribeStub.calledWithExactly(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])).toBe(true)
+        expect(unsubscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])
     })
 
     it('unsubscribes error account error listener on unmount', async () => {
         const handlers = {}
-        const unsubscribeStub = sandbox.stub(Web3Poller, 'unsubscribe').callsFake((event, handler) => {
+        const unsubscribeStub = jest.spyOn(Web3Poller, 'unsubscribe').mockImplementation((event, handler) => {
             handlers[event] = handler
         })
 
@@ -350,12 +343,12 @@ describe('useWeb3Status', () => {
         }
 
         const account = '0x123'
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve(account))
+        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        sandbox.stub(web3Provider, 'default').callsFake(() => ({
+        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
         }))
-        sandbox.stub(web3Provider, 'validateWeb3')
+        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
 
         let el
         await act(async () => {
@@ -366,16 +359,16 @@ describe('useWeb3Status', () => {
             el.unmount()
         })
 
-        expect(unsubscribeStub.calledWithExactly(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])).toBe(true)
+        expect(unsubscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])
     })
 
     it('doesnt subscribe to account error listener if there is no account', async () => {
         const subscribeHandlers = {}
-        const subscribeStub = sandbox.stub(Web3Poller, 'subscribe').callsFake((event, handler) => {
+        const subscribeStub = jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
             subscribeHandlers[event] = handler
         })
         const unsubscribeHandlers = {}
-        const unsubscribeStub = sandbox.stub(Web3Poller, 'unsubscribe').callsFake((event, handler) => {
+        const unsubscribeStub = jest.spyOn(Web3Poller, 'unsubscribe').mockImplementation((event, handler) => {
             unsubscribeHandlers[event] = handler
         })
 
@@ -384,7 +377,7 @@ describe('useWeb3Status', () => {
             return null
         }
 
-        sandbox.stub(web3Provider, 'validateWeb3').callsFake(() => {
+        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => {
             throw new Error('unlocked')
         })
 
@@ -397,13 +390,13 @@ describe('useWeb3Status', () => {
             el.unmount()
         })
 
-        expect(subscribeStub.neverCalledWith(
+        expect(subscribeStub).not.toBeCalledWith(
             Web3Poller.events.ACCOUNT_ERROR,
             subscribeHandlers[Web3Poller.events.ACCOUNT_ERROR],
-        )).toBe(true)
-        expect(unsubscribeStub.neverCalledWith(
+        )
+        expect(unsubscribeStub).not.toBeCalledWith(
             Web3Poller.events.ACCOUNT_ERROR,
             unsubscribeHandlers[Web3Poller.events.ACCOUNT_ERROR],
-        )).toBe(true)
+        )
     })
 })

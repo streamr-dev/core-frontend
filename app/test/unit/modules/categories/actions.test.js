@@ -1,6 +1,4 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
-import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
 import * as actions from '$mp/modules/categories/actions'
@@ -10,14 +8,12 @@ import * as services from '$mp/modules/categories/services'
 import { categoriesSchema } from '$shared/modules/entities/schema'
 
 describe('categories - actions', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getCategories', () => {
@@ -34,7 +30,7 @@ describe('categories - actions', () => {
             ]
             const { result, entities } = normalize(categories, categoriesSchema)
 
-            sandbox.stub(services, 'getCategories').callsFake(() => Promise.resolve(categories))
+            jest.spyOn(services, 'getCategories').mockImplementation(() => Promise.resolve(categories))
 
             const store = mockStore()
             await store.dispatch(actions.getCategories(true))
@@ -56,12 +52,12 @@ describe('categories - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('responds to errors', async () => {
             const error = new Error('Error')
-            sandbox.stub(services, 'getCategories').callsFake(() => Promise.reject(error))
+            jest.spyOn(services, 'getCategories').mockImplementation(() => Promise.reject(error))
 
             const store = mockStore()
             await store.dispatch(actions.getCategories(true))
@@ -76,7 +72,7 @@ describe('categories - actions', () => {
                     payload: error,
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 })

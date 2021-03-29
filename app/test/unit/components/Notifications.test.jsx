@@ -1,5 +1,4 @@
 import React from 'react'
-import sinon from 'sinon'
 import { mount, shallow } from 'enzyme'
 import NotificationSystem from 'react-notification-system'
 
@@ -9,25 +8,24 @@ import BasicNotification from '$shared/components/Notifications/BasicNotificatio
 import TransactionNotification from '$shared/components/Notifications/TransactionNotification'
 
 describe(Notifications, () => {
-    const sandbox = sinon.createSandbox()
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('mounting/unmounting', () => {
         it('starts listening for notifications on mount', () => {
-            sandbox.stub(Notification, 'subscribe')
+            jest.spyOn(Notification, 'subscribe').mockImplementation()
             const notifications = shallow(<Notifications />)
-            sinon.assert.calledOnce(Notification.subscribe)
-            sinon.assert.calledWith(Notification.subscribe, notifications.instance().addNotification)
+            expect(Notification.subscribe).toHaveBeenCalledTimes(1)
+            expect(Notification.subscribe).toBeCalledWith(notifications.instance().addNotification)
         })
 
         it('stops listening for notifications before unmount', () => {
-            sandbox.stub(Notification, 'unsubscribe')
+            jest.spyOn(Notification, 'unsubscribe').mockImplementation()
             const notifications = shallow(<Notifications />)
             notifications.unmount()
-            sinon.assert.calledOnce(Notification.unsubscribe)
+            expect(Notification.unsubscribe).toHaveBeenCalledTimes(1)
         })
     })
 
@@ -60,12 +58,14 @@ describe(Notifications, () => {
 
         it('triggers showNotification', () => {
             const instance = notifications.instance()
-            sandbox.stub(instance, 'showNotification')
+            jest.spyOn(instance, 'showNotification').mockImplementation()
             addNotification(new Notification({
                 title: 'Message',
             }))
-            sinon.assert.calledOnce(instance.showNotification)
-            sinon.assert.calledWith(instance.showNotification, sinon.match.has('title', 'Message'))
+            expect(instance.showNotification).toHaveBeenCalledTimes(1)
+            expect(instance.showNotification.mock.calls[0][0]).toMatchObject({
+                title: 'Message',
+            })
         })
     })
 
@@ -85,14 +85,18 @@ describe(Notifications, () => {
             })
             notification.id = 1337
 
-            sandbox.stub(system, 'addNotification')
+            jest.spyOn(system, 'addNotification').mockImplementation()
             showNotification(notification)
-            sinon.assert.calledOnce(system.addNotification)
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('uid', 1337))
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('title', 'Message'))
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('message', null))
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('autoDismiss', 5))
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('children', sinon.match.has('type', BasicNotification)))
+            expect(system.addNotification).toHaveBeenCalledTimes(1)
+            expect(system.addNotification.mock.calls[0][0]).toMatchObject({
+                uid: 1337,
+                title: 'Message',
+                message: null,
+                autoDismiss: 5,
+                children: {
+                    type: BasicNotification,
+                },
+            })
         })
 
         it('shows a transaction notification', () => {
@@ -103,14 +107,18 @@ describe(Notifications, () => {
             })
             notification.id = 1337
 
-            sandbox.stub(system, 'addNotification')
+            jest.spyOn(system, 'addNotification').mockImplementation()
             showNotification(notification)
-            sinon.assert.calledOnce(system.addNotification)
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('uid', 1337))
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('title', ''))
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('message', null))
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('autoDismiss', 0))
-            sinon.assert.calledWith(system.addNotification, sinon.match.has('children', sinon.match.has('type', TransactionNotification)))
+            expect(system.addNotification).toHaveBeenCalledTimes(1)
+            expect(system.addNotification.mock.calls[0][0]).toMatchObject({
+                uid: 1337,
+                title: '',
+                message: null,
+                autoDismiss: 0,
+                children: {
+                    type: TransactionNotification,
+                },
+            })
         })
     })
 

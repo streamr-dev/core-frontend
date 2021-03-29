@@ -1,5 +1,3 @@
-import assert from 'assert-diff'
-
 import * as all from '$mp/modules/global/selectors'
 
 const state = {
@@ -15,18 +13,18 @@ const state = {
 
 describe('global - selectors', () => {
     it('selects dataPerUsd', () => {
-        assert.deepStrictEqual(all.selectDataPerUsd(state), state.global.dataPerUsd)
+        expect(all.selectDataPerUsd(state)).toStrictEqual(state.global.dataPerUsd)
     })
 
     it('selects dataPerUsd error', () => {
-        assert.deepStrictEqual(all.selectDataPerUsdError(state), null)
+        expect(all.selectDataPerUsdError(state)).toStrictEqual(null)
     })
 
     it('selects network is correct', () => {
-        assert.deepStrictEqual(all.selectEthereumNetworkIsCorrect(state), true)
+        expect(all.selectEthereumNetworkIsCorrect(state)).toStrictEqual(true)
     })
 
     it('selects network error', () => {
-        assert.deepStrictEqual(all.selectEthereumNetworkError(state), null)
+        expect(all.selectEthereumNetworkError(state)).toStrictEqual(null)
     })
 })

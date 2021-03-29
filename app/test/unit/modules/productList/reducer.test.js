@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$mp/modules/productList/reducer'
 import * as constants from '$mp/modules/productList/constants'
 
 describe('productList - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     it('handles request', () => {
@@ -14,10 +12,10 @@ describe('productList - reducer', () => {
             fetching: true,
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.GET_PRODUCTS_REQUEST,
             payload: {},
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('handles success', () => {
@@ -36,7 +34,7 @@ describe('productList - reducer', () => {
                 hasMore: false,
             },
         })
-        assert.deepStrictEqual(reducerState, expectedState)
+        expect(reducerState).toStrictEqual(expectedState)
     })
 
     it('handles failure', () => {
@@ -55,7 +53,7 @@ describe('productList - reducer', () => {
                 error,
             },
         })
-        assert.deepStrictEqual(reducerState, expectedState)
+        expect(reducerState).toStrictEqual(expectedState)
     })
 
     it('updates filter', () => {
@@ -75,7 +73,7 @@ describe('productList - reducer', () => {
                 },
             },
         })
-        assert.deepStrictEqual(reducerState, expectedState)
+        expect(reducerState).toStrictEqual(expectedState)
     })
 
     it('clears filter', () => {
@@ -92,7 +90,7 @@ describe('productList - reducer', () => {
             type: constants.CLEAR_FILTERS,
         })
 
-        assert.deepStrictEqual(reducerState, expectedState)
+        expect(reducerState).toStrictEqual(expectedState)
     })
 
     it('clears product list', () => {
@@ -116,6 +114,6 @@ describe('productList - reducer', () => {
             type: constants.CLEAR_PRODUCT_LIST,
         })
 
-        assert.deepStrictEqual(reducerState, expectedState)
+        expect(reducerState).toStrictEqual(expectedState)
     })
 })

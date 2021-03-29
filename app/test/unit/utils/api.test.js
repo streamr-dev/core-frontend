@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import moxios from 'moxios'
 
 import * as all from '$shared/utils/api'
@@ -30,14 +29,14 @@ describe('api utils', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, '/test-endpoint')
+                expect(request.config.method).toBe('get')
+                expect(request.config.url).toBe('/test-endpoint')
             })
 
             const result = await all.get({
                 url: '/test-endpoint',
             })
-            assert.equal(result, data)
+            expect(result).toBe(data)
         })
 
         it('responds to errors', async () => {
@@ -54,9 +53,9 @@ describe('api utils', () => {
                     url: '/test-endpoint',
                 })
             } catch (e) {
-                assert.equal(e.statusCode, 500)
-                assert.equal(e.code, error.code)
-                assert.equal(e.message, error.message)
+                expect(e.statusCode).toBe(500)
+                expect(e.code).toBe(error.code)
+                expect(e.message).toBe(error.message)
             }
         })
     })
@@ -70,17 +69,17 @@ describe('api utils', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, '/test-endpoint')
-                assert.equal(request.config.headers['Content-Type'], 'application/json')
-                assert.equal(request.config.data, JSON.stringify(data))
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe('/test-endpoint')
+                expect(request.config.headers['Content-Type']).toBe('application/json')
+                expect(request.config.data).toBe(JSON.stringify(data))
             })
 
             const result = await all.post({
                 url: '/test-endpoint',
                 data,
             })
-            assert.equal(result, data)
+            expect(result).toBe(data)
         })
     })
 
@@ -93,17 +92,17 @@ describe('api utils', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'put')
-                assert.equal(request.config.url, '/test-endpoint')
-                assert.equal(request.config.headers['Content-Type'], 'application/json')
-                assert.equal(request.config.data, JSON.stringify(data))
+                expect(request.config.method).toBe('put')
+                expect(request.config.url).toBe('/test-endpoint')
+                expect(request.config.headers['Content-Type']).toBe('application/json')
+                expect(request.config.data).toBe(JSON.stringify(data))
             })
 
             const result = await all.put({
                 url: '/test-endpoint',
                 data,
             })
-            assert.equal(result, data)
+            expect(result).toBe(data)
         })
     })
 })

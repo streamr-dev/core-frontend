@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as selectors from '$mp/modules/contractProduct/selectors'
@@ -21,18 +20,18 @@ describe('contractProduct - selectors', () => {
     }
 
     it('selects fetchingContractProduct', () => {
-        assert.deepStrictEqual(selectors.selectFetchingContractProduct(state), contractProduct.fetchingContractProduct)
+        expect(selectors.selectFetchingContractProduct(state)).toStrictEqual(contractProduct.fetchingContractProduct)
     })
 
     it('selects contractProductError', () => {
-        assert.deepStrictEqual(selectors.selectContractProductError(state), contractProduct.contractProductError)
+        expect(selectors.selectContractProductError(state)).toStrictEqual(contractProduct.contractProductError)
     })
 
     it('selects contractProductId', () => {
-        assert.deepStrictEqual(selectors.selectContractProductId(state), contractProduct.id)
+        expect(selectors.selectContractProductId(state)).toStrictEqual(contractProduct.id)
     })
 
     it('selects contractProduct', () => {
-        assert.deepStrictEqual(selectors.selectContractProduct(state), contractProduct)
+        expect(selectors.selectContractProduct(state)).toStrictEqual(contractProduct)
     })
 })

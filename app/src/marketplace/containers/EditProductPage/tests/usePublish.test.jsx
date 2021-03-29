@@ -2,7 +2,6 @@ import EventEmitter from 'events'
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { mount } from 'enzyme'
-import sinon from 'sinon'
 import BN from 'bignumber.js'
 
 import Transaction from '$shared/utils/Transaction'
@@ -19,20 +18,15 @@ jest.mock('react-redux', () => ({
 }))
 
 describe('usePublish', () => {
-    let sandbox
-
     beforeAll(() => {
         // don't show error as console.error
         jest.spyOn(console, 'error')
         console.error.mockImplementation((...args) => console.warn(...args))
     })
 
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     afterAll(() => {
@@ -78,13 +72,13 @@ describe('usePublish', () => {
                 state: 'DEPLOYED',
             }
 
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
 
@@ -116,13 +110,13 @@ describe('usePublish', () => {
                 },
             }
 
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
 
@@ -151,13 +145,13 @@ describe('usePublish', () => {
                 state: 'NOT_DEPLOYED',
             }
 
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
 
@@ -186,13 +180,13 @@ describe('usePublish', () => {
                 state: 'NOT_DEPLOYED',
             }
 
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve({
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve({
                 id: '1',
             }))
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
 
@@ -215,13 +209,13 @@ describe('usePublish', () => {
                 <Test />
             ))
 
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no owner')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
 
@@ -298,7 +292,7 @@ describe('usePublish', () => {
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
 
-                sandbox.stub(productServices, 'postDeployFree').callsFake(() => Promise.resolve())
+                jest.spyOn(productServices, 'postDeployFree').mockImplementation(() => Promise.resolve())
 
                 await result.queue.start()
 
@@ -345,7 +339,7 @@ describe('usePublish', () => {
                     .subscribe('finish', finishFn)
 
                 const error = new Error('something happened')
-                sandbox.stub(productServices, 'postDeployFree').callsFake(() => {
+                jest.spyOn(productServices, 'postDeployFree').mockImplementation(() => {
                     throw error
                 })
 
@@ -397,7 +391,7 @@ describe('usePublish', () => {
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
 
-                sandbox.stub(productServices, 'postUndeployFree').callsFake(() => Promise.resolve())
+                jest.spyOn(productServices, 'postUndeployFree').mockImplementation(() => Promise.resolve())
 
                 await result.queue.start()
 
@@ -448,7 +442,7 @@ describe('usePublish', () => {
                     .subscribe('finish', finishFn)
 
                 const error = new Error('something happened')
-                sandbox.stub(productServices, 'postUndeployFree').callsFake(() => {
+                jest.spyOn(productServices, 'postUndeployFree').mockImplementation(() => {
                     throw error
                 })
 
@@ -506,17 +500,17 @@ describe('usePublish', () => {
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
 
-                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
+                const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve())
 
                 await result.queue.start()
 
-                expect(putProductStub.calledWith({
+                expect(putProductStub).toBeCalledWith({
                     id: '1',
                     name: 'New name',
                     description: 'Description',
                     streams: ['2', '3', '4'],
                     pendingChanges: undefined,
-                })).toBe(true)
+                }, '1')
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
@@ -563,9 +557,9 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                const createContractProductStub = sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
-                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
-                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
+                const createContractProductStub = jest.spyOn(contractProductServices, 'createContractProduct').mockImplementation(() => tx)
+                const postSetDeployingStub = jest.spyOn(productServices, 'postSetDeploying').mockImplementation(() => Promise.resolve())
+                const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -592,8 +586,8 @@ describe('usePublish', () => {
                     result.queue.start(),
                 ])
 
-                expect(postSetDeployingStub.calledWith('1')).toBe(true)
-                expect(createContractProductStub.calledWith({
+                expect(postSetDeployingStub).toBeCalledWith('1', 'test')
+                expect(createContractProductStub.mock.calls[0][0]).toMatchObject({
                     id: '1',
                     name: 'Name',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -603,8 +597,8 @@ describe('usePublish', () => {
                     state: 'NOT_DEPLOYED',
                     ownerAddress: '',
                     requiresWhitelist: undefined,
-                })).toBe(true)
-                expect(putProductStub.called).toBe(false)
+                })
+                expect(putProductStub).not.toBeCalled()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
@@ -654,9 +648,9 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                const createContractProductStub = sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
-                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
-                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
+                const createContractProductStub = jest.spyOn(contractProductServices, 'createContractProduct').mockImplementation(() => tx)
+                const postSetDeployingStub = jest.spyOn(productServices, 'postSetDeploying').mockImplementation(() => Promise.resolve())
+                const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -683,8 +677,8 @@ describe('usePublish', () => {
                     result.queue.start(),
                 ])
 
-                expect(postSetDeployingStub.calledWith('1')).toBe(true)
-                expect(createContractProductStub.calledWith({
+                expect(postSetDeployingStub).toBeCalledWith('1', 'test')
+                expect(createContractProductStub.mock.calls[0][0]).toMatchObject({
                     id: '1',
                     name: 'Name',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -694,8 +688,8 @@ describe('usePublish', () => {
                     state: 'NOT_DEPLOYED',
                     ownerAddress: '',
                     requiresWhitelist: true,
-                })).toBe(true)
-                expect(putProductStub.called).toBe(true)
+                })
+                expect(putProductStub).toBeCalled()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
@@ -717,7 +711,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve({
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve({
                     id: '1',
                     pricePerSecond: BN(1),
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -753,9 +747,9 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(contractProductServices, 'deleteProduct').callsFake(() => tx)
-                const postSetUndeployingStub = sandbox.stub(productServices, 'postSetUndeploying').callsFake(() => Promise.resolve())
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+                jest.spyOn(contractProductServices, 'deleteProduct').mockImplementation(() => tx)
+                const postSetUndeployingStub = jest.spyOn(productServices, 'postSetUndeploying').mockImplementation(() => Promise.resolve())
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -784,8 +778,8 @@ describe('usePublish', () => {
                 ])
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT)
-                expect(postSetUndeployingStub.calledWith('1')).toBe(true)
-                expect(addTransactionStub.calledWith(hash, transactionTypes.UNDEPLOY_PRODUCT)).toBe(true)
+                expect(postSetUndeployingStub).toBeCalledWith('1', 'test')
+                expect(addTransactionStub).toBeCalledWith(hash, transactionTypes.UNDEPLOY_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT)
@@ -803,7 +797,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve({
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve({
                     id: '1',
                     pricePerSecond: BN(1),
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -839,9 +833,9 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx)
-                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+                jest.spyOn(contractProductServices, 'redeployProduct').mockImplementation(() => tx)
+                const postSetDeployingStub = jest.spyOn(productServices, 'postSetDeploying').mockImplementation(() => Promise.resolve())
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -870,8 +864,8 @@ describe('usePublish', () => {
                 ])
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
-                expect(postSetDeployingStub.calledWith('1')).toBe(true)
-                expect(addTransactionStub.calledWith(hash, transactionTypes.REDEPLOY_PRODUCT)).toBe(true)
+                expect(postSetDeployingStub).toBeCalledWith('1', 'test')
+                expect(addTransactionStub).toBeCalledWith(hash, transactionTypes.REDEPLOY_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
@@ -897,7 +891,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
 
                 const product = {
                     id: '1',
@@ -926,9 +920,9 @@ describe('usePublish', () => {
                 const receipt1 = {
                     transactionHash: hash1,
                 }
-                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx1)
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const updateContractStub = jest.spyOn(contractProductServices, 'updateContractProduct').mockImplementation(() => tx1)
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
+                const postSetDeployingStub = jest.spyOn(productServices, 'postSetDeploying').mockImplementation(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -958,14 +952,14 @@ describe('usePublish', () => {
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(startedFn).not.toHaveBeenCalledWith(actionsTypes.REDEPLOY_PAID)
-                expect(updateContractStub.calledWith({
+                expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
-                }, true)).toBe(true)
-                expect(postSetDeployingStub.calledWith('1')).toBe(true)
-                expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
+                })
+                expect(postSetDeployingStub).toBeCalledWith('1', 'test')
+                expect(addTransactionStub).toBeCalledWith(hash1, transactionTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
@@ -991,7 +985,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
 
                 const product = {
                     id: '1',
@@ -1016,7 +1010,7 @@ describe('usePublish', () => {
 
                 const updateError = new Error('update failed')
 
-                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => {
+                const updateContractStub = jest.spyOn(contractProductServices, 'updateContractProduct').mockImplementation(() => {
                     throw updateError
                 })
 
@@ -1034,12 +1028,12 @@ describe('usePublish', () => {
                 await result.queue.start()
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(updateContractStub.calledWith({
+                expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
-                })).toBe(true)
+                })
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.FAILED, updateError)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(finishFn).toHaveBeenCalled()
@@ -1056,7 +1050,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve({
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve({
                     id: '1',
                     pricePerSecond: BN(1),
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -1064,7 +1058,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }))
-                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
+                const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve())
 
                 const result = await publish({
                     id: '1',
@@ -1098,7 +1092,7 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(contractProductServices, 'redeployProduct').callsFake(() => tx)
+                jest.spyOn(contractProductServices, 'redeployProduct').mockImplementation(() => tx)
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -1129,7 +1123,7 @@ describe('usePublish', () => {
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
-                expect(putProductStub.calledWith({
+                expect(putProductStub.mock.calls[0][0]).toMatchObject({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
@@ -1140,7 +1134,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     pendingChanges: undefined,
-                })).toBe(true)
+                })
                 expect(finishFn).toHaveBeenCalled()
             })
 
@@ -1163,16 +1157,16 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+                const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve())
                 const emitter = new EventEmitter()
                 const tx = new Transaction(emitter)
                 const hash = 'test'
                 const receipt = {
                     transactionHash: hash,
                 }
-                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx)
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+                const updateContractStub = jest.spyOn(contractProductServices, 'updateContractProduct').mockImplementation(() => tx)
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
 
                 const product = {
                     id: '1',
@@ -1230,21 +1224,21 @@ describe('usePublish', () => {
                     result.queue.start(),
                 ])
 
-                expect(updateContractStub.calledWith({
+                expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pendingChanges.pricePerSecond,
                     beneficiaryAddress: product.pendingChanges.beneficiaryAddress,
                     priceCurrency: product.pendingChanges.priceCurrency,
-                })).toBe(true)
+                })
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
-                expect(addTransactionStub.calledWith(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
+                expect(addTransactionStub).toBeCalledWith(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(putProductStub.calledWith({
+                expect(putProductStub.mock.calls[0][0]).toMatchObject({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
@@ -1255,7 +1249,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     pendingChanges: undefined,
-                })).toBe(true)
+                })
                 expect(finishFn).toHaveBeenCalled()
             })
         })
@@ -1272,9 +1266,9 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => Promise.resolve('0.3'))
-                sandbox.stub(dataUnionServices, 'getDataUnionOwner')
-                    .callsFake(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
+                jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
+                jest.spyOn(dataUnionServices, 'getDataUnionOwner')
+                    .mockImplementation(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
 
                 const result = await publish({
                     id: '1',
@@ -1306,8 +1300,8 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(contractProductServices, 'createContractProduct').callsFake(() => tx)
-                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                jest.spyOn(contractProductServices, 'createContractProduct').mockImplementation(() => tx)
+                const postSetDeployingStub = jest.spyOn(productServices, 'postSetDeploying').mockImplementation(() => Promise.resolve())
 
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -1335,7 +1329,7 @@ describe('usePublish', () => {
                     result.queue.start(),
                 ])
 
-                expect(postSetDeployingStub.calledWith('1')).toBe(true)
+                expect(postSetDeployingStub).toBeCalledWith('1', 'test')
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
@@ -1354,7 +1348,7 @@ describe('usePublish', () => {
                     <Test />
                 ))
 
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve({
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve({
                     id: '1',
                     pricePerSecond: BN(1),
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -1362,9 +1356,9 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }))
-                sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => Promise.resolve('0.3'))
-                sandbox.stub(dataUnionServices, 'getDataUnionOwner')
-                    .callsFake(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
+                jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
+                jest.spyOn(dataUnionServices, 'getDataUnionOwner')
+                    .mockImplementation(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
 
                 const emitter = new EventEmitter()
                 const tx = new Transaction(emitter)
@@ -1373,9 +1367,9 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                sandbox.stub(contractProductServices, 'deleteProduct').callsFake(() => tx)
-                const postSetUndeployingStub = sandbox.stub(productServices, 'postSetUndeploying').callsFake(() => Promise.resolve())
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+                jest.spyOn(contractProductServices, 'deleteProduct').mockImplementation(() => tx)
+                const postSetUndeployingStub = jest.spyOn(productServices, 'postSetUndeploying').mockImplementation(() => Promise.resolve())
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
 
                 const result = await publish({
                     id: '1',
@@ -1425,8 +1419,8 @@ describe('usePublish', () => {
                 ])
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT)
-                expect(postSetUndeployingStub.calledWith('1')).toBe(true)
-                expect(addTransactionStub.calledWith(hash, transactionTypes.UNDEPLOY_PRODUCT)).toBe(true)
+                expect(postSetUndeployingStub).toBeCalledWith('1', 'test')
+                expect(addTransactionStub).toBeCalledWith(hash, transactionTypes.UNDEPLOY_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UNDEPLOY_CONTRACT_PRODUCT)
@@ -1452,10 +1446,10 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-                sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => Promise.resolve('0.3'))
-                sandbox.stub(dataUnionServices, 'getDataUnionOwner')
-                    .callsFake(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+                jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
+                jest.spyOn(dataUnionServices, 'getDataUnionOwner')
+                    .mockImplementation(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
 
                 const emitter1 = new EventEmitter()
                 const tx1 = new Transaction(emitter1)
@@ -1464,9 +1458,9 @@ describe('usePublish', () => {
                     transactionHash: hash1,
                 }
 
-                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx1)
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const updateContractStub = jest.spyOn(contractProductServices, 'updateContractProduct').mockImplementation(() => tx1)
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
+                const postSetDeployingStub = jest.spyOn(productServices, 'postSetDeploying').mockImplementation(() => Promise.resolve())
 
                 const product = {
                     id: '1',
@@ -1517,14 +1511,14 @@ describe('usePublish', () => {
                 ])
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(updateContractStub.calledWith({
+                expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
-                }, true)).toBe(true)
-                expect(postSetDeployingStub.calledWith('1')).toBe(true)
-                expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
+                })
+                expect(postSetDeployingStub).toBeCalledWith('1', 'test')
+                expect(addTransactionStub).toBeCalledWith(hash1, transactionTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
@@ -1550,10 +1544,10 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-                sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => Promise.resolve('0.3'))
-                sandbox.stub(dataUnionServices, 'getDataUnionOwner')
-                    .callsFake(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+                jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
+                jest.spyOn(dataUnionServices, 'getDataUnionOwner')
+                    .mockImplementation(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
 
                 const emitter1 = new EventEmitter()
                 const tx1 = new Transaction(emitter1)
@@ -1569,10 +1563,10 @@ describe('usePublish', () => {
                     transactionHash: hash2,
                 }
 
-                const setAdminFeeStub = sandbox.stub(dataUnionServices, 'setAdminFee').callsFake(() => tx1)
-                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx2)
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-                const postSetDeployingStub = sandbox.stub(productServices, 'postSetDeploying').callsFake(() => Promise.resolve())
+                const setAdminFeeStub = jest.spyOn(dataUnionServices, 'setAdminFee').mockImplementation(() => tx1)
+                const updateContractStub = jest.spyOn(contractProductServices, 'updateContractProduct').mockImplementation(() => tx2)
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
+                const postSetDeployingStub = jest.spyOn(productServices, 'postSetDeploying').mockImplementation(() => Promise.resolve())
 
                 const product = {
                     id: '1',
@@ -1634,16 +1628,16 @@ describe('usePublish', () => {
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(setAdminFeeStub.calledWith(product.beneficiaryAddress, product.pendingChanges.adminFee)).toBe(true)
-                expect(updateContractStub.calledWith({
+                expect(setAdminFeeStub).toBeCalledWith(product.beneficiaryAddress, product.pendingChanges.adminFee)
+                expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
                     beneficiaryAddress: product.beneficiaryAddress,
                     priceCurrency: product.priceCurrency,
-                }, true)).toBe(true)
-                expect(postSetDeployingStub.calledWith('1')).toBe(true)
-                expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)).toBe(true)
-                expect(addTransactionStub.calledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
+                })
+                expect(postSetDeployingStub).toBeCalledWith('1', 'test2')
+                expect(addTransactionStub).toBeCalledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)
+                expect(addTransactionStub).toBeCalledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
@@ -1672,10 +1666,10 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-                sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => Promise.resolve('0.3'))
-                sandbox.stub(dataUnionServices, 'getDataUnionOwner')
-                    .callsFake(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+                jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
+                jest.spyOn(dataUnionServices, 'getDataUnionOwner')
+                    .mockImplementation(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
 
                 const emitter = new EventEmitter()
                 const tx = new Transaction(emitter)
@@ -1684,9 +1678,9 @@ describe('usePublish', () => {
                     transactionHash: hash,
                 }
 
-                const setAdminFeeStub = sandbox.stub(dataUnionServices, 'setAdminFee').callsFake(() => tx)
-                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+                const setAdminFeeStub = jest.spyOn(dataUnionServices, 'setAdminFee').mockImplementation(() => tx)
+                const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve())
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
 
                 const product = {
                     id: '1',
@@ -1747,7 +1741,7 @@ describe('usePublish', () => {
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
 
-                expect(putProductStub.calledWith({
+                expect(putProductStub).toBeCalledWith({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
@@ -1759,9 +1753,9 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     type: 'DATAUNION',
                     pendingChanges: undefined,
-                })).toBe(true)
-                expect(setAdminFeeStub.calledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')).toBe(true)
-                expect(addTransactionStub.calledWith(hash, transactionTypes.UPDATE_ADMIN_FEE)).toBe(true)
+                }, '1')
+                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')
+                expect(addTransactionStub).toBeCalledWith(hash, transactionTypes.UPDATE_ADMIN_FEE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.PENDING)
@@ -1789,10 +1783,10 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
-                sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-                sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => Promise.resolve('0.3'))
-                sandbox.stub(dataUnionServices, 'getDataUnionOwner')
-                    .callsFake(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
+                jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+                jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
+                jest.spyOn(dataUnionServices, 'getDataUnionOwner')
+                    .mockImplementation(() => Promise.resolve('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0'))
 
                 const emitter1 = new EventEmitter()
                 const tx1 = new Transaction(emitter1)
@@ -1807,10 +1801,10 @@ describe('usePublish', () => {
                     transactionHash: hash2,
                 }
 
-                const setAdminFeeStub = sandbox.stub(dataUnionServices, 'setAdminFee').callsFake(() => tx1)
-                const updateContractStub = sandbox.stub(contractProductServices, 'updateContractProduct').callsFake(() => tx2)
-                const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve())
-                const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+                const setAdminFeeStub = jest.spyOn(dataUnionServices, 'setAdminFee').mockImplementation(() => tx1)
+                const updateContractStub = jest.spyOn(contractProductServices, 'updateContractProduct').mockImplementation(() => tx2)
+                const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve())
+                const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
 
                 const product = {
                     id: '1',
@@ -1882,7 +1876,7 @@ describe('usePublish', () => {
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
 
-                expect(putProductStub.calledWith({
+                expect(putProductStub.mock.calls[0][0]).toMatchObject({
                     id: '1',
                     name: 'New name',
                     streams: ['2', '3', '4'],
@@ -1894,16 +1888,16 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     type: 'DATAUNION',
                     pendingChanges: undefined,
-                })).toBe(true)
-                expect(updateContractStub.calledWith({
+                })
+                expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pendingChanges.pricePerSecond,
                     beneficiaryAddress: product.pendingChanges.beneficiaryAddress,
                     priceCurrency: product.pendingChanges.priceCurrency,
-                })).toBe(true)
-                expect(setAdminFeeStub.calledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')).toBe(true)
-                expect(addTransactionStub.calledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)).toBe(true)
-                expect(addTransactionStub.calledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)).toBe(true)
+                })
+                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')
+                expect(addTransactionStub).toBeCalledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)
+                expect(addTransactionStub).toBeCalledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE, transactionStates.PENDING)

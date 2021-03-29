@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 import merge from 'lodash/merge'
 
@@ -61,22 +60,22 @@ const state = {
 
 describe('myPurchaseList - selectors', () => {
     it('selects fetching status for my purchases', () => {
-        assert.deepStrictEqual(all.selectFetchingMyPurchaseList(state), false)
+        expect(all.selectFetchingMyPurchaseList(state)).toStrictEqual(false)
     })
 
     it('selects my purchase list ids', () => {
-        assert.deepStrictEqual(all.selectMyPurchaseListIds(state), state.myPurchaseList.products)
+        expect(all.selectMyPurchaseListIds(state)).toStrictEqual(state.myPurchaseList.products)
     })
 
     it('selects purchase list', () => {
-        assert.deepStrictEqual(all.selectMyPurchaseList(state), products)
+        expect(all.selectMyPurchaseList(state)).toStrictEqual(products)
     })
 
     it('selects error', () => {
-        assert.deepStrictEqual(all.selectMyPurchaseListError(state), null)
+        expect(all.selectMyPurchaseListError(state)).toStrictEqual(null)
     })
 
     it('selects subscriptions', () => {
-        assert.deepStrictEqual(all.selectSubscriptions(state), subscriptions)
+        expect(all.selectSubscriptions(state)).toStrictEqual(subscriptions)
     })
 })

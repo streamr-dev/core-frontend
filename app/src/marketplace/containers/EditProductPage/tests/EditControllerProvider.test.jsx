@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import sinon from 'sinon'
 import { MemoryRouter, withRouter } from 'react-router-dom'
 
 import Notification from '$shared/utils/Notification'
@@ -60,14 +59,9 @@ jest.mock('react-redux', () => ({
 }))
 
 describe('EditControllerProvider', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('validate', () => {
@@ -84,8 +78,8 @@ describe('EditControllerProvider', () => {
                 id: '1',
             }
 
-            const notificationStub = sandbox.stub(Notification, 'push')
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            const notificationStub = jest.spyOn(Notification, 'push')
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {},
             }))
 
@@ -106,11 +100,12 @@ describe('EditControllerProvider', () => {
                 result = await currentContext.validate()
             })
             expect(result).toBe(false)
-            expect(notificationStub.callCount).toBe(5)
+            expect(notificationStub).toHaveBeenCalledTimes(5)
         })
 
         it('notifies if product fields are missing', async () => {
-            sandbox.stub(sharedConstants, 'dataUnionMemberLimit').value(10)
+            const oldLimit = sharedConstants.dataUnionMemberLimit
+            sharedConstants.dataUnionMemberLimit = 10
 
             let currentContext
             let validationContext
@@ -134,8 +129,8 @@ describe('EditControllerProvider', () => {
                 adminFee: '0.3',
             }
 
-            const notificationStub = sandbox.stub(Notification, 'push')
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            const notificationStub = jest.spyOn(Notification, 'push')
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {},
             }))
 
@@ -156,11 +151,13 @@ describe('EditControllerProvider', () => {
                 result = await currentContext.validate()
             })
             expect(result).toBe(false)
-            expect(notificationStub.callCount).toBe(1)
-            expect(notificationStub.calledWith({
+            expect(notificationStub).toHaveBeenCalledTimes(1)
+            expect(notificationStub).toBeCalledWith({
                 title: 'The minimum community size for a Data Union is ten members.',
                 icon: 'error',
-            })).toBe(true)
+            })
+
+            sharedConstants.dataUnionMemberLimit = oldLimit
         })
     })
 
@@ -179,7 +176,7 @@ describe('EditControllerProvider', () => {
                 name: 'name',
             }
 
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {},
             }))
 
@@ -220,11 +217,11 @@ describe('EditControllerProvider', () => {
                 name: 'name',
             }
 
-            const openStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const openStub = jest.fn(() => Promise.resolve({
                 save: false,
                 redirect: false,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: openStub,
                 },
@@ -271,11 +268,11 @@ describe('EditControllerProvider', () => {
                 name: 'name',
             }
 
-            const openStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const openStub = jest.fn(() => Promise.resolve({
                 save: false,
                 redirect: true,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: openStub,
                 },
@@ -322,22 +319,22 @@ describe('EditControllerProvider', () => {
                 name: 'name',
             }
 
-            const openStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const openStub = jest.fn(() => Promise.resolve({
                 save: true,
                 redirect: true,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: openStub,
                 },
             }))
-            sandbox.stub(usePending, 'default').callsFake(() => ({
+            jest.spyOn(usePending, 'default').mockImplementation(() => ({
                 wrap: async (fn) => {
                     const result = await fn()
                     return result
                 },
             }))
-            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
 
@@ -363,7 +360,7 @@ describe('EditControllerProvider', () => {
                 await currentContext.back()
             })
 
-            expect(putProductStub.calledOnce).toBe(true)
+            expect(putProductStub).toHaveBeenCalledTimes(1)
             expect(props.location.pathname).toBe('/core/products')
         })
     })
@@ -382,16 +379,16 @@ describe('EditControllerProvider', () => {
                 id: '1',
                 name: 'name',
             }
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {},
             }))
-            sandbox.stub(usePending, 'default').callsFake(() => ({
+            jest.spyOn(usePending, 'default').mockImplementation(() => ({
                 wrap: async (fn) => {
                     const result = await fn()
                     return result
                 },
             }))
-            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
 
@@ -413,7 +410,7 @@ describe('EditControllerProvider', () => {
                 await currentContext.save()
             })
 
-            expect(putProductStub.calledOnce).toBe(true)
+            expect(putProductStub).toHaveBeenCalledTimes(1)
             expect(props.location.pathname).toBe('/core/products')
         })
 
@@ -431,24 +428,24 @@ describe('EditControllerProvider', () => {
                 name: 'name',
                 newImageToUpload: new File([''], 'filename'),
             }
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {},
             }))
-            sandbox.stub(usePending, 'default').callsFake(() => ({
+            jest.spyOn(usePending, 'default').mockImplementation(() => ({
                 wrap: async (fn) => {
                     const result = await fn()
                     return result
                 },
             }))
-            const replaceProductStub = sandbox.stub()
-            sandbox.stub(useEditableProductUpdater, 'default').callsFake(() => ({
+            const replaceProductStub = jest.fn()
+            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
-            const postImageStub = sandbox.stub(productServices, 'postImage').callsFake(() => Promise.resolve({
+            const postImageStub = jest.spyOn(productServices, 'postImage').mockImplementation(() => Promise.resolve({
                 imageUrl: 'imageUrl',
                 thumbnailUrl: 'thumbnailUrl',
             }))
-            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
 
@@ -478,11 +475,11 @@ describe('EditControllerProvider', () => {
             }
             delete expectedProduct.newImageToUpload
 
-            expect(postImageStub.calledOnce).toBe(true)
-            expect(postImageStub.calledWith(product.id, product.newImageToUpload)).toBe(true)
-            expect(replaceProductStub.calledOnce).toBe(true)
-            expect(replaceProductStub.calledWith(expectedProduct)).toBe(true)
-            expect(putProductStub.calledOnce).toBe(true)
+            expect(postImageStub).toHaveBeenCalledTimes(1)
+            expect(postImageStub).toBeCalledWith(product.id, product.newImageToUpload)
+            expect(replaceProductStub).toHaveBeenCalledTimes(1)
+            expect(replaceProductStub).toBeCalledWith(expectedProduct)
+            expect(putProductStub).toHaveBeenCalledTimes(1)
             expect(props.location.pathname).toBe('/core/products')
         })
 
@@ -499,16 +496,16 @@ describe('EditControllerProvider', () => {
                 id: '1',
                 name: 'name',
             }
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {},
             }))
-            sandbox.stub(usePending, 'default').callsFake(() => ({
+            jest.spyOn(usePending, 'default').mockImplementation(() => ({
                 wrap: async (fn) => {
                     const result = await fn()
                     return result
                 },
             }))
-            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
 
@@ -532,7 +529,7 @@ describe('EditControllerProvider', () => {
                 })
             })
 
-            expect(putProductStub.calledOnce).toBe(true)
+            expect(putProductStub).toHaveBeenCalledTimes(1)
             expect(props.location.pathname).toBe('/core/products/1/edit')
         })
     })
@@ -553,8 +550,8 @@ describe('EditControllerProvider', () => {
                 id: '1',
             }
 
-            const notificationStub = sandbox.stub(Notification, 'push')
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            const notificationStub = jest.spyOn(Notification, 'push')
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {},
             }))
 
@@ -581,7 +578,7 @@ describe('EditControllerProvider', () => {
                 await currentContext.publish()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(notificationStub.callCount).toBe(5)
+            expect(notificationStub).toHaveBeenCalledTimes(5)
             expect(props.location.pathname).toBe('/core/products/1/edit')
         })
 
@@ -609,15 +606,15 @@ describe('EditControllerProvider', () => {
                 streams: ['1', '2'],
             }
 
-            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const modalOpenStub = jest.fn(() => Promise.resolve({
                 succeeded: false,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
 
@@ -644,10 +641,10 @@ describe('EditControllerProvider', () => {
                 await currentContext.publish()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(modalOpenStub.calledWith({
+            expect(modalOpenStub).toHaveBeenCalledTimes(1)
+            expect(modalOpenStub).toBeCalledWith({
                 product,
-            })).toBe(true)
+            })
             expect(props.location.pathname).toBe('/core/products/1/edit')
         })
 
@@ -675,21 +672,21 @@ describe('EditControllerProvider', () => {
                 streams: ['1', '2'],
             }
 
-            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const modalOpenStub = jest.fn(() => Promise.resolve({
                 succeeded: false,
                 started: true,
                 isUnpublish: false,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = sandbox.stub()
-            sandbox.stub(useEditableProductUpdater, 'default').callsFake(() => ({
+            const replaceProductStub = jest.fn()
+            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
@@ -716,15 +713,15 @@ describe('EditControllerProvider', () => {
                 await currentContext.publish()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(modalOpenStub.calledWith({
+            expect(modalOpenStub).toHaveBeenCalledTimes(1)
+            expect(modalOpenStub).toBeCalledWith({
                 product,
-            })).toBe(true)
-            expect(replaceProductStub.calledOnce).toBe(true)
-            expect(replaceProductStub.calledWith({
+            })
+            expect(replaceProductStub).toHaveBeenCalledTimes(1)
+            expect(replaceProductStub).toBeCalledWith({
                 ...product,
                 state: 'DEPLOYING',
-            })).toBe(true)
+            })
             expect(props.location.pathname).toBe('/core/products/1/edit')
         })
 
@@ -752,21 +749,21 @@ describe('EditControllerProvider', () => {
                 streams: ['1', '2'],
             }
 
-            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const modalOpenStub = jest.fn(() => Promise.resolve({
                 succeeded: false,
                 started: true,
                 isUnpublish: true,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = sandbox.stub()
-            sandbox.stub(useEditableProductUpdater, 'default').callsFake(() => ({
+            const replaceProductStub = jest.fn()
+            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
@@ -793,15 +790,15 @@ describe('EditControllerProvider', () => {
                 await currentContext.publish()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(modalOpenStub.calledWith({
+            expect(modalOpenStub).toHaveBeenCalledTimes(1)
+            expect(modalOpenStub).toBeCalledWith({
                 product,
-            })).toBe(true)
-            expect(replaceProductStub.calledOnce).toBe(true)
-            expect(replaceProductStub.calledWith({
+            })
+            expect(replaceProductStub).toHaveBeenCalledTimes(1)
+            expect(replaceProductStub).toBeCalledWith({
                 ...product,
                 state: 'UNDEPLOYING',
-            })).toBe(true)
+            })
             expect(props.location.pathname).toBe('/core/products/1/edit')
         })
 
@@ -829,21 +826,21 @@ describe('EditControllerProvider', () => {
                 streams: ['1', '2'],
             }
 
-            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const modalOpenStub = jest.fn(() => Promise.resolve({
                 succeeded: true,
                 started: true,
                 isUnpublish: false,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = sandbox.stub()
-            sandbox.stub(useEditableProductUpdater, 'default').callsFake(() => ({
+            const replaceProductStub = jest.fn()
+            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
@@ -870,15 +867,15 @@ describe('EditControllerProvider', () => {
                 await currentContext.publish()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(modalOpenStub.calledWith({
+            expect(modalOpenStub).toHaveBeenCalledTimes(1)
+            expect(modalOpenStub).toBeCalledWith({
                 product,
-            })).toBe(true)
-            expect(replaceProductStub.calledOnce).toBe(true)
-            expect(replaceProductStub.calledWith({
+            })
+            expect(replaceProductStub).toHaveBeenCalledTimes(1)
+            expect(replaceProductStub).toBeCalledWith({
                 ...product,
                 state: 'DEPLOYING',
-            })).toBe(true)
+            })
             expect(props.location.pathname).toBe('/core/products')
         })
 
@@ -906,22 +903,22 @@ describe('EditControllerProvider', () => {
                 streams: ['1', '2'],
             }
 
-            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const modalOpenStub = jest.fn(() => Promise.resolve({
                 succeeded: true,
                 started: true,
                 isUnpublish: false,
                 showPublishedProduct: true,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = sandbox.stub()
-            sandbox.stub(useEditableProductUpdater, 'default').callsFake(() => ({
+            const replaceProductStub = jest.fn()
+            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
@@ -948,15 +945,15 @@ describe('EditControllerProvider', () => {
                 await currentContext.publish()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(modalOpenStub.calledWith({
+            expect(modalOpenStub).toHaveBeenCalledTimes(1)
+            expect(modalOpenStub).toBeCalledWith({
                 product,
-            })).toBe(true)
-            expect(replaceProductStub.calledOnce).toBe(true)
-            expect(replaceProductStub.calledWith({
+            })
+            expect(replaceProductStub).toHaveBeenCalledTimes(1)
+            expect(replaceProductStub).toBeCalledWith({
                 ...product,
                 state: 'DEPLOYING',
-            })).toBe(true)
+            })
             expect(props.location.pathname).toBe('/marketplace/products/1')
         })
 
@@ -984,21 +981,21 @@ describe('EditControllerProvider', () => {
                 streams: ['1', '2'],
             }
 
-            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const modalOpenStub = jest.fn(() => Promise.resolve({
                 succeeded: true,
                 started: true,
                 isUnpublish: true,
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = sandbox.stub()
-            sandbox.stub(useEditableProductUpdater, 'default').callsFake(() => ({
+            const replaceProductStub = jest.fn()
+            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
@@ -1025,15 +1022,15 @@ describe('EditControllerProvider', () => {
                 await currentContext.publish()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(modalOpenStub.calledWith({
+            expect(modalOpenStub).toHaveBeenCalledTimes(1)
+            expect(modalOpenStub).toBeCalledWith({
                 product,
-            })).toBe(true)
-            expect(replaceProductStub.calledOnce).toBe(true)
-            expect(replaceProductStub.calledWith({
+            })
+            expect(replaceProductStub).toHaveBeenCalledTimes(1)
+            expect(replaceProductStub).toBeCalledWith({
                 ...product,
                 state: 'UNDEPLOYING',
-            })).toBe(true)
+            })
             expect(props.location.pathname).toBe('/core/products')
         })
     })
@@ -1054,8 +1051,8 @@ describe('EditControllerProvider', () => {
                 id: '1',
             }
 
-            const notificationStub = sandbox.stub(Notification, 'push')
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            const notificationStub = jest.spyOn(Notification, 'push')
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {},
             }))
 
@@ -1082,12 +1079,13 @@ describe('EditControllerProvider', () => {
                 await currentContext.deployDataUnion()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(notificationStub.callCount).toBe(5)
+            expect(notificationStub).toHaveBeenCalledTimes(5)
             expect(props.location.pathname).toBe('/core/products/1/edit')
         })
 
         it('does not redirect if deploy fails', async () => {
-            sandbox.stub(sharedConstants, 'dataUnionMemberLimit').value(0)
+            const oldLimit = sharedConstants.dataUnionMemberLimit
+            sharedConstants.dataUnionMemberLimit = 0
 
             let currentContext
             let validationContext
@@ -1112,13 +1110,13 @@ describe('EditControllerProvider', () => {
                 adminFee: '0.3',
             }
 
-            const modalOpenStub = sandbox.stub().callsFake(() => Promise.resolve(false))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            const modalOpenStub = jest.fn(() => Promise.resolve(false))
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake(() => Promise.resolve({
+            const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
 
@@ -1145,13 +1143,16 @@ describe('EditControllerProvider', () => {
                 await currentContext.deployDataUnion()
             })
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(putProductStub.calledOnce).toBe(true)
+            expect(modalOpenStub).toHaveBeenCalledTimes(1)
+            expect(putProductStub).toHaveBeenCalledTimes(1)
             expect(props.location.pathname).toBe('/core/products/1/edit')
+
+            sharedConstants.dataUnionMemberLimit = oldLimit
         })
 
         it('updates and saves beneficiary address if deploy succeeds', async () => {
-            sandbox.stub(sharedConstants, 'dataUnionMemberLimit').value(0)
+            const oldLimit = sharedConstants.dataUnionMemberLimit
+            sharedConstants.dataUnionMemberLimit = 0
 
             let currentContext
             let validationContext
@@ -1177,16 +1178,16 @@ describe('EditControllerProvider', () => {
             }
 
             const beneficiaryAddress = '0x538a2Fa87E03B280e10C83AA8dD7E5B15B868BD9'
-            const modalOpenStub = sandbox.stub().callsFake(({ updateAddress }) => new Promise((resolve) => {
+            const modalOpenStub = jest.fn(({ updateAddress }) => new Promise((resolve) => {
                 updateAddress(beneficiaryAddress)
                 resolve(true)
             }))
-            sandbox.stub(useModal, 'default').callsFake(() => ({
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
                 api: {
                     open: modalOpenStub,
                 },
             }))
-            const putProductStub = sandbox.stub(productServices, 'putProduct').callsFake((p) => (
+            const putProductStub = jest.spyOn(productServices, 'putProduct').mockImplementation((p) => (
                 Promise.resolve({
                     ...p,
                 })
@@ -1238,14 +1239,16 @@ describe('EditControllerProvider', () => {
             delete expectedProduct.adminFee
 
             expect(currentContext.publishAttempted).toBe(true)
-            expect(modalOpenStub.calledOnce).toBe(true)
-            expect(putProductStub.calledTwice).toBe(true)
-            expect(putProductStub.calledWith(expectedProduct, product.id)).toBe(true)
-            expect(putProductStub.calledWith({
+            expect(modalOpenStub).toHaveBeenCalledTimes(1)
+            expect(putProductStub).toHaveBeenCalledTimes(2)
+            expect(putProductStub).toBeCalledWith(expectedProduct, product.id)
+            expect(putProductStub).toBeCalledWith({
                 ...expectedProduct,
                 beneficiaryAddress,
-            }, product.id)).toBe(true)
+            }, product.id)
             expect(props.location.pathname).toBe('/core/products')
+
+            sharedConstants.dataUnionMemberLimit = oldLimit
         })
     })
 })

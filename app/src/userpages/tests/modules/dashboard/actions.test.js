@@ -1,7 +1,6 @@
 import thunk from 'redux-thunk'
 import configureMockStore from 'redux-mock-store'
 import moxios from 'moxios'
-import sinon from 'sinon'
 
 import * as originalActions from '$userpages/modules/dashboard/actions'
 import * as entitiesActions from '$shared/modules/entities/actions'
@@ -12,13 +11,11 @@ const mockStore = configureMockStore(middlewares)
 describe('Dashboard actions', () => {
     let store
     let actions
-    let sandbox
     let oldStreamrApiUrl
 
     beforeEach(() => {
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
-        sandbox = sinon.createSandbox()
         moxios.install()
         store = mockStore({
             user: {
@@ -39,7 +36,8 @@ describe('Dashboard actions', () => {
     afterEach(() => {
         moxios.uninstall()
         store.clearActions()
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
@@ -55,7 +53,7 @@ describe('Dashboard actions', () => {
                     name: 'test2',
                 }],
             })
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                 type: 'updateEntities',
             }))
             const expectedActions = [{

@@ -2,7 +2,6 @@ import EventEmitter from 'events'
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { mount } from 'enzyme'
-import sinon from 'sinon'
 import BN from 'bignumber.js'
 
 import Transaction from '$shared/utils/Transaction'
@@ -26,20 +25,15 @@ jest.mock('react-redux', () => ({
 }))
 
 describe('usePurchase', () => {
-    let sandbox
-
     beforeAll(() => {
         // don't show error as console.error
         jest.spyOn(console, 'error')
         console.error.mockImplementation((...args) => console.warn(...args))
     })
 
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     afterAll(() => {
@@ -160,7 +154,7 @@ describe('usePurchase', () => {
                 timeUnit: 'hour',
                 paymentCurrency: paymentCurrencies.DATA,
             }
-            sandbox.stub(priceUtils, 'dataForTimeUnits').callsFake(() => undefined)
+            jest.spyOn(priceUtils, 'dataForTimeUnits').mockImplementation(() => undefined)
 
             await act(async () => {
                 try {
@@ -259,7 +253,7 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.ETH,
                 price: '1234',
             }
-            sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => {
+            jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => {
                 throw new Error('no balance')
             })
 
@@ -314,13 +308,14 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(20)))
-            const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+            jest.spyOn(productServices, 'getMyDataAllowance').mockImplementation(() => Promise.resolve(BN(20)))
+            const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd,
+                gasIncrease: 123,
             })
 
             expect(result.queue).toBeTruthy()
@@ -350,7 +345,7 @@ describe('usePurchase', () => {
             }
 
             let callCount = 0
-            const setAllowanceStub = sandbox.stub(productServices, 'setMyDataAllowance').callsFake(() => {
+            const setAllowanceStub = jest.spyOn(productServices, 'setMyDataAllowance').mockImplementation(() => {
                 if (callCount === 0) {
                     callCount += 1
                     return tx1
@@ -358,9 +353,9 @@ describe('usePurchase', () => {
 
                 return tx2
             })
-            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx3)
-            const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
+            const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx3)
+            const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
+            const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -410,19 +405,19 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(addTransactionStub.calledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)).toBe(true)
-            expect(addTransactionStub.calledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)).toBe(true)
-            expect(addTransactionStub.calledWith(hash3, transactionTypes.SUBSCRIPTION)).toBe(true)
-            expect(setAllowanceStub.calledWith('0')).toBe(true)
-            expect(setAllowanceStub.calledWith(purchasePrice)).toBe(true)
-            expect(validateStub.calledWith({
+            expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)
+            expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)
+            expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0')
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice)
+            expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,
-            })).toBe(true)
-            expect(buyProductStub.calledWith('1', '3600', 'DATA', purchasePrice)).toBe(true)
-            expect(subscriptionStub.calledWith('1')).toBe(true)
+            })
+            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1')
         })
 
         it('purchases the product & sets allowance', async () => {
@@ -459,13 +454,14 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(0)))
-            const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+            jest.spyOn(productServices, 'getMyDataAllowance').mockImplementation(() => Promise.resolve(BN(0)))
+            const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd,
+                gasIncrease: 123,
             })
 
             expect(result.queue).toBeTruthy()
@@ -487,9 +483,9 @@ describe('usePurchase', () => {
                 transactionHash: hash2,
             }
 
-            const setAllowanceStub = sandbox.stub(productServices, 'setMyDataAllowance').callsFake(() => tx1)
-            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx2)
-            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
+            const setAllowanceStub = jest.spyOn(productServices, 'setMyDataAllowance').mockImplementation(() => tx1)
+            const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx2)
+            const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -530,15 +526,15 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(setAllowanceStub.calledWith(purchasePrice)).toBe(true)
-            expect(validateStub.calledWith({
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice)
+            expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: false,
-            })).toBe(true)
-            expect(buyProductStub.calledWith('1', '3600', 'DATA', purchasePrice)).toBe(true)
-            expect(subscriptionStub.calledWith('1')).toBe(true)
+            })
+            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1')
         })
 
         it('purchases the product when there is enough allowance', async () => {
@@ -575,13 +571,14 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            sandbox.stub(productServices, 'getMyDataAllowance').callsFake(() => Promise.resolve(BN(5000)))
-            const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+            jest.spyOn(productServices, 'getMyDataAllowance').mockImplementation(() => Promise.resolve(BN(5000)))
+            const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd,
+                gasIncrease: 123,
             })
 
             expect(result.queue).toBeTruthy()
@@ -596,8 +593,8 @@ describe('usePurchase', () => {
                 transactionHash: hash,
             }
 
-            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx)
-            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
+            const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx)
+            const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -629,14 +626,14 @@ describe('usePurchase', () => {
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(validateStub.calledWith({
+            expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: false,
                 includeGasForResetAllowance: false,
-            })).toBe(true)
-            expect(buyProductStub.calledWith('1', '3600', 'DATA', purchasePrice)).toBe(true)
-            expect(subscriptionStub.calledWith('1')).toBe(true)
+            })
+            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1')
         })
     })
 
@@ -667,13 +664,14 @@ describe('usePurchase', () => {
                 price: '1234',
             }
 
-            sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(20)))
-            const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+            jest.spyOn(productServices, 'getMyDaiAllowance').mockImplementation(() => Promise.resolve(BN(20)))
+            const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd: '10',
+                gasIncrease: 123,
             })
 
             expect(result.queue).toBeTruthy()
@@ -703,7 +701,7 @@ describe('usePurchase', () => {
             }
 
             let callCount = 0
-            const setAllowanceStub = sandbox.stub(productServices, 'setMyDaiAllowance').callsFake(() => {
+            const setAllowanceStub = jest.spyOn(productServices, 'setMyDaiAllowance').mockImplementation(() => {
                 if (callCount === 0) {
                     callCount += 1
                     return tx1
@@ -711,9 +709,9 @@ describe('usePurchase', () => {
 
                 return tx2
             })
-            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx3)
-            const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
-            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
+            const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx3)
+            const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
+            const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -763,19 +761,19 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(addTransactionStub.calledWith(hash1, transactionTypes.RESET_DAI_ALLOWANCE)).toBe(true)
-            expect(addTransactionStub.calledWith(hash2, transactionTypes.SET_DAI_ALLOWANCE)).toBe(true)
-            expect(addTransactionStub.calledWith(hash3, transactionTypes.SUBSCRIPTION)).toBe(true)
-            expect(setAllowanceStub.calledWith('0')).toBe(true)
-            expect(setAllowanceStub.calledWith('1234')).toBe(true)
-            expect(validateStub.calledWith({
+            expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DAI_ALLOWANCE)
+            expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DAI_ALLOWANCE)
+            expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0')
+            expect(setAllowanceStub).toHaveBeenCalledWith('1234')
+            expect(validateStub).toHaveBeenCalledWith({
                 price: '1234',
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,
-            })).toBe(true)
-            expect(buyProductStub.calledWith('1', '3600', 'DAI', '1234')).toBe(true)
-            expect(subscriptionStub.calledWith('1')).toBe(true)
+            })
+            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1')
         })
 
         it('purchases the product & sets allowance', async () => {
@@ -804,13 +802,14 @@ describe('usePurchase', () => {
                 price: '1234',
             }
 
-            sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(0)))
-            const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+            jest.spyOn(productServices, 'getMyDaiAllowance').mockImplementation(() => Promise.resolve(BN(0)))
+            const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd: '10',
+                gasIncrease: 123,
             })
 
             expect(result.queue).toBeTruthy()
@@ -832,9 +831,9 @@ describe('usePurchase', () => {
                 transactionHash: hash2,
             }
 
-            const setAllowanceStub = sandbox.stub(productServices, 'setMyDaiAllowance').callsFake(() => tx1)
-            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx2)
-            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
+            const setAllowanceStub = jest.spyOn(productServices, 'setMyDaiAllowance').mockImplementation(() => tx1)
+            const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx2)
+            const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -875,15 +874,15 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(setAllowanceStub.calledWith('1234')).toBe(true)
-            expect(validateStub.calledWith({
+            expect(setAllowanceStub).toHaveBeenCalledWith('1234')
+            expect(validateStub).toHaveBeenCalledWith({
                 price: '1234',
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: false,
-            })).toBe(true)
-            expect(buyProductStub.calledWith('1', '3600', 'DAI', '1234')).toBe(true)
-            expect(subscriptionStub.calledWith('1')).toBe(true)
+            })
+            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1')
         })
 
         it('purchases the product when there is enough allowance', async () => {
@@ -912,13 +911,14 @@ describe('usePurchase', () => {
                 price: '1234',
             }
 
-            sandbox.stub(productServices, 'getMyDaiAllowance').callsFake(() => Promise.resolve(BN(5000)))
-            const validateStub = sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+            jest.spyOn(productServices, 'getMyDaiAllowance').mockImplementation(() => Promise.resolve(BN(5000)))
+            const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd: '10',
+                gasIncrease: 123,
             })
 
             expect(result.queue).toBeTruthy()
@@ -933,8 +933,8 @@ describe('usePurchase', () => {
                 transactionHash: hash,
             }
 
-            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx)
-            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
+            const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx)
+            const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -966,14 +966,14 @@ describe('usePurchase', () => {
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(validateStub.calledWith({
+            expect(validateStub).toHaveBeenCalledWith({
                 price: '1234',
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: false,
                 includeGasForResetAllowance: false,
-            })).toBe(true)
-            expect(buyProductStub.calledWith('1', '3600', 'DAI', '1234')).toBe(true)
-            expect(subscriptionStub.calledWith('1')).toBe(true)
+            })
+            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1')
         })
     })
 
@@ -1004,12 +1004,13 @@ describe('usePurchase', () => {
                 price: '1234',
             }
 
-            sandbox.stub(web3Utils, 'validateBalanceForPurchase').callsFake(() => Promise.resolve())
+            jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
                 dataPerUsd: '10',
+                gasIncrease: 123,
             })
 
             expect(result.queue).toBeTruthy()
@@ -1024,8 +1025,8 @@ describe('usePurchase', () => {
                 transactionHash: hash,
             }
 
-            const buyProductStub = sandbox.stub(productServices, 'buyProduct').callsFake(() => tx)
-            const subscriptionStub = sandbox.stub(productActions, 'getProductSubscription')
+            const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx)
+            const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
 
             const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
@@ -1057,8 +1058,8 @@ describe('usePurchase', () => {
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(buyProductStub.calledWith('1', '3600', 'ETH', '1234')).toBe(true)
-            expect(subscriptionStub.calledWith('1')).toBe(true)
+            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'ETH', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1')
         })
     })
 })

@@ -1,26 +1,21 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
-
 import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/global/actions'
 import * as constants from '$mp/modules/global/constants'
 import * as services from '$mp/modules/global/services'
 
 describe('global - actions', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getDataPerUsd', () => {
         it('calls services.getDataPerUsd and sets the rate', async () => {
             const dataPerUsd = 1
-            const serviceStub = sandbox.stub(services, 'getDataPerUsd').callsFake(() => Promise.resolve(dataPerUsd))
+            const serviceStub = jest.spyOn(services, 'getDataPerUsd').mockImplementation(() => Promise.resolve(dataPerUsd))
 
             const store = mockStore()
             await store.dispatch(actions.getDataPerUsd())
@@ -36,13 +31,13 @@ describe('global - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-            assert(serviceStub.calledOnce)
+            expect(store.getActions()).toStrictEqual(expectedActions)
+            expect(serviceStub).toHaveBeenCalledTimes(1)
         })
 
         it('calls services.getDataPerUsd and handles error', async () => {
             const errorMessage = 'error'
-            const serviceStub = sandbox.stub(services, 'getDataPerUsd').callsFake(() => Promise.reject(new Error(errorMessage)))
+            const serviceStub = jest.spyOn(services, 'getDataPerUsd').mockImplementation(() => Promise.reject(new Error(errorMessage)))
 
             const store = mockStore()
             await store.dispatch(actions.getDataPerUsd())
@@ -60,14 +55,14 @@ describe('global - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-            assert(serviceStub.calledOnce)
+            expect(store.getActions()).toStrictEqual(expectedActions)
+            expect(serviceStub).toHaveBeenCalledTimes(1)
         })
     })
 
     describe('checkEthereumNetwork', () => {
         it('calls services.checkEthereumNetworkIsCorrect', async () => {
-            const serviceStub = sandbox.stub(services, 'checkEthereumNetworkIsCorrect').callsFake(() => Promise.resolve())
+            const serviceStub = jest.spyOn(services, 'checkEthereumNetworkIsCorrect').mockImplementation(() => Promise.resolve())
 
             const store = mockStore()
             await store.dispatch(actions.checkEthereumNetwork())
@@ -80,13 +75,14 @@ describe('global - actions', () => {
                     type: constants.CHECK_ETHEREUM_NETWORK_SUCCESS,
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-            assert(serviceStub.calledOnce)
+            expect(store.getActions()).toStrictEqual(expectedActions)
+            expect(serviceStub).toHaveBeenCalledTimes(1)
         })
 
         it('calls services.checkEthereumNetworkIsCorrect and handles error', async () => {
             const errorMessage = 'error'
-            const serviceStub = sandbox.stub(services, 'checkEthereumNetworkIsCorrect').callsFake(() => Promise.reject(new Error(errorMessage)))
+            const serviceStub = jest.spyOn(services, 'checkEthereumNetworkIsCorrect')
+                .mockImplementation(() => Promise.reject(new Error(errorMessage)))
 
             const store = mockStore()
             await store.dispatch(actions.checkEthereumNetwork())
@@ -104,8 +100,8 @@ describe('global - actions', () => {
                     },
                 },
             ]
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-            assert(serviceStub.calledOnce)
+            expect(store.getActions()).toStrictEqual(expectedActions)
+            expect(serviceStub).toHaveBeenCalledTimes(1)
         })
     })
 })

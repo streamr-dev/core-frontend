@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$shared/modules/user/reducer'
 import * as constants from '$shared/modules/user/constants'
 
 describe('user - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), {
+        expect(reducer(undefined, {})).toStrictEqual({
             ...initialState,
             fetchingUserData: true,
         })
@@ -18,10 +16,10 @@ describe('user - reducer', () => {
                 fetchingUserData: true,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.USER_DATA_REQUEST,
                 payload: {},
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -36,12 +34,12 @@ describe('user - reducer', () => {
                 fetchingUserData: false,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.USER_DATA_SUCCESS,
                 payload: {
                     user,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -54,12 +52,12 @@ describe('user - reducer', () => {
                 userDataError: error,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.USER_DATA_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState)
+            })).toStrictEqual(expectedState)
         })
 
         it('resets current user when fetch fails', () => {
@@ -74,12 +72,12 @@ describe('user - reducer', () => {
                 fetchingUserData: false,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.USER_DATA_SUCCESS,
                 payload: {
                     user,
                 },
-            }), expectedState1)
+            })).toStrictEqual(expectedState1)
 
             const error = new Error('Test')
             const expectedState2 = {
@@ -89,18 +87,18 @@ describe('user - reducer', () => {
                 userDataError: error,
             }
 
-            assert.deepStrictEqual(reducer(undefined, {
+            expect(reducer(undefined, {
                 type: constants.USER_DATA_FAILURE,
                 payload: {
                     error,
                 },
-            }), expectedState2)
+            })).toStrictEqual(expectedState2)
         })
     })
 
     describe('UPDATE_CURRENT_USER', () => {
         it('should update the user on UPDATE_CURRENT_USER', () => {
-            assert.deepStrictEqual(reducer({
+            expect(reducer({
                 some: 'state',
                 user: {
                     name: 'test',
@@ -113,7 +111,7 @@ describe('user - reducer', () => {
                         email: 'test3',
                     },
                 },
-            }), {
+            })).toStrictEqual({
                 some: 'state',
                 saved: false,
                 user: {
@@ -123,7 +121,7 @@ describe('user - reducer', () => {
             })
         })
         it('should add the user if currentUser === null', () => {
-            assert.deepStrictEqual(reducer({
+            expect(reducer({
                 some: 'state',
                 user: null,
             }, {
@@ -134,7 +132,7 @@ describe('user - reducer', () => {
                         email: 'test3',
                     },
                 },
-            }), {
+            })).toStrictEqual({
                 some: 'state',
                 saved: false,
                 user: {
@@ -147,18 +145,18 @@ describe('user - reducer', () => {
 
     describe('SAVE_CURRENT_USER', () => {
         it('should set fetching = true on SAVE_CURRENT_USER_REQUEST', () => {
-            assert.deepStrictEqual(reducer({
+            expect(reducer({
                 some: 'state',
             }, {
                 type: constants.SAVE_CURRENT_USER_REQUEST,
-            }), {
+            })).toStrictEqual({
                 some: 'state',
                 fetchingUserData: true,
             })
         })
 
         it('should set the user as currentUser on SAVE_CURRENT_USER_SUCCESS', () => {
-            assert.deepStrictEqual(reducer({
+            expect(reducer({
                 some: 'state',
             }, {
                 type: constants.SAVE_CURRENT_USER_SUCCESS,
@@ -167,7 +165,7 @@ describe('user - reducer', () => {
                         just: 'someField',
                     },
                 },
-            }), {
+            })).toStrictEqual({
                 some: 'state',
                 user: {
                     just: 'someField',
@@ -179,14 +177,14 @@ describe('user - reducer', () => {
         })
 
         it('should handle the error on SAVE_CURRENT_USER_FAILURE', () => {
-            assert.deepStrictEqual(reducer({
+            expect(reducer({
                 some: 'field',
             }, {
                 type: constants.SAVE_CURRENT_USER_FAILURE,
                 payload: {
                     error: new Error('test-error'),
                 },
-            }), {
+            })).toStrictEqual({
                 some: 'field',
                 fetchingUserData: false,
                 userDataError: new Error('test-error'),

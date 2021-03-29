@@ -1,7 +1,5 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
-import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/myPurchaseList/actions'
 import * as constants from '$mp/modules/myPurchaseList/constants'
@@ -10,14 +8,12 @@ import * as services from '$mp/modules/myPurchaseList/services'
 import { subscriptionsSchema } from '$shared/modules/entities/schema'
 
 describe('myPurchaseList - actions', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getMyPurchases', () => {
@@ -37,7 +33,7 @@ describe('myPurchaseList - actions', () => {
             ]
             const { result, entities } = normalize(subscriptions, subscriptionsSchema)
 
-            sandbox.stub(services, 'getMyPurchases').callsFake(() => Promise.resolve(subscriptions))
+            jest.spyOn(services, 'getMyPurchases').mockImplementation(() => Promise.resolve(subscriptions))
 
             const store = mockStore({
                 entities: {
@@ -67,7 +63,7 @@ describe('myPurchaseList - actions', () => {
                 },
             ]
             const resultActions = store.getActions()
-            assert.deepStrictEqual(resultActions, expectedActions)
+            expect(resultActions).toStrictEqual(expectedActions)
         })
     })
 })

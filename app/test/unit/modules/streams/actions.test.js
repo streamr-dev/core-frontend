@@ -1,5 +1,4 @@
 import { normalize } from 'normalizr'
-import sinon from 'sinon'
 
 import * as actions from '$mp/modules/streams/actions'
 import * as constants from '$mp/modules/streams/constants'
@@ -9,14 +8,9 @@ import { streamsSchema } from '$shared/modules/entities/schema'
 import mockStore from '$testUtils/mockStoreProvider'
 
 describe('streams - actions', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getStreams', () => {
@@ -52,7 +46,7 @@ describe('streams - actions', () => {
 
             const { result, entities } = normalize(streams, streamsSchema)
 
-            const getStreamsStub = sandbox.stub(services, 'getStreams').callsFake(() => Promise.resolve({
+            const getStreamsStub = jest.spyOn(services, 'getStreams').mockImplementation(() => Promise.resolve({
                 streams,
                 hasMoreResults: false,
             }))
@@ -80,12 +74,12 @@ describe('streams - actions', () => {
             ]
 
             expect(store.getActions()).toStrictEqual(expectedActions)
-            expect(getStreamsStub.calledWith({})).toBe(true)
+            expect(getStreamsStub).toBeCalledWith({})
         })
 
         it('responds to errors', async () => {
             const error = new Error('Error')
-            sandbox.stub(services, 'getStreams').callsFake(() => Promise.reject(error))
+            jest.spyOn(services, 'getStreams').mockImplementation(() => Promise.reject(error))
 
             const store = mockStore()
             await store.dispatch(actions.getStreams())

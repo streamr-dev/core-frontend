@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$mp/modules/transactions/reducer'
 import * as constants from '$mp/modules/transactions/constants'
 
 describe('transactions - reducers', () => {
     it('has initial state', async () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     it('adds transaction', () => {
@@ -15,12 +13,12 @@ describe('transactions - reducers', () => {
             completed: [],
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.ADD_TRANSACTION,
             payload: {
                 id,
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('completes transaction', () => {
@@ -30,11 +28,11 @@ describe('transactions - reducers', () => {
             completed: [id],
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.COMPLETE_TRANSACTION,
             payload: {
                 id,
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 })

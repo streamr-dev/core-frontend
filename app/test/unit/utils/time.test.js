@@ -1,53 +1,53 @@
-import assert from 'assert-diff'
 import moment from 'moment-timezone'
+import BN from 'bignumber.js'
 
 import * as all from '$mp/utils/time'
 
 describe('time utils', () => {
     describe('toSeconds', () => {
         it('converts to seconds', () => {
-            assert.equal(all.toSeconds(1, 'second'), 1)
-            assert.equal(all.toSeconds(1, 'minute'), 60)
-            assert.equal(all.toSeconds(1, 'hour'), 3600)
-            assert.equal(all.toSeconds(1, 'day'), 86400)
-            assert.equal(all.toSeconds(1, 'week'), 604800)
-            assert.equal(all.toSeconds(1, 'month'), 2592000)
+            expect(all.toSeconds(1, 'second')).toStrictEqual(BN(1))
+            expect(all.toSeconds(1, 'minute')).toStrictEqual(BN(60))
+            expect(all.toSeconds(1, 'hour')).toStrictEqual(BN(3600))
+            expect(all.toSeconds(1, 'day')).toStrictEqual(BN(86400))
+            expect(all.toSeconds(1, 'week')).toStrictEqual(BN(604800))
+            expect(all.toSeconds(1, 'month')).toStrictEqual(BN(2592000))
         })
 
         it('rejects invalid time units', () => {
-            assert.throws(() => all.toSeconds(1, 'asdf'))
-            assert.throws(() => all.toSeconds(1, 'seconds'))
+            expect(() => all.toSeconds(1, 'asdf')).toThrow()
+            expect(() => all.toSeconds(1, 'seconds')).toThrow()
         })
     })
 
     describe('formatDateTime', () => {
         it('formats datetime', () => {
-            assert.equal(all.formatDateTime(1, 'UTC'), '1970-01-01 00:00:00')
-            assert.equal(all.formatDateTime(1, 'Europe/Helsinki'), '1970-01-01 02:00:00')
-            assert.equal(all.formatDateTime(), undefined)
+            expect(all.formatDateTime(1, 'UTC')).toBe('1970-01-01 00:00:00')
+            expect(all.formatDateTime(1, 'Europe/Helsinki')).toBe('1970-01-01 02:00:00')
+            expect(all.formatDateTime()).toBe(undefined)
         })
     })
 
     describe('getAbbreviation', () => {
         it('displays abbreviation', () => {
-            assert.equal(all.getAbbreviation('second'), 's')
-            assert.equal(all.getAbbreviation('minute'), 'min')
-            assert.equal(all.getAbbreviation('hour'), 'hr')
-            assert.equal(all.getAbbreviation('day'), 'd')
-            assert.equal(all.getAbbreviation('week'), 'wk')
-            assert.equal(all.getAbbreviation('month'), 'm')
-            assert.equal(all.getAbbreviation('asdf'), '')
+            expect(all.getAbbreviation('second')).toBe('s')
+            expect(all.getAbbreviation('minute')).toBe('min')
+            expect(all.getAbbreviation('hour')).toBe('hr')
+            expect(all.getAbbreviation('day')).toBe('d')
+            expect(all.getAbbreviation('week')).toBe('wk')
+            expect(all.getAbbreviation('month')).toBe('m')
+            expect(all.getAbbreviation('asdf')).toBe('')
         })
     })
 
     describe('isActive', () => {
         it('returns correct status', () => {
-            assert.equal(all.isActive(Date.now()), false)
-            assert.equal(all.isActive(moment()), false)
-            assert.equal(all.isActive(0), false)
-            assert.equal(all.isActive(1), false)
-            assert.equal(all.isActive('1970-01-01 00:00:00'), false)
-            assert.equal(all.isActive('2050-01-01 00:00:00'), true) // in the year 2050 someone will curse me
+            expect(all.isActive(Date.now())).toBe(false)
+            expect(all.isActive(moment())).toBe(false)
+            expect(all.isActive(0)).toBe(false)
+            expect(all.isActive(1)).toBe(false)
+            expect(all.isActive('1970-01-01 00:00:00')).toBe(false)
+            expect(all.isActive('2050-01-01 00:00:00')).toBe(true) // in the year 2050 someone will curse me
         })
     })
 })

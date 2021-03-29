@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/relatedProducts/selectors'
@@ -30,18 +29,18 @@ const state = {
 
 describe('relatedProducts - selectors', () => {
     it('selects related product ids', () => {
-        assert.deepStrictEqual(all.selectRelatedProductListIds(state), state.relatedProducts.ids)
+        expect(all.selectRelatedProductListIds(state)).toStrictEqual(state.relatedProducts.ids)
     })
 
     it('selects all related products', () => {
-        assert.deepStrictEqual(all.selectRelatedProductList(state), relatedProducts)
+        expect(all.selectRelatedProductList(state)).toStrictEqual(relatedProducts)
     })
 
     it('selects fetching status for related products', () => {
-        assert.deepStrictEqual(all.selectFetchingRelatedProductList(state), false)
+        expect(all.selectFetchingRelatedProductList(state)).toStrictEqual(false)
     })
 
     it('selects related products error', () => {
-        assert.deepStrictEqual(all.selectRelatedProductListError(state), null)
+        expect(all.selectRelatedProductListError(state)).toStrictEqual(null)
     })
 })

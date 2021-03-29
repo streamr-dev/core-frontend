@@ -1,33 +1,31 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
-
 import * as all from '$mp/modules/contractProduct/services'
 import * as utils from '$mp/utils/smartContract'
+import { mapPriceToContract } from '$mp/utils/product'
 
 describe('Product services', () => {
-    let sandbox
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getProductFromContract', () => {
         it('must convert weis to token', async () => {
-            const getProductStub = sandbox.stub().callsFake(() => ({
+            const getProductStub = jest.fn(() => ({
                 call: () => Promise.resolve({
                     pricePerSecond: '1000000000000000000',
                 }),
             }))
-            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const getContractStub = jest.fn(() => ({
                 methods: {
                     getProduct: getProductStub,
                 },
             }))
+            jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
             const result = await all.getProductFromContract('1234abcdef')
-            assert.deepStrictEqual({
+            expect({
                 priceCurrency: undefined,
                 state: undefined,
                 pricePerSecond: '1',
@@ -37,20 +35,20 @@ describe('Product services', () => {
                 beneficiaryAddress: undefined,
                 minimumSubscriptionInSeconds: 0,
                 requiresWhitelist: undefined,
-            }, result)
-            assert(getContractStub.calledOnce)
-            assert(getProductStub.calledOnce)
-            assert(getProductStub.calledWith('0x1234abcdef'))
+            }).toStrictEqual(result)
+            expect(getContractStub).toBeCalled()
+            expect(getProductStub).toBeCalled()
+            expect(getProductStub).toBeCalledWith('0x1234abcdef')
         })
 
         it('must throw error if owner is 0', async (done) => {
-            const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const getProductStub = jest.fn(() => ({
                 call: () => Promise.resolve({
                     owner: '0x000',
                     pricePerSecond: '0',
                 }),
             }))
-            sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     getProduct: getProductStub,
                 },
@@ -58,6 +56,7 @@ describe('Product services', () => {
             try {
                 await all.getProductFromContract('1234abcdef')
             } catch (e) {
+                expect(e.message).toMatch(/No product found/)
                 done()
             }
         })
@@ -84,11 +83,11 @@ describe('Product services', () => {
             }
         })
         it('must fail if no id', (done) => {
-            const createContractProductStub = sinon.stub().callsFake(() => ({
+            const createContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createContractProductStub,
                 },
@@ -99,16 +98,16 @@ describe('Product services', () => {
                     id: null,
                 })
             } catch (e) {
-                assert(/not a valid hex/.test(e.message))
+                expect(e.message).toMatch(/not a valid hex/)
                 done()
             }
         })
         it('must transform the currency to number', () => {
-            const createContractProductStub = sinon.stub().callsFake(() => ({
+            const createContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createContractProductStub,
                 },
@@ -121,16 +120,32 @@ describe('Product services', () => {
                 ...exampleProduct,
                 priceCurrency: 'DATA',
             })
-            assert(createContractProductStub.calledTwice)
-            assert.equal(1, createContractProductStub.getCall(0).args[4])
-            assert.equal(0, createContractProductStub.getCall(1).args[4])
+            expect(createContractProductStub).toHaveBeenCalledTimes(2)
+            expect(createContractProductStub).toHaveBeenNthCalledWith(
+                1,
+                `0x${exampleProduct.id}`,
+                exampleProduct.name,
+                exampleProduct.beneficiaryAddress,
+                mapPriceToContract(exampleProduct.pricePerSecond),
+                1,
+                0,
+            )
+            expect(createContractProductStub).toHaveBeenNthCalledWith(
+                2,
+                `0x${exampleProduct.id}`,
+                exampleProduct.name,
+                exampleProduct.beneficiaryAddress,
+                mapPriceToContract(exampleProduct.pricePerSecond),
+                0,
+                0,
+            )
         })
         it('must fail if price is 0', (done) => {
-            const createContractProductStub = sinon.stub().callsFake(() => ({
+            const createContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createContractProductStub,
                 },
@@ -141,16 +156,16 @@ describe('Product services', () => {
                     pricePerSecond: '0',
                 })
             } catch (e) {
-                assert(e.message.match(/product price/i))
+                expect(e.message).toMatch(/product price/i)
                 done()
             }
         })
         it('must fail if price is negative', (done) => {
-            const createContractProductStub = sinon.stub().callsFake(() => ({
+            const createContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createContractProductStub,
                 },
@@ -161,16 +176,16 @@ describe('Product services', () => {
                     pricePerSecond: -3,
                 })
             } catch (e) {
-                assert(e.message.match(/product price/i))
+                expect(e.message).toMatch(/product price/i)
                 done()
             }
         })
         it('must fail if invalid currency', (done) => {
-            const createContractProductStub = sinon.stub().callsFake(() => ({
+            const createContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createContractProductStub,
                 },
@@ -181,16 +196,16 @@ describe('Product services', () => {
                     priceCurrency: 'foobar',
                 })
             } catch (e) {
-                assert(e.message.match('Invalid currency: foobar'))
+                expect(e.message).toMatch('Invalid currency: foobar')
                 done()
             }
         })
         it('must call send with correct object', (done) => {
-            sandbox.stub(utils, 'send').callsFake((a) => {
-                assert.equal('test', a)
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
+                expect(a).toBe('test')
                 done()
             })
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: () => 'test',
                 },
@@ -198,38 +213,38 @@ describe('Product services', () => {
             all.createContractProduct(exampleProduct)
         })
         it('must return the result of send', () => {
-            sandbox.stub(utils, 'send').callsFake(() => 'test')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation(() => 'test')
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: () => {
                     },
                 },
             }))
-            assert.equal('test', all.createContractProduct(exampleProduct))
+            expect(all.createContractProduct(exampleProduct)).toBe('test')
         })
         it('must call createProduct with correct params (when DATA)', () => {
-            const createProductSpy = sandbox.spy()
-            sandbox.stub(utils, 'send')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const createProductSpy = jest.fn()
+            jest.spyOn(utils, 'send').mockImplementation(jest.fn())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createProductSpy,
                 },
             }))
             all.createContractProduct(exampleProduct)
-            assert(createProductSpy.calledOnce)
-            assert(createProductSpy.calledWithExactly(
+            expect(createProductSpy).toBeCalled()
+            expect(createProductSpy).toBeCalledWith(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
                 0,
                 0,
-            ))
+            )
         })
         it('must call createProduct with correct params (when USD)', () => {
-            const createProductSpy = sandbox.spy()
-            sandbox.stub(utils, 'send')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const createProductSpy = jest.fn()
+            jest.spyOn(utils, 'send').mockImplementation(jest.fn())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createProductSpy,
                 },
@@ -238,15 +253,15 @@ describe('Product services', () => {
                 ...exampleProduct,
                 priceCurrency: 'USD',
             })
-            assert(createProductSpy.calledOnce)
-            assert(createProductSpy.calledWithExactly(
+            expect(createProductSpy).toBeCalled()
+            expect(createProductSpy).toBeCalledWith(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 '63000000000000000000',
                 1,
                 0,
-            ))
+            )
         })
     })
 
@@ -271,11 +286,11 @@ describe('Product services', () => {
             }
         })
         it('must fail if no id', (done) => {
-            const updateContractProductStub = sinon.stub().callsFake(() => ({
+            const updateContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateContractProductStub,
                 },
@@ -286,16 +301,16 @@ describe('Product services', () => {
                     id: null,
                 })
             } catch (e) {
-                assert(/not a valid hex/.test(e.message))
+                expect(e.message).toMatch(/not a valid hex/)
                 done()
             }
         })
         it('must transform the currency to number', () => {
-            const updateContractProductStub = sinon.stub().callsFake(() => ({
+            const updateContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateContractProductStub,
                 },
@@ -308,16 +323,34 @@ describe('Product services', () => {
                 ...exampleProduct,
                 priceCurrency: 'DATA',
             })
-            assert(updateContractProductStub.calledTwice)
-            assert.equal(1, updateContractProductStub.getCall(0).args[4])
-            assert.equal(0, updateContractProductStub.getCall(1).args[4])
+            expect(updateContractProductStub).toHaveBeenCalledTimes(2)
+            expect(updateContractProductStub).toHaveBeenNthCalledWith(
+                1,
+                `0x${exampleProduct.id}`,
+                exampleProduct.name,
+                exampleProduct.beneficiaryAddress,
+                mapPriceToContract(exampleProduct.pricePerSecond),
+                1,
+                0,
+                false,
+            )
+            expect(updateContractProductStub).toHaveBeenNthCalledWith(
+                2,
+                `0x${exampleProduct.id}`,
+                exampleProduct.name,
+                exampleProduct.beneficiaryAddress,
+                mapPriceToContract(exampleProduct.pricePerSecond),
+                0,
+                0,
+                false,
+            )
         })
         it('must fail if price is 0', (done) => {
-            const updateContractProductStub = sinon.stub().callsFake(() => ({
+            const updateContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateContractProductStub,
                 },
@@ -328,16 +361,16 @@ describe('Product services', () => {
                     pricePerSecond: 0,
                 })
             } catch (e) {
-                assert(e.message.match(/product price/i))
+                expect(e.message).toMatch(/product price/i)
                 done()
             }
         })
         it('must fail if price is negative', (done) => {
-            const updateContractProductStub = sinon.stub().callsFake(() => ({
+            const updateContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateContractProductStub,
                 },
@@ -348,16 +381,16 @@ describe('Product services', () => {
                     pricePerSecond: -3,
                 })
             } catch (e) {
-                assert(e.message.match(/product price/i))
+                expect(e.message).toMatch(/product price/i)
                 done()
             }
         })
         it('must fail if invalid currency', (done) => {
-            const updateContractProductStub = sinon.stub().callsFake(() => ({
+            const updateContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateContractProductStub,
                 },
@@ -368,16 +401,16 @@ describe('Product services', () => {
                     priceCurrency: 'foobar',
                 })
             } catch (e) {
-                assert(e.message.match('Invalid currency: foobar'))
+                expect(e.message).toMatch('Invalid currency: foobar')
                 done()
             }
         })
         it('must call send with correct object', (done) => {
-            sandbox.stub(utils, 'send').callsFake((a) => {
-                assert.equal('test', a)
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
+                expect(a).toBe('test')
                 done()
             })
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: () => 'test',
                 },
@@ -385,26 +418,26 @@ describe('Product services', () => {
             all.updateContractProduct(exampleProduct)
         })
         it('must return the result of send', () => {
-            sandbox.stub(utils, 'send').callsFake(() => 'test')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation(() => 'test')
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: () => {
                     },
                 },
             }))
-            assert.equal('test', all.updateContractProduct(exampleProduct))
+            expect(all.updateContractProduct(exampleProduct)).toBe('test')
         })
         it('must call updateProduct with correct params (when DATA)', () => {
-            const updateProductSpy = sandbox.spy()
-            sandbox.stub(utils, 'send')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const updateProductSpy = jest.fn()
+            jest.spyOn(utils, 'send')
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateProductSpy,
                 },
             }))
             all.updateContractProduct(exampleProduct)
-            assert(updateProductSpy.calledOnce)
-            assert(updateProductSpy.calledWithExactly(
+            expect(updateProductSpy).toHaveBeenCalledTimes(1)
+            expect(updateProductSpy).toBeCalledWith(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
@@ -412,12 +445,12 @@ describe('Product services', () => {
                 0,
                 0,
                 false,
-            ))
+            )
         })
         it('must call updateProductSpy with correct params (when USD)', () => {
-            const updateProductSpy = sandbox.spy()
-            sandbox.stub(utils, 'send')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const updateProductSpy = jest.fn()
+            jest.spyOn(utils, 'send')
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateProductSpy,
                 },
@@ -426,8 +459,8 @@ describe('Product services', () => {
                 ...exampleProduct,
                 priceCurrency: 'USD',
             })
-            assert(updateProductSpy.calledOnce)
-            assert(updateProductSpy.calledWithExactly(
+            expect(updateProductSpy).toHaveBeenCalledTimes(1)
+            expect(updateProductSpy).toBeCalledWith(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
@@ -435,12 +468,12 @@ describe('Product services', () => {
                 1,
                 0,
                 false,
-            ))
+            )
         })
         it('must call updateProductSpy with correct params redeploying', () => {
-            const updateProductSpy = sandbox.spy()
-            sandbox.stub(utils, 'send')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const updateProductSpy = jest.fn()
+            jest.spyOn(utils, 'send')
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateProductSpy,
                 },
@@ -449,8 +482,8 @@ describe('Product services', () => {
                 ...exampleProduct,
                 priceCurrency: 'USD',
             }, true)
-            assert(updateProductSpy.calledOnce)
-            assert(updateProductSpy.calledWithExactly(
+            expect(updateProductSpy).toHaveBeenCalledTimes(1)
+            expect(updateProductSpy).toBeCalledWith(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
@@ -458,41 +491,41 @@ describe('Product services', () => {
                 1,
                 0,
                 true,
-            ))
+            )
         })
     })
 
     describe('deleteProduct', () => {
         it('calls deleteProduct contract method', async () => {
-            const deleteProductStub = sinon.stub().callsFake(() => ({
+            const deleteProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     deleteProduct: deleteProductStub,
                 },
             }))
             await all.deleteProduct('1')
-            assert(deleteProductStub.calledWith('0x1'))
-            assert(deleteProductStub.calledOnce)
+            expect(deleteProductStub).toBeCalledWith('0x1')
+            expect(deleteProductStub).toHaveBeenCalledTimes(1)
         })
     })
 
     describe('redeployProduct', () => {
         it('calls redeployProduct contract method', async () => {
-            const redeployProductStub = sinon.stub().callsFake(() => ({
+            const redeployProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     redeployProduct: redeployProductStub,
                 },
             }))
             await all.redeployProduct('1')
-            assert(redeployProductStub.calledWith('0x1'))
-            assert(redeployProductStub.calledOnce)
+            expect(redeployProductStub).toBeCalledWith('0x1')
+            expect(redeployProductStub).toHaveBeenCalledTimes(1)
         })
     })
 })

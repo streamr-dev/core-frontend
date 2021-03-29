@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$mp/modules/streams/reducer'
 import * as constants from '$mp/modules/streams/constants'
 
 describe('streams - reducer', () => {
     it('has initial state', () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     it('handles request', () => {
@@ -16,10 +14,10 @@ describe('streams - reducer', () => {
             hasMoreResults: false,
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.GET_STREAMS_REQUEST,
             payload: {},
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('handles success', () => {
@@ -30,13 +28,13 @@ describe('streams - reducer', () => {
             hasMoreResults: true,
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.GET_STREAMS_SUCCESS,
             payload: {
                 streams: [1, 2],
                 hasMoreResults: true,
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('combines stream ids to list', () => {
@@ -53,13 +51,13 @@ describe('streams - reducer', () => {
             hasMoreResults: false,
         }
 
-        assert.deepStrictEqual(reducer(state, {
+        expect(reducer(state, {
             type: constants.GET_STREAMS_SUCCESS,
             payload: {
                 streams: [3, 4],
                 hasMoreResults: false,
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('combines stream ids to list and removes duplicates', () => {
@@ -76,13 +74,13 @@ describe('streams - reducer', () => {
             hasMoreResults: false,
         }
 
-        assert.deepStrictEqual(reducer(state, {
+        expect(reducer(state, {
             type: constants.GET_STREAMS_SUCCESS,
             payload: {
                 streams: [3, 4, 5],
                 hasMoreResults: false,
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('handles failure', () => {
@@ -95,12 +93,12 @@ describe('streams - reducer', () => {
             hasMoreResults: false,
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.GET_STREAMS_FAILURE,
             payload: {
                 error,
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('clears the stream list', () => {
@@ -117,8 +115,8 @@ describe('streams - reducer', () => {
             hasMoreResults: false,
         }
 
-        assert.deepStrictEqual(reducer(state, {
+        expect(reducer(state, {
             type: constants.CLEAR_STREAM_LIST,
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 })

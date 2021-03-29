@@ -1,7 +1,6 @@
 import EventEmitter from 'events'
 import React from 'react'
 import { mount } from 'enzyme'
-import sinon from 'sinon'
 import { act } from 'react-dom/test-utils'
 import * as redux from 'react-redux'
 
@@ -17,8 +16,6 @@ import * as useBalances from '$shared/hooks/useBalances'
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 
 describe('GlobalInfoWatcher', () => {
-    let sandbox
-    let clock
     const { location } = window
 
     beforeAll(() => {
@@ -33,19 +30,20 @@ describe('GlobalInfoWatcher', () => {
     })
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
-        clock = sandbox.useFakeTimers()
+        jest.useFakeTimers()
     })
 
     afterEach(() => {
-        sandbox.restore()
-        clock.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
+        jest.runOnlyPendingTimers()
+        jest.useRealTimers()
     })
 
     it('renders the component', () => {
-        sandbox.stub(redux, 'useSelector')
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(useBalances, 'useBalances').callsFake(() => ({
+        jest.spyOn(redux, 'useSelector').mockImplementation()
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
 
@@ -54,64 +52,64 @@ describe('GlobalInfoWatcher', () => {
     })
 
     it('polls usd rate', () => {
-        sandbox.stub(redux, 'useSelector')
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(useBalances, 'useBalances').callsFake(() => ({
+        jest.spyOn(redux, 'useSelector').mockImplementation()
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
-        const dataPerUsdStub = sandbox.stub(globalActions, 'getDataPerUsd')
+        const dataPerUsdStub = jest.spyOn(globalActions, 'getDataPerUsd').mockImplementation()
 
         act(() => {
             mount(<GlobalInfoWatcher />)
         })
 
-        expect(dataPerUsdStub.calledOnce).toBe(true)
+        expect(dataPerUsdStub).toHaveBeenCalledTimes(1)
 
         // Advance clock for 7h
         act(() => {
-            clock.tick(1000 * 60 * 60 * 7)
+            jest.advanceTimersByTime(1000 * 60 * 60 * 7)
         })
-        expect(dataPerUsdStub.callCount).toEqual(2)
+        expect(dataPerUsdStub).toHaveBeenCalledTimes(3)
     })
 
     it('polls login', () => {
-        sandbox.stub(redux, 'useSelector')
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(useBalances, 'useBalances').callsFake(() => ({
+        jest.spyOn(redux, 'useSelector').mockImplementation()
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
-        const userDataStub = sandbox.stub(userActions, 'getUserData')
+        const userDataStub = jest.spyOn(userActions, 'getUserData').mockImplementation()
 
         act(() => {
             mount(<GlobalInfoWatcher />)
         })
 
-        expect(userDataStub.calledOnce).toBe(true)
+        expect(userDataStub).toHaveBeenCalledTimes(1)
 
         // Advance clock for 6min
         act(() => {
-            clock.tick(1000 * 60 * 6)
+            jest.advanceTimersByTime(1000 * 60 * 6)
         })
-        expect(userDataStub.callCount).toEqual(2)
+        expect(userDataStub).toHaveBeenCalledTimes(4)
     })
 
     it('stops polling on unmount', () => {
-        sandbox.stub(redux, 'useSelector')
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(useBalances, 'useBalances').callsFake(() => ({
+        jest.spyOn(redux, 'useSelector').mockImplementation()
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
-        sandbox.stub(Web3Poller, 'unsubscribe')
+        jest.spyOn(Web3Poller, 'unsubscribe').mockImplementation()
 
-        const clockSpy = sinon.spy(clock, 'clearTimeout')
+        const clockSpy = jest.spyOn(window, 'clearTimeout')
 
         act(() => {
             const wrapper = mount(<GlobalInfoWatcher />)
             wrapper.unmount()
         })
 
-        expect(clockSpy.callCount).toEqual(5)
-        expect(Web3Poller.unsubscribe.callCount).toEqual(4)
+        expect(clockSpy).toHaveBeenCalledTimes(5)
+        expect(Web3Poller.unsubscribe).toHaveBeenCalledTimes(4)
     })
 
     it('adds pending transactions from storage on mount', () => {
@@ -120,20 +118,20 @@ describe('GlobalInfoWatcher', () => {
             '0x456': 'purchase',
         }
 
-        sandbox.stub(redux, 'useSelector')
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(useBalances, 'useBalances').callsFake(() => ({
+        jest.spyOn(redux, 'useSelector').mockImplementation()
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
-        const defaultAccountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
-        const networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
-        sandbox.stub(getWeb3, 'default').callsFake(() => ({
+        const defaultAccountStub = jest.fn(() => Promise.resolve('testAccount'))
+        const networkStub = jest.fn(() => Promise.resolve(1))
+        jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
             getEthereumNetwork: networkStub,
         }))
-        sandbox.stub(web3Utils, 'hasTransactionCompleted').callsFake(() => Promise.resolve(false))
-        sandbox.stub(transactionUtils, 'getTransactionsFromSessionStorage').callsFake(() => transactions)
-        const addTransactionStub = sandbox.stub(transactionActions, 'addTransaction')
+        jest.spyOn(web3Utils, 'hasTransactionCompleted').mockImplementation(() => Promise.resolve(false))
+        jest.spyOn(transactionUtils, 'getTransactionsFromSessionStorage').mockImplementation(() => transactions)
+        const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction').mockImplementation()
 
         act(() => {
             mount(<GlobalInfoWatcher />)
@@ -141,22 +139,22 @@ describe('GlobalInfoWatcher', () => {
 
         act(() => {
             // Advance clock for 2s
-            clock.tick(2 * 1000)
+            jest.advanceTimersByTime(2 * 1000)
         })
 
-        expect(addTransactionStub.callCount).toEqual(2)
+        expect(addTransactionStub).toHaveBeenCalledTimes(2)
     })
 
     it('reloads page on network change', () => {
-        sandbox.stub(redux, 'useSelector')
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
+        jest.spyOn(redux, 'useSelector').mockImplementation()
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
 
         const emitter = new EventEmitter()
 
-        sandbox.stub(Web3Poller, 'subscribe').callsFake((event, handler) => {
+        jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
             emitter.on(event, handler)
         })
-        sandbox.stub(Web3Poller, 'unsubscribe').callsFake((event, handler) => {
+        jest.spyOn(Web3Poller, 'unsubscribe').mockImplementation((event, handler) => {
             emitter.off(event, handler)
         })
 

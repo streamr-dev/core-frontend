@@ -1,6 +1,3 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
-
 import Notification from '$shared/utils/Notification'
 import * as actions from '$mp/modules/transactions/actions'
 import * as constants from '$mp/modules/transactions/constants'
@@ -10,23 +7,21 @@ import * as entitiesActions from '$shared/modules/entities/actions'
 import mockStore from '$testUtils/mockStoreProvider'
 
 describe('transactions - actions', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('addTransaction', () => {
         it('updates transaction succesfully', async () => {
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                 type: 'updateEntities',
             }))
 
-            const addTransactionToSessionStorageSpy = sandbox.spy(transactionUtils, 'addTransactionToSessionStorage')
+            const addTransactionToSessionStorageSpy = jest.spyOn(transactionUtils, 'addTransactionToSessionStorage')
 
             const txHash = 'hash'
             const type = 'testType'
@@ -45,11 +40,11 @@ describe('transactions - actions', () => {
                 },
             ]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-            assert(addTransactionToSessionStorageSpy.calledWith(
+            expect(store.getActions()).toStrictEqual(expectedActions)
+            expect(addTransactionToSessionStorageSpy).toBeCalledWith(
                 txHash,
                 type,
-            ))
+            )
         })
 
         const allowedNotifications = [
@@ -62,11 +57,12 @@ describe('transactions - actions', () => {
 
         Object.values(transactionTypes).forEach((type) => {
             it(`adds transaction and handles notification correctly (${type})`, () => {
-                sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+                jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                     type: 'updateEntities',
                 }))
-                sandbox.stub(Notification, 'push')
-                const addTransactionToSessionStorageSpy = sandbox.spy(transactionUtils, 'addTransactionToSessionStorage')
+                const notificationStub = jest.fn()
+                jest.spyOn(Notification, 'push').mockImplementation(notificationStub)
+                const addTransactionToSessionStorageSpy = jest.spyOn(transactionUtils, 'addTransactionToSessionStorage')
 
                 const txHash = 'hash'
                 const store = mockStore()
@@ -85,24 +81,26 @@ describe('transactions - actions', () => {
                 ]
 
                 if (allowedNotifications.indexOf(type) >= 0) {
-                    sinon.assert.calledWith(Notification.push, sinon.match.has('txHash', txHash))
+                    expect(notificationStub).toBeCalledWith({
+                        txHash: 'hash',
+                    })
                 }
 
-                assert.deepStrictEqual(store.getActions(), expectedActions)
-                assert(addTransactionToSessionStorageSpy.calledWith(
+                expect(store.getActions()).toStrictEqual(expectedActions)
+                expect(addTransactionToSessionStorageSpy).toBeCalledWith(
                     txHash,
                     type,
-                ))
+                )
             })
         })
     })
 
     describe('completeTransaction', () => {
         it('completes the transaction', () => {
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                 type: 'updateEntities',
             }))
-            const removeTransactionFromSessionStorageSpy = sandbox.spy(transactionUtils, 'removeTransactionFromSessionStorage')
+            const removeTransactionFromSessionStorageSpy = jest.spyOn(transactionUtils, 'removeTransactionFromSessionStorage')
 
             const txHash = 'hash'
             const receipt = 'receipt'
@@ -121,17 +119,17 @@ describe('transactions - actions', () => {
                 },
             ]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-            assert(removeTransactionFromSessionStorageSpy.calledWith(txHash))
+            expect(store.getActions()).toStrictEqual(expectedActions)
+            expect(removeTransactionFromSessionStorageSpy).toBeCalledWith(txHash)
         })
     })
 
     describe('transactionError', () => {
         it('adds transaction error', () => {
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                 type: 'updateEntities',
             }))
-            const removeTransactionFromSessionStorageSpy = sandbox.spy(transactionUtils, 'removeTransactionFromSessionStorage')
+            const removeTransactionFromSessionStorageSpy = jest.spyOn(transactionUtils, 'removeTransactionFromSessionStorage')
 
             const txHash = 'hash'
             const error = 'error'
@@ -150,8 +148,8 @@ describe('transactions - actions', () => {
                 },
             ]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
-            assert(removeTransactionFromSessionStorageSpy.calledWith(txHash))
+            expect(store.getActions()).toStrictEqual(expectedActions)
+            expect(removeTransactionFromSessionStorageSpy).toBeCalledWith(txHash)
         })
     })
 })

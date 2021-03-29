@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import sinon from 'sinon'
 import BN from 'bignumber.js'
 import * as redux from 'react-redux'
 
@@ -14,24 +13,19 @@ import * as entitiesUtils from '$shared/utils/entities'
 import useProductLoadCallback from '../useProductLoadCallback'
 
 describe('useProductLoadCallback', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     it('loads a product', async () => {
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(usePending, 'default').callsFake(() => ({
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        sandbox.stub(productServices, 'getProductById').callsFake((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
         }))
@@ -66,16 +60,16 @@ describe('useProductLoadCallback', () => {
     })
 
     it('throws an error', async () => {
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(usePending, 'default').callsFake(() => ({
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        sandbox.stub(productServices, 'getProductById').callsFake(() => {
+        jest.spyOn(productServices, 'getProductById').mockImplementation(() => {
             throw new Error('something happened')
         })
-        sandbox.stub(loginInterceptor, 'handleLoadError').callsFake(() => Promise.resolve())
+        jest.spyOn(loginInterceptor, 'handleLoadError').mockImplementation(() => Promise.resolve())
 
         let loadProduct
         let product
@@ -108,14 +102,14 @@ describe('useProductLoadCallback', () => {
     })
 
     it('loads the admin fee for data union products', async () => {
-        sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => Promise.resolve('0.3'))
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(usePending, 'default').callsFake(() => ({
+        jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        sandbox.stub(productServices, 'getProductById').callsFake((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'DATAUNION',
@@ -156,16 +150,16 @@ describe('useProductLoadCallback', () => {
     })
 
     it('sets dataUnionDeployed = false for data union products if admin fee call fails', async () => {
-        sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+        jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
             throw new Error('not found')
         })
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(usePending, 'default').callsFake(() => ({
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        sandbox.stub(productServices, 'getProductById').callsFake((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'DATAUNION',
@@ -206,13 +200,13 @@ describe('useProductLoadCallback', () => {
     })
 
     it('loads a product and sets default values for data product', async () => {
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(usePending, 'default').callsFake(() => ({
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        sandbox.stub(productServices, 'getProductById').callsFake((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'NORMAL',
@@ -256,13 +250,13 @@ describe('useProductLoadCallback', () => {
     })
 
     it('loads a product with existing values', async () => {
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(usePending, 'default').callsFake(() => ({
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        sandbox.stub(productServices, 'getProductById').callsFake((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'NORMAL',
@@ -304,15 +298,15 @@ describe('useProductLoadCallback', () => {
 
     it('sets the loaded product values to redux store without pending changes', async () => {
         const entityHandler = jest.fn()
-        sandbox.stub(entitiesUtils, 'handleEntities').callsFake(() => entityHandler)
+        jest.spyOn(entitiesUtils, 'handleEntities').mockImplementation(() => entityHandler)
 
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(usePending, 'default').callsFake(() => ({
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        sandbox.stub(productServices, 'getProductById').callsFake((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'NORMAL',
@@ -364,15 +358,15 @@ describe('useProductLoadCallback', () => {
 
     it('sets the loaded product values with pending changes as the editable product data for published products', async () => {
         const entityHandler = jest.fn()
-        sandbox.stub(entitiesUtils, 'handleEntities').callsFake(() => entityHandler)
+        jest.spyOn(entitiesUtils, 'handleEntities').mockImplementation(() => entityHandler)
 
-        sandbox.stub(redux, 'useDispatch').callsFake(() => (action) => action)
-        sandbox.stub(usePending, 'default').callsFake(() => ({
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
+        jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        sandbox.stub(productServices, 'getProductById').callsFake((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'NORMAL',

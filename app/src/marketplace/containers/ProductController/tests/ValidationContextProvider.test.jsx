@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import sinon from 'sinon'
 
 import * as useProduct from '../useProduct'
 
@@ -40,14 +39,9 @@ jest.mock('react-redux', () => ({
 }))
 
 describe('validation context', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     it('creates validation context', () => {
@@ -57,7 +51,7 @@ describe('validation context', () => {
             return null
         }
 
-        sandbox.stub(useProduct, 'default').callsFake(() => ({
+        jest.spyOn(useProduct, 'default').mockImplementation(() => ({
             id: '1',
         }))
 
@@ -74,7 +68,7 @@ describe('validation context', () => {
 
     describe('touched fields', () => {
         beforeEach(() => {
-            sandbox.stub(useProduct, 'default').callsFake(() => ({
+            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
                 id: '1',
             }))
         })
@@ -171,7 +165,7 @@ describe('validation context', () => {
 
     describe('status', () => {
         beforeEach(() => {
-            sandbox.stub(useProduct, 'default').callsFake(() => ({
+            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
                 id: '1',
             }))
         })
@@ -341,7 +335,7 @@ describe('validation context', () => {
 
     describe('validate', () => {
         beforeEach(() => {
-            sandbox.stub(useProduct, 'default').callsFake(() => ({
+            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
                 id: '1',
             }))
         })
@@ -768,7 +762,7 @@ describe('validation context', () => {
                     streams: ['2', '3', '4'],
                 },
             }
-            sandbox.stub(useProduct, 'default').callsFake(() => product)
+            jest.spyOn(useProduct, 'default').mockImplementation(() => product)
 
             mount((
                 <ValidationContextProvider>
@@ -794,7 +788,7 @@ describe('validation context', () => {
                 return null
             }
 
-            sandbox.stub(useProduct, 'default').callsFake(() => ({
+            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
                 id: '1',
                 name: 'Name',
                 description: 'Description',
@@ -839,7 +833,7 @@ describe('validation context', () => {
                 return null
             }
 
-            sandbox.stub(useProduct, 'default').callsFake(() => ({
+            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
                 id: '1',
                 name: 'Name',
                 description: 'Description',
@@ -881,7 +875,7 @@ describe('validation context', () => {
                 return null
             }
 
-            sandbox.stub(useProduct, 'default').callsFake(() => ({
+            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
                 id: '1',
                 name: 'Name',
                 description: 'Description',
@@ -926,7 +920,7 @@ describe('validation context', () => {
                 return null
             }
 
-            sandbox.stub(useProduct, 'default').callsFake(() => ({
+            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
                 id: '1',
                 name: 'Name',
                 description: 'Description',

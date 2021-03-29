@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import BN from 'bignumber.js'
 
 import { productStates } from '$shared/utils/constants'
@@ -12,7 +11,7 @@ describe('product utils', () => {
                 isFree: true,
                 pricePerSecond: 0,
             }
-            assert.equal(all.isPaidProduct(product), false)
+            expect(all.isPaidProduct(product)).toBe(false)
         })
 
         it('detects a paid product', () => {
@@ -20,7 +19,7 @@ describe('product utils', () => {
                 isFree: false,
                 pricePerSecond: 1000,
             }
-            assert.equal(all.isPaidProduct(product), true)
+            expect(all.isPaidProduct(product)).toBe(true)
         })
     })
 
@@ -30,122 +29,122 @@ describe('product utils', () => {
                 id: 'text',
                 type: 'DATAUNION',
             }
-            assert.equal(all.isDataUnionProduct(product1), true)
+            expect(all.isDataUnionProduct(product1)).toBe(true)
             const product2 = {
                 id: 'text',
                 type: 'NORMAL',
             }
-            assert.equal(all.isDataUnionProduct(product2), false)
+            expect(all.isDataUnionProduct(product2)).toBe(false)
         })
 
         it('detects data union product from empty object', () => {
-            assert.equal(all.isDataUnionProduct({}), false)
+            expect(all.isDataUnionProduct({})).toBe(false)
         })
 
         it('detects data union product from value', () => {
-            assert.equal(all.isDataUnionProduct('DATAUNION'), true)
-            assert.equal(all.isDataUnionProduct('NORMAL'), false)
+            expect(all.isDataUnionProduct('DATAUNION')).toBe(true)
+            expect(all.isDataUnionProduct('NORMAL')).toBe(false)
         })
 
         it('detects data union product from empty value', () => {
-            assert.equal(all.isDataUnionProduct(''), false)
-            assert.equal(all.isDataUnionProduct(), false)
+            expect(all.isDataUnionProduct('')).toBe(false)
+            expect(all.isDataUnionProduct()).toBe(false)
         })
     })
 
     describe('validateProductPriceCurrency', () => {
         it('detects a valid currency', () => {
-            assert.doesNotThrow(() => all.validateProductPriceCurrency('DATA'))
-            assert.doesNotThrow(() => all.validateProductPriceCurrency('USD'))
+            expect(() => all.validateProductPriceCurrency('DATA')).not.toThrow()
+            expect(() => all.validateProductPriceCurrency('USD')).not.toThrow()
         })
 
         it('detects an invalid currency', () => {
-            assert.throws(() => all.validateProductPriceCurrency(undefined))
-            assert.throws(() => all.validateProductPriceCurrency(null))
-            assert.throws(() => all.validateProductPriceCurrency('ETH'))
-            assert.throws(() => all.validateProductPriceCurrency('ÖDD'))
+            expect(() => all.validateProductPriceCurrency(undefined)).toThrow()
+            expect(() => all.validateProductPriceCurrency(null)).toThrow()
+            expect(() => all.validateProductPriceCurrency('ETH')).toThrow()
+            expect(() => all.validateProductPriceCurrency('ÖDD')).toThrow()
         })
     })
 
     describe('validateApiProductPricePerSecond', () => {
         it('detects a valid PPS', () => {
-            assert.doesNotThrow(() => all.validateApiProductPricePerSecond('0'))
-            assert.doesNotThrow(() => all.validateApiProductPricePerSecond('1'))
-            assert.doesNotThrow(() => all.validateApiProductPricePerSecond('0,00045'))
-            assert.doesNotThrow(() => all.validateApiProductPricePerSecond(BN(0.000001231355)))
+            expect(() => all.validateApiProductPricePerSecond('0')).not.toThrow()
+            expect(() => all.validateApiProductPricePerSecond('1')).not.toThrow()
+            expect(() => all.validateApiProductPricePerSecond('0,00045')).not.toThrow()
+            expect(() => all.validateApiProductPricePerSecond(BN(0.000001231355))).not.toThrow()
         })
 
         it('detects an invalid PPS', () => {
-            assert.throws(() => all.validateApiProductPricePerSecond('-1'))
-            assert.throws(() => all.validateApiProductPricePerSecond(BN(-0.000001231355)))
+            expect(() => all.validateApiProductPricePerSecond('-1')).toThrow()
+            expect(() => all.validateApiProductPricePerSecond(BN(-0.000001231355))).toThrow()
         })
     })
 
     describe('validateContractProductPricePerSecond', () => {
         it('detects a valid PPS', () => {
-            assert.doesNotThrow(() => all.validateContractProductPricePerSecond('1'))
-            assert.doesNotThrow(() => all.validateContractProductPricePerSecond('0,000125'))
-            assert.doesNotThrow(() => all.validateContractProductPricePerSecond(BN(0.000001231355)))
+            expect(() => all.validateContractProductPricePerSecond('1')).not.toThrow()
+            expect(() => all.validateContractProductPricePerSecond('0,000125')).not.toThrow()
+            expect(() => all.validateContractProductPricePerSecond(BN(0.000001231355))).not.toThrow()
         })
 
         it('detects an invalid PPS', () => {
-            assert.throws(() => all.validateContractProductPricePerSecond('0'))
-            assert.throws(() => all.validateContractProductPricePerSecond('-0.0001'))
-            assert.throws(() => all.validateContractProductPricePerSecond(BN(-0.000001231355)))
+            expect(() => all.validateContractProductPricePerSecond('0')).toThrow()
+            expect(() => all.validateContractProductPricePerSecond('-0.0001')).toThrow()
+            expect(() => all.validateContractProductPricePerSecond(BN(-0.000001231355))).toThrow()
         })
     })
 
     describe('mapPriceFromContract', () => {
         it('converts the price', () => {
-            assert.equal(all.mapPriceFromContract('0,0000013314'), 'NaN')
-            assert.equal(all.mapPriceFromContract('asdfasdf'), 'NaN')
-            assert.equal(all.mapPriceFromContract('0'), '0')
-            assert.equal(all.mapPriceFromContract('1000000000000000000'), '1')
-            assert.equal(all.mapPriceFromContract('1'), '1e-18')
-            assert.equal(all.mapPriceFromContract('-1'), '-1e-18')
+            expect(all.mapPriceFromContract('0,0000013314')).toBe('NaN')
+            expect(all.mapPriceFromContract('asdfasdf')).toBe('NaN')
+            expect(all.mapPriceFromContract('0')).toBe('0')
+            expect(all.mapPriceFromContract('1000000000000000000')).toBe('1')
+            expect(all.mapPriceFromContract('1')).toBe('1e-18')
+            expect(all.mapPriceFromContract('-1')).toBe('-1e-18')
         })
     })
 
     describe('mapPriceToContract', () => {
         it('converts the price', () => {
-            assert.equal(all.mapPriceToContract('0,0000013314'), 'NaN')
-            assert.equal(all.mapPriceToContract('asdfasdf'), 'NaN')
-            assert.equal(all.mapPriceToContract('0'), '0')
-            assert.equal(all.mapPriceToContract('1'), '1000000000000000000')
-            assert.equal(all.mapPriceToContract('1e-18'), '1')
-            assert.equal(all.mapPriceToContract('-1e-18'), '-1')
-            assert.equal(all.mapPriceToContract('0.0000000000000000001'), '0')
-            assert.equal(all.mapPriceToContract('0.00000000000000000049'), '0')
-            assert.equal(all.mapPriceToContract('0.00000000000000000051'), '1')
-            assert.equal(all.mapPriceToContract('66666666666666.00000000000123456789'), '66666666666666000000000001234568')
-            assert.equal(all.mapPriceToContract('66666666666666.00000000000123456749'), '66666666666666000000000001234567')
+            expect(all.mapPriceToContract('0,0000013314')).toBe('NaN')
+            expect(all.mapPriceToContract('asdfasdf')).toBe('NaN')
+            expect(all.mapPriceToContract('0')).toBe('0')
+            expect(all.mapPriceToContract('1')).toBe('1000000000000000000')
+            expect(all.mapPriceToContract('1e-18')).toBe('1')
+            expect(all.mapPriceToContract('-1e-18')).toBe('-1')
+            expect(all.mapPriceToContract('0.0000000000000000001')).toBe('0')
+            expect(all.mapPriceToContract('0.00000000000000000049')).toBe('0')
+            expect(all.mapPriceToContract('0.00000000000000000051')).toBe('1')
+            expect(all.mapPriceToContract('66666666666666.00000000000123456789')).toBe('66666666666666000000000001234568')
+            expect(all.mapPriceToContract('66666666666666.00000000000123456749')).toBe('66666666666666000000000001234567')
         })
     })
 
     describe('mapPriceFromApi', () => {
         it('converts the price', () => {
-            assert.equal(all.mapPriceFromApi('0,0000013314'), 'NaN')
-            assert.equal(all.mapPriceFromApi('lorem impsum'), 'NaN')
-            assert.equal(all.mapPriceFromApi('0'), '0')
-            assert.equal(all.mapPriceFromApi('1000000000'), '1')
-            assert.equal(all.mapPriceFromApi('1'), '1e-9')
-            assert.equal(all.mapPriceFromApi('-1'), '-1e-9')
+            expect(all.mapPriceFromApi('0,0000013314')).toBe('NaN')
+            expect(all.mapPriceFromApi('lorem impsum')).toBe('NaN')
+            expect(all.mapPriceFromApi('0')).toBe('0')
+            expect(all.mapPriceFromApi('1000000000')).toBe('1')
+            expect(all.mapPriceFromApi('1')).toBe('1e-9')
+            expect(all.mapPriceFromApi('-1')).toBe('-1e-9')
         })
     })
 
     describe('mapPriceToApi', () => {
         it('converts the price', () => {
-            assert.equal(all.mapPriceToApi('0,0000013314'), 'NaN')
-            assert.equal(all.mapPriceToApi('lorem impsum'), 'NaN')
-            assert.equal(all.mapPriceToApi('0'), '0')
-            assert.equal(all.mapPriceToApi('1'), '1000000000')
-            assert.equal(all.mapPriceToApi('1e-9'), '1')
-            assert.equal(all.mapPriceToApi('-1e-9'), '-1')
-            assert.equal(all.mapPriceToApi('0.0000000001'), '0')
-            assert.equal(all.mapPriceToApi('0.00000000049'), '0')
-            assert.equal(all.mapPriceToApi('0.00000000051'), '1')
-            assert.equal(all.mapPriceToApi('66666666666666.00123456789'), '66666666666666001234568')
-            assert.equal(all.mapPriceToApi('66666666666666.00123456749'), '66666666666666001234567')
+            expect(all.mapPriceToApi('0,0000013314')).toBe('NaN')
+            expect(all.mapPriceToApi('lorem impsum')).toBe('NaN')
+            expect(all.mapPriceToApi('0')).toBe('0')
+            expect(all.mapPriceToApi('1')).toBe('1000000000')
+            expect(all.mapPriceToApi('1e-9')).toBe('1')
+            expect(all.mapPriceToApi('-1e-9')).toBe('-1')
+            expect(all.mapPriceToApi('0.0000000001')).toBe('0')
+            expect(all.mapPriceToApi('0.00000000049')).toBe('0')
+            expect(all.mapPriceToApi('0.00000000051')).toBe('1')
+            expect(all.mapPriceToApi('66666666666666.00123456789')).toBe('66666666666666001234568')
+            expect(all.mapPriceToApi('66666666666666.00123456749')).toBe('66666666666666001234567')
         })
     })
 
@@ -160,7 +159,7 @@ describe('product utils', () => {
                 pricePerSecond: '1',
             }
 
-            assert.deepStrictEqual(all.mapProductFromApi(inProduct), outProduct)
+            expect(all.mapProductFromApi(inProduct)).toStrictEqual(outProduct)
         })
     })
 
@@ -177,7 +176,7 @@ describe('product utils', () => {
                 priceCurrency: 'DATA',
             }
 
-            assert.deepStrictEqual(all.mapProductToPostApi(inProduct), outProduct)
+            expect(all.mapProductToPostApi(inProduct)).toStrictEqual(outProduct)
         })
 
         it('rejects invalid objects', () => {
@@ -187,7 +186,7 @@ describe('product utils', () => {
                 priceCurrency: 'EUR',
             }
 
-            assert.throws(() => all.mapProductToPostApi(inProduct))
+            expect(() => all.mapProductToPostApi(inProduct)).toThrow()
         })
     })
 
@@ -328,7 +327,7 @@ describe('product utils', () => {
                 requiresWhitelist: true,
             }
 
-            assert.deepStrictEqual(all.mapProductFromContract(inProduct.id, inProduct), outProduct)
+            expect(all.mapProductFromContract(inProduct.id, inProduct)).toStrictEqual(outProduct)
         })
     })
 
@@ -337,49 +336,49 @@ describe('product utils', () => {
             const prod1 = {
                 state: 'NOT_DEPLOYED',
             }
-            assert.equal(all.isPublishedProduct(prod1), false)
+            expect(all.isPublishedProduct(prod1)).toBe(false)
 
             const prod2 = {
                 state: 'DEPLOYED',
             }
-            assert.equal(all.isPublishedProduct(prod2), true)
+            expect(all.isPublishedProduct(prod2)).toBe(true)
 
             const prod3 = {
                 state: 'DEPLOYING',
             }
-            assert.equal(all.isPublishedProduct(prod3), false)
+            expect(all.isPublishedProduct(prod3)).toBe(false)
 
             const prod4 = {
                 state: 'UNDEPLOYING',
             }
-            assert.equal(all.isPublishedProduct(prod4), false)
+            expect(all.isPublishedProduct(prod4)).toBe(false)
         })
     })
 
     describe('getValidId', () => {
         describe('when prefix = true or missing', () => {
             it('works with a prefixed id', () => {
-                assert.equal(all.getValidId('0x1234'), '0x1234')
-                assert.equal(all.getValidId('0x1234', true), '0x1234')
+                expect(all.getValidId('0x1234')).toBe('0x1234')
+                expect(all.getValidId('0x1234', true)).toBe('0x1234')
             })
             it('works with an unprefixed id', () => {
-                assert.equal(all.getValidId('1234'), '0x1234')
-                assert.equal(all.getValidId('1234', true), '0x1234')
+                expect(all.getValidId('1234')).toBe('0x1234')
+                expect(all.getValidId('1234', true)).toBe('0x1234')
             })
             it('throws with an invalid id', () => {
-                assert.throws(() => all.getValidId('test'), /is not a valid hex/)
-                assert.throws(() => all.getValidId('test', true), /is not a valid hex/)
+                expect(() => all.getValidId('test')).toThrowError(/is not a valid hex/)
+                expect(() => all.getValidId('test', true)).toThrowError(/is not a valid hex/)
             })
         })
         describe('when prefix = false', () => {
             it('works with a prefixed id', () => {
-                assert.equal(all.getValidId('0x1234', false), '1234')
+                expect(all.getValidId('0x1234', false)).toBe('1234')
             })
             it('works with an unprefixed id', () => {
-                assert.equal(all.getValidId('1234', false), '1234')
+                expect(all.getValidId('1234', false)).toBe('1234')
             })
             it('throws with an invalid id', () => {
-                assert.throws(() => all.getValidId('test', false), /is not a valid hex/)
+                expect(() => all.getValidId('test', false)).toThrowError(/is not a valid hex/)
             })
         })
     })

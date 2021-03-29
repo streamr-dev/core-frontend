@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/transactions/selectors'
@@ -29,15 +28,15 @@ const state = {
 
 describe('transactions - selectors', () => {
     it('selects pending transaction ids', () => {
-        assert.deepStrictEqual(all.selectPendingTransactionIds(state), state.transactions.pending)
+        expect(all.selectPendingTransactionIds(state)).toStrictEqual(state.transactions.pending)
     })
 
     it('selects completed transaction ids', () => {
-        assert.deepStrictEqual(all.selectCompletedTransactionIds(state), state.transactions.completed)
+        expect(all.selectCompletedTransactionIds(state)).toStrictEqual(state.transactions.completed)
     })
 
     it('selects the transaction entity', () => {
         const selector = all.makeSelectTransaction('12345')
-        assert.deepStrictEqual(selector(state), transactions[0])
+        expect(selector(state)).toStrictEqual(transactions[0])
     })
 })

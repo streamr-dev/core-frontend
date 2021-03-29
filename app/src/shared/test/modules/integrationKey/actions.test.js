@@ -1,5 +1,3 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
 import mockStore from '$testUtils/mockStoreProvider'
 
 import * as actions from '$shared/modules/integrationKey/actions'
@@ -9,17 +7,17 @@ import * as entitiesActions from '$shared/modules/entities/actions'
 import { integrationKeyServices } from '$shared/utils/constants'
 
 describe('integrationKey - actions', () => {
-    let sandbox
     let oldStreamrApiUrl
 
     beforeEach(() => {
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
-        sandbox = sinon.createSandbox()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
+        jest.spyOn(services, 'getBalance').mockImplementation(jest.fn())
     })
 
     afterEach(() => {
-        sandbox.restore()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
@@ -35,14 +33,17 @@ describe('integrationKey - actions', () => {
                     address: privateKey,
                 },
             }
-            const serviceStub = sandbox.stub(services, 'createPrivateKey').callsFake(() => Promise.resolve(data))
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+
+            const serviceStub = jest.fn(() => Promise.resolve(data))
+            jest.spyOn(services, 'createPrivateKey').mockImplementation(serviceStub)
+
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(jest.fn(() => ({
                 type: 'updateEntities',
-            }))
+            })))
 
             const store = mockStore()
             await store.dispatch(actions.createIntegrationKey('name', privateKey))
-            assert(serviceStub.calledOnce)
+            expect(serviceStub).toBeCalled()
 
             const expectedActions = [{
                 type: constants.CREATE_INTEGRATION_KEY_REQUEST,
@@ -57,13 +58,13 @@ describe('integrationKey - actions', () => {
                 },
             }]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('creates CREATE_INTEGRATION_KEY_FAILURE when creating private key fails', async () => {
             const privateKey = '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10'
             const error = new Error('error')
-            sandbox.stub(services, 'createPrivateKey').callsFake(() => Promise.reject(error))
+            jest.spyOn(services, 'createPrivateKey').mockImplementation(jest.fn(() => Promise.reject(error)))
             const expectedActions = [{
                 type: constants.CREATE_INTEGRATION_KEY_REQUEST,
             },
@@ -80,10 +81,10 @@ describe('integrationKey - actions', () => {
             try {
                 await store.dispatch(actions.createIntegrationKey('name', privateKey))
             } catch (e) {
-                assert(e === error)
+                expect(e === error).toBe(true)
             }
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -92,17 +93,18 @@ describe('integrationKey - actions', () => {
             try {
                 actions.deleteIntegrationKey()
             } catch (e) {
-                assert(e.message.match(/No id/i))
+                expect(e.message).toMatch(/No id/i)
             }
         })
 
         it('creates DELETE_INTEGRATION_KEY_SUCCESS when deleting an integration key has succeeded', async () => {
             const id = 'testid'
-            const serviceStub = sandbox.stub(services, 'deleteIntegrationKey').callsFake(() => Promise.resolve(null))
+            const serviceStub = jest.fn(() => Promise.resolve(null))
+            jest.spyOn(services, 'deleteIntegrationKey').mockImplementation(serviceStub)
 
             const store = mockStore()
             await store.dispatch(actions.deleteIntegrationKey(id))
-            assert(serviceStub.calledOnce)
+            expect(serviceStub).toBeCalled()
 
             const expectedActions = [{
                 type: constants.DELETE_INTEGRATION_KEY_REQUEST,
@@ -114,12 +116,12 @@ describe('integrationKey - actions', () => {
                 },
             }]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('creates DELETE_INTEGRATION_KEY_FAILURE deleting an integration key fails', async () => {
             const error = new Error('error')
-            sandbox.stub(services, 'deleteIntegrationKey').callsFake(() => Promise.reject(error))
+            jest.spyOn(services, 'deleteIntegrationKey').mockImplementation(jest.fn(() => Promise.reject(error)))
             const expectedActions = [{
                 type: constants.DELETE_INTEGRATION_KEY_REQUEST,
             },
@@ -136,10 +138,10 @@ describe('integrationKey - actions', () => {
             try {
                 await store.dispatch(actions.deleteIntegrationKey('name'))
             } catch (e) {
-                assert(e === error)
+                expect(e === error).toBe(true)
             }
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -154,10 +156,12 @@ describe('integrationKey - actions', () => {
                     address: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 },
             }
-            const serviceStub = sandbox.stub(services, 'createIdentity').callsFake(() => Promise.resolve(data))
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            const serviceStub = jest.fn(() => Promise.resolve(data))
+            jest.spyOn(services, 'createIdentity').mockImplementation(serviceStub)
+
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(jest.fn(() => ({
                 type: 'updateEntities',
-            }))
+            })))
 
             const store = mockStore()
             const params = {
@@ -166,8 +170,8 @@ describe('integrationKey - actions', () => {
                 signChallenge: () => Promise.resolve('signature'),
             }
             await store.dispatch(actions.createIdentity(params))
-            assert(serviceStub.calledOnce)
-            assert(serviceStub.calledWith(params))
+            expect(serviceStub).toBeCalled()
+            expect(serviceStub).toBeCalledWith(params)
 
             const expectedActions = [{
                 type: constants.CREATE_IDENTITY_REQUEST,
@@ -182,12 +186,14 @@ describe('integrationKey - actions', () => {
                 },
             }]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('creates CREATE_IDENTITY_FAILURE creating identity fails', async () => {
             const error = new Error('error')
-            const serviceStub = sandbox.stub(services, 'createIdentity').callsFake(() => Promise.reject(error))
+            const serviceStub = jest.fn(() => Promise.reject(error))
+            jest.spyOn(services, 'createIdentity').mockImplementation(serviceStub)
+
             const expectedActions = [{
                 type: constants.CREATE_IDENTITY_REQUEST,
             },
@@ -210,11 +216,11 @@ describe('integrationKey - actions', () => {
             try {
                 await store.dispatch(actions.createIdentity(params))
             } catch (e) {
-                assert(e === error)
+                expect(e === error).toBe(true)
             }
 
-            assert(serviceStub.calledWith(params))
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(serviceStub).toBeCalledWith(params)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 
@@ -241,14 +247,16 @@ describe('integrationKey - actions', () => {
                 },
             ]
 
-            const serviceStub = sandbox.stub(services, 'getIntegrationKeys').callsFake(() => Promise.resolve(data))
-            sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+            const serviceStub = jest.fn(() => Promise.resolve(data))
+            jest.spyOn(services, 'getIntegrationKeys').mockImplementation(serviceStub)
+
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(jest.fn(() => ({
                 type: 'updateEntities',
-            }))
+            })))
 
             const store = mockStore()
             await store.dispatch(actions.fetchIntegrationKeys())
-            assert(serviceStub.calledOnce)
+            expect(serviceStub).toBeCalled()
 
             const expectedActions = [
                 {
@@ -266,21 +274,22 @@ describe('integrationKey - actions', () => {
                 },
             ]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
 
         it('calls services.getIntegrationKeys and handles error', async () => {
             const error = new Error('error')
-            const serviceStub = sandbox.stub(services, 'getIntegrationKeys').callsFake(() => Promise.reject(error))
+            const serviceStub = jest.fn(() => Promise.reject(error))
+            jest.spyOn(services, 'getIntegrationKeys').mockImplementation(serviceStub)
 
             const store = mockStore()
 
             try {
                 await store.dispatch(actions.fetchIntegrationKeys())
             } catch (e) {
-                assert(e === error)
+                expect(e === error).toBe(true)
             }
-            assert(serviceStub.calledOnce)
+            expect(serviceStub).toBeCalled()
 
             const expectedActions = [
                 {
@@ -296,7 +305,7 @@ describe('integrationKey - actions', () => {
                 },
             ]
 
-            assert.deepStrictEqual(store.getActions(), expectedActions)
+            expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
 })

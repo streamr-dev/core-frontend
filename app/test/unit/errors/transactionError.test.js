@@ -1,17 +1,15 @@
-import assert from 'assert-diff'
-
 import TransactionError from '$shared/errors/TransactionError'
 
 describe('TransactionFailedError', () => {
     it('must extend Error', () => {
         // This is tested because of a bug in babel
-        assert(new TransactionError('moi', 'receipt') instanceof Error)
+        expect(new TransactionError('moi', 'receipt') instanceof Error).toBe(true)
     })
     it('must be instanceof itself', () => {
         // This is tested because of a bug in babel
-        assert(new TransactionError('moi', 'receipt') instanceof TransactionError)
+        expect(new TransactionError('moi', 'receipt') instanceof TransactionError).toBe(true)
     })
     it('must give the receipt on getReceipt', () => {
-        assert.equal(new TransactionError('moi', 'receipt').getReceipt(), 'receipt')
+        expect(new TransactionError('moi', 'receipt').getReceipt()).toBe('receipt')
     })
 })

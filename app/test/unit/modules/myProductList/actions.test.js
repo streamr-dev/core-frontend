@@ -1,9 +1,7 @@
-import assert from 'assert-diff'
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import { normalize } from 'normalizr'
 
-import sinon from 'sinon'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
 import * as constants from '$mp/modules/myProductList/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
@@ -14,14 +12,12 @@ const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 
 describe('myProductList - actions', () => {
-    let sandbox
-
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('getMyProducts', () => {
@@ -42,7 +38,7 @@ describe('myProductList - actions', () => {
             ]
             const { result, entities } = normalize(products, productsSchema)
 
-            sandbox.stub(services, 'getMyProducts').callsFake(() => Promise.resolve(products))
+            jest.spyOn(services, 'getMyProducts').mockImplementation(() => Promise.resolve(products))
 
             const store = mockStore({
                 myProductList: {
@@ -70,7 +66,7 @@ describe('myProductList - actions', () => {
                 },
             ]
             const resultActions = store.getActions()
-            assert.deepStrictEqual(resultActions, expectedActions)
+            expect(resultActions).toStrictEqual(expectedActions)
         })
     })
 })

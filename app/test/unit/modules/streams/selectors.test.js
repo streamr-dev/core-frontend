@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import { normalize } from 'normalizr'
 
 import * as all from '$mp/modules/streams/selectors'
@@ -48,18 +47,18 @@ const state = {
 
 describe('streams - selectors', () => {
     it('selects stream ids', () => {
-        assert.deepStrictEqual(all.selectStreamIds(state), state.streams.ids)
+        expect(all.selectStreamIds(state)).toStrictEqual(state.streams.ids)
     })
 
     it('selects streams', () => {
-        assert.deepStrictEqual(all.selectStreams(state), streams)
+        expect(all.selectStreams(state)).toStrictEqual(streams)
     })
 
     it('selects fetching status for streams', () => {
-        assert.deepStrictEqual(all.selectFetchingStreams(state), false)
+        expect(all.selectFetchingStreams(state)).toStrictEqual(false)
     })
 
     it('selects error', () => {
-        assert.deepStrictEqual(all.selectStreamsError(state), null)
+        expect(all.selectStreamsError(state)).toStrictEqual(null)
     })
 })

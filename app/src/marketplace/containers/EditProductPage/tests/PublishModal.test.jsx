@@ -1,7 +1,6 @@
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { mount } from 'enzyme'
-import sinon from 'sinon'
 import BN from 'bignumber.js'
 
 import * as productServices from '$mp/modules/product/services'
@@ -26,26 +25,21 @@ jest.mock('$shared/components/Dialog', () => ({
 }))
 
 describe('Publish modal', () => {
-    let sandbox
-
-    beforeEach(() => {
-        sandbox = sinon.createSandbox()
-    })
-
     afterEach(() => {
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('Error states', () => {
         it('shows an error if product fetching fails', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
             }))
 
             const error = new Error('product fetch failed')
-            sandbox.stub(productServices, 'getProductById').callsFake(() => {
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => {
                 throw error
             })
 
@@ -67,7 +61,7 @@ describe('Publish modal', () => {
         })
 
         it('renders null if product is being loaded', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
@@ -82,16 +76,16 @@ describe('Publish modal', () => {
             }
 
             let productResolver
-            sandbox.stub(productServices, 'getProductById').callsFake(() => new Promise((resolve) => {
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => new Promise((resolve) => {
                 productResolver = resolve
             }))
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -119,7 +113,7 @@ describe('Publish modal', () => {
         })
 
         it('shows a loading screen if web3 is required and wallet is being checked', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: true,
                 account: null,
@@ -133,14 +127,14 @@ describe('Publish modal', () => {
                 priceCurrency: 'DATA',
             }
 
-            sandbox.stub(productServices, 'getProductById').callsFake(() => Promise.resolve(product))
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -163,7 +157,7 @@ describe('Publish modal', () => {
 
         it('shows an error screen if web3 is required and wallet is locked', async () => {
             const error = new Error('walletLocked')
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: error,
                 checkingWeb3: false,
                 account: null,
@@ -177,14 +171,14 @@ describe('Publish modal', () => {
                 priceCurrency: 'DATA',
             }
 
-            sandbox.stub(productServices, 'getProductById').callsFake(() => Promise.resolve(product))
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -209,7 +203,7 @@ describe('Publish modal', () => {
 
     describe('Publish', () => {
         it('shows the confirm screen', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
@@ -220,16 +214,16 @@ describe('Publish modal', () => {
             }
 
             let resolveProduct
-            sandbox.stub(productServices, 'getProductById').callsFake(() => new Promise((resolve) => {
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => new Promise((resolve) => {
                 resolveProduct = resolve
             }))
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -257,7 +251,7 @@ describe('Publish modal', () => {
         })
 
         it('shows the confirm screen if a specific owner is required and correct account is selected', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -272,7 +266,7 @@ describe('Publish modal', () => {
                 priceCurrency: 'EUR',
             }
 
-            sandbox.stub(productServices, 'getProductById').callsFake(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
             const contractProduct = {
                 id: '1',
                 pricePerSecond: BN(1),
@@ -281,11 +275,11 @@ describe('Publish modal', () => {
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
             }
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -306,7 +300,7 @@ describe('Publish modal', () => {
         })
 
         it('asks to unlock the wallet if a specific owner is required (no account available)', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
@@ -321,7 +315,7 @@ describe('Publish modal', () => {
                 priceCurrency: 'EUR',
             }
 
-            sandbox.stub(productServices, 'getProductById').callsFake(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
             const contractProduct = {
                 id: '1',
                 pricePerSecond: BN(1),
@@ -330,11 +324,11 @@ describe('Publish modal', () => {
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
             }
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -356,7 +350,7 @@ describe('Publish modal', () => {
         })
 
         it('asks to unlock the wallet if a specific owner is required (wrong account selected)', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
@@ -371,7 +365,7 @@ describe('Publish modal', () => {
                 priceCurrency: 'EUR',
             }
 
-            sandbox.stub(productServices, 'getProductById').callsFake(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
             const contractProduct = {
                 id: '1',
                 pricePerSecond: BN(1),
@@ -380,11 +374,11 @@ describe('Publish modal', () => {
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
             }
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -408,7 +402,7 @@ describe('Publish modal', () => {
 
     describe('Unpublish', () => {
         it('shows the confirm screen', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
@@ -419,16 +413,16 @@ describe('Publish modal', () => {
             }
 
             let resolveProduct
-            sandbox.stub(productServices, 'getProductById').callsFake(() => new Promise((resolve) => {
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => new Promise((resolve) => {
                 resolveProduct = resolve
             }))
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -456,7 +450,7 @@ describe('Publish modal', () => {
         })
 
         it('shows the confirm screen if owner is required and correct account is selected', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -471,7 +465,7 @@ describe('Publish modal', () => {
                 priceCurrency: 'EUR',
             }
 
-            sandbox.stub(productServices, 'getProductById').callsFake(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
             const contractProduct = {
                 id: '1',
                 state: 'DEPLOYED',
@@ -480,11 +474,11 @@ describe('Publish modal', () => {
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
             }
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -505,7 +499,7 @@ describe('Publish modal', () => {
         })
 
         it('asks to unlock the wallet if a specific owner is required (no account selected)', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: undefined,
@@ -520,16 +514,16 @@ describe('Publish modal', () => {
                 priceCurrency: 'EUR',
             }
 
-            sandbox.stub(productServices, 'getProductById').callsFake(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
             const contractProduct = {
                 id: '1',
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
             }
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 
@@ -551,7 +545,7 @@ describe('Publish modal', () => {
         })
 
         it('asks to unlock the wallet if a specific owner is required (wrong account selected)', async () => {
-            sandbox.stub(useWeb3Status, 'default').callsFake(() => ({
+            jest.spyOn(useWeb3Status, 'default').mockImplementation(() => ({
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
@@ -566,16 +560,16 @@ describe('Publish modal', () => {
                 priceCurrency: 'EUR',
             }
 
-            sandbox.stub(productServices, 'getProductById').callsFake(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
             const contractProduct = {
                 id: '1',
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
             }
-            sandbox.stub(contractProductServices, 'getProductFromContract').callsFake(() => Promise.resolve(contractProduct))
-            sandbox.stub(dataUnionServices, 'getAdminFee').callsFake(() => {
+            jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
+            jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
             })
-            sandbox.stub(dataUnionServices, 'getDataUnionOwner').callsFake(() => {
+            jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
             })
 

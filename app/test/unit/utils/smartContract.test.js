@@ -1,6 +1,4 @@
 import EventEmitter from 'events'
-import assert from 'assert-diff'
-import sinon from 'sinon'
 
 import * as getWeb3 from '$shared/web3/web3Provider'
 import * as getConfig from '$shared/web3/config'
@@ -27,78 +25,76 @@ const PromiEvent = () => {
 }
 
 describe('smartContract utils', () => {
-    let sandbox
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
-        sandbox.reset()
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     describe('hexEqualsZero', () => {
         it('must return true when 0 with 0x prefix', () => {
-            assert(all.hexEqualsZero('0x0000000000000000000000000000000'))
+            expect(all.hexEqualsZero('0x0000000000000000000000000000000')).toBe(true)
         })
         it('must return true when 0 without 0x prefix', () => {
-            assert(all.hexEqualsZero('000000000000000000000000000000000'))
+            expect(all.hexEqualsZero('000000000000000000000000000000000')).toBe(true)
         })
         it('must return false when other than 0 with 0x prefix', () => {
-            assert(!all.hexEqualsZero('0x3123123123123123123123123123123123'))
-            assert(!all.hexEqualsZero('0x0000000000000000000000000000000002'))
+            expect(!all.hexEqualsZero('0x3123123123123123123123123123123123')).toBe(true)
+            expect(!all.hexEqualsZero('0x0000000000000000000000000000000002')).toBe(true)
         })
         it('must return false when other than 0 without 0x prefix', () => {
-            assert(!all.hexEqualsZero('3123123123123123123123123123123123'))
-            assert(!all.hexEqualsZero('0000000000000000000000000000000002'))
+            expect(!all.hexEqualsZero('3123123123123123123123123123123123')).toBe(true)
+            expect(!all.hexEqualsZero('0000000000000000000000000000000002')).toBe(true)
         })
         it('must return false with invalid strings', () => {
-            assert(!all.hexEqualsZero('0x'))
-            assert(!all.hexEqualsZero(''))
-            assert(!all.hexEqualsZero(undefined))
-            assert(!all.hexEqualsZero(null))
-            assert(!all.hexEqualsZero(8))
+            expect(!all.hexEqualsZero('0x')).toBe(true)
+            expect(!all.hexEqualsZero('')).toBe(true)
+            expect(!all.hexEqualsZero(undefined)).toBe(true)
+            expect(!all.hexEqualsZero(null)).toBe(true)
+            expect(!all.hexEqualsZero(8)).toBe(true)
         })
     })
 
     describe('getPrefixedHexString', () => {
         it('prefixes unprefixed hex string', () => {
-            assert.equal(all.getPrefixedHexString('1234'), '0x1234')
+            expect(all.getPrefixedHexString('1234')).toBe('0x1234')
         })
         it('keeps prefixed string as is', () => {
-            assert.equal(all.getPrefixedHexString('0x1234'), '0x1234')
+            expect(all.getPrefixedHexString('0x1234')).toBe('0x1234')
         })
     })
 
     describe('getUnprefixedHexString', () => {
         it('deprefixes prefixed hex string', () => {
-            assert.equal(all.getUnprefixedHexString('0x1234'), '1234')
+            expect(all.getUnprefixedHexString('0x1234')).toBe('1234')
         })
         it('keeps unprefixed string as is', () => {
-            assert.equal(all.getUnprefixedHexString('1234'), '1234')
+            expect(all.getUnprefixedHexString('1234')).toBe('1234')
         })
     })
 
     describe('isValidHexString', () => {
         it('detects a valid hex string ', () => {
-            assert.equal(all.isValidHexString('12345'), true)
-            assert.equal(all.isValidHexString('deadbeef'), true)
-            assert.equal(all.isValidHexString('0x12345'), true)
-            assert.equal(all.isValidHexString('0xcafebabe'), true)
+            expect(all.isValidHexString('12345')).toBe(true)
+            expect(all.isValidHexString('deadbeef')).toBe(true)
+            expect(all.isValidHexString('0x12345')).toBe(true)
+            expect(all.isValidHexString('0xcafebabe')).toBe(true)
         })
 
         it('detects an invalid hex string', () => {
-            assert.equal(all.isValidHexString(undefined), false)
-            assert.equal(all.isValidHexString(null), false)
-            assert.equal(all.isValidHexString(3), false)
-            assert.equal(all.isValidHexString('öööö'), false)
-            assert.equal(all.isValidHexString('0xöööö'), false)
+            expect(all.isValidHexString(undefined)).toBe(false)
+            expect(all.isValidHexString(null)).toBe(false)
+            expect(all.isValidHexString(3)).toBe(false)
+            expect(all.isValidHexString('öööö')).toBe(false)
+            expect(all.isValidHexString('0xöööö')).toBe(false)
         })
 
         it('detects an invalid hex string with a zero-width space', () => {
             // IMPORTANT: The ids in the next lines contain zero-width spaces. Don't remove and retype without adding them there again
-            assert.equal(all.isValidHexString('0x1234​'), false)
-            assert.equal(all.isValidHexString('1234​'), false)
+            expect(all.isValidHexString('0x1234​')).toBe(false)
+            expect(all.isValidHexString('1234​')).toBe(false)
         })
     })
 
@@ -109,31 +105,27 @@ describe('smartContract utils', () => {
 
             class Test {}
 
-            const contractSpy = sandbox.spy(Test)
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 eth: {
-                    Contract: contractSpy,
+                    Contract: Test,
                 },
             }))
             const contract = all.getContract({
                 address: contractAddress,
                 abi,
             })
-            assert(contract instanceof Test)
-            assert(contractSpy.calledOnce)
-            assert(contractSpy.calledWithNew())
-            assert(contractSpy.calledWith(abi, contractAddress))
+            expect(contract).toBeInstanceOf(Test)
         })
     })
 
     describe('call', () => {
         it('must return the right thing', () => {
-            const stub = sandbox.stub().callsFake(() => 'test')
+            const stub = jest.fn(() => 'test')
             const method = {
                 call: stub,
             }
             const callResult = all.call(method)
-            assert.equal('test', callResult)
+            expect('test').toBe(callResult)
         })
     })
 
@@ -142,13 +134,13 @@ describe('smartContract utils', () => {
         let networkStub
 
         beforeEach(() => {
-            accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
-            networkStub = sandbox.stub().callsFake(() => Promise.resolve(1))
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            accountStub = jest.fn(() => Promise.resolve('testAccount'))
+            networkStub = jest.fn(() => Promise.resolve(1))
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: accountStub,
                 getEthereumNetwork: networkStub,
             }))
-            sandbox.stub(getConfig, 'default').callsFake(() => ({
+            jest.spyOn(getConfig, 'default').mockImplementation(() => ({
                 networkId: 1,
             }))
         })
@@ -163,14 +155,14 @@ describe('smartContract utils', () => {
                 send: () => fakeEmitter,
                 estimateGas: () => Promise.resolve(0),
             }
-            assert(all.send(method) instanceof Transaction)
+            expect(all.send(method)).toBeInstanceOf(Transaction)
         })
 
         it('must ask for the default address and send the transaction with it', (done) => {
             const fakeEmitter = PromiEvent()
             all.send({
                 send: ({ from }) => {
-                    done(assert.equal('testAccount', from))
+                    done(expect(from).toBe('testAccount'))
                     return fakeEmitter
                 },
                 estimateGas: () => Promise.resolve(0),
@@ -178,7 +170,7 @@ describe('smartContract utils', () => {
         })
 
         it('must fail if checkEthereumNetworkIsCorrect fails', (done) => {
-            networkStub = sandbox.stub().callsFake(() => Promise.resolve(2))
+            networkStub = jest.fn(() => Promise.resolve(2))
             const fakeEmitter = {
                 on: () => fakeEmitter,
                 off: () => fakeEmitter,
@@ -188,7 +180,7 @@ describe('smartContract utils', () => {
                 estimateGas: () => Promise.resolve(0),
             })
                 .onError((e) => {
-                    assert.equal('Please switch to the Mainnet network in your Ethereum wallet. It\'s currently #2.', e.message)
+                    expect(e.message).toBe('Please switch to the Mainnet network in your Ethereum wallet. It\'s currently #2.')
                     done()
                 })
         })
@@ -204,7 +196,7 @@ describe('smartContract utils', () => {
 
                 all.send(method)
                     .onError((e) => {
-                        assert.equal('test', e)
+                        expect(e).toBe('test')
                         done()
                     })
 
@@ -223,9 +215,9 @@ describe('smartContract utils', () => {
                 }
                 all.send(method)
                     .onError((e) => {
-                        assert(e instanceof TransactionError)
-                        assert.equal('test', e.message)
-                        assert.equal(receipt, e.getReceipt())
+                        expect(e).toBeInstanceOf(TransactionError)
+                        expect(e.message).toBe('test')
+                        expect(e.getReceipt()).toBe(receipt)
                         done()
                     })
 
@@ -245,7 +237,7 @@ describe('smartContract utils', () => {
                 }
                 all.send(method)
                     .onTransactionHash((hash) => {
-                        assert.equal('test', hash)
+                        expect(hash).toBe('test')
                         done()
                     })
 
@@ -268,7 +260,7 @@ describe('smartContract utils', () => {
                 }
                 all.send(method)
                     .onTransactionComplete((receipt2) => {
-                        assert.equal(receipt.test, receipt2.test)
+                        expect(receipt2.test).toBe(receipt.test)
                         done()
                     })
 
@@ -288,12 +280,12 @@ describe('smartContract utils', () => {
                 }
                 all.send(method)
                     .onTransactionComplete(() => {
-                        assert(false)
+                        expect(false).toBe(true)
                     })
                     .onError((e) => {
-                        assert(e instanceof TransactionError)
-                        assert.equal('Transaction failed', e.message)
-                        assert.equal(receipt, e.getReceipt())
+                        expect(e).toBeInstanceOf(TransactionError)
+                        expect(e.message).toBe('Transaction failed')
+                        expect(e.getReceipt()).toBe(receipt)
                         done()
                     })
 
@@ -308,7 +300,7 @@ describe('smartContract utils', () => {
                 const emitter = PromiEvent()
                 const method = {
                     send: (options) => {
-                        assert.equal(options.gas, 123321)
+                        expect(options.gas).toBe(123321)
                         done()
                         return emitter
                     },
@@ -339,21 +331,21 @@ describe('smartContract utils', () => {
                     ...editProduct,
                     beneficiaryAddress: 'test2',
                 }
-                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+                expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
             })
             it('it must return true if product is paid and pricePerSecond has been changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     pricePerSecond: 2000,
                 }
-                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+                expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
             })
             it('it must return true if product is paid and currency has been changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     priceCurrency: 'USD',
                 }
-                assert.equal(all.isUpdateContractProductRequired(contractProduct, editProductUpdated), true)
+                expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
             })
         })
     })

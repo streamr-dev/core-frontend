@@ -1,11 +1,9 @@
-import assert from 'assert-diff'
-
 import reducer, { initialState } from '$mp/modules/relatedProducts/reducer'
 import * as constants from '$mp/modules/relatedProducts/constants'
 
 describe('relatedProducts - reducers', () => {
     it('has initial state', async () => {
-        assert.deepStrictEqual(reducer(undefined, {}), initialState)
+        expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
     it('handles request', () => {
@@ -15,10 +13,10 @@ describe('relatedProducts - reducers', () => {
             error: null,
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.GET_RELATED_PRODUCTS_REQUEST,
             payload: {},
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('handles success', () => {
@@ -28,12 +26,12 @@ describe('relatedProducts - reducers', () => {
             error: null,
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.GET_RELATED_PRODUCTS_SUCCESS,
             payload: {
                 products: [1, 2],
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 
     it('handles failure', () => {
@@ -45,11 +43,11 @@ describe('relatedProducts - reducers', () => {
             error,
         }
 
-        assert.deepStrictEqual(reducer(undefined, {
+        expect(reducer(undefined, {
             type: constants.GET_RELATED_PRODUCTS_FAILURE,
             payload: {
                 error,
             },
-        }), expectedState)
+        })).toStrictEqual(expectedState)
     })
 })

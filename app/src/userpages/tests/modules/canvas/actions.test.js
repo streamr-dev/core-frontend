@@ -1,7 +1,6 @@
 import configureMockStore from 'redux-mock-store'
 import thunk from 'redux-thunk'
 import moxios from 'moxios'
-import sinon from 'sinon'
 
 import * as entitiesActions from '$shared/modules/entities/actions'
 import * as actions from '../../../modules/canvas/actions'
@@ -11,24 +10,23 @@ const mockStore = configureMockStore(middlewares)
 
 describe('Canvas actions', () => {
     let store
-    let sandbox
 
     beforeEach(() => {
         moxios.install()
         store = mockStore({
             canvas: {},
         })
-        sandbox = sinon.createSandbox()
     })
 
     afterEach(() => {
         moxios.uninstall()
         store.clearActions()
-        sandbox.restore()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
     })
 
     it('creates GET_CANVASES_SUCCESS when fetching running canvases has succeeded', async () => {
-        sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+        jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
             type: 'updateEntities',
         }))
 
@@ -104,7 +102,7 @@ describe('Canvas actions', () => {
     })
 
     it('Updates the filter', async () => {
-        sandbox.stub(entitiesActions, 'updateEntities').callsFake(() => ({
+        jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
             type: 'updateEntities',
         }))
 

@@ -1,4 +1,3 @@
-import assert from 'assert-diff'
 import moxios from 'moxios'
 
 import * as services from '$mp/modules/productList/services'
@@ -67,10 +66,10 @@ describe('productList - services', () => {
             })
             const expectedUrl = `${process.env.STREAMR_API_URL}\
 /products?categories&grantedAccess=false&max=${productListPageSize + 1}&maxPrice&offset=0&publicAccess=true&search=&sortBy`
-            assert.equal(request.config.method, 'get')
-            assert.equal(request.config.url, `${expectedUrl}`)
+            expect(request.config.method).toBe('get')
+            expect(request.config.url).toBe(`${expectedUrl}`)
         })
         const result = await services.getProducts(filter, productListPageSize, 0)
-        assert.deepStrictEqual(result, expectedResult)
+        expect(result).toStrictEqual(expectedResult)
     })
 })

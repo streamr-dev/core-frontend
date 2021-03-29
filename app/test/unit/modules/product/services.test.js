@@ -1,8 +1,7 @@
-import assert from 'assert-diff'
-import sinon from 'sinon'
 import moxios from 'moxios'
 import { cloneDeep } from 'lodash'
 import moment from 'moment'
+import BN from 'bignumber.js'
 
 import * as all from '$mp/modules/product/services'
 import * as utils from '$mp/utils/smartContract'
@@ -17,12 +16,10 @@ const mockFile = new File(['test'], 'test.jpg', {
 const ONE_DAY = '86400'
 
 describe('product - services', () => {
-    let sandbox
     let oldStreamrApiUrl
     let oldDaiTokenAddress
 
     beforeEach(() => {
-        sandbox = sinon.createSandbox()
         moxios.install()
         oldStreamrApiUrl = process.env.STREAMR_API_URL
         process.env.STREAMR_API_URL = ''
@@ -31,8 +28,9 @@ describe('product - services', () => {
     })
 
     afterEach(() => {
-        sandbox.restore()
         moxios.uninstall()
+        jest.clearAllMocks()
+        jest.restoreAllMocks()
         process.env.STREAMR_API_URL = oldStreamrApiUrl
         process.env.DAI_TOKEN_CONTRACT_ADDRESS = oldDaiTokenAddress
     })
@@ -46,7 +44,7 @@ describe('product - services', () => {
                 pricePerSecond: '0',
             }
 
-            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
+            const getIdSpy = jest.spyOn(productUtils, 'getValidId')
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -54,14 +52,14 @@ describe('product - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/123`)
+                expect(request.config.method).toBe('get')
+                expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/123`)
             })
 
             const result = await all.getProductById('123')
-            assert.deepStrictEqual(result, data)
-            assert(getIdSpy.calledOnce)
-            assert(getIdSpy.calledWith('123', false))
+            expect(result).toStrictEqual(data)
+            expect(getIdSpy).toHaveBeenCalledTimes(1)
+            expect(getIdSpy).toBeCalledWith('123', false)
         })
     })
 
@@ -79,7 +77,7 @@ describe('product - services', () => {
                 },
             ]
 
-            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
+            const getIdSpy = jest.spyOn(productUtils, 'getValidId')
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -87,70 +85,72 @@ describe('product - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'get')
-                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/123/streams`)
+                expect(request.config.method).toBe('get')
+                expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/123/streams`)
             })
 
             const result = await all.getStreamsByProductId('123')
-            assert.deepStrictEqual(result, data)
-            assert(getIdSpy.calledOnce)
-            assert(getIdSpy.calledWith('123', false))
+            expect(result).toStrictEqual(data)
+            expect(getIdSpy).toHaveBeenCalledTimes(1)
+            expect(getIdSpy).toBeCalledWith('123', false)
         })
     })
 
     describe('getMyProductSubscription', () => {
         it('works as intended', async () => {
-            const accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            const accountStub = jest.fn(() => Promise.resolve('testAccount'))
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: accountStub,
             }))
-            const getProductStub = sandbox.stub().callsFake(() => ({
+            const getProductStub = jest.fn(() => ({
                 call: () => Promise.resolve({
                     status: '0x1',
                     pricePerSecond: '0',
                 }),
             }))
-            const getSubscriptionStub = sandbox.stub().callsFake(() => ({
+            const getSubscriptionStub = jest.fn(() => ({
                 call: () => Promise.resolve({
                     endTimestamp: '0',
                 }),
             }))
-            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const getContractStub = jest.fn(() => ({
                 methods: {
                     getProduct: getProductStub,
                     getSubscription: getSubscriptionStub,
                 },
             }))
+            jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
             const result = await all.getMyProductSubscription('1234abcdef')
-            assert.deepStrictEqual({
+            expect(result).toStrictEqual({
                 productId: '1234abcdef',
                 endTimestamp: 0,
-            }, result)
-            assert(getProductStub.calledOnce)
-            assert(getSubscriptionStub.calledOnce)
-            assert(getContractStub.calledTwice)
-            assert(getProductStub.calledWith('0x1234abcdef'))
-            assert(getSubscriptionStub.calledWith('0x1234abcdef', 'testAccount'))
+            })
+            expect(getProductStub).toHaveBeenCalledTimes(1)
+            expect(getSubscriptionStub).toHaveBeenCalledTimes(1)
+            expect(getContractStub).toHaveBeenCalledTimes(2)
+            expect(getProductStub).toBeCalledWith('0x1234abcdef')
+            expect(getSubscriptionStub).toBeCalledWith('0x1234abcdef', 'testAccount')
         })
 
         it('throws an error if no product was found', async (done) => {
-            const accountStub = sandbox.stub().callsFake(() => Promise.resolve('testAccount'))
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            const accountStub = jest.fn(() => Promise.resolve('testAccount'))
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: accountStub,
             }))
-            const getProductStub = sandbox.stub().callsFake(() => Promise.resolve({
+            const getProductStub = jest.fn(() => ({
                 call: () => Promise.resolve({
                     owner: '0x000',
                 }),
             }))
-            sandbox.stub(utils, 'getContract').callsFake(() => Promise.resolve({
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     getProduct: getProductStub,
                 },
             }))
             try {
-                await all.getProductFromContract('1234abcdef')
+                await all.getMyProductSubscription('1234abcdef')
             } catch (e) {
+                expect(e.message).toMatch(/No product found/)
                 done()
             }
         })
@@ -169,11 +169,11 @@ describe('product - services', () => {
                 response: data,
             })
 
-            assert.equal(request.config.method, 'put')
-            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${data.id}`)
+            expect(request.config.method).toBe('put')
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/${data.id}`)
         })
         const result = await all.putProduct(data, data.id)
-        assert.deepStrictEqual(result, expectedResult)
+        expect(result).toStrictEqual(expectedResult)
     })
 
     it('posts product', async () => {
@@ -189,11 +189,11 @@ describe('product - services', () => {
                 response: data,
             })
 
-            assert.equal(request.config.method, 'post')
-            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products`)
+            expect(request.config.method).toBe('post')
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products`)
         })
         const result = await all.postProduct(data)
-        assert.deepStrictEqual(result, expectedResult)
+        expect(result).toStrictEqual(expectedResult)
     })
 
     it('posts image', async () => {
@@ -209,11 +209,11 @@ describe('product - services', () => {
                 response: data,
             })
 
-            assert.equal(request.config.method, 'post')
-            assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${data.id}/images`)
+            expect(request.config.method).toBe('post')
+            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/${data.id}/images`)
         })
         const result = await all.postImage(data.id, mockFile)
-        assert.deepStrictEqual(result, expectedResult)
+        expect(result).toStrictEqual(expectedResult)
     })
 
     describe('postUndeployFree', () => {
@@ -232,12 +232,12 @@ describe('product - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/undeployFree`)
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/${productId}/undeployFree`)
             })
 
             const result = await all.postUndeployFree(productId)
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -258,15 +258,15 @@ describe('product - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/setUndeploying`)
-                assert.equal(request.config.data, JSON.stringify({
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/${productId}/setUndeploying`)
+                expect(request.config.data).toBe(JSON.stringify({
                     transactionHash: txHash,
                 }))
             })
 
             const result = await all.postSetUndeploying(productId, txHash)
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -286,12 +286,12 @@ describe('product - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/deployFree`)
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/${productId}/deployFree`)
             })
 
             const result = await all.postDeployFree(productId)
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -312,15 +312,15 @@ describe('product - services', () => {
                     response: data,
                 })
 
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, `${process.env.STREAMR_API_URL}/products/${productId}/setDeploying`)
-                assert.equal(request.config.data, JSON.stringify({
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/${productId}/setDeploying`)
+                expect(request.config.data).toBe(JSON.stringify({
                     transactionHash: txHash,
                 }))
             })
 
             const result = await all.postSetDeploying(productId, txHash)
-            assert.deepStrictEqual(result, data)
+            expect(result).toStrictEqual(data)
         })
     })
 
@@ -329,89 +329,89 @@ describe('product - services', () => {
             const productId = '1'
             const endsAt = moment().add(1, 'year').unix()
 
-            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
+            const getIdSpy = jest.spyOn(productUtils, 'getValidId')
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
                     status: 200,
                     response: null,
                 })
-                assert.equal(request.config.method, 'post')
-                assert.equal(request.config.url, '/subscriptions')
-                assert.equal(request.config.data, JSON.stringify({
+                expect(request.config.method).toBe('post')
+                expect(request.config.url).toBe('/subscriptions')
+                expect(request.config.data).toBe(JSON.stringify({
                     product: productId,
                     endsAt,
                 }))
             })
 
             const result = await all.addFreeProduct(productId, endsAt)
-            assert.deepStrictEqual(result, null)
-            assert(getIdSpy.calledOnce)
-            assert(getIdSpy.calledWith(productId, false))
+            expect(result).toBe(null)
+            expect(getIdSpy).toHaveBeenCalledTimes(1)
+            expect(getIdSpy).toBeCalledWith(productId, false)
         })
     })
 
     describe('buyProduct', () => {
         it('must call marketplaceContractMethods.buy when bying with DATA', () => {
-            const buyStub = sinon.stub().callsFake(() => ({
+            const buyStub = jest.fn(() => ({
                 send: () => 'test',
             }))
 
-            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const getIdSpy = jest.spyOn(productUtils, 'getValidId')
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buy: buyStub,
                 },
             }))
             all.buyProduct('1234', '1000', 'DATA', '4321')
-            assert(buyStub.calledOnce)
-            assert(buyStub.calledWith('0x1234', '1000'))
-            assert(getIdSpy.calledOnce)
-            assert(getIdSpy.calledWith('1234'))
+            expect(buyStub).toHaveBeenCalledTimes(1)
+            expect(buyStub).toBeCalledWith('0x1234', '1000')
+            expect(getIdSpy).toHaveBeenCalledTimes(1)
+            expect(getIdSpy).toBeCalledWith('1234')
         })
         it('must call marketplaceContractMethods.buy when bying with ETH', () => {
-            const buyStub = sinon.stub().callsFake(() => ({
+            const buyStub = jest.fn(() => ({
                 send: () => 'test',
             }))
 
-            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const getIdSpy = jest.spyOn(productUtils, 'getValidId')
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buyWithETH: buyStub,
                 },
             }))
             all.buyProduct('1234', '1000', 'ETH', '4321')
-            assert(buyStub.calledOnce)
-            assert(buyStub.calledWith('0x1234', '1000', ONE_DAY))
-            assert(getIdSpy.calledOnce)
-            assert(getIdSpy.calledWith('1234'))
+            expect(buyStub).toHaveBeenCalledTimes(1)
+            expect(buyStub).toBeCalledWith('0x1234', '1000', ONE_DAY)
+            expect(getIdSpy).toHaveBeenCalledTimes(1)
+            expect(getIdSpy).toBeCalledWith('1234')
         })
         it('must call marketplaceContractMethods.buy when bying with DAI', () => {
-            const buyStub = sinon.stub().callsFake(() => ({
+            const buyStub = jest.fn(() => ({
                 send: () => 'test',
             }))
 
-            const getIdSpy = sandbox.spy(productUtils, 'getValidId')
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            const getIdSpy = jest.spyOn(productUtils, 'getValidId')
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buyWithERC20: buyStub,
                 },
             }))
             all.buyProduct('1234', '1000', 'DAI', '4321')
-            assert(buyStub.calledOnce)
-            assert(buyStub.calledWith('0x1234', '1000', ONE_DAY, process.env.DAI_TOKEN_CONTRACT_ADDRESS, '4321000000000000000000'))
-            assert(getIdSpy.calledOnce)
-            assert(getIdSpy.calledWith('1234'))
+            expect(buyStub).toHaveBeenCalledTimes(1)
+            expect(buyStub).toBeCalledWith('0x1234', '1000', ONE_DAY, process.env.DAI_TOKEN_CONTRACT_ADDRESS, '4321000000000000000000')
+            expect(getIdSpy).toHaveBeenCalledTimes(1)
+            expect(getIdSpy).toBeCalledWith('1234')
         })
         it('must call send with correct object when bying with DATA', (done) => {
-            sandbox.stub(utils, 'send').callsFake((a) => {
-                assert.equal('test', a)
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
+                expect(a).toBe('test')
                 done()
             })
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buy: () => 'test',
                 },
@@ -419,11 +419,11 @@ describe('product - services', () => {
             all.buyProduct('1234', 1000, 'DATA', '4321')
         })
         it('must call send with correct object when bying with ETH', (done) => {
-            sandbox.stub(utils, 'send').callsFake((a) => {
-                assert.equal('test', a)
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
+                expect(a).toBe('test')
                 done()
             })
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buyWithETH: () => 'test',
                 },
@@ -431,11 +431,11 @@ describe('product - services', () => {
             all.buyProduct('1234', 1000, 'ETH', '4321')
         })
         it('must call send with correct object when bying with DAI', (done) => {
-            sandbox.stub(utils, 'send').callsFake((a) => {
-                assert.equal('test', a)
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
+                expect(a).toBe('test')
                 done()
             })
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buyWithERC20: () => 'test',
                 },
@@ -443,46 +443,46 @@ describe('product - services', () => {
             all.buyProduct('1234', 1000, 'DAI', '4321')
         })
         it('must return the result of send when bying with DATA', () => {
-            sandbox.stub(utils, 'send').callsFake(() => 'test')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation(() => 'test')
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buy: () => {
                     },
                 },
             }))
-            assert.equal('test', all.buyProduct('1234', 1000, 'DATA', '4321'))
+            expect(all.buyProduct('1234', 1000, 'DATA', '4321')).toBe('test')
         })
         it('must return the result of send when bying with ETH', () => {
-            sandbox.stub(utils, 'send').callsFake(() => 'test')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation(() => 'test')
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buyWithETH: () => {
                     },
                 },
             }))
-            assert.equal('test', all.buyProduct('1234', 1000, 'ETH', '4321'))
+            expect(all.buyProduct('1234', 1000, 'ETH', '4321')).toBe('test')
         })
         it('must return the result of send when bying with DAI', () => {
-            sandbox.stub(utils, 'send').callsFake(() => 'test')
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation(() => 'test')
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buyWithERC20: () => {
                     },
                 },
             }))
-            assert.equal('test', all.buyProduct('1234', 1000, 'DAI', '4321'))
+            expect(all.buyProduct('1234', 1000, 'DAI', '4321')).toBe('test')
         })
     })
 
     describe('getMyDataAllowance', () => {
         it('must call the correct method', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
-            const allowanceStub = sandbox.stub().callsFake(() => ({
+            const allowanceStub = jest.fn(() => ({
                 call: () => Promise.resolve('1000'),
             }))
-            const getContractStub = sandbox.stub(utils, 'getContract').callsFake(({ abi }) => {
+            const getContractStub = jest.fn(({ abi }) => {
                 if (abi.find((f) => f.name === 'allowance')) {
                     return {
                         methods: {
@@ -496,20 +496,21 @@ describe('product - services', () => {
                     },
                 }
             })
+            jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
             await all.getMyDataAllowance()
-            assert(allowanceStub.calledOnce)
-            assert(getContractStub.calledTwice)
-            assert.equal('testAccount', allowanceStub.getCall(0).args[0])
-            assert.equal('marketplaceAddress', allowanceStub.getCall(0).args[1])
+            expect(allowanceStub).toHaveBeenCalledTimes(1)
+            expect(getContractStub).toHaveBeenCalledTimes(2)
+            expect(allowanceStub.mock.calls[0][0]).toBe('testAccount')
+            expect(allowanceStub.mock.calls[0][1]).toBe('marketplaceAddress')
         })
         it('must transform the result from wei to tokens', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
-            const allowanceStub = sandbox.stub().callsFake(() => ({
+            const allowanceStub = jest.fn(() => ({
                 call: () => Promise.resolve(('276000000000000000000').toString()),
             }))
-            sandbox.stub(utils, 'getContract').callsFake(({ abi }) => {
+            jest.spyOn(utils, 'getContract').mockImplementation(({ abi }) => {
                 if (abi.find((f) => f.name === 'allowance')) {
                     return {
                         methods: {
@@ -524,20 +525,20 @@ describe('product - services', () => {
                 }
             })
             const result = await all.getMyDataAllowance()
-            assert.equal(276, result)
+            expect(result).toStrictEqual(BN(276))
         })
     })
 
     describe('setMyDataAllowance', () => {
         it('must call the correct method', async () => {
-            const approveStub = sinon.stub().callsFake(() => ({
+            const approveStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(() => ({
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     approve: approveStub,
                 },
@@ -546,29 +547,29 @@ describe('product - services', () => {
                 },
             }))
             await all.setMyDataAllowance(100)
-            assert(approveStub.calledOnce)
-            assert(approveStub.calledWith('marketplaceAddress', '100000000000000000000'))
+            expect(approveStub).toHaveBeenCalledTimes(1)
+            expect(approveStub).toBeCalledWith('marketplaceAddress', '100000000000000000000')
         })
         it('must not approve negative values', (done) => {
             try {
                 all.setMyDataAllowance(-100)
             } catch (e) {
-                assert.equal('Amount must be non-negative!', e.message)
+                expect(e.message).toBe('Amount must be non-negative!')
                 done()
             }
         })
         it('must return the result of send', async () => {
-            sandbox.stub(getWeb3, 'default').callsFake(() => ({
+            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
-            const approveStub = sinon.stub().callsFake(() => ({
+            const approveStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            const balanceStub = sandbox.stub().callsFake(() => ({
+            const balanceStub = jest.fn(() => ({
                 call: () => Promise.resolve('100000000000000000000'), // 100
             }))
-            sandbox.stub(utils, 'send').callsFake((method) => method.send())
-            sandbox.stub(utils, 'getContract').callsFake(({ abi }) => {
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
+            jest.spyOn(utils, 'getContract').mockImplementation(({ abi }) => {
                 if (abi.find((f) => f.name === 'approve')) {
                     return {
                         methods: {
@@ -584,7 +585,7 @@ describe('product - services', () => {
                 }
             })
             const result = await all.setMyDataAllowance(100)
-            assert.equal(result, 'test')
+            expect(result).toBe('test')
         })
     })
 })
