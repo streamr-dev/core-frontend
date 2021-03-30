@@ -64,6 +64,8 @@ const doGetProducts = (replace: ?boolean = false, dispatch: Function, getState: 
                 }
                 dispatch(updateEntities(entities))
                 dispatch(getProductsSuccess(result, data.hasMoreProducts))
+
+                return result
             },
             (error) => {
                 dispatch(getProductsFailure(error))
@@ -71,15 +73,29 @@ const doGetProducts = (replace: ?boolean = false, dispatch: Function, getState: 
         )
 }
 
+type GetProducts = {
+    replace?: boolean,
+    onSuccess?: Function,
+    onError?: Function,
+}
+
 // We need to define the debounced fetch here so that we have only one reference to it
 // https://gist.github.com/krstffr/245fe83885b597aabaf06348220c2fe9
-const doGetProductsDebounced = debounce(doGetProducts, 500)
+const doGetProductsDebounced = debounce((
+    { replace, onSuccess, onError }: GetProducts,
+    dispatch: Function,
+    getState: () => StoreState,
+) => (
+    doGetProducts(replace, dispatch, getState)
+        .then(onSuccess)
+        .catch(onError)
+), 500)
 
 // Use a debounced fetch because this action is dispatched when the user is typing
 // (we cannot use here `getProductsDebounced = () => debounce(...)` because that would
 // return a new instance every time `getProductsDebounced` is called).
 
-export const getProductsDebounced = (replace: ?boolean) => doGetProductsDebounced.bind(null, replace)
+export const getProductsDebounced = (options: GetProducts) => doGetProductsDebounced.bind(null, options)
 export const getProducts = (replace: ?boolean) => doGetProducts.bind(null, replace)
 
 export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (filter: Filter) => ({
