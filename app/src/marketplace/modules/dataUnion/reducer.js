@@ -98,22 +98,28 @@ const reducer: (DataUnionState) => DataUnionState = handleActions({
                 action.payload.id,
             ]),
         ]
+        const requested = new Set(state.requested)
+        requested.delete(action.payload.id)
         const fetchingStats = new Set(state.fetchingStats)
         fetchingStats.delete(action.payload.id)
 
         return {
             ...state,
             ready: [...ready],
+            requested: [...requested],
             fetchingStats: [...fetchingStats],
         }
     },
 
     [GET_DATA_UNION_STATS_FAILURE]: (state: DataUnionState, action: DataUnionIdAction) => {
+        const requested = new Set(state.requested)
+        requested.delete(action.payload.id)
         const fetchingStats = new Set(state.fetchingStats)
         fetchingStats.delete(action.payload.id)
 
         return {
             ...state,
+            requested: [...requested],
             fetchingStats: [...fetchingStats],
         }
     },
