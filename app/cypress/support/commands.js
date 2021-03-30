@@ -109,17 +109,6 @@ Cypress.Commands.add('addToStorageNode', (streamId) => {
         .then((stream) => stream.addToStorageNode(DEV_STORAGE_NODE_ADDRESS))
 })
 
-Cypress.Commands.add('enableStorageNode', (streamId, address) => (
-    cy
-        .authenticatedRequest({
-            url: `http://localhost/api/v1/streams/${encodeURIComponent(streamId)}/storageNodes`,
-            method: 'POST',
-            body: {
-                address,
-            },
-        })
-))
-
 Cypress.Commands.add('getStream', (id) => {
     cy
         .authenticatedRequest({

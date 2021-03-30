@@ -571,7 +571,7 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
-                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+                cy.addToStorageNode(streamId)
                 cy.createStreamPermission(streamId, 'tester two', 'stream_get')
                 cy.logout()
                 cy.login('tester two')
@@ -732,7 +732,7 @@ describe('Stream edit page', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
-                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+                cy.addToStorageNode(streamId)
 
                 cy.server()
 
@@ -770,7 +770,7 @@ describe('Stream edit page', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
-                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+                cy.addToStorageNode(streamId)
 
                 cy.server()
 
