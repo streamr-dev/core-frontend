@@ -30,6 +30,7 @@ import {
     selectFetchingProductList,
     selectHasMoreSearchResults,
 } from '$mp/modules/productList/selectors'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import styles from './products.pcss'
 
@@ -41,41 +42,62 @@ const Products = () => {
     const isFetching = useSelector(selectFetchingProductList)
     const hasMoreSearchResults = useSelector(selectHasMoreSearchResults)
     const dispatch = useDispatch()
+    const isMounted = useIsMounted()
     const productsRef = useRef()
     productsRef.current = products
 
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
     const loadCategories = useCallback(() => dispatch(getCategories(false)), [dispatch])
-    const { load: loadDataUnions, members } = useAllDataUnionStats()
+    const { load: loadDataUnionStats, members, reset: resetStats } = useAllDataUnionStats()
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 
     const onFilterChange = useCallback((filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(getProducts(true))
-    }, [dispatch])
+            .then((productIds) => {
+                if (isMounted()) {
+                    loadDataUnionStats(productIds)
+                }
+            })
+    }, [dispatch, isMounted, loadDataUnionStats])
 
     const onSearchChange = useCallback((search: SearchFilter) => {
         dispatch(updateFilter({
             search,
         }))
-        dispatch(getProductsDebounced(true))
-    }, [dispatch])
+        dispatch(getProductsDebounced({
+            replace: true,
+            onSuccess: (productIds) => {
+                if (isMounted()) {
+                    loadDataUnionStats(productIds)
+                }
+            },
+        }))
+    }, [dispatch, isMounted, loadDataUnionStats])
 
     const clearFiltersAndReloadProducts = useCallback(() => {
         dispatch(clearFilters())
         dispatch(getProducts(true))
-    }, [dispatch])
+            .then((productIds) => {
+                if (isMounted()) {
+                    loadDataUnionStats(productIds)
+                }
+            })
+    }, [dispatch, isMounted, loadDataUnionStats])
 
     useEffect(() => {
         loadCategories()
-        loadDataUnions()
 
         if (productsRef.current && productsRef.current.length === 0) {
             clearFiltersAndReloadProducts()
         }
-    }, [loadDataUnions, loadCategories, clearFiltersAndReloadProducts])
+    }, [loadCategories, clearFiltersAndReloadProducts])
+
+    useEffect(() => () => {
+        resetStats()
+    }, [resetStats])
 
     return (
         <Layout
