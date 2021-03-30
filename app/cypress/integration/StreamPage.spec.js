@@ -65,6 +65,7 @@ describe('Stream listing page', () => {
         it('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                cy.addToStorageNode(streamId)
                 cy.sendToStream(streamId, {
                     key: 'value',
                 })
@@ -85,6 +86,7 @@ describe('Stream listing page', () => {
         it('renders active color after a refresh and new data in the meantime', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                cy.addToStorageNode(streamId)
                 cy.visit('/core/streams')
                 cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
                     cy.get('[data-test-hook="Last message at"]').should('be.empty')
@@ -688,6 +690,7 @@ describe('Stream edit page', () => {
         it('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                cy.addToStorageNode(streamId)
                 const encodedId = encodeURIComponent(streamId)
                 cy.sendToStream(streamId, {
                     key: 'value',

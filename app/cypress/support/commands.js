@@ -90,6 +90,25 @@ Cypress.Commands.add('createStream', ({ domain: customDomain, stream } = {
         ))
 ))
 
+Cypress.Commands.add('addToStorageNode', (streamId) => {
+    // add the stream to DEV storage node ("broker-node-storage-1" on streamr-docker-dev environment)
+    const DEV_STORAGE_NODE_ADDRESS = '0xde1112f631486CfC759A50196853011528bC5FA0'
+    const DEV_STORAGE_NODE_URL = 'http://10.200.10.1:8891'
+    const config = getClientConfig({
+        url: 'ws://localhost/api/v1/ws',
+        restUrl: 'http://localhost/api/v1',
+        storageNode: {
+            address: DEV_STORAGE_NODE_ADDRESS,
+            url: DEV_STORAGE_NODE_URL,
+        },
+        autoConnect: false,
+    })
+    const client = new StreamrClient(config)
+    return client
+        .getStream(streamId)
+        .then((stream) => stream.addToStorageNode(DEV_STORAGE_NODE_ADDRESS))
+})
+
 Cypress.Commands.add('enableStorageNode', (streamId, address) => (
     cy
         .authenticatedRequest({
