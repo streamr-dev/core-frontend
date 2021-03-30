@@ -1,8 +1,7 @@
 // @flow
 
 import React from 'react'
-import { Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
-import { ConnectedRouter } from 'connected-react-router'
+import { Router, Route as RouterRoute, Switch, Redirect } from 'react-router-dom'
 
 import '$shared/assets/stylesheets'
 import '@ibm/plex/css/ibm-plex.css'
@@ -81,7 +80,7 @@ const MiscRouter = () => ([
 ])
 
 const App = () => (
-    <ConnectedRouter history={history}>
+    <Router history={history}>
         <SessionProvider>
             <ModalPortalProvider>
                 <ModalProvider>
@@ -101,7 +100,7 @@ const App = () => (
                 </ModalProvider>
             </ModalPortalProvider>
         </SessionProvider>
-    </ConnectedRouter>
+    </Router>
 )
 
 export default App

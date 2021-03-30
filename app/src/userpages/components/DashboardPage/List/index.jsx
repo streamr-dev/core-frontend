@@ -2,8 +2,7 @@
 
 import React, { Fragment, useState, useMemo, useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { push } from 'connected-react-router'
+import { useHistory, Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -132,6 +131,7 @@ const DashboardList = () => {
 
     const sidebar = useSidebar()
     const dispatch = useDispatch()
+    const history = useHistory()
 
     useEffect(() => {
         dispatch(getDashboards(filter))
@@ -207,7 +207,7 @@ const DashboardList = () => {
         permissions[id].includes('dashboard_delete')
     ), [fetchingPermissions, permissions])
 
-    const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
+    const navigate = useCallback((to) => history.push(to), [history])
 
     const getActions = useCallback((dashboard) => {
         const hasDeletePermission = canBeDeletedByCurrentUser(dashboard.id)

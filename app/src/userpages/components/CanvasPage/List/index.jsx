@@ -2,8 +2,7 @@
 
 import React, { Fragment, useEffect, useMemo, useCallback, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link as RouterLink } from 'react-router-dom'
-import { push } from 'connected-react-router'
+import { useHistory, Link as RouterLink } from 'react-router-dom'
 import styled from 'styled-components'
 
 import type { Canvas, CanvasId } from '$userpages/flowtype/canvas-types'
@@ -127,6 +126,7 @@ const CanvasList = () => {
     } = useFilterSort(sortOptions)
 
     const dispatch = useDispatch()
+    const history = useHistory()
     const { copy } = useCopy()
     const canvases = useSelector(selectCanvases)
     const fetching = useSelector(selectFetching)
@@ -209,7 +209,7 @@ const CanvasList = () => {
         permissions[id].includes('canvas_delete')
     ), [fetchingPermissions, permissions])
 
-    const navigate = useCallback((to) => dispatch(push(to)), [dispatch])
+    const navigate = useCallback((to) => history.push(to), [history])
 
     const getActions = useCallback((canvas) => {
         const hasDeletePermission = canBeDeletedByCurrentUser(canvas.id)

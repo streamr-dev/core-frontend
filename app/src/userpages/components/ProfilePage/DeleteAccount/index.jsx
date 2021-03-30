@@ -3,6 +3,7 @@
 import React, { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
+import { useHistory } from 'react-router-dom'
 
 import Button from '$shared/components/Button'
 import useModal from '$shared/hooks/useModal'
@@ -12,6 +13,7 @@ import { logout } from '$shared/modules/user/actions'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { MD, LG } from '$shared/utils/styled'
+import routes from '$routes'
 import Description from '../Description'
 import DeleteAccountDialog from './DeleteAccountDialog'
 
@@ -30,6 +32,7 @@ const DeleteAccount = () => {
     const { wrap, isPending: isDeleteDialogPending } = usePending('user.DELETE_ACCOUNT_DIALOG')
     const { isPending: isSavePending } = usePending('user.SAVE')
     const dispatch = useDispatch()
+    const history = useHistory()
     const isMounted = useIsMounted()
 
     const deleteAccount = useCallback(async () => (
@@ -50,12 +53,13 @@ const DeleteAccount = () => {
                     setTimeout(() => {
                         if (isMounted()) {
                             dispatch(logout())
+                            history.push(routes.root())
                         }
                     }, 500)
                 }
             }
         })
-    ), [wrap, deleteAccountDialog, isMounted, dispatch])
+    ), [wrap, deleteAccountDialog, isMounted, dispatch, history])
 
     return (
         <div>

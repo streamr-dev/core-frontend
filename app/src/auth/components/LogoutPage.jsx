@@ -1,6 +1,8 @@
 // @flow
 
 import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+
 import { post } from '$shared/utils/api'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/hooks/useOnMount'
@@ -14,6 +16,7 @@ const LogoutPage = () => {
     const fail = useFailure()
 
     const dispatch = useDispatch()
+    const history = useHistory()
 
     useOnMount(async () => {
         try {
@@ -22,6 +25,7 @@ const LogoutPage = () => {
             })
             if (isMounted()) {
                 dispatch(logoutAction())
+                history.push(routes.root())
             }
         } catch (e) {
             fail(e)

@@ -8,6 +8,16 @@ jest.mock('react-redux', () => ({
     connect: jest.fn().mockImplementation(() => (action) => action),
 }))
 
+jest.mock('react-router-dom', () => ({
+    useHistory: jest.fn().mockImplementation(() => ({
+        push: jest.fn(),
+        replace: jest.fn(),
+    })),
+    useLocation: jest.fn().mockImplementation(() => ({
+        pathname: undefined,
+    })),
+}))
+
 jest.mock('$shared/modules/integrationKey/hooks/usePrivateKeys', () => (
     jest.fn().mockImplementation(() => ({
         fetching: false,

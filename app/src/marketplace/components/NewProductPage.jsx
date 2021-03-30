@@ -1,11 +1,9 @@
 // @flow
 
 import React, { useEffect } from 'react'
-import { type Location } from 'react-router-dom'
+import { useHistory, type Location } from 'react-router-dom'
 import styled from 'styled-components'
 import qs from 'query-string'
-import { useDispatch } from 'react-redux'
-import { replace } from 'connected-react-router'
 import { postEmptyProduct } from '$mp/modules/product/services'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { type ProductType } from '$mp/flowtype/product-types'
@@ -25,7 +23,7 @@ const sanitizedType = (type: ?string): ProductType => (
 )
 
 const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
-    const dispatch = useDispatch()
+    const history = useHistory()
 
     const isMounted = useIsMounted()
 
@@ -37,10 +35,10 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
         postEmptyProduct(sanitizedType(type))
             .then(({ id }) => {
                 if (isMounted()) {
-                    dispatch(replace(routes.products.edit({
+                    history.replace(routes.products.edit({
                         id,
                         newProduct: true,
-                    })))
+                    }))
                     Activity.push({
                         action: actionTypes.CREATE,
                         resourceId: id,
@@ -48,7 +46,7 @@ const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
                     })
                 }
             }, fail)
-    }, [dispatch, isMounted, search, fail])
+    }, [isMounted, search, fail, history])
 
     return (
         <LoadingIndicator className={className} loading />
