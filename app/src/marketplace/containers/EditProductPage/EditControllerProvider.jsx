@@ -230,6 +230,12 @@ function useEditController(product: Product) {
         const { beneficiaryAddress } = productRef.current
         if ((!address || isEthereumAddress(address)) && (!beneficiaryAddress || !areAddressesEqual(beneficiaryAddress, address))) {
             updateBeneficiaryAddress(address, false)
+
+            // save the new address immediately to db
+            await putProduct(State.update(productRef.current, () => ({
+                ...productRef.current,
+                beneficiaryAddress: address,
+            })), productRef.current.id || '')
         }
     }, [updateBeneficiaryAddress])
 

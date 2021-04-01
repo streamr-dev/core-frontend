@@ -129,7 +129,9 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 
     // Update beneficiary address to product as soon as it changes
     useEffect(() => {
-        updateAddress(address)
+        if (!!address && isEthereumAddress(address)) {
+            updateAddress(address)
+        }
     }, [address, updateAddress])
 
     if (!checkingWeb3 && web3Error) {

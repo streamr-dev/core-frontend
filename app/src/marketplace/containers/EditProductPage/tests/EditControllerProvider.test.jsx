@@ -1240,7 +1240,7 @@ describe('EditControllerProvider', () => {
 
             expect(currentContext.publishAttempted).toBe(true)
             expect(modalOpenStub).toHaveBeenCalledTimes(1)
-            expect(putProductStub).toHaveBeenCalledTimes(2)
+            expect(putProductStub).toHaveBeenCalledTimes(3)
             expect(putProductStub).toBeCalledWith(expectedProduct, product.id)
             expect(putProductStub).toBeCalledWith({
                 ...expectedProduct,
