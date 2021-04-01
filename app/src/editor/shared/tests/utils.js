@@ -1,4 +1,4 @@
-import keythereum from 'keythereum'
+import Wallet from 'ethereumjs-wallet'
 import StreamrClient from 'streamr-client'
 import { setToken } from '$shared/utils/sessionToken'
 import * as Services from '../services'
@@ -8,8 +8,8 @@ import * as Services from '../services'
  */
 
 function createNewUserClient() {
-    const generatedKey = keythereum.create()
-    const privateKey = `0x${generatedKey.privateKey.toString('hex')}`
+    const generatedWallet = Wallet.generate()
+    const privateKey = generatedWallet.getPrivateKeyString()
 
     const client = new StreamrClient({
         auth: {
