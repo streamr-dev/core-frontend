@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { replace } from 'connected-react-router'
+import { useHistory } from 'react-router-dom'
 import moment from 'moment'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
@@ -59,6 +59,7 @@ const getWhitelistStatus = async ({ productId, validate = false }: WhitelistStat
 
 const Hero = () => {
     const dispatch = useDispatch()
+    const history = useHistory()
     const product = useProduct()
     const { api: purchaseDialog } = useModal('purchase')
     const { isPending, wrap } = usePending('product.PURCHASE_DIALOG')
@@ -109,7 +110,7 @@ const Hero = () => {
 
                     if (isMounted() && !!started && !!succeeded) {
                         if (viewInCore) {
-                            dispatch(replace(routes.subscriptions()))
+                            history.replace(routes.subscriptions())
                         } else {
                             dispatch(getProductSubscription(productId))
                         }
@@ -132,15 +133,16 @@ const Hero = () => {
                     dispatch(getMyPurchases())
                 }
             } else {
-                dispatch(replace(routes.auth.login({
+                history.replace(routes.auth.login({
                     redirect: routes.marketplace.product({
                         id: productId,
                     }),
-                })))
+                }))
             }
         })
     ), [productId,
         dispatch,
+        history,
         isLoggedIn,
         purchaseDialog,
         isPaid,

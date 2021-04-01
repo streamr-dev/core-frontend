@@ -2,7 +2,6 @@
 
 import thunk from 'redux-thunk'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
-import { connectRouter, routerMiddleware } from 'connected-react-router'
 
 import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
@@ -20,10 +19,9 @@ import relatedProductsReducer from './marketplace/modules/relatedProducts/reduce
 import transactionsReducer from './marketplace/modules/transactions/reducer'
 import userpagesReducers from './userpages/reducers'
 
-import history from './history'
 import analytics from './analytics'
 
-const middleware = [thunk, routerMiddleware(history), ...analytics.getMiddlewares()]
+const middleware = [thunk, ...analytics.getMiddlewares()]
 const toBeComposed = [applyMiddleware(...middleware)]
 
 /* eslint-disable no-underscore-dangle */
@@ -44,7 +42,6 @@ export function initStore() {
             myPurchaseList: myPurchasesReducer,
             product: productReducer,
             productList: productsReducer,
-            router: connectRouter(history),
             streams: streamsReducer,
             user: userReducer,
             integrationKey: integrationKeyReducer,

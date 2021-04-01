@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { push } from 'connected-react-router'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
 import { deleteOrRemoveStream } from '$userpages/modules/userPageStreams/actions'
@@ -46,6 +45,7 @@ export const CreateStreamButton = () => (
 
 const Row = ({ stream, onShareClick: onShareClickProp }) => {
     const dispatch = useDispatch()
+    const history = useHistory()
     const { copy } = useCopy()
     const fetchingPermissions = useSelector(selectFetchingPermissions)
     const permissions = useSelector(selectStreamPermissions)
@@ -114,10 +114,10 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
     }, [snippetDialog, stream.id])
 
     const showStream = useCallback(() => (
-        dispatch(push(routes.streams.show({
+        history.push(routes.streams.show({
             id: stream.id,
-        })))
-    ), [dispatch, stream.id])
+        }))
+    ), [history, stream.id])
 
     const onCopyId = useCallback(() => {
         copy(stream.id)

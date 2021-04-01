@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Context, type Node, useState, useCallback, useMemo, useEffect } from 'react'
-import { withRouter, type History } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 
@@ -77,14 +77,17 @@ function useModalContext(path: string): ContextProps {
 
 type Props = {
     children?: Node,
-    history: History,
 }
 
-const ModalContextProvider = withRouter(({ children, history }: Props) => (
-    <ModalContext.Provider value={useModalContext(history.location.pathname)}>
-        {children || null}
-    </ModalContext.Provider>
-))
+const ModalContextProvider = ({ children }: Props) => {
+    const { pathname } = useLocation()
+
+    return (
+        <ModalContext.Provider value={useModalContext(pathname)}>
+            {children || null}
+        </ModalContext.Provider>
+    )
+}
 
 export {
     ModalContextProvider as Provider,
