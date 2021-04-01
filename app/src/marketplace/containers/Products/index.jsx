@@ -92,8 +92,11 @@ const Products = () => {
 
         if (productsRef.current && productsRef.current.length === 0) {
             clearFiltersAndReloadProducts()
+        } else if (productsRef.current && productsRef.current.length > 0) {
+            // just reload DU stats if product list was cached
+            loadDataUnionStats(productsRef.current.map(({ id }) => id))
         }
-    }, [loadCategories, clearFiltersAndReloadProducts])
+    }, [loadCategories, clearFiltersAndReloadProducts, loadDataUnionStats])
 
     useEffect(() => () => {
         resetStats()
