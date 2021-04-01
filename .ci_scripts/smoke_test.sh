@@ -2,19 +2,17 @@
 
 set -e
 
+## Get Streamr Docker dev
+git clone --depth 1 https://github.com/streamr-dev/streamr-docker-dev.git "$GITHUB_WORKSPACE/streamr-docker-dev"
+
 ## Script for preparing smoke test
 sudo ifconfig docker0 10.200.10.1/24
 
-## Get Streamr Docker dev
-if [ ! -d "$TRAVIS_BUILD_DIR/streamr-docker-dev" ]; then
-    git clone https://github.com/streamr-dev/streamr-docker-dev.git "$TRAVIS_BUILD_DIR/streamr-docker-dev"
-fi
-
 ## Switch out image for local one
-sed -i "s#$OWNER/$IMAGE_NAME:dev#$OWNER/$IMAGE_NAME:local#g" "$TRAVIS_BUILD_DIR/streamr-docker-dev/docker-compose.override.yml"
+sed -i "s#$OWNER/$IMAGE_NAME:dev#$OWNER/$IMAGE_NAME:local#g" "$GITHUB_WORKSPACE/streamr-docker-dev/docker-compose.yml"
 
 ## Start up services needed
-"$TRAVIS_BUILD_DIR/streamr-docker-dev/streamr-docker-dev/bin.sh" start --wait
+"$GITHUB_WORKSPACE/streamr-docker-dev/streamr-docker-dev/bin.sh" start --wait
 
 ## Wait for the service to come online and test
 wait_time=10;
