@@ -598,7 +598,7 @@ async function* getMembers(address: string): any {
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for (const join of joins) {
         const memberAddress = join.returnValues.member
-        const dataUnion = await client.getDataUnion(address)
+        const dataUnion = client.getDataUnion(address)
         const memberData = await dataUnion.getMemberStats(memberAddress)
         yield {
             ...memberData,
@@ -646,6 +646,15 @@ export async function* getAllMembers(id: DataUnionId): any {
     } else if (version === 2) {
         yield* getMembers(id)
     }
+}
+
+export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) => {
+    const client = createClient()
+    const dataUnion = client.getDataUnion(id)
+    console.log('Removing members', id, memberAddresses)
+    const receipt = await dataUnion.removeMembers(memberAddresses)
+    console.log('Removed')
+    return receipt
 }
 
 type GetSecrets = {

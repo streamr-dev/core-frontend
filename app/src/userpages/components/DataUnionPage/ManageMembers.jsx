@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
 import { MEDIUM } from '$shared/utils/styled'
-import { getAllMembers } from '$mp/modules/dataUnion/services'
+import { getAllMembers, removeMembers } from '$mp/modules/dataUnion/services'
 import { truncate } from '$shared/utils/text'
 import { fromAtto } from '$mp/utils/math'
 import Text from '$ui/Text'
@@ -63,7 +63,8 @@ const TableRow = styled(TableGrid)`
     line-height: 56px;
     color: #525252;
 
-    &:not(:last-child) {
+    &:not(:last-child),
+    &:only-child {
         border-bottom: 1px solid #EFEFEF;
     }
 `
@@ -186,7 +187,7 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                                     <span>{fromAtto(member.totalEarnings).toFixed(3)}</span>
                                     <span>{fromAtto(member.withdrawableEarnings).toFixed(3)}</span>
                                     <Status status={member.status} />
-                                    <RemoveButton>Remove</RemoveButton>
+                                    <RemoveButton onClick={async () => removeMembers(dataUnionId, [member.address])}>Remove</RemoveButton>
                                 </React.Fragment>
                             ) : (
                                 <React.Fragment>

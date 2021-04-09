@@ -55,7 +55,8 @@ const TableRow = styled(TableGrid)`
     line-height: 56px;
     color: #525252;
 
-    &:not(:last-child) {
+    &:not(:last-child),
+    &:only-child {
         border-bottom: 1px solid #EFEFEF;
     }
 `
