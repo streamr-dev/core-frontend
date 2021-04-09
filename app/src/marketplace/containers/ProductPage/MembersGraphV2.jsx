@@ -48,7 +48,7 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
             y: memberCount,
         }]
 
-        // Because we cannot read the whole joinPartStream, we have to
+        // Because we cannot read every event from blockchain, we have to
         // work backwards from the initial state and calculate graph points
         // using the member count diff.
         const data = memberData.reduce((acc, element) => {

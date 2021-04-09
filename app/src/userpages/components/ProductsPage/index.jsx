@@ -58,7 +58,7 @@ const ProductsPage = () => {
         setSort,
         resetFilter,
     } = useFilterSort(sortOptions)
-    const allProducts = useSelector(selectMyProductList)
+    const products = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
     const {
@@ -70,18 +70,19 @@ const ProductsPage = () => {
     } = useAllDataUnionStats()
 
     useEffect(() => {
-        dispatch(getMyProducts(filter))
+        // Modify filter to include only normal products
+        const finalFilter = {
+            ...filter,
+            // key: 'type',
+            // value: 'normal',
+        }
+        dispatch(getMyProducts(finalFilter))
             .then(loadDataUnionStats)
     }, [dispatch, filter, loadDataUnionStats])
 
     useEffect(() => () => {
         resetStats()
     }, [resetStats])
-
-    const products = useMemo(() => (
-        // allProducts.filter((p) => !isDataUnionProduct(p))
-        allProducts
-    ), [allProducts])
 
     return (
         <Layout

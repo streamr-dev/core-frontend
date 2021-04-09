@@ -1,7 +1,8 @@
 // @flow
 
 import React from 'react'
-import { Translate, I18n } from 'react-redux-i18n'
+
+import type { Filter } from '$userpages/flowtype/common-types'
 
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
@@ -10,7 +11,6 @@ import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import docsLinks from '$shared/../docsLinks'
-import type { Filter } from '$userpages/flowtype/common-types'
 
 type NoResultsViewProps = {
     onResetFilter: Function,
@@ -20,18 +20,20 @@ type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
 
-const NoDataUnionsView = () => (
+const NoCreatedDataUnionsView = () => (
     <EmptyState
         image={(
             <img
                 src={emptyStateIcon}
                 srcSet={`${emptyStateIcon2x} 2x`}
-                alt={I18n.t('error.notFound')}
+                alt="Not found"
             />
         )}
     >
-        <Translate value="userpages.dataunions.noCreatedDataUnions.title" />
-        <Translate value="userpages.dataunions.noCreatedDataUnions.message" tag="small" dangerousHTML link={docsLinks.dataUnions} />
+        You haven&apos;t created any Data Unions
+        <small>
+            Learn how to create one in the <a href={docsLinks.dataUnions}>Docs</a>
+        </small>
     </EmptyState>
 )
 
@@ -41,7 +43,7 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
             <img
                 src={noResultIcon}
                 srcSet={`${noResultemptyStateIcon2x} 2x`}
-                alt={I18n.t('error.notFound')}
+                alt="Not found"
             />
         )}
         link={(
@@ -49,23 +51,27 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
                 kind="special"
                 onClick={onResetFilter}
             >
-                <Translate value="userpages.dataunions.noDataUnionResult.clearFilters" />
+                Clear filters
             </Button>
         )}
     >
-        <Translate value="userpages.dataunions.noDataUnionResult.title" />
-        <Translate value="userpages.dataunions.noDataUnionResult.message" tag="small" />
+        <p>
+            <span>No results.</span>
+            <small>
+                We couldn&apos;t find any data unions that match your search.
+            </small>
+        </p>
     </EmptyState>
 )
 
-const NoDashboardsView = ({ hasFilter, ...rest }: Props) => {
+const NoDataUnionsView = ({ hasFilter, ...rest }: Props) => {
     if (hasFilter) {
         return (
             <NoResultsView {...rest} />
         )
     }
 
-    return <NoDataUnionsView />
+    return <NoCreatedDataUnionsView />
 }
 
-export default NoDashboardsView
+export default NoDataUnionsView

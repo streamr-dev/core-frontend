@@ -65,7 +65,7 @@ const Header = ({
                             Products
                         </Tab>
                         <Tab to={routes.dataunions.index()}>
-                            <Translate value="general.dataUnions" />
+                            Data Unions
                         </Tab>
                         <Tab to={routes.subscriptions()}>
                             Subscriptions

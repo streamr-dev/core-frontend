@@ -1,11 +1,13 @@
 // @flow
 
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
 import { MEDIUM } from '$shared/utils/styled'
 import { ago } from '$shared/utils/time'
+import { truncate } from '$shared/utils/text'
+import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
 
 const Container = styled.div`
     background: #FDFDFD;
@@ -82,31 +84,44 @@ const ApproveButton = styled(Button).attrs(() => ({
     }
 `
 
-const JoinRequests = () => {
-    const requests = [
-        {
-            address: '0x23213',
-            timestamp: Date.now(),
-        },
-        {
-            address: '0x23213',
-            timestamp: Date.now(),
-        },
-        {
-            address: '0x23213',
-            timestamp: Date.now(),
-        },
-        {
-            address: '0x23213',
-            timestamp: Date.now(),
-        },
-        {
-            address: '0x23213',
-            timestamp: Date.now(),
-        },
-    ]
+type Props = {
+    dataUnion: any,
+    joinRequests: Array<any>,
+    className?: string,
+}
+
+const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
+    const [processedRequests, setProcessedRequests] = useState([])
+    const { approve } = useJoinRequests()
+    const dataUnionId = dataUnion && dataUnion.id
+
+    const approveSingle = useCallback(async (id) => {
+        // Set request as processed to hide it from UI straight away without
+        // waiting for server response
+        setProcessedRequests((prev) => [
+            ...prev,
+            id,
+        ])
+        await approve({
+            dataUnionId,
+            joinRequestId: id,
+        })
+    }, [approve, dataUnionId])
+
+    const approveAll = useCallback(async () => {
+        // TODO: This would be better done in parallel
+        // but the backend seems to choke this way so
+        // do sequentially for now.
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const req of joinRequests) {
+            // eslint-disable-next-line no-await-in-loop
+            await approveSingle(req.id)
+        }
+    }, [approveSingle, joinRequests])
+
     return (
-        <Container>
+        <Container className={className}>
             <Heading>Manage join requests</Heading>
             <TableHeader>
                 <span>Address</span>
@@ -115,21 +130,25 @@ const JoinRequests = () => {
                 <ApproveButton>Approve</ApproveButton>
             </TableHeader>
             <TableRows rowCount={3}>
-                {requests.map((req) => (
-                    <TableRow>
-                        <span>{req.address}</span>
-                        <span>{ago(new Date(req.timestamp))}</span>
-                        <ApproveButton>Approve</ApproveButton>
+                {joinRequests.filter((req) => !processedRequests.includes(req.id)).map((req) => (
+                    <TableRow key={req.id}>
+                        <span>{truncate(req.memberAddress)}</span>
+                        <span>{ago(new Date(req.dateCreated))}</span>
+                        <ApproveButton onClick={() => approveSingle(req.id)}>
+                            Approve
+                        </ApproveButton>
                     </TableRow>
                 ))}
             </TableRows>
             <Footer>
-                <Button kind="primary" size="normal" outline>
-                    Approve all requests
-                </Button>
+                {joinRequests.length > 0 && (
+                    <Button kind="primary" size="normal" outline onClick={() => approveAll()}>
+                        Approve all requests
+                    </Button>
+                )}
             </Footer>
         </Container>
     )
 }
 
-export default JoinRequests
+export default styled(ManageJoinRequests)``

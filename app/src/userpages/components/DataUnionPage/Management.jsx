@@ -1,14 +1,15 @@
 // @flow
 
-import React, { useMemo, useCallback, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 
 import DaysPopover from '$shared/components/DaysPopover'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
-import useMemberStats from '$mp/modules/dataUnion/hooks/useMemberStats'
-import useDataUnionStats from '$mp/containers/ProductPage/useDataUnionStats'
-import useDataUnion from '$mp/containers/ProductController/useDataUnion'
+import MembersGraphV2 from '$mp/containers/ProductPage/MembersGraphV2'
+import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
+import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
+import ProductController, { useController } from '$mp/containers/ProductController'
 import { MEDIUM } from '$shared/utils/styled'
 
 import ManageJoinRequests from './ManageJoinRequests'
@@ -27,6 +28,8 @@ const Box = styled.div`
     background: #FDFDFD;
     border: 1px solid #EFEFEF;
     border-radius: 4px;
+    width: 100%;
+    padding: 32px 24px 16px 24px;
 `
 
 const Heading = styled.div`
@@ -38,46 +41,93 @@ const Heading = styled.div`
     color: #323232;
 `
 
+const GraphHeader = styled.div`
+    margin-bottom: 32px;
+`
+
+const StyledDaysPopover = styled(DaysPopover)`
+    width: 100%;
+    justify-content: flex-end;
+`
+
 type Props = {
     product: any,
+    joinRequests: Array<any>,
+    dataUnion: any,
+    className?: string,
 }
 
-const Management = ({ product }: Props) => {
+const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
     const [days, setDays] = useState(7)
-    const dataUnion = useDataUnion()
+    const [subsDays, setSubsDays] = useState(7)
+    const { loadDataUnion } = useController()
     const { joinPartStreamId } = dataUnion || {}
-    const { load: loadDataUnions, members } = useMemberStats()
-    console.log(members)
+    const { startPolling, stopPolling, memberCount } = useDataUnionServerStats()
+    const { beneficiaryAddress } = product
 
     useEffect(() => {
-        loadDataUnions()
-    }, [loadDataUnions])
+        if (beneficiaryAddress) {
+            loadDataUnion(beneficiaryAddress)
+            startPolling(beneficiaryAddress)
+            return () => stopPolling()
+        }
+
+        return () => {}
+    }, [startPolling, stopPolling, beneficiaryAddress, loadDataUnion])
 
     return (
-        <Container>
-            <ManageJoinRequests />
-            <ManageMembers />
+        <Container className={className}>
+            <ManageJoinRequests dataUnion={dataUnion} joinRequests={joinRequests} />
+            <ManageMembers dataUnion={dataUnion} />
             <Box>
-                <Heading>Subscribers</Heading>
+                <GraphHeader>
+                    <TimeSeriesGraph.Header>
+                        <Heading>
+                            Subscribers
+                        </Heading>
+                        <StyledDaysPopover
+                            onChange={setSubsDays}
+                            selectedItem={`${subsDays}`}
+                        />
+                    </TimeSeriesGraph.Header>
+                </GraphHeader>
+                <SubscriberGraph
+                    productId={product.id}
+                    shownDays={subsDays}
+                />
             </Box>
             <Box>
-                <TimeSeriesGraph.Header>
-                    <Heading>Members</Heading>
-                    <DaysPopover
-                        onChange={setDays}
-                        selectedItem={`${days}`}
-                    />
-                </TimeSeriesGraph.Header>
-                <TimeSeriesGraph.Body>
+                <GraphHeader>
+                    <TimeSeriesGraph.Header>
+                        <Heading>Members</Heading>
+                        <StyledDaysPopover
+                            onChange={setDays}
+                            selectedItem={`${days}`}
+                        />
+                    </TimeSeriesGraph.Header>
+                </GraphHeader>
+                {dataUnion && dataUnion.version && dataUnion.version === 1 && joinPartStreamId ? (
                     <MembersGraph
                         joinPartStreamId={joinPartStreamId}
-                        memberCount={0}
+                        memberCount={(memberCount && memberCount.total) || 0}
                         shownDays={days}
                     />
-                </TimeSeriesGraph.Body>
+                ) : (
+                    <MembersGraphV2
+                        memberCount={(memberCount && memberCount.total) || 0}
+                        shownDays={days}
+                        dataUnionAddress={dataUnion && dataUnion.id}
+                    />
+                )}
             </Box>
         </Container>
     )
 }
 
-export default Management
+const WrappedManagement = (props: Props) => (
+    <ProductController>
+        <Management {...props} />
+    </ProductController>
+)
+
+export default WrappedManagement

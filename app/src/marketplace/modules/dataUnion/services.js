@@ -591,6 +591,63 @@ export const getJoinsAndParts = async (address: string, fromTimestamp: number) =
     return result
 }
 
+async function* getMembers(address: string): any {
+    const joins = await getSidechainEvents(address, 'MemberJoined', 0)
+    const client = createClient()
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for (const join of joins) {
+        const memberAddress = join.returnValues.member
+        const dataUnion = await client.getDataUnion(address)
+        const memberData = await dataUnion.getMemberStats(memberAddress)
+        yield {
+            ...memberData,
+            address: memberAddress,
+        }
+    }
+    /* eslint-enable no-restricted-syntax, no-await-in-loop */
+}
+
+// eslint-disable-next-line camelcase
+async function* deprecated_getMembers(id: DataUnionId, timestampFrom: number = 0): any {
+    const dataUnion = await getDataUnion(id)
+    const client = createClient()
+    await client.ensureConnected()
+    const sub = await client.subscribe({
+        streamId: dataUnion.joinPartStreamId,
+        resend: {
+            from: {
+                timestamp: timestampFrom,
+            },
+        },
+    })
+
+    /* eslint-disable no-restricted-syntax */
+    for await (const msg of sub) {
+        if (msg.parsedContent.type === 'join' && msg.parsedContent.addresses != null) {
+            for (const address of msg.parsedContent.addresses) {
+                yield {
+                    address,
+                    earnings: NaN,
+                    withdrawable: NaN,
+                    status: 'NOT_AVAILABLE',
+                }
+            }
+        }
+    }
+    /* eslint-enable no-restricted-syntax */
+}
+
+export async function* getAllMembers(id: DataUnionId): any {
+    const version = await getDataUnionVersion(id)
+
+    if (version === 1) {
+        yield* deprecated_getMembers(id)
+    } else if (version === 2) {
+        yield* getMembers(id)
+    }
+}
+
 type GetSecrets = {
     dataUnionId: DataUnionId,
 }

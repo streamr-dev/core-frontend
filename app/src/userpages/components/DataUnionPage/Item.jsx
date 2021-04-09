@@ -1,18 +1,34 @@
 // @flow
 
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
+import get from 'lodash/get'
 
 import { type Product } from '$mp/flowtype/product-types'
 import { ago } from '$shared/utils/time'
-import { productStates } from '$shared/utils/constants'
+import { productStates, NotificationIcon } from '$shared/utils/constants'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledPopover from '$shared/components/Popover'
 import Tooltip from '$shared/components/Tooltip'
 import { isEthereumAddress } from '$mp/utils/validate'
-import { MEDIUM } from '$shared/utils/styled'
+import { MEDIUM, SM, LG } from '$shared/utils/styled'
+import { getSubscriberCount } from '$mp/modules/contractProduct/services'
+import { getDataUnion } from '$mp/modules/dataUnion/services'
+import { fromAtto } from '$mp/utils/math'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
+import useFilterSort from '$userpages/hooks/useFilterSort'
+import { getFilters } from '$userpages/utils/constants'
+import { truncate } from '$shared/utils/text'
+import useCopy from '$shared/hooks/useCopy'
+import Notification from '$shared/utils/Notification'
+import Link from '$shared/components/Link'
+import useModal from '$shared/hooks/useModal'
+import routes from '$routes'
 
 import Management from './Management'
+import ManageJoinRequests from './ManageJoinRequests'
+import ManageMembers from './ManageMembers'
 
 const Container = styled.div`
     width: 100%;
@@ -71,6 +87,7 @@ const State = styled.span`
     font-size: 12px;
     line-height: 18px;
     margin-right: 6px;
+    color: ${({ published }) => (published ? '#2AC437' : '#323232')};
 `
 
 const Updated = styled.span`
@@ -79,26 +96,40 @@ const Updated = styled.span`
     color: #ADADAD;
 `
 
+const Address = styled.span`
+    font-size: 12px;
+    line-height: 20px;
+    color: #A3A3A3;
+    background: #F8F8F8;
+    border-radius: 2px;
+    padding: 4px;
+
+    &:hover {
+        color: #323232;
+    }
+`
+
 const Buttons = styled.div`
     align-self: center;
     margin-right: 24px;
+    display: none;
+
+    @media (min-width: ${LG}px) {
+        display: block;
+    }
 `
 
-const Button = styled.button`
+const Button = styled(Link)`
     margin: 0 4px 0 0;
     padding: 0;
     border: none;
     background: none;
     outline: none;
-    color: #ADADAD;
+    color: #ADADAD !important;
     transition: 200ms ease-in-out color;
 
     &:hover {
-        color: #323232;
-    }
-
-    &:focus {
-        outline: none;
+        color: #323232 !important;
     }
 `
 
@@ -115,15 +146,39 @@ const Popover = styled(UnstyledPopover)`
 const Stats = styled.div`
     border-top: 1px solid #EFEFEF;
     display: grid;
-    grid-auto-flow: column;
+    grid-template-columns: repeat(3, 1fr);
+
+    @media (min-width: ${SM}px) {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    @media (min-width: ${LG}px) {
+        grid-template-columns: repeat(6, 1fr);
+    }
 `
 
 const Stat = styled.div`
-    border-right: 1px solid #EFEFEF;
     margin: 16px 0;
+    display: block;
 
     &:last-child {
         border-right: none;
+    }
+
+    @media (min-width: ${SM}px) {
+        border-right: 1px solid #EFEFEF;
+
+        &:nth-child(5) {
+            display: none;
+        }
+    }
+
+    @media (min-width: ${LG}px) {
+        border-right: 1px solid #EFEFEF;
+
+        &:nth-child(5) {
+            display: block;
+        }
     }
 `
 
@@ -143,20 +198,132 @@ const Value = styled.div`
     color: #323232;
 `
 
+const StyledManagement = styled(Management)`
+    display: none;
+
+    ${ManageJoinRequests} {
+        display: none;
+    }
+
+    ${ManageMembers} {
+        display: none;
+    }
+
+    @media (min-width: ${SM}px) {
+        grid-template-columns: 1fr;
+        display: grid;
+    }
+
+    @media (min-width: ${LG}px) {
+        grid-template-columns: 1fr 1fr;
+
+        ${ManageJoinRequests} {
+            display: grid;
+        }
+
+        ${ManageMembers} {
+            display: grid;
+        }
+    }
+`
+
+const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000
+
 type Props = {
     product: Product,
+    stats: any,
 }
 
-const Item = ({ product }: Props) => {
-    const [isOpen, setIsOpen] = useState(true)
+const Item = ({ product, stats }: Props) => {
+    const { copy } = useCopy()
+    const isMounted = useIsMounted()
+    const [isOpen, setIsOpen] = useState(false)
+    const [subscriberCount, setSubscriberCount] = useState(false)
+    const [dataUnion, setDataUnion] = useState(null)
+
+    const { api: publishDialog } = useModal('publish')
+    const { load: loadJoinRequests, members: joinRequests } = useJoinRequests()
+    const filters = getFilters('dataunion')
+    const sortOptions = useMemo(() => ([
+        filters.APPROVE,
+    ]), [filters])
+    const { filter } = useFilterSort(sortOptions)
+
+    const productId = product && product.id
+    const dataUnionId = product && product.beneficiaryAddress
+
+    useEffect(() => {
+        const load = async () => {
+            if (productId) {
+                const count = await getSubscriberCount(productId)
+
+                if (isMounted()) {
+                    setSubscriberCount(count)
+                }
+            }
+        }
+        load()
+    }, [productId, isMounted])
+
+    useEffect(() => {
+        const load = async () => {
+            if (dataUnionId) {
+                const du = await getDataUnion(dataUnionId)
+
+                if (isMounted()) {
+                    setDataUnion(du)
+                }
+            }
+        }
+        load()
+    }, [dataUnionId, isMounted])
+
+    useEffect(() => {
+        const load = async () => {
+            if (dataUnionId) {
+                await loadJoinRequests({
+                    dataUnionId,
+                    filter,
+                })
+            }
+        }
+        load()
+    }, [loadJoinRequests, dataUnionId, filter])
 
     const productState = useMemo(() => {
         if (product.state === productStates.DEPLOYED &&
             isEthereumAddress(product.beneficiaryAddress)) {
-            return 'Deployed'
+            return 'Published'
         }
         return 'Draft'
     }, [product])
+
+    const revenue = useMemo(() => fromAtto(get(stats, 'totalEarnings', 0)), [stats])
+
+    const adminFees = useMemo(() => {
+        if (dataUnion) {
+            const { adminFee } = dataUnion
+            const fee = Number.parseFloat(adminFee)
+
+            if (fee) {
+                return revenue * fee
+            }
+        }
+        return 0
+    }, [revenue, dataUnion])
+
+    const avgUserRevenue = useMemo(() => {
+        const memberCount = get(stats, 'memberCount.total', 0)
+        const created = get(product, 'created', 0)
+        const ageMs = Date.now() - Date.parse(created)
+        const ageInWeeks = ageMs / WEEK_IN_MS
+
+        if (revenue <= 0) {
+            return 0
+        }
+
+        return revenue / ageInWeeks / memberCount
+    }, [revenue, product, stats])
 
     const onHeaderClick = useCallback(() => {
         setIsOpen(!isOpen)
@@ -173,11 +340,24 @@ const Item = ({ product }: Props) => {
                         {product.name}
                     </Name>
                     <Details>
-                        <State>
+                        <State published={productState === 'Published'}>
                             {productState}
                         </State>
                         {product.state === productStates.DEPLOYED ? (
-                            product.beneficiaryAddress
+                            <Tooltip value="Copy DU address">
+                                <Address
+                                    onClick={(event) => {
+                                        event.stopPropagation()
+                                        copy(product.beneficiaryAddress)
+                                        Notification.push({
+                                            title: 'DU address copied to clipboard',
+                                            icon: NotificationIcon.CHECKMARK,
+                                        })
+                                    }}
+                                >
+                                    {truncate(product.beneficiaryAddress)}
+                                </Address>
+                            </Tooltip>
                         ) : (
                             <Updated>
                                 Updated {ago(new Date(product.updated || 0))}
@@ -186,62 +366,95 @@ const Item = ({ product }: Props) => {
                     </Details>
                 </TitleContainer>
                 <Buttons>
-                    <Tooltip value="View on Etherscan">
-                        <Button onClick={() => console.log('click')}>
-                            <Icon name="externalLink" />
-                        </Button>
-                    </Tooltip>
+                    {product.beneficiaryAddress && (
+                        <Tooltip value="View on Etherscan">
+                            <Button
+                                href={
+                                    routes.etherscanAddress({
+                                        address: product.beneficiaryAddress,
+                                    })
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Icon name="externalLink" />
+                            </Button>
+                        </Tooltip>
+                    )}
                     <Tooltip value="Edit product">
-                        <Button onClick={() => console.log('click')}>
+                        <Button
+                            to={
+                                routes.products.edit({
+                                    id: product.id,
+                                })
+                            }
+                        >
                             <Icon name="pencil" />
                         </Button>
                     </Tooltip>
                     <Tooltip value="View on marketplace">
-                        <Button onClick={() => console.log('click')}>
+                        <Button
+                            to={
+                                routes.marketplace.product({
+                                    id: product.id,
+                                })
+                            }
+                        >
                             <Icon name="eye" />
                         </Button>
                     </Tooltip>
                     <Popover
                         title="Options"
-                        noCaret
+                        caret={false}
                         type="meatball"
                         menuProps={{
                             right: true,
                         }}
                     >
-                        <Popover.Item onClick={() => console.log('test')}>Unpublish</Popover.Item>
-                        <Popover.Item onClick={() => console.log('test')}>Hide</Popover.Item>
+                        <Popover.Item
+                            onClick={async () => {
+                                await publishDialog.open({
+                                    product,
+                                })
+                            }}
+                        >
+                            {product.state === productStates.DEPLOYED ? 'Unpublish' : 'Publish'}
+                        </Popover.Item>
                     </Popover>
                 </Buttons>
             </Header>
             <Stats>
                 <Stat>
                     <Key>Join requests</Key>
-                    <Value>0</Value>
+                    <Value>{joinRequests.length}</Value>
                 </Stat>
                 <Stat>
                     <Key>Members</Key>
-                    <Value>12</Value>
+                    <Value>{get(stats, 'memberCount.total', '0')}</Value>
                 </Stat>
                 <Stat>
                     <Key>Revenue</Key>
-                    <Value>123</Value>
+                    <Value>{revenue.toFixed(2)}</Value>
                 </Stat>
                 <Stat>
                     <Key>Admin fees</Key>
-                    <Value>123</Value>
+                    <Value>{adminFees.toFixed(2)}</Value>
                 </Stat>
                 <Stat>
                     <Key>Avg user revenue / wk</Key>
-                    <Value>123</Value>
+                    <Value>{avgUserRevenue.toFixed(2)}</Value>
                 </Stat>
                 <Stat>
                     <Key>Subscribers</Key>
-                    <Value>123</Value>
+                    <Value>{subscriberCount}</Value>
                 </Stat>
             </Stats>
             {isOpen && (
-                <Management product={product} />
+                <StyledManagement
+                    product={product}
+                    dataUnion={dataUnion}
+                    joinRequests={joinRequests}
+                />
             )}
         </Container>
     )
