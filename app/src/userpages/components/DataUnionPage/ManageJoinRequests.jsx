@@ -85,6 +85,15 @@ const ApproveButton = styled(Button).attrs(() => ({
     }
 `
 
+const NoJoinRequests = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 14px;
+    line-height: 18px;
+`
+
 type Props = {
     dataUnion: any,
     joinRequests: Array<any>,
@@ -140,13 +149,20 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                         </ApproveButton>
                     </TableRow>
                 ))}
+                {joinRequests.length === 0 && (
+                    <NoJoinRequests>No join requests waiting for you</NoJoinRequests>
+                )}
             </TableRows>
             <Footer>
-                {joinRequests.length > 0 && (
-                    <Button kind="primary" size="normal" outline onClick={() => approveAll()}>
-                        Approve all requests
-                    </Button>
-                )}
+                <Button
+                    kind="primary"
+                    size="normal"
+                    outline
+                    onClick={() => approveAll()}
+                    disabled={joinRequests.length === 0}
+                >
+                    Approve all requests
+                </Button>
             </Footer>
         </Container>
     )

@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -124,6 +124,22 @@ const SearchInput = styled(Text)`
     padding-left: 32px;
 `
 
+const CenteredMessage = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 14px;
+    line-height: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+`
+
+const Heavy = styled.span`
+    font-weight: ${MEDIUM};
+`
+
 type Props = {
     dataUnion: any,
     className?: string,
@@ -154,6 +170,10 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
         setSearch(search)
     }, [setSearch])
 
+    const searchResults = useMemo(() => (
+        members.filter((m) => ((search && search.length > 0) ? m.address.includes(search) : true))
+    ), [search, members])
+
     return (
         <Container className={className}>
             <Heading>
@@ -177,8 +197,12 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                 <RemoveButton>Remove</RemoveButton>
             </TableHeader>
             <TableRows rowCount={4}>
-                {members
-                    .filter((m) => ((search && search.length > 0) ? m.address.includes(search) : true))
+                {search && search.length > 0 && searchResults.length === 0 && (
+                    <CenteredMessage>
+                        <span>No members found that match {' '} <Heavy>{search}</Heavy></span>
+                    </CenteredMessage>
+                )}
+                {searchResults
                     .map((member) => (
                         <TableRow key={member.address}>
                             <span>{truncate(member.address)}</span>
@@ -198,7 +222,11 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                                 </React.Fragment>
                             )}
                         </TableRow>
-                    ))}
+                    ))
+                }
+                {members.length === 0 && (
+                    <CenteredMessage>No members at the moment</CenteredMessage>
+                )}
             </TableRows>
             <Footer />
         </Container>
