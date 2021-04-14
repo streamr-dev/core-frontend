@@ -65,6 +65,7 @@ describe('Stream listing page', () => {
         it('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                cy.addToStorageNode(streamId)
                 cy.sendToStream(streamId, {
                     key: 'value',
                 })
@@ -85,6 +86,7 @@ describe('Stream listing page', () => {
         it('renders active color after a refresh and new data in the meantime', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                cy.addToStorageNode(streamId)
                 cy.visit('/core/streams')
                 cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
                     cy.get('[data-test-hook="Last message at"]').should('be.empty')
@@ -569,7 +571,7 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
-                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+                cy.addToStorageNode(streamId)
                 cy.createStreamPermission(streamId, 'tester two', 'stream_get')
                 cy.logout()
                 cy.login('tester two')
@@ -688,6 +690,7 @@ describe('Stream edit page', () => {
         it('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
+                cy.addToStorageNode(streamId)
                 const encodedId = encodeURIComponent(streamId)
                 cy.sendToStream(streamId, {
                     key: 'value',
@@ -729,7 +732,7 @@ describe('Stream edit page', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
-                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+                cy.addToStorageNode(streamId)
 
                 cy.server()
 
@@ -767,7 +770,7 @@ describe('Stream edit page', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
-                cy.enableStorageNode(streamId, '0xde1112f631486CfC759A50196853011528bC5FA0')
+                cy.addToStorageNode(streamId)
 
                 cy.server()
 
