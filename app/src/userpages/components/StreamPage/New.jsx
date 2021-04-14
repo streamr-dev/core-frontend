@@ -1,9 +1,8 @@
 import React, { useCallback, useState, useMemo, useRef, useEffect, useReducer } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { push } from 'connected-react-router'
 import { useTransition, animated } from 'react-spring'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 import { MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
@@ -255,6 +254,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const streamDataRef = useRef()
     const contentChangedRef = useRef(false)
     const dispatch = useDispatch()
+    const history = useHistory()
     const { api: confirmExitDialog } = useModal('confirmExit')
     const { load: loadIntegrationKeys, ethereumIdentities } = useEthereumIdentities()
     const [domains, setDomains] = useState([])
@@ -361,21 +361,21 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         if (isMounted() && canProceed) {
             scrollTop()
 
-            dispatch(push(routes.streams.index()))
+            history.push(routes.streams.index())
         }
-    }, [confirmIsSaved, dispatch, isMounted])
+    }, [confirmIsSaved, history, isMounted])
 
     const onDomainChange = useCallback(({ value: domain }) => {
         if (domain === ADD_ENS_DOMAIN) {
             window.open(ADD_DOMAIN_URL, '_blank', 'noopener noreferrer')
         } else if (domain === CONNECT_ETH_ACCOUNT) {
-            dispatch(push(routes.profile({}, {
+            history.push(routes.profile({}, {
                 hash: 'ethereum-accounts',
-            })))
+            }))
         } else {
             updateStream({ domain })
         }
-    }, [dispatch, updateStream])
+    }, [history, updateStream])
 
     const onPathnameChange = useCallback((e) => {
         const pathname = e.target.value
@@ -444,10 +444,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             // give time for fadeout animation to happen
             setTimeout(() => {
                 if (isMounted()) {
-                    dispatch(push(routes.streams.show({
+                    history.push(routes.streams.show({
                         id: streamId,
                         newStream: 1,
-                    })))
+                    }))
                 }
             }, 300)
         } catch (e) {
@@ -469,7 +469,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 setLoading(false)
             }
         }
-    }, [dispatch, isMounted])
+    }, [dispatch, isMounted, history])
 
     useEffect(() => {
         streamDataRef.current = {

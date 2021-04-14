@@ -99,20 +99,9 @@ describe('user - actions', () => {
 
             await store.dispatch(actions.logout())
 
-            const expectedActions = [
-                {
-                    type: constants.RESET_USER_DATA,
-                },
-                {
-                    type: '@@router/CALL_HISTORY_METHOD',
-                    payload: {
-                        method: 'push',
-                        args: [
-                            '/',
-                        ],
-                    },
-                },
-            ]
+            const expectedActions = [{
+                type: constants.RESET_USER_DATA,
+            }]
             expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })

@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { push } from 'connected-react-router'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import cloneDeep from 'lodash/cloneDeep'
 import { useTransition, animated } from 'react-spring'
@@ -99,6 +99,7 @@ const UnstyledEdit = ({
     const { api: confirmSaveDialog } = useModal('confirmSave')
 
     const dispatch = useDispatch()
+    const history = useHistory()
 
     useEffect(() => {
         if (!streamId || !streamRef.current) { return }
@@ -148,7 +149,7 @@ const UnstyledEdit = ({
                 })
 
                 if (options.redirect) {
-                    dispatch(push(routes.streams.index()))
+                    history.push(routes.streams.index())
                 }
             }
         } catch (e) {
@@ -163,7 +164,7 @@ const UnstyledEdit = ({
                 setSpinner(false)
             }
         }
-    }, [stream, dispatch, isMounted])
+    }, [stream, dispatch, isMounted, history])
 
     const confirmIsSaved = useCallback(async () => {
         if (!didChange(originalStreamRef.current, streamRef.current)) {
@@ -187,9 +188,9 @@ const UnstyledEdit = ({
         const canProceed = await confirmIsSaved()
 
         if (isMounted() && canProceed) {
-            dispatch(push(routes.streams.index()))
+            history.push(routes.streams.index())
         }
-    }, [confirmIsSaved, dispatch, isMounted])
+    }, [confirmIsSaved, history, isMounted])
 
     const subSnippets = useMemo(() => (
         subscribeSnippets({

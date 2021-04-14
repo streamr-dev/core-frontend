@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import startCase from 'lodash/startCase'
-import { push } from 'connected-react-router'
-import { useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
+
 import Layout from '$shared/components/Layout/Core'
 import Label from '$ui/Label'
 import { SM, MEDIUM } from '$shared/utils/styled'
@@ -74,17 +74,17 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
 
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
 
-    const dispatch = useDispatch()
+    const history = useHistory()
 
     const onBack = useCallback(() => {
         scrollTop()
 
         if (currentUser) {
-            dispatch(push(routes.streams.index()))
+            history.push(routes.streams.index())
         } else {
-            dispatch(push(routes.root()))
+            history.push(routes.root())
         }
-    }, [dispatch, currentUser])
+    }, [history, currentUser])
 
     const snippets = useMemo(() => (
         subscribeSnippets({

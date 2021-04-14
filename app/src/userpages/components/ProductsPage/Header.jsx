@@ -1,9 +1,7 @@
 // @flow
 
 import React, { type Node, useCallback } from 'react'
-import { useDispatch } from 'react-redux'
-import { push } from 'connected-react-router'
-import { Link } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Tab from '$userpages/components/Header/Tab'
@@ -109,16 +107,16 @@ type Props = {
 }
 
 const Header = ({ className, searchComponent, filterComponent }: Props) => {
-    const dispatch = useDispatch()
+    const history = useHistory()
     const isMounted = useIsMounted()
     const product = useProduct()
 
     const redirectToProductList = useCallback(() => {
         if (!isMounted()) { return }
-        dispatch(push(routes.products.index()))
+        history.push(routes.products.index())
     }, [
         isMounted,
-        dispatch,
+        history,
     ])
 
     const {

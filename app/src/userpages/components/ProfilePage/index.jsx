@@ -2,7 +2,7 @@
 
 import React, { useCallback, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { push } from 'connected-react-router'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -38,11 +38,12 @@ export const ProfilePage = () => {
     const { isPending: isAvatarUploadPending } = usePending('user.UPLOAD_AVATAR')
     const isMounted = useIsMounted()
     const dispatch = useDispatch()
+    const history = useHistory()
     const { fetching: isLoadingEthIdentities } = useEthereumIdentities()
     const { fetching: isLoadingPrivateKeys } = usePrivateKeys()
 
     const doSaveCurrentUser = useCallback(() => dispatch(saveCurrentUser()), [dispatch])
-    const redirectToUserPages = useCallback(() => dispatch(push(routes.core())), [dispatch])
+    const redirectToUserPages = useCallback(() => history.push(routes.core()), [history])
 
     const onSave = useCallback(async () => (
         wrap(async () => {

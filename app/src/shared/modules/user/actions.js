@@ -1,14 +1,12 @@
 // @flow
 
 import { createAction } from 'redux-actions'
-import { push } from 'connected-react-router'
 import * as yup from 'yup'
 
 import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
 import type { User } from '$shared/flowtype/user-types'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { clearStorage } from '$shared/utils/storage'
-import routes from '$routes'
 import type {
     UserErrorActionCreator,
     UserDataActionCreator,
@@ -38,7 +36,6 @@ export const resetUserData: ReduxActionCreator = createAction(RESET_USER_DATA)
 export const logout = () => (dispatch: Function) => {
     clearStorage()
     dispatch(resetUserData())
-    dispatch(push(routes.root()))
 }
 
 // Fetching user data
