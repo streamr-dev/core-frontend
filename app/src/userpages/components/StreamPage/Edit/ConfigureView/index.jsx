@@ -1,10 +1,11 @@
 // @flow
 
 import React, { Fragment, useMemo, useState, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { arrayMove } from 'react-sortable-hoc'
 import uuid from 'uuid'
 import styled from 'styled-components'
+import { useClient } from 'streamr-client-react'
 
 import Button from '$shared/components/Button'
 import type { Stream } from '$shared/flowtype/stream-types'
@@ -12,7 +13,6 @@ import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
 import Select from '$ui/Select'
 import { selectFieldsAutodetectFetching, fieldTypes } from '$userpages/modules/userPageStreams/selectors'
-import { streamFieldsAutodetect } from '$userpages/modules/userPageStreams/actions'
 import Text from '$ui/Text'
 import SplitControl from '$userpages/components/SplitControl'
 import Notification from '$shared/utils/Notification'
@@ -55,8 +55,8 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
     })), [])
     const [isAddingField, setIsAddingField] = useState(false)
     const fieldsAutodetectFetching = useSelector(selectFieldsAutodetectFetching)
-    const dispatch = useDispatch()
     const isMounted = useIsMounted()
+    const client = useClient()
 
     const streamFields = useMemo(() => {
         const { config } = stream
@@ -126,9 +126,13 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
     const autodetectFields = useCallback(async () => {
         if (streamId) {
             try {
-                await dispatch(streamFieldsAutodetect(streamId))
-
+                const streamObj = await client.getStream(streamId)
                 if (!isMounted()) { return }
+
+                streamObj.detectFields()
+                if (typeof updateStream === 'function') {
+                    updateStream('config.fields', streamObj.config.fields)
+                }
 
                 Notification.push({
                     title: 'Fields autodetected',
@@ -145,7 +149,7 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
                 })
             }
         }
-    }, [dispatch, streamId, isMounted])
+    }, [streamId, isMounted, client, updateStream])
 
     const isDisabled = !!(disabled || fieldsAutodetectFetching)
 
