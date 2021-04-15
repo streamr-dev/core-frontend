@@ -16,6 +16,7 @@ import Button from '$shared/components/Button'
 import { MD, LG } from '$shared/utils/styled'
 import { getFilters } from '$userpages/utils/constants'
 import PublishModal from '$mp/containers/EditProductPage/PublishModal'
+import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import routes from '$routes'
 
 import Search from '../Header/Search'
@@ -126,4 +127,8 @@ const DataUnionPage = () => {
     )
 }
 
-export default DataUnionPage
+export default () => (
+    <PendingProvider name="dataunion">
+        <DataUnionPage />
+    </PendingProvider>
+)

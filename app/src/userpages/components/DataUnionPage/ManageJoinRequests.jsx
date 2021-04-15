@@ -7,6 +7,7 @@ import Button from '$shared/components/Button'
 import { MEDIUM } from '$shared/utils/styled'
 import { ago } from '$shared/utils/time'
 import { truncate } from '$shared/utils/text'
+import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
 
 const Container = styled.div`
@@ -15,6 +16,11 @@ const Container = styled.div`
     border-radius: 4px;
     display: grid;
     grid-template-rows: 72px auto 72px;
+`
+
+const LoadingIndicator = styled(UnstyledLoadingIndicator)`
+    position: sticky !important;
+    top: 58px;
 `
 
 const Row = styled.div`
@@ -118,6 +124,8 @@ type Props = {
 
 const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
     const [processingRequests, setProcessingRequests] = useState([])
+    const [approveAllProcessing, setApproveAllProcessing] = useState(false)
+    const loading = approveAllProcessing || processingRequests.length > 0
     const { approve } = useJoinRequests()
     const dataUnionId = dataUnion && dataUnion.id
 
@@ -126,17 +134,15 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
             ...prev,
             id,
         ])
-        try {
-            await approve({
-                dataUnionId,
-                joinRequestId: id,
-            })
-        } finally {
-            setProcessingRequests((prev) => prev.filter((req) => req.id !== id))
-        }
+        await approve({
+            dataUnionId,
+            joinRequestId: id,
+        })
+        setProcessingRequests((prev) => prev.filter((req) => req !== id))
     }, [approve, dataUnionId])
 
     const approveAll = useCallback(async () => {
+        setApproveAllProcessing(true)
         // TODO: This would be better done in parallel
         // but the backend seems to choke this way so
         // do sequentially for now.
@@ -146,6 +152,8 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
             // eslint-disable-next-line no-await-in-loop
             await approveSingle(req.id)
         }
+
+        setApproveAllProcessing(false)
     }, [approveSingle, joinRequests])
 
     return (
@@ -157,6 +165,7 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                     <span>Requested</span>
                 </TableHeader>
                 <TableRows rowCount={3}>
+                    <LoadingIndicator loading={loading} />
                     {joinRequests.map((req) => {
                         const processing = processingRequests.includes(req.id)
                         return (
@@ -185,6 +194,7 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                     outline
                     onClick={() => approveAll()}
                     disabled={joinRequests.length === 0}
+                    waiting={approveAllProcessing}
                 >
                     Approve all requests
                 </Button>

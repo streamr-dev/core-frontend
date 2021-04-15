@@ -10,6 +10,7 @@ import { truncate } from '$shared/utils/text'
 import { fromAtto } from '$mp/utils/math'
 import Text from '$ui/Text'
 import SvgIcon from '$shared/components/SvgIcon'
+import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 
 const Container = styled.div`
     background: #FDFDFD;
@@ -17,6 +18,11 @@ const Container = styled.div`
     border-radius: 4px;
     display: grid;
     grid-template-rows: 72px auto 16px;
+`
+
+const LoadingIndicator = styled(UnstyledLoadingIndicator)`
+    position: sticky !important;
+    top: 58px;
 `
 
 const Row = styled.div`
@@ -167,10 +173,14 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
     const [members, setMembers] = useState([])
     const [search, setSearch] = useState('')
     const [processingMembers, setProcessingMembers] = useState([])
+    const [loadingMembers, setLoadingMembers] = useState(false)
+    const loading = loadingMembers || processingMembers.length > 0
 
     useEffect(() => {
         const load = async () => {
             if (dataUnionId) {
+                setLoadingMembers(true)
+
                 // eslint-disable-next-line no-restricted-syntax
                 for await (const member of getAllMembers(dataUnionId)) {
                     setMembers((prev) => [
@@ -178,6 +188,8 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                         member,
                     ])
                 }
+
+                setLoadingMembers(false)
             }
         }
         load()
@@ -226,6 +238,7 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                     <span>Status</span>
                 </TableHeader>
                 <TableRows rowCount={4}>
+                    <LoadingIndicator loading={loading} />
                     {search && search.length > 0 && searchResults.length === 0 && (
                         <CenteredMessage>
                             <span>No members found that match {' '} <Heavy>{search}</Heavy></span>

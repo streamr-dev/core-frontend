@@ -24,6 +24,8 @@ import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
 import Link from '$shared/components/Link'
 import useModal from '$shared/hooks/useModal'
+import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
+import usePending from '$shared/hooks/usePending'
 import routes from '$routes'
 
 import Management from './Management'
@@ -41,6 +43,11 @@ const Container = styled.div`
     &:hover {
         box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.1);
     }
+`
+
+const LoadingIndicator = styled(UnstyledLoadingIndicator)`
+    position: sticky !important;
+    top: 0;
 `
 
 const Header = styled.div`
@@ -240,6 +247,10 @@ const Item = ({ product, stats }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
     const [subscriberCount, setSubscriberCount] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
+    const { wrap: wrapSubscriberLoad, isPending: loadingSubscriberCount } = usePending('dataunion.item.SUBSCRIBERS')
+    const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending('dataunion.item.DATAUNION')
+    const { wrap: wrapJoinRequestLoad, isPending: loadingJoinRequests } = usePending('dataunion.item.JOINREQUESTS')
+    const loading = loadingSubscriberCount || loadingDataUnion || loadingJoinRequests
 
     const { api: publishDialog } = useModal('publish')
     const { load: loadJoinRequests, members: joinRequests } = useJoinRequests()
@@ -262,8 +273,8 @@ const Item = ({ product, stats }: Props) => {
                 }
             }
         }
-        load()
-    }, [productId, isMounted])
+        wrapSubscriberLoad(() => load())
+    }, [productId, isMounted, wrapSubscriberLoad])
 
     useEffect(() => {
         const load = async () => {
@@ -275,8 +286,8 @@ const Item = ({ product, stats }: Props) => {
                 }
             }
         }
-        load()
-    }, [dataUnionId, isMounted])
+        wrapDataUnionLoad(() => load())
+    }, [dataUnionId, isMounted, wrapDataUnionLoad])
 
     useEffect(() => {
         const load = async () => {
@@ -287,8 +298,8 @@ const Item = ({ product, stats }: Props) => {
                 })
             }
         }
-        load()
-    }, [loadJoinRequests, dataUnionId, filter])
+        wrapJoinRequestLoad(() => load())
+    }, [loadJoinRequests, dataUnionId, filter, wrapJoinRequestLoad])
 
     const productState = useMemo(() => {
         if (product.state === productStates.DEPLOYED &&
@@ -423,6 +434,7 @@ const Item = ({ product, stats }: Props) => {
                     </Popover>
                 </Buttons>
             </Header>
+            <LoadingIndicator loading={loading} />
             <Stats>
                 <Stat>
                     <Key>Join requests</Key>
