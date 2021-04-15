@@ -14,7 +14,7 @@ const Container = styled.div`
     border: 1px solid #EFEFEF;
     border-radius: 4px;
     display: grid;
-    grid-template-rows: 72px 56px auto 72px;
+    grid-template-rows: 72px auto 72px;
 `
 
 const Row = styled.div`
@@ -34,26 +34,38 @@ const Heading = styled(Row)`
 
 const TableGrid = styled(Row)`
     display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    grid-template-columns: 1fr 1fr 80px;
+`
+
+const Table = styled.div`
+    overflow: auto;
 `
 
 const TableHeader = styled(TableGrid)`
     font-weight: ${MEDIUM};
+    height: 56px;
     font-size: 12px;
     line-height: 16px;
     color: #A3A3A3;
     border-bottom: 1px solid #EFEFEF;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #FDFDFD;
 `
 
 const TableRows = styled.div`
     height: ${({ rowCount }) => (rowCount * 56)}px;
-    overflow: auto;
 `
 
 const TableRow = styled(TableGrid)`
     font-size: 14px;
     line-height: 56px;
     color: #525252;
+
+    > * {
+        opacity: ${({ processing }) => (processing ? 0.5 : 1.0)};
+    }
 
     &:not(:last-child),
     &:only-child {
@@ -94,6 +106,10 @@ const NoJoinRequests = styled.div`
     line-height: 18px;
 `
 
+const Approving = styled.div`
+    font-size: 12px;
+`
+
 type Props = {
     dataUnion: any,
     joinRequests: Array<any>,
@@ -101,21 +117,23 @@ type Props = {
 }
 
 const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
-    const [processedRequests, setProcessedRequests] = useState([])
+    const [processingRequests, setProcessingRequests] = useState([])
     const { approve } = useJoinRequests()
     const dataUnionId = dataUnion && dataUnion.id
 
     const approveSingle = useCallback(async (id) => {
-        // Set request as processed to hide it from UI straight away without
-        // waiting for server response
-        setProcessedRequests((prev) => [
+        setProcessingRequests((prev) => [
             ...prev,
             id,
         ])
-        await approve({
-            dataUnionId,
-            joinRequestId: id,
-        })
+        try {
+            await approve({
+                dataUnionId,
+                joinRequestId: id,
+            })
+        } finally {
+            setProcessingRequests((prev) => prev.filter((req) => req.id !== id))
+        }
     }, [approve, dataUnionId])
 
     const approveAll = useCallback(async () => {
@@ -133,26 +151,33 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
     return (
         <Container className={className}>
             <Heading>Manage join requests</Heading>
-            <TableHeader>
-                <span>Address</span>
-                <span>Requested</span>
-                {/* Render button to make 'auto' column work properly */}
-                <ApproveButton>Approve</ApproveButton>
-            </TableHeader>
-            <TableRows rowCount={3}>
-                {joinRequests.filter((req) => !processedRequests.includes(req.id)).map((req) => (
-                    <TableRow key={req.id}>
-                        <span>{truncate(req.memberAddress)}</span>
-                        <span>{ago(new Date(req.dateCreated))}</span>
-                        <ApproveButton onClick={() => approveSingle(req.id)}>
-                            Approve
-                        </ApproveButton>
-                    </TableRow>
-                ))}
-                {joinRequests.length === 0 && (
-                    <NoJoinRequests>No join requests waiting for you</NoJoinRequests>
-                )}
-            </TableRows>
+            <Table>
+                <TableHeader>
+                    <span>Address</span>
+                    <span>Requested</span>
+                </TableHeader>
+                <TableRows rowCount={3}>
+                    {joinRequests.map((req) => {
+                        const processing = processingRequests.includes(req.id)
+                        return (
+                            <TableRow key={req.id} processing={processing}>
+                                <span>{truncate(req.memberAddress)}</span>
+                                <span>{ago(new Date(req.dateCreated))}</span>
+                                {processing ? (
+                                    <Approving>Approving...</Approving>
+                                ) : (
+                                    <ApproveButton onClick={() => approveSingle(req.id)}>
+                                        Approve
+                                    </ApproveButton>
+                                )}
+                            </TableRow>
+                        )
+                    })}
+                    {joinRequests.length === 0 && (
+                        <NoJoinRequests>No join requests waiting for you</NoJoinRequests>
+                    )}
+                </TableRows>
+            </Table>
             <Footer>
                 <Button
                     kind="primary"

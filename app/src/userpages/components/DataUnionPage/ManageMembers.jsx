@@ -16,7 +16,7 @@ const Container = styled.div`
     border: 1px solid #EFEFEF;
     border-radius: 4px;
     display: grid;
-    grid-template-rows: 72px 56px auto 16px;
+    grid-template-rows: 72px auto 16px;
 `
 
 const Row = styled.div`
@@ -38,7 +38,12 @@ const Heading = styled(Row)`
 
 const TableGrid = styled(Row)`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto auto;
+    grid-template-columns: 1fr 1fr 1fr 40px 80px;
+    grid-column-gap: 16px;
+`
+
+const Table = styled.div`
+    overflow: auto;
 `
 
 const TableHeader = styled(TableGrid)`
@@ -47,6 +52,11 @@ const TableHeader = styled(TableGrid)`
     line-height: 16px;
     color: #A3A3A3;
     border-bottom: 1px solid #EFEFEF;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #FDFDFD;
 
     &:nth-child(3) {
         justify-items: center;
@@ -55,13 +65,16 @@ const TableHeader = styled(TableGrid)`
 
 const TableRows = styled.div`
     height: ${({ rowCount }) => (rowCount * 56)}px;
-    overflow: auto;
 `
 
 const TableRow = styled(TableGrid)`
     font-size: 14px;
     line-height: 56px;
     color: #525252;
+    
+    > * {
+        opacity: ${({ processing }) => (processing ? 0.5 : 1.0)};
+    }
 
     &:not(:last-child),
     &:only-child {
@@ -77,8 +90,7 @@ const RemoveButton = styled(Button).attrs(() => ({
     variant: 'dark',
 }))`
     visibility: hidden;
-    font-size: 12px !important;
-    margin: 0 16px;
+    font-size: 12px !important;    
 
     ${TableRow}:hover & {
         visibility: visible;
@@ -97,6 +109,7 @@ const Status = styled.div`
     }};
     height: 16px;
     width: 16px;
+    justify-self: center;
 `
 
 const Disabled = styled.span`
@@ -140,6 +153,10 @@ const Heavy = styled.span`
     font-weight: ${MEDIUM};
 `
 
+const Removing = styled.div`
+    font-size: 12px;
+`
+
 type Props = {
     dataUnion: any,
     className?: string,
@@ -149,6 +166,7 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
     const dataUnionId = dataUnion && dataUnion.id
     const [members, setMembers] = useState([])
     const [search, setSearch] = useState('')
+    const [processingMembers, setProcessingMembers] = useState([])
 
     useEffect(() => {
         const load = async () => {
@@ -170,6 +188,18 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
         setSearch(search)
     }, [setSearch])
 
+    const removeMember = useCallback(async (memberAddress: string) => {
+        setProcessingMembers((prev) => [
+            ...prev,
+            memberAddress,
+        ])
+        try {
+            await removeMembers(dataUnionId, [memberAddress])
+        } finally {
+            setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
+        }
+    }, [dataUnionId])
+
     const searchResults = useMemo(() => (
         members.filter((m) => ((search && search.length > 0) ? m.address.includes(search) : true))
     ), [search, members])
@@ -188,46 +218,52 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                     />
                 </SearchContainer>
             </Heading>
-            <TableHeader>
-                <span>Address</span>
-                <span>Earnings</span>
-                <span>Withdrawable</span>
-                <span>Status</span>
-                {/* Render button to make 'auto' column work properly */}
-                <RemoveButton>Remove</RemoveButton>
-            </TableHeader>
-            <TableRows rowCount={4}>
-                {search && search.length > 0 && searchResults.length === 0 && (
-                    <CenteredMessage>
-                        <span>No members found that match {' '} <Heavy>{search}</Heavy></span>
-                    </CenteredMessage>
-                )}
-                {searchResults
-                    .map((member) => (
-                        <TableRow key={member.address}>
-                            <span>{truncate(member.address)}</span>
-                            {dataUnion && dataUnion.version === 2 ? (
-                                <React.Fragment>
-                                    <span>{fromAtto(member.totalEarnings).toFixed(3)}</span>
-                                    <span>{fromAtto(member.withdrawableEarnings).toFixed(3)}</span>
-                                    <Status status={member.status} />
-                                    <RemoveButton onClick={async () => removeMembers(dataUnionId, [member.address])}>Remove</RemoveButton>
-                                </React.Fragment>
-                            ) : (
-                                <React.Fragment>
-                                    <Disabled>0.000</Disabled>
-                                    <Disabled>0.000</Disabled>
-                                    <Status status={member.status} />
-                                    <RemoveButton>Remove</RemoveButton>
-                                </React.Fragment>
-                            )}
-                        </TableRow>
-                    ))
-                }
-                {members.length === 0 && (
-                    <CenteredMessage>No members at the moment</CenteredMessage>
-                )}
-            </TableRows>
+            <Table>
+                <TableHeader>
+                    <span>Address</span>
+                    <span>Earnings</span>
+                    <span>Withdrawable</span>
+                    <span>Status</span>
+                </TableHeader>
+                <TableRows rowCount={4}>
+                    {search && search.length > 0 && searchResults.length === 0 && (
+                        <CenteredMessage>
+                            <span>No members found that match {' '} <Heavy>{search}</Heavy></span>
+                        </CenteredMessage>
+                    )}
+                    {searchResults
+                        .map((member) => {
+                            const processing = processingMembers.includes(member.address)
+                            return (
+                                <TableRow key={member.address} processing={processing}>
+                                    <span>{truncate(member.address)}</span>
+                                    {dataUnion && dataUnion.version === 2 ? (
+                                        <React.Fragment>
+                                            <span>{fromAtto(member.totalEarnings).toFixed(3)}</span>
+                                            <span>{fromAtto(member.withdrawableEarnings).toFixed(3)}</span>
+                                            <Status status={member.status} />
+                                            {processing ? (
+                                                <Removing>Removing...</Removing>
+                                            ) : (
+                                                <RemoveButton onClick={() => removeMember(member.address)}>Remove</RemoveButton>
+                                            )}
+                                        </React.Fragment>
+                                    ) : (
+                                        <React.Fragment>
+                                            <Disabled>0.000</Disabled>
+                                            <Disabled>0.000</Disabled>
+                                            <Status status={member.status} />
+                                        </React.Fragment>
+                                    )}
+                                </TableRow>
+                            )
+                        })
+                    }
+                    {members.length === 0 && (
+                        <CenteredMessage>No members at the moment</CenteredMessage>
+                    )}
+                </TableRows>
+            </Table>
             <Footer />
         </Container>
     )

@@ -651,9 +651,7 @@ export async function* getAllMembers(id: DataUnionId): any {
 export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) => {
     const client = createClient()
     const dataUnion = client.getDataUnion(id)
-    console.log('Removing members', id, memberAddresses)
     const receipt = await dataUnion.removeMembers(memberAddresses)
-    console.log('Removed')
     return receipt
 }
 
