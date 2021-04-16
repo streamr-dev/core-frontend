@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
 import { MEDIUM } from '$shared/utils/styled'
-import { getAllMembers, removeMembers } from '$mp/modules/dataUnion/services'
+import { getAllMemberEvents, removeMembers } from '$mp/modules/dataUnion/services'
 import { truncate } from '$shared/utils/text'
 import { fromAtto } from '$mp/utils/math'
 import Text from '$ui/Text'
@@ -182,11 +182,15 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                 setLoadingMembers(true)
 
                 // eslint-disable-next-line no-restricted-syntax
-                for await (const member of getAllMembers(dataUnionId)) {
-                    setMembers((prev) => [
-                        ...prev,
-                        member,
-                    ])
+                for await (const event of getAllMemberEvents(dataUnionId)) {
+                    if (event.type === 'join') {
+                        setMembers((prev) => [
+                            ...prev,
+                            event,
+                        ])
+                    } else if (event.type === 'part') {
+                        setMembers((prev) => prev.filter((m) => m.address !== event.address))
+                    }
                 }
 
                 setLoadingMembers(false)

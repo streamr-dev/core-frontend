@@ -556,11 +556,11 @@ const getSidechainEvents = async (address: string, eventName: string, fromBlock:
     return events
 }
 
-export const getJoinsAndParts = async (address: string, fromTimestamp: number) => {
+export const getJoinsAndParts = async (id: DataUnionId, fromTimestamp: number) => {
     const web3 = getSidechainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
-    const joinEvents = await getSidechainEvents(address, 'MemberJoined', fromBlock)
-    const partEvents = await getSidechainEvents(address, 'MemberParted', fromBlock)
+    const joinEvents = await getSidechainEvents(id, 'MemberJoined', fromBlock)
+    const partEvents = await getSidechainEvents(id, 'MemberParted', fromBlock)
     const result = []
 
     const joins = joinEvents
@@ -591,25 +591,8 @@ export const getJoinsAndParts = async (address: string, fromTimestamp: number) =
     return result
 }
 
-async function* getMembers(address: string): any {
-    const joins = await getSidechainEvents(address, 'MemberJoined', 0)
-    const client = createClient()
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for (const join of joins) {
-        const memberAddress = join.returnValues.member
-        const dataUnion = client.getDataUnion(address)
-        const memberData = await dataUnion.getMemberStats(memberAddress)
-        yield {
-            ...memberData,
-            address: memberAddress,
-        }
-    }
-    /* eslint-enable no-restricted-syntax, no-await-in-loop */
-}
-
 // eslint-disable-next-line camelcase
-async function* deprecated_getMembers(id: DataUnionId, timestampFrom: number = 0): any {
+async function* deprecated_getMemberEvents(id: DataUnionId, timestampFrom: number = 0): any {
     const dataUnion = await getDataUnion(id)
     const client = createClient()
     await client.ensureConnected()
@@ -624,9 +607,10 @@ async function* deprecated_getMembers(id: DataUnionId, timestampFrom: number = 0
 
     /* eslint-disable no-restricted-syntax */
     for await (const msg of sub) {
-        if (msg.parsedContent.type === 'join' && msg.parsedContent.addresses != null) {
+        if (msg.parsedContent.addresses != null) {
             for (const address of msg.parsedContent.addresses) {
                 yield {
+                    type: msg.parsedContent.type, // 'join' or 'part'
                     address,
                     earnings: NaN,
                     withdrawable: NaN,
@@ -638,13 +622,51 @@ async function* deprecated_getMembers(id: DataUnionId, timestampFrom: number = 0
     /* eslint-enable no-restricted-syntax */
 }
 
-export async function* getAllMembers(id: DataUnionId): any {
+async function* getDU2JoinsAndParts(id: DataUnionId, fromTimestamp: number = 0) {
+    const client = createClient()
+    const web3 = getSidechainWeb3()
+    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
+    const joinEvents = await getSidechainEvents(id, 'MemberJoined', fromBlock)
+    const partEvents = await getSidechainEvents(id, 'MemberParted', fromBlock)
+
+    const joins = joinEvents
+        .map((e) => ({
+            ...e,
+            type: 'join',
+        }))
+    const parts = partEvents
+        .map((e) => ({
+            ...e,
+            type: 'part',
+        }))
+    const joinsAndParts = ([...joins, ...parts])
+    joinsAndParts.sort((a, b) => b.blockNumber - a.blockNumber)
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const e of joinsAndParts) {
+        const memberAddress = e.returnValues.member
+        // eslint-disable-next-line no-await-in-loop
+        const block = await web3.eth.getBlock(e.blockHash)
+        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
+            const dataUnion = client.getDataUnion(id)
+            // eslint-disable-next-line no-await-in-loop
+            const memberData = await dataUnion.getMemberStats(memberAddress)
+            yield {
+                ...memberData,
+                type: e.type,
+                address: memberAddress,
+            }
+        }
+    }
+}
+
+export async function* getAllMemberEvents(id: DataUnionId): any {
     const version = await getDataUnionVersion(id)
 
     if (version === 1) {
-        yield* deprecated_getMembers(id)
+        yield* deprecated_getMemberEvents(id)
     } else if (version === 2) {
-        yield* getMembers(id)
+        yield* getDU2JoinsAndParts(id)
     }
 }
 
