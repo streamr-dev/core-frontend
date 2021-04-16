@@ -33,7 +33,7 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
     const [graphData, setGraphData] = useState([])
     const activeAddressesRef = useRef([])
 
-    const resendFrom = useMemo(() => (
+    const startDate = useMemo(() => (
         Date.now() - (shownDays * MILLISECONDS_IN_DAY)
     ), [shownDays])
 
@@ -122,11 +122,11 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
 
         // Make sure we fill the whole date range
         data.push({
-            x: Date.now() - (shownDays * MILLISECONDS_IN_DAY),
+            x: startDate,
             y: latestMemberCount,
         })
         setGraphData(data)
-    }, [memberData, memberCount, memberCountUpdatedAt, shownDays])
+    }, [memberData, memberCount, memberCountUpdatedAt, startDate])
 
     useEffect(() => {
         setMemberCountUpdatedAt(Date.now())
@@ -144,7 +144,7 @@ const MembersGraph = ({ joinPartStreamId, memberCount, shownDays = 7 }: Props) =
         stream: joinPartStreamId,
         resend: {
             from: {
-                timestamp: resendFrom,
+                timestamp: startDate,
             },
         },
     }, {

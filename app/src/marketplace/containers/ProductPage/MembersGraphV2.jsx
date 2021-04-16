@@ -71,11 +71,11 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
 
         // Make sure we fill the whole date range
         data.push({
-            x: Date.now() - (shownDays * MILLISECONDS_IN_DAY),
+            x: startDate,
             y: latestMemberCount,
         })
         setGraphData(data)
-    }, [memberData, memberCount, memberCountUpdatedAt, shownDays])
+    }, [memberData, memberCount, memberCountUpdatedAt, startDate])
 
     return (
         <TimeSeriesGraph

@@ -559,30 +559,30 @@ const getSidechainEvents = async (address: string, eventName: string, fromBlock:
 export const getJoinsAndParts = async (address: string, fromTimestamp: number) => {
     const web3 = getSidechainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
-    const joins = await getSidechainEvents(address, 'MemberJoined', fromBlock)
-    const parts = await getSidechainEvents(address, 'MemberParted', fromBlock)
+    const joinEvents = await getSidechainEvents(address, 'MemberJoined', fromBlock)
+    const partEvents = await getSidechainEvents(address, 'MemberParted', fromBlock)
     const result = []
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const e of joins) {
-        // eslint-disable-next-line no-await-in-loop
-        const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp) {
-            result.push({
-                timestamp: block.timestamp * 1000,
-                diff: 1,
-            })
-        }
-    }
+    const joins = joinEvents
+        .map((e) => ({
+            ...e,
+            type: 'join',
+        }))
+    const parts = partEvents
+        .map((e) => ({
+            ...e,
+            type: 'part',
+        }))
+    const joinsAndParts = ([...joins, ...parts])
 
     // eslint-disable-next-line no-restricted-syntax
-    for (const e of parts) {
+    for (const e of joinsAndParts) {
         // eslint-disable-next-line no-await-in-loop
         const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp) {
+        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
             result.push({
                 timestamp: block.timestamp * 1000,
-                diff: -1,
+                diff: e.type === 'join' ? 1 : -1,
             })
         }
     }

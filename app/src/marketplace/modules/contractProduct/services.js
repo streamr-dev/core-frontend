@@ -78,7 +78,7 @@ export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, 
     for (const e of events) {
         // eslint-disable-next-line no-await-in-loop
         const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp) {
+        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
             subscriptions.push({
                 start: block.timestamp * 1000,
                 end: e.returnValues && e.returnValues.endTimestamp && parseTimestamp(e.returnValues.endTimestamp),
