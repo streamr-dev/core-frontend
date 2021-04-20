@@ -200,7 +200,7 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
     }, [dataUnionId])
 
     const onSearchChange = useCallback((e) => {
-        const search = e.target.value
+        const search = e.target.value.trim()
         setSearch(search)
     }, [setSearch])
 
@@ -211,6 +211,8 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
         ])
         try {
             await removeMembers(dataUnionId, [memberAddress])
+        } catch (e) {
+            console.error('Could not remove member', e)
         } finally {
             setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
         }

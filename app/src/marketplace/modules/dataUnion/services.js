@@ -252,6 +252,7 @@ export const createClient = (options: CreateClient = {}) => {
         mainnet: {
             url: process.env.WEB3_PUBLIC_HTTP_PROVIDER,
         },
+        streamrNodeAddress: getStreamrEngineAddresses()[0],
     })
 }
 
@@ -287,7 +288,6 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: string): SmartC
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
-                joinPartAgents: getStreamrEngineAddresses(),
             })
         })
         .then((dataUnion) => {
