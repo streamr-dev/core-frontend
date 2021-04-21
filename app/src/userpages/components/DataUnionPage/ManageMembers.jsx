@@ -5,12 +5,13 @@ import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
 import { MEDIUM } from '$shared/utils/styled'
-import { getAllMemberEvents, removeMembers } from '$mp/modules/dataUnion/services'
 import { truncate } from '$shared/utils/text'
 import { fromAtto } from '$mp/utils/math'
 import Text from '$ui/Text'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import useDataUnionMembers from '$mp/modules/dataUnion/hooks/useDataUnionMembers'
 
 const Container = styled.div`
     background: #FDFDFD;
@@ -83,7 +84,7 @@ const TableRow = styled(TableGrid)`
     }
 
     &:not(:last-child),
-    &:only-child {
+    &:nth-child(-n+3) { /* -n+3 means the 3 first children  */
         border-bottom: 1px solid #EFEFEF;
     }
 `
@@ -169,35 +170,23 @@ type Props = {
 }
 
 const ManageMembers = ({ dataUnion, className }: Props) => {
+    const isMounted = useIsMounted()
     const dataUnionId = dataUnion && dataUnion.id
-    const [members, setMembers] = useState([])
     const [search, setSearch] = useState('')
     const [processingMembers, setProcessingMembers] = useState([])
-    const [loadingMembers, setLoadingMembers] = useState(false)
+    const { loading: loadingMembers, load: loadMembers, remove: removeMembers, members } = useDataUnionMembers()
     const loading = loadingMembers || processingMembers.length > 0
 
     useEffect(() => {
         const load = async () => {
-            if (dataUnionId) {
-                setLoadingMembers(true)
-
-                // eslint-disable-next-line no-restricted-syntax
-                for await (const event of getAllMemberEvents(dataUnionId)) {
-                    if (event.type === 'join') {
-                        setMembers((prev) => [
-                            ...prev,
-                            event,
-                        ])
-                    } else if (event.type === 'part') {
-                        setMembers((prev) => prev.filter((m) => m.address !== event.address))
-                    }
-                }
-
-                setLoadingMembers(false)
+            try {
+                await loadMembers(dataUnionId)
+            } catch (e) {
+                console.error('Could not load member list', e)
             }
         }
         load()
-    }, [dataUnionId])
+    }, [loadMembers, dataUnionId])
 
     const onSearchChange = useCallback((e) => {
         const search = e.target.value.trim()
@@ -214,9 +203,11 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
         } catch (e) {
             console.error('Could not remove member', e)
         } finally {
-            setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
+            if (isMounted()) {
+                setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
+            }
         }
-    }, [dataUnionId])
+    }, [dataUnionId, removeMembers, isMounted])
 
     const searchResults = useMemo(() => (
         members.filter((m) => ((search && search.length > 0) ? m.address.includes(search) : true))

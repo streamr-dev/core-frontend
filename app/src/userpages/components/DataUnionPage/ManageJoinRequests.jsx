@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -9,6 +9,10 @@ import { ago } from '$shared/utils/time'
 import { truncate } from '$shared/utils/text'
 import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
+import useDataUnionMembers from '$mp/modules/dataUnion/hooks/useDataUnionMembers'
+import useIsMounted from '$shared/hooks/useIsMounted'
+import Notification from '$shared/utils/Notification'
+import { NotificationIcon } from '$shared/utils/constants'
 
 const Container = styled.div`
     background: #FDFDFD;
@@ -74,7 +78,7 @@ const TableRow = styled(TableGrid)`
     }
 
     &:not(:last-child),
-    &:only-child {
+    &:nth-child(-n+3) { /* -n+3 means the 3 first children  */
         border-bottom: 1px solid #EFEFEF;
     }
 `
@@ -123,38 +127,59 @@ type Props = {
 }
 
 const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
+    const isMounted = useIsMounted()
     const [processingRequests, setProcessingRequests] = useState([])
     const [approveAllProcessing, setApproveAllProcessing] = useState(false)
     const loading = approveAllProcessing || processingRequests.length > 0
     const { approve } = useJoinRequests()
+    const { load: loadMembers } = useDataUnionMembers()
     const dataUnionId = dataUnion && dataUnion.id
+
+    const pendingRequests = useMemo(() => (
+        joinRequests.filter((req) => req.state === 'PENDING')
+    ), [joinRequests])
 
     const approveSingle = useCallback(async (id) => {
         setProcessingRequests((prev) => [
             ...prev,
             id,
         ])
-        await approve({
-            dataUnionId,
-            joinRequestId: id,
-        })
-        setProcessingRequests((prev) => prev.filter((req) => req !== id))
-    }, [approve, dataUnionId])
+        try {
+            await approve({
+                dataUnionId,
+                joinRequestId: id,
+            })
+        } catch (e) {
+            Notification.push({
+                title: `Approve failed: ${e.message}`,
+                icon: NotificationIcon.ERROR,
+            })
+        } finally {
+            if (isMounted()) {
+                setProcessingRequests((prev) => prev.filter((req) => req !== id))
+
+                // Refresh member listing
+                await loadMembers(dataUnionId)
+            }
+        }
+    }, [approve, dataUnionId, loadMembers, isMounted])
 
     const approveAll = useCallback(async () => {
         setApproveAllProcessing(true)
         // TODO: This would be better done in parallel
         // but the backend seems to choke this way so
-        // do sequentially for now.
+        // do this sequentially for now.
 
         // eslint-disable-next-line no-restricted-syntax
-        for (const req of joinRequests) {
+        for (const req of pendingRequests) {
             // eslint-disable-next-line no-await-in-loop
             await approveSingle(req.id)
         }
 
-        setApproveAllProcessing(false)
-    }, [approveSingle, joinRequests])
+        if (isMounted()) {
+            setApproveAllProcessing(false)
+        }
+    }, [approveSingle, pendingRequests, isMounted])
 
     return (
         <Container className={className}>
@@ -166,7 +191,7 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                 </TableHeader>
                 <TableRows rowCount={3}>
                     <LoadingIndicator loading={loading} />
-                    {joinRequests.map((req) => {
+                    {pendingRequests.map((req) => {
                         const processing = processingRequests.includes(req.id)
                         return (
                             <TableRow key={req.id} processing={processing}>
@@ -182,7 +207,7 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                             </TableRow>
                         )
                     })}
-                    {joinRequests.length === 0 && (
+                    {pendingRequests.length === 0 && (
                         <NoJoinRequests>No join requests waiting for you</NoJoinRequests>
                     )}
                 </TableRows>
@@ -193,7 +218,7 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                     size="normal"
                     outline
                     onClick={() => approveAll()}
-                    disabled={joinRequests.length === 0}
+                    disabled={pendingRequests.length === 0}
                     waiting={approveAllProcessing}
                 >
                     Approve all requests

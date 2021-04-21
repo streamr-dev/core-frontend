@@ -610,7 +610,6 @@ async function* deprecated_getMemberEvents(id: DataUnionId, timestampFrom: numbe
         if (msg.parsedContent.addresses != null) {
             for (const address of msg.parsedContent.addresses) {
                 yield {
-                    type: msg.parsedContent.type, // 'join' or 'part'
                     address,
                     earnings: NaN,
                     withdrawable: NaN,
@@ -622,28 +621,16 @@ async function* deprecated_getMemberEvents(id: DataUnionId, timestampFrom: numbe
     /* eslint-enable no-restricted-syntax */
 }
 
-async function* getDU2JoinsAndParts(id: DataUnionId, fromTimestamp: number = 0) {
+async function* getMemberEvents(id: DataUnionId, fromTimestamp: number = 0) {
     const client = createClient()
     const web3 = getSidechainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
     const joinEvents = await getSidechainEvents(id, 'MemberJoined', fromBlock)
-    const partEvents = await getSidechainEvents(id, 'MemberParted', fromBlock)
 
-    const joins = joinEvents
-        .map((e) => ({
-            ...e,
-            type: 'join',
-        }))
-    const parts = partEvents
-        .map((e) => ({
-            ...e,
-            type: 'part',
-        }))
-    const joinsAndParts = ([...joins, ...parts])
-    joinsAndParts.sort((a, b) => b.blockNumber - a.blockNumber)
+    joinEvents.sort((a, b) => b.blockNumber - a.blockNumber)
 
     // eslint-disable-next-line no-restricted-syntax
-    for (const e of joinsAndParts) {
+    for (const e of joinEvents) {
         const memberAddress = e.returnValues.member
         // eslint-disable-next-line no-await-in-loop
         const block = await web3.eth.getBlock(e.blockHash)
@@ -653,7 +640,6 @@ async function* getDU2JoinsAndParts(id: DataUnionId, fromTimestamp: number = 0) 
             const memberData = await dataUnion.getMemberStats(memberAddress)
             yield {
                 ...memberData,
-                type: e.type,
                 address: memberAddress,
             }
         }
@@ -666,7 +652,7 @@ export async function* getAllMemberEvents(id: DataUnionId): any {
     if (version === 1) {
         yield* deprecated_getMemberEvents(id)
     } else if (version === 2) {
-        yield* getDU2JoinsAndParts(id)
+        yield* getMemberEvents(id)
     }
 }
 

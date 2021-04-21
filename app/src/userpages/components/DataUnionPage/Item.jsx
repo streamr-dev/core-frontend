@@ -26,6 +26,7 @@ import Link from '$shared/components/Link'
 import useModal from '$shared/hooks/useModal'
 import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import usePending from '$shared/hooks/usePending'
+import { DataUnionMembersProvider } from '$mp/modules/dataUnion/hooks/useDataUnionMembers'
 import routes from '$routes'
 
 import Management from './Management'
@@ -472,4 +473,10 @@ const Item = ({ product, stats }: Props) => {
     )
 }
 
-export default Item
+const WrappedItem = (props: Props) => (
+    <DataUnionMembersProvider>
+        <Item {...props} />
+    </DataUnionMembersProvider>
+)
+
+export default WrappedItem
