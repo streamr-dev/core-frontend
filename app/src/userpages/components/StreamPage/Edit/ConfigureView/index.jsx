@@ -127,11 +127,16 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
         if (streamId) {
             try {
                 const streamObj = await client.getStream(streamId)
-                if (!isMounted()) { return }
+                await streamObj.detectFields()
 
-                streamObj.detectFields()
+                if (!isMounted()) { return }
+                const newFields = streamObj.config.fields.map((f) => ({
+                    ...f,
+                    id: uuid(),
+                }))
+
                 if (typeof updateStream === 'function') {
-                    updateStream('config.fields', streamObj.config.fields)
+                    updateStream('config.fields', newFields)
                 }
 
                 Notification.push({
