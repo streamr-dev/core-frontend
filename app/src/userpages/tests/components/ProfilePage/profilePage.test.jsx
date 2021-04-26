@@ -18,12 +18,6 @@ jest.mock('react-router-dom', () => ({
     })),
 }))
 
-jest.mock('$shared/modules/integrationKey/hooks/usePrivateKeys', () => (
-    jest.fn().mockImplementation(() => ({
-        fetching: false,
-    }))
-))
-
 jest.mock('$shared/modules/integrationKey/hooks/useEthereumIdentities', () => (
     jest.fn().mockImplementation(() => ({
         fetching: false,

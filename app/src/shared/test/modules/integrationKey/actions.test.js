@@ -21,73 +21,6 @@ describe('integrationKey - actions', () => {
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
-    describe('createIntegrationKey', () => {
-        it('creates CREATE_INTEGRATION_KEY_SUCCESS when creating private key has succeeded', async () => {
-            const privateKey = '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10'
-            const data = {
-                id: 'testid',
-                user: 1234,
-                name: 'Test',
-                service: integrationKeyServices.PRIVATE_KEY,
-                json: {
-                    address: privateKey,
-                },
-            }
-
-            const serviceStub = jest.fn(() => Promise.resolve(data))
-            jest.spyOn(services, 'createPrivateKey').mockImplementation(serviceStub)
-
-            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(jest.fn(() => ({
-                type: 'updateEntities',
-            })))
-
-            const store = mockStore()
-            await store.dispatch(actions.createIntegrationKey('name', privateKey))
-            expect(serviceStub).toBeCalled()
-
-            const expectedActions = [{
-                type: constants.CREATE_INTEGRATION_KEY_REQUEST,
-            },
-            {
-                type: 'updateEntities',
-            },
-            {
-                type: constants.CREATE_INTEGRATION_KEY_SUCCESS,
-                payload: {
-                    id: data.id,
-                },
-            }]
-
-            expect(store.getActions()).toStrictEqual(expectedActions)
-        })
-
-        it('creates CREATE_INTEGRATION_KEY_FAILURE when creating private key fails', async () => {
-            const privateKey = '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10'
-            const error = new Error('error')
-            jest.spyOn(services, 'createPrivateKey').mockImplementation(jest.fn(() => Promise.reject(error)))
-            const expectedActions = [{
-                type: constants.CREATE_INTEGRATION_KEY_REQUEST,
-            },
-            {
-                type: constants.CREATE_INTEGRATION_KEY_FAILURE,
-                payload: {
-                    error: {
-                        message: 'error',
-                    },
-                },
-            }]
-            const store = mockStore()
-
-            try {
-                await store.dispatch(actions.createIntegrationKey('name', privateKey))
-            } catch (e) {
-                expect(e === error).toBe(true)
-            }
-
-            expect(store.getActions()).toStrictEqual(expectedActions)
-        })
-    })
-
     describe('deleteIntegrationKey', () => {
         it('throws an error if id is not defined', () => {
             try {
@@ -269,7 +202,6 @@ describe('integrationKey - actions', () => {
                     type: constants.INTEGRATION_KEYS_SUCCESS,
                     payload: {
                         ethereumIdentities: ['testid'],
-                        privateKeys: ['anotherid'],
                     },
                 },
             ]

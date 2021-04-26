@@ -18,18 +18,15 @@ import type {
 } from './types'
 
 import * as services from './services'
-import { selectEthereumIdentities, selectPrivateKeys } from './selectors'
+import { selectEthereumIdentities } from './selectors'
 import {
     INTEGRATION_KEYS_REQUEST,
     INTEGRATION_KEYS_SUCCESS,
     INTEGRATION_KEYS_FAILURE,
-    CREATE_INTEGRATION_KEY_REQUEST,
     DELETE_INTEGRATION_KEY_REQUEST,
     EDIT_INTEGRATION_KEY_REQUEST,
-    CREATE_INTEGRATION_KEY_SUCCESS,
     DELETE_INTEGRATION_KEY_SUCCESS,
     EDIT_INTEGRATION_KEY_SUCCESS,
-    CREATE_INTEGRATION_KEY_FAILURE,
     DELETE_INTEGRATION_KEY_FAILURE,
     EDIT_INTEGRATION_KEY_FAILURE,
     CREATE_IDENTITY_REQUEST,
@@ -42,9 +39,8 @@ import {
 const integrationKeysRequest: ReduxActionCreator = createAction(INTEGRATION_KEYS_REQUEST)
 const integrationKeysSuccess: IntegrationKeysActionCreator = createAction(
     INTEGRATION_KEYS_SUCCESS,
-    (ethereumIdentities: IntegrationKeyIdList, privateKeys: IntegrationKeyIdList) => ({
+    (ethereumIdentities: IntegrationKeyIdList) => ({
         ethereumIdentities,
-        privateKeys,
     }),
 )
 const integrationKeysError: IntegrationKeysErrorActionCreator = createAction(INTEGRATION_KEYS_FAILURE, (error: ErrorInUi) => ({
@@ -61,21 +57,6 @@ const deleteIntegrationKeySuccess: IntegrationKeyIdActionCreator = createAction(
 )
 const deleteIntegrationKeyFailure: IntegrationKeysErrorActionCreator = createAction(
     DELETE_INTEGRATION_KEY_FAILURE,
-    (error: ErrorInUi) => ({
-        error,
-    }),
-)
-
-// create integration key
-const createIntegrationKeyRequest: ReduxActionCreator = createAction(CREATE_INTEGRATION_KEY_REQUEST)
-const createIntegrationKeySuccess: IntegrationKeyIdActionCreator = createAction(
-    CREATE_INTEGRATION_KEY_SUCCESS,
-    (id: IntegrationKeyId) => ({
-        id,
-    }),
-)
-const createIntegrationKeyFailure: IntegrationKeysErrorActionCreator = createAction(
-    CREATE_INTEGRATION_KEY_FAILURE,
     (error: ErrorInUi) => ({
         error,
     }),
@@ -159,23 +140,17 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
             handleEntities(integrationKeysSchema, dispatch)(result)
 
             const ethereumIdentities: IntegrationKeyIdList = []
-            const privateKeys: IntegrationKeyIdList = []
 
             result.forEach((key) => {
                 if (key.service === integrationKeyServices.ETHEREREUM_IDENTITY && key.id) {
                     ethereumIdentities.push(key.id)
                 }
-
-                if (key.service === integrationKeyServices.PRIVATE_KEY && key.id) {
-                    privateKeys.push(key.id)
-                }
             })
 
-            dispatch(integrationKeysSuccess(ethereumIdentities, privateKeys))
+            dispatch(integrationKeysSuccess(ethereumIdentities))
 
             return {
                 ethereumIdentities,
-                privateKeys,
             }
         }, (error) => {
             dispatch(integrationKeysError({
@@ -188,35 +163,12 @@ export const fetchIntegrationKeys = () => (dispatch: Function) => {
 export const updateBalances = () => (dispatch: Function, getState: Function) => {
     const state = getState()
     const ethIdentities = selectEthereumIdentities(state)
-    const privateKeys = selectPrivateKeys(state)
 
     const uniqueAccounts = [...(new Set([
         ...(ethIdentities || []).map(({ json }) => json.address).filter(Boolean),
-        ...(privateKeys || []).map(({ json }) => json.address).filter(Boolean),
     ]))]
 
     uniqueAccounts.forEach((account) => dispatch(updateBalance(account)))
-}
-
-export const createIntegrationKey = (name: string) => (dispatch: Function) => {
-    dispatch(createIntegrationKeyRequest())
-    return services.createPrivateKey(name)
-        .then((result) => {
-            const newId = handleEntities(integrationKeySchema, dispatch)(result)
-            dispatch(createIntegrationKeySuccess(newId))
-
-            // update account balance
-            const { address } = (result.json || {})
-
-            if (address) {
-                dispatch(updateBalance(address))
-            }
-        }, (error) => {
-            dispatch(createIntegrationKeyFailure({
-                message: error.message,
-            }))
-            throw error
-        })
 }
 
 export const deleteIntegrationKey = (id: IntegrationKeyId) => (dispatch: Function) => {

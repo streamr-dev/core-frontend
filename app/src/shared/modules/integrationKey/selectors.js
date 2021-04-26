@@ -27,17 +27,6 @@ export const selectEthereumIdentities: (StoreState) => ?IntegrationKeyList = cre
     (result: ?IntegrationKeyList, entities: EntitiesState): IntegrationKeyList => denormalize(result, integrationKeysSchema, entities),
 )
 
-export const selectPrivateKeyIds: (StoreState) => IntegrationKeyIdList = createSelector(
-    selectIntegrationKeyState,
-    (subState: IntegrationKeyState): ?IntegrationKeyIdList => subState.privateKeys,
-)
-
-export const selectPrivateKeys: (StoreState) => ?IntegrationKeyList = createSelector(
-    selectPrivateKeyIds,
-    selectEntities,
-    (result: ?IntegrationKeyList, entities: EntitiesState): IntegrationKeyList => denormalize(result, integrationKeysSchema, entities),
-)
-
 export const selectIntegrationKeysError: (StoreState) => ?ErrorInUi = createSelector(
     selectIntegrationKeyState,
     (subState: IntegrationKeyState): ?ErrorInUi => subState.integrationKeysError,
@@ -56,11 +45,9 @@ export const selectCreatingIdentityError: (StoreState) => ?ErrorInUi = createSel
 export const selectBalances: (StoreState) => BalanceList = createSelector(
     selectIntegrationKeyState,
     selectEthereumIdentities,
-    selectPrivateKeys,
-    (subState: IntegrationKeyState, ethIdentities: IntegrationKeyList, privateKeys: IntegrationKeyList): BalanceList => {
+    (subState: IntegrationKeyState, ethIdentities: IntegrationKeyList): BalanceList => {
         const uniqueAccounts = [...(new Set([
             ...(ethIdentities || []).map(({ json }) => json.address).filter(Boolean),
-            ...(privateKeys || []).map(({ json }) => json.address).filter(Boolean),
         ]))]
 
         return uniqueAccounts.reduce((result, address) => {

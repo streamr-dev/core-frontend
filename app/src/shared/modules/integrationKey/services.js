@@ -1,6 +1,5 @@
 // @flow
 
-import { getPublicWeb3 } from '$shared/web3/web3Provider'
 import { get, post, del, put } from '$shared/utils/api'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import {
@@ -26,23 +25,6 @@ const GRAPH_API_URL = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
 export const getIntegrationKeys = (): ApiResult<Array<IntegrationKey>> => get({
     url: routes.api.integrationKeys.index(),
 })
-
-export const createPrivateKey = (name: string): ApiResult<IntegrationKey> => {
-    const web3 = getPublicWeb3()
-
-    const { privateKey } = web3.eth.accounts.create()
-
-    return post({
-        url: routes.api.integrationKeys.index(),
-        data: {
-            name,
-            service: integrationKeyServices.PRIVATE_KEY,
-            json: {
-                privateKey,
-            },
-        },
-    })
-}
 
 export const editIntegrationKey = (id: IntegrationKeyId, name: string): ApiResult<IntegrationKey> =>
     put({
