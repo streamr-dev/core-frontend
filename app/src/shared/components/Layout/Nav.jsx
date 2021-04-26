@@ -109,12 +109,6 @@ const UnstyledWide = (props) => {
                         <Menu.Item as={Link} to={routes.streams.index()}>
                             Streams
                         </Menu.Item>
-                        <Menu.Item as={Link} to={routes.canvases.index()}>
-                            Canvases
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={routes.dashboards.index()}>
-                            Dashboards
-                        </Menu.Item>
                         <Menu.Item as={Link} to={routes.products.index()}>
                             Products
                         </Menu.Item>

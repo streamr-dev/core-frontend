@@ -1,8 +1,6 @@
 // @flow
 
 export const ResourceType = {
-    CANVAS: 'Canvas',
-    DASHBOARD: 'Dashboard',
     PRODUCT: 'Product',
     STREAM: 'Stream',
 }

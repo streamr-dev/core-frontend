@@ -9,10 +9,6 @@ export default () => {
             return 'marketplace'
         }
 
-        if (/^\/(canvas|dashboard)\//.test(pathname)) {
-            return 'core'
-        }
-
         return pathname.split(/\//).filter(Boolean)[0] || 'core'
     }, [pathname])
 }

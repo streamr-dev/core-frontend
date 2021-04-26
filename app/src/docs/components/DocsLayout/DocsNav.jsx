@@ -70,12 +70,6 @@ export const DocsMenu = () => (
         <Menu.Item as={Link} to={docsLinks.streams}>
             Streams
         </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.canvases}>
-            Canvases
-        </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.dashboards}>
-            Dashboards
-        </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.products}>
             Products
         </Menu.Item>

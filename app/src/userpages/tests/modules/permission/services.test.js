@@ -18,9 +18,7 @@ describe('services', () => {
 
     describe('getApiUrl', () => {
         it.each([
-            ['DASHBOARD', 'dashboards'],
             ['STREAM', 'streams'],
-            ['CANVAS', 'canvases'],
             ['PRODUCT', 'products'],
         ])('returns %s permission urls', (resourceType, url) => {
             expect(all.getApiUrl({
@@ -53,38 +51,6 @@ describe('services', () => {
     })
 
     describe('getResourcePermissions', () => {
-        it('makes a GET request for dashboard permissions', async (done) => {
-            const id = 'afasdfasdfasgsdfg'
-            all.getResourcePermissions({
-                resourceType: 'DASHBOARD',
-                resourceId: id,
-            })
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-            expect(request.url).toMatch(`dashboards/${id}/permissions`)
-            expect(request.config.method).toMatch('get')
-            done()
-            request.respondWith({
-                status: 200,
-            })
-        })
-
-        it('makes a GET request for canvas permissions', async (done) => {
-            const id = 'afasdfasdfasgsdfg'
-            all.getResourcePermissions({
-                resourceType: 'CANVAS',
-                resourceId: id,
-            })
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-            expect(request.url).toMatch(`canvases/${id}/permissions`)
-            expect(request.config.method).toMatch('get')
-            done()
-            request.respondWith({
-                status: 200,
-            })
-        })
-
         it('makes a GET request for stream permissions', async (done) => {
             const id = 'afasdfasdfasgsdfg'
             all.getResourcePermissions({
@@ -119,50 +85,6 @@ describe('services', () => {
     })
 
     describe('addResourcePermission', () => {
-        it('makes a POST request to add dashboard permission', async (done) => {
-            const id = 'afasdfasdfasgsdfg'
-            all.addResourcePermission({
-                resourceType: 'DASHBOARD',
-                resourceId: id,
-                data: {
-                    test: '1234',
-                },
-            })
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-            expect(request.url).toMatch(`dashboards/${id}/permissions`)
-            expect(request.config.method).toMatch('post')
-            expect(request.config.data).toMatch(JSON.stringify({
-                test: '1234',
-            }))
-            done()
-            request.respondWith({
-                status: 200,
-            })
-        })
-
-        it('makes a POST request to add canvas permission', async (done) => {
-            const id = 'afasdfasdfasgsdfg'
-            all.addResourcePermission({
-                resourceType: 'CANVAS',
-                resourceId: id,
-                data: {
-                    test: '1234',
-                },
-            })
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-            expect(request.url).toMatch(`canvases/${id}/permissions`)
-            expect(request.config.method).toMatch('post')
-            expect(request.config.data).toMatch(JSON.stringify({
-                test: '1234',
-            }))
-            done()
-            request.respondWith({
-                status: 200,
-            })
-        })
-
         it('makes a POST request to add stream permission', async (done) => {
             const id = 'afasdfasdfasgsdfg'
             all.addResourcePermission({
@@ -209,42 +131,6 @@ describe('services', () => {
     })
 
     describe('removeResourcePermission', () => {
-        it('makes a DELETE request to remove dashboard permission', async (done) => {
-            const resourceId = 'afasdfasdfasgsdfg'
-            const id = '1234'
-            all.removeResourcePermission({
-                resourceType: 'DASHBOARD',
-                resourceId,
-                id,
-            })
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-            expect(request.url).toMatch(`dashboards/${resourceId}/permissions/${id}`)
-            expect(request.config.method).toMatch('delete')
-            done()
-            request.respondWith({
-                status: 200,
-            })
-        })
-
-        it('makes a DELETE request to remove canvas permission', async (done) => {
-            const resourceId = 'afasdfasdfasgsdfg'
-            const id = '1234'
-            all.removeResourcePermission({
-                resourceType: 'CANVAS',
-                resourceId,
-                id,
-            })
-            await moxios.promiseWait()
-            const request = moxios.requests.mostRecent()
-            expect(request.url).toMatch(`canvases/${resourceId}/permissions/${id}`)
-            expect(request.config.method).toMatch('delete')
-            done()
-            request.respondWith({
-                status: 200,
-            })
-        })
-
         it('makes a DELETE request to remove stream permission', async (done) => {
             const resourceId = 'afasdfasdfasgsdfg'
             const id = '1234'

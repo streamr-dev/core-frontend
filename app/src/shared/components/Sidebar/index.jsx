@@ -10,7 +10,6 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import isEditableElement from '$shared/utils/isEditableElement'
 import SharedErrorComponentView from '$shared/components/ErrorComponentView'
 import SvgIcon from '$shared/components/SvgIcon'
-import AppInfo from '$shared/components/AppInfo'
 
 import Select from './Select'
 
@@ -81,7 +80,7 @@ const ErrorComponentView = styled(UnstyledErrorComponentView)`
     text-align: left;
 `
 
-const UnstyledHeader = ({ onClose, title, subtitle = <AppInfo />, ...props }) => (
+const UnstyledHeader = ({ onClose, title, subtitle, ...props }) => (
     <Container {...props}>
         <div>
             <h3 title={title}>

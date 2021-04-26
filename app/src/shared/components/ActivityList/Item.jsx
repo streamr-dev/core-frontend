@@ -88,8 +88,6 @@ const ResourceImage = ({ resource, resourceType, isLoading }) => {
             ) : (
                 <SvgIcon name="product" />
             )
-        case resourceTypes.CANVAS:
-            return <SvgIcon name="canvas" />
         case resourceTypes.STREAM:
             return <SvgIcon name="stream" />
         default:
@@ -159,7 +157,6 @@ const Item = ({ activity }) => {
                         resource.type === productTypes.DATAUNION && 'Data Union'}
                         {resourceType === resourceTypes.PRODUCT &&
                         resource && resource.type === productTypes.NORMAL && 'Data Product'}
-                        {resourceType === resourceTypes.CANVAS && 'Canvas'}
                         {resourceType === resourceTypes.STREAM && 'Stream'}
                     </span>
                     {' '}

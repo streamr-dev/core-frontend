@@ -25,12 +25,6 @@ export const subscriptionsSchema = [subscriptionSchema]
 export const transactionSchema = new schema.Entity('transactions')
 export const transactionsSchema = [transactionSchema]
 
-export const dashboardSchema = new schema.Entity('dashboards')
-export const dashboardsSchema = [dashboardSchema]
-
-export const canvasSchema = new schema.Entity('canvases')
-export const canvasesSchema = [canvasSchema]
-
 export const integrationKeySchema = new schema.Entity('integrationKeys')
 export const integrationKeysSchema = [integrationKeySchema]
 

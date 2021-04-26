@@ -18,8 +18,6 @@ export const initialState: EntitiesState = {
     relatedProducts: {},
     subscriptions: {},
     transactions: {},
-    dashboards: {},
-    canvases: {},
     integrationKeys: {},
     joinRequests: {},
     dataUnionSecrets: {},

@@ -61,12 +61,6 @@ const Header = ({
                         <Tab to={routes.streams.index()}>
                             Streams
                         </Tab>
-                        <Tab to={routes.canvases.index()}>
-                            Canvases
-                        </Tab>
-                        <Tab to={routes.dashboards.index()}>
-                            Dashboards
-                        </Tab>
                         <Tab to={routes.products.index()}>
                             Products
                         </Tab>

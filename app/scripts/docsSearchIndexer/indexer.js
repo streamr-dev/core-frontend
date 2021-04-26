@@ -18,17 +18,18 @@ import * as Sentry from '@sentry/node'
 import {
     buildLunrIndex,
     processMdxDocsPages,
-    processModuleReferenceDocs,
-    commitModulesToStore,
-    validateStores,
     saveStore,
     saveIndex,
 } from './utils'
 
 function initSentry() {
-    Sentry.init({
-        dsn: 'https://8311f8e7df9046b781600f95eefd1aa0@o151964.ingest.sentry.io/5235991',
-    })
+    if (process.env.SENTRY_INDEXER_DSN) {
+        Sentry.init({
+            dsn: process.env.SENTRY_INDEXER_DSN,
+            release: process.env.VERSION,
+            debug: true,
+        })
+    }
 }
 
 /**
@@ -37,12 +38,14 @@ function initSentry() {
 (async function start() {
     console.log('Generating the Docs Search Index & Store...')
     initSentry()
-    const modules = await processModuleReferenceDocs()
-    const modulesStore = commitModulesToStore(modules)
     const pagesStore = await processMdxDocsPages()
-    validateStores(pagesStore, modulesStore)
-    const searchStore = Object.assign(modulesStore, pagesStore)
-    const searchIndex = buildLunrIndex(searchStore)
+
+    if (!pagesStore) {
+        throw new Error('Docs Pages not found!')
+    }
+
+    const searchStore = Object.assign(pagesStore)
+    const searchIndex = buildLunrIndex(pagesStore)
     try {
         saveStore(searchStore)
         saveIndex(searchIndex)

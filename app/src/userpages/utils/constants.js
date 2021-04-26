@@ -9,7 +9,7 @@ export const defaultColumns = {
     lg: 3,
 }
 
-type ResourceType = 'stream' | 'canvas' | 'product' | 'dashboard' | 'dataunion'
+type ResourceType = 'stream' | 'product' | 'dataunion'
 
 /* eslint-disable arrow-body-style */
 export const getFilters = (resourceType: ResourceType): {

@@ -522,42 +522,6 @@ const sources = {
             </g>
         </svg>
     ),
-    canvas: (
-        <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <rect id="a" x="0" y="0" width="32" height="32" rx="4" />
-                <rect id="b" x="0" y="0" width="32" height="32" rx="4" />
-            </defs>
-            <g fill="none" fillRule="evenodd">
-                <rect stroke="#D8D8D8" x=".5" y=".5" width="31" height="31" rx="4" />
-                <mask id="c" fill="#fff">
-                    <use xlinkHref="#b" />
-                </mask>
-                <use fill="#97BAC0" xlinkHref="#b" />
-                <g mask="url(#c)">
-                    <g transform="translate(6 6)">
-                        <circle stroke="#FFF" strokeWidth="1.5" cx="4" cy="4" r="3.25" />
-                        <circle fill="#FFF" cx="4" cy="4" r="1" />
-                    </g>
-                </g>
-                <g mask="url(#c)">
-                    <g transform="translate(18 6)">
-                        <circle stroke="#FFF" strokeWidth="1.5" cx="4" cy="4" r="3.25" />
-                        <circle fill="#FFF" cx="4" cy="4" r="1" />
-                    </g>
-                </g>
-                <g mask="url(#c)">
-                    <g transform="translate(6 18)">
-                        <path stroke="#FFF" strokeWidth="1.5" d="M.75.75h6.5v6.5H.75z" />
-                        <circle fill="#FFF" cx="4" cy="4" r="1" />
-                    </g>
-                </g>
-                <g mask="url(#c)">
-                    <circle stroke="#FFF" strokeWidth="1.5" cx="4" cy="4" r="3.25" transform="translate(18 18)" />
-                </g>
-            </g>
-        </svg>
-    ),
     product: (
         <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
             <defs>

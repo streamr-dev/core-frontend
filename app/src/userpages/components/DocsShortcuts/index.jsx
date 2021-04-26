@@ -14,12 +14,6 @@ const DocsShortcuts = () => (
         <Link to={docsLinks.streams} target="_blank" rel="noopener noreferrer">
             Streams
         </Link>
-        <Link to={docsLinks.canvases} target="_blank" rel="noopener noreferrer">
-            Canvases
-        </Link>
-        <Link to={docsLinks.dashboards} target="_blank" rel="noopener noreferrer">
-            Dashboards
-        </Link>
         <Link to={docsLinks.products} target="_blank" rel="noopener noreferrer">
             Products
         </Link>
