@@ -9,7 +9,6 @@ import Notification from '$shared/utils/Notification'
 import TransactionNotification from './TransactionNotification'
 import BasicNotification from './BasicNotification'
 import styles from './notificationStyles'
-import wrapperStyles from './Notifications.pcss'
 
 type System = {
     addNotification: (any) => void,
@@ -103,7 +102,7 @@ class Notifications extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className={wrapperStyles.wrapper}>
+            <div>
                 <NotificationSystem
                     style={styles}
                     ref={this.system}

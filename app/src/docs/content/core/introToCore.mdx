@@ -8,20 +8,16 @@ import QuickHelp from './images/intro_to_core_03_desktop.jpg'
 import QuickHelp2x from './images/intro_to_core_03_desktop@2x.jpg'
 import SubMenus from './images/intro_to_core_04_desktop.jpg'
 import SubMenus2x from './images/intro_to_core_04_desktop@2x.jpg'
-import TileMenu from './images/intro_to_core_05_desktop.jpg'
-import TileMenu2x from './images/intro_to_core_05_desktop@2x.jpg'
-import ShareButton from './images/intro_to_core_06_desktop.jpg'
-import ShareButton2x from './images/intro_to_core_06_desktop@2x.jpg'
 import ShareSettings from './images/intro_to_core_07_desktop.jpg'
 import ShareSettings2x from './images/intro_to_core_07_desktop@2x.jpg'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
 # Introduction to Core
-Streamr Core is the collection of open source applications developed and supported by Streamr that help you create, process, visualise and sell your real-time data. It allows you to create real-time data streams from your devices, build and test real-time processes with them, grab free or paid data streams from our Marketplace, or build your own products and sell them. It keeps track of all of your resources and earnings and makes it all available in one easy to use interface.
+Streamr Core is the collection of open source applications developed and supported by Streamr that help you create, process, visualise and sell your real-time data. It allows you to create real-time data streams from your devices, grab free or paid data streams from our Marketplace, or build your own products and sell them. It keeps track of all of your resources and earnings and makes it all available in one easy to use interface.
 
 ## Main user interface
-The main interface to the Core app contains a number of elements, including user profile, view switcher, main view panel (list or tile), create button, filter and sort controls,  quick help button and the app menu. The main views in the app are Streams, Canvases, Dashboards, Products, Subscriptions and Transactions. There is also a Settings view accessed through the menu at top right (which shows the intials of your currently signed in account).
+The main interface to the Core app contains a number of elements, including user profile, view switcher, main view panel (list or tile), create button, filter and sort controls,  quick help button and the app menu. The main views in the app are Streams, Products, Subscriptions and Transactions. There is also a Settings view accessed through the menu at top right (which shows the intials of your currently signed in account).
 
 <Image
   border
@@ -31,9 +27,7 @@ The main interface to the Core app contains a number of elements, including user
 />
 
 ### Create buttons
-Four of the main views offer create functions; Streams, Canvases, Dashboards and Products. Creating a stream or product will take you into the relevant create flow. For more on this, see Working with Streams or Working with Products. 
-
-In the case of canvases, these are built within the powerful Core visual programming editor. For more on this see Working with Canvases. Dashboards are also a unique case, because dashboards are basically view-only versions of the visualisation modules from canvases, so they have their own UI allowing you to add modules from your canvases and arrange the dashboard tiles sizes and layout. For more, see Working with Dashboards.
+Two of the main views offer create functions; Streams and Products. Creating a stream or a product will take you into the relevant create flow. For more on this, see Working with Streams or Working with Products. 
 
 ### User profile
 You can set or edit your profile image (useful in future iterations of the Marketplace), username, email address and Ethereum address by either going to the Settings menu (at upper right with your Eth Address) or by clicking on your profile image.
@@ -58,7 +52,7 @@ The quick help menu gives you fast access to the these docs and the main Streamr
 />
 
 ### Tile and List submenus
-Both tile (canvases, dashboards, products, subscriptions) and list views (streams and transactions) offer per-item functions, accessed via a meatball menu from top right of tiles and right hand end of list views. Simply mouseover the item to see the menu.
+Both tile (products and subscriptions) and list views (streams and transactions) offer per-item functions, accessed via a meatball menu from top right of tiles and right hand end of list views. Simply mouseover the item to see the menu.
 
 <Image
   src={SubMenus}
@@ -67,22 +61,8 @@ Both tile (canvases, dashboards, products, subscriptions) and list views (stream
   figCaption="List item submenu (streams)"
 />
 
-<Image
-  src={TileMenu}
-  highResSrc={TileMenu2x}
-  alt="Tile menu"
-  figCaption="Tile submenu (canvases)"
-/>
-
 ## Sharing resources in Core
-All of the main resources types created and used within Core can be shared with others - streams, canvases and dashboards. In the case of canvases and dashboards, they can be shared from either their tile menu or from within their editing environments. Look for the share icon in the bottom toolbar. Streams can only be shared from the main Streams view via the submenu.
-
-<Image
-  src={ShareButton}
-  highResSrc={ShareButton2x}
-  alt="Share button"
-  figCaption="Share button in canvas editor"
-/>
+Streams are the main type of resource that can be shared with others. Streams can be shared from the main Streams view via the submenu or on the Stream edit page.
 
 When you share a resource, you can share it either privately or publicly. A private share means the link is only accessible to the users whose Ethereum address it has been shared with. A public share means anyone with the link — and importantly, anyone using the public API — can access your resource. 
 

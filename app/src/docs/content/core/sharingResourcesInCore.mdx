@@ -12,8 +12,7 @@ import coreStyles from '$docs/components/Pages/Core/core.pcss'
 
 # Sharing resources in Core
 
-When using the Core app you can share most resources with other Streamr user accounts. Streams, canvases and dashboards can all be shared. There are two routes in Core for sharing resources, from the edit view or the main display view for that resource. Streams are shared from the list item menu or the share button in the edit view. Canvases and
-dashboards are shared from the tile menu or the share button on the editor toolbar.
+When using the Core app, you can share your Stream resources with other Streamr user accounts. Streams are shared from the list item menu or the share button in the edit view.
 
 <figure>
     <div className={coreStyles.videoFrame}>
@@ -47,9 +46,7 @@ Using the role chooser, you can assign a role with preset permissions, and then 
 
 ## Permissions and Roles
 
-Permissions and roles vary somewhat between streams and other resources. The matrixes below outline the role types and permissions for those roles.
-
-### Streams
+The matrix below outlines the role types and permissions for Streams.
 
 <div className={coreStyles.tableWrapper}>
     <table className={cx(docsStyles.striped, coreStyles.matrix)}>
@@ -108,119 +105,6 @@ Permissions and roles vary somewhat between streams and other resources. The mat
                 <td>stream_share</td>
                 <td>Edit stream permissions</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-### Canvases
-
-<div className={coreStyles.tableWrapper}>
-    <table className={cx(docsStyles.striped, coreStyles.matrix)}>
-        <thead>
-            <tr>
-                <th>Permissions</th>
-                <th>User can</th>
-                <th>User</th>
-                <th>Editor</th>
-                <th>Owner</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>canvas_get</td>
-                <td>Open canvas</td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>canvas_edit</td>
-                <td>Edit canvas</td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>canvas_delete</td>
-                <td>Delete canvas</td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>canvas_startstop</td>
-                <td>Start &amp; stop canvas</td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>canvas_interact</td>
-                <td>Interact with runtime UI</td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>canvas_share</td>
-                <td>Edit canvas permissions</td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-### Dashboards
-
-<div className={coreStyles.tableWrapper}>
-    <table className={cx(docsStyles.striped, coreStyles.matrix)}>
-        <thead>
-            <tr>
-                <th>Permissions</th>
-                <th>User can</th>
-                <th>User</th>
-                <th>Editor</th>
-                <th>Owner</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>dashboard_get</td>
-                <td>Open dashboard</td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>dashboard_edit</td>
-                <td>Edit dashboard</td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>dashboard_delete</td>
-                <td>Delete dashboard</td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>dashboard_interact</td>
-                <td>Interact with runtime UI</td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>dashboard_share</td>
-                <td>Edit dashboard permissions</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>

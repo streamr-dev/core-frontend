@@ -105,7 +105,6 @@ const EditableText = ({
                 [styles.idle]: !editing,
                 [styles.disabled]: disabled,
                 [styles.blank]: valueIsBlank,
-                [styles.dragCancel]: !!editing,
                 [styles.hidePlaceholderOnFocus]: hidePlaceholderOnFocus,
             }, valueIsBlank ? blankClassName : undefined)}
             onDoubleClick={startEditing}

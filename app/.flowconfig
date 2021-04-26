@@ -3,9 +3,7 @@
 
 [untyped]
 .*/node_modules/@streamr/streamr-layout/.*
-.*/node_modules/react-leaflet/.*
 .*/node_modules/react-select/.*
-.*/node_modules/react-grid-layout/.*
 
 [libs]
 ./src/marketplace/flowtype/global-types.js
@@ -25,7 +23,6 @@ module.name_mapper='\$routes' -> '<PROJECT_ROOT>/src/routes'
 module.name_mapper='\$shared' -> '<PROJECT_ROOT>/src/shared'
 module.name_mapper='\$testUtils' -> '<PROJECT_ROOT>/test/test-utils'
 module.name_mapper='\$utils' -> '<PROJECT_ROOT>/src/utils'
-module.name_mapper='\$editor' -> '<PROJECT_ROOT>/src/editor'
 module.name_mapper='\$ui' -> '<PROJECT_ROOT>/src/shared/components/Ui'
 sharedmemory.hash_table_pow=21
 
