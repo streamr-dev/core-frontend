@@ -50,9 +50,3 @@ export const getStreams = (params: any, pageSize: number, offset: number): ApiRe
         streams: streams.splice(0, pageSize),
         hasMoreResults: streams.length > 0,
     }))
-
-export const autodetectStreamfields = (streamId: StreamId): ApiResult<Stream> => get({
-    url: routes.api.streams.detectFields({
-        streamId,
-    }),
-})

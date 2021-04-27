@@ -4,7 +4,7 @@ import set from 'lodash/set'
 
 import uuid from 'uuid'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Stream, StreamId, StreamIdList, StreamFieldList } from '$shared/flowtype/stream-types'
+import type { Stream, StreamId, StreamIdList } from '$shared/flowtype/stream-types'
 import type { Filter } from '$userpages/flowtype/common-types'
 import type { ResourceId } from '$userpages/flowtype/permission-types'
 
@@ -41,24 +41,6 @@ export const DELETE_STREAM_SUCCESS = 'userpages/streams/DELETE_STREAM_SUCCESS'
 export const DELETE_STREAM_FAILURE = 'userpages/streams/DELETE_STREAM_FAILURE'
 
 export const OPEN_STREAM = 'userpages/streams/OPEN_STREAM'
-
-export const STREAM_FIELD_AUTODETECT_REQUEST = 'userpages/streams/STREAM_FIELD_AUTODETECT_REQUEST'
-export const STREAM_FIELD_AUTODETECT_SUCCESS = 'userpages/streams/STREAM_FIELD_AUTODETECT_SUCCESS'
-export const STREAM_FIELD_AUTODETECT_FAILURE = 'userpages/streams/STREAM_FIELD_AUTODETECT_FAILURE'
-
-const getStreamFieldAutodetectRequest = () => ({
-    type: STREAM_FIELD_AUTODETECT_REQUEST,
-})
-
-const getStreamFieldAutodetectSuccess = (fields: StreamFieldList) => ({
-    type: STREAM_FIELD_AUTODETECT_SUCCESS,
-    fields,
-})
-
-const getStreamFieldAutodetectFailure = (error: ErrorInUi) => ({
-    type: STREAM_FIELD_AUTODETECT_FAILURE,
-    error,
-})
 
 const getStreamRequest = () => ({
     type: GET_STREAM_REQUEST,
@@ -301,28 +283,6 @@ export const updateEditStreamField = (field: string, data: any) => (dispatch: Fu
     set(stream, field, data)
 
     handleEntities(streamSchema, dispatch)(stream)
-}
-
-export const streamFieldsAutodetect = (id: StreamId) => (dispatch: Function) => {
-    dispatch(getStreamFieldAutodetectRequest())
-    return services.autodetectStreamfields(id)
-        .then((data) => ({
-            id,
-            config: {
-                fields: data.config.fields,
-            },
-        }))
-        .then(({ config: { fields } }) => {
-            if (fields) {
-                dispatch(updateEditStreamField('config.fields', fields))
-                dispatch(getStreamFieldAutodetectSuccess(fields))
-            }
-        }, (err) => {
-            if (err) {
-                dispatch(getStreamFieldAutodetectFailure(err))
-                throw err
-            }
-        })
 }
 
 export const openStream = (id: ?StreamId) => ({
