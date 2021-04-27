@@ -11,7 +11,6 @@ const initialState = {
     updating: false,
     deleting: false,
     error: null,
-    autodetectFetching: false,
     streamFieldAutodetectError: null,
     pageSize: 20,
     hasMoreSearchResults: null,

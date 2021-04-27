@@ -34,7 +34,6 @@ const initialState = {
     updating: false,
     deleting: false,
     error: null,
-    autodetectFetching: false,
     streamFieldAutodetectError: null,
     pageSize: streamListPageSize,
     hasMoreSearchResults: null,

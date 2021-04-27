@@ -54,11 +54,6 @@ export const selectUpdating: (StoreState) => boolean = createSelector(
     (subState: UserPageStreamsState): boolean => subState.updating,
 )
 
-export const selectFieldsAutodetectFetching: (StoreState) => boolean = createSelector(
-    selectUserPageStreamsState,
-    (subState: UserPageStreamsState): boolean => subState.autodetectFetching,
-)
-
 export const selectPageSize: (StoreState) => number = createSelector(
     selectUserPageStreamsState,
     (subState: UserPageStreamsState): number => subState.pageSize,
