@@ -2,7 +2,6 @@ import docsLinks from '../docsLinks'
 
 // docsMap is used by the Docs UI Navigation and the Search Indexer script.
 // All sections must contain a 'root' entry.
-// N.B. Module references are indexed separately and thus only require the [path] property.
 
 // [Section title] {   <-- Rendered navigation section title.
 //     [Page Title] : {    <-- Rendered navigation page title.
@@ -86,87 +85,6 @@ export const generateMap = () => ({
             filePath: 'streams/integrationPatterns.mdx',
         },
     },
-    Canvases: {
-        root: {
-            path: docsLinks.canvases,
-            section: 'Canvases',
-            title: 'Intro to canvases',
-            filePath: 'canvases/introToCanvases.mdx',
-        },
-        'Intro to canvases': {
-            path: docsLinks.introToCanvases,
-            section: 'Canvases',
-            title: 'Intro to canvases',
-            filePath: 'canvases/introToCanvases.mdx',
-        },
-        'Using Canvases': {
-            path: docsLinks.usingCanvases,
-            section: 'Canvases',
-            title: 'Using Canvases',
-            filePath: 'canvases/usingCanvasesInCore.mdx',
-        },
-        'Modules basics': {
-            path: docsLinks.modulesBasics,
-            section: 'Canvases',
-            title: 'Modules basics',
-            filePath: 'canvases/modulesBasics.mdx',
-        },
-        'Modules advanced': {
-            path: docsLinks.modulesAdvanced,
-            section: 'Canvases',
-            title: 'Modules advanced',
-            filePath: 'canvases/modulesAdvanced.mdx',
-        },
-    },
-    'Module Reference': {
-        root: {
-            path: docsLinks.moduleReference,
-        },
-        Boolean: {
-            path: docsLinks.moduleReferenceBoolean,
-        },
-        'Custom Modules': {
-            path: docsLinks.moduleReferenceCustomModules,
-        },
-        Input: {
-            path: docsLinks.moduleReferenceInput,
-        },
-        Integrations: {
-            path: docsLinks.moduleReferenceIntegrations,
-        },
-        List: {
-            path: docsLinks.moduleReferenceList,
-        },
-        Map: {
-            path: docsLinks.moduleReferenceMap,
-        },
-        Streams: {
-            path: docsLinks.moduleReferenceStreams,
-        },
-        Text: {
-            path: docsLinks.moduleReferenceText,
-        },
-        'Time & Date': {
-            path: docsLinks.moduleReferenceTimeAndDate,
-        },
-        'Time Series': {
-            path: docsLinks.moduleReferenceTimeSeries,
-        },
-        Utils: {
-            path: docsLinks.moduleReferenceUtils,
-        },
-        Visualizations: {
-            path: docsLinks.moduleReferenceVisualizations,
-        },
-    },
-    Dashboards: {
-        root: {
-            path: docsLinks.dashboards,
-            section: 'Dashboards',
-            title: 'Dashboards',
-            filePath: 'dashboards/introToDashboards.mdx',
-        },
-    },
     'Data Products': {
         root: {
             path: docsLinks.products,
@@ -243,12 +161,6 @@ export const generateMap = () => ({
             section: 'Tutorials',
             title: 'Simple pub/sub',
             filePath: 'tutorials/buildingPubSub.mdx',
-        },
-        'Custom modules': {
-            path: docsLinks.customModuleTutorial,
-            section: 'Tutorials',
-            title: 'Custom modules',
-            filePath: 'tutorials/buildingCustomModule.mdx',
         },
     },
     'DATA Token': {

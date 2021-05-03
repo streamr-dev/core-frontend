@@ -11,8 +11,6 @@ import type { StoreState as MarketplaceStoreState } from '$mp/flowtype/store-sta
 import type { StoreState as UserPagesStoreState } from '$userpages/flowtype/states/store-state'
 import type { User } from '$shared/flowtype/user-types'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { DashboardEntities } from '$userpages/flowtype/dashboard-types'
-import type { CanvasEntities } from '$userpages/flowtype/canvas-types'
 import type { IntegrationKeyEntities, IntegrationKeyIdList, BalanceList } from '$shared/flowtype/integration-key-types'
 
 // entities
@@ -26,8 +24,6 @@ export type EntitiesState = {
     relatedProducts?: ProductEntities,
     streams?: StreamEntities,
     transactions?: TransactionEntities,
-    dashboards?: DashboardEntities,
-    canvases?: CanvasEntities,
     integrationKeys?: IntegrationKeyEntities,
 }
 
@@ -43,11 +39,8 @@ export type UserState = {
 // integration key
 export type IntegrationKeyState = {
     ethereumIdentities: IntegrationKeyIdList,
-    privateKeys: IntegrationKeyIdList,
     fetchingIntegrationKeys: boolean,
     integrationKeysError: ?ErrorInUi,
-    creatingIntegrationKey: boolean,
-    creatingIntegrationKeyError: ?ErrorInUi,
     creatingIdentity: boolean,
     creatingIdentityError: ?ErrorInUi,
     removingIntegrationKey: boolean,

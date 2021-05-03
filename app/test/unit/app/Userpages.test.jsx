@@ -5,18 +5,6 @@ import { mount } from 'enzyme'
 import UserpagesRouter from '$mp/../app/Userpages'
 
 /* eslint-disable react/prop-types */
-jest.mock('$userpages/components/DashboardPage/List', () => ({
-    __esModule: true,
-    default: () => (
-        'Dashboard list'
-    ),
-}))
-jest.mock('$userpages/components/CanvasPage/List', () => ({
-    __esModule: true,
-    default: () => (
-        'Canvas list'
-    ),
-}))
 jest.mock('$userpages/components/StreamPage', () => ({
     __esModule: true,
     default: ({ match }) => (
@@ -84,20 +72,6 @@ jest.mock('$auth/utils/userAuthenticated', () => ({
 /* eslint-enable react/prop-types */
 
 describe('Userpages Routes', () => {
-    it('shows list of canvases', () => {
-        const el = mount((
-            <MemoryRouter
-                initialEntries={['/core/canvases']}
-            >
-                <Switch>
-                    {UserpagesRouter()}
-                </Switch>
-            </MemoryRouter>
-        ))
-
-        expect(el.text()).toBe('Canvas list')
-    })
-
     it('shows profile', () => {
         const el = mount((
             <MemoryRouter
@@ -110,20 +84,6 @@ describe('Userpages Routes', () => {
         ))
 
         expect(el.text()).toBe('Profile page')
-    })
-
-    it('shows dashboard list', () => {
-        const el = mount((
-            <MemoryRouter
-                initialEntries={['/core/dashboards']}
-            >
-                <Switch>
-                    {UserpagesRouter()}
-                </Switch>
-            </MemoryRouter>
-        ))
-
-        expect(el.text()).toBe('Dashboard list')
     })
 
     it('shows stream list', () => {

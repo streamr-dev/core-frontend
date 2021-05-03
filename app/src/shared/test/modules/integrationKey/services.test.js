@@ -1,7 +1,6 @@
 import moxios from 'moxios'
 
 import * as services from '$shared/modules/integrationKey/services'
-import * as getWeb3 from '$shared/web3/web3Provider'
 import * as utils from '$mp/utils/web3'
 import { BalanceType } from '$shared/flowtype/integration-key-types'
 
@@ -55,57 +54,6 @@ describe('integrationKey - services', () => {
 
             const result = await services.getIntegrationKeys()
             expect(result).toStrictEqual(data)
-        })
-    })
-
-    describe('createPrivateKey', () => {
-        it('sends a POST request to create a new integration key', async () => {
-            const name = 'My private key'
-            const account = {
-                address: '0x1234',
-                privateKey: '1234567890abcdefgh',
-            }
-            const data = {
-                id: '1',
-                name,
-                service: integrationKeyServices.PRIVATE_KEY,
-                json: {
-                    address: account.address,
-                },
-            }
-
-            const createStub = jest.fn(() => account)
-            const publicWeb3Stub = {
-                eth: {
-                    accounts: {
-                        create: createStub,
-                    },
-                },
-            }
-            jest.spyOn(getWeb3, 'getPublicWeb3').mockImplementation(jest.fn(() => publicWeb3Stub))
-
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: data,
-                })
-
-                expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe('/integration_keys')
-                expect(request.headers['Content-Type']).toBe('application/json')
-                expect(request.config.data).toBe(JSON.stringify({
-                    name,
-                    service: integrationKeyServices.PRIVATE_KEY,
-                    json: {
-                        privateKey: account.privateKey,
-                    },
-                }))
-            })
-
-            const result = await services.createPrivateKey(name)
-            expect(result).toStrictEqual(data)
-            expect(createStub).toBeCalled()
         })
     })
 

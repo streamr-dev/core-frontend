@@ -13,10 +13,6 @@ const resourcePath = (resourceType: $Keys<typeof ResourceType>, id: ResourceID) 
             return routes.products.edit({
                 id,
             })
-        case ResourceType.CANVAS:
-            return routes.canvases.edit({
-                id,
-            })
         default:
             return null
     }

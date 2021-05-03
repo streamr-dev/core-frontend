@@ -13,9 +13,7 @@ type ResourcePermission = {
 
 export const getApiUrl = ({ resourceType, resourceId, id }: ResourcePermission) => {
     const mapping = {
-        DASHBOARD: ['dashboards', 'dashboardId'],
         STREAM: ['streams', 'streamId'],
-        CANVAS: ['canvases', 'canvasId'],
         PRODUCT: ['products', 'productId'],
     }
     const [urlPart, targetId]: [string, string] = mapping[resourceType] || []

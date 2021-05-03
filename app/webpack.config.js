@@ -231,7 +231,6 @@ module.exports = {
                 'src/shared/**/*.*',
                 'src/routes/**/*.*',
                 'src/userpages/**/*.*',
-                'src/editor/**/*.*',
                 'src/docs/**/*.*',
                 'src/*.*',
             ].filter(Boolean),
@@ -253,8 +252,6 @@ module.exports = {
                     '**/stub.jsx',
                     // skip stories
                     '**/*.stories.*',
-                    // and files used by stories
-                    'src/editor/canvas/components/ModuleRenderer/modules.js',
                     // skip MD documentation
                     'src/docs/docsEditingGuide.md',
                     // skip sketch files
@@ -316,7 +313,6 @@ module.exports = {
             $mp: path.resolve(__dirname, 'src/marketplace/'),
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
-            $editor: path.resolve(__dirname, 'src/editor/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
             $routes: path.resolve(__dirname, 'src/routes'),
             $utils: path.resolve(__dirname, 'src/utils/'),
@@ -326,7 +322,6 @@ module.exports = {
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
             'eth-lib': path.resolve(__dirname, 'node_modules/eth-lib'),
             eventemitter3: path.resolve(__dirname, 'node_modules/eventemitter3'),
-            'hoist-non-react-statics': path.resolve(__dirname, 'node_modules/hoist-non-react-statics'),
             invariant: path.resolve(__dirname, 'node_modules/invariant'),
             isarray: path.resolve(__dirname, 'node_modules/isarray'),
             'query-string': path.resolve(__dirname, 'node_modules/query-string'),

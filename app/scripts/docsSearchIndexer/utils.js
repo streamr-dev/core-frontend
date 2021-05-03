@@ -6,11 +6,6 @@ const remark = require('remark')
 const remarkMdx = require('remark-mdx')
 const strip = require('remark-mdx-to-plain-text')
 const lunr = require('lunr')
-const h2p = require('html2plaintext')
-const { titleize } = require('@streamr/streamr-layout')
-const canvasModules = require('../moduleReferences/canvasModuleHelpData.json')
-
-const baseModuleRefPath = '/docs/module-reference/'
 
 /**
  * Loads MDX as plain text.
@@ -19,70 +14,6 @@ require.extensions['.mdx'] = function readMdx(module, filename) {
     const mdxFilename = filename
     const mdxModule = module
     mdxModule.exports = fs.readFileSync(mdxFilename, 'utf8')
-}
-
-/**
- * Convert category name into suitable anchor
- * e.g. Time & Date -> time-and-date
- * NB: Must match toAnchor from the Platorm: src/docs/components/Pages/ModuleReference/data.js
-*/
-const toAnchor = (text) => (
-    text.trim()
-        .toLowerCase()
-        .replace(/&/g, 'and')
-        .replace(/\s+/g, '-')
-)
-
-/**
- * Generates formatted Module text content.
-*/
-const generateModuleRefTextContent = (name, path, content) => (
-    `${titleize(name)} (${titleize(path)}). ${content}`
-)
-
-/**
- * Saves formatted Modules with meta data to the search store.
-*/
-export function commitModulesToStore(modules) {
-    const modulesStore = {}
-    modules.forEach(({ refContent, refPath, refName, fullPath }) => {
-        if (fullPath && refContent) {
-            modulesStore[`${fullPath}`] = {
-                id: `${fullPath}`,
-                content: generateModuleRefTextContent(refName, refPath, refContent),
-                section: titleize(refPath),
-                title: `Canvas Module: ${titleize(refName)}`,
-            }
-        }
-    })
-
-    return modulesStore
-}
-
-/**
- * Iterates through the Module Reference Help JSON file source of truth.
- * Generates formatted meta information about each Module.
-*/
-export async function processModuleReferenceDocs() {
-    const modules = []
-
-    canvasModules.forEach((module) => {
-        const { helpText } = module.help
-        let { path, name } = module
-
-        // Take the first part of: "Integrations: Ethereum"
-        path = toAnchor(path.split(':')[0])
-        name = toAnchor(name.split(':')[0])
-
-        modules.push({
-            refContent: h2p(helpText).replace(/(\r\n|\n|\r)/gm, ''),
-            refPath: path,
-            refName: name,
-            fullPath: `${baseModuleRefPath}${path}#${name}`,
-        })
-    })
-
-    return modules
 }
 
 /**
@@ -119,20 +50,18 @@ async function getPageContents(fileInfos) {
 function getFileInfos() {
     const fileInfos = []
     Object.keys(docsMap).forEach((section) => {
-        if (section !== 'Module Reference') {
-            const pages = Object.keys(docsMap[section])
-            pages.forEach((page) => {
-                // Include root page only if it's the only available page
-                if (pages.length <= 1 || page !== 'root') {
-                    fileInfos.push({
-                        filePath: docsMap[section][page].filePath,
-                        path: docsMap[section][page].path,
-                        section: docsMap[section][page].section,
-                        title: docsMap[section][page].title,
-                    })
-                }
-            })
-        }
+        const pages = Object.keys(docsMap[section])
+        pages.forEach((page) => {
+            // Include root page only if it's the only available page
+            if (pages.length <= 1 || page !== 'root') {
+                fileInfos.push({
+                    filePath: docsMap[section][page].filePath,
+                    path: docsMap[section][page].path,
+                    section: docsMap[section][page].section,
+                    title: docsMap[section][page].title,
+                })
+            }
+        })
     })
 
     return fileInfos
@@ -140,7 +69,6 @@ function getFileInfos() {
 
 /**
   * Process mdx files by iterating through the docs Pages
-  * (except for root pages and the Module Reference section).
 */
 export async function processMdxDocsPages() {
     const pagesStore = {}
@@ -175,18 +103,6 @@ export function buildLunrIndex(searchStore) {
     })
 
     return idx
-}
-
-/**
- * Ensures we don't override the store with an empty store.
-*/
-export function validateStores(pagesStore, modulesStore) {
-    if (!pagesStore) {
-        throw new Error('Docs Pages not found!')
-    }
-    if (!modulesStore) {
-        throw new Error('Canvas Modules not found!')
-    }
 }
 
 /**

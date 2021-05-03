@@ -22,12 +22,6 @@ const state = {
                 name: 'test2',
             },
         ],
-        privateKeys: [
-            {
-                address: '0x99781aD21621a30881Aaa21559463C38cF1A9EF9',
-                name: 'test3',
-            },
-        ],
         fetchingIntegrationKeys: false,
         integrationKeysError: null,
         logoutError: null,

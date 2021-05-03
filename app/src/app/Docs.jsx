@@ -19,15 +19,6 @@ import Partitioning from '$docs/components/Pages/Streams/Partitioning'
 import IntegrationPatterns from '$docs/components/Pages/Streams/IntegrationPatterns'
 import EndToEndEncryption from '$docs/components/Pages/Streams/EndToEndEncryption'
 import DataSigningAndVerification from '$docs/components/Pages/Streams/DataSigningAndVerification'
-// Canvases Docs
-import IntroToCanvases from '$docs/components/Pages/Canvases/IntroToCanvases'
-import UsingCanvasesInCore from '$docs/components/Pages/Canvases/UsingCanvasesInCore'
-import ModulesBasics from '$docs/components/Pages/Canvases/ModulesBasics'
-import ModulesAdvanced from '$docs/components/Pages/Canvases/ModulesAdvanced'
-// Module Reference Docs
-import ModuleReferenceHelp from '$docs/components/Pages/ModuleReference/HelpModules'
-// Dashboard Docs
-import Dashboards from '$docs/components/Pages/Dashboards'
 // Data Products Docs
 import CreateProduct from '$docs/components/Pages/Products/CreateProduct'
 // Data Unions Docs
@@ -40,7 +31,6 @@ import JoinAndWithdraw from '$docs/components/Pages/DataUnions/JoinAndWithdraw'
 import UXBestPractices from '$docs/components/Pages/DataUnions/UXBestPractices'
 // Tutorials Docs
 import BuildingPubSub from '$docs/components/Pages/Tutorials/BuildingPubSub'
-import BuildingCustomModule from '$docs/components/Pages/Tutorials/BuildingCustomModule'
 // DATA Token Docs
 import DataToken from '$docs/components/Pages/DataToken'
 // Core Docs
@@ -79,14 +69,6 @@ const DocsRouter = () => ([
     <Route exact path={links.integrationPatterns} component={IntegrationPatterns} key="IntegrationPatterns" />,
     <Route exact path={links.endToEndEncryption} component={EndToEndEncryption} key="EndToEndEncryption" />,
     <Route exact path={links.dataSigningAndVerification} component={DataSigningAndVerification} key="DSAndVerification" />,
-    // Canvases routes
-    <Route exact path={links.introToCanvases} component={IntroToCanvases} key="IntroToCanvases" />,
-    <Redirect exact from={links.canvases} to={links.introToCanvases} key="CanvasesRoot" />,
-    <Route exact path={links.usingCanvases} component={UsingCanvasesInCore} key="UsingCanvases" />,
-    <Route exact path={links.modulesBasics} component={ModulesBasics} key="ModulesBasics" />,
-    <Route exact path={links.modulesAdvanced} component={ModulesAdvanced} key="ModulesAdvanced" />,
-    // Dashboard routes
-    <Route exact path={links.dashboards} component={Dashboards} key="DashboardsPage" />,
     // Data Products routes
     <Route exact path={links.createProduct} component={CreateProduct} key="CreateProduct" />,
     <Redirect exact from={links.products} to={links.createProduct} key="ProductsRoot" />,
@@ -99,84 +81,9 @@ const DocsRouter = () => ([
     <Route exact path={links.createAndMonitor} component={CreateAndMonitor} key="CreateAndMonitor" />,
     <Route exact path={links.joinAndWithdraw} component={JoinAndWithdraw} key="JoinAndWithdraw" />,
     <Route exact path={links.uxBestPractices} component={UXBestPractices} key="UXBestPractices" />,
-    // Module Reference routes
-    <Route
-        exact
-        path={links.moduleReferenceBoolean}
-        render={() => (<ModuleReferenceHelp category="Boolean" pageTitle="Boolean Modules" />)}
-        key="BooleanDocsPage"
-    />,
-    <Redirect exact from={links.moduleReference} to={links.moduleReferenceBoolean} key="ModuleReferencePage" />,
-    <Route
-        exact
-        path={links.moduleReferenceCustomModules}
-        render={() => (<ModuleReferenceHelp category="Custom Modules" pageTitle="Custom Modules" />)}
-        key="CMDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceInput}
-        render={() => (<ModuleReferenceHelp category="Input" pageTitle="Input Modules" />)}
-        key="InputDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceIntegrations}
-        render={() => (<ModuleReferenceHelp category="Integrations" pageTitle="Integration Modules" />)}
-        key="IntegrationsDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceList}
-        render={() => (<ModuleReferenceHelp category="List" pageTitle="List Modules" />)}
-        key="ListDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceMap}
-        render={() => (<ModuleReferenceHelp category="Map" pageTitle="Map Modules" />)}
-        key="MapDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceStreams}
-        render={() => (<ModuleReferenceHelp category="Streams" pageTitle="Stream Modules" />)}
-        key="StreamsDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceText}
-        render={() => (<ModuleReferenceHelp category="Text" pageTitle="Text Modules" />)}
-        key="TextDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceTimeAndDate}
-        render={() => (<ModuleReferenceHelp category="Time & Date" pageTitle="Time & Date Modules" />)}
-        key="TimeAndDateDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceTimeSeries}
-        render={() => (<ModuleReferenceHelp category="Time Series" pageTitle="Time Series Modules" />)}
-        key="TimeSeriesDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceUtils}
-        render={() => (<ModuleReferenceHelp category="Utils" pageTitle="Utils Modules" />)}
-        key="UtilsDocsPage"
-    />,
-    <Route
-        exact
-        path={links.moduleReferenceVisualizations}
-        render={() => (<ModuleReferenceHelp category="Visualizations" pageTitle="Visualization Modules" />)}
-        key="VisualizationsDocsPage"
-    />,
     // Tutorials routes
     <Route exact path={links.buildingPubSubTutorial} component={BuildingPubSub} key="BuildingPubSub" />,
     <Redirect exact from={links.tutorials} to={links.buildingPubSubTutorial} key="TutorialsRoot" />,
-    <Route exact path={links.customModuleTutorial} component={BuildingCustomModule} key="BuildingCustomModule" />,
     // DATA Token routes
     <Route exact path={links.dataToken} component={DataToken} key="DataTokenPage" />,
     // Core routes

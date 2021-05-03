@@ -7,22 +7,6 @@
         "login": "/login",
         "logout": "/logout"
     },
-    "canvases": {
-        "edit": "/canvas/editor/:id?",
-        "embed": "/canvas/embed/:id",
-        "public": {
-            "edit": "<platform>/canvas/editor/:id",
-            "embed": "<platform>/canvas/embed/:id"
-        },
-        "index": "/core/canvases"
-    },
-    "dashboards": {
-        "edit": "/dashboard/editor/:id?",
-        "index": "/core/dashboards",
-        "public": {
-            "edit": "<platform>/dashboard/editor/:id?"
-        }
-    },
     "community": {
         "blog": "https://blog.streamr.network/",
         "discord": "https://discord.gg/gZAm8P7hK8",
@@ -112,31 +96,12 @@
             "image": "<api>/users/me/image",
             "products": "<api>/users/me/products"
         },
-        "canvases": {
-            "index": "<api>/canvases",
-            "show": "<api>/canvases/:id",
-            "downloadCsv": "<api>/canvases/downloadCsv",
-            "permissions": {
-                "index": "<api>/canvases/:canvasId/permissions",
-                "show": "<api>/canvases/:canvasId/permissions/:id"
-            },
-            "start": "<api>/canvases/:id/start",
-            "stop": "<api>/canvases/:id/stop"
-        },
         "modules": {
             "index": "<api>/modules",
             "show": "<api>/modules/:id"
         },
         "moduleCategories": "<api>/module_categories",
         "categories": "<api>/categories",
-        "dashboards": {
-            "index": "<api>/dashboards",
-            "show": "<api>/dashboards/:id",
-            "permissions": {
-                "index": "<api>/dashboards/:dashboardId/permissions",
-                "show": "<api>/dashboards/:dashboardId/permissions/:id"
-            }
-        },
         "streams": {
             "data": {
                 "from": "<api>/streams/:streamId/data/partitions/:partition/from",

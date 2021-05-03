@@ -14,9 +14,6 @@ import {
     INTEGRATION_KEYS_REQUEST,
     INTEGRATION_KEYS_SUCCESS,
     INTEGRATION_KEYS_FAILURE,
-    CREATE_INTEGRATION_KEY_REQUEST,
-    CREATE_INTEGRATION_KEY_SUCCESS,
-    CREATE_INTEGRATION_KEY_FAILURE,
     CREATE_IDENTITY_REQUEST,
     CREATE_IDENTITY_SUCCESS,
     CREATE_IDENTITY_FAILURE,
@@ -28,11 +25,8 @@ import {
 
 export const initialState: IntegrationKeyState = {
     ethereumIdentities: [],
-    privateKeys: [],
     fetchingIntegrationKeys: false,
     integrationKeysError: null,
-    creatingIntegrationKey: false,
-    creatingIntegrationKeyError: null,
     creatingIdentity: false,
     creatingIdentityError: null,
     removingIntegrationKey: false,
@@ -50,31 +44,12 @@ const reducer: (IntegrationKeyState) => IntegrationKeyState = handleActions({
         ...state,
         fetchingIntegrationKeys: false,
         ethereumIdentities: action.payload.ethereumIdentities,
-        privateKeys: action.payload.privateKeys,
     }),
 
     [INTEGRATION_KEYS_FAILURE]: (state: IntegrationKeyState, action: IntegrationKeysErrorAction) => ({
         ...state,
         fetchingIntegrationKeys: false,
         integrationKeysError: action.payload.error,
-    }),
-
-    [CREATE_INTEGRATION_KEY_REQUEST]: (state: IntegrationKeyState) => ({
-        ...state,
-        creatingIntegrationKey: true,
-    }),
-
-    [CREATE_INTEGRATION_KEY_SUCCESS]: (state: IntegrationKeyState, action: IntegrationKeyIdAction) => ({
-        ...state,
-        creatingIntegrationKey: false,
-        privateKeys: [...state.privateKeys, action.payload.id],
-        creatingIntegrationKeyError: null,
-    }),
-
-    [CREATE_INTEGRATION_KEY_FAILURE]: (state: IntegrationKeyState, action: IntegrationKeysErrorAction) => ({
-        ...state,
-        creatingIntegrationKey: false,
-        creatingIntegrationKeyError: action.payload.error,
     }),
 
     [CREATE_IDENTITY_REQUEST]: (state: IntegrationKeyState) => ({
@@ -104,7 +79,6 @@ const reducer: (IntegrationKeyState) => IntegrationKeyState = handleActions({
         ...state,
         removingIntegrationKey: false,
         ethereumIdentities: state.ethereumIdentities.filter((id) => id !== action.payload.id),
-        privateKeys: state.privateKeys.filter((id) => id !== action.payload.id),
         removingIntegrationError: null,
     }),
 

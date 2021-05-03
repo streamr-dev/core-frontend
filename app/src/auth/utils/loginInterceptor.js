@@ -3,7 +3,6 @@
  */
 
 import axios from 'axios'
-import { matchPath } from 'react-router-dom'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import routes from '$routes'
@@ -11,19 +10,6 @@ import routes from '$routes'
 function shouldRedirect(error) {
     // ignore redirect to login logic for login route
     if (window.location.pathname === routes.auth.login()) { return false }
-    // no redirects for embeds
-    if (matchPath(window.location.pathname, {
-        path: routes.canvases.embed(),
-    })) {
-        return false
-    }
-
-    // no redirects for canvases
-    if (matchPath(window.location.pathname, {
-        path: routes.canvases.edit(),
-    })) {
-        return false
-    }
 
     if (error.response && error.response.status === 401) {
         const { ignoreUnauthorized } = error.config

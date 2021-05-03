@@ -29,7 +29,6 @@ const state = {
     test: true,
     integrationKey: {
         ethereumIdentities: ['1', '2'],
-        privateKeys: ['3'],
         fetchingIntegrationKeys: false,
         integrationKeysError: {
             message: 'error',
@@ -61,14 +60,6 @@ describe('integrationKey - selectors', () => {
 
     it('selects ethereum identities', () => {
         expect(all.selectEthereumIdentities(state)).toStrictEqual([service1, service2])
-    })
-
-    it('selects private key ids', () => {
-        expect(all.selectPrivateKeyIds(state)).toStrictEqual(state.integrationKey.privateKeys)
-    })
-
-    it('select private keys', () => {
-        expect(all.selectPrivateKeys(state)).toStrictEqual([service3])
     })
 
     it('selects integration keys error', () => {

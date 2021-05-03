@@ -64,12 +64,6 @@ const Footer = ({ topBorder = false }) => (
                 <a href={docsLinks.streams}>
                     Streams
                 </a>
-                <a href={docsLinks.canvases}>
-                    Canvases
-                </a>
-                <a href={docsLinks.dashboards}>
-                    Dashboards
-                </a>
                 <a href={docsLinks.products}>
                     Products
                 </a>

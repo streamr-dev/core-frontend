@@ -21,11 +21,9 @@ describe('integrationKey - reducer', () => {
 
         it('handles success', () => {
             const ethereumIdentities = ['test1', 'test2']
-            const privateKeys = ['test3']
             const expectedState = {
                 ...initialState,
                 ethereumIdentities,
-                privateKeys,
                 fetchingIntegrationKeys: false,
             }
 
@@ -33,7 +31,6 @@ describe('integrationKey - reducer', () => {
                 type: constants.INTEGRATION_KEYS_SUCCESS,
                 payload: {
                     ethereumIdentities,
-                    privateKeys,
                 },
             })).toStrictEqual(expectedState)
         })
@@ -49,52 +46,6 @@ describe('integrationKey - reducer', () => {
 
             expect(reducer(undefined, {
                 type: constants.INTEGRATION_KEYS_FAILURE,
-                payload: {
-                    error,
-                },
-            })).toStrictEqual(expectedState)
-        })
-    })
-
-    describe('CREATE_INTEGRATION_KEY', () => {
-        it('handles request', () => {
-            const expectedState = {
-                ...initialState,
-                creatingIntegrationKey: true,
-            }
-
-            expect(reducer(undefined, {
-                type: constants.CREATE_INTEGRATION_KEY_REQUEST,
-                payload: {},
-            })).toStrictEqual(expectedState)
-        })
-
-        it('handles success', () => {
-            const expectedState = {
-                ...initialState,
-                privateKeys: ['test1'],
-                creatingIntegrationKey: false,
-            }
-
-            expect(reducer(undefined, {
-                type: constants.CREATE_INTEGRATION_KEY_SUCCESS,
-                payload: {
-                    id: 'test1',
-                },
-            })).toStrictEqual(expectedState)
-        })
-
-        it('handles failure', () => {
-            const error = new Error('Test')
-
-            const expectedState = {
-                ...initialState,
-                creatingIntegrationKey: false,
-                creatingIntegrationKeyError: error,
-            }
-
-            expect(reducer(undefined, {
-                type: constants.CREATE_INTEGRATION_KEY_FAILURE,
                 payload: {
                     error,
                 },
@@ -165,13 +116,11 @@ describe('integrationKey - reducer', () => {
             const nextState = {
                 ...initialState,
                 ethereumIdentities: ['test1', 'test2'],
-                privateKeys: ['test3'],
                 removingIntegrationKey: false,
             }
             const expectedState = {
                 ...initialState,
                 ethereumIdentities: ['test2'],
-                privateKeys: ['test3'],
                 removingIntegrationKey: false,
             }
 
@@ -187,13 +136,11 @@ describe('integrationKey - reducer', () => {
             const nextState = {
                 ...initialState,
                 ethereumIdentities: ['test1', 'test2'],
-                privateKeys: ['test3'],
                 removingIntegrationKey: false,
             }
             const expectedState = {
                 ...initialState,
                 ethereumIdentities: ['test1', 'test2'],
-                privateKeys: [],
                 removingIntegrationKey: false,
             }
 

@@ -28,13 +28,13 @@ describe('Permission actions', () => {
 
     describe('getResourcePermissions', () => {
         it('creates GET_RESOURCE_PERMISSIONS_SUCCESS when fetching resources succeeded', async () => {
-            const resourceType = 'DASHBOARD'
+            const resourceType = 'STREAM'
             const resourceId = 'asdfasdfasasd'
             const permissions = [{
                 user: 'test',
                 operation: 'test',
             }]
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/me`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${resourceId}/permissions/me`, {
                 status: 200,
                 response: permissions,
             })
@@ -52,9 +52,9 @@ describe('Permission actions', () => {
             expect(store.getActions()).toEqual(expectedActions)
         })
         it('creates GET_RESOURCE_PERMISSIONS_FAILURE with the error when fetching permissions failed', async (done) => {
-            const resourceType = 'DASHBOARD'
+            const resourceType = 'STREAM'
             const resourceId = 'asdfasdfasasd'
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/dashboards/${resourceId}/permissions/me`, {
+            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams/${resourceId}/permissions/me`, {
                 status: 500,
                 response: {
                     message: 'test',

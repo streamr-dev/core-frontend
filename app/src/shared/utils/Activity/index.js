@@ -24,8 +24,6 @@ type Action = $Keys<typeof actionTypes>
 export const resourceTypes = {
     STREAM: 'STREAM',
     PRODUCT: 'PRODUCT',
-    CANVAS: 'CANVAS',
-    DASHBOARD: 'DASHBOARD',
 }
 
 export type ResourceType = $Keys<typeof resourceTypes>

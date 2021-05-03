@@ -6,9 +6,8 @@ import type { Address } from '$shared/flowtype/web3-types'
 
 export type IntegrationKeysAction = PayloadAction<{
     ethereumIdentities: IntegrationKeyIdList,
-    privateKeys: IntegrationKeyIdList,
 }>
-export type IntegrationKeysActionCreator = (IntegrationKeyIdList, IntegrationKeyIdList) => IntegrationKeysAction
+export type IntegrationKeysActionCreator = (IntegrationKeyIdList) => IntegrationKeysAction
 
 export type IntegrationKeysErrorAction = PayloadAction<{
     error: ErrorInUi,

@@ -14,7 +14,6 @@ import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
-import usePrivateKeys from '$shared/modules/integrationKey/hooks/usePrivateKeys'
 
 import Layout from '$shared/components/Layout'
 import CoreLayout from '$shared/components/Layout/Core'
@@ -24,7 +23,6 @@ import { NotificationIcon } from '$shared/utils/constants'
 import Nav from '$shared/components/Layout/Nav'
 import routes from '$routes'
 import ProfileSettings from './ProfileSettings'
-import IntegrationKeyHandler from './IntegrationKeyHandler'
 import IdentityHandler from './IdentityHandler/index'
 import DeleteAccount from './DeleteAccount'
 
@@ -40,7 +38,6 @@ export const ProfilePage = () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const { fetching: isLoadingEthIdentities } = useEthereumIdentities()
-    const { fetching: isLoadingPrivateKeys } = usePrivateKeys()
 
     const doSaveCurrentUser = useCallback(() => dispatch(saveCurrentUser()), [dispatch])
     const redirectToUserPages = useCallback(() => history.push(routes.core()), [history])
@@ -75,8 +72,7 @@ export const ProfilePage = () => {
         isAddPrivateKeyPending ||
         isDeleteAccountPending ||
         isAvatarUploadPending ||
-        isLoadingEthIdentities ||
-        isLoadingPrivateKeys
+        isLoadingEthIdentities
     )
 
     return (
@@ -117,13 +113,6 @@ export const ProfilePage = () => {
                     linkTitle="ETH Accounts"
                 >
                     <IdentityHandler />
-                </TOCPage.Section>
-                <TOCPage.Section
-                    id="private-keys"
-                    title="Ethereum keys for canvases"
-                    linkTitle="ETH canvas keys"
-                >
-                    <IntegrationKeyHandler />
                 </TOCPage.Section>
                 <TOCPage.Section
                     id="delete-account"

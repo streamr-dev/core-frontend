@@ -5,7 +5,7 @@ describe('', () => {
         const { generateMap } = await import('./docsMap')
         const docsMap = generateMap()
 
-        expect(Object.keys(docsMap).length).toBe(16)
+        expect(Object.keys(docsMap).length).toBe(13)
         expect('Data Unions' in docsMap).toBe(true)
     })
 })

@@ -11,9 +11,6 @@ import { Row, Col } from 'reactstrap'
 import { arrayMove } from 'react-sortable-hoc'
 import Toggle from '$shared/components/Toggle'
 import Checkbox from '$shared/components/Checkbox'
-import Calendar from '$shared/components/Calendar'
-import WithCalendar from '$shared/components/WithCalendar'
-import dateFormatter from '$utils/dateFormatter'
 import SortableList from '$shared/components/SortableList'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
@@ -27,7 +24,6 @@ import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
 import Notification from '$shared/utils/Notification'
-import ContextMenu from '$shared/components/ContextMenu'
 import { NotificationIcon } from '$shared/utils/constants'
 import Spinner from '$shared/components/Spinner'
 import Text from '$ui/Text'
@@ -96,26 +92,6 @@ story('Checkbox')
     ))
     .addWithJSX('changeable', () => (
         <CheckboxContainer />
-    ))
-
-const CalendarContainer = () => (
-    <WithCalendar
-        date={new Date('2019-01-01')}
-    >
-        {({ toggleCalendar, date }) => (
-            <button type="button" onClick={toggleCalendar}>
-                {dateFormatter('DD MMMM YYYY')(date)}
-            </button>
-        )}
-    </WithCalendar>
-)
-
-story('Calendar')
-    .addWithJSX('basic', () => (
-        <Calendar value={new Date('2019-01-01')} />
-    ))
-    .addWithJSX('attached to button', () => (
-        <CalendarContainer />
     ))
 
 class SortableListContainer extends React.Component {
@@ -371,38 +347,6 @@ story('Notifications')
             </React.Fragment>
         )
     })
-
-class ContextMenuContainer extends React.Component {
-    state = {
-        isOpen: false,
-    }
-
-    targetRef = React.createRef()
-
-    toggleMenu = () => {
-        this.setState((state) => ({
-            isOpen: !state.isOpen,
-        }))
-    }
-
-    render() {
-        return (
-            <React.Fragment>
-                <button ref={this.targetRef} onClick={this.toggleMenu}>Click me</button>
-                <ContextMenu isOpen={this.state.isOpen} target={this.targetRef} placement="bottom">
-                    <ContextMenu.Item text="Item" onClick={action('1')} />
-                    <ContextMenu.Item text="Another item" onClick={action('2')} />
-                    <ContextMenu.Item text="I'm the last item" onClick={action('3')} />
-                </ContextMenu>
-            </React.Fragment>
-        )
-    }
-}
-
-story('ContextMenu')
-    .addWithJSX('basic', () => (
-        <ContextMenuContainer />
-    ))
 
 story('Spinner')
     .addWithJSX('Small', () => (<Spinner size="small" />))

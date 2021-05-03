@@ -79,59 +79,6 @@ jest.mock('$docs/components/Pages/Streams/DataSigningAndVerification', () => ({
         '/docs/streams/data-signing-and-verification'
     ),
 }))
-jest.mock('$docs/components/Pages/Canvases/IntroToCanvases', () => ({
-    __esModule: true,
-    default: () => (
-        `
-            /docs/canvases
-            /docs/canvases/intro-to-canvases
-        `
-    ),
-}))
-jest.mock('$docs/components/Pages/Canvases/UsingCanvasesInCore', () => ({
-    __esModule: true,
-    default: () => (
-        '/docs/canvases/using-canvases-in-core'
-    ),
-}))
-jest.mock('$docs/components/Pages/Canvases/ModulesBasics', () => ({
-    __esModule: true,
-    default: () => (
-        '/docs/canvases/modules-basics'
-    ),
-}))
-jest.mock('$docs/components/Pages/Canvases/ModulesAdvanced', () => ({
-    __esModule: true,
-    default: () => (
-        '/docs/canvases/modules-advanced'
-    ),
-}))
-jest.mock('$docs/components/Pages/ModuleReference/HelpModules', () => ({
-    __esModule: true,
-    default: () => (
-        `
-            /docs/module-reference
-            /docs/module-reference/boolean
-            /docs/module-reference/custom-modules
-            /docs/module-reference/input
-            /docs/module-reference/integrations
-            /docs/module-reference/list
-            /docs/module-reference/map
-            /docs/module-reference/streams
-            /docs/module-reference/text
-            /docs/module-reference/time-and-date
-            /docs/module-reference/time-series
-            /docs/module-reference/utils
-            /docs/module-reference/visualizations
-        `
-    ),
-}))
-jest.mock('$docs/components/Pages/Dashboards', () => ({
-    __esModule: true,
-    default: () => (
-        '/docs/dashboards'
-    ),
-}))
 jest.mock('$docs/components/Pages/Products/CreateProduct', () => ({
     __esModule: true,
     default: () => (
@@ -193,12 +140,6 @@ jest.mock('$docs/components/Pages/Tutorials/BuildingPubSub', () => ({
             /docs/tutorials
             /docs/tutorials/building-pub-sub
         `
-    ),
-}))
-jest.mock('$docs/components/Pages/Tutorials/BuildingCustomModule', () => ({
-    __esModule: true,
-    default: () => (
-        '/docs/tutorials/building-custom-canvas-module'
     ),
 }))
 jest.mock('$docs/components/Pages/DataToken', () => ({

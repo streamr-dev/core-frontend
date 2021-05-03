@@ -9,8 +9,6 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import ErrorPage from '$shared/components/ErrorPage'
 
 // Userpages
-import DashboardList from '$userpages/components/DashboardPage/List'
-import CanvasList from '$userpages/components/CanvasPage/List'
 import StreamPage from '$userpages/components/StreamPage'
 import NewStreamPage from '$userpages/components/StreamPage/New'
 import StreamListView from '$userpages/components/StreamPage/List'
@@ -26,9 +24,7 @@ import routes from '$routes'
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
 // Userpages Auth
-const CanvasListAuth = userIsAuthenticated(CanvasList)
 const ProfilePageAuth = userIsAuthenticated(ProfilePage)
-const DashboardListAuth = userIsAuthenticated(DashboardList)
 const StreamListViewAuth = userIsAuthenticated(StreamListView)
 const TransactionListAuth = userIsAuthenticated(TransactionList)
 const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
@@ -39,9 +35,7 @@ const EditProductAuth = userIsAuthenticated(EditProductPage)
 const NewStreamPageAuth = userIsAuthenticated(NewStreamPage)
 
 const UserpagesRouter = () => ([
-    <Route exact path={routes.canvases.index()} component={CanvasListAuth} key="CanvasesCanvasList" />,
     <Route exact path={routes.profile()} component={ProfilePageAuth} key="ProfilePage" />,
-    <Route exact path={routes.dashboards.index()} component={DashboardListAuth} key="DashboardList" />,
     <Route exact path={routes.streams.new()} component={NewStreamPageAuth} key="newStreamPage" />,
     <Route exact path={routes.streams.show()} component={StreamPage} key="streamPage" />,
     <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,

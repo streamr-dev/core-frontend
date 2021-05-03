@@ -31,11 +31,6 @@ const ActivityProvider = ({ children }) => {
         let url
 
         switch (type) {
-            case ResourceType.CANVAS:
-                url = routes.api.canvases.show({
-                    id,
-                })
-                break
             case ResourceType.PRODUCT:
                 url = routes.api.products.show({
                     id,

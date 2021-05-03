@@ -2,15 +2,11 @@
 
 import React from 'react'
 import styled, { css } from 'styled-components'
-import { titleize } from '@streamr/streamr-layout'
 import ReactImage from 'react-image'
 import { ago } from '$shared/utils/time'
 import Logo from '$shared/components/Logo'
 import Skeleton from '$shared/components/Skeleton'
 import Rect from '$shared/components/Rect'
-import { RunStates } from '$editor/canvas/state'
-import CanvasPreview from '$editor/canvas/components/Preview'
-import DashboardPreview from '$editor/dashboard/components/Preview'
 import Link from '$shared/components/Link'
 import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits } from '$shared/utils/constants'
@@ -187,74 +183,9 @@ const ImageTile = ({
     </Tile>
 )
 
-type CanvasTileProps = {
-    canvas: any,
-    onMenuToggle?: (boolean) => any,
-    actions: any,
-}
-
 export const touchedAgo = ({ updated, created }: any): string => `
     ${updated === created ? 'Created' : 'Updated'} ${ago(new Date(updated))}
 `
-
-const CanvasTile = ({ canvas, onMenuToggle, actions, ...props }: CanvasTileProps) => (
-    <Tile {...props}>
-        <Menu onToggle={onMenuToggle}>
-            {actions}
-        </Menu>
-        <Link
-            to={routes.canvases.edit({
-                id: canvas.id,
-            })}
-        >
-            <Tile.ImageContainer autoSize>
-                <Tile.Thumbnail
-                    as={CanvasPreview}
-                    canvas={canvas}
-                />
-            </Tile.ImageContainer>
-            <Summary
-                name={canvas.name}
-                description={touchedAgo(canvas)}
-                label={(
-                    <Label mood={canvas.state === RunStates.Running && HAPPY}>
-                        {titleize(canvas.state)}
-                    </Label>
-                )}
-            />
-        </Link>
-    </Tile>
-)
-
-type DashboardTileProps = {
-    dashboard: any,
-    onMenuToggle?: (boolean) => any,
-    actions: any,
-}
-
-const DashboardTile = ({ dashboard, onMenuToggle, actions, ...props }: DashboardTileProps) => (
-    <Tile {...props}>
-        <Menu onToggle={onMenuToggle}>
-            {actions}
-        </Menu>
-        <Link
-            to={routes.dashboards.edit({
-                id: dashboard.id,
-            })}
-        >
-            <Tile.ImageContainer autoSize>
-                <Tile.Thumbnail
-                    as={DashboardPreview}
-                    dashboard={dashboard}
-                />
-            </Tile.ImageContainer>
-            <Summary
-                name={dashboard.name}
-                description={touchedAgo(dashboard)}
-            />
-        </Link>
-    </Tile>
-)
 
 type PurchaseTileProps = {
     expiresAt: Date,
@@ -479,8 +410,6 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
 )
 
 export {
-    CanvasTile,
-    DashboardTile,
     ImageTile,
     MarketplaceProductTile,
     ProductTile,
