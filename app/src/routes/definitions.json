@@ -50,7 +50,8 @@
         "show": "/core/streams/:id",
         "new": "/core/streams/new",
         "public": {
-            "show": "<platform>/core/streams/:id"
+            "show": "/streams/:id",
+            "preview": "/streams/:id/preview"
         }
     },
     "terms": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",

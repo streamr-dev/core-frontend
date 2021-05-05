@@ -10,6 +10,7 @@ import ErrorPage from '$shared/components/ErrorPage'
 
 // Userpages
 import StreamPage from '$userpages/components/StreamPage'
+import StreamInspectorPage from '$userpages/components/StreamPage/Inspector'
 import NewStreamPage from '$userpages/components/StreamPage/New'
 import StreamListView from '$userpages/components/StreamPage/List'
 import TransactionList from '$userpages/components/TransactionPage/List'
@@ -38,6 +39,8 @@ const UserpagesRouter = () => ([
     <Route exact path={routes.profile()} component={ProfilePageAuth} key="ProfilePage" />,
     <Route exact path={routes.streams.new()} component={NewStreamPageAuth} key="newStreamPage" />,
     <Route exact path={routes.streams.show()} component={StreamPage} key="streamPage" />,
+    <Route exact path={routes.streams.public.show()} component={StreamPage} key="publicStreamPage" />,
+    <Route exact path={routes.streams.public.preview()} component={StreamInspectorPage} key="publicStreamPreviewPage" />,
     <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,
     <Route exact path={routes.transactions()} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={routes.subscriptions()} component={PurchasesPageAuth} key="PurchasesPage" />,

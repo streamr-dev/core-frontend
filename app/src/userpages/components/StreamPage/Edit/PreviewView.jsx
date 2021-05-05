@@ -1,7 +1,8 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react'
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import { useClient, useSubscription } from 'streamr-client-react'
+
 import Button from '$shared/components/Button'
 import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -59,30 +60,31 @@ const LOCAL_DATA_LIST_LENGTH = 20
 
 const initialState = Array(PREVIEW_TABLE_LENGTH).fill(undefined)
 
+const areMessagesSame = (a, b) => {
+    const aRef = a.toMessageRef()
+    const bRef = b.toMessageRef()
+    return aRef.compareTo(bRef) === 0
+}
+
 const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true, ...props }) => {
     const [isRunning, setIsRunning] = useState(true)
     const { api: showPreviewDialog, isOpen: isPreviewDialogOpen } = useModal('userpages.streamPreview')
-
-    const [hasData, setHasData] = useState(!subscribe)
     const dataRef = useRef([])
     const [visibleData, setVisibleData] = useState(initialState)
-    const [dataReceived, setDataReceived] = useState(false)
     const [dataError, setDataError] = useState(false)
     const hasLoaded = useIsSessionTokenReady()
     const client = useClient()
-    window.streamrClient = client
     const [activePartition, setActivePartition] = useState(0)
     const isMounted = useIsMounted()
+    const streamId = stream && stream.id
+
+    const hasData = useMemo(() => (
+        visibleData.some((d) => d !== undefined)
+    ), [visibleData])
+
     const updateDataToState = useThrottled(useCallback((data) => {
-        setDataReceived(true)
         setVisibleData([...data])
     }, []), 100)
-
-    useEffect(() => {
-        if (dataReceived) {
-            setHasData(true)
-        }
-    }, [dataReceived])
 
     const onError = useCallback(() => {
         if (isMounted()) {
@@ -111,28 +113,24 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
             metadata,
         }
 
+        if (dataRef.current.find((d) => d != null && areMessagesSame(d.metadata.messageId, metadata.messageId)) != null) {
+            // Duplicate message -> skip it
+            return
+        }
+
         dataRef.current.unshift(dataPoint)
         dataRef.current.length = Math.min(dataRef.current.length, LOCAL_DATA_LIST_LENGTH)
         updateDataToState(dataRef.current)
     }, [dataRef, updateDataToState, isMounted, onError])
 
-    const onSub = useCallback(() => {
-        if (isMounted()) {
-            // Clear data when subscribed to make sure
-            // we don't get duplicate messages with resend
-            setVisibleData([...initialState])
-            dataRef.current = [...initialState]
-            setDataReceived(false)
-        }
-    }, [isMounted])
+    const reset = useCallback(() => {
+        setVisibleData([...initialState])
+        dataRef.current = [...initialState]
+    }, [])
 
     useEffect(() => {
-        setVisibleData([...initialState])
-    }, [activePartition])
-
-    const onToggleRun = useCallback(() => {
-        setIsRunning((wasRunning) => !wasRunning)
-    }, [setIsRunning])
+        reset()
+    }, [activePartition, streamId, reset])
 
     const showPreview = useCallback(async (streamId, stream) => {
         await showPreviewDialog.open({
@@ -141,19 +139,22 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
         })
     }, [showPreviewDialog])
 
+    const onToggleRun = useCallback(() => {
+        setIsRunning((wasRunning) => !wasRunning)
+    }, [setIsRunning])
+
     useSubscription({
-        stream: stream && stream.id,
+        stream: streamId,
         partition: activePartition,
         resend: {
             last: LOCAL_DATA_LIST_LENGTH,
         },
     }, {
         onMessage: onData,
-        onSubscribed: onSub,
-        isActive: !!(stream && stream.id && subscribe && isRunning),
+        isActive: !!(streamId && subscribe && isRunning),
     })
 
-    if (!stream || !stream.id) {
+    if (!streamId) {
         return null
     }
 
@@ -194,7 +195,7 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
                     </Button>
                     <Button
                         kind="secondary"
-                        onClick={() => showPreview(stream.id, stream)}
+                        onClick={() => showPreview(streamId, stream)}
                         disabled={!hasData}
                     >
                         Inspect data
@@ -203,7 +204,7 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
             </Wrapper>
             {!!isPreviewDialogOpen && (
                 <StreamPreviewDialog
-                    streamId={stream.id}
+                    streamId={streamId}
                     stream={stream}
                     streamData={visibleData}
                     activePartition={activePartition}
