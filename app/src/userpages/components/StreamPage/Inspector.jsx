@@ -63,6 +63,7 @@ const UnstyledInspectorView = (props) => {
                     if (canHandleLoadError(error)) {
                         await handleLoadError({
                             error,
+                            ignoreUnauthorized: true,
                         })
                     } else {
                         throw error
@@ -153,7 +154,7 @@ const UnstyledInspectorView = (props) => {
             streamData={visibleData}
             activePartition={activePartition}
             onPartitionChange={setActivePartition}
-            onClose={() => history.replace(routes.streams.public.show({
+            onClose={() => history.replace(routes.streams.root.show({
                 id: streamId,
             }))}
         />
