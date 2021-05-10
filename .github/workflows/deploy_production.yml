@@ -28,46 +28,45 @@ jobs:
           npm ci
       - name: Get version string from git tag name
         id: get_version
-        #run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
-        run: echo ::set-output name=VERSION::test
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Print version
         run: echo ${{ steps.get_version.outputs.VERSION }}
       - name: Build app with production environment variables
         env:
-          NODE_ENV=production
-          VERSION=${{ steps.get_version.outputs.VERSION }}
-          PORT=12345
-          SENTRY_ENVIRONMENT=production
-          STREAMR_API_URL=https://streamr.network/api/v1
-          STREAMR_WS_URL=wss://streamr.network/api/v1/ws
-          PLATFORM_ORIGIN_URL=https://streamr.network
-          PLATFORM_PUBLIC_PATH=https://cdn.streamr.com
-          STREAMR_URL=https://streamr.network
-          GOOGLE_ANALYTICS_ID=UA-55331565-5
-          MARKETPLACE_CONTRACT_ADDRESS=0x2b3f2887c697b3f4f8d9f818c95482e1a3a759a5
-          DATA_TOKEN_CONTRACT_ADDRESS=0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
-          DAI_TOKEN_CONTRACT_ADDRESS=0x6B175474E89094C44Da98b954EedeAC495271d0F
-          UNISWAP_ADAPTOR_CONTRACT_ADDRESS=0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307
-          WEB3_REQUIRED_NETWORK_ID=1
-          WEB3_PUBLIC_HTTP_PROVIDER=https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
-          WEB3_PUBLIC_WS_PROVIDER=wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
-          SENTRY_DSN=https://e012761929d24baa96ca82772f60b395@o151964.ingest.sentry.io/1203154
-          SENTRY_INDEXER_DSN=https://8311f8e7df9046b781600f95eefd1aa0@o151964.ingest.sentry.io/5235991
-          STREAMR_ENGINE_NODE_ADDRESSES=0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a
-          DATA_UNION_OPERATOR_ADDRESS=0xc0aa4dC0763550161a6B59fa430361b5a26df28C
-          DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS=1
-          DATA_UNION_PUBLISH_MEMBER_LIMIT=1
-          WEB3_TRANSACTION_CONFIRMATION_BLOCKS=1
-          NO_TEST_HOOKS=1
-          STORAGE_NODES="Streamr Germany:0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
-          DATA_UNION_FACTORY_MAINNET_ADDRESS=0x7d55f9981d4E10A193314E001b96f72FCc901e40
-          DATA_UNION_FACTORY_SIDECHAIN_ADDRESS=0x1b55587Beea0b5Bc96Bb2ADa56bD692870522e9f
-          DATA_UNION_TEMPLATE_MAINNET_ADDRESS=0x5FE790E3751dd775Cb92e9086Acd34a2adeB8C7b
-          DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS=0xf1E9d6E254BeA3f0129018AcA1A50AEcb7D528be
-          DATA_TOKEN_SIDECHAIN_ADDRESS=0xE4a2620edE1058D61BEe5F45F6414314fdf10548
-          DATA_UNION_SIDECHAIN_PROVIDER=https://rpc.xdaichain.com/
-          DATA_UNION_SIDECHAIN_ID=100
-          DATAUNION_VERSION=2
+          NODE_ENV: production
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
+          PORT: 12345
+          SENTRY_ENVIRONMENT: production
+          STREAMR_API_URL: https://streamr.network/api/v1
+          STREAMR_WS_URL: wss://streamr.network/api/v1/ws
+          PLATFORM_ORIGIN_URL: https://streamr.network
+          PLATFORM_PUBLIC_PATH: https://cdn.streamr.com
+          STREAMR_URL: https://streamr.network
+          GOOGLE_ANALYTICS_ID: UA-55331565-5
+          MARKETPLACE_CONTRACT_ADDRESS: 0x2b3f2887c697b3f4f8d9f818c95482e1a3a759a5
+          DATA_TOKEN_CONTRACT_ADDRESS: 0x0Cf0Ee63788A0849fE5297F3407f701E122cC023
+          DAI_TOKEN_CONTRACT_ADDRESS: 0x6B175474E89094C44Da98b954EedeAC495271d0F
+          UNISWAP_ADAPTOR_CONTRACT_ADDRESS: 0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307
+          WEB3_REQUIRED_NETWORK_ID: 1
+          WEB3_PUBLIC_HTTP_PROVIDER: https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
+          WEB3_PUBLIC_WS_PROVIDER: wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
+          SENTRY_DSN: https://e012761929d24baa96ca82772f60b395@o151964.ingest.sentry.io/1203154
+          SENTRY_INDEXER_DSN: https://8311f8e7df9046b781600f95eefd1aa0@o151964.ingest.sentry.io/5235991
+          STREAMR_ENGINE_NODE_ADDRESSES: 0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a
+          DATA_UNION_OPERATOR_ADDRESS: 0xc0aa4dC0763550161a6B59fa430361b5a26df28C
+          DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS: 1
+          DATA_UNION_PUBLISH_MEMBER_LIMIT: 1
+          WEB3_TRANSACTION_CONFIRMATION_BLOCKS: 1
+          NO_TEST_HOOKS: 1
+          STORAGE_NODES: "Streamr Germany:0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
+          DATA_UNION_FACTORY_MAINNET_ADDRESS: 0x7d55f9981d4E10A193314E001b96f72FCc901e40
+          DATA_UNION_FACTORY_SIDECHAIN_ADDRESS: 0x1b55587Beea0b5Bc96Bb2ADa56bD692870522e9f
+          DATA_UNION_TEMPLATE_MAINNET_ADDRESS: 0x5FE790E3751dd775Cb92e9086Acd34a2adeB8C7b
+          DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS: 0xf1E9d6E254BeA3f0129018AcA1A50AEcb7D528be
+          DATA_TOKEN_SIDECHAIN_ADDRESS: 0xE4a2620edE1058D61BEe5F45F6414314fdf10548
+          DATA_UNION_SIDECHAIN_PROVIDER: https://rpc.xdaichain.com/
+          DATA_UNION_SIDECHAIN_ID: 100
+          DATAUNION_VERSION: 2
         run: npm run build --if-present
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
