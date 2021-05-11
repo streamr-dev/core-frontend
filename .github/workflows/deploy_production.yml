@@ -36,7 +36,6 @@ jobs:
           NODE_ENV: production
           VERSION: ${{ steps.get_version.outputs.VERSION }}
           PORT: 12345
-          SENTRY_ENVIRONMENT: production
           STREAMR_API_URL: https://streamr.network/api/v1
           STREAMR_WS_URL: wss://streamr.network/api/v1/ws
           PLATFORM_ORIGIN_URL: https://streamr.network
@@ -50,6 +49,7 @@ jobs:
           WEB3_REQUIRED_NETWORK_ID: 1
           WEB3_PUBLIC_HTTP_PROVIDER: https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
           WEB3_PUBLIC_WS_PROVIDER: wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
+          SENTRY_ENVIRONMENT: production
           SENTRY_DSN: https://e012761929d24baa96ca82772f60b395@o151964.ingest.sentry.io/1203154
           SENTRY_INDEXER_DSN: https://8311f8e7df9046b781600f95eefd1aa0@o151964.ingest.sentry.io/5235991
           STREAMR_ENGINE_NODE_ADDRESSES: "0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a"
