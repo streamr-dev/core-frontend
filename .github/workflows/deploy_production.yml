@@ -1,8 +1,8 @@
 name: Deploy to production
 on:
   push:
-    #tags:
-    # - v*
+    tags:
+     - v*
 
 defaults:
   run:
@@ -28,8 +28,7 @@ jobs:
           npm ci
       - name: Get version string from git tag name
         id: get_version
-        run: echo ::set-output name=VERSION::test_version
-        #run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+        run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Print version string
         run: echo ${{ steps.get_version.outputs.VERSION }}
       - name: Build app with production environment variables
@@ -80,11 +79,11 @@ jobs:
           aws-region: eu-west-1
       - name: Deploy to S3
         run: |
-          aws s3 sync dist/. s3://eu-west-1-streamr-cdn --acl private --dryrun
+          aws s3 sync dist/. s3://eu-west-1-streamr-cdn --acl private
+      - name: Invalidate Cloudfront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID_FRONTEND_PROD }} --paths "/*"
       - name: Save to vault
         run: |
-          aws s3 sync dist/. s3://eu-west-1-streamr-vault/marketplace/releases/latest --acl private --dryrun
-          aws s3 sync dist/. s3://eu-west-1-streamr-vault/marketplace/releases/${{ steps.get_version.outputs.VERSION }} --acl private --dryrun
-      #- name: Invalidate Cloudfront cache
-      #  run: |
-      #    aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID_FRONTEND_PROD }} --paths "/*"
+          aws s3 sync dist/. s3://eu-west-1-streamr-vault/marketplace/releases/latest --acl private
+          aws s3 sync dist/. s3://eu-west-1-streamr-vault/marketplace/releases/${{ steps.get_version.outputs.VERSION }} --acl private
