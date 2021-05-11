@@ -50,6 +50,8 @@ jobs:
           WEB3_PUBLIC_HTTP_PROVIDER: https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
           WEB3_PUBLIC_WS_PROVIDER: wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
           SENTRY_ENVIRONMENT: production
+          SENTRY_ORG: streamr
+          SENTRY_PROJECT: marketplace
           SENTRY_DSN: https://e012761929d24baa96ca82772f60b395@o151964.ingest.sentry.io/1203154
           SENTRY_INDEXER_DSN: https://8311f8e7df9046b781600f95eefd1aa0@o151964.ingest.sentry.io/5235991
           STREAMR_ENGINE_NODE_ADDRESSES: "0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a"
