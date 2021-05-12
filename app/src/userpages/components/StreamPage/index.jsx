@@ -21,28 +21,26 @@ import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useStreamPermissions from '$userpages/hooks/useStreamPermissions'
 import ClientProvider from '$shared/components/StreamrClientProvider'
+import routes from '$routes'
+
 import View from './View'
 import Edit from './Edit'
 
 const StreamPage = (props) => {
     const { id: idProp } = props.match.params || {}
+    const { path } = props.match || {}
     const decodedIdProp = useMemo(() => decodeURIComponent(idProp), [idProp])
     const permissions = useStreamPermissions(decodedIdProp)
 
     const fetching = useSelector(selectFetching)
-
     const updating = useSelector(selectUpdating)
 
     const dispatch = useDispatch()
-
     const fail = useFailure()
 
     const readOnly = !(permissions || []).includes('stream_edit')
-
     const canShare = (permissions || []).includes('stream_share')
-
     const stream = useSelector(selectOpenStream)
-
     const currentUser = useSelector(selectUserData)
 
     const isMounted = useIsMounted()
@@ -61,6 +59,8 @@ const StreamPage = (props) => {
                     if (canHandleLoadError(error)) {
                         await handleLoadError({
                             error,
+                            // We want to show a 404 page when on public stream url while the stream has no public permissions
+                            ignoreUnauthorized: (path === routes.streams.public.show()),
                         })
                     } else {
                         throw error
@@ -80,7 +80,7 @@ const StreamPage = (props) => {
         if (permissions) {
             fetch()
         }
-    }, [fail, dispatch, decodedIdProp, isMounted, permissions])
+    }, [fail, dispatch, decodedIdProp, isMounted, permissions, path])
 
     useEffect(() => () => {
         dispatch(closeStream())
