@@ -154,7 +154,7 @@ const UnstyledInspectorView = (props) => {
             streamData={visibleData}
             activePartition={activePartition}
             onPartitionChange={setActivePartition}
-            onClose={() => history.replace(routes.streams.root.show({
+            onClose={() => history.replace(routes.streams.public.show({
                 id: streamId,
             }))}
         />

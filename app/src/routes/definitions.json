@@ -50,9 +50,7 @@
         "show": "/core/streams/:id",
         "new": "/core/streams/new",
         "public": {
-            "show": "<streamr>/streams/:id"
-        },
-        "root": {
+            "stream": "<streamr>/streams/:id",
             "show": "/streams/:id",
             "preview": "/streams/:id/preview"
         }

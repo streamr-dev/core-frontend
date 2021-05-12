@@ -60,7 +60,7 @@ const StreamPage = (props) => {
                         await handleLoadError({
                             error,
                             // We want to show a 404 page when on public stream url while the stream has no public permissions
-                            ignoreUnauthorized: (path === routes.streams.root.show()),
+                            ignoreUnauthorized: (path === routes.streams.public.show()),
                         })
                     } else {
                         throw error

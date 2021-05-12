@@ -12,7 +12,7 @@ export type ResourceID = string | number | null | void
 const resourceUrl = (resourceType: $Keys<typeof ResourceType>, id: ResourceID) => {
     switch (resourceType) {
         case ResourceType.STREAM:
-            return routes.streams.public.show({
+            return routes.streams.public.stream({
                 id,
             })
         default:
