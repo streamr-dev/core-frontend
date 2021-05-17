@@ -544,7 +544,7 @@ const getSidechainContract = async (dataUnionId: string) => {
     const address = await dataUnion.getSidechainAddress()
 
     const web3 = getSidechainWeb3()
-    return new web3.eth.Contract(getConfig().dataUnionAbi, address)
+    return new web3.eth.Contract(getConfig().dataUnionSidechainAbi, address)
 }
 
 const getSidechainEvents = async (address: string, eventName: string, fromBlock: number = 0) => {
