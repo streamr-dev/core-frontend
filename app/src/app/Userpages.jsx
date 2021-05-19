@@ -18,8 +18,6 @@ import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
 import ProductsPage from '$userpages/components/ProductsPage'
 import DataUnionPage from '$userpages/components/DataUnionPage'
-import StatsPage from '$userpages/components/ProductsPage/Stats'
-import MembersPage from '$userpages/components/ProductsPage/Members'
 import EditProductPage from '$mp/containers/EditProductPage'
 import routes from '$routes'
 
@@ -32,8 +30,6 @@ const TransactionListAuth = userIsAuthenticated(TransactionList)
 const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
 const DataUnionPageAuth = userIsAuthenticated(DataUnionPage)
-const StatsPageAuth = userIsAuthenticated(StatsPage)
-const MembersPageAuth = userIsAuthenticated(MembersPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
 const NewStreamPageAuth = userIsAuthenticated(NewStreamPage)
 
@@ -49,8 +45,6 @@ const UserpagesRouter = () => ([
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
     <Route exact path={routes.dataunions.index()} component={DataUnionPageAuth} key="DataUnionPage" />,
     <Route exact path={routes.products.edit()} component={EditProductAuth} key="EditProduct" />,
-    <Route exact path={routes.products.stats()} component={StatsPageAuth} key="StatsPage" />,
-    <Route exact path={routes.products.members()} component={MembersPageAuth} key="MembersPage" />,
     <Redirect from={routes.core()} to={routes.streams.index()} component={StreamListViewAuth} key="StreamListViewRedirect" />,
 ])
 

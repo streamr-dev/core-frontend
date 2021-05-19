@@ -321,9 +321,7 @@ const ProductTile = ({
                     right
                     icon="dataUnion"
                     forwardAs={Badge.Link}
-                    to={product.id && routes.products.stats({
-                        id: product.id,
-                    })}
+                    to={routes.dataunions.index()}
                 >
                     {numMembers}
                 </IconBadge>

@@ -62,9 +62,7 @@
     "products": {
         "edit": "/core/products/:id/edit",
         "index": "/core/products",
-        "members": "/core/products/:id/members",
-        "new": "/core/products/new",
-        "stats": "/core/products/:id/stats"
+        "new": "/core/products/new"
     },
     "dataunions": {
         "edit": "/core/dataunions/:id/edit",

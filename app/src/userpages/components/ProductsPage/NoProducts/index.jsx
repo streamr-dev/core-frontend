@@ -53,7 +53,7 @@ const NoCreatedProductsView = () => (
         )}
     >
         <p>
-            <span>You haven&apos;t created any Data Products or Data Unions yet.</span>
+            <span>You haven&apos;t created any Data Products yet.</span>
             <Message>
                 Click the Create button above to get started.
                 <br />
