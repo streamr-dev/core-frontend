@@ -9,6 +9,7 @@ import { CoreHelmet } from '$shared/components/Helmet'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
 import { selectMyProductList, selectFetching } from '$mp/modules/myProductList/selectors'
 import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
+import { productTypes } from '$mp/utils/constants'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import useFilterSort from '$userpages/hooks/useFilterSort'
@@ -59,18 +60,24 @@ const DataUnionPage = () => {
         ]
     }, [])
     const { filter, setSearch, resetFilter } = useFilterSort(sortOptions)
-    const products = useSelector(selectMyProductList)
+    const allProducts = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
 
     const { load: loadDataUnionStats, stats } = useAllDataUnionStats()
+
+    // Make sure we show only data unions.
+    // This is needed to avoid quick flash of possibly normal products.
+    const products = useMemo(() => (
+        allProducts.filter((p) => p.type === productTypes.DATAUNION)
+    ), [allProducts])
 
     useEffect(() => {
         // Modify filter to include only dataunions
         const finalFilter = {
             ...filter,
             key: 'type',
-            value: 'dataunion',
+            value: productTypes.DATAUNION,
         }
         dispatch(getMyProducts(finalFilter)).then((results) => {
             loadDataUnionStats(results)

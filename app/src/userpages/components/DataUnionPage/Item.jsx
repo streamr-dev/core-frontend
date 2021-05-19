@@ -404,17 +404,19 @@ const Item = ({ product, stats }: Props) => {
                             <Icon name="pencil" />
                         </Button>
                     </Tooltip>
-                    <Tooltip value="View on marketplace">
-                        <Button
-                            to={
-                                routes.marketplace.product({
-                                    id: product.id,
-                                })
-                            }
-                        >
-                            <Icon name="eye" />
-                        </Button>
-                    </Tooltip>
+                    {product.state === productStates.DEPLOYED && (
+                        <Tooltip value="View on marketplace">
+                            <Button
+                                to={
+                                    routes.marketplace.product({
+                                        id: product.id,
+                                    })
+                                }
+                            >
+                                <Icon name="eye" />
+                            </Button>
+                        </Tooltip>
+                    )}
                     <Popover
                         title="Options"
                         caret={false}
