@@ -1246,7 +1246,7 @@ describe('EditControllerProvider', () => {
                 ...expectedProduct,
                 beneficiaryAddress,
             }, product.id)
-            expect(props.location.pathname).toBe('/core/products')
+            expect(props.location.pathname).toBe('/core/dataunions')
 
             sharedConstants.dataUnionMemberLimit = oldLimit
         })
