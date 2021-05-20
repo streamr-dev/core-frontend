@@ -654,6 +654,26 @@ const sources = {
             />
         </svg>
     ),
+    externalLink: (
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.0008 13.4286V10H18.5723" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M21.9994 10L14.2852 17.7143" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M15.5 12.5713H10.7857C10.3518 12.5713 10 12.9231 10 13.357V21.2141C10 21.6481 10.3518 21.9999 10.7857 21.9999H18.6429C19.0768 21.9999 19.4286 21.6481 19.4286 21.2141V16.4999" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
+    pencil: (
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22.3402 9.65976C22.1283 9.44871 21.8766 9.28175 21.5998 9.16852C21.3229 9.05528 21.0264 8.99803 20.7273 9.00005C20.4282 9.00208 20.1324 9.06334 19.8571 9.18031C19.5819 9.29728 19.3325 9.46764 19.1234 9.68154L10.1013 18.7036L9 23L13.2964 21.8981L22.3185 12.876C22.5324 12.667 22.7028 12.4177 22.8198 12.1424C22.9368 11.8672 22.9981 11.5715 23.0002 11.2724C23.0022 10.9733 22.9449 10.6768 22.8316 10.4C22.7184 10.1232 22.5513 9.87162 22.3402 9.65976V9.65976Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M18.8652 9.93994L22.0597 13.1344" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M10.1016 18.7031L13.2991 21.8951" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
+    eye: (
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15.9988 10.501C12.774 10.4466 9.43872 12.7002 7.34189 15.0082C7.1218 15.2526 7 15.5698 7 15.8986C7 16.2275 7.1218 16.5447 7.34189 16.789C9.39312 19.0483 12.7188 21.3539 15.9988 21.2987C19.2788 21.3539 22.6053 19.0483 24.6581 16.789C24.8782 16.5447 25 16.2275 25 15.8986C25 15.5698 24.8782 15.2526 24.6581 15.0082C22.5589 12.7002 19.2236 10.4466 15.9988 10.501Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M18.9981 15.9003C18.998 16.4936 18.8219 17.0735 18.4921 17.5668C18.1624 18.06 17.6938 18.4444 17.1456 18.6714C16.5974 18.8983 15.9942 18.9576 15.4123 18.8417C14.8304 18.7259 14.2959 18.4401 13.8765 18.0205C13.457 17.6009 13.1713 17.0664 13.0556 16.4844C12.9399 15.9025 12.9994 15.2993 13.2265 14.7512C13.4536 14.2031 13.8381 13.7346 14.3314 13.405C14.8248 13.0753 15.4048 12.8994 15.9981 12.8994C16.3922 12.8993 16.7824 12.9769 17.1465 13.1276C17.5105 13.2784 17.8413 13.4995 18.1199 13.7782C18.3986 14.0568 18.6195 14.3877 18.7702 14.7518C18.9209 15.1159 18.9983 15.5062 18.9981 15.9003Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+    ),
     github: (
         <SocialIcons.GitHub />
     ),

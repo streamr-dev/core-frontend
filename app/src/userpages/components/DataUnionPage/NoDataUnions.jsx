@@ -2,40 +2,25 @@
 
 import React from 'react'
 
+import type { Filter } from '$userpages/flowtype/common-types'
+
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
-import type { Filter } from '$userpages/flowtype/common-types'
+import docsLinks from '$shared/../docsLinks'
 
-type NoDataUnionMembersProps = {
-    filter: ?Filter,
-}
 type NoResultsViewProps = {
     onResetFilter: Function,
+    filter: ?Filter,
 }
-type Props = NoResultsViewProps & NoDataUnionMembersProps & {
+type Props = NoResultsViewProps & {
     hasFilter: boolean,
 }
 
-const messages = {
-    approve: {
-        title: 'No one is waiting to join at the moment.',
-        message: 'Get out there and promote it 🚀',
-    },
-    remove: {
-        title: 'No one has joined yet.',
-        message: 'Get out there and promote it 🚀',
-    },
-    rejected: {
-        title: 'You haven\'t rejected any approvals yet.',
-        message: 'Keep up the good work 👍',
-    },
-}
-
-const NoDataUnionMembers = ({ filter }: NoDataUnionMembersProps) => (
+const NoCreatedDataUnionsView = () => (
     <EmptyState
         image={(
             <img
@@ -45,14 +30,10 @@ const NoDataUnionMembers = ({ filter }: NoDataUnionMembersProps) => (
             />
         )}
     >
-        {!!filter && filter.id && messages[filter.id] && (
-            <p>
-                <span>{messages[filter.id].title}</span>
-                <small>
-                    {messages[filter.id].message}
-                </small>
-            </p>
-        )}
+        You haven&apos;t created any Data Unions
+        <small>
+            Learn how to create one in the <a href={docsLinks.dataUnions}>Docs</a>
+        </small>
     </EmptyState>
 )
 
@@ -75,22 +56,22 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
         )}
     >
         <p>
-            <span>Nope, sorry!</span>
+            <span>No results.</span>
             <small>
-                We couldn&apos;t find any members that match your search.
+                We couldn&apos;t find any data unions that match your search.
             </small>
         </p>
     </EmptyState>
 )
 
-const NoMembersView = ({ hasFilter, filter, ...rest }: Props) => {
+const NoDataUnionsView = ({ hasFilter, ...rest }: Props) => {
     if (hasFilter) {
         return (
             <NoResultsView {...rest} />
         )
     }
 
-    return <NoDataUnionMembers filter={filter} />
+    return <NoCreatedDataUnionsView />
 }
 
-export default NoMembersView
+export default NoDataUnionsView

@@ -73,6 +73,7 @@ function useJoinRequests() {
             })
         } catch (e) {
             console.warn(e)
+            throw e
         }
     }, [update])
 
@@ -99,10 +100,14 @@ function useJoinRequests() {
             })
         } catch (e) {
             console.warn(e)
+            throw e
         }
     }, [])
 
-    const members = useMemo(() => denormalize(ids, joinRequestsSchema, entities), [ids, entities])
+    const members = useMemo(() => (
+        denormalize(ids, joinRequestsSchema, entities)
+            .sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime())
+    ), [ids, entities])
 
     return useMemo(() => ({
         load,

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, Fragment } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useHistory } from 'react-router-dom'
 
 import { CoreHelmet } from '$shared/components/Helmet'
 import { getMyProducts } from '$mp/modules/myProductList/actions'
@@ -12,12 +13,13 @@ import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import ListContainer from '$shared/components/Container/List'
 import { isDataUnionProduct } from '$mp/utils/product'
 import useFilterSort from '$userpages/hooks/useFilterSort'
-import useModal from '$shared/hooks/useModal'
 import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 import CreateProductModal from '$mp/containers/CreateProductModal'
 import Button from '$shared/components/Button'
 import Grid from '$shared/components/Tile/Grid'
 import { ProductTile } from '$shared/components/Tile'
+import { productTypes } from '$mp/utils/constants'
+import routes from '$routes'
 import Search from '../Header/Search'
 import { getFilters } from '../../utils/constants'
 import Layout from '../Layout'
@@ -27,15 +29,19 @@ import * as MenuItems from './MenuItems'
 import styles from './products.pcss'
 
 export const CreateProductButton = () => {
-    const { api: createProductDialog } = useModal('marketplace.createProduct')
+    const history = useHistory()
 
     return (
         <Button
             type="button"
             className={styles.createProductButton}
-            onClick={() => createProductDialog.open()}
+            onClick={() => {
+                history.replace(routes.products.new({
+                    type: productTypes.NORMAL,
+                }))
+            }}
         >
-            Create
+            Create product
         </Button>
     )
 }
@@ -58,7 +64,7 @@ const ProductsPage = () => {
         setSort,
         resetFilter,
     } = useFilterSort(sortOptions)
-    const products = useSelector(selectMyProductList)
+    const allProducts = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
     const {
@@ -69,8 +75,20 @@ const ProductsPage = () => {
         reset: resetStats,
     } = useAllDataUnionStats()
 
+    // Make sure we show only normal products.
+    // This is needed to avoid quick flash of possibly data union products.
+    const products = useMemo(() => (
+        allProducts.filter((p) => p.type === productTypes.NORMAL)
+    ), [allProducts])
+
     useEffect(() => {
-        dispatch(getMyProducts(filter))
+        // Modify filter to include only normal products
+        const finalFilter = {
+            ...filter,
+            key: 'type',
+            value: productTypes.NORMAL,
+        }
+        dispatch(getMyProducts(finalFilter))
             .then(loadDataUnionStats)
     }, [dispatch, filter, loadDataUnionStats])
 
@@ -127,7 +145,6 @@ const ProductsPage = () => {
                         const isFetching = fetchingIds.includes(beneficiaryAddress)
                         const memberCount = (isDataUnion && !isFetching) ? members[beneficiaryAddress] : undefined
                         const isDeploying = isDataUnion && readyToFetch && !isFetching && typeof memberCount === 'undefined'
-                        const contractAddress = isDataUnion ? beneficiaryAddress : null
                         const published = state === productStates.DEPLOYED
                         const deployed = !!(isDataUnion && !!beneficiaryAddress)
 
@@ -138,15 +155,6 @@ const ProductsPage = () => {
                                     <Fragment>
                                         <MenuItems.Edit id={id} />
                                         <MenuItems.View id={id} disabled={!published} />
-                                        {deployed && (
-                                            <MenuItems.ViewStats id={id} />
-                                        )}
-                                        {deployed && (
-                                            <MenuItems.ViewDataUnion id={id} />
-                                        )}
-                                        {contractAddress && (
-                                            <MenuItems.CopyContractAddress address={contractAddress} />
-                                        )}
                                         <MenuItems.Copy id={id} disabled={!published} />
                                     </Fragment>
                                 }

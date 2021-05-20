@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { getSubscribedEvents } from '$mp/modules/contractProduct/services'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -18,26 +18,47 @@ const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
     const [isLoading, setIsLoading] = useState(false)
     const isMounted = useIsMounted()
 
+    const startDate = useMemo(() => (
+        Date.now() - (shownDays * MILLISECONDS_IN_DAY)
+    ), [shownDays])
+
     useEffect(() => {
         const getSubscriptions = async () => {
             setIsLoading(true)
-            const fromTimestamp = Date.now() - (shownDays * MILLISECONDS_IN_DAY)
-            const subscriptions = await getSubscribedEvents(productId, fromTimestamp)
+            const subscriptions = await getSubscribedEvents(productId, startDate)
             if (isMounted) {
                 setSubscriptionData(subscriptions)
                 setIsLoading(false)
             }
         }
         getSubscriptions()
-    }, [productId, shownDays, isMounted])
+    }, [productId, isMounted, startDate])
 
     useEffect(() => {
         const data = []
+        const subscriptions = subscriptionData || []
 
-        if (subscriptionData == null || subscriptionData.length === 0) {
+        const subs = subscriptions
+            .filter((e) => e.start <= Date.now() && e.start >= startDate)
+            .map((e) => ({
+                time: e.start,
+                type: 's', // s = subscription
+            }))
+        const unsubs = subscriptions
+            .filter((e) => e.end <= Date.now() && e.end >= startDate)
+            .map((e) => ({
+                time: e.end,
+                type: 'u', // u = unsubscription
+            }))
+
+        // Combine subscription and unsubscription events to a single array
+        // ordered by event time
+        const subscriptionEvents = ([...subs, ...unsubs]).sort((a, b) => a.time - b.time)
+
+        if (subscriptionEvents.length === 0) {
             // Draw a zero line when there are no subscriptions
             data.push({
-                x: Date.now() - (shownDays * MILLISECONDS_IN_DAY),
+                x: startDate,
                 y: 0,
             })
             data.push({
@@ -47,23 +68,6 @@ const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
             setGraphData(data)
             return
         }
-
-        const subs = subscriptionData
-            .filter((e) => e.start <= Date.now())
-            .map((e) => ({
-                time: e.start,
-                type: 's', // s = subscription
-            }))
-        const unsubs = subscriptionData
-            .filter((e) => e.end <= Date.now())
-            .map((e) => ({
-                time: e.end,
-                type: 'u', // u = unsubscription
-            }))
-
-        // Combine subscription and unsubscription events to a single array
-        // ordered by event time
-        const subscriptionEvents = ([...subs, ...unsubs]).sort((a, b) => a.time - b.time)
 
         let subCount = 0
         subscriptionEvents.forEach((e) => {
@@ -89,14 +93,20 @@ const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
             })
         })
 
-        // Make sure we fill the whole time range
-        data.unshift({
-            x: Date.now() - (shownDays * MILLISECONDS_IN_DAY),
-            y: data[0].y,
-        })
+        // Make sure we fill the whole date range
+        if (data.length > 0) {
+            data.unshift({
+                x: startDate,
+                y: data[0].y,
+            })
+            data.push({
+                x: Date.now(),
+                y: data[data.length - 1].y,
+            })
+        }
 
         setGraphData(data)
-    }, [subscriptionData, shownDays])
+    }, [subscriptionData, startDate])
 
     return (
         <TimeSeriesGraph

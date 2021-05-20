@@ -64,6 +64,9 @@ const Header = ({
                         <Tab to={routes.products.index()}>
                             Products
                         </Tab>
+                        <Tab to={routes.dataunions.index()}>
+                            Data Unions
+                        </Tab>
                         <Tab to={routes.subscriptions()}>
                             Subscriptions
                         </Tab>

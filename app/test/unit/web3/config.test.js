@@ -8,6 +8,7 @@ jest.mock('$shared/web3/contracts/communityProduct', () => ({
 }))
 jest.mock('$shared/web3/abis/uniswapAdaptor', () => (['u_test', 'u_values', 'u_only']))
 jest.mock('$shared/web3/abis/dataunion', () => (['d_test', 'd_values', 'd_only']))
+jest.mock('$shared/web3/abis/dataunionSidechain', () => (['ds_test', 'ds_values', 'ds_only']))
 
 describe('config', () => {
     let oldEnv
@@ -61,6 +62,7 @@ describe('config', () => {
                     address: 'uniAddress',
                 },
                 dataUnionAbi: ['d_test', 'd_values', 'd_only'],
+                dataUnionSidechainAbi: ['ds_test', 'ds_values', 'ds_only'],
             })
         })
     })

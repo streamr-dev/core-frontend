@@ -47,16 +47,10 @@ jest.mock('$userpages/components/ProductsPage', () => ({
         'Products list'
     ),
 }))
-jest.mock('$userpages/components/ProductsPage/Stats', () => ({
+jest.mock('$userpages/components/DataUnionPage', () => ({
     __esModule: true,
-    default: ({ match }) => (
-        `Product ${match.params.id} stats`
-    ),
-}))
-jest.mock('$userpages/components/ProductsPage/Members', () => ({
-    __esModule: true,
-    default: ({ match }) => (
-        `Product ${match.params.id} members`
+    default: () => (
+        'Data union list'
     ),
 }))
 jest.mock('$mp/containers/EditProductPage', () => ({
@@ -170,6 +164,20 @@ describe('Userpages Routes', () => {
         expect(el.text()).toBe('Products list')
     })
 
+    it('shows data unions list', () => {
+        const el = mount((
+            <MemoryRouter
+                initialEntries={['/core/dataunions']}
+            >
+                <Switch>
+                    {UserpagesRouter()}
+                </Switch>
+            </MemoryRouter>
+        ))
+
+        expect(el.text()).toBe('Data union list')
+    })
+
     it('shows product editor', () => {
         const el = mount((
             <MemoryRouter
@@ -182,34 +190,6 @@ describe('Userpages Routes', () => {
         ))
 
         expect(el.text()).toBe('Product 123 editor')
-    })
-
-    it('shows the data union stats page', () => {
-        const el = mount((
-            <MemoryRouter
-                initialEntries={['/core/products/123/stats']}
-            >
-                <Switch>
-                    {UserpagesRouter()}
-                </Switch>
-            </MemoryRouter>
-        ))
-
-        expect(el.text()).toBe('Product 123 stats')
-    })
-
-    it('shows the data union members page', () => {
-        const el = mount((
-            <MemoryRouter
-                initialEntries={['/core/products/123/members']}
-            >
-                <Switch>
-                    {UserpagesRouter()}
-                </Switch>
-            </MemoryRouter>
-        ))
-
-        expect(el.text()).toBe('Product 123 members')
     })
 
     it('redirects to stream list on bad route', () => {

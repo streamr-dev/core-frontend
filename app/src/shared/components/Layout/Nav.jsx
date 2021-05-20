@@ -112,6 +112,9 @@ const UnstyledWide = (props) => {
                         <Menu.Item as={Link} to={routes.products.index()}>
                             Products
                         </Menu.Item>
+                        <Menu.Item as={Link} to={routes.dataunions.index()}>
+                            Data Unions
+                        </Menu.Item>
                         <Menu.Item as={Link} to={routes.subscriptions()}>
                             Subscriptions
                         </Menu.Item>

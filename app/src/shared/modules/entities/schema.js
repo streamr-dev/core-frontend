@@ -44,3 +44,8 @@ export const whiteListedAddressSchema = new schema.Entity('whitelistedAddresses'
     idAttribute: 'address',
 })
 export const whiteListedAddressesSchema = [whiteListedAddressSchema]
+
+export const dataUnionMemberSchema = new schema.Entity('dataUnionMembers', undefined, {
+    idAttribute: 'address',
+})
+export const dataUnionMembersSchema = [dataUnionMemberSchema]

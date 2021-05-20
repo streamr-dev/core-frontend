@@ -32,6 +32,7 @@
     "publisherTerms": "https://s3.amazonaws.com/streamr-public/streamr-data-provider-agreement.pdf",
     "resetAllowanceInfo": "https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729",
     "etherscanTransaction": "https://etherscan.io/tx/:tx",
+    "etherscanAddress": "https://etherscan.io/address/:address",
     "allowanceInfo": "https://tokenallowance.io",
     "marketplace": {
         "index": "/marketplace",
@@ -61,9 +62,11 @@
     "products": {
         "edit": "/core/products/:id/edit",
         "index": "/core/products",
-        "members": "/core/products/:id/members",
-        "new": "/core/products/new",
-        "stats": "/core/products/:id/stats"
+        "new": "/core/products/new"
+    },
+    "dataunions": {
+        "edit": "/core/dataunions/:id/edit",
+        "index": "/core/dataunions"
     },
     "whitepaper": "<landingPage>/whitepaper",
     "site": {

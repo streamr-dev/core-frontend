@@ -5,6 +5,7 @@ import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
 import uniswapAdaptorAbi from './abis/uniswapAdaptor'
 import dataUnionAbi from './abis/dataunion'
+import dataUnionSidechainAbi from './abis/dataunionSidechain'
 import communityProductMetadata from './contracts/communityProduct'
 
 type Config = {
@@ -18,6 +19,7 @@ type Config = {
     communityProduct: SmartContractMetadata,
     uniswapAdaptor: SmartContractConfig,
     dataUnionAbi: string,
+    dataUnionSidechainAbi: string,
 }
 
 const getConfig = (): Config => ({
@@ -46,6 +48,7 @@ const getConfig = (): Config => ({
         address: process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS || '',
     },
     dataUnionAbi,
+    dataUnionSidechainAbi,
 })
 
 export default getConfig

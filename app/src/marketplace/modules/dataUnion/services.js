@@ -247,11 +247,12 @@ export const createClient = (options: CreateClient = {}) => {
         },
         sidechain: {
             url: process.env.DATA_UNION_SIDECHAIN_PROVIDER,
-            chainId: process.env.DATA_UNION_SIDECHAIN_ID,
+            chainId: parseInt(process.env.DATA_UNION_SIDECHAIN_ID, 10),
         },
         mainnet: {
             url: process.env.WEB3_PUBLIC_HTTP_PROVIDER,
         },
+        streamrNodeAddress: getStreamrEngineAddresses()[0],
     })
 }
 
@@ -287,7 +288,6 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: string): SmartC
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
-                joinPartAgents: getStreamrEngineAddresses(),
             })
         })
         .then((dataUnion) => {
@@ -544,7 +544,7 @@ const getSidechainContract = async (dataUnionId: string) => {
     const address = await dataUnion.getSidechainAddress()
 
     const web3 = getSidechainWeb3()
-    return new web3.eth.Contract(getConfig().dataUnionAbi, address)
+    return new web3.eth.Contract(getConfig().dataUnionSidechainAbi, address)
 }
 
 const getSidechainEvents = async (address: string, eventName: string, fromBlock: number = 0) => {
@@ -556,39 +556,111 @@ const getSidechainEvents = async (address: string, eventName: string, fromBlock:
     return events
 }
 
-export const getJoinsAndParts = async (address: string, fromTimestamp: number) => {
+export const getJoinsAndParts = async (id: DataUnionId, fromTimestamp: number) => {
     const web3 = getSidechainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
-    const joins = await getSidechainEvents(address, 'MemberJoined', fromBlock)
-    const parts = await getSidechainEvents(address, 'MemberParted', fromBlock)
+    const joinEvents = await getSidechainEvents(id, 'MemberJoined', fromBlock)
+    const partEvents = await getSidechainEvents(id, 'MemberParted', fromBlock)
     const result = []
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const e of joins) {
-        // eslint-disable-next-line no-await-in-loop
-        const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp) {
-            result.push({
-                timestamp: block.timestamp * 1000,
-                diff: 1,
-            })
-        }
-    }
+    const joins = joinEvents
+        .map((e) => ({
+            ...e,
+            type: 'join',
+        }))
+    const parts = partEvents
+        .map((e) => ({
+            ...e,
+            type: 'part',
+        }))
+    const joinsAndParts = ([...joins, ...parts])
 
     // eslint-disable-next-line no-restricted-syntax
-    for (const e of parts) {
+    for (const e of joinsAndParts) {
         // eslint-disable-next-line no-await-in-loop
         const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp) {
+        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
             result.push({
                 timestamp: block.timestamp * 1000,
-                diff: -1,
+                diff: e.type === 'join' ? 1 : -1,
             })
         }
     }
 
     result.sort((a, b) => b.timestamp - a.timestamp)
     return result
+}
+
+// eslint-disable-next-line camelcase
+async function* deprecated_getMemberEvents(id: DataUnionId, timestampFrom: number = 0): any {
+    const dataUnion = await getDataUnion(id)
+    const client = createClient()
+    await client.ensureConnected()
+    const sub = await client.subscribe({
+        streamId: dataUnion.joinPartStreamId,
+        resend: {
+            from: {
+                timestamp: timestampFrom,
+            },
+        },
+    })
+
+    /* eslint-disable no-restricted-syntax */
+    for await (const msg of sub) {
+        if (msg.parsedContent.addresses != null) {
+            for (const address of msg.parsedContent.addresses) {
+                yield {
+                    address,
+                    earnings: NaN,
+                    withdrawable: NaN,
+                    status: 'NOT_AVAILABLE',
+                }
+            }
+        }
+    }
+    /* eslint-enable no-restricted-syntax */
+}
+
+async function* getMemberEvents(id: DataUnionId, fromTimestamp: number = 0) {
+    const client = createClient()
+    const web3 = getSidechainWeb3()
+    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
+    const joinEvents = await getSidechainEvents(id, 'MemberJoined', fromBlock)
+
+    joinEvents.sort((a, b) => b.blockNumber - a.blockNumber)
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const e of joinEvents) {
+        const memberAddress = e.returnValues.member
+        // eslint-disable-next-line no-await-in-loop
+        const block = await web3.eth.getBlock(e.blockHash)
+        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
+            const dataUnion = client.getDataUnion(id)
+            // eslint-disable-next-line no-await-in-loop
+            const memberData = await dataUnion.getMemberStats(memberAddress)
+            yield {
+                ...memberData,
+                address: memberAddress,
+            }
+        }
+    }
+}
+
+export async function* getAllMemberEvents(id: DataUnionId): any {
+    const version = await getDataUnionVersion(id)
+
+    if (version === 1) {
+        yield* deprecated_getMemberEvents(id)
+    } else if (version === 2) {
+        yield* getMemberEvents(id)
+    }
+}
+
+export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) => {
+    const client = createClient()
+    const dataUnion = client.getDataUnion(id)
+    const receipt = await dataUnion.removeMembers(memberAddresses)
+    return receipt
 }
 
 type GetSecrets = {

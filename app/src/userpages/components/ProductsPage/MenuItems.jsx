@@ -39,28 +39,6 @@ export const View = ({ id, disabled }: any) => {
     )
 }
 
-export const ViewStats = ({ id }: any) => (
-    <MenuItem
-        tag={MenuLink}
-        to={routes.products.stats({
-            id,
-        })}
-    >
-        View stats
-    </MenuItem>
-)
-
-export const ViewDataUnion = ({ id }: any) => (
-    <MenuItem
-        tag={MenuLink}
-        to={routes.products.members({
-            id,
-        })}
-    >
-        View members
-    </MenuItem>
-)
-
 export const Copy = ({ id, disabled }: any) => {
     const { copy } = useCopy()
 
@@ -76,23 +54,6 @@ export const Copy = ({ id, disabled }: any) => {
             disabled={disabled}
         >
             Copy URL
-        </MenuItem>
-    )
-}
-
-export const CopyContractAddress = ({ disabled, address }: any) => {
-    const { copy } = useCopy()
-
-    const onClick = useCallback(() => {
-        copy(address)
-    }, [copy, address])
-
-    return (
-        <MenuItem
-            onClick={onClick}
-            disabled={disabled}
-        >
-            Copy ETH address
         </MenuItem>
     )
 }

@@ -48,7 +48,7 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
             y: memberCount,
         }]
 
-        // Because we cannot read the whole joinPartStream, we have to
+        // Because we cannot read every event from blockchain, we have to
         // work backwards from the initial state and calculate graph points
         // using the member count diff.
         const data = memberData.reduce((acc, element) => {
@@ -71,11 +71,11 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
 
         // Make sure we fill the whole date range
         data.push({
-            x: Date.now() - (shownDays * MILLISECONDS_IN_DAY),
+            x: startDate,
             y: latestMemberCount,
         })
         setGraphData(data)
-    }, [memberData, memberCount, memberCountUpdatedAt, shownDays])
+    }, [memberData, memberCount, memberCountUpdatedAt, startDate])
 
     return (
         <TimeSeriesGraph
