@@ -6,6 +6,9 @@ on:
       - development
     tags:        
       - v*
+  pull_request:
+    branches:
+      - development
   schedule:
     # Push nightly version at the end of every day
     - cron:  '0 0 * * *'
