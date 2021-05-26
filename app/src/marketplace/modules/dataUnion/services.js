@@ -552,13 +552,19 @@ export async function* getSidechainEvents(address: string, eventName: string, fr
     const contract = await getSidechainContract(address)
     const latestBlock = await web3.eth.getBlock('latest')
 
-    // Get events batched since xDai RPC seems to timeout if fetching too large sets
+    // Get events in batches since xDai RPC seems to timeout if fetching too large sets
     const batchSize = 10000
+
     for (let blockNumber = fromBlock; blockNumber < latestBlock.number; blockNumber += (batchSize + 1)) {
+        let toBlockNumber = blockNumber + batchSize
+        if (toBlockNumber > latestBlock.number) {
+            toBlockNumber = latestBlock.number
+        }
+
         // eslint-disable-next-line no-await-in-loop
         const events = await contract.getPastEvents(eventName, {
             fromBlock: blockNumber,
-            toBlock: blockNumber + batchSize,
+            toBlock: toBlockNumber,
         })
         yield events
     }
