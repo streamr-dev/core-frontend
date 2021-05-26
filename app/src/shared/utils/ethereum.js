@@ -116,6 +116,6 @@ class EthDater {
 
 export const getBlockNumberForTimestamp = async (web3, timestampSecs) => {
     const dater = new EthDater(web3)
-    const result = dater.getDate(timestampSecs)
+    const result = await dater.getDate(timestampSecs)
     return result.block
 }
