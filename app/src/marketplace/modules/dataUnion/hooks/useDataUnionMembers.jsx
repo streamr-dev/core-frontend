@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useContext } from 'react'
+import React, { useMemo, useCallback, useState, useContext, useRef, useEffect } from 'react'
 import { denormalize } from 'normalizr'
 
 import { dataUnionMemberSchema, dataUnionMembersSchema } from '$shared/modules/entities/schema'
@@ -12,12 +12,32 @@ function useDataUnionMembers() {
     const [loading, setLoading] = useState(false)
     const [ids, setIds] = useState([])
     const { update, entities } = useEntities()
+    const generator = useRef(null)
+
+    const reset = useCallback(() => {
+        setIds([])
+    }, [])
+
+    useEffect(() => () => {
+        // Cancel generator on unmount
+        if (generator.current != null) {
+            generator.current.return('Canceled')
+            generator.current = null
+        }
+    }, [])
 
     const load = useCallback(async (dataUnionId) => {
         setLoading(true)
         try {
+            if (generator.current != null) {
+                generator.current.return('Canceled')
+                generator.current = null
+                reset()
+            }
+            generator.current = getAllMemberEvents(dataUnionId)
+
             // eslint-disable-next-line no-restricted-syntax
-            for await (const event of getAllMemberEvents(dataUnionId)) {
+            for await (const event of generator.current) {
                 const result = update({
                     data: event,
                     schema: dataUnionMemberSchema,
@@ -33,7 +53,7 @@ function useDataUnionMembers() {
         } finally {
             setLoading(false)
         }
-    }, [update])
+    }, [update, reset])
 
     const remove = useCallback(async (dataUnionId, memberAddresses) => {
         try {
@@ -46,10 +66,6 @@ function useDataUnionMembers() {
             console.warn(e)
             throw e
         }
-    }, [])
-
-    const reset = useCallback(() => {
-        setIds([])
     }, [])
 
     const members = useMemo(() => (
