@@ -547,48 +547,62 @@ const getSidechainContract = async (dataUnionId: string) => {
     return new web3.eth.Contract(getConfig().dataUnionSidechainAbi, address)
 }
 
-const getSidechainEvents = async (address: string, eventName: string, fromBlock: number = 0) => {
+export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number = 0): any {
+    const web3 = getSidechainWeb3()
     const contract = await getSidechainContract(address)
-    const events = await contract.getPastEvents(eventName, {
-        fromBlock,
-        toBlock: 'latest',
-    })
-    return events
+    const latestBlock = await web3.eth.getBlock('latest')
+
+    // Get events in batches since xDai RPC seems to timeout if fetching too large sets
+    const batchSize = 10000
+
+    for (let blockNumber = fromBlock; blockNumber < latestBlock.number; blockNumber += (batchSize + 1)) {
+        let toBlockNumber = blockNumber + batchSize
+        if (toBlockNumber > latestBlock.number) {
+            toBlockNumber = latestBlock.number
+        }
+
+        // eslint-disable-next-line no-await-in-loop
+        const events = await contract.getPastEvents(eventName, {
+            fromBlock: blockNumber,
+            toBlock: toBlockNumber,
+        })
+        yield events
+    }
 }
 
-export const getJoinsAndParts = async (id: DataUnionId, fromTimestamp: number) => {
+export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number): any {
     const web3 = getSidechainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
-    const joinEvents = await getSidechainEvents(id, 'MemberJoined', fromBlock)
-    const partEvents = await getSidechainEvents(id, 'MemberParted', fromBlock)
-    const result = []
 
-    const joins = joinEvents
-        .map((e) => ({
-            ...e,
-            type: 'join',
-        }))
-    const parts = partEvents
-        .map((e) => ({
-            ...e,
-            type: 'part',
-        }))
-    const joinsAndParts = ([...joins, ...parts])
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const e of joinsAndParts) {
+    const handleEvent = async (e, type) => {
         // eslint-disable-next-line no-await-in-loop
         const block = await web3.eth.getBlock(e.blockHash)
         if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
-            result.push({
+            const event = {
                 timestamp: block.timestamp * 1000,
-                diff: e.type === 'join' ? 1 : -1,
-            })
+                diff: type === 'join' ? 1 : -1,
+            }
+            return event
+        }
+
+        return null
+    }
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const joins of getSidechainEvents(id, 'MemberJoined', fromBlock)) {
+        for (const join of joins) {
+            const result = await handleEvent(join, 'join')
+            yield result
         }
     }
 
-    result.sort((a, b) => b.timestamp - a.timestamp)
-    return result
+    for await (const parts of getSidechainEvents(id, 'MemberParted', fromBlock)) {
+        for (const part of parts) {
+            const result = await handleEvent(part, 'part')
+            yield result
+        }
+    }
+    /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
 // eslint-disable-next-line camelcase
@@ -625,25 +639,23 @@ async function* getMemberEvents(id: DataUnionId, fromTimestamp: number = 0) {
     const client = createClient()
     const web3 = getSidechainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
-    const joinEvents = await getSidechainEvents(id, 'MemberJoined', fromBlock)
 
-    joinEvents.sort((a, b) => b.blockNumber - a.blockNumber)
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const e of joinEvents) {
-        const memberAddress = e.returnValues.member
-        // eslint-disable-next-line no-await-in-loop
-        const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
-            const dataUnion = client.getDataUnion(id)
-            // eslint-disable-next-line no-await-in-loop
-            const memberData = await dataUnion.getMemberStats(memberAddress)
-            yield {
-                ...memberData,
-                address: memberAddress,
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const joins of getSidechainEvents(id, 'MemberJoined', fromBlock)) {
+        for (const e of joins) {
+            const memberAddress = e.returnValues.member
+            const block = await web3.eth.getBlock(e.blockHash)
+            if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
+                const dataUnion = client.getDataUnion(id)
+                const memberData = await dataUnion.getMemberStats(memberAddress)
+                yield {
+                    ...memberData,
+                    address: memberAddress,
+                }
             }
         }
     }
+    /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
 export async function* getAllMemberEvents(id: DataUnionId): any {

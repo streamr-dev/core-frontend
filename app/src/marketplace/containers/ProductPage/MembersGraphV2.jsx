@@ -1,7 +1,8 @@
 // @flow
 
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 
+import useIsMounted from '$shared/hooks/useIsMounted'
 import ClientProvider from '$shared/components/StreamrClientProvider'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import { getJoinsAndParts } from '$mp/modules/dataUnion/services'
@@ -15,13 +16,20 @@ type Props = {
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
 const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props) => {
+    const isMounted = useIsMounted()
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
+    const generator = useRef(null)
 
     const startDate = useMemo(() => (
         Date.now() - (shownDays * MILLISECONDS_IN_DAY)
     ), [shownDays])
+
+    const reset = useCallback(() => {
+        setGraphData([])
+        setMemberData([])
+    }, [])
 
     useEffect(() => {
         setMemberCountUpdatedAt(Date.now())
@@ -29,14 +37,40 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
 
     useEffect(() => {
         const loadData = async () => {
-            const result = await getJoinsAndParts(dataUnionAddress, startDate)
-            setMemberData(result)
+            try {
+                if (generator.current != null) {
+                    generator.current.return('Canceled')
+                    generator.current = null
+                    reset()
+                }
+                generator.current = getJoinsAndParts(dataUnionAddress, startDate)
+
+                // eslint-disable-next-line no-restricted-syntax
+                for await (const event of generator.current) {
+                    if (isMounted()) {
+                        setMemberData((prev) => [
+                            ...prev,
+                            event,
+                        ])
+                    }
+                }
+            } catch (e) {
+                console.warn(e)
+            }
         }
 
         if (dataUnionAddress) {
             loadData()
         }
-    }, [dataUnionAddress, startDate])
+    }, [dataUnionAddress, startDate, reset, isMounted])
+
+    useEffect(() => () => {
+        // Cancel generator on unmount
+        if (generator.current != null) {
+            generator.current.return('Canceled')
+            generator.current = null
+        }
+    }, [])
 
     useEffect(() => {
         memberData.sort((a, b) => b.timestamp - a.timestamp)
