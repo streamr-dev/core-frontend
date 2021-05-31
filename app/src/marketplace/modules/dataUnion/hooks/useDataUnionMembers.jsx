@@ -3,12 +3,14 @@ import { denormalize } from 'normalizr'
 
 import { dataUnionMemberSchema, dataUnionMembersSchema } from '$shared/modules/entities/schema'
 
+import useIsMounted from '$shared/hooks/useIsMounted'
 import useEntities from '$shared/hooks/useEntities'
 import { getAllMemberEvents, removeMembers } from '../services'
 
 const DataUnionMembersContext = React.createContext({})
 
 function useDataUnionMembers() {
+    const isMounted = useIsMounted()
     const [loading, setLoading] = useState(false)
     const [ids, setIds] = useState([])
     const { update, entities } = useEntities()
@@ -38,14 +40,16 @@ function useDataUnionMembers() {
 
             // eslint-disable-next-line no-restricted-syntax
             for await (const event of generator.current) {
-                const result = update({
-                    data: event,
-                    schema: dataUnionMemberSchema,
-                })
-                setIds((prev) => [
-                    ...prev.filter((i) => i !== result),
-                    result,
-                ])
+                if (isMounted()) {
+                    const result = update({
+                        data: event,
+                        schema: dataUnionMemberSchema,
+                    })
+                    setIds((prev) => [
+                        ...prev.filter((i) => i !== result),
+                        result,
+                    ])
+                }
             }
         } catch (e) {
             console.warn(e)
@@ -53,7 +57,7 @@ function useDataUnionMembers() {
         } finally {
             setLoading(false)
         }
-    }, [update, reset])
+    }, [update, reset, isMounted])
 
     const remove = useCallback(async (dataUnionId, memberAddresses) => {
         try {

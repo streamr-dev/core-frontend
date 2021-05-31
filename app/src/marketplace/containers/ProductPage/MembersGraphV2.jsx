@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 
+import useIsMounted from '$shared/hooks/useIsMounted'
 import ClientProvider from '$shared/components/StreamrClientProvider'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import { getJoinsAndParts } from '$mp/modules/dataUnion/services'
@@ -15,6 +16,7 @@ type Props = {
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
 const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props) => {
+    const isMounted = useIsMounted()
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
@@ -45,10 +47,12 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
 
                 // eslint-disable-next-line no-restricted-syntax
                 for await (const event of generator.current) {
-                    setMemberData((prev) => [
-                        ...prev,
-                        event,
-                    ])
+                    if (isMounted()) {
+                        setMemberData((prev) => [
+                            ...prev,
+                            event,
+                        ])
+                    }
                 }
             } catch (e) {
                 console.warn(e)
@@ -58,7 +62,7 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
         if (dataUnionAddress) {
             loadData()
         }
-    }, [dataUnionAddress, startDate, reset])
+    }, [dataUnionAddress, startDate, reset, isMounted])
 
     useEffect(() => () => {
         // Cancel generator on unmount
