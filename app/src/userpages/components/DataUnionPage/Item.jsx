@@ -121,23 +121,34 @@ const Buttons = styled.div`
     align-self: center;
     margin-right: 24px;
     display: none;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 4px;
 
     @media (min-width: ${LG}px) {
-        display: block;
+        display: grid;
     }
 `
 
 const Button = styled(Link)`
-    margin: 0 4px 0 0;
+    display: flex;
     padding: 0;
     border: none;
     background: none;
     outline: none;
     color: #ADADAD !important;
-    transition: 200ms ease-in-out color;
+    transition: 200ms ease-in-out all;
+    height: 32px;
+    width: 32px;
+    border-radius: 2px;
 
     &:hover {
         color: #323232 !important;
+        background-color: #F8F8F8;;
+    }
+
+    &:active {
+        color: #323232 !important;
+        background-color: #EFEFEF;;
     }
 `
 
@@ -147,8 +158,34 @@ const Icon = styled(SvgIcon)`
 `
 
 const Popover = styled(UnstyledPopover)`
-    display: inline-flex;
-    vertical-align: middle;
+    display: flex;
+    height: 100%;
+    border-radius: 2px;
+    transition: 200ms ease-in-out all;
+
+    div:first-of-type {
+        display: flex;
+        height: 100%;
+
+        span {
+            height: 100%;
+        }
+
+        &:hover {
+            color: #323232 !important;
+            background-color: #F8F8F8;;
+        }
+
+        &:active {
+            color: #323232 !important;
+            background-color: #EFEFEF;;
+        }
+    }
+
+    svg {
+        display: flex;
+        height: 100%;
+    }
 `
 
 const Stats = styled.div`
