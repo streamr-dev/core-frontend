@@ -155,7 +155,7 @@ function useValidationContext(): ContextProps {
 
         // applies only to data union
         if (isDataUnionProduct(product)) {
-            if (!product.adminFee || !(product.adminFee > 0 && product.adminFee <= 1)) {
+            if (!product.adminFee || !(product.adminFee >= 0 && product.adminFee <= 1)) {
                 setStatus('adminFee', ERROR, 'Admin fee cannot be empty')
             } else {
                 clearStatus('adminFee')

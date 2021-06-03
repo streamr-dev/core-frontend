@@ -99,9 +99,9 @@ const TextField = ({
     </StyledLabel>
 )
 
-const adminFeeOptions = [10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
+const adminFeeOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
     label: `${value} %`,
-    value: `${value / 100}`,
+    value: `${value !== 0 ? (value / 100) : 0}`,
 }))
 
 type Props = {

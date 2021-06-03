@@ -148,7 +148,7 @@ export const createJoinPartStream = async (account: Address, productId: ProductI
 
 // eslint-disable-next-line camelcase
 const deprecated_getAdminFeeInEther = (adminFee: string) => {
-    if (+adminFee <= 0 || +adminFee > 1) {
+    if (+adminFee < 0 || +adminFee > 1) {
         throw new Error(`${adminFee} is not a valid admin fee`)
     }
 
