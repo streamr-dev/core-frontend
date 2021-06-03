@@ -174,7 +174,13 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
     const dataUnionId = dataUnion && dataUnion.id
     const [search, setSearch] = useState('')
     const [processingMembers, setProcessingMembers] = useState([])
-    const { loading: loadingMembers, load: loadMembers, remove: removeMembers, members } = useDataUnionMembers()
+    const {
+        loading: loadingMembers,
+        load: loadMembers,
+        remove: removeMembers,
+        members,
+        search: searchMembers,
+    } = useDataUnionMembers()
     const loading = loadingMembers || processingMembers.length > 0
 
     useEffect(() => {
@@ -210,8 +216,10 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
     }, [dataUnionId, removeMembers, isMounted])
 
     const searchResults = useMemo(() => (
-        members.filter((m) => ((search && search.length > 0) ? m.address.includes(search) : true))
-    ), [search, members])
+        searchMembers(search)
+    ), [search, searchMembers])
+
+    const listing = search.length > 0 ? searchResults : members
 
     return (
         <Container className={className}>
@@ -241,7 +249,7 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                             <span>No members found that match {' '} <Heavy>{search}</Heavy></span>
                         </CenteredMessage>
                     )}
-                    {searchResults
+                    {listing
                         .map((member) => {
                             const processing = processingMembers.includes(member.address)
                             return (

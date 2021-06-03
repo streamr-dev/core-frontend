@@ -1,23 +1,26 @@
 import React, { useMemo, useCallback, useState, useContext, useRef, useEffect } from 'react'
-import { denormalize } from 'normalizr'
-
-import { dataUnionMemberSchema, dataUnionMembersSchema } from '$shared/modules/entities/schema'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useEntities from '$shared/hooks/useEntities'
+import { useThrottled } from '$shared/hooks/wrapCallback'
 import { getAllMemberEvents, removeMembers } from '../services'
 
 const DataUnionMembersContext = React.createContext({})
+const VISIBLE_MEMBERS_LIMIT = 100
 
 function useDataUnionMembers() {
     const isMounted = useIsMounted()
     const [loading, setLoading] = useState(false)
-    const [ids, setIds] = useState([])
-    const { update, entities } = useEntities()
+    const [members, setMembers] = useState([])
     const generator = useRef(null)
+    const membersRef = useRef([])
+
+    const updateDataToState = useThrottled(useCallback((data) => {
+        setMembers([...data.slice(0, VISIBLE_MEMBERS_LIMIT)])
+    }, []), 100)
 
     const reset = useCallback(() => {
-        setIds([])
+        setMembers([])
+        membersRef.current = []
     }, [])
 
     useEffect(() => () => {
@@ -41,14 +44,10 @@ function useDataUnionMembers() {
             // eslint-disable-next-line no-restricted-syntax
             for await (const event of generator.current) {
                 if (isMounted()) {
-                    const result = update({
-                        data: event,
-                        schema: dataUnionMemberSchema,
-                    })
-                    setIds((prev) => [
-                        ...prev.filter((i) => i !== result),
-                        result,
-                    ])
+                    if (membersRef.current.find((m) => m.address === event.address) === undefined) {
+                        membersRef.current.push(event)
+                        updateDataToState(membersRef.current)
+                    }
                 }
             }
         } catch (e) {
@@ -57,7 +56,7 @@ function useDataUnionMembers() {
         } finally {
             setLoading(false)
         }
-    }, [update, reset, isMounted])
+    }, [reset, isMounted, updateDataToState])
 
     const remove = useCallback(async (dataUnionId, memberAddresses) => {
         try {
@@ -65,17 +64,18 @@ function useDataUnionMembers() {
                 dataUnionId,
                 memberAddresses,
             })
-            setIds((prev) => prev.filter((m) => !memberAddresses.includes(m)))
+            setMembers((prev) => prev.filter((m) => !memberAddresses.includes(m.address)))
         } catch (e) {
             console.warn(e)
             throw e
         }
     }, [])
 
-    const members = useMemo(() => (
-        denormalize(ids, dataUnionMembersSchema, entities)
-            .sort((a, b) => a.address.localeCompare(b.address))
-    ), [ids, entities])
+    const search = useCallback((text) => (
+        membersRef.current
+            .filter((m) => ((text && text.length > 0) ? m.address.includes(text) : true))
+            .slice(0, VISIBLE_MEMBERS_LIMIT)
+    ), [])
 
     return useMemo(() => ({
         loading,
@@ -83,12 +83,14 @@ function useDataUnionMembers() {
         members,
         remove,
         reset,
+        search,
     }), [
         loading,
         load,
         members,
         remove,
         reset,
+        search,
     ])
 }
 

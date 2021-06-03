@@ -547,7 +547,7 @@ const getSidechainContract = async (dataUnionId: string) => {
     return new web3.eth.Contract(getConfig().dataUnionSidechainAbi, address)
 }
 
-export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number = 0): any {
+export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number): any {
     const web3 = getSidechainWeb3()
     const contract = await getSidechainContract(address)
     const latestBlock = await web3.eth.getBlock('latest')
@@ -635,17 +635,16 @@ async function* deprecated_getMemberEvents(id: DataUnionId, timestampFrom: numbe
     /* eslint-enable no-restricted-syntax */
 }
 
-async function* getMemberEvents(id: DataUnionId, fromTimestamp: number = 0) {
+export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: number): any {
     const client = createClient()
     const web3 = getSidechainWeb3()
-    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const joins of getSidechainEvents(id, 'MemberJoined', fromBlock)) {
+    for await (const joins of getSidechainEvents(id, 'MemberJoined', blockNumber)) {
         for (const e of joins) {
             const memberAddress = e.returnValues.member
             const block = await web3.eth.getBlock(e.blockHash)
-            if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
+            if (block) {
                 const dataUnion = client.getDataUnion(id)
                 const memberData = await dataUnion.getMemberStats(memberAddress)
                 yield {
@@ -658,13 +657,21 @@ async function* getMemberEvents(id: DataUnionId, fromTimestamp: number = 0) {
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
+export async function* getMemberEventsFromTimestamp(id: DataUnionId, timestamp: number = 0): any {
+    const web3 = getSidechainWeb3()
+    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(timestamp / 1000))
+
+    yield* getMemberEventsFromBlock(id, fromBlock)
+}
+
 export async function* getAllMemberEvents(id: DataUnionId): any {
     const version = await getDataUnionVersion(id)
 
     if (version === 1) {
         yield* deprecated_getMemberEvents(id)
     } else if (version === 2) {
-        yield* getMemberEvents(id)
+        const duFirstPossibleBlock = parseInt(process.env.DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK, 10)
+        yield* getMemberEventsFromBlock(id, duFirstPossibleBlock)
     }
 }
 
