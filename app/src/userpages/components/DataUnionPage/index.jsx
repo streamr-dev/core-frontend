@@ -26,11 +26,15 @@ import NoDataUnionsView from './NoDataUnions'
 import Item from './Item'
 
 const CreateButton = styled(Button)`
-    display: none;
-    min-width: 6rem;
+    && {
+        display: none;
+        min-width: 6rem;
+    }
 
     @media (min-width: ${LG}px) {
-        display: block;
+        && {
+            display: inline-flex;
+        }
     }
 `
 
