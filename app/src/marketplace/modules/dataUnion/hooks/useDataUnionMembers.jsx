@@ -60,10 +60,7 @@ function useDataUnionMembers() {
 
     const remove = useCallback(async (dataUnionId, memberAddresses) => {
         try {
-            await removeMembers({
-                dataUnionId,
-                memberAddresses,
-            })
+            await removeMembers(dataUnionId, memberAddresses)
             setMembers((prev) => prev.filter((m) => !memberAddresses.includes(m.address)))
         } catch (e) {
             console.warn(e)
