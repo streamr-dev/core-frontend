@@ -1,11 +1,14 @@
 // @flow
 
 import BN from 'bignumber.js'
+import * as yup from 'yup'
 
 import type { NumberString } from '$shared/flowtype/common-types'
 import { contractCurrencies as currencies, productStates } from '$shared/utils/constants'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import type { Product, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
+import { isEthereumAddress } from './validate'
+import { isPriceValid } from './price'
 
 import { productTypes } from './constants'
 import { fromAtto, fromNano, toAtto, toNano } from './math'
@@ -114,4 +117,67 @@ export const getValidId = (id: string, prefix: boolean = true): string => {
         throw new InvalidHexStringError(id)
     }
     return prefix ? getPrefixedHexString(id) : getUnprefixedHexString(id)
+}
+
+const urlValidator = yup.string().trim().url()
+const emailValidator = yup.string().trim().email()
+
+export const validate = (product: Product, isEthIdentityRequired: boolean = false): Object => {
+    const invalidFields = {};
+
+    ['name', 'description', 'category'].forEach((field) => {
+        invalidFields[field] = !product[field]
+    })
+
+    invalidFields.imageUrl = (!product.imageUrl && !product.newImageToUpload)
+    invalidFields.streams = (!product.streams || product.streams.length <= 0)
+    invalidFields.termsOfUse = (product.termsOfUse != null && product.termsOfUse.termsUrl)
+
+    const isPaid = isPaidProduct(product)
+
+    // applies only to data union
+    if (isDataUnionProduct(product)) {
+        invalidFields.adminFee = (product.adminFee === undefined || !(+product.adminFee >= 0 && +product.adminFee <= 1))
+        invalidFields.beneficiaryAddress = false
+
+        invalidFields.ethIdentity = isEthIdentityRequired
+    } else {
+        invalidFields.beneficiaryAddress = (isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress)))
+        invalidFields.adminFee = false
+    }
+
+    if (isPaid) {
+        invalidFields.pricePerSecond = (!isPriceValid(product.pricePerSecond))
+    } else {
+        invalidFields.pricePerSecond = false
+    }
+
+    if (product.contact) {
+        ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
+            // $FlowFixMe product.contact exists
+            if (product.contact[field] && product.contact[field].length > 0) {
+                // $FlowFixMe product.contact exists
+                invalidFields[`contact.${field}`] = !urlValidator.isValidSync(product.contact[field])
+            } else {
+                invalidFields[`contact.${field}`] = false
+            }
+        })
+
+        // $FlowFixMe product.contact exists
+        if (product.contact.email && product.contact.email.length > 0) {
+            const result = emailValidator.isValidSync(product.contact.email)
+            // $FlowFixMe product.contact exists
+            invalidFields['contact.email'] = (!result && product.contact.email)
+        } else {
+            invalidFields['contact.email'] = false
+        }
+    }
+
+    if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
+        invalidFields['contact.email'] = true
+    } else if (!product.requiresWhitelist) {
+        invalidFields['contact.email'] = false
+    }
+
+    return invalidFields
 }
