@@ -5,8 +5,9 @@ import get from 'lodash/get'
 import set from 'lodash/fp/set'
 import isPlainObject from 'lodash/isPlainObject'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 
-import { validate as validateProduct } from '$mp/utils/product'
+import { validate as validateProduct, isDataUnionProduct } from '$mp/utils/product'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
 import useIsEthIdentityNeeded from '../EditProductPage/useIsEthIdentityNeeded'
 import useProduct from '../ProductController/useProduct'
@@ -37,7 +38,7 @@ const ValidationContext: Context<ContextProps> = React.createContext({})
 
 const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 
-const validationErrors = {
+export const validationErrors = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
     category: 'Product category cannot be empty',
@@ -61,7 +62,11 @@ function useValidationContext(): ContextProps {
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouchedState] = useState({})
     const originalProduct = useProduct()
-    const { isRequired: isEthIdentityRequired } = useIsEthIdentityNeeded()
+    const dataUnion = useDataUnion()
+    const { owner } = dataUnion || {}
+    const { isRequired } = useIsEthIdentityNeeded(owner)
+    const isDataUnion = isDataUnionProduct(originalProduct)
+    const isEthIdentityRequired = !!(isDataUnion && isRequired)
 
     const setTouched = useCallback((name: string, value = true) => {
         setTouchedState((existing) => ({

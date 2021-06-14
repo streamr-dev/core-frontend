@@ -22,6 +22,7 @@ import useDataUnionStatsLoadCallback from './useDataUnionStatsLoadCallback'
 import useRelatedProductsLoadCallback from './useRelatedProductsLoadCallback'
 import useLoadStreamsCallback from './useLoadStreamsCallback'
 import useClearStreamsCallback from './useClearStreamsCallback'
+import useResetDataUnionCallback from './useResetDataUnionCallback'
 
 type ContextProps = {
     hasLoaded: boolean,
@@ -36,6 +37,7 @@ type ContextProps = {
     loadRelatedProducts: Function,
     loadStreams: Function,
     clearStreams: Function,
+    resetDataUnion: Function,
 }
 
 const ProductControllerContext: Context<ContextProps> = React.createContext({})
@@ -114,6 +116,7 @@ function useProductController() {
     const loadRelatedProducts = useRelatedProductsLoadCallback()
     const loadStreams = useLoadStreamsCallback()
     const clearStreams = useClearStreamsCallback()
+    const resetDataUnion = useResetDataUnionCallback()
 
     return useMemo(() => ({
         hasLoaded,
@@ -128,6 +131,7 @@ function useProductController() {
         loadRelatedProducts,
         loadStreams,
         clearStreams,
+        resetDataUnion,
     }), [
         hasLoaded,
         setHasLoaded,
@@ -141,6 +145,7 @@ function useProductController() {
         loadRelatedProducts,
         loadStreams,
         clearStreams,
+        resetDataUnion,
     ])
 }
 

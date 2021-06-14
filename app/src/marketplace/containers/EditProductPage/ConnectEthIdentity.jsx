@@ -8,6 +8,7 @@ import useModal from '$shared/hooks/useModal'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Button from '$shared/components/Button'
 import AddIdentityDialog from '$userpages/components/ProfilePage/IdentityHandler/AddIdentityDialog'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import useValidation from '../ProductController/useValidation'
 import useIsEthIdentityNeeded from './useIsEthIdentityNeeded'
@@ -31,7 +32,9 @@ type Props = {
 }
 
 const ConnectEthIdentity = ({ className, disabled }: Props) => {
-    const { isRequired, requiredAddress, walletLocked } = useIsEthIdentityNeeded()
+    const dataUnion = useDataUnion()
+    const { owner } = dataUnion || {}
+    const { isRequired, requiredAddress, walletLocked } = useIsEthIdentityNeeded(owner)
     const { isValid, message } = useValidation('ethIdentity')
     const { publishAttempted } = useContext(EditControllerContext)
 

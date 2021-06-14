@@ -61,6 +61,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadDataUnionStats,
         clearStreams,
         loadStreams,
+        resetDataUnion,
     } = useController()
 
     const { load: loadDataUnionSecrets, reset: resetDataUnionSecrets } = useDataUnionSecrets()
@@ -144,8 +145,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     // clear data union secrets when unmounting
     useEffect(() => () => {
+        resetDataUnion()
         resetDataUnionSecrets()
-    }, [resetDataUnionSecrets])
+    }, [resetDataUnion, resetDataUnionSecrets])
 
     // clear whitelisted addresses when unmounting
     useEffect(() => () => {

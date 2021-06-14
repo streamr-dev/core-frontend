@@ -131,7 +131,7 @@ export const validate = (product: Product, isEthIdentityRequired: boolean = fals
 
     invalidFields.imageUrl = (!product.imageUrl && !product.newImageToUpload)
     invalidFields.streams = (!product.streams || product.streams.length <= 0)
-    invalidFields.termsOfUse = (product.termsOfUse != null && product.termsOfUse.termsUrl)
+    invalidFields.termsOfUse = !!(product.termsOfUse != null && product.termsOfUse.termsUrl)
 
     const isPaid = isPaidProduct(product)
 

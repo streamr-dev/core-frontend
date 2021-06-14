@@ -6,20 +6,26 @@ import get from 'lodash/get'
 
 import { type Product } from '$mp/flowtype/product-types'
 import { ago } from '$shared/utils/time'
-import { productStates, NotificationIcon } from '$shared/utils/constants'
+import { productStates, NotificationIcon, dataUnionMemberLimit } from '$shared/utils/constants'
 import SvgIcon from '$shared/components/SvgIcon'
+import UnstyledFallbackImage from '$shared/components/FallbackImage'
 import UnstyledPopover from '$shared/components/Popover'
 import Tooltip from '$shared/components/Tooltip'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { getProductById } from '$mp/modules/product/services'
+import { validate as validateProduct } from '$mp/utils/product'
 import { MEDIUM, SM, LG } from '$shared/utils/styled'
 import { getSubscriberCount } from '$mp/modules/contractProduct/services'
 import { getDataUnion } from '$mp/modules/dataUnion/services'
 import { fromAtto } from '$mp/utils/math'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
+import useIsEthIdentityNeeded from '$mp/containers/EditProductPage/useIsEthIdentityNeeded'
+import { withPendingChanges } from '$mp/containers/EditProductPage/state'
+import { validationErrors } from '$mp/containers/ProductController/ValidationContextProvider'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import { getFilters } from '$userpages/utils/constants'
-import { truncate } from '$shared/utils/text'
+import { truncate, numberToText } from '$shared/utils/text'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
 import Link from '$shared/components/Link'
@@ -27,6 +33,7 @@ import useModal from '$shared/hooks/useModal'
 import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import usePending from '$shared/hooks/usePending'
 import { DataUnionMembersProvider } from '$mp/modules/dataUnion/hooks/useDataUnionMembers'
+import Initials from '$shared/components/AvatarImage/Initials'
 import routes from '$routes'
 
 import Management from './Management'
@@ -64,9 +71,8 @@ const ImageContainer = styled.div`
     cursor: pointer;
 `
 
-const Image = styled.img`
+const FallbackImage = styled(UnstyledFallbackImage)`
     display: block;
-    object-fit: cover;
     height: 48px;
     width: 48px;
 `
@@ -282,13 +288,20 @@ type Props = {
 const Item = ({ product, stats }: Props) => {
     const { copy } = useCopy()
     const isMounted = useIsMounted()
+    const productId = product && product.id
+    const productName = product && product.name
+    const dataUnionId = product && product.beneficiaryAddress
+
     const [isOpen, setIsOpen] = useState(false)
     const [subscriberCount, setSubscriberCount] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
-    const { wrap: wrapSubscriberLoad, isPending: loadingSubscriberCount } = usePending('dataunion.item.SUBSCRIBERS')
-    const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending('dataunion.item.DATAUNION')
-    const { wrap: wrapJoinRequestLoad, isPending: loadingJoinRequests } = usePending('dataunion.item.JOINREQUESTS')
-    const loading = loadingSubscriberCount || loadingDataUnion || loadingJoinRequests
+    const { wrap: wrapSubscriberLoad, isPending: loadingSubscriberCount } = usePending(`dataunion.item.${productId || ''}.SUBSCRIBERS`)
+    const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
+    const { wrap: wrapJoinRequestLoad, isPending: loadingJoinRequests } = usePending(`dataunion.item.${productId || ''}.JOINREQUESTS`)
+    const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
+    const { owner } = dataUnion || {}
+    const { isRequired: isEthIdentityRequired } = useIsEthIdentityNeeded(owner)
+    const loading = loadingSubscriberCount || loadingDataUnion || loadingJoinRequests || isPublishPending
 
     const { api: publishDialog } = useModal('publish')
     const { load: loadJoinRequests, members: joinRequests } = useJoinRequests()
@@ -297,9 +310,6 @@ const Item = ({ product, stats }: Props) => {
         filters.APPROVE,
     ]), [filters])
     const { filter } = useFilterSort(sortOptions)
-
-    const productId = product && product.id
-    const dataUnionId = product && product.beneficiaryAddress
 
     useEffect(() => {
         const load = async () => {
@@ -378,11 +388,73 @@ const Item = ({ product, stats }: Props) => {
         setIsOpen(!isOpen)
     }, [isOpen])
 
+    const validate = useCallback((product) => {
+        const invalidFields = validateProduct(product, isEthIdentityRequired)
+        const errors = Object.keys(invalidFields)
+            .filter((field) => !!invalidFields[field])
+            .map((field) => field)
+
+        if (errors.length > 0) {
+            errors.forEach((field) => {
+                Notification.push({
+                    title: validationErrors[field],
+                    icon: NotificationIcon.ERROR,
+                })
+            })
+
+            return false
+        }
+
+        if (isEthereumAddress(product.beneficiaryAddress)) {
+            const { active: activeMembers } = (stats && stats.memberCount) || {}
+
+            if ((activeMembers || 0) < dataUnionMemberLimit) {
+                Notification.push({
+                    title: `The minimum community size for a Data Union is ${dataUnionMemberLimit === 1 ?
+                        'one member' :
+                        `${numberToText(dataUnionMemberLimit)} members`
+                    }.`,
+                    icon: NotificationIcon.ERROR,
+                })
+                return false
+            }
+        }
+
+        return true
+    }, [isEthIdentityRequired, stats])
+
+    const publish = useCallback(async (productId) => wrapPublish(async () => {
+        const product = await getProductById(productId || '')
+        const productWithPendingChanges = withPendingChanges(product)
+
+        if (validate(productWithPendingChanges)) {
+            await publishDialog.open({
+                product,
+            })
+        }
+    }), [wrapPublish, validate, publishDialog])
+
+    const productInitials = useMemo(() => {
+        const initials = (productName || '').split(/\s+/).filter(Boolean).map((s) => s[0]).slice(0, 2)
+            .join('')
+            .toUpperCase()
+
+        return (
+            <Initials>
+                {initials}
+            </Initials>
+        )
+    }, [productName])
+
     return (
         <Container>
             <Header>
                 <ImageContainer onClick={onHeaderClick}>
-                    <Image src={product.imageUrl} />
+                    <FallbackImage
+                        alt={product.name || ''}
+                        src={product.imageUrl || ''}
+                        placeholder={productInitials}
+                    />
                 </ImageContainer>
                 <TitleContainer onClick={onHeaderClick}>
                     <Name>
@@ -392,19 +464,19 @@ const Item = ({ product, stats }: Props) => {
                         <State published={productState === 'Published'}>
                             {productState}
                         </State>
-                        {product.state === productStates.DEPLOYED ? (
+                        {dataUnion ? (
                             <Tooltip value="Copy DU address">
                                 <Address
                                     onClick={(event) => {
                                         event.stopPropagation()
-                                        copy(product.beneficiaryAddress)
+                                        copy(dataUnion.id)
                                         Notification.push({
                                             title: 'DU address copied to clipboard',
                                             icon: NotificationIcon.CHECKMARK,
                                         })
                                     }}
                                 >
-                                    {truncate(product.beneficiaryAddress)}
+                                    {truncate(dataUnion.id)}
                                 </Address>
                             </Tooltip>
                         ) : (
@@ -415,12 +487,12 @@ const Item = ({ product, stats }: Props) => {
                     </Details>
                 </TitleContainer>
                 <Buttons>
-                    {product.beneficiaryAddress && (
+                    {dataUnion && (
                         <Tooltip value="View on Etherscan">
                             <Button
                                 href={
                                     routes.etherscanAddress({
-                                        address: product.beneficiaryAddress,
+                                        address: dataUnion.id,
                                     })
                                 }
                                 target="_blank"
@@ -464,10 +536,9 @@ const Item = ({ product, stats }: Props) => {
                     >
                         <Popover.Item
                             onClick={async () => {
-                                await publishDialog.open({
-                                    product,
-                                })
+                                publish(product.id)
                             }}
+                            disabled={loading}
                         >
                             {product.state === productStates.DEPLOYED ? 'Unpublish' : 'Publish'}
                         </Popover.Item>
