@@ -9,7 +9,7 @@ While the Core UI can do just about everything you'd want to do with streams, so
 Events in streams can be queried via HTTP. Example using `curl`:
 
 <CodeSnippet language="bash">
-    {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d "{\"foo\":\"hello\",\"bar\":24.5}" https://streamr.network/api/v1/streams/MY-STREAM-ID/data`}
+    {`curl -i -X POST -H "Authorization: Bearer MY-SESSION-TOKEN" -d '{"foo":"hello","bar":24.5}' https://streamr.network/api/v1/streams/MY-STREAM-ID/data`}
 </CodeSnippet>
 
 The following endpoint would return the 5 most recent messages in a stream (or to be more precise, the default partition 0 of a stream):
