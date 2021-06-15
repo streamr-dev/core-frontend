@@ -17,6 +17,7 @@ import Button from '$shared/components/Button'
 import { MD, LG } from '$shared/utils/styled'
 import { getFilters } from '$userpages/utils/constants'
 import PublishModal from '$mp/containers/EditProductPage/PublishModal'
+import DeployDataUnionModal from '$mp/containers/EditProductPage/DeployDataUnionModal'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import routes from '$routes'
 
@@ -134,6 +135,7 @@ const DataUnionPage = () => {
             </StyledListContainer>
             <DocsShortcuts />
             <PublishModal />
+            <DeployDataUnionModal />
         </Layout>
     )
 }

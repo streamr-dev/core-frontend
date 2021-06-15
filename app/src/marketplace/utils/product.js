@@ -137,7 +137,7 @@ export const validate = (product: Product, isEthIdentityRequired: boolean = fals
 
     // applies only to data union
     if (isDataUnionProduct(product)) {
-        invalidFields.adminFee = (product.adminFee === undefined || !(+product.adminFee >= 0 && +product.adminFee <= 1))
+        invalidFields.adminFee = (product.adminFee === undefined || +product.adminFee < 0 || +product.adminFee > 1)
         invalidFields.beneficiaryAddress = false
 
         invalidFields.ethIdentity = isEthIdentityRequired
