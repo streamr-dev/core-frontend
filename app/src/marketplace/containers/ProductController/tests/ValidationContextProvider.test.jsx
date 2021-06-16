@@ -644,7 +644,7 @@ describe('validation context', () => {
                     adminFee: 0,
                 })
             })
-            expect(currentContext.isValid('adminFee')).toBe(false)
+            expect(currentContext.isValid('adminFee')).toBe(true)
 
             act(() => {
                 currentContext.clearStatus('adminFee')
