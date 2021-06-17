@@ -174,6 +174,7 @@ const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
     const isMounted = useIsMounted()
     const dataUnionId = dataUnion && dataUnion.id
     const [search, setSearch] = useState('')
+    const [searchResults, setSearchResults] = useState([])
     const [processingMembers, setProcessingMembers] = useState([])
     const {
         loading: loadingMembers,
@@ -216,9 +217,20 @@ const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
         }
     }, [dataUnionId, removeMembers, isMounted])
 
-    const searchResults = useMemo(() => (
-        searchMembers(search)
-    ), [search, searchMembers])
+    useEffect(() => {
+        const doSearch = async () => {
+            try {
+                const results = await searchMembers(dataUnionId, search)
+
+                if (isMounted()) {
+                    setSearchResults(results)
+                }
+            } catch (e) {
+                console.error('Could not load search results', e)
+            }
+        }
+        doSearch()
+    }, [search, dataUnionId, isMounted, searchMembers])
 
     const listing = search.length > 0 ? searchResults : members
 
