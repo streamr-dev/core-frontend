@@ -224,37 +224,143 @@ export async function* getJoinsAndParts(id: DataUnionId, chainId: number, fromTi
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-async function* getMemberEventsFromBlock(id: DataUnionId, chainId: number, blockNumber: number): any {
-    const client = createClient(chainId)
-    const web3 = getPublicWeb3(chainId)
+export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number, toTimestamp: number = Date.now()): Promise<Array<any>> => {
+    const accuracy = 'HOUR' // HOUR or DAY
+    const result = await post({
+        url: 'http://192.168.1.3:8000/subgraphs/name/streamr-dev/dataunion',
+        data: {
+            query: `
+                query {
+                    dataUnionStatsBuckets(
+                        where: {
+                            type: "${accuracy}",
+                            startDate_gte: ${Math.floor(fromTimestamp / 1000)},
+                            endDate_lte: ${Math.ceil(toTimestamp / 1000)}
+                        },
+                        orderBy: startDate,
+                    ) {
+                        startDate,
+                        endDate,
+                        memberCountAtStart,
+                        memberCountChange,
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+    return result.data.dataUnionStatsBuckets
+}
 
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const joins of getEvents(id, chainId, 'MemberJoined', blockNumber)) {
-        for (const e of joins) {
-            const memberAddress = e.returnValues.member
-            const block = await web3.eth.getBlock(e.blockHash)
-            if (block) {
-                const dataUnion = await client.getDataUnion(id)
-                const memberData = await dataUnion.getMemberStats(memberAddress)
+export const getDataUnionMembers = async (id: DataUnionId, limit: number = 100): Promise<Array<string>> => {
+    const result = await post({
+        url: 'http://192.168.1.3:8000/subgraphs/name/streamr-dev/dataunion',
+        data: {
+            query: `
+                query {
+                    dataUnions(where: { mainchainAddress: "${id.toLowerCase()}" }) {
+                        members(first: ${Math.floor(limit)}, orderBy: address, orderDirection: asc) {
+                            address
+                        }
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+    if (result.data.dataUnions.length > 0) {
+        return result.data.dataUnions[0].members.map((m) => m.address)
+    }
+    return []
+}
+
+export const searchDataUnionMembers = async (id: DataUnionId, query: string): Promise<Array<string>> => {
+    const result = await post({
+        url: 'http://192.168.1.3:8000/subgraphs/name/streamr-dev/dataunion',
+        data: {
+            query: `
+                query {
+                    memberSearch(text: "${query}:*") {
+                        address
+                        dataunion {
+                            mainchainAddress
+                        }
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+    if (result && result.data && result.data.memberSearch) {
+        // With limitations in full text search in The Graph,
+        // we cannot do filtering on the query itself so we
+        // have to manually pick results only for this dataunion id.
+        const duMembers = result.data.memberSearch
+            .filter((m) => m.dataunion.mainchainAddress === id)
+            .map((m) => m.address)
+        return duMembers
+    }
+    return []
+}
+
+// eslint-disable-next-line camelcase
+async function* deprecated_getMemberStatuses(id: DataUnionId, timestampFrom: number = 0): any {
+    const dataUnion = await getDataUnion(id)
+    const client = createClient()
+    await client.ensureConnected()
+    const sub = await client.subscribe({
+        streamId: dataUnion.joinPartStreamId,
+        resend: {
+            from: {
+                timestamp: timestampFrom,
+            },
+        },
+    })
+
+    /* eslint-disable no-restricted-syntax */
+    for await (const msg of sub) {
+        if (msg.parsedContent.addresses != null) {
+            for (const address of msg.parsedContent.addresses) {
                 yield {
-                    ...memberData,
-                    address: memberAddress,
+                    address,
+                    earnings: NaN,
+                    withdrawable: NaN,
+                    status: 'NOT_AVAILABLE',
                 }
             }
+        }
+    }
+    /* eslint-enable no-restricted-syntax */
+}
+
+async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>): any {
+    const client = createClient()
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for (const memberAddress of members) {
+        const dataUnion = client.getDataUnion(id)
+        const memberData = await dataUnion.getMemberStats(memberAddress)
+        yield {
+            ...memberData,
+            address: memberAddress,
         }
     }
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-export async function* getMemberEventsFromTimestamp(id: DataUnionId, chainId: number, timestamp: number = 0): any {
-    const web3 = getPublicWeb3()
-    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(timestamp / 1000))
-
-    yield* getMemberEventsFromBlock(id, chainId, fromBlock)
+export async function* getMemberStatusesFromTheGraph(id: DataUnionId): any {
+    const members = await getDataUnionMembers(id)
+    yield* getMemberStatusesWithClient(id, members)
 }
 
-export async function* getAllMemberEvents(id: DataUnionId, chainId: number): any {
-    yield* getMemberEventsFromBlock(id, chainId, 1)
+export async function* getMemberStatuses(id: DataUnionId): any {
+    const version = await getDataUnionVersion(id)
+
+    if (version === 1) {
+        yield* deprecated_getMemberStatuses(id)
+    } else if (version === 2) {
+        yield* getMemberStatusesFromTheGraph(id)
+    }
 }
 
 // ----------------------

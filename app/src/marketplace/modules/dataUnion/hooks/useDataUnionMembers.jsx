@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState, useContext, useRef, useEffect } 
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { useThrottled } from '$shared/hooks/wrapCallback'
-import { getAllMemberEvents, removeMembers } from '../services'
+import { getMemberStatuses, removeMembers, searchDataUnionMembers } from '../services'
 
 const DataUnionMembersContext = React.createContext({})
 const VISIBLE_MEMBERS_LIMIT = 100
@@ -39,7 +39,7 @@ function useDataUnionMembers() {
                 generator.current = null
                 reset()
             }
-            generator.current = getAllMemberEvents(dataUnionId, chainId)
+            generator.current = getMemberStatuses(dataUnionId)
 
             // eslint-disable-next-line no-restricted-syntax
             for await (const event of generator.current) {
@@ -73,11 +73,11 @@ function useDataUnionMembers() {
         }
     }, [isMounted])
 
-    const search = useCallback((text) => (
-        membersRef.current
-            .filter((m) => ((text && text.length > 0) ? m.address.includes(text) : true))
-            .slice(0, VISIBLE_MEMBERS_LIMIT)
-    ), [])
+    const search = useCallback(async (dataUnionId, text) => {
+        const results = await searchDataUnionMembers(dataUnionId, text)
+        console.log('Res', results)
+        return results.slice(0, VISIBLE_MEMBERS_LIMIT)
+    }, [])
 
     return useMemo(() => ({
         loading,
