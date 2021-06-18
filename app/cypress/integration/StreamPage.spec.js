@@ -69,13 +69,15 @@ describe('Stream listing page', () => {
                 cy.sendToStream(streamId, {
                     key: 'value',
                 })
+                cy.server()
+                cy.route(`/api/v1/streams/${streamId}/data/partitions/0/last?count=1`).as('getLastMessage')
 
+                cy.visit('/core/streams')
+                cy.wait('@getLastMessage')
                 // It looks like it takes a while for a message to get to the history storage.
                 // That's why we're waiting 3s below.
                 // eslint-disable-next-line cypress/no-unnecessary-waiting
                 cy.wait(3000)
-
-                cy.visit('/core/streams')
                 cy.get(`[data-test-hook="Stream row for ${streamId}"]`).within(() => {
                     cy.get('[data-test-hook="Last message at"]').contains('Just now')
                     cy.get('[data-test-hook="Status ok"]')
@@ -695,13 +697,16 @@ describe('Stream edit page', () => {
                 cy.sendToStream(streamId, {
                     key: 'value',
                 })
+                cy.server()
+                cy.route(`/api/v1/streams/${encodedId}/data/partitions/0/last?count=1`).as('getLastMessage')
+
+                cy.visit(`/core/streams/${encodedId}`)
+                cy.wait('@getLastMessage')
 
                 // It looks like it takes a while for a message to get to the history storage.
                 // That's why we're waiting 3s below.
                 // eslint-disable-next-line cypress/no-unnecessary-waiting
                 cy.wait(3000)
-
-                cy.visit(`/core/streams/${encodedId}`)
 
                 cy.get('[data-test-hook="TOCSection status"]').within(() => {
                     cy.get('[data-test-hook="Status ok"]')

@@ -5,6 +5,7 @@ import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } 
 import Scrollspy from 'react-scrollspy'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 
 import useEditableProduct from '../ProductController/useEditableProduct'
 import useNewProductMode from '../ProductController/useNewProductMode'
@@ -24,7 +25,9 @@ const EditorNav = () => {
     const product = useEditableProduct()
     const productRef = useRef()
     productRef.current = product
-    const { isRequired: showConnectEthIdentity } = useIsEthIdentityNeeded()
+    const dataUnion = useDataUnion()
+    const { owner } = dataUnion || {}
+    const { isRequired: showConnectEthIdentity } = useIsEthIdentityNeeded(owner)
     const isNewProduct = useNewProductMode()
 
     const [activeSectionId, setActiveSectionId] = useState(undefined)
@@ -160,7 +163,7 @@ const EditorNav = () => {
             heading: 'Whitelist',
             status: getStatus('requiresWhitelist'),
         }]),
-        ...includeIf(!!showConnectEthIdentity, [{
+        ...includeIf(!!isDataUnion && !!showConnectEthIdentity, [{
             id: 'connect-eth-identity',
             heading: 'Ethereum identity',
             status: ethIdentityStatus,

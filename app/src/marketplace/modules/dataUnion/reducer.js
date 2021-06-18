@@ -15,6 +15,7 @@ import {
     REMOVE_DATA_UNION_SECRET,
     GET_DATA_UNION_STATS_FAILURE,
     GET_ALL_DATA_UNION_STATS_REQUEST,
+    RESET_DATA_UNION,
     RESET_DATA_UNION_STATS,
 } from './constants'
 import type {
@@ -123,6 +124,12 @@ const reducer: (DataUnionState) => DataUnionState = handleActions({
             fetchingStats: [...fetchingStats],
         }
     },
+
+    [RESET_DATA_UNION]: (state: DataUnionState) => ({
+        ...state,
+        id: undefined,
+        fetching: false,
+    }),
 
     [RESET_DATA_UNION_STATS]: (state: DataUnionState) => ({
         ...state,

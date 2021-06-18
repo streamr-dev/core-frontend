@@ -22,6 +22,7 @@ import {
     ADD_DATA_UNION_SECRET,
     REMOVE_DATA_UNION_SECRET,
     GET_ALL_DATA_UNION_STATS_REQUEST,
+    RESET_DATA_UNION,
     RESET_DATA_UNION_STATS,
 } from './constants'
 import type {
@@ -108,6 +109,7 @@ const getAllDataUnionStatsRequest: DataUnionIdsActionCreator = createAction(
     }),
 )
 
+export const resetDataUnion: ReduxActionCreator = createAction(RESET_DATA_UNION)
 export const resetDataUnionStats: ReduxActionCreator = createAction(RESET_DATA_UNION_STATS)
 
 export const getDataUnionById = (dataUnionId: DataUnionId) => async (dispatch: Function) => {

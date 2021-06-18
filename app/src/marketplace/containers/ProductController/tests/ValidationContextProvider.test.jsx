@@ -644,6 +644,15 @@ describe('validation context', () => {
                     adminFee: 0,
                 })
             })
+            expect(currentContext.isValid('adminFee')).toBe(true)
+
+            act(() => {
+                currentContext.clearStatus('adminFee')
+                currentContext.validate({
+                    type: 'DATAUNION',
+                    adminFee: -2,
+                })
+            })
             expect(currentContext.isValid('adminFee')).toBe(false)
 
             act(() => {

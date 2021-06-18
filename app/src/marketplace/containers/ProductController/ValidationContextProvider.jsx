@@ -1,15 +1,13 @@
 // @flow
 
 import React, { useMemo, useCallback, useState, type Node, type Context } from 'react'
-import * as yup from 'yup'
 import get from 'lodash/get'
 import set from 'lodash/fp/set'
 import isPlainObject from 'lodash/isPlainObject'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 
-import { isEthereumAddress } from '$mp/utils/validate'
-import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
-import { isPriceValid } from '$mp/utils/price'
+import { validate as validateProduct, isDataUnionProduct } from '$mp/utils/product'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
 import useIsEthIdentityNeeded from '../EditProductPage/useIsEthIdentityNeeded'
 import useProduct from '../ProductController/useProduct'
@@ -40,15 +38,35 @@ const ValidationContext: Context<ContextProps> = React.createContext({})
 
 const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 
-const urlValidator = yup.string().trim().url()
-const emailValidator = yup.string().trim().email()
+export const validationErrors = {
+    name: 'Product name cannot be empty',
+    description: 'Product description cannot be empty',
+    category: 'Product category cannot be empty',
+    imageUrl: 'Product must have a cover image',
+    streams: 'No streams selected',
+    termsOfUse: 'Invalid URL for detailed terms',
+    adminFee: 'Admin fee cannot be empty',
+    ethIdentity: 'Please connect an Ethereum address',
+    beneficiaryAddress: 'A valid ethereum address is needed',
+    pricePerSecond: 'Price should be greater or equal to 0',
+    'contact.url': 'Invalid URL',
+    'contact.social1': 'Invalid URL',
+    'contact.social2': 'Invalid URL',
+    'contact.social3': 'Invalid URL',
+    'contact.social4': 'Invalid URL',
+    'contact.email': 'Email address is required',
+}
 
 function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouchedState] = useState({})
     const originalProduct = useProduct()
-    const { isRequired: isEthIdentityRequired } = useIsEthIdentityNeeded()
+    const dataUnion = useDataUnion()
+    const { owner } = dataUnion || {}
+    const { isRequired } = useIsEthIdentityNeeded(owner)
+    const isDataUnion = isDataUnionProduct(originalProduct)
+    const isEthIdentityRequired = !!(isDataUnion && isRequired)
 
     const setTouched = useCallback((name: string, value = true) => {
         setTouchedState((existing) => ({
@@ -122,101 +140,15 @@ function useValidationContext(): ContextProps {
     const validate = useCallback((product) => {
         if (!isMounted() || !product) { return }
 
-        ['name', 'description', 'category'].forEach((field) => {
-            if (!product[field]) {
-                setStatus(field, ERROR, `Product ${field} cannot be empty`)
+        const invalidFields = validateProduct(product, isEthIdentityRequired)
+
+        Object.keys(validationErrors).forEach((field) => {
+            if (invalidFields[field]) {
+                setStatus(field, ERROR, validationErrors[field])
             } else {
                 clearStatus(field)
             }
         })
-
-        if (!product.imageUrl && !product.newImageToUpload) {
-            setStatus('imageUrl', ERROR, 'Product must have a cover image')
-        } else {
-            clearStatus('imageUrl')
-        }
-
-        if (!product.streams || product.streams.length <= 0) {
-            setStatus('streams', ERROR, 'No streams selected')
-        } else {
-            clearStatus('streams')
-        }
-
-        if (product.termsOfUse != null && product.termsOfUse.termsUrl) {
-            const result = urlValidator.isValidSync(product.termsOfUse.termsUrl)
-            if (!result) {
-                setStatus('termsOfUse', ERROR, 'Invalid URL for detailed terms')
-            } else {
-                clearStatus('termsOfUse')
-            }
-        }
-
-        const isPaid = isPaidProduct(product)
-
-        // applies only to data union
-        if (isDataUnionProduct(product)) {
-            if (!product.adminFee || !(product.adminFee >= 0 && product.adminFee <= 1)) {
-                setStatus('adminFee', ERROR, 'Admin fee cannot be empty')
-            } else {
-                clearStatus('adminFee')
-            }
-            clearStatus('beneficiaryAddress')
-
-            if (isEthIdentityRequired) {
-                setStatus('ethIdentity', ERROR, 'Please connect an Ethereum address')
-            } else {
-                clearStatus('ethIdentity')
-            }
-        } else {
-            if (isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress))) {
-                setStatus('beneficiaryAddress', ERROR, 'A valid ethereum address is needed')
-            } else {
-                clearStatus('beneficiaryAddress')
-            }
-            clearStatus('adminFee')
-        }
-
-        if (isPaid) {
-            if (!isPriceValid(product.pricePerSecond)) {
-                setStatus('pricePerSecond', ERROR, 'Price should be greater or equal to 0')
-            } else {
-                clearStatus('pricePerSecond')
-            }
-        } else {
-            clearStatus('pricePerSecond')
-        }
-
-        if (product.contact) {
-            ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
-                if (product.contact[field] && product.contact[field].length > 0) {
-                    const result = urlValidator.isValidSync(product.contact[field])
-                    if (!result) {
-                        setStatus(`contact.${field}`, ERROR, 'Invalid URL')
-                    } else {
-                        clearStatus(`contact.${field}`)
-                    }
-                } else {
-                    clearStatus(`contact.${field}`)
-                }
-            })
-
-            if (product.contact.email && product.contact.email.length > 0) {
-                const result = emailValidator.isValidSync(product.contact.email)
-                if (!result && product.contact.email) {
-                    setStatus('contact.email', ERROR, 'Invalid email address')
-                } else {
-                    clearStatus('contact.email')
-                }
-            } else {
-                clearStatus('contact.email')
-            }
-        }
-
-        if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
-            setStatus('contact.email', ERROR, 'Email address is required')
-        } else if (!product.requiresWhitelist) {
-            clearStatus('contact.email')
-        }
 
         // Set pending fields, a change is marked pending if there was a saved pending change or
         // we made a change that is different from the loaded product

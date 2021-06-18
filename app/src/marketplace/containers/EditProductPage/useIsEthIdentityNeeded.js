@@ -2,42 +2,32 @@
 
 import { useMemo } from 'react'
 
-import useDataUnion from '$mp/containers/ProductController/useDataUnion'
+import type { Address } from '$shared/flowtype/web3-types'
 import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
-import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
-import useProduct from '../ProductController/useProduct'
 
-export function useIsEthIdentityNeeded() {
-    const product = useProduct()
-    const isDataUnion = isDataUnionProduct(product)
-    const dataUnion = useDataUnion()
-    const { owner } = dataUnion || {}
+export function useIsEthIdentityNeeded(owner?: Address) {
     const { isLinked, ethereumIdentities } = useEthereumIdentities()
-
     const accountAddress = useAccountAddress()
 
     return useMemo(() => {
         let isRequired = false
         let requiredAddress
-        let walletLocked = false
 
-        if (isDataUnion) {
-            const isDeployed = isDataUnion && isEthereumAddress(owner)
-            const accountLinked = !!accountAddress && isLinked(accountAddress)
-            const ownerLinked = !!owner && isLinked(owner)
+        const isDeployed = owner && isEthereumAddress(owner)
+        const accountLinked = !!accountAddress && isLinked(accountAddress)
+        const ownerLinked = !!owner && isLinked(owner)
 
-            const noIdentities = (!ethereumIdentities || ethereumIdentities.length <= 0)
-            walletLocked = (!isDeployed && !accountAddress)
-            const noCurrentLink = (!isDeployed && !accountLinked)
-            const noOwnerLink = (isDeployed && !ownerLinked)
+        const noIdentities = (!ethereumIdentities || ethereumIdentities.length <= 0)
+        const walletLocked = (!isDeployed && !accountAddress)
+        const noCurrentLink = (!isDeployed && !accountLinked)
+        const noOwnerLink = (isDeployed && !ownerLinked)
 
-            isRequired = noIdentities || walletLocked || noCurrentLink || noOwnerLink
+        isRequired = !!(noIdentities || walletLocked || noCurrentLink || noOwnerLink)
 
-            if (noOwnerLink) {
-                requiredAddress = owner
-            }
+        if (noOwnerLink) {
+            requiredAddress = owner
         }
 
         return {
@@ -46,7 +36,6 @@ export function useIsEthIdentityNeeded() {
             walletLocked,
         }
     }, [
-        isDataUnion,
         owner,
         ethereumIdentities,
         isLinked,

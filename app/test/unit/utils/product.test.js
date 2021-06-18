@@ -382,4 +382,291 @@ describe('product utils', () => {
             })
         })
     })
+
+    describe('validate', () => {
+        it('validates empty product free data product', () => {
+            expect(all.validate({
+                type: 'NORMAL',
+                isFree: true,
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates empty product free data union', () => {
+            expect(all.validate({
+                type: 'DATAUNION',
+                isFree: true,
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: true,
+                ethIdentity: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates empty product free data union (eth identity required)', () => {
+            expect(all.validate({
+                type: 'DATAUNION',
+                isFree: true,
+            }, true)).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: true,
+                ethIdentity: true,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates empty product paid data product', () => {
+            expect(all.validate({
+                type: 'NORMAL',
+                isFree: false,
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: true,
+                beneficiaryAddress: true,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates empty product paid data union', () => {
+            expect(all.validate({
+                type: 'DATAUNION',
+                isFree: false,
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: true,
+                beneficiaryAddress: false,
+                adminFee: true,
+                ethIdentity: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates name, description & category', () => {
+            expect(all.validate({
+                type: 'NORMAL',
+                name: 'new name',
+                description: 'new description',
+                category: 'new category',
+            })).toStrictEqual({
+                name: false,
+                description: false,
+                category: false,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates image', () => {
+            expect(all.validate({
+                type: 'NORMAL',
+                imageUrl: 'http://...',
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: false,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+            expect(all.validate({
+                type: 'NORMAL',
+                newImageToUpload: 'blob',
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: false,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates streams', () => {
+            expect(all.validate({
+                type: 'NORMAL',
+                streams: ['1', '2'],
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: false,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates admin fee', () => {
+            expect(all.validate({
+                type: 'DATAUNION',
+                adminFee: 0.3,
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: false,
+                ethIdentity: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+            expect(all.validate({
+                type: 'DATAUNION',
+                adminFee: 0,
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: false,
+                ethIdentity: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+            expect(all.validate({
+                type: 'DATAUNION',
+                adminFee: 1.1,
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: false,
+                adminFee: true,
+                ethIdentity: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates beneficiary address', () => {
+            expect(all.validate({
+                type: 'NORMAL',
+                isFree: false,
+                beneficiaryAddress: 'invalidAddress',
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: true,
+                beneficiaryAddress: true,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+            expect(all.validate({
+                type: 'NORMAL',
+                isFree: false,
+                beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: true,
+                beneficiaryAddress: false,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+
+        it('validates price', () => {
+            expect(all.validate({
+                type: 'NORMAL',
+                isFree: false,
+                pricePerSecond: '-10',
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: true,
+                beneficiaryAddress: true,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+            expect(all.validate({
+                type: 'NORMAL',
+                isFree: false,
+                pricePerSecond: '123',
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: true,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+            })
+        })
+    })
 })
