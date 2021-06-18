@@ -12,7 +12,7 @@ import UnstyledFallbackImage from '$shared/components/FallbackImage'
 import UnstyledPopover from '$shared/components/Popover'
 import Tooltip from '$shared/components/Tooltip'
 import { isEthereumAddress } from '$mp/utils/validate'
-import { getProductById } from '$mp/modules/product/services'
+import { getProductById, putProduct } from '$mp/modules/product/services'
 import { validate as validateProduct } from '$mp/utils/product'
 import { MEDIUM, SM, LG } from '$shared/utils/styled'
 import { getSubscriberCount } from '$mp/modules/contractProduct/services'
@@ -34,6 +34,8 @@ import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import usePending from '$shared/hooks/usePending'
 import { DataUnionMembersProvider } from '$mp/modules/dataUnion/hooks/useDataUnionMembers'
 import Initials from '$shared/components/AvatarImage/Initials'
+import useEntities from '$shared/hooks/useEntities'
+import { productSchema } from '$shared/modules/entities/schema'
 import routes from '$routes'
 
 import Management from './Management'
@@ -295,15 +297,18 @@ const Item = ({ product, stats }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
     const [subscriberCount, setSubscriberCount] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
+    const { update: updateEntities } = useEntities()
     const { wrap: wrapSubscriberLoad, isPending: loadingSubscriberCount } = usePending(`dataunion.item.${productId || ''}.SUBSCRIBERS`)
     const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
     const { wrap: wrapJoinRequestLoad, isPending: loadingJoinRequests } = usePending(`dataunion.item.${productId || ''}.JOINREQUESTS`)
     const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
+    const { wrap: wrapDeploy, isPending: isDeployPending } = usePending(`dataunion.item.${productId || ''}.DEPLOY`)
     const { owner } = dataUnion || {}
     const { isRequired: isEthIdentityRequired } = useIsEthIdentityNeeded(owner)
-    const loading = loadingSubscriberCount || loadingDataUnion || loadingJoinRequests || isPublishPending
+    const loading = loadingSubscriberCount || loadingDataUnion || loadingJoinRequests || isPublishPending || isDeployPending
 
     const { api: publishDialog } = useModal('publish')
+    const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
     const { load: loadJoinRequests, members: joinRequests } = useJoinRequests()
     const filters = getFilters('dataunion')
     const sortOptions = useMemo(() => ([
@@ -434,6 +439,29 @@ const Item = ({ product, stats }: Props) => {
         }
     }), [wrapPublish, validate, publishDialog])
 
+    const deploy = useCallback(async (productId) => wrapDeploy(async () => {
+        const product = await getProductById(productId || '')
+        const productWithPendingChanges = withPendingChanges(product)
+
+        if (validate(productWithPendingChanges)) {
+            let updatedProduct = product
+            const updateAddress = async (beneficiaryAddress) => {
+                updatedProduct = await putProduct({
+                    ...product,
+                    beneficiaryAddress,
+                }, product.id || '')
+            }
+            await deployDataUnionDialog.open({
+                product,
+                updateAddress,
+            })
+            updateEntities({
+                data: updatedProduct,
+                schema: productSchema,
+            })
+        }
+    }), [wrapDeploy, validate, deployDataUnionDialog, updateEntities])
+
     const productInitials = useMemo(() => {
         const initials = (productName || '').split(/\s+/).filter(Boolean).map((s) => s[0]).slice(0, 2)
             .join('')
@@ -534,14 +562,26 @@ const Item = ({ product, stats }: Props) => {
                             right: true,
                         }}
                     >
-                        <Popover.Item
-                            onClick={async () => {
-                                publish(product.id)
-                            }}
-                            disabled={loading}
-                        >
-                            {product.state === productStates.DEPLOYED ? 'Unpublish' : 'Publish'}
-                        </Popover.Item>
+                        {!dataUnion && (
+                            <Popover.Item
+                                onClick={async () => {
+                                    deploy(product.id)
+                                }}
+                                disabled={loading}
+                            >
+                                Deploy
+                            </Popover.Item>
+                        )}
+                        {!!dataUnion && (
+                            <Popover.Item
+                                onClick={async () => {
+                                    publish(product.id)
+                                }}
+                                disabled={loading}
+                            >
+                                {product.state === productStates.DEPLOYED ? 'Unpublish' : 'Publish'}
+                            </Popover.Item>
+                        )}
                     </Popover>
                 </Buttons>
             </Header>
