@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import { MemoryRouter, withRouter } from 'react-router-dom'
+import { Router, useLocation } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 
 import Notification from '$shared/utils/Notification'
 
-import { Provider as RouterContextProvider } from '$shared/contexts/Router'
 import * as UndoContext from '$shared/contexts/Undo'
 import * as useModal from '$shared/hooks/useModal'
 import * as usePending from '$shared/hooks/usePending'
@@ -83,12 +83,16 @@ describe('EditControllerProvider', () => {
                 api: {},
             }))
 
+            const history = createMemoryHistory()
+
             mount((
-                <ValidationContextProvider>
-                    <EditControllerProvider product={product}>
-                        <Test />
-                    </EditControllerProvider>
-                </ValidationContextProvider>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             await act(async () => {
@@ -134,12 +138,16 @@ describe('EditControllerProvider', () => {
                 api: {},
             }))
 
+            const history = createMemoryHistory()
+
             mount((
-                <ValidationContextProvider>
-                    <EditControllerProvider product={product}>
-                        <Test />
-                    </EditControllerProvider>
-                </ValidationContextProvider>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             await act(async () => {
@@ -164,12 +172,12 @@ describe('EditControllerProvider', () => {
     describe('back', () => {
         it('redirects if no fields are touched', async () => {
             let currentContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -180,37 +188,39 @@ describe('EditControllerProvider', () => {
                 api: {},
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
+
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await currentContext.back()
             })
 
-            expect(props.location.pathname).toBe('/core/products')
+            expect(location.pathname).toBe('/core/products')
         })
 
         it('asks confirmation if fields are touched, does not redirect if canceled', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -227,19 +237,20 @@ describe('EditControllerProvider', () => {
                 },
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.setTouched('name')
@@ -249,19 +260,19 @@ describe('EditControllerProvider', () => {
                 await currentContext.back()
             })
 
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
         })
 
         it('asks confirmation if fields are touched, redirects without saving if changes are discarded', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -278,19 +289,20 @@ describe('EditControllerProvider', () => {
                 },
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.setTouched('name')
@@ -300,19 +312,19 @@ describe('EditControllerProvider', () => {
                 await currentContext.back()
             })
 
-            expect(props.location.pathname).toBe('/core/products')
+            expect(location.pathname).toBe('/core/products')
         })
 
         it('asks confirmation if fields are touched, redirects after saving', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -338,19 +350,20 @@ describe('EditControllerProvider', () => {
                 ...product,
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.setTouched('name')
@@ -361,19 +374,19 @@ describe('EditControllerProvider', () => {
             })
 
             expect(putProductStub).toHaveBeenCalledTimes(1)
-            expect(props.location.pathname).toBe('/core/products')
+            expect(location.pathname).toBe('/core/products')
         })
     })
 
     describe('save', () => {
         it('saves product info', async () => {
             let currentContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -392,36 +405,37 @@ describe('EditControllerProvider', () => {
                 ...product,
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await currentContext.save()
             })
 
             expect(putProductStub).toHaveBeenCalledTimes(1)
-            expect(props.location.pathname).toBe('/core/products')
+            expect(location.pathname).toBe('/core/products')
         })
 
         it('uploads new image before saving product info', async () => {
             let currentContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -449,19 +463,20 @@ describe('EditControllerProvider', () => {
                 ...product,
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await currentContext.save()
@@ -480,17 +495,17 @@ describe('EditControllerProvider', () => {
             expect(replaceProductStub).toHaveBeenCalledTimes(1)
             expect(replaceProductStub).toBeCalledWith(expectedProduct)
             expect(putProductStub).toHaveBeenCalledTimes(1)
-            expect(props.location.pathname).toBe('/core/products')
+            expect(location.pathname).toBe('/core/products')
         })
 
         it('does not redirect if options.redirect = false', async () => {
             let currentContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -509,19 +524,20 @@ describe('EditControllerProvider', () => {
                 ...product,
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await currentContext.save({
@@ -530,21 +546,55 @@ describe('EditControllerProvider', () => {
             })
 
             expect(putProductStub).toHaveBeenCalledTimes(1)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
         })
     })
 
     describe('publish', () => {
+        it('sets publish attempted if params is present in url', () => {
+            let currentContext
+            let location
+            const Test = () => {
+                location = useLocation()
+                currentContext = useContext(EditControllerContext)
+                return null
+            }
+
+            const product = {
+                id: '1',
+            }
+
+            jest.spyOn(useModal, 'default').mockImplementation(() => ({
+                api: {},
+            }))
+
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit?publishAttempted=1'],
+            })
+            mount((
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
+            ))
+
+            expect(currentContext.publishAttempted).toBe(true)
+            expect(location.pathname).toBe('/core/products/1/edit')
+        })
+
         it('sets publish attempted if validation fails', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -555,20 +605,21 @@ describe('EditControllerProvider', () => {
                 api: {},
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -579,19 +630,19 @@ describe('EditControllerProvider', () => {
             })
             expect(currentContext.publishAttempted).toBe(true)
             expect(notificationStub).toHaveBeenCalledTimes(5)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
         })
 
         it('does not redirect if publish fails', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -618,20 +669,21 @@ describe('EditControllerProvider', () => {
                 ...product,
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -645,19 +697,19 @@ describe('EditControllerProvider', () => {
             expect(modalOpenStub).toBeCalledWith({
                 product,
             })
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
         })
 
         it('updates publishing state if process is started before completing', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -690,20 +742,21 @@ describe('EditControllerProvider', () => {
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -722,19 +775,19 @@ describe('EditControllerProvider', () => {
                 ...product,
                 state: 'DEPLOYING',
             })
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
         })
 
         it('updates unpublishing state if process is started before completing', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -767,20 +820,21 @@ describe('EditControllerProvider', () => {
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -799,19 +853,19 @@ describe('EditControllerProvider', () => {
                 ...product,
                 state: 'UNDEPLOYING',
             })
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
         })
 
         it('redirects to product list if publish succeeded and dialog closed normally', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -844,20 +898,21 @@ describe('EditControllerProvider', () => {
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -876,19 +931,19 @@ describe('EditControllerProvider', () => {
                 ...product,
                 state: 'DEPLOYING',
             })
-            expect(props.location.pathname).toBe('/core/products')
+            expect(location.pathname).toBe('/core/products')
         })
 
         it('redirects to product page if publish succeeded and view product clicked', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -922,20 +977,21 @@ describe('EditControllerProvider', () => {
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -954,19 +1010,19 @@ describe('EditControllerProvider', () => {
                 ...product,
                 state: 'DEPLOYING',
             })
-            expect(props.location.pathname).toBe('/marketplace/products/1')
+            expect(location.pathname).toBe('/marketplace/products/1')
         })
 
         it('redirects to product list if unpublish succeeded', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -999,20 +1055,21 @@ describe('EditControllerProvider', () => {
                 replaceProduct: (fn) => replaceProductStub(fn(product)),
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -1031,7 +1088,7 @@ describe('EditControllerProvider', () => {
                 ...product,
                 state: 'UNDEPLOYING',
             })
-            expect(props.location.pathname).toBe('/core/products')
+            expect(location.pathname).toBe('/core/products')
         })
     })
 
@@ -1039,13 +1096,13 @@ describe('EditControllerProvider', () => {
         it('sets publish attempted if validation fails', async () => {
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -1056,20 +1113,21 @@ describe('EditControllerProvider', () => {
                 api: {},
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -1080,7 +1138,7 @@ describe('EditControllerProvider', () => {
             })
             expect(currentContext.publishAttempted).toBe(true)
             expect(notificationStub).toHaveBeenCalledTimes(5)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
         })
 
         it('does not redirect if deploy fails', async () => {
@@ -1089,13 +1147,13 @@ describe('EditControllerProvider', () => {
 
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -1120,20 +1178,21 @@ describe('EditControllerProvider', () => {
                 ...product,
             }))
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
-                    <RouterContextProvider>
-                        <ValidationContextProvider>
-                            <EditControllerProvider product={product}>
-                                <Test />
-                            </EditControllerProvider>
-                        </ValidationContextProvider>
-                    </RouterContextProvider>
-                </MemoryRouter>
+                <Router history={history}>
+                    <ValidationContextProvider>
+                        <EditControllerProvider product={product}>
+                            <Test />
+                        </EditControllerProvider>
+                    </ValidationContextProvider>
+                </Router>
             ))
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -1145,7 +1204,7 @@ describe('EditControllerProvider', () => {
             expect(currentContext.publishAttempted).toBe(true)
             expect(modalOpenStub).toHaveBeenCalledTimes(1)
             expect(putProductStub).toHaveBeenCalledTimes(1)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             sharedConstants.dataUnionMemberLimit = oldLimit
         })
@@ -1156,13 +1215,13 @@ describe('EditControllerProvider', () => {
 
             let currentContext
             let validationContext
-            let props
-            const Test = withRouter((nextProps) => {
-                props = nextProps
+            let location
+            const Test = () => {
+                location = useLocation()
                 currentContext = useContext(EditControllerContext)
                 validationContext = useContext(ValidationContext)
                 return null
-            })
+            }
 
             const product = {
                 id: '1',
@@ -1207,16 +1266,17 @@ describe('EditControllerProvider', () => {
                 )
             }
 
+            const history = createMemoryHistory({
+                initialEntries: ['/core/products/1/edit'],
+            })
             mount((
-                <MemoryRouter initialEntries={['/core/products/1/edit']}>
+                <Router history={history}>
                     <UndoContext.Provider>
-                        <RouterContextProvider>
-                            <ValidationContextProvider>
-                                <ControllerWrap />
-                            </ValidationContextProvider>
-                        </RouterContextProvider>
+                        <ValidationContextProvider>
+                            <ControllerWrap />
+                        </ValidationContextProvider>
                     </UndoContext.Provider>
-                </MemoryRouter>
+                </Router>
             ))
 
             await act(async () => {
@@ -1224,7 +1284,7 @@ describe('EditControllerProvider', () => {
             })
 
             expect(currentContext.publishAttempted).toBe(false)
-            expect(props.location.pathname).toBe('/core/products/1/edit')
+            expect(location.pathname).toBe('/core/products/1/edit')
 
             await act(async () => {
                 await validationContext.validate(product)
@@ -1246,7 +1306,7 @@ describe('EditControllerProvider', () => {
                 ...expectedProduct,
                 beneficiaryAddress,
             }, product.id)
-            expect(props.location.pathname).toBe('/core/dataunions')
+            expect(location.pathname).toBe('/core/dataunions')
 
             sharedConstants.dataUnionMemberLimit = oldLimit
         })

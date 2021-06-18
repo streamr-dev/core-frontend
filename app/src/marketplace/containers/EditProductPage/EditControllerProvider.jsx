@@ -2,8 +2,9 @@
 
 import React, { type Node, type Context, useState, useMemo, useCallback, useContext, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import qs from 'query-string'
+import { useLocation, useHistory } from 'react-router-dom'
 
-import { Context as RouterContext } from '$shared/contexts/Router'
 import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
@@ -49,7 +50,8 @@ type ContextProps = {
 const EditControllerContext: Context<ContextProps> = React.createContext({})
 
 function useEditController(product: Product) {
-    const { history } = useContext(RouterContext)
+    const location = useLocation()
+    const history = useHistory()
     const { isAnyTouched, resetTouched, status } = useContext(ValidationContext)
     const [isPreview, setIsPreview] = useState(false)
     // lastSectionRef is stored here and set in EditorNav so it remembers its state when toggling
@@ -61,7 +63,7 @@ function useEditController(product: Product) {
     const originalProduct = useSelector(selectProduct)
     const { replaceProduct } = useEditableProductUpdater()
     const dataUnion = useSelector(selectDataUnionStats)
-    const [publishAttempted, setPublishAttempted] = useState(false)
+    const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))
     const [preferredCurrency, setPreferredCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)

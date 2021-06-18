@@ -2,8 +2,8 @@
 
 import React, { type Node, type Context, useMemo, useContext, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
-import * as RouterContext from '$shared/contexts/Router'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { usePending } from '$shared/hooks/usePending'
 import { resetProduct } from '$mp/modules/product/actions'
@@ -51,12 +51,10 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectPr
     const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
-    const { match } = useContext(RouterContext.Context)
     const { setHasLoaded } = useContext(ProductControllerContext)
     const { isPending } = usePending('product.LOAD')
     const isMounted = useIsMounted()
-
-    const { id: urlId } = match.params
+    const { id: urlId } = useParams()
 
     useEffect(() => {
         if (urlId && !loadedOnce && !isPending) {
@@ -164,18 +162,16 @@ function ControllerProvider({ children }: ControllerProviderProps) {
 type ControllerProps = ControllerProviderProps & EffectProps
 
 const ProductController = ({ children, ignoreUnauthorized = false, requirePublished = false }: ControllerProps) => (
-    <RouterContext.Provider>
-        <PendingProvider name="product">
-            <ValidationContextProvider>
-                <PermissionsProvider>
-                    <ControllerProvider>
-                        <ProductEffects ignoreUnauthorized={ignoreUnauthorized} requirePublished={requirePublished} />
-                        {children || null}
-                    </ControllerProvider>
-                </PermissionsProvider>
-            </ValidationContextProvider>
-        </PendingProvider>
-    </RouterContext.Provider>
+    <PendingProvider name="product">
+        <ValidationContextProvider>
+            <PermissionsProvider>
+                <ControllerProvider>
+                    <ProductEffects ignoreUnauthorized={ignoreUnauthorized} requirePublished={requirePublished} />
+                    {children || null}
+                </ControllerProvider>
+            </PermissionsProvider>
+        </ValidationContextProvider>
+    </PendingProvider>
 )
 
 export default ProductController

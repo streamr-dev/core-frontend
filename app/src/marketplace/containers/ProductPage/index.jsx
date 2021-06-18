@@ -1,14 +1,13 @@
 // @flow
 
-import React, { useEffect, useCallback, useContext } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Layout from '$shared/components/Layout'
 
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import type { ProductId } from '$mp/flowtype/product-types'
-import * as RouterContext from '$shared/contexts/Router'
 import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
@@ -45,7 +44,7 @@ const ProductPage = () => {
     const isLoggedIn = userData !== null && !!getToken()
     const { isPending } = usePending('contractProduct.LOAD')
 
-    const { match } = useContext(RouterContext.Context)
+    const { id: productId } = useParams()
 
     const loadAdditionalProductData = useCallback(async (id: ProductId) => {
         loadContractProductSubscription(id)
@@ -65,8 +64,8 @@ const ProductPage = () => {
     ])
 
     useEffect(() => {
-        loadAdditionalProductData(match.params.id)
-    }, [loadAdditionalProductData, match.params.id])
+        loadAdditionalProductData(productId)
+    }, [loadAdditionalProductData, productId])
 
     const { dataUnionDeployed, beneficiaryAddress } = product
 
@@ -114,11 +113,15 @@ const EditWrap = () => {
     )
 }
 
-const ProductContainer = withRouter((props) => (
-    <ProductController key={props.match.params.id} ignoreUnauthorized requirePublished>
-        <EditWrap />
-    </ProductController>
-))
+const ProductContainer = () => {
+    const { id } = useParams()
+
+    return (
+        <ProductController key={id} ignoreUnauthorized requirePublished>
+            <EditWrap />
+        </ProductController>
+    )
+}
 
 export default () => (
     <ProductContainer />

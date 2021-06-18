@@ -3,6 +3,7 @@
 import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import get from 'lodash/get'
+import { useHistory } from 'react-router-dom'
 
 import { type Product } from '$mp/flowtype/product-types'
 import { ago } from '$shared/utils/time'
@@ -22,7 +23,6 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
 import useIsEthIdentityNeeded from '$mp/containers/EditProductPage/useIsEthIdentityNeeded'
 import { withPendingChanges } from '$mp/containers/EditProductPage/state'
-import { validationErrors } from '$mp/containers/ProductController/ValidationContextProvider'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import { getFilters } from '$userpages/utils/constants'
 import { truncate, numberToText } from '$shared/utils/text'
@@ -288,6 +288,7 @@ type Props = {
 }
 
 const Item = ({ product, stats }: Props) => {
+    const history = useHistory()
     const { copy } = useCopy()
     const isMounted = useIsMounted()
     const productId = product && product.id
@@ -399,18 +400,9 @@ const Item = ({ product, stats }: Props) => {
             .filter((field) => !!invalidFields[field])
             .map((field) => field)
 
-        if (errors.length > 0) {
-            errors.forEach((field) => {
-                Notification.push({
-                    title: validationErrors[field],
-                    icon: NotificationIcon.ERROR,
-                })
-            })
+        const valid = !!(errors.length <= 0)
 
-            return false
-        }
-
-        if (isEthereumAddress(product.beneficiaryAddress)) {
+        if (!!valid && isEthereumAddress(product.beneficiaryAddress)) {
             const { active: activeMembers } = (stats && stats.memberCount) || {}
 
             if ((activeMembers || 0) < dataUnionMemberLimit) {
@@ -421,29 +413,53 @@ const Item = ({ product, stats }: Props) => {
                     }.`,
                     icon: NotificationIcon.ERROR,
                 })
-                return false
+
+                return {
+                    valid: false,
+                    redirect: false,
+                }
             }
         }
 
-        return true
+        return {
+            valid,
+            redirect: !valid,
+        }
     }, [isEthIdentityRequired, stats])
+
+    const redirectToEditProduct = useCallback((productId) => {
+        if (!isMounted()) { return }
+        history.push(routes.products.edit({
+            id: productId,
+            publishAttempted: 1,
+        }))
+    }, [
+        isMounted,
+        history,
+    ])
 
     const publish = useCallback(async (productId) => wrapPublish(async () => {
         const product = await getProductById(productId || '')
         const productWithPendingChanges = withPendingChanges(product)
 
-        if (validate(productWithPendingChanges)) {
+        const { valid, redirect } = validate(productWithPendingChanges)
+
+        if (valid) {
             await publishDialog.open({
                 product,
             })
+        } else if (redirect) {
+            redirectToEditProduct(productId)
         }
-    }), [wrapPublish, validate, publishDialog])
+    }), [wrapPublish, validate, publishDialog, redirectToEditProduct])
 
     const deploy = useCallback(async (productId) => wrapDeploy(async () => {
         const product = await getProductById(productId || '')
         const productWithPendingChanges = withPendingChanges(product)
 
-        if (validate(productWithPendingChanges)) {
+        const { valid, redirect } = validate(productWithPendingChanges)
+
+        if (valid) {
             let updatedProduct = product
             const updateAddress = async (beneficiaryAddress) => {
                 updatedProduct = await putProduct({
@@ -459,8 +475,16 @@ const Item = ({ product, stats }: Props) => {
                 data: updatedProduct,
                 schema: productSchema,
             })
+        } else if (redirect) {
+            redirectToEditProduct(productId)
         }
-    }), [wrapDeploy, validate, deployDataUnionDialog, updateEntities])
+    }), [
+        wrapDeploy,
+        validate,
+        deployDataUnionDialog,
+        updateEntities,
+        redirectToEditProduct,
+    ])
 
     const productInitials = useMemo(() => {
         const initials = (productName || '').split(/\s+/).filter(Boolean).map((s) => s[0]).slice(0, 2)

@@ -1,10 +1,9 @@
 // @flow
 
-import React, { useEffect, useCallback, useContext, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { useClient, useSubscription } from 'streamr-client-react'
-import { Context as RouterContext } from '$shared/contexts/Router'
 import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
@@ -127,7 +126,7 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
 }
 
 const PreviewWrap = ({ productId, streamId }) => {
-    const { history } = useContext(RouterContext)
+    const history = useHistory()
     const product = useProduct()
     const dispatch = useDispatch()
     const streams = useSelector(selectProductStreams)
@@ -213,19 +212,19 @@ const PreviewWrap = ({ productId, streamId }) => {
     )
 }
 
-const ProductContainer = withRouter((props) => {
-    const idProp = props.match.params.streamId
+const ProductContainer = () => {
+    const { id: productId, streamId: idProp } = useParams()
     const streamId = useMemo(() => decodeURIComponent(idProp), [idProp])
 
     return (
         <ProductController key={streamId} ignoreUnauthorized>
             <PreviewWrap
-                productId={props.match.params.id}
+                productId={productId}
                 streamId={streamId}
             />
         </ProductController>
     )
-})
+}
 
 export default () => (
     <ClientProvider>
