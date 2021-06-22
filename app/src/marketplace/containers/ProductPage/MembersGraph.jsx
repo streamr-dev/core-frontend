@@ -56,16 +56,32 @@ const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }:
                 y: val.memberCountAtStart,
             })
             // Add a superficial datapoint to form a staircase graph
+            if ((val.endDate * 1000) <= Date.now()) {
+                data.push({
+                    x: (val.endDate * 1000) - 1,
+                    y: val.memberCountAtStart + val.memberCountChange,
+                })
+            }
+        }
+
+        // Make sure we fill the whole date range (end)
+        if (data.length === 0) {
             data.push({
-                x: (val.endDate * 1000) - 1,
-                y: val.memberCountAtStart + val.memberCountChange,
+                x: Date.now(),
+                y: memberCount,
+            })
+        } else {
+            const lastMemberCount = data[data.length - 1].y
+            data.push({
+                x: Date.now(),
+                y: lastMemberCount,
             })
         }
 
         if (data.length > 0) {
             const firstMemberCount = data[0].y
 
-            // Make sure we fill the whole date range
+            // Make sure we fill the whole date range (start)
             data.unshift({
                 x: startDate,
                 y: firstMemberCount,
