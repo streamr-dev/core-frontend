@@ -608,7 +608,7 @@ export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number):
 export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number, toTimestamp: number = Date.now()): Promise<Array<any>> => {
     const accuracy = 'HOUR' // HOUR or DAY
     const result = await post({
-        url: 'http://192.168.1.3:8000/subgraphs/name/streamr-dev/dataunion',
+        url: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/dataunion`,
         data: {
             query: `
                 query {
@@ -635,7 +635,7 @@ export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number
 
 export const getDataUnionMembers = async (id: DataUnionId, limit: number = 100): Promise<Array<string>> => {
     const result = await post({
-        url: 'http://192.168.1.3:8000/subgraphs/name/streamr-dev/dataunion',
+        url: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/dataunion`,
         data: {
             query: `
                 query {
@@ -655,13 +655,13 @@ export const getDataUnionMembers = async (id: DataUnionId, limit: number = 100):
     return []
 }
 
-export const searchDataUnionMembers = async (id: DataUnionId, query: string): Promise<Array<string>> => {
+export const searchDataUnionMembers = async (id: DataUnionId, query: string, limit: number = 100): Promise<Array<string>> => {
     const result = await post({
-        url: 'http://192.168.1.3:8000/subgraphs/name/streamr-dev/dataunion',
+        url: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/dataunion`,
         data: {
             query: `
                 query {
-                    memberSearch(text: "${query}:*") {
+                    members(where: { addressString_contains: "${query}"}, first: ${Math.floor(limit)}) {
                         address
                         dataunion {
                             mainchainAddress
@@ -672,14 +672,14 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string): Pr
         },
         useAuthorization: false,
     })
-    if (result && result.data && result.data.memberSearch) {
+    if (result && result.data && result.data.members) {
         // With limitations in full text search in The Graph,
         // we cannot do filtering on the query itself so we
-        // have to manually pick results only for this dataunion id.
-        const duMembers = result.data.memberSearch
+        // have to manually pick results only for this dataunion.
+        const members = result.data.members
             .filter((m) => m.dataunion.mainchainAddress === id)
             .map((m) => m.address)
-        return duMembers
+        return members
     }
     return []
 }
