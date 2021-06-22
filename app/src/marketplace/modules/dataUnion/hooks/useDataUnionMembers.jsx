@@ -75,7 +75,6 @@ function useDataUnionMembers() {
 
     const search = useCallback(async (dataUnionId, text) => {
         const results = await searchDataUnionMembers(dataUnionId, text)
-        console.log('Res', results)
         return results.slice(0, VISIBLE_MEMBERS_LIMIT)
     }, [])
 

@@ -114,7 +114,13 @@ const Management = ({ product, dataUnion, className }: Props) => {
                 </GraphHeader>
                 {dataUnion && !!dataUnion.id && (
                     <MembersGraph
+                        joinPartStreamId={joinPartStreamId}
                         memberCount={(memberCount && memberCount.total) || 0}
+                        shownDays={days}
+                    />
+                ) : (
+                    <MembersGraphV2
+                        memberCount={(memberCount && memberCount.active) || 0}
                         shownDays={days}
                         dataUnionAddress={dataUnion && dataUnion.id}
                         chainId={chainId}
