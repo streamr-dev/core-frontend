@@ -714,6 +714,18 @@ async function* deprecated_getMemberStatuses(id: DataUnionId, timestampFrom: num
     /* eslint-enable no-restricted-syntax */
 }
 
+export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<string>): any {
+    const statuses = []
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const status of getMemberStatusesWithClient(id, members)) {
+        statuses.push(status)
+    }
+    /* eslint-enable no-restricted-syntax, no-await-in-loop */
+
+    return statuses
+}
+
 async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>): any {
     const client = createClient()
 
