@@ -38,7 +38,7 @@ const ValidationContext: Context<ContextProps> = React.createContext({})
 
 const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 
-export const validationErrors = {
+const validationErrors = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
     category: 'Product category cannot be empty',

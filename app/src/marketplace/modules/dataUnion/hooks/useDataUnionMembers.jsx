@@ -54,19 +54,24 @@ function useDataUnionMembers() {
             console.warn(e)
             throw e
         } finally {
-            setLoading(false)
+            if (isMounted()) {
+                setLoading(false)
+            }
         }
     }, [reset, isMounted, updateDataToState])
 
     const remove = useCallback(async (dataUnionId, memberAddresses) => {
         try {
             await removeMembers(dataUnionId, memberAddresses)
-            setMembers((prev) => prev.filter((m) => !memberAddresses.includes(m.address)))
+
+            if (isMounted()) {
+                setMembers((prev) => prev.filter((m) => !memberAddresses.includes(m.address)))
+            }
         } catch (e) {
             console.warn(e)
             throw e
         }
-    }, [])
+    }, [isMounted])
 
     const search = useCallback((text) => (
         membersRef.current

@@ -2,7 +2,6 @@ import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { mount } from 'enzyme'
 
-import { Provider as RouterContextProvider } from '$shared/contexts/Router'
 import useNewStreamMode from '$userpages/components/StreamPage/Edit/useNewStreamMode'
 
 describe('useNewStreamMode', () => {
@@ -17,9 +16,7 @@ describe('useNewStreamMode', () => {
             <MemoryRouter
                 initialEntries={['/streams/1234/edit']}
             >
-                <RouterContextProvider>
-                    <Test />
-                </RouterContextProvider>
+                <Test />
             </MemoryRouter>
         ))
 
@@ -37,9 +34,7 @@ describe('useNewStreamMode', () => {
             <MemoryRouter
                 initialEntries={['/streams/1234/edit?newStream=true']}
             >
-                <RouterContextProvider>
-                    <Test />
-                </RouterContextProvider>
+                <Test />
             </MemoryRouter>
         ))
 

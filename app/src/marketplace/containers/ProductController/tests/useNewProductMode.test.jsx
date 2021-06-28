@@ -2,7 +2,6 @@ import React from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { mount } from 'enzyme'
 
-import { Provider as RouterContextProvider } from '$shared/contexts/Router'
 import useNewProductMode from '../useNewProductMode'
 
 describe('useNewProductMode', () => {
@@ -17,9 +16,7 @@ describe('useNewProductMode', () => {
             <MemoryRouter
                 initialEntries={['/products/1234/edit']}
             >
-                <RouterContextProvider>
-                    <Test />
-                </RouterContextProvider>
+                <Test />
             </MemoryRouter>
         ))
 
@@ -37,9 +34,7 @@ describe('useNewProductMode', () => {
             <MemoryRouter
                 initialEntries={['/products/1234/edit?newProduct=true']}
             >
-                <RouterContextProvider>
-                    <Test />
-                </RouterContextProvider>
+                <Test />
             </MemoryRouter>
         ))
 
