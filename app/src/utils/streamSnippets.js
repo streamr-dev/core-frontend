@@ -2,14 +2,14 @@ export const subscribeSnippets = ({ id }) => ({
     javascript: `
         const StreamrClient = require('streamr-client')
 
-        const streamr = new StreamrClient({
+        const client = new StreamrClient({
             auth: {
                 privateKey: 'YOUR-PRIVATE-KEY',
             },
         })
 
         // Subscribe to a stream
-        streamr.subscribe({
+        client.subscribe({
             stream: '${id}',
         }, (message, metadata) => {
             // Do something with the message here!
