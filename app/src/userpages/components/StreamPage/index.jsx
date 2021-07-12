@@ -68,8 +68,10 @@ const StreamPage = (props) => {
                 }
             } catch (e) {
                 if (!(e instanceof ResourceNotFoundError)) {
+                    console.warn(e)
+
                     Notification.push({
-                        title: e.message,
+                        title: 'Stream not found',
                         icon: NotificationIcon.ERROR,
                     })
                 }

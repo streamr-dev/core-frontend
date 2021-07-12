@@ -79,8 +79,10 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                     icon: NotificationIcon.CHECKMARK,
                 })
             } catch (e) {
+                console.warn(e)
+
                 Notification.push({
-                    title: e.message,
+                    title: `Stream ${canBeDeletedByCurrentUser ? 'delete' : 'remove'} failed`,
                     icon: NotificationIcon.ERROR,
                 })
             }

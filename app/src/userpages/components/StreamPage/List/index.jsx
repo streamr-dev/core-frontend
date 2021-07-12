@@ -150,8 +150,10 @@ const StreamList = () => {
         try {
             await dispatch(getStreams(...args))
         } catch (e) {
+            console.warn(e)
+
             Notification.push({
-                title: e.message,
+                title: 'Failed to fetch streams',
                 icon: NotificationIcon.ERROR,
             })
         }
