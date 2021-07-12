@@ -82,7 +82,7 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                 console.warn(e)
 
                 Notification.push({
-                    title: `Stream ${canBeDeletedByCurrentUser ? 'delete' : 'remove'} failed`,
+                    title: `Stream ${canBeDeletedByCurrentUser ? 'deletion' : 'removal'} failed`,
                     icon: NotificationIcon.ERROR,
                 })
             }

@@ -96,8 +96,10 @@ const ProfileSettings = () => {
 
             if (isMounted()) {
                 if (error) {
+                    console.warn(error)
+
                     Notification.push({
-                        title: error.message,
+                        title: 'Save failed',
                         icon: NotificationIcon.ERROR,
                     })
                 } else if (uploaded) {
