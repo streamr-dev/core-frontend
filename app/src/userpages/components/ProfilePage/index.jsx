@@ -59,7 +59,7 @@ export const ProfilePage = () => {
                 console.warn(e)
 
                 Notification.push({
-                    title: e.message,
+                    title: 'Save failed',
                     icon: NotificationIcon.ERROR,
                 })
             }

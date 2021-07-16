@@ -149,7 +149,7 @@ const ConfigureView = ({ stream, disabled, updateStream }: Props) => {
                 if (!isMounted()) { return }
 
                 Notification.push({
-                    title: err.message,
+                    title: 'Failed to detect fields',
                     icon: NotificationIcon.ERROR,
                 })
             } finally {

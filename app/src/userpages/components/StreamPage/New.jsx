@@ -461,7 +461,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             }
 
             Notification.push({
-                title: e.message,
+                title: 'Save failed',
                 icon: NotificationIcon.ERROR,
             })
         } finally {
