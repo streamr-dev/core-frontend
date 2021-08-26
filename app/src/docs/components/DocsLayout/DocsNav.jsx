@@ -87,9 +87,7 @@ const BlogPostItem = styled(Menu.SecondaryItem)`
 `
 
 const UnstyledWide = (props) => {
-    const posts = useBlogPosts(ghostContentApi, {
-        pin: '5ed5aa3afd4c71003937a991',
-    })
+    const posts = useBlogPosts(ghostContentApi)
 
     return (
         <Nav.Wide
