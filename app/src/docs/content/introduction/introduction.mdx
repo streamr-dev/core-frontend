@@ -4,6 +4,8 @@ import Logo from '$shared/components/Logo'
 import SvgIcon from '$shared/components/SvgIcon'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
+import IntroductionHero from './introductionHero.png'
+import IntroductionHero2x from './introductionHero@2x.png'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import styles from '$docs/components/Pages/Introduction/introduction.pcss'
@@ -12,7 +14,14 @@ import styles from '$docs/components/Pages/Introduction/introduction.pcss'
 Welcome to Streamr, the platform for real-time data on the decentralized web. Explore what you can do with Streamr below.
 
 <div className={styles.streamrBanner}>
-    <Logo color="#FF5C00" opacity="1" className={styles.logo} />
+    <img
+        alt="Introduction"
+        className={styles.heroImage}
+        height="280"
+        src={IntroductionHero}
+        srcSet={`${IntroductionHero2x} 2x`}
+        width="736"
+    />
 </div>
 
 <div className={styles.panels}>
