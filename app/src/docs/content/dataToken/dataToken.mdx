@@ -30,9 +30,12 @@ The introduction of token economics defines three new roles: Sponsor, Broker, an
 
 It should be noted that the roles are independent of each other and can be mixed and matched by all actors depending on their goals, for example, the same person could be a Sponsor, Publisher, and a Delegator.
 
-<img width="500" alt="Tokenomics-01@2x" src="https://user-images.githubusercontent.com/25470781/132445067-59807ed9-2c74-4dc9-8a76-af0195b400dc.png" />
-
-*A publisher app publishes a stream, and their node relays the stream*
+<div align="center">
+    <div>
+        <img width="500" alt="Tokenomics-01@2x" src="https://user-images.githubusercontent.com/25470781/132445067-59807ed9-2c74-4dc9-8a76-af0195b400dc.png" />
+    </div>
+    <i>A publisher app publishes a stream, and their node relays the stream</i>
+</div>
 
 ### Publisher
 A Publisher is simply a node through which certain data enters the network. The data usually originates in an adjacent application that interfaces with the Publisher node, with the goal of delivering that data to Subscribers via the network. Publisher nodes relay the messages to other nodes they are connected to.
@@ -40,16 +43,22 @@ A Publisher is simply a node through which certain data enters the network. The 
 ### Subscriber
 A Subscriber is a node in the network that wants to receive messages from a stream. Just like Publishers, they also relay the messages to other nodes they are connected to. Subscribers may have a range of different motivations for joining a stream – there could be an adjacent application that wants the data, they could be Brokers who mine the stream by becoming Subscribers (see below), or they may even want to help the stream simply for charitable reasons.
 
-<img width="500" alt="Tokenomics-2@2x" src="https://user-images.githubusercontent.com/25470781/132445090-3a6e0388-8dec-442f-aa44-22ff0798ea8e.png" />
-
-*Wanting better service for the stream, a sponsor deploys and funds a Bounty in $DATA*
+<div align="center">
+    <div>
+        <img width="500" alt="Tokenomics-2@2x" src="https://user-images.githubusercontent.com/25470781/132445090-3a6e0388-8dec-442f-aa44-22ff0798ea8e.png" />
+    </div>
+    <i>Wanting better service for the stream, a sponsor deploys and funds a Bounty in $DATA</i>
+</div>
 
 ### Sponsor
 Sponsors pay to secure the operation of a stream. They pay DATA tokens into a smart contract called a Bounty. Essentially, the Sponsor says *“I want to spend X amount of DATA tokens over a period of time T to improve stream S”.* The Bounty contract releases the funds over time to Brokers who are mining the Bounty (see below to learn about Brokers). It should be noted that a stream can have many Sponsors, and they could be anyone at all, including the Publisher(s), Subscribers, or a third party.
 
-<img width="500" alt="Tokenomics-3@2x" src="https://user-images.githubusercontent.com/25470781/132445115-70822dac-992a-4221-9b2b-fb99059d5734.png" />
-
-*Broker nodes watching for bounties stake $DATA and join the stream overlay*
+<div align="center">
+    <div>
+        <img width="500" alt="Tokenomics-3@2x" src="https://user-images.githubusercontent.com/25470781/132445115-70822dac-992a-4221-9b2b-fb99059d5734.png" />
+    </div>
+    <i>Broker nodes watching for bounties stake $DATA and join the stream overlay</i>
+</div>
 
 ### Broker Node
 Broker nodes are the miners in the Streamr Network. They are nodes that constantly monitor which Bounties are available – Bounties are smart contracts on the public blockchain, so they are visible to everyone. Broker nodes choose the Bounties they want to start mining, stake DATA on them, and become Subscribers in the related streams. The promise of the Broker is: *"I am an honest and stable node, and I’ll join the stream topologies to help stabilise and secure them".* Brokers don’t subscribe to a stream because they’re interested in the data, they join because they want to earn a share of the DATA tokens flowing through a Bounty. The Broker can claim their rewards periodically to withdraw earned tokens from the Bounty contract.
@@ -60,9 +69,12 @@ Brokers are expected to be honest, following the protocol rule of properly forwa
 
 The amount of DATA tokens the Broker stakes on the Bounty determines the size of their share of the token flow. The Broker will generally stake on Bounties where they can earn the best available yield for their stake. Other Brokers in a Bounty are there to share the cake, so overcrowded Bounties may not offer the best yields, and some Brokers will decide to mine other Bounties instead. Like any open market, the market of servicing Bounties will always gravitate towards achieving equilibrium between supply and demand.
 
-<img width="500" alt="Tokenomics-5@2x" src="https://user-images.githubusercontent.com/25470781/132445150-d5845749-78a1-4784-94ac-49fd3c92326b.png" />
-
-*Delegators can help brokers join more streams and earn yield on their stake*
+<div align="center">
+    <div>
+        <img width="500" alt="Tokenomics-5@2x" src="https://user-images.githubusercontent.com/25470781/132445150-d5845749-78a1-4784-94ac-49fd3c92326b.png" />
+    </div>
+    <i>Delegators can help brokers join more streams and earn yield on their stake</i>
+</div>
 
 ### Delegator
 Delegators are DATA token holders who don’t want to do mining themselves, but would rather earn yield on their tokens by supplying liquidity to Brokers. In exchange, they earn a share of the Broker’s rewards. Since Brokers need to stake tokens to mine Bounties, having access to tokens from Delegators enables them to earn more from Bounties, creating a win-win situation.
@@ -81,4 +93,6 @@ As part of the rollout of the Brubeck milestone, we’ll also be releasing a new
 
 What do you think about the current progress and plans? Join our [Discord](https://discord.gg/gZAm8P7hK8), especially the #data-tokenomics channel there, to chat more! Also make sure to participate in the [upcoming Brubeck testnets](https://blog.streamr.network/sign-up-for-the-brubeck-testnet-2m-data-rewards-to-claim/) to get hands-on experience in running a Streamr node. Not only will you set yourself up for building on Streamr, you can also earn a share of 2M DATA available to testnet participants!
 
-<img width="500" alt="Tokenomics-01@2x" src="https://user-images.githubusercontent.com/25470781/132445044-4cdb20d1-4b8a-40ac-8a5a-5b6520b58021.png" />
+<div align="center">
+    <img width="500" alt="Tokenomics-01@2x" src="https://user-images.githubusercontent.com/25470781/132445044-4cdb20d1-4b8a-40ac-8a5a-5b6520b58021.png" />
+</div>
