@@ -110,7 +110,7 @@ const UnstyledTableOfContents = ({ children, ...props }: TocProps) => {
 const TableOfContents = styled(UnstyledTableOfContents)`
     position: relative;
     margin: 0.5rem 0 1.5rem 0;
-    max-height: 100vh;
+    max-height: calc(100vh - 32px - 4.5rem);
     padding: 0;
     overflow: scroll;
     overflow-x: hidden;
