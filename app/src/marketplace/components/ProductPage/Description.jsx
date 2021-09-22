@@ -55,6 +55,7 @@ const SideBar = styled.div`
     background-color: #EFEFEF;
     font-size: 1em;
     line-height: 1.5em;
+    max-height: 15.5em;
     padding: 1.5em;
 
     @media (min-width: ${SM}px) {
