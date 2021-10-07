@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from 'react'
 import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
 import { useSelector } from 'react-redux'
-import { Nav, Menu, Button } from '@streamr/streamr-layout'
+import { Menu, NavDropdown, Button } from '@streamr/streamr-layout'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import { DocsMenu } from '$docs/components/DocsLayout/DocsNav'
@@ -48,7 +48,7 @@ const DropdownToggle = styled.div`
     }
 `
 
-const SignedInUserMenu = styled(Nav.Wide.Dropdown)`
+const SignedInUserMenu = styled(NavDropdown)`
     ${Menu} {
         padding-top: 4px;
 
@@ -85,7 +85,7 @@ const SignedInUserMenu = styled(Nav.Wide.Dropdown)`
     }
 `
 
-const UnstyledWide = (props) => {
+/* const UnstyledWide = (props) => {
     const current = useCurrentLocation()
 
     const currentUser = useSelector(selectUserData)
@@ -213,7 +213,7 @@ const UnstyledWide = (props) => {
             )}
         </Nav.Wide>
     )
-}
+} */
 
 const ConnectedWith = styled.div`
     background-color: #F8F8F8;
@@ -275,7 +275,7 @@ const methods = {
     walletConnect: 'WalletConnect',
 }
 
-const UnstyledNarrow = (props) => {
+/* const UnstyledNarrow = (props) => {
     const current = useCurrentLocation()
 
     const currentUser = useSelector(selectUserData)
@@ -339,9 +339,10 @@ const UnstyledNarrow = (props) => {
             </Nav.Narrow.Footer>
         </Nav.Narrow>
     )
-}
+} */
 
-const Wide = styled(UnstyledWide)`
+// const Wide = styled(UnstyledWide)`
+const Wide = styled.div`
     ${({ theme }) => !!theme.navShadow && css`
         box-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
     `}
@@ -365,18 +366,11 @@ const Wide = styled(UnstyledWide)`
     }
 `
 
-const Narrow = styled(UnstyledNarrow)`
-    ${Nav.Narrow.Body} {
-        padding-top: 96px;
-    }
-
+// const Narrow = styled(UnstyledNarrow)`
+const Narrow = styled.div`
     ${User.UsernameCopy},
     ${ConnectedWith} {
         margin-right: 16px;
-    }
-
-    ${Nav.Link}:not([href]) {
-        color: #cdcdcd;
     }
 
     @media (min-width: ${TABLET}px) {
