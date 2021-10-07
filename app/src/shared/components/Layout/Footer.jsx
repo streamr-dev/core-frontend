@@ -37,8 +37,8 @@ const Footer = ({ topBorder = false }) => (
                 <a href={routes.site.discover.marketplace()}>
                     Marketplace
                 </a>
-                <a href={routes.site.discover.core()}>
-                    Core
+                <a href={routes.site.discover.dataToken()}>
+                    DATA Token
                 </a>
             </FooterColumn>
             <FooterColumn title="Apps">

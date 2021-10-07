@@ -2,6 +2,7 @@
 
 import '$shared/styles/pcss'
 import { ThemeProvider } from 'styled-components'
+import { NavProvider } from '@streamr/streamr-layout'
 
 import React from 'react'
 import cx from 'classnames'
@@ -33,13 +34,15 @@ const Layout = ({
 
     return (
         <ThemeProvider theme={theme}>
-            <div className={cx(styles.framed, framedClassname)}>
-                <div className={cx(styles.inner, innerClassname)}>
-                    {nav}
-                    <div {...props} />
+            <NavProvider>
+                <div className={cx(styles.framed, framedClassname)}>
+                    <div className={cx(styles.inner, innerClassname)}>
+                        {nav}
+                        <div {...props} />
+                    </div>
+                    {!!footer && <Footer />}
                 </div>
-                {!!footer && <Footer />}
-            </div>
+            </NavProvider>
         </ThemeProvider>
     )
 }

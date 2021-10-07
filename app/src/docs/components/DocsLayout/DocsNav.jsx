@@ -1,7 +1,20 @@
 import React, { useContext } from 'react'
-import styled, { ThemeProvider, ThemeContext } from 'styled-components'
+import styled from 'styled-components'
 import GhostContentAPI from '@tryghost/content-api'
-import { Nav, Menu, Button, useBlogPosts } from '@streamr/streamr-layout'
+import {
+    Button,
+    HamburgerButton,
+    Logo,
+    LogoLink,
+    Menu,
+    Navbar,
+    NavDropdown,
+    NavProvider,
+    NavLink,
+    NavOverlay,
+    useBlogPosts,
+} from '@streamr/streamr-layout'
+
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import SiteSection from '$shared/components/Layout/SiteSection'
@@ -16,23 +29,26 @@ const ghostContentApi = new GhostContentAPI({
 
 const AppsAndServicesGroup = () => (
     <Menu.Group name="Apps and services">
+        <Menu.Item as={Link} href={routes.site.discover.network()}>
+            Network
+        </Menu.Item>
+        <Menu.Item as={Link} href={routes.site.discover.dataToken()}>
+            DATA Token
+        </Menu.Item>
         <Menu.Item as={Link} href={routes.site.discover.dataUnions()}>
             Data Unions
         </Menu.Item>
         <Menu.Item as={Link} href={routes.site.discover.marketplace()}>
             Marketplace
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.discover.core()}>
-            Core
-        </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.discover.network()}>
-            Network
-        </Menu.Item>
     </Menu.Group>
 )
 
 const CaseStudiesGroup = () => (
     <Menu.Group name="Case studies">
+        <Menu.Item as={Link} href={routes.site.caseStudies.paveMotors()}>
+            Pave Motors
+        </Menu.Item>
         <Menu.Item as={Link} href={routes.site.caseStudies.swash()}>
             Swash
         </Menu.Item>
@@ -50,31 +66,34 @@ const ProjectMenu = () => (
         <Menu.Item as={Link} href={routes.site.about()}>
             About
         </Menu.Item>
+        <Menu.Item as={Link} href={routes.site.tokenMigration()}>
+            Token Migration
+        </Menu.Item>
+        <Menu.Item as={Link} href={routes.site.ecosystem()}>
+            Ecosystem
+        </Menu.Item>
         <Menu.Item as={Link} href={routes.site.papers()}>
             Papers
+        </Menu.Item>
+        <Menu.Item as={Link} href={routes.site.roadmap()}>
+            Roadmap
         </Menu.Item>
         <Menu.Item as={Link} href={routes.community.blog()}>
             Blog
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.design()}>
-            Design assets
-        </Menu.Item>
     </Menu>
 )
 
-export const DocsMenu = () => (
+export const DevelopersMenu = () => (
     <Menu>
-        <Menu.Item as={Link} to={docsLinks.gettingStarted}>
-            Getting started
+        <Menu.Item as={Link} href={docsLinks.gettingStarted}>
+            Docs
         </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.streams}>
-            Streams
+        <Menu.Item as={Link} href={routes.site.fund()}>
+            Data Fund
         </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.products}>
-            Products
-        </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.dataUnions}>
-            Data Unions
+        <Menu.Item as={Link} to={routes.site.design()}>
+            Design assets
         </Menu.Item>
     </Menu>
 )
@@ -86,82 +105,100 @@ const BlogPostItem = styled(Menu.SecondaryItem)`
     text-overflow: ellipsis;
 `
 
-const UnstyledWide = (props) => {
+const UnstyledDesktopNav = ({ className }) => {
     const posts = useBlogPosts(ghostContentApi)
 
     return (
-        <Nav.Wide
-            {...props}
-            logoComponent={(
-                <Nav.LogoItem href={routes.root()} />
-            )}
-        >
-            <Nav.Wide.Dropdown
-                toggle={(
-                    <Nav.Link>
-                        Discover
-                    </Nav.Link>
-                )}
-                menu={(
-                    <Menu>
-                        <AppsAndServicesGroup />
-                        <CaseStudiesGroup />
-                    </Menu>
-                )}
-            />
-            <Nav.Wide.Dropdown
-                toggle={(
-                    <Nav.Link>
-                        Project
-                    </Nav.Link>
-                )}
-                menu={(
-                    <ProjectMenu />
-                )}
-            />
-            <Nav.Wide.Dropdown
-                highlight
-                toggle={(
-                    <Nav.Link>
+        <div className={className}>
+            <Navbar>
+                <Navbar.Item>
+                    <LogoLink href={routes.root()}>
+                        <Logo />
+                    </LogoLink>
+                </Navbar.Item>
+                <Navbar.Item data-mobile-only>
+                    <SiteSection>
                         Docs
-                    </Nav.Link>
-                )}
-                menu={(
-                    <DocsMenu />
-                )}
-            />
-            <Nav.Wide.Dropdown
-                toggle={(
-                    <Nav.Link>
-                        Community
-                    </Nav.Link>
-                )}
-                menu={(
-                    <Menu>
-                        <Menu.Group>
-                            <Menu.Item as={Link} href={routes.community.discord()}>
-                                Discord
-                            </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.twitter()}>
-                                Twitter
-                            </Menu.Item>
-                        </Menu.Group>
-                        {posts.length > 0 && (
-                            <Menu.Group name="From the blog">
-                                {posts.map(({ id, url, title }) => (
-                                    <BlogPostItem as={Link} href={url} key={id}>
-                                        {`→ ${title}`}
-                                    </BlogPostItem>
-                                ))}
-                            </Menu.Group>
+                    </SiteSection>
+                </Navbar.Item>
+                <Navbar.Item data-desktop-only>
+                    <NavDropdown
+                        toggle={(
+                            <NavLink>
+                                Discover
+                            </NavLink>
                         )}
-                    </Menu>
-                )}
-            />
-            <Button tag="a" href={routes.core()} size="mini" outline>
-                Use Core
-            </Button>
-        </Nav.Wide>
+                        menu={(
+                            <Menu>
+                                <AppsAndServicesGroup />
+                                <CaseStudiesGroup />
+                            </Menu>
+                        )}
+                    />
+                </Navbar.Item>
+                <Navbar.Item data-desktop-only>
+                    <NavDropdown
+                        toggle={(
+                            <NavLink>
+                                Project
+                            </NavLink>
+                        )}
+                        menu={(
+                            <ProjectMenu />
+                        )}
+                    />
+                </Navbar.Item>
+                <Navbar.Item data-desktop-only>
+                    <NavDropdown
+                        highlight
+                        toggle={(
+                            <NavLink>
+                                Developers
+                            </NavLink>
+                        )}
+                        menu={(
+                            <DevelopersMenu />
+                        )}
+                    />
+                </Navbar.Item>
+                <Navbar.Item data-desktop-only>
+                    <NavDropdown
+                        toggle={(
+                            <NavLink>
+                                Community
+                            </NavLink>
+                        )}
+                        menu={(
+                            <Menu>
+                                <Menu.Group>
+                                    <Menu.Item as={Link} href={routes.community.discord()}>
+                                        Discord
+                                    </Menu.Item>
+                                    <Menu.Item as={Link} href={routes.community.twitter()}>
+                                        Twitter
+                                    </Menu.Item>
+                                </Menu.Group>
+                                {posts.length > 0 && (
+                                    <Menu.Group name="From the blog">
+                                        {posts.map(({ id, url, title }) => (
+                                            <BlogPostItem as={Link} href={url} key={id}>
+                                                {`→ ${title}`}
+                                            </BlogPostItem>
+                                        ))}
+                                    </Menu.Group>
+                                )}
+                            </Menu>
+                        )}
+                    />
+                </Navbar.Item>
+                <Navbar.Item data-desktop-only>
+                    <Button tag="a" href={routes.core()} size="mini" outline>
+                        Use Core
+                    </Button>
+                </Navbar.Item>
+                <HamburgerButton idle />
+            </Navbar>
+        </div>
     )
 }
 
@@ -182,26 +219,26 @@ const MenuColumn = styled.div`
     }
 `
 
-const UnstyledNarrow = (props) => (
-    <Nav.Narrow
-        {...props}
-        logoComponent={(
-            <React.Fragment>
-                <Nav.LogoItem href={routes.root()} />
-                <SiteSection>
-                    Docs
-                </SiteSection>
-            </React.Fragment>
-        )}
-        altLogoComponent={(
-            <Nav.LogoItem href={routes.root()} />
-        )}
-    >
-        <Nav.Narrow.Body>
-            <Nav.Link as={Link} to={routes.root()}>
+const UnstyledMobileNav = (props) => (
+    <NavOverlay>
+        <NavOverlay.Head>
+            <Navbar>
+                <Navbar.Item spread>
+                    <LogoLink href={routes.root()}>
+                        <Logo />
+                    </LogoLink>
+                </Navbar.Item>
+                <Navbar.Item />
+                <Navbar.Item>
+                    <HamburgerButton />
+                </Navbar.Item>
+            </Navbar>
+        </NavOverlay.Head>
+        <NavOverlay.Body>
+            <NavOverlay.Link as={Link} to={routes.root()}>
                 Top
-            </Nav.Link>
-            <Nav.Narrow.Dropdown label="Discover">
+            </NavOverlay.Link>
+            <NavOverlay.Dropdown label="Discover">
                 <Menu>
                     <MenuInner>
                         <MenuColumn>
@@ -212,51 +249,48 @@ const UnstyledNarrow = (props) => (
                         </MenuColumn>
                     </MenuInner>
                 </Menu>
-            </Nav.Narrow.Dropdown>
-            <Nav.Narrow.Dropdown label="Project">
+            </NavOverlay.Dropdown>
+            <NavOverlay.Dropdown label="Project">
                 <ProjectMenu />
-            </Nav.Narrow.Dropdown>
-            <Nav.Narrow.Dropdown label="Docs">
-                <DocsMenu />
-            </Nav.Narrow.Dropdown>
-            <Nav.Narrow.Dropdown label="Community">
+            </NavOverlay.Dropdown>
+            <NavOverlay.Dropdown label="Developers">
+                <DevelopersMenu />
+            </NavOverlay.Dropdown>
+            <NavOverlay.Dropdown label="Community">
                 <Menu>
                     <MenuInner>
                         <MenuColumn>
-                            <Menu.Item as={Link} href={routes.community.discord()}>
+                            <Menu.Item as={Link} newTab href={routes.community.discord()}>
                                 Discord
                             </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.twitter()}>
+                            <Menu.Item as={Link} newTab href={routes.community.twitter()}>
                                 Twitter
                             </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.github()}>
+                            <Menu.Item as={Link} newTab href={routes.community.github()}>
                                 Github
                             </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.youtube()}>
+                            <Menu.Item as={Link} newTab href={routes.community.youtube()}>
                                 Youtube
-                            </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.trello()}>
-                                Trello
                             </Menu.Item>
                         </MenuColumn>
                         <MenuColumn>
-                            <Menu.Item as={Link} href={routes.community.reddit()}>
+                            <Menu.Item as={Link} newTab href={routes.community.reddit()}>
                                 Reddit
                             </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.peepeth()}>
-                                Peepeth
-                            </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.blog()}>
+                            <Menu.Item as={Link} newTab href={routes.community.blog()}>
                                 Blog
                             </Menu.Item>
-                            <Menu.Item as={Link} href={routes.community.linkedin()}>
+                            <Menu.Item as={Link} newTab href={routes.community.linkedin()}>
                                 Linkedin
+                            </Menu.Item>
+                            <Menu.Item as={Link} newTab href={routes.community.trello()}>
+                                Trello
                             </Menu.Item>
                         </MenuColumn>
                     </MenuInner>
                 </Menu>
-            </Nav.Narrow.Dropdown>
-            <Nav.Narrow.Dropdown label="Contact">
+            </NavOverlay.Dropdown>
+            <NavOverlay.Dropdown label="Contact">
                 <Menu>
                     <Menu.Item as={Link} href={routes.contact.general()}>
                         General
@@ -271,8 +305,8 @@ const UnstyledNarrow = (props) => (
                         Business
                     </Menu.Item>
                 </Menu>
-            </Nav.Narrow.Dropdown>
-            <Nav.Narrow.Dropdown label="Documents">
+            </NavOverlay.Dropdown>
+            <NavOverlay.Dropdown label="Documents">
                 <Menu>
                     <Menu.Item as={Link} href="https://streamr.network/governance-whitepaper">
                         Decentralized governance
@@ -287,55 +321,82 @@ const UnstyledNarrow = (props) => (
                         Privacy policy
                     </Menu.Item>
                 </Menu>
-            </Nav.Narrow.Dropdown>
-        </Nav.Narrow.Body>
-        <Nav.Narrow.Footer>
+            </NavOverlay.Dropdown>
+        </NavOverlay.Body>
+        <NavOverlay.Footer>
             <Button tag="a" href={routes.core()}>
                 Use Core
             </Button>
-        </Nav.Narrow.Footer>
-    </Nav.Narrow>
+        </NavOverlay.Footer>
+    </NavOverlay>
 )
 
-const Wide = styled(UnstyledWide)``
+const DesktopNav = styled(UnstyledDesktopNav)`
+`
 
-const Narrow = styled(UnstyledNarrow)``
+const MobileNav = styled(UnstyledMobileNav)``
 
-const lightTheme = {
-    backgroundColor: '#ffffff',
-    color: '#323232',
-    buttonColor: '#0324ff',
-}
-
-const N = (props) => {
-    const theme = useContext(ThemeContext)
-
-    return (
-        <div {...props}>
-            <ThemeProvider theme={theme.dark ? {} : lightTheme}>
-                <Wide />
-                <Narrow />
-            </ThemeProvider>
-        </div>
-    )
-}
+const N = (props) => (
+    <div {...props}>
+        <DesktopNav />
+        <MobileNav />
+    </div>
+)
 
 export default styled(N)`
-    ${Wide} {
-        display: none;
-    }
+    color: #323232;
 
-    ${Nav.Narrow.Body} {
-        padding-top: 96px;
-    }
+    ${Navbar} {
+        padding: 20px 24px;
 
-    @media (min-width: ${DESKTOP}px) {
-        ${Narrow} {
+        @media (min-width: ${TABLET}px) {
+            padding: 16px 24px;
+        }
+
+        @media (min-width: ${DESKTOP}px) {
+            padding: 16px 24px;
+        }
+
+        > ${Navbar.Item}:first-child {
+            flex-grow: initial;
+        }
+
+        > ${Navbar.Item}:nth-child(2) {
+            flex-grow: 1;
+        }
+
+        > [data-mobile-only=true] {
+            display: block;
+        }
+
+        > [data-desktop-only=true] {
             display: none;
         }
 
-        ${Wide} {
+        > ${HamburgerButton} {
             display: flex;
+        }
+    }
+
+    ${Button} {
+        padding: 0 16px;
+    }
+
+    @media (min-width: ${DESKTOP}px) {
+        ${Navbar} > ${Navbar.Item}:first-child {
+            flex-grow: 1;
+        }
+
+        ${Navbar} > [data-mobile-only=true] {
+            display: none;
+        }
+
+        ${Navbar} > [data-desktop-only=true] {
+            display: block;
+        }
+
+        ${Navbar} > ${HamburgerButton} {
+            display: none;
         }
     }
 `
