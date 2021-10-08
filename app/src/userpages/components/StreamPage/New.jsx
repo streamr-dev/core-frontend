@@ -13,7 +13,6 @@ import { scrollTop } from '$shared/hooks/useScrollToTop'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
-import Nav from '$shared/components/Layout/Nav'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { createStream } from '$userpages/modules/userPageStreams/actions'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -514,9 +513,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     return (
         <Layout
             {...props}
-            nav={(
-                <Nav noWide />
-            )}
+            nav={null}
             loading={loading}
             navComponent={(
                 <Toolbar

@@ -20,7 +20,6 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
-import Nav from '$shared/components/Layout/Nav'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
@@ -239,9 +238,7 @@ const UnstyledEdit = ({
     return (
         <CoreLayout
             {...props}
-            nav={(
-                <Nav noWide />
-            )}
+            nav={null}
             navComponent={(
                 <Toolbar
                     altMobileLayout

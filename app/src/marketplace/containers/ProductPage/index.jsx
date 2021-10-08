@@ -12,6 +12,7 @@ import usePending from '$shared/hooks/usePending'
 
 import { getProductSubscription } from '$mp/modules/product/actions'
 import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
+import Nav from '$shared/components/Layout/Nav'
 
 import useProduct from '$mp/containers/ProductController/useProduct'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -25,10 +26,6 @@ import Page from './Page'
 const LoadingIndicator = styled(PrestyledLoadingIndicator)`
     top: 2px;
 `
-
-const theme = {
-    navShadow: true,
-}
 
 const ProductPage = () => {
     const dispatch = useDispatch()
@@ -76,7 +73,7 @@ const ProductPage = () => {
     }, [dataUnionDeployed, beneficiaryAddress, loadDataUnion])
 
     return (
-        <Layout theme={theme}>
+        <Layout nav={(<Nav shadow />)}>
             <MarketplaceHelmet title={product.name} />
             <LoadingIndicator loading={isPending} />
             <Page />

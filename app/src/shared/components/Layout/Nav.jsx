@@ -1,11 +1,22 @@
-import React, { Fragment, useContext } from 'react'
-import styled, { css, ThemeProvider, ThemeContext } from 'styled-components'
+import React, { Fragment } from 'react'
+import styled from 'styled-components'
 import { useSelector } from 'react-redux'
-import { Menu, NavDropdown, Button } from '@streamr/streamr-layout'
+import {
+    Button,
+    HamburgerButton,
+    Logo,
+    LogoLink,
+    Menu,
+    Navbar,
+    NavDropdown,
+    NavProvider,
+    NavLink,
+    NavOverlay,
+} from '@streamr/streamr-layout'
+
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import { DocsMenu } from '$docs/components/DocsLayout/DocsNav'
-import useCurrentLocation from '$shared/hooks/useCurrentLocation'
+import { DevelopersMenu } from '$docs/components/DocsLayout/DocsNav'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
 import ActivityList from '$shared/components/ActivityList'
@@ -85,135 +96,188 @@ const SignedInUserMenu = styled(NavDropdown)`
     }
 `
 
-/* const UnstyledWide = (props) => {
-    const current = useCurrentLocation()
+const UnstyledNavDivider = (props) => (
+    <div {...props}>
+        <div />
+    </div>
+)
+
+const NavDivider = styled(UnstyledNavDivider)`
+    height: 16px;
+    opacity: 0.6;
+    padding: 0 8px;
+
+    > div {
+        background-color: currentColor;
+        content: '';
+        height: 100%;
+        width: 1px;
+    }
+`
+
+const UnstyledDesktopNav = (props) => {
+    const { highlight: current } = NavProvider.useState()
 
     const currentUser = useSelector(selectUserData)
 
     return (
-        <Nav.Wide
-            {...props}
-            logoComponent={(
-                <Nav.LogoItem href={routes.root()} />
-            )}
-        >
-            <Nav.Wide.Dropdown
-                highlight={current === 'core'}
-                toggle={(
-                    <Nav.Link>
-                        Core
-                    </Nav.Link>
-                )}
-                menu={(
-                    <Menu>
-                        <Menu.Item as={Link} to={routes.streams.index()}>
-                            Streams
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={routes.products.index()}>
-                            Products
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={routes.dataunions.index()}>
-                            Data Unions
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={routes.subscriptions()}>
-                            Subscriptions
-                        </Menu.Item>
-                        <Menu.Item as={Link} to={routes.transactions()}>
-                            Transactions
-                        </Menu.Item>
-                    </Menu>
-                )}
-            />
-            <Nav.Wide.Dropdown
-                highlight={current === 'marketplace'}
-                toggle={(
-                    <Nav.Link as={Link} to={routes.marketplace.index()}>
-                        Marketplace
-                    </Nav.Link>
-                )}
-            />
-            <Nav.Wide.Dropdown
-                highlight={current === 'docs'}
-                toggle={(
-                    <Nav.Link>
-                        Docs
-                    </Nav.Link>
-                )}
-                menu={(
-                    <DocsMenu />
-                )}
-            />
-            {!currentUser && (
-                <Fragment>
-                    <Nav.Wide.Divider />
-                    <Button tag="a" href={routes.auth.login()} kind="primary" size="mini" outline>
-                        Use Core
-                    </Button>
-                </Fragment>
-            )}
-            {!!currentUser && (
-                <Fragment>
-                    <ActivityList>
-                        <Nav.Wide.Dropdown
-                            alignMenu="right"
-                            nodeco
-                            toggle={(
-                                <Nav.Link>
-                                    <SvgIcon
-                                        name="alarmBell"
-                                        // eslint-disable-next-line react/jsx-curly-brace-presence
-                                        css={`
-                                                height: 20px;
-                                                width: 16px;
-                                        `}
-                                    />
-                                </Nav.Link>
-                            )}
-                            menu={(
-                                <Menu
-                                    // eslint-disable-next-line react/jsx-curly-brace-presence
-                                    css={`
-                                        padding: 0 !important;
-                                    `}
-                                >
-                                    <ActivityList.Items />
-                                </Menu>
-                            )}
-                        />
-                    </ActivityList>
-                    <User.UsernameCopy username={currentUser.username} />
-                    <SignedInUserMenu
-                        edge
-                        alignMenu="right"
-                        nodeco
+        <div {...props}>
+            <Navbar>
+                <Navbar.Item spread>
+                    <LogoLink href={routes.root()}>
+                        <Logo />
+                    </LogoLink>
+                </Navbar.Item>
+                <Navbar.Item data-mobile-only>
+                    <SiteSection>
+                        {current}
+                    </SiteSection>
+                </Navbar.Item>
+                <Navbar.Item data-desktop-only>
+                    <NavDropdown
+                        highlight={current === 'core'}
                         toggle={(
-                            <Nav.Link>
-                                <DropdownToggle>
-                                    <CaretDownIcon name="caretDown" />
-                                    <CaretUpIcon name="caretUp" />
-                                </DropdownToggle>
-                            </Nav.Link>
+                            <NavLink>
+                                Core
+                            </NavLink>
                         )}
                         menu={(
                             <Menu>
-                                <Menu.Item>
-                                    <User.Avatarless source={currentUser} />
+                                <Menu.Item as={Link} to={routes.streams.index()}>
+                                    Streams
                                 </Menu.Item>
-                                <Menu.Item as={Link} to={routes.profile()}>
-                                    Settings
+                                <Menu.Item as={Link} to={routes.products.index()}>
+                                    Products
                                 </Menu.Item>
-                                <Menu.Divider />
-                                <Menu.Item as={Link} to={routes.auth.logout()}>
-                                    Sign out
+                                <Menu.Item as={Link} to={routes.dataunions.index()}>
+                                    Data Unions
+                                </Menu.Item>
+                                <Menu.Item as={Link} to={routes.subscriptions()}>
+                                    Subscriptions
+                                </Menu.Item>
+                                <Menu.Item as={Link} to={routes.transactions()}>
+                                    Transactions
                                 </Menu.Item>
                             </Menu>
                         )}
                     />
-                </Fragment>
-            )}
-        </Nav.Wide>
+                </Navbar.Item>
+                <Navbar.Item data-desktop-only>
+                    <NavDropdown
+                        highlight={current === 'marketplace'}
+                        toggle={(
+                            <NavLink as={Link} to={routes.marketplace.index()}>
+                                Marketplace
+                            </NavLink>
+                        )}
+                    />
+                </Navbar.Item>
+                <Navbar.Item data-desktop-only>
+                    <NavDropdown
+                        highlight={current === 'docs'}
+                        toggle={(
+                            <NavLink>
+                                Developers
+                            </NavLink>
+                        )}
+                        menu={(
+                            <DevelopersMenu />
+                        )}
+                    />
+                </Navbar.Item>
+                {!currentUser && (
+                    <Fragment>
+                        <Navbar.Item
+                            style={{
+                                marginLeft: '4px',
+                            }}
+                            data-desktop-only
+                        >
+                            <NavDivider />
+                        </Navbar.Item>
+                        <Navbar.Item data-desktop-only>
+                            <Button tag="a" href={routes.auth.login()} kind="primary" size="mini" outline>
+                                Use Core
+                            </Button>
+                        </Navbar.Item>
+                    </Fragment>
+                )}
+                {!!currentUser && (
+                    <Fragment>
+                        <Navbar.Item data-desktop-only>
+                            <ActivityList>
+                                <NavDropdown
+                                    alignMenu="right"
+                                    nodeco
+                                    toggle={(
+                                        <NavLink>
+                                            <SvgIcon
+                                                name="alarmBell"
+                                                // eslint-disable-next-line react/jsx-curly-brace-presence
+                                                css={`
+                                                        height: 20px;
+                                                        width: 16px;
+                                                `}
+                                            />
+                                        </NavLink>
+                                    )}
+                                    menu={(
+                                        <Menu
+                                            // eslint-disable-next-line react/jsx-curly-brace-presence
+                                            css={`
+                                                padding: 0 !important;
+                                            `}
+                                        >
+                                            <ActivityList.Items />
+                                        </Menu>
+                                    )}
+                                />
+                            </ActivityList>
+                        </Navbar.Item>
+                        <Navbar.Item data-desktop-only>
+                            <User.UsernameCopy username={currentUser.username} />
+                        </Navbar.Item>
+                        <Navbar.Item
+                            style={{
+                                marginLeft: 0,
+                            }}
+                            data-desktop-only
+                        >
+                            <SignedInUserMenu
+                                edge
+                                alignMenu="right"
+                                nodeco
+                                toggle={(
+                                    <NavLink>
+                                        <DropdownToggle>
+                                            <CaretDownIcon name="caretDown" />
+                                            <CaretUpIcon name="caretUp" />
+                                        </DropdownToggle>
+                                    </NavLink>
+                                )}
+                                menu={(
+                                    <Menu>
+                                        <Menu.Item>
+                                            <User.Avatarless source={currentUser} />
+                                        </Menu.Item>
+                                        <Menu.Item as={Link} to={routes.profile()}>
+                                            Settings
+                                        </Menu.Item>
+                                        <Menu.Divider />
+                                        <Menu.Item as={Link} to={routes.auth.logout()}>
+                                            Sign out
+                                        </Menu.Item>
+                                    </Menu>
+                                )}
+                            />
+                        </Navbar.Item>
+                    </Fragment>
+                )}
+                <HamburgerButton idle />
+            </Navbar>
+        </div>
     )
-} */
+}
 
 const ConnectedWith = styled.div`
     background-color: #F8F8F8;
@@ -275,58 +339,59 @@ const methods = {
     walletConnect: 'WalletConnect',
 }
 
-/* const UnstyledNarrow = (props) => {
-    const current = useCurrentLocation()
-
+const UnstyledMobileNav = ({ className }) => {
     const currentUser = useSelector(selectUserData)
 
     const method = getMethod()
 
     return (
-        <Nav.Narrow
-            {...props}
-            logoComponent={(
-                <Fragment>
-                    <Nav.LogoItem href={routes.root()} />
-                    <SiteSection>
-                        {current}
-                    </SiteSection>
-                </Fragment>
-            )}
-            altLogoComponent={(
-                <Nav.LogoItem href={routes.root()} />
-            )}
-            infoComponent={(currentUser && (
-                <ConnectedWith>
-                    <span>&zwnj;</span>
-                    <img src={icons[method]} alt="" />
-                    <strong>
-                        {methods[method]}
-                    </strong>
-                </ConnectedWith>
-            ))}
-        >
-            <Nav.Narrow.Body>
-                <Nav.Link as={Link} to={routes.core()}>
+        <NavOverlay className={className}>
+            <NavOverlay.Head>
+                <Navbar>
+                    <Navbar.Item spread>
+                        <LogoLink href={routes.root()}>
+                            <Logo />
+                        </LogoLink>
+                    </Navbar.Item>
+                    {currentUser ? (
+                        <Navbar.Item>
+                            <ConnectedWith>
+                                <span>&zwnj;</span>
+                                <img src={icons[method]} alt="" />
+                                <strong>
+                                    {methods[method]}
+                                </strong>
+                            </ConnectedWith>
+                        </Navbar.Item>
+                    ) : (
+                        <Navbar.Item />
+                    )}
+                    <Navbar.Item>
+                        <HamburgerButton />
+                    </Navbar.Item>
+                </Navbar>
+            </NavOverlay.Head>
+            <NavOverlay.Body>
+                <NavOverlay.Link as={Link} to={routes.core()}>
                     Core
-                </Nav.Link>
-                <Nav.Link as={Link} to={routes.marketplace.index()}>
+                </NavOverlay.Link>
+                <NavOverlay.Link as={Link} to={routes.marketplace.index()}>
                     Marketplace
-                </Nav.Link>
-                <Nav.Link as={Link} to="/docs">
+                </NavOverlay.Link>
+                <NavOverlay.Link as={Link} to="/docs">
                     Docs
-                </Nav.Link>
+                </NavOverlay.Link>
                 {!currentUser ? (
-                    <Nav.Link>
+                    <NavOverlay.Link>
                         Settings
-                    </Nav.Link>
+                    </NavOverlay.Link>
                 ) : (
-                    <Nav.Link as={Link} to={routes.profile()}>
+                    <NavOverlay.Link as={Link} to={routes.profile()}>
                         Settings
-                    </Nav.Link>
+                    </NavOverlay.Link>
                 )}
-            </Nav.Narrow.Body>
-            <Nav.Narrow.Footer>
+            </NavOverlay.Body>
+            <NavOverlay.Footer>
                 {currentUser ? (
                     <Button tag="a" href={routes.auth.logout()} kind="secondary" size="normal">
                         Sign out
@@ -336,16 +401,33 @@ const methods = {
                         Use Core
                     </Button>
                 )}
-            </Nav.Narrow.Footer>
-        </Nav.Narrow>
+            </NavOverlay.Footer>
+        </NavOverlay>
     )
-} */
+}
 
-// const Wide = styled(UnstyledWide)`
-const Wide = styled.div`
-    ${({ theme }) => !!theme.navShadow && css`
+const DesktopNav = styled(UnstyledDesktopNav)`
+    position: relative;
+
+    ${Navbar} {
+        > ${Navbar.Item}:first-child {
+            flex-grow: initial;
+        }
+
+        > ${Navbar.Item}:nth-child(2) {
+            flex-grow: 1;
+        }
+    }
+
+    @media (min-width: ${DESKTOP}px) {
+        ${Navbar} > ${Navbar.Item}:first-child {
+            flex-grow: 1;
+        }
+    }
+
+    &[data-shadow=true] {
         box-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
-    `}
+    }
 
     ${User.Avatarless} {
         line-height: 20px;
@@ -360,17 +442,16 @@ const Wide = styled.div`
     ${User.Username} {
         font-size: 12px;
     }
-
-    ${User.UsernameCopy} + ${SignedInUserMenu} {
-        margin-left: 0;
-    }
 `
 
-// const Narrow = styled(UnstyledNarrow)`
-const Narrow = styled.div`
+const MobileNav = styled(UnstyledMobileNav)`
     ${User.UsernameCopy},
     ${ConnectedWith} {
         margin-right: 16px;
+    }
+
+    ${NavLink}:not([href]) {
+        color: #cdcdcd;
     }
 
     @media (min-width: ${TABLET}px) {
@@ -380,43 +461,70 @@ const Narrow = styled.div`
     }
 `
 
-const lightTheme = {
-    backgroundColor: '#ffffff',
-    color: '#323232',
-}
+const UnstyledContainer = (props) => (
+    <div {...props} />
+)
 
-const UnstyledN = ({ noWide, noNarrow, ...props }) => {
-    const theme = useContext(ThemeContext) || {}
+export const Container = styled(UnstyledContainer)`
+    background-color: #FFFFFF;
+    color: #323232;
 
-    return !noWide && !noNarrow && (
-        <div {...props}>
-            <ThemeProvider theme={theme.dark ? {} : lightTheme}>
-                {!noWide && <Wide />}
-                {!noNarrow && <Narrow />}
-            </ThemeProvider>
-        </div>
-    )
-}
+    ${Navbar} {
+        padding: 20px 24px;
 
-const N = styled(UnstyledN)`
-    ${Wide} {
-        display: none;
-    }
+        @media (min-width: ${TABLET}px) {
+            padding: 16px 24px;
+        }
 
-    @media (min-width: ${DESKTOP}px) {
-        ${Narrow} {
+        @media (min-width: ${DESKTOP}px) {
+            padding: 16px 24px;
+        }
+
+        > ${HamburgerButton} {
+            display: flex;
+        }
+
+        ${Navbar.Item}:empty {
             display: none;
         }
 
-        ${Wide} {
-            display: flex;
+        > [data-mobile-only=true] {
+            display: block;
+        }
+
+        > [data-desktop-only=true] {
+            display: none;
+        }
+    }
+
+    ${Button} {
+        padding: 0 16px;
+    }
+
+    @media (min-width: ${DESKTOP}px) {
+        ${Navbar} > [data-mobile-only=true] {
+            display: none;
+        }
+
+        ${Navbar} > [data-desktop-only=true] {
+            display: block;
+        }
+
+        ${Navbar} > ${HamburgerButton} {
+            display: none;
         }
     }
 `
 
+const N = ({ children, shadow, ...props }) => (
+    <Container {...props}>
+        <DesktopNav data-shadow={!!shadow} />
+        <MobileNav />
+    </Container>
+)
+
 Object.assign(N, {
-    Wide,
-    Narrow,
+    Container,
     SiteSection,
 })
 
