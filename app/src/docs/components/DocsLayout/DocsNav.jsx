@@ -1,6 +1,8 @@
 import React from 'react'
+import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import GhostContentAPI from '@tryghost/content-api'
+import { useSelector } from 'react-redux'
 import {
     Button,
     HamburgerButton,
@@ -17,6 +19,7 @@ import {
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
 import Nav from '$shared/components/Layout/Nav'
+import { selectUserData } from '$shared/modules/user/selectors'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
@@ -107,6 +110,10 @@ const BlogPostItem = styled(Menu.SecondaryItem)`
 const UnstyledDesktopNav = ({ className }) => {
     const posts = useBlogPosts(ghostContentApi)
 
+    const currentUser = useSelector(selectUserData)
+
+    const { pathname } = useLocation()
+
     return (
         <div className={className}>
             <Navbar>
@@ -191,9 +198,28 @@ const UnstyledDesktopNav = ({ className }) => {
                     />
                 </Navbar.Item>
                 <Navbar.Item data-desktop-only>
-                    <Button tag="a" href={routes.core()} size="mini" outline>
-                        Use Core
-                    </Button>
+                    {!!currentUser && (
+                        <Button
+                            tag={Link}
+                            href={routes.core()}
+                            size="mini"
+                            outline
+                        >
+                            Use Core
+                        </Button>
+                    )}
+                    {!currentUser && (
+                        <Button
+                            tag={Link}
+                            href={routes.auth.login({
+                                redirect: pathname,
+                            })}
+                            size="mini"
+                            outline
+                        >
+                            Connect Wallet
+                        </Button>
+                    )}
                 </Navbar.Item>
                 <HamburgerButton idle />
             </Navbar>
@@ -218,117 +244,137 @@ const MenuColumn = styled.div`
     }
 `
 
-const UnstyledMobileNav = ({ className }) => (
-    <NavOverlay className={className}>
-        <NavOverlay.Head>
-            <Navbar>
-                <Navbar.Item spread>
-                    <LogoLink href={routes.root()}>
-                        <Logo />
-                    </LogoLink>
-                </Navbar.Item>
-                <Navbar.Item />
-                <Navbar.Item>
-                    <HamburgerButton />
-                </Navbar.Item>
-            </Navbar>
-        </NavOverlay.Head>
-        <NavOverlay.Body>
-            <NavOverlay.Link as={Link} to={routes.root()}>
-                Top
-            </NavOverlay.Link>
-            <NavOverlay.Dropdown label="Discover">
-                <Menu>
-                    <MenuInner>
-                        <MenuColumn>
-                            <AppsAndServicesGroup />
-                        </MenuColumn>
-                        <MenuColumn>
-                            <CaseStudiesGroup />
-                        </MenuColumn>
-                    </MenuInner>
-                </Menu>
-            </NavOverlay.Dropdown>
-            <NavOverlay.Dropdown label="Project">
-                <ProjectMenu />
-            </NavOverlay.Dropdown>
-            <NavOverlay.Dropdown label="Developers">
-                <DevelopersMenu />
-            </NavOverlay.Dropdown>
-            <NavOverlay.Dropdown label="Community">
-                <Menu>
-                    <MenuInner>
-                        <MenuColumn>
-                            <Menu.Item as={Link} newTab href={routes.community.discord()}>
-                                Discord
-                            </Menu.Item>
-                            <Menu.Item as={Link} newTab href={routes.community.twitter()}>
-                                Twitter
-                            </Menu.Item>
-                            <Menu.Item as={Link} newTab href={routes.community.github()}>
-                                Github
-                            </Menu.Item>
-                            <Menu.Item as={Link} newTab href={routes.community.youtube()}>
-                                Youtube
-                            </Menu.Item>
-                        </MenuColumn>
-                        <MenuColumn>
-                            <Menu.Item as={Link} newTab href={routes.community.reddit()}>
-                                Reddit
-                            </Menu.Item>
-                            <Menu.Item as={Link} newTab href={routes.community.blog()}>
-                                Blog
-                            </Menu.Item>
-                            <Menu.Item as={Link} newTab href={routes.community.linkedin()}>
-                                Linkedin
-                            </Menu.Item>
-                            <Menu.Item as={Link} newTab href={routes.community.trello()}>
-                                Trello
-                            </Menu.Item>
-                        </MenuColumn>
-                    </MenuInner>
-                </Menu>
-            </NavOverlay.Dropdown>
-            <NavOverlay.Dropdown label="Contact">
-                <Menu>
-                    <Menu.Item as={Link} href={routes.contact.general()}>
-                        General
-                    </Menu.Item>
-                    <Menu.Item as={Link} href={routes.contact.media()}>
-                        Media
-                    </Menu.Item>
-                    <Menu.Item as={Link} href={routes.contact.jobs()}>
-                        Jobs
-                    </Menu.Item>
-                    <Menu.Item as={Link} href={routes.contact.labs()}>
-                        Business
-                    </Menu.Item>
-                </Menu>
-            </NavOverlay.Dropdown>
-            <NavOverlay.Dropdown label="Documents">
-                <Menu>
-                    <Menu.Item as={Link} href="https://streamr.network/governance-whitepaper">
-                        Decentralized governance
-                    </Menu.Item>
-                    <Menu.Item as={Link} href="https://streamr.network/whitepaper">
-                        Streamr Whitepaper
-                    </Menu.Item>
-                    <Menu.Item as={Link} href="https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf">
-                        Terms &amp; Conditions
-                    </Menu.Item>
-                    <Menu.Item as={Link} href="https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf">
-                        Privacy policy
-                    </Menu.Item>
-                </Menu>
-            </NavOverlay.Dropdown>
-        </NavOverlay.Body>
-        <NavOverlay.Footer>
-            <Button tag="a" href={routes.core()}>
-                Use Core
-            </Button>
-        </NavOverlay.Footer>
-    </NavOverlay>
-)
+const UnstyledMobileNav = ({ className }) => {
+    const currentUser = useSelector(selectUserData)
+    const { pathname } = useLocation()
+
+    return (
+        <NavOverlay className={className}>
+            <NavOverlay.Head>
+                <Navbar>
+                    <Navbar.Item spread>
+                        <LogoLink href={routes.root()}>
+                            <Logo />
+                        </LogoLink>
+                    </Navbar.Item>
+                    <Navbar.Item />
+                    <Navbar.Item>
+                        <HamburgerButton />
+                    </Navbar.Item>
+                </Navbar>
+            </NavOverlay.Head>
+            <NavOverlay.Body>
+                <NavOverlay.Link as={Link} to={routes.root()}>
+                    Top
+                </NavOverlay.Link>
+                <NavOverlay.Dropdown label="Discover">
+                    <Menu>
+                        <MenuInner>
+                            <MenuColumn>
+                                <AppsAndServicesGroup />
+                            </MenuColumn>
+                            <MenuColumn>
+                                <CaseStudiesGroup />
+                            </MenuColumn>
+                        </MenuInner>
+                    </Menu>
+                </NavOverlay.Dropdown>
+                <NavOverlay.Dropdown label="Project">
+                    <ProjectMenu />
+                </NavOverlay.Dropdown>
+                <NavOverlay.Dropdown label="Developers">
+                    <DevelopersMenu />
+                </NavOverlay.Dropdown>
+                <NavOverlay.Dropdown label="Community">
+                    <Menu>
+                        <MenuInner>
+                            <MenuColumn>
+                                <Menu.Item as={Link} newTab href={routes.community.discord()}>
+                                    Discord
+                                </Menu.Item>
+                                <Menu.Item as={Link} newTab href={routes.community.twitter()}>
+                                    Twitter
+                                </Menu.Item>
+                                <Menu.Item as={Link} newTab href={routes.community.github()}>
+                                    Github
+                                </Menu.Item>
+                                <Menu.Item as={Link} newTab href={routes.community.youtube()}>
+                                    Youtube
+                                </Menu.Item>
+                            </MenuColumn>
+                            <MenuColumn>
+                                <Menu.Item as={Link} newTab href={routes.community.reddit()}>
+                                    Reddit
+                                </Menu.Item>
+                                <Menu.Item as={Link} newTab href={routes.community.blog()}>
+                                    Blog
+                                </Menu.Item>
+                                <Menu.Item as={Link} newTab href={routes.community.linkedin()}>
+                                    Linkedin
+                                </Menu.Item>
+                                <Menu.Item as={Link} newTab href={routes.community.trello()}>
+                                    Trello
+                                </Menu.Item>
+                            </MenuColumn>
+                        </MenuInner>
+                    </Menu>
+                </NavOverlay.Dropdown>
+                <NavOverlay.Dropdown label="Contact">
+                    <Menu>
+                        <Menu.Item as={Link} href={routes.contact.general()}>
+                            General
+                        </Menu.Item>
+                        <Menu.Item as={Link} href={routes.contact.media()}>
+                            Media
+                        </Menu.Item>
+                        <Menu.Item as={Link} href={routes.contact.jobs()}>
+                            Jobs
+                        </Menu.Item>
+                        <Menu.Item as={Link} href={routes.contact.labs()}>
+                            Business
+                        </Menu.Item>
+                    </Menu>
+                </NavOverlay.Dropdown>
+                <NavOverlay.Dropdown label="Documents">
+                    <Menu>
+                        <Menu.Item as={Link} href="https://streamr.network/governance-whitepaper">
+                            Decentralized governance
+                        </Menu.Item>
+                        <Menu.Item as={Link} href="https://streamr.network/whitepaper">
+                            Streamr Whitepaper
+                        </Menu.Item>
+                        <Menu.Item as={Link} href="https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf">
+                            Terms &amp; Conditions
+                        </Menu.Item>
+                        <Menu.Item as={Link} href="https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf">
+                            Privacy policy
+                        </Menu.Item>
+                    </Menu>
+                </NavOverlay.Dropdown>
+            </NavOverlay.Body>
+            <NavOverlay.Footer>
+                {!!currentUser && (
+                    <Button
+                        tag={Link}
+                        href={routes.core()}
+                    >
+                        Use Core
+                    </Button>
+                )}
+                {!currentUser && (
+                    <Button
+                        tag={Link}
+                        href={routes.auth.login({
+                            redirect: pathname,
+                        })}
+                    >
+                        Connect wallet
+                    </Button>
+                )}
+            </NavOverlay.Footer>
+        </NavOverlay>
+    )
+}
 
 const DesktopNav = styled(UnstyledDesktopNav)`
     ${Navbar} {

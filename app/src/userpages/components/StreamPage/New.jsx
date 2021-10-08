@@ -513,7 +513,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     return (
         <Layout
             {...props}
-            nav={null}
+            nav={false}
             loading={loading}
             navComponent={(
                 <Toolbar

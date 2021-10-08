@@ -93,7 +93,7 @@ const StreamPage = (props) => {
         return (
             <Layout
                 loading
-                nav={null}
+                nav={false}
                 navComponent={(
                     <Toolbar
                         actions={{}}

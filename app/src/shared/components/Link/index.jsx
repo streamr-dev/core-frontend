@@ -16,7 +16,6 @@ const Link = styled(Raw)`
     :focus,
     :hover,
     :visited {
-        color: inherit;
         outline: 0;
         text-decoration: ${({ decorated }) => (decorated ? 'underline' : 'none')};
     }
