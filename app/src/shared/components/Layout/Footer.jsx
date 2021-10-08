@@ -34,11 +34,14 @@ const Footer = ({ topBorder = false }) => (
                 <a href={routes.site.discover.network()}>
                     Network
                 </a>
-                <a href={routes.site.discover.marketplace()}>
-                    Marketplace
-                </a>
                 <a href={routes.site.discover.dataToken()}>
                     DATA Token
+                </a>
+                <a href={routes.site.discover.dataUnions()}>
+                    Data Unions
+                </a>
+                <a href={routes.site.discover.marketplace()}>
+                    Marketplace
                 </a>
             </FooterColumn>
             <FooterColumn title="Apps">

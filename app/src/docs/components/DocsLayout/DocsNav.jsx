@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import GhostContentAPI from '@tryghost/content-api'
 import {
@@ -9,7 +9,6 @@ import {
     Menu,
     Navbar,
     NavDropdown,
-    NavProvider,
     NavLink,
     NavOverlay,
     useBlogPosts,
@@ -17,7 +16,7 @@ import {
 
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import SiteSection from '$shared/components/Layout/SiteSection'
+import Nav from '$shared/components/Layout/Nav'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
@@ -117,9 +116,9 @@ const UnstyledDesktopNav = ({ className }) => {
                     </LogoLink>
                 </Navbar.Item>
                 <Navbar.Item data-mobile-only>
-                    <SiteSection>
+                    <Nav.SiteSection>
                         Docs
-                    </SiteSection>
+                    </Nav.SiteSection>
                 </Navbar.Item>
                 <Navbar.Item data-desktop-only>
                     <NavDropdown
@@ -219,8 +218,8 @@ const MenuColumn = styled.div`
     }
 `
 
-const UnstyledMobileNav = (props) => (
-    <NavOverlay>
+const UnstyledMobileNav = ({ className }) => (
+    <NavOverlay className={className}>
         <NavOverlay.Head>
             <Navbar>
                 <Navbar.Item spread>
@@ -332,31 +331,7 @@ const UnstyledMobileNav = (props) => (
 )
 
 const DesktopNav = styled(UnstyledDesktopNav)`
-`
-
-const MobileNav = styled(UnstyledMobileNav)``
-
-const N = (props) => (
-    <div {...props}>
-        <DesktopNav />
-        <MobileNav />
-    </div>
-)
-
-export default styled(N)`
-    color: #323232;
-
     ${Navbar} {
-        padding: 20px 24px;
-
-        @media (min-width: ${TABLET}px) {
-            padding: 16px 24px;
-        }
-
-        @media (min-width: ${DESKTOP}px) {
-            padding: 16px 24px;
-        }
-
         > ${Navbar.Item}:first-child {
             flex-grow: initial;
         }
@@ -364,39 +339,22 @@ export default styled(N)`
         > ${Navbar.Item}:nth-child(2) {
             flex-grow: 1;
         }
-
-        > [data-mobile-only=true] {
-            display: block;
-        }
-
-        > [data-desktop-only=true] {
-            display: none;
-        }
-
-        > ${HamburgerButton} {
-            display: flex;
-        }
-    }
-
-    ${Button} {
-        padding: 0 16px;
     }
 
     @media (min-width: ${DESKTOP}px) {
         ${Navbar} > ${Navbar.Item}:first-child {
             flex-grow: 1;
         }
-
-        ${Navbar} > [data-mobile-only=true] {
-            display: none;
-        }
-
-        ${Navbar} > [data-desktop-only=true] {
-            display: block;
-        }
-
-        ${Navbar} > ${HamburgerButton} {
-            display: none;
-        }
     }
 `
+
+const MobileNav = styled(UnstyledMobileNav)``
+
+const N = (props) => (
+    <Nav.Container {...props}>
+        <DesktopNav />
+        <MobileNav />
+    </Nav.Container>
+)
+
+export default N
