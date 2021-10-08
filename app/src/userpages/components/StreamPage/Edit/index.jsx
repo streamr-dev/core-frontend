@@ -238,7 +238,7 @@ const UnstyledEdit = ({
     return (
         <CoreLayout
             {...props}
-            nav={null}
+            nav={false}
             navComponent={(
                 <Toolbar
                     altMobileLayout

@@ -233,7 +233,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     return (
         <CoreLayout
             className={styles.layout}
-            nav={null}
+            nav={false}
             navComponent={(
                 <Toolbar
                     left={<BackButton onBack={back} />}
@@ -269,7 +269,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
 const LoadingView = () => (
     <CoreLayout
         className={styles.layout}
-        nav={null}
+        nav={false}
         loading
         navComponent={(
             <Toolbar

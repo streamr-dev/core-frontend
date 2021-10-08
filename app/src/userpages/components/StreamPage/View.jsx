@@ -103,7 +103,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
     return (
         <Layout
             {...props}
-            nav={null}
+            nav={false}
             navComponent={(
                 <Toolbar
                     altMobileLayout

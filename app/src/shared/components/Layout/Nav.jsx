@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 import {
     Button,
     HamburgerButton,
@@ -117,6 +118,7 @@ const NavDivider = styled(UnstyledNavDivider)`
 
 const UnstyledDesktopNav = (props) => {
     const { highlight: current } = NavProvider.useState()
+    const { pathname } = useLocation()
 
     const currentUser = useSelector(selectUserData)
 
@@ -196,8 +198,16 @@ const UnstyledDesktopNav = (props) => {
                             <NavDivider />
                         </Navbar.Item>
                         <Navbar.Item data-desktop-only>
-                            <Button tag="a" href={routes.auth.login()} kind="primary" size="mini" outline>
-                                Use Core
+                            <Button
+                                tag="a"
+                                href={routes.auth.login({
+                                    redirect: pathname,
+                                })}
+                                kind="primary"
+                                size="mini"
+                                outline
+                            >
+                                Connect Wallet
                             </Button>
                         </Navbar.Item>
                     </Fragment>
@@ -344,6 +354,8 @@ const UnstyledMobileNav = ({ className }) => {
 
     const method = getMethod()
 
+    const { pathname } = useLocation()
+
     return (
         <NavOverlay className={className}>
             <NavOverlay.Head>
@@ -393,12 +405,24 @@ const UnstyledMobileNav = ({ className }) => {
             </NavOverlay.Body>
             <NavOverlay.Footer>
                 {currentUser ? (
-                    <Button tag="a" href={routes.auth.logout()} kind="secondary" size="normal">
+                    <Button
+                        tag={Link}
+                        to={routes.auth.logout()}
+                        kind="secondary"
+                        size="normal"
+                    >
                         Sign out
                     </Button>
                 ) : (
-                    <Button tag="a" href={routes.auth.login()} kind="primary" size="normal">
-                        Use Core
+                    <Button
+                        tag="a"
+                        href={routes.auth.login({
+                            redirect: pathname,
+                        })}
+                        kind="primary"
+                        size="normal"
+                    >
+                        Connect Wallet
                     </Button>
                 )}
             </NavOverlay.Footer>

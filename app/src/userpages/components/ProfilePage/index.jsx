@@ -76,7 +76,7 @@ export const ProfilePage = () => {
 
     return (
         <CoreLayout
-            nav={null}
+            nav={false}
             navComponent={(
                 <Toolbar
                     altMobileLayout
