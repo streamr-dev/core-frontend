@@ -4,10 +4,10 @@ import React, { type Node, useState, useMemo, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 
+import { LG, MD } from '$shared/utils/styled'
 import scrollTo from '$shared/utils/scrollTo'
 import UnstyledElevatedContainer from '$shared/components/ElevatedContainer'
 import SvgIcon from '$shared/components/SvgIcon'
-import { MD } from '$shared/utils/styled'
 
 import docsMap from '$docs/docsMap'
 
@@ -115,6 +115,11 @@ const TableOfContents = styled(UnstyledTableOfContents)`
     overflow: scroll;
     overflow-x: hidden;
     scrollbar-width: none;
+
+    @media (min-width: ${LG}px) {
+        display: block;
+        max-height: calc(100vh - 32px - 4.5rem);
+    }
 
     &::-webkit-scrollbar {
         width: 0;
