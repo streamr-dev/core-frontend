@@ -128,23 +128,35 @@ export const generateMap = () => ({
             title: 'Intro to streams',
             filePath: 'streams/introToStreams.mdx',
         },
-        'Streams in Core': {
-            path: docsLinks.streamsInCore,
+        'Creating streams': {
+            path: docsLinks.creatingStreams,
             section: 'Streams',
-            title: 'Streams in Core',
-            filePath: 'streams/usingStreamsInCore.mdx',
+            title: 'Creating streams',
+            filePath: 'streams/creatingStreams.mdx',
         },
-        'Streams via SDKs': {
-            path: docsLinks.streamsViaSdk,
+        'Managing your streams': {
+            path: docsLinks.managingYourStreams,
             section: 'Streams',
-            title: 'Streams via SDKs',
-            filePath: 'streams/usingStreamsViaSdk.mdx',
+            title: 'Managing your streams',
+            filePath: 'streams/managingYourStreams.mdx',
         },
-        'Streams via API': {
-            path: docsLinks.streamsViaApi,
+        'Publish and subscribe': {
+            path: docsLinks.publishAndSubscribe,
             section: 'Streams',
-            title: 'Streams via API',
-            filePath: 'streams/usingStreamsViaApi.mdx',
+            title: 'Publish and subscribe',
+            filePath: 'streams/publishAndSubscribe.mdx',
+        },
+        'Access control': {
+            path: docsLinks.accessControl,
+            section: 'Streams',
+            title: 'Access control',
+            filePath: 'streams/accessControl.mdx',
+        },
+        Storage: {
+            path: docsLinks.storage,
+            section: 'Streams',
+            title: 'Storage',
+            filePath: 'streams/storage.mdx',
         },
         'Data signing & verification': {
             path: docsLinks.dataSigningAndVerification,
@@ -163,12 +175,6 @@ export const generateMap = () => ({
             section: 'Streams',
             title: 'Partitioning',
             filePath: 'streams/partitioning.mdx',
-        },
-        'Integration Patterns': {
-            path: docsLinks.integrationPatterns,
-            section: 'Streams',
-            title: 'Integration Patterns',
-            filePath: 'streams/integrationPatterns.mdx',
         },
     },
     'Data Products': {

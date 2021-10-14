@@ -26,13 +26,14 @@ import Mining from '$docs/components/Pages/StreamrNodes/Mining'
 
 // Streams Docs
 import IntroToStreams from '$docs/components/Pages/Streams/IntroToStreams'
-import UsingStreamsInCore from '$docs/components/Pages/Streams/UsingStreamsInCore'
-import UsingStreamsViaApi from '$docs/components/Pages/Streams/UsingStreamsViaApi'
-import UsingStreamsViaSdk from '$docs/components/Pages/Streams/UsingStreamsViaSdk'
-import Partitioning from '$docs/components/Pages/Streams/Partitioning'
-import IntegrationPatterns from '$docs/components/Pages/Streams/IntegrationPatterns'
+import CreatingStreams from '$docs/components/Pages/Streams/CreatingStreams'
+import ManagingYourStreams from '$docs/components/Pages/Streams/ManagingYourStreams'
+import PublishAndSubscribe from '$docs/components/Pages/Streams/PublishAndSubscribe'
+import AccessControl from '$docs/components/Pages/Streams/AccessControl'
+import Storage from '$docs/components/Pages/Streams/Storage'
 import EndToEndEncryption from '$docs/components/Pages/Streams/EndToEndEncryption'
 import DataSigningAndVerification from '$docs/components/Pages/Streams/DataSigningAndVerification'
+import Partitioning from '$docs/components/Pages/Streams/Partitioning'
 // Data Products Docs
 import CreateProduct from '$docs/components/Pages/Products/CreateProduct'
 // Data Unions Docs
@@ -91,13 +92,14 @@ const DocsRouter = () => ([
     // Streams routes
     <Route exact path={links.introToStreams} component={IntroToStreams} key="IntroToStreamsPage" />,
     <Redirect exact from={links.streams} to={links.introToStreams} key="StreamsRoot" />,
-    <Route exact path={links.streamsInCore} component={UsingStreamsInCore} key="UsingStreamsInCore" />,
-    <Route exact path={links.streamsViaApi} component={UsingStreamsViaApi} key="UsingStreamsViaApi" />,
-    <Route exact path={links.streamsViaSdk} component={UsingStreamsViaSdk} key="UsingStreamsViaSdk" />,
-    <Route exact path={links.partitioning} component={Partitioning} key="Partitioning" />,
-    <Route exact path={links.integrationPatterns} component={IntegrationPatterns} key="IntegrationPatterns" />,
+    <Route exact path={links.creatingStreams} component={CreatingStreams} key="creatingStreams" />,
+    <Route exact path={links.managingYourStreams} component={ManagingYourStreams} key="managingYourStreams" />,
+    <Route exact path={links.publishAndSubscribe} component={PublishAndSubscribe} key="publishAndSubscribe" />,
+    <Route exact path={links.accessControl} component={AccessControl} key="accessControl" />,
+    <Route exact path={links.storage} component={Storage} key="storage" />,
     <Route exact path={links.endToEndEncryption} component={EndToEndEncryption} key="EndToEndEncryption" />,
     <Route exact path={links.dataSigningAndVerification} component={DataSigningAndVerification} key="DSAndVerification" />,
+    <Route exact path={links.partitioning} component={Partitioning} key="Partitioning" />,
     // Data Products routes
     <Route exact path={links.createProduct} component={CreateProduct} key="CreateProduct" />,
     <Redirect exact from={links.products} to={links.createProduct} key="ProductsRoot" />,
@@ -132,7 +134,6 @@ const DocsRouter = () => ([
     <Route exact path={links.apiOverview} component={ApiOverview} key="ApiOverview" />,
     <Redirect exact from={links.api} to={links.apiOverview} key="ApiOverview" />,
     <Route exact path={links.authentication} component={Authentication} key="Authentication" />,
-    <Route exact path={links.apiStreamsViaApi} component={UsingStreamsViaApi} key="usingStreamsViaApi" />,
     // API Explorer
     <Route exact path={links.apiExplorer} component={ApiExplorer} key="apiExplorer" />,
     // Technical Notes routes
