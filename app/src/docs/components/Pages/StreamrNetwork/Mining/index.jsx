@@ -3,7 +3,7 @@
 import React from 'react'
 import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import MiningContent from '$docs/content/streamrNodes/mining.mdx'
+import MiningContent from '$docs/content/streamrNetwork/mining.mdx'
 
 const Mining = () => (
     <DocsLayout>

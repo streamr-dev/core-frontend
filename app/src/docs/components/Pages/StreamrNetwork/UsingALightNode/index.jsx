@@ -3,7 +3,7 @@
 import React from 'react'
 import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import UsingALightNodeContent from '$docs/content/streamrNodes/usingALightNode.mdx'
+import UsingALightNodeContent from '$docs/content/streamrNetwork/usingALightNode.mdx'
 
 const UsingALightNode = () => (
     <DocsLayout>

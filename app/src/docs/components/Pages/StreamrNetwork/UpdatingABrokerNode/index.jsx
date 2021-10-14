@@ -3,7 +3,7 @@
 import React from 'react'
 import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import UpdatingABrokerNodeContent from '$docs/content/streamrNodes/updatingABrokerNode.mdx'
+import UpdatingABrokerNodeContent from '$docs/content/streamrNetwork/updatingABrokerNode.mdx'
 
 const UpdatingABrokerNode = () => (
     <DocsLayout>

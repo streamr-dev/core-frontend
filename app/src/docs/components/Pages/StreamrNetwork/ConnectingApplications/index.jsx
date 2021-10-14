@@ -3,7 +3,7 @@
 import React from 'react'
 import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import ConnectingApplicationsContent from '$docs/content/streamrNodes/connectingApplications.mdx'
+import ConnectingApplicationsContent from '$docs/content/streamrNetwork/connectingApplications.mdx'
 
 const ConnectingApplications = () => (
     <DocsLayout>
