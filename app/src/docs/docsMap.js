@@ -71,6 +71,50 @@ export const generateMap = () => ({
             filePath: 'learn/howToContribute.mdx',
         },
     },
+    'Streamr nodes': {
+        root: {
+            path: docsLinks.streamrNodes,
+            section: 'Streamr nodes',
+            title: 'Intro to Streamr nodes',
+            filePath: 'streamrNodes/introToStreamrNodes.mdx',
+        },
+        'Intro to Streamr nodes': {
+            path: docsLinks.introToStreamrNodes,
+            section: 'Streamr nodes',
+            title: 'Intro to Streamr nodes',
+            filePath: 'streamrNodes/introToStreamrNodes.mdx',
+        },
+        'Using a light node': {
+            path: docsLinks.usingALightNode,
+            section: 'Streamr nodes',
+            title: 'Using a light node',
+            filePath: 'streamrNodes/usingALightNode.mdx',
+        },
+        'Installing a Broker node': {
+            path: docsLinks.installingABrokerNode,
+            section: 'Streamr nodes',
+            title: 'Installing a Broker node',
+            filePath: 'streamrNodes/installingABrokerNode.mdx',
+        },
+        'Updating a Broker node': {
+            path: docsLinks.updatingABrokerNode,
+            section: 'Streamr nodes',
+            title: 'Updating a Broker node',
+            filePath: 'streamrNodes/updatingABrokerNode.mdx',
+        },
+        'Connecting applications': {
+            path: docsLinks.connectingApplications,
+            section: 'Streamr nodes',
+            title: 'Connecting applications',
+            filePath: 'streamrNodes/connectingApplications.mdx',
+        },
+        Mining: {
+            path: docsLinks.mining,
+            section: 'Streamr nodes',
+            title: 'Mining',
+            filePath: 'streamrNodes/mining.mdx',
+        },
+    },
     Streams: {
         root: {
             path: docsLinks.streams,

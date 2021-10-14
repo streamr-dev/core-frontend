@@ -16,6 +16,14 @@ import Tokenomics from '$docs/components/Pages/Learn/Tokenomics'
 import NetworkExplorer from '$docs/components/Pages/Learn/NetworkExplorer'
 import Glossary from '$docs/components/Pages/Learn/Glossary'
 import HowToContribute from '$docs/components/Pages/Learn/HowToContribute'
+// Streamr nodes Docs
+import IntroToStreamrNodes from '$docs/components/Pages/StreamrNodes/IntroToStreamrNodes'
+import UsingALightNode from '$docs/components/Pages/StreamrNodes/UsingALightNode'
+import InstallingABrokerNode from '$docs/components/Pages/StreamrNodes/InstallingABrokerNode'
+import UpdatingABrokerNode from '$docs/components/Pages/StreamrNodes/UpdatingABrokerNode'
+import ConnectingApplications from '$docs/components/Pages/StreamrNodes/ConnectingApplications'
+import Mining from '$docs/components/Pages/StreamrNodes/Mining'
+
 // Streams Docs
 import IntroToStreams from '$docs/components/Pages/Streams/IntroToStreams'
 import UsingStreamsInCore from '$docs/components/Pages/Streams/UsingStreamsInCore'
@@ -72,6 +80,14 @@ const DocsRouter = () => ([
     <Route exact path={links.networkExplorer} component={NetworkExplorer} key="NetworkExplorerPage" />,
     <Route exact path={links.glossary} component={Glossary} key="GlossaryPage" />,
     <Route exact path={links.howToContribute} component={HowToContribute} key="HowToContributePage" />,
+    // Streamr Node routes
+    <Route exact path={links.introToStreamrNodes} component={IntroToStreamrNodes} key="IntroToStreamrNodes" />,
+    <Redirect exact from={links.streamrNodes} to={links.introToStreamrNodes} key="StreamrNodesRoot" />,
+    <Route exact path={links.usingALightNode} component={UsingALightNode} key="UsingALightNode" />,
+    <Route exact path={links.installingABrokerNode} component={InstallingABrokerNode} key="InstallingABrokerNode" />,
+    <Route exact path={links.updatingABrokerNode} component={UpdatingABrokerNode} key="UpdatingABrokerNode" />,
+    <Route exact path={links.connectingApplications} component={ConnectingApplications} key="connectingApplications" />,
+    <Route exact path={links.mining} component={Mining} key="mining" />,
     // Streams routes
     <Route exact path={links.introToStreams} component={IntroToStreams} key="IntroToStreamsPage" />,
     <Redirect exact from={links.streams} to={links.introToStreams} key="StreamsRoot" />,
