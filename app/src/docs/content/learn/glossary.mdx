@@ -1,10 +1,10 @@
 # Glossary
 
 #### Broker node
-.
+Broker nodes are the miners in the Streamr Network. They are nodes that constantly monitor Bounties requesting data relaying support in return for DATA tokens.
 
-#### Core
-.
+#### Core app
+A user interface for creating and managing streams. [GitHub Repo](https://github.com/streamr-dev/core-frontend).
 
 #### Data Union
 A Data Union framework provides a way to collect and package an individuals's real-time data together with others' with rich consent and while distributing a fair share of the revenue back to the users when someone pays to access it.
@@ -18,16 +18,16 @@ Gap fill is a the mechanism of requesting resends of missing messages in a messa
 The client can now detect that they missed one or more messages that came after Message 2 but before Message 5. They do a "gap fill" to fill the gap, i.e. request a resend of messages from Message 2 (exclusive) up to Message 4 (inclusive).
 
 #### Light node
-.
+Light nodes are bundled inside an application that uses Streamr to Publish and/or subscibe to streaming data. Light nodes are not extendable like Broker nodes and cannot 'mine' other streams for DATA tokens.
 
 #### Stream
-A stream is simply a sequence of data points in time, i.e. an append only log.
+A stream is simply a sequence of data points in time, i.e. an append only log. This is semantically equivalent to *topics* in traditional pub/sub networks. 
 
 #### Storage node
-.
+A Streamr network node that subscribes to data with a commitment to store the data and make it available for retrieval requests.
 
 #### Topology
 Arrangement on nodes that participate in the dissemination of messages inside a stream.
 
 #### Tracker
-.
+Trackers are a type of Streamr node that build and maintain peer to peer stream topologies.

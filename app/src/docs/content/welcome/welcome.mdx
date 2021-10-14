@@ -28,13 +28,13 @@ Welcome to Streamr, the platform for real-time data on the decentralized web. Ex
     <Link to={docsLinks.dataUnions} className={styles.panelTile}>
         <strong>Streamr Network</strong>
         <p className={styles.jumplistText}>
-            The Streamr Network is a decentralized pub/sub network for transporting real-time data over incentivized Bittorrent style WebRTC mesh networks.
+            The Streamr Network is a decentralized pub/sub network for transporting real-time data over incentivized WebRTC mesh networks.
         </p>
     </Link>
     <Link to={docsLinks.dataUnions} className={styles.panelTile}>
         <strong>Data Unions</strong>
         <p className={styles.jumplistText}>
-            The Data Union framework is a data crowdsourcing and crowdselling solution.
+            Data Unions are a way to collect and package an individuals's real-time data together with others' with rich consent and fair reward.
         </p>
     </Link>
 </div>
@@ -46,22 +46,21 @@ Welcome to Streamr, the platform for real-time data on the decentralized web. Ex
     <p><strong>Streams</strong> are sequences of timestamped messages, delivered from publishers to subscribers by the Streamr Network.</p>
 </Link>
 <Link to={docsLinks.dataToken} className={styles.keyComponents}>
+    <p><strong>Streamr nodes</strong> are the access points to the Streamr Network. To connect your application to streams, you interface it with a Streamr node.</p>
+</Link>
+<Link to={docsLinks.dataToken} className={styles.keyComponents}>
     <p><strong>DATA</strong> is the cryptocurrency which powers the Streamr ecosystem in various ways. It is an ERC-20 token on the Ethereum blockchain.</p>
 </Link>
 
 ## Start with your use case
-- I want to publish data from a JS or browser application. <Link to={docsLinks.publishAndSubscribe}>Stream Pub/Sub link</Link>
-- I want to publish data from any device using any language. <Link to={docsLinks.connectingApplications}>Connecting apps link</Link>
-- I want to run a Broker node. <Link to={docsLinks.installingABrokerNode}>install a broker node link</Link>
+- I want to publish or subscribe to data from my application<Link to={docsLinks.publishAndSubscribe}>pubsub link</Link>
+- I want to view and manage my streams. <Link to={docsLinks.managingYourStreams}>managing streams link</Link>
+- I want to explore the Network<Link to={docsLinks.networkExplorer}>NE link</Link>
+- I want to mine DATA tokens. <Link to={docsLinks.mining}>mining..</Link>
 - I want to build a Data Union. <Link to={docsLinks.dataUnions}>DU link</Link>
 - I want to buy and sell real-time data. <Link to={docsLinks.marketplace}>MP link</Link>
-- I want to view and manage my streams. <Link to={docsLinks.managingYourStreams}>managing streams link</Link>
 
-To understand the exact inner workings of Streamr, and perhaps help build it, check the <Link to={docsLinks.technicalNotes}>Technical Notes</Link> section and of course the project <a target="_blank" rel="noopener noreferrer" href={routes.community.github()}>GitHub</a>.
-
-Here are some ideas to help you start building on the Streamr Platform. You can also run the full Streamr stack locally with Docker. Please follow the instructions in the <a href="https://github.com/streamr-dev/streamr-docker-dev" target="_blank" rel="noopener noreferrer">GitHub repo</a> readme.
-
-### Useful links
-- <a href="https://github.com/streamr-dev" target="_blank" rel="noopener noreferrer">Streamr GitHub repos</a>
-- <a href="https://github.com/streamr-dev/streamr-docker-dev" target="_blank" rel="noopener noreferrer">Streamr local Docker stack</a>
-- <a href="https://github.com/streamr-dev/cli-tools" target="_blank" rel="noopener noreferrer">Streamr command line tools</a>
+### Explore the project
+- <a href="https://github.com/streamr-dev/network-monorepo" target="_blank" rel="noopener noreferrer">Streamr Monorepo</a>
+- <a href="https://github.com/streamr-dev/network-monorepo/tree/main/packages/cli-tools" target="_blank" rel="noopener noreferrer">Streamr command line tools</a>
+- <a href="https://github.com/streamr-dev/examples" target="_blank" rel="noopener noreferrer">Streamr Examples</a>

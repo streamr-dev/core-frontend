@@ -70,6 +70,7 @@ const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 const DocsRouter = () => ([
     // // Welcome routes
     <Route exact path={links.welcome} component={Welcome} key="WelcomePage" />,
+    <Redirect exact from={links.docs} to={links.welcome} key="landingPage" />,
     // Learn routes
     <Route exact path={links.overview} component={Learn} key="LearnPageRoot" />,
     <Redirect exact from={links.learn} to={links.overview} key="LearnPage" />,
