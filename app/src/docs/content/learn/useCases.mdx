@@ -1,1 +1,35 @@
+import { Link } from 'react-router-dom'
+
+import docsLinks from '$shared/../docsLinks'
+
 # Use Cases
+Streams implement a publish-subscribe paradigm, or pub/sub for short. A stream can receive data from many sources (or publishers), and there can be several listeners who subscribe to a stream. There are several variations on the possible pub/sub topologies, such as many-to-one, one-to-many, or many-to-many. Streamr supports all of these.
+
+These are just a few examples. There is virtually no limit on the kind, format, or quantity of data you can feed into Streamr, even digital images, streaming video, or other domain-specific data could be pushed into a stream.
+
+### Data Monetisation
+Buy and sell access to ethically sourced data streams using <Link to={docsLinks.dataUnions}>Data Unions</Link>.
+
+### DevOps
+Gather metrics from decentralized systems such as blockchain networks.
+- https://blog.streamr.network/collecting-metrics-data-from-decentralized-systems
+
+### Gaming
+Capable of being the real-time networking layer of massive multiplayer games.
+
+### IoT messaging
+Publish and broadcast messages from any kind of internet-connected device.
+
+Some common use cases include:
+- Sensory readings of speed and orientation
+- Geolocation
+- Ambient temperature and humidity 
+- Social media messages
+- Stock market events
+- Mobile ad impressions
+
+### Networking middleware
+Transfer metadata for VoIP or WebRTC signalling.
+
+### Blockchain networking
+DDoS resistant block transfer or broadcast signed transactions with low and predictable latency.

@@ -82,7 +82,8 @@
             "core": "/discover/core",
             "marketplace": "/discover/marketplace",
             "network": "/discover/network",
-            "dataUnions": "/discover/data-unions"
+            "dataUnions": "/discover/data-unions",
+            "dataToken": "/discover/data-token"
         },
         "papers": "/papers"
     },

@@ -25,63 +25,43 @@ Welcome to Streamr, the platform for real-time data on the decentralized web. Ex
 </div>
 
 <div className={styles.panels}>
-    <Link to={docsLinks.gettingStarted} className={styles.panelTile}>
-        <strong>Getting Started</strong>
+    <Link to={docsLinks.dataUnions} className={styles.panelTile}>
+        <strong>Streamr Network</strong>
         <p className={styles.jumplistText}>
-            If you're the type that prefers to jump right in, read this section to get set up for Streamr.
+            The Streamr Network is a decentralized pub/sub network for transporting real-time data over incentivized Bittorrent style WebRTC mesh networks.
         </p>
     </Link>
-    <Link to={docsLinks.tutorials} className={styles.panelTile}>
-        <strong>Tutorials</strong>
+    <Link to={docsLinks.dataUnions} className={styles.panelTile}>
+        <strong>Data Unions</strong>
         <p className={styles.jumplistText}>
-            Follow hands-on tutorials to learn how to use Streamr in practice.
+            The Data Union framework is a data crowdsourcing and crowdselling solution.
         </p>
     </Link>
 </div>
 
 <hr />
 
-## What is Streamr?
-Streamr is an open source, crowdfunded, decentralized platform for real-time data. At its heart is the <a target="_blank" rel="noopener noreferrer" href={routes.site.discover.network()}>Streamr Network</a>, which transports <Link to={docsLinks.streams}>streams</Link> of messages from data publishers to subscribers, appearing to the user as a global publish/subscribe messaging service.
-
-It is similar in functionality to message queues, enterprise messaging systems, MQTT brokers, Apache Kafka, or pub/sub cloud messaging services. The key features of such systems, including Streamr, are:
-
-- Publishing messages in order to make them available to subscribers
-- Subscribing to messages in order to process them as they occur
-- Storing messages for later use
-
-You can interact with Streamr using the <Link to={docsLinks.core}>Core</Link> user interface, <Link to={docsLinks.sdk}>SDKs</Link>, or directly via the <Link to={docsLinks.api}>API</Link>.
-In addition to the Network, the Streamr stack includes a <Link to={docsLinks.marketplace}>Marketplace</Link> for data sharing and monetization.
-
-Using the built-in tooling is optional, as Streamr also integrates with many popular data frameworks including <a target="_blank" rel="noopener noreferrer" href={routes.blogPosts.spark()}>Apache Spark</a> and <a target="_blank" rel="noopener noreferrer" href={routes.blogPosts.nodered()}>Node-RED</a>. To start using Streamr right away, check out the <Link to={docsLinks.gettingStarted}>Getting Started</Link> section and the <Link to={docsLinks.tutorials}>Tutorials.</Link>
-
-## Why use Streamr?
-The big difference to comparable data frameworks is that Streamr aims to be decentralized and peer-to-peer. There are plenty of advantages to decentralization.
-
-Similar to cloud services, you get on-demand scalability, minimal up-front investment, and benefit from economies of scale. Unlike cloud services, there's no vendor lock-in, no monopolies, no proprietary code, and no need to trust a third party with your data. Decentralized networks are also secure by design, more resilient to attacks and disruptions due to their distributed and peer-to-peer nature. They also benefit from network effects— as adoption grows, the above points become stronger, a shared standard is formed across industries, and a lot of useful content becomes available from a single source.
-
-Instead of a centralized party, the Network is run by its community of users, and it heavily relies on cryptography to remove the need for trust. This creates a permissionless and neutral network for real-time data, which is highly suitable for use cases such as data sharing, data monetisation, and the <a target="_blank" rel="noopener noreferrer" href={routes.misc.decentralizedWeb()}>decentralized web</a>, extending the capabilities of the underlying internet without compromising its open and decentralized nature.
-
-Another major difference is that Streamr utilizes a companion blockchain, currently <a target="_blank" rel="noopener noreferrer" href="https://www.ethereum.org">Ethereum</a>. The blockchain provides users with secure digital identities, enables direct transfers of value in the form of a Streamr-specific cryptocurrency <Link to={docsLinks.dataToken}>DATA</Link>, and provides a shared ground truth for the network nodes.
-
-## Work in Progress
-While Streamr already works today, it is not yet feature-complete or fully decentralized. It is being very actively developed towards decentralization, node incentives, and new features. Learn more about the roadmap on the <a target="_blank" rel="noopener noreferrer" href={process.env.PLATFORM_ORIGIN_URL}>project website</a>.
-
 ## Key Concepts
 <Link to={docsLinks.streams} className={styles.keyComponents}>
     <p><strong>Streams</strong> are sequences of timestamped messages, delivered from publishers to subscribers by the Streamr Network.</p>
-</Link>
-<Link to={docsLinks.products} className={styles.keyComponents}>
-    <p><strong>Products</strong> are collections of streams which can be published onto the Marketplace and subscribed by other Streamr users.</p>
 </Link>
 <Link to={docsLinks.dataToken} className={styles.keyComponents}>
     <p><strong>DATA</strong> is the cryptocurrency which powers the Streamr ecosystem in various ways. It is an ERC-20 token on the Ethereum blockchain.</p>
 </Link>
 
-## Dig Deeper
-On the below channels, you can find others developing on Streamr, as well as get in touch with the Streamr core contributors:
-
-- <a target="_blank" rel="noopener noreferrer" href={routes.community.discord()}>Discord</a>
-- <a target="_blank" rel="noopener noreferrer" href={routes.community.reddit()}>Reddit</a>
+## Start with your use case
+- I want to publish data from a JS or browser application. <Link to={docsLinks.publishAndSubscribe}>Stream Pub/Sub link</Link>
+- I want to publish data from any device using any language. <Link to={docsLinks.connectingApplications}>Connecting apps link</Link>
+- I want to run a Broker node. <Link to={docsLinks.installingABrokerNode}>install a broker node link</Link>
+- I want to build a Data Union. <Link to={docsLinks.dataUnions}>DU link</Link>
+- I want to buy and sell real-time data. <Link to={docsLinks.marketplace}>MP link</Link>
+- I want to view and manage my streams. <Link to={docsLinks.managingYourStreams}>managing streams link</Link>
 
 To understand the exact inner workings of Streamr, and perhaps help build it, check the <Link to={docsLinks.technicalNotes}>Technical Notes</Link> section and of course the project <a target="_blank" rel="noopener noreferrer" href={routes.community.github()}>GitHub</a>.
+
+Here are some ideas to help you start building on the Streamr Platform. You can also run the full Streamr stack locally with Docker. Please follow the instructions in the <a href="https://github.com/streamr-dev/streamr-docker-dev" target="_blank" rel="noopener noreferrer">GitHub repo</a> readme.
+
+### Useful links
+- <a href="https://github.com/streamr-dev" target="_blank" rel="noopener noreferrer">Streamr GitHub repos</a>
+- <a href="https://github.com/streamr-dev/streamr-docker-dev" target="_blank" rel="noopener noreferrer">Streamr local Docker stack</a>
+- <a href="https://github.com/streamr-dev/cli-tools" target="_blank" rel="noopener noreferrer">Streamr command line tools</a>
