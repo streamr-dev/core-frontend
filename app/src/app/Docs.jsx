@@ -23,7 +23,6 @@ import InstallingABrokerNode from '$docs/components/Pages/StreamrNodes/Installin
 import UpdatingABrokerNode from '$docs/components/Pages/StreamrNodes/UpdatingABrokerNode'
 import ConnectingApplications from '$docs/components/Pages/StreamrNodes/ConnectingApplications'
 import Mining from '$docs/components/Pages/StreamrNodes/Mining'
-
 // Streams Docs
 import IntroToStreams from '$docs/components/Pages/Streams/IntroToStreams'
 import CreatingStreams from '$docs/components/Pages/Streams/CreatingStreams'
@@ -34,8 +33,9 @@ import Storage from '$docs/components/Pages/Streams/Storage'
 import EndToEndEncryption from '$docs/components/Pages/Streams/EndToEndEncryption'
 import DataSigningAndVerification from '$docs/components/Pages/Streams/DataSigningAndVerification'
 import Partitioning from '$docs/components/Pages/Streams/Partitioning'
-// Data Products Docs
-import CreateProduct from '$docs/components/Pages/Products/CreateProduct'
+// Marketplace Docs
+import IntroToMarketplace from '$docs/components/Pages/Marketplace/IntroToMarketplace'
+import CreatingDataProducts from '$docs/components/Pages/Marketplace/CreatingDataProducts'
 // Data Unions Docs
 import IntroToDataUnions from '$docs/components/Pages/DataUnions/IntroToDataUnions'
 import DataUnionsCore from '$docs/components/Pages/DataUnions/DataUnionsCore'
@@ -51,8 +51,6 @@ import DataToken from '$docs/components/Pages/DataToken'
 // Core Docs
 import IntroToCore from '$docs/components/Pages/Core/IntroToCore'
 import SharingResourcesInCore from '$docs/components/Pages/Core/SharingResourcesInCore'
-// Marketplace Docs
-import IntroToMarketplace from '$docs/components/Pages/Marketplace/IntroToMarketplace'
 // SDK Docs
 import Sdk from '$docs/components/Pages/Sdk/Overview'
 import JavascriptSdk from '$docs/components/Pages/Sdk/Javascript'
@@ -100,9 +98,10 @@ const DocsRouter = () => ([
     <Route exact path={links.endToEndEncryption} component={EndToEndEncryption} key="EndToEndEncryption" />,
     <Route exact path={links.dataSigningAndVerification} component={DataSigningAndVerification} key="DSAndVerification" />,
     <Route exact path={links.partitioning} component={Partitioning} key="Partitioning" />,
-    // Data Products routes
-    <Route exact path={links.createProduct} component={CreateProduct} key="CreateProduct" />,
-    <Redirect exact from={links.products} to={links.createProduct} key="ProductsRoot" />,
+    // Marketplace routes
+    <Route exact path={links.introToMarketplace} component={IntroToMarketplace} key="IntroToMarketplace" />,
+    <Redirect exact from={links.marketplace} to={links.introToMarketplace} key="MarketplaceRoot" />,
+    <Route exact path={links.creatingDataProducts} component={CreatingDataProducts} key="CreatingDataProducts" />,
     // Data union routes
     <Redirect exact from={links.dataUnions} to={links.introToDataUnions} key="DataUnionsRoot" />,
     <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsIntro" />,
@@ -121,9 +120,6 @@ const DocsRouter = () => ([
     <Route exact path={links.introToCore} component={IntroToCore} key="IntroToCore" />,
     <Redirect exact from={links.core} to={links.introToCore} key="CoreRoot" />,
     <Route exact path={links.sharingResourcesInCore} component={SharingResourcesInCore} key="SharingResourcesInCore" />,
-    // Marketplace routes
-    <Route exact path={links.introToMarketplace} component={IntroToMarketplace} key="IntroToMarketplace" />,
-    <Redirect exact from={links.marketplace} to={links.introToMarketplace} key="MarketplaceRoot" />,
     // SDK Routes
     <Route exact path={links.sdkOverview} component={Sdk} key="SdkOverviewPage" />,
     <Redirect exact from={links.sdk} to={links.sdkOverview} key="SdkRoot" />,

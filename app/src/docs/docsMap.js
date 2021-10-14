@@ -177,18 +177,24 @@ export const generateMap = () => ({
             filePath: 'streams/partitioning.mdx',
         },
     },
-    'Data Products': {
+    Marketplace: {
         root: {
-            path: docsLinks.products,
-            section: 'Data Products',
-            title: 'Create a Product',
-            filePath: 'products/createDataProduct.mdx',
+            path: docsLinks.marketplace,
+            section: 'Marketplace',
+            title: 'Intro to the Marketplace',
+            filePath: 'marketplace/introToMarketplace.mdx',
         },
-        'Create a Product': {
-            path: docsLinks.createProduct,
-            section: 'Data Products',
-            title: 'Create a Product',
-            filePath: 'products/createDataProduct.mdx',
+        'Intro to the Marketplace': {
+            path: docsLinks.introToMarketplace,
+            section: 'Marketplace',
+            title: 'Intro to the Marketplace',
+            filePath: 'marketplace/introToMarketplace.mdx',
+        },
+        'Creating data products': {
+            path: docsLinks.creatingDataProducts,
+            section: 'Marketplace',
+            title: 'Creating data products',
+            filePath: 'marketplace/creatingDataProducts.mdx',
         },
     },
     'Data Unions': {
@@ -281,20 +287,6 @@ export const generateMap = () => ({
             section: 'Core',
             title: 'Sharing resources in Core',
             filePath: 'core/sharingResourcesInCore.mdx',
-        },
-    },
-    Marketplace: {
-        root: {
-            path: docsLinks.marketplace,
-            section: 'Marketplace',
-            title: 'Intro to the Marketplace',
-            filePath: 'marketplace/introToMarketplace.mdx',
-        },
-        'Intro to the Marketplace': {
-            path: docsLinks.introToMarketplace,
-            section: 'Marketplace',
-            title: 'Intro to the Marketplace',
-            filePath: 'marketplace/introToMarketplace.mdx',
         },
     },
     SDKs: {
