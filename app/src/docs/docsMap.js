@@ -46,10 +46,10 @@ export const generateMap = () => ({
             title: 'Use cases',
             filePath: 'learn/useCases.mdx',
         },
-        Tokenomics: {
+        'DATA tokenomics': {
             path: docsLinks.tokenomics,
             section: 'Learn',
-            title: 'Tokenomics',
+            title: 'DATA tokenomics',
             filePath: 'learn/tokenomics.mdx',
         },
         'Network Explorer': {
@@ -245,122 +245,6 @@ export const generateMap = () => ({
             section: 'Data Unions',
             title: 'UX best practices',
             filePath: 'dataUnions/uxBestPractices.mdx',
-        },
-    },
-    Tutorials: {
-        root: {
-            path: docsLinks.tutorials,
-            section: 'Tutorials',
-            title: 'Simple pub/sub',
-            filePath: 'tutorials/buildingPubSub.mdx',
-        },
-        'Simple pub/sub': {
-            path: docsLinks.buildingPubSubTutorial,
-            section: 'Tutorials',
-            title: 'Simple pub/sub',
-            filePath: 'tutorials/buildingPubSub.mdx',
-        },
-    },
-    'DATA Token': {
-        root: {
-            path: docsLinks.dataToken,
-            section: 'DATA Token',
-            title: 'DATA Token',
-            filePath: 'dataToken/dataToken.mdx',
-        },
-    },
-    Core: {
-        root: {
-            path: docsLinks.core,
-            section: 'Core',
-            title: 'Intro to Core',
-            filePath: 'core/introToCore.mdx',
-        },
-        'Intro to Core': {
-            path: docsLinks.introToCore,
-            section: 'Core',
-            title: 'Intro to Core',
-            filePath: 'core/introToCore.mdx',
-        },
-        'Sharing resources in Core': {
-            path: docsLinks.sharingResourcesInCore,
-            section: 'Core',
-            title: 'Sharing resources in Core',
-            filePath: 'core/sharingResourcesInCore.mdx',
-        },
-    },
-    SDKs: {
-        root: {
-            path: docsLinks.sdk,
-            section: 'SDKs',
-            title: 'SDKs',
-            filePath: 'sdk/overview.mdx',
-        },
-        Overview: {
-            path: docsLinks.sdkOverview,
-            section: 'SDKs',
-            title: 'Overview',
-            filePath: 'sdk/overview.mdx',
-        },
-        JavaScript: {
-            path: docsLinks.javascriptSdk,
-            section: 'SDKs',
-            title: 'JavaScript',
-            filePath: 'sdk/javascript.mdx',
-        },
-        Java: {
-            path: docsLinks.javaSdk,
-            section: 'SDKs',
-            title: 'Java',
-            filePath: 'sdk/java.mdx',
-        },
-        Python: {
-            path: docsLinks.pythonSdk,
-            section: 'SDKs',
-            title: 'Python',
-            filePath: 'sdk/python.mdx',
-        },
-    },
-    API: {
-        root: {
-            path: docsLinks.api,
-            section: 'API',
-            title: 'API overview',
-            filePath: 'api/overview.mdx',
-        },
-        'API overview': {
-            path: docsLinks.apiOverview,
-            section: 'API',
-            title: 'API overview',
-            filePath: 'api/overview.mdx',
-        },
-        Authentication: {
-            path: docsLinks.authentication,
-            section: 'API',
-            title: 'Authentication',
-            filePath: 'api/authentication.mdx',
-        },
-        'Streams via API': {
-            path: docsLinks.apiStreamsViaApi,
-            section: 'API',
-            title: 'Work with streams via API',
-            filePath: 'streams/usingStreamsViaApi.mdx',
-        },
-    },
-    'API Explorer': {
-        root: {
-            path: docsLinks.apiExplorer,
-            section: 'API Explorer',
-            title: 'API Explorer',
-            filePath: 'apiExplorer/apiExplorer.mdx',
-        },
-    },
-    'Technical Notes': {
-        root: {
-            path: docsLinks.technicalNotes,
-            section: 'Technical Notes',
-            title: 'Technical Notes',
-            filePath: 'technicalNotes/technicalNotes.mdx',
         },
     },
 })
