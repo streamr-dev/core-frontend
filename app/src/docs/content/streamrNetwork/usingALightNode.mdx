@@ -1,1 +1,57 @@
+import { Link } from 'react-router-dom'
+
+import { CodeSnippet } from '@streamr/streamr-layout'
+import docsLinks from '$shared/../docsLinks'
+
+import {
+    CreateJavascriptClient,
+    CreateJavaClient,
+    AuthJavascriptClient,
+    AuthJavaClient,
+    SubscribeJavascriptClient,
+    SubscribeJavaClient,
+    PublishJavascriptClient,
+    PublishJavaClient,
+} from '$shared/snippets/streams.js'
+
 # Using a light node
+
+Light nodes are Streamr nodes that run locally as part of your application instance. You use it exactly like any other library: you import it to your application and interface with it using function calls.
+
+The Streamr light node is packaged as a JavaScript library. It runs in Node.js as well as the browser. If you're developing in a programming language other than JS, <Link to={docsLinks.installingABrokerNode}>run a Broker node</Link> instead and <Link to={docsLinks.connectingApplications}>connect your application</Link> to it.
+
+## Importing a light node
+
+The `StreamrClient` library wraps a light node, which the library uses for publishing and subscribing to data. The library is available on `npm` as package `streamr-client`. This article contains quick usage instructions, but for more detailed instructions please refer to the [streamr-client](https://www.npmjs.com/package/streamr-client) library itself.
+
+Install the library using `npm`:
+
+```
+npm install streamr-client
+```
+
+When using Node.js, import the library with:
+
+```
+import { StreamrClient } from 'streamr-client'
+```
+
+Create an instance of `StreamrClient`, authenticated with an Ethereum private key:
+
+<CodeSnippet language="javascript">{CreateJavascriptClient}</CodeSnippet>
+
+Learn more about how Ethereum keys are used for <Link to={docsLinks.identity}>identity on Streamr</Link>.
+
+### Subscribing to real-time messages in a stream
+
+By subscribing to a <Link to={docsLinks.streams}>stream</Link>, your application gets immediately notified about new messages in the stream.
+
+<CodeSnippet language="javascript">{SubscribeJavascriptClient}</CodeSnippet>
+
+### Publishing messages to streams
+
+When you publish messages to a stream, they get delivered by the peer-to-peer network to all subscribing nodes.
+
+<CodeSnippet language="javascript">{PublishJavascriptClient}</CodeSnippet>
+
+For more detailed instructions, please refer to the [streamr-client](https://www.npmjs.com/package/streamr-client) library itself.

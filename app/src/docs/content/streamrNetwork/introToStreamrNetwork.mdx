@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
 # Intro to the Streamr Network
@@ -24,7 +25,7 @@ Which approach to choose depends on your use case. Here are some commonly used d
 
 ## Light nodes
 
-Light nodes are Streamr nodes that run locally as part of your application. You use it exactly like any other library. You import it to your application and interface with it using function calls.
+Light nodes are Streamr nodes that run locally as part of your application instance. You use it exactly like any other library: you import it to your application and interface with it using function calls.
 
 This is the most decentralized approach as it doesn't require you to host Streamr nodes separately, but on the other hand it requires a Streamr node implementation to exist for the programming language you're using. So far, the Streamr node has only been implemented in JS, meaning that light nodes can be used in web applications as well as Node.js-based applications.
 
@@ -42,4 +43,4 @@ Learn how to <Link to={docsLinks.installingABrokerNode}>install a Broker node</L
 
 ## Further reading
 
-Most readers of these docs will seek information about *using* the Streamr Network in their applications. To understand *how* the Network and nodes actually work under the hood, the technicalities are discussed at length in the [Streamr Network whitepaper](https://streamr.network/network-whitepaper).
+Most readers of these docs will seek information about *using* the Streamr Network in their applications. To understand *how* the Network and nodes actually work under the hood, the technicalities are discussed at length in the <a target="_blank" rel="noopener noreferrer" href={routes.networkWhitepaper()}>the Network page</a>. A stylish nutshell representation of the Network is available on <a target="_blank" rel="noopener noreferrer" href={routes.site.discover.network()}>the Network page</a> of the project website.
