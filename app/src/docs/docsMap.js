@@ -21,12 +21,54 @@ export const generateMap = () => ({
             filePath: 'welcome/welcome.mdx',
         },
     },
-    'Getting Started': {
+    Learn: {
         root: {
-            path: docsLinks.gettingStarted,
-            section: 'Getting Started',
-            title: 'Getting Started',
-            filePath: 'gettingStarted/gettingStarted.mdx',
+            path: docsLinks.learn,
+            section: 'Learn',
+            title: 'Overview',
+            filePath: 'learn/overview.mdx',
+        },
+        Overview: {
+            path: docsLinks.overview,
+            section: 'Learn',
+            title: 'Overview',
+            filePath: 'learn/overview.mdx',
+        },
+        Identity: {
+            path: docsLinks.identity,
+            section: 'Learn',
+            title: 'Identity',
+            filePath: 'learn/identity.mdx',
+        },
+        'Use cases': {
+            path: docsLinks.useCases,
+            section: 'Learn',
+            title: 'Use cases',
+            filePath: 'learn/useCases.mdx',
+        },
+        Tokenomics: {
+            path: docsLinks.tokenomics,
+            section: 'Learn',
+            title: 'Tokenomics',
+            filePath: 'learn/tokenomics.mdx',
+        },
+        'Network Explorer': {
+            path: docsLinks.networkExplorer,
+            section: 'Learn',
+            title: 'Network Explorer',
+            filePath: 'learn/networkExplorer.mdx',
+        },
+        Glossary: {
+            path: docsLinks.glossary,
+            section: 'Learn',
+            title: 'Glossary',
+            filePath: 'learn/glossary.mdx',
+        },
+        'How to contribute': {
+            path: docsLinks.howToContribute,
+            section: 'Learn',
+            title: 'How to contribute',
+            filePath: 'learn/howToContribute.mdx',
         },
     },
     Streams: {

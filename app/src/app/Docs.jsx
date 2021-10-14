@@ -8,8 +8,14 @@ import GenericErrorPage from '$shared/components/GenericErrorPage'
 
 // Docs Pages
 import Welcome from '$docs/components/Pages/Welcome'
-// Getting Started Docs
-import GettingStarted from '$docs/components/Pages/GettingStarted'
+// Learn Docs
+import Learn from '$docs/components/Pages/Learn/Overview'
+import Identity from '$docs/components/Pages/Learn/Identity'
+import UseCases from '$docs/components/Pages/Learn/UseCases'
+import Tokenomics from '$docs/components/Pages/Learn/Tokenomics'
+import NetworkExplorer from '$docs/components/Pages/Learn/NetworkExplorer'
+import Glossary from '$docs/components/Pages/Learn/Glossary'
+import HowToContribute from '$docs/components/Pages/Learn/HowToContribute'
 // Streams Docs
 import IntroToStreams from '$docs/components/Pages/Streams/IntroToStreams'
 import UsingStreamsInCore from '$docs/components/Pages/Streams/UsingStreamsInCore'
@@ -57,8 +63,15 @@ const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 const DocsRouter = () => ([
     // // Welcome routes
     <Route exact path={links.welcome} component={Welcome} key="WelcomePage" />,
-    // Getting Started routes
-    <Route exact path={links.gettingStarted} component={GettingStarted} key="GettingStartedPage" />,
+    // Learn routes
+    <Route exact path={links.overview} component={Learn} key="LearnPageRoot" />,
+    <Redirect exact from={links.learn} to={links.overview} key="LearnPage" />,
+    <Route exact path={links.identity} component={Identity} key="IdentityPage" />,
+    <Route exact path={links.useCases} component={UseCases} key="UseCasesPage" />,
+    <Route exact path={links.tokenomics} component={Tokenomics} key="TokenomicsPage" />,
+    <Route exact path={links.networkExplorer} component={NetworkExplorer} key="NetworkExplorerPage" />,
+    <Route exact path={links.glossary} component={Glossary} key="GlossaryPage" />,
+    <Route exact path={links.howToContribute} component={HowToContribute} key="HowToContributePage" />,
     // Streams routes
     <Route exact path={links.introToStreams} component={IntroToStreams} key="IntroToStreamsPage" />,
     <Redirect exact from={links.streams} to={links.introToStreams} key="StreamsRoot" />,
