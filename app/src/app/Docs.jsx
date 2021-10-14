@@ -7,7 +7,7 @@ import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 
 // Docs Pages
-import Introduction from '$docs/components/Pages/Introduction'
+import Welcome from '$docs/components/Pages/Welcome'
 // Getting Started Docs
 import GettingStarted from '$docs/components/Pages/GettingStarted'
 // Streams Docs
@@ -55,8 +55,8 @@ import links from '$shared/../docsLinks'
 const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
 
 const DocsRouter = () => ([
-    // // Introduction routes
-    <Route exact path={links.introduction} component={Introduction} key="IntroductionPage" />,
+    // // Welcome routes
+    <Route exact path={links.welcome} component={Welcome} key="WelcomePage" />,
     // Getting Started routes
     <Route exact path={links.gettingStarted} component={GettingStarted} key="GettingStartedPage" />,
     // Streams routes
@@ -109,7 +109,7 @@ const DocsRouter = () => ([
     // Technical Notes routes
     <Route exact path={links.technicalNotes} component={TechnicalNotes} key="technicalNotes" />,
     // Docs Root
-    <Redirect exact from={links.docs} to={links.introduction} key="DocsRoot" />,
+    <Redirect exact from={links.docs} to={links.welcome} key="DocsRoot" />,
 ])
 
 export default DocsRouter

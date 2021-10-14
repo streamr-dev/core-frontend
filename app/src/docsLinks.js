@@ -1,6 +1,6 @@
 export default {
     docs: '/docs',
-    introduction: '/docs/introduction',
+    welcome: '/docs/welcome',
     gettingStarted: '/docs/getting-started',
     streams: '/docs/streams',
     introToStreams: '/docs/streams/intro-to-streams',

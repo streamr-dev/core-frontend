@@ -3,15 +3,15 @@
 import React from 'react'
 import DocsLayout from '$docs/components/DocsLayout'
 import { DocsHelmet } from '$shared/components/Helmet'
-import IntroductionContent from '$docs/content/introduction/introduction.mdx'
+import WelcomeContent from '$docs/content/welcome/welcome.mdx'
 
-const Introduction = () => (
+const Welcome = () => (
     <DocsLayout>
-        <DocsHelmet title="Introduction" />
+        <DocsHelmet title="Welcome" />
         <section>
-            <IntroductionContent />
+            <WelcomeContent />
         </section>
     </DocsLayout>
 )
 
-export default Introduction
+export default Welcome

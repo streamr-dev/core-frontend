@@ -13,12 +13,12 @@ import docsLinks from '../docsLinks'
 // }
 
 export const generateMap = () => ({
-    Introduction: {
+    Welcome: {
         root: {
-            path: docsLinks.introduction,
-            section: 'Introduction',
-            title: 'Introduction',
-            filePath: 'introduction/introduction.mdx',
+            path: docsLinks.welcome,
+            section: 'Welcome',
+            title: 'Welcome',
+            filePath: 'welcome/welcome.mdx',
         },
     },
     'Getting Started': {
