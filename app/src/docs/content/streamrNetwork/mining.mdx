@@ -1,1 +1,23 @@
+import { Link } from 'react-router-dom'
+import Warning from '$docs/components/Warning'
+
+import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
+
 # Mining
+
+Broker nodes will be able to participate in mining via a mining plugin that is included with the Broker node. Mining means that the Broker node subscribes to selected incentivized streams and helps propagate the messages in those streams, essentially contributing bandwidth to the stream in exchange for earning DATA tokens from associated Bounty smart contracts.
+
+The mining process and associated token economics are described at a high level on the <a target="_blank" rel="noopener noreferrer" href={routes.site.discover.dataToken()}>DATA token page</a> on the project website, as well as in the <Link to={docsLinks.tokenomics}>Tokenomics</Link> section of the docs.
+
+## Coming in Tatum
+
+The full token economics along with the mining features will be launched in the Tatum milestone in 2022. 
+
+In the meanwhile, a simplified form of mining was possible in the Brubeck milestone incentivized testnets in late 2021. At the time of writing, mining incentives for the Brubeck mainnet had not yet been decided by the Streamr governance process. 
+
+<Warning>
+
+This section will be updated once mining becomes available.
+
+</Warning>
