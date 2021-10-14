@@ -3,15 +3,15 @@
 import React from 'react'
 import { DocsHelmet } from '$shared/components/Helmet'
 import DocsLayout from '$docs/components/DocsLayout'
-import ConnectingApplicationsToABrokerNodeContent from '$docs/content/streamrNodes/connectingApplicationsToABrokerNode.mdx'
+import ConnectingApplicationsContent from '$docs/content/streamrNodes/connectingApplications.mdx'
 
-const ConnectingApplicationsToABrokerNode = () => (
+const ConnectingApplications = () => (
     <DocsLayout>
         <DocsHelmet title="Connecting applications to a Broker node" />
         <section>
-            <ConnectingApplicationsToABrokerNodeContent />
+            <ConnectingApplicationsContent />
         </section>
     </DocsLayout>
 )
 
-export default ConnectingApplicationsToABrokerNode
+export default ConnectingApplications
