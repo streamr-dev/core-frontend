@@ -210,40 +210,40 @@ export const generateMap = () => ({
             title: 'Intro to Data Unions',
             filePath: 'dataUnions/introToDataUnions.mdx',
         },
-        'Create a DU with Core': {
-            path: docsLinks.dataUnionsInCore,
+        'Creating a Data Union': {
+            path: docsLinks.creatingADataUnion,
             section: 'Data Unions',
-            title: 'Create a DU with Core',
-            filePath: 'dataUnions/dataUnionsCore.mdx',
+            title: 'Creating a Data Union',
+            filePath: 'dataUnions/creatingADataUnion.mdx',
         },
-        'Framework Roles': {
-            path: docsLinks.frameworkRoles,
+        'Roles & responsibilities': {
+            path: docsLinks.rolesAndResponsibilities,
             section: 'Data Unions',
-            title: 'Framework Roles',
-            filePath: 'dataUnions/frameworkRoles.mdx',
+            title: 'Roles & responsibilities',
+            filePath: 'dataUnions/rolesAndResponsibilities.mdx',
         },
-        'Auth & Identity': {
-            path: docsLinks.authAndIdentity,
+        'Wallet management': {
+            path: docsLinks.walletManagement,
             section: 'Data Unions',
-            title: 'Auth & Identity',
-            filePath: 'dataUnions/authAndIdentity.mdx',
+            title: 'Wallet management',
+            filePath: 'dataUnions/walletManagement.mdx',
         },
-        'Create & Monitor': {
-            path: docsLinks.createAndMonitor,
+        'Joining and parting members': {
+            path: docsLinks.joiningAndPartingMembers,
             section: 'Data Unions',
-            title: 'Create & Monitor',
-            filePath: 'dataUnions/createAndMonitor.mdx',
+            title: 'Joining and parting members',
+            filePath: 'dataUnions/joiningAndPartingMembers.mdx',
         },
-        'Join & Withdraw': {
-            path: docsLinks.joinAndWithdraw,
+        'Withdrawing earnings': {
+            path: docsLinks.withdrawingEarnings,
             section: 'Data Unions',
-            title: 'Join & Withdraw',
-            filePath: 'dataUnions/joinAndWithdraw.mdx',
+            title: 'Withdrawing earnings',
+            filePath: 'dataUnions/withdrawingEarnings.mdx',
         },
-        'UX Best Practices': {
+        'UX best practices': {
             path: docsLinks.uxBestPractices,
             section: 'Data Unions',
-            title: 'UX Best Practices',
+            title: 'UX best practices',
             filePath: 'dataUnions/uxBestPractices.mdx',
         },
     },

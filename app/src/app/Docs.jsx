@@ -38,11 +38,11 @@ import IntroToMarketplace from '$docs/components/Pages/Marketplace/IntroToMarket
 import CreatingDataProducts from '$docs/components/Pages/Marketplace/CreatingDataProducts'
 // Data Unions Docs
 import IntroToDataUnions from '$docs/components/Pages/DataUnions/IntroToDataUnions'
-import DataUnionsCore from '$docs/components/Pages/DataUnions/DataUnionsCore'
-import FrameworkRoles from '$docs/components/Pages/DataUnions/FrameworkRoles'
-import AuthAndIdentity from '$docs/components/Pages/DataUnions/AuthAndIdentity'
-import CreateAndMonitor from '$docs/components/Pages/DataUnions/CreateAndMonitor'
-import JoinAndWithdraw from '$docs/components/Pages/DataUnions/JoinAndWithdraw'
+import CreatingADataUnion from '$docs/components/Pages/DataUnions/CreatingADataUnion'
+import RolesAndResponsibilities from '$docs/components/Pages/DataUnions/RolesAndResponsibilities'
+import WalletManagement from '$docs/components/Pages/DataUnions/WalletManagement'
+import JoiningAndPartingMembers from '$docs/components/Pages/DataUnions/JoiningAndPartingMembers'
+import WithdrawingEarnings from '$docs/components/Pages/DataUnions/WithdrawingEarnings'
 import UXBestPractices from '$docs/components/Pages/DataUnions/UXBestPractices'
 // Tutorials Docs
 import BuildingPubSub from '$docs/components/Pages/Tutorials/BuildingPubSub'
@@ -105,11 +105,11 @@ const DocsRouter = () => ([
     // Data union routes
     <Redirect exact from={links.dataUnions} to={links.introToDataUnions} key="DataUnionsRoot" />,
     <Route exact path={links.introToDataUnions} component={IntroToDataUnions} key="DataUnionsIntro" />,
-    <Route exact path={links.dataUnionsInCore} component={DataUnionsCore} key="DataUnionsInCore" />,
-    <Route exact path={links.frameworkRoles} component={FrameworkRoles} key="FrameworkRoles" />,
-    <Route exact path={links.authAndIdentity} component={AuthAndIdentity} key="AuthAndIdentity" />,
-    <Route exact path={links.createAndMonitor} component={CreateAndMonitor} key="CreateAndMonitor" />,
-    <Route exact path={links.joinAndWithdraw} component={JoinAndWithdraw} key="JoinAndWithdraw" />,
+    <Route exact path={links.creatingADataUnion} component={CreatingADataUnion} key="creatingADataUnion" />,
+    <Route exact path={links.rolesAndResponsibilities} component={RolesAndResponsibilities} key="RolesAndResponsibilities" />,
+    <Route exact path={links.walletManagement} component={WalletManagement} key="walletManagement" />,
+    <Route exact path={links.joiningAndPartingMembers} component={JoiningAndPartingMembers} key="joiningAndPartingMembers" />,
+    <Route exact path={links.withdrawingEarnings} component={WithdrawingEarnings} key="withdrawingEarnings" />,
     <Route exact path={links.uxBestPractices} component={UXBestPractices} key="UXBestPractices" />,
     // Tutorials routes
     <Route exact path={links.buildingPubSubTutorial} component={BuildingPubSub} key="BuildingPubSub" />,
