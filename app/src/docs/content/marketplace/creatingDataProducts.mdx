@@ -1,0 +1,95 @@
+
+import { Link } from 'react-router-dom'
+
+import Image from '$docs/components/Image'
+
+import ProductsOverview from './images/intro_to_products_01_desktop.jpg'
+import ProductsOverview2x from './images/intro_to_products_01_desktop@2x.jpg'
+import ProductsCreateFlowMobile from './images/intro_to_products_02_mobile@2x.jpg'
+import ProductsCreateFlow from './images/intro_to_products_02_desktop.jpg'
+import ProductsCreateFlow2x from './images/intro_to_products_02_desktop@2x.jpg'
+import StreamSelector from './images/intro_to_products_03_desktop.jpg'
+import StreamSelector2x from './images/intro_to_products_03_desktop@2x.jpg'
+import CoverImage from './images/intro_to_products_04_desktop.jpg'
+import CoverImage2x from './images/intro_to_products_04_desktop@2x.jpg'
+import MDEditor from './images/intro_to_products_05_desktop.jpg'
+import MDEditor2x from './images/intro_to_products_05_desktop@2x.jpg'
+import PriceEditor from './images/intro_to_products_06_desktop.jpg'
+import PriceEditor2x from './images/intro_to_products_06_desktop@2x.jpg'
+import WalletAccess from './images/intro_to_products_07_desktop.jpg'
+import WalletAccess2x from './images/intro_to_products_07_desktop@2x.jpg'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+
+# Create a Product
+In the Streamr Marketplace, you can buy and sell a variety of real-time data products, and if you have access to your own real-time data, you can make and sell your own within the Core app. A product is a single stream or bundle of real-time data streams either sold or made available for free on the Marketplace. These streams typically originate from sensors or applications. You can also create crowdsourced data products with Core, where they are called Data Unions.
+
+Core and the Marketplace support crypto token payments using Streamr's native token DATA, DAI or ETH. To create or subscribe to paid products, you will need an Ethereum wallet, some ETH for gas, and some DATA, ETH or DAI, if making subscriptions. Below we'll run through the basics of creating a product.
+
+<Image
+  src={ProductsOverview}
+  highResSrc={ProductsOverview2x}
+  alt="Products Overview"
+/>
+
+## Create a product in Core
+Creating a product in Core is quite simple, but requires some preparation. Once you're ready, simply go to Core > Products and click <span className={docsStyles.streamrHighlight}>Create Product</span> But before you do, you should prepare the various things listed below. If you get stuck halfway through, you can click Save & Exit at any time, and Streamr will keep a draft of your product. When you come back, simply click on the draft product tile in Core > Products to continue.
+
+The Product edit validator helps you to see what is required for publishing. If you see an orange ! icon there, it means you've skipped a section required. Once all the required sections have blue ticks, you're ready to publish.
+
+<Image
+  mobileSrc={ProductsCreateFlowMobile}
+  src={ProductsCreateFlow}
+  highResSrc={ProductsCreateFlow2x}
+  alt="Product creation steps"
+/>
+
+### Prepare your streams
+You need some real-time streams, added to Streamr. You can do this in Core > Streams by clicking <span className={docsStyles.streamrHighlight}>Create Stream</span> This will open the Stream editor, and create an empty stream container, with a unique ID. Then all you need to do is
+
+- Copy the ID to use in your code to pipe data into Streamr
+- Test whether data is flowing correctly by using the Preview section
+- Field names, type and order should be auto-configured by Streamr
+- If they aren't, you can manually name the fields, select a type, and drag to reorder them
+
+### Add your streams
+All streams you have added to your Streamr account will show in the stream selector part of the Product Editor. Click to select as many streams as you like, but do consider how to best provide value to your buyers.
+
+<Image
+  src={StreamSelector}
+  highResSrc={StreamSelector2x}
+  alt="Stream Selector"
+/>
+
+### Cover images
+You will need a good cover image. If you have a designer who can help, this is ideal, otherwise you can find many high quality free images at Unsplash.com or Reshot.com. Make sure your image is around 1000-1200 pixels on the long side so it is sharp even on large, high-dpi screens. Something thematically related to your data is good if you don't have custom imagery for it. If you upload the wrong one, just upload another and it will be replaced.
+
+### Description
+Write a good description, be concise, but give enough details for buyers to understand the value of your data. You can use Markdown to format headlines and lists, but do remember to keep it simple. You can write as much as you like, but something around 400 words maximum is probably a good rule of thumb.
+
+<Image
+  src={MDEditor}
+  highResSrc={MDEditor2x}
+  alt="Text MD Editor"
+/>
+
+### Price
+You can make your product free or paid. For paid products, set price by minute, hour, day or week intervals. You can switch between viewing price in Streamr's DATA token or fiat currency for your convenience. You can also choose to fix price in fiat to protect against sudden shifts in the DATA price.
+
+<Image
+  src={PriceEditor}
+  highResSrc={PriceEditor2x}
+  alt="Price Editor"
+/>
+
+### Details and Terms
+Here you can add contact details, choose a category, add your website for more information, as well as add some social media links. Social media is optional, but can help buyers feel more confident in buying from you as they can check your reputation online more easily. Terms allows you to state the terms you are offering your data on. You can choose from some multiple choice options, in addition to giving a link to a PDF or website which contains full terms of use..
+
+### Publishing
+For a paid product, you'll need a Web3 wallet, and a small amount of ethereum for gas fees, required to publish the product to the Marketplace smart contract. The <span className={docsStyles.streamrHighlight}>Publish</span> button will be enabled once required sections are filled, so click that, unlock your wallet and confirm the transaction. Your product will be published on the Marketplace once the ethereum blockchain has confirmed your transaction.
+
+<Image
+  src={WalletAccess}
+  highResSrc={WalletAccess2x}
+  alt="Wallet Access"
+/>
