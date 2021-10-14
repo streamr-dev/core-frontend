@@ -1,1 +1,38 @@
+import { Link } from 'react-router-dom'
+
+import docsLinks from '$shared/../docsLinks'
+
 # Updating a Broker node
+
+This article shows how to update your existing Streamr Broker node to the latest version. If you are installing your node for the first time, follow <Link to={docsLinks.installingABrokerNode}>installing a Broker node</Link> instead.
+
+## Updating to the latest version
+
+Updates become available for both the NPM and Docker versions of the Broker node software. As with the installation guide, there are two sets of instructions here, for Docker and NPM. Note that there is no need to run the config wizard again.
+
+## Updating a node running on Docker
+
+Stop the currently running Broker as follows:
+
+- Identify and record the container ID of your node by running `docker ps`
+- Then, `docker stop <container_ID>`
+
+Next, pull the latest version of the Broker node software,
+
+```
+docker pull streamr/broker-node:dev
+```
+
+Then start the container as usual - or refer to the <Link to={docsLinks.installingABrokerNode}>installation guide</Link> for the start command.
+
+
+## Updating a node via NPM
+- Stop your existing broker node process (Ctrl+C for example)
+- Then, `npm install -g streamr-broker`
+
+Start the node using the `streamr-broker` command as usual.
+
+If you have any problems updating with npm, you could try running `npm doctor` to diagnose the symptoms.
+
+These instructions have been tested on Linux and macOS and may vary on Windows.
+
