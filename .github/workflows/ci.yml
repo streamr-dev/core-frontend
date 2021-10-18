@@ -21,8 +21,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          npm install -g npm@lts
           npm ci
       # job specific steps
       - name: Run ESlint
@@ -45,8 +43,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          npm install -g npm@lts
           npm ci
       # job specific steps
       - name: Build app
@@ -73,8 +69,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          npm install -g npm@lts
           npm ci
       - name: Cache node modules
         uses: actions/cache@v1
@@ -135,8 +129,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install Dependencies
         run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          npm install -g npm@lts
           npm ci
       # job specific steps
       - name: Build Storybook
