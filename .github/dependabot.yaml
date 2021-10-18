@@ -1,0 +1,61 @@
+#
+# https://dependabot.com/docs/config-file/validator/
+#
+---
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+      time: "08:00"
+      timezone: Europe/Helsinki
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: ci
+      include: scope
+    reviewers:
+      - kare
+    assignees:
+      - tumppi
+      - mondoreale
+      - juhah
+      - kare
+    labels:
+      - ci
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: daily
+      time: "08:00"
+      timezone: Europe/Helsinki
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+      include: scope
+    reviewers:
+      - kare
+    assignees:
+      - tumppi
+      - mondoreale
+      - juhah
+      - kare
+    labels:
+      - build
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: daily
+      time: "08:00"
+      timezone: Europe/Helsinki
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: build
+      include: scope
+    assignees:
+      - tumppi
+      - mondoreale
+      - juhah
+    labels:
+      - build
+
