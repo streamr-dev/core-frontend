@@ -21,6 +21,7 @@ import Layout from '$shared/components/Layout/Core'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useStreamPermissions from '$userpages/hooks/useStreamPermissions'
 import ClientProvider from '$shared/components/StreamrClientProvider'
+import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
 
 import View from './View'
@@ -90,7 +91,16 @@ const StreamPage = (props) => {
 
     if (!permissions || (fetching && !updating) || !stream) {
         return (
-            <Layout loading />
+            <Layout
+                loading
+                nav={false}
+                navComponent={(
+                    <Toolbar
+                        actions={{}}
+                        altMobileLayout
+                    />
+                )}
+            />
         )
     }
 

@@ -12,7 +12,6 @@ import * as UndoContext from '$shared/contexts/Undo'
 import Toolbar from '$shared/components/Toolbar'
 import type { Product } from '$mp/flowtype/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
-import Nav from '$shared/components/Layout/Nav'
 
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
@@ -234,9 +233,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     return (
         <CoreLayout
             className={styles.layout}
-            nav={(
-                <Nav noWide />
-            )}
+            nav={false}
             navComponent={(
                 <Toolbar
                     left={<BackButton onBack={back} />}
@@ -272,9 +269,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
 const LoadingView = () => (
     <CoreLayout
         className={styles.layout}
-        nav={(
-            <Nav noWide />
-        )}
+        nav={false}
         loading
         navComponent={(
             <Toolbar

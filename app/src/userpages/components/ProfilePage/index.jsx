@@ -20,7 +20,6 @@ import CoreLayout from '$shared/components/Layout/Core'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import Nav from '$shared/components/Layout/Nav'
 import routes from '$routes'
 import ProfileSettings from './ProfileSettings'
 import IdentityHandler from './IdentityHandler/index'
@@ -77,9 +76,7 @@ export const ProfilePage = () => {
 
     return (
         <CoreLayout
-            nav={(
-                <Nav noWide />
-            )}
+            nav={false}
             navComponent={(
                 <Toolbar
                     altMobileLayout

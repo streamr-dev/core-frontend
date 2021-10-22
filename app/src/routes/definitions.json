@@ -74,16 +74,21 @@
         "caseStudies": {
             "swash": "/case-studies/swash",
             "tracey": "/case-studies/tracey",
-            "machineWitness": "/case-studies/machine-witness"
+            "machineWitness": "/case-studies/machine-witness",
+            "paveMotors": "/case-studies/pave-motors"
         },
         "design": "/design",
         "discover": {
-            "core": "/discover/core",
+            "dataToken": "/discover/data-token",
             "marketplace": "/discover/marketplace",
             "network": "/discover/network",
             "dataUnions": "/discover/data-unions"
         },
-        "papers": "/papers"
+        "papers": "/papers",
+        "ecosystem": "/ecosystem",
+        "tokenMigration": "/token-migration",
+        "roadmap": "/roadmap",
+        "fund": "/fund"
     },
     "notFound": "/404",
     "error": "/error",
