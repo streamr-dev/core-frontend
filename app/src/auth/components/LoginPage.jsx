@@ -1,78 +1,18 @@
 import React, { useCallback, useReducer, useContext, useRef } from 'react'
 import { useDispatch } from 'react-redux'
-import styled from 'styled-components'
+import { Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
 
 import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
-import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import Button from '$shared/components/Button'
 import { getUserData } from '$shared/modules/user/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { SM } from '$shared/utils/styled'
 
 import useMetamask from '../hooks/useMetamask'
 import useWalletConnect from '../hooks/useWalletConnect'
 import SessionContext from '../contexts/Session'
-import metamaskLogo from '../assets/Metamask.png'
-import metamaskLogo2x from '../assets/Metamask@2x.png'
-import walletConnectLogo from '../assets/WalletConnect.png'
-import walletConnectLogo2x from '../assets/WalletConnect@2x.png'
 
 import SessionProvider from './SessionProvider'
 import AuthLayout from './AuthLayout'
-import SignInMethod from './SignInMethod'
-
-const Panel = styled.div`
-    background: #FFFFFF;
-    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-`
-
-const PanelRow = styled.div`
-    height: 80px;
-    user-select: none;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-`
-
-const Header = styled.span`
-    font-size: 18px;
-`
-
-const LoadingIndicator = styled(UnstyledLoadingIndicator)`
-    position: absolute;
-    top: 81px;
-`
-
-const AuthPanel = styled.div`
-    margin: 0 auto;
-    max-width: 432px;
-    width: 100%;
-
-    ${Panel} {
-        position: relative;
-    }
-
-    ${PanelRow} + ${PanelRow} {
-        border-top: 1px solid #F2F1F1;
-    }
-
-    @media (max-width: ${SM}px) {
-        max-width: 328px;
-    }
-`
-
-const Footer = styled.div`
-    font-size: 14px;
-    flex-grow: 1;
-    margin-left: 32px;
-    margin-right: 16px;
-
-    button {
-        float: right;
-    }
-`
 
 const METAMASK = 'metamask'
 const WALLET_CONNECT = 'walletConnect'
@@ -100,14 +40,12 @@ const handlers = {
 const methods = [{
     id: METAMASK,
     title: 'MetaMask',
-    image: metamaskLogo,
-    image2x: metamaskLogo2x,
+    icon: (<SignInMethod.Icon.Metamask />),
     enabled: true,
 }, {
     id: WALLET_CONNECT,
     title: 'WalletConnect',
-    image: walletConnectLogo,
-    image2x: walletConnectLogo2x,
+    icon: (<SignInMethod.Icon.WalletConnect />),
     enabled: true,
 }]
 
@@ -199,20 +137,14 @@ const LoginPage = () => {
 
     return (
         <AuthLayout>
-            <AuthPanel>
-                <Panel>
+            <Auth>
+                <Auth.Panel>
                     <LoadingIndicator loading={connecting} />
-                    <PanelRow>
-                        <Header>Connect a wallet</Header>
-                    </PanelRow>
-                    {methods.map(({
-                        id,
-                        title,
-                        image,
-                        image2x,
-                        enabled,
-                    }) => (
-                        <PanelRow key={id}>
+                    <Auth.PanelRow>
+                        <Auth.Header>Connect a wallet</Auth.Header>
+                    </Auth.PanelRow>
+                    {methods.map(({ id, title, icon, enabled }) => (
+                        <Auth.PanelRow key={id}>
                             <SignInMethod
                                 disabled={allDisabled || !enabled}
                                 onClick={() => connect(id)}
@@ -225,17 +157,13 @@ const LoginPage = () => {
                                     {(method !== id || (!connecting && !error)) && title}
                                 </SignInMethod.Title>
                                 <SignInMethod.Icon>
-                                    <img
-                                        src={image}
-                                        srcSet={`${image2x} 2x`}
-                                        alt={title}
-                                    />
+                                    {icon}
                                 </SignInMethod.Icon>
                             </SignInMethod>
-                        </PanelRow>
+                        </Auth.PanelRow>
                     ))}
-                    <PanelRow>
-                        <Footer>
+                    <Auth.PanelRow>
+                        <Auth.Footer>
                             {!error && !connecting && (
                                 <span>
                                     Need an Ethereum wallet?
@@ -265,10 +193,10 @@ const LoginPage = () => {
                                     Try again
                                 </Button>
                             )}
-                        </Footer>
-                    </PanelRow>
-                </Panel>
-            </AuthPanel>
+                        </Auth.Footer>
+                    </Auth.PanelRow>
+                </Auth.Panel>
+            </Auth>
         </AuthLayout>
     )
 }
