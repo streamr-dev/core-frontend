@@ -717,7 +717,6 @@ describe('usePublish', () => {
                 expect(result.mode).toBe(publishModes.PUBLISH)
                 expect(result.queue).toBeTruthy()
                 expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
-                    actionsTypes.PUBLISH_PENDING_CHANGES,
                     actionsTypes.CREATE_CONTRACT_PRODUCT,
                 ])
                 expect(result.queue.needsWeb3()).toBe(true)
@@ -771,10 +770,7 @@ describe('usePublish', () => {
                     ownerAddress: '',
                     requiresWhitelist: true,
                 })
-                expect(putProductStub).toBeCalled()
-                expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
-                expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
-                expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
+                expect(putProductStub).not.toBeCalled()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.PENDING)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT, transactionStates.CONFIRMED)

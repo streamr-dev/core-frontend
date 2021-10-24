@@ -115,7 +115,7 @@ export default function usePublish() {
         const queue = new ActionQueue()
 
         // update product data if needed
-        if (nextMode === publishModes.REPUBLISH || (nextMode === publishModes.PUBLISH && Object.keys(pendingChanges).length > 0)) {
+        if (nextMode === publishModes.REPUBLISH || (nextMode === publishModes.PUBLISH && Object.keys(productDataChanges).length > 0)) {
             const nextProduct = {
                 ...product,
                 ...productDataChanges,

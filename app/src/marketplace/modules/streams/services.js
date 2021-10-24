@@ -52,14 +52,11 @@ export async function* getPagedStreams(params: Object): any {
 }
 
 export async function getAllStreams(params: Object): any {
-    let streams = []
+    const streams = []
 
     // eslint-disable-next-line no-restricted-syntax, no-await-in-loop
     for await (const pagedStreams of getPagedStreams(params)) {
-        streams = [
-            ...streams,
-            ...pagedStreams,
-        ]
+        streams.push(...pagedStreams)
     }
 
     return streams
