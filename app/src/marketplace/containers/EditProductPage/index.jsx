@@ -17,7 +17,6 @@ import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useProduct from '$mp/containers/ProductController/useProduct'
-import useEthereumIdentities from '$shared/modules/integrationKey/hooks/useEthereumIdentities'
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { selectFetchingStreams } from '$mp/modules/streams/selectors'
@@ -85,8 +84,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadWhiteWhitelistedAdresses,
     ])
 
-    // Load eth identities & data union (used to determine if owner account is linked)
-    const { load: loadEthIdentities } = useEthereumIdentities()
     const originalProduct = useProduct()
     const { beneficiaryAddress } = originalProduct
 
@@ -97,12 +94,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const isLoading = savePending || publishDialogLoading
     const modalsOpen = !!(isDataUnionDeployDialogOpen || isConfirmSaveDialogOpen || isPublishDialogOpen)
     const isDisabled = isLoading || modalsOpen
-
-    useEffect(() => {
-        loadEthIdentities()
-    }, [
-        loadEthIdentities,
-    ])
 
     useEffect(() => {
         if (isDataUnion && isEthereumAddress(beneficiaryAddress)) {
