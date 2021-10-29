@@ -1,6 +1,4 @@
-// @flow
-
-import React, { type Node, useState, useMemo, useCallback } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 
@@ -10,10 +8,6 @@ import UnstyledElevatedContainer from '$shared/components/ElevatedContainer'
 import SvgIcon from '$shared/components/SvgIcon'
 
 import docsMap from '$docs/docsMap'
-
-type TocProps = {
-    children?: Node,
-}
 
 const NavListItem = styled.li`
     a {
@@ -66,7 +60,7 @@ const SubNavList = styled.ul`
     }
 `
 
-const UnstyledTableOfContents = ({ children, ...props }: TocProps) => {
+const UnstyledTableOfContents = ({ children, ...props }) => {
     const { pathname } = useLocation()
     const isActiveSection = useCallback((subNavList) => Object.keys(subNavList).some((subKey) => (
         pathname.includes(subNavList[subKey].path)
@@ -154,9 +148,6 @@ const TableOfContents = styled(UnstyledTableOfContents)`
     }
 `
 
-type Props = {
-}
-
 const MobileHeader = styled(NavListItem)`
     && {
         margin-top: 0.5em;
@@ -203,7 +194,7 @@ const ElevatedContainer = styled(UnstyledElevatedContainer)`
     `}
 `
 
-const UnstyledResponsive = (props: Props) => {
+const UnstyledResponsive = (props) => {
     const [compressed, setCompressed] = useState(true)
     const { pathname } = useLocation()
 
