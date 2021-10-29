@@ -37,4 +37,7 @@ export default {
     joiningAndPartingMembers: '/docs/data-unions/join-and-parting-members',
     withdrawingEarnings: '/docs/data-unions/withdrawing-earnings',
     uxBestPractices: '/docs/data-unions/ux-best-practices',
+    dataToken: '/docs/data-token',
+    gettingStarted: 'docs/getting-started',
+    products: 'docs/products',
 }
