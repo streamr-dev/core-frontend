@@ -1,0 +1,19 @@
+import cx from 'classnames'
+import { Link } from 'react-router-dom'
+
+import Image from '$docs/components/Image'
+
+import StreamStorage from './images/stream_storage.png'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import streamsStyles from '$docs/components/Pages/Streams/streamsStyles.pcss'
+
+# Data storage
+The data in the Streamr Network is stored in storage nodes. You can enable data storage on your streams to retain historical data in one or more geographic locations of your choice. You can also choose how long to store your stream’s historical data before auto-deletion.
+
+<Image
+  src={StreamStorage}
+  alt="Stream storage"
+/>
+
+By default, no storage nodes are selected. You can opt-in to storage by selecting a storage node. At the moment, there is only one available option: Streamr Germany. However, new options will be added as they become available.

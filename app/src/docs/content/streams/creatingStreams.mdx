@@ -1,0 +1,34 @@
+import cx from 'classnames'
+import { Link } from 'react-router-dom'
+
+import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
+import Image from '$docs/components/Image'
+
+import StreamListing from './images/core_streams_01_desktop_border.jpg'
+import StreamListing2x from './images/core_streams_01_desktop_border@2x.jpg'
+import StreamDetails from './images/core_streams_02_desktop.jpg'
+import StreamDetails2x from './images/core_streams_02_desktop@2x.jpg'
+import StreamConfigure from './images/core_streams_03_desktop.jpg'
+import StreamConfigure2x from './images/core_streams_03_desktop@2x.jpg'
+import StreamPreview from './images/core_streams_04_desktop.jpg'
+import StreamPreview2x from './images/core_streams_04_desktop@2x.jpg'
+import StreamApiAccess from './images/core_streams_05_desktop.jpg'
+import StreamApiAccess2x from './images/core_streams_05_desktop@2x.jpg'
+import StreamPath from './images/stream_path.png'
+import StreamStorage from './images/stream_storage.png'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import streamsStyles from '$docs/components/Pages/Streams/streamsStyles.pcss'
+
+# Creating streams
+Streams are identified by a unique and immutable stream ID, which consists of a domain and a user-given path, just like an Internet URL. The domain is either an Ethereum address of the logged in user, or it can also be an ENS (Ethereum Name Service) name owned by the Ethereum address of the logged in user. All streams require a unique path in the format of `domain/pathname` and can contain single or multi-level paths.
+
+ENS names allow streams to have human readable names, for example `mydomain.eth/traffic/helsinki`. If you haven’t used an ENS name before, you can easily create one with a small amount of ETH on <a href="https://ens.domains" target="_blank" rel="noopener noreferrer">ENS Domains</a>. Your purchased addresses will automatically appear in the <Link to={routes.streams.index()}>Core app</Link> for immediate usage. At a future date, the stream registry will live on the blockchain.
+
+<Image
+  src={StreamPath}
+  alt="Stream path naming"
+/>
+
+Please remember, you may need to escape the pathname slash depending on your coding environment. The Streamr client will escape the pathname slashes so also take care not to escape the pathname twice.

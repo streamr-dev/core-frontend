@@ -1,0 +1,98 @@
+import SvgIcon from '$shared/components/SvgIcon'
+import cx from 'classnames'
+
+import Image from '$docs/components/Image'
+
+import ShareSettings from './images/sharing_resources_in_core_02_desktop.jpg'
+import ShareSettings2x from './images/sharing_resources_in_core_02_desktop@2x.jpg'
+import Sharing from './videos/sharing_resources_in_core_01.mp4'
+
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import coreStyles from '$docs/components/Pages/Streams/coreStyles.pcss'
+
+# Stream access control
+The matrix below outlines the role types and permissions for streams.
+
+<div className={coreStyles.tableWrapper}>
+    <table className={cx(docsStyles.striped, coreStyles.matrix)}>
+        <thead>
+            <tr>
+                <th>Permissions</th>
+                <th>User can</th>
+                <th>Subscriber</th>
+                <th>Publisher</th>
+                <th>Editor</th>
+                <th>Owner</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>stream_get</td>
+                <td>Fetch stream details</td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+            </tr>
+            <tr>
+                <td>stream_edit</td>
+                <td>Edit stream details</td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+            </tr>
+            <tr>
+                <td>stream_delete</td>
+                <td>Delete the stream</td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+            </tr>
+            <tr>
+                <td>stream_publish</td>
+                <td>Publish to stream</td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+            </tr>
+            <tr>
+                <td>stream_subscribe</td>
+                <td>Subscribe to stream</td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+            </tr>
+            <tr>
+                <td>stream_share</td>
+                <td>Edit stream permissions</td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+## Sharing streams in core 
+When using the Core app, you can share streams with other Etheruem accounts using the Share sidebar. This sidebar can be accessed from the stream list item menu or the share button in the stream edit view.
+
+<Image
+  src={ShareSettings}
+  highResSrc={ShareSettings2x}
+  alt="Share settings"
+  figCaption="The share sidebar showing a stream having a subscriber role added"
+/>
+
+To update and edit a stream's access control, follow these steps:
+
+1. Choose private or public stream
+2. Type the Ethereum address of the user you want invite to share
+3. Choose the permissions for that user, either via the role chooser or build a custom role by clicking the checkboxes
+4. Add, remove or adjust permissions for as many people as you want
+5. Click Save to finalise any changes button before you close the side bar
+6. Get a confirmation “Your permissions have been updated” notification

@@ -1,0 +1,35 @@
+import { Link } from 'react-router-dom'
+
+import docsLinks from '$shared/../docsLinks'
+
+# Connecting applications to a Broker node
+
+The Broker node ships with interface plugins, which can be used to publish and subscribe to data from applications over off-the-shelf protocols HTTP, Websocket, and MQTT.
+
+## Configuration
+
+The plugins are enabled and configured in the Broker config file. To generate a config file and enable the plugins you need, you can use the <Link to={docsLinks.installingABrokerNode}>config wizard</Link>.
+
+## Authentication
+
+The plugins expose ports and API endpoints which can be used to publish and subscribe to data using the identity of the Broker node. You will want to secure those ports, either by setting up a firewall and restricting access to the ports based on IP, or configuring API keys that only allow access if the API key is provided.
+
+The API keys can be configured in the Broker config file, in a top-level field `apiAuthentication`:
+
+```
+{
+    "network": ...
+    "plugins": ...
+    "apiAuthentication": {
+        "keys": ["my-very-secret-key"]
+    }
+}
+```
+
+By knowing any of the correct API keys, the applications are granted access to the node. The API keys are passed by the application in slightly different ways depending on which protocol is used.
+
+Note that the API keys grant access to publishing and subscribing via your node, while the node's private key grants access to your node's identity and assets. Never confuse API keys and the node's private key, and never send the private key over the internet.
+
+## Usage
+
+The configuration and usage of each of the plugins is documented [here](https://github.com/streamr-dev/network-monorepo/blob/main/packages/broker/plugins.md).

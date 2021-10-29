@@ -1,0 +1,39 @@
+import { Link } from 'react-router-dom'
+import ReactPlayer from 'react-player'
+import routes from '$routes'
+import docsLinks from '$shared/../docsLinks'
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import Image from '$docs/components/Image'
+
+import EthIdentities from './images/gs_eth_id_03_desktop.jpg'
+import EthIdentities2x from './images/gs_eth_id_03_desktop@2x.jpg'
+import SignInWithEth from './images/gs_eth_sign_02_desktop.jpg'
+import SignInWithEth2x from './images/gs_eth_sign_02_desktop@2x.jpg'
+import SignatureRequest from './images/signatureRequest.png'
+import SignatureRequest2x from './images/signatureRequest@2x.png'
+
+# Identity
+Your Ethereum account is your Streamr account and identity - there's no email registration, simply <Link to={routes.auth.login()}>login</Link> with your Web3 Ethereum wallet such as <a href="https://metamask.io" target="blank">Metamask</a>.
+
+Streamr supports <a href="https://ens.domains" target="_blank" rel="noopener noreferrer">ENS</a> names to allow streams to have human readable names, for example `mydomain.eth/traffic/helsinki`. More on that in the <Link to={docsLinks.streams}>Streams</Link> section.
+
+### Connect your Ethereum Account
+The easiest way to get started is through the free and open source Chrome browser extension, Metamask. Metamask is also available on Android and Apple mobile devices. The explainer video below will help you understand how to use Metamask.
+
+<div className={docsStyles.playerWrapper}>
+    <ReactPlayer
+        controls
+        className={docsStyles.reactPlayer}
+        url="https://www.youtube.com/watch?v=ZIGUC9JAAw8"
+        width="100%"
+        height="100%"
+    />
+</div>
+
+Once you have your Ethereum account on Metamask, you can connect it to Streamr. A popup will ask you to sign a message with your Ethereum account to prove ownership, click **Sign**.
+
+<Image
+  src={SignInWithEth}
+  highResSrc={SignInWithEth2x}
+  alt="Ethereum sign in"
+/>

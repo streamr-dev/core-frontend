@@ -15,7 +15,7 @@ import RevenueAndDataMobile2x from './images/intro_to_data_unions_01_revenue_and
 # Introduction to Data Unions
 The Data Union framework is a data crowdsourcing and crowdselling solution. Working in tandem with the Streamr Network and Ethereum, the framework powers applications that enable people to earn by sharing valuable data.
 
-Data Unions are like <Link to={docsLinks.products}>Data Products</Link> in that they also contain a bundle of real-time <Link to={docsLinks.streams}>data streams</Link>. A Data Union is listed on the Streamr Marketplace as a type of data product for sale. When a buyer subscribes to the product, the DATA revenue is automatically distributed among all of the data producers. The product can be bridged or exported to other data marketplaces at any time, usually as static files. 
+Data Unions contain a collection of real-time <Link to={docsLinks.streams}>data streams</Link>. A Data Union is listed on the Streamr Marketplace as a type of data product for sale. When a buyer subscribes to the product, the DATA revenue is automatically distributed among all of the data producers. The product can be bridged or exported to other data marketplaces at any time, usually as static files. 
 
 Data Unions may differ from each other based on their membership model, use cases, revenue structure or governance, but they also share some common components: a group of members contributing their data, an entity providing the application layer to manage the data and a discovery mechanism, or marketplace for the data.
 
@@ -55,12 +55,11 @@ Once the product has been published, you can view revenue and community metrics,
 
 ### General Flow
 - Use the Core app to create a draft Data Union, and deploy the Data Union smart contract
-- Integrate the Data Unions Framework into your your app via one of our <Link to={docsLinks.sdkOverview}>client libraries</Link>
+- Integrate the Data Unions Framework into your your app using the <a href="https://github.com/streamr-dev/network-monorepo/tree/main/packages/client" target="_blank" rel="noopener noreferrer">Streamr client</a>
 - Allow users to join the Data Union. You must have a minimum of <span dangerouslySetInnerHTML={{
     __html: (dataUnionMemberLimit === 1) ? 'one user' : `${numberToText(dataUnionMemberLimit)} users`
 }} /> to publish, but the larger the number of members, the more valuable your product is likely to be
 - Publish the Data Union to the Marketplace
 - Manage users and view revenue via the Core app
 
-### Get Started
-If you want to get started immediately, you should learn how to <Link to={docsLinks.dataUnionsInCore}>Build a Data Union with Core</Link>. If this is your first time, you might want to start by <Link to={docsLinks.products}>Creating a free Product in Core</Link>. For an in-depth guide to connecting your app to a Data Union, check out our <Link to={docsLinks.joinAndWithdraw}>Data Unions Integration Guide</Link>.
+Automatically generated API documentation is also available <a href="https://github.com/streamr-dev/network-monorepo" target="_blank" rel="noopener noreferrer">here</a>. These docs are generated from the repository TypeScript source code.

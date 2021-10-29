@@ -68,6 +68,7 @@
         "edit": "/core/dataunions/:id/edit",
         "index": "/core/dataunions"
     },
+    "networkWhitepaper": "<landingPage>/network-whitepaper",
     "whitepaper": "<landingPage>/whitepaper",
     "site": {
         "about": "/about",
@@ -81,7 +82,8 @@
             "core": "/discover/core",
             "marketplace": "/discover/marketplace",
             "network": "/discover/network",
-            "dataUnions": "/discover/data-unions"
+            "dataUnions": "/discover/data-unions",
+            "dataToken": "/discover/data-token"
         },
         "papers": "/papers"
     },
