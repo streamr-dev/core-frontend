@@ -2,18 +2,7 @@ import { Link } from 'react-router-dom'
 
 import docsLinks from '$shared/../docsLinks'
 
-# Joining and withdrawing funds
-
-### Joining a Data Union
-A member can join a Data Union by calling `join` in one of the <Link to={docsLinks.sdk}>Streamr Client libraries</Link>. This call is answered by a centralized gatekeeping service, currently run by Streamr, but can be replaced by your own gatekeeping service. Joining does not incur a gas fee if the default client settings are used. 
-
-The typical way for a device or member to join the Data Union is via shared secrets. See <Link to={docsLinks.createAndMonitor}>Create and monitor Data Unions</Link> for details on creating a shared secret. Calling `join` with a valid secret will allow the member to join immediately:
-
-```
-const dataUnion = await streamr.getDataUnion(dataUnionAddress)
-await dataUnion.join(secret)
-```
-
+# Withdrawing earnings
 Membership inside a Data Union offers a revenue share of funds that accumulate in the Data Union contract as well as data publishing rights to the collection of streams inside the Data Union.
 
 The correct secret allows the member to join without manual approval from the Data Union Admin. If the secret is omitted, the Admin must login, find pending join requests in the Data Union Admin view of the product, and approve the requests manually.
@@ -41,7 +30,6 @@ The response would be something like:
 }
 ```
 
-### Withdrawing earnings
 Earnings in DATA token accumulate on the Data Union smart contract. Every active member has a claim to a fraction of these funds, as determined by their join date and the parameters of the Data Union smart contract. That claim is asserted when they make a withdrawal transaction.
 
 ```
@@ -57,5 +45,3 @@ Without support from the Data Union Admin, the member will require a (very) smal
 The Data Unions framework also support gasless withdrawals via metatransactions. This means that Data Union Admins can optionally pay the transaction fees on behalf of members, potentially enabling a better user experience. DATA tokens can also to be directly deposited to a particular member’s balance in the Data Union, allowing Data Union Admins to run referral campaigns that pay out personalised rewards (as opposed to the equal revenue sharing among members, the core feature of Data Unions).
 
 Members of Data Unions that require support with withdrawing should reach out to the Data Union Admin and not Streamr as the Admin is best positioned to assist in all matters of the Data Union. Data Union Admins are encouraged to reach out for support from Streamr. Currently, the best way is on the Dev channel, inside our <a href="https://discord.gg/gZAm8P7hK8" target="_blank" rel="noopener noreferrer">Discord</a>.
-
-Automatically generated API documentation is also available <a href="https://github.com/streamr-dev/network-monorepo" target="_blank" rel="noopener noreferrer">here</a>. These docs are generated from the repository TypeScript source code.

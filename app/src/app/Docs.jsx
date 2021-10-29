@@ -44,25 +44,7 @@ import WalletManagement from '$docs/components/Pages/DataUnions/WalletManagement
 import JoiningAndPartingMembers from '$docs/components/Pages/DataUnions/JoiningAndPartingMembers'
 import WithdrawingEarnings from '$docs/components/Pages/DataUnions/WithdrawingEarnings'
 import UXBestPractices from '$docs/components/Pages/DataUnions/UXBestPractices'
-// Tutorials Docs
-import BuildingPubSub from '$docs/components/Pages/Tutorials/BuildingPubSub'
-// DATA Token Docs
-import DataToken from '$docs/components/Pages/DataToken'
-// Core Docs
-import IntroToCore from '$docs/components/Pages/Core/IntroToCore'
-import SharingResourcesInCore from '$docs/components/Pages/Core/SharingResourcesInCore'
-// SDK Docs
-import Sdk from '$docs/components/Pages/Sdk/Overview'
-import JavascriptSdk from '$docs/components/Pages/Sdk/Javascript'
-import JavaSdk from '$docs/components/Pages/Sdk/Java'
-import PythonSdk from '$docs/components/Pages/Sdk/Python'
-// ****
-// API Docs
-import ApiOverview from '$docs/components/Pages/Api/Overview'
-import Authentication from '$docs/components/Pages/Api/Authentication'
-import ApiExplorer from '$docs/components/Pages/ApiExplorer'
-// Technical Notes Docs
-import TechnicalNotes from '$docs/components/Pages/TechnicalNotes'
+
 import links from '$shared/../docsLinks'
 
 const Route = withErrorBoundary(GenericErrorPage)(RouterRoute)
@@ -80,6 +62,7 @@ const DocsRouter = () => ([
     <Route exact path={links.networkExplorer} component={NetworkExplorer} key="NetworkExplorerPage" />,
     <Route exact path={links.glossary} component={Glossary} key="GlossaryPage" />,
     <Route exact path={links.howToContribute} component={HowToContribute} key="HowToContributePage" />,
+    <Redirect exact from={links.dataToken} to={links.tokenomics} key="tokenomicsPage" />,
     // Streamr Network routes
     <Route exact path={links.introToStreamrNetwork} component={IntroToStreamrNetwork} key="IntroToStreamrNetwork" />,
     <Redirect exact from={links.streamrNetwork} to={links.introToStreamrNetwork} key="StreamrNetworkRoot" />,
@@ -112,30 +95,9 @@ const DocsRouter = () => ([
     <Route exact path={links.joiningAndPartingMembers} component={JoiningAndPartingMembers} key="joiningAndPartingMembers" />,
     <Route exact path={links.withdrawingEarnings} component={WithdrawingEarnings} key="withdrawingEarnings" />,
     <Route exact path={links.uxBestPractices} component={UXBestPractices} key="UXBestPractices" />,
-    // Tutorials routes
-    <Route exact path={links.buildingPubSubTutorial} component={BuildingPubSub} key="BuildingPubSub" />,
-    <Redirect exact from={links.tutorials} to={links.buildingPubSubTutorial} key="TutorialsRoot" />,
-    // DATA Token routes
-    <Route exact path={links.dataToken} component={DataToken} key="DataTokenPage" />,
-    // Core routes
-    <Route exact path={links.introToCore} component={IntroToCore} key="IntroToCore" />,
-    <Redirect exact from={links.core} to={links.introToCore} key="CoreRoot" />,
-    <Route exact path={links.sharingResourcesInCore} component={SharingResourcesInCore} key="SharingResourcesInCore" />,
-    // SDK Routes
-    <Route exact path={links.sdkOverview} component={Sdk} key="SdkOverviewPage" />,
-    <Redirect exact from={links.sdk} to={links.sdkOverview} key="SdkRoot" />,
-    <Route exact path={links.javascriptSdk} component={JavascriptSdk} key="JavascriptSdkPage" />,
-    <Route exact path={links.javaSdk} component={JavaSdk} key="JavaSdkPage" />,
-    <Route exact path={links.pythonSdk} component={PythonSdk} key="PythonSdk" />,
-    // API routes
-    <Route exact path={links.apiOverview} component={ApiOverview} key="ApiOverview" />,
-    <Redirect exact from={links.api} to={links.apiOverview} key="ApiOverview" />,
-    <Route exact path={links.authentication} component={Authentication} key="Authentication" />,
-    // API Explorer
-    <Route exact path={links.apiExplorer} component={ApiExplorer} key="apiExplorer" />,
-    // Technical Notes routes
-    <Route exact path={links.technicalNotes} component={TechnicalNotes} key="technicalNotes" />,
-    // Docs Root
+    // Docs Root/Redirects
+    <Redirect exact from={links.gettingStarted} to={links.welcome} key="GettingStartedRedirect" />,
+    <Redirect exact from={links.products} to={links.marketplace} key="ProductsRedirect" />,
     <Redirect exact from={links.docs} to={links.welcome} key="DocsRoot" />,
 ])
 

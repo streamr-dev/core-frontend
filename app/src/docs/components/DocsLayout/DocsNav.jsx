@@ -64,14 +64,14 @@ const ProjectMenu = () => (
 
 export const DocsMenu = () => (
     <Menu>
-        <Menu.Item as={Link} to={docsLinks.gettingStarted}>
+        <Menu.Item as={Link} to={docsLinks.welcome}>
             Getting started
+        </Menu.Item>
+        <Menu.Item as={Link} to={docsLinks.streamrNetwork}>
+            Streamr Network
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.streams}>
             Streams
-        </Menu.Item>
-        <Menu.Item as={Link} to={docsLinks.products}>
-            Products
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.dataUnions}>
             Data Unions

@@ -33,15 +33,16 @@ streamr.subscribe({
 })`
 
 export const ClientPub =
-`// Here's our example data point
-const msg = {
-    temperature: 25.4,
-    humidity: 10,
-    happy: true
-}
+`// Run a Streamr node right inside your JS app
+const StreamrClient = require('streamr-client')
 
-// Publish using the Stream id only
-client.publish('my-stream-id', msg)
+const streamr = new StreamrClient({
+    auth: {
+        privateKey: 'ethereum-private-key'
+    }
+})
 
-// Or alternatively, via the Stream object (from e.g. getOrCreateStream)
-stream.publish(msg)`
+// Publish messages to a stream
+streamr.publish('mydomain.eth/test', {
+    hello: 'world',
+})`
