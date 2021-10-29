@@ -61,6 +61,8 @@ const Toolbar = styled(UnstyledToolbar)`
     top: 0;
     width: 100%;
     z-index: 5;
+    min-height: 80px;
+    align-items: center;
 
     ${({ altMobileLayout }) => !!altMobileLayout && css`
         @media (max-width: ${MD - 1}px) {

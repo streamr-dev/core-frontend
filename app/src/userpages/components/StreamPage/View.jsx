@@ -18,7 +18,6 @@ import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
-import Nav from '$shared/components/Layout/Nav'
 import { CoreHelmet } from '$shared/components/Helmet'
 import { fieldTypes } from '$userpages/modules/userPageStreams/selectors'
 import routes from '$routes'
@@ -104,9 +103,7 @@ const UnstyledView = ({ stream, currentUser, ...props }) => {
     return (
         <Layout
             {...props}
-            nav={(
-                <Nav noWide />
-            )}
+            nav={false}
             navComponent={(
                 <Toolbar
                     altMobileLayout

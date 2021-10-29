@@ -16,12 +16,12 @@ describe('Nav.Wide', () => {
         const el = mount((
             <MemoryRouter>
                 <Provider store={mockStore(store)}>
-                    <Nav.Wide />
+                    <Nav />
                 </Provider>
             </MemoryRouter>
         ))
 
-        expect(el.find('LogoItem').exists()).toBe(true)
+        expect(el.find('Logo').exists()).toBe(true)
     })
 
     describe('When the user is not signed in', () => {
@@ -32,14 +32,15 @@ describe('Nav.Wide', () => {
             const el = mount((
                 <MemoryRouter>
                     <Provider store={mockStore(store)}>
-                        <Nav.Wide />
+                        <Nav />
                     </Provider>
                 </MemoryRouter>
             ))
 
             expect(el.find({ href: '/core/streams' }).exists()).toBe(true)
+            expect(el.find({ href: '/marketplace' }).exists()).toBe(true)
             expect(el.find({ href: '/docs/welcome' }).exists()).toBe(true)
-            expect(el.find({ href: '/login' }).exists()).toBe(true)
+            expect(el.find({ href: '/login?redirect=%2F' }).exists()).toBe(true)
         })
     })
 
@@ -56,7 +57,7 @@ describe('Nav.Wide', () => {
             const el = mount((
                 <MemoryRouter>
                     <Provider store={mockStore(store)}>
-                        <Nav.Wide />
+                        <Nav />
                     </Provider>
                 </MemoryRouter>
             ))
@@ -79,7 +80,7 @@ describe('Nav.Wide', () => {
             const el = mount((
                 <MemoryRouter>
                     <Provider store={mockStore(store)}>
-                        <Nav.Wide />
+                        <Nav />
                     </Provider>
                 </MemoryRouter>
             ))

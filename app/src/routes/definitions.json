@@ -75,17 +75,22 @@
         "caseStudies": {
             "swash": "/case-studies/swash",
             "tracey": "/case-studies/tracey",
-            "machineWitness": "/case-studies/machine-witness"
+            "machineWitness": "/case-studies/machine-witness",
+            "paveMotors": "/case-studies/pave-motors"
         },
         "design": "/design",
         "discover": {
-            "core": "/discover/core",
+            "dataToken": "/discover/data-token",
             "marketplace": "/discover/marketplace",
             "network": "/discover/network",
             "dataUnions": "/discover/data-unions",
             "dataToken": "/discover/data-token"
         },
-        "papers": "/papers"
+        "papers": "/papers",
+        "ecosystem": "/ecosystem",
+        "tokenMigration": "/token-migration",
+        "roadmap": "/roadmap",
+        "fund": "/fund"
     },
     "notFound": "/404",
     "error": "/error",
@@ -153,10 +158,6 @@
                 "index": "<api>/products/:productId/permissions",
                 "show": "<api>/products/:productId/permissions/:id"
             }
-        },
-        "integrationKeys": {
-            "index": "<api>/integration_keys",
-            "show": "<api>/integration_keys/:id"
         },
         "storageNodes": {
             "index": "<api>/streams/:id/storageNodes",

@@ -23,8 +23,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: |
-          npm config set //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          npm install -g npm@lts
           npm ci
       - name: Get version string from git tag name
         id: get_version

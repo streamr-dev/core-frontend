@@ -2,11 +2,13 @@
 
 import '$shared/styles/pcss'
 import { ThemeProvider } from 'styled-components'
+import { NavProvider } from '@streamr/streamr-layout'
 
 import React from 'react'
 import cx from 'classnames'
 
 import useScrollToTop from '$shared/hooks/useScrollToTop'
+import useCurrentLocation from '$shared/hooks/useCurrentLocation'
 import Nav from './Nav'
 import Footer from './Footer'
 import styles from './layout.pcss'
@@ -31,15 +33,19 @@ const Layout = ({
 }: Props = {}) => {
     useScrollToTop()
 
+    const current = useCurrentLocation()
+
     return (
         <ThemeProvider theme={theme}>
-            <div className={cx(styles.framed, framedClassname)}>
-                <div className={cx(styles.inner, innerClassname)}>
-                    {nav}
-                    <div {...props} />
+            <NavProvider highlight={current}>
+                <div className={cx(styles.framed, framedClassname)}>
+                    <div className={cx(styles.inner, innerClassname)}>
+                        {nav}
+                        <div {...props} />
+                    </div>
+                    {!!footer && <Footer />}
                 </div>
-                {!!footer && <Footer />}
-            </div>
+            </NavProvider>
         </ThemeProvider>
     )
 }
