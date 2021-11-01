@@ -56,7 +56,7 @@ const CoverImage = ({ disabled }: Props) => {
                     This image will be shown as the tile image in the Marketplace browse view,
                     and also as the main image on your product page. For best quality,
                     an image size of around 1000 x 800px is recommended. PNG or JPEG format. Need images?
-                    See the <Link to={docsLinks.createProduct}>docs</Link>
+                    See the <Link to={docsLinks.creatingDataProducts}>docs</Link>
                 </p>
                 <ImageUpload
                     setImageToUpload={onUpload}

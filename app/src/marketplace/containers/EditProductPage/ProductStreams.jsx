@@ -50,7 +50,7 @@ const ProductStreams = ({ disabled }: Props) => {
                 <p>
                     Products can contain a range of streams, or a single &quot;firehose&quot; type stream, it&apos;s up to you.
                     If you haven&apos;t made any streams yet, you can create one here. For help creating streams,
-                    see the <Link to={docsLinks.createProduct}>docs</Link>.
+                    see the <Link to={docsLinks.creatingDataProducts}>docs</Link>.
                 </p>
                 <StreamSelectorComponent
                     availableStreams={availableStreams}

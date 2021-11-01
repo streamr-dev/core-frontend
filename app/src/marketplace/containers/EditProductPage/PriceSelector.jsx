@@ -76,7 +76,7 @@ const PriceSelector = ({ disabled }: Props) => {
                     Set the price for your product here. Note that once published,
                     you will not be able to make a free product into a paid one or vice versa.
                     But you can edit this while your product is a draft. For help,
-                    see the <Link to={docsLinks.createProduct}>docs</Link>.
+                    see the <Link to={docsLinks.creatingDataProducts}>docs</Link>.
                 </p>
                 <RadioButtonGroup
                     name="productPriceType"

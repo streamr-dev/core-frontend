@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
+import { StatusIcon as UnstyledStatusIcon } from '@streamr/streamr-layout'
 
 import Popover from '$shared/components/Popover'
 import { truncate } from '$shared/utils/text'
@@ -12,7 +13,6 @@ import useCopy from '$shared/hooks/useCopy'
 import Label from '$ui/Label'
 import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
-import UnstyledStatusIcon from '$shared/components/StatusIcon'
 import KeyFieldEditor, { type LabelType, keyValues } from './KeyFieldEditor'
 
 const KeyFieldContainer = styled.div`

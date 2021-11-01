@@ -57,7 +57,7 @@ const NoCreatedProductsView = () => (
             <Message>
                 Click the Create button above to get started.
                 <br />
-                If you need help, see the <Link to={docsLinks.createProduct}>docs</Link>.
+                If you need help, see the <Link to={docsLinks.creatingDataProducts}>docs</Link>.
             </Message>
             <MobileMessage>
                 Use the app in a desktop browser to create one.
