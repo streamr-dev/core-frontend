@@ -1,0 +1,27 @@
+import { Link } from 'react-router-dom'
+import docsLinks from '$shared/../docsLinks'
+
+# Wallet management
+Members are identified by an Ethereum address, which is also their identity in the Streamr ecosystem, as Ethereum keys are used to authenticate to Streamr as well for signing datapoints.
+
+### Ethereum key generation & management
+Ethereum addresses have an associated private key, which must be kept safe, as it grants access to earned funds. Similarly, losing it means losing funds.
+
+Ethereum private keys are just randomly generated 256 bits (32 bytes). They are usually displayed in form of 64 hexadecimal characters. You can use any securely random method of generating those keys, but here’s how to do it using the <a href="https://github.com/streamr-dev/network-monorepo/tree/main/packages/client" target="_blank" rel="noopener noreferrer">Streamr client</a> for JavaScript and easily get the associated address too:
+ 
+```
+const wallet = streamr.generateEthereumAccount()
+```
+
+which returns an object of this form:
+
+```
+{
+  address: '0x12345...',
+  privateKey: 'acebabe123...'
+}
+```
+
+The data-producing application can generate the keys when it is launched for the first time, and store the information locally or the user may connect their existing wallet. The private key should always stay on the device and it should never be sent over the internet.
+
+Storing the private key in encrypted form is recommended. One way to approach this is to encrypt it using a user-defined password. If the key is stored encrypted, the key needs to be decrypted when the application starts. The decrypted version should be kept in memory, as it is continuously needed for signing data.

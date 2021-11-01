@@ -1,0 +1,118 @@
+import { Link } from 'react-router-dom'
+
+import Image from '$docs/components/Image'
+import docsLinks from '$shared/../docsLinks'
+import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
+import { numberToText } from '$shared/utils/text'
+import { dataUnionMemberLimit } from '$shared/utils/constants'
+
+import Build from './images/data_unions_in_core_01_build.jpg'
+import Build2x from './images/data_unions_in_core_01_build@2x.jpg'
+
+import Deploy from './videos/data_unions_in_core_02_deploy.mp4'
+import Managing from './videos/data_unions_in_core_03_managing.mp4'
+
+# Creating a Data Union
+To create a Data Union in Core, go to Core > Products, click <span className={docsStyles.streamrHighlight}>Create</span> and choose Data Union as the product type. Other than the sections below, the process is similar to creating a Data Product.
+
+<Image
+  src={Build}
+  highResSrc={Build2x}
+  alt="Build a Data Union with Core"
+/>
+
+### Deploying a Data Union
+Creating a Data Union starts with deploying the Data Union smart contract. A Data Union is identified by the address of its smart contract. While the deployment transaction is an Ethereum mainnet transaction, the Data Union smart contract is deployed to the sidechain - currently xDai. The sidechain address is deterministic and can be found by reading the mainnet contract on <a href="http://etherscan.io/" target="_blank" rel="noopener noreferrer">Etherscan</a>. Currently the Core UI shows the mainnet address, in the future it will show both the mainnet and sidechain addresses.
+
+The account that deploys the contract is also the owner of that contract. Once all the required fields have been filled and the draft Data Union is ready to be deployed, click <span className={docsStyles.streamrHighlight}>Continue</span> to deploy the Data Union. The deploy dialogue will walk you through the deploy process.
+
+For the mainnet contract deployment transaction, you'll need a Web3 wallet and a small amount of Ethereum for gas fees. The amount required is approximately 178k gas, not to be confused with gas price in Gwei which fluctuates based on network usage. The Data Union deployment might take a moment to register once the transaction has been mined. The progress indicator will show an estimate of the remaining time. You can either close the dialog and move on or wait for the process to complete after which you will be automatically redirected.
+
+<figure>
+    <video muted loop autoPlay>
+        <source src={Deploy} type="video/mp4" />
+    </video>
+</figure>
+
+### Member authentication via shared secrets
+Shared secrets allow new members to join the Data Union without explicit approval from the Data Union Admin, in order to streamline the on-ramp process. Users may still join the Data Union without a secret but they will have to be manually accepted by the Admin. Shared secret generation becomes available in the Data Union editor once you have deployed your Data Union.
+
+### Publishing to the Marketplace
+A minimum of <span dangerouslySetInnerHTML={{
+    __html: (dataUnionMemberLimit === 1) ? 'one member' : `${numberToText(dataUnionMemberLimit)} members`
+}} /> is needed to publish the Data Union to the Marketplace. Once enough members have joined, you can publish the Data Union by clicking <span className={docsStyles.streamrHighlight}>Continue</span> from the action bar. Your Data Union will be published on the Marketplace once the Ethereum blockchain has confirmed your transaction.
+
+### Managing the Data Union
+Data Unions are listed along with Data Products in Core > Products. Data Unions are marked by a Data Union badge and a Members badge showing the current amount of approved members. Click the tile menu to access the Data Union stats and manage members.
+
+The Stats view provides an overview of the Data Union as well as it's members and subscribers over time. The Members view allows you to manage manual member join requests (requests that did not contain a shared secret).
+
+<figure>
+    <video muted loop autoPlay>
+        <source src={Managing} type="video/mp4" />
+    </video>
+</figure>
+
+### Admin fee
+Admins are responsible for maintaining the Data Unions, including ensuring good data quality and removing members that are not contributing data as expected. They are incentivized by receiving an admin fee, a percentage of incoming revenue. Members agree to it by joining the Data Union.
+
+### Creating a Data Union programmatically
+A Data Union is typically created in the <Link to={docsLinks.creatingADataUnion}>Core app</Link>. It can also be achieved programmatically, via a client library. Deploying a Data Union requires gas.
+
+To get a DataUnion instance, call streamr.getDataUnion(dataUnionAddress).
+```
+const dataUnion = await streamr.getDataUnion(dataUnionAddress)
+```
+
+To deploy a new DataUnion, call deployDataUnion()
+```
+const dataUnion = await streamr.deployDataUnion()
+```
+
+A Data Union is identified by the address of its smart contract on the Ethereum Mainnet. After the smart contract has been created, the Admin may choose to create an shared secret:
+
+```
+const secret = await dataUnion.createSecret(name)
+```
+
+The `name` parameter is simply an identifier for the secret. If it is not provided, a randomly generated one will be used. Note that the request must be authenticated using the Ethereum address of the Admin of the Data Union, as described in <Link to={docsLinks.walletManagement}>Data Unions Auth & Identity</Link>.
+
+The shared secret allows new members to join the Data Union without explicit approval from the Data Union Admin, to streamline the member joining process.
+
+After the Data Union is deployed, it can be published on the Marketplace.
+
+### Observing Data Unions
+The Admin should make requests through the <a href="https://www.npmjs.com/package/streamr-client" target="_blank" rel="noopener noreferrer">Streamr client</a>. For example,
+
+```
+const stats = await dataUnion.getStats()
+```
+
+The returned stats object would look something like:
+
+```
+{
+  "activeMemberCount": BigNumber(0),
+  "inactiveMemberCount": BigNumber(0),
+  "joinPartAgentCount": BigNumber,
+  "lifetimeMemberEarnings": BigNumber(0),
+  "totalEarnings": BigNumber(0),
+  "totalWithdrawable": BigNumber(0),
+}
+```
+
+Other relevant query functions:
+
+```
+await dataUnion.getAddress()
+await dataUnion.getAdminAddress()
+await dataUnion.getSidechainAddress()
+await dataUnion.getAdminFee()
+await dataUnion.getMemberStats(memberAddress)
+await dataUnion.getBalance(memberAddress)
+await dataUnion.getWithdrawableEarnings(memberAddress)
+```
+
+The Streamr Core app also provides monitoring functions for Admins, showing subscriber numbers, total revenue, join requests and more.
+
+Automatically generated API documentation is also available <a href="https://github.com/streamr-dev/network-monorepo" target="_blank" rel="noopener noreferrer">here</a>. These docs are generated from the repository TypeScript source code.

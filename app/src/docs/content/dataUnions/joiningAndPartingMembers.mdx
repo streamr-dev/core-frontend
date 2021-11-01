@@ -1,0 +1,18 @@
+import { Link } from 'react-router-dom'
+
+import docsLinks from '$shared/../docsLinks'
+
+# Joining and parting members
+
+### Member joins
+A member can join a Data Union by calling `join` using the Streamr Client library. This call is answered by a centralized gatekeeping service, currently run by Streamr, but can be replaced by your own gatekeeping service. Joining does not incur a gas fee if the default client settings are used. 
+
+The typical way for a device or member to join the Data Union is via shared secrets. See <Link to={docsLinks.creatingADataUnion}>Creating a Data Union</Link> for details on creating a shared secret. Calling `join` with a valid secret will allow the member to join immediately:
+
+```
+const dataUnion = await streamr.getDataUnion(dataUnionAddress)
+await dataUnion.join(secret)
+```
+
+### Removing a member
+To remove (part) members, please refer to the <a href="https://github.com/streamr-dev/network-monorepo/blob/main/packages/client/README.md#admin-functions" target="_blank" rel="noopener noreferrer">Data Union Admin API documentation</a>.

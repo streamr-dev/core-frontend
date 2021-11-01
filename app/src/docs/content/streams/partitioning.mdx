@@ -32,7 +32,7 @@ While the data publisher is free to choose a target partition for a message arbi
   alt="Stream and Partitions"
 />
 
-The `publish` methods in the <Link to={docsLinks.sdk}>Streamr SDKs</Link> usually take an optional `partitionKey` parameter. For example, in the JS client:
+The `publish` methods in the Streamr client usually take an optional `partitionKey` parameter. For example:
 
 ```
 streamr.publish(stream, message, timestamp, partitionKey)

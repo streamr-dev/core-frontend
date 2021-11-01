@@ -88,14 +88,17 @@ const ProjectMenu = () => (
 
 export const DevelopersMenu = () => (
     <Menu>
-        <Menu.Item as={Link} href={docsLinks.gettingStarted}>
-            Docs
+        <Menu.Item as={Link} to={docsLinks.welcome}>
+            Getting started
         </Menu.Item>
-        <Menu.Item as={Link} href={routes.site.fund()}>
-            Data Fund
+        <Menu.Item as={Link} to={docsLinks.streamrNetwork}>
+            Streamr Network
         </Menu.Item>
-        <Menu.Item as={Link} to={routes.site.design()}>
-            Design assets
+        <Menu.Item as={Link} to={docsLinks.streams}>
+            Streams
+        </Menu.Item>
+        <Menu.Item as={Link} to={docsLinks.dataUnions}>
+            Data Unions
         </Menu.Item>
     </Menu>
 )

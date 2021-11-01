@@ -13,20 +13,106 @@ import docsLinks from '../docsLinks'
 // }
 
 export const generateMap = () => ({
-    Introduction: {
+    Welcome: {
         root: {
-            path: docsLinks.introduction,
-            section: 'Introduction',
-            title: 'Introduction',
-            filePath: 'introduction/introduction.mdx',
+            path: docsLinks.welcome,
+            section: 'Welcome',
+            title: 'Welcome',
+            filePath: 'welcome/welcome.mdx',
         },
     },
-    'Getting Started': {
+    Learn: {
         root: {
-            path: docsLinks.gettingStarted,
-            section: 'Getting Started',
-            title: 'Getting Started',
-            filePath: 'gettingStarted/gettingStarted.mdx',
+            path: docsLinks.learn,
+            section: 'Learn',
+            title: 'Overview',
+            filePath: 'learn/overview.mdx',
+        },
+        Overview: {
+            path: docsLinks.overview,
+            section: 'Learn',
+            title: 'Overview',
+            filePath: 'learn/overview.mdx',
+        },
+        Identity: {
+            path: docsLinks.identity,
+            section: 'Learn',
+            title: 'Identity',
+            filePath: 'learn/identity.mdx',
+        },
+        'Use cases': {
+            path: docsLinks.useCases,
+            section: 'Learn',
+            title: 'Use cases',
+            filePath: 'learn/useCases.mdx',
+        },
+        'DATA tokenomics': {
+            path: docsLinks.tokenomics,
+            section: 'Learn',
+            title: 'DATA tokenomics',
+            filePath: 'learn/tokenomics.mdx',
+        },
+        'Network Explorer': {
+            path: docsLinks.networkExplorer,
+            section: 'Learn',
+            title: 'Network Explorer',
+            filePath: 'learn/networkExplorer.mdx',
+        },
+        Glossary: {
+            path: docsLinks.glossary,
+            section: 'Learn',
+            title: 'Glossary',
+            filePath: 'learn/glossary.mdx',
+        },
+        'How to contribute': {
+            path: docsLinks.howToContribute,
+            section: 'Learn',
+            title: 'How to contribute',
+            filePath: 'learn/howToContribute.mdx',
+        },
+    },
+    'Streamr Network': {
+        root: {
+            path: docsLinks.streamrNetwork,
+            section: 'Streamr Network',
+            title: 'Intro to the Streamr Network',
+            filePath: 'streamrNetwork/introToStreamrNetwork.mdx',
+        },
+        'Intro to Streamr nodes': {
+            path: docsLinks.introToStreamrNetwork,
+            section: 'Streamr Network',
+            title: 'Intro to the Streamr Network',
+            filePath: 'streamrNetwork/introToStreamrNetwork.mdx',
+        },
+        'Using a light node': {
+            path: docsLinks.usingALightNode,
+            section: 'Streamr Network',
+            title: 'Using a light node',
+            filePath: 'streamrNetwork/usingALightNode.mdx',
+        },
+        'Installing a Broker node': {
+            path: docsLinks.installingABrokerNode,
+            section: 'Streamr Network',
+            title: 'Installing a Broker node',
+            filePath: 'streamrNetwork/installingABrokerNode.mdx',
+        },
+        'Updating a Broker node': {
+            path: docsLinks.updatingABrokerNode,
+            section: 'Streamr Network',
+            title: 'Updating a Broker node',
+            filePath: 'streamrNetwork/updatingABrokerNode.mdx',
+        },
+        'Connecting applications': {
+            path: docsLinks.connectingApplications,
+            section: 'Streamr Network',
+            title: 'Connecting applications',
+            filePath: 'streamrNetwork/connectingApplications.mdx',
+        },
+        Mining: {
+            path: docsLinks.mining,
+            section: 'Streamr nodes',
+            title: 'Mining',
+            filePath: 'streamrNetwork/mining.mdx',
         },
     },
     Streams: {
@@ -42,23 +128,35 @@ export const generateMap = () => ({
             title: 'Intro to streams',
             filePath: 'streams/introToStreams.mdx',
         },
-        'Streams in Core': {
-            path: docsLinks.streamsInCore,
+        'Creating streams': {
+            path: docsLinks.creatingStreams,
             section: 'Streams',
-            title: 'Streams in Core',
-            filePath: 'streams/usingStreamsInCore.mdx',
+            title: 'Creating streams',
+            filePath: 'streams/creatingStreams.mdx',
         },
-        'Streams via SDKs': {
-            path: docsLinks.streamsViaSdk,
+        'Managing your streams': {
+            path: docsLinks.managingYourStreams,
             section: 'Streams',
-            title: 'Streams via SDKs',
-            filePath: 'streams/usingStreamsViaSdk.mdx',
+            title: 'Managing your streams',
+            filePath: 'streams/managingYourStreams.mdx',
         },
-        'Streams via API': {
-            path: docsLinks.streamsViaApi,
+        'Publish and subscribe': {
+            path: docsLinks.publishAndSubscribe,
             section: 'Streams',
-            title: 'Streams via API',
-            filePath: 'streams/usingStreamsViaApi.mdx',
+            title: 'Publish and subscribe',
+            filePath: 'streams/publishAndSubscribe.mdx',
+        },
+        'Access control': {
+            path: docsLinks.accessControl,
+            section: 'Streams',
+            title: 'Access control',
+            filePath: 'streams/accessControl.mdx',
+        },
+        Storage: {
+            path: docsLinks.storage,
+            section: 'Streams',
+            title: 'Storage',
+            filePath: 'streams/storage.mdx',
         },
         'Data signing & verification': {
             path: docsLinks.dataSigningAndVerification,
@@ -78,25 +176,25 @@ export const generateMap = () => ({
             title: 'Partitioning',
             filePath: 'streams/partitioning.mdx',
         },
-        'Integration Patterns': {
-            path: docsLinks.integrationPatterns,
-            section: 'Streams',
-            title: 'Integration Patterns',
-            filePath: 'streams/integrationPatterns.mdx',
-        },
     },
-    'Data Products': {
+    Marketplace: {
         root: {
-            path: docsLinks.products,
-            section: 'Data Products',
-            title: 'Create a Product',
-            filePath: 'products/createDataProduct.mdx',
+            path: docsLinks.marketplace,
+            section: 'Marketplace',
+            title: 'Intro to the Marketplace',
+            filePath: 'marketplace/introToMarketplace.mdx',
         },
-        'Create a Product': {
-            path: docsLinks.createProduct,
-            section: 'Data Products',
-            title: 'Create a Product',
-            filePath: 'products/createDataProduct.mdx',
+        'Intro to the Marketplace': {
+            path: docsLinks.introToMarketplace,
+            section: 'Marketplace',
+            title: 'Intro to the Marketplace',
+            filePath: 'marketplace/introToMarketplace.mdx',
+        },
+        'Creating data products': {
+            path: docsLinks.creatingDataProducts,
+            section: 'Marketplace',
+            title: 'Creating data products',
+            filePath: 'marketplace/creatingDataProducts.mdx',
         },
     },
     'Data Unions': {
@@ -112,171 +210,41 @@ export const generateMap = () => ({
             title: 'Intro to Data Unions',
             filePath: 'dataUnions/introToDataUnions.mdx',
         },
-        'Create a DU with Core': {
-            path: docsLinks.dataUnionsInCore,
+        'Creating a Data Union': {
+            path: docsLinks.creatingADataUnion,
             section: 'Data Unions',
-            title: 'Create a DU with Core',
-            filePath: 'dataUnions/dataUnionsCore.mdx',
+            title: 'Creating a Data Union',
+            filePath: 'dataUnions/creatingADataUnion.mdx',
         },
-        'Framework Roles': {
-            path: docsLinks.frameworkRoles,
+        'Roles & responsibilities': {
+            path: docsLinks.rolesAndResponsibilities,
             section: 'Data Unions',
-            title: 'Framework Roles',
-            filePath: 'dataUnions/frameworkRoles.mdx',
+            title: 'Roles & responsibilities',
+            filePath: 'dataUnions/rolesAndResponsibilities.mdx',
         },
-        'Auth & Identity': {
-            path: docsLinks.authAndIdentity,
+        'Wallet management': {
+            path: docsLinks.walletManagement,
             section: 'Data Unions',
-            title: 'Auth & Identity',
-            filePath: 'dataUnions/authAndIdentity.mdx',
+            title: 'Wallet management',
+            filePath: 'dataUnions/walletManagement.mdx',
         },
-        'Create & Monitor': {
-            path: docsLinks.createAndMonitor,
+        'Joining and parting members': {
+            path: docsLinks.joiningAndPartingMembers,
             section: 'Data Unions',
-            title: 'Create & Monitor',
-            filePath: 'dataUnions/createAndMonitor.mdx',
+            title: 'Joining and parting members',
+            filePath: 'dataUnions/joiningAndPartingMembers.mdx',
         },
-        'Join & Withdraw': {
-            path: docsLinks.joinAndWithdraw,
+        'Withdrawing earnings': {
+            path: docsLinks.withdrawingEarnings,
             section: 'Data Unions',
-            title: 'Join & Withdraw',
-            filePath: 'dataUnions/joinAndWithdraw.mdx',
+            title: 'Withdrawing earnings',
+            filePath: 'dataUnions/withdrawingEarnings.mdx',
         },
-        'UX Best Practices': {
+        'UX best practices': {
             path: docsLinks.uxBestPractices,
             section: 'Data Unions',
-            title: 'UX Best Practices',
+            title: 'UX best practices',
             filePath: 'dataUnions/uxBestPractices.mdx',
-        },
-    },
-    Tutorials: {
-        root: {
-            path: docsLinks.tutorials,
-            section: 'Tutorials',
-            title: 'Simple pub/sub',
-            filePath: 'tutorials/buildingPubSub.mdx',
-        },
-        'Simple pub/sub': {
-            path: docsLinks.buildingPubSubTutorial,
-            section: 'Tutorials',
-            title: 'Simple pub/sub',
-            filePath: 'tutorials/buildingPubSub.mdx',
-        },
-    },
-    'DATA Token': {
-        root: {
-            path: docsLinks.dataToken,
-            section: 'DATA Token',
-            title: 'DATA Token',
-            filePath: 'dataToken/dataToken.mdx',
-        },
-    },
-    Core: {
-        root: {
-            path: docsLinks.core,
-            section: 'Core',
-            title: 'Intro to Core',
-            filePath: 'core/introToCore.mdx',
-        },
-        'Intro to Core': {
-            path: docsLinks.introToCore,
-            section: 'Core',
-            title: 'Intro to Core',
-            filePath: 'core/introToCore.mdx',
-        },
-        'Sharing resources in Core': {
-            path: docsLinks.sharingResourcesInCore,
-            section: 'Core',
-            title: 'Sharing resources in Core',
-            filePath: 'core/sharingResourcesInCore.mdx',
-        },
-    },
-    Marketplace: {
-        root: {
-            path: docsLinks.marketplace,
-            section: 'Marketplace',
-            title: 'Intro to the Marketplace',
-            filePath: 'marketplace/introToMarketplace.mdx',
-        },
-        'Intro to the Marketplace': {
-            path: docsLinks.introToMarketplace,
-            section: 'Marketplace',
-            title: 'Intro to the Marketplace',
-            filePath: 'marketplace/introToMarketplace.mdx',
-        },
-    },
-    SDKs: {
-        root: {
-            path: docsLinks.sdk,
-            section: 'SDKs',
-            title: 'SDKs',
-            filePath: 'sdk/overview.mdx',
-        },
-        Overview: {
-            path: docsLinks.sdkOverview,
-            section: 'SDKs',
-            title: 'Overview',
-            filePath: 'sdk/overview.mdx',
-        },
-        JavaScript: {
-            path: docsLinks.javascriptSdk,
-            section: 'SDKs',
-            title: 'JavaScript',
-            filePath: 'sdk/javascript.mdx',
-        },
-        Java: {
-            path: docsLinks.javaSdk,
-            section: 'SDKs',
-            title: 'Java',
-            filePath: 'sdk/java.mdx',
-        },
-        Python: {
-            path: docsLinks.pythonSdk,
-            section: 'SDKs',
-            title: 'Python',
-            filePath: 'sdk/python.mdx',
-        },
-    },
-    API: {
-        root: {
-            path: docsLinks.api,
-            section: 'API',
-            title: 'API overview',
-            filePath: 'api/overview.mdx',
-        },
-        'API overview': {
-            path: docsLinks.apiOverview,
-            section: 'API',
-            title: 'API overview',
-            filePath: 'api/overview.mdx',
-        },
-        Authentication: {
-            path: docsLinks.authentication,
-            section: 'API',
-            title: 'Authentication',
-            filePath: 'api/authentication.mdx',
-        },
-        'Streams via API': {
-            path: docsLinks.apiStreamsViaApi,
-            section: 'API',
-            title: 'Work with streams via API',
-            filePath: 'streams/usingStreamsViaApi.mdx',
-        },
-    },
-    'API Explorer': {
-        root: {
-            path: docsLinks.apiExplorer,
-            section: 'API Explorer',
-            title: 'API Explorer',
-            filePath: 'apiExplorer/apiExplorer.mdx',
-        },
-    },
-    'Technical Notes': {
-        root: {
-            path: docsLinks.technicalNotes,
-            section: 'Technical Notes',
-            title: 'Technical Notes',
-            filePath: 'technicalNotes/technicalNotes.mdx',
         },
     },
 })

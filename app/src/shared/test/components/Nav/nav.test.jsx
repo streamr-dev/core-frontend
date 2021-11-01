@@ -39,8 +39,7 @@ describe('Nav.Wide', () => {
 
             expect(el.find({ href: '/core/streams' }).exists()).toBe(true)
             expect(el.find({ href: '/marketplace' }).exists()).toBe(true)
-            expect(el.find({ href: '/docs/getting-started' }).exists()).toBe(true)
-            debugger
+            expect(el.find({ href: '/docs/welcome' }).exists()).toBe(true)
             expect(el.find({ href: '/login?redirect=%2F' }).exists()).toBe(true)
         })
     })
@@ -64,8 +63,7 @@ describe('Nav.Wide', () => {
             ))
 
             expect(el.find({ href: '/core/streams' }).exists()).toBe(true)
-            expect(el.find({ href: '/marketplace' }).exists()).toBe(true)
-            expect(el.find({ href: '/docs/getting-started' }).exists()).toBe(true)
+            expect(el.find({ href: '/docs/welcome' }).exists()).toBe(true)
             expect(el.find({ href: '/login' }).exists()).toBe(false)
             expect(el.find({ href: '/logout' }).exists()).toBe(true)
         })
