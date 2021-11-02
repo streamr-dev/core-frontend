@@ -88,8 +88,8 @@ const ProjectMenu = () => (
 
 export const DevelopersMenu = () => (
     <Menu>
-        <Menu.Item as={Link} to={docsLinks.welcome}>
-            Getting started
+        <Menu.Item as={Link} to={docsLinks.docs}>
+            Introduction
         </Menu.Item>
         <Menu.Item as={Link} to={docsLinks.streamrNetwork}>
             Streamr Network
