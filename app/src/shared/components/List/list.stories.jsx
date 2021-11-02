@@ -6,9 +6,9 @@ import styles from '@sambego/storybook-styles'
 import styled from 'styled-components'
 import { action } from '@storybook/addon-actions'
 import sortBy from 'lodash/sortBy'
+import { StatusIcon } from '@streamr/streamr-layout'
 
 import { MD, LG } from '$shared/utils/styled'
-import StatusIcon from '$shared/components/StatusIcon'
 import Meatball from '$shared/components/Meatball'
 
 import {

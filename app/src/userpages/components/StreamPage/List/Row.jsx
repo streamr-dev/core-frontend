@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
-import { titleize } from '@streamr/streamr-layout'
+import { StatusIcon, titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
+
 import { deleteOrRemoveStream } from '$userpages/modules/userPageStreams/actions'
 import Popover from '$shared/components/Popover'
-import StatusIcon from '$shared/components/StatusIcon'
 import confirmDialog from '$shared/utils/confirm'
 import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'

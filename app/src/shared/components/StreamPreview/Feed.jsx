@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import moment from 'moment-timezone'
 import stringifyObject from 'stringify-object'
+import { Tooltip } from '@streamr/streamr-layout'
+
 import { formatDateTime } from '$mp/utils/time'
-import Tooltip from '$shared/components/Tooltip'
 import {
     SecurityIcon as PrestyledSecurityIcon,
     getSecurityLevel,

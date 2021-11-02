@@ -2,12 +2,12 @@
 
 import React, { useCallback, useState } from 'react'
 import styled, { css } from 'styled-components'
+import { StatusIcon } from '@streamr/streamr-layout'
 
 import Button from '$shared/components/Button'
 import UnstyledToggle from '$shared/components/Toggle'
 import UnstyledPopover from '$shared/components/Popover'
 import useCopy from '$shared/hooks/useCopy'
-import StatusIcon from '$shared/components/StatusIcon'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'

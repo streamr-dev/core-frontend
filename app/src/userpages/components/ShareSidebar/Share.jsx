@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo, Fragment, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
-import { Button as LayoutButton } from '@streamr/streamr-layout'
+import { Button as LayoutButton, Tooltip } from '@streamr/streamr-layout'
+
 import { truncate } from '$shared/utils/text'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
@@ -11,7 +12,6 @@ import getOperationKeys from '$shared/components/PermissionsProvider/utils/getOp
 import lookup from '$shared/components/PermissionsProvider/utils/lookup'
 import toOperationId from '$shared/components/PermissionsProvider/utils/toOperationId'
 import { selectUsername } from '$shared/modules/user/selectors'
-import Tooltip from '$shared/components/Tooltip'
 import SvgIcon from '$shared/components/SvgIcon'
 import useMeasure from '$shared/hooks/useMeasure'
 import { MEDIUM } from '$shared/utils/styled'

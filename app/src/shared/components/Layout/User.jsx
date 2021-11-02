@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Tooltip } from '@streamr/streamr-layout'
 
 import { isEthereumAddress } from '$mp/utils/validate'
 import { truncate } from '$shared/utils/text'
 import { MEDIUM } from '$shared/utils/styled'
 import useCopy from '$shared/hooks/useCopy'
-import Tooltip from '$shared/components/Tooltip'
 
 const Name = styled.div`
     font-weight: ${MEDIUM};
