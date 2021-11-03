@@ -1,10 +1,10 @@
 // @flow
 
-import { type Node, useCallback, useEffect, useRef } from 'react'
+import React, { type Node, useCallback, useEffect, useRef, useState, Fragment } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import type { Hash, Receipt } from '$shared/flowtype/web3-types'
-import { getUserData } from '$shared/modules/user/actions'
+import { getUserData, logout } from '$shared/modules/user/actions'
 import { getDataPerUsd } from '$mp/modules/global/actions'
 import {
     addTransaction,
@@ -18,6 +18,8 @@ import { useBalances } from '$shared/hooks/useBalances'
 import { selectUserData } from '$shared/modules/user/selectors'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
+import useAccountAddress from '$shared/hooks/useAccountAddress'
+import SwitchAccountModal from './SwitchAccountModal'
 
 type Props = {
     children?: Node,
@@ -30,6 +32,7 @@ const PENDING_TX_WAIT = 1000 // 1s
 
 export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
+    const address = useAccountAddress()
 
     // Poll usd rate from contract
     const dataPerUsdRatePollTimeout = useRef()
@@ -113,7 +116,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     useEffect(() => {
         if (!username || !isEthereumAddress(username)) { return () => {} }
 
-        // fetch the integration keys first and then start polling for the balance
+        // start polling for the balance
         balancePoll()
 
         return () => {
@@ -142,7 +145,36 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         }
     }, [])
 
-    return children || null
+    const [accountChanged, setAccountChanged] = useState(false)
+
+    // show notice if Metamask account changes to a different account
+    useEffect(() => {
+        if (!username || !address) {
+            return
+        }
+
+        setAccountChanged(address.toLowerCase() !== username.toLowerCase())
+    }, [address, username])
+
+    const onClose = useCallback(() => {
+        setAccountChanged(false)
+    }, [])
+
+    const onContinue = useCallback(() => {
+        setAccountChanged(false)
+        dispatch(logout())
+    }, [dispatch])
+
+    return (
+        <Fragment>
+            <SwitchAccountModal
+                isOpen={accountChanged}
+                onClose={onClose}
+                onContinue={onContinue}
+            />
+            {children || null}
+        </Fragment>
+    )
 }
 
 export default GlobalInfoWatcher

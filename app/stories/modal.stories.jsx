@@ -43,6 +43,7 @@ import RemoveWhitelistedAddressDialog from '$mp/components/Modal/RemoveWhitelist
 import WhitelistEditProgressDialog from '$mp/components/Modal/WhitelistEditProgressDialog'
 import WhitelistEditErrorDialog from '$mp/components/Modal/WhitelistEditErrorDialog'
 import WhitelistRequestAccessDialog from '$mp/components/Modal/WhitelistRequestAccessDialog'
+import SwitchWalletAccountDialog from '$mp/components/Modal/SwitchWalletAccountDialog'
 
 // userpages
 import SnippetDialog from '$userpages/components/SnippetDialog'
@@ -816,6 +817,14 @@ story('Marketplace/WhitelistRequestAccessDialog')
         <WhitelistRequestAccessDialog
             contactEmail="tester1@streamr.com"
             productName="Test Product"
+            onClose={action('onClose')}
+        />
+    ))
+
+story('Marketplace/SwitchWalletAccountDialog')
+    .add('default', () => (
+        <SwitchWalletAccountDialog
+            onContinue={action('onContinue')}
             onClose={action('onClose')}
         />
     ))
