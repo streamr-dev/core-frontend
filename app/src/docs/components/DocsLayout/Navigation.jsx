@@ -94,7 +94,7 @@ const UnstyledTableOfContents = ({ children, ...props }: TocProps) => {
                                         key={subKey}
                                     >
                                         <Link to={navItem[subKey].path}>
-                                            {subKey}
+                                            {navItem[subKey].title}
                                         </Link>
                                     </NavListItem>
                                 ))}
@@ -211,8 +211,10 @@ const UnstyledResponsive = (props: Props) => {
         const topTitle = Object.keys(docsMap)
             .find((topLevelNavItem) => pathname.indexOf(docsMap[topLevelNavItem].root.path) === 0)
 
-        const secondTitle = !!topTitle && !!docsMap[topTitle] && Object.keys(docsMap[topTitle])
+        const secondLevelKey = !!topTitle && !!docsMap[topTitle] && Object.keys(docsMap[topTitle])
             .find((secondLevelNavItem) => pathname === docsMap[topTitle][secondLevelNavItem].path)
+
+        const { title: secondTitle } = docsMap[topTitle][secondLevelKey] || {}
 
         return [
             topTitle || '',

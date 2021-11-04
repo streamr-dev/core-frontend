@@ -28,43 +28,43 @@ export const generateMap = () => ({
             title: 'Overview',
             filePath: 'learn/overview.mdx',
         },
-        Overview: {
+        overview: {
             path: docsLinks.overview,
             section: 'Learn',
             title: 'Overview',
             filePath: 'learn/overview.mdx',
         },
-        Identity: {
+        identity: {
             path: docsLinks.identity,
             section: 'Learn',
             title: 'Identity',
             filePath: 'learn/identity.mdx',
         },
-        'Use cases': {
+        useCases: {
             path: docsLinks.useCases,
             section: 'Learn',
             title: 'Use cases',
             filePath: 'learn/useCases.mdx',
         },
-        'DATA tokenomics': {
+        tokenomics: {
             path: docsLinks.tokenomics,
             section: 'Learn',
             title: 'DATA tokenomics',
             filePath: 'learn/tokenomics.mdx',
         },
-        'Network Explorer': {
+        networkExplorer: {
             path: docsLinks.networkExplorer,
             section: 'Learn',
             title: 'Network Explorer',
             filePath: 'learn/networkExplorer.mdx',
         },
-        Glossary: {
+        glossary: {
             path: docsLinks.glossary,
             section: 'Learn',
             title: 'Glossary',
             filePath: 'learn/glossary.mdx',
         },
-        'How to contribute': {
+        howToContribute: {
             path: docsLinks.howToContribute,
             section: 'Learn',
             title: 'How to contribute',
@@ -78,39 +78,39 @@ export const generateMap = () => ({
             title: 'Intro to the Streamr Network',
             filePath: 'streamrNetwork/introToStreamrNetwork.mdx',
         },
-        'Intro to Streamr nodes': {
+        introToStreamrNetwork: {
             path: docsLinks.introToStreamrNetwork,
             section: 'Streamr Network',
             title: 'Intro to the Streamr Network',
             filePath: 'streamrNetwork/introToStreamrNetwork.mdx',
         },
-        'Using a light node': {
+        usingALightNode: {
             path: docsLinks.usingALightNode,
             section: 'Streamr Network',
             title: 'Using a light node',
             filePath: 'streamrNetwork/usingALightNode.mdx',
         },
-        'Installing a Broker node': {
+        installingABrokerNode: {
             path: docsLinks.installingABrokerNode,
             section: 'Streamr Network',
             title: 'Installing a Broker node',
             filePath: 'streamrNetwork/installingABrokerNode.mdx',
         },
-        'Updating a Broker node': {
+        updatingABrokerNode: {
             path: docsLinks.updatingABrokerNode,
             section: 'Streamr Network',
             title: 'Updating a Broker node',
             filePath: 'streamrNetwork/updatingABrokerNode.mdx',
         },
-        'Connecting applications': {
+        connectingApplications: {
             path: docsLinks.connectingApplications,
             section: 'Streamr Network',
             title: 'Connecting applications',
             filePath: 'streamrNetwork/connectingApplications.mdx',
         },
-        Mining: {
+        mining: {
             path: docsLinks.mining,
-            section: 'Streamr nodes',
+            section: 'Streamr Network',
             title: 'Mining',
             filePath: 'streamrNetwork/mining.mdx',
         },
@@ -122,55 +122,55 @@ export const generateMap = () => ({
             title: 'Intro to streams',
             filePath: 'streams/introToStreams.mdx',
         },
-        'Intro to streams': {
+        introToStreams: {
             path: docsLinks.introToStreams,
             section: 'Streams',
             title: 'Intro to streams',
             filePath: 'streams/introToStreams.mdx',
         },
-        'Creating streams': {
+        creatingStreams: {
             path: docsLinks.creatingStreams,
             section: 'Streams',
             title: 'Creating streams',
             filePath: 'streams/creatingStreams.mdx',
         },
-        'Managing your streams': {
+        managingYourStreams: {
             path: docsLinks.managingYourStreams,
             section: 'Streams',
             title: 'Managing your streams',
             filePath: 'streams/managingYourStreams.mdx',
         },
-        'Publish and subscribe': {
+        publishAndSubscribe: {
             path: docsLinks.publishAndSubscribe,
             section: 'Streams',
             title: 'Publish and subscribe',
             filePath: 'streams/publishAndSubscribe.mdx',
         },
-        'Access control': {
+        accessControl: {
             path: docsLinks.accessControl,
             section: 'Streams',
             title: 'Access control',
             filePath: 'streams/accessControl.mdx',
         },
-        Storage: {
+        storage: {
             path: docsLinks.storage,
             section: 'Streams',
             title: 'Storage',
             filePath: 'streams/storage.mdx',
         },
-        'Data signing & verification': {
+        dataSigningAndVerification: {
             path: docsLinks.dataSigningAndVerification,
             section: 'Streams',
             title: 'Data signing & verification',
             filePath: 'streams/dataSigningAndVerification.mdx',
         },
-        'End-to-end encryption': {
+        endToEndEncryption: {
             path: docsLinks.endToEndEncryption,
             section: 'Streams',
             title: 'End-to-end encryption',
             filePath: 'streams/endToEndEncryption.mdx',
         },
-        Partitioning: {
+        partitioning: {
             path: docsLinks.partitioning,
             section: 'Streams',
             title: 'Partitioning',
@@ -184,13 +184,13 @@ export const generateMap = () => ({
             title: 'Intro to the Marketplace',
             filePath: 'marketplace/introToMarketplace.mdx',
         },
-        'Intro to the Marketplace': {
+        introToMarketplace: {
             path: docsLinks.introToMarketplace,
             section: 'Marketplace',
             title: 'Intro to the Marketplace',
             filePath: 'marketplace/introToMarketplace.mdx',
         },
-        'Creating data products': {
+        creatingDataProducts: {
             path: docsLinks.creatingDataProducts,
             section: 'Marketplace',
             title: 'Creating data products',
@@ -204,43 +204,43 @@ export const generateMap = () => ({
             title: 'Intro to Data Unions',
             filePath: 'dataUnions/introToDataUnions.mdx',
         },
-        'Intro to Data Unions': {
+        introToDataUnions: {
             path: docsLinks.introToDataUnions,
             section: 'Data Unions',
             title: 'Intro to Data Unions',
             filePath: 'dataUnions/introToDataUnions.mdx',
         },
-        'Creating a Data Union': {
+        creatingADataUnion: {
             path: docsLinks.creatingADataUnion,
             section: 'Data Unions',
             title: 'Creating a Data Union',
             filePath: 'dataUnions/creatingADataUnion.mdx',
         },
-        'Roles & responsibilities': {
+        rolesAndResponsibilities: {
             path: docsLinks.rolesAndResponsibilities,
             section: 'Data Unions',
             title: 'Roles & responsibilities',
             filePath: 'dataUnions/rolesAndResponsibilities.mdx',
         },
-        'Wallet management': {
+        walletManagement: {
             path: docsLinks.walletManagement,
             section: 'Data Unions',
             title: 'Wallet management',
             filePath: 'dataUnions/walletManagement.mdx',
         },
-        'Joining and parting members': {
+        joiningAndPartingMembers: {
             path: docsLinks.joiningAndPartingMembers,
             section: 'Data Unions',
             title: 'Joining and parting members',
             filePath: 'dataUnions/joiningAndPartingMembers.mdx',
         },
-        'Withdrawing earnings': {
+        withdrawingEarnings: {
             path: docsLinks.withdrawingEarnings,
             section: 'Data Unions',
             title: 'Withdrawing earnings',
             filePath: 'dataUnions/withdrawingEarnings.mdx',
         },
-        'UX best practices': {
+        uxBestPractices: {
             path: docsLinks.uxBestPractices,
             section: 'Data Unions',
             title: 'UX best practices',
