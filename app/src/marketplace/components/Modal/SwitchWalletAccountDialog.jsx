@@ -26,6 +26,8 @@ const SwitchWalletAccountDialog = ({ onClose, onContinue, ...props }) => (
                 The active account in your wallet has changed.
                 <br />
                 You&apos;re about to switch to different Core account.
+                <br />
+                Unsaved work will be lost.
             </p>
         </Dialog>
     </ModalPortal>

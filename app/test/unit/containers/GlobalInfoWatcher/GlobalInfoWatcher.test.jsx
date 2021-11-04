@@ -109,7 +109,7 @@ describe('GlobalInfoWatcher', () => {
         })
 
         expect(clockSpy).toHaveBeenCalledTimes(5)
-        expect(Web3Poller.unsubscribe).toHaveBeenCalledTimes(4)
+        expect(Web3Poller.unsubscribe).toHaveBeenCalledTimes(6)
     })
 
     it('adds pending transactions from storage on mount', () => {
