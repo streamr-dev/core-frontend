@@ -25,7 +25,6 @@
         "labs": "mailto:labs@streamr.com",
         "media": "mailto:media@streamr.com"
     },
-    "contributionSummary": "https://s3.amazonaws.com/streamr-public/Crowdcontribution+Information+Summary+(20170912).pdf",
     "tos": "https://s3.amazonaws.com/streamr-public/streamr-terms-of-use.pdf",
     "privacyPolicy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
@@ -42,6 +41,7 @@
             "product": "<streamr>/marketplace/products/:id"
         }
     },
+    "networkExplorer": "/network-explorer",
     "privacy": "https://s3.amazonaws.com/streamr-public/streamr-privacy-policy.pdf",
     "subscriptions": "/core/subscriptions",
     "root": "/",
@@ -83,8 +83,7 @@
             "dataToken": "/discover/data-token",
             "marketplace": "/discover/marketplace",
             "network": "/discover/network",
-            "dataUnions": "/discover/data-unions",
-            "dataToken": "/discover/data-token"
+            "dataUnions": "/discover/data-unions"
         },
         "papers": "/papers",
         "ecosystem": "/ecosystem",
