@@ -27,12 +27,9 @@ const FooterColumns = styled(UnstyledFooterColumns)`
 const Footer = ({ topBorder = false }) => (
     <LayoutFooter>
         <FooterColumns separate={topBorder}>
-            <FooterColumn title="Learn">
+            <FooterColumn title="Discover">
                 <a href={routes.root()}>
                     Top
-                </a>
-                <a href={routes.site.discover.network()}>
-                    Network
                 </a>
                 <a href={routes.site.discover.dataToken()}>
                     DATA Token
@@ -43,32 +40,47 @@ const Footer = ({ topBorder = false }) => (
                 <a href={routes.site.discover.marketplace()}>
                     Marketplace
                 </a>
-            </FooterColumn>
-            <FooterColumn title="Apps">
-                <a href={routes.marketplace.index()}>
-                    Marketplace
-                </a>
-                <a href={routes.core()}>
-                    Core
+                <a href={routes.site.discover.network()}>
+                    Network
                 </a>
             </FooterColumn>
             <FooterColumn title="Project">
                 <a href={routes.site.about()}>
                     About
                 </a>
-                <a href={routes.site.design()}>
-                    Design Assets
+                <a href={routes.site.roadmap()}>
+                    Roadmap
+                </a>
+                <a href={routes.site.ecosystem()}>
+                    Ecosystem
+                </a>
+                <a href={routes.site.papers()}>
+                    Papers
                 </a>
                 <a href={routes.community.medium()}>
                     Blog
                 </a>
             </FooterColumn>
-            <FooterColumn title="Docs">
-                <a href={docsLinks.streams}>
-                    Streams
+            <FooterColumn title="Developers">
+                <a href={docsLinks.docs}>
+                    Docs
                 </a>
-                <a href={docsLinks.products}>
-                    Products
+                <a href={routes.site.fund()}>
+                    Data Fund
+                </a>
+                <a href={routes.site.design()}>
+                    Design Assets
+                </a>
+            </FooterColumn>
+            <FooterColumn title="Apps">
+                <a href={routes.networkExplorer()}>
+                    Network Explorer
+                </a>
+                <a href={routes.marketplace.index()}>
+                    Marketplace
+                </a>
+                <a href={routes.core()}>
+                    Core
                 </a>
             </FooterColumn>
             <FooterColumn title="Contact">
@@ -85,13 +97,7 @@ const Footer = ({ topBorder = false }) => (
                     Business
                 </a>
             </FooterColumn>
-            <FooterColumn title="Documents">
-                <a href="https://streamr.network/whitepaper">
-                    Whitepaper
-                </a>
-                <a href={routes.contributionSummary()}>
-                    Contribution Summary
-                </a>
+            <FooterColumn title="Legal">
                 <a href={routes.tos()}>
                     Terms &amp; Conditions
                 </a>
