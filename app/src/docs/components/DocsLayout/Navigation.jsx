@@ -94,7 +94,7 @@ const UnstyledTableOfContents = ({ children, ...props }: TocProps) => {
                                         key={subKey}
                                     >
                                         <Link to={navItem[subKey].path}>
-                                            {subKey}
+                                            {navItem[subKey].title}
                                         </Link>
                                     </NavListItem>
                                 ))}
@@ -208,11 +208,23 @@ const UnstyledResponsive = (props: Props) => {
     const { pathname } = useLocation()
 
     const [topLevelTitle, secondLevelTitle] = useMemo(() => {
-        const topTitle = Object.keys(docsMap)
+        const docsMapKeys = Object.keys(docsMap)
+        let topTitle = docsMapKeys
             .find((topLevelNavItem) => pathname.indexOf(docsMap[topLevelNavItem].root.path) === 0)
 
-        const secondTitle = !!topTitle && !!docsMap[topTitle] && Object.keys(docsMap[topTitle])
-            .find((secondLevelNavItem) => pathname === docsMap[topTitle][secondLevelNavItem].path)
+        if (!topTitle) {
+            [topTitle] = docsMapKeys || []
+        }
+
+        const secondLevelKeys = Object.keys(docsMap[topTitle])
+        let secondLevelKey = !!topTitle && !!docsMap[topTitle] &&
+            secondLevelKeys.find((secondLevelNavItem) => pathname === docsMap[topTitle][secondLevelNavItem].path)
+
+        if (!secondLevelKey) {
+            [secondLevelKey] = secondLevelKeys || []
+        }
+
+        const { title: secondTitle } = (!!secondLevelKey && docsMap[topTitle][secondLevelKey]) || {}
 
         return [
             topTitle || '',

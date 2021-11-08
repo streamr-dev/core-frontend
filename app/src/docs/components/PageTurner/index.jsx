@@ -1,154 +1,182 @@
-// @flow
-
-import React from 'react'
-import { Link, withRouter, type Location } from 'react-router-dom'
-import cx from 'classnames'
+import React, { useMemo } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import docsMap from '$docs/docsMap'
+import { SM, MD } from '$shared/utils/styled'
 
-import styles from './pageTurner.pcss'
+// Flatten docs page hierarchy into a single array
+const docsPages = (Object.values(docsMap) || []).flatMap((subPages) => {
+    const pages = Object.values(subPages)
 
-type Props = {
-    location: Location,
+    // if there are more than one page we can filter out the root page
+    if (pages.length > 1) {
+        pages.shift()
+    }
+
+    return pages
+})
+
+const UnstyledPageTurner = ({ className }) => {
+    const { pathname } = useLocation()
+
+    const links = useMemo(() => {
+        const currentPageIndex = docsPages.findIndex(({ path }) => path === pathname)
+
+        const pages = []
+
+        if (currentPageIndex >= 0) {
+            const { section: currentSection } = docsPages[currentPageIndex]
+
+            // link to previous page
+            if (currentPageIndex > 0) {
+                const previousPage = {
+                    ...docsPages[currentPageIndex - 1],
+                    direction: 'back',
+                }
+
+                // If the previous page links to previous section, find out the first page of that section
+                if (previousPage.section !== currentSection) {
+                    const firstSectionPageIndex = docsPages.findIndex(({ section }) => section === previousPage.section)
+
+                    Object.assign(previousPage, {
+                        ...docsPages[firstSectionPageIndex],
+                        title: previousPage.section,
+                    })
+                }
+
+                pages.push(previousPage)
+            }
+
+            // link to next page
+            if (currentPageIndex < (docsPages.length - 1)) {
+                const nextPage = {
+                    ...docsPages[currentPageIndex + 1],
+                    direction: 'forward',
+                }
+
+                // use next section title instead of article title if section changes
+                if (nextPage.section !== currentSection) {
+                    nextPage.title = nextPage.section
+                }
+
+                pages.push(nextPage)
+            }
+        }
+
+        return pages
+    }, [pathname])
+
+    return (
+        <div className={className}>
+            <hr />
+            <ul>
+                {links.map(({ title, path, direction }) => (
+                    <li
+                        key={`item-${String(title)}`}
+                        data-direction={direction}
+                    >
+                        <Link to={path}>
+                            {title}
+                            <SvgIcon name="back" />
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    )
 }
 
-type State = {
-    documentHeight: number,
-}
-
-class PageTurner extends React.Component<Props, State> {
-    // currentPathMatch: True when the current URL pathname is a match to the current docsNav item.
-    // firstPathMatch: True when the current URL pathname is a match to the first docsNav item.
-    // matchFound: A pathname match found which is not the first item.
-    // navDirections: An object containing the previous and next pages when the direction is valid.
-
-    state = {
-        documentHeight: 0,
+const PageTurner = styled(UnstyledPageTurner)`
+    ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 0;
+        margin: 4em 0 1em;
+        list-style: none;
     }
 
-    componentDidMount() {
-        this.getScrollHeight()
-        window.addEventListener('load', this.getScrollHeight)
-    }
+    ul li {
+        font-weight: var(--medium);
+        position: relative;
+        flex-basis: calc(50% - 8px);
+        max-width: 328px;
+        background-color: #F8F8F8;
+        border-radius: 4px;
+        text-align: center;
 
-    componentWillUnmount() {
-        window.removeEventListener('load', this.getScrollHeight)
-    }
+        svg {
+            position: absolute;
+            top: 32px;
+            width: 16px;
+            height: 16px;
 
-    getScrollHeight = () => {
-        this.setState({
-            documentHeight: window.document.body.scrollHeight,
-        })
-    }
-
-    currentPathMatch: boolean = false
-    firstPathMatch: boolean = false
-    matchFound: boolean = false
-    navDirections = this.calcNavDirections()
-
-    isExtraPaddingRequired = () => this.state.documentHeight < 2000 && this.state.documentHeight !== 0 && window.document.body.scrollWidth > 991
-
-    isPathnameMatch(pathnames) {
-        let match = false
-
-        Object.keys(pathnames).forEach((subKey) => {
-            if (this.props.location.pathname.includes(pathnames[subKey].path)) {
-                match = true
+            path {
+                stroke: var(--streamrBlue);
             }
-        })
+        }
 
-        return match
-    }
+        &[data-direction="back"] {
+            padding-left: 30px;
 
-    calcNavDirections() {
-        // calcNavDirections: Calculates the previous and next top-level pages based on the current URL pathname.
-        // It does this by cycling through docsNav to get the surrounding items (navDirections) of the matched navigation path.
-        // It pushes and replaces navDirections object items when the currentPathMatch has not been discovered yet,
-        // When currentPathMatch is true, the navDirections will accept at most, the next item.
-        // Edge case for firstPathMatch (navDirections: length == 1 & index == 0).
-
-        return Object.entries(docsMap).reduce((acc, [navigationTitle, navigationPath]: any, index) => {
-            let navDirections = {
-                ...acc,
-            }
-            // e.g. {
-            //          'Getting Started': ..,
-            //           Streams: ...,
-            //      }
-
-            this.currentPathMatch = this.isPathnameMatch(navigationPath)
-            // Is the user inside this particular top-level path?
-
-            if (this.currentPathMatch && index === 0) {
-                this.firstPathMatch = true
-                return navDirections
+            svg {
+                left: 24px;
             }
 
-            // Update the function accumulator with a new nav button if needs be.
-            switch (Object.keys(navDirections).length) {
-                case 0: // always inject the current nav item, as a match can be found on the next attempt.
-                    navDirections[navigationTitle] = navigationPath
-
-                    return navDirections
-
-                case 1:
-                    if (this.firstPathMatch) { // We only need 1 chapter! Done.
-                        return navDirections
-                    }
-
-                    if (this.currentPathMatch) { // We've found a match. Flag for next round.
-                        this.matchFound = true
-                        return navDirections
-                    }
-
-                    if (this.matchFound) { // Previous run found the match, insert this chapter for injection. Done.
-                        navDirections[navigationTitle] = navigationPath
-                    } else { // Keep going!
-                        navDirections = {}
-                        navDirections[navigationTitle] = navigationPath
-                    }
-
-                    return navDirections
-
-                default:
-                    // Don't update - we have our two chapters!
-                    return navDirections
+            :hover {
+                svg {
+                    transform: translate(-4px, 0);
+                    transition: all 0.3s ease-out;
+                }
             }
-        }, {})
+        }
+
+        &[data-direction="forward"] {
+            margin-left: auto;
+
+            svg {
+                right: 24px;
+                transform: rotate(180deg);
+            }
+
+            :hover {
+                svg {
+                    transform: translate(4px, 0) rotate(180deg);
+                    transition: all 0.3s ease-out;
+                }
+            }
+        }
+
+        a {
+            display: block;
+            padding: 24px;
+
+            &:hover {
+                color: var(--streamrBlue);
+            }
+        }
+
+        &:active {
+            background-color: #EFEFEF;
+        }
     }
 
-    generateNavButtons() {
-        return (
-            Object.entries(this.navDirections).map(([linkTitle, linkPath]: any, index) => (
-                <li
-                    key={`item-${String(linkTitle)}`}
-                    className={cx(styles.navButton, {
-                        [styles.backward]: index === 0 && !this.firstPathMatch,
-                        [styles.forward]: index === 1 || this.firstPathMatch,
-                    })}
-                >
-                    <Link to={linkPath.root.path}>
-                        {(index === 0 && !this.firstPathMatch) ? 'Back to ' : ''}{linkTitle}
-                        <SvgIcon
-                            name="back"
-                            className={styles.arrow}
-                        />
-                    </Link>
-                </li>
-            ))
-        )
+    @media (max-width: ${MD + 1}px) {
+        ul li {
+            flex-basis: 100%;
+            margin: 8px 0;
+            max-width: none;
+        }
     }
 
-    render() {
-        return (
-            <div className={this.isExtraPaddingRequired() ? styles.extraPadding : null}>
-                <hr />
-                <ul className={styles.pageTurnerContainer}>
-                    {this.generateNavButtons()}
-                </ul>
-            </div>
-        )
+    @media (max-width: ${SM + 1}px) {
+        ul li {
+            &[data-direction="back"] {
+                display: none;
+            }
+        }
     }
-}
+`
 
-export default withRouter(PageTurner)
+export default PageTurner

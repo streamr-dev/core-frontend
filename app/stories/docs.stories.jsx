@@ -1,5 +1,6 @@
 /* eslint-disable react/no-multi-comp */
 import React from 'react'
+import { MemoryRouter } from 'react-router-dom'
 
 import { storiesOf } from '@storybook/react'
 import { withKnobs } from '@storybook/addon-knobs'
@@ -61,7 +62,9 @@ story('Navigation')
 story('PageTurner')
     .addDecorator(StoryRouter())
     .addWithJSX('PageTurner', () => (
-        <div className={docsStyles.docsLayout}>
-            <PageTurner />
-        </div>
+        <MemoryRouter initialEntries={['/docs/welcome']}>
+            <div className={docsStyles.docsLayout}>
+                <PageTurner />
+            </div>
+        </MemoryRouter>
     ))
