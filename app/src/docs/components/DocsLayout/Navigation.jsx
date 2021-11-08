@@ -2,62 +2,77 @@ import React, { useState, useMemo, useCallback } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 
-import { LG, MD } from '$shared/utils/styled'
+import { LG, MD, REGULAR, MEDIUM } from '$shared/utils/styled'
 import scrollTo from '$shared/utils/scrollTo'
 import UnstyledElevatedContainer from '$shared/components/ElevatedContainer'
 import SvgIcon from '$shared/components/SvgIcon'
 
 import docsMap from '$docs/docsMap'
 
+const SubNavList = styled.ul`
+    border-left: 1px solid #D8D8D8;
+    display: none;
+    list-style-type: none;
+    margin-bottom: 0.2em;
+    margin-top: 1.2em;
+    padding-left: 1.2em;
+    position: sticky;
+    text-align: left;
+`
+
 const NavListItem = styled.li`
     a {
-        padding: 0.5em 0;
+        color: var(--greyDark);
+        display: block;
         font-size: 16px;
         letter-spacing: 0;
         line-height: 24px;
-    }
-`
-
-const SubNavList = styled.ul`
-    list-style-type: none;
-    text-align: left;
-    position: sticky;
-
-    margin-top: 1.2em;
-    margin-bottom: 0.2em;
-    padding-left: 1.2em;
-    border-left: 1px solid #D8D8D8;
-
-    &[hidden="true"] {
-        display: none;
+        margin: 0;
+        padding: 0.5em 0;
+        text-decoration: none;
+        width: 100%;
     }
 
-    && ${NavListItem} {
-        margin-bottom: 0;
-        font-weight: var(--regular);
+    a:hover {
+        color: var(--streamrBlue);
+    }
+
+    ${SubNavList} & {
         font-size: 16px;
+        font-weight: ${REGULAR};
         letter-spacing: 0;
-        margin-bottom: 1em;
         line-height: 1.5em;
-        padding: 0;
         list-style: none;
-
-        a {
-            color: #A3A3A3;
-            display: block;
-            width: 100%;
-            text-decoration: none;
-
-            :hover {
-                color: var(--streamrBlue);
-            }
-        }
-
-        &[data-active="true"] a {
-            color: var(--streamrBlue);
-            font-weight: var(--medium);
-        }
+        margin-bottom: 0;
+        margin-bottom: 1em;
+        padding: 0;
     }
+
+    ${SubNavList} & a {
+        color: #A3A3A3;
+        display: block;
+        padding: 0;
+        text-decoration: none;
+        width: 100%;
+    }
+
+    ${SubNavList} & a:hover {
+        color: var(--streamrBlue);
+    }
+
+    ${({ $active }) => !!$active && css`
+        && a {
+            color: var(--streamrBlue);
+        }
+
+        & + ${SubNavList} {
+            display: block;
+        }
+
+        ${SubNavList} & a {
+            font-weight: ${MEDIUM};
+        }
+    `}
 `
 
 const UnstyledTableOfContents = ({ children, ...props }) => {
@@ -76,15 +91,15 @@ const UnstyledTableOfContents = ({ children, ...props }) => {
 
                 return ( // eslint-disable-next-line react/no-array-index-key
                     <React.Fragment key={index}>
-                        <NavListItem data-active={isActive}>
+                        <NavListItem $active={isActive}>
                             <Link to={navItem.root.path}>{topLevelNav}</Link>
                         </NavListItem>
                         {subItems.length > 0 && (
-                            <SubNavList hidden={!isActive}>
+                            <SubNavList>
                                 {/* Render subNav contents */}
                                 {subItems.map((subKey) => (
                                     <NavListItem
-                                        data-active={pathname.includes(navItem[subKey].path)}
+                                        $active={pathname.includes(navItem[subKey].path)}
                                         key={subKey}
                                     >
                                         <Link to={navItem[subKey].path}>
@@ -118,33 +133,6 @@ const TableOfContents = styled(UnstyledTableOfContents)`
     &::-webkit-scrollbar {
         width: 0;
         background: transparent;
-    }
-
-    ${NavListItem} {
-        font-weight: var(--regular);
-        font-size: 16px;
-        letter-spacing: 0;
-        margin-bottom: 1rem;
-        line-height: 1.5em;
-        padding: 0;
-        list-style: none;
-
-        a {
-            color: var(--greyDark);
-            display: block;
-            width: 100%;
-            text-decoration: none;
-            padding: 0;
-            margin: 0;
-
-            :hover {
-                color: var(--streamrBlue);
-            }
-        }
-
-        &[data-active="true"] a {
-            color: var(--streamrBlue);
-        }
     }
 `
 
