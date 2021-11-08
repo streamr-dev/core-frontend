@@ -24,6 +24,7 @@ import GenericErrorPage from '$shared/components/GenericErrorPage'
 import ErrorPage from '$shared/components/ErrorPage'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
 import Analytics from '$shared/utils/Analytics'
+import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
 import routes from '$routes'
 
 import history from '../history'
@@ -65,18 +66,20 @@ const App = () => (
         <SessionProvider>
             <ModalPortalProvider>
                 <ModalProvider>
-                    <ActivityResourceProvider>
-                        <Analytics />
-                        <Switch>
-                            {AuthenticationRouter()}
-                            {MarketplaceRouter()}
-                            {DocsRouter()}
-                            {UserpagesRouter()}
-                            {MiscRouter()}
-                        </Switch>
-                        <Notifications />
-                    </ActivityResourceProvider>
-                    {isProduction() && <GoogleAnalyticsTracker />}
+                    <GlobalInfoWatcher>
+                        <ActivityResourceProvider>
+                            <Analytics />
+                            <Switch>
+                                {AuthenticationRouter()}
+                                {MarketplaceRouter()}
+                                {DocsRouter()}
+                                {UserpagesRouter()}
+                                {MiscRouter()}
+                            </Switch>
+                            <Notifications />
+                        </ActivityResourceProvider>
+                        {isProduction() && <GoogleAnalyticsTracker />}
+                    </GlobalInfoWatcher>
                 </ModalProvider>
             </ModalPortalProvider>
         </SessionProvider>

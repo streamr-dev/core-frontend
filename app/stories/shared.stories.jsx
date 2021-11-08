@@ -289,13 +289,11 @@ story('ModalPortal')
             <ModalPortalProvider>
                 <h1>Lorem ipsum cause dolor sit emat!</h1>
                 {boolean('Visible', true) && (
-                    <ModalPortal>
-                        <ErrorDialog
-                            title="Godlike!"
-                            message="Hello world!"
-                            onClose={() => {}}
-                        />
-                    </ModalPortal>
+                    <ErrorDialog
+                        title="Godlike!"
+                        message="Hello world!"
+                        onClose={() => {}}
+                    />
                 )}
             </ModalPortalProvider>
         </React.Fragment>
@@ -335,13 +333,11 @@ story('Notifications')
                     ))}
                     <Notifications />
                     {boolean('Show dialog', false) && (
-                        <ModalPortal>
-                            <ErrorDialog
-                                title="Godlike!"
-                                message="Hello world!"
-                                onClose={() => {}}
-                            />
-                        </ModalPortal>
+                        <ErrorDialog
+                            title="Godlike!"
+                            message="Hello world!"
+                            onClose={() => {}}
+                        />
                     )}
                 </ModalPortalProvider>
             </React.Fragment>
