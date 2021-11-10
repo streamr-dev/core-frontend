@@ -20,7 +20,7 @@ const stories =
 
 const MSEC_DAILY = 86400000
 
-const today = new Date('2035-01-01').getTime() + Math.floor(MSEC_DAILY / 2)
+const today = new Date('2035-01-01').getTime() + Math.floor(MSEC_DAILY * 0.5)
 
 const graphData = [{
     x: today,
