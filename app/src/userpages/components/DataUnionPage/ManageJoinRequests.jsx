@@ -13,6 +13,7 @@ import useDataUnionMembers from '$mp/modules/dataUnion/hooks/useDataUnionMembers
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 
 const Container = styled.div`
     background: #FDFDFD;
@@ -134,6 +135,7 @@ const ManageJoinRequests = ({ dataUnion, chainId, joinRequests, className }: Pro
     const loading = approveAllProcessing || processingRequests.length > 0
     const { approve } = useJoinRequests()
     const { load: loadMembers } = useDataUnionMembers()
+    const { loadByDataUnionId: loadDataUnionStats } = useAllDataUnionStats()
     const dataUnionId = dataUnion && dataUnion.id
 
     const pendingRequests = useMemo(() => (
@@ -160,10 +162,11 @@ const ManageJoinRequests = ({ dataUnion, chainId, joinRequests, className }: Pro
                 setProcessingRequests((prev) => prev.filter((req) => req !== id))
 
                 // Refresh member listing
-                await loadMembers(dataUnionId, chainId)
+                await loadMembers(dataUnionId)
+                loadDataUnionStats([dataUnionId])
             }
         }
-    }, [approve, dataUnionId, chainId, loadMembers, isMounted])
+    }, [approve, dataUnionId, loadMembers, isMounted, loadDataUnionStats])
 
     const approveAll = useCallback(async () => {
         setApproveAllProcessing(true)
@@ -190,8 +193,8 @@ const ManageJoinRequests = ({ dataUnion, chainId, joinRequests, className }: Pro
                     <span>Address</span>
                     <span>Requested</span>
                 </TableHeader>
+                <LoadingIndicator loading={loading} />
                 <TableRows rowCount={3}>
-                    <LoadingIndicator loading={loading} />
                     {pendingRequests.map((req) => {
                         const processing = processingRequests.includes(req.id)
                         return (
