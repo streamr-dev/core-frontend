@@ -44,7 +44,7 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
         if (dataUnionAddress) {
             loadData()
         }
-    }, [dataUnionAddress, startDate, reset, isMounted])
+    }, [dataUnionAddress, startDate, reset, isMounted, memberCount])
 
     useEffect(() => {
         const data = []
@@ -56,12 +56,10 @@ const MembersGraphV2 = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props)
                 y: val.memberCountAtStart,
             })
             // Add a superficial datapoint to form a staircase graph
-            if ((val.endDate * 1000) <= Date.now()) {
-                data.push({
-                    x: (val.endDate * 1000) - 1,
-                    y: val.memberCountAtStart + val.memberCountChange,
-                })
-            }
+            data.push({
+                x: (val.endDate * 1000) - 1,
+                y: val.memberCountAtStart + val.memberCountChange,
+            })
         }
 
         // Make sure we fill the whole date range (end)

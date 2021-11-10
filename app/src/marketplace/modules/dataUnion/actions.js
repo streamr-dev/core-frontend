@@ -193,3 +193,9 @@ export const updateDataUnionStats = (productIds: ProductIdList) => (dispatch: Fu
     dispatch(getAllDataUnionStatsRequest(dataUnionIds))
     dataUnionStatsCancel = dispatch(startUpdateDataUnionStats(dataUnionIds))
 }
+
+export const updateDataUnionStatsByDataUnionId = (dataUnionIds: Array<DataUnionId>) => (dispatch: Function) => {
+    dataUnionStatsCancel()
+    dispatch(getAllDataUnionStatsRequest(dataUnionIds))
+    dataUnionStatsCancel = dispatch(startUpdateDataUnionStats(dataUnionIds))
+}

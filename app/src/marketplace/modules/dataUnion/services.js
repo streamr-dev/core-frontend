@@ -605,8 +605,14 @@ export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number):
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number, toTimestamp: number = Date.now()): Promise<Array<any>> => {
+export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
     const accuracy = 'HOUR' // HOUR or DAY
+    let toTimestampFixed = toTimestamp || Date.now()
+
+    // Make sure we take buckets that extend into the future into account
+    const offset = accuracy === 'DAY' ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000
+    toTimestampFixed = Date.now() + offset
+
     const result = await post({
         url: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/dataunion`,
         data: {
@@ -616,7 +622,7 @@ export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number
                         where: {
                             type: "${accuracy}",
                             startDate_gte: ${Math.floor(fromTimestamp / 1000)},
-                            endDate_lte: ${Math.ceil(toTimestamp / 1000)}
+                            endDate_lte: ${Math.ceil(toTimestampFixed / 1000)}
                         },
                         orderBy: startDate,
                     ) {

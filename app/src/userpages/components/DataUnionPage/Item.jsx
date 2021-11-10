@@ -638,6 +638,7 @@ const Item = ({ product, stats }: Props) => {
                     product={product}
                     dataUnion={dataUnion}
                     joinRequests={joinRequests}
+                    stats={stats}
                 />
             )}
         </Container>

@@ -8,7 +8,6 @@ import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import MembersGraphV2 from '$mp/containers/ProductPage/MembersGraphV2'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
-import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import { MEDIUM } from '$shared/utils/styled'
 
@@ -54,26 +53,31 @@ type Props = {
     product: any,
     joinRequests: Array<any>,
     dataUnion: any,
+    stats: any,
     className?: string,
 }
 
-const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
+const Management = ({
+    product,
+    joinRequests,
+    dataUnion,
+    stats,
+    className,
+}: Props) => {
     const [days, setDays] = useState(7)
     const [subsDays, setSubsDays] = useState(7)
     const { loadDataUnion } = useController()
     const { joinPartStreamId } = dataUnion || {}
-    const { startPolling, stopPolling, memberCount } = useDataUnionServerStats()
+    const memberCount = (stats && stats.memberCount) || 0
     const { beneficiaryAddress } = product
 
     useEffect(() => {
         if (beneficiaryAddress) {
             loadDataUnion(beneficiaryAddress)
-            startPolling(beneficiaryAddress)
-            return () => stopPolling()
         }
 
         return () => {}
-    }, [startPolling, stopPolling, beneficiaryAddress, loadDataUnion])
+    }, [beneficiaryAddress, loadDataUnion])
 
     return (
         <Container className={className}>
