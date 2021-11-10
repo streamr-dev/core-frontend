@@ -156,67 +156,6 @@ const deprecated_getAdminFeeInEther = (adminFee: string) => {
     return web3.utils.toWei(adminFee, 'ether')
 }
 
-// eslint-disable-next-line camelcase
-const deprecated_deployDataUnion = (productId: ProductId, adminFee: string): SmartContractTransaction => {
-    const web3 = getWeb3()
-    const emitter = new EventEmitter()
-    const errorHandler = (error: Error) => {
-        emitter.emit('error', error)
-    }
-    const tx = new Transaction(emitter)
-    const contract = getConfig().communityProduct
-    const operatorAddress = process.env.DATA_UNION_OPERATOR_ADDRESS
-    const tokenAddress = process.env.DATA_TOKEN_CONTRACT_ADDRESS
-    const blockFreezePeriodSeconds = process.env.DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS || 1
-
-    Promise.all([
-        web3.getDefaultAccount(),
-        checkEthereumNetworkIsCorrect(web3),
-    ])
-        .then(([account]) => Promise.all([
-            Promise.resolve(account),
-            // Calculate future address of the contract so that we don't have to wait
-            // for the transaction to be confirmed.
-            calculateContractAddress(account),
-            // create join part stream
-            createJoinPartStream(account, productId),
-        ]))
-        .then(([account, futureAddress, joinPartStream]) => {
-            const args = [
-                operatorAddress,
-                joinPartStream.id,
-                tokenAddress,
-                blockFreezePeriodSeconds,
-                deprecated_getAdminFeeInEther(adminFee),
-            ]
-            const web3Contract = new web3.eth.Contract(contract.abi)
-            const deployer = web3Contract.deploy({
-                data: contract.bytecode,
-                arguments: args,
-            })
-            deployer
-                .send({
-                    from: account,
-                })
-                .on('error', errorHandler)
-                .on('transactionHash', () => {
-                    // send calculated contract address as the transaction hash,
-                    // ignore actual tx hash
-                    emitter.emit('transactionHash', futureAddress)
-                })
-                .on('receipt', (receipt) => {
-                    if (parseInt(receipt.status, 16) === 0) {
-                        errorHandler(new TransactionError('Transaction failed', receipt))
-                    } else {
-                        emitter.emit('receipt', receipt)
-                    }
-                })
-        }, errorHandler)
-        .catch(errorHandler)
-
-    return tx
-}
-
 type CreateClient = {
     usePublicNode?: boolean,
 }
@@ -256,7 +195,13 @@ export const createClient = (options: CreateClient = {}) => {
     })
 }
 
-export const deployDataUnion2 = (productId: ProductId, adminFee: string): SmartContractTransaction => {
+type DeployDataUnion = {
+    productId: ProductId,
+    adminFee: string,
+    version?: number,
+}
+
+export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): SmartContractTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
@@ -304,23 +249,7 @@ export const deployDataUnion2 = (productId: ProductId, adminFee: string): SmartC
     return tx
 }
 
-export const getDefaultDataUnionVersion = () => (
-    parseInt(process.env.DATAUNION_VERSION, 10) === 2 ? 2 : 1
-)
-
-type DeployDataUnion = {
-    productId: ProductId,
-    adminFee: string,
-    version?: number,
-}
-
-export const deployDataUnion = ({ productId, adminFee, version = 1 }: DeployDataUnion): SmartContractTransaction => {
-    if (version !== 2) {
-        return deprecated_deployDataUnion(productId, adminFee)
-    }
-
-    return deployDataUnion2(productId, adminFee)
-}
+export const getDefaultDataUnionVersion = () => 2
 
 // eslint-disable-next-line camelcase
 const deprecated_getCommunityContract = (address: DataUnionId, usePublicNode: boolean = false) => {
