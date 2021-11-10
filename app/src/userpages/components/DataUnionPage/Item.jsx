@@ -617,6 +617,8 @@ const Item = ({ product, stats }: Props) => {
                 <StyledManagement
                     product={product}
                     dataUnion={dataUnion}
+                    joinRequests={joinRequests}
+                    stats={stats}
                 />
             )}
         </Container>

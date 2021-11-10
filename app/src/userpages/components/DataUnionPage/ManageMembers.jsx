@@ -13,6 +13,7 @@ import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { useDebounced } from '$shared/hooks/wrapCallback'
 import useDataUnionMembers from '$mp/modules/dataUnion/hooks/useDataUnionMembers'
+import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 
 const Container = styled.div`
     background: #FDFDFD;
@@ -185,6 +186,7 @@ const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
         search: searchMembers,
     } = useDataUnionMembers()
     const loading = loadingMembers || processingMembers.length > 0
+    const { loadByDataUnionId: loadDataUnionStats } = useAllDataUnionStats()
 
     useEffect(() => {
         const load = async () => {
@@ -216,19 +218,18 @@ const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
         } finally {
             if (isMounted()) {
                 setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
+                loadDataUnionStats([dataUnionId])
             }
         }
-    }, [dataUnionId, removeMembers, isMounted])
+    }, [dataUnionId, removeMembers, isMounted, loadDataUnionStats])
 
     useEffect(() => {
         const doSearch = async () => {
             try {
-                console.log('Starting search with', search)
                 const results = await searchMembers(dataUnionId, search)
 
                 if (isMounted()) {
                     setSearchResults(results)
-                    console.log('End search with results', results, 'for', search)
                 }
             } catch (e) {
                 console.error('Could not load search results', e)
@@ -260,8 +261,8 @@ const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
                     <span>Withdrawable</span>
                     <span>Status</span>
                 </TableHeader>
+                <LoadingIndicator loading={loading} />
                 <TableRows rowCount={4}>
-                    <LoadingIndicator loading={loading} />
                     {search && search.length > 0 && searchResults.length === 0 && (
                         <CenteredMessage>
                             <span>No members found that match {' '} <Heavy>{search}</Heavy></span>

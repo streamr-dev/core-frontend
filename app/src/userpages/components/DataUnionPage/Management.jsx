@@ -8,7 +8,6 @@ import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
-import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import { MEDIUM } from '$shared/utils/styled'
 
@@ -57,26 +56,31 @@ const StyledDaysPopover = styled(DaysPopover)`
 type Props = {
     product: any,
     dataUnion: any,
+    stats: any,
     className?: string,
 }
 
-const Management = ({ product, dataUnion, className }: Props) => {
+const Management = ({
+    product,
+    dataUnion,
+    stats,
+    className,
+}: Props) => {
     const [days, setDays] = useState(7)
     const [subsDays, setSubsDays] = useState(7)
     const { loadDataUnion } = useController()
-    const { startPolling, stopPolling, memberCount } = useDataUnionServerStats()
+    const { joinPartStreamId } = dataUnion || {}
+    const memberCount = (stats && stats.memberCount) || 0
     const { beneficiaryAddress } = product
     const chainId = getChainIdFromApiString(product.chain)
 
     useEffect(() => {
         if (beneficiaryAddress) {
             loadDataUnion(beneficiaryAddress, chainId)
-            startPolling(beneficiaryAddress, chainId)
-            return () => stopPolling()
         }
 
         return () => {}
-    }, [startPolling, stopPolling, beneficiaryAddress, chainId, loadDataUnion])
+    }, [beneficiaryAddress, loadDataUnion, chainId])
 
     return (
         <Container className={className}>

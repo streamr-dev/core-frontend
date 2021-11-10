@@ -3,19 +3,27 @@
 import { useCallback, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { updateDataUnionStats, cancelDataUnionStatsFetch, resetDataUnionStats } from '$mp/modules/dataUnion/actions'
+import {
+    updateDataUnionStats,
+    cancelDataUnionStatsFetch,
+    resetDataUnionStats,
+    updateDataUnionStatsByDataUnionId,
+} from '$mp/modules/dataUnion/actions'
 import {
     selectDeployedDataUnionStats,
     selectDataUnionRequestedIds,
     selectDataUnionFetchingIds,
     selectDataUnionDeployedIds,
 } from '$mp/modules/dataUnion/selectors'
-import type { ProductIdList } from '$mp/flowtype/product-types'
+import type { ProductIdList, DataUnionId } from '$mp/flowtype/product-types'
 
 function useAllDataUnionStats() {
     const dispatch = useDispatch()
     const load = useCallback((ids: ProductIdList = []) => {
         dispatch(updateDataUnionStats(ids))
+    }, [dispatch])
+    const loadByDataUnionId = useCallback((ids: Array<DataUnionId> = []) => {
+        dispatch(updateDataUnionStatsByDataUnionId(ids))
     }, [dispatch])
     const stats = useSelector(selectDeployedDataUnionStats)
     const loadedIds = useSelector(selectDataUnionRequestedIds)
@@ -40,6 +48,7 @@ function useAllDataUnionStats() {
 
     return useMemo(() => ({
         load,
+        loadByDataUnionId,
         loadedIds,
         fetchingIds,
         deployedIds,
@@ -48,6 +57,7 @@ function useAllDataUnionStats() {
         reset,
     }), [
         load,
+        loadByDataUnionId,
         loadedIds,
         fetchingIds,
         deployedIds,
