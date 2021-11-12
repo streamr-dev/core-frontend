@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import useLunr from '$docs/hooks/useLunr'
-import useGetIndexStore from '$docs/hooks/useGetIndexStore'
 import RawHtml from '$shared/components/RawHtml'
 import BodyClass from '$shared/components/BodyClass'
 import { SM, LG } from '$shared/utils/styled'
@@ -115,9 +114,9 @@ type Props = {
 }
 
 const UnstyledSearch = ({ toggleOverlay, nav, ...props }: Props) => {
-    const [index, store] = useGetIndexStore()
     const [query, setQuery] = useState('')
-    const searchResults = useLunr(query, index, store)
+
+    const searchResults = useLunr(query)
 
     const onSearchChange = (searchValue) => {
         setQuery(searchValue)

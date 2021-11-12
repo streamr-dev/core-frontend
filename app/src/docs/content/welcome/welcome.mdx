@@ -1,66 +1,198 @@
 import { Link } from 'react-router-dom'
-
 import Logo from '$shared/components/Logo'
 import SvgIcon from '$shared/components/SvgIcon'
 import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
-import IntroductionHero from './introductionHero.png'
-import IntroductionHero2x from './introductionHero@2x.png'
-
+import Panels, { ImageWrap } from './Panels'
+import Concept, { ImageWrap as ConceptImageWrap } from './Concept'
+import UseCase from './UseCase'
+import Explore, { ImageWrap as ExploreImageWrap } from './Explore'
+import Ne from './ne.png'
+import Ne2x from './ne@2x.png'
+import Du from './du.png'
+import Du2x from './du@2x.png'
+import iconDATA from './iconDATA.svg'
+import iconStreams from './iconStreams.svg'
+import iconNodes from './iconNodes.svg'
+import next from './next.svg'
+import devStack from './devStack.png'
+import devStack2x from './devStack@2x.png'
+import externalLink from './externalLink.svg'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
-import styles from '$docs/components/Pages/Welcome/welcome.pcss'
 
 # Streamr Documentation
 Welcome to Streamr, the platform for real-time data on the decentralized web. Explore what you can do with Streamr below.
 
-<div className={styles.streamrBanner}>
-    <img
-        alt="Introduction"
-        className={styles.heroImage}
-        height="280"
-        src={IntroductionHero}
-        srcSet={`${IntroductionHero2x} 2x`}
-        width="736"
-    />
-</div>
-
-<div className={styles.panels}>
-    <Link to={docsLinks.streamrNetwork} className={styles.panelTile}>
-        <strong>Streamr Network</strong>
-        <p className={styles.jumplistText}>
-            The Streamr Network is a decentralized pub/sub network for transporting real-time data over incentivized WebRTC mesh networks.
-        </p>
+<Panels>
+    <Link to={docsLinks.streamrNetwork}>
+        <ImageWrap>
+            <img alt="" src={Ne} srcSet={`${Ne2x} 2x`} />
+        </ImageWrap>
+        <div>
+            <h4>
+                Streamr Network
+            </h4>
+            <p>
+                The Streamr Network is a decentralized pub/sub network for transporting
+                real-time data over incentivized WebRTC mesh&nbsp;networks.
+            </p>
+        </div>
     </Link>
-    <Link to={docsLinks.dataUnions} className={styles.panelTile}>
-        <strong>Data Unions</strong>
-        <p className={styles.jumplistText}>
-            Data Unions are a way to collect and package an individuals's real-time data together with others' with rich consent and fair reward.
-        </p>
+    <Link to={docsLinks.dataUnions}>
+        <ImageWrap>
+            <img alt="" src={Du} srcSet={`${Du2x} 2x`} />
+        </ImageWrap>
+        <div>
+            <h4>
+                Data Unions
+            </h4>
+            <p>
+                Data Unions are a way to collect and package an individuals&apos;s real-time
+                data together with others&apos; with rich consent and fair&nbsp;reward.
+            </p>
+        </div>
     </Link>
-</div>
+</Panels>
 
 <hr />
 
 ## Key Concepts
-<Link to={docsLinks.streams} className={styles.keyComponents}>
-    <p><strong>Streams</strong> are sequences of timestamped messages, delivered from publishers to subscribers by the Streamr Network.</p>
-</Link>
-<Link to={docsLinks.introToStreamrNetwork} className={styles.keyComponents}>
-    <p><strong>Streamr nodes</strong> are the access points to the Streamr Network. To connect your application to streams, you interface it with a Streamr node.</p>
-</Link>
-<Link to={docsLinks.dataToken} className={styles.keyComponents}>
-    <p><strong>DATA</strong> is the cryptocurrency which powers the Streamr ecosystem in various ways. It is an ERC-20 token on the Ethereum blockchain.</p>
-</Link>
+<Concept>
+    <Link to={docsLinks.streams}>
+        <ConceptImageWrap>
+            <img src={iconStreams} alt="" />
+        </ConceptImageWrap>
+        <p>
+            <em>Streams</em>
+            {' '}
+            are sequences of timestamped messages, delivered from publishers to subscribers by the
+            Streamr&nbsp;Network.
+        </p>
+    </Link>
+</Concept>
+<Concept>
+    <Link to={docsLinks.introToStreamrNetwork}>
+        <ConceptImageWrap>
+            <img src={iconNodes} alt="" />
+        </ConceptImageWrap>
+        <p>
+            <em>Streamr nodes</em>
+            {' '}
+            are the access points to the Streamr Network. To connect your application to streams,
+            you interface it with a Streamr&nbsp;node.
+        </p>
+    </Link>
+</Concept>
+<Concept>
+    <Link to={docsLinks.dataToken}>
+        <ConceptImageWrap>
+            <img src={iconDATA} alt="" />
+        </ConceptImageWrap>
+        <p>
+            <em>DATA</em>
+            {' '}
+            is the cryptocurrency which powers the Streamr ecosystem in various ways. It is an
+            ERC-20 token on the Ethereum&nbsp;blockchain.
+        </p>
+    </Link>
+</Concept>
 
 ## Start with your use case
-- <Link to={docsLinks.publishAndSubscribe}>I want to publish or subscribe to data from my application</Link>
-- <Link to={docsLinks.managingYourStreams}>I want to view and manage my streams</Link>
-- <Link to={docsLinks.networkExplorer}>I want to explore the Network</Link>
-- <Link to={docsLinks.mining}>I want to mine DATA tokens</Link>
-- <Link to={docsLinks.dataUnions}>I want to build a Data Union</Link>
-- <Link to={docsLinks.marketplace}>I want to buy and sell real-time data</Link>
+<UseCase>
+    <Link to={docsLinks.publishAndSubscribe}>
+        <p>
+            I want to publish or subscribe to data from my&nbsp;application.
+        </p>
+        <img alt="" src={next} />
+    </Link>
+</UseCase>
+<UseCase>
+    <Link to={docsLinks.managingYourStreams}>
+        <p>
+            I want to view and manage my&nbsp;streams.
+        </p>
+        <img alt="" src={next} />
+    </Link>
+</UseCase>
+<UseCase>
+    <Link to={docsLinks.networkExplorer}>
+        <p>
+            I want to explore the&nbsp;Network.
+        </p>
+        <img alt="" src={next} />
+    </Link>
+</UseCase>
+<UseCase>
+    <Link to={docsLinks.mining}>
+        <p>
+            I want to mine DATA&nbsp;tokens.
+        </p>
+        <img alt="" src={next} />
+    </Link>
+</UseCase>
+<UseCase>
+    <Link to={docsLinks.dataUnions}>
+        <p>
+            I want to build a Data&nbsp;Union.
+        </p>
+        <img alt="" src={next} />
+    </Link>
+</UseCase>
+<UseCase>
+    <Link to={docsLinks.marketplace}>
+        <p>
+            I want to buy and sell real-time&nbsp;data.
+        </p>
+        <img alt="" src={next} />
+    </Link>
+</UseCase>
 
-### Explore the project
-- <a href="https://github.com/streamr-dev/examples" target="_blank" rel="noopener noreferrer">Streamr Examples</a>
-- <a href="https://github.com/streamr-dev/network-monorepo/tree/main/packages/cli-tools" target="_blank" rel="noopener noreferrer">Streamr command line tools</a>
-- <a href="https://github.com/streamr-dev/network-monorepo" target="_blank" rel="noopener noreferrer">Streamr Monorepo</a>
+<hr />
+
+## Explore the project
+<Explore>
+    <ExploreImageWrap>
+        <img alt="" src={devStack} srcSet={`${devStack2x} 2x`} />
+    </ExploreImageWrap>
+    <ul>
+        <li>
+            <a href="https://github.com/streamr-dev/examples" rel="noopener noreferrer" target="_blank">
+                <div>
+                    <h4>
+                        Streamr Examples
+                    </h4>
+                    <p>
+                        Streamr code examples and important resources to get you started.
+                    </p>
+                </div>
+                <img src={externalLink} alt="" />
+            </a>
+        </li>
+        <li>
+            <a href="https://github.com/streamr-dev/network-monorepo/tree/main/packages/cli-tools" rel="noopener noreferrer" target="_blank">
+                <div>
+                    <h4>
+                        Streamr command line tools
+                    </h4>
+                    <p>
+                        Tools for interacting with Streamr from the command line.
+                    </p>
+                </div>
+                <img src={externalLink} alt="" />
+            </a>
+        </li>
+        <li>
+            <a href="https://github.com/streamr-dev/network-monorepo" rel="noopener noreferrer" target="_blank">
+                <div>
+                    <h4>
+                        Streamr Monorepo
+                    </h4>
+                    <p>
+                        A monorepo containing all the main  components of Streamr Network.
+                    </p>
+                </div>
+                <img src={externalLink} alt="" />
+            </a>
+        </li>
+    </ul>
+</Explore>

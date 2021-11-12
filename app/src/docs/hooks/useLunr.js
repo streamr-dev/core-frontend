@@ -1,21 +1,21 @@
-// @flow
-
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
+import lunr from 'lunr'
+import docsIndex from '../components/Search/index/index'
+import store from '../components/Search/index/store'
 import { runSearchQuery } from '../components/Search/searchUtils'
 
-const useLunr = (query: string, providedIndex: any, providedStore: any) => {
-    const [index, setIndex] = useState(null)
-    const [store, setStore] = useState(null)
+let index
 
-    useEffect(() => {
-        if (!providedIndex || !providedStore) { return }
-        setIndex(providedIndex)
-        setStore(providedStore)
-    }, [providedIndex, providedStore])
+export default function useLunr(query) {
+    return useMemo(() => {
+        if (index == null) {
+            index = lunr.Index.load(docsIndex)
+        }
 
-    return useMemo(() => runSearchQuery({
-        query, index, store,
-    }), [query, store, index])
+        return runSearchQuery({
+            query,
+            index,
+            store,
+        })
+    }, [query])
 }
-
-export default useLunr
