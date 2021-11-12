@@ -6,7 +6,7 @@ import docsLinks from '$shared/../docsLinks'
 import Panels, { ImageWrap } from './Panels'
 import Concept, { ImageWrap as ConceptImageWrap } from './Concept'
 import UseCase from './UseCase'
-import Explore, { ImageWrap as ExploreImageWrap } from './Explore'
+import Explore, { ImageWrap as ExploreImageWrap, ExternalLinkWrap } from './Explore'
 import Ne from './ne.png'
 import Ne2x from './ne@2x.png'
 import Du from './du.png'
@@ -165,7 +165,9 @@ Welcome to Streamr, the platform for real-time data on the decentralized web. Ex
                         Streamr code examples and important resources to get you started.
                     </p>
                 </div>
-                <img src={externalLink} alt="" />
+                <ExternalLinkWrap>
+                    <img src={externalLink} alt="" />
+                </ExternalLinkWrap>
             </a>
         </li>
         <li>
@@ -178,7 +180,9 @@ Welcome to Streamr, the platform for real-time data on the decentralized web. Ex
                         Tools for interacting with Streamr from the command line.
                     </p>
                 </div>
-                <img src={externalLink} alt="" />
+                <ExternalLinkWrap>
+                    <img src={externalLink} alt="" />
+                </ExternalLinkWrap>
             </a>
         </li>
         <li>
@@ -191,7 +195,9 @@ Welcome to Streamr, the platform for real-time data on the decentralized web. Ex
                         A monorepo containing all the main  components of Streamr Network.
                     </p>
                 </div>
-                <img src={externalLink} alt="" />
+                <ExternalLinkWrap>
+                    <img src={externalLink} alt="" />
+                </ExternalLinkWrap>
             </a>
         </li>
     </ul>

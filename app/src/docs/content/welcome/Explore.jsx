@@ -24,6 +24,12 @@ export const ImageWrap = styled.div`
     }
 `
 
+export const ExternalLinkWrap = styled.div`
+    align-items: center;
+    display: flex;
+    margin-left: 16px;
+`
+
 const Explore = styled.div`
     background: #F8F8F8;
     border-radius: 8px;
@@ -56,7 +62,6 @@ const Explore = styled.div`
 
     a img {
         flex: 0;
-        margin-left: 16px;
     }
 
     li + li {
