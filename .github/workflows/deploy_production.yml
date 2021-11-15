@@ -66,7 +66,6 @@ jobs:
           DATA_TOKEN_SIDECHAIN_ADDRESS: "0xE4a2620edE1058D61BEe5F45F6414314fdf10548"
           DATA_UNION_SIDECHAIN_PROVIDER: https://rpc.xdaichain.com/
           DATA_UNION_SIDECHAIN_ID: 100
-          DATAUNION_VERSION: 2
         run: npm run build --if-present
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1

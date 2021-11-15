@@ -5,7 +5,7 @@ import StreamrClient from 'streamr-client'
 import BN from 'bignumber.js'
 import Web3 from 'web3'
 
-import { getContract, call, calculateContractAddress } from '$mp/utils/smartContract'
+import { getContract, call } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 import { getToken } from '$shared/utils/sessionToken'
 

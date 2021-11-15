@@ -8,9 +8,6 @@
  * entry inside the exported object from 'docsMap.js'. Follow the advice inside
  * that file. If you want to hide parts of the docs from the indexer,
  * use a conditional environmental flag inside docsMap.js to hide these pages.
- *
- * New canvas modules must be added/updated through the referenced
- * canvasModuleHelpData.json.
 */
 
 import * as Sentry from '@sentry/node'

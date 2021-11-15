@@ -1,7 +1,7 @@
 # Streamr Core frontend
 
 This is the Streamr Core application frontend, which includes tooling for creating and editing Streamr resources
-(streams, canvases, dashboards, products), the data marketplace, and related documentation.
+(streams, data unions, products), the data marketplace, and related documentation.
 
 The Core frontend runs against an API backend and Ethereum smart contracts. For more information see [Backend](#backend).
 
@@ -11,7 +11,6 @@ Although the frontend consists of a single app, the code is structured into diff
 
 * `auth` contains components for login
 * `docs` contains the Streamr documentation
-* `editor` is the visual programming environment for canvases
 * `marketplace` contains the data marketplace
 * `shared` has shared code and utilities
 * `userpages` contains the views for managing a user's Streamr resources
@@ -60,27 +59,17 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
 | UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | Address of the deployed Uniswap adaptor                              |
 | DATA_UNION_PUBLISH_MEMBER_LIMIT                   | Number of members required for a data union product before publish   |
+| DATA_UNION_FACTORY_MAINNET_ADDRESS                |                                                                      |
+| DATA_UNION_TEMPLATE_MAINNET_ADDRESS               |                                                                      |
+| DATA_UNION_FACTORY_SIDECHAIN_ADDRESS              |                                                                      |
+| DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK       |                                                                      |
+| DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS             |                                                                      |
+| DATA_UNION_SIDECHAIN_PROVIDER                     |                                                                      |
+| DATA_TOKEN_SIDECHAIN_ADDRESS                      |                                                                      |
+| DATA_UNION_SIDECHAIN_ID                           |                                                                      |
+| STORAGE_NODES                                     |                                                                      |
 
-Development values (set the values in your `.env`):
-
-| Variable                                          | Value                                        | Description                     |
-|---------------------------------------------------|----------------------------------------------|---------------------------------|
-| PORT                                              | `3333`                                       |                                 |
-| PLATFORM_ORIGIN_URL                               | `http://localhost`                           |                                 |
-| STREAMR_API_URL                                   | `http://localhost/api/v1`                    |                                 |
-| STREAMR_WS_URL                                    | `ws://localhost/api/v1/ws`                   |                                 |
-| STREAMR_URL                                       | `http://localhost`                           |                                 |
-| MARKETPLACE_CONTRACT_ADDRESS                      | `0xF1371c0f40528406dc4f4cAf89924eA9Da49E866` |                                 |
-| DATA_TOKEN_CONTRACT_ADDRESS                       | `0xbAA81A0179015bE47Ad439566374F2Bae098686F` |                                 |
-| DAI_TOKEN_CONTRACT_ADDRESS                        | `0x642d2b84a32a9a92fec78ceaa9488388b3704898` |                                 |
-| WEB3_REQUIRED_NETWORK_ID                          | 8995                                         |                                 |
-| WEB3_PUBLIC_HTTP_PROVIDER                         | http://localhost:8545                        | Private network                 |
-| WEB3_PUBLIC_WS_PROVIDER                           | ws://localhost:8545                          |                                 |
-| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            | Parity confirms tx immediately |
-| BUNDLE_ANALYSIS                                   | 1                                            | PLATFORM_ORIGIN_URL/report.html |
-| STREAMR_ENGINE_NODE_ADDRESSES                     | 0xFCAd0B19bB29D4674531d6f115237E16AfCE377c   |                                 |
-| UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | 0xe4ea76e830a659282368ca2e7e4d18c4ae52d8b3   |                                 |
-| DATA_UNION_PUBLISH_MEMBER_LIMIT                   | 1                                            |                                 |
+Default development values are taken from `.env.required` which can be overridden by values in your `.env` file.
 
 Optional config values:
 
