@@ -1,7 +1,7 @@
 # Streamr Core frontend
 
-This is the Streamr Core application frontend, which includes tooling for creating and editing Streamr resources 
-(streams, canvases, dashboards, products), the data marketplace, and related documentation.
+This is the Streamr Core application frontend, which includes tooling for creating and editing Streamr resources
+(streams, data unions, products), the data marketplace, and related documentation.
 
 The Core frontend runs against an API backend and Ethereum smart contracts. For more information see [Backend](#backend).
 
@@ -11,14 +11,13 @@ Although the frontend consists of a single app, the code is structured into diff
 
 * `auth` contains components for login
 * `docs` contains the Streamr documentation
-* `editor` is the visual programming environment for canvases
 * `marketplace` contains the data marketplace
 * `shared` has shared code and utilities
 * `userpages` contains the views for managing a user's Streamr resources
 * `routes` contains the list of App routes.
-* `utils` contains commonly used utilities, used throughout the App. 
+* `utils` contains commonly used utilities, used throughout the App.
 * `stories` storybook stories.
-* `test` App unit tests. 
+* `test` App unit tests.
 * `travis_scripts` Deployment scripts.
 
 ## Getting Started
@@ -34,8 +33,8 @@ Webpack is configured with live reloading and will be served on http://localhost
 
 ### Documentation
 
-The live documentation can be found at [streamr.network/docs](https://streamr.network/docs). 
-The documentation content files are held in `/src/docs/content` as MDX files (jsx flavoured markdown). 
+The live documentation can be found at [streamr.network/docs](https://streamr.network/docs).
+The documentation content files are held in `/src/docs/content` as MDX files (jsx flavoured markdown).
 Community contributions are encouraged, please see the [Docs Editing Guide](https://github.com/streamr-dev/streamr-platform/app/src/docs/docsEditingGuide.md) for more information.
 
 ### Environment & Smart contract configuration
@@ -59,32 +58,18 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
 | STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
 | UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | Address of the deployed Uniswap adaptor                              |
-| DATA_UNION_OPERATOR_ADDRESS                       |                                                                      |
-| DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS            |                                                                      |
 | DATA_UNION_PUBLISH_MEMBER_LIMIT                   | Number of members required for a data union product before publish   |
+| DATA_UNION_FACTORY_MAINNET_ADDRESS                |                                                                      |
+| DATA_UNION_TEMPLATE_MAINNET_ADDRESS               |                                                                      |
+| DATA_UNION_FACTORY_SIDECHAIN_ADDRESS              |                                                                      |
+| DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK       |                                                                      |
+| DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS             |                                                                      |
+| DATA_UNION_SIDECHAIN_PROVIDER                     |                                                                      |
+| DATA_TOKEN_SIDECHAIN_ADDRESS                      |                                                                      |
+| DATA_UNION_SIDECHAIN_ID                           |                                                                      |
+| STORAGE_NODES                                     |                                                                      |
 
-Development values (set the values in your `.env`):
-
-| Variable                                          | Value                                        | Description                     |
-|---------------------------------------------------|----------------------------------------------|---------------------------------|
-| PORT                                              | `3333`                                       |                                 |
-| PLATFORM_ORIGIN_URL                               | `http://localhost`                           |                                 |
-| STREAMR_API_URL                                   | `http://localhost/api/v1`                    |                                 |
-| STREAMR_WS_URL                                    | `ws://localhost/api/v1/ws`                   |                                 |
-| STREAMR_URL                                       | `http://localhost`                           |                                 |
-| MARKETPLACE_CONTRACT_ADDRESS                      | `0xF1371c0f40528406dc4f4cAf89924eA9Da49E866` |                                 |
-| DATA_TOKEN_CONTRACT_ADDRESS                       | `0xbAA81A0179015bE47Ad439566374F2Bae098686F` |                                 |
-| DAI_TOKEN_CONTRACT_ADDRESS                        | `0x642d2b84a32a9a92fec78ceaa9488388b3704898` |                                 |
-| WEB3_REQUIRED_NETWORK_ID                          | 8995                                         |                                 |
-| WEB3_PUBLIC_HTTP_PROVIDER                         | http://localhost:8545                        | Private network                 |
-| WEB3_PUBLIC_WS_PROVIDER                           | ws://localhost:8545                          |                                 |
-| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | 1                                            | Parity confirms tx immediately |
-| BUNDLE_ANALYSIS                                   | 1                                            | PLATFORM_ORIGIN_URL/report.html |
-| STREAMR_ENGINE_NODE_ADDRESSES                     | 0xFCAd0B19bB29D4674531d6f115237E16AfCE377c   |                                 |
-| UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | 0xe4ea76e830a659282368ca2e7e4d18c4ae52d8b3   |                                 |
-| DATA_UNION_OPERATOR_ADDRESS                       | 0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1   |                                 |
-| DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS            | 1                                            |                                 |
-| DATA_UNION_PUBLISH_MEMBER_LIMIT                   | 1                                            |                                 |
+Default development values are taken from `.env.required` which can be overridden by values in your `.env` file.
 
 Optional config values:
 
@@ -99,30 +84,6 @@ Optional config values:
 
 Use `.travis.yml` to set the production values.
 
-### Smart contract configuration
-
-To be able to use the Marketplace, you'll need to configure these variables into your `.env` file:
-
-| Variable                     | Description                                                          |
-|------------------------------|----------------------------------------------------------------------|
-| MARKETPLACE_CONTRACT_ADDRESS | Address of the deployed Marketplace contract                         |
-| DATA_TOKEN_CONTRACT_ADDRESS  | Address of the deployed DATA Token contract                          |
-| WEB3_REQUIRED_NETWORK_ID     | This is used to check that the user has selected the correct network |
-| WEB3_PUBLIC_HTTP_PROVIDER    | A public provider used to query Marketplace methods without Metamask |
-| WEB3_PUBLIC_WS_PROVIDER      | A public websocket prodiver (currently not in use)                   |
-
-Development values (set the values in your `.env`):
-
-| Variable                     | Value                                        | Description      |
-|------------------------------|----------------------------------------------|------------------|
-| MARKETPLACE_CONTRACT_ADDRESS | `0xF1371c0f40528406dc4f4cAf89924eA9Da49E866` |                  |
-| DATA_TOKEN_CONTRACT_ADDRESS  | `0xbAA81A0179015bE47Ad439566374F2Bae098686F` |                  |
-| WEB3_REQUIRED_NETWORK_ID     | 8995                                         | Private network  |
-| WEB3_PUBLIC_HTTP_PROVIDER    | http://localhost:8545                        |                  |
-| WEB3_PUBLIC_WS_PROVIDER      | ws://localhost:8545                          |                  |
-
-Use `.travis.yml` to set the production values.
-
 #### Routes
 
 Marketplace: [/marketplace](/marketplace)
@@ -133,12 +94,12 @@ Docs: [/docs](/docs)
 
 ### Backend
 
-To run the app locally, you must install and start the development environment running on Docker. 
+To run the app locally, you must install and start the development environment running on Docker.
 Follow the instructions [https://github.com/streamr-dev/streamr-docker-dev](here) to start the full stack except the frontend:
 
 `streamr-docker-dev start --except platform`
 
-Note that the instructions also include login credentials for the local app. 
+Note that the instructions also include login credentials for the local app.
 
 
 ### Git Branches
@@ -151,9 +112,9 @@ Master Branch (tagged releases) -> Production code - https://streamr.network/cor
 
 ### Deploying to Staging
 
-Merging a PR to `development` will trigger a release to staging. 
+Merging a PR to `development` will trigger a release to staging.
 
-### Deploying to Production 
+### Deploying to Production
 
 Follow these steps to push a new production release:
 
@@ -170,7 +131,7 @@ git commit -m "Upgrade to 2.1.15"
 git push
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '2.1.15', 
+At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '2.1.15',
 
 ```
 git tag -a v2.1.15 -m 'v2.1.15'
@@ -189,8 +150,8 @@ The parameter patch means updating the last number of the version, eg. 1.0.0 -> 
 
 ### Production Hotfixes
 
-Create new branch from master `hotfix/ticket-id-issue-title` 
-Merge the approved branch to master and push a tagged incremental release. 
+Create new branch from master `hotfix/ticket-id-issue-title`
+Merge the approved branch to master and push a tagged incremental release.
 
 ```
 git checkout master
@@ -201,7 +162,7 @@ git commit -m "Upgrade to 2.1.15"
 git push
 ```
 
-At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '2.1.15', 
+At this point it's a good idea to check that Travis confirms all tests are passing. Then, for example if the new version is '2.1.15',
 
 ```
 git tag -a v2.1.15 -m 'v2.1.15'

@@ -57,8 +57,8 @@ const Layout = createGlobalStyle`
 
 const Pusher = styled.div`
     min-width: var(--LiveDataMinMargin);
-    max-width: calc((100vw - 1108px - var(--LiveDataInspectorMinWidth) - 32px) / 2);
-    width: calc((100vw - 1108px - var(--LiveDataInspectorWidth) - 32px) / 2);
+    max-width: calc((100vw - 1108px - var(--LiveDataInspectorMinWidth) - 32px) * 0.5);
+    width: calc((100vw - 1108px - var(--LiveDataInspectorWidth) - 32px) * 0.5);
 `
 
 Object.assign(Layout, {

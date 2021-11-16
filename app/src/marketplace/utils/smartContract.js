@@ -3,7 +3,6 @@
 import EventEmitter from 'events'
 import type { PromiEvent } from 'web3'
 import { isHex } from 'web3-utils'
-import { generateAddress, bufferToHex } from 'ethereumjs-util'
 import BN from 'bignumber.js'
 
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
@@ -39,18 +38,6 @@ export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 export const getPrefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '0x')
 
 export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '')
-
-export const calculateContractAddress = async (account: Address): Promise<Address> => {
-    const web3 = getWeb3()
-    const currentNonce = await web3.eth.getTransactionCount(account)
-
-    if (!Number.isInteger(currentNonce)) {
-        throw new Error('Could not calculate address')
-    }
-
-    const futureAddress = bufferToHex(generateAddress(account, currentNonce))
-    return futureAddress
-}
 
 /**
  * Tells if the given string is valid hex or not.

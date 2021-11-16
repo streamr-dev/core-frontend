@@ -8,7 +8,7 @@ defaults:
   run:
     working-directory: app
 
-jobs:  
+jobs:
   deploy:
     name: Build and deploy to production
     runs-on: ubuntu-latest
@@ -54,8 +54,6 @@ jobs:
           SENTRY_DSN: https://e012761929d24baa96ca82772f60b395@o151964.ingest.sentry.io/1203154
           SENTRY_INDEXER_DSN: https://8311f8e7df9046b781600f95eefd1aa0@o151964.ingest.sentry.io/5235991
           STREAMR_ENGINE_NODE_ADDRESSES: "0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a"
-          DATA_UNION_OPERATOR_ADDRESS: "0xc0aa4dC0763550161a6B59fa430361b5a26df28C"
-          DATA_UNION_BLOCK_FREEZE_PERIOD_SECONDS: 1
           DATA_UNION_PUBLISH_MEMBER_LIMIT: 1
           WEB3_TRANSACTION_CONFIRMATION_BLOCKS: 1
           NO_TEST_HOOKS: 1
@@ -68,11 +66,10 @@ jobs:
           DATA_TOKEN_SIDECHAIN_ADDRESS: "0xE4a2620edE1058D61BEe5F45F6414314fdf10548"
           DATA_UNION_SIDECHAIN_PROVIDER: https://weathered-billowing-thunder.xdai.quiknode.pro/502bd1fa80407bcd07ebd4f14e37c6e5c20db640/
           DATA_UNION_SIDECHAIN_ID: 100
-          DATAUNION_VERSION: 2
         run: npm run build --if-present
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
-        with: 
+        with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
