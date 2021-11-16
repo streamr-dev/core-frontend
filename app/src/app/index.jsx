@@ -9,6 +9,7 @@ import '$utils/setupSnippets'
 
 // Auth
 import SessionProvider from '$auth/components/SessionProvider'
+import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import LoginPage from '$auth/components/LoginPage'
 import LogoutPage from '$auth/components/LogoutPage'
 
@@ -64,24 +65,26 @@ const MiscRouter = () => ([
 const App = () => (
     <Router history={history}>
         <SessionProvider>
-            <ModalPortalProvider>
-                <ModalProvider>
-                    <GlobalInfoWatcher>
-                        <ActivityResourceProvider>
-                            <Analytics />
-                            <Switch>
-                                {AuthenticationRouter()}
-                                {MarketplaceRouter()}
-                                {DocsRouter()}
-                                {UserpagesRouter()}
-                                {MiscRouter()}
-                            </Switch>
-                            <Notifications />
-                        </ActivityResourceProvider>
-                        {isProduction() && <GoogleAnalyticsTracker />}
-                    </GlobalInfoWatcher>
-                </ModalProvider>
-            </ModalPortalProvider>
+            <StreamrClientProvider>
+                <ModalPortalProvider>
+                    <ModalProvider>
+                        <GlobalInfoWatcher>
+                            <ActivityResourceProvider>
+                                <Analytics />
+                                <Switch>
+                                    {AuthenticationRouter()}
+                                    {MarketplaceRouter()}
+                                    {DocsRouter()}
+                                    {UserpagesRouter()}
+                                    {MiscRouter()}
+                                </Switch>
+                                <Notifications />
+                            </ActivityResourceProvider>
+                            {isProduction() && <GoogleAnalyticsTracker />}
+                        </GlobalInfoWatcher>
+                    </ModalProvider>
+                </ModalPortalProvider>
+            </StreamrClientProvider>
         </SessionProvider>
     </Router>
 )
