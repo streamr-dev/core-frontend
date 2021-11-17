@@ -29,9 +29,11 @@ import { MEDIUM } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
 import { CoreHelmet } from '$shared/components/Helmet'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { truncate } from '$shared/utils/text'
 import routes from '$routes'
 
+import { useController } from '../../StreamController'
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
@@ -83,13 +85,9 @@ const didChange = (original, changed) => {
     return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
 }
 
-const UnstyledEdit = ({
-    stream,
-    canShare,
-    disabled,
-    isNewStream,
-    ...props
-}: any) => {
+const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
+    const { stream: originalStream, permissions } = useController()
+    const { state: stream } = useEditableState()
     const sidebar = useSidebar()
     const { id: streamId } = stream
     const streamRef = useRef()
@@ -99,6 +97,8 @@ const UnstyledEdit = ({
 
     const dispatch = useDispatch()
     const history = useHistory()
+
+    const canShare = useMemo(() => permissions.includes('stream_share'), [permissions])
 
     useEffect(() => {
         if (!streamId || !streamRef.current) { return }

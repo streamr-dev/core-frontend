@@ -58,12 +58,12 @@ export default function useLoadStreamCallback() {
 
             if (!isMounted()) { return }
 
+            productUpdater.replaceState(() => stream.toObject())
+
             setStream({
                 stream,
                 permissions: normalizePermissions(permissions),
             })
-
-            productUpdater.replaceState(() => stream.toObject())
         })
     ), [wrap, client, setStream, productUpdater, isMounted])
 

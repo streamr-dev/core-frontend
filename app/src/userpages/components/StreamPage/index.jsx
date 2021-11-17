@@ -1,10 +1,9 @@
 import React, { useMemo } from 'react'
-import { useSelector } from 'react-redux'
 import { useRouteMatch, useParams } from 'react-router-dom'
 
-import { selectUserData } from '$shared/modules/user/selectors'
 import Layout from '$shared/components/Layout/Core'
 import Toolbar from '$shared/components/Toolbar'
+import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import routes from '$routes'
 
 import StreamController, { useController } from '../StreamController'
@@ -15,20 +14,9 @@ import Edit from './Edit'
 const StreamPage = () => {
     const { stream, permissions, hasLoaded } = useController()
 
-    const [readOnly, canShare] = useMemo(() => {
-        if (!permissions) {
-            return [false, false]
-        }
+    const readOnly = useMemo(() => !permissions.includes('stream_edit'), [permissions])
 
-        return [
-            !permissions.includes('stream_edit'),
-            permissions.includes('stream_share'),
-        ]
-    }, [permissions])
-
-    const currentUser = useSelector(selectUserData)
-
-    if (!hasLoaded || !stream || !permissions) {
+    if (!hasLoaded || !stream) {
         return (
             <Layout
                 loading
@@ -45,18 +33,12 @@ const StreamPage = () => {
 
     if (readOnly) {
         return (
-            <View
-                stream={stream}
-                currentUser={currentUser}
-            />
+            <View />
         )
     }
 
     return (
-        <Edit
-            stream={stream}
-            canShare={canShare}
-        />
+        <Edit />
     )
 }
 
@@ -66,12 +48,13 @@ export default () => {
     const { path } = useRouteMatch(routes.streams.public.show()) || {}
 
     return (
-        <StreamController
-            key={idProp}
-            autoLoadStreamId={decodedIdProp}
-            ignoreUnauthorized={path === routes.streams.public.show()}
-        >
-            <StreamPage />
-        </StreamController>
+        <UndoContextProvider key={idProp}>
+            <StreamController
+                autoLoadStreamId={decodedIdProp}
+                ignoreUnauthorized={path === routes.streams.public.show()}
+            >
+                <StreamPage />
+            </StreamController>
+        </UndoContextProvider>
     )
 }

@@ -99,20 +99,6 @@ const deleteStreamFailure = (error: ErrorInUi) => ({
     error,
 })
 
-const createStreamRequest = () => ({
-    type: CREATE_STREAM_REQUEST,
-})
-
-const createStreamSuccess = (stream: Stream) => ({
-    type: CREATE_STREAM_SUCCESS,
-    stream,
-})
-
-const createStreamFailure = (error: ErrorInUi) => ({
-    type: CREATE_STREAM_FAILURE,
-    error,
-})
-
 const clearStreamsListAction = () => ({
     type: CLEAR_STREAM_LIST,
 })
@@ -186,22 +172,6 @@ export const getStreams = ({ replace = false, filter = {} }: GetStreamParams = {
             dispatch(getStreamsFailure(e))
             throw e
         })
-}
-
-export const createStream = (options: { id: string, description: ?string }) => (dispatch: Function): Promise<StreamId> => {
-    dispatch(createStreamRequest())
-    return new Promise((resolve, reject) => {
-        services.postStream(options)
-            .then(handleEntities(streamSchema, dispatch))
-            .then((id) => {
-                dispatch(createStreamSuccess(id))
-                resolve(id)
-            })
-            .catch((e) => {
-                dispatch(createStreamFailure(e))
-                reject(e)
-            })
-    })
 }
 
 export const updateStream = (stream: Stream) => (dispatch: Function) => {

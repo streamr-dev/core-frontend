@@ -33,64 +33,6 @@ describe('Stream actions', () => {
         process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
-    describe('createStream', () => {
-        it('creates CREATE_STREAM_SUCCESS when creating stream has succeeded', async () => {
-            const stream = {
-                id: 'test',
-                name: 'test',
-            }
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams`, {
-                status: 200,
-                response: stream,
-            })
-            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
-                type: 'updateEntities',
-            }))
-
-            const expectedActions = [{
-                type: actions.CREATE_STREAM_REQUEST,
-            }, {
-                type: 'updateEntities',
-            }, {
-                type: actions.CREATE_STREAM_SUCCESS,
-                stream: 'test',
-            }]
-
-            await store.dispatch(actions.createStream(stream))
-            expect(store.getActions()).toEqual(expectedActions)
-        })
-        it('creates CREATE_STREAM_FAILURE when creating stream has failed', async () => {
-            const stream = {
-                name: 'test',
-            }
-            moxios.stubRequest(`${process.env.STREAMR_API_URL}/streams`, {
-                status: 500,
-                response: {
-                    error: 'test',
-                    code: 'TEST',
-                },
-            })
-
-            const expectedActions = [{
-                type: actions.CREATE_STREAM_REQUEST,
-            }, {
-                type: actions.CREATE_STREAM_FAILURE,
-                error: {
-                    message: 'test',
-                    code: 'TEST',
-                    statusCode: 500,
-                },
-            }]
-
-            try {
-                await store.dispatch(actions.createStream(stream))
-                expect(false).toBe(true) // fail on purpose because action did not throw
-            } catch (e) {
-                expect(store.getActions().slice(0, 2)).toMatchObject(expectedActions.slice(0, 2))
-            }
-        })
-    })
-
     describe('getStream', () => {
         it('creates GET_STREAM_SUCCESS when fetching a stream has succeeded', async () => {
             const id = 'asdfasdfasasd'

@@ -1,9 +1,10 @@
-import React, { useCallback, useState, useMemo, useRef, useEffect, useReducer } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import { Link, useHistory } from 'react-router-dom'
 import { StatusIcon } from '@streamr/streamr-layout'
+import { useClient } from 'streamr-client-react'
 
 import { MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
@@ -15,7 +16,6 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { createStream } from '$userpages/modules/userPageStreams/actions'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Layout from '$shared/components/Layout/Core'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
@@ -31,6 +31,8 @@ import Button from '$shared/components/Button'
 import { truncate } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
 import CodeSnippets from '$shared/components/CodeSnippets'
+import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import routes from '$routes'
 import PartitionsView from './Edit/PartitionsView'
 import HistoryView from './Edit/HistoryView'
@@ -235,14 +237,8 @@ const ConfirmExitModal = () => {
 }
 
 const UnstyledNew = ({ currentUser, ...props }) => {
-    const [{ domain, pathname, description }, updateStream] = useReducer((state, changeSet) => ({
-        ...state,
-        ...changeSet,
-    }), {
-        pathname: '',
-        description: '',
-        domain: undefined,
-    })
+    const { state: { domain, pathname, description }, updateState: updateStream } = useEditableState()
+    const client = useClient()
 
     const [loading, setLoading] = useState(false)
     const [createAttempted, setCreateAttempted] = useState(false)
@@ -250,7 +246,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const [validationError, setValidationError] = useState(undefined)
     const streamDataRef = useRef()
     const contentChangedRef = useRef(false)
-    const dispatch = useDispatch()
     const history = useHistory()
     const { api: confirmExitDialog } = useModal('confirmExit')
     const [domains, setDomains] = useState([])
@@ -321,7 +316,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         if (domain) { return }
 
         if (isEthereumAddress(currentUser.username)) {
-            updateStream({ domain: currentUser.username })
+            updateStream('set default domain', (s) => ({
+                ...s,
+                domain: currentUser.username,
+            }))
         }
     }, [domain, currentUser, domainOptions, updateStream])
 
@@ -353,24 +351,36 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         if (domain === ADD_ENS_DOMAIN) {
             window.open(ADD_DOMAIN_URL, '_blank', 'noopener noreferrer')
         } else {
-            updateStream({ domain })
+            updateStream('domain', (s) => ({
+                ...s,
+                domain,
+            }))
         }
     }, [updateStream])
 
     const onPathnameChange = useCallback((e) => {
         const pathname = e.target.value
 
-        updateStream({ pathname })
+        updateStream('pathname', (s) => ({
+            ...s,
+            pathname,
+        }))
     }, [updateStream])
 
     const onDescriptionChange = useCallback((e) => {
         const description = e.target.value
 
-        updateStream({ description })
+        updateStream('description', (s) => ({
+            ...s,
+            description,
+        }))
     }, [updateStream])
 
     const onClearPathname = useCallback(() => {
-        updateStream({ pathname: '' })
+        updateStream('clear pathname', (s) => ({
+            ...s,
+            pathname: '',
+        }))
     }, [updateStream])
 
     useEffect(() => {
@@ -399,13 +409,13 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         try {
             const { domain, pathname, description } = streamDataRef.current
 
-            const streamId = await dispatch(createStream({
+            const newStream = await client.createStream({
                 id: getValidId({
                     domain,
                     pathname,
                 }),
                 description,
-            }))
+            })
 
             if (!isMounted()) { return }
 
@@ -417,7 +427,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             })
             Activity.push({
                 action: actionTypes.CREATE,
-                resourceId: streamId,
+                resourceId: newStream.id,
                 resourceType: resourceTypes.STREAM,
             })
 
@@ -425,7 +435,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             setTimeout(() => {
                 if (isMounted()) {
                     history.push(routes.streams.show({
-                        id: streamId,
+                        id: newStream.id,
                         newStream: 1,
                     }))
                 }
@@ -449,7 +459,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 setLoading(false)
             }
         }
-    }, [dispatch, isMounted, history])
+    }, [client, isMounted, history])
 
     useEffect(() => {
         streamDataRef.current = {
@@ -737,14 +747,29 @@ const New = styled(UnstyledNew)`
 
 const NewStreamViewMaybe = (props) => {
     const currentUser = useSelector(selectUserData)
+    const { state: stream, replaceState: resetStream } = useEditableState()
 
-    if (!currentUser) {
+    useEffect(() => {
+        resetStream(() => ({
+            pathname: '',
+            description: '',
+            domain: undefined,
+        }))
+    }, [resetStream])
+
+    if (!currentUser || !stream) {
         return (
             <Layout loading />
         )
     }
 
-    return <New {...props} currentUser={currentUser} />
+    return (
+        <New {...props} currentUser={currentUser} />
+    )
 }
 
-export default NewStreamViewMaybe
+export default () => (
+    <UndoContextProvider>
+        <NewStreamViewMaybe />
+    </UndoContextProvider>
+)
