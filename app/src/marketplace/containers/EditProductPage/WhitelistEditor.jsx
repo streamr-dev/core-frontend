@@ -8,12 +8,12 @@ import type { Address } from '$shared/flowtype/web3-types'
 import WhitelistEditorComponent from '$mp/components/WhitelistEditor'
 
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
-import useEditableProduct from '$mp/containers/ProductController/useEditableProduct'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useEditableProductActions from '$mp/containers/ProductController/useEditableProductActions'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 export const WhitelistEditor = () => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const contractProduct = useContractProduct()
     const { items } = useWhitelist()
     const { updateRequiresWhitelist } = useEditableProductActions()

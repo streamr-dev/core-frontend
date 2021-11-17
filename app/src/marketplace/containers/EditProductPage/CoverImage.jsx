@@ -8,9 +8,9 @@ import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import useValidation from '../ProductController/useValidation'
-import useEditableProduct from '../ProductController/useEditableProduct'
 import { Context as EditControllerContext } from './EditControllerProvider'
 
 import styles from './coverImage.pcss'
@@ -21,7 +21,7 @@ type Props = {
 }
 
 const CoverImage = ({ disabled }: Props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { updateImageFile } = useEditableProductActions()
     const { isValid, message } = useValidation('imageUrl')
     const { api: cropImageDialog, isOpen } = useModal('cropImage')

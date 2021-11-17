@@ -3,14 +3,14 @@ import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
 import * as UndoContext from '$shared/contexts/Undo'
-import useEditableProductUpdater from '../useEditableProductUpdater'
+import useEditableState from './useEditableState'
 
-describe('useEditableProductUpdater', () => {
+describe('useEditableState', () => {
     it('replaces the current product', () => {
         let updater
         let product
         function Test() {
-            updater = useEditableProductUpdater()
+            updater = useEditableState()
             const { state } = useContext(UndoContext.Context)
             product = state
             return null
@@ -25,7 +25,7 @@ describe('useEditableProductUpdater', () => {
         expect(product).toBeFalsy()
 
         act(() => {
-            updater.replaceProduct(() => ({
+            updater.replaceState(() => ({
                 name: 'My Product',
             }))
         })
@@ -39,7 +39,7 @@ describe('useEditableProductUpdater', () => {
         let updater
         let product
         function Test() {
-            updater = useEditableProductUpdater()
+            updater = useEditableState()
             const { state } = useContext(UndoContext.Context)
             product = state
             return null
@@ -54,11 +54,11 @@ describe('useEditableProductUpdater', () => {
         expect(product).toBeFalsy()
 
         act(() => {
-            updater.updateProduct('update1', (prev) => ({
+            updater.updateState('update1', (prev) => ({
                 ...prev,
                 name: 'My Product',
             }))
-            updater.updateProduct('update2', (prev) => ({
+            updater.updateState('update2', (prev) => ({
                 ...prev,
                 description: 'My Product Description',
             }))

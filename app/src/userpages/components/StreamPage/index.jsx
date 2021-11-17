@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { useRouteMatch, useParams } from 'react-router-dom'
 
@@ -7,41 +7,28 @@ import Layout from '$shared/components/Layout/Core'
 import Toolbar from '$shared/components/Toolbar'
 import routes from '$routes'
 
+import StreamController, { useController } from '../StreamController'
+
 import View from './View'
 import Edit from './Edit'
-import useStream from './useStream'
 
 const StreamPage = () => {
-    const { id: idProp } = useParams()
-    const decodedIdProp = useMemo(() => decodeURIComponent(idProp), [idProp])
-    const { path } = useRouteMatch(routes.streams.public.show()) || {}
-
-    const { stream, permissions, fetching, fetch } = useStream()
-    const updating = false
+    const { stream, permissions, hasLoaded } = useController()
 
     const [readOnly, canShare] = useMemo(() => {
         if (!permissions) {
             return [false, false]
         }
 
-        const operations = new Set(permissions.map(({ operation }) => operation))
-
         return [
-            !operations.has('stream_edit'),
-            operations.has('stream_share'),
+            !permissions.includes('stream_edit'),
+            permissions.includes('stream_share'),
         ]
     }, [permissions])
 
     const currentUser = useSelector(selectUserData)
 
-    useEffect(() => {
-        fetch({
-            streamId: decodedIdProp,
-            isPublic: (path === routes.streams.public.show()),
-        })
-    }, [fetch, decodedIdProp, path])
-
-    if (!permissions || (fetching && !updating) || !stream) {
+    if (!hasLoaded || !stream || !permissions) {
         return (
             <Layout
                 loading
@@ -69,9 +56,22 @@ const StreamPage = () => {
         <Edit
             stream={stream}
             canShare={canShare}
-            disabled={updating}
         />
     )
 }
 
-export default StreamPage
+export default () => {
+    const { id: idProp } = useParams()
+    const decodedIdProp = useMemo(() => decodeURIComponent(idProp), [idProp])
+    const { path } = useRouteMatch(routes.streams.public.show()) || {}
+
+    return (
+        <StreamController
+            key={idProp}
+            autoLoadStreamId={decodedIdProp}
+            ignoreUnauthorized={path === routes.streams.public.show()}
+        >
+            <StreamPage />
+        </StreamController>
+    )
+}

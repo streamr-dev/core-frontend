@@ -10,7 +10,7 @@ import * as UndoContext from '$shared/contexts/Undo'
 import * as useModal from '$shared/hooks/useModal'
 import * as usePending from '$shared/hooks/usePending'
 import * as productServices from '$mp/modules/product/services'
-import * as useEditableProductUpdater from '$mp/containers/ProductController/useEditableProductUpdater'
+import * as useEditableState from '$shared/contexts/Undo/useEditableState'
 import * as sharedConstants from '$shared/utils/constants'
 import { Provider as ValidationContextProvider, Context as ValidationContext } from '../../ProductController/ValidationContextProvider'
 import { Provider as EditControllerProvider, Context as EditControllerContext } from '../EditControllerProvider'
@@ -445,9 +445,9 @@ describe('EditControllerProvider', () => {
                     return result
                 },
             }))
-            const replaceProductStub = jest.fn()
-            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
-                replaceProduct: (fn) => replaceProductStub(fn(product)),
+            const replaceStateStub = jest.fn()
+            jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
             const postImageStub = jest.spyOn(productServices, 'postImage').mockImplementation(() => Promise.resolve({
                 imageUrl: 'imageUrl',
@@ -486,8 +486,8 @@ describe('EditControllerProvider', () => {
 
             expect(postImageStub).toHaveBeenCalledTimes(1)
             expect(postImageStub).toBeCalledWith(product.id, product.newImageToUpload)
-            expect(replaceProductStub).toHaveBeenCalledTimes(1)
-            expect(replaceProductStub).toBeCalledWith(expectedProduct)
+            expect(replaceStateStub).toHaveBeenCalledTimes(1)
+            expect(replaceStateStub).toBeCalledWith(expectedProduct)
             expect(putProductStub).toHaveBeenCalledTimes(1)
             expect(location.pathname).toBe('/core/products')
         })
@@ -731,9 +731,9 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = jest.fn()
-            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
-                replaceProduct: (fn) => replaceProductStub(fn(product)),
+            const replaceStateStub = jest.fn()
+            jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
 
             const history = createMemoryHistory({
@@ -764,8 +764,8 @@ describe('EditControllerProvider', () => {
             expect(modalOpenStub).toBeCalledWith({
                 product,
             })
-            expect(replaceProductStub).toHaveBeenCalledTimes(1)
-            expect(replaceProductStub).toBeCalledWith({
+            expect(replaceStateStub).toHaveBeenCalledTimes(1)
+            expect(replaceStateStub).toBeCalledWith({
                 ...product,
                 state: 'DEPLOYING',
             })
@@ -809,9 +809,9 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = jest.fn()
-            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
-                replaceProduct: (fn) => replaceProductStub(fn(product)),
+            const replaceStateStub = jest.fn()
+            jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
 
             const history = createMemoryHistory({
@@ -842,8 +842,8 @@ describe('EditControllerProvider', () => {
             expect(modalOpenStub).toBeCalledWith({
                 product,
             })
-            expect(replaceProductStub).toHaveBeenCalledTimes(1)
-            expect(replaceProductStub).toBeCalledWith({
+            expect(replaceStateStub).toHaveBeenCalledTimes(1)
+            expect(replaceStateStub).toBeCalledWith({
                 ...product,
                 state: 'UNDEPLOYING',
             })
@@ -887,9 +887,9 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = jest.fn()
-            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
-                replaceProduct: (fn) => replaceProductStub(fn(product)),
+            const replaceStateStub = jest.fn()
+            jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
 
             const history = createMemoryHistory({
@@ -920,8 +920,8 @@ describe('EditControllerProvider', () => {
             expect(modalOpenStub).toBeCalledWith({
                 product,
             })
-            expect(replaceProductStub).toHaveBeenCalledTimes(1)
-            expect(replaceProductStub).toBeCalledWith({
+            expect(replaceStateStub).toHaveBeenCalledTimes(1)
+            expect(replaceStateStub).toBeCalledWith({
                 ...product,
                 state: 'DEPLOYING',
             })
@@ -966,9 +966,9 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = jest.fn()
-            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
-                replaceProduct: (fn) => replaceProductStub(fn(product)),
+            const replaceStateStub = jest.fn()
+            jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
 
             const history = createMemoryHistory({
@@ -999,8 +999,8 @@ describe('EditControllerProvider', () => {
             expect(modalOpenStub).toBeCalledWith({
                 product,
             })
-            expect(replaceProductStub).toHaveBeenCalledTimes(1)
-            expect(replaceProductStub).toBeCalledWith({
+            expect(replaceStateStub).toHaveBeenCalledTimes(1)
+            expect(replaceStateStub).toBeCalledWith({
                 ...product,
                 state: 'DEPLOYING',
             })
@@ -1044,9 +1044,9 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({
                 ...product,
             }))
-            const replaceProductStub = jest.fn()
-            jest.spyOn(useEditableProductUpdater, 'default').mockImplementation(() => ({
-                replaceProduct: (fn) => replaceProductStub(fn(product)),
+            const replaceStateStub = jest.fn()
+            jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
 
             const history = createMemoryHistory({
@@ -1077,8 +1077,8 @@ describe('EditControllerProvider', () => {
             expect(modalOpenStub).toBeCalledWith({
                 product,
             })
-            expect(replaceProductStub).toHaveBeenCalledTimes(1)
-            expect(replaceProductStub).toBeCalledWith({
+            expect(replaceStateStub).toHaveBeenCalledTimes(1)
+            expect(replaceStateStub).toBeCalledWith({
                 ...product,
                 state: 'UNDEPLOYING',
             })

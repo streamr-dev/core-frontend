@@ -10,7 +10,7 @@ import { timeUnits } from '$shared/utils/constants'
 
 import type { Product, ContactDetails } from '$mp/flowtype/product-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
-import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { Context as ValidationContext } from './ValidationContextProvider'
 
 const getPricePerSecond = (isFree, price, timeUnit) => (
@@ -25,7 +25,7 @@ type SocialLinks = {
 }
 
 export function useEditableProductActions() {
-    const { updateProduct: commit } = useEditableProductUpdater()
+    const { updateState: commit } = useEditableState()
     const { undo } = useContext(UndoContext)
     const { setTouched } = useContext(ValidationContext)
 

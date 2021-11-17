@@ -5,8 +5,8 @@ import React, { useContext, useMemo, useState, useCallback, useRef, useEffect } 
 import Scrollspy from 'react-scrollspy'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import EditorNavComponent, { statuses } from '$mp/components/ProductPage/EditorNav'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 
-import useEditableProduct from '../ProductController/useEditableProduct'
 import useNewProductMode from '../ProductController/useNewProductMode'
 import { Context as ValidationContext } from '../ProductController/ValidationContextProvider'
 import { Context as EditControllerContext } from './EditControllerProvider'
@@ -20,7 +20,7 @@ const CLICK_OFFSET = -130
 const includeIf = (condition: boolean, elements: Array<any>) => (condition ? elements : [])
 
 const EditorNav = () => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const productRef = useRef()
     productRef.current = product
     const isNewProduct = useNewProductMode()

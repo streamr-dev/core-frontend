@@ -15,7 +15,7 @@ import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
 } from '$mp/modules/product/selectors'
-import useEditableProduct from '../ProductController/useEditableProduct'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as EditControllerContext } from './EditControllerProvider'
@@ -27,7 +27,7 @@ type Props = {
 }
 
 const ProductStreams = ({ disabled }: Props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { isValid, message } = useValidation('streams')
     const { updateStreams } = useEditableProductActions()
     const { publishAttempted } = useContext(EditControllerContext)
