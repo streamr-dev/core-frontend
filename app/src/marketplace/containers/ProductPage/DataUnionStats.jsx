@@ -11,7 +11,6 @@ import DaysPopover from '$shared/components/DaysPopover'
 import { SM } from '$shared/utils/styled'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import MembersGraph from './MembersGraph'
-import MembersGraphV2 from './MembersGraphV2'
 
 type Props = {
     stats: Array<Object>,
@@ -20,7 +19,6 @@ type Props = {
         active: number,
         inactive: number,
     },
-    joinPartStreamId?: ?string,
     showDeploying?: boolean,
     dataUnion: any,
 }
@@ -58,7 +56,6 @@ const Graphs = styled.div`
 const UnstyledDataUnionStats = ({
     stats,
     memberCount,
-    joinPartStreamId,
     showDeploying,
     dataUnion,
     ...props
@@ -95,15 +92,8 @@ const UnstyledDataUnionStats = ({
                                 />
                             </TimeSeriesGraph.Header>
                             <TimeSeriesGraph.Body>
-                                {dataUnion && dataUnion.version && dataUnion.version === 1 && joinPartStreamId && (
+                                {dataUnion && !!dataUnion.id && (
                                     <MembersGraph
-                                        joinPartStreamId={joinPartStreamId}
-                                        memberCount={memberCount.total}
-                                        shownDays={days}
-                                    />
-                                )}
-                                {dataUnion && dataUnion.version && dataUnion.version === 2 && (
-                                    <MembersGraphV2
                                         memberCount={memberCount.total}
                                         shownDays={days}
                                         dataUnionAddress={dataUnion.id}

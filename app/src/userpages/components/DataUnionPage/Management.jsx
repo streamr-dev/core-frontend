@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import DaysPopover from '$shared/components/DaysPopover'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
-import MembersGraphV2 from '$mp/containers/ProductPage/MembersGraphV2'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import ProductController, { useController } from '$mp/containers/ProductController'
@@ -61,7 +60,6 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
     const [days, setDays] = useState(7)
     const [subsDays, setSubsDays] = useState(7)
     const { loadDataUnion } = useController()
-    const { joinPartStreamId } = dataUnion || {}
     const { startPolling, stopPolling, memberCount } = useDataUnionServerStats()
     const { beneficiaryAddress } = product
 
@@ -106,14 +104,8 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
                         />
                     </TimeSeriesGraph.Header>
                 </GraphHeader>
-                {dataUnion && dataUnion.version && dataUnion.version === 1 && joinPartStreamId ? (
+                {dataUnion && !!dataUnion.id && (
                     <MembersGraph
-                        joinPartStreamId={joinPartStreamId}
-                        memberCount={(memberCount && memberCount.total) || 0}
-                        shownDays={days}
-                    />
-                ) : (
-                    <MembersGraphV2
                         memberCount={(memberCount && memberCount.total) || 0}
                         shownDays={days}
                         dataUnionAddress={dataUnion && dataUnion.id}

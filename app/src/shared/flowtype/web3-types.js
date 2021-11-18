@@ -28,11 +28,6 @@ export type SmartContractConfig = {
     address: Address
 }
 
-export type SmartContractMetadata = {
-    abi: Abi,
-    bytecode: string,
-}
-
 export type SmartContractCall<T> = Promise<T>
 
 export type SmartContractTransaction = Transaction

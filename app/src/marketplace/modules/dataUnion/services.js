@@ -82,8 +82,6 @@ const getDataUnionObject = async (address: string, usePublicNode: boolean = fals
     return dataUnion
 }
 
-export const getDefaultDataUnionVersion = () => 2
-
 export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
     const dataUnion = await getDataUnionObject(address, usePublicNode)
     return dataUnion.getAdminAddress()
@@ -129,7 +127,6 @@ export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = tru
 type DeployDataUnion = {
     productId: ProductId,
     adminFee: string,
-    version?: number,
 }
 
 export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): SmartContractTransaction => {

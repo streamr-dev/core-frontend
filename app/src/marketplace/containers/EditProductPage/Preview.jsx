@@ -124,7 +124,6 @@ const DataUnionStats = () => {
         subscriberCount,
         totalEarnings,
     })
-    const { joinPartStreamId } = dataUnion || {}
 
     useEffect(() => {
         if (beneficiaryAddress) {
@@ -141,7 +140,6 @@ const DataUnionStats = () => {
             return {
                 stats,
                 memberCount,
-                joinPartStreamId,
                 dataUnion,
             }
         }
@@ -175,7 +173,7 @@ const DataUnionStats = () => {
                 inactive: 0,
             },
         }
-    }, [isDuDeployed, stats, memberCount, joinPartStreamId, created, adminFee, dataUnion])
+    }, [isDuDeployed, stats, memberCount, created, adminFee, dataUnion])
 
     return (
         <ProductPageDataUnionStats {...statsProps} />
