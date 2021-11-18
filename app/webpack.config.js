@@ -1,6 +1,11 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development' // set a default NODE_ENV
 const path = require('path')
 const webpack = require('webpack')
+
+// TODO: change this when https://linear.app/streamr/issue/ETH-184/config-package is ready
+const devConfig = require('streamr-dev-config')
+const prodConfig = require('data-union-config').production
+
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
 const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
@@ -27,6 +32,49 @@ const dist = path.resolve(root, 'dist')
 const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'),
 })
+
+// TODO: change this when https://linear.app/streamr/issue/ETH-184/config-package is ready
+const ethereumConfig = isProduction() ? {
+    // mainnet
+    // WEB3_PUBLIC_HTTP_PROVIDER: // from secrets
+    WEB3_REQUIRED_NETWORK_ID: prodConfig.mainnet.chainId,
+    DATA_TOKEN_CONTRACT_ADDRESS: prodConfig.mainnet.token,
+    DAI_TOKEN_CONTRACT_ADDRESS: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+    MARKETPLACE_CONTRACT_ADDRESS: '0xdc8d23092b93f9bb7416f45dea36f55996f34867',
+    UNISWAP_ADAPTOR_CONTRACT_ADDRESS: '0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307', // TODO: use v3 after deployment
+    STREAMR_ENGINE_NODE_ADDRESSES: prodConfig.mainnet.coreApi,
+    DATA_UNION_FACTORY_MAINNET_ADDRESS: prodConfig.mainnet.dataUnionFactory,
+    DATA_UNION_TEMPLATE_MAINNET_ADDRESS: prodConfig.mainnet.dataUnionTemplate,
+
+    // xdai
+    // DATA_UNION_SIDECHAIN_PROVIDER: prodConfig.xdai.url, // from secrets
+    DATA_UNION_SIDECHAIN_ID: prodConfig.xdai.chainId,
+    DATA_TOKEN_SIDECHAIN_ADDRESS: prodConfig.xdai.token,
+    DATA_UNION_FACTORY_SIDECHAIN_ADDRESS: prodConfig.xdai.dataUnionFactory,
+    DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS: prodConfig.xdai.dataUnionTemplate,
+    DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK: 14924666,
+} : {
+    // mainnet
+    WEB3_PUBLIC_HTTP_PROVIDER: devConfig.mainnet.url,
+    WEB3_PUBLIC_WS_PROVIDER: 'ws://localhost:8545', // TODO: is this used? I think not: getWebSocketWeb3 is not used in code
+    WEB3_REQUIRED_NETWORK_ID: devConfig.mainnet.chainId,
+    DATA_TOKEN_CONTRACT_ADDRESS: devConfig.mainnet.token,
+    DAI_TOKEN_CONTRACT_ADDRESS: devConfig.mainnet.otherToken,
+    MARKETPLACE_CONTRACT_ADDRESS: '0xF1371c0f40528406dc4f4cAf89924eA9Da49E866', // TODO: add to smart-contracts-init
+    UNISWAP_ADAPTOR_CONTRACT_ADDRESS: devConfig.mainnet.uniswap2Adapter, // TODO: use v3
+    STREAMR_ENGINE_NODE_ADDRESSES: devConfig.mainnet.coreApi,
+    DATA_UNION_FACTORY_MAINNET_ADDRESS: devConfig.mainnet.dataUnionFactory,
+    DATA_UNION_TEMPLATE_MAINNET_ADDRESS: devConfig.mainnet.dataUnionTemplate,
+
+    // xdai
+    DATA_UNION_SIDECHAIN_PROVIDER: devConfig.xdai.url,
+    DATA_UNION_SIDECHAIN_ID: devConfig.xdai.chainId,
+    DATA_TOKEN_SIDECHAIN_ADDRESS: devConfig.xdai.token,
+    DATA_UNION_FACTORY_SIDECHAIN_ADDRESS: devConfig.xdai.dataUnionFactory,
+    DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS: devConfig.xdai.dataUnionTemplate,
+    DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK: 0, // TODO: add to smart-contracts-init
+}
+Object.assign(process.env, ethereumConfig)
 
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
@@ -193,6 +241,7 @@ module.exports = {
             TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
+        new webpack.EnvironmentPlugin(Object.keys(ethereumConfig)),
         ...(analyze ? [
             new BundleAnalyzerPlugin({
                 analyzerMode: 'static',
