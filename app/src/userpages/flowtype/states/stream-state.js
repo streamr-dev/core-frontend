@@ -5,9 +5,6 @@ import type { ErrorInUi } from '$shared/flowtype/common-types'
 
 export type UserPageStreamsState = {
     ids: StreamIdList,
-    openStream: {
-        id: ?StreamId,
-    },
     fetching: boolean,
     updating: boolean,
     error?: ?ErrorInUi,

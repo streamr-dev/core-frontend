@@ -1,16 +1,16 @@
 // @flow
 
-import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useMemo, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import cloneDeep from 'lodash/cloneDeep'
 import { useTransition, animated } from 'react-spring'
 import { StatusIcon } from '@streamr/streamr-layout'
+import set from 'lodash/set'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusLabel from '$shared/components/StatusLabel'
-import { updateStream as updateStreamAction, updateEditStream, updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import CoreLayout from '$shared/components/Layout/Core'
@@ -79,7 +79,7 @@ function StreamPageSidebar({ stream }) {
 }
 
 const didChange = (original, changed) => {
-    const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = original || {}
+    const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = original.toObject() || {}
     const { streamStatus: changedStatus, lastData: changedData, ...changedStripped } = changed || {}
 
     return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
@@ -87,33 +87,31 @@ const didChange = (original, changed) => {
 
 const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
     const { stream: originalStream, permissions } = useController()
-    const { state: stream } = useEditableState()
+    const { state: stream, updateState } = useEditableState()
     const sidebar = useSidebar()
-    const { id: streamId } = stream
     const streamRef = useRef()
     streamRef.current = stream
-    const originalStreamRef = useRef()
     const { api: confirmSaveDialog } = useModal('confirmSave')
 
-    const dispatch = useDispatch()
     const history = useHistory()
 
     const canShare = useMemo(() => permissions.includes('stream_share'), [permissions])
 
-    useEffect(() => {
-        if (!streamId || !streamRef.current) { return }
-        originalStreamRef.current = {
-            ...streamRef.current,
-            config: cloneDeep(streamRef.current.config),
-        }
-    }, [streamId])
-
     const updateStream = useCallback((change, additionalData) => {
         try {
             if (typeof change === 'string') {
-                dispatch(updateEditStreamField(change, additionalData))
+                updateState(`update "${change}"`, (s) => {
+                    const nextStream = {
+                        ...s,
+                    }
+
+                    set(nextStream, change, additionalData)
+
+                    return nextStream
+                })
             } else if (typeof change === 'object') {
-                dispatch(updateEditStream({
+                updateState('update multiple fields', (s) => ({
+                    ...s,
                     ...change,
                 }))
             } else {
@@ -122,11 +120,11 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
         } catch (e) {
             console.warn(e)
         }
-    }, [dispatch])
+    }, [updateState])
 
     usePreventNavigatingAway(
         'You have unsaved changes. Are you sure you want to leave?',
-        () => didChange(originalStreamRef.current, streamRef.current),
+        () => didChange(originalStream, streamRef.current),
     )
 
     const isMounted = useIsMounted()
@@ -139,7 +137,10 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
         setSpinner(true)
 
         try {
-            await dispatch(updateStreamAction(stream))
+            const newStream = cloneDeep(originalStream)
+            Object.assign(newStream, streamRef.current)
+
+            await newStream.update()
 
             if (isMounted()) {
                 Notification.push({
@@ -163,10 +164,10 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
                 setSpinner(false)
             }
         }
-    }, [stream, dispatch, isMounted, history])
+    }, [originalStream, isMounted, history])
 
     const confirmIsSaved = useCallback(async () => {
-        if (!didChange(originalStreamRef.current, streamRef.current)) {
+        if (!didChange(originalStream, streamRef.current)) {
             return true
         }
 
@@ -181,7 +182,7 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
         }
 
         return !!canProceed
-    }, [confirmSaveDialog, save, isMounted])
+    }, [originalStream, confirmSaveDialog, save, isMounted])
 
     const cancel = useCallback(async () => {
         const canProceed = await confirmIsSaved()

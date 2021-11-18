@@ -5,9 +5,6 @@ import type { StreamAction } from '$userpages/flowtype/actions/stream-actions'
 import { streamListPageSize } from '$userpages/utils/constants'
 
 import {
-    GET_STREAM_REQUEST,
-    GET_STREAM_SUCCESS,
-    GET_STREAM_FAILURE,
     GET_STREAMS_REQUEST,
     GET_STREAMS_SUCCESS,
     GET_STREAMS_FAILURE,
@@ -15,20 +12,13 @@ import {
     CREATE_STREAM_REQUEST,
     CREATE_STREAM_SUCCESS,
     CREATE_STREAM_FAILURE,
-    UPDATE_STREAM_REQUEST,
-    UPDATE_STREAM_SUCCESS,
-    UPDATE_STREAM_FAILURE,
     DELETE_STREAM_REQUEST,
     DELETE_STREAM_SUCCESS,
     DELETE_STREAM_FAILURE,
-    OPEN_STREAM,
 } from './actions'
 
 const initialState = {
     ids: [],
-    openStream: {
-        id: null,
-    },
     savingStreamFields: false,
     fetching: false,
     updating: false,
@@ -41,7 +31,6 @@ const initialState = {
 
 export default function (state: UserPageStreamsState = initialState, action: StreamAction): UserPageStreamsState {
     switch (action.type) {
-        case GET_STREAM_REQUEST:
         case GET_STREAMS_REQUEST:
         case CREATE_STREAM_REQUEST:
         case DELETE_STREAM_REQUEST:
@@ -50,19 +39,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 fetching: true,
             }
 
-        case UPDATE_STREAM_REQUEST:
-            return {
-                ...state,
-                fetching: true,
-                updating: true,
-            }
-
-        case GET_STREAM_SUCCESS:
-            return {
-                ...state,
-                fetching: false,
-                error: null,
-            }
         case CREATE_STREAM_SUCCESS:
             return {
                 ...state,
@@ -95,14 +71,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 hasMoreSearchResults: null,
             }
 
-        case UPDATE_STREAM_SUCCESS:
-            return {
-                ...state,
-                fetching: false,
-                updating: false,
-                error: null,
-            }
-
         case DELETE_STREAM_SUCCESS: {
             const removedId = action.id // flow complains about using action.id directly ¯\_(ツ)_/¯
             const ids = state.ids.filter((id) => (id !== removedId))
@@ -114,7 +82,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
             }
         }
 
-        case GET_STREAM_FAILURE:
         case GET_STREAMS_FAILURE:
         case CREATE_STREAM_FAILURE:
         case DELETE_STREAM_FAILURE:
@@ -122,23 +89,6 @@ export default function (state: UserPageStreamsState = initialState, action: Str
                 ...state,
                 fetching: false,
                 error: action.error,
-            }
-
-        case UPDATE_STREAM_FAILURE:
-            return {
-                ...state,
-                fetching: false,
-                updating: false,
-                error: action.error,
-            }
-
-        case OPEN_STREAM:
-            return {
-                ...state,
-                openStream: {
-                    ...state.openStream,
-                    id: action.id,
-                },
             }
 
         default:

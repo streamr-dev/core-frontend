@@ -3,9 +3,6 @@ import * as actions from '$userpages/modules/userPageStreams/actions'
 
 const initialState = {
     ids: [],
-    openStream: {
-        id: null,
-    },
     savingStreamFields: false,
     fetching: false,
     updating: false,
@@ -24,9 +21,7 @@ describe('Stream reducer', () => {
     describe('REQUEST actions', () => {
         it('should set fetching = true on all REQUEST actions', () => {
             [
-                actions.GET_STREAM_REQUEST,
                 actions.CREATE_STREAM_REQUEST,
-                actions.UPDATE_STREAM_REQUEST,
                 actions.DELETE_STREAM_REQUEST,
             ].forEach((action) => {
                 expect(reducer({
@@ -38,24 +33,11 @@ describe('Stream reducer', () => {
         })
     })
 
-    describe(actions.UPDATE_STREAM_REQUEST, () => {
-        it('raises the `updating` flag', () => {
-            expect(reducer({
-                updating: false,
-            }, {
-                type: actions.UPDATE_STREAM_REQUEST,
-            }).updating).toBe(true)
-        })
-    })
-
     describe('SUCCESS actions', () => {
-        describe('adding the stream on GET_STREAM_SUCCESS, CREATE_STREAM_SUCCESS', () => {
+        describe('adding the stream on CREATE_STREAM_SUCCESS', () => {
             it('must add the stream if it does not exist', () => {
                 [
                     actions.CREATE_STREAM_SUCCESS,
-                    actions.GET_STREAM_SUCCESS,
-                    actions.CREATE_STREAM_SUCCESS,
-                    actions.GET_STREAM_SUCCESS,
                 ].forEach((action) => {
                     const stream = {
                         id: 'moi',
@@ -71,25 +53,6 @@ describe('Stream reducer', () => {
                         fetching: false,
                         error: null,
                     })
-                })
-            })
-
-            it('must add the stream if it does not exist - UPDATE_STREAM_SUCCESS', () => {
-                const stream = {
-                    id: 'moi',
-                    field: 'hei',
-                }
-
-                expect(reducer({
-                    ids: [],
-                }, {
-                    type: actions.UPDATE_STREAM_SUCCESS,
-                    stream: stream.id,
-                })).toStrictEqual({
-                    ids: [],
-                    fetching: false,
-                    updating: false,
-                    error: null,
                 })
             })
 
@@ -139,16 +102,6 @@ describe('Stream reducer', () => {
             })
         })
 
-        describe(actions.UPDATE_STREAM_SUCCESS, () => {
-            it('lowers the `updating` flag', () => {
-                expect(reducer({
-                    updating: true,
-                }, {
-                    type: actions.UPDATE_STREAM_SUCCESS,
-                }).updating).toBe(false)
-            })
-        })
-
         describe('deleting the stream on DELETE_STREAM_SUCCESS', () => {
             const stream = {
                 id: 'moi',
@@ -174,9 +127,7 @@ describe('Stream reducer', () => {
     describe('FAILURE actions', () => {
         describe('it should add the error and set fetching = false on all FAILURE actions', () => {
             [
-                actions.GET_STREAM_FAILURE,
                 actions.CREATE_STREAM_FAILURE,
-                actions.UPDATE_STREAM_FAILURE,
                 actions.DELETE_STREAM_FAILURE,
             ].forEach((action) => {
                 const error = {
@@ -195,16 +146,6 @@ describe('Stream reducer', () => {
 
                 expect(result.fetching).toBe(false)
                 expect(error).toStrictEqual(result.error)
-            })
-        })
-
-        describe(actions.UPDATE_STREAM_FAILURE, () => {
-            it('lowers the `updating` flag', () => {
-                expect(reducer({
-                    updating: true,
-                }, {
-                    type: actions.UPDATE_STREAM_FAILURE,
-                }).updating).toBe(false)
             })
         })
     })

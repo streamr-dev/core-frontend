@@ -196,7 +196,6 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
                     <Button
                         kind="secondary"
                         onClick={() => showPreview(streamId, stream)}
-                        disabled={!hasData}
                     >
                         Inspect data
                     </Button>

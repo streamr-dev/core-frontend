@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { useClient } from 'streamr-client-react'
+import uuid from 'uuid'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
@@ -17,6 +18,25 @@ function normalizePermissions(permissions) {
     }
 
     return [...new Set(permissions.map(({ operation }) => operation))]
+}
+
+const mapStreamFields = (stream) => {
+    const { config } = stream
+
+    if (!config || !config.fields) {
+        return stream
+    }
+
+    return {
+        ...stream,
+        config: {
+            ...config,
+            fields: (config.fields || []).map((field) => ({
+                ...field,
+                id: field.id ? field.id : uuid(),
+            })),
+        },
+    }
 }
 
 export default function useLoadStreamCallback() {
@@ -58,7 +78,7 @@ export default function useLoadStreamCallback() {
 
             if (!isMounted()) { return }
 
-            productUpdater.replaceState(() => stream.toObject())
+            productUpdater.replaceState(() => mapStreamFields(stream.toObject()))
 
             setStream({
                 stream,
