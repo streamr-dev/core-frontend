@@ -2,10 +2,6 @@ import getConfig from '$shared/web3/config'
 
 jest.mock('$shared/web3/abis/token', () => (['t_test', 't_values', 't_only']))
 jest.mock('$shared/web3/abis/marketplace', () => (['m_test', 'm_values', 'm_only']))
-jest.mock('$shared/web3/contracts/communityProduct', () => ({
-    abi: ['c_test', 'c_values', 'c_only'],
-    bytecode: '0xdeadbeef',
-}))
 jest.mock('$shared/web3/abis/uniswapAdaptor', () => (['u_test', 'u_values', 'u_only']))
 jest.mock('$shared/web3/abis/dataunion', () => (['d_test', 'd_values', 'd_only']))
 jest.mock('$shared/web3/abis/dataunionSidechain', () => (['ds_test', 'ds_values', 'ds_only']))
@@ -52,10 +48,6 @@ describe('config', () => {
                 marketplace: {
                     abi: ['m_test', 'm_values', 'm_only'],
                     address: 'mpAddress',
-                },
-                communityProduct: {
-                    abi: ['c_test', 'c_values', 'c_only'],
-                    bytecode: '0xdeadbeef',
                 },
                 uniswapAdaptor: {
                     abi: ['u_test', 'u_values', 'u_only'],

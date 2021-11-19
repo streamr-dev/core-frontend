@@ -40,8 +40,6 @@ const ProductDetailsPage = () => {
     })
     const dataUnion = useDataUnion()
 
-    const { joinPartStreamId } = dataUnion || {}
-
     useEffect(() => {
         if (isDataUnion) {
             startPolling(beneficiaryAddress)
@@ -69,7 +67,6 @@ const ProductDetailsPage = () => {
                         showDeploying={!isDuDeployed}
                         stats={stats}
                         memberCount={memberCount}
-                        joinPartStreamId={joinPartStreamId}
                         dataUnion={dataUnion}
                     />
                 )}

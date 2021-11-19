@@ -1,12 +1,11 @@
 // @flow
 
-import type { SmartContractConfig, SmartContractMetadata } from '$shared/flowtype/web3-types'
+import type { SmartContractConfig } from '$shared/flowtype/web3-types'
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
 import uniswapAdaptorAbi from './abis/uniswapAdaptor'
 import dataUnionAbi from './abis/dataunion'
 import dataUnionSidechainAbi from './abis/dataunionSidechain'
-import communityProductMetadata from './contracts/communityProduct'
 
 type Config = {
     networkId: string,
@@ -16,7 +15,6 @@ type Config = {
     marketplace: SmartContractConfig,
     dataToken: SmartContractConfig,
     daiToken: SmartContractConfig,
-    communityProduct: SmartContractMetadata,
     uniswapAdaptor: SmartContractConfig,
     dataUnionAbi: string,
     dataUnionSidechainAbi: string,
@@ -38,10 +36,6 @@ const getConfig = (): Config => ({
     marketplace: {
         abi: marketplaceAbi,
         address: process.env.MARKETPLACE_CONTRACT_ADDRESS || '',
-    },
-    communityProduct: {
-        abi: communityProductMetadata.abi,
-        bytecode: communityProductMetadata.bytecode,
     },
     uniswapAdaptor: {
         abi: uniswapAdaptorAbi,

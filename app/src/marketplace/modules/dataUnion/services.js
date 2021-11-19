@@ -5,26 +5,17 @@ import StreamrClient from 'streamr-client'
 import BN from 'bignumber.js'
 import Web3 from 'web3'
 
-import { getContract, call } from '$mp/utils/smartContract'
 import getConfig from '$shared/web3/config'
 import { getToken } from '$shared/utils/sessionToken'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
-import type { Stream, NewStream } from '$shared/flowtype/stream-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
-import type { Permission } from '$userpages/flowtype/permission-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
 import { post, del, get, put } from '$shared/utils/api'
-import { postStream, getStream } from '$userpages/modules/userPageStreams/services'
-import {
-    getResourcePermissions,
-    addResourcePermission,
-    removeResourcePermission,
-} from '$userpages/modules/permission/services'
-import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
+import { getWeb3 } from '$shared/web3/web3Provider'
 import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
 import routes from '$routes'
@@ -34,126 +25,6 @@ export const getStreamrEngineAddresses = (): Array<string> => {
     const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
     const addresses = addressesString.split(',')
     return addresses
-}
-
-export const createJoinPartStream = async (account: Address, productId: ProductId): Promise<Stream> => {
-    const newStream: NewStream = {
-        id: `${account}/dataunions/${productId}/joinPartStream`,
-        description: 'Automatically created JoinPart stream for data union',
-    }
-
-    let stream
-    try {
-        try {
-            stream = await getStream(newStream.id)
-        } catch (e) {
-            // ignore error
-        } finally {
-            if (stream == null || stream.id == null) {
-                stream = await postStream(newStream)
-            }
-        }
-    } catch (e) {
-        console.error('Could not create a new JoinPart stream or get an existing one', e)
-        throw e
-    }
-
-    // Add public read permission
-    try {
-        await Promise.all([
-            addResourcePermission({
-                resourceType: 'STREAM',
-                resourceId: stream.id,
-                data: {
-                    anonymous: true,
-                    operation: 'stream_get',
-                    user: null,
-                },
-            }),
-            addResourcePermission({
-                resourceType: 'STREAM',
-                resourceId: stream.id,
-                data: {
-                    anonymous: true,
-                    operation: 'stream_subscribe',
-                    user: null,
-                },
-            }),
-        ])
-    } catch (e) {
-        console.error('Could not add public read permission for JoinPart stream', e)
-        throw e
-    }
-
-    // Add write permissions for all Streamr Engine nodes
-    try {
-        const nodeAddresses = getStreamrEngineAddresses()
-
-        // Process node addresses and add share & write permissions for each of them.
-        // We need to add permissions in series because adding them in parallel causes
-        // a race condition on backend and some of the calls will fail.
-        // eslint-disable-next-line no-restricted-syntax
-        for (const address of nodeAddresses) {
-            // Share permission is not strictly necessary but needed to avoid error when
-            // removing user's share permission (must have at least one share permission)
-            // eslint-disable-next-line no-await-in-loop
-            await Promise.all([
-                addResourcePermission({
-                    resourceType: 'STREAM',
-                    resourceId: stream.id,
-                    data: {
-                        operation: 'stream_get',
-                        user: address,
-                    },
-                }),
-                addResourcePermission({
-                    resourceType: 'STREAM',
-                    resourceId: stream.id,
-                    data: {
-                        operation: 'stream_publish',
-                        user: address,
-                    },
-                }),
-            ])
-        }
-    } catch (e) {
-        console.error('Could not add write keys to JoinPart stream', e)
-        throw e
-    }
-
-    // Remove share & edit permission to prevent deleting the stream
-    try {
-        const myPermissions: Array<Permission> = await getResourcePermissions({
-            resourceType: 'STREAM',
-            resourceId: stream.id,
-        })
-        const deletedTypes = new Set(['stream_edit', 'stream_delete'])
-        const deletedPermissions = myPermissions.filter((p) => deletedTypes.has(p.operation))
-
-        if (deletedPermissions && deletedPermissions.length > 0) {
-            await Promise.all([
-                ...deletedPermissions.map(async ({ id }) => removeResourcePermission({
-                    resourceType: 'STREAM',
-                    resourceId: stream.id,
-                    id,
-                })),
-            ])
-        }
-    } catch (e) {
-        console.error('Could not remove share permission from JoinPart stream', e)
-    }
-
-    return stream
-}
-
-// eslint-disable-next-line camelcase
-const deprecated_getAdminFeeInEther = (adminFee: string) => {
-    if (+adminFee < 0 || +adminFee > 1) {
-        throw new Error(`${adminFee} is not a valid admin fee`)
-    }
-
-    const web3 = getWeb3()
-    return web3.utils.toWei(adminFee, 'ether')
 }
 
 type CreateClient = {
@@ -195,10 +66,67 @@ export const createClient = (options: CreateClient = {}) => {
     })
 }
 
+// ----------------------
+// smart contract queries
+// ----------------------
+
+const getDataUnionObject = async (address: string, usePublicNode: boolean = false) => {
+    const client = createClient({
+        usePublicNode,
+    })
+    const dataUnion = await client.safeGetDataUnion(address)
+    const version = await dataUnion.getVersion()
+    if (version !== 2) {
+        throw new Error(`Unsupported DU version: ${version}`)
+    }
+    return dataUnion
+}
+
+export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
+    const dataUnion = await getDataUnionObject(address, usePublicNode)
+    return dataUnion.getAdminAddress()
+}
+
+export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean = false) => {
+    const dataUnion = await getDataUnionObject(address, usePublicNode)
+    const adminFee = await dataUnion.getAdminFee()
+    return `${adminFee}`
+}
+
+export const getDataUnionStats = async (address: DataUnionId, usePublicNode: boolean = false): ApiResult<Object> => {
+    const dataUnion = await getDataUnionObject(address, usePublicNode)
+    const { activeMemberCount, inactiveMemberCount, totalEarnings } = await dataUnion.getStats()
+
+    const active = (activeMemberCount && BN(activeMemberCount.toString()).toNumber()) || 0
+    const inactive = (inactiveMemberCount && BN(inactiveMemberCount.toString()).toNumber()) || 0
+    return {
+        memberCount: {
+            active,
+            inactive,
+            total: active + inactive,
+        },
+        totalEarnings: totalEarnings && BN(totalEarnings.toString()).toNumber(),
+    }
+}
+
+export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = true): ApiResult<Object> => {
+    const adminFee = await getAdminFee(id, usePublicNode)
+    const owner = await getDataUnionOwner(id, usePublicNode)
+    return {
+        id: id.toLowerCase(),
+        adminFee,
+        owner,
+        version: 2,
+    }
+}
+
+// ----------------------
+// transactions
+// ----------------------
+
 type DeployDataUnion = {
     productId: ProductId,
     adminFee: string,
-    version?: number,
 }
 
 export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): SmartContractTransaction => {
@@ -214,7 +142,6 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
     Promise.all([
         web3.getDefaultAccount(),
         checkEthereumNetworkIsCorrect(web3),
-        client.ensureConnected(),
     ])
         .then(([account]) => {
             // eslint-disable-next-line no-underscore-dangle
@@ -249,80 +176,6 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
     return tx
 }
 
-export const getDefaultDataUnionVersion = () => 2
-
-// eslint-disable-next-line camelcase
-const deprecated_getCommunityContract = (address: DataUnionId, usePublicNode: boolean = false) => {
-    const { abi } = getConfig().communityProduct
-
-    return getContract({
-        abi,
-        address,
-    }, usePublicNode)
-}
-
-export const getDataUnionVersion = async (address: DataUnionId, usePublicNode: boolean = true) => {
-    const client = createClient({
-        usePublicNode,
-    })
-    const dataUnion = await client.getDataUnion(address)
-
-    return (dataUnion && dataUnion.getVersion()) || 0
-}
-
-// eslint-disable-next-line camelcase
-const deprecated_getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
-    const contract = deprecated_getCommunityContract(address, usePublicNode)
-    const owner = await call(contract.methods.owner())
-
-    return owner
-}
-
-export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
-    const version = await getDataUnionVersion(address, usePublicNode)
-
-    if (version === 2) {
-        const client = createClient({
-            usePublicNode,
-        })
-        const dataUnion = client.getDataUnion(address)
-
-        return dataUnion.getAdminAddress()
-    } else if (version === 1) {
-        return deprecated_getDataUnionOwner(address, usePublicNode)
-    }
-
-    throw new Error('unknow DU version')
-}
-
-// eslint-disable-next-line camelcase
-const deprecated_getAdminFee = async (address: DataUnionId, usePublicNode: boolean = false) => {
-    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-
-    const contract = deprecated_getCommunityContract(address, usePublicNode)
-    const adminFee = await call(contract.methods.adminFee())
-
-    return web3.utils.fromWei(web3.utils.toBN(adminFee), 'ether')
-}
-
-export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean = false) => {
-    const version = await getDataUnionVersion(address, usePublicNode)
-
-    if (version === 2) {
-        const client = createClient({
-            usePublicNode,
-        })
-        const dataUnion = client.getDataUnion(address)
-        const adminFee = await dataUnion.getAdminFee()
-
-        return `${adminFee}`
-    } else if (version === 1) {
-        return deprecated_getAdminFee(address, usePublicNode)
-    }
-
-    throw new Error('unknow DU version')
-}
-
 export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContractTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
@@ -332,153 +185,42 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
     }
     const tx = new Transaction(emitter)
     Promise.all([
-        web3.getDefaultAccount(),
-        getDataUnionVersion(address),
+        getDataUnionObject(address),
         checkEthereumNetworkIsCorrect(web3),
     ])
-        .then(([account, version]) => {
-            if (version === 2) {
-                const client = createClient()
-                const dataUnion = client.getDataUnion(address)
+        .then(([dataUnion]) => {
+            emitter.emit('transactionHash')
 
-                emitter.emit('transactionHash')
-
-                dataUnion.setAdminFee(+adminFee)
-                    .then((receipt) => {
-                        if (parseInt(receipt.status, 16) === 0) {
-                            errorHandler(new TransactionError('Transaction failed', receipt))
-                        } else {
-                            emitter.emit('receipt', receipt)
-                        }
-                    }, errorHandler)
-            } else if (version === 1) {
-                const method = deprecated_getCommunityContract(address).methods.setAdminFee(deprecated_getAdminFeeInEther(adminFee))
-                method.send({
-                    from: account,
-                })
-                    .on('error', (error, receipt) => {
-                        if (receipt) {
-                            errorHandler(new TransactionError(error.message, receipt))
-                        } else {
-                            errorHandler(error)
-                        }
-                    })
-                    .on('transactionHash', (hash) => {
-                        emitter.emit('transactionHash', hash)
-                    })
-                    .on('receipt', (receipt) => {
-                        if (parseInt(receipt.status, 16) === 0) {
-                            errorHandler(new TransactionError('Transaction failed', receipt))
-                        } else {
-                            emitter.emit('receipt', receipt)
-                        }
-                    })
-                    .catch(errorHandler)
-            } else {
-                throw new Error('Unknow DU version')
-            }
+            dataUnion.setAdminFee(+adminFee)
+                .then((receipt) => {
+                    if (parseInt(receipt.status, 16) === 0) {
+                        errorHandler(new TransactionError('Transaction failed', receipt))
+                    } else {
+                        emitter.emit('receipt', receipt)
+                    }
+                }, errorHandler)
         }, errorHandler)
-
     return tx
 }
 
-// eslint-disable-next-line camelcase
-const deprecated_getDataUnionStats = (id: DataUnionId): ApiResult<Object> => get({
-    url: routes.api.dataunions.stats({
-        id,
-    }),
-    useAuthorization: false,
-})
-
-export const getDataUnionStats = async (id: DataUnionId): ApiResult<Object> => {
-    const version = await getDataUnionVersion(id, true)
-
-    if (version === 2) {
-        const client = createClient({
-            usePublicNode: true,
-        })
-        const dataUnion = client.getDataUnion(id)
-
-        const stats = await dataUnion.getStats()
-        const { activeMemberCount, inactiveMemberCount, totalEarnings } = stats
-
-        const active = (activeMemberCount && BN(activeMemberCount.toString()).toNumber()) || 0
-        const inactive = (inactiveMemberCount && BN(inactiveMemberCount.toString()).toNumber()) || 0
-
-        return {
-            memberCount: {
-                active,
-                inactive,
-                total: active + inactive,
-            },
-            totalEarnings: totalEarnings && BN(totalEarnings.toString()).toNumber(),
-        }
-    } else if (version === 1) {
-        return deprecated_getDataUnionStats(id)
-    }
-
-    throw new Error('unknow DU version')
+export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) => {
+    const dataUnion = await getDataUnionObject(id, true)
+    const receipt = await dataUnion.removeMembers(memberAddresses)
+    return receipt
 }
 
-// eslint-disable-next-line camelcase
-const deprecated_getJoinPartStreamId = (address: DataUnionId, usePublicNode: boolean = false) =>
-    call(deprecated_getCommunityContract(address, usePublicNode).methods.joinPartStream())
-
-// eslint-disable-next-line camelcase
-const deprecated_getDataUnion = async (id: DataUnionId, usePublicNode: boolean = true): ApiResult<Object> => {
-    const adminFee = await deprecated_getAdminFee(id, usePublicNode)
-    const joinPartStreamId = await deprecated_getJoinPartStreamId(id, usePublicNode)
-    const owner = await deprecated_getDataUnionOwner(id, usePublicNode)
-
-    return {
-        id: id.toLowerCase(),
-        adminFee,
-        joinPartStreamId,
-        owner,
-    }
-}
-
-export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = true): ApiResult<Object> => {
-    const version = await getDataUnionVersion(id, usePublicNode)
-
-    if (version === 2) {
-        const adminFee = await getAdminFee(id, usePublicNode)
-        const owner = await getDataUnionOwner(id, usePublicNode)
-
-        return {
-            id: id.toLowerCase(),
-            adminFee,
-            owner,
-            version,
-        }
-    } else if (version === 1) {
-        const du = await deprecated_getDataUnion(id, usePublicNode)
-
-        return {
-            ...du,
-            version,
-        }
-    }
-
-    throw new Error('Unknow DU version')
-}
+// ----------------------
+// getting events (TODO: move to streamr-client)
+// ----------------------
 
 const getSidechainWeb3 = () => new Web3(new Web3.providers.HttpProvider(process.env.DATA_UNION_SIDECHAIN_PROVIDER))
 
-const getSidechainContract = async (dataUnionId: string) => {
-    const client = createClient({
-        usePublicNode: true,
-    })
-    const dataUnion = client.getDataUnion(dataUnionId)
-    const address = await dataUnion.getSidechainAddress()
-
-    const web3 = getSidechainWeb3()
-    return new web3.eth.Contract(getConfig().dataUnionSidechainAbi, address)
-}
-
 export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number): any {
+    const dataUnion = await getDataUnionObject(address, true)
+    const sidechainAddress = await dataUnion.getSidechainAddress()
+
     const web3 = getSidechainWeb3()
-    const contract = await getSidechainContract(address)
+    const contract = new web3.eth.Contract(getConfig().dataUnionSidechainAbi, sidechainAddress)
     const latestBlock = await web3.eth.getBlock('latest')
 
     // Get events in batches since xDai RPC seems to timeout if fetching too large sets
@@ -534,36 +276,6 @@ export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number):
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-// eslint-disable-next-line camelcase
-async function* deprecated_getMemberEvents(id: DataUnionId, timestampFrom: number = 0): any {
-    const dataUnion = await getDataUnion(id)
-    const client = createClient()
-    await client.ensureConnected()
-    const sub = await client.subscribe({
-        streamId: dataUnion.joinPartStreamId,
-        resend: {
-            from: {
-                timestamp: timestampFrom,
-            },
-        },
-    })
-
-    /* eslint-disable no-restricted-syntax */
-    for await (const msg of sub) {
-        if (msg.parsedContent.addresses != null) {
-            for (const address of msg.parsedContent.addresses) {
-                yield {
-                    address,
-                    earnings: NaN,
-                    withdrawable: NaN,
-                    status: 'NOT_AVAILABLE',
-                }
-            }
-        }
-    }
-    /* eslint-enable no-restricted-syntax */
-}
-
 export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: number): any {
     const client = createClient()
     const web3 = getSidechainWeb3()
@@ -574,7 +286,7 @@ export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: nu
             const memberAddress = e.returnValues.member
             const block = await web3.eth.getBlock(e.blockHash)
             if (block) {
-                const dataUnion = client.getDataUnion(id)
+                const dataUnion = await client.safeGetDataUnion(id)
                 const memberData = await dataUnion.getMemberStats(memberAddress)
                 yield {
                     ...memberData,
@@ -594,22 +306,13 @@ export async function* getMemberEventsFromTimestamp(id: DataUnionId, timestamp: 
 }
 
 export async function* getAllMemberEvents(id: DataUnionId): any {
-    const version = await getDataUnionVersion(id)
-
-    if (version === 1) {
-        yield* deprecated_getMemberEvents(id)
-    } else if (version === 2) {
-        const duFirstPossibleBlock = parseInt(process.env.DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK, 10)
-        yield* getMemberEventsFromBlock(id, duFirstPossibleBlock)
-    }
+    const duFirstPossibleBlock = parseInt(process.env.DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK, 10)
+    yield* getMemberEventsFromBlock(id, duFirstPossibleBlock)
 }
 
-export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) => {
-    const client = createClient()
-    const dataUnion = client.getDataUnion(id)
-    const receipt = await dataUnion.removeMembers(memberAddresses)
-    return receipt
-}
+// ----------------------
+// calls to core-api
+// ----------------------
 
 type GetSecrets = {
     dataUnionId: DataUnionId,

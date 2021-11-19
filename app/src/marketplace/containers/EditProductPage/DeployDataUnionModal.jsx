@@ -9,7 +9,7 @@ import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployData
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
-import { deployDataUnion, getDefaultDataUnionVersion } from '$mp/modules/dataUnion/services'
+import { deployDataUnion } from '$mp/modules/dataUnion/services'
 import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
 import getWeb3 from '$shared/web3/web3Provider'
@@ -81,7 +81,6 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
             deployDataUnion({
                 productId: productId || '',
                 adminFee,
-                version: getDefaultDataUnionVersion(),
             })
                 .onTransactionHash((contractAddress) => {
                     if (!isMounted()) { return }

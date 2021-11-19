@@ -161,7 +161,6 @@ export type MemberCount = {
 export type DataUnion = {
     id: DataUnionId,
     adminFee: number | string,
-    joinPartStreamId: StreamId,
     owner: Address,
 }
 
