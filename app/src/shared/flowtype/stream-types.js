@@ -11,11 +11,6 @@ export type StreamFieldList = Array<StreamField>
 
 export type StreamId = string
 
-export type NewStream = {
-    id: string,
-    description: ?string,
-}
-
 export type Stream = {
     id: StreamId,
     name: string,

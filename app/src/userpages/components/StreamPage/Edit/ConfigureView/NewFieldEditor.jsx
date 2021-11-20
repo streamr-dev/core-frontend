@@ -10,7 +10,7 @@ import type { StreamField } from '$shared/flowtype/stream-types'
 import SplitControl from '$userpages/components/SplitControl'
 import Label from '$ui/Label'
 import Errors from '$ui/Errors'
-import { fieldTypes } from '$userpages/modules/userPageStreams/selectors'
+import { fieldTypes } from '$userpages/utils/constants'
 
 type Props = {
     previousFields: Array<StreamField>,

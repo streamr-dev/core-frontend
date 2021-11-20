@@ -1,14 +1,10 @@
-import React, { useCallback, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { StatusIcon, titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
 
-import { deleteOrRemoveStream } from '$userpages/modules/userPageStreams/actions'
 import Popover from '$shared/components/Popover'
 import confirmDialog from '$shared/utils/confirm'
-import { getResourcePermissions } from '$userpages/modules/permission/actions'
-import { selectFetchingPermissions, selectStreamPermissions } from '$userpages/modules/permission/selectors'
 import { NotificationIcon } from '$shared/utils/constants'
 import Notification from '$shared/utils/Notification'
 import Button from '$shared/components/Button'
@@ -19,8 +15,10 @@ import useModal from '$shared/hooks/useModal'
 import { StreamList } from '$shared/components/List'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import routes from '$routes'
 import useStreamPath from '../shared/useStreamPath'
+import { normalizePermissions } from '../../StreamController/useLoadStreamCallback'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -43,20 +41,20 @@ export const CreateStreamButton = () => (
     </DesktopOnlyButton>
 )
 
-const Row = ({ stream, onShareClick: onShareClickProp }) => {
-    const dispatch = useDispatch()
+const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveStreamProp }) => {
     const history = useHistory()
     const { copy } = useCopy()
-    const fetchingPermissions = useSelector(selectFetchingPermissions)
-    const permissions = useSelector(selectStreamPermissions)
+    const isMounted = useIsMounted()
+    const [permissions, setPermissions] = useState([])
+    const permissionsFetchedRef = useRef(false)
+
     const { api: snippetDialog } = useModal('userpages.streamSnippet')
     const { truncatedId } = useStreamPath(stream.id)
 
-    const canBeDeletedByCurrentUser = (
-        !fetchingPermissions &&
-        permissions[stream.id] &&
-        permissions[stream.id].includes('stream_delete')
-    )
+    const [canBeDeletedByCurrentUser, canBeSharedByCurrentUser] = useMemo(() => [
+        permissions.includes('stream_delete'),
+        permissions.includes('stream_share'),
+    ], [permissions])
 
     const confirmDeleteStream = useCallback(async () => {
         const confirmed = await confirmDialog('stream', {
@@ -72,12 +70,23 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
 
         if (confirmed) {
             try {
-                await dispatch(deleteOrRemoveStream(stream.id))
+                if (canBeDeletedByCurrentUser) {
+                    await stream.delete()
+                } else {
+                    // fetch permissions again to get ids
+                    const newPermissions = await stream.getMyPermissions()
+
+                    await Promise.allSettled(newPermissions.map(({ id }) => stream.revokePermission(id)))
+                }
 
                 Notification.push({
                     title: `Stream ${canBeDeletedByCurrentUser ? 'deleted' : 'removed'} successfully`,
                     icon: NotificationIcon.CHECKMARK,
                 })
+
+                if (!isMounted()) { return }
+
+                onRemoveStreamProp(stream)
             } catch (e) {
                 console.warn(e)
 
@@ -85,25 +94,29 @@ const Row = ({ stream, onShareClick: onShareClickProp }) => {
                     title: `Stream ${canBeDeletedByCurrentUser ? 'deletion' : 'removal'} failed`,
                     icon: NotificationIcon.ERROR,
                 })
+            } finally {
+                if (isMounted()) {
+                    setPermissions([])
+                }
             }
         }
-    }, [dispatch, stream.id, canBeDeletedByCurrentUser])
+    }, [stream, canBeDeletedByCurrentUser, onRemoveStreamProp, isMounted])
 
     const onToggleStreamDropdown = useCallback(async (open) => {
-        if (open && !fetchingPermissions && !permissions[stream.id]) {
+        if (open && !permissionsFetchedRef.current) {
+            permissionsFetchedRef.current = true
+
             try {
-                await dispatch(getResourcePermissions('STREAM', stream.id))
+                const permissions = await stream.getMyPermissions()
+
+                if (isMounted()) {
+                    setPermissions(normalizePermissions(permissions))
+                }
             } catch (e) {
                 // Noop.
             }
         }
-    }, [dispatch, fetchingPermissions, permissions, stream.id])
-
-    const canBeSharedByCurrentUser = (
-        !fetchingPermissions &&
-        permissions[stream.id] &&
-        permissions[stream.id].includes('stream_share')
-    )
+    }, [stream, isMounted])
 
     const onShareClick = useCallback(() => {
         onShareClickProp(stream)

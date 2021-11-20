@@ -12,7 +12,7 @@ import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 import { useController } from '.'
 
-function normalizePermissions(permissions) {
+export function normalizePermissions(permissions) {
     if (!permissions || !Array.isArray(permissions)) {
         return []
     }

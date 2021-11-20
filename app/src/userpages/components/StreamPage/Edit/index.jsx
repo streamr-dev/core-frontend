@@ -1,7 +1,6 @@
 // @flow
 
 import React, { useCallback, useState, useMemo, useRef } from 'react'
-import { useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import cloneDeep from 'lodash/cloneDeep'
@@ -20,7 +19,6 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
-import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Notification from '$shared/utils/Notification'
@@ -48,17 +46,10 @@ import styles from './edit.pcss'
 
 function StreamPageSidebar({ stream }) {
     const sidebar = useSidebar()
-    const dispatch = useDispatch()
-
-    const streamId = stream && stream.id
 
     const onClose = useCallback(() => {
         sidebar.close()
-
-        if (streamId) {
-            dispatch(getResourcePermissions('STREAM', streamId))
-        }
-    }, [sidebar, dispatch, streamId])
+    }, [sidebar])
 
     return (
         <Sidebar.WithErrorBoundary

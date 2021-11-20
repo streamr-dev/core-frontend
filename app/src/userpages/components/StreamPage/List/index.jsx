@@ -1,20 +1,12 @@
-// @flow
-
-import React, { Fragment, useEffect, useState, useCallback, useMemo } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { Fragment, useEffect, useState, useCallback, useMemo, useRef, useReducer } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { useClient } from 'streamr-client-react'
 
 import { CoreHelmet } from '$shared/components/Helmet'
-import {
-    getStreams,
-    clearStreamsList,
-} from '$userpages/modules/userPageStreams/actions'
-import { selectStreams, selectFetching, selectHasMoreSearchResults } from '$userpages/modules/userPageStreams/selectors'
 import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
 import Layout from '$userpages/components/Layout'
-import { resetResourcePermission } from '$userpages/modules/permission/actions'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import LoadMore from '$mp/components/LoadMore'
 import ListContainer from '$shared/components/Container/List'
@@ -25,9 +17,11 @@ import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarP
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { MD, LG } from '$shared/utils/styled'
 import { StreamList as StreamListComponent } from '$shared/components/List'
+import { getParamsForFilter } from '$userpages/utils/filters'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
+import useIsMounted from '$shared/hooks/useIsMounted'
 import routes from '$routes'
 
 import Search from '../../Header/Search'
@@ -77,15 +71,15 @@ const StyledListContainer = styled(ListContainer)`
     }
 `
 
+// Hides sort dropdown in desktop mode, table headers can be used for sorting
 const TabletPopover = styled(Popover)`
     @media (min-width: ${LG}px) {
         display: none;
     }
 `
 
-function StreamPageSidebar({ stream }) {
+function StreamPageSidebar({ stream, onInvalidate }) {
     const sidebar = useSidebar()
-    const dispatch = useDispatch()
 
     const streamId = stream && stream.id
 
@@ -93,9 +87,9 @@ function StreamPageSidebar({ stream }) {
         sidebar.close()
 
         if (streamId) {
-            dispatch(resetResourcePermission('STREAM', streamId))
+            onInvalidate(streamId)
         }
-    }, [sidebar, dispatch, streamId])
+    }, [sidebar, onInvalidate, streamId])
 
     return (
         <Sidebar.WithErrorBoundary
@@ -115,7 +109,60 @@ function StreamPageSidebar({ stream }) {
     )
 }
 
+const PAGE_SIZE = 20
+
+const streamsReducer = (state, action) => {
+    switch (action.type) {
+        case 'startFetching':
+            return {
+                ...state,
+                fetching: true,
+            }
+
+        case 'setStreams': {
+            const nextStreams = action.streams.slice(0, PAGE_SIZE)
+
+            return {
+                ...state,
+                streams: action.replace ? nextStreams : [...state.streams, ...nextStreams],
+                fetching: false,
+                hasMoreResults: action.streams.length > PAGE_SIZE,
+            }
+        }
+
+        case 'endFetching':
+            return {
+                ...state,
+                fetching: false,
+            }
+
+        case 'removeStream':
+            return {
+                ...state,
+                streams: state.streams.filter(({ id }) => id !== action.streamId),
+            }
+
+        case 'invalidateStreamPermissions':
+            return {
+                ...state,
+                invalidatedStreams: {
+                    ...state.invalidatedStreams,
+                    [action.streamId]: (state.invalidatedStreams[action.streamId] || 0) + 1,
+                },
+            }
+
+        default:
+            break
+    }
+
+    return {
+        ...state,
+    }
+}
+
 const StreamList = () => {
+    const client = useClient()
+    const isMounted = useIsMounted()
     const filters = useMemo(() => getFilters('stream'), [])
     const allSortOptions = useMemo(() => ([
         filters.RECENT_DESC,
@@ -137,18 +184,45 @@ const StreamList = () => {
         resetFilter,
     } = useFilterSort(allSortOptions)
     const [dialogTargetStream, setDialogTargetStream] = useState(null)
-    const dispatch = useDispatch()
-    const streams = useSelector(selectStreams)
-    const fetching = useSelector(selectFetching)
-    const hasMoreResults = useSelector(selectHasMoreSearchResults)
 
-    useEffect(() => () => {
-        dispatch(clearStreamsList())
-    }, [dispatch])
+    const [{ streams, fetching, hasMoreResults, invalidatedStreams }, dispatch] = useReducer(streamsReducer, {
+        streams: [],
+        fetching: false,
+        hasMoreResults: false,
+        invalidatedStreams: {},
+    })
+    const offsetRef = useRef()
+    offsetRef.current = streams.length
 
-    const fetchStreams = useCallback(async (...args) => {
+    const fetchStreams = useCallback(async ({ replace = false, filter = {} } = {}) => {
         try {
-            await dispatch(getStreams(...args))
+            dispatch({
+                type: 'startFetching',
+            })
+            const params = getParamsForFilter(filter, {
+                uiChannel: false,
+                sortBy: 'lastUpdated',
+            })
+            let offset = offsetRef.current
+
+            // If we are replacing, reset the offset before API call
+            if (replace) {
+                offset = 0
+            }
+
+            const nextStreams = await client.listStreams({
+                ...params,
+                max: PAGE_SIZE + 1, // query 1 extra element to determine if we should show "load more" button
+                offset,
+            })
+
+            if (isMounted()) {
+                dispatch({
+                    type: 'setStreams',
+                    streams: nextStreams,
+                    replace,
+                })
+            }
         } catch (e) {
             console.warn(e)
 
@@ -156,8 +230,14 @@ const StreamList = () => {
                 title: 'Failed to fetch streams',
                 icon: NotificationIcon.ERROR,
             })
+        } finally {
+            if (isMounted()) {
+                dispatch({
+                    type: 'endFetching',
+                })
+            }
         }
-    }, [dispatch])
+    }, [dispatch, client, isMounted])
 
     useEffect(() => {
         fetchStreams({
@@ -194,6 +274,22 @@ const StreamList = () => {
             return nextSort
         })
     }, [setActiveSort, setSort, defaultFilter])
+
+    const onRemoveStream = useCallback(({ id }) => {
+        if (id) {
+            dispatch({
+                type: 'removeStream',
+                streamId: id,
+            })
+        }
+    }, [dispatch])
+
+    const onInvalidate = useCallback((streamId) => {
+        dispatch({
+            type: 'invalidateStreamPermissions',
+            streamId,
+        })
+    }, [dispatch])
 
     return (
         <Layout
@@ -265,30 +361,38 @@ const StreamList = () => {
                                     Status
                                 </StreamListComponent.HeaderItem>
                             </StreamListComponent.Header>
-                            {streams.map((stream) => (
-                                <Row
-                                    key={stream.id}
-                                    onShareClick={onOpenShareDialog}
-                                    stream={stream}
-                                />
-                            ))}
+                            {streams.map((stream) => {
+                                // invalidate component when share dialog is closed to fetch new permissions
+                                const updateKey = invalidatedStreams[stream.id] || 0
+
+                                return (
+                                    <Row
+                                        key={`${stream.id}-${updateKey}`}
+                                        onShareClick={onOpenShareDialog}
+                                        onRemoveStream={onRemoveStream}
+                                        stream={stream}
+                                    />
+                                )
+                            })}
                         </StreamListComponent>
                         <LoadMore
                             hasMoreSearchResults={!fetching && hasMoreResults}
-                            onClick={() => fetchStreams()}
+                            onClick={() => fetchStreams({
+                                filter,
+                            })}
                             preserveSpace
                         />
                     </Fragment>
                 )}
             </StyledListContainer>
             <SnippetDialog />
-            <StreamPageSidebar stream={dialogTargetStream} />
+            <StreamPageSidebar stream={dialogTargetStream} onInvalidate={onInvalidate} />
             <DocsShortcuts />
         </Layout>
     )
 }
 
-export default (props: any) => (
+export default (props) => (
     <SidebarProvider>
         <StreamList {...props} />
     </SidebarProvider>
