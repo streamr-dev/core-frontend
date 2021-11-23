@@ -120,16 +120,4 @@ describe('product - selectors', () => {
     it('selects contract subscription', () => {
         expect(all.selectContractSubscription(state)).toBe(state.product.contractSubscription)
     })
-
-    it('selects contract subscription validity status', () => {
-        expect(all.selectContractSubscriptionIsValid(state)).toBe(false)
-    })
-
-    it('selects product purchased status', () => {
-        expect(all.selectProductIsPurchased(state)).toBe(true)
-    })
-
-    it('selects subscription validity status', () => {
-        expect(all.selectSubscriptionIsValid(state)).toBe(true)
-    })
 })

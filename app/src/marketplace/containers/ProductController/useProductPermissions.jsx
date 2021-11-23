@@ -70,7 +70,7 @@ type Props = {
     autoLoadPermissions?: boolean,
 }
 
-function PermissionContextProvider({ children, autoLoadPermissions }: Props) {
+function PermissionContextProvider({ children, autoLoadPermissions = true }: Props) {
     return (
         <PermissionContext.Provider value={usePermissionContextValue(!!autoLoadPermissions)}>
             {children || null}
