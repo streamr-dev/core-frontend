@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
-import useProduct from '$mp/containers/ProductController/useProduct'
+import { useController } from '$mp/containers/ProductController'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -20,7 +20,7 @@ import RelatedProducts from './RelatedProducts'
 import usePreviewStats from './usePreviewStats'
 
 const ProductDetailsPage = () => {
-    const product = useProduct()
+    const { product } = useController()
     const contractProduct = useContractProduct()
 
     const { subscriberCount } = contractProduct || {}

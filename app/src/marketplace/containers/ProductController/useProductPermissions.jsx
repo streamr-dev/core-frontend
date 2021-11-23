@@ -6,7 +6,7 @@ import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { getResourcePermissions } from '$userpages/modules/permission/services'
-import useProduct from './useProduct'
+import { useController } from '.'
 
 type ContextProps = {
     hasPermissions: boolean,
@@ -18,10 +18,10 @@ type ContextProps = {
 
 const PermissionContext: Context<ContextProps> = React.createContext({})
 
-function usePermissionContextValue() {
+function usePermissionContextValue(autoLoadPermissions: boolean = true) {
     const [permissions, setPermissions] = useState()
     const isMounted = useIsMounted()
-    const product = useProduct()
+    const { product } = useController()
     const { wrap, isPending } = usePending('product.PERMISSIONS')
     const [loadedOnce, setLoadedOnce] = useState(false)
 
@@ -41,13 +41,13 @@ function usePermissionContextValue() {
 
     // load permissions if needed
     useEffect(() => {
-        if (!productId || isPending) { return }
+        if (!productId || isPending || !autoLoadPermissions) { return }
 
         if (!loadedOnce) {
             loadPermissions(productId)
             setLoadedOnce(true)
         }
-    }, [productId, loadedOnce, isPending, loadPermissions])
+    }, [autoLoadPermissions, productId, loadedOnce, isPending, loadPermissions])
 
     const hasPermissions = !!permissions
 
@@ -67,11 +67,12 @@ function usePermissionContextValue() {
 
 type Props = {
     children?: Node,
+    autoLoadPermissions?: boolean,
 }
 
-function PermissionContextProvider({ children }: Props) {
+function PermissionContextProvider({ children, autoLoadPermissions }: Props) {
     return (
-        <PermissionContext.Provider value={usePermissionContextValue()}>
+        <PermissionContext.Provider value={usePermissionContextValue(!!autoLoadPermissions)}>
             {children || null}
         </PermissionContext.Provider>
     )

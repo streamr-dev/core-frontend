@@ -8,7 +8,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { validate as validateProduct } from '$mp/utils/product'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
-import useProduct from '../ProductController/useProduct'
+import { useController } from '../ProductController'
 
 export const INFO = 'info'
 export const WARNING = 'warning'
@@ -58,7 +58,7 @@ function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState({})
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouchedState] = useState({})
-    const originalProduct = useProduct()
+    const { product: originalProduct } = useController()
 
     const setTouched = useCallback((name: string, value = true) => {
         setTouchedState((existing) => ({

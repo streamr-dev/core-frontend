@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 import Segment from '$shared/components/Segment'
-import useProduct from '$mp/containers/ProductController/useProduct'
+import { useController } from '$mp/containers/ProductController'
+import useProductSubscription from '$mp/containers/ProductController/useProductSubscription'
 import {
-    selectSubscriptionIsValid,
     selectStreams,
     selectFetchingStreams,
 } from '$mp/modules/product/selectors'
@@ -17,9 +17,9 @@ import { isPaidProduct } from '$mp/utils/product'
 import routes from '$routes'
 
 const Streams = withRouter(({ history }) => {
-    const product = useProduct()
+    const { product } = useController()
     const productId = product.id
-    const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
+    const { isSubscriptionValid } = useProductSubscription()
     const userData = useSelector(selectUserData)
     const streams = useSelector(selectStreams)
     const fetchingStreams = useSelector(selectFetchingStreams)
@@ -40,8 +40,8 @@ const Streams = withRouter(({ history }) => {
     }, [history])
 
     const locked = useMemo(() => !(
-        isProductFree || (isLoggedIn && isProductSubscriptionValid)
-    ), [isProductFree, isLoggedIn, isProductSubscriptionValid])
+        isProductFree || (isLoggedIn && isSubscriptionValid)
+    ), [isProductFree, isLoggedIn, isSubscriptionValid])
 
     return (
         <Segment>
@@ -51,7 +51,7 @@ const Streams = withRouter(({ history }) => {
                     fetchingStreams={fetchingStreams}
                     locked={locked}
                     onStreamPreview={onStreamPreview}
-                    onStreamSettings={!!isLoggedIn && isProductSubscriptionValid && onStreamSettings}
+                    onStreamSettings={!!isLoggedIn && isSubscriptionValid && onStreamSettings}
                 />
             </Segment.Body>
         </Segment>

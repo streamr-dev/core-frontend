@@ -5,7 +5,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import moment from 'moment'
 
-import useProduct from '$mp/containers/ProductController/useProduct'
+import { useController } from '$mp/containers/ProductController'
+import useProductSubscription from '$mp/containers/ProductController/useProductSubscription'
 import useModal from '$shared/hooks/useModal'
 import usePending from '$shared/hooks/usePending'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -17,10 +18,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
-import {
-    selectSubscriptionIsValid,
-    selectContractSubscription,
-} from '$mp/modules/product/selectors'
+
 import { ImageTile } from '$shared/components/Tile'
 import { NotificationIcon } from '$shared/utils/constants'
 import Notification from '$shared/utils/Notification'
@@ -60,7 +58,7 @@ const getWhitelistStatus = async ({ productId, validate = false }: WhitelistStat
 const Hero = () => {
     const dispatch = useDispatch()
     const history = useHistory()
-    const product = useProduct()
+    const { product } = useController()
     const { api: purchaseDialog } = useModal('purchase')
     const { isPending, wrap } = usePending('product.PURCHASE_DIALOG')
     const isMounted = useIsMounted()
@@ -69,8 +67,7 @@ const Hero = () => {
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
     const isDataUnion = !!(product && isDataUnionProduct(product))
-    const isProductSubscriptionValid = useSelector(selectSubscriptionIsValid)
-    const subscription = useSelector(selectContractSubscription)
+    const { contractSubscription, isSubscriptionValid } = useProductSubscription()
     const account = useAccountAddress()
 
     const productId = product.id
@@ -186,8 +183,8 @@ const Hero = () => {
             rightContent={
                 <ProductDetails
                     product={product}
-                    isValidSubscription={!!isProductSubscriptionValid}
-                    productSubscription={subscription}
+                    isValidSubscription={!!isSubscriptionValid}
+                    productSubscription={contractSubscription}
                     onPurchase={onPurchase}
                     isPurchasing={isPending}
                     isWhitelisted={isWhitelisted}

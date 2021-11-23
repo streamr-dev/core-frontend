@@ -3,11 +3,13 @@
 import React, { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import { titleize } from '@streamr/streamr-layout'
+import { denormalize } from 'normalizr'
 
-import useProduct from '$mp/containers/ProductController/useProduct'
+import { useController } from '$mp/containers/ProductController'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import usePending from '$shared/hooks/usePending'
-import { selectCategory } from '$mp/modules/product/selectors'
+import { selectEntities } from '$shared/modules/entities/selectors'
+import { categorySchema } from '$shared/modules/entities/schema'
 import { ago } from '$shared/utils/time'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
@@ -17,9 +19,11 @@ type Props = {
 }
 
 const Description = ({ isProductFree }: Props) => {
-    const product = useProduct()
+    const { product } = useController()
     const contractProduct = useContractProduct()
-    const category = useSelector(selectCategory)
+
+    const entities = useSelector(selectEntities)
+    const category = product && denormalize(product.category, categorySchema, entities)
     const { isPending } = usePending('contractProduct.LOAD_SUBSCRIPTION')
     const { purchaseTimestamp, subscriberCount } = contractProduct || {}
 

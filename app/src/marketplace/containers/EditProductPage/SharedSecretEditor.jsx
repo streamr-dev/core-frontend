@@ -8,7 +8,7 @@ import AddKeyField from '$shared/components/KeyField/AddKeyField'
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import type { Secret } from '$mp/modules/dataUnion/types'
 import { usePending } from '$shared/hooks/usePending'
-import useProduct from '../ProductController/useProduct'
+import { useController } from '../ProductController'
 
 const KeyField = styled(UnstyledKeyField)``
 const AddKeyFieldWrapper = styled.div``
@@ -18,7 +18,7 @@ type Props = {
 }
 
 const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
-    const product = useProduct()
+    const { product } = useController()
     const { secrets, edit, add, remove } = useDataUnionSecrets()
     const dataUnionId = (product && product.beneficiaryAddress) || ''
     const { isPending: isAddPending, wrap: wrapAddSecret } = usePending('product.ADD_SECRET')

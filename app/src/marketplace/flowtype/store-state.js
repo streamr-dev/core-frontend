@@ -58,9 +58,6 @@ export type RelatedProductListState = {
 
 // product
 export type ProductState = {
-    id: ?ProductId,
-    fetchingProduct: boolean,
-    productError: ?ErrorInUi,
     streams: StreamIdList,
     fetchingStreams: boolean,
     streamsError: ?ErrorInUi,

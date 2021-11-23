@@ -10,7 +10,6 @@ import useWeb3Status from '$shared/hooks/useWeb3Status'
 import { useController } from '$mp/containers/ProductController'
 import { usePending } from '$shared/hooks/usePending'
 import { purchaseFlowSteps } from '$mp/utils/constants'
-import { selectProduct } from '$mp/modules/product/selectors'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
 import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import { transactionStates, DEFAULT_CURRENCY, paymentCurrencies, gasLimits } from '$shared/utils/constants'
@@ -40,14 +39,13 @@ type Props = {
 
 export const PurchaseDialog = ({ productId, api }: Props) => {
     const dispatch = useDispatch()
-    const { loadContractProduct } = useController()
+    const { product, loadContractProduct } = useController()
     const { web3Error, checkingWeb3, account } = useWeb3Status()
     const { isPending: isContractProductLoadPending } = usePending('contractProduct.LOAD')
     const { isPending: isPurchasePending, wrap: wrapPurchase } = usePending('product.PURCHASE')
     const [step, setStep] = useState(null)
     const [purchaseError, setPurchaseError] = useState(null)
     const dataPerUsd = useSelector(selectDataPerUsd)
-    const product = useSelector(selectProduct)
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
     const contractProductError = useSelector(selectContractProductError)

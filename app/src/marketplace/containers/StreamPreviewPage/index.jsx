@@ -8,12 +8,10 @@ import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
-import useProduct from '$mp/containers/ProductController/useProduct'
 import ClientProvider from '$shared/components/StreamrClientProvider'
 import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
-    selectProductIsPurchased,
 } from '$mp/modules/product/selectors'
 import { useThrottled } from '$shared/hooks/wrapCallback'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -23,6 +21,7 @@ import { getProductSubscription } from '$mp/modules/product/actions'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 import routes from '$routes'
 import ProductController, { useController } from '../ProductController'
+import useProductSubscription from '../ProductController/useProductSubscription'
 
 const PreviewModal = ({ onClose, ...previewProps }) => (
     <ModalPortal>
@@ -127,7 +126,7 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
 
 const PreviewWrap = ({ productId, streamId }) => {
     const history = useHistory()
-    const product = useProduct()
+    const { product } = useController()
     const dispatch = useDispatch()
     const streams = useSelector(selectProductStreams)
     const fetchingStreams = useSelector(selectFetchingProductStreams)
@@ -137,7 +136,7 @@ const PreviewWrap = ({ productId, streamId }) => {
     const isMounted = useIsMounted()
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
-    const isProductSubscriptionValid = useSelector(selectProductIsPurchased)
+    const { isSubscriptionValid } = useProductSubscription()
 
     const targetStream = useMemo(() => (
         streams && streams.find(({ id }) => id === streamId)
@@ -146,7 +145,7 @@ const PreviewWrap = ({ productId, streamId }) => {
 
     useEffect(() => {
         if (!streamLoaded) {
-            loadProductStreams(productId)
+            loadProductStreams(productId, false)
         }
     }, [streamLoaded, loadProductStreams, productId])
 
@@ -207,7 +206,7 @@ const PreviewWrap = ({ productId, streamId }) => {
             titlePrefix={product.name}
             onClose={redirectToProduct}
             onChange={redirectToPreview}
-            onStreamSettings={!!isLoggedIn && isProductSubscriptionValid && redirectToSettings}
+            onStreamSettings={!!isLoggedIn && isSubscriptionValid && redirectToSettings}
         />
     )
 }
@@ -217,7 +216,11 @@ const ProductContainer = () => {
     const streamId = useMemo(() => decodeURIComponent(idProp), [idProp])
 
     return (
-        <ProductController key={streamId} ignoreUnauthorized>
+        <ProductController
+            key={streamId}
+            ignoreUnauthorized
+            useAuthorization={false}
+        >
             <PreviewWrap
                 productId={productId}
                 streamId={streamId}

@@ -1,6 +1,4 @@
-// @flow
-
-import React, { type Node, type Context, useMemo, useContext, useEffect, useState } from 'react'
+import React, { useMemo, useContext, useEffect, useState, useReducer } from 'react'
 import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -24,34 +22,12 @@ import useLoadAllStreamsCallback from './useLoadAllStreamsCallback'
 import useClearStreamsCallback from './useClearStreamsCallback'
 import useResetDataUnionCallback from './useResetDataUnionCallback'
 
-type ContextProps = {
-    hasLoaded: boolean,
-    setHasLoaded: Function,
-    loadProduct: Function,
-    loadContractProduct: Function,
-    loadContractProductSubscription: Function,
-    loadCategories: Function,
-    loadProductStreams: Function,
-    loadDataUnion: Function,
-    loadDataUnionStats: Function,
-    loadRelatedProducts: Function,
-    loadAllStreams: Function,
-    clearStreams: Function,
-    resetDataUnion: Function,
-}
+const ProductControllerContext = React.createContext({})
 
-const ProductControllerContext: Context<ContextProps> = React.createContext({})
-
-type EffectProps = {
-    ignoreUnauthorized?: boolean,
-    requirePublished?: boolean,
-}
-
-function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectProps) {
+function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthorization }) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
-    const { setHasLoaded } = useContext(ProductControllerContext)
     const { isPending } = usePending('product.LOAD')
     const isMounted = useIsMounted()
     const { id: urlId } = useParams()
@@ -63,10 +39,7 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectPr
                 productId: urlId,
                 ignoreUnauthorized,
                 requirePublished,
-            }).then(() => {
-                if (isMounted()) {
-                    setHasLoaded(true)
-                }
+                useAuthorization,
             })
             loadContractProduct(urlId)
             setLoadedOnce(true)
@@ -78,16 +51,17 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished }: EffectPr
         loadContractProduct,
         isPending,
         ignoreUnauthorized,
+        useAuthorization,
         requirePublished,
-        setHasLoaded,
         isMounted,
     ])
 }
 
-function ProductEffects({ ignoreUnauthorized, requirePublished }: EffectProps) {
+function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization }) {
     useProductLoadEffect({
         ignoreUnauthorized,
         requirePublished,
+        useAuthorization,
     })
     useProductValidationEffect()
 
@@ -103,7 +77,13 @@ export function useController() {
 }
 
 function useProductController() {
-    const [hasLoaded, setHasLoaded] = useState(false)
+    const [{ hasLoaded, product }, setProduct] = useReducer((state, nextProduct) => ({
+        product: nextProduct,
+        hasLoaded: true,
+    }), {
+        hasLoaded: false,
+        product: undefined,
+    })
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
     const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
@@ -117,8 +97,9 @@ function useProductController() {
     const resetDataUnion = useResetDataUnionCallback()
 
     return useMemo(() => ({
+        product,
         hasLoaded,
-        setHasLoaded,
+        setProduct,
         loadProduct,
         loadContractProduct,
         loadContractProductSubscription,
@@ -131,8 +112,9 @@ function useProductController() {
         clearStreams,
         resetDataUnion,
     }), [
+        product,
         hasLoaded,
-        setHasLoaded,
+        setProduct,
         loadProduct,
         loadContractProduct,
         loadContractProductSubscription,
@@ -147,11 +129,7 @@ function useProductController() {
     ])
 }
 
-type ControllerProviderProps = {
-    children?: Node,
-}
-
-function ControllerProvider({ children }: ControllerProviderProps) {
+function ControllerProvider({ children }) {
     return (
         <ProductControllerContext.Provider value={useProductController()}>
             {children}
@@ -159,14 +137,16 @@ function ControllerProvider({ children }: ControllerProviderProps) {
     )
 }
 
-type ControllerProps = ControllerProviderProps & EffectProps
-
-const ProductController = ({ children, ignoreUnauthorized = false, requirePublished = false }: ControllerProps) => (
+const ProductController = ({ children, ignoreUnauthorized = false, requirePublished = false, useAuthorization = true }) => (
     <PendingProvider name="product">
         <ValidationContextProvider>
-            <PermissionsProvider>
+            <PermissionsProvider autoLoadPermissions={!!useAuthorization}>
                 <ControllerProvider>
-                    <ProductEffects ignoreUnauthorized={ignoreUnauthorized} requirePublished={requirePublished} />
+                    <ProductEffects
+                        ignoreUnauthorized={ignoreUnauthorized}
+                        requirePublished={requirePublished}
+                        useAuthorization={!!useAuthorization}
+                    />
                     {children || null}
                 </ControllerProvider>
             </PermissionsProvider>
