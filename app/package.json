@@ -1,6 +1,6 @@
 {
   "name": "marketplace",
-  "version": "2.4.28",
+  "version": "2.4.29",
   "description": "The Streamr Core App",
   "main": "src/index.jsx",
   "scripts": {
