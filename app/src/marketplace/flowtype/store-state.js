@@ -139,7 +139,6 @@ export type GlobalState = {
     networkId: ?string,
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
-    ethereumNetworkError: ?TransactionError,
 }
 
 // transactions
