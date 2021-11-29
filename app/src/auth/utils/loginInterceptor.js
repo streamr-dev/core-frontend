@@ -101,6 +101,21 @@ export async function handleLoadError({ error, ignoreUnauthorized = false } = {}
     throw error
 }
 
+export function canHandleClientError(err) {
+    if (err.code === 'NOT_FOUND') { return true }
+    return false
+}
+
+export async function handleClientError({ error, type, id, ignoreUnauthorized = false } = {}) {
+    const { code } = error || {}
+
+    if (code === 'NOT_FOUND') {
+        throw new ResourceNotFoundError(type, id)
+    }
+
+    throw error
+}
+
 export default function installInterceptor(instance = axios) {
     // add global axios interceptor
     // redirect to login page on 401 response

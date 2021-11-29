@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import Checkbox from '$shared/components/Checkbox'
-import useStreamStorageNodeToggle from '$shared/components/StorageNode/useStreamStorageNodeToggle'
 import Spinner from '$shared/components/Spinner'
 
 const Button = styled.button`
@@ -23,20 +22,18 @@ const Button = styled.button`
 `
 
 const UnstyledStorageNode = ({
-    address,
-    changing: changingProp,
-    checked: checkedProp,
+    changing,
+    checked,
     children,
     disabled,
     onClick: onClickProp,
-    streamId,
     ...props
 }) => {
-    const [checked, changing, change] = useStreamStorageNodeToggle(streamId, address, checkedProp, changingProp)
-
     const onClick = useCallback(() => {
-        change()
-    }, [change])
+        if (onClickProp && typeof onClickProp === 'function') {
+            onClickProp()
+        }
+    }, [onClickProp])
 
     return (
         <Button

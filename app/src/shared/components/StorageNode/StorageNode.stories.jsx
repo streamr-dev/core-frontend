@@ -1,6 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
+import { action } from '@storybook/addon-actions'
 import { withKnobs, boolean, text } from '@storybook/addon-knobs'
 import StorageNode from '.'
 
@@ -15,6 +16,7 @@ story('StorageNode').add('with knobs', () => (
     <StorageNode
         disabled={boolean('Disabled', false)}
         checked={boolean('Checked', false)}
+        onClick={action('onClick')}
     >
         {text('Location name', 'United States of America')}
     </StorageNode>

@@ -238,7 +238,7 @@ const UnstyledView = (props) => {
                     id="historicalData"
                     title="Data storage"
                 >
-                    <Storage streamId={stream.id} disabled />
+                    <Storage stream={stream} disabled />
                     <FormGroup>
                         <Field label="Store historical data for">
                             <HistoricalStorage>

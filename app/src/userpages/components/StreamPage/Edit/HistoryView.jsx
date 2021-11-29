@@ -49,7 +49,13 @@ const InputContainer = styled.div`
     grid-column-gap: 1rem;
 `
 
-const HistoryView = ({ stream, disabled, updateStream, showStorageOptions = true }) => {
+const HistoryView = ({
+    stream,
+    originalStream,
+    disabled,
+    updateStream,
+    showStorageOptions = true,
+}) => {
     const [storageAmount, setStorageAmount] = useState(0)
     const [storageUnit, setStorageUnit] = useState(undefined)
     const { id: streamId } = stream
@@ -105,7 +111,7 @@ const HistoryView = ({ stream, disabled, updateStream, showStorageOptions = true
                 You can also choose how long to store your stream’s historical data before auto-deletion.
             </Description>
             {!!showStorageOptions && (
-                <Storage streamId={streamId} />
+                <Storage stream={originalStream} />
             )}
             {stream && stream.storageDays !== undefined &&
                 <Fragment>

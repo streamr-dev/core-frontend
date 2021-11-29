@@ -3,10 +3,34 @@ import styled from 'styled-components'
 import StorageNode from '$shared/components/StorageNode'
 import Label from '$ui/Label'
 import nodes from '$shared/utils/storageNodes'
-import useStreamStorageNodeAddresses from '$shared/components/StorageNode/useStreamStorageNodeAddresses'
+import useStreamStorageNodeAddresses from './useStreamStorageNodeAddresses'
+import useStreamStorageNodeToggle from './useStreamStorageNodeToggle'
 
-const UnstyledStorage = ({ streamId, disabled, ...props }) => {
-    const addresses = useStreamStorageNodeAddresses(streamId)
+const StorageNodeItem = ({
+    stream,
+    address,
+    name,
+    disabled,
+    checked: checkedProp,
+    changing: changingProp,
+}) => {
+    const [checked, changing, change] = useStreamStorageNodeToggle(stream, address, checkedProp, changingProp)
+
+    return (
+        <StorageNode
+            address={address}
+            changing={changing}
+            checked={checked}
+            disabled={disabled}
+            onClick={change}
+        >
+            {name}
+        </StorageNode>
+    )
+}
+
+const UnstyledStorage = ({ stream, disabled, ...props }) => {
+    const addresses = useStreamStorageNodeAddresses(stream)
 
     return (
         <div {...props}>
@@ -16,16 +40,15 @@ const UnstyledStorage = ({ streamId, disabled, ...props }) => {
             </Label>
             <StorageNode.List data-test-hook="Storage nodes">
                 {nodes.map(({ address, name }) => (
-                    <StorageNode
+                    <StorageNodeItem
                         address={address}
+                        name={name}
                         changing={addresses == null}
                         checked={(addresses || []).includes(address)}
                         disabled={disabled}
                         key={address}
-                        streamId={streamId}
-                    >
-                        {name}
-                    </StorageNode>
+                        stream={stream}
+                    />
                 ))}
             </StorageNode.List>
         </div>

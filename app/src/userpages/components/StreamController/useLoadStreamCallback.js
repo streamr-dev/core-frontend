@@ -4,21 +4,13 @@ import uuid from 'uuid'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
-import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
+import { canHandleClientError, handleClientError } from '$auth/utils/loginInterceptor'
 
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 import { useController } from '.'
-
-export function normalizePermissions(permissions) {
-    if (!permissions || !Array.isArray(permissions)) {
-        return []
-    }
-
-    return [...new Set(permissions.map(({ operation }) => operation))]
-}
 
 const mapStreamFields = (stream) => {
     const { config } = stream
@@ -54,9 +46,11 @@ export default function useLoadStreamCallback() {
                 stream = await client.getStream(id)
             } catch (error) {
                 if (!isMounted()) { return }
-                if (canHandleLoadError(error)) {
-                    await handleLoadError({
+                if (canHandleClientError(error)) {
+                    await handleClientError({
                         error,
+                        type: 'STREAM',
+                        id,
                         ignoreUnauthorized,
                     })
                 }
@@ -73,7 +67,7 @@ export default function useLoadStreamCallback() {
                     console.error('useLoadStreamCallback', e)
                 }
 
-                return []
+                return {}
             })()
 
             if (!isMounted()) { return }
@@ -82,7 +76,7 @@ export default function useLoadStreamCallback() {
 
             setStream({
                 stream,
-                permissions: normalizePermissions(permissions),
+                permissions,
             })
         })
     ), [wrap, client, setStream, productUpdater, isMounted])

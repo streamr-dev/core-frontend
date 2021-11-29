@@ -210,6 +210,9 @@ const StreamList = () => {
                 offset = 0
             }
 
+            // TODO: ordering not supported by the client
+            delete params.sortBy
+
             const nextStreams = await client.listStreams({
                 ...params,
                 max: PAGE_SIZE + 1, // query 1 extra element to determine if we should show "load more" button

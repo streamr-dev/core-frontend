@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { StatusIcon, titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
+import { StreamOperation } from 'streamr-client'
 
 import Popover from '$shared/components/Popover'
 import confirmDialog from '$shared/utils/confirm'
@@ -18,7 +19,6 @@ import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import routes from '$routes'
 import useStreamPath from '../shared/useStreamPath'
-import { normalizePermissions } from '../../StreamController/useLoadStreamCallback'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -52,8 +52,8 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
     const { truncatedId } = useStreamPath(stream.id)
 
     const [canBeDeletedByCurrentUser, canBeSharedByCurrentUser] = useMemo(() => [
-        permissions.includes('stream_delete'),
-        permissions.includes('stream_share'),
+        !!permissions[StreamOperation.STREAM_DELETE],
+        !!permissions[StreamOperation.STREAM_SHARE],
     ], [permissions])
 
     const confirmDeleteStream = useCallback(async () => {
@@ -76,7 +76,8 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
                     // fetch permissions again to get ids
                     const newPermissions = await stream.getMyPermissions()
 
-                    await Promise.allSettled(newPermissions.map(({ id }) => stream.revokePermission(id)))
+                    await Promise.allSettled(Object.keys(newPermissions)
+                        .map((operation) => stream.revokePermission(operation)))
                 }
 
                 Notification.push({
@@ -110,7 +111,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
                 const permissions = await stream.getMyPermissions()
 
                 if (isMounted()) {
-                    setPermissions(normalizePermissions(permissions))
+                    setPermissions(permissions)
                 }
             } catch (e) {
                 // Noop.

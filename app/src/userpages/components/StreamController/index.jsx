@@ -48,7 +48,7 @@ function useStreamController() {
         hasLoaded: true,
     }), {
         stream: undefined,
-        permissions: [],
+        permissions: {},
         hasLoaded: false,
     })
     const loadStream = useLoadStreamCallback()

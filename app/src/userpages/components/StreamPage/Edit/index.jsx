@@ -7,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { useTransition, animated } from 'react-spring'
 import { StatusIcon } from '@streamr/streamr-layout'
 import set from 'lodash/set'
+import { StreamOperation } from 'streamr-client'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusLabel from '$shared/components/StatusLabel'
@@ -86,7 +87,7 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
 
     const history = useHistory()
 
-    const canShare = useMemo(() => permissions.includes('stream_share'), [permissions])
+    const canShare = useMemo(() => !!permissions[StreamOperation.STREAM_SHARE], [permissions])
 
     const updateStream = useCallback((change, additionalData) => {
         try {
@@ -357,6 +358,7 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
                             >
                                 <HistoryView
                                     stream={stream}
+                                    originalStream={originalStream}
                                     disabled={isDisabled}
                                     updateStream={updateStream}
                                 />

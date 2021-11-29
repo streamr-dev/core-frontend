@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { get } from '$shared/utils/api'
-import routes from '$routes'
 
-const useStreamStorageNodeAddresses = (streamId) => {
+const useStreamStorageNodeAddresses = (stream) => {
     const [nodes, setNodes] = useState()
 
     const isMounted = useIsMounted()
@@ -13,11 +11,7 @@ const useStreamStorageNodeAddresses = (streamId) => {
             let result = []
 
             try {
-                result = await get({
-                    url: routes.api.storageNodes.index({
-                        id: streamId,
-                    }),
-                })
+                result = await stream.getStorageNodes()
             } catch (e) {
                 console.error('Something is wrong', e)
             }
@@ -27,10 +21,10 @@ const useStreamStorageNodeAddresses = (streamId) => {
             }
         }
 
-        if (streamId) {
+        if (stream) {
             fetch()
         }
-    }, [isMounted, streamId])
+    }, [isMounted, stream])
 
     return nodes
 }
