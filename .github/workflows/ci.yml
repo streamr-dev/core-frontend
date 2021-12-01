@@ -71,14 +71,14 @@ jobs:
         run: |
           npm ci
       - name: Cache node modules
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Cache Cypress binary
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.cache/Cypress
           key: cypress-${{ runner.os }}-cypress-${{ hashFiles('package-lock.json') }}
