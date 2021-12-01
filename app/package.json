@@ -234,7 +234,7 @@
     "smooth-scroll-into-view-if-needed": "^1.1.29",
     "storybook-addon-jsx": "^5.4.0",
     "storybook-react-router": "^1.0.8",
-    "streamr-client": "^6.1.0-ocr-experimental.8",
+    "streamr-client": "^6.1.0-ocr-experimental.7",
     "streamr-client-react": "^2.0.0",
     "stringify-object": "^3.3.0",
     "style-loader": "^0.23.1",

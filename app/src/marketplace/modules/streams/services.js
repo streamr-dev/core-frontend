@@ -2,7 +2,7 @@
 
 import { get } from '$shared/utils/api'
 import type { ApiResult } from '$shared/flowtype/common-types'
-import type { StreamId, StreamList } from '$shared/flowtype/stream-types'
+import type { StreamList } from '$shared/flowtype/stream-types'
 import routes from '$routes'
 
 export const getStreams = (params: Object): ApiResult<{
@@ -61,11 +61,3 @@ export async function getAllStreams(params: Object): any {
 
     return streams
 }
-
-export const getStreamData = (streamId: StreamId, fromTimestamp: number): ApiResult<Object> => get({
-    url: routes.api.streams.data.from({
-        fromTimestamp,
-        partition: 0,
-        streamId,
-    }),
-})

@@ -109,21 +109,7 @@
         },
         "categories": "<api>/categories",
         "streams": {
-            "data": {
-                "from": "<api>/streams/:streamId/data/partitions/:partition/from",
-                "last": "<api>/streams/:streamId/data/partitions/:partition/last"
-            },
-            "index": "<api>/streams",
-            "show": "<api>/streams/:id",
-            "detectFields": "<api>/streams/:streamId/detectFields",
-            "keys": {
-                "index": "<api>/streams/:streamId/keys",
-                "show": "<api>/streams/:streamId/keys/:id"
-            },
-            "permissions": {
-                "index": "<api>/streams/:streamId/permissions",
-                "show": "<api>/streams/:streamId/permissions/:id"
-            }
+            "index": "<api>/streams"
         },
         "dataunions": {
             "index": "<api>/dataunions",

@@ -1,7 +1,6 @@
 import { useEffect, useCallback, useReducer, useRef } from 'react'
+import { useClient } from 'streamr-client-react'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { get } from '$shared/utils/api'
-import routes from '$routes'
 
 const SET_TIMESTAMP = 'set timestamp'
 
@@ -44,6 +43,7 @@ const useLastMessageTimestamp = (streamId) => {
     const [{ timestamp, error, refreshedAt, refreshKey }, dispatch] = useReducer(reducer, initialState)
 
     const isMounted = useIsMounted()
+    const client = useClient()
 
     const isFetchingRef = useRef(true)
 
@@ -61,13 +61,8 @@ const useLastMessageTimestamp = (streamId) => {
     useEffect(() => {
         const attach = async () => {
             try {
-                const [message] = await get({
-                    url: routes.api.streams.data.last({
-                        count: 1,
-                        partition: 0,
-                        streamId,
-                    }),
-                })
+                const [message] = await client.getStreamLast(streamId)
+
                 if (isMounted()) {
                     dispatch({
                         type: SET_TIMESTAMP,
@@ -87,7 +82,7 @@ const useLastMessageTimestamp = (streamId) => {
         }
 
         attach()
-    }, [streamId, isMounted, refreshKey])
+    }, [client, streamId, isMounted, refreshKey])
 
     return [timestamp, error, refresh, refreshedAt]
 }

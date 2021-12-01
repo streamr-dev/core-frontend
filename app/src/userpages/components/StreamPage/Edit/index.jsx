@@ -71,7 +71,15 @@ function StreamPageSidebar({ stream }) {
 }
 
 const didChange = (original, changed) => {
-    const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = original.toObject() || {}
+    const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = (() => {
+        const streamObject = original.toObject() || {}
+
+        if (!streamObject.inactivityThresholdHours) {
+            streamObject.inactivityThresholdHours = 0
+        }
+
+        return streamObject
+    })()
     const { streamStatus: changedStatus, lastData: changedData, ...changedStripped } = changed || {}
 
     return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
