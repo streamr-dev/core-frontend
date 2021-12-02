@@ -1,4 +1,6 @@
 export default function getClientConfig(options = {}) {
+    const web3 = getWeb3()
+
     const config = Object.assign({
         autoConnect: true,
         autoDisconnect: false,
@@ -6,7 +8,24 @@ export default function getClientConfig(options = {}) {
         url: process.env.STREAMR_WS_URL,
         verifySignatures: 'never',
         auth: {
-            privateKey: '5e98cce00cff5dea6b454889f359a4ec06b9fa6b88e9d69b86de8e1c81887da0',
+            ethereum: web3.metamaskProvider,
+        },
+        ethereum: {
+            binanceRPC: {
+                chainId: 56,
+            },
+            binanceAdapterAddress: '0x0000000000000000000000000000000000000000',
+            binanceSmartChainAMBAddress: '0x0000000000000000000000000000000000000000',
+            withdrawServerUrl: '',
+            mainnet: {
+                url: process.env.WEB3_PUBLIC_HTTP_PROVIDER,
+            },
+            sidechain: {
+                url: process.env.DATA_UNION_SIDECHAIN_PROVIDER,
+                chainId: parseInt(process.env.DATA_UNION_SIDECHAIN_ID, 10),
+            },
+            tokenAddress: '0x0000000000000000000000000000000000000000',
+            tokenSidechainAddress: '0x0000000000000000000000000000000000000000',
         },
     }, options)
 

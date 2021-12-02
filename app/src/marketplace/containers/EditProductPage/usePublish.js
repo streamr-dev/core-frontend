@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
+import { useClient } from 'streamr-client-react'
 
 import type { Product } from '$mp/flowtype/product-types'
 import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
@@ -55,6 +56,7 @@ export type PublishMode = $Values<typeof publishModes>
 
 export default function usePublish() {
     const dispatch = useDispatch()
+    const client = useClient()
 
     return useCallback(async (product: Product) => {
         if (!product) {
@@ -129,7 +131,7 @@ export default function usePublish() {
                     try {
                         // Get all streams and verify that the added streams actually exist,
                         // otherwise the product update will fail
-                        const streams = await getAllStreams()
+                        const streams = await getAllStreams(client)
                         const streamIds = new Set(streams.map(({ id }) => id))
                         nextProduct.streams = (nextProduct.streams || []).filter((id) => streamIds.has(id))
 
@@ -451,5 +453,5 @@ export default function usePublish() {
             mode: nextMode,
             queue,
         }
-    }, [dispatch])
+    }, [client, dispatch])
 }

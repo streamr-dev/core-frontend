@@ -559,7 +559,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                         {!!isDomainDisabled && (
                                             <DisabledDomain>
                                                 {!loadingDomains && (
-                                                    <span>{domain || ''}</span>
+                                                    <span>{truncate(domain) || ''}</span>
                                                 )}
                                                 {!!loadingDomains && (
                                                     <React.Fragment>

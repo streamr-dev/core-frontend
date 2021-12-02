@@ -1,14 +1,4 @@
-// @flow
-
-import { get } from '$shared/utils/api'
-import type { ApiResult } from '$shared/flowtype/common-types'
-import type { StreamList } from '$shared/flowtype/stream-types'
-import routes from '$routes'
-
-export const getStreams = (params: Object): ApiResult<{
-    streams: StreamList,
-    hasMoreResults: boolean,
-}> => {
+export const getStreams = (client, params) => {
     const nextParams = {
         uiChannel: false,
         operation: 'STREAM_SHARE',
@@ -20,10 +10,8 @@ export const getStreams = (params: Object): ApiResult<{
         nextParams.max += 1
     }
 
-    return get({
-        url: routes.api.streams.index({
-            ...nextParams,
-        }),
+    return client.listStreams({
+        ...nextParams,
     })
         .then((streams) => ({
             streams: nextParams.max ? streams.splice(0, nextParams.max - 1) : streams,
@@ -33,13 +21,13 @@ export const getStreams = (params: Object): ApiResult<{
 
 const STREAMS_PAGE_SIZE = 999
 
-export async function* getPagedStreams(params: Object): any {
+export async function* getPagedStreams(client, params) {
     let page = 0
     let hasMore = false
 
     do {
         // eslint-disable-next-line no-await-in-loop
-        const { streams, hasMoreResults } = await getStreams({
+        const { streams, hasMoreResults } = await getStreams(client, {
             ...(params || {}),
             max: STREAMS_PAGE_SIZE,
             offset: page * STREAMS_PAGE_SIZE,
@@ -51,11 +39,11 @@ export async function* getPagedStreams(params: Object): any {
     } while (hasMore)
 }
 
-export async function getAllStreams(params: Object): any {
+export async function getAllStreams(client, params = {}) {
     const streams = []
 
     // eslint-disable-next-line no-restricted-syntax, no-await-in-loop
-    for await (const pagedStreams of getPagedStreams(params)) {
+    for await (const pagedStreams of getPagedStreams(client, params)) {
         streams.push(...pagedStreams)
     }
 
