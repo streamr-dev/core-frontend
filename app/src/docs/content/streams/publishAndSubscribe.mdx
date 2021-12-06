@@ -27,6 +27,12 @@ Checkout the docs section for <Link to={docsLinks.usingALightNode}>Using a light
 - <a href="https://www.npmjs.com/package/streamr-client" target="_blank" rel="noopener noreferrer">Streamr Client NPM</a>
 - <a href="https://github.com/streamr-dev/network-monorepo/blob/main/packages/client/README.md" target="_blank" rel="noopener noreferrer">Streamr Client Github</a>
 
+<Warning>
+
+The current stable version of the Streamr Client is 5.x (at the time of writing, December 2021). The Brubeck era client, (currently available as an alpha build) is version 6.x and above. The developer experience of the Streamr Client in 5.x and 6.x is the same, however, the 6.x client also runs as a light node in the network, whereas the 5.x era client communicates to a Streamr run node remotely. When the Streamr Network transitions into the Brubeck era (ETA 2021) data guarantees of 5.x clients may need to be reassessed.
+
+</Warning>
+
 ### Publish and subscribe via MQTT, HTTP or Websocket
 You will need to run a Broker node and interface to it with either MQTT, HTTP or Websocket. Checkout the docs section for <Link to={docsLinks.connectingApplications}>Connecting Applications</Link>. 
 
