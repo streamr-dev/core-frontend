@@ -1,44 +1,36 @@
-// @flow
-
 import { createAction } from 'redux-actions'
-
-import type { NumberString, ReduxActionCreator, ErrorInUi } from '$shared/flowtype/common-types'
-import type TransactionError from '$shared/errors/TransactionError'
 
 import {
     GET_DATA_USD_RATE_REQUEST,
     GET_DATA_USD_RATE_SUCCESS,
     GET_DATA_USD_RATE_FAILURE,
-    CHECK_ETHEREUM_NETWORK_REQUEST,
-    CHECK_ETHEREUM_NETWORK_SUCCESS,
-    CHECK_ETHEREUM_NETWORK_FAILURE,
+    SET_ETHEREUM_NETWORK_ID,
 } from './constants'
-import type { DataPerUsdActionCreator, GlobalEthereumErrorActionCreator } from './types'
 import * as services from './services'
 
-const getDataPerUsdRequest: ReduxActionCreator = createAction(GET_DATA_USD_RATE_REQUEST)
+const getDataPerUsdRequest = createAction(GET_DATA_USD_RATE_REQUEST)
 
-const getDataPerUsdSuccess: DataPerUsdActionCreator = createAction(
+const getDataPerUsdSuccess = createAction(
     GET_DATA_USD_RATE_SUCCESS,
-    (dataPerUsd: NumberString) => ({
+    (dataPerUsd) => ({
         dataPerUsd,
     }),
 )
 
-const getDataPerUsdError: GlobalEthereumErrorActionCreator = createAction(
+const getDataPerUsdError = createAction(
     GET_DATA_USD_RATE_FAILURE,
-    (error: TransactionError) => ({
+    (error) => ({
         error,
     }),
 )
 
-export const getDataPerUsd = () => (dispatch: Function) => {
+export const getDataPerUsd = () => (dispatch) => {
     dispatch(getDataPerUsdRequest())
     return services
         .getDataPerUsd()
         .then(
-            (dataPerUsd: NumberString) => dispatch(getDataPerUsdSuccess(dataPerUsd)),
-            (error: TransactionError) => {
+            (dataPerUsd) => dispatch(getDataPerUsdSuccess(dataPerUsd)),
+            (error) => {
                 dispatch(getDataPerUsdError({
                     message: error.message,
                 }))
@@ -46,27 +38,9 @@ export const getDataPerUsd = () => (dispatch: Function) => {
         )
 }
 
-const checkEthereumNetworkRequest: ReduxActionCreator = createAction(CHECK_ETHEREUM_NETWORK_REQUEST)
-
-const checkEthereumNetworkSuccess: ReduxActionCreator = createAction(CHECK_ETHEREUM_NETWORK_SUCCESS)
-
-const checkEthereumNetworkError: GlobalEthereumErrorActionCreator = createAction(
-    CHECK_ETHEREUM_NETWORK_FAILURE,
-    (error: ErrorInUi) => ({
-        error,
+export const setEthereumNetworkId = createAction(
+    SET_ETHEREUM_NETWORK_ID,
+    (networkId) => ({
+        networkId,
     }),
 )
-
-export const checkEthereumNetwork = () => (dispatch: Function) => {
-    dispatch(checkEthereumNetworkRequest())
-    return services
-        .checkEthereumNetworkIsCorrect()
-        .then(
-            () => dispatch(checkEthereumNetworkSuccess()),
-            (error: TransactionError) => {
-                dispatch(checkEthereumNetworkError({
-                    message: error.message,
-                }))
-            },
-        )
-}

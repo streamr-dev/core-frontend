@@ -43,7 +43,7 @@ export default class Web3Poller {
     pendingTransactionsPollTimeout: ?TimeoutID = null
     web3: StreamrWeb3Type = getWeb3()
     account: any = null
-    networkId: NumberString = ''
+    networkId: ?NumberString = ''
     emitter: EventEmitter = new EventEmitter()
 
     constructor() {
@@ -137,17 +137,24 @@ export default class Web3Poller {
         }
     }
 
-    fetchChosenEthereumNetwork = () => (
-        this.web3.getEthereumNetwork()
+    fetchChosenEthereumNetwork = () => {
+        const fetchPromise = this.web3.getEthereumNetwork()
+
+        // make sure getting the network does not hang longer than the poll timeout
+        const cancelPromise = new Promise((resolve, reject) => {
+            setTimeout(() => reject(new Error('Cancelled')), NETWORK_POLL_INTERVAL)
+        })
+
+        return Promise.race([fetchPromise, cancelPromise])
             .then((network) => {
                 this.handleNetwork((network && network.toString()) || '')
-            }, () => {
-                this.web3.getDefaultAccount()
-                    .catch((err) => {
-                        this.emitter.emit(events.NETWORK_ERROR, err)
-                    })
+            }, (err) => {
+                if (this.networkId) {
+                    this.networkId = null
+                    this.emitter.emit(events.NETWORK_ERROR, err)
+                }
             })
-    )
+    }
 
     handleNetwork = (network: NumberString) => {
         const next = network

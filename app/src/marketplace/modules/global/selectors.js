@@ -1,30 +1,18 @@
-// @flow
-
 import { createSelector } from 'reselect'
 
-import type { GlobalState } from '$mp/flowtype/store-state'
-import type { StoreState } from '$shared/flowtype/store-state'
-import TransactionError from '$shared/errors/TransactionError'
-import type { NumberString } from '$shared/flowtype/common-types'
+const selectGlobalState = (state) => state.global
 
-const selectGlobalState = (state: StoreState): GlobalState => state.global
-
-export const selectDataPerUsd: (StoreState) => ?NumberString = createSelector(
+export const selectDataPerUsd = createSelector(
     selectGlobalState,
-    (subState: GlobalState): ?NumberString => subState.dataPerUsd,
+    (subState) => subState.dataPerUsd,
 )
 
-export const selectDataPerUsdError: (StoreState) => ?TransactionError = createSelector(
+export const selectDataPerUsdError = createSelector(
     selectGlobalState,
-    (subState: GlobalState): ?TransactionError => subState.dataPerUsdRateError,
+    (subState) => subState.dataPerUsdRateError,
 )
 
-export const selectEthereumNetworkIsCorrect: (StoreState) => ?boolean = createSelector(
+export const selectEthereumNetworkId = createSelector(
     selectGlobalState,
-    (subState: GlobalState): ?boolean => subState.ethereumNetworkIsCorrect,
-)
-
-export const selectEthereumNetworkError: (StoreState) => ?TransactionError = createSelector(
-    selectGlobalState,
-    (subState: GlobalState): ?TransactionError => subState.ethereumNetworkError,
+    (subState) => subState.networkId,
 )

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import type { Hash, Receipt } from '$shared/flowtype/web3-types'
 import { getUserData, logout } from '$shared/modules/user/actions'
-import { getDataPerUsd } from '$mp/modules/global/actions'
+import { getDataPerUsd, setEthereumNetworkId } from '$mp/modules/global/actions'
 import {
     addTransaction,
     completeTransaction,
@@ -129,8 +129,10 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
         let currentNetworkId
 
         const onNetworkChange = (networkId: NumberString) => {
-            if (currentNetworkId && networkId && currentNetworkId !== networkId) {
-                window.location.reload()
+            const nextNetworkId = !(networkId instanceof Error) ? networkId : undefined
+
+            if (!currentNetworkId || currentNetworkId !== nextNetworkId) {
+                dispatch(setEthereumNetworkId(nextNetworkId))
             }
 
             currentNetworkId = networkId
@@ -143,7 +145,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
             Web3Poller.unsubscribe(Web3Poller.events.NETWORK, onNetworkChange)
             Web3Poller.unsubscribe(Web3Poller.events.NETWORK_ERROR, onNetworkChange)
         }
-    }, [])
+    }, [dispatch])
 
     const [accountChanged, setAccountChanged] = useState(false)
 
