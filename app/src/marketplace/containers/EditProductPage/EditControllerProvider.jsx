@@ -25,11 +25,11 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 import useModal from '$shared/hooks/useModal'
 import routes from '$routes'
 import * as State from '../EditProductPage/state'
-import useEditableProductUpdater from '../ProductController/useEditableProductUpdater'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 
@@ -61,7 +61,7 @@ function useEditController(product: Product) {
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useEditableProductActions()
     const originalProduct = useSelector(selectProduct)
-    const { replaceProduct } = useEditableProductUpdater()
+    const { replaceState } = useEditableState()
     const dataUnion = useSelector(selectDataUnionStats)
     const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))
     const [preferredCurrency, setPreferredCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
@@ -131,7 +131,7 @@ function useEditController(product: Product) {
                     nextProduct.thumbnailUrl = newThumbnailUrl
                     delete nextProduct.newImageToUpload
 
-                    replaceProduct(() => nextProduct)
+                    replaceState(() => nextProduct)
                 } catch (e) {
                     console.error('Could not upload image', e)
                 }
@@ -161,7 +161,7 @@ function useEditController(product: Product) {
         savePending,
         redirectToProductList,
         originalProduct,
-        replaceProduct,
+        replaceState,
         resetTouched,
     ])
 
@@ -211,7 +211,7 @@ function useEditController(product: Product) {
             if (!isMounted()) { return }
 
             if (started) {
-                replaceProduct((prevProduct) => ({
+                replaceState((prevProduct) => ({
                     ...prevProduct,
                     state: isUnpublish ? productStates.UNDEPLOYING : productStates.DEPLOYING,
                 }))
@@ -229,7 +229,7 @@ function useEditController(product: Product) {
         publishDialog,
         redirectToProductList,
         redirectToProduct,
-        replaceProduct,
+        replaceState,
         isMounted,
     ])
 

@@ -26,10 +26,10 @@ import usePending from '$shared/hooks/usePending'
 import ProductPage from '$shared/components/ProductPage'
 import { MD, XL } from '$shared/utils/styled'
 import usePreviewStats from '$mp/containers/ProductPage/usePreviewStats'
-import useEditableProduct from '../ProductController/useEditableProduct'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 const Hero = () => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const isDataUnion = !!(product && isDataUnionProduct(product))
     const { preview, createPreview } = useFilePreview()
 
@@ -63,7 +63,7 @@ const Hero = () => {
 }
 
 const Description = () => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const categories = useSelector(selectAllCategories)
 
     const productCategory = product.category
@@ -105,7 +105,7 @@ const Description = () => {
 }
 
 const DataUnionStats = () => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
 
     const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
 
@@ -181,7 +181,7 @@ const DataUnionStats = () => {
 }
 
 const Streams = () => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const streamIds = product.streams
     const streamIdSet = useMemo(() => new Set(streamIds), [streamIds])
     const streams = useSelector(selectStreams)
@@ -207,7 +207,7 @@ const Streams = () => {
 }
 
 const UnstyledPreview = (props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
 
     const isDataUnion = !!(product && isDataUnionProduct(product))
 

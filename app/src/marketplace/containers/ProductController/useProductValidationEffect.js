@@ -2,11 +2,11 @@
 
 import { useEffect, useContext } from 'react'
 
-import useEditableProduct from './useEditableProduct'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { Context as ValidationContext } from './ValidationContextProvider'
 
 export default function useProductValidationEffect() {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { validate } = useContext(ValidationContext)
 
     useEffect(() => {

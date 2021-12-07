@@ -14,9 +14,9 @@ import SetPrice from '$mp/components/SetPrice'
 import Toggle from '$shared/components/Toggle'
 import SvgIcon from '$shared/components/SvgIcon'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 import { convert } from '$mp/utils/price'
-import useEditableProduct from '../ProductController/useEditableProduct'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
@@ -32,7 +32,7 @@ type Props = {
 }
 
 const PriceSelector = ({ disabled }: Props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { publishAttempted, preferredCurrency: currency, setPreferredCurrency: setCurrency } = useContext(EditControllerContext)
     const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
     const dataPerUsd = useSelector(selectDataPerUsd)

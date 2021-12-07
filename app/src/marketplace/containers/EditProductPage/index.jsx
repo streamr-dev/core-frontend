@@ -22,10 +22,10 @@ import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotF
 import { selectFetchingStreams } from '$mp/modules/streams/selectors'
 import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
 import useModal from '$shared/hooks/useModal'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 import BackButton from '$shared/components/BackButton'
 import useProductPermissions from '../ProductController/useProductPermissions'
-import useEditableProduct from '../ProductController/useEditableProduct'
 import ProductController, { useController } from '../ProductController'
 import { Provider as EditControllerProvider, Context as EditControllerContext } from './EditControllerProvider'
 import Editor from './Editor'
@@ -249,7 +249,7 @@ const LoadingView = () => (
 )
 
 const EditWrap = () => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { isPending: isLoadPending } = usePending('product.LOAD')
     const { isPending: isPermissionsPending } = usePending('product.PERMISSIONS')
     const { hasPermissions, edit } = useProductPermissions()

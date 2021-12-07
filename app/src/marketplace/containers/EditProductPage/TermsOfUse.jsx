@@ -7,7 +7,7 @@ import Checkbox from '$shared/components/Checkbox'
 import Text from '$ui/Text'
 import Label from '$ui/Label'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
-import useEditableProduct from '../ProductController/useEditableProduct'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import useValidation from '../ProductController/useValidation'
 
@@ -81,7 +81,7 @@ const CheckboxContainer = styled.div`
 `
 
 const TermsOfUse = ({ className, disabled }: Props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { updateTermsOfUse } = useEditableProductActions()
     const { isValid, message } = useValidation('termsOfUse')
 

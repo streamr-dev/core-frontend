@@ -152,4 +152,11 @@ export const getFilters = (resourceType: ResourceType): {
     }
 }
 
-export const streamListPageSize = 20
+export const fieldTypes = {
+    number: 'Number',
+    boolean: 'Boolean',
+    map: 'Object',
+    list: 'List',
+    string: 'String',
+    timestamp: 'Timestamp',
+}

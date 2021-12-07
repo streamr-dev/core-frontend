@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import Text, { SpaciousTheme } from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
-import useEditableProduct from '../ProductController/useEditableProduct'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as EditControllerContext } from './EditControllerProvider'
@@ -17,7 +17,7 @@ type Props = {
 }
 
 const ProductName = ({ disabled }: Props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { isValid, message } = useValidation('name')
     const { updateName } = useEditableProductActions()
     const { publishAttempted } = useContext(EditControllerContext)

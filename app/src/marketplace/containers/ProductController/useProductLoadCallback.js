@@ -20,9 +20,9 @@ import { handleEntities } from '$shared/utils/entities'
 import { productSchema } from '$shared/modules/entities/schema'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 import * as State from '../EditProductPage/state'
-import useEditableProductUpdater from './useEditableProductUpdater'
 
 type LoadProps = {
     productId: ProductId,
@@ -31,7 +31,7 @@ type LoadProps = {
 }
 
 export default function useProductLoadCallback() {
-    const productUpdater = useEditableProductUpdater()
+    const productUpdater = useEditableState()
     const { wrap } = usePending('product.LOAD')
     const isMounted = useIsMounted()
     const dispatch = useDispatch()
@@ -113,7 +113,7 @@ export default function useProductLoadCallback() {
             })
             dispatch(getProductByIdSuccess(result))
 
-            productUpdater.replaceProduct(() => State.withPendingChanges(nextProduct))
+            productUpdater.replaceState(() => State.withPendingChanges(nextProduct))
         })
     ), [wrap, dispatch, productUpdater, isMounted])
 

@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import startCase from 'lodash/startCase'
 import { useHistory } from 'react-router-dom'
@@ -19,8 +20,10 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
 import { CoreHelmet } from '$shared/components/Helmet'
-import { fieldTypes } from '$userpages/modules/userPageStreams/selectors'
+import { fieldTypes } from '$userpages/utils/constants'
+import { selectUserData } from '$shared/modules/user/selectors'
 import routes from '$routes'
+import { useController } from '../StreamController'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import { getSecurityLevelConfig } from './Edit/SecurityView'
 import Preview from './Edit/PreviewView'
@@ -66,13 +69,13 @@ const StreamPartitions = styled.div`
     width: 136px;
 `
 
-const UnstyledView = ({ stream, currentUser, ...props }) => {
+const UnstyledView = (props) => {
+    const { stream } = useController()
     const { copy, isCopied } = useCopy()
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
     const { truncatedDomain: domain, pathname } = useStreamPath(stream.id)
-
     const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
-
+    const currentUser = useSelector(selectUserData)
     const history = useHistory()
 
     const onBack = useCallback(() => {

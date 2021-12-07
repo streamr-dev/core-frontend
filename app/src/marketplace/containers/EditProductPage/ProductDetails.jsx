@@ -11,9 +11,9 @@ import { selectAllCategories, selectFetchingCategories } from '$mp/modules/categ
 import Text from '$ui/Text'
 import Label from '$ui/Label'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import useValidation from '../ProductController/useValidation'
-import useEditableProduct from '../ProductController/useEditableProduct'
 import { Context as EditControllerContext } from './EditControllerProvider'
 
 import styles from './productDetails.pcss'
@@ -111,7 +111,7 @@ type Props = {
 /* eslint-disable object-curly-newline */
 
 const ProductDetails = ({ disabled }: Props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { publishAttempted } = useContext(EditControllerContext)
     const categories = useSelector(selectAllCategories)
     const fetching = useSelector(selectFetchingCategories)

@@ -4,7 +4,7 @@ import React, { useContext } from 'react'
 import cx from 'classnames'
 
 import MarkdownEditor from '$mp/components/MarkdownEditor'
-import useEditableProduct from '../ProductController/useEditableProduct'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as EditControllerContext } from './EditControllerProvider'
@@ -15,7 +15,7 @@ type Props = {
 }
 
 const ProductDescription = ({ disabled }: Props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const { publishAttempted } = useContext(EditControllerContext)
     const { isValid, message } = useValidation('description')
     const { updateDescription } = useEditableProductActions()

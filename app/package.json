@@ -46,7 +46,7 @@
     ],
     "coverageThreshold": {
       "global": {
-        "lines": 32
+        "lines": 31
       }
     },
     "testMatch": [

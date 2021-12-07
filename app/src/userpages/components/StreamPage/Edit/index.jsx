@@ -1,16 +1,15 @@
 // @flow
 
-import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useCallback, useState, useMemo, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import cloneDeep from 'lodash/cloneDeep'
 import { useTransition, animated } from 'react-spring'
 import { StatusIcon } from '@streamr/streamr-layout'
+import set from 'lodash/set'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import StatusLabel from '$shared/components/StatusLabel'
-import { updateStream as updateStreamAction, updateEditStream, updateEditStreamField } from '$userpages/modules/userPageStreams/actions'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import CoreLayout from '$shared/components/Layout/Core'
@@ -20,7 +19,6 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
-import { getResourcePermissions } from '$userpages/modules/permission/actions'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Notification from '$shared/utils/Notification'
@@ -29,9 +27,11 @@ import { MEDIUM } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
 import { CoreHelmet } from '$shared/components/Helmet'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { truncate } from '$shared/utils/text'
 import routes from '$routes'
 
+import { useController } from '../../StreamController'
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
@@ -46,17 +46,10 @@ import styles from './edit.pcss'
 
 function StreamPageSidebar({ stream }) {
     const sidebar = useSidebar()
-    const dispatch = useDispatch()
-
-    const streamId = stream && stream.id
 
     const onClose = useCallback(() => {
         sidebar.close()
-
-        if (streamId) {
-            dispatch(getResourcePermissions('STREAM', streamId))
-        }
-    }, [sidebar, dispatch, streamId])
+    }, [sidebar])
 
     return (
         <Sidebar.WithErrorBoundary
@@ -77,43 +70,39 @@ function StreamPageSidebar({ stream }) {
 }
 
 const didChange = (original, changed) => {
-    const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = original || {}
+    const { streamStatus: originalStatus, lastData: originalData, ...originalStripped } = original.toObject() || {}
     const { streamStatus: changedStatus, lastData: changedData, ...changedStripped } = changed || {}
 
     return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
 }
 
-const UnstyledEdit = ({
-    stream,
-    canShare,
-    disabled,
-    isNewStream,
-    ...props
-}: any) => {
+const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
+    const { stream: originalStream, permissions } = useController()
+    const { state: stream, updateState } = useEditableState()
     const sidebar = useSidebar()
-    const { id: streamId } = stream
     const streamRef = useRef()
     streamRef.current = stream
-    const originalStreamRef = useRef()
     const { api: confirmSaveDialog } = useModal('confirmSave')
 
-    const dispatch = useDispatch()
     const history = useHistory()
 
-    useEffect(() => {
-        if (!streamId || !streamRef.current) { return }
-        originalStreamRef.current = {
-            ...streamRef.current,
-            config: cloneDeep(streamRef.current.config),
-        }
-    }, [streamId])
+    const canShare = useMemo(() => permissions.includes('stream_share'), [permissions])
 
     const updateStream = useCallback((change, additionalData) => {
         try {
             if (typeof change === 'string') {
-                dispatch(updateEditStreamField(change, additionalData))
+                updateState(`update "${change}"`, (s) => {
+                    const nextStream = {
+                        ...s,
+                    }
+
+                    set(nextStream, change, additionalData)
+
+                    return nextStream
+                })
             } else if (typeof change === 'object') {
-                dispatch(updateEditStream({
+                updateState('update multiple fields', (s) => ({
+                    ...s,
                     ...change,
                 }))
             } else {
@@ -122,11 +111,11 @@ const UnstyledEdit = ({
         } catch (e) {
             console.warn(e)
         }
-    }, [dispatch])
+    }, [updateState])
 
     usePreventNavigatingAway(
         'You have unsaved changes. Are you sure you want to leave?',
-        () => didChange(originalStreamRef.current, streamRef.current),
+        () => didChange(originalStream, streamRef.current),
     )
 
     const isMounted = useIsMounted()
@@ -139,7 +128,10 @@ const UnstyledEdit = ({
         setSpinner(true)
 
         try {
-            await dispatch(updateStreamAction(stream))
+            const newStream = cloneDeep(originalStream)
+            Object.assign(newStream, streamRef.current)
+
+            await newStream.update()
 
             if (isMounted()) {
                 Notification.push({
@@ -163,10 +155,10 @@ const UnstyledEdit = ({
                 setSpinner(false)
             }
         }
-    }, [stream, dispatch, isMounted, history])
+    }, [originalStream, isMounted, history])
 
     const confirmIsSaved = useCallback(async () => {
-        if (!didChange(originalStreamRef.current, streamRef.current)) {
+        if (!didChange(originalStream, streamRef.current)) {
             return true
         }
 
@@ -181,7 +173,7 @@ const UnstyledEdit = ({
         }
 
         return !!canProceed
-    }, [confirmSaveDialog, save, isMounted])
+    }, [originalStream, confirmSaveDialog, save, isMounted])
 
     const cancel = useCallback(async () => {
         const canProceed = await confirmIsSaved()
@@ -239,6 +231,7 @@ const UnstyledEdit = ({
         <CoreLayout
             {...props}
             nav={false}
+            loading={spinner}
             navComponent={(
                 <Toolbar
                     altMobileLayout

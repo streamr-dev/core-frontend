@@ -5,7 +5,7 @@ import cx from 'classnames'
 
 import DetailsContainer from '$shared/components/Container/Details'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
-import useEditableProduct from '../ProductController/useEditableProduct'
+import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 import EditorNav from './EditorNav'
 import ProductName from './ProductName'
@@ -25,7 +25,7 @@ type Props = {
 }
 
 const Editor = ({ disabled }: Props) => {
-    const product = useEditableProduct()
+    const { state: product } = useEditableState()
     const isDataUnion = isDataUnionProduct(product)
     const isPaid = isPaidProduct(product)
 
