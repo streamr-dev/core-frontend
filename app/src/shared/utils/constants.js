@@ -31,6 +31,11 @@ export const productStates = {
     UNDEPLOYING: 'UNDEPLOYING',
 }
 
+export const networks = {
+    MAINNET: 'mainnet',
+    SIDECHAIN: 'sidechain',
+}
+
 export const ethereumNetworks = {
     '1': 'Mainnet',
     '3': 'Ropsten',

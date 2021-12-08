@@ -11,6 +11,7 @@ import {
     WalletLockedError,
 } from '$shared/errors/Web3/index'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
+import { networks } from '$shared/utils/constants'
 
 declare var ethereum: Web3
 declare var web3: Web3
@@ -35,7 +36,8 @@ export class StreamrWeb3 extends Web3 {
         this.isLegacy = options && !!options.isLegacy
         // Set number of desired confirmations for transactions.
         // This needs to be 1 for local Ganache chain. Default is 24.
-        this.transactionConfirmationBlocks = getConfig().transactionConfirmationBlocks
+        const { mainnet } = getConfig()
+        this.transactionConfirmationBlocks = mainnet.transactionConfirmationBlocks
     }
 
     getDefaultAccount = (): Promise<Address> => this.eth.getAccounts()
@@ -46,7 +48,11 @@ export class StreamrWeb3 extends Web3 {
             return accounts[0]
         })
 
-    getEthereumNetwork = (): Promise<number> => this.eth.net.getId()
+    getChainId = async (): Promise<?string> => {
+        const network = await this.eth.net.getId()
+
+        return Number.isInteger(network) ? network.toString() : undefined
+    }
 
     isEnabled = (): boolean => !!this.currentProvider
 }
@@ -55,11 +61,11 @@ const publicWeb3Options = {
     timeout: 20000, // milliseconds,
 }
 
-export const getPublicWeb3 = (): StreamrWeb3 =>
-    new StreamrWeb3(new Web3.providers.HttpProvider(getConfig().publicNodeAddress, publicWeb3Options))
+export const getPublicWeb3 = (): StreamrWeb3 => {
+    const { mainnet } = getConfig()
 
-export const getWebSocketWeb3 = (): StreamrWeb3 =>
-    new StreamrWeb3(new Web3.providers.WebsocketProvider(getConfig().websocketAddress))
+    return new StreamrWeb3(new Web3.providers.HttpProvider(mainnet.rpcUrl, publicWeb3Options))
+}
 
 export const getWeb3 = (): StreamrWeb3 => {
     if (typeof ethereum !== 'undefined') {
@@ -76,10 +82,10 @@ export const getWeb3 = (): StreamrWeb3 => {
 
 type ValidateParams = {
     web3: Web3,
-    checkNetwork?: boolean,
+    requireNetwork?: $Values<typeof networks> | boolean,
 }
 
-export const validateWeb3 = async ({ web3: _web3, checkNetwork = true }: ValidateParams): Web3 => {
+export const validateWeb3 = async ({ web3: _web3, requireNetwork = networks.MAINNET }: ValidateParams): Web3 => {
     if ((_web3.isLegacy && !window.web3) ||
         (!_web3.isLegacy && !window.ethereum)) {
         throw new Web3NotSupportedError()
@@ -134,8 +140,11 @@ export const validateWeb3 = async ({ web3: _web3, checkNetwork = true }: Validat
     }
 
     // Validate correct network
-    if (checkNetwork) {
-        await checkEthereumNetworkIsCorrect(_web3)
+    if (typeof requireNetwork === 'string' && Object.values(networks).includes(requireNetwork)) {
+        await checkEthereumNetworkIsCorrect({
+            web3: _web3,
+            network: requireNetwork,
+        })
     }
 
     return _web3

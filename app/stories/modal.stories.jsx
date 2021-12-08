@@ -30,6 +30,7 @@ import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
 import InsufficientDaiDialog from '$mp/components/Modal/InsufficientDaiDialog'
 import InsufficientEthDialog from '$mp/components/Modal/InsufficientEthDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
+import WrongNetworkSelectedDialog from '$mp/components/Modal/WrongNetworkSelectedDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
@@ -544,6 +545,25 @@ story('Marketplace/NoBalanceDialog')
             }}
             paymentCurrency="DAI"
             onCancel={action('onCancel')}
+        />
+    ))
+
+story('Marketplace/WrongNetworkSelectedDialog')
+    .add('default', () => (
+        <WrongNetworkSelectedDialog
+            requiredNetwork={text('Required network', '1')}
+            currentNetwork={text('Current network', '2')}
+            onCancel={action('onCancel')}
+            onSwitch={action('onSwitch')}
+        />
+    ))
+    .add('switching', () => (
+        <WrongNetworkSelectedDialog
+            requiredNetwork={text('Required network', '1')}
+            currentNetwork={text('Current network', '2')}
+            switching
+            onCancel={action('onCancel')}
+            onSwitch={action('onSwitch')}
         />
     ))
 

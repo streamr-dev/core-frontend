@@ -135,10 +135,10 @@ describe('smartContract utils', () => {
 
         beforeEach(() => {
             accountStub = jest.fn(() => Promise.resolve('testAccount'))
-            networkStub = jest.fn(() => Promise.resolve(1))
+            networkStub = jest.fn(() => Promise.resolve('1'))
             jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
                 getDefaultAccount: accountStub,
-                getEthereumNetwork: networkStub,
+                getChainId: networkStub,
             }))
             jest.spyOn(getConfig, 'default').mockImplementation(() => ({
                 networkId: 1,

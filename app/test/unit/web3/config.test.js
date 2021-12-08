@@ -26,16 +26,14 @@ describe('config', () => {
             process.env.MARKETPLACE_CONTRACT_ADDRESS = 'mpAddress'
             process.env.DATA_TOKEN_CONTRACT_ADDRESS = 'dataTokenAddress'
             process.env.DAI_TOKEN_CONTRACT_ADDRESS = 'daiTokenAddress'
-            process.env.WEB3_REQUIRED_NETWORK_ID = '1'
-            process.env.WEB3_PUBLIC_HTTP_PROVIDER = 'https://dummy'
-            process.env.WEB3_PUBLIC_WS_PROVIDER = 'wss://dummy/ws'
+            process.env.MAINNET_CHAIN_ID = '1'
+            process.env.MAINNET_HTTP_PROVIDER = 'https://dummy'
             process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS = 1337
             process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS = 'uniAddress'
 
             expect(getConfig()).toStrictEqual({
                 networkId: '1',
                 publicNodeAddress: 'https://dummy',
-                websocketAddress: 'wss://dummy/ws',
                 transactionConfirmationBlocks: 1337,
                 dataToken: {
                     abi: ['t_test', 't_values', 't_only'],

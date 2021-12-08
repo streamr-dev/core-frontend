@@ -43,7 +43,7 @@ const getWhitelistStatus = async ({ productId, validate = false }: WhitelistStat
         if (validate) {
             await validateWeb3({
                 web3,
-                checkNetwork: false, // network check is done later if purchase is possible
+                requireNetwork: false, // network check is done later if purchase is possible
             })
         }
         const account = await web3.getDefaultAccount()

@@ -19,9 +19,23 @@ const ETH = '0x0000000000000000000000000000000000000000'
 const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
 const DATA = process.env.DATA_TOKEN_CONTRACT_ADDRESS
 
-const dataTokenContractMethods = (usePublicNode: boolean = false) => getContract(getConfig().dataToken, usePublicNode).methods
-const daiTokenContractMethods = (usePublicNode: boolean = false) => getContract(getConfig().daiToken, usePublicNode).methods
-const uniswapAdaptorMethods = (usePublicNode: boolean = false) => getContract(getConfig().uniswapAdaptor, usePublicNode).methods
+const dataTokenContractMethods = (usePublicNode: boolean = false) => {
+    const { mainnet } = getConfig()
+
+    return getContract(mainnet.dataToken, usePublicNode).methods
+}
+
+const daiTokenContractMethods = (usePublicNode: boolean = false) => {
+    const { mainnet } = getConfig()
+
+    return getContract(mainnet.daiToken, usePublicNode).methods
+}
+
+const uniswapAdaptorMethods = (usePublicNode: boolean = false) => {
+    const { mainnet } = getConfig()
+
+    return getContract(mainnet.uniswapAdaptor, usePublicNode).methods
+}
 
 export const getEthBalance = (address: Address, usePublicNode: boolean = false): Promise<BN> => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()

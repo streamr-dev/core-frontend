@@ -17,7 +17,11 @@ import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 import { getWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
 
-const contractMethods = (usePublicNode: boolean = false) => getContract(getConfig().marketplace, usePublicNode).methods
+const contractMethods = (usePublicNode: boolean = false) => {
+    const { mainnet } = getConfig()
+
+    return getContract(mainnet.marketplace, usePublicNode).methods
+}
 
 const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
 
@@ -32,7 +36,8 @@ export const getProductFromContract = async (id: ProductId, usePublicNode: boole
 )
 
 export const getMarketplaceEvents = async (id: ProductId, eventName: string, fromBlock: number = 0, usePublicNode: boolean = true) => {
-    const contract = getContract(getConfig().marketplace, usePublicNode)
+    const { mainnet } = getConfig()
+    const contract = getContract(mainnet.marketplace, usePublicNode)
     const events = await contract.getPastEvents(eventName, {
         filter: {
             productId: getValidId(id),

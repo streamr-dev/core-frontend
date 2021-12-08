@@ -124,10 +124,10 @@ describe('GlobalInfoWatcher', () => {
             update: () => {},
         }))
         const defaultAccountStub = jest.fn(() => Promise.resolve('testAccount'))
-        const networkStub = jest.fn(() => Promise.resolve(1))
+        const networkStub = jest.fn(() => Promise.resolve('1'))
         jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
-            getEthereumNetwork: networkStub,
+            getChainId: networkStub,
         }))
         jest.spyOn(web3Utils, 'hasTransactionCompleted').mockImplementation(() => Promise.resolve(false))
         jest.spyOn(transactionUtils, 'getTransactionsFromSessionStorage').mockImplementation(() => transactions)

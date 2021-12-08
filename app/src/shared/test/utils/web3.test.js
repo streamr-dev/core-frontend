@@ -17,7 +17,7 @@ describe('web3 utils', () => {
                 networkId: '1',
             }))
             await all.checkEthereumNetworkIsCorrect({
-                getEthereumNetwork: () => Promise.resolve(1),
+                getChainId: () => Promise.resolve('1'),
             })
         })
 
@@ -27,7 +27,7 @@ describe('web3 utils', () => {
             }))
             try {
                 await all.checkEthereumNetworkIsCorrect({
-                    getEthereumNetwork: () => Promise.resolve(1),
+                    getChainId: () => Promise.resolve('1'),
                 })
             } catch (e) {
                 done()

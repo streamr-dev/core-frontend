@@ -51,9 +51,8 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
 | DATA_TOKEN_CONTRACT_ADDRESS                       | Address of the deployed DATA Token contract                          |
 | DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
-| WEB3_REQUIRED_NETWORK_ID                          | This is used to check that the user has selected the correct network |
-| WEB3_PUBLIC_HTTP_PROVIDER                         | A public provider used to query Marketplace methods without Metamask |
-| WEB3_PUBLIC_WS_PROVIDER                           | A public websocket prodiver (currently not in use)                   |
+| MAINNET_CHAIN_ID                                  | This is used to check that the user has selected the correct network |
+| MAINNET_HTTP_PROVIDER                             | A public provider used to query Marketplace methods without Metamask |
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | Number of confirmations required for tx to be considered successful  |
 | BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
 | STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
@@ -64,9 +63,9 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | DATA_UNION_FACTORY_SIDECHAIN_ADDRESS              |                                                                      |
 | DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK       |                                                                      |
 | DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS             |                                                                      |
-| DATA_UNION_SIDECHAIN_PROVIDER                     |                                                                      |
+| SIDECHAIN_CHAIN_ID                                |                                                                      |
+| SIDECHAIN_HTTP_PROVIDER                           |                                                                      |
 | DATA_TOKEN_SIDECHAIN_ADDRESS                      |                                                                      |
-| DATA_UNION_SIDECHAIN_ID                           |                                                                      |
 | STORAGE_NODES                                     |                                                                      |
 
 Default development values are taken from `.env.required` which can be overridden by values in your `.env` file.

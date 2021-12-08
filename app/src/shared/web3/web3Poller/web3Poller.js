@@ -138,7 +138,7 @@ export default class Web3Poller {
     }
 
     fetchChosenEthereumNetwork = () => {
-        const fetchPromise = this.web3.getEthereumNetwork()
+        const fetchPromise = this.web3.getChainId()
 
         // make sure getting the network does not hang longer than the poll timeout
         const cancelPromise = new Promise((resolve, reject) => {
@@ -147,7 +147,7 @@ export default class Web3Poller {
 
         return Promise.race([fetchPromise, cancelPromise])
             .then((network) => {
-                this.handleNetwork((network && network.toString()) || '')
+                this.handleNetwork(network || '')
             }, (err) => {
                 if (this.networkId) {
                     this.networkId = null

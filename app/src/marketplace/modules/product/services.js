@@ -16,11 +16,29 @@ import { fromAtto, toAtto } from '$mp/utils/math'
 import routes from '$routes'
 import { getContract, call, send } from '../../utils/smartContract'
 
-const marketplaceContractMethods = () => getContract(getConfig().marketplace).methods
-const uniswapAdaptorContractMethods = () => getContract(getConfig().uniswapAdaptor).methods
-const dataTokenContractMethods = () => getContract(getConfig().dataToken).methods
-const daiTokenContractMethods = () => getContract(getConfig().daiToken).methods
-const marketplaceContract = () => getContract(getConfig().marketplace)
+const uniswapAdaptorContractMethods = () => {
+    const { mainnet } = getConfig()
+
+    return getContract(mainnet.uniswapAdaptor).methods
+}
+
+const dataTokenContractMethods = () => {
+    const { mainnet } = getConfig()
+
+    return getContract(mainnet.dataToken).methods
+}
+
+const daiTokenContractMethods = () => {
+    const { mainnet } = getConfig()
+
+    return getContract(mainnet.daiToken).methods
+}
+
+const marketplaceContract = () => {
+    const { mainnet } = getConfig()
+
+    return getContract(mainnet.marketplace)
+}
 
 export const getProductById = async (id: ProductId): ApiResult<Product> => get({
     url: routes.api.products.show({
@@ -41,7 +59,7 @@ export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subsc
         getProductFromContract(id),
         getWeb3().getDefaultAccount(),
     ])
-        .then(([, account]) => call(marketplaceContractMethods().getSubscription(getValidId(id), account)))
+        .then(([, account]) => call(marketplaceContract().methods.getSubscription(getValidId(id), account)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),
@@ -165,7 +183,7 @@ export const buyProduct = (
             })
 
         default: // Pay with DATA
-            return send(marketplaceContractMethods().buy(getValidId(id), subscriptionInSeconds.toString()), {
+            return send(marketplaceContract().methods.buy(getValidId(id), subscriptionInSeconds.toString()), {
                 gas: gasLimits.BUY_PRODUCT + gasIncrease,
             })
     }
