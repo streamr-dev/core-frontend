@@ -91,9 +91,22 @@ export const validateWeb3 = async ({ web3: _web3, checkNetwork = true }: Validat
             // ethereum.enable() is deprecated and may be removed in the future.
             // Prefer 'eth_requestAccounts' RPC method instead
             if (typeof ethereum.request === 'function') {
-                await ethereum.request({
+                // If MetaMask is locked, eth_requestAccounts will wait user to unlock without timeout.
+                // Let's add a timeout to end that madness.
+                const cancelPromise = new Promise((resolve, reject) => {
+                    setTimeout(() => reject(new Error('Cancelled')), 100)
+                })
+
+                const accountsPromise = ethereum.request({
                     method: 'eth_requestAccounts',
                 })
+
+                try {
+                    await Promise.race([cancelPromise, accountsPromise])
+                } catch (e) {
+                    console.warn('Unlock timeout')
+                    throw new WalletLockedError()
+                }
             } else {
                 // ethereum.request is available since MetaMask v. 8, fallback to ethereum.enable()
                 await ethereum.enable()
