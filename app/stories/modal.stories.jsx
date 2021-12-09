@@ -553,7 +553,7 @@ story('Marketplace/WrongNetworkSelectedDialog')
         <WrongNetworkSelectedDialog
             requiredNetwork={text('Required network', '1')}
             currentNetwork={text('Current network', '2')}
-            onCancel={action('onCancel')}
+            onClose={action('onClose')}
             onSwitch={action('onSwitch')}
         />
     ))
@@ -562,7 +562,7 @@ story('Marketplace/WrongNetworkSelectedDialog')
             requiredNetwork={text('Required network', '1')}
             currentNetwork={text('Current network', '2')}
             switching
-            onCancel={action('onCancel')}
+            onClose={action('onClose')}
             onSwitch={action('onSwitch')}
         />
     ))

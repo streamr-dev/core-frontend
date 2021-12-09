@@ -52,15 +52,17 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
     useEffect(() => {
         if (!requireWeb3 || checkingWeb3) { return () => {} }
 
-        const onAccount = () => {
+        const onChange = () => {
             if (!isMounted()) { return }
             validate()
         }
 
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT, onAccount)
+        Web3Poller.subscribe(Web3Poller.events.ACCOUNT, onChange)
+        Web3Poller.subscribe(Web3Poller.events.NETWORK, onChange)
 
         return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, onAccount)
+            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, onChange)
+            Web3Poller.unsubscribe(Web3Poller.events.NETWORK, onChange)
         }
     }, [requireWeb3, checkingWeb3, isMounted, validate])
 
@@ -74,9 +76,11 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
         }
 
         Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
+        Web3Poller.subscribe(Web3Poller.events.NETWORK_ERROR, setLocked)
 
         return () => {
             Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
+            Web3Poller.unsubscribe(Web3Poller.events.NETWORK_ERROR, setLocked)
         }
     }, [requireWeb3, account, isMounted])
 

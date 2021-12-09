@@ -17,7 +17,7 @@ const Buttons = styled(UnstyledButtons)`
 `
 
 const WrongNetworkSelectedDialog = ({
-    onCancel,
+    onClose,
     onSwitch,
     switching,
     requiredNetwork,
@@ -35,7 +35,7 @@ const WrongNetworkSelectedDialog = ({
         <ModalPortal>
             <Dialog
                 title="Please switch network"
-                onClose={onCancel}
+                onClose={onClose}
                 renderActions={() => (
                     <Buttons
                         actions={{
