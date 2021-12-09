@@ -157,22 +157,23 @@ describe('GlobalInfoWatcher', () => {
         jest.spyOn(Web3Poller, 'unsubscribe').mockImplementation((event, handler) => {
             emitter.off(event, handler)
         })
+        const setEthereumNetworkIdStub = jest.spyOn(globalActions, 'setEthereumNetworkId').mockImplementation()
 
         act(() => {
             mount(<GlobalInfoWatcher />)
         })
-        expect(window.location.reload).not.toHaveBeenCalled()
+        expect(setEthereumNetworkIdStub).toHaveBeenCalledTimes(0)
 
         // defining first time should not reload
         act(() => {
             emitter.emit(Web3Poller.events.NETWORK, '8995')
         })
-        expect(window.location.reload).not.toHaveBeenCalled()
+        expect(setEthereumNetworkIdStub).toHaveBeenCalledTimes(1)
 
         // should reload if network was defined
         act(() => {
             emitter.emit(Web3Poller.events.NETWORK, '5')
         })
-        expect(window.location.reload).toHaveBeenCalled()
+        expect(setEthereumNetworkIdStub).toHaveBeenCalledTimes(2)
     })
 })

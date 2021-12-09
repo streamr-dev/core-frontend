@@ -27,32 +27,40 @@ describe('config', () => {
             process.env.DATA_TOKEN_CONTRACT_ADDRESS = 'dataTokenAddress'
             process.env.DAI_TOKEN_CONTRACT_ADDRESS = 'daiTokenAddress'
             process.env.MAINNET_CHAIN_ID = '1'
-            process.env.MAINNET_HTTP_PROVIDER = 'https://dummy'
+            process.env.SIDECHAIN_CHAIN_ID = '8995'
+            process.env.MAINNET_HTTP_PROVIDER = 'https://mainnet'
+            process.env.SIDECHAIN_HTTP_PROVIDER = 'https://sidechain'
             process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS = 1337
             process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS = 'uniAddress'
 
             expect(getConfig()).toStrictEqual({
-                networkId: '1',
-                publicNodeAddress: 'https://dummy',
-                transactionConfirmationBlocks: 1337,
-                dataToken: {
-                    abi: ['t_test', 't_values', 't_only'],
-                    address: 'dataTokenAddress',
+                mainnet: {
+                    chainId: '1',
+                    rpcUrl: 'https://mainnet',
+                    transactionConfirmationBlocks: 1337,
+                    dataToken: {
+                        abi: ['t_test', 't_values', 't_only'],
+                        address: 'dataTokenAddress',
+                    },
+                    daiToken: {
+                        abi: ['t_test', 't_values', 't_only'],
+                        address: 'daiTokenAddress',
+                    },
+                    marketplace: {
+                        abi: ['m_test', 'm_values', 'm_only'],
+                        address: 'mpAddress',
+                    },
+                    uniswapAdaptor: {
+                        abi: ['u_test', 'u_values', 'u_only'],
+                        address: 'uniAddress',
+                    },
+                    dataUnionAbi: ['d_test', 'd_values', 'd_only'],
                 },
-                daiToken: {
-                    abi: ['t_test', 't_values', 't_only'],
-                    address: 'daiTokenAddress',
+                sidechain: {
+                    chainId: '8995',
+                    rpcUrl: 'https://sidechain',
+                    dataUnionAbi: ['ds_test', 'ds_values', 'ds_only'],
                 },
-                marketplace: {
-                    abi: ['m_test', 'm_values', 'm_only'],
-                    address: 'mpAddress',
-                },
-                uniswapAdaptor: {
-                    abi: ['u_test', 'u_values', 'u_only'],
-                    address: 'uniAddress',
-                },
-                dataUnionAbi: ['d_test', 'd_values', 'd_only'],
-                dataUnionSidechainAbi: ['ds_test', 'ds_values', 'ds_only'],
             })
         })
     })

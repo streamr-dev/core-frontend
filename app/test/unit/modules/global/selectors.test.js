@@ -3,11 +3,9 @@ import * as all from '$mp/modules/global/selectors'
 const state = {
     global: {
         dataPerUsd: 1,
-        ethereumNetworkIsCorrect: true,
-        checkingNetwork: false,
         fetchingDataPerUsdRate: false,
-        ethereumNetworkError: null,
         dataPerUsdRateError: null,
+        networkId: undefined,
     },
 }
 
@@ -20,11 +18,16 @@ describe('global - selectors', () => {
         expect(all.selectDataPerUsdError(state)).toStrictEqual(null)
     })
 
-    it('selects network is correct', () => {
-        expect(all.selectEthereumNetworkIsCorrect(state)).toStrictEqual(true)
+    it('selects network', () => {
+        expect(all.selectEthereumNetworkId(state)).toStrictEqual(undefined)
     })
 
-    it('selects network error', () => {
-        expect(all.selectEthereumNetworkError(state)).toStrictEqual(null)
+    it('selects network', () => {
+        expect(all.selectEthereumNetworkId({
+            global: {
+                ...state.global,
+                networkId: '1',
+            },
+        })).toStrictEqual('1')
     })
 })

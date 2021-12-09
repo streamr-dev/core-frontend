@@ -3,6 +3,7 @@ import EventEmitter from 'events'
 import * as getWeb3 from '$shared/web3/web3Provider'
 import * as getConfig from '$shared/web3/config'
 import * as all from '$mp/utils/smartContract'
+import { networks } from '$shared/utils/constants'
 import Transaction from '$shared/utils/Transaction'
 import TransactionError from '$shared/errors/TransactionError'
 
@@ -141,7 +142,12 @@ describe('smartContract utils', () => {
                 getChainId: networkStub,
             }))
             jest.spyOn(getConfig, 'default').mockImplementation(() => ({
-                networkId: 1,
+                mainnet: {
+                    chainId: '1',
+                },
+                sidechain: {
+                    chainId: '8995',
+                },
             }))
         })
 
@@ -169,8 +175,8 @@ describe('smartContract utils', () => {
             })
         })
 
-        it('must fail if checkEthereumNetworkIsCorrect fails', (done) => {
-            networkStub = jest.fn(() => Promise.resolve(2))
+        it('must fail if checkEthereumNetworkIsCorrect fails in mainnet', (done) => {
+            networkStub = jest.fn(() => Promise.resolve('2'))
             const fakeEmitter = {
                 on: () => fakeEmitter,
                 off: () => fakeEmitter,
@@ -180,7 +186,27 @@ describe('smartContract utils', () => {
                 estimateGas: () => Promise.resolve(0),
             })
                 .onError((e) => {
-                    expect(e.message).toBe('Please switch to the Mainnet network in your Ethereum wallet. It\'s currently #2.')
+                    expect(e.requiredNetwork).toBe('1')
+                    expect(e.currentNetwork).toBe('2')
+                    done()
+                })
+        })
+
+        it('must fail if checkEthereumNetworkIsCorrect fails in mainnet', (done) => {
+            networkStub = jest.fn(() => Promise.resolve('2'))
+            const fakeEmitter = {
+                on: () => fakeEmitter,
+                off: () => fakeEmitter,
+            }
+            all.send({
+                send: () => fakeEmitter,
+                estimateGas: () => Promise.resolve(0),
+            }, {
+                network: networks.SIDECHAIN,
+            })
+                .onError((e) => {
+                    expect(e.requiredNetwork).toBe('8995')
+                    expect(e.currentNetwork).toBe('2')
                     done()
                 })
         })

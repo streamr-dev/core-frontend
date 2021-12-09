@@ -1,6 +1,7 @@
 import * as all from '$shared/utils/web3'
 import * as getConfig from '$shared/web3/config'
 import * as getWeb3 from '$shared/web3/web3Provider'
+import { networks } from '$shared/utils/constants'
 
 describe('web3 utils', () => {
     beforeEach(() => {
@@ -14,20 +15,66 @@ describe('web3 utils', () => {
     describe('checkEthereumNetworkIsCorrect', () => {
         it('must resolve if required network is the same as the actual network', async () => {
             jest.spyOn(getConfig, 'default').mockImplementation(() => ({
-                networkId: '1',
+                mainnet: {
+                    chainId: '1',
+                },
             }))
             await all.checkEthereumNetworkIsCorrect({
-                getChainId: () => Promise.resolve('1'),
+                web3: {
+                    getChainId: () => Promise.resolve('1'),
+                },
             })
         })
 
         it('must fail if required network is not the same as the actual network', async (done) => {
             jest.spyOn(getConfig, 'default').mockImplementation(() => ({
-                networkId: '2',
+                mainnet: {
+                    chainId: '2',
+                },
             }))
             try {
                 await all.checkEthereumNetworkIsCorrect({
-                    getChainId: () => Promise.resolve('1'),
+                    web3: {
+                        getChainId: () => Promise.resolve('1'),
+                    },
+                })
+            } catch (e) {
+                done()
+            }
+        })
+
+        it('must resolve if required sidechain is the same as the actual network', async () => {
+            jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+                mainnet: {
+                    chainId: '1',
+                },
+                sidechain: {
+                    chainId: '8995',
+                },
+            }))
+            await all.checkEthereumNetworkIsCorrect({
+                web3: {
+                    getChainId: () => Promise.resolve('8995'),
+                },
+                network: networks.SIDECHAIN,
+            })
+        })
+
+        it('must fail if required sidechain is not the same as the actual network', async (done) => {
+            jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+                mainnet: {
+                    chainId: '2',
+                },
+                sidechain: {
+                    chainId: '8995',
+                },
+            }))
+            try {
+                await all.checkEthereumNetworkIsCorrect({
+                    web3: {
+                        getChainId: () => Promise.resolve('1'),
+                    },
+                    network: networks.SIDECHAIN,
                 })
             } catch (e) {
                 done()
