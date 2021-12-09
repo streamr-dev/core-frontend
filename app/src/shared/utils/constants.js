@@ -42,6 +42,8 @@ export const ethereumNetworks = {
     '4': 'Rinkeby',
     '5': 'Görli',
     '42': 'Kovan',
+    '100': 'xDAI',
+    '137': 'Polygon',
 }
 
 export const timeUnits = {

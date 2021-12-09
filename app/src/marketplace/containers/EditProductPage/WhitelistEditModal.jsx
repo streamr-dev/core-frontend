@@ -19,6 +19,9 @@ import AddWhitelistedAddressDialog from '$mp/components/Modal/AddWhitelistedAddr
 import RemoveWhitelistedAddressDialog from '$mp/components/Modal/RemoveWhitelistedAddressDialog'
 import WhitelistEditProgressDialog from '$mp/components/Modal/WhitelistEditProgressDialog'
 import WhitelistEditErrorDialog from '$mp/components/Modal/WhitelistEditErrorDialog'
+import WrongNetworkSelectedDialog from '$mp/components/Modal/WrongNetworkSelectedDialog'
+import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import useSwitchChain from '$shared/hooks/useSwitchChain'
 
 import useUpdateWhitelist, { actionsTypes } from './useUpdateWhitelist'
 
@@ -155,7 +158,21 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
         }
     }, [productId, updateWhitelist, requiresWhitelist])
 
+    const { switchChain, switchPending } = useSwitchChain()
+
     if (web3Error) {
+        if (web3Error instanceof WrongNetworkSelectedError) {
+            return (
+                <WrongNetworkSelectedDialog
+                    onClose={onClose}
+                    onSwitch={() => switchChain(web3Error.requiredNetwork)}
+                    switching={switchPending}
+                    requiredNetwork={web3Error.requiredNetwork}
+                    currentNetwork={web3Error.currentNetwork}
+                />
+            )
+        }
+
         return (
             <Web3ErrorDialog
                 onClose={onClose}
