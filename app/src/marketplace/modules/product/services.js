@@ -13,7 +13,6 @@ import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto, toAtto } from '$mp/utils/math'
-import { productTypes } from '$mp/utils/constants'
 import routes from '$routes'
 import { getContract, call, send } from '../../utils/smartContract'
 
@@ -63,24 +62,13 @@ export const postProduct = (product: Product): ApiResult<Product> => post({
 })
     .then(mapProductFromApi)
 
-export const postEmptyProduct = (type: ProductType): ApiResult<Product> => {
-    let product = {
+export const postEmptyProduct = (type: ProductType): ApiResult<Product> => post({
+    url: routes.api.products.index(),
+    data: {
         type,
-    }
-
-    if (type === productTypes.DATAUNION) {
-        product = {
-            ...product,
-            dataUnionVersion: 2,
-        }
-    }
-
-    return post({
-        url: routes.api.products.index(),
-        data: product,
-    })
-        .then(mapProductFromApi)
-}
+    },
+})
+    .then(mapProductFromApi)
 
 export const postImage = (id: ProductId, image: File): ApiResult<Product> => {
     const options = {
