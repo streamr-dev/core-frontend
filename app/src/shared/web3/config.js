@@ -29,11 +29,6 @@ type Config = {
     sidechain: SidechainConfig,
 }
 
-/*
-    mainnetChainId: string,
-    publicNodeAddress: string,
-*/
-
 const getConfig = (): Config => ({
     mainnet: {
         chainId: process.env.MAINNET_CHAIN_ID || '',
@@ -61,6 +56,51 @@ const getConfig = (): Config => ({
         chainId: process.env.SIDECHAIN_CHAIN_ID || '',
         rpcUrl: process.env.SIDECHAIN_HTTP_PROVIDER || '',
         dataUnionAbi: dataUnionSidechainAbi,
+    },
+    metamask: {
+        // local development values
+        // Note: rpcUrls need to use HTTPS urls, otherwise adding the chain will fail
+        [((process.env.MAINNET_CHAIN_ID || '8995'): string)]: {
+            getParams: () => ({
+                chainName: 'Mainchain (dev)',
+                rpcUrls: [process.env.MAINNET_HTTP_PROVIDER || ''],
+                nativeCurrency: {
+                    name: 'ETH',
+                    symbol: 'ETH',
+                    decimals: 18,
+                },
+            }),
+        },
+        [((process.env.SIDECHAIN_CHAIN_ID || '8997'): string)]: {
+            getParams: () => ({
+                chainName: 'Sidechain (dev)',
+                rpcUrls: [process.env.SIDECHAIN_HTTP_PROVIDER || ''],
+                nativeCurrency: {
+                    name: 'xDAI',
+                    symbol: 'xDAI',
+                    decimals: 18,
+                },
+            }),
+        },
+        // Real chain values
+        // Note: urls are added to user's Metamask, do not use private RPC urls here
+        '1': {
+            getParams: () => {
+                throw new Error('Mainnet can not be added!')
+            },
+        },
+        '100': {
+            getParams: () => ({
+                chainName: 'xDAI',
+                rpcUrls: ['https://rpc.xdaichain.com/'],
+                blockExplorerUrls: ['https://blockscout.com/poa/xdai'],
+                nativeCurrency: {
+                    name: 'xDAI',
+                    symbol: 'xDAI',
+                    decimals: 18,
+                },
+            }),
+        },
     },
 })
 

@@ -3,54 +3,6 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 import getConfig from '$shared/web3/config'
 
-const { mainnet, sidechain } = getConfig()
-
-const networks = {
-    // local development values
-    // Note: rpcUrls need to use HTTPS urls, otherwise adding the chain will fail
-    [mainnet.chainId]: {
-        getParams: () => ({
-            chainName: 'Mainchain (dev)',
-            rpcUrls: [mainnet.rpcUrl],
-            nativeCurrency: {
-                name: 'ETH',
-                symbol: 'ETH',
-                decimals: 18,
-            },
-        }),
-    },
-    [sidechain.chainId]: {
-        getParams: () => ({
-            chainName: 'Sidechain (dev)',
-            rpcUrls: [sidechain.rpcUrl],
-            nativeCurrency: {
-                name: 'xDAI',
-                symbol: 'xDAI',
-                decimals: 18,
-            },
-        }),
-    },
-    // Real chain values
-    // Note: urls are added to user's Metamask, do not use private RPC urls here
-    '1': {
-        getParams: () => {
-            throw new Error('Mainnet can not be added!')
-        },
-    },
-    '100': {
-        getParams: () => ({
-            chainName: 'xDAI',
-            rpcUrls: ['https://rpc.xdaichain.com/'],
-            blockExplorerUrls: ['https://blockscout.com/poa/xdai'],
-            nativeCurrency: {
-                name: 'xDAI',
-                symbol: 'xDAI',
-                decimals: 18,
-            },
-        }),
-    },
-}
-
 export default function useSwitchChain() {
     const [switchPending, setSwitchPending] = useState(false)
     const isMounted = useIsMounted()
@@ -59,6 +11,8 @@ export default function useSwitchChain() {
         const web3 = getWeb3()
 
         setSwitchPending(true)
+
+        const { metamask: networks } = getConfig()
 
         try {
             await validateWeb3({
