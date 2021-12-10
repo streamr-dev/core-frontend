@@ -4,16 +4,14 @@ import styled from 'styled-components'
 import UnstyledPngIcon from '$shared/components/PngIcon'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
-import UnstyledButtons from '$shared/components/Buttons'
 import { ethereumNetworks } from '$shared/utils/constants'
 
 const PngIcon = styled(UnstyledPngIcon)`
-    margin: 10px 0 20px;
+    margin: 16px 0 20px;
 `
 
-const Buttons = styled(UnstyledButtons)`
-    padding: 0.5rem 1.5rem 1.5rem;
-    justify-content: center !important;
+const Text = styled.p`
+    margin-bottom: 1rem !important;
 `
 
 const WrongNetworkSelectedDialog = ({
@@ -36,35 +34,39 @@ const WrongNetworkSelectedDialog = ({
             <Dialog
                 title="Please switch network"
                 onClose={onClose}
-                renderActions={() => (
-                    <Buttons
-                        actions={{
-                            next: {
-                                title: `${switching ? 'Switching' : 'Switch'} to ${requiredNetworkName}`,
-                                kind: 'secondary',
-                                onClick: () => onSwitch(),
-                                disabled: !!switching,
-                                spinner: !!switching,
-                            },
-                        }}
-                    />
-                )}
+                actions={{
+                    cancel: {
+                        title: 'Cancel',
+                        onClick: () => onClose(),
+                        kind: 'link',
+                        disabled: !!switching,
+                    },
+                    next: {
+                        title: switching ? 'Switching...' : 'Switch network',
+                        kind: 'primary',
+                        onClick: () => onSwitch(),
+                        disabled: !!switching,
+                        spinner: !!switching,
+                    },
+                }}
             >
                 <PngIcon
-                    name="walletError"
+                    name="wallet"
                     alt="Please switch network"
                 />
-                <p>
+                <Text>
                     Please switch to the
                     {' '}
                     {requiredNetworkName}
                     {' '}
-                    network in your Ethereum wallet.
+                    network in your
                     <br />
-                    It&apos;s currently
+                    Ethereum wallet.
                     {' '}
-                    {currentNetworkName}.
-                </p>
+                    It&apos;s currently in
+                    {' '}
+                    {currentNetworkName} network.
+                </Text>
             </Dialog>
         </ModalPortal>
     )

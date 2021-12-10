@@ -37,6 +37,8 @@ export const networks = {
 }
 
 export const ethereumNetworks = {
+    [((process.env.MAINNET_CHAIN_ID || '8995'): string)]: 'Local mainchain',
+    [((process.env.SIDECHAIN_CHAIN_ID || '8997'): string)]: 'Local sidechain',
     '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',
