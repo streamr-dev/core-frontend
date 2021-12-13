@@ -13,7 +13,7 @@ import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
+import { NotificationIcon, networks } from '$shared/utils/constants'
 import StatusLabel from '$shared/components/StatusLabel'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -33,7 +33,10 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import CodeSnippets from '$shared/components/CodeSnippets'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
+import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
 import routes from '$routes'
+import SwitchNetworkModal from './SwitchNetworkModal'
 import PartitionsView from './Edit/PartitionsView'
 import HistoryView from './Edit/HistoryView'
 import ConfigureView from './Edit/ConfigureView'
@@ -248,6 +251,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const contentChangedRef = useRef(false)
     const history = useHistory()
     const { api: confirmExitDialog } = useModal('confirmExit')
+    const { api: switchNetworkDialog } = useModal('switchNetwork')
     const [domains, setDomains] = useState([])
     const [loadingDomains, setLoadingDomains] = useState(true)
     const isMounted = useIsMounted()
@@ -400,6 +404,30 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         })
     }, [domain, pathname])
 
+    const validateNetwork = useCallback(async () => {
+        try {
+            await validateWeb3({
+                web3: getWeb3(),
+                requireNetwork: networks.SIDECHAIN,
+            })
+        } catch (e) {
+            let propagateError = true
+
+            if (e instanceof WrongNetworkSelectedError) {
+                const { proceed } = await switchNetworkDialog.open({
+                    requiredNetwork: e.requiredNetwork,
+                    initialNetwork: e.currentNetwork,
+                })
+
+                propagateError = !proceed
+            }
+
+            if (propagateError) {
+                throw e
+            }
+        }
+    }, [switchNetworkDialog])
+
     const onSave = useCallback(async () => {
         if (!streamDataRef.current) { return }
 
@@ -408,6 +436,8 @@ const UnstyledNew = ({ currentUser, ...props }) => {
 
         try {
             const { domain, pathname, description } = streamDataRef.current
+
+            await validateNetwork()
 
             const newStream = await client.createStream({
                 id: getValidId({
@@ -459,7 +489,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 setLoading(false)
             }
         }
-    }, [client, isMounted, history])
+    }, [client, isMounted, history, validateNetwork])
 
     useEffect(() => {
         streamDataRef.current = {
@@ -723,6 +753,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 )
             ))}
             <ConfirmExitModal />
+            <SwitchNetworkModal />
         </Layout>
     )
 }
