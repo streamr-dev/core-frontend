@@ -44,9 +44,8 @@ jobs:
           DATA_TOKEN_CONTRACT_ADDRESS: "0x8f693ca8D21b157107184d29D398A8D082b38b76"
           DAI_TOKEN_CONTRACT_ADDRESS: "0x6B175474E89094C44Da98b954EedeAC495271d0F"
           UNISWAP_ADAPTOR_CONTRACT_ADDRESS: "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
-          WEB3_REQUIRED_NETWORK_ID: 1
-          WEB3_PUBLIC_HTTP_PROVIDER: https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
-          WEB3_PUBLIC_WS_PROVIDER: wss://mainnet.infura.io/ws/v3/17c3985baecb4c4d94a1edc2c4d23206
+          MAINNET_CHAIN_ID: 1
+          MAINNET_HTTP_PROVIDER: https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206
           SENTRY_ENVIRONMENT: production
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           SENTRY_ORG: streamr
@@ -64,8 +63,8 @@ jobs:
           DATA_UNION_TEMPLATE_MAINNET_ADDRESS: "0x67352e3F7dBA907aF877020aE7E9450C0029C70c"
           DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS: "0xaCF9e8134047eDc671162D9404BF63a587435bAa"
           DATA_TOKEN_SIDECHAIN_ADDRESS: "0xE4a2620edE1058D61BEe5F45F6414314fdf10548"
-          DATA_UNION_SIDECHAIN_PROVIDER: https://weathered-billowing-thunder.xdai.quiknode.pro/502bd1fa80407bcd07ebd4f14e37c6e5c20db640/
-          DATA_UNION_SIDECHAIN_ID: 100
+          SIDECHAIN_HTTP_PROVIDER: https://weathered-billowing-thunder.xdai.quiknode.pro/502bd1fa80407bcd07ebd4f14e37c6e5c20db640/
+          SIDECHAIN_CHAIN_ID: 100
         run: |
           npm run build-index
           npm run build --if-present

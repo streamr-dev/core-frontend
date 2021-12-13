@@ -59,49 +59,4 @@ describe('global - actions', () => {
             expect(serviceStub).toHaveBeenCalledTimes(1)
         })
     })
-
-    describe('checkEthereumNetwork', () => {
-        it('calls services.checkEthereumNetworkIsCorrect', async () => {
-            const serviceStub = jest.spyOn(services, 'checkEthereumNetworkIsCorrect').mockImplementation(() => Promise.resolve())
-
-            const store = mockStore()
-            await store.dispatch(actions.checkEthereumNetwork())
-
-            const expectedActions = [
-                {
-                    type: constants.CHECK_ETHEREUM_NETWORK_REQUEST,
-                },
-                {
-                    type: constants.CHECK_ETHEREUM_NETWORK_SUCCESS,
-                },
-            ]
-            expect(store.getActions()).toStrictEqual(expectedActions)
-            expect(serviceStub).toHaveBeenCalledTimes(1)
-        })
-
-        it('calls services.checkEthereumNetworkIsCorrect and handles error', async () => {
-            const errorMessage = 'error'
-            const serviceStub = jest.spyOn(services, 'checkEthereumNetworkIsCorrect')
-                .mockImplementation(() => Promise.reject(new Error(errorMessage)))
-
-            const store = mockStore()
-            await store.dispatch(actions.checkEthereumNetwork())
-
-            const expectedActions = [
-                {
-                    type: constants.CHECK_ETHEREUM_NETWORK_REQUEST,
-                },
-                {
-                    type: constants.CHECK_ETHEREUM_NETWORK_FAILURE,
-                    payload: {
-                        error: {
-                            message: errorMessage,
-                        },
-                    },
-                },
-            ]
-            expect(store.getActions()).toStrictEqual(expectedActions)
-            expect(serviceStub).toHaveBeenCalledTimes(1)
-        })
-    })
 })

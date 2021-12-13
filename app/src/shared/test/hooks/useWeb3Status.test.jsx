@@ -130,7 +130,7 @@ describe('useWeb3Status', () => {
 
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
-        expect(subscribeStub).toHaveBeenCalledTimes(1)
+        expect(subscribeStub).toHaveBeenCalledTimes(2)
         expect(result.isLocked).toBe(true)
     })
 
@@ -160,7 +160,7 @@ describe('useWeb3Status', () => {
             el.unmount()
         })
 
-        expect(unsubscribeStub).toHaveBeenCalledTimes(1)
+        expect(unsubscribeStub).toHaveBeenCalledTimes(2)
     })
 
     it('returns the next account when new account is detected', async () => {

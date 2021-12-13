@@ -139,8 +139,7 @@ export type Web3State = {
 // global things
 export type GlobalState = {
     dataPerUsd: ?NumberString,
-    ethereumNetworkIsCorrect: ?boolean,
-    checkingNetwork: boolean,
+    networkId: ?string,
     fetchingDataPerUsdRate: boolean,
     dataPerUsdRateError: ?TransactionError,
     ethereumNetworkError: ?TransactionError,

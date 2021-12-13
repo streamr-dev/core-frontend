@@ -24,10 +24,13 @@ import PurchaseError from '$mp/components/Modal/PurchaseError'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
+import WrongNetworkSelectedDialog from '$mp/components/Modal/WrongNetworkSelectedDialog'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import type { Ref, UseStateTuple } from '$shared/flowtype/common-types'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import { isDataUnionProduct } from '$mp/utils/product'
+import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import useSwitchChain from '$shared/hooks/useSwitchChain'
 import usePurchase, { actionsTypes } from './usePurchase'
 
 type Props = {
@@ -188,7 +191,21 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         })
     }, [api, purchaseStarted, allSucceeded])
 
+    const { switchChain, switchPending } = useSwitchChain()
+
     if (!isContractProductLoadPending && !checkingWeb3 && web3Error) {
+        if (web3Error instanceof WrongNetworkSelectedError) {
+            return (
+                <WrongNetworkSelectedDialog
+                    onClose={onClose}
+                    onSwitch={() => switchChain(web3Error.requiredNetwork)}
+                    switching={switchPending}
+                    requiredNetwork={web3Error.requiredNetwork}
+                    currentNetwork={web3Error.currentNetwork}
+                />
+            )
+        }
+
         return (
             <Web3ErrorDialog
                 onClose={onClose}

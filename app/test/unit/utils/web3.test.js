@@ -48,7 +48,9 @@ describe('web3 utils', () => {
                 call: () => Promise.resolve(accountBalance),
             }))
             jest.spyOn(getConfig, 'default').mockImplementation(() => ({
-                dataToken: 'dataToken',
+                mainnet: {
+                    dataToken: 'dataToken',
+                },
             }))
             const getContractStub = jest.fn(() => ({
                 methods: {
@@ -70,7 +72,9 @@ describe('web3 utils', () => {
                 call: () => Promise.resolve(accountBalance),
             }))
             jest.spyOn(getConfig, 'default').mockImplementation(() => ({
-                dataToken: 'dataToken',
+                mainnet: {
+                    dataToken: 'dataToken',
+                },
             }))
             const getContractStub = jest.fn(() => ({
                 methods: {

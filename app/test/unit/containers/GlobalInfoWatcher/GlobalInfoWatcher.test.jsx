@@ -124,10 +124,10 @@ describe('GlobalInfoWatcher', () => {
             update: () => {},
         }))
         const defaultAccountStub = jest.fn(() => Promise.resolve('testAccount'))
-        const networkStub = jest.fn(() => Promise.resolve(1))
+        const networkStub = jest.fn(() => Promise.resolve('1'))
         jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
             getDefaultAccount: defaultAccountStub,
-            getEthereumNetwork: networkStub,
+            getChainId: networkStub,
         }))
         jest.spyOn(web3Utils, 'hasTransactionCompleted').mockImplementation(() => Promise.resolve(false))
         jest.spyOn(transactionUtils, 'getTransactionsFromSessionStorage').mockImplementation(() => transactions)
@@ -157,22 +157,23 @@ describe('GlobalInfoWatcher', () => {
         jest.spyOn(Web3Poller, 'unsubscribe').mockImplementation((event, handler) => {
             emitter.off(event, handler)
         })
+        const setEthereumNetworkIdStub = jest.spyOn(globalActions, 'setEthereumNetworkId').mockImplementation()
 
         act(() => {
             mount(<GlobalInfoWatcher />)
         })
-        expect(window.location.reload).not.toHaveBeenCalled()
+        expect(setEthereumNetworkIdStub).toHaveBeenCalledTimes(0)
 
         // defining first time should not reload
         act(() => {
             emitter.emit(Web3Poller.events.NETWORK, '8995')
         })
-        expect(window.location.reload).not.toHaveBeenCalled()
+        expect(setEthereumNetworkIdStub).toHaveBeenCalledTimes(1)
 
         // should reload if network was defined
         act(() => {
             emitter.emit(Web3Poller.events.NETWORK, '5')
         })
-        expect(window.location.reload).toHaveBeenCalled()
+        expect(setEthereumNetworkIdStub).toHaveBeenCalledTimes(2)
     })
 })

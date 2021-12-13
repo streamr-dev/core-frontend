@@ -22,20 +22,20 @@ describe('config', () => {
             }
         })
 
-        it('gets the right config from env', () => {
+        it('gets the right mainnet config from env', () => {
             process.env.MARKETPLACE_CONTRACT_ADDRESS = 'mpAddress'
             process.env.DATA_TOKEN_CONTRACT_ADDRESS = 'dataTokenAddress'
             process.env.DAI_TOKEN_CONTRACT_ADDRESS = 'daiTokenAddress'
-            process.env.WEB3_REQUIRED_NETWORK_ID = '1'
-            process.env.WEB3_PUBLIC_HTTP_PROVIDER = 'https://dummy'
-            process.env.WEB3_PUBLIC_WS_PROVIDER = 'wss://dummy/ws'
+            process.env.MAINNET_CHAIN_ID = '1'
+            process.env.MAINNET_HTTP_PROVIDER = 'https://mainnet'
             process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS = 1337
             process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS = 'uniAddress'
 
-            expect(getConfig()).toStrictEqual({
-                networkId: '1',
-                publicNodeAddress: 'https://dummy',
-                websocketAddress: 'wss://dummy/ws',
+            const { mainnet } = getConfig()
+
+            expect(mainnet).toStrictEqual({
+                chainId: '1',
+                rpcUrl: 'https://mainnet',
                 transactionConfirmationBlocks: 1337,
                 dataToken: {
                     abi: ['t_test', 't_values', 't_only'],
@@ -54,7 +54,36 @@ describe('config', () => {
                     address: 'uniAddress',
                 },
                 dataUnionAbi: ['d_test', 'd_values', 'd_only'],
-                dataUnionSidechainAbi: ['ds_test', 'ds_values', 'ds_only'],
+            })
+        })
+
+        it('gets the right sidechain config from env', () => {
+            process.env.SIDECHAIN_CHAIN_ID = '8995'
+            process.env.SIDECHAIN_HTTP_PROVIDER = 'https://sidechain'
+
+            const { sidechain } = getConfig()
+
+            expect(sidechain).toStrictEqual({
+                chainId: '8995',
+                rpcUrl: 'https://sidechain',
+                dataUnionAbi: ['ds_test', 'ds_values', 'ds_only'],
+            })
+        })
+
+        it('gets metamask config', () => {
+            process.env.SIDECHAIN_CHAIN_ID = '8997'
+            process.env.MAINNET_CHAIN_ID = '8995'
+
+            const { metamask } = getConfig()
+
+            const chainIds = Object.keys(metamask)
+
+            expect(chainIds.length > 0).toBe(true)
+
+            chainIds.forEach((chainId) => {
+                const { getParams } = metamask[chainId]
+
+                expect(typeof getParams).toBe('function')
             })
         })
     })

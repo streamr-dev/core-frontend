@@ -56,11 +56,11 @@ export const createClient = (options: CreateClient = {}) => {
             ethereum: web3 && web3.metamaskProvider,
         },
         sidechain: {
-            url: process.env.DATA_UNION_SIDECHAIN_PROVIDER,
-            chainId: parseInt(process.env.DATA_UNION_SIDECHAIN_ID, 10),
+            url: process.env.SIDECHAIN_HTTP_PROVIDER,
+            chainId: parseInt(process.env.SIDECHAIN_CHAIN_ID, 10),
         },
         mainnet: {
-            url: process.env.WEB3_PUBLIC_HTTP_PROVIDER,
+            url: process.env.MAINNET_HTTP_PROVIDER,
         },
         streamrNodeAddress: getStreamrEngineAddresses()[0],
     })
@@ -141,7 +141,9 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
 
     Promise.all([
         web3.getDefaultAccount(),
-        checkEthereumNetworkIsCorrect(web3),
+        checkEthereumNetworkIsCorrect({
+            web3,
+        }),
     ])
         .then(([account]) => {
             // eslint-disable-next-line no-underscore-dangle
@@ -186,7 +188,9 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
     const tx = new Transaction(emitter)
     Promise.all([
         getDataUnionObject(address),
-        checkEthereumNetworkIsCorrect(web3),
+        checkEthereumNetworkIsCorrect({
+            web3,
+        }),
     ])
         .then(([dataUnion]) => {
             emitter.emit('transactionHash')
@@ -213,14 +217,15 @@ export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) 
 // getting events (TODO: move to streamr-client)
 // ----------------------
 
-const getSidechainWeb3 = () => new Web3(new Web3.providers.HttpProvider(process.env.DATA_UNION_SIDECHAIN_PROVIDER))
+const getSidechainWeb3 = () => new Web3(new Web3.providers.HttpProvider(process.env.SIDECHAIN_HTTP_PROVIDER))
 
 export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number): any {
     const dataUnion = await getDataUnionObject(address, true)
     const sidechainAddress = await dataUnion.getSidechainAddress()
 
     const web3 = getSidechainWeb3()
-    const contract = new web3.eth.Contract(getConfig().dataUnionSidechainAbi, sidechainAddress)
+    const { sidechain } = getConfig()
+    const contract = new web3.eth.Contract(sidechain.dataUnionAbi, sidechainAddress)
     const latestBlock = await web3.eth.getBlock('latest')
 
     // Get events in batches since xDai RPC seems to timeout if fetching too large sets

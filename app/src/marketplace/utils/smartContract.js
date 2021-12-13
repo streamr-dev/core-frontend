@@ -6,6 +6,7 @@ import { isHex } from 'web3-utils'
 import BN from 'bignumber.js'
 
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
+import { networks } from '$shared/utils/constants'
 
 import getWeb3, { getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
 import TransactionError from '$shared/errors/TransactionError'
@@ -62,6 +63,7 @@ export const call = (method: Callable): SmartContractCall<*> => method.call()
 export const send = (method: Sendable, options?: {
     gas?: number,
     value?: NumberString | BN,
+    network?: $Values<typeof networks>,
 }): SmartContractTransaction => {
     const web3 = getWeb3()
     const emitter = new EventEmitter()
@@ -73,7 +75,10 @@ export const send = (method: Sendable, options?: {
     const tx = new Transaction(emitter)
     Promise.all([
         web3.getDefaultAccount(),
-        checkEthereumNetworkIsCorrect(web3),
+        checkEthereumNetworkIsCorrect({
+            web3,
+            network: (options && options.network) || networks.MAINNET,
+        }),
     ])
         .then(([account]) => (
             method.send({

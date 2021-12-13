@@ -1,7 +1,6 @@
 import * as all from '$mp/modules/global/services'
 import * as smartContractUtils from '$mp/utils/smartContract'
 import * as getWeb3 from '$shared/web3/web3Provider'
-import * as web3Utils from '$shared/utils/web3'
 
 describe('global - services', () => {
     beforeEach(() => {
@@ -46,16 +45,6 @@ describe('global - services', () => {
             }))
             const result = await all.getDataPerUsd()
             expect(result).toBe('209')
-        })
-    })
-
-    describe('checkEthereumNetworkIsCorrect', () => {
-        it('must call checkEthereumNetworkIsCorrect util', () => {
-            jest.spyOn(getWeb3, 'default').mockImplementation(jest.fn())
-            const getContractStub = jest.spyOn(web3Utils, 'checkEthereumNetworkIsCorrect').mockImplementation(() => {})
-
-            all.checkEthereumNetworkIsCorrect()
-            expect(getContractStub).toHaveBeenCalledTimes(1)
         })
     })
 })

@@ -57,13 +57,13 @@ describe('web3Provider', () => {
             })
         })
 
-        describe('getEthereumNetwork', () => {
+        describe('getChainId', () => {
             it('must return the network', async () => {
                 const web3 = new StreamrWeb3()
                 const getNetStub = jest.fn(() => Promise.resolve(6))
                 jest.spyOn(web3.eth.net, 'getId').mockImplementation(getNetStub)
-                const net = await web3.getEthereumNetwork()
-                expect(net).toBe(6)
+                const net = await web3.getChainId()
+                expect(net).toBe('6')
                 expect(getNetStub).toHaveBeenCalledTimes(1)
             })
         })
@@ -98,7 +98,7 @@ describe('web3Provider', () => {
     })
     describe('getPublicWeb3', () => {
         it('must return web3 with the public provider', () => {
-            process.env.WEB3_PUBLIC_HTTP_PROVIDER = 'http://localhost:8545'
+            process.env.MAINNET_HTTP_PROVIDER = 'http://localhost:8545'
             const web3 = getPublicWeb3()
             expect(web3.currentProvider.host).toBe('http://localhost:8545')
         })

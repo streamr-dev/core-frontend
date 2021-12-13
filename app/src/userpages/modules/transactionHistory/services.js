@@ -122,7 +122,7 @@ const getInputValues = (type, logs) => {
 
 export const getTransactionEvents = (addresses: HashList, products: ProductIdList): Promise<EventLogList> => {
     const web3 = getPublicWeb3()
-    const { marketplace, dataToken } = getConfig()
+    const { marketplace, dataToken } = getConfig().mainnet
 
     // these are needed to decode log values
     abiDecoder.addABI(marketplace.abi)

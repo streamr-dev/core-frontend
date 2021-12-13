@@ -59,14 +59,18 @@ export class WalletLockedError extends Error {
 
 export class WrongNetworkSelectedError extends Error {
     code: string
+    requiredNetwork: string
+    currentNetwork: ?string
 
-    constructor(requiredNetworkName: string, currentNetworkName: string, ...args: any[]) {
+    constructor(requiredNetwork: string, currentNetwork: ?string, ...args: any[]) {
         super(
-            `Please switch to the ${requiredNetworkName} network in your Ethereum wallet. It's currently ${currentNetworkName}.`,
+            `Network #${requiredNetwork} is required, currently #${currentNetwork || 'N/A'} selected.`,
             ...args,
         )
 
         this.code = ErrorCodes.WRONG_NETWORK_SELECTED
+        this.requiredNetwork = requiredNetwork
+        this.currentNetwork = currentNetwork
 
         if (Error.captureStackTrace) {
             Error.captureStackTrace(this, WrongNetworkSelectedError)

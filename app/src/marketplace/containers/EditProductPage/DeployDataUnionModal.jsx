@@ -7,6 +7,7 @@ import { type Product } from '$mp/flowtype/product-types'
 import GuidedDeployDataUnionDialog from '$mp/components/Modal/GuidedDeployDataUnionDialog'
 import ConfirmDeployDataUnionDialog from '$mp/components/Modal/ConfirmDeployDataUnionDialog'
 import DeployingDataUnionDialog from '$mp/components/Modal/DeployingDataUnionDialog'
+import WrongNetworkSelectedDialog from '$mp/components/Modal/WrongNetworkSelectedDialog'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import { deployDataUnion } from '$mp/modules/dataUnion/services'
@@ -18,6 +19,8 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
+import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import useSwitchChain from '$shared/hooks/useSwitchChain'
 
 type DeployDialogProps = {
     product: Product,
@@ -133,7 +136,21 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         }
     }, [address, updateAddress])
 
+    const { switchChain, switchPending } = useSwitchChain()
+
     if (!checkingWeb3 && web3Error) {
+        if (web3Error instanceof WrongNetworkSelectedError) {
+            return (
+                <WrongNetworkSelectedDialog
+                    onClose={onClose}
+                    onSwitch={() => switchChain(web3Error.requiredNetwork)}
+                    switching={switchPending}
+                    requiredNetwork={web3Error.requiredNetwork}
+                    currentNetwork={web3Error.currentNetwork}
+                />
+            )
+        }
+
         return (
             <Web3ErrorDialog
                 onClose={onClose}

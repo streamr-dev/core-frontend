@@ -31,12 +31,21 @@ export const productStates = {
     UNDEPLOYING: 'UNDEPLOYING',
 }
 
+export const networks = {
+    MAINNET: 'mainnet',
+    SIDECHAIN: 'sidechain',
+}
+
 export const ethereumNetworks = {
+    [((process.env.MAINNET_CHAIN_ID || '8995'): string)]: 'Local mainchain',
+    [((process.env.SIDECHAIN_CHAIN_ID || '8997'): string)]: 'Local sidechain',
     '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',
     '5': 'Görli',
     '42': 'Kovan',
+    '100': 'xDAI',
+    '137': 'Polygon',
 }
 
 export const timeUnits = {

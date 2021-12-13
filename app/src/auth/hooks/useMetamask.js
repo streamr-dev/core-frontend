@@ -8,7 +8,7 @@ const useMetamask = () => (
 
         await validateWeb3({
             web3,
-            checkNetwork: false,
+            requireNetwork: false,
         })
 
         const token = await getSessionToken({

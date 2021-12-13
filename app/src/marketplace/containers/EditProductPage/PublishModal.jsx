@@ -14,10 +14,13 @@ import ReadyToPublishDialog from '$mp/components/Modal/ReadyToPublishDialog'
 import PublishTransactionProgress from '$mp/components/Modal/PublishTransactionProgress'
 import PublishComplete from '$mp/components/Modal/PublishComplete'
 import PublishError from '$mp/components/Modal/PublishError'
+import WrongNetworkSelectedDialog from '$mp/components/Modal/WrongNetworkSelectedDialog'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import usePending from '$shared/hooks/usePending'
+import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import useSwitchChain from '$shared/hooks/useSwitchChain'
 import usePublish, { publishModes } from './usePublish'
 
 type Props = {
@@ -138,11 +141,25 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         }
     }, [queue])
 
+    const { switchChain, switchPending } = useSwitchChain()
+
     if (isPending || (!mode && checkingWeb3)) {
         return null
     }
 
     if (!!requireWeb3 && web3Error) {
+        if (web3Error instanceof WrongNetworkSelectedError) {
+            return (
+                <WrongNetworkSelectedDialog
+                    onClose={onClose}
+                    onSwitch={() => switchChain(web3Error.requiredNetwork)}
+                    switching={switchPending}
+                    requiredNetwork={web3Error.requiredNetwork}
+                    currentNetwork={web3Error.currentNetwork}
+                />
+            )
+        }
+
         return (
             <Web3ErrorDialog
                 onClose={onClose}
