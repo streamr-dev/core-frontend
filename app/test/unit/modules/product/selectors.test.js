@@ -74,7 +74,6 @@ const state = {
     product: {
         id: '1337',
         fetchingProduct: true,
-        productError: null,
         streams: normalizedStreams.result,
         fetchingStreams: true,
         streamsError: null,
@@ -102,22 +101,6 @@ const state = {
 }
 
 describe('product - selectors', () => {
-    it('selects product fetching status', () => {
-        expect(all.selectFetchingProduct(state)).toBe(true)
-    })
-
-    it('selects product id', () => {
-        expect(all.selectProductId(state)).toBe('1337')
-    })
-
-    it('selects product', () => {
-        expect(all.selectProduct(state)).toStrictEqual(products[0])
-    })
-
-    it('selects product error', () => {
-        expect(all.selectProductError(state)).toBe(null)
-    })
-
     it('selects product streams', () => {
         expect(all.selectFetchingStreams(state)).toBe(true)
     })
@@ -130,27 +113,11 @@ describe('product - selectors', () => {
         expect(all.selectStreams(state)).toStrictEqual(streams)
     })
 
-    it('selects category', () => {
-        expect(all.selectCategory(state)).toStrictEqual(categories[0])
-    })
-
     it('selects streams error', () => {
         expect(all.selectStreamsError(state)).toBe(null)
     })
 
     it('selects contract subscription', () => {
         expect(all.selectContractSubscription(state)).toBe(state.product.contractSubscription)
-    })
-
-    it('selects contract subscription validity status', () => {
-        expect(all.selectContractSubscriptionIsValid(state)).toBe(false)
-    })
-
-    it('selects product purchased status', () => {
-        expect(all.selectProductIsPurchased(state)).toBe(true)
-    })
-
-    it('selects subscription validity status', () => {
-        expect(all.selectSubscriptionIsValid(state)).toBe(true)
     })
 })

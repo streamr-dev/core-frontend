@@ -39,11 +39,6 @@ jest.mock('react-redux', () => ({
 jest.mock('../useNewProductMode', () => (
     jest.fn().mockImplementation(() => false)
 ))
-jest.mock('../useProduct', () => (
-    jest.fn().mockImplementation(() => ({
-        id: '1',
-    }))
-))
 
 describe('useEditableProductActions', () => {
     describe('updateProduct', () => {

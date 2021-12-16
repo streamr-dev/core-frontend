@@ -10,7 +10,6 @@ import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/product/services'
 import { selectDataUnionStats } from '$mp/modules/dataUnion/selectors'
-import { selectProduct } from '$mp/modules/product/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
 import {
@@ -30,6 +29,7 @@ import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useModal from '$shared/hooks/useModal'
 import routes from '$routes'
 import * as State from '../EditProductPage/state'
+import { useController } from '../ProductController'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 
@@ -60,7 +60,7 @@ function useEditController(product: Product) {
     const isMounted = useIsMounted()
     const savePending = usePending('product.SAVE')
     const { updateBeneficiaryAddress } = useEditableProductActions()
-    const originalProduct = useSelector(selectProduct)
+    const { product: originalProduct } = useController()
     const { replaceState } = useEditableState()
     const dataUnion = useSelector(selectDataUnionStats)
     const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))

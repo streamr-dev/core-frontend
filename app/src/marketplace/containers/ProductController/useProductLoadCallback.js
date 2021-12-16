@@ -1,7 +1,6 @@
 // @flow
 
 import { useCallback } from 'react'
-import { useDispatch } from 'react-redux'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
@@ -9,40 +8,38 @@ import { canHandleLoadError, handleLoadError } from '$auth/utils/loginIntercepto
 
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getProductById } from '$mp/modules/product/services'
-import { getProductByIdRequest, getProductByIdSuccess } from '$mp/modules/product/actions'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY, productStates } from '$shared/utils/constants'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
-import { handleEntities } from '$shared/utils/entities'
-import { productSchema } from '$shared/modules/entities/schema'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 
 import * as State from '../EditProductPage/state'
+import { useController } from '.'
 
 type LoadProps = {
     productId: ProductId,
     ignoreUnauthorized?: boolean,
     requirePublished?: boolean,
+    useAuthorization?: boolean,
 }
 
 export default function useProductLoadCallback() {
     const productUpdater = useEditableState()
     const { wrap } = usePending('product.LOAD')
     const isMounted = useIsMounted()
-    const dispatch = useDispatch()
     const fail = useFailure()
+    const { setProduct } = useController()
 
-    const load = useCallback(async ({ productId, ignoreUnauthorized, requirePublished }: LoadProps) => (
+    const load = useCallback(async ({ productId, ignoreUnauthorized, requirePublished, useAuthorization = true }: LoadProps) => (
         wrap(async () => {
-            dispatch(getProductByIdRequest(productId))
             let product
             try {
-                product = await getProductById(productId)
+                product = await getProductById(productId, useAuthorization)
             } catch (error) {
                 if (!isMounted()) { return }
                 if (canHandleLoadError(error)) {
@@ -105,17 +102,14 @@ export default function useProductLoadCallback() {
                 requiresWhitelist,
             }
 
-            // update redux state, keep original product in redux
-            // Set pending changes to empty to prevent merging with previous values
-            const result = handleEntities(productSchema, dispatch)({
+            setProduct({
                 ...nextProduct,
                 pendingChanges: null,
             })
-            dispatch(getProductByIdSuccess(result))
 
             productUpdater.replaceState(() => State.withPendingChanges(nextProduct))
         })
-    ), [wrap, dispatch, productUpdater, isMounted])
+    ), [wrap, setProduct, productUpdater, isMounted])
 
     return useCallback(async (props: LoadProps) => {
         try {

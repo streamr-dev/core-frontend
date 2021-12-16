@@ -6,7 +6,7 @@ import cx from 'classnames'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
-import useProduct from '../ProductController/useProduct'
+import { useController } from '../ProductController'
 import SharedSecretEditor from './SharedSecretEditor'
 
 import styles from './productStreams.pcss'
@@ -17,7 +17,7 @@ type Props = {
 }
 
 const SharedSecrets = ({ className, disabled }: Props) => {
-    const product = useProduct()
+    const { product } = useController()
     const isDataUnion = isDataUnionProduct(product)
     const dataunion = useDataUnion()
     const { owner } = dataunion || {}

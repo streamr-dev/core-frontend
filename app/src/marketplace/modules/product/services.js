@@ -40,10 +40,11 @@ const marketplaceContract = () => {
     return getContract(mainnet.marketplace)
 }
 
-export const getProductById = async (id: ProductId): ApiResult<Product> => get({
+export const getProductById = async (id: ProductId, useAuthorization: boolean = true): ApiResult<Product> => get({
     url: routes.api.products.show({
         id: getValidId(id, false),
     }),
+    useAuthorization,
 })
     .then(mapProductFromApi)
 

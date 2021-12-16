@@ -14,7 +14,6 @@ import { getProductSubscription } from '$mp/modules/product/actions'
 import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import Nav from '$shared/components/Layout/Nav'
 
-import useProduct from '$mp/containers/ProductController/useProduct'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getToken } from '$shared/utils/sessionToken'
 import ProductController, { useController } from '../ProductController'
@@ -30,13 +29,13 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
 const ProductPage = () => {
     const dispatch = useDispatch()
     const {
+        product,
         loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
         loadDataUnion,
         loadRelatedProducts,
     } = useController()
-    const product = useProduct()
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null && !!getToken()
     const { isPending } = usePending('contractProduct.LOAD')
@@ -91,8 +90,7 @@ const LoadingView = () => (
 )
 
 const EditWrap = () => {
-    const product = useProduct()
-    const { hasLoaded } = useController()
+    const { product, hasLoaded } = useController()
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
 
@@ -114,7 +112,12 @@ const ProductContainer = () => {
     const { id } = useParams()
 
     return (
-        <ProductController key={id} ignoreUnauthorized requirePublished>
+        <ProductController
+            key={id}
+            ignoreUnauthorized
+            requirePublished
+            useAuthorization={false}
+        >
             <EditWrap />
         </ProductController>
     )

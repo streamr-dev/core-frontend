@@ -49,7 +49,14 @@ const mockState = {
 
 jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
-    useDispatch: jest.fn(),
+}))
+
+jest.mock('../../ProductController', () => ({
+    useController: () => ({
+        product: {
+            id: '1',
+        },
+    }),
 }))
 
 describe('EditControllerProvider', () => {

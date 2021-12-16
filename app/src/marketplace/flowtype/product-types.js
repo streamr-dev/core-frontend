@@ -70,6 +70,7 @@ export type Product = {
     pendingChanges?: PendingChanges,
     termsOfUse: TermsOfUse,
     contact: ?ContactDetails,
+    dataUnionDeployed?: boolean,
 }
 
 export type ProductSubscriptionId = string

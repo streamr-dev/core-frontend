@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import * as useProduct from '../useProduct'
+import * as useController from '../'
 
 import { Provider as ValidationContextProvider, Context as ValidationContext } from '../ValidationContextProvider'
 
@@ -45,8 +45,10 @@ describe('validation context', () => {
             return null
         }
 
-        jest.spyOn(useProduct, 'default').mockImplementation(() => ({
-            id: '1',
+        jest.spyOn(useController, 'useController').mockImplementation(() => ({
+            product: {
+                id: '1',
+            },
         }))
 
         mount((
@@ -62,8 +64,10 @@ describe('validation context', () => {
 
     describe('touched fields', () => {
         beforeEach(() => {
-            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
-                id: '1',
+            jest.spyOn(useController, 'useController').mockImplementation(() => ({
+                product: {
+                    id: '1',
+                },
             }))
         })
 
@@ -159,8 +163,10 @@ describe('validation context', () => {
 
     describe('status', () => {
         beforeEach(() => {
-            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
-                id: '1',
+            jest.spyOn(useController, 'useController').mockImplementation(() => ({
+                product: {
+                    id: '1',
+                },
             }))
         })
 
@@ -329,8 +335,10 @@ describe('validation context', () => {
 
     describe('validate', () => {
         beforeEach(() => {
-            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
-                id: '1',
+            jest.spyOn(useController, 'useController').mockImplementation(() => ({
+                product: {
+                    id: '1',
+                },
             }))
         })
 
@@ -765,7 +773,9 @@ describe('validation context', () => {
                     streams: ['2', '3', '4'],
                 },
             }
-            jest.spyOn(useProduct, 'default').mockImplementation(() => product)
+            jest.spyOn(useController, 'useController').mockImplementation(() => ({
+                product,
+            }))
 
             mount((
                 <ValidationContextProvider>
@@ -791,12 +801,14 @@ describe('validation context', () => {
                 return null
             }
 
-            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
-                id: '1',
-                name: 'Name',
-                description: 'Description',
-                streams: ['1', '3'],
-                category: 'category',
+            jest.spyOn(useController, 'useController').mockImplementation(() => ({
+                product: {
+                    id: '1',
+                    name: 'Name',
+                    description: 'Description',
+                    streams: ['1', '3'],
+                    category: 'category',
+                },
             }))
 
             mount((
@@ -836,13 +848,15 @@ describe('validation context', () => {
                 return null
             }
 
-            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
-                id: '1',
-                name: 'Name',
-                description: 'Description',
-                streams: ['1', '3'],
-                category: 'category',
-                imageUrl: 'http://...',
+            jest.spyOn(useController, 'useController').mockImplementation(() => ({
+                product: {
+                    id: '1',
+                    name: 'Name',
+                    description: 'Description',
+                    streams: ['1', '3'],
+                    category: 'category',
+                    imageUrl: 'http://...',
+                },
             }))
 
             mount((
@@ -878,12 +892,14 @@ describe('validation context', () => {
                 return null
             }
 
-            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
-                id: '1',
-                name: 'Name',
-                description: 'Description',
-                category: 'category',
-                streams: ['1', '3'],
+            jest.spyOn(useController, 'useController').mockImplementation(() => ({
+                product: {
+                    id: '1',
+                    name: 'Name',
+                    description: 'Description',
+                    category: 'category',
+                    streams: ['1', '3'],
+                },
             }))
 
             mount((
@@ -923,11 +939,13 @@ describe('validation context', () => {
                 return null
             }
 
-            jest.spyOn(useProduct, 'default').mockImplementation(() => ({
-                id: '1',
-                name: 'Name',
-                description: 'Description',
-                streams: ['1', '3'],
+            jest.spyOn(useController, 'useController').mockImplementation(() => ({
+                product: {
+                    id: '1',
+                    name: 'Name',
+                    description: 'Description',
+                    streams: ['1', '3'],
+                },
             }))
 
             mount((

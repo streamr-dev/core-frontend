@@ -16,7 +16,6 @@ import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
 import { isEthereumAddress } from '$mp/utils/validate'
-import useProduct from '$mp/containers/ProductController/useProduct'
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import { selectFetchingStreams } from '$mp/modules/streams/selectors'
@@ -50,6 +49,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: publishDialogLoading } = usePending('product.PUBLISH_DIALOG_LOAD')
     const {
+        product: originalProduct,
         loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
@@ -84,7 +84,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadWhiteWhitelistedAdresses,
     ])
 
-    const originalProduct = useProduct()
     const { beneficiaryAddress } = originalProduct
 
     const isDataUnion = isDataUnionProduct(product)
