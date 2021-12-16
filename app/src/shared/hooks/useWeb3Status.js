@@ -6,6 +6,7 @@ import type { ErrorInUi } from '$shared/flowtype/common-types'
 import getWeb3, { validateWeb3 } from '$shared/web3/web3Provider'
 import { WalletLockedError } from '$shared/errors/Web3'
 import type { Address } from '$shared/flowtype/web3-types'
+import { networks } from '$shared/utils/constants'
 
 import Web3Poller from '$shared/web3/web3Poller'
 
@@ -21,9 +22,10 @@ type Result = {
 
 type Web3Status = {
     requireWeb3: boolean,
+    requireNetwork?: $Values<typeof networks>,
 }
 
-export default function useWeb3Status({ requireWeb3 = true }: Web3Status = {}): Result {
+export default function useWeb3Status({ requireWeb3 = true, requireNetwork = networks.MAINNET }: Web3Status = {}): Result {
     const [web3Error, setWeb3Error] = useState(null)
     const [checkingWeb3, setCheckingWeb3] = useState(false)
     const isMounted = useIsMounted()
@@ -36,6 +38,7 @@ export default function useWeb3Status({ requireWeb3 = true }: Web3Status = {}): 
         try {
             await validateWeb3({
                 web3,
+                requireNetwork,
                 unlockTimeout: true,
             })
             if (!isMounted()) { return }
@@ -52,7 +55,7 @@ export default function useWeb3Status({ requireWeb3 = true }: Web3Status = {}): 
         }
 
         setCheckingWeb3(false)
-    }, [isMounted])
+    }, [isMounted, requireNetwork])
 
     useEffect(() => {
         if (!requireWeb3 || checkingWeb3) { return () => {} }
@@ -72,7 +75,7 @@ export default function useWeb3Status({ requireWeb3 = true }: Web3Status = {}): 
     }, [requireWeb3, checkingWeb3, isMounted, validate])
 
     useEffect(() => {
-        if (!requireWeb3 || !account) { return () => {} }
+        if (!requireWeb3) { return () => {} }
 
         const setLocked = () => {
             if (!isMounted()) { return }
@@ -87,7 +90,7 @@ export default function useWeb3Status({ requireWeb3 = true }: Web3Status = {}): 
             Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
             Web3Poller.unsubscribe(Web3Poller.events.NETWORK_ERROR, setLocked)
         }
-    }, [requireWeb3, account, isMounted])
+    }, [requireWeb3, isMounted])
 
     useEffect(() => {
         if (!requireWeb3 || account || web3Error) { return }

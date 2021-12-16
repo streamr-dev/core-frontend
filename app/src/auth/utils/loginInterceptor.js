@@ -106,7 +106,7 @@ export function canHandleClientError(err) {
     return false
 }
 
-export async function handleClientError({ error, type, id, ignoreUnauthorized = false } = {}) {
+export async function handleClientError({ error, type, id } = {}) {
     const { code } = error || {}
 
     if (code === 'NOT_FOUND') {

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import useModal from '$shared/hooks/useModal'
@@ -9,10 +9,14 @@ import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
 import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
+import { networks } from '$shared/utils/constants'
 
 const SwitchNetworkModal = ({ api, requiredNetwork, initialNetwork }) => {
     const { switchChain, switchPending } = useSwitchChain()
-    const { web3Error, checkingWeb3 } = useWeb3Status()
+    const { account, web3Error, checkingWeb3 } = useWeb3Status({
+        requireWeb3: true,
+        requireNetwork: networks.SIDECHAIN,
+    })
     const currentNetworkId = useSelector(selectEthereumNetworkId)
 
     const onSwitch = useCallback(async (nextNetwork) => {
@@ -32,6 +36,21 @@ const SwitchNetworkModal = ({ api, requiredNetwork, initialNetwork }) => {
             proceed: false,
         })
     }, [api])
+
+    useEffect(() => {
+        if (checkingWeb3 || web3Error || !account) { return }
+
+        // Close modal if the user selects the correct network
+        if (requiredNetwork === currentNetworkId) {
+            api.close({
+                proceed: true,
+            })
+        }
+    }, [api, checkingWeb3, web3Error, account, requiredNetwork, currentNetworkId])
+
+    if (!account && checkingWeb3) {
+        return null
+    }
 
     if (web3Error && !(web3Error instanceof WrongNetworkSelectedError)) {
         return (

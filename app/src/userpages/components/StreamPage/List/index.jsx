@@ -25,6 +25,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import routes from '$routes'
 
 import Search from '../../Header/Search'
+import SwitchNetworkModal from '../SwitchNetworkModal'
 
 import SnippetDialog from './SnippetDialog'
 import Row from './Row'
@@ -389,6 +390,7 @@ const StreamList = () => {
                 )}
             </StyledListContainer>
             <SnippetDialog />
+            <SwitchNetworkModal />
             <StreamPageSidebar stream={dialogTargetStream} onInvalidate={onInvalidate} />
             <DocsShortcuts />
         </Layout>

@@ -37,6 +37,15 @@ function warnOnce(error) {
     console.warn(error)
 }
 
+class CancelError extends Error {
+    __proto__: any
+
+    constructor() {
+        super('Cancelled')
+        this.__proto__ = CancelError.prototype // eslint-disable-line no-proto
+    }
+}
+
 export default class Web3Poller {
     web3PollTimeout: ?TimeoutID = null
     ethereumNetworkPollTimeout: ?TimeoutID = null
@@ -142,14 +151,14 @@ export default class Web3Poller {
 
         // make sure getting the network does not hang longer than the poll timeout
         const cancelPromise = new Promise((resolve, reject) => {
-            setTimeout(() => reject(new Error('Cancelled')), NETWORK_POLL_INTERVAL)
+            setTimeout(() => reject(new CancelError()), NETWORK_POLL_INTERVAL)
         })
 
         return Promise.race([fetchPromise, cancelPromise])
             .then((network) => {
                 this.handleNetwork(network || '')
             }, (err) => {
-                if (this.networkId) {
+                if (!(err instanceof CancelError) && this.networkId) {
                     this.networkId = null
                     this.emitter.emit(events.NETWORK_ERROR, err)
                 }

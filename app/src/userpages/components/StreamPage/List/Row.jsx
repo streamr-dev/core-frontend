@@ -6,7 +6,7 @@ import { StreamPermission } from 'streamr-client'
 
 import Popover from '$shared/components/Popover'
 import confirmDialog from '$shared/utils/confirm'
-import { NotificationIcon } from '$shared/utils/constants'
+import { NotificationIcon, networks } from '$shared/utils/constants'
 import Notification from '$shared/utils/Notification'
 import Button from '$shared/components/Button'
 import useCopy from '$shared/hooks/useCopy'
@@ -17,6 +17,8 @@ import { StreamList } from '$shared/components/List'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
+import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
 import routes from '$routes'
 import useStreamPath from '../shared/useStreamPath'
 
@@ -48,6 +50,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
     const [permissions, setPermissions] = useState([])
     const permissionsFetchedRef = useRef(false)
 
+    const { api: switchNetworkDialog } = useModal('switchNetwork')
     const { api: snippetDialog } = useModal('userpages.streamSnippet')
     const { truncatedId } = useStreamPath(stream.id)
 
@@ -55,6 +58,30 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
         !!permissions[StreamPermission.DELETE],
         !!permissions[StreamPermission.GRANT],
     ], [permissions])
+
+    const validateNetwork = useCallback(async () => {
+        try {
+            await validateWeb3({
+                web3: getWeb3(),
+                requireNetwork: networks.SIDECHAIN,
+            })
+        } catch (e) {
+            let propagateError = true
+
+            if (e instanceof WrongNetworkSelectedError) {
+                const { proceed } = await switchNetworkDialog.open({
+                    requiredNetwork: e.requiredNetwork,
+                    initialNetwork: e.currentNetwork,
+                })
+
+                propagateError = !proceed
+            }
+
+            if (propagateError) {
+                throw e
+            }
+        }
+    }, [switchNetworkDialog])
 
     const confirmDeleteStream = useCallback(async () => {
         const confirmed = await confirmDialog('stream', {
@@ -70,6 +97,8 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
 
         if (confirmed) {
             try {
+                await validateNetwork()
+
                 if (canBeDeletedByCurrentUser) {
                     await stream.delete()
                 } else {
@@ -77,7 +106,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
                     const newPermissions = await stream.getMyPermissions()
 
                     await Promise.allSettled(Object.keys(newPermissions)
-                        .map((operation) => stream.revokePermission(operation)))
+                        .map((operation) => stream.revokeUserPermission(operation)))
                 }
 
                 Notification.push({
@@ -101,7 +130,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
                 }
             }
         }
-    }, [stream, canBeDeletedByCurrentUser, onRemoveStreamProp, isMounted])
+    }, [stream, canBeDeletedByCurrentUser, onRemoveStreamProp, isMounted, validateNetwork])
 
     const onToggleStreamDropdown = useCallback(async (open) => {
         if (open && !permissionsFetchedRef.current) {
