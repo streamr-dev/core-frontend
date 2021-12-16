@@ -1,6 +1,7 @@
 import { ConfigTest } from 'streamr-client'
 
 import isProduction from '$mp/utils/isProduction'
+import { getWeb3 } from '$shared/web3/web3Provider'
 
 export default function getClientConfig(options = {}) {
     const web3 = getWeb3()

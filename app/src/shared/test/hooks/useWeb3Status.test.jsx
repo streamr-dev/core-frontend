@@ -132,7 +132,7 @@ describe('useWeb3Status', () => {
 
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
-        expect(subscribeStub).toHaveBeenCalledTimes(2)
+        expect(subscribeStub).toHaveBeenCalledTimes(4)
         expect(result.isLocked).toBe(true)
     })
 
@@ -162,7 +162,7 @@ describe('useWeb3Status', () => {
             el.unmount()
         })
 
-        expect(unsubscribeStub).toHaveBeenCalledTimes(2)
+        expect(unsubscribeStub).toHaveBeenCalledTimes(4)
     })
 
     it('returns the next account when new account is detected', async () => {
@@ -331,6 +331,7 @@ describe('useWeb3Status', () => {
         expect(result.web3Error).toBeTruthy()
         expect(result.isLocked).toBe(true)
         expect(unsubscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])
+        expect(unsubscribeStub).toBeCalledWith(Web3Poller.events.NETWORK_ERROR, handlers[Web3Poller.events.NETWORK_ERROR])
     })
 
     it('unsubscribes error account error listener on unmount', async () => {
@@ -362,43 +363,5 @@ describe('useWeb3Status', () => {
         })
 
         expect(unsubscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])
-    })
-
-    it('doesnt subscribe to account error listener if there is no account', async () => {
-        const subscribeHandlers = {}
-        const subscribeStub = jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
-            subscribeHandlers[event] = handler
-        })
-        const unsubscribeHandlers = {}
-        const unsubscribeStub = jest.spyOn(Web3Poller, 'unsubscribe').mockImplementation((event, handler) => {
-            unsubscribeHandlers[event] = handler
-        })
-
-        const Test = () => {
-            useWeb3Status()
-            return null
-        }
-
-        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => {
-            throw new Error('unlocked')
-        })
-
-        let el
-        await act(async () => {
-            el = mount(<Test />)
-        })
-
-        await act(async () => {
-            el.unmount()
-        })
-
-        expect(subscribeStub).not.toBeCalledWith(
-            Web3Poller.events.ACCOUNT_ERROR,
-            subscribeHandlers[Web3Poller.events.ACCOUNT_ERROR],
-        )
-        expect(unsubscribeStub).not.toBeCalledWith(
-            Web3Poller.events.ACCOUNT_ERROR,
-            unsubscribeHandlers[Web3Poller.events.ACCOUNT_ERROR],
-        )
     })
 })

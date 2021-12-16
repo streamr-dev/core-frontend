@@ -90,7 +90,7 @@ export default function useWeb3Status({ requireWeb3 = true, requireNetwork = net
             Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
             Web3Poller.unsubscribe(Web3Poller.events.NETWORK_ERROR, setLocked)
         }
-    }, [requireWeb3, isMounted])
+    }, [requireWeb3, account, isMounted])
 
     useEffect(() => {
         if (!requireWeb3 || account || web3Error) { return }

@@ -3,7 +3,7 @@
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import type { User } from '$shared/flowtype/user-types'
 
-export type ResourceType = 'STREAM' | 'PRODUCT'
+export type ResourceType = 'PRODUCT'
 export type ResourceId = string
 
 // eslint-disable-next-line max-len
