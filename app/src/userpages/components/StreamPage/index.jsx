@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { useRouteMatch, useParams } from 'react-router-dom'
-import { StreamOperation } from 'streamr-client'
+import { StreamPermission } from 'streamr-client'
 
 import Layout from '$shared/components/Layout/Core'
 import Toolbar from '$shared/components/Toolbar'
@@ -15,7 +15,7 @@ import Edit from './Edit'
 const StreamPage = () => {
     const { stream, permissions, hasLoaded } = useController()
 
-    const readOnly = useMemo(() => !permissions[StreamOperation.STREAM_EDIT], [permissions])
+    const readOnly = useMemo(() => !permissions[StreamPermission.EDIT], [permissions])
 
     if (!hasLoaded || !stream) {
         return (

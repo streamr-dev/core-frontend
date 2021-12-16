@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { StatusIcon, titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
-import { StreamOperation } from 'streamr-client'
+import { StreamPermission } from 'streamr-client'
 
 import Popover from '$shared/components/Popover'
 import confirmDialog from '$shared/utils/confirm'
@@ -52,8 +52,8 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
     const { truncatedId } = useStreamPath(stream.id)
 
     const [canBeDeletedByCurrentUser, canBeSharedByCurrentUser] = useMemo(() => [
-        !!permissions[StreamOperation.STREAM_DELETE],
-        !!permissions[StreamOperation.STREAM_SHARE],
+        !!permissions[StreamPermission.DELETE],
+        !!permissions[StreamPermission.GRANT],
     ], [permissions])
 
     const confirmDeleteStream = useCallback(async () => {
