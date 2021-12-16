@@ -83,9 +83,10 @@ export const getWeb3 = (): StreamrWeb3 => {
 type ValidateParams = {
     web3: Web3,
     requireNetwork?: $Values<typeof networks> | boolean,
+    unlockTimeout?: number | boolean,
 }
 
-export const validateWeb3 = async ({ web3: _web3, requireNetwork = networks.MAINNET }: ValidateParams): Web3 => {
+export const validateWeb3 = async ({ web3: _web3, requireNetwork = networks.MAINNET, unlockTimeout = false }: ValidateParams): Web3 => {
     if ((_web3.isLegacy && !window.web3) ||
         (!_web3.isLegacy && !window.ethereum)) {
         throw new Web3NotSupportedError()
@@ -97,18 +98,22 @@ export const validateWeb3 = async ({ web3: _web3, requireNetwork = networks.MAIN
             // ethereum.enable() is deprecated and may be removed in the future.
             // Prefer 'eth_requestAccounts' RPC method instead
             if (typeof ethereum.request === 'function') {
-                // If MetaMask is locked, eth_requestAccounts will wait user to unlock without timeout.
-                // Let's add a timeout to end that madness.
-                const cancelPromise = new Promise((resolve, reject) => {
-                    setTimeout(() => reject(new Error('Cancelled')), 100)
-                })
-
                 const accountsPromise = ethereum.request({
                     method: 'eth_requestAccounts',
                 })
 
                 try {
-                    await Promise.race([cancelPromise, accountsPromise])
+                    if (unlockTimeout === false) {
+                        await accountsPromise
+                    } else {
+                        // If MetaMask is locked, eth_requestAccounts will wait user to unlock without timeout.
+                        // Let's add a timeout to end that madness.
+                        const cancelPromise = new Promise((resolve, reject) => {
+                            setTimeout(() => reject(new Error('Cancelled')), (typeof unlockTimeout === 'number') ? unlockTimeout : 100)
+                        })
+
+                        await Promise.race([cancelPromise, accountsPromise])
+                    }
                 } catch (e) {
                     console.warn('Unlock timeout')
                     throw new WalletLockedError()

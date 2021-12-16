@@ -32,6 +32,7 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
         try {
             await validateWeb3({
                 web3,
+                unlockTimeout: true,
             })
             if (!isMounted()) { return }
 
