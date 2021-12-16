@@ -54,7 +54,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const [step, setStep] = useState(dontShowAgain ? steps.CONFIRM : steps.GUIDE)
     const [deployError, setDeployError] = useState(null)
     const [estimate, setEstimate] = useState(0)
-    const [address, setAddress] = useState(null)
+    const [address, setAddress] = useState(undefined)
     const isMounted = useIsMounted()
     const { web3Error, checkingWeb3 } = useWeb3Status()
 
@@ -131,7 +131,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
 
     // Update beneficiary address to product as soon as it changes
     useEffect(() => {
-        if (!!address && isEthereumAddress(address)) {
+        if (address === null || (!!address && isEthereumAddress(address))) {
             updateAddress(address)
         }
     }, [address, updateAddress])
