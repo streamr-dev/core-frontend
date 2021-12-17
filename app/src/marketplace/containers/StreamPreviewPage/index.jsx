@@ -8,10 +8,6 @@ import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
-import {
-    selectStreams as selectProductStreams,
-    selectFetchingStreams as selectFetchingProductStreams,
-} from '$mp/modules/product/selectors'
 import { useThrottled } from '$shared/hooks/wrapCallback'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { Message } from '$shared/utils/SubscriptionEvents'
@@ -125,10 +121,9 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
 
 const PreviewWrap = ({ productId, streamId }) => {
     const history = useHistory()
-    const { product } = useController()
+    const { product, productStreams: streams } = useController()
     const dispatch = useDispatch()
-    const streams = useSelector(selectProductStreams)
-    const fetchingStreams = useSelector(selectFetchingProductStreams)
+    const { isPending: fetchingStreams } = usePending('product.LOAD_PRODUCT_STREAMS')
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
     const { loadProductStreams } = useController()

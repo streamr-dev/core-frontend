@@ -15,12 +15,6 @@ export type ProductErrorAction = PayloadAction<{
 }>
 export type ProductErrorActionCreator = (id: ProductId, error: ErrorFromApi) => ProductErrorAction
 
-export type StreamIdsByProductIdAction = PayloadAction<{
-    id: ProductId,
-    streams: StreamIdList,
-}>
-export type StreamIdsByProductIdActionCreator = (id: ProductId, streams: StreamIdList) => StreamIdsByProductIdAction
-
 export type ProductSubscriptionAction = PayloadAction<{
     id: ProductId,
     subscription: Subscription,

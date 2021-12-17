@@ -2,22 +2,15 @@
 
 import React, { useContext, useMemo } from 'react'
 import cx from 'classnames'
-import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import uniqBy from 'lodash/uniqBy'
 
 import StreamSelectorComponent from '$mp/components/StreamSelector'
-import {
-    selectStreams as selectAllStreams,
-    selectFetchingStreams,
-} from '$mp/modules/streams/selectors'
-import {
-    selectStreams as selectProductStreams,
-    selectFetchingStreams as selectFetchingProductStreams,
-} from '$mp/modules/product/selectors'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { usePending } from '$shared/hooks/usePending'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
+import { useController } from '../ProductController'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import styles from './productStreams.pcss'
 import docsLinks from '$shared/../docsLinks'
@@ -31,10 +24,9 @@ const ProductStreams = ({ disabled }: Props) => {
     const { isValid, message } = useValidation('streams')
     const { updateStreams } = useEditableProductActions()
     const { publishAttempted } = useContext(EditControllerContext)
-    const allStreams = useSelector(selectAllStreams)
-    const fetchingAllStreams = useSelector(selectFetchingStreams)
-    const productStreams = useSelector(selectProductStreams)
-    const fetchingProductStreams = useSelector(selectFetchingProductStreams)
+    const { productStreams, allStreams } = useController()
+    const { isPending: fetchingProductStreams } = usePending('product.LOAD_PRODUCT_STREAMS')
+    const { isPending: fetchingAllStreams } = usePending('product.LOAD_ALL_STREAMS')
 
     // Filter product streams based on actual selection
     const streamIds = product.streams

@@ -58,9 +58,6 @@ export type RelatedProductListState = {
 
 // product
 export type ProductState = {
-    streams: StreamIdList,
-    fetchingStreams: boolean,
-    streamsError: ?ErrorInUi,
     fetchingContractSubscription: boolean,
     contractSubscriptionError: ?ErrorInUi,
     contractSubscription: ?Subscription,
@@ -88,7 +85,6 @@ export type DataUnionState = {
 export type StreamsState = {
     ids: StreamIdList,
     fetching: boolean,
-    error: ?ErrorInUi,
 }
 
 // Purchase

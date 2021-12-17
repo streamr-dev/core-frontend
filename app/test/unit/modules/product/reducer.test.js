@@ -6,60 +6,6 @@ describe('product - reducer', () => {
         expect(reducer(undefined, {})).toStrictEqual(initialState)
     })
 
-    describe('getStreamsByProductId', () => {
-        it('handles request', () => {
-            const expectedState = {
-                ...initialState,
-                fetchingStreams: true,
-                streamsError: null,
-                streams: [],
-            }
-
-            expect(reducer(undefined, {
-                type: constants.GET_STREAMS_BY_PRODUCT_ID_REQUEST,
-            })).toStrictEqual(expectedState)
-        })
-
-        it('handles success', () => {
-            const streams = [
-                {
-                    id: 1,
-                    name: 'Test 1',
-                },
-            ]
-            const expectedState = {
-                ...initialState,
-                fetchingStreams: false,
-                streamsError: null,
-                streams,
-            }
-
-            expect(reducer(undefined, {
-                type: constants.GET_STREAMS_BY_PRODUCT_ID_SUCCESS,
-                payload: {
-                    streams,
-                },
-            })).toStrictEqual(expectedState)
-        })
-
-        it('handles failure', () => {
-            const error = new Error('Test')
-
-            const expectedState = {
-                ...initialState,
-                fetchingStreams: false,
-                streamsError: error,
-            }
-
-            expect(reducer(undefined, {
-                type: constants.GET_STREAMS_BY_PRODUCT_ID_FAILURE,
-                payload: {
-                    error,
-                },
-            })).toStrictEqual(expectedState)
-        })
-    })
-
     describe('getProductSubscriptionFromContract', () => {
         it('handles request', () => {
             const expectedState = {
