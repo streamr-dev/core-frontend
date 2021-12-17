@@ -140,16 +140,16 @@ function ControllerProvider({ children }) {
 const ProductController = ({ children, ignoreUnauthorized = false, requirePublished = false, useAuthorization = true }) => (
     <PendingProvider name="product">
         <ValidationContextProvider>
-            <PermissionsProvider autoLoadPermissions={!!useAuthorization}>
-                <ControllerProvider>
+            <ControllerProvider>
+                <PermissionsProvider autoLoadPermissions={!!useAuthorization}>
                     <ProductEffects
                         ignoreUnauthorized={ignoreUnauthorized}
                         requirePublished={requirePublished}
                         useAuthorization={!!useAuthorization}
                     />
                     {children || null}
-                </ControllerProvider>
-            </PermissionsProvider>
+                </PermissionsProvider>
+            </ControllerProvider>
         </ValidationContextProvider>
     </PendingProvider>
 )
