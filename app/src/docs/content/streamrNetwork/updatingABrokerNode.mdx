@@ -1,10 +1,17 @@
 import { Link } from 'react-router-dom'
+import Warning from '$docs/components/Warning'
 
 import docsLinks from '$shared/../docsLinks'
 
 # Updating a Broker node
 
 This article shows how to update your existing Streamr Broker node to the latest version. If you are installing your node for the first time, follow <Link to={docsLinks.installingABrokerNode}>installing a Broker node</Link> instead.
+
+<Warning>
+
+The current stable version of the Streamr Client is `5.x` (at the time of writing, December 2021) which is connected to the [Corea Network](https://streamr.network/roadmap). The Brubeck Network Streamr Client is the [6.0.0-alpha.19](https://www.npmjs.com/package/streamr-client/v/6.0.0-alpha.19) build along with the `testnet` builds of the Broker node. The developer experience of the two networks is the same, however, the `6.0.0-alpha.19` client also runs as a light node in the network, whereas the `5.x` era client communicates to a Streamr run node, remotely. When the Streamr Network transitions into the Brubeck era (ETA Jan/Feb 2022), data guarantees of `5.x` clients will need to be reassessed. Publishing data to the Brubeck network will only be visible in the [Brubeck Core UI](https://brubeck.streamr.network). The Marketplace, Core app and CLI tool are currently all configured to interact with the Corea Network only. Take care not to mix networks during this transition period.
+
+</Warning>
 
 ## Updating to the latest version
 
@@ -20,7 +27,7 @@ Stop the currently running Broker as follows:
 Next, pull the latest version of the Broker node software,
 
 ```
-docker pull streamr/broker-node:dev
+docker pull streamr/broker-node:testnet
 ```
 
 Then start the container as usual - or refer to the <Link to={docsLinks.installingABrokerNode}>installation guide</Link> for the start command.
@@ -28,7 +35,7 @@ Then start the container as usual - or refer to the <Link to={docsLinks.installi
 
 ## Updating a node via NPM
 - Stop your existing broker node process (Ctrl+C for example)
-- Then, `npm install -g streamr-broker`
+- Then, `npm install -g streamr-broker@testnet`
 
 Start the node using the `streamr-broker` command as usual.
 
