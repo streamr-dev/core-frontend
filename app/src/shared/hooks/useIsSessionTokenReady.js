@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux'
-import { getToken } from '$shared/utils/sessionToken'
+import { useSession } from '$auth/components/SessionProvider'
 import { selectAuthState } from '$shared/modules/user/selectors'
 
 export default function useIsSessionTokenReady() {
-    const sessionToken = getToken()
+    const { token } = useSession()
     const { isAuthenticating, authenticationFailed, isAuthenticated } = useSelector(selectAuthState)
 
-    return !!sessionToken || (!isAuthenticating && (!!authenticationFailed || !isAuthenticated))
+    return !!token || (!isAuthenticating && (!!authenticationFailed || !isAuthenticated))
 }
