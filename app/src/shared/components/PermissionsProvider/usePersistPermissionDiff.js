@@ -1,14 +1,17 @@
 import { useCallback, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { useClient } from 'streamr-client-react'
+
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { getResourcePermissions, addResourcePermission, removeResourcePermission } from '$userpages/modules/permission/services'
 import { selectUsername } from '$shared/modules/user/selectors'
 import getPermissionsDiff from './utils/getPermissionsDiff'
 import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
 import toOperationName from './utils/toOperationName'
 
 export default function usePersistPermissionDiff() {
+    const client = useClient()
+
     const userId = useSelector(selectUsername)
 
     const dispatch = usePermissionsDispatch()
@@ -38,25 +41,30 @@ export default function usePersistPermissionDiff() {
 
         const errors = {}
 
-        const performer = (fn, dataTransform) => (data) => (
-            fn({
-                resourceType,
-                resourceId,
-                ...dataTransform(data),
-            }).catch((error) => {
+        const stream = await client.getStream(resourceId)
+        if (!isMounted()) {
+            return
+        }
+
+        const add = async (data) => {
+            try {
+                await stream.grantPermission(data.operation, data.user)
+            } catch (error) {
                 console.error(error)
                 // Store failure but do not abort.
                 errors[data.anonymous ? 'anonymous' : data.user] = error
-            })
-        )
+            }
+        }
 
-        const add = performer(addResourcePermission, (data) => ({
-            data,
-        }))
-
-        const del = performer(removeResourcePermission, ({ id }) => ({
-            id,
-        }))
+        const del = async (data) => {
+            try {
+                await stream.revokePermission(data.id)
+            } catch (error) {
+                console.error(error)
+                // Store failure but do not abort.
+                errors[data.anonymous ? 'anonymous' : data.user] = error
+            }
+        }
 
         await Promise.all([...changes.add.map(add), ...changes.del.map((p) => (
             p !== sharePermission ? del(p) : Promise.resolve()
@@ -75,10 +83,7 @@ export default function usePersistPermissionDiff() {
         }
 
         try {
-            const result = await getResourcePermissions({
-                resourceId,
-                resourceType,
-            })
+            const result = await stream.getPermissions()
 
             if (!isMounted()) {
                 return

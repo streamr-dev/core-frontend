@@ -5,7 +5,7 @@ import React, { type Context, type Node, useMemo, useCallback, useState, useEffe
 import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 
-import { getResourcePermissions } from '$userpages/modules/permission/services'
+import { getPermissions } from '$mp/modules/product/services'
 import { useController } from '.'
 
 type ContextProps = {
@@ -29,11 +29,7 @@ function usePermissionContextValue(autoLoadPermissions: boolean = true) {
 
     const loadPermissions = useCallback(async (id) => (
         wrap(async () => {
-            const result = await getResourcePermissions({
-                resourceType: 'PRODUCT',
-                resourceId: id,
-                id: 'me',
-            })
+            const result = await getPermissions(id, 'me')
             if (!isMounted()) { return }
             setPermissions(result.map(({ operation }) => operation))
         })

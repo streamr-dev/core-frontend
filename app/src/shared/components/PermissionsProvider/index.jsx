@@ -1,6 +1,7 @@
 import React, { useReducer, createContext, useContext, useEffect, useRef, useMemo } from 'react'
 import { useSelector } from 'react-redux'
-import { getResourcePermissions } from '$userpages/modules/permission/services'
+import { useClient } from 'streamr-client-react'
+
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUsername } from '$shared/modules/user/selectors'
 import reducer, { initialState, SET_RESOURCE, SET_PERMISSIONS } from './utils/reducer'
@@ -54,6 +55,8 @@ export const useEditableUserIds = () => {
 const mountId = (resourceType, resourceId) => `${resourceType}/${resourceId}`
 
 const PermissionsProvider = ({ resourceType, resourceId, children }) => {
+    const client = useClient()
+
     const [state, dispatch] = useReducer(reducer, {
         ...initialState,
         resourceId,
@@ -77,10 +80,8 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
     useEffect(() => {
         const fetch = async () => {
             try {
-                const result = await getResourcePermissions({
-                    resourceId,
-                    resourceType,
-                })
+                const stream = await client.getStream(resourceId)
+                const result = await stream.getPermissions()
 
                 if (!isMounted() || mountRef.current !== mountId(resourceType, resourceId)) {
                     return
@@ -96,7 +97,7 @@ const PermissionsProvider = ({ resourceType, resourceId, children }) => {
         }
 
         fetch()
-    }, [resourceType, resourceId, isMounted])
+    }, [resourceType, resourceId, isMounted, client])
 
     return (
         <DispatchContext.Provider value={dispatch}>
