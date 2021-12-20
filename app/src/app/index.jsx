@@ -8,7 +8,7 @@ import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
 
 // Auth
-import SessionProvider from '$auth/components/SessionProvider'
+import { Provider as SessionProvider } from '$auth/components/SessionProvider'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import LoginPage from '$auth/components/LoginPage'
 import LogoutPage from '$auth/components/LogoutPage'

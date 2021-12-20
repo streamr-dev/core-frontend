@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
-import ClientProvider from '$shared/components/StreamrClientProvider'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import { getJoinsAndParts } from '$mp/modules/dataUnion/services'
 
@@ -119,10 +118,4 @@ const MembersGraph = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props) =
     )
 }
 
-export default function MembersGraphWrapper(props: Props) {
-    return (
-        <ClientProvider>
-            <MembersGraph {...props} />
-        </ClientProvider>
-    )
-}
+export default MembersGraph

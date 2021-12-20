@@ -5,7 +5,6 @@ import { useSubscription } from 'streamr-client-react'
 import { selectPendingTransactions } from '$mp/modules/transactions/selectors'
 import Activity, { actionTypes } from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
-import ClientProvider from '$shared/components/StreamrClientProvider'
 import { useFetchResource } from './ActivityResourceProvider'
 import Items from './Items'
 
@@ -106,14 +105,8 @@ const ActivityList = ({ children = <Items /> }) => {
     )
 }
 
-export default function ActivityListWrapper(props) {
-    return (
-        <ClientProvider>
-            <ActivityList {...props} />
-        </ClientProvider>
-    )
-}
-
-Object.assign(ActivityListWrapper, {
+Object.assign(ActivityList, {
     Items,
 })
+
+export default ActivityList

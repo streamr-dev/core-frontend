@@ -1,15 +1,24 @@
 /* eslint-disable react/no-unused-state */
 
-import React, { useCallback, useEffect, useReducer, useMemo } from 'react'
-import Context from '$auth/contexts/Session'
+import React, { useCallback, useEffect, useReducer, useMemo, useContext } from 'react'
 import { setToken, getToken, setMethod, getMethod } from '$shared/utils/sessionToken'
 
-function SessionProvider(props) {
-    const { children } = props
+const defaultContext = {
+    token: null,
+    setSessionToken: null,
+    resetSessionToken: null,
+}
 
+const SessionContext = React.createContext(defaultContext)
+
+export function useSession() {
+    return useContext(SessionContext)
+}
+
+function useSessionProvider() {
     const [{ token, method }, updateState] = useReducer((state, nextState) => ({
-        token: nextState.token ? nextState.token : state.token,
-        method: nextState.method ? nextState.method : state.method,
+        token: nextState.token !== undefined ? nextState.token : state.token,
+        method: nextState.method !== undefined ? nextState.method : state.method,
     }), {
         token: getToken(),
         method: getMethod(),
@@ -32,19 +41,35 @@ function SessionProvider(props) {
         })
     }, [])
 
-    const sessionProvider = useMemo(() => ({
+    const resetSessionToken = useCallback(() => {
+        updateState({
+            token: null,
+            method: null,
+        })
+    }, [])
+
+    return useMemo(() => ({
         setSessionToken,
+        resetSessionToken,
         token,
     }), [
         setSessionToken,
+        resetSessionToken,
         token,
     ])
+}
+
+function SessionProvider({ children }) {
+    const value = useSessionProvider()
 
     return (
-        <Context.Provider value={sessionProvider}>
+        <SessionContext.Provider value={value}>
             {children}
-        </Context.Provider>
+        </SessionContext.Provider>
     )
 }
 
-export default SessionProvider
+export {
+    SessionContext as Context,
+    SessionProvider as Provider,
+}
