@@ -15,7 +15,7 @@ import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import Nav from '$shared/components/Layout/Nav'
 
 import { selectUserData } from '$shared/modules/user/selectors'
-import { getToken } from '$shared/utils/sessionToken'
+import { useSession } from '$auth/components/SessionProvider'
 import ProductController, { useController } from '../ProductController'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import PurchaseModal from './PurchaseModal'
@@ -37,7 +37,8 @@ const ProductPage = () => {
         loadRelatedProducts,
     } = useController()
     const userData = useSelector(selectUserData)
-    const isLoggedIn = userData !== null && !!getToken()
+    const { token } = useSession()
+    const isLoggedIn = userData !== null && !!token
     const { isPending } = usePending('contractProduct.LOAD')
 
     const { id: productId } = useParams()

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useClient } from 'streamr-client-react'
-import ClientProvider from '$shared/components/StreamrClientProvider'
 import Activity from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
@@ -54,9 +53,7 @@ const Handler = () => {
 
 const ActivityStreamHandler = () => (
     <PendingProvider name="streamr-client">
-        <ClientProvider>
-            <Handler />
-        </ClientProvider>
+        <Handler />
     </PendingProvider>
 )
 

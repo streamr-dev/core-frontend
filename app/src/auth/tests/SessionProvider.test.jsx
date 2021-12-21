@@ -2,9 +2,7 @@ import React, { useContext } from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import Context from '$auth/contexts/Session'
-
-import SessionProvider from '$auth/components/SessionProvider'
+import { Provider as SessionProvider, useSession } from '$auth/components/SessionProvider'
 import { SESSION_TOKEN_KEY, SESSION_LOGIN_TIME, SESSION_LOGIN_METHOD } from '$shared/utils/sessionToken'
 
 describe('SessionProvider', () => {
@@ -27,7 +25,7 @@ describe('SessionProvider', () => {
         let currentContext
 
         const Test = () => {
-            currentContext = useContext(Context)
+            currentContext = useSession()
 
             return null
         }
@@ -47,7 +45,7 @@ describe('SessionProvider', () => {
         let currentContext
 
         const Test = () => {
-            currentContext = useContext(Context)
+            currentContext = useSession()
 
             return null
         }
@@ -67,7 +65,7 @@ describe('SessionProvider', () => {
         let currentContext
 
         const Test = () => {
-            currentContext = useContext(Context)
+            currentContext = useSession()
 
             return null
         }
@@ -90,7 +88,7 @@ describe('SessionProvider', () => {
         let currentContext
 
         const Test = () => {
-            currentContext = useContext(Context)
+            currentContext = useSession()
 
             return null
         }
@@ -119,7 +117,7 @@ describe('SessionProvider', () => {
         let currentContext
 
         const Test = () => {
-            currentContext = useContext(Context)
+            currentContext = useSession()
 
             return null
         }
@@ -143,7 +141,7 @@ describe('SessionProvider', () => {
         let currentContext
 
         const Test = () => {
-            currentContext = useContext(Context)
+            currentContext = useSession()
 
             return null
         }
@@ -161,7 +159,7 @@ describe('SessionProvider', () => {
         let currentContext
 
         const Test = () => {
-            currentContext = useContext(Context)
+            currentContext = useSession()
 
             return null
         }
@@ -186,11 +184,48 @@ describe('SessionProvider', () => {
         expect(currentContext.token).toBe('myToken')
     })
 
+    it('resets session token', () => {
+        let currentContext
+
+        const Test = () => {
+            currentContext = useSession()
+
+            return null
+        }
+
+        mount((
+            <SessionProvider>
+                <Test />
+            </SessionProvider>
+        ))
+
+        expect(currentContext.token).toBeFalsy()
+
+        act(() => {
+            currentContext.setSessionToken({
+                token: 'myToken',
+                method: 'metamask',
+            })
+        })
+
+        expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('myToken')
+        expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe('metamask')
+        expect(currentContext.token).toBe('myToken')
+
+        act(() => {
+            currentContext.resetSessionToken()
+        })
+
+        expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe(null)
+        expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe(null)
+        expect(currentContext.token).toBe(null)
+    })
+
     it('stores new token when changed', async () => {
         let currentContext
 
         const Test = () => {
-            currentContext = useContext(Context)
+            currentContext = useSession()
 
             return null
         }

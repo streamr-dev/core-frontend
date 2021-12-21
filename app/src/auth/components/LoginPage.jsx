@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer, useContext, useRef } from 'react'
+import React, { useCallback, useReducer, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
 
@@ -9,9 +9,8 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 
 import useMetamask from '../hooks/useMetamask'
 import useWalletConnect from '../hooks/useWalletConnect'
-import SessionContext from '../contexts/Session'
 
-import SessionProvider from './SessionProvider'
+import { useSession } from './SessionProvider'
 import AuthLayout from './AuthLayout'
 
 const METAMASK = 'metamask'
@@ -65,7 +64,7 @@ const LoginPage = () => {
         [WALLET_CONNECT]: useWalletConnect(),
     }
 
-    const { setSessionToken } = useContext(SessionContext)
+    const { setSessionToken } = useSession()
     const cancelPromiseRef = useRef(undefined)
 
     const cancel = useCallback(() => {
@@ -204,7 +203,5 @@ const LoginPage = () => {
 export { LoginPage }
 
 export default userIsNotAuthenticated((props) => (
-    <SessionProvider>
-        <LoginPage {...props} />
-    </SessionProvider>
+    <LoginPage {...props} />
 ))

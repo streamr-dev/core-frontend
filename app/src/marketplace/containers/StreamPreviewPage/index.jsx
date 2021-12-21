@@ -8,7 +8,6 @@ import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
-import ClientProvider from '$shared/components/StreamrClientProvider'
 import {
     selectStreams as selectProductStreams,
     selectFetchingStreams as selectFetchingProductStreams,
@@ -229,9 +228,4 @@ const ProductContainer = () => {
     )
 }
 
-export default () => (
-    <ClientProvider>
-        <ProductContainer />
-    </ClientProvider>
-)
-
+export default ProductContainer
