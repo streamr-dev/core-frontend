@@ -76,7 +76,7 @@ export default function useProductLoadCallback() {
             // Fetch whitelist status from contract product
             let requiresWhitelist = false
             try {
-                const contractProduct = await getProductFromContract(productId, true)
+                const contractProduct = await getProductFromContract(productId)
                 // eslint-disable-next-line prefer-destructuring
                 requiresWhitelist = contractProduct.requiresWhitelist
 
