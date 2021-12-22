@@ -11,6 +11,7 @@ export default function StreamrClientProvider({ children }) {
 
         if (token) {
             nextConfig.auth = {
+                ...nextConfig.auth,
                 sessionToken: token,
             }
         }
