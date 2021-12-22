@@ -19,10 +19,10 @@ const StreamPage = () => {
     if (!hasLoaded || !stream) {
         return (
             <Layout
-                loading
                 nav={false}
                 navComponent={(
                     <Toolbar
+                        loading
                         actions={{}}
                         altMobileLayout
                     />

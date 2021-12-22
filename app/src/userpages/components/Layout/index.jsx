@@ -5,6 +5,7 @@ import React, { Component, type Node } from 'react'
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import BodyClass from '$shared/components/BodyClass'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Header from '../Header'
 
 import './layout.pcss'
@@ -32,6 +33,7 @@ class UserpagesLayout extends Component<Props, State> {
             headerSearchComponent,
             headerFilterComponent,
             noHeader,
+            loading,
             ...props
         } = this.props
         return (
@@ -48,6 +50,7 @@ class UserpagesLayout extends Component<Props, State> {
                             filterComponent={headerFilterComponent}
                             noHeader={noHeader}
                         />
+                        <LoadingIndicator loading={!!loading} />
                     </React.Fragment>
                 )}
             />

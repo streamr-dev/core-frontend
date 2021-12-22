@@ -231,10 +231,10 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
         <CoreLayout
             {...props}
             nav={false}
-            loading={spinner}
             navComponent={(
                 <Toolbar
                     altMobileLayout
+                    loading={spinner}
                     left={<BackButton onBack={cancel} />}
                     actions={{
                         share: {

@@ -5,6 +5,7 @@ import styled, { css } from 'styled-components'
 import Buttons, { type ButtonActions } from '$shared/components/Buttons'
 import { MD } from '$shared/utils/styled'
 import ElevatedContainer from '$shared/components/ElevatedContainer'
+import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 
 const Cell = styled.div`
     align-items: center;
@@ -19,11 +20,27 @@ const Right = styled.div`
     text-align: right;
 `
 
+const Items = styled.div`
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 80px;
+    padding: 1.25rem 2rem;
+
+    ${Left},
+    ${Right} {
+        flex: 1;
+    }
+`
+
+const LoadingIndicator = styled(UnstyledLoadingIndicator)``
+
 type Props = {
     actions?: ButtonActions,
     altMobileLayout?: boolean,
     left?: Node,
     middle?: Node,
+    loading?: boolean,
 }
 
 const UnstyledToolbar = ({
@@ -31,52 +48,59 @@ const UnstyledToolbar = ({
     altMobileLayout,
     left,
     middle,
+    loading,
     ...props
 }: Props) => (
     <ElevatedContainer {...props} data-test-hook="Toolbar">
-        {!!(left || middle) && (
-            <Left>
-                {left}
-            </Left>
-        )}
-        {!!middle && (
-            <Middle>
-                {middle}
-            </Middle>
-        )}
-        {!!actions && (
-            <Right>
-                <Buttons actions={actions} />
-            </Right>
-        )}
+        <Items>
+            {!!(left || middle) && (
+                <Left>
+                    {left}
+                </Left>
+            )}
+            {!!middle && (
+                <Middle>
+                    {middle}
+                </Middle>
+            )}
+            {!!actions && (
+                <Right>
+                    <Buttons actions={actions} />
+                </Right>
+            )}
+        </Items>
+        <LoadingIndicator loading={!!loading} />
     </ElevatedContainer>
 )
 
 const Toolbar = styled(UnstyledToolbar)`
     background-color: white;
-    display: flex;
-    min-height: 4rem;
-    padding: 1.25rem 2rem;
     position: sticky;
     top: 0;
-    width: 100%;
     z-index: 5;
-    min-height: 80px;
-    align-items: center;
+    width: 100%;
+
+    ${LoadingIndicator} {
+        position: absolute;
+        bottom: 0;
+    }
 
     ${({ altMobileLayout }) => !!altMobileLayout && css`
         @media (max-width: ${MD - 1}px) {
             bottom: 0;
-            padding: 15px;
             position: fixed;
             top: auto;
+
+            ${LoadingIndicator} {
+                top: 0;
+                bottom: auto;
+            }
+
+            ${Items} {
+                padding: 15px;
+            }
         }
     `}
-
-    ${Left},
-    ${Right} {
-        flex: 1;
-    }
 `
 
 export default Toolbar
