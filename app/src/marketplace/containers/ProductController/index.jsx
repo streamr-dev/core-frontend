@@ -81,7 +81,10 @@ function reducer(state, action) {
         case 'setProductStreams':
             return {
                 ...state,
-                productStreams: action.streams,
+                productStreams: [
+                    ...state.productStreams,
+                    ...action.streams,
+                ],
             }
 
         case 'setAllStreams':

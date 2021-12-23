@@ -63,39 +63,6 @@ describe('product - services', () => {
         })
     })
 
-    describe('getStreamsByProductId', () => {
-        it('gets streams by product id', async () => {
-            process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
-            const data = [
-                {
-                    id: '123',
-                    name: 'Stream 123',
-                },
-                {
-                    id: '111',
-                    name: 'Stream 111',
-                },
-            ]
-
-            const getIdSpy = jest.spyOn(productUtils, 'getValidId')
-            moxios.wait(() => {
-                const request = moxios.requests.mostRecent()
-                request.respondWith({
-                    status: 200,
-                    response: data,
-                })
-
-                expect(request.config.method).toBe('get')
-                expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/123/streams`)
-            })
-
-            const result = await all.getStreamsByProductId('123')
-            expect(result).toStrictEqual(data)
-            expect(getIdSpy).toHaveBeenCalledTimes(1)
-            expect(getIdSpy).toBeCalledWith('123', false)
-        })
-    })
-
     describe('getMyProductSubscription', () => {
         it('works as intended', async () => {
             const accountStub = jest.fn(() => Promise.resolve('testAccount'))

@@ -1,11 +1,7 @@
-import { normalize } from 'normalizr'
-
 import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/product/actions'
 import * as constants from '$mp/modules/product/constants'
 import * as services from '$mp/modules/product/services'
-import * as entityConstants from '$shared/modules/entities/constants'
-import { streamsSchema } from '$shared/modules/entities/schema'
 import { initialState } from '$mp/modules/product/reducer'
 
 jest.mock('$mp/modules/myPurchaseList/actions', () => (

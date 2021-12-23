@@ -5,6 +5,8 @@ import SvgIcon from '$shared/components/SvgIcon'
 import { SM, LG } from '$shared/utils/styled'
 import Segment from '$shared/components/Segment'
 import { truncate } from '$shared/utils/text'
+import LoadingIndicator from '$shared/components/LoadingIndicator'
+import Button from '$shared/components/Button'
 
 const StreamCount = styled.span`
     display: inline-block;
@@ -181,10 +183,28 @@ const HeaderRow = styled(DataRow)`
     }
 `
 
+const LoadMoreRow = styled(DataRow)`
+    overflow: visible;
+    padding: 12px 24px;
+    height: auto;
+
+    @media (min-width: ${SM}px) {
+        padding: 16px 32px;
+    }
+
+    ${RowItem} {
+        width: 100%;
+        text-align: center;
+    }
+`
+
 export const StreamListing = ({
     streams: streamsProp,
+    totalStreams,
     locked,
     fetchingStreams,
+    hasMoreResults,
+    onLoadMore,
     onStreamPreview,
     onStreamSettings,
     ...props
@@ -205,9 +225,7 @@ export const StreamListing = ({
                 <HeaderRow>
                     <TitleItem>
                         Streams
-                        {!fetchingStreams && (
-                            <StreamCount>{streams.length}</StreamCount>
-                        )}
+                        <StreamCount>{totalStreams}</StreamCount>
                         {!!locked && (
                             <LockedNotice>
                                 Subscribe to unlock
@@ -219,50 +237,63 @@ export const StreamListing = ({
                     </DescriptionItem>
                 </HeaderRow>
             </Segment.Header>
+            <LoadingIndicator loading={!!fetchingStreams} />
             <Segment.Body>
-                {!fetchingStreams && (
-                    <TableBody>
-                        {streams.map(({ id: streamId, description }) => (
-                            <DataRow key={streamId} locked={locked} clickable={!locked && !!showPreview}>
-                                <TitleItem title={description}>
-                                    {truncate(streamId)}
-                                </TitleItem>
-                                <DescriptionItem title={description}>{description}</DescriptionItem>
-                                {(!!showPreview || !!showSettings) && (
-                                    <RowButtons>
-                                        {!!showPreview && (
-                                            <button type="button" onClick={() => onStreamPreview(streamId)}>
-                                                <SvgIcon name="listInspect" />
-                                            </button>
-                                        )}
-                                        {!!showSettings && (
-                                            <button type="button" onClick={() => onStreamSettings(streamId)}>
-                                                <SvgIcon name="listSettings" />
-                                            </button>
-                                        )}
-                                    </RowButtons>
-                                )}
-                                {!!showPreview && (
-                                    <MobileHitTarget onClick={() => onStreamPreview(streamId)} />
-                                )}
-                            </DataRow>
-                        ))}
-                    </TableBody>
-                )}
-                {!!fetchingStreams && (
-                    <DataRow locked={locked}>
-                        <RowItem>
-                            Loading streams...
-                        </RowItem>
-                    </DataRow>
-                )}
-                {!fetchingStreams && streams.length === 0 && (
-                    <DataRow locked={locked}>
-                        <RowItem>
-                            No streams found.
-                        </RowItem>
-                    </DataRow>
-                )}
+                <TableBody>
+                    {streams.length > 0 && streams.map(({ id: streamId, description }) => (
+                        <DataRow key={streamId} locked={locked} clickable={!locked && !!showPreview}>
+                            <TitleItem title={description}>
+                                {truncate(streamId)}
+                            </TitleItem>
+                            <DescriptionItem title={description}>{description}</DescriptionItem>
+                            {(!!showPreview || !!showSettings) && (
+                                <RowButtons>
+                                    {!!showPreview && (
+                                        <button type="button" onClick={() => onStreamPreview(streamId)}>
+                                            <SvgIcon name="listInspect" />
+                                        </button>
+                                    )}
+                                    {!!showSettings && (
+                                        <button type="button" onClick={() => onStreamSettings(streamId)}>
+                                            <SvgIcon name="listSettings" />
+                                        </button>
+                                    )}
+                                </RowButtons>
+                            )}
+                            {!!showPreview && (
+                                <MobileHitTarget onClick={() => onStreamPreview(streamId)} />
+                            )}
+                        </DataRow>
+                    ))}
+                    {!!fetchingStreams && streams.length === 0 && (
+                        <DataRow locked={locked}>
+                            <RowItem>
+                                Loading streams...
+                            </RowItem>
+                        </DataRow>
+                    )}
+                    {!fetchingStreams && streams.length === 0 && (
+                        <DataRow locked={locked}>
+                            <RowItem>
+                                No streams found.
+                            </RowItem>
+                        </DataRow>
+                    )}
+                    {!!hasMoreResults && (
+                        <LoadMoreRow locked={locked}>
+                            <RowItem>
+                                <Button
+                                    kind="special"
+                                    variant="dark"
+                                    onClick={onLoadMore}
+                                    disabled={!!fetchingStreams}
+                                >
+                                    View more
+                                </Button>
+                            </RowItem>
+                        </LoadMoreRow>
+                    )}
+                </TableBody>
             </Segment.Body>
         </Segment>
     )

@@ -9,7 +9,6 @@ import type { SmartContractTransaction, SmartContractCall, Hash } from '$shared/
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import type { NumberString, ApiResult, PaymentCurrency } from '$shared/flowtype/common-types'
 import type { Product, ProductId, Subscription, ProductType } from '$mp/flowtype/product-types'
-import type { StreamList } from '$shared/flowtype/stream-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto, toAtto } from '$mp/utils/math'
@@ -47,13 +46,6 @@ export const getProductById = async (id: ProductId, useAuthorization: boolean = 
     useAuthorization,
 })
     .then(mapProductFromApi)
-
-export const getStreamsByProductId = async (id: ProductId, useAuthorization: boolean = true): ApiResult<StreamList> => get({
-    url: routes.api.products.streams({
-        id: getValidId(id, false),
-    }),
-    useAuthorization,
-})
 
 export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subscription> => (
     Promise.all([

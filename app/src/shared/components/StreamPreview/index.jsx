@@ -81,7 +81,6 @@ const UnstyledStreamPreview = ({
                 partitions={partitionOptions || []}
                 streamId={streamId}
                 streamIds={navigableStreamIds || []}
-                streamLoaded={streamLoaded}
             />
             <LoadingIndicator loading={!streamLoaded || !!loading} />
             <Feed

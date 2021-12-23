@@ -112,7 +112,7 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
             streamData={visibleData}
             activePartition={activePartition}
             onPartitionChange={setActivePartition}
-            loading={!hasLoaded || !subscribed}
+            loading={!stream || !hasLoaded || !subscribed}
             subscriptionError={hasLoaded && !client && ('Error: Unable to process the stream data.')}
             dataError={!!dataError && 'Data'}
         />
@@ -123,7 +123,6 @@ const PreviewWrap = ({ productId, streamId }) => {
     const history = useHistory()
     const { product, productStreams: streams } = useController()
     const dispatch = useDispatch()
-    const { isPending: fetchingStreams } = usePending('product.LOAD_PRODUCT_STREAMS')
     const { isPending: loadPending } = usePending('product.LOAD')
     const { isPending: permissionsPending } = usePending('product.PERMISSIONS')
     const { loadProductStreams } = useController()
@@ -139,9 +138,9 @@ const PreviewWrap = ({ productId, streamId }) => {
 
     useEffect(() => {
         if (!streamLoaded) {
-            loadProductStreams(productId, false)
+            loadProductStreams([streamId])
         }
-    }, [streamLoaded, loadProductStreams, productId])
+    }, [streamLoaded, loadProductStreams, streamId])
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -179,7 +178,7 @@ const PreviewWrap = ({ productId, streamId }) => {
         }))
     }, [history, isMounted])
 
-    if (!product || loadPending || permissionsPending || fetchingStreams) {
+    if (!product || loadPending || permissionsPending) {
         return (
             <PreviewModal
                 streamId={streamId}
@@ -211,7 +210,7 @@ const ProductContainer = () => {
 
     return (
         <ProductController
-            key={streamId}
+            key={productId}
             ignoreUnauthorized
             useAuthorization={false}
         >

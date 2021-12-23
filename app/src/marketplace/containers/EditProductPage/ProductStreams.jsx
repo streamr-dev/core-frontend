@@ -24,16 +24,13 @@ const ProductStreams = ({ disabled }: Props) => {
     const { isValid, message } = useValidation('streams')
     const { updateStreams } = useEditableProductActions()
     const { publishAttempted } = useContext(EditControllerContext)
-    const { productStreams, allStreams } = useController()
-    const { isPending: fetchingProductStreams } = usePending('product.LOAD_PRODUCT_STREAMS')
+    const { allStreams } = useController()
     const { isPending: fetchingAllStreams } = usePending('product.LOAD_ALL_STREAMS')
 
     // Filter product streams based on actual selection
     const streamIds = product.streams
-    const streamIdSet = useMemo(() => new Set(streamIds), [streamIds])
-    const selectedStreams = useMemo(() => productStreams.filter(({ id }) => streamIdSet.has(id)), [streamIdSet, productStreams])
 
-    const availableStreams = useMemo(() => uniqBy([...allStreams, ...selectedStreams], 'id'), [allStreams, selectedStreams])
+    const availableStreams = useMemo(() => uniqBy(allStreams, 'id'), [allStreams])
 
     return (
         <section id="streams" className={cx(styles.root, styles.StreamSelector)}>
@@ -46,7 +43,7 @@ const ProductStreams = ({ disabled }: Props) => {
                 </p>
                 <StreamSelectorComponent
                     availableStreams={availableStreams}
-                    fetchingStreams={fetchingProductStreams || fetchingAllStreams}
+                    fetchingStreams={fetchingAllStreams}
                     onEdit={updateStreams}
                     streams={streamIds}
                     className={styles.streams}

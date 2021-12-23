@@ -51,7 +51,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
         product: originalProduct,
         loadContractProductSubscription,
         loadCategories,
-        loadProductStreams,
         loadDataUnion,
         loadDataUnionStats,
         loadAllStreams,
@@ -69,13 +68,11 @@ const EditProductPage = ({ product }: { product: Product }) => {
     useEffect(() => {
         loadContractProductSubscription(productId)
         loadCategories()
-        loadProductStreams(productId)
         loadWhiteWhitelistedAdresses(productId)
         loadAllStreams()
     }, [
         loadCategories,
         loadContractProductSubscription,
-        loadProductStreams,
         productId,
         loadAllStreams,
         loadWhiteWhitelistedAdresses,

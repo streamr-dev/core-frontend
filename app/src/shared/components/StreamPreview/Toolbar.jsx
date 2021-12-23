@@ -86,7 +86,6 @@ const UnstyledToolbar = ({
     partitions = [],
     streamId,
     streamIds = [streamId],
-    streamLoaded = false,
 }) => {
     const { copy, isCopied } = useCopy()
 
@@ -94,33 +93,30 @@ const UnstyledToolbar = ({
         <div className={className}>
             <Lhs>
                 <Layout.Pusher />
-                {!!streamLoaded && (
-                    <Inner>
-                        <div>
-                            <Selector
-                                title="Streams"
-                                options={streamIds}
-                                active={streamId}
-                                onChange={onStreamChange}
-                            />
-                        </div>
-                        <IfEnoughRoom>
-                            <Selector
-                                title="Partitions"
-                                options={partitions}
-                                active={partition}
-                                onChange={onPartitionChange}
-                            />
-                        </IfEnoughRoom>
-                    </Inner>
-                )}
+                <Inner>
+                    <div>
+                        <Selector
+                            title="Streams"
+                            options={streamIds}
+                            active={streamId}
+                            onChange={onStreamChange}
+                        />
+                    </div>
+                    <IfEnoughRoom>
+                        <Selector
+                            title="Partitions"
+                            options={partitions}
+                            active={partition}
+                            onChange={onPartitionChange}
+                        />
+                    </IfEnoughRoom>
+                </Inner>
             </Lhs>
             <Rhs>
                 <div>
                     {typeof onSettingsButtonClick === 'function' && (
                         <SettingsButton
                             kind="secondary"
-                            disabled={!streamLoaded}
                             onClick={() => onSettingsButtonClick(streamId)}
                         >
                             Stream Settings
@@ -129,7 +125,6 @@ const UnstyledToolbar = ({
                     <Button
                         kind="secondary"
                         onClick={() => copy(streamId)}
-                        disabled={!streamLoaded}
                     >
                         {isCopied ? (
                             'Copied!'
