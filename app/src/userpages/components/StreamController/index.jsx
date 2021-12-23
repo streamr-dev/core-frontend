@@ -1,8 +1,10 @@
 import React, { useMemo, useContext, useEffect, useState, useReducer } from 'react'
+import { useSelector } from 'react-redux'
 
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { selectUserData } from '$shared/modules/user/selectors'
 
 import useLoadStreamCallback from './useLoadStreamCallback'
 
@@ -13,20 +15,23 @@ function LoadStreamEffect({ id, ignoreUnauthorized }) {
     const loadStream = useLoadStreamCallback()
     const { isPending } = usePending('stream.LOAD')
     const isMounted = useIsMounted()
+    const { username } = useSelector(selectUserData) || {}
 
     useEffect(() => {
-        if (id && !loadedOnce && !isPending) {
+        if (id && username && !loadedOnce && !isPending) {
             (async () => {
                 setLoadedOnce(true)
 
                 await loadStream({
                     id,
+                    username,
                     ignoreUnauthorized,
                 })
             })()
         }
     }, [
         id,
+        username,
         ignoreUnauthorized,
         loadedOnce,
         loadStream,

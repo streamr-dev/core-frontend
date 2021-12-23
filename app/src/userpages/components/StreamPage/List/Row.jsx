@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 import { StatusIcon, titleize } from '@streamr/streamr-layout'
 import styled from 'styled-components'
@@ -19,6 +20,7 @@ import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import { selectUserData } from '$shared/modules/user/selectors'
 import routes from '$routes'
 import useStreamPath from '../shared/useStreamPath'
 
@@ -49,6 +51,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
     const isMounted = useIsMounted()
     const [permissions, setPermissions] = useState([])
     const permissionsFetchedRef = useRef(false)
+    const { username } = useSelector(selectUserData) || {}
 
     const { api: switchNetworkDialog } = useModal('switchNetwork')
     const { api: snippetDialog } = useModal('userpages.streamSnippet')
@@ -103,7 +106,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
                     await stream.delete()
                 } else {
                     // fetch permissions again to get ids
-                    const newPermissions = await stream.getMyPermissions()
+                    const newPermissions = await stream.getUserPermissions(username)
 
                     await Promise.allSettled(Object.keys(newPermissions)
                         .map((operation) => stream.revokeUserPermission(operation)))
@@ -130,14 +133,14 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
                 }
             }
         }
-    }, [stream, canBeDeletedByCurrentUser, onRemoveStreamProp, isMounted, validateNetwork])
+    }, [stream, canBeDeletedByCurrentUser, onRemoveStreamProp, isMounted, validateNetwork, username])
 
     const onToggleStreamDropdown = useCallback(async (open) => {
         if (open && !permissionsFetchedRef.current) {
             permissionsFetchedRef.current = true
 
             try {
-                const permissions = await stream.getMyPermissions()
+                const permissions = await stream.getUserPermissions(username)
 
                 if (isMounted()) {
                     setPermissions(permissions)
@@ -146,7 +149,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
                 // Noop.
             }
         }
-    }, [stream, isMounted])
+    }, [stream, isMounted, username])
 
     const onShareClick = useCallback(() => {
         onShareClickProp(stream)

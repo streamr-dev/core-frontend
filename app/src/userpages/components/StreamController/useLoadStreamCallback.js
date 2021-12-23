@@ -39,7 +39,7 @@ export default function useLoadStreamCallback() {
     const productUpdater = useEditableState()
     const { setStream } = useController()
 
-    const load = useCallback(async ({ id, ignoreUnauthorized }) => (
+    const load = useCallback(async ({ id, username, ignoreUnauthorized }) => (
         wrap(async () => {
             let stream
             try {
@@ -62,7 +62,7 @@ export default function useLoadStreamCallback() {
 
             const permissions = await (async () => {
                 try {
-                    return await stream.getMyPermissions()
+                    return await stream.getUserPermissions(username)
                 } catch (e) {
                     console.error('useLoadStreamCallback', e)
                 }
