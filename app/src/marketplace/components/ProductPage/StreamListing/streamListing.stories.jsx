@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { useReducer, useMemo, useCallback } from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { withKnobs, boolean } from '@storybook/addon-knobs'
@@ -63,6 +63,7 @@ const DefaultView = () => {
     return (
         <StreamListingWithContainer
             streams={streamList}
+            totalStreams={streamList.length}
             onStreamPreview={!!showPreview && action('onStreamPreview')}
             onStreamSettings={!!showSettings && action('onStreamSettings')}
         />
@@ -95,7 +96,7 @@ const FetchingView = () => {
 
     return (
         <StreamListingWithContainer
-            streams={streamList}
+            streams={[]}
             onStreamPreview={!!showPreview && action('onStreamPreview')}
             onStreamSettings={!!showSettings && action('onStreamSettings')}
             fetchingStreams
@@ -131,6 +132,7 @@ const EmptyView = () => {
     return (
         <StreamListingWithContainer
             streams={[]}
+            totalStreams={0}
             onStreamPreview={!!showPreview && action('onStreamPreview')}
             onStreamSettings={!!showSettings && action('onStreamSettings')}
             locked={boolean('Locked', false)}
@@ -165,6 +167,7 @@ const LongListView = () => {
     return (
         <StreamListingWithContainer
             streams={longStreamList}
+            totalStreams={longStreamList.length}
             onStreamPreview={!!showPreview && action('onStreamPreview')}
             onStreamSettings={!!showSettings && action('onStreamSettings')}
         />
@@ -198,6 +201,7 @@ const LockedView = () => {
     return (
         <StreamListingWithContainer
             streams={streamList}
+            totalStreams={streamList.length}
             onStreamPreview={!!showPreview && action('onStreamPreview')}
             onStreamSettings={!!showSettings && action('onStreamSettings')}
             locked
@@ -233,6 +237,7 @@ const WithoutContainerView = () => {
         <Container>
             <StreamListing
                 streams={streamList}
+                totalStreams={streamList.length}
                 onStreamPreview={!!showPreview && action('onStreamPreview')}
                 onStreamSettings={!!showSettings && action('onStreamSettings')}
             />
@@ -254,6 +259,58 @@ stories.add('without container (tablet)', () => (
 
 stories.add('without container (iPhone)', () => (
     <WithoutContainerView />
+), {
+    viewport: {
+        defaultViewport: 'iPhone',
+    },
+})
+
+const PAGE_SIZE = 100
+
+const LoadingMoreListView = () => {
+    const showPreview = boolean('Show preview', true)
+    const showSettings = boolean('Show settings', true)
+    const [page, advancePage] = useReducer((p) => p + 1, 1)
+
+    const [visibleStreams, hasMoreResults] = useMemo(() => {
+        const nextItems = longStreamList.slice(0, page * PAGE_SIZE)
+
+        return [
+            nextItems,
+            nextItems.length < longStreamList.length,
+        ]
+    }, [page])
+
+    const onLoadMore = useCallback(() => {
+        advancePage()
+    }, [advancePage])
+
+    return (
+        <StreamListingWithContainer
+            streams={visibleStreams}
+            totalStreams={longStreamList.length}
+            hasMoreResults={hasMoreResults}
+            onLoadMore={onLoadMore}
+            onStreamPreview={!!showPreview && action('onStreamPreview')}
+            onStreamSettings={!!showSettings && action('onStreamSettings')}
+        />
+    )
+}
+
+stories.add('loading more', () => (
+    <LoadingMoreListView />
+))
+
+stories.add('loading more (tablet)', () => (
+    <LoadingMoreListView />
+), {
+    viewport: {
+        defaultViewport: 'sm',
+    },
+})
+
+stories.add('loading more (iPhone)', () => (
+    <LoadingMoreListView />
 ), {
     viewport: {
         defaultViewport: 'iPhone',
