@@ -3,7 +3,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
-import styled from 'styled-components'
 
 import { CoreHelmet } from '$shared/components/Helmet'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
@@ -14,16 +13,12 @@ import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
 
-import Layout from '$shared/components/Layout'
 import CoreLayout from '$shared/components/Layout/Core'
-import LoadingIndicator from '$shared/components/LoadingIndicator'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import routes from '$routes'
 import ProfileSettings from './ProfileSettings'
 import DeleteAccount from './DeleteAccount'
-
-import styles from './profilePage.pcss'
 
 export const ProfilePage = () => {
     const { isPending: isSavePending, wrap } = usePending('user.SAVE')
@@ -72,6 +67,7 @@ export const ProfilePage = () => {
             navComponent={(
                 <Toolbar
                     altMobileLayout
+                    loading={isLoading}
                     actions={{
                         cancel: {
                             title: 'Cancel',
@@ -88,8 +84,6 @@ export const ProfilePage = () => {
                     }}
                 />
             )}
-            loading={isLoading}
-            loadingClassname={styles.loadingIndicator}
         >
             <CoreHelmet title="Profile" />
             <TOCPage title="Settings">
@@ -108,14 +102,17 @@ export const ProfilePage = () => {
     )
 }
 
-const StyledLoadingIndicator = styled(LoadingIndicator)`
-  top: 2px;
-`
-
 const LoadingView = () => (
-    <Layout>
-        <StyledLoadingIndicator loading />
-    </Layout>
+    <CoreLayout
+        nav={false}
+        navComponent={(
+            <Toolbar
+                loading
+                actions={{}}
+                altMobileLayout
+            />
+        )}
+    />
 )
 
 const ProfileWrap = () => {

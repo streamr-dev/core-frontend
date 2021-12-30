@@ -505,10 +505,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         <Layout
             {...props}
             nav={false}
-            loading={loading}
             navComponent={(
                 <Toolbar
                     altMobileLayout
+                    loading={loading}
                     left={(
                         <BackButton onBack={onBack} />
                     )}
@@ -745,6 +745,19 @@ const New = styled(UnstyledNew)`
     }
 `
 
+const LoadingView = () => (
+    <Layout
+        nav={false}
+        navComponent={(
+            <Toolbar
+                loading
+                actions={{}}
+                altMobileLayout
+            />
+        )}
+    />
+)
+
 const NewStreamViewMaybe = (props) => {
     const currentUser = useSelector(selectUserData)
     const { state: stream, replaceState: resetStream } = useEditableState()
@@ -759,7 +772,7 @@ const NewStreamViewMaybe = (props) => {
 
     if (!currentUser || !stream) {
         return (
-            <Layout loading />
+            <LoadingView />
         )
     }
 

@@ -207,15 +207,14 @@ const EditProductPage = ({ product }: { product: Product }) => {
                     middle={toolbarMiddle}
                     actions={actions}
                     altMobileLayout
+                    loading={isLoading || (isPreview && fetchingAllStreams)}
                 />
             )}
-            loadingClassname={styles.loadingIndicator}
             contentClassname={cx({
                 [coreLayoutStyles.pad]: !isPreview,
                 [styles.editorContent]: !isPreview,
                 [styles.previewContent]: !!isPreview,
             })}
-            loading={isLoading || (isPreview && fetchingAllStreams)}
         >
             <CoreHelmet title={product.name} />
             {isPreview && (
@@ -237,9 +236,9 @@ const LoadingView = () => (
     <CoreLayout
         className={styles.layout}
         nav={false}
-        loading
         navComponent={(
             <Toolbar
+                loading
                 actions={{}}
                 altMobileLayout
             />

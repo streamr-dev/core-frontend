@@ -67,8 +67,8 @@ story('Toolbar').addWithJSX('middle icon', () => (
     <Fragment>
         <Toolbar
             actions={toolbarActions}
-            altMobileLayout
             left={text('status text', 'status')}
+            altMobileLayout
             middle={<SvgIcon
                 name="user"
                 style={{
@@ -81,3 +81,21 @@ story('Toolbar').addWithJSX('middle icon', () => (
     </Fragment>
 ))
 
+story('Toolbar').addWithJSX('loading', () => (
+    <Fragment>
+        <Toolbar
+            actions={toolbarActions}
+            left={text('status text', 'status')}
+            loading
+            altMobileLayout
+            middle={<SvgIcon
+                name="user"
+                style={{
+                    width: '40px',
+                    height: '40px',
+                }}
+            />}
+        />
+        <Content>Lorem ipsum dolor sit emat.</Content>
+    </Fragment>
+))
