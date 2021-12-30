@@ -107,11 +107,6 @@
             "image": "<api>/users/me/image",
             "products": "<api>/users/me/products"
         },
-        "modules": {
-            "index": "<api>/modules",
-            "show": "<api>/modules/:id"
-        },
-        "moduleCategories": "<api>/module_categories",
         "categories": "<api>/categories",
         "streams": {
             "data": {
@@ -147,7 +142,6 @@
             "index": "<api>/products",
             "show": "<api>/products/:id",
             "images": "<api>/products/:id/images",
-            "streams": "<api>/products/:id/streams",
             "undeployFree": "<api>/products/:id/undeployFree",
             "setUndeploying": "<api>/products/:id/setUndeploying",
             "deployFree": "<api>/products/:id/deployFree",

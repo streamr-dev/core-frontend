@@ -1,10 +1,8 @@
-import React, { useMemo, useContext, useEffect, useState, useReducer } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useMemo, useContext, useEffect, useState, useReducer, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { usePending } from '$shared/hooks/usePending'
-import { resetProduct } from '$mp/modules/product/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { Provider as PermissionsProvider } from './useProductPermissions'
 import { Provider as ValidationContextProvider } from './ValidationContextProvider'
@@ -19,7 +17,6 @@ import useDataUnionLoadCallback from './useDataUnionLoadCallback'
 import useDataUnionStatsLoadCallback from './useDataUnionStatsLoadCallback'
 import useRelatedProductsLoadCallback from './useRelatedProductsLoadCallback'
 import useLoadAllStreamsCallback from './useLoadAllStreamsCallback'
-import useClearStreamsCallback from './useClearStreamsCallback'
 import useResetDataUnionCallback from './useResetDataUnionCallback'
 
 const ProductControllerContext = React.createContext({})
@@ -65,10 +62,6 @@ function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization
     })
     useProductValidationEffect()
 
-    // Clear product on unmount
-    const dispatch = useDispatch()
-    useEffect(() => () => dispatch(resetProduct()), [dispatch])
-
     return null
 }
 
@@ -76,30 +69,89 @@ export function useController() {
     return useContext(ProductControllerContext)
 }
 
+function reducer(state, action) {
+    switch (action.type) {
+        case 'setProduct':
+            return {
+                ...state,
+                product: action.product,
+                hasLoaded: true,
+            }
+
+        case 'setProductStreams':
+            return {
+                ...state,
+                productStreams: [
+                    ...state.productStreams,
+                    ...action.streams,
+                ],
+            }
+
+        case 'setAllStreams':
+            return {
+                ...state,
+                allStreams: action.streams,
+            }
+
+        default:
+            break
+    }
+
+    return state
+}
+
 function useProductController() {
-    const [{ hasLoaded, product }, setProduct] = useReducer((state, nextProduct) => ({
-        product: nextProduct,
-        hasLoaded: true,
-    }), {
+    const [{ hasLoaded, product, productStreams, allStreams }, dispatch] = useReducer(reducer, {
         hasLoaded: false,
         product: undefined,
+        productStreams: [],
+        allStreams: [],
     })
+
+    const setProduct = useCallback((nextProduct) => {
+        dispatch({
+            type: 'setProduct',
+            product: nextProduct,
+        })
+    }, [dispatch])
+
+    const setProductStreams = useCallback((nextStreams) => {
+        dispatch({
+            type: 'setProductStreams',
+            streams: nextStreams,
+        })
+    }, [dispatch])
+
+    const setAllStreams = useCallback((nextStreams) => {
+        dispatch({
+            type: 'setAllStreams',
+            streams: nextStreams,
+        })
+    }, [dispatch])
+
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
     const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
     const loadCategories = useLoadCategoriesCallback()
-    const loadProductStreams = useLoadProductStreamsCallback()
+    const loadProductStreams = useLoadProductStreamsCallback({
+        setProductStreams,
+    })
     const loadDataUnion = useDataUnionLoadCallback()
     const loadDataUnionStats = useDataUnionStatsLoadCallback()
     const loadRelatedProducts = useRelatedProductsLoadCallback()
-    const loadAllStreams = useLoadAllStreamsCallback()
-    const clearStreams = useClearStreamsCallback()
+    const loadAllStreams = useLoadAllStreamsCallback({
+        setAllStreams,
+    })
     const resetDataUnion = useResetDataUnionCallback()
 
     return useMemo(() => ({
-        product,
         hasLoaded,
+        product,
         setProduct,
+        productStreams,
+        setProductStreams,
+        allStreams,
+        setAllStreams,
         loadProduct,
         loadContractProduct,
         loadContractProductSubscription,
@@ -109,12 +161,15 @@ function useProductController() {
         loadDataUnionStats,
         loadRelatedProducts,
         loadAllStreams,
-        clearStreams,
         resetDataUnion,
     }), [
-        product,
         hasLoaded,
+        product,
         setProduct,
+        productStreams,
+        setProductStreams,
+        allStreams,
+        setAllStreams,
         loadProduct,
         loadContractProduct,
         loadContractProductSubscription,
@@ -124,7 +179,6 @@ function useProductController() {
         loadDataUnionStats,
         loadRelatedProducts,
         loadAllStreams,
-        clearStreams,
         resetDataUnion,
     ])
 }

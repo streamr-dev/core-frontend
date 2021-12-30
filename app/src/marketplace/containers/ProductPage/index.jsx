@@ -32,7 +32,6 @@ const ProductPage = () => {
         product,
         loadContractProductSubscription,
         loadCategories,
-        loadProductStreams,
         loadDataUnion,
         loadRelatedProducts,
     } = useController()
@@ -46,7 +45,6 @@ const ProductPage = () => {
     const loadAdditionalProductData = useCallback(async (id: ProductId) => {
         loadContractProductSubscription(id)
         loadCategories()
-        loadProductStreams(id, isLoggedIn)
         loadRelatedProducts(id, isLoggedIn)
         if (isLoggedIn) {
             dispatch(getProductSubscription(id))
@@ -56,7 +54,6 @@ const ProductPage = () => {
         isLoggedIn,
         loadContractProductSubscription,
         loadCategories,
-        loadProductStreams,
         loadRelatedProducts,
     ])
 

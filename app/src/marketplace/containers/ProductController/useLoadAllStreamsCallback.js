@@ -1,19 +1,25 @@
 // @flow
 
 import { useCallback } from 'react'
-import { useDispatch } from 'react-redux'
 
 import usePending from '$shared/hooks/usePending'
 
-import { getAllStreams } from '$mp/modules/streams/actions'
+import { getAllStreams } from '$mp/modules/streams/services'
 
-export default function useLoadAllStreamsCallback() {
-    const dispatch = useDispatch()
-    const { wrap } = usePending('streams.LOAD')
+export default function useLoadAllStreamsCallback({ setAllStreams }: {
+    setAllStreams: Function,
+}) {
+    const { wrap } = usePending('streams.LOAD_ALL_STREAMS')
 
     return useCallback(async (params: Object = {}) => (
         wrap(async () => {
-            await dispatch(getAllStreams(params))
+            try {
+                const streams = await getAllStreams(params)
+
+                setAllStreams(streams)
+            } catch (e) {
+                console.warn(e)
+            }
         })
-    ), [wrap, dispatch])
+    ), [wrap, setAllStreams])
 }

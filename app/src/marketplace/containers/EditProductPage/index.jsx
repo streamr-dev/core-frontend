@@ -2,7 +2,6 @@
 
 import React, { useContext, useMemo, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
-import { useSelector } from 'react-redux'
 import cx from 'classnames'
 
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -18,7 +17,6 @@ import { productStates } from '$shared/utils/constants'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
-import { selectFetchingStreams } from '$mp/modules/streams/selectors'
 import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
 import useModal from '$shared/hooks/useModal'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
@@ -48,21 +46,19 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useContext(EditControllerContext)
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: publishDialogLoading } = usePending('product.PUBLISH_DIALOG_LOAD')
+    const { isPending: fetchingAllStreams } = usePending('product.LOAD_ALL_STREAMS')
     const {
         product: originalProduct,
         loadContractProductSubscription,
         loadCategories,
-        loadProductStreams,
         loadDataUnion,
         loadDataUnionStats,
-        clearStreams,
         loadAllStreams,
         resetDataUnion,
     } = useController()
 
     const { load: loadDataUnionSecrets, reset: resetDataUnionSecrets } = useDataUnionSecrets()
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
-    const fetchingAllStreams = useSelector(selectFetchingStreams)
     const { isOpen: isDataUnionDeployDialogOpen } = useModal('dataUnion.DEPLOY')
     const { isOpen: isConfirmSaveDialogOpen } = useModal('confirmSave')
     const { isOpen: isPublishDialogOpen } = useModal('publish')
@@ -72,13 +68,11 @@ const EditProductPage = ({ product }: { product: Product }) => {
     useEffect(() => {
         loadContractProductSubscription(productId)
         loadCategories()
-        loadProductStreams(productId)
         loadWhiteWhitelistedAdresses(productId)
         loadAllStreams()
     }, [
         loadCategories,
         loadContractProductSubscription,
-        loadProductStreams,
         productId,
         loadAllStreams,
         loadWhiteWhitelistedAdresses,
@@ -112,8 +106,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     useEffect(() => () => {
         resetDataUnion()
         resetDataUnionSecrets()
-        clearStreams()
-    }, [resetDataUnion, resetDataUnionSecrets, clearStreams])
+    }, [resetDataUnion, resetDataUnionSecrets])
 
     // clear whitelisted addresses when unmounting
     useEffect(() => () => {

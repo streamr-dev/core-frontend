@@ -101,22 +101,6 @@ const state = {
 }
 
 describe('product - selectors', () => {
-    it('selects product streams', () => {
-        expect(all.selectFetchingStreams(state)).toBe(true)
-    })
-
-    it('selects product stream ids', () => {
-        expect(all.selectStreamIds(state)).toStrictEqual([1, 2])
-    })
-
-    it('selects product streams', () => {
-        expect(all.selectStreams(state)).toStrictEqual(streams)
-    })
-
-    it('selects streams error', () => {
-        expect(all.selectStreamsError(state)).toBe(null)
-    })
-
     it('selects contract subscription', () => {
         expect(all.selectContractSubscription(state)).toBe(state.product.contractSubscription)
     })

@@ -1,20 +1,30 @@
-// @flow
-
 import { useCallback } from 'react'
-import { useDispatch } from 'react-redux'
+import { useClient } from 'streamr-client-react'
 
 import usePending from '$shared/hooks/usePending'
 
-import type { ProductId } from '$mp/flowtype/product-types'
-import { getStreamsByProductId } from '$mp/modules/product/actions'
+export default function useLoadProductStreamsCallback({ setProductStreams }) {
+    const { wrap } = usePending('product.LOAD_PRODUCT_STREAMS')
+    const client = useClient()
 
-export default function useLoadProductStreamsCallback() {
-    const dispatch = useDispatch()
-    const { wrap } = usePending('product.LOAD_STREAMS')
-
-    return useCallback(async (productId: ProductId, useAuthorization: boolean = true) => (
+    return useCallback(async (streamIds) => (
         wrap(async () => {
-            await dispatch(getStreamsByProductId(productId, useAuthorization))
+            const streams = await Promise.allSettled((streamIds || []).map(async (id) => {
+                try {
+                    const stream = await client.getStream(id)
+
+                    return stream.toObject()
+                } catch (e) {
+                    console.warn(e)
+                }
+
+                return {
+                    id,
+                    description: undefined,
+                }
+            }))
+
+            setProductStreams(streams.map(({ value }) => value).filter(Boolean))
         })
-    ), [wrap, dispatch])
+    ), [wrap, setProductStreams, client])
 }

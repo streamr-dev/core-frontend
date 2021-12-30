@@ -1,7 +1,6 @@
 // @flow
 
 import type { ErrorFromApi, PayloadAction } from '$shared/flowtype/common-types'
-import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { ProductId, Subscription } from '../../flowtype/product-types'
 
 export type ProductIdAction = PayloadAction<{
@@ -14,12 +13,6 @@ export type ProductErrorAction = PayloadAction<{
     error: ErrorFromApi
 }>
 export type ProductErrorActionCreator = (id: ProductId, error: ErrorFromApi) => ProductErrorAction
-
-export type StreamIdsByProductIdAction = PayloadAction<{
-    id: ProductId,
-    streams: StreamIdList,
-}>
-export type StreamIdsByProductIdActionCreator = (id: ProductId, streams: StreamIdList) => StreamIdsByProductIdAction
 
 export type ProductSubscriptionAction = PayloadAction<{
     id: ProductId,
