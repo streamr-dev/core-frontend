@@ -56,7 +56,7 @@ const getTransactionsFailure = (error: ErrorInUi) => ({
 export const fetchProducts = (ids: ProductIdList) => (dispatch: Function) => {
     (ids || []).forEach((id) => {
         try {
-            getProductFromContract(id, true)
+            getProductFromContract(id)
                 .then(handleEntities(contractProductSchema, dispatch))
                 .catch((e) => {
                     console.warn(e)

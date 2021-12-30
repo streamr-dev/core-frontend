@@ -25,7 +25,7 @@ const contractMethods = (usePublicNode: boolean = false) => {
 
 const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
 
-export const getProductFromContract = async (id: ProductId, usePublicNode: boolean = false): SmartContractCall<SmartContractProduct> => (
+export const getProductFromContract = async (id: ProductId, usePublicNode: boolean = true): SmartContractCall<SmartContractProduct> => (
     call(contractMethods(usePublicNode).getProduct(getValidId(id)))
         .then((result) => {
             if (!result || hexEqualsZero(result.owner)) {

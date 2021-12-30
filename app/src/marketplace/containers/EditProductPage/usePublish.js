@@ -64,7 +64,7 @@ export default function usePublish() {
         // load contract product
         let contractProduct
         try {
-            contractProduct = await getProductFromContract(product.id || '', true)
+            contractProduct = await getProductFromContract(product.id || '')
         } catch (e) {
             // don't need to do anything with this error necessarily,
             // it just means that the product wasn't deployed
