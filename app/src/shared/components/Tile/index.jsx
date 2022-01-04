@@ -2,7 +2,7 @@
 
 import React from 'react'
 import styled, { css } from 'styled-components'
-import ReactImage from 'react-image'
+import { Img } from 'react-image'
 import { ago } from '$shared/utils/time'
 import Logo from '$shared/components/Logo'
 import Skeleton from '$shared/components/Skeleton'
@@ -18,7 +18,7 @@ import Summary from './Summary'
 import Menu from './Menu'
 import Badge, { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
 
-const Image = styled(ReactImage)`
+const Image = styled(Img)`
     img& {
         display: block;
         object-fit: cover;
