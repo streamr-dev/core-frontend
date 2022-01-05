@@ -2,7 +2,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
-import * as permissionServices from '$userpages/modules/permission/services'
+import * as productServices from '$mp/modules/product/services'
 import * as usePending from '$shared/hooks/usePending'
 import usePermissionContext, { Provider as PermissionContextProvider } from '../useProductPermissions'
 import * as ProductController from '../'
@@ -26,7 +26,7 @@ describe('PermissionContext', () => {
             isPending: false,
         }))
         let resolvePermissions
-        jest.spyOn(permissionServices, 'getResourcePermissions').mockImplementation(() => new Promise((resolve) => {
+        jest.spyOn(productServices, 'getPermissions').mockImplementation(() => new Promise((resolve) => {
             resolvePermissions = resolve
         }))
 
@@ -79,7 +79,7 @@ describe('PermissionContext', () => {
             },
             isPending: false,
         }))
-        const getPermissionsStub = jest.spyOn(permissionServices, 'getResourcePermissions')
+        const getPermissionsStub = jest.spyOn(productServices, 'getPermissions')
 
         let result
         function Test() {

@@ -100,6 +100,15 @@ export const postImage = (id: ProductId, image: File): ApiResult<Product> => {
     }).then(mapProductFromApi)
 }
 
+export const getPermissions = (productId: ProductId, id: string): ApiResult<any> => (
+    get({
+        url: routes.api.products.permissions.show({
+            productId,
+            id,
+        }),
+    })
+)
+
 export const postUndeployFree = async (id: ProductId): ApiResult<Product> => post({
     url: routes.api.products.undeployFree({
         id: getValidId(id, false),
