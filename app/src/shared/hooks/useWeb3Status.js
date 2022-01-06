@@ -19,7 +19,11 @@ type Result = {
     account: ?Address,
 }
 
-export function useWeb3Status(requireWeb3: boolean = true): Result {
+type Web3Status = {
+    requireWeb3: boolean,
+}
+
+export default function useWeb3Status({ requireWeb3 = true }: Web3Status = {}): Result {
     const [web3Error, setWeb3Error] = useState(null)
     const [checkingWeb3, setCheckingWeb3] = useState(false)
     const isMounted = useIsMounted()
@@ -99,5 +103,3 @@ export function useWeb3Status(requireWeb3: boolean = true): Result {
         account,
     }), [requireWeb3, web3Error, checkingWeb3, account])
 }
-
-export default useWeb3Status

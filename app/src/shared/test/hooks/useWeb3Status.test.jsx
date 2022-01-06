@@ -17,7 +17,9 @@ describe('useWeb3Status', () => {
     it('does nothing if requireWeb3 parameter is false', () => {
         let result
         const Test = () => {
-            result = useWeb3Status(false)
+            result = useWeb3Status({
+                requireWeb3: false,
+            })
             return null
         }
 

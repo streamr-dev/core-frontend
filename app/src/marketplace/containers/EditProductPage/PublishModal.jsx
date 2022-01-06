@@ -44,7 +44,9 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [requireWeb3, setRequireWeb3] = useState(false)
     const [requiredOwner, setRequiredOwner] = useState(null)
     const [web3Actions, setWeb3Actions] = useState(new Set([]))
-    const { web3Error, checkingWeb3, account } = useWeb3Status(requireWeb3)
+    const { web3Error, checkingWeb3, account } = useWeb3Status({
+        requireWeb3,
+    })
     const { isPending, start: startPending, end: endPending } = usePending('product.PUBLISH_DIALOG_LOAD')
     const productId = product.id
 
