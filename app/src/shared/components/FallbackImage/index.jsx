@@ -1,7 +1,7 @@
 // @flow
 
 import React, { type Node } from 'react'
-import ReactImg from 'react-image'
+import { Img as ReactImg } from 'react-image'
 import cx from 'classnames'
 
 import Logo from '$shared/components/Logo'
