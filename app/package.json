@@ -1,5 +1,5 @@
 {
-  "name": "marketplace",
+  "name": "core-frontend",
   "version": "2.4.34",
   "description": "The Streamr Core App",
   "main": "src/index.jsx",
