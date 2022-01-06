@@ -19,7 +19,7 @@ import AddWhitelistedAddressDialog from '$mp/components/Modal/AddWhitelistedAddr
 import RemoveWhitelistedAddressDialog from '$mp/components/Modal/RemoveWhitelistedAddressDialog'
 import WhitelistEditProgressDialog from '$mp/components/Modal/WhitelistEditProgressDialog'
 import WhitelistEditErrorDialog from '$mp/components/Modal/WhitelistEditErrorDialog'
-import WrongNetworkSelectedDialog from '$mp/components/Modal/WrongNetworkSelectedDialog'
+import WrongNetworkSelectedDialog from '$shared/components/WrongNetworkSelectedDialog'
 import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 

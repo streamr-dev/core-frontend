@@ -30,7 +30,6 @@ import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
 import InsufficientDaiDialog from '$mp/components/Modal/InsufficientDaiDialog'
 import InsufficientEthDialog from '$mp/components/Modal/InsufficientEthDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
-import WrongNetworkSelectedDialog from '$mp/components/Modal/WrongNetworkSelectedDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
@@ -59,6 +58,7 @@ import InstallMetaMaskDialog from '$shared/components/Web3ErrorDialog/Web3NotDet
 import InstallMobileApplicationDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallMobileApplicationDialog'
 import InstallSupportedBrowserDialog from '$shared/components/Web3ErrorDialog/Web3NotDetectedDialog/InstallSupportedBrowserDialog'
 import ConfirmSaveDialog from '$shared/components/ConfirmSaveDialog'
+import WrongNetworkSelectedDialog from '$shared/components/WrongNetworkSelectedDialog'
 
 const story = (name) => storiesOf(`Modal/${name}`, module)
     .addDecorator(StoryRouter())
@@ -548,25 +548,6 @@ story('Marketplace/NoBalanceDialog')
         />
     ))
 
-story('Marketplace/WrongNetworkSelectedDialog')
-    .add('default', () => (
-        <WrongNetworkSelectedDialog
-            requiredNetwork={text('Required network', '1')}
-            currentNetwork={text('Current network', '2')}
-            onClose={action('onClose')}
-            onSwitch={action('onSwitch')}
-        />
-    ))
-    .add('switching', () => (
-        <WrongNetworkSelectedDialog
-            requiredNetwork={text('Required network', '1')}
-            currentNetwork={text('Current network', '2')}
-            switching
-            onClose={action('onClose')}
-            onSwitch={action('onSwitch')}
-        />
-    ))
-
 story('Marketplace/ChooseAccessPeriodDialog')
     .add('default', () => (
         <ChooseAccessPeriodDialog
@@ -1012,6 +993,25 @@ story('Shared/Web3NotDetectedDialog')
             defaultViewport: 'iPhone',
         },
     })
+
+story('Shared/WrongNetworkSelectedDialog')
+    .add('default', () => (
+        <WrongNetworkSelectedDialog
+            requiredNetwork={text('Required network', '1')}
+            currentNetwork={text('Current network', '2')}
+            onClose={action('onClose')}
+            onSwitch={action('onSwitch')}
+        />
+    ))
+    .add('switching', () => (
+        <WrongNetworkSelectedDialog
+            requiredNetwork={text('Required network', '1')}
+            currentNetwork={text('Current network', '2')}
+            switching
+            onClose={action('onClose')}
+            onSwitch={action('onSwitch')}
+        />
+    ))
 
 story('Profile/AvatarUploadDialog')
     .add('default', () => (
