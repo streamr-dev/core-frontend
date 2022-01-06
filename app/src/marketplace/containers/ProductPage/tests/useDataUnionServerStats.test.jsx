@@ -7,6 +7,7 @@ import * as services from '$mp/modules/dataUnion/services'
 import useDataUnionServerStats from '../useDataUnionServerStats'
 
 jest.mock('$mp/modules/dataUnion/services')
+jest.mock('streamr-client', () => ({}))
 jest.useFakeTimers()
 
 describe('useDataUnionServerStats', () => {

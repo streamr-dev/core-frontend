@@ -5,6 +5,8 @@ import { mount } from 'enzyme'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 import MarketplaceRouter from '$mp/../app/Marketplace'
 
+jest.mock('streamr-client', () => ({}))
+
 /* eslint-disable react/prop-types */
 jest.mock('$mp/containers/Products', () => ({
     __esModule: true,

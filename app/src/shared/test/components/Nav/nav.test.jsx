@@ -7,6 +7,8 @@ import mockStore from '$testUtils/mockStoreProvider'
 // eslint-disable-next-line import/order
 import Nav from '$shared/components/Layout/Nav'
 
+jest.mock('streamr-client', () => ({}))
+
 /* eslint-disable object-curly-newline */
 describe('Nav.Wide', () => {
     it('renders logo', () => {

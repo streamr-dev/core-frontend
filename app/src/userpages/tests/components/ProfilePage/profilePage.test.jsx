@@ -3,6 +3,8 @@ import { shallow } from 'enzyme'
 
 import { ProfilePage } from '../../../components/ProfilePage'
 
+jest.mock('streamr-client', () => ({}))
+
 jest.mock('react-redux', () => ({
     useDispatch: jest.fn().mockImplementation(() => (action) => action),
     connect: jest.fn().mockImplementation(() => (action) => action),

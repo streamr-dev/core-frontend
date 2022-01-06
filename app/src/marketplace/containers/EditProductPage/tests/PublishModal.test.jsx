@@ -10,6 +10,8 @@ import * as dataUnionServices from '$mp/modules/dataUnion/services'
 
 import { PublishOrUnpublishModal } from '../PublishModal'
 
+jest.mock('streamr-client', () => ({}))
+
 jest.mock('react-redux', () => ({
     useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))

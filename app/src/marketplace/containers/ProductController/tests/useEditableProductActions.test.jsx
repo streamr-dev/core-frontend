@@ -32,6 +32,8 @@ const mockState = {
     },
 }
 
+jest.mock('streamr-client', () => ({}))
+
 jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
     useDispatch: jest.fn(),

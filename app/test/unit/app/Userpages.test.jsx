@@ -4,6 +4,8 @@ import { mount } from 'enzyme'
 
 import UserpagesRouter from '$mp/../app/Userpages'
 
+jest.mock('streamr-client', () => ({}))
+
 /* eslint-disable react/prop-types */
 jest.mock('$userpages/components/StreamPage', () => ({
     __esModule: true,

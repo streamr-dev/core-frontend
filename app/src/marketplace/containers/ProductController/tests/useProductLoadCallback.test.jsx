@@ -12,6 +12,8 @@ import * as entitiesUtils from '$shared/utils/entities'
 import * as ProductController from '../'
 import useProductLoadCallback from '../useProductLoadCallback'
 
+jest.mock('streamr-client', () => ({}))
+
 describe('useProductLoadCallback', () => {
     afterEach(() => {
         jest.clearAllMocks()

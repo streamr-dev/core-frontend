@@ -7,6 +7,8 @@ import * as usePending from '$shared/hooks/usePending'
 import usePermissionContext, { Provider as PermissionContextProvider } from '../useProductPermissions'
 import * as ProductController from '../'
 
+jest.mock('streamr-client', () => ({}))
+
 describe('PermissionContext', () => {
     afterEach(() => {
         jest.clearAllMocks()

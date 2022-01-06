@@ -2,6 +2,8 @@ import React from 'react'
 import { mount } from 'enzyme'
 import ActivityList from '$shared/components/ActivityList'
 
+jest.mock('streamr-client', () => ({}))
+
 describe('ActivityList', () => {
     afterEach(() => {
         delete process.env.ACTIVITY_QUEUE
