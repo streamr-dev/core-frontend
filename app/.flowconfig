@@ -1,5 +1,6 @@
 [ignore]
 .*/node_modules/oboe/.*
+.*/node_modules/resolve/.*
 
 [untyped]
 .*/node_modules/@streamr/streamr-layout/.*
