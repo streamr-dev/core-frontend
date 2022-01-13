@@ -23,19 +23,16 @@ import BackButton from '$shared/components/BackButton'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon, networks } from '$shared/utils/constants'
+import { NotificationIcon } from '$shared/utils/constants'
 import { MEDIUM } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
 import { CoreHelmet } from '$shared/components/Helmet'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { truncate } from '$shared/utils/text'
-import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
-import SwitchNetworkModal from '../SwitchNetworkModal'
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
@@ -88,14 +85,13 @@ const didChange = (original, changed) => {
     return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
 }
 
-const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
+const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any) => {
     const { stream: originalStream, permissions } = useController()
     const { state: stream, updateState } = useEditableState()
     const sidebar = useSidebar()
     const streamRef = useRef()
     streamRef.current = stream
     const { api: confirmSaveDialog } = useModal('confirmSave')
-    const { api: switchNetworkDialog } = useModal('switchNetwork')
 
     const history = useHistory()
 
@@ -134,30 +130,6 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
     const isMounted = useIsMounted()
 
     const [spinner, setSpinner] = useState(false)
-
-    const validateNetwork = useCallback(async () => {
-        try {
-            await validateWeb3({
-                web3: getWeb3(),
-                requireNetwork: networks.SIDECHAIN,
-            })
-        } catch (e) {
-            let propagateError = true
-
-            if (e instanceof WrongNetworkSelectedError) {
-                const { proceed } = await switchNetworkDialog.open({
-                    requiredNetwork: e.requiredNetwork,
-                    initialNetwork: e.currentNetwork,
-                })
-
-                propagateError = !proceed
-            }
-
-            if (propagateError) {
-                throw e
-            }
-        }
-    }, [switchNetworkDialog])
 
     const save = useCallback(async (options = {
         redirect: true,
@@ -419,7 +391,6 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
             ))}
             <StreamPageSidebar stream={stream} />
             <ConfirmSaveModal />
-            <SwitchNetworkModal />
         </CoreLayout>
     )
 }

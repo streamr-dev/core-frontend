@@ -5,17 +5,22 @@ import { StreamPermission } from 'streamr-client'
 import Layout from '$shared/components/Layout/Core'
 import Toolbar from '$shared/components/Toolbar'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
+import { networks } from '$shared/utils/constants'
+import useRequireNetwork from '$shared/hooks/useRequireNetwork'
+
 import routes from '$routes'
 
 import StreamController, { useController } from '../StreamController'
+import SwitchNetworkModal from './SwitchNetworkModal'
 
 import View from './View'
 import Edit from './Edit'
 
 const StreamPage = () => {
     const { stream, permissions, hasLoaded } = useController()
+    const { isPending, isCorrect, validateNetwork } = useRequireNetwork(networks.SIDECHAIN)
 
-    const readOnly = useMemo(() => !permissions[StreamPermission.EDIT], [permissions])
+    const readOnly = useMemo(() => isPending || !isCorrect || !permissions[StreamPermission.EDIT], [permissions, isPending, isCorrect])
 
     if (!hasLoaded || !stream) {
         return (
@@ -39,7 +44,9 @@ const StreamPage = () => {
     }
 
     return (
-        <Edit />
+        <Edit
+            validateNetwork={validateNetwork}
+        />
     )
 }
 
@@ -55,6 +62,7 @@ export default () => {
                 ignoreUnauthorized={path === routes.streams.public.show()}
             >
                 <StreamPage />
+                <SwitchNetworkModal />
             </StreamController>
         </UndoContextProvider>
     )

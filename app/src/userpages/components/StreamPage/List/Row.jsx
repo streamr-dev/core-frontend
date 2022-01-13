@@ -18,8 +18,7 @@ import { StreamList } from '$shared/components/List'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import useRequireNetwork from '$shared/hooks/useRequireNetwork'
 import { selectUserData } from '$shared/modules/user/selectors'
 import routes from '$routes'
 import useStreamPath from '../shared/useStreamPath'
@@ -53,7 +52,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
     const permissionsFetchedRef = useRef(false)
     const { username } = useSelector(selectUserData) || {}
 
-    const { api: switchNetworkDialog } = useModal('switchNetwork')
+    const { validateNetwork } = useRequireNetwork(networks.SIDECHAIN, false)
     const { api: snippetDialog } = useModal('userpages.streamSnippet')
     const { truncatedId } = useStreamPath(stream.id)
 
@@ -62,29 +61,22 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
         !!permissions[StreamPermission.GRANT],
     ], [permissions])
 
-    const validateNetwork = useCallback(async () => {
+    const fetchPermissions = useCallback(async () => {
+        let permissions = []
+
         try {
-            await validateWeb3({
-                web3: getWeb3(),
-                requireNetwork: networks.SIDECHAIN,
-            })
+            permissions = await stream.getUserPermissions(username)
+
+            if (isMounted()) {
+                setPermissions(permissions)
+            }
         } catch (e) {
-            let propagateError = true
-
-            if (e instanceof WrongNetworkSelectedError) {
-                const { proceed } = await switchNetworkDialog.open({
-                    requiredNetwork: e.requiredNetwork,
-                    initialNetwork: e.currentNetwork,
-                })
-
-                propagateError = !proceed
-            }
-
-            if (propagateError) {
-                throw e
-            }
+            // Noop.
+            console.error(e)
         }
-    }, [switchNetworkDialog])
+
+        return permissions
+    }, [stream, isMounted, username])
 
     const confirmDeleteStream = useCallback(async () => {
         const confirmed = await confirmDialog('stream', {
@@ -100,14 +92,14 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
 
         if (confirmed) {
             try {
-                await validateNetwork()
+                await validateNetwork(true)
 
-                if (canBeDeletedByCurrentUser) {
+                // Fetch permissions again once we are on the right chain
+                const newPermissions = await fetchPermissions()
+
+                if (newPermissions[StreamPermission.DELETE]) {
                     await stream.delete()
                 } else {
-                    // fetch permissions again to get ids
-                    const newPermissions = await stream.getUserPermissions(username)
-
                     await Promise.allSettled(Object.keys(newPermissions)
                         .map((operation) => stream.revokeUserPermission(operation)))
                 }
@@ -133,23 +125,14 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
                 }
             }
         }
-    }, [stream, canBeDeletedByCurrentUser, onRemoveStreamProp, isMounted, validateNetwork, username])
+    }, [stream, canBeDeletedByCurrentUser, onRemoveStreamProp, isMounted, validateNetwork, fetchPermissions])
 
     const onToggleStreamDropdown = useCallback(async (open) => {
         if (open && !permissionsFetchedRef.current) {
             permissionsFetchedRef.current = true
-
-            try {
-                const permissions = await stream.getUserPermissions(username)
-
-                if (isMounted()) {
-                    setPermissions(permissions)
-                }
-            } catch (e) {
-                // Noop.
-            }
+            fetchPermissions()
         }
-    }, [stream, isMounted, username])
+    }, [fetchPermissions])
 
     const onShareClick = useCallback(() => {
         onShareClickProp(stream)

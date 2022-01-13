@@ -33,8 +33,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import CodeSnippets from '$shared/components/CodeSnippets'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
-import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import useRequireNetwork from '$shared/hooks/useRequireNetwork'
 import routes from '$routes'
 import SwitchNetworkModal from './SwitchNetworkModal'
 import PartitionsView from './Edit/PartitionsView'
@@ -251,10 +250,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const contentChangedRef = useRef(false)
     const history = useHistory()
     const { api: confirmExitDialog } = useModal('confirmExit')
-    const { api: switchNetworkDialog } = useModal('switchNetwork')
     const [domains, setDomains] = useState([])
     const [loadingDomains, setLoadingDomains] = useState(true)
     const isMounted = useIsMounted()
+    const { validateNetwork } = useRequireNetwork(networks.SIDECHAIN)
     const currentUserRef = useRef(undefined)
     currentUserRef.current = currentUser
 
@@ -403,30 +402,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             }
         })
     }, [domain, pathname])
-
-    const validateNetwork = useCallback(async () => {
-        try {
-            await validateWeb3({
-                web3: getWeb3(),
-                requireNetwork: networks.SIDECHAIN,
-            })
-        } catch (e) {
-            let propagateError = true
-
-            if (e instanceof WrongNetworkSelectedError) {
-                const { proceed } = await switchNetworkDialog.open({
-                    requiredNetwork: e.requiredNetwork,
-                    initialNetwork: e.currentNetwork,
-                })
-
-                propagateError = !proceed
-            }
-
-            if (propagateError) {
-                throw e
-            }
-        }
-    }, [switchNetworkDialog])
 
     const onSave = useCallback(async () => {
         if (!streamDataRef.current) { return }
