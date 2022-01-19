@@ -145,7 +145,7 @@ describe('smartContract utils', () => {
                 mainnet: {
                     chainId: '1',
                 },
-                sidechain: {
+                dataunionsChain: {
                     chainId: '8995',
                 },
             }))
@@ -202,7 +202,7 @@ describe('smartContract utils', () => {
                 send: () => fakeEmitter,
                 estimateGas: () => Promise.resolve(0),
             }, {
-                network: networks.SIDECHAIN,
+                network: networks.DATAUNIONS,
             })
                 .onError((e) => {
                     expect(e.requiredNetwork).toBe('8995')

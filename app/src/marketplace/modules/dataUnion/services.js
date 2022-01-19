@@ -190,15 +190,18 @@ export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) 
 // getting events (TODO: move to streamr-client)
 // ----------------------
 
-const getSidechainWeb3 = () => new Web3(new Web3.providers.HttpProvider(process.env.SIDECHAIN_HTTP_PROVIDER))
+const getDataUnionChainWeb3 = () => {
+    const { dataUnionChainRPC: { url } } = getClientConfig()
+    return new Web3(new Web3.providers.HttpProvider(url))
+}
 
 export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number): any {
     const dataUnion = await getDataUnionObject(address, true)
     const sidechainAddress = await dataUnion.getSidechainAddress()
 
-    const web3 = getSidechainWeb3()
-    const { sidechain } = getConfig()
-    const contract = new web3.eth.Contract(sidechain.dataUnionAbi, sidechainAddress)
+    const web3 = getDataUnionChainWeb3()
+    const { dataunionsChain } = getConfig()
+    const contract = new web3.eth.Contract(dataunionsChain.dataUnionAbi, sidechainAddress)
     const latestBlock = await web3.eth.getBlock('latest')
 
     // Get events in batches since xDai RPC seems to timeout if fetching too large sets
@@ -220,7 +223,7 @@ export async function* getSidechainEvents(address: string, eventName: string, fr
 }
 
 export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number): any {
-    const web3 = getSidechainWeb3()
+    const web3 = getDataUnionChainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
 
     const handleEvent = async (e, type) => {
@@ -256,7 +259,7 @@ export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number):
 
 export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: number): any {
     const client = createClient()
-    const web3 = getSidechainWeb3()
+    const web3 = getDataUnionChainWeb3()
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for await (const joins of getSidechainEvents(id, 'MemberJoined', blockNumber)) {
@@ -277,7 +280,7 @@ export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: nu
 }
 
 export async function* getMemberEventsFromTimestamp(id: DataUnionId, timestamp: number = 0): any {
-    const web3 = getSidechainWeb3()
+    const web3 = getDataUnionChainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(timestamp / 1000))
 
     yield* getMemberEventsFromBlock(id, fromBlock)

@@ -91,22 +91,44 @@ describe('config', () => {
             })
         })
 
-        it('gets the right sidechain config from env', () => {
-            const { sidechain } = getConfig()
+        it('gets the right dataunions chain config from env', () => {
+            process.env.DATAUNIONS_CHAIN_ID = '8995'
+            process.env.DATAUNIONS_HTTP_PROVIDER = 'https://dataunionschain'
 
-            expect(sidechain).toStrictEqual({
+            const { dataunionsChain } = getConfig()
+
+            expect(dataunionsChain).toStrictEqual({
                 chainId: '8995',
-                rpcUrl: 'http://sidechainrpc:8546',
+                rpcUrl: 'https://dataunionschain',
                 dataUnionAbi: ['ds_test', 'ds_values', 'ds_only'],
             })
         })
 
+        it('gets the right streams chain config from env', () => {
+            process.env.STREAMS_CHAIN_ID = '8996'
+            process.env.STREAMS_HTTP_PROVIDER = 'https://streamschain'
+
+            const { streamsChain } = getConfig()
+
+            expect(streamsChain).toStrictEqual({
+                chainId: '8996',
+                rpcUrl: 'https://streamschain',
+            })
+        })
+
         it('gets metamask config', () => {
+            process.env.MAINNET_CHAIN_ID = '8995'
+            process.env.STREAMS_CHAIN_ID = '8996'
+            process.env.DATAUNIONS_CHAIN_ID = '8997'
+
             const { metamask } = getConfig()
 
             const chainIds = Object.keys(metamask)
 
             expect(chainIds.length > 0).toBe(true)
+            expect(chainIds.includes('8995')).toBe(true)
+            expect(chainIds.includes('8996')).toBe(true)
+            expect(chainIds.includes('8997')).toBe(true)
 
             chainIds.forEach((chainId) => {
                 const { getParams } = metamask[chainId]

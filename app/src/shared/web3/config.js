@@ -21,19 +21,25 @@ type MainnetConfig = {
     transactionConfirmationBlocks: number,
 }
 
-type SidechainConfig = {
+type DataUnionChainConfig = {
     chainId: string,
     rpcUrl: string,
     dataUnionAbi: string,
 }
 
+type SidechainConfig = {
+    chainId: string,
+    rpcUrl: string,
+}
+
 type Config = {
     mainnet: MainnetConfig,
-    sidechain: SidechainConfig,
+    dataunionsChain: DataUnionChainConfig,
+    streamsChain: SidechainConfig,
 }
 
 const getConfig = (): Config => {
-    const { tokenAddress, dataUnionChainRPC: sideChainConfig, mainChainRPC: mainChainConfig } = getClientConfig()
+    const { tokenAddress, dataUnionChainRPC, mainChainRPC, streamRegistryChainRPC } = getClientConfig()
 
     // eslint-disable-next-line max-len
     const { daiTokenContractAddress: DAI, marketplaceContractAddress, uniswapAdaptorContractAddress, web3TransactionConfirmationBlocks } = getCoreConfig()
@@ -43,7 +49,7 @@ const getConfig = (): Config => {
     return {
         mainnet: {
             chainId: mainChainId,
-            rpcUrl: mainChainConfig.url,
+            rpcUrl: mainChainRPC.url,
             transactionConfirmationBlocks: web3TransactionConfirmationBlocks || 24,
             dataToken: {
                 abi: tokenAbi,
@@ -63,10 +69,14 @@ const getConfig = (): Config => {
             },
             dataUnionAbi,
         },
-        sidechain: {
-            chainId: sideChainConfig.chainId,
-            rpcUrl: sideChainConfig.url,
+        dataunionsChain: {
+            chainId: dataUnionChainRPC.chainId,
+            rpcUrl: dataUnionChainRPC.url,
             dataUnionAbi: dataUnionSidechainAbi,
+        },
+        streamsChain: {
+            chainId: streamRegistryChainRPC.chainId,
+            rpcUrl: streamRegistryChainRPC.url,
         },
         metamask: {
             // local development values
@@ -74,7 +84,7 @@ const getConfig = (): Config => {
             [mainChainId]: {
                 getParams: () => ({
                     chainName: 'Mainchain (dev)',
-                    rpcUrls: [mainChainConfig.url || ''],
+                    rpcUrls: [mainChainRPC.url],
                     nativeCurrency: {
                         name: 'ETH',
                         symbol: 'ETH',
@@ -82,10 +92,21 @@ const getConfig = (): Config => {
                     },
                 }),
             },
-            [sideChainConfig.chainId]: {
+            [dataUnionChainRPC.chainId]: {
                 getParams: () => ({
-                    chainName: 'Sidechain (dev)',
-                    rpcUrls: [sideChainConfig.url || ''],
+                    chainName: 'Dataunions chain (dev)',
+                    rpcUrls: [dataUnionChainRPC.url],
+                    nativeCurrency: {
+                        name: 'xDAI',
+                        symbol: 'xDAI',
+                        decimals: 18,
+                    },
+                }),
+            },
+            [streamRegistryChainRPC.chainId]: {
+                getParams: () => ({
+                    chainName: 'Streams chain (dev)',
+                    rpcUrls: [streamRegistryChainRPC.url],
                     nativeCurrency: {
                         name: 'xDAI',
                         symbol: 'xDAI',

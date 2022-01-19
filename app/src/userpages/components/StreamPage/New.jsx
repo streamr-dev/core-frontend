@@ -253,7 +253,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const [domains, setDomains] = useState([])
     const [loadingDomains, setLoadingDomains] = useState(true)
     const isMounted = useIsMounted()
-    const { validateNetwork } = useRequireNetwork(networks.SIDECHAIN)
+    const { validateNetwork } = useRequireNetwork(networks.STREAMS)
     const currentUserRef = useRef(undefined)
     currentUserRef.current = currentUser
 
