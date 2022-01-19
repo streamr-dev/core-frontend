@@ -16,12 +16,16 @@ export default function getClientConfig(options = {}) {
         auth: {
             ethereum: web3.metamaskProvider,
         },
-        mainnet: {
+        mainChainRPC: {
             url: process.env.MAINNET_HTTP_PROVIDER,
         },
-        sidechain: {
-            url: process.env.SIDECHAIN_HTTP_PROVIDER,
-            chainId: parseInt(process.env.SIDECHAIN_CHAIN_ID, 10),
+        dataUnionChainRPC: {
+            url: process.env.DATAUNIONS_HTTP_PROVIDER,
+            chainId: parseInt(process.env.DATAUNIONS_CHAIN_ID, 10),
+        },
+        streamRegistryChainRPC: {
+            url: process.env.STREAMS_HTTP_PROVIDER,
+            chainId: parseInt(process.env.STREAMS_CHAIN_ID, 10),
         },
     }, options)
 

@@ -18,15 +18,21 @@ type MainnetConfig = {
     transactionConfirmationBlocks: number,
 }
 
-type SidechainConfig = {
+type DataUnionChainConfig = {
     chainId: string,
     rpcUrl: string,
     dataUnionAbi: string,
 }
 
+type SidechainConfig = {
+    chainId: string,
+    rpcUrl: string,
+}
+
 type Config = {
     mainnet: MainnetConfig,
-    sidechain: SidechainConfig,
+    dataunionsChain: DataUnionChainConfig,
+    streamsChain: SidechainConfig,
 }
 
 const getConfig = (): Config => ({
@@ -52,10 +58,14 @@ const getConfig = (): Config => ({
         },
         dataUnionAbi,
     },
-    sidechain: {
-        chainId: process.env.SIDECHAIN_CHAIN_ID || '',
-        rpcUrl: process.env.SIDECHAIN_HTTP_PROVIDER || '',
+    dataunionsChain: {
+        chainId: process.env.DATAUNIONS_CHAIN_ID || '',
+        rpcUrl: process.env.DATAUNIONS_HTTP_PROVIDER || '',
         dataUnionAbi: dataUnionSidechainAbi,
+    },
+    streamsChain: {
+        chainId: process.env.STREAMS_CHAIN_ID || '',
+        rpcUrl: process.env.STREAMS_HTTP_PROVIDER || '',
     },
     metamask: {
         // local development values
@@ -71,10 +81,21 @@ const getConfig = (): Config => ({
                 },
             }),
         },
-        [((process.env.SIDECHAIN_CHAIN_ID || '8997'): string)]: {
+        [((process.env.DATAUNIONS_CHAIN_ID || '8997'): string)]: {
             getParams: () => ({
-                chainName: 'Sidechain (dev)',
-                rpcUrls: [process.env.SIDECHAIN_HTTP_PROVIDER || ''],
+                chainName: 'Dataunions chain (dev)',
+                rpcUrls: [process.env.DATAUNIONS_HTTP_PROVIDER || ''],
+                nativeCurrency: {
+                    name: 'xDAI',
+                    symbol: 'xDAI',
+                    decimals: 18,
+                },
+            }),
+        },
+        [((process.env.STREAMS_CHAIN_ID || '8997'): string)]: {
+            getParams: () => ({
+                chainName: 'Streams chain (dev)',
+                rpcUrls: [process.env.STREAMS_HTTP_PROVIDER || ''],
                 nativeCurrency: {
                     name: 'xDAI',
                     symbol: 'xDAI',

@@ -52,7 +52,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
     const permissionsFetchedRef = useRef(false)
     const { username } = useSelector(selectUserData) || {}
 
-    const { validateNetwork } = useRequireNetwork(networks.SIDECHAIN, false)
+    const { validateNetwork } = useRequireNetwork(networks.STREAMS, false)
     const { api: snippetDialog } = useModal('userpages.streamSnippet')
     const { truncatedId } = useStreamPath(stream.id)
 

@@ -33,12 +33,14 @@ export const productStates = {
 
 export const networks = {
     MAINNET: 'mainnet',
-    SIDECHAIN: 'sidechain',
+    DATAUNIONS: 'dataunionsChain',
+    STREAMS: 'streamsChain',
 }
 
 export const ethereumNetworks = {
     [((process.env.MAINNET_CHAIN_ID || '8995'): string)]: 'Local mainchain',
-    [((process.env.SIDECHAIN_CHAIN_ID || '8997'): string)]: 'Local sidechain',
+    [((process.env.DATAUNIONS_CHAIN_ID || '8997'): string)]: 'Local dataunions chain',
+    [((process.env.STREAMS_CHAIN_ID || '8997'): string)]: 'Local streams chain',
     '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',

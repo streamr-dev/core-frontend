@@ -18,7 +18,7 @@ import Edit from './Edit'
 
 const StreamPage = () => {
     const { stream, permissions, hasLoaded } = useController()
-    const { isPending, isCorrect, validateNetwork } = useRequireNetwork(networks.SIDECHAIN)
+    const { isPending, isCorrect, validateNetwork } = useRequireNetwork(networks.STREAMS)
 
     const readOnly = useMemo(() => isPending || !isCorrect || !permissions[StreamPermission.EDIT], [permissions, isPending, isCorrect])
 

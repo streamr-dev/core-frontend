@@ -15,7 +15,7 @@ const SwitchNetworkModal = ({ api, requiredNetwork, initialNetwork }) => {
     const { switchChain, switchPending } = useSwitchChain()
     const { account, web3Error, checkingWeb3 } = useWeb3Status({
         requireWeb3: true,
-        requireNetwork: networks.SIDECHAIN,
+        requireNetwork: networks.STREAMS,
     })
     const currentNetworkId = useSelector(selectEthereumNetworkId)
 

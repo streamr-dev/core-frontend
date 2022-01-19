@@ -48,7 +48,7 @@ describe('web3 utils', () => {
                 mainnet: {
                     chainId: '1',
                 },
-                sidechain: {
+                dataunionsChain: {
                     chainId: '8995',
                 },
             }))
@@ -56,7 +56,7 @@ describe('web3 utils', () => {
                 web3: {
                     getChainId: () => Promise.resolve('8995'),
                 },
-                network: networks.SIDECHAIN,
+                network: networks.DATAUNIONS,
             })
         })
 
@@ -65,7 +65,7 @@ describe('web3 utils', () => {
                 mainnet: {
                     chainId: '2',
                 },
-                sidechain: {
+                dataunionsChain: {
                     chainId: '8995',
                 },
             }))
@@ -74,7 +74,7 @@ describe('web3 utils', () => {
                     web3: {
                         getChainId: () => Promise.resolve('1'),
                     },
-                    network: networks.SIDECHAIN,
+                    network: networks.DATAUNIONS,
                 })
             } catch (e) {
                 done()
