@@ -2,8 +2,6 @@ import ActionQueue from '$mp/utils/actionQueue'
 import { actionsTypes } from '$mp/containers/EditProductPage/usePublish'
 import { transactionStates } from '$shared/utils/constants'
 
-jest.mock('streamr-client', () => ({}))
-
 describe('Action queue', () => {
     it('calls finish on empty queue', () => {
         const queue = new ActionQueue()

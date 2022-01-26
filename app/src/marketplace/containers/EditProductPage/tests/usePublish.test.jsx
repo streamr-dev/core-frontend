@@ -14,8 +14,6 @@ import * as streamsServices from '$mp/modules/streams/services'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import usePublish, { publishModes, actionsTypes } from '../usePublish'
 
-jest.mock('streamr-client', () => ({}))
-
 jest.mock('react-redux', () => ({
     useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
