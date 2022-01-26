@@ -48,7 +48,7 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | REST_URL                                          | Address of the environment's Backend Rest API                        |
 | STREAMR_URL                                       | API Address for Dockerized Environments                              |
 | MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
-| DATA_TOKEN_CONTRACT_ADDRESS                       | Address of the deployed DATA Token contract                          |
+| TOKEN_ADDRESS                                     | Address of the deployed DATA Token contract                          |
 | DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
 | MAINNET_CHAIN_ID                                  | This is used to check that the user has selected the correct network |
 | MAINNET_HTTP_PROVIDER                             | A public provider used to query Marketplace methods without Metamask |

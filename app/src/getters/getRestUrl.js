@@ -1,5 +1,5 @@
-import getDockerUrl from './getDockerUrl'
+import { ConfigTest } from 'streamr-client'
 
 export default function getRestUrl() {
-    return process.env.REST_URL || `${getDockerUrl()}/api/v1`
+    return ConfigTest.restUrl
 }

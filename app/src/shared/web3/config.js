@@ -1,6 +1,7 @@
 // @flow
 
 import type { SmartContractConfig } from '$shared/flowtype/web3-types'
+import getDataTokenAddress from '../../getters/getDataTokenAddress'
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
 import uniswapAdaptorAbi from './abis/uniswapAdaptor'
@@ -36,7 +37,7 @@ const getConfig = (): Config => ({
         transactionConfirmationBlocks: parseInt(process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS, 10) || 24,
         dataToken: {
             abi: tokenAbi,
-            address: process.env.DATA_TOKEN_CONTRACT_ADDRESS || '',
+            address: getDataTokenAddress(),
         },
         daiToken: {
             abi: tokenAbi,

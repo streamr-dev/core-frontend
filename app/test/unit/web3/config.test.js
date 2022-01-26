@@ -6,6 +6,13 @@ jest.mock('$shared/web3/abis/uniswapAdaptor', () => (['u_test', 'u_values', 'u_o
 jest.mock('$shared/web3/abis/dataunion', () => (['d_test', 'd_values', 'd_only']))
 jest.mock('$shared/web3/abis/dataunionSidechain', () => (['ds_test', 'ds_values', 'ds_only']))
 
+const MOCK_TOKEN_ADDRESS = 'dataTokenAddress'
+
+jest.mock('$app/src/getters/getDataTokenAddress', () => ({
+    __esModule: true,
+    default: () => MOCK_TOKEN_ADDRESS,
+}))
+
 describe('config', () => {
     let oldEnv
 
@@ -24,7 +31,6 @@ describe('config', () => {
 
         it('gets the right mainnet config from env', () => {
             process.env.MARKETPLACE_CONTRACT_ADDRESS = 'mpAddress'
-            process.env.DATA_TOKEN_CONTRACT_ADDRESS = 'dataTokenAddress'
             process.env.DAI_TOKEN_CONTRACT_ADDRESS = 'daiTokenAddress'
             process.env.MAINNET_CHAIN_ID = '1'
             process.env.MAINNET_HTTP_PROVIDER = 'https://mainnet'
@@ -39,7 +45,7 @@ describe('config', () => {
                 transactionConfirmationBlocks: 1337,
                 dataToken: {
                     abi: ['t_test', 't_values', 't_only'],
-                    address: 'dataTokenAddress',
+                    address: MOCK_TOKEN_ADDRESS,
                 },
                 daiToken: {
                     abi: ['t_test', 't_values', 't_only'],

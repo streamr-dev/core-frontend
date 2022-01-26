@@ -39,7 +39,6 @@ export const createClient = (options: CreateClient = {}) => {
     const web3 = usePublicNode ? undefined : getWeb3()
 
     return new StreamrClient({
-        tokenAddress: process.env.DATA_TOKEN_CONTRACT_ADDRESS,
         tokenAddressSidechain: process.env.DATA_TOKEN_SIDECHAIN_ADDRESS,
         dataUnion: {
             factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
