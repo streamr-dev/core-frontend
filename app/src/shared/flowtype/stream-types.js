@@ -32,6 +32,9 @@ export type Stream = {
     uiChannel: boolean,
     requireSignedData: boolean,
     requireEncryptedData: boolean,
+    migrateToBrubeck: boolean,
+    migrateSyncTurnedOnAt: ?string,
+    migrateSyncLastRunAt: ?string,
 }
 
 export type StreamIdList = Array<StreamId>
