@@ -3,6 +3,7 @@
 import * as Sentry from '@sentry/browser'
 import { RewriteFrames } from '@sentry/integrations'
 import LogRocket from 'logrocket'
+import getStreamrUrl from './getters/getStreamrUrl'
 
 type ErrorServiceId = string
 type ErrorService = {
@@ -69,7 +70,7 @@ if (process.env.SENTRY_DSN) {
                     window.location.origin,
                     process.env.PLATFORM_PUBLIC_PATH,
                     process.env.PLATFORM_ORIGIN_URL,
-                    process.env.STREAMR_URL,
+                    getStreamrUrl(),
                 ].filter(Boolean),
                 debug: true,
             })

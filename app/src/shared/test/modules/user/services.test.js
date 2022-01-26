@@ -11,7 +11,6 @@ jest.mock('$app/getters/getRestUrl', () => ({
 
 describe('user - services', () => {
     let dateNowSpy
-    let oldStreamrUrl
     const DATE_NOW = 1337
 
     beforeAll(() => {
@@ -24,15 +23,12 @@ describe('user - services', () => {
     })
 
     beforeEach(() => {
-        oldStreamrUrl = process.env.STREAMR_URL
-        process.env.STREAMR_URL = 'streamr'
         moxios.install()
     })
 
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
-        process.env.STREAMR_URL = oldStreamrUrl
         moxios.uninstall()
     })
 
