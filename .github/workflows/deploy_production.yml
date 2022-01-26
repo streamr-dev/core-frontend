@@ -34,7 +34,7 @@ jobs:
           NODE_ENV: production
           VERSION: ${{ steps.get_version.outputs.VERSION }}
           PORT: 12345
-          STREAMR_API_URL: https://streamr.network/api/v1
+          REST_URL: https://streamr.network/api/v1
           STREAMR_WS_URL: wss://streamr.network/api/v1/ws
           PLATFORM_ORIGIN_URL: https://streamr.network
           PLATFORM_PUBLIC_PATH: https://cdn.streamr.com

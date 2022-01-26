@@ -2,6 +2,13 @@ import moxios from 'moxios'
 
 import * as services from '$mp/modules/relatedProducts/services'
 
+const REST_URL = 'TEST_STREAMR_API_URL'
+
+jest.mock('$app/getters/getRestUrl', () => ({
+    __esModule: true,
+    default: () => REST_URL,
+}))
+
 describe('relatedProducts - services', () => {
     beforeEach(() => {
         moxios.install()
@@ -12,7 +19,6 @@ describe('relatedProducts - services', () => {
     })
 
     it('gets products', async () => {
-        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const productId = '789'
         const data = [
             {
@@ -49,7 +55,7 @@ describe('relatedProducts - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/${productId}/related`)
+            expect(request.config.url).toBe(`${REST_URL}/products/${productId}/related`)
         })
 
         const result = await services.getRelatedProducts(productId)

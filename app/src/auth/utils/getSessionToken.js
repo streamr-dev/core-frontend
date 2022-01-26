@@ -17,7 +17,6 @@ const parseError = ({ body }) => {
 export default async (auth: Object): Promise<?string> => {
     try {
         return await new StreamrClient({
-            restUrl: process.env.STREAMR_API_URL,
             auth,
         }).session.getSessionToken()
     } catch (e) {

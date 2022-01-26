@@ -45,7 +45,7 @@ To be able to use the Marketplace, you'll need to configure these variables into
 |---------------------------------------------------|----------------------------------------------------------------------|
 | PORT                                              | Port used by webpack devServer                                       |
 | PLATFORM_ORIGIN_URL                               | Base path/address of the current environment                         |
-| STREAMR_API_URL                                   | Address of the environment's Backend Rest API                        |
+| REST_URL                                          | Address of the environment's Backend Rest API                        |
 | STREAMR_WS_URL                                    | Address of the environment's Backend Websocket API                   |
 | STREAMR_URL                                       | API Address for Dockerized Environments                              |
 | MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |

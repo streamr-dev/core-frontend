@@ -4,19 +4,19 @@ import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
 import * as services from '$shared/modules/user/services'
 
-describe('user - actions', () => {
-    let oldStreamrApiUrl
+jest.mock('$app/getters/getRestUrl', () => ({
+    __esModule: true,
+    default: () => '',
+}))
 
+describe('user - actions', () => {
     beforeEach(() => {
-        oldStreamrApiUrl = process.env.STREAMR_API_URL
-        process.env.STREAMR_API_URL = ''
         jest.spyOn(services, 'getBalance').mockImplementation(jest.fn())
     })
 
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
-        process.env.STREAMR_API_URL = oldStreamrApiUrl
     })
 
     describe('getUserData', () => {

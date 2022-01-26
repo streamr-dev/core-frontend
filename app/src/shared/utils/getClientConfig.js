@@ -10,8 +10,6 @@ export default function getClientConfig(options = {}) {
         ...(!isProduction() ? ConfigTest : {}),
         autoConnect: true,
         autoDisconnect: false,
-        restUrl: process.env.STREAMR_API_URL,
-        theGraphUrl: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/network-contracts`,
         verifySignatures: 'never',
         auth: {
             ethereum: web3.metamaskProvider,

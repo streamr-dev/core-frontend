@@ -4,9 +4,13 @@ import * as services from '$shared/modules/user/services'
 import * as utils from '$mp/utils/web3'
 import { BalanceType } from '$shared/flowtype/user-types'
 
+jest.mock('$app/getters/getRestUrl', () => ({
+    __esModule: true,
+    default: () => '',
+}))
+
 describe('user - services', () => {
     let dateNowSpy
-    let oldStreamrApiUrl
     let oldStreamrUrl
     const DATE_NOW = 1337
 
@@ -20,8 +24,6 @@ describe('user - services', () => {
     })
 
     beforeEach(() => {
-        oldStreamrApiUrl = process.env.STREAMR_API_URL
-        process.env.STREAMR_API_URL = ''
         oldStreamrUrl = process.env.STREAMR_URL
         process.env.STREAMR_URL = 'streamr'
         moxios.install()
@@ -30,7 +32,6 @@ describe('user - services', () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
-        process.env.STREAMR_API_URL = oldStreamrApiUrl
         process.env.STREAMR_URL = oldStreamrUrl
         moxios.uninstall()
     })

@@ -40,7 +40,6 @@ export const createClient = (options: CreateClient = {}) => {
 
     return new StreamrClient({
         url: process.env.STREAMR_WS_URL,
-        restUrl: process.env.STREAMR_API_URL,
         tokenAddress: process.env.DATA_TOKEN_CONTRACT_ADDRESS,
         tokenAddressSidechain: process.env.DATA_TOKEN_SIDECHAIN_ADDRESS,
         dataUnion: {

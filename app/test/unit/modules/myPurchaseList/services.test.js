@@ -2,6 +2,13 @@ import moxios from 'moxios'
 
 import * as services from '$mp/modules/myPurchaseList/services'
 
+const REST_URL = 'TEST_STREAMR_API_URL'
+
+jest.mock('$app/getters/getRestUrl', () => ({
+    __esModule: true,
+    default: () => REST_URL,
+}))
+
 describe('myPurchaseList - services', () => {
     beforeEach(() => {
         moxios.install()
@@ -12,7 +19,6 @@ describe('myPurchaseList - services', () => {
     })
 
     it('gets my purchases', async () => {
-        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const data = [
             {
                 user: 'test-user-1',
@@ -60,7 +66,7 @@ describe('myPurchaseList - services', () => {
                 status: 200,
                 response: data,
             })
-            const expectedUrl = `${process.env.STREAMR_API_URL}/subscriptions`
+            const expectedUrl = `${REST_URL}/subscriptions`
             expect(request.config.method).toBe('get')
             expect(request.config.url).toBe(`${expectedUrl}`)
         })

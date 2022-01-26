@@ -3,7 +3,7 @@
 import pick from 'lodash/pick'
 import qs from 'query-string'
 import { parse, compile } from 'path-to-regexp'
-
+import getRestUrl from '../getters/getRestUrl'
 import definitions from './definitions'
 
 type Routes = {
@@ -89,5 +89,5 @@ export default buildRoutes(definitions, () => ({
     landingPage: 'https://streamr.network',
     streamr: process.env.STREAMR_URL,
     platform: process.env.PLATFORM_ORIGIN_URL,
-    api: process.env.STREAMR_API_URL,
+    api: getRestUrl(),
 }))

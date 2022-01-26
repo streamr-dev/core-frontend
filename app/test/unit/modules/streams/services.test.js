@@ -95,7 +95,6 @@ describe('streams - services', () => {
     })
 
     it('returns false when no more results available', async () => {
-        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         /* eslint-disable object-curly-newline */
         const data = [
             { id: '1' },
@@ -124,7 +123,6 @@ describe('streams - services', () => {
     })
 
     it('returns all streams from paged results', async () => {
-        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const allStreams = Array.from({
             length: 1500,
         }, (v, i) => ({
