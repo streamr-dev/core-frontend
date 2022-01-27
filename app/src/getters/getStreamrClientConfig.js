@@ -21,7 +21,7 @@ export default function getStreamrClientConfig(options = {}) {
             sessionToken: getToken() || undefined,
             ethereum: web3 && web3.metamaskProvider,
         },
-        mainChainRPC: mainChainConfig.url,
+        mainChainRPC: mainChainConfig,
         streamRegistryChainRPC: sideChainConfig,
         dataUnionChainRPC: sideChainConfig,
         ...options,

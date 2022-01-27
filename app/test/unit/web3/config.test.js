@@ -13,6 +13,11 @@ jest.mock('$app/src/getters/getDataTokenAddress', () => ({
     default: () => MOCK_TOKEN_ADDRESS,
 }))
 
+jest.mock('$app/src/getters/getMainChainId', () => ({
+    __esModule: true,
+    default: () => '1',
+}))
+
 jest.mock('$app/src/getters/getMainChainConfig', () => {
     const { default: actual } = jest.requireActual('$app/src/getters/getMainChainConfig')
 
@@ -20,7 +25,6 @@ jest.mock('$app/src/getters/getMainChainConfig', () => {
         __esModule: true,
         default: () => ({
             ...actual(),
-            chainId: '1',
             url: 'http://mainchainrpc:8545',
         }),
     }

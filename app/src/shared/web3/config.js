@@ -3,6 +3,7 @@
 import type { SmartContractConfig } from '$shared/flowtype/web3-types'
 import getDataTokenAddress from '$app/src/getters/getDataTokenAddress'
 import getMainChainConfig from '$app/src/getters/getMainChainConfig'
+import getMainChainId from '$app/src/getters/getMainChainId'
 import getSideChainConfig from '$app/src/getters/getSideChainConfig'
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
@@ -37,9 +38,11 @@ const getConfig = (): Config => {
 
     const sideChainConfig = getSideChainConfig()
 
+    const mainChainId = getMainChainId()
+
     return {
         mainnet: {
-            chainId: mainChainConfig.chainId,
+            chainId: mainChainId,
             rpcUrl: mainChainConfig.url,
             transactionConfirmationBlocks: parseInt(process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS, 10) || 24,
             dataToken: {
@@ -68,7 +71,7 @@ const getConfig = (): Config => {
         metamask: {
             // local development values
             // Note: rpcUrls need to use HTTPS urls, otherwise adding the chain will fail
-            [mainChainConfig.chainId]: {
+            [mainChainId]: {
                 getParams: () => ({
                     chainName: 'Mainchain (dev)',
                     rpcUrls: [mainChainConfig.url || ''],
