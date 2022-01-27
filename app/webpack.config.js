@@ -30,7 +30,7 @@ const gitRevisionPlugin = new GitRevisionPlugin({
 })
 
 if (isProduction()) {
-    validateEnv()
+    validateEnv(process.env)
 }
 
 // We have to make sure that publicPath ends with a slash. If it
