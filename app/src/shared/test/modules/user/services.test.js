@@ -4,7 +4,7 @@ import * as services from '$shared/modules/user/services'
 import * as utils from '$mp/utils/web3'
 import { BalanceType } from '$shared/flowtype/user-types'
 
-jest.mock('$app/getters/getRestUrl', () => ({
+jest.mock('$app/src/getters/getRestUrl', () => ({
     __esModule: true,
     default: () => '',
 }))

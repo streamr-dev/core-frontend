@@ -4,7 +4,7 @@ import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
 import * as services from '$shared/modules/user/services'
 
-jest.mock('$app/getters/getRestUrl', () => ({
+jest.mock('$app/src/getters/getRestUrl', () => ({
     __esModule: true,
     default: () => '',
 }))

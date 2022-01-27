@@ -15,11 +15,11 @@ const mockFile = new File(['test'], 'test.jpg', {
 
 const ONE_DAY = '86400'
 
-const REST_URL = 'TEST_STREAMR_API_URL'
+const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
 
-jest.mock('$app/getters/getRestUrl', () => ({
+jest.mock('$app/src/getters/getRestUrl', () => ({
     __esModule: true,
-    default: () => REST_URL,
+    default: () => MOCK_REST_URL,
 }))
 
 describe('product - services', () => {
@@ -55,7 +55,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('get')
-                expect(request.config.url).toBe(`${REST_URL}/products/123`)
+                expect(request.config.url).toBe(`${MOCK_REST_URL}/products/123`)
             })
 
             const result = await all.getProductById('123')
@@ -138,7 +138,7 @@ describe('product - services', () => {
             })
 
             expect(request.config.method).toBe('put')
-            expect(request.config.url).toBe(`${REST_URL}/products/${data.id}`)
+            expect(request.config.url).toBe(`${MOCK_REST_URL}/products/${data.id}`)
         })
         const result = await all.putProduct(data, data.id)
         expect(result).toStrictEqual(expectedResult)
@@ -157,7 +157,7 @@ describe('product - services', () => {
             })
 
             expect(request.config.method).toBe('post')
-            expect(request.config.url).toBe(`${REST_URL}/products`)
+            expect(request.config.url).toBe(`${MOCK_REST_URL}/products`)
         })
         const result = await all.postProduct(data)
         expect(result).toStrictEqual(expectedResult)
@@ -176,7 +176,7 @@ describe('product - services', () => {
             })
 
             expect(request.config.method).toBe('post')
-            expect(request.config.url).toBe(`${REST_URL}/products/${data.id}/images`)
+            expect(request.config.url).toBe(`${MOCK_REST_URL}/products/${data.id}/images`)
         })
         const result = await all.postImage(data.id, mockFile)
         expect(result).toStrictEqual(expectedResult)
@@ -199,7 +199,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`${REST_URL}/products/${productId}/undeployFree`)
+                expect(request.config.url).toBe(`${MOCK_REST_URL}/products/${productId}/undeployFree`)
             })
 
             const result = await all.postUndeployFree(productId)
@@ -225,7 +225,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`${REST_URL}/products/${productId}/setUndeploying`)
+                expect(request.config.url).toBe(`${MOCK_REST_URL}/products/${productId}/setUndeploying`)
                 expect(request.config.data).toBe(JSON.stringify({
                     transactionHash: txHash,
                 }))
@@ -253,7 +253,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`${REST_URL}/products/${productId}/deployFree`)
+                expect(request.config.url).toBe(`${MOCK_REST_URL}/products/${productId}/deployFree`)
             })
 
             const result = await all.postDeployFree(productId)
@@ -279,7 +279,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`${REST_URL}/products/${productId}/setDeploying`)
+                expect(request.config.url).toBe(`${MOCK_REST_URL}/products/${productId}/setDeploying`)
                 expect(request.config.data).toBe(JSON.stringify({
                     transactionHash: txHash,
                 }))
@@ -303,7 +303,7 @@ describe('product - services', () => {
                     response: null,
                 })
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe('/subscriptions')
+                expect(request.config.url).toBe(`${MOCK_REST_URL}/subscriptions`)
                 expect(request.config.data).toBe(JSON.stringify({
                     product: productId,
                     endsAt,

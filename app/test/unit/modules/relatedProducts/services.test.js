@@ -2,11 +2,11 @@ import moxios from 'moxios'
 
 import * as services from '$mp/modules/relatedProducts/services'
 
-const REST_URL = 'TEST_STREAMR_API_URL'
+const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
 
-jest.mock('$app/getters/getRestUrl', () => ({
+jest.mock('$app/src/getters/getRestUrl', () => ({
     __esModule: true,
-    default: () => REST_URL,
+    default: () => MOCK_REST_URL,
 }))
 
 describe('relatedProducts - services', () => {
@@ -55,7 +55,7 @@ describe('relatedProducts - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${REST_URL}/products/${productId}/related`)
+            expect(request.config.url).toBe(`${MOCK_REST_URL}/products/${productId}/related`)
         })
 
         const result = await services.getRelatedProducts(productId)

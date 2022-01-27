@@ -3,11 +3,11 @@ import moxios from 'moxios'
 import * as services from '$mp/modules/productList/services'
 import { productListPageSize } from '$mp/utils/constants'
 
-const REST_URL = 'TEST_STREAMR_API_URL'
+const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
 
-jest.mock('$app/getters/getRestUrl', () => ({
+jest.mock('$app/src/getters/getRestUrl', () => ({
     __esModule: true,
-    default: () => REST_URL,
+    default: () => MOCK_REST_URL,
 }))
 
 describe('productList - services', () => {
@@ -70,7 +70,7 @@ describe('productList - services', () => {
                 status: 200,
                 response: data,
             })
-            const expectedUrl = `${REST_URL}\
+            const expectedUrl = `${MOCK_REST_URL}\
 /products?categories&grantedAccess=false&max=${productListPageSize + 1}&maxPrice&offset=0&publicAccess=true&search=&sortBy`
             expect(request.config.method).toBe('get')
             expect(request.config.url).toBe(`${expectedUrl}`)

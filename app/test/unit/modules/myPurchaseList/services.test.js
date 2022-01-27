@@ -2,11 +2,11 @@ import moxios from 'moxios'
 
 import * as services from '$mp/modules/myPurchaseList/services'
 
-const REST_URL = 'TEST_STREAMR_API_URL'
+const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
 
-jest.mock('$app/getters/getRestUrl', () => ({
+jest.mock('$app/src/getters/getRestUrl', () => ({
     __esModule: true,
-    default: () => REST_URL,
+    default: () => MOCK_REST_URL,
 }))
 
 describe('myPurchaseList - services', () => {
@@ -66,7 +66,7 @@ describe('myPurchaseList - services', () => {
                 status: 200,
                 response: data,
             })
-            const expectedUrl = `${REST_URL}/subscriptions`
+            const expectedUrl = `${MOCK_REST_URL}/subscriptions`
             expect(request.config.method).toBe('get')
             expect(request.config.url).toBe(`${expectedUrl}`)
         })

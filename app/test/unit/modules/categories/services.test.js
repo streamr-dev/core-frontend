@@ -2,11 +2,11 @@ import moxios from 'moxios'
 
 import * as services from '$mp/modules/categories/services'
 
-const REST_URL = 'TEST_STREAMR_API_URL'
+const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
 
-jest.mock('$app/getters/getRestUrl', () => ({
+jest.mock('$app/src/getters/getRestUrl', () => ({
     __esModule: true,
-    default: () => REST_URL,
+    default: () => MOCK_REST_URL,
 }))
 
 describe('categories - services', () => {
@@ -40,7 +40,7 @@ describe('categories - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${REST_URL}/categories?includeEmpty=true`)
+            expect(request.config.url).toBe(`${MOCK_REST_URL}/categories?includeEmpty=true`)
             done()
         })
 
@@ -68,7 +68,7 @@ describe('categories - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${REST_URL}/categories?includeEmpty=false`)
+            expect(request.config.url).toBe(`${MOCK_REST_URL}/categories?includeEmpty=false`)
             done()
         })
 

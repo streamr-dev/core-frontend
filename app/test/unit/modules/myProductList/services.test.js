@@ -2,11 +2,11 @@ import moxios from 'moxios'
 
 import { getMyProducts } from '$mp/modules/myProductList/services'
 
-const REST_URL = 'TEST_STREAMR_API_URL'
+const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
 
-jest.mock('$app/getters/getRestUrl', () => ({
+jest.mock('$app/src/getters/getRestUrl', () => ({
     __esModule: true,
-    default: () => REST_URL,
+    default: () => MOCK_REST_URL,
 }))
 
 describe('myProductList - services', () => {
@@ -63,7 +63,7 @@ describe('myProductList - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${REST_URL}/users/me/products`)
+            expect(request.config.url).toBe(`${MOCK_REST_URL}/users/me/products`)
         })
 
         const result = await getMyProducts()
