@@ -18,10 +18,10 @@ export default function getStreamrClientConfig(options = {}) {
         autoDisconnect: false,
         verifySignatures: 'never',
         auth: {
-            sessionToken: getToken(),
+            sessionToken: getToken() || undefined,
             ethereum: web3 && web3.metamaskProvider,
         },
-        mainChainRPC: mainChainConfig,
+        mainChainRPC: mainChainConfig.url,
         streamRegistryChainRPC: sideChainConfig,
         dataUnionChainRPC: sideChainConfig,
         ...options,
