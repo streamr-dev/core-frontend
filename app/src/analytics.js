@@ -3,6 +3,7 @@
 import * as Sentry from '@sentry/browser'
 import { RewriteFrames } from '@sentry/integrations'
 import LogRocket from 'logrocket'
+import getPlatformOriginUrl from './getters/getPlatformOriginUrl'
 import getStreamrUrl from './getters/getStreamrUrl'
 
 type ErrorServiceId = string
@@ -69,7 +70,7 @@ if (process.env.SENTRY_DSN) {
                 whitelistUrls: [
                     window.location.origin,
                     process.env.PLATFORM_PUBLIC_PATH,
-                    process.env.PLATFORM_ORIGIN_URL,
+                    getPlatformOriginUrl(),
                     getStreamrUrl(),
                 ].filter(Boolean),
                 debug: true,

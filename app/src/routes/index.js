@@ -3,6 +3,7 @@
 import pick from 'lodash/pick'
 import qs from 'query-string'
 import { parse, compile } from 'path-to-regexp'
+import getPlatformOriginUrl from '$app/src/getters/getPlatformOriginUrl'
 import getRestUrl from '../getters/getRestUrl'
 import getStreamrUrl from '../getters/getStreamrUrl'
 import definitions from './definitions'
@@ -89,6 +90,6 @@ export const buildRoutes = (paths: Paths, getVariables: () => Variables): Routes
 export default buildRoutes(definitions, () => ({
     landingPage: 'https://streamr.network',
     streamr: getStreamrUrl(),
-    platform: process.env.PLATFORM_ORIGIN_URL,
+    platform: getPlatformOriginUrl(),
     api: getRestUrl(),
 }))
