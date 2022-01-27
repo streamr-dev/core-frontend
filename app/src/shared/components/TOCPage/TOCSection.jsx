@@ -9,6 +9,7 @@ type Props = {
     id: string,
     title?: string | Element<any>,
     status?: string | Element<any>,
+    icon?: string | Element<any>,
     children?: Node,
     onlyDesktop?: boolean,
 }
@@ -37,8 +38,9 @@ const Title = styled.h3`
 `
 
 const TitleWrapper = styled.div`
-    display: inline-flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 16px;
     align-items: center;
     width: 100%;
 `
@@ -51,6 +53,7 @@ export const UnstyledTOCSection = ({
     id,
     title,
     status,
+    icon,
     children,
     onlyDesktop,
     ...props
@@ -63,6 +66,7 @@ export const UnstyledTOCSection = ({
                     {!!title && (
                         <TitleText>{title}</TitleText>
                     )}
+                    {icon || <span />}
                     {!!status && (
                         <Status>{status}</Status>
                     )}

@@ -34,9 +34,11 @@ import CodeSnippets from '$shared/components/CodeSnippets'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import routes from '$routes'
+import { WarningIcon } from './shared/Icons'
 import PartitionsView from './Edit/PartitionsView'
 import HistoryView from './Edit/HistoryView'
 import ConfigureView from './Edit/ConfigureView'
+import MigrateView from './Edit/MigrateView'
 import { StatusView } from './Edit/StatusView'
 import SecurityView from './Edit/SecurityView'
 import Preview from './Edit/PreviewView'
@@ -629,6 +631,17 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                         />
                                     </Field>
                                 </FormGroup>
+                            </TOCSection>
+                            <TOCSection
+                                id="migrate"
+                                title="Migration to Brubeck"
+                                icon={<WarningIcon />}
+                                disabled
+                            >
+                                <MigrateView
+                                    disabled
+                                    updateStream={updateStream}
+                                />
                             </TOCSection>
                             <TOCSection
                                 id="snippets"

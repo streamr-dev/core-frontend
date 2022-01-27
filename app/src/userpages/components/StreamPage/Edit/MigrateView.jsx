@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { MEDIUM } from '$shared/utils/styled'
 import type { Stream } from '$shared/flowtype/stream-types'
@@ -9,12 +9,18 @@ import UnstyledToggle from '$shared/components/Toggle'
 
 type Props = {
     disabled: boolean,
-    stream: Stream,
+    stream: ?Stream,
     updateStream?: Function,
 }
 
 const Description = styled.p`
     margin-bottom: 3rem;
+`
+
+const OpacityContainer = styled.div`
+    ${({ disabled }) => !!disabled && css`
+        opacity: 0.5;
+    `}
 `
 
 const InputContainer = styled.div`
@@ -62,26 +68,27 @@ export function StatusView({ disabled, stream, updateStream }: Props) {
                 Note that messages in the stream are not automatically copied to the new network -
                 please update your data publishers to use the new network. <a href="#">Learn more</a> about migrating to Brubeck.
             </Description>
-            <InputContainer>
-                <Label htmlFor="migrationEnabled">
-                    Sync this stream and its permissions to Brubeck
-                </Label>
-                <Toggle
-                    disabled={disabled}
-                    id="migrationEnabled"
-                    value={migrateToBrubeck}
-                    onChange={(value) => {
-                        if (typeof updateStream !== 'function') {
-                            return
-                        }
-                        updateStream('set migrateToBrubeck flag', (s) => ({
-                            ...s,
-                            migrateToBrubeck: value,
-                        }))
-                    }}
-                />
-            </InputContainer>
-            <LastSync>Last synced on: {migrateSyncLastRunAt}</LastSync>
+            <OpacityContainer disabled={disabled}>
+                <InputContainer>
+                    <Label htmlFor="migrationEnabled">
+                        Sync this stream and its permissions to Brubeck
+                    </Label>
+                    <Toggle
+                        disabled={disabled}
+                        id="migrationEnabled"
+                        value={migrateToBrubeck}
+                        onChange={(value) => {
+                            if (typeof updateStream !== 'function') {
+                                return
+                            }
+                            updateStream({
+                                migrateToBrubeck: value,
+                            })
+                        }}
+                    />
+                </InputContainer>
+                <LastSync>Last synced on: {migrateSyncLastRunAt || 'N/A'}</LastSync>
+            </OpacityContainer>
         </div>
     )
 }
