@@ -14,6 +14,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
+const validateEnv = require('./scripts/validateEnv')
 
 const dotenv = require('./scripts/dotenv')
 
@@ -27,6 +28,10 @@ const dist = path.resolve(root, 'dist')
 const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'),
 })
+
+if (isProduction()) {
+    validateEnv()
+}
 
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
