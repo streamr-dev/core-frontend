@@ -27,6 +27,15 @@ export default function getClientConfig(options = {}) {
             url: process.env.STREAMS_HTTP_PROVIDER,
             chainId: parseInt(process.env.STREAMS_CHAIN_ID, 10),
         },
+        streamRegistryChainAddress: process.env.STREAM_REGISTRY_CONTRACT_ADDRESS,
+        nodeRegistryChainAddress: process.env.NODE_REGISTRY_CONTRACT_ADDRESS,
+        streamStorageRegistryChainAddress: process.env.STREAM_STORAGE_REGISTRY_CONTRACT_ADDRESS,
+        dataUnion: {
+            factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
+            factorySidechainAddress: process.env.DATA_UNION_FACTORY_SIDECHAIN_ADDRESS,
+            templateMainnetAddress: process.env.DATA_UNION_TEMPLATE_MAINNET_ADDRESS,
+            templateSidechainAddress: process.env.DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS,
+        },
     }, options)
 
     return config
