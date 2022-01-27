@@ -1,5 +1,8 @@
 // @flow
 
+import getMainChainConfig from '$app/src/getters/getMainChainConfig'
+import getSideChainConfig from '$app/src/getters/getSideChainConfig'
+
 /*
     These are all type
     {
@@ -37,8 +40,8 @@ export const networks = {
 }
 
 export const ethereumNetworks = {
-    [((process.env.MAINNET_CHAIN_ID || '8995'): string)]: 'Local mainchain',
-    [((process.env.SIDECHAIN_CHAIN_ID || '8997'): string)]: 'Local sidechain',
+    [getMainChainConfig().chainId]: 'Local mainchain',
+    [getSideChainConfig().chainId]: 'Local sidechain',
     '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',

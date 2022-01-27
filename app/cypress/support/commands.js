@@ -4,7 +4,7 @@ import { hdkey } from 'ethereumjs-wallet'
 
 import { setToken } from '$shared/utils/sessionToken'
 import getAuthorizationHeader from '$shared/utils/getAuthorizationHeader'
-import getClientConfig from '$shared/utils/getClientConfig'
+import getStreamrClientConfig from '$app/src/getters/getStreamrClientConfig'
 
 const cache = {}
 
@@ -92,7 +92,7 @@ Cypress.Commands.add('addToStorageNode', (streamId) => {
     // add the stream to DEV storage node ("broker-node-storage-1" on streamr-docker-dev environment)
     const DEV_STORAGE_NODE_ADDRESS = '0xde1112f631486CfC759A50196853011528bC5FA0'
     const DEV_STORAGE_NODE_URL = 'http://10.200.10.1:8891'
-    const config = getClientConfig({
+    const config = getStreamrClientConfig({
         url: 'ws://localhost/api/v1/ws',
         storageNode: {
             address: DEV_STORAGE_NODE_ADDRESS,
@@ -155,9 +155,10 @@ Cypress.Commands.add('createProduct', (body) => (
 ))
 
 Cypress.Commands.add('connectToClient', (options = {}) => {
-    const client = new StreamrClient(getClientConfig(Object.assign({
+    const client = new StreamrClient(getStreamrClientConfig({
         url: 'ws://localhost/api/v1/ws',
-    }, options)))
+        ...options,
+    }))
 
     return client.ensureConnected().then(() => client)
 })

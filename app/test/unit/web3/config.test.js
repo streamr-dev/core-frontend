@@ -13,6 +13,32 @@ jest.mock('$app/src/getters/getDataTokenAddress', () => ({
     default: () => MOCK_TOKEN_ADDRESS,
 }))
 
+jest.mock('$app/src/getters/getMainChainConfig', () => {
+    const { default: actual } = jest.requireActual('$app/src/getters/getMainChainConfig')
+
+    return {
+        __esModule: true,
+        default: () => ({
+            ...actual(),
+            chainId: '1',
+            url: 'http://mainchainrpc:8545',
+        }),
+    }
+})
+
+jest.mock('$app/src/getters/getSideChainConfig', () => {
+    const { default: actual } = jest.requireActual('$app/src/getters/getSideChainConfig')
+
+    return {
+        __esModule: true,
+        default: () => ({
+            ...actual(),
+            chainId: '8995',
+            url: 'http://sidechainrpc:8546',
+        }),
+    }
+})
+
 describe('config', () => {
     let oldEnv
 
@@ -32,8 +58,6 @@ describe('config', () => {
         it('gets the right mainnet config from env', () => {
             process.env.MARKETPLACE_CONTRACT_ADDRESS = 'mpAddress'
             process.env.DAI_TOKEN_CONTRACT_ADDRESS = 'daiTokenAddress'
-            process.env.MAINNET_CHAIN_ID = '1'
-            process.env.MAINNET_HTTP_PROVIDER = 'https://mainnet'
             process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS = 1337
             process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS = 'uniAddress'
 
@@ -41,7 +65,7 @@ describe('config', () => {
 
             expect(mainnet).toStrictEqual({
                 chainId: '1',
-                rpcUrl: 'https://mainnet',
+                rpcUrl: 'http://mainchainrpc:8545',
                 transactionConfirmationBlocks: 1337,
                 dataToken: {
                     abi: ['t_test', 't_values', 't_only'],
@@ -64,22 +88,16 @@ describe('config', () => {
         })
 
         it('gets the right sidechain config from env', () => {
-            process.env.SIDECHAIN_CHAIN_ID = '8995'
-            process.env.SIDECHAIN_HTTP_PROVIDER = 'https://sidechain'
-
             const { sidechain } = getConfig()
 
             expect(sidechain).toStrictEqual({
                 chainId: '8995',
-                rpcUrl: 'https://sidechain',
+                rpcUrl: 'http://sidechainrpc:8546',
                 dataUnionAbi: ['ds_test', 'ds_values', 'ds_only'],
             })
         })
 
         it('gets metamask config', () => {
-            process.env.SIDECHAIN_CHAIN_ID = '8997'
-            process.env.MAINNET_CHAIN_ID = '8995'
-
             const { metamask } = getConfig()
 
             const chainIds = Object.keys(metamask)

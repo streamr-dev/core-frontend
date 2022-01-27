@@ -50,21 +50,21 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
 | TOKEN_ADDRESS                                     | Address of the deployed DATA Token contract                          |
 | DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
-| MAINNET_CHAIN_ID                                  | This is used to check that the user has selected the correct network |
-| MAINNET_HTTP_PROVIDER                             | A public provider used to query Marketplace methods without Metamask |
+| MAIN_CHAIN_ID                                     | This is used to check that the user has selected the correct network |
+| ETHEREUM_SERVER_URL                               | A public provider used to query Marketplace methods without Metamask |
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | Number of confirmations required for tx to be considered successful  |
 | BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
 | STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
 | UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | Address of the deployed Uniswap adaptor                              |
 | DATA_UNION_PUBLISH_MEMBER_LIMIT                   | Number of members required for a data union product before publish   |
-| DATA_UNION_FACTORY_MAINNET_ADDRESS                |                                                                      |
-| DATA_UNION_TEMPLATE_MAINNET_ADDRESS               |                                                                      |
-| DATA_UNION_FACTORY_SIDECHAIN_ADDRESS              |                                                                      |
+| DU_FACTORY_MAINNET                                |                                                                      |
+| DU_TEMPLATE_MAINNET                               |                                                                      |
+| DU_FACTORY_SIDECHAIN                              |                                                                      |
 | DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK       |                                                                      |
-| DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS             |                                                                      |
-| SIDECHAIN_CHAIN_ID                                |                                                                      |
-| SIDECHAIN_HTTP_PROVIDER                           |                                                                      |
-| DATA_TOKEN_SIDECHAIN_ADDRESS                      |                                                                      |
+| DU_TEMPLATE_SIDECHAIN                             |                                                                      |
+| SIDE_CHAIN_ID                                     |                                                                      |
+| SIDECHAIN_URL                                     |                                                                      |
+| TOKEN_ADDRESS_SIDECHAIN                           |                                                                      |
 | STORAGE_NODES                                     |                                                                      |
 
 Default development values are taken from `.env.required` which can be overridden by values in your `.env` file.

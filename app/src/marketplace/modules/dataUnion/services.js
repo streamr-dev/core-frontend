@@ -5,8 +5,8 @@ import StreamrClient from 'streamr-client'
 import BN from 'bignumber.js'
 import Web3 from 'web3'
 
+import getStreamrClientConfig from '$app/src/getters/getStreamrClientConfig'
 import getConfig from '$shared/web3/config'
-import { getToken } from '$shared/utils/sessionToken'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
@@ -31,36 +31,16 @@ type CreateClient = {
     usePublicNode?: boolean,
 }
 
-export const createClient = (options: CreateClient = {}) => {
-    const { usePublicNode } = {
-        usePublicNode: false,
-        ...(options || {}),
-    }
-    const web3 = usePublicNode ? undefined : getWeb3()
-
-    return new StreamrClient({
-        tokenAddressSidechain: process.env.DATA_TOKEN_SIDECHAIN_ADDRESS,
-        dataUnion: {
-            factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
-            factorySidechainAddress: process.env.DATA_UNION_FACTORY_SIDECHAIN_ADDRESS,
-            templateMainnetAddress: process.env.DATA_UNION_TEMPLATE_MAINNET_ADDRESS,
-            templateSidechainAddress: process.env.DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS,
-        },
-        autoConnect: false,
-        autoDisconnect: false,
-        auth: {
-            sessionToken: getToken(),
-            ethereum: web3 && web3.metamaskProvider,
-        },
-        sidechain: {
-            url: process.env.SIDECHAIN_HTTP_PROVIDER,
-            chainId: parseInt(process.env.SIDECHAIN_CHAIN_ID, 10),
-        },
-        mainnet: {
-            url: process.env.MAINNET_HTTP_PROVIDER,
-        },
+function createClient({ usePublicNode = false }: CreateClient = {}) {
+    const config = getStreamrClientConfig({
         streamrNodeAddress: getStreamrEngineAddresses()[0],
     })
+
+    if (usePublicNode) {
+        delete config.auth.ethereum
+    }
+
+    return new StreamrClient(config)
 }
 
 // ----------------------
