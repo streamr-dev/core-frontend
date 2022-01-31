@@ -11,7 +11,7 @@ export default function getClientConfig(options = {}) {
         autoConnect: true,
         autoDisconnect: false,
         restUrl: process.env.STREAMR_API_URL,
-        theGraphUrl: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/network-contracts`,
+        theGraphUrl: process.env.THE_GRAPH_URL,
         verifySignatures: 'never',
         auth: {
             ethereum: web3.metamaskProvider,
@@ -28,7 +28,7 @@ export default function getClientConfig(options = {}) {
             chainId: parseInt(process.env.STREAMS_CHAIN_ID, 10),
         },
         streamRegistryChainAddress: process.env.STREAM_REGISTRY_CONTRACT_ADDRESS,
-        nodeRegistryChainAddress: process.env.NODE_REGISTRY_CONTRACT_ADDRESS,
+        nodeRegistryChainAddress: process.env.STORAGE_NODE_REGISTRY_CONTRACT_ADDRESS,
         streamStorageRegistryChainAddress: process.env.STREAM_STORAGE_REGISTRY_CONTRACT_ADDRESS,
         dataUnion: {
             factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
