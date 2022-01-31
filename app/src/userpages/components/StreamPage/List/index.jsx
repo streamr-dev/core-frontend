@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useCallback, useMemo, useRef, useReducer } from 'react'
+import React, { Fragment, useEffect, useState, useCallback, useMemo, useReducer } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useClient } from 'streamr-client-react'
@@ -192,8 +192,6 @@ const StreamList = () => {
         hasMoreResults: false,
         invalidatedStreams: {},
     })
-    const offsetRef = useRef()
-    offsetRef.current = streams.length
 
     const fetchStreams = useCallback(async ({ replace = false, filter = {} } = {}) => {
         try {
@@ -204,21 +202,16 @@ const StreamList = () => {
                 uiChannel: false,
                 sortBy: 'lastUpdated',
             })
-            let offset = offsetRef.current
-
-            // If we are replacing, reset the offset before API call
-            if (replace) {
-                offset = 0
-            }
 
             // TODO: ordering not supported by the client
             delete params.sortBy
 
-            const nextStreams = await client.listStreams({
-                ...params,
-                max: PAGE_SIZE + 1, // query 1 extra element to determine if we should show "load more" button
-                offset,
-            })
+            let nextStreams = []
+            if (params.search) {
+                nextStreams = await client.searchStreams(params.search)
+            } else {
+                nextStreams = await client.getAllStreams()
+            }
 
             if (isMounted()) {
                 dispatch({

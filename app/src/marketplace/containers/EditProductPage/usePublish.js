@@ -22,7 +22,6 @@ import {
     postDeployFree,
     postSetDeploying,
 } from '$mp/modules/product/services'
-import { getAllStreams } from '$mp/modules/streams/services'
 
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
@@ -131,7 +130,7 @@ export default function usePublish() {
                     try {
                         // Get all streams and verify that the added streams actually exist,
                         // otherwise the product update will fail
-                        const streams = await getAllStreams(client)
+                        const streams = await client.getAllStreams()
                         const streamIds = new Set(streams.map(({ id }) => id))
                         nextProduct.streams = (nextProduct.streams || []).filter((id) => streamIds.has(id))
 
