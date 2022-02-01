@@ -163,6 +163,10 @@ module.exports = {
                     keyseparator: '.',
                 },
             },
+            {
+                test: /\.toml$/,
+                loader: 'toml-loader',
+            },
         ],
     },
     plugins: [
@@ -322,6 +326,7 @@ module.exports = {
             $routes: path.resolve(__dirname, 'src/routes'),
             $utils: path.resolve(__dirname, 'src/utils/'),
             $ui: path.resolve(__dirname, 'src/shared/components/Ui'),
+            $config: path.resolve(__dirname, `src/config/${process.env.NODE_ENV}.toml`),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),

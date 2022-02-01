@@ -1,0 +1,6 @@
+[core]
+platformOriginUrl = "https://streamr.network"
+streamrUrl = "https://streamr.network"
+
+[client.mainchain]
+chainId = 1

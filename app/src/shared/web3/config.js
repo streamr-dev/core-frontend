@@ -1,10 +1,8 @@
 // @flow
 
 import type { SmartContractConfig } from '$shared/flowtype/web3-types'
-import getDataTokenAddress from '$app/src/getters/getDataTokenAddress'
-import getMainChainConfig from '$app/src/getters/getMainChainConfig'
 import getMainChainId from '$app/src/getters/getMainChainId'
-import getSideChainConfig from '$app/src/getters/getSideChainConfig'
+import getClientConfig from '$app/src/getters/getClientConfig'
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
 import uniswapAdaptorAbi from './abis/uniswapAdaptor'
@@ -34,9 +32,7 @@ type Config = {
 }
 
 const getConfig = (): Config => {
-    const mainChainConfig = getMainChainConfig()
-
-    const sideChainConfig = getSideChainConfig()
+    const { tokenAddress, dataUnionChainRPC: sideChainConfig, mainChainRPC: mainChainConfig } = getClientConfig()
 
     const mainChainId = getMainChainId()
 
@@ -47,7 +43,7 @@ const getConfig = (): Config => {
             transactionConfirmationBlocks: parseInt(process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS, 10) || 24,
             dataToken: {
                 abi: tokenAbi,
-                address: getDataTokenAddress(),
+                address: tokenAddress,
             },
             daiToken: {
                 abi: tokenAbi,

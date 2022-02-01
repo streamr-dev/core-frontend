@@ -1,0 +1,50 @@
+[docker]
+host = "localhost"
+
+[core]
+platformOriginUrl = ""
+streamrUrl = ""
+
+[client]
+graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
+restUrl = "/api/v1"
+storageNodeAddress = "0xFCAd0B19bB29D4674531d6f115237E16AfCE377c" # STREAMR_ENGINE_NODE_ADDRESSES
+
+[client.mainchain]
+name = "dev_ethereum"
+dataTokenAddress = "0xbAA81A0179015bE47Ad439566374F2Bae098686F"
+chainId = 1
+
+[client.mainchain.rpc]
+url = ":8545"
+
+[client.mainchain.dataUnion]
+factoryAddress = "0x4bbcBeFBEC587f6C4AF9AF9B48847caEa1Fe81dA"
+templateAddress = "0x7bFBAe10AE5b5eF45e2aC396E0E605F6658eF3Bc"
+
+[client.sidechain]
+name = "dev_xdai"
+dataTokenAddress = "0x73Be21733CC5D08e1a14Ea9a399fb27DB3BEf8fF"
+
+[client.sidechain.rpc]
+chainId = 127
+url = ":8546"
+
+[client.sidechain.dataUnion]
+factoryAddress = "0x4A4c4759eb3b7ABee079f832850cD3D0dC48D927"
+templateAddress = "0x36afc8c9283CC866b8EB6a61C6e6862a83cd6ee8"
+
+[[client.network.trackers]]
+id = "0xb9e7cEBF7b03AE26458E32a059488386b05798e8"
+wsUrl = ":30301"
+httpUrl = ":30301"
+
+[[client.network.trackers]]
+id = "0x0540A3e144cdD81F402e7772C76a5808B71d2d30"
+wsUrl = ":30302"
+httpUrl = ":30302"
+
+[[client.network.trackers]]
+id = "0xf2C195bE194a2C91e93Eacb1d6d55a00552a85E2"
+wsUrl = ":30303"
+httpUrl = ":30303"

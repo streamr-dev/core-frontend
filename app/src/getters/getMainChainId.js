@@ -1,3 +1,5 @@
+import config from '$config'
+
 export default function getMainChainId() {
-    return Number(process.env.MAIN_CHAIN_ID || 8995)
+    return config.client?.mainchain?.chainId
 }

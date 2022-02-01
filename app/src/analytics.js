@@ -3,8 +3,7 @@
 import * as Sentry from '@sentry/browser'
 import { RewriteFrames } from '@sentry/integrations'
 import LogRocket from 'logrocket'
-import getPlatformOriginUrl from './getters/getPlatformOriginUrl'
-import getStreamrUrl from './getters/getStreamrUrl'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 type ErrorServiceId = string
 type ErrorService = {
@@ -58,6 +57,8 @@ export class Analytics {
 
 const analytics = new Analytics()
 
+const { streamrUrl, platformOriginUrl } = getCoreConfig()
+
 if (process.env.SENTRY_DSN) {
     analytics.register({
         id: 'Sentry',
@@ -70,8 +71,8 @@ if (process.env.SENTRY_DSN) {
                 whitelistUrls: [
                     window.location.origin,
                     process.env.PLATFORM_PUBLIC_PATH,
-                    getPlatformOriginUrl(),
-                    getStreamrUrl(),
+                    platformOriginUrl,
+                    streamrUrl,
                 ].filter(Boolean),
                 debug: true,
             })

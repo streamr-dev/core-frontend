@@ -5,7 +5,7 @@ import StreamrClient from 'streamr-client'
 import BN from 'bignumber.js'
 import Web3 from 'web3'
 
-import getStreamrClientConfig from '$app/src/getters/getStreamrClientConfig'
+import getClientConfig from '$app/src/getters/getClientConfig'
 import getConfig from '$shared/web3/config'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
@@ -23,6 +23,8 @@ import type { Secret } from './types'
 
 export const getStreamrEngineAddresses = (): Array<string> => {
     const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
+    // TODO: Refactor, or just replace this one. It's the same issue.
+    // const addressesString = getClientConfig().streamrNodeAddress || '',
     const addresses = addressesString.split(',')
     return addresses
 }
@@ -32,7 +34,7 @@ type CreateClient = {
 }
 
 function createClient({ usePublicNode = false }: CreateClient = {}) {
-    const config = getStreamrClientConfig({
+    const config = getClientConfig({
         streamrNodeAddress: getStreamrEngineAddresses()[0],
     })
 

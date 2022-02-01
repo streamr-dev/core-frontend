@@ -1,18 +1,22 @@
 import React, { useMemo } from 'react'
 import Provider from 'streamr-client-react'
-import getStreamrClientConfig from '$app/src/getters/getStreamrClientConfig'
+import getClientConfig from '$app/src/getters/getClientConfig'
 import { useSession } from '$auth/components/SessionProvider'
+import { getWeb3 } from '$shared/web3/web3Provider'
 
 export default function StreamrClientProvider({ children }) {
     const { token } = useSession()
 
     const config = useMemo(() => {
-        const nextConfig = getStreamrClientConfig()
+        const nextConfig = getClientConfig()
+
+        const web3 = getWeb3()
 
         if (token) {
             nextConfig.auth = {
                 ...nextConfig.auth,
-                sessionToken: token,
+                sessionToken: token || undefined,
+                ethereum: web3 && web3.metamaskProvider,
             }
         }
 
