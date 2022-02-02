@@ -7,6 +7,7 @@ import Web3 from 'web3'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getConfig from '$shared/web3/config'
+import { getToken } from '$shared/utils/sessionToken'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
@@ -27,18 +28,14 @@ type CreateClient = {
 }
 
 function createClient({ usePublicNode = false }: CreateClient = {}) {
+    const web3 = usePublicNode ? undefined : getWeb3()
+
     return new StreamrClient(getClientConfig({
-        auth: (() => {
-            if (usePublicNode) {
-                return {}
-            }
-
-            const web3 = getWeb3()
-
-            return {
-                ethereum: web3 && web3.metamaskProvider,
-            }
-        })(),
+        auth: {
+            sessionToken: getToken(),
+            ethereum: web3 && web3.metamaskProvider,
+        },
+        autoConnect: false,
     }))
 }
 
