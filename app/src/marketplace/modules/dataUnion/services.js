@@ -21,28 +21,24 @@ import Transaction from '$shared/utils/Transaction'
 import routes from '$routes'
 import type { Secret } from './types'
 
-export const getStreamrEngineAddresses = (): Array<string> => {
-    const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
-    // TODO: Refactor, or just replace this one. It's the same issue.
-    // const addressesString = getClientConfig().streamrNodeAddress || '',
-    const addresses = addressesString.split(',')
-    return addresses
-}
-
 type CreateClient = {
     usePublicNode?: boolean,
 }
 
 function createClient({ usePublicNode = false }: CreateClient = {}) {
-    const config = getClientConfig({
-        streamrNodeAddress: getStreamrEngineAddresses()[0],
-    })
+    return new StreamrClient(getClientConfig({
+        auth: (() => {
+            if (usePublicNode) {
+                return {}
+            }
 
-    if (usePublicNode) {
-        delete config.auth.ethereum
-    }
+            const web3 = getWeb3()
 
-    return new StreamrClient(config)
+            return {
+                ethereum: web3 && web3.metamaskProvider,
+            }
+        })(),
+    }))
 }
 
 // ----------------------

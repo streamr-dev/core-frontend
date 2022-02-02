@@ -46,7 +46,6 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | PORT                                              | Port used by webpack devServer                                       |
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | Number of confirmations required for tx to be considered successful  |
 | BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
-| STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
 | DATA_UNION_PUBLISH_MEMBER_LIMIT                   | Number of members required for a data union product before publish   |
 | DU_FACTORY_MAINNET                                |                                                                      |
 | DU_TEMPLATE_MAINNET                               |                                                                      |

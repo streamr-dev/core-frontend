@@ -33,7 +33,6 @@ const envSchema = object({
     SIDE_CHAIN_ID: chainId(),
     SIDECHAIN_URL: string().required().url(),
     STORAGE_NODES: storageNodeCollection().required(),
-    STREAMR_ENGINE_NODE_ADDRESSES: ethereumAddress(),
     WEB3_TRANSACTION_CONFIRMATION_BLOCKS: nonNegativeNumberic(),
 })
 

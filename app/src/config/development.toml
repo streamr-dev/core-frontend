@@ -11,7 +11,7 @@ uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
 restUrl = "/api/v1"
-storageNodeAddress = "0xFCAd0B19bB29D4674531d6f115237E16AfCE377c" # STREAMR_ENGINE_NODE_ADDRESSES
+streamrNodeAddress = "0xFCAd0B19bB29D4674531d6f115237E16AfCE377c"
 
 [client.mainchain]
 chainId = 8995

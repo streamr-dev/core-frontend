@@ -7,6 +7,7 @@ uniswapAdaptorContractAddress = "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
 
 [client]
 restUrl = "https://streamr.network/api/v1"
+streamrNodeAddress = "0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a"
 
 [client.mainchain]
 chainId = 1
