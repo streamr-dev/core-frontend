@@ -36,7 +36,11 @@ url = ":8545"
 [client.sidechain]
 dataTokenAddress = "0x73Be21733CC5D08e1a14Ea9a399fb27DB3BEf8fF"
 
-[client.sidechain.rpc]
+[client.dataUnionChain.rpc]
+chainId = 8997
+url = ":8546"
+
+[client.streamRegistryChain.rpc]
 chainId = 8997
 url = ":8546"
 
