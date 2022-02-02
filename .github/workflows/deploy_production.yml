@@ -42,16 +42,6 @@ jobs:
           SENTRY_PROJECT: marketplace
           SENTRY_DSN: https://e012761929d24baa96ca82772f60b395@o151964.ingest.sentry.io/1203154
           SENTRY_INDEXER_DSN: https://8311f8e7df9046b781600f95eefd1aa0@o151964.ingest.sentry.io/5235991
-          DATA_UNION_PUBLISH_MEMBER_LIMIT: 1
-          WEB3_TRANSACTION_CONFIRMATION_BLOCKS: 1
-          NO_TEST_HOOKS: 1
-          DU_FACTORY_MAINNET: "0xE41439BF434F9CfBF0153f5231C205d4ae0C22e3"
-          DU_FACTORY_SIDECHAIN: "0xFCE1FBFAaE61861B011B379442c8eE1DC868ABd0"
-          DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK: 14924666
-          DU_TEMPLATE_MAINNET: "0x67352e3F7dBA907aF877020aE7E9450C0029C70c"
-          DU_TEMPLATE_SIDECHAIN: "0xaCF9e8134047eDc671162D9404BF63a587435bAa"
-          SIDECHAIN_URL: https://weathered-billowing-thunder.xdai.quiknode.pro/502bd1fa80407bcd07ebd4f14e37c6e5c20db640/
-          SIDE_CHAIN_ID: 100
         run: |
           npm run build-index
           npm run build --if-present

@@ -35,7 +35,8 @@ type Config = {
 const getConfig = (): Config => {
     const { tokenAddress, dataUnionChainRPC: sideChainConfig, mainChainRPC: mainChainConfig } = getClientConfig()
 
-    const { daiTokenContractAddress: DAI, marketplaceContractAddress, uniswapAdaptorContractAddress } = getCoreConfig()
+    // eslint-disable-next-line max-len
+    const { daiTokenContractAddress: DAI, marketplaceContractAddress, uniswapAdaptorContractAddress, web3TransactionConfirmationBlocks } = getCoreConfig()
 
     const mainChainId = getMainChainId()
 
@@ -43,7 +44,7 @@ const getConfig = (): Config => {
         mainnet: {
             chainId: mainChainId,
             rpcUrl: mainChainConfig.url,
-            transactionConfirmationBlocks: parseInt(process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS, 10) || 24,
+            transactionConfirmationBlocks: web3TransactionConfirmationBlocks || 24,
             dataToken: {
                 abi: tokenAbi,
                 address: tokenAddress,

@@ -1,7 +1,6 @@
-// @flow
-
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 /*
     These are all type
@@ -115,4 +114,4 @@ export const StreamrClientRepositories = {
     [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }
 
-export const dataUnionMemberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
+export const dataUnionMemberLimit = getCoreConfig().dataUnionPublishMemberLimit

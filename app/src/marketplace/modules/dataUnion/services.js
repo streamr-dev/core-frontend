@@ -14,6 +14,7 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { post, del, get, put } from '$shared/utils/api'
 import { getWeb3 } from '$shared/web3/web3Provider'
 import TransactionError from '$shared/errors/TransactionError'
@@ -286,8 +287,7 @@ export async function* getMemberEventsFromTimestamp(id: DataUnionId, timestamp: 
 }
 
 export async function* getAllMemberEvents(id: DataUnionId): any {
-    const duFirstPossibleBlock = parseInt(process.env.DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK, 10)
-    yield* getMemberEventsFromBlock(id, duFirstPossibleBlock)
+    yield* getMemberEventsFromBlock(id, getCoreConfig().dataUnionFactorySidechainCreationBlock)
 }
 
 // ----------------------

@@ -1,15 +1,5 @@
 const { object, string, number, lazy } = require('yup')
 
-const chainId = () => lazy((v) => (
-    typeof v === 'string'
-        ? string().required().matches(/^[1-9]\d*$/)
-        : number().required().min(1)
-))
-
-const ethereumAddress = () => string()
-    .required()
-    .matches(/^0x[a-f\d]{40}$/i, 'is not a valid ethereum address')
-
 const nonNegativeNumberic = () => lazy((v) => (
     typeof v === 'string'
         ? string().required().matches(/^\d+$/)
@@ -17,20 +7,14 @@ const nonNegativeNumberic = () => lazy((v) => (
 ))
 
 const envSchema = object({
-    DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK: nonNegativeNumberic(),
-    DATA_UNION_PUBLISH_MEMBER_LIMIT: nonNegativeNumberic(),
-    DU_FACTORY_MAINNET: ethereumAddress(),
-    DU_FACTORY_SIDECHAIN: ethereumAddress(),
-    DU_TEMPLATE_MAINNET: ethereumAddress(),
-    DU_TEMPLATE_SIDECHAIN: ethereumAddress(),
-    GRAPH_API_URL: string().required().url(),
+    GOOGLE_ANALYTICS_ID: string().required(),
     PLATFORM_PUBLIC_PATH: string().required().url(),
     PORT: nonNegativeNumberic(),
+    SENTRY_DSN: string().required().url(),
+    SENTRY_ENVIRONMENT: string().required(),
+    SENTRY_INDEXER_DSN: string().required().url(),
     SENTRY_ORG: string().required(),
     SENTRY_PROJECT: string().required(),
-    SIDE_CHAIN_ID: chainId(),
-    SIDECHAIN_URL: string().required().url(),
-    WEB3_TRANSACTION_CONFIRMATION_BLOCKS: nonNegativeNumberic(),
 })
 
 module.exports = (env) => (
