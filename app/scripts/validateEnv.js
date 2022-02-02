@@ -16,8 +16,6 @@ const nonNegativeNumberic = () => lazy((v) => (
         : number().required().min(0)
 ))
 
-const storageNodeCollection = () => string().matches(/^(\s*[^:\s][^:]*:0x[a-f\d]{40})(,\s*[^:\s][^:]*:0x[a-f\d]{40})*$/)
-
 const envSchema = object({
     DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK: nonNegativeNumberic(),
     DATA_UNION_PUBLISH_MEMBER_LIMIT: nonNegativeNumberic(),
@@ -32,7 +30,6 @@ const envSchema = object({
     SENTRY_PROJECT: string().required(),
     SIDE_CHAIN_ID: chainId(),
     SIDECHAIN_URL: string().required().url(),
-    STORAGE_NODES: storageNodeCollection().required(),
     WEB3_TRANSACTION_CONFIRMATION_BLOCKS: nonNegativeNumberic(),
 })
 

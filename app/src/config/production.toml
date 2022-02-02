@@ -5,6 +5,10 @@ platformOriginUrl = "https://streamr.network"
 streamrUrl = "https://streamr.network"
 uniswapAdaptorContractAddress = "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
 
+[[core.storageNodes]]
+name = "Streamr Germany"
+address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
+
 [client]
 restUrl = "https://streamr.network/api/v1"
 streamrNodeAddress = "0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a"

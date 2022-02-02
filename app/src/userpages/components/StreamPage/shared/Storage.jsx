@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import StorageNode from '$shared/components/StorageNode'
 import Label from '$ui/Label'
-import nodes from '$shared/utils/storageNodes'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import useStreamStorageNodeAddresses from './useStreamStorageNodeAddresses'
 import useStreamStorageNodeToggle from './useStreamStorageNodeToggle'
 
@@ -32,6 +32,8 @@ const StorageNodeItem = ({
 const UnstyledStorage = ({ stream, disabled, ...props }) => {
     const addresses = useStreamStorageNodeAddresses(stream)
 
+    const { storageNodes } = getCoreConfig()
+
     return (
         <div {...props}>
             <Label>
@@ -39,7 +41,7 @@ const UnstyledStorage = ({ stream, disabled, ...props }) => {
                 {!!disabled && 'Storage nodes'}
             </Label>
             <StorageNode.List data-test-hook="Storage nodes">
-                {nodes.map(({ address, name }) => (
+                {storageNodes.map(({ address, name }) => (
                     <StorageNodeItem
                         address={address}
                         name={name}

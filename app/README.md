@@ -54,7 +54,6 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | DU_TEMPLATE_SIDECHAIN                             |                                                                      |
 | SIDE_CHAIN_ID                                     |                                                                      |
 | SIDECHAIN_URL                                     |                                                                      |
-| STORAGE_NODES                                     |                                                                      |
 
 Default development values are taken from `.env.required` which can be overridden by values in your `.env` file.
 

@@ -8,6 +8,10 @@ platformOriginUrl = ""
 streamrUrl = ""
 uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
 
+[[core.storageNodes]]
+name = "Local (broker-node-storage-1)"
+address = "0xde1112f631486CfC759A50196853011528bC5FA0"
+
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
 restUrl = "/api/v1"

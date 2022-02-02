@@ -16,7 +16,6 @@ const VALID_ENV = {
     SENTRY_PROJECT: 'marketplace',
     SIDE_CHAIN_ID: '8997',
     SIDECHAIN_URL: 'http://127.0.0.1:8546',
-    STORAGE_NODES: 'Local node:0xde1112f631486CfC759A50196853011528bC5FA0',
     WEB3_TRANSACTION_CONFIRMATION_BLOCKS: '1',
 }
 
@@ -137,45 +136,5 @@ it('ensures valid SENTRY_PROJECT', presenceTest('SENTRY_PROJECT'))
 it('ensures valid SIDE_CHAIN_ID', nonNegativeNumericTest('SIDE_CHAIN_ID', { allowZero: false }))
 
 it('ensures valid SIDECHAIN_URL', urlTest('SIDECHAIN_URL'))
-
-it('ensures valid STORAGE_NODES', async () => {
-    await presenceTest('STORAGE_NODES')()
-
-    await ex({
-        STORAGE_NODES: 'A:B',
-    }).rejects.toThrow(ValidationError)
-
-    await ex({
-        STORAGE_NODES: 'A:0xZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ',
-    }).rejects.toThrow(ValidationError)
-
-    await ex({
-        STORAGE_NODES: 'A:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-    }).rejects.toThrow(ValidationError)
-
-    await ex({
-        STORAGE_NODES: 'A:0x0',
-    }).rejects.toThrow(ValidationError)
-
-    await ex({
-        STORAGE_NODES: 'anything',
-    }).rejects.toThrow(ValidationError)
-
-    await ex({
-        STORAGE_NODES: ':0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-    }).rejects.toThrow(ValidationError)
-
-    await ex({
-        STORAGE_NODES: ' :0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-    }).rejects.toThrow(ValidationError)
-
-    await ex({
-        STORAGE_NODES: ' Name::0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-    }).rejects.toThrow(ValidationError)
-
-    await ex({
-        STORAGE_NODES: ' Name:0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-    }).resolves
-})
 
 it('ensures valid WEB3_TRANSACTION_CONFIRMATION_BLOCKS', nonNegativeNumericTest('WEB3_TRANSACTION_CONFIRMATION_BLOCKS'))
