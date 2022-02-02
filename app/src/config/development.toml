@@ -2,8 +2,11 @@
 host = "localhost"
 
 [core]
+daiTokenContractAddress = "0x642d2b84a32a9a92fec78ceaa9488388b3704898"
+marketplaceContractAddress = "0xF1371c0f40528406dc4f4cAf89924eA9Da49E866"
 platformOriginUrl = ""
 streamrUrl = ""
+uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
 
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
@@ -11,9 +14,9 @@ restUrl = "/api/v1"
 storageNodeAddress = "0xFCAd0B19bB29D4674531d6f115237E16AfCE377c" # STREAMR_ENGINE_NODE_ADDRESSES
 
 [client.mainchain]
-name = "dev_ethereum"
+chainId = 8995
 dataTokenAddress = "0xbAA81A0179015bE47Ad439566374F2Bae098686F"
-chainId = 1
+name = "dev_ethereum"
 
 [client.mainchain.rpc]
 url = ":8545"

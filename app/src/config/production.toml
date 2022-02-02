@@ -1,6 +1,21 @@
 [core]
+daiTokenContractAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+marketplaceContractAddress = "0xdc8d23092b93f9bb7416f45dea36f55996f34867"
 platformOriginUrl = "https://streamr.network"
 streamrUrl = "https://streamr.network"
+uniswapAdaptorContractAddress = "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
+
+[client]
+restUrl = "https://streamr.network/api/v1"
 
 [client.mainchain]
 chainId = 1
+dataTokenAddress = "0x8f693ca8D21b157107184d29D398A8D082b38b76"
+name = "ethereum"
+
+[client.mainchain.rpc]
+url = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
+
+[client.sidechain]
+dataTokenAddress = "0xE4a2620edE1058D61BEe5F45F6414314fdf10548"
+name = "xdai"

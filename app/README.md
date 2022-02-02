@@ -44,18 +44,9 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | Variable                                          | Description                                                          |
 |---------------------------------------------------|----------------------------------------------------------------------|
 | PORT                                              | Port used by webpack devServer                                       |
-| PLATFORM_ORIGIN_URL                               | Base path/address of the current environment                         |
-| REST_URL                                          | Address of the environment's Backend Rest API                        |
-| STREAMR_URL                                       | API Address for Dockerized Environments                              |
-| MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
-| TOKEN_ADDRESS                                     | Address of the deployed DATA Token contract                          |
-| DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
-| MAIN_CHAIN_ID                                     | This is used to check that the user has selected the correct network |
-| ETHEREUM_SERVER_URL                               | A public provider used to query Marketplace methods without Metamask |
 | WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | Number of confirmations required for tx to be considered successful  |
 | BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
 | STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
-| UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | Address of the deployed Uniswap adaptor                              |
 | DATA_UNION_PUBLISH_MEMBER_LIMIT                   | Number of members required for a data union product before publish   |
 | DU_FACTORY_MAINNET                                |                                                                      |
 | DU_TEMPLATE_MAINNET                               |                                                                      |
@@ -64,7 +55,6 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | DU_TEMPLATE_SIDECHAIN                             |                                                                      |
 | SIDE_CHAIN_ID                                     |                                                                      |
 | SIDECHAIN_URL                                     |                                                                      |
-| TOKEN_ADDRESS_SIDECHAIN                           |                                                                      |
 | STORAGE_NODES                                     |                                                                      |
 
 Default development values are taken from `.env.required` which can be overridden by values in your `.env` file.

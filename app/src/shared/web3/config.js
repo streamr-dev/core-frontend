@@ -3,6 +3,7 @@
 import type { SmartContractConfig } from '$shared/flowtype/web3-types'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
 import uniswapAdaptorAbi from './abis/uniswapAdaptor'
@@ -34,6 +35,8 @@ type Config = {
 const getConfig = (): Config => {
     const { tokenAddress, dataUnionChainRPC: sideChainConfig, mainChainRPC: mainChainConfig } = getClientConfig()
 
+    const { daiTokenContractAddress: DAI, marketplaceContractAddress, uniswapAdaptorContractAddress } = getCoreConfig()
+
     const mainChainId = getMainChainId()
 
     return {
@@ -47,15 +50,15 @@ const getConfig = (): Config => {
             },
             daiToken: {
                 abi: tokenAbi,
-                address: process.env.DAI_TOKEN_CONTRACT_ADDRESS || '',
+                address: DAI,
             },
             marketplace: {
                 abi: marketplaceAbi,
-                address: process.env.MARKETPLACE_CONTRACT_ADDRESS || '',
+                address: marketplaceContractAddress,
             },
             uniswapAdaptor: {
                 abi: uniswapAdaptorAbi,
-                address: process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS || '',
+                address: uniswapAdaptorContractAddress,
             },
             dataUnionAbi,
         },

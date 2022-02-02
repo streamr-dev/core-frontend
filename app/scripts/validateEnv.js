@@ -19,30 +19,21 @@ const nonNegativeNumberic = () => lazy((v) => (
 const storageNodeCollection = () => string().matches(/^(\s*[^:\s][^:]*:0x[a-f\d]{40})(,\s*[^:\s][^:]*:0x[a-f\d]{40})*$/)
 
 const envSchema = object({
-    DAI_TOKEN_CONTRACT_ADDRESS: ethereumAddress(),
     DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK: nonNegativeNumberic(),
     DATA_UNION_PUBLISH_MEMBER_LIMIT: nonNegativeNumberic(),
     DU_FACTORY_MAINNET: ethereumAddress(),
     DU_FACTORY_SIDECHAIN: ethereumAddress(),
     DU_TEMPLATE_MAINNET: ethereumAddress(),
     DU_TEMPLATE_SIDECHAIN: ethereumAddress(),
-    ETHEREUM_SERVER_URL: string().required().url(),
     GRAPH_API_URL: string().required().url(),
-    MAIN_CHAIN_ID: chainId(),
-    MARKETPLACE_CONTRACT_ADDRESS: ethereumAddress(),
-    PLATFORM_ORIGIN_URL: string().required().url(),
     PLATFORM_PUBLIC_PATH: string().required().url(),
     PORT: nonNegativeNumberic(),
-    REST_URL: string().required().url(),
     SENTRY_ORG: string().required(),
     SENTRY_PROJECT: string().required(),
     SIDE_CHAIN_ID: chainId(),
     SIDECHAIN_URL: string().required().url(),
     STORAGE_NODES: storageNodeCollection().required(),
     STREAMR_ENGINE_NODE_ADDRESSES: ethereumAddress(),
-    TOKEN_ADDRESS_SIDECHAIN: ethereumAddress(),
-    TOKEN_ADDRESS: ethereumAddress(),
-    UNISWAP_ADAPTOR_CONTRACT_ADDRESS: ethereumAddress(),
     WEB3_TRANSACTION_CONFIRMATION_BLOCKS: nonNegativeNumberic(),
 })
 
