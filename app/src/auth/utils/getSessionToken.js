@@ -1,6 +1,5 @@
-// @flow
-
 import StreamrClient from 'streamr-client'
+import getClientConfig from '$app/src/getters/getClientConfig'
 
 const parseError = ({ body }) => {
     const message = ((defaultMessage) => {
@@ -14,11 +13,11 @@ const parseError = ({ body }) => {
     return new Error(message)
 }
 
-export default async (auth: Object): Promise<?string> => {
+export default async (auth) => {
     try {
-        return await new StreamrClient({
+        return await new StreamrClient(getClientConfig({
             auth,
-        }).session.getSessionToken()
+        })).session.getSessionToken()
     } catch (e) {
         throw parseError(e)
     }
