@@ -206,11 +206,19 @@ const StreamList = () => {
             // TODO: ordering not supported by the client
             delete params.sortBy
 
-            let nextStreams = []
-            if (params.search) {
-                nextStreams = await client.searchStreams(params.search)
-            } else {
-                nextStreams = await client.getAllStreams()
+            const nextStreams = []
+
+            const gen = params.search
+                ? client.searchStreams(params.search)
+                : client.getAllStreams()
+
+            // eslint-disable-next-line no-restricted-syntax
+            for await (const stream of gen) {
+                if (!isMounted()) {
+                    break
+                }
+
+                nextStreams.push(stream)
             }
 
             if (isMounted()) {
