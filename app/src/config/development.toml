@@ -20,6 +20,12 @@ graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
 restUrl = "/api/v1"
 streamrNodeAddress = "0xFCAd0B19bB29D4674531d6f115237E16AfCE377c"
 
+[client.dataUnion]
+factoryMainnetAddress = "0x4bbcBeFBEC587f6C4AF9AF9B48847caEa1Fe81dA"
+templateMainnetAddress = "0x7bFBAe10AE5b5eF45e2aC396E0E605F6658eF3Bc"
+factorySidechainAddress = "0x4A4c4759eb3b7ABee079f832850cD3D0dC48D927"
+templateSidechainAddress = "0x36afc8c9283CC866b8EB6a61C6e6862a83cd6ee8"
+
 [client.mainchain]
 chainId = 8995
 dataTokenAddress = "0xbAA81A0179015bE47Ad439566374F2Bae098686F"
@@ -28,10 +34,6 @@ name = "dev_ethereum"
 [client.mainchain.rpc]
 url = ":8545"
 
-[client.mainchain.dataUnion]
-factoryAddress = "0x4bbcBeFBEC587f6C4AF9AF9B48847caEa1Fe81dA"
-templateAddress = "0x7bFBAe10AE5b5eF45e2aC396E0E605F6658eF3Bc"
-
 [client.sidechain]
 name = "dev_xdai"
 dataTokenAddress = "0x73Be21733CC5D08e1a14Ea9a399fb27DB3BEf8fF"
@@ -39,10 +41,6 @@ dataTokenAddress = "0x73Be21733CC5D08e1a14Ea9a399fb27DB3BEf8fF"
 [client.sidechain.rpc]
 chainId = 8997
 url = ":8546"
-
-[client.sidechain.dataUnion]
-factoryAddress = "0x4A4c4759eb3b7ABee079f832850cD3D0dC48D927"
-templateAddress = "0x36afc8c9283CC866b8EB6a61C6e6862a83cd6ee8"
 
 [[client.network.trackers]]
 id = "0xb9e7cEBF7b03AE26458E32a059488386b05798e8"
