@@ -1,8 +1,8 @@
 import formatConfigUrl from '$utils/formatConfigUrl'
-import config from '$config'
+import getConfig from '$app/src/getters/getConfig'
 
 export default function getCoreConfig() {
-    const { core } = config
+    const { core } = getConfig()
 
     return {
         ...core,

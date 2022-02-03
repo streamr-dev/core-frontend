@@ -2,10 +2,10 @@ import { STREAM_CLIENT_DEFAULTS } from 'streamr-client'
 import formatConfigUrl from '$utils/formatConfigUrl'
 import formatRpc from '$utils/formatRpc'
 import formatTrackers from '$utils/formatTrackers'
-import config from '$config'
+import getConfig from '$app/src/getters/getConfig'
 
 export default function getClientConfig(mods = {}) {
-    const { client } = config
+    const { client } = getConfig()
 
     const { dataUnion, ensCacheChainAddress, ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
 

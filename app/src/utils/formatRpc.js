@@ -1,12 +1,12 @@
 import formatConfigUrl from '$utils/formatConfigUrl'
-import config from '$config'
+import getConfig from '$app/src/getters/getConfig'
 
 export default function formatRpc(rpc) {
-    if (!rpc) {
+    if (!rpc || typeof rpc !== 'object') {
         return rpc
     }
 
-    const { client } = config
+    const { client } = getConfig()
 
     return {
         ...rpc,
