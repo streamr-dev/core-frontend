@@ -26,7 +26,7 @@ jobs:
       - name: Hadolint for linting Dockerfile
         uses: hadolint/hadolint-action@v1.6.0
         with:
-          dockerfile: ./Dockerfile
+          dockerfile: ./app/Dockerfile
           config: ./.hadolint.yaml
       - name: Run ESlint
         run: npm run eslint
