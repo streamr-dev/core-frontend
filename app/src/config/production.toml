@@ -13,7 +13,7 @@ name = "Streamr Germany"
 address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
 
 [client]
-restUrl = "https://streamr.network/api/v1"
+restUrl = "https://streamr.network/api/v2"
 streamrNodeAddress = "0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a"
 
 [client.mainchain]
