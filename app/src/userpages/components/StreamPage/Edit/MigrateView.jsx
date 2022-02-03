@@ -60,8 +60,8 @@ export function StatusView({ disabled, stream, updateStream }: Props) {
     return (
         <div>
             <Description>
-                This stream exists in the Corea milestone network, which will be shut down on March 31st 2022.
-                You can enable the below switch to automatically recreate the stream and its permissions in the new Brubeck network.
+                This stream exists in the Corea milestone network, which will be shut down on May 31st 2022.
+                You can enable the below switch to automatically recreate the stream and its permissions in the new Brubeck network when it launches.
                 Alternatively, you can recreate your stream and permissions manually at any time.
                 <br />
                 <br />
