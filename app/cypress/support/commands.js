@@ -4,7 +4,9 @@ import { hdkey } from 'ethereumjs-wallet'
 
 import { setToken } from '$shared/utils/sessionToken'
 import getAuthorizationHeader from '$shared/utils/getAuthorizationHeader'
-import getClientConfig from '$shared/utils/getClientConfig'
+
+// FIXME: This whole cypress spec needs attention. Lots of deprecations.
+import getClientConfig from '$app/src/getters/getClientConfig'
 
 const cache = {}
 
@@ -23,7 +25,6 @@ const generatePrivateKey = (mnemonic) => {
 
 Cypress.Commands.add('login', (mnemonic = 'tester one') => (
     new StreamrClient({
-        restUrl: 'http://localhost/api/v1',
         auth: {
             privateKey: generatePrivateKey(mnemonic),
         },
@@ -32,7 +33,6 @@ Cypress.Commands.add('login', (mnemonic = 'tester one') => (
 
 Cypress.Commands.add('tokenLogin', (sessionToken) => (
     new StreamrClient({
-        restUrl: 'http://localhost/api/v1',
         auth: {
             sessionToken,
         },
@@ -96,7 +96,6 @@ Cypress.Commands.add('addToStorageNode', (streamId) => {
     const DEV_STORAGE_NODE_URL = 'http://10.200.10.1:8891'
     const config = getClientConfig({
         url: 'ws://localhost/api/v1/ws',
-        restUrl: 'http://localhost/api/v1',
         storageNode: {
             address: DEV_STORAGE_NODE_ADDRESS,
             url: DEV_STORAGE_NODE_URL,
@@ -158,10 +157,10 @@ Cypress.Commands.add('createProduct', (body) => (
 ))
 
 Cypress.Commands.add('connectToClient', (options = {}) => {
-    const client = new StreamrClient(getClientConfig(Object.assign({
-        restUrl: 'http://localhost/api/v1',
+    const client = new StreamrClient(getClientConfig({
         url: 'ws://localhost/api/v1/ws',
-    }, options)))
+        ...options,
+    }))
 
     return client.ensureConnected().then(() => client)
 })

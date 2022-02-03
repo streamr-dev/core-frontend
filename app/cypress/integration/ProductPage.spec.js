@@ -2,7 +2,7 @@ import qs from 'query-string'
 import { matchPath } from 'react-router-dom'
 
 describe('Product listing page', () => {
-    it('requires a login', () => {
+    it.skip('requires a login', () => {
         cy.visit('/core/products')
         cy.location().should((l) => {
             expect(l.pathname).to.eq('/login')
@@ -10,7 +10,7 @@ describe('Product listing page', () => {
         })
     })
 
-    it('renders products', () => {
+    it.skip('renders products', () => {
         cy.login()
         cy.visit('/core/products')
         cy.contains('Anonymous User')
@@ -19,7 +19,7 @@ describe('Product listing page', () => {
 })
 
 describe('New product', () => {
-    it('requires a user to be logged in', () => {
+    it.skip('requires a user to be logged in', () => {
         cy.visit('/core/products/new')
         cy.location().should((l) => {
             expect(l.pathname).to.eq('/login')
@@ -27,7 +27,7 @@ describe('New product', () => {
         })
     })
 
-    it('creates a data product by default and takes the user to the edit page', () => {
+    it.skip('creates a data product by default and takes the user to the edit page', () => {
         cy.login()
         cy.visit('/core/products/new')
         cy.location().should((l) => {
@@ -42,7 +42,7 @@ describe('New product', () => {
         cy.get('[name=name]').invoke('val').should('eq', 'Untitled Product')
     })
 
-    it('creates a data union and takes the user to the edit page', () => {
+    it.skip('creates a data union and takes the user to the edit page', () => {
         cy.login()
         cy.visit('/core/products/new?type=DATAUNION')
         cy.location().should((l) => {
@@ -57,7 +57,7 @@ describe('New product', () => {
         cy.get('[name=name]').invoke('val').should('eq', 'Untitled Product')
     })
 
-    it('shows the error page if product creation fails', () => {
+    it.skip('shows the error page if product creation fails', () => {
         cy.ignoreUncaughtError(/failed with status code 422/i)
 
         cy.login()
@@ -72,7 +72,7 @@ describe('New product', () => {
         cy.contains(/something has broken/i)
     })
 
-    it('displays "not found" page if product is not published', () => {
+    it.skip('displays "not found" page if product is not published', () => {
         cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()
@@ -86,7 +86,7 @@ describe('New product', () => {
 })
 
 describe('Edit product', () => {
-    it('displays "not found" page if user has no permission to edit', () => {
+    it.skip('displays "not found" page if user has no permission to edit', () => {
         cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()
@@ -105,7 +105,7 @@ describe('Edit product', () => {
 
 // TODO: Update test. /stats returns the "Whoops! We don't seem to be able to find your data." page also for existing products now
 // describe('Data union stats', () => {
-//     it('displays "not found" page if product is not a data union', () => {
+//     it.skip('displays "not found" page if product is not a data union', () => {
 //         cy.ignoreUncaughtError(/could not be found/i)
 //         cy.login()
 //         cy.createProduct().then((productId) => {
@@ -117,7 +117,7 @@ describe('Edit product', () => {
 // })
 
 describe('Data union members', () => {
-    it('displays "not found" page if product is not a data union', () => {
+    it.skip('displays "not found" page if product is not a data union', () => {
         cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()

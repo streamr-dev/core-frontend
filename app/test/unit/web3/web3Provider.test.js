@@ -3,20 +3,35 @@ import FakeProvider from 'web3-fake-provider'
 
 import { getWeb3, getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
 
+jest.mock('$app/src/getters/getConfig', () => {
+    const { default: gc } = jest.requireActual('$app/src/getters/getConfig')
+
+    const actualConfig = gc()
+
+    return {
+        __esModule: true,
+        default: () => ({
+            ...actualConfig,
+            client: {
+                ...actualConfig.client,
+                mainchain: {
+                    ...actualConfig.client.mainchain,
+                    rpc: {
+                        ...actualConfig.client.mainchain.rpc,
+                        url: 'http://mainchainrpc:8545',
+                    },
+                },
+            },
+        }),
+    }
+})
+
 describe('web3Provider', () => {
-    let oldEnv
-    beforeEach(() => {
-        oldEnv = {
-            ...process.env,
-        }
-    })
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
-        process.env = {
-            ...oldEnv,
-        }
     })
+
     describe('StreamrWeb3', () => {
         it('must extend Web3', () => {
             expect(StreamrWeb3.prototype).toBeInstanceOf(Web3)
@@ -96,11 +111,11 @@ describe('web3Provider', () => {
             expect(web3.currentProvider.host).toBe('http://vitalik:300')
         })
     })
+
     describe('getPublicWeb3', () => {
         it('must return web3 with the public provider', () => {
-            process.env.MAINNET_HTTP_PROVIDER = 'http://localhost:8545'
             const web3 = getPublicWeb3()
-            expect(web3.currentProvider.host).toBe('http://localhost:8545')
+            expect(web3.currentProvider.host).toBe('http://mainchainrpc:8545')
         })
     })
 })

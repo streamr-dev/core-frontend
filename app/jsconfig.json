@@ -13,7 +13,8 @@
       "$shared/**/*": ["src/shared/**/*"],
       "$testUtils/**/*": ["src/test/test-utils/**/*"],
       "$ui/**/*": ["src/shared/components/Ui/**/*"],
-      "$utils/**/*": ["src/utils/**/*"]
+      "$utils/**/*": ["src/utils/**/*"],
+      "$config": ["src/config/*.toml"],
     }
   },
   "exclude": ["node_modules", "dist"]

@@ -14,6 +14,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
+const validateEnv = require('./scripts/validateEnv')
 
 const dotenv = require('./scripts/dotenv')
 
@@ -27,6 +28,10 @@ const dist = path.resolve(root, 'dist')
 const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'),
 })
+
+if (isProduction()) {
+    validateEnv(process.env)
+}
 
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
@@ -157,6 +162,10 @@ module.exports = {
                 options: {
                     keyseparator: '.',
                 },
+            },
+            {
+                test: /\.toml$/,
+                loader: 'toml-loader',
             },
         ],
     },
@@ -317,6 +326,7 @@ module.exports = {
             $routes: path.resolve(__dirname, 'src/routes'),
             $utils: path.resolve(__dirname, 'src/utils/'),
             $ui: path.resolve(__dirname, 'src/shared/components/Ui'),
+            $config: path.resolve(__dirname, `src/config/${process.env.NODE_ENV}.toml`),
             // When duplicate bundles point to different places.
             '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
             'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),

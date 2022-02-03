@@ -72,7 +72,7 @@ module.exports = function BabelConfig(api) {
             '@babel/plugin-syntax-dynamic-import',
             'babel-plugin-styled-components',
             api.env('test') && 'babel-plugin-dynamic-import-node',
-            process.env.NO_TEST_HOOKS && './scripts/removeTestAttrs',
+            !process.env.TEST_HOOKS && './scripts/removeTestAttrs',
         ].filter(Boolean),
     }
 }

@@ -16,7 +16,7 @@ it.skip('creates a whole bunch of users for a stream', () => {
 })
 
 describe('Stream listing page', () => {
-    it('requires a login', () => {
+    it.skip('requires a login', () => {
         cy.visit('/core/streams')
         cy.location().should((l) => {
             expect(l.pathname).to.eq('/login')
@@ -24,7 +24,7 @@ describe('Stream listing page', () => {
         })
     })
 
-    it('renders streams', () => {
+    it.skip('renders streams', () => {
         cy.login()
         cy.visit('/core/streams')
         cy.contains('Anonymous User')
@@ -32,7 +32,7 @@ describe('Stream listing page', () => {
     })
 
     describe('activity status', () => {
-        it('renders inactive color when no data is flowing', () => {
+        it.skip('renders inactive color when no data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 cy.visit('/core/streams')
@@ -43,7 +43,7 @@ describe('Stream listing page', () => {
             })
         })
 
-        it('renders error color when fetching fails', () => {
+        it.skip('renders error color when fetching fails', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 cy.server({
@@ -62,7 +62,7 @@ describe('Stream listing page', () => {
             })
         })
 
-        it('renders active color when data is flowing', () => {
+        it.skip('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 cy.addToStorageNode(streamId)
@@ -85,7 +85,7 @@ describe('Stream listing page', () => {
             })
         })
 
-        it('renders active color after a refresh and new data in the meantime', () => {
+        it.skip('renders active color after a refresh and new data in the meantime', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 cy.addToStorageNode(streamId)
@@ -116,7 +116,7 @@ describe('Stream listing page', () => {
 })
 
 describe('New stream page', () => {
-    it('requires a user to be logged in', () => {
+    it.skip('requires a user to be logged in', () => {
         cy.visit('/core/streams/new')
         cy.location().should((l) => {
             expect(l.pathname).to.eq('/login')
@@ -124,7 +124,7 @@ describe('New stream page', () => {
         })
     })
 
-    it('takes the user to the new stream page', () => {
+    it.skip('takes the user to the new stream page', () => {
         cy.login()
         cy.visit('/core/streams/new')
         cy.location('pathname').should('eq', '/core/streams/new')
@@ -137,7 +137,7 @@ describe('New stream page', () => {
         cy.get('[name=domain]').invoke('val').should('match', /^0x[0-9a-f.]+/i)
     })
 
-    it('creates a stream and takes the user to the edit page', () => {
+    it.skip('creates a stream and takes the user to the edit page', () => {
         cy.login()
         cy.visit('/core/streams/new')
 
@@ -168,7 +168,7 @@ describe('New stream page', () => {
         })
     })
 
-    it('does not save until valid path is given', () => {
+    it.skip('does not save until valid path is given', () => {
         cy.login()
         cy.visit('/core/streams/new')
         cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).should('exist')
@@ -197,7 +197,7 @@ describe('New stream page', () => {
         cy.contains(/use a single slash to separate paths/i).should('exist')
     })
 
-    it('gives an error if a stream with the same name exists', () => {
+    it.skip('gives an error if a stream with the same name exists', () => {
         cy.login()
         cy.createStream().then((streamId) => {
             const pathname = streamId.slice(streamId.indexOf('/') + 1)
@@ -209,7 +209,7 @@ describe('New stream page', () => {
         })
     })
 
-    it('prompts to verify exit if there are unsaved changes', () => {
+    it.skip('prompts to verify exit if there are unsaved changes', () => {
         cy.login()
         cy.visit('/core/streams/new')
         cy.get('input[name=pathname]').clear().type('mystream')
@@ -228,7 +228,7 @@ describe('New stream page', () => {
         cy.location('pathname').should('eq', '/core/streams')
     })
 
-    it('can create a path with dot separator in id', () => {
+    it.skip('can create a path with dot separator in id', () => {
         // Althought the client-side routing handles dots quite well the backend infra does
         // not. Let's un-skip this spec once that is fixed.
         cy.login()
@@ -256,7 +256,7 @@ describe('New stream page', () => {
 })
 
 describe('Stream read-only page (no edit permission)', () => {
-    it('displays "not found" page if stream does not exist', () => {
+    it.skip('displays "not found" page if stream does not exist', () => {
         cy.ignoreUncaughtError(/could not be found/i)
 
         cy.visit('/core/streams/TEST')
@@ -264,7 +264,7 @@ describe('Stream read-only page (no edit permission)', () => {
         cy.location('pathname').should('eq', '/core/streams/TEST')
     })
 
-    it('displays "not found" page if user has no "read" permission', () => {
+    it.skip('displays "not found" page if user has no "read" permission', () => {
         cy.ignoreUncaughtError(/could not be found/i)
 
         cy.login()
@@ -281,7 +281,7 @@ describe('Stream read-only page (no edit permission)', () => {
         })
     })
 
-    it('displays the generic error page if getting stream fails', () => {
+    it.skip('displays the generic error page if getting stream fails', () => {
         cy.ignoreUncaughtError(/request failed with status code 501/i)
 
         cy.login()
@@ -301,7 +301,7 @@ describe('Stream read-only page (no edit permission)', () => {
         })
     })
 
-    it('displays public stream information to not logged in users', () => {
+    it.skip('displays public stream information to not logged in users', () => {
         const field1 = {
             id: uuid(),
             name: 'foo',
@@ -342,7 +342,7 @@ describe('Stream read-only page (no edit permission)', () => {
         })
     })
 
-    it('displays public stream information to logged in users w/o "get" permission', () => {
+    it.skip('displays public stream information to logged in users w/o "get" permission', () => {
         const field1 = {
             id: uuid(),
             name: 'foo',
@@ -383,7 +383,7 @@ describe('Stream read-only page (no edit permission)', () => {
         })
     })
 
-    it('displays stream information to users with "get" permission, no "edit"', () => {
+    it.skip('displays stream information to users with "get" permission, no "edit"', () => {
         const field1 = {
             id: uuid(),
             name: 'foo',
@@ -425,7 +425,7 @@ describe('Stream read-only page (no edit permission)', () => {
         })
     })
 
-    it('skips displaying empty Fields section', () => {
+    it.skip('skips displaying empty Fields section', () => {
         cy.login()
         cy.createStream({
             stream: {
@@ -448,7 +448,7 @@ describe('Stream read-only page (no edit permission)', () => {
         })
     })
 
-    it('skips displaying empty description', () => {
+    it.skip('skips displaying empty description', () => {
         cy.login()
         cy.createStream({
             stream: {
@@ -469,7 +469,7 @@ describe('Stream read-only page (no edit permission)', () => {
     })
 
     describe('security levels', () => {
-        it('displays "basic" level correctly', () => {
+        it.skip('displays "basic" level correctly', () => {
             cy.login()
             cy.createStream({
                 stream: {
@@ -485,7 +485,7 @@ describe('Stream read-only page (no edit permission)', () => {
             })
         })
 
-        it('displays "signed" level correctly', () => {
+        it.skip('displays "signed" level correctly', () => {
             cy.login()
             cy.createStream({
                 stream: {
@@ -501,7 +501,7 @@ describe('Stream read-only page (no edit permission)', () => {
             })
         })
 
-        it('displays "encrypted" level correctly', () => {
+        it.skip('displays "encrypted" level correctly', () => {
             cy.login()
             cy.createStream({
                 stream: {
@@ -519,7 +519,7 @@ describe('Stream read-only page (no edit permission)', () => {
     })
 
     describe('<- back button', () => {
-        it('takes logged in user with no edit permissions to their stream listing page', () => {
+        it.skip('takes logged in user with no edit permissions to their stream listing page', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -532,7 +532,7 @@ describe('Stream read-only page (no edit permission)', () => {
             })
         })
 
-        it('takes not logged in user to "/"', () => {
+        it.skip('takes not logged in user to "/"', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -546,7 +546,7 @@ describe('Stream read-only page (no edit permission)', () => {
     })
 
     describe('Storage nodes UI', () => {
-        it('displays disabled UI without checkboxes when unchecked', () => {
+        it.skip('displays disabled UI without checkboxes when unchecked', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -569,7 +569,7 @@ describe('Stream read-only page (no edit permission)', () => {
             })
         })
 
-        it('displays disabled UI with checkboxes when checked', () => {
+        it.skip('displays disabled UI with checkboxes when checked', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -596,7 +596,7 @@ describe('Stream read-only page (no edit permission)', () => {
 })
 
 describe('Stream edit page', () => {
-    it('shows your streams as editable', () => {
+    it.skip('shows your streams as editable', () => {
         cy.login()
         cy.createStream().then((streamId) => {
             const encodedId = encodeURIComponent(streamId)
@@ -606,7 +606,7 @@ describe('Stream edit page', () => {
         })
     })
 
-    it('shows stream shared with you for editing as editable', () => {
+    it.skip('shows stream shared with you for editing as editable', () => {
         cy.login()
         cy.createStream().then((streamId) => {
             const encodedId = encodeURIComponent(streamId)
@@ -622,7 +622,7 @@ describe('Stream edit page', () => {
         })
     })
 
-    it('allows you to save changes', () => {
+    it.skip('allows you to save changes', () => {
         cy.login()
         cy.createStream().then((streamId) => {
             const encodedId = encodeURIComponent(streamId)
@@ -657,7 +657,7 @@ describe('Stream edit page', () => {
     })
 
     describe('activity status', () => {
-        it('renders inactive color when no data is flowing', () => {
+        it.skip('renders inactive color when no data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -669,7 +669,7 @@ describe('Stream edit page', () => {
             })
         })
 
-        it('renders error color when fetching fails', () => {
+        it.skip('renders error color when fetching fails', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -689,7 +689,7 @@ describe('Stream edit page', () => {
             })
         })
 
-        it('renders active color when data is flowing', () => {
+        it.skip('renders active color when data is flowing', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 cy.addToStorageNode(streamId)
@@ -716,7 +716,7 @@ describe('Stream edit page', () => {
     })
 
     describe('Storage nodes UI', () => {
-        it('displays non-disabled UI', () => {
+        it.skip('displays non-disabled UI', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -733,7 +733,7 @@ describe('Stream edit page', () => {
             })
         })
 
-        it('loads current nodes from the server', () => {
+        it.skip('loads current nodes from the server', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -751,7 +751,7 @@ describe('Stream edit page', () => {
             })
         })
 
-        it('allows user to enable a storage node', () => {
+        it.skip('allows user to enable a storage node', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -771,7 +771,7 @@ describe('Stream edit page', () => {
             })
         })
 
-        it('allows user to disable a storage node', () => {
+        it.skip('allows user to disable a storage node', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)
@@ -793,7 +793,7 @@ describe('Stream edit page', () => {
             })
         })
 
-        it('does not toggle a storage node on network failure', () => {
+        it.skip('does not toggle a storage node on network failure', () => {
             cy.login()
             cy.createStream().then((streamId) => {
                 const encodedId = encodeURIComponent(streamId)

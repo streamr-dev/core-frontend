@@ -1,4 +1,6 @@
-// @flow
+import getMainChainId from '$app/src/getters/getMainChainId'
+import getClientConfig from '$app/src/getters/getClientConfig'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 /*
     These are all type
@@ -33,12 +35,14 @@ export const productStates = {
 
 export const networks = {
     MAINNET: 'mainnet',
-    SIDECHAIN: 'sidechain',
+    DATAUNIONS: 'dataunionsChain',
+    STREAMS: 'streamsChain',
 }
 
 export const ethereumNetworks = {
-    [((process.env.MAINNET_CHAIN_ID || '8995'): string)]: 'Local mainchain',
-    [((process.env.SIDECHAIN_CHAIN_ID || '8997'): string)]: 'Local sidechain',
+    [getMainChainId()]: 'Local mainchain',
+    [getClientConfig().dataUnionChainRPC.chainId]: 'Local dataunions chain',
+    [getClientConfig().streamRegistryChainRPC.chainId]: 'Local streams chain',
     '1': 'Mainnet',
     '3': 'Ropsten',
     '4': 'Rinkeby',
@@ -112,4 +116,4 @@ export const StreamrClientRepositories = {
     [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }
 
-export const dataUnionMemberLimit = parseInt(process.env.DATA_UNION_PUBLISH_MEMBER_LIMIT, 10) || 0
+export const dataUnionMemberLimit = getCoreConfig().dataUnionPublishMemberLimit

@@ -5,6 +5,7 @@ import getConfig from '$shared/web3/config'
 import getWeb3 from '$shared/web3/web3Provider'
 import { get, put, post } from '$shared/utils/api'
 
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import type { SmartContractTransaction, SmartContractCall, Hash } from '$shared/flowtype/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import type { NumberString, ApiResult, PaymentCurrency } from '$shared/flowtype/common-types'
@@ -161,7 +162,7 @@ export const buyProduct = (
     gasIncrease?: number = 0,
 ): SmartContractTransaction => {
     const web3 = getWeb3()
-    const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
+    const { daiTokenContractAddress: DAI } = getCoreConfig()
 
     switch (paymentCurrency) {
         case paymentCurrencies.ETH:
@@ -209,8 +210,9 @@ export const setMyDataAllowance = (amount: string | BN): SmartContractTransactio
 
 export const getMyDaiAllowance = (): SmartContractCall<BN> => {
     const web3 = getWeb3()
+    const { uniswapAdaptorContractAddress } = getCoreConfig()
     return web3.getDefaultAccount()
-        .then((myAddress) => call(daiTokenContractMethods().allowance(myAddress, process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS)))
+        .then((myAddress) => call(daiTokenContractMethods().allowance(myAddress, uniswapAdaptorContractAddress)))
         .then(fromAtto)
 }
 
@@ -219,6 +221,7 @@ export const setMyDaiAllowance = (amount: string | BN): SmartContractTransaction
         throw new Error('Amount must be non-negative!')
     }
 
-    const method = daiTokenContractMethods().approve(process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS, toAtto(amount).toFixed(0))
+    const { uniswapAdaptorContractAddress } = getCoreConfig()
+    const method = daiTokenContractMethods().approve(uniswapAdaptorContractAddress, toAtto(amount).toFixed(0))
     return send(method)
 }

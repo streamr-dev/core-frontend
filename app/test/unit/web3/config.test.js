@@ -1,45 +1,73 @@
 import getConfig from '$shared/web3/config'
 
 jest.mock('$shared/web3/abis/token', () => (['t_test', 't_values', 't_only']))
+
 jest.mock('$shared/web3/abis/marketplace', () => (['m_test', 'm_values', 'm_only']))
+
 jest.mock('$shared/web3/abis/uniswapAdaptor', () => (['u_test', 'u_values', 'u_only']))
+
 jest.mock('$shared/web3/abis/dataunion', () => (['d_test', 'd_values', 'd_only']))
+
 jest.mock('$shared/web3/abis/dataunionSidechain', () => (['ds_test', 'ds_values', 'ds_only']))
 
+jest.mock('$app/src/getters/getConfig', () => {
+    const { default: gc } = jest.requireActual('$app/src/getters/getConfig')
+
+    const actualConfig = gc()
+
+    return {
+        __esModule: true,
+        default: () => ({
+            ...actualConfig,
+            core: {
+                ...actualConfig.core,
+                daiTokenContractAddress: 'daiTokenAddress',
+                marketplaceContractAddress: 'mpAddress',
+                uniswapAdaptorContractAddress: 'uniAddress',
+                web3TransactionConfirmationBlocks: 1337,
+            },
+            client: {
+                ...actualConfig.client,
+                mainchain: {
+                    ...actualConfig.client.mainchain,
+                    chainId: 9999,
+                    dataTokenAddress: 'tokenAddress',
+                    rpc: {
+                        ...actualConfig.client.mainchain.rpc,
+                        url: 'http://mainchainrpc:8545',
+                    },
+                },
+                dataUnionChain: {
+                    ...actualConfig.client.dataUnionChain,
+                    rpc: {
+                        chainId: 8995,
+                        url: 'https://dataunionschain',
+                    },
+                },
+                streamRegistryChain: {
+                    ...actualConfig.client.streamRegistryChain,
+                    rpc: {
+                        chainId: 8996,
+                        url: 'https://streamschain',
+                    },
+                },
+            },
+        }),
+    }
+})
+
 describe('config', () => {
-    let oldEnv
-
     describe('building the config', () => {
-        beforeEach(() => {
-            oldEnv = {
-                ...process.env,
-            }
-        })
-
-        afterEach(() => {
-            process.env = {
-                ...oldEnv,
-            }
-        })
-
         it('gets the right mainnet config from env', () => {
-            process.env.MARKETPLACE_CONTRACT_ADDRESS = 'mpAddress'
-            process.env.DATA_TOKEN_CONTRACT_ADDRESS = 'dataTokenAddress'
-            process.env.DAI_TOKEN_CONTRACT_ADDRESS = 'daiTokenAddress'
-            process.env.MAINNET_CHAIN_ID = '1'
-            process.env.MAINNET_HTTP_PROVIDER = 'https://mainnet'
-            process.env.WEB3_TRANSACTION_CONFIRMATION_BLOCKS = 1337
-            process.env.UNISWAP_ADAPTOR_CONTRACT_ADDRESS = 'uniAddress'
-
             const { mainnet } = getConfig()
 
             expect(mainnet).toStrictEqual({
-                chainId: '1',
-                rpcUrl: 'https://mainnet',
+                chainId: 9999,
+                rpcUrl: 'http://mainchainrpc:8545',
                 transactionConfirmationBlocks: 1337,
                 dataToken: {
                     abi: ['t_test', 't_values', 't_only'],
-                    address: 'dataTokenAddress',
+                    address: 'tokenAddress',
                 },
                 daiToken: {
                     abi: ['t_test', 't_values', 't_only'],
@@ -57,28 +85,34 @@ describe('config', () => {
             })
         })
 
-        it('gets the right sidechain config from env', () => {
-            process.env.SIDECHAIN_CHAIN_ID = '8995'
-            process.env.SIDECHAIN_HTTP_PROVIDER = 'https://sidechain'
+        it('gets the right dataunions chain config from env', () => {
+            const { dataunionsChain } = getConfig()
 
-            const { sidechain } = getConfig()
-
-            expect(sidechain).toStrictEqual({
-                chainId: '8995',
-                rpcUrl: 'https://sidechain',
+            expect(dataunionsChain).toStrictEqual({
+                chainId: 8995,
+                rpcUrl: 'https://dataunionschain',
                 dataUnionAbi: ['ds_test', 'ds_values', 'ds_only'],
             })
         })
 
-        it('gets metamask config', () => {
-            process.env.SIDECHAIN_CHAIN_ID = '8997'
-            process.env.MAINNET_CHAIN_ID = '8995'
+        it('gets the right streams chain config from env', () => {
+            const { streamsChain } = getConfig()
 
+            expect(streamsChain).toStrictEqual({
+                chainId: 8996,
+                rpcUrl: 'https://streamschain',
+            })
+        })
+
+        it('gets metamask config', () => {
             const { metamask } = getConfig()
 
             const chainIds = Object.keys(metamask)
 
             expect(chainIds.length > 0).toBe(true)
+            expect(chainIds.includes('9999')).toBe(true)
+            expect(chainIds.includes('8995')).toBe(true)
+            expect(chainIds.includes('8996')).toBe(true)
 
             chainIds.forEach((chainId) => {
                 const { getParams } = metamask[chainId]

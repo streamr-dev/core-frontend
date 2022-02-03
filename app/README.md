@@ -44,29 +44,7 @@ To be able to use the Marketplace, you'll need to configure these variables into
 | Variable                                          | Description                                                          |
 |---------------------------------------------------|----------------------------------------------------------------------|
 | PORT                                              | Port used by webpack devServer                                       |
-| PLATFORM_ORIGIN_URL                               | Base path/address of the current environment                         |
-| STREAMR_API_URL                                   | Address of the environment's Backend Rest API                        |
-| STREAMR_WS_URL                                    | Address of the environment's Backend Websocket API                   |
-| STREAMR_URL                                       | API Address for Dockerized Environments                              |
-| MARKETPLACE_CONTRACT_ADDRESS                      | Address of the deployed latest Marketplace contract                  |
-| DATA_TOKEN_CONTRACT_ADDRESS                       | Address of the deployed DATA Token contract                          |
-| DAI_TOKEN_CONTRACT_ADDRESS                        | Address of the deployed DAI Token contract                           |
-| MAINNET_CHAIN_ID                                  | This is used to check that the user has selected the correct network |
-| MAINNET_HTTP_PROVIDER                             | A public provider used to query Marketplace methods without Metamask |
-| WEB3_TRANSACTION_CONFIRMATION_BLOCKS              | Number of confirmations required for tx to be considered successful  |
 | BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
-| STREAMR_ENGINE_NODE_ADDRESSES                     |                                                                      |
-| UNISWAP_ADAPTOR_CONTRACT_ADDRESS                  | Address of the deployed Uniswap adaptor                              |
-| DATA_UNION_PUBLISH_MEMBER_LIMIT                   | Number of members required for a data union product before publish   |
-| DATA_UNION_FACTORY_MAINNET_ADDRESS                |                                                                      |
-| DATA_UNION_TEMPLATE_MAINNET_ADDRESS               |                                                                      |
-| DATA_UNION_FACTORY_SIDECHAIN_ADDRESS              |                                                                      |
-| DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK       |                                                                      |
-| DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS             |                                                                      |
-| SIDECHAIN_CHAIN_ID                                |                                                                      |
-| SIDECHAIN_HTTP_PROVIDER                           |                                                                      |
-| DATA_TOKEN_SIDECHAIN_ADDRESS                      |                                                                      |
-| STORAGE_NODES                                     |                                                                      |
 
 Default development values are taken from `.env.required` which can be overridden by values in your `.env` file.
 

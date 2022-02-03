@@ -9,6 +9,8 @@ import getConfig from '$shared/web3/config'
 import type { SmartContractCall, Address } from '$shared/flowtype/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
+import getClientConfig from '$app/src/getters/getClientConfig'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getContract, call } from '../utils/smartContract'
 import { fromAtto } from './math'
 
@@ -16,8 +18,8 @@ declare var ethereum: Web3
 
 const UNISWAP_SAFETY_MARGIN = 1.05
 const ETH = '0x0000000000000000000000000000000000000000'
-const DAI = process.env.DAI_TOKEN_CONTRACT_ADDRESS
-const DATA = process.env.DATA_TOKEN_CONTRACT_ADDRESS
+const { daiTokenContractAddress: DAI } = getCoreConfig()
+const { tokenAddress: DATA } = getClientConfig()
 
 const dataTokenContractMethods = (usePublicNode: boolean = false) => {
     const { mainnet } = getConfig()

@@ -1,8 +1,13 @@
 import moxios from 'moxios'
 
+import setTempEnv from '$testUtils/setTempEnv'
 import * as services from '$mp/modules/relatedProducts/services'
 
 describe('relatedProducts - services', () => {
+    setTempEnv({
+        STREAMR_DOCKER_DEV_HOST: 'localhost',
+    })
+
     beforeEach(() => {
         moxios.install()
     })
@@ -12,7 +17,6 @@ describe('relatedProducts - services', () => {
     })
 
     it('gets products', async () => {
-        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const productId = '789'
         const data = [
             {
@@ -49,7 +53,7 @@ describe('relatedProducts - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/products/${productId}/related`)
+            expect(request.config.url).toBe(`http://localhost/api/v1/products/${productId}/related`)
         })
 
         const result = await services.getRelatedProducts(productId)

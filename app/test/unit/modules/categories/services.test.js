@@ -1,5 +1,6 @@
 import moxios from 'moxios'
 
+import setTempEnv from '$testUtils/setTempEnv'
 import * as services from '$mp/modules/categories/services'
 
 describe('categories - services', () => {
@@ -11,8 +12,11 @@ describe('categories - services', () => {
         moxios.uninstall()
     })
 
+    setTempEnv({
+        STREAMR_DOCKER_DEV_HOST: 'localhost',
+    })
+
     it('gets categories with empty', async (done) => {
-        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const data = [
             {
                 id: 1,
@@ -34,7 +38,7 @@ describe('categories - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/categories?includeEmpty=true`)
+            expect(request.config.url).toBe('http://localhost/api/v1/categories?includeEmpty=true')
             done()
         })
 
@@ -43,7 +47,6 @@ describe('categories - services', () => {
     })
 
     it('gets categories without empty', async (done) => {
-        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const data = [
             {
                 id: 1,
@@ -63,7 +66,7 @@ describe('categories - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/categories?includeEmpty=false`)
+            expect(request.config.url).toBe('http://localhost/api/v1/categories?includeEmpty=false')
             done()
         })
 

@@ -5,6 +5,7 @@ import StreamrClient from 'streamr-client'
 import BN from 'bignumber.js'
 import Web3 from 'web3'
 
+import getClientConfig from '$app/src/getters/getClientConfig'
 import getConfig from '$shared/web3/config'
 import { getToken } from '$shared/utils/sessionToken'
 
@@ -14,6 +15,7 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { post, del, get, put } from '$shared/utils/api'
 import { getWeb3 } from '$shared/web3/web3Provider'
 import TransactionError from '$shared/errors/TransactionError'
@@ -21,49 +23,20 @@ import Transaction from '$shared/utils/Transaction'
 import routes from '$routes'
 import type { Secret } from './types'
 
-export const getStreamrEngineAddresses = (): Array<string> => {
-    const addressesString = process.env.STREAMR_ENGINE_NODE_ADDRESSES || ''
-    const addresses = addressesString.split(',')
-    return addresses
-}
-
 type CreateClient = {
     usePublicNode?: boolean,
 }
 
-export const createClient = (options: CreateClient = {}) => {
-    const { usePublicNode } = {
-        usePublicNode: false,
-        ...(options || {}),
-    }
+function createClient({ usePublicNode = false }: CreateClient = {}) {
     const web3 = usePublicNode ? undefined : getWeb3()
 
-    return new StreamrClient({
-        url: process.env.STREAMR_WS_URL,
-        restUrl: process.env.STREAMR_API_URL,
-        tokenAddress: process.env.DATA_TOKEN_CONTRACT_ADDRESS,
-        tokenAddressSidechain: process.env.DATA_TOKEN_SIDECHAIN_ADDRESS,
-        dataUnion: {
-            factoryMainnetAddress: process.env.DATA_UNION_FACTORY_MAINNET_ADDRESS,
-            factorySidechainAddress: process.env.DATA_UNION_FACTORY_SIDECHAIN_ADDRESS,
-            templateMainnetAddress: process.env.DATA_UNION_TEMPLATE_MAINNET_ADDRESS,
-            templateSidechainAddress: process.env.DATA_UNION_TEMPLATE_SIDECHAIN_ADDRESS,
-        },
-        autoConnect: false,
-        autoDisconnect: false,
+    return new StreamrClient(getClientConfig({
         auth: {
             sessionToken: getToken(),
             ethereum: web3 && web3.metamaskProvider,
         },
-        sidechain: {
-            url: process.env.SIDECHAIN_HTTP_PROVIDER,
-            chainId: parseInt(process.env.SIDECHAIN_CHAIN_ID, 10),
-        },
-        mainnet: {
-            url: process.env.MAINNET_HTTP_PROVIDER,
-        },
-        streamrNodeAddress: getStreamrEngineAddresses()[0],
-    })
+        autoConnect: false,
+    }))
 }
 
 // ----------------------
@@ -217,15 +190,18 @@ export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) 
 // getting events (TODO: move to streamr-client)
 // ----------------------
 
-const getSidechainWeb3 = () => new Web3(new Web3.providers.HttpProvider(process.env.SIDECHAIN_HTTP_PROVIDER))
+const getDataUnionChainWeb3 = () => {
+    const { dataUnionChainRPC: { url } } = getClientConfig()
+    return new Web3(new Web3.providers.HttpProvider(url))
+}
 
 export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number): any {
     const dataUnion = await getDataUnionObject(address, true)
     const sidechainAddress = await dataUnion.getSidechainAddress()
 
-    const web3 = getSidechainWeb3()
-    const { sidechain } = getConfig()
-    const contract = new web3.eth.Contract(sidechain.dataUnionAbi, sidechainAddress)
+    const web3 = getDataUnionChainWeb3()
+    const { dataunionsChain } = getConfig()
+    const contract = new web3.eth.Contract(dataunionsChain.dataUnionAbi, sidechainAddress)
     const latestBlock = await web3.eth.getBlock('latest')
 
     // Get events in batches since xDai RPC seems to timeout if fetching too large sets
@@ -247,7 +223,7 @@ export async function* getSidechainEvents(address: string, eventName: string, fr
 }
 
 export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number): any {
-    const web3 = getSidechainWeb3()
+    const web3 = getDataUnionChainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
 
     const handleEvent = async (e, type) => {
@@ -283,7 +259,7 @@ export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number):
 
 export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: number): any {
     const client = createClient()
-    const web3 = getSidechainWeb3()
+    const web3 = getDataUnionChainWeb3()
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for await (const joins of getSidechainEvents(id, 'MemberJoined', blockNumber)) {
@@ -304,15 +280,14 @@ export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: nu
 }
 
 export async function* getMemberEventsFromTimestamp(id: DataUnionId, timestamp: number = 0): any {
-    const web3 = getSidechainWeb3()
+    const web3 = getDataUnionChainWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(timestamp / 1000))
 
     yield* getMemberEventsFromBlock(id, fromBlock)
 }
 
 export async function* getAllMemberEvents(id: DataUnionId): any {
-    const duFirstPossibleBlock = parseInt(process.env.DATA_UNION_FACTORY_SIDECHAIN_CREATION_BLOCK, 10)
-    yield* getMemberEventsFromBlock(id, duFirstPossibleBlock)
+    yield* getMemberEventsFromBlock(id, getCoreConfig().dataUnionFactorySidechainCreationBlock)
 }
 
 // ----------------------

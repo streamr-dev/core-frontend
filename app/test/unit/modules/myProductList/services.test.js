@@ -1,8 +1,13 @@
 import moxios from 'moxios'
 
+import setTempEnv from '$testUtils/setTempEnv'
 import { getMyProducts } from '$mp/modules/myProductList/services'
 
 describe('myProductList - services', () => {
+    setTempEnv({
+        STREAMR_DOCKER_DEV_HOST: 'localhost',
+    })
+
     beforeEach(() => {
         moxios.install()
     })
@@ -12,7 +17,6 @@ describe('myProductList - services', () => {
     })
 
     it('get myproducts', async () => {
-        process.env.STREAMR_API_URL = 'TEST_STREAMR_API_URL'
         const data = [
             {
                 id: '123abc',
@@ -57,7 +61,7 @@ describe('myProductList - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${process.env.STREAMR_API_URL}/users/me/products`)
+            expect(request.config.url).toBe('http://localhost/api/v1/users/me/products')
         })
 
         const result = await getMyProducts()
