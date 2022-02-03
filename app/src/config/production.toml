@@ -31,5 +31,5 @@ chainId = 100
 url = "https://weathered-billowing-thunder.xdai.quiknode.pro/502bd1fa80407bcd07ebd4f14e37c6e5c20db640/"
 
 [client.streamRegistryChain.rpc]
-chainId = 100
-url = "https://weathered-billowing-thunder.xdai.quiknode.pro/502bd1fa80407bcd07ebd4f14e37c6e5c20db640/"
+chainId = 137
+url = "https://wild-dark-thunder.matic.quiknode.pro/08b0fa6254499defc975c381ee21777cb197fac5/"

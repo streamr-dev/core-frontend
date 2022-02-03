@@ -133,6 +133,18 @@ const getConfig = (): Config => {
                     },
                 }),
             },
+            '137': {
+                getParams: () => ({
+                    chainName: 'Polygon',
+                    rpcUrls: ['https://polygon-rpc.com/'],
+                    blockExplorerUrls: ['https://polygonscan.com/'],
+                    nativeCurrency: {
+                        name: 'MATIC',
+                        symbol: 'MATIC',
+                        decimals: 18,
+                    },
+                }),
+            },
         },
     }
 }
