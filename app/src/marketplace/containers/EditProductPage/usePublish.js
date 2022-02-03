@@ -130,7 +130,14 @@ export default function usePublish() {
                     try {
                         // Get all streams and verify that the added streams actually exist,
                         // otherwise the product update will fail
-                        const streams = await client.getAllStreams()
+                        const gen = await client.getAllStreams()
+                        const streams = []
+
+                        // eslint-disable-next-line no-restricted-syntax
+                        for await (const stream of gen) {
+                            streams.push(stream)
+                        }
+
                         const streamIds = new Set(streams.map(({ id }) => id))
                         nextProduct.streams = (nextProduct.streams || []).filter((id) => streamIds.has(id))
 
