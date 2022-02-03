@@ -10,6 +10,11 @@ jest.mock('$app/src/getters/getConfig', () => ({
     default: jest.fn(),
 }))
 
+xit('is ensCacheChainAddress in STREAM_CLIENT_DEFAULTS?', () => {
+    // `ensCacheChainAddress` should not be part of the config. It's going away soon. Let's keep
+    // this xitted example here as a clean-up reminder.
+})
+
 describe('getClientConfig', () => {
     it('when empty, defaults to streamr-client\'s configuration', () => {
         getConfig.mockImplementation(() => ({ /* emptiness */ }))
