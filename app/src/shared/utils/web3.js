@@ -17,7 +17,7 @@ export const checkEthereumNetworkIsCorrect = async ({ web3, network = networks.M
     const config = getConfig()
     const requiredChainId = (config[network] || {}).chainId
 
-    if (!currentChainId || requiredChainId !== currentChainId) {
+    if (!currentChainId || requiredChainId.toString() !== currentChainId.toString()) {
         throw new WrongNetworkSelectedError(requiredChainId, currentChainId)
     }
 }
