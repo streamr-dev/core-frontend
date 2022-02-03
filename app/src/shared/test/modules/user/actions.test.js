@@ -4,11 +4,6 @@ import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
 import * as services from '$shared/modules/user/services'
 
-jest.mock('$app/src/getters/getRestUrl', () => ({
-    __esModule: true,
-    default: () => '',
-}))
-
 describe('user - actions', () => {
     beforeEach(() => {
         jest.spyOn(services, 'getBalance').mockImplementation(jest.fn())

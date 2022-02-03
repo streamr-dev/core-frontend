@@ -3,14 +3,25 @@ import FakeProvider from 'web3-fake-provider'
 
 import { getWeb3, getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
 
-jest.mock('$app/src/getters/getMainChainConfig', () => {
-    const { default: actual } = jest.requireActual('$app/src/getters/getMainChainConfig')
+jest.mock('$app/src/getters/getConfig', () => {
+    const { default: gc } = jest.requireActual('$app/src/getters/getConfig')
+
+    const actualConfig = gc()
 
     return {
         __esModule: true,
         default: () => ({
-            ...actual(),
-            url: 'http://mainchainrpc:8545',
+            ...actualConfig,
+            client: {
+                ...actualConfig.client,
+                mainchain: {
+                    ...actualConfig.client.mainchain,
+                    rpc: {
+                        ...actualConfig.client.mainchain.rpc,
+                        url: 'http://mainchainrpc:8545',
+                    },
+                },
+            },
         }),
     }
 })

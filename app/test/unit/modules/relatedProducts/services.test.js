@@ -1,15 +1,13 @@
 import moxios from 'moxios'
 
+import setTempEnv from '$testUtils/setTempEnv'
 import * as services from '$mp/modules/relatedProducts/services'
 
-const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
-
-jest.mock('$app/src/getters/getRestUrl', () => ({
-    __esModule: true,
-    default: () => MOCK_REST_URL,
-}))
-
 describe('relatedProducts - services', () => {
+    setTempEnv({
+        STREAMR_DOCKER_DEV_HOST: 'localhost',
+    })
+
     beforeEach(() => {
         moxios.install()
     })
@@ -55,7 +53,7 @@ describe('relatedProducts - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${MOCK_REST_URL}/products/${productId}/related`)
+            expect(request.config.url).toBe(`http://localhost/api/v1/products/${productId}/related`)
         })
 
         const result = await services.getRelatedProducts(productId)

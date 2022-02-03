@@ -3,15 +3,15 @@ import moxios from 'moxios'
 import * as services from '$shared/modules/user/services'
 import * as utils from '$mp/utils/web3'
 import { BalanceType } from '$shared/flowtype/user-types'
-
-jest.mock('$app/src/getters/getRestUrl', () => ({
-    __esModule: true,
-    default: () => '',
-}))
+import setTempEnv from '$testUtils/setTempEnv'
 
 describe('user - services', () => {
     let dateNowSpy
     const DATE_NOW = 1337
+
+    setTempEnv({
+        STREAMR_DOCKER_DEV_HOST: 'localhost',
+    })
 
     beforeAll(() => {
         dateNowSpy = jest.spyOn(Date, 'now').mockImplementation(() => DATE_NOW)
@@ -47,7 +47,7 @@ describe('user - services', () => {
                 })
 
                 expect(request.config.method).toBe('get')
-                expect(request.config.url).toBe('/users/me?noCache=1337')
+                expect(request.config.url).toBe('http://localhost/api/v1/users/me?noCache=1337')
             })
 
             const result = await services.getUserData()
@@ -71,7 +71,7 @@ describe('user - services', () => {
                 })
 
                 expect(request.config.method).toBe('put')
-                expect(request.config.url).toBe('/users/me')
+                expect(request.config.url).toBe('http://localhost/api/v1/users/me')
                 expect(request.headers['Content-Type']).toBe('application/json')
             })
 
@@ -89,7 +89,7 @@ describe('user - services', () => {
                 })
 
                 expect(request.config.method).toBe('delete')
-                expect(request.config.url).toBe('/users/me')
+                expect(request.config.url).toBe('http://localhost/api/v1/users/me')
             })
 
             await services.deleteUserAccount()
@@ -118,7 +118,7 @@ describe('user - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe('/users/me/image')
+                expect(request.config.url).toBe('http://localhost/api/v1/users/me/image')
                 expect(request.headers['Content-Type']).toBe('multipart/form-data')
             })
 
@@ -144,7 +144,7 @@ describe('user - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`/login/challenge/${account}`)
+                expect(request.config.url).toBe(`http://localhost/api/v1/login/challenge/${account}`)
                 expect(request.headers['Content-Type']).toBe('application/x-www-form-urlencoded')
             })
 

@@ -1,15 +1,13 @@
 import moxios from 'moxios'
 
+import setTempEnv from '$testUtils/setTempEnv'
 import * as services from '$mp/modules/myPurchaseList/services'
 
-const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
-
-jest.mock('$app/src/getters/getRestUrl', () => ({
-    __esModule: true,
-    default: () => MOCK_REST_URL,
-}))
-
 describe('myPurchaseList - services', () => {
+    setTempEnv({
+        STREAMR_DOCKER_DEV_HOST: 'localhost',
+    })
+
     beforeEach(() => {
         moxios.install()
     })
@@ -66,9 +64,8 @@ describe('myPurchaseList - services', () => {
                 status: 200,
                 response: data,
             })
-            const expectedUrl = `${MOCK_REST_URL}/subscriptions`
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${expectedUrl}`)
+            expect(request.config.url).toBe('http://localhost/api/v1/subscriptions')
         })
         const result = await services.getMyPurchases()
         expect(result).toStrictEqual(expectedResult)

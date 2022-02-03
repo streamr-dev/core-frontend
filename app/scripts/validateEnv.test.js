@@ -4,7 +4,6 @@ import validate from './validateEnv'
 
 const VALID_ENV = {
     GOOGLE_ANALYTICS_ID: 'UA-12121212-1',
-    NODE_ENV: 'production',
     PLATFORM_PUBLIC_PATH: 'https://cdn.streamr.com',
     PORT: '12345',
     SENTRY_DSN: 'https://user@pass.ingest.sentry.io/1337',
@@ -93,8 +92,6 @@ it('validates valid env successfully', async () => {
 })
 
 it('ensures valid GOOGLE_ANALYTICS_ID', presenceTest('GOOGLE_ANALYTICS_ID'))
-
-it('ensures valid NODE_ENV', presenceTest('NODE_ENV'))
 
 it('ensures valid PLATFORM_PUBLIC_PATH', presenceTest('PLATFORM_PUBLIC_PATH'))
 

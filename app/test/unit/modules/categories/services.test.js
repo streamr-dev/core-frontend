@@ -1,13 +1,7 @@
 import moxios from 'moxios'
 
+import setTempEnv from '$testUtils/setTempEnv'
 import * as services from '$mp/modules/categories/services'
-
-const MOCK_REST_URL = 'TEST_STREAMR_API_URL'
-
-jest.mock('$app/src/getters/getRestUrl', () => ({
-    __esModule: true,
-    default: () => MOCK_REST_URL,
-}))
 
 describe('categories - services', () => {
     beforeEach(() => {
@@ -16,6 +10,10 @@ describe('categories - services', () => {
 
     afterEach(() => {
         moxios.uninstall()
+    })
+
+    setTempEnv({
+        STREAMR_DOCKER_DEV_HOST: 'localhost',
     })
 
     it('gets categories with empty', async (done) => {
@@ -40,7 +38,7 @@ describe('categories - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${MOCK_REST_URL}/categories?includeEmpty=true`)
+            expect(request.config.url).toBe('http://localhost/api/v1/categories?includeEmpty=true')
             done()
         })
 
@@ -68,7 +66,7 @@ describe('categories - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`${MOCK_REST_URL}/categories?includeEmpty=false`)
+            expect(request.config.url).toBe('http://localhost/api/v1/categories?includeEmpty=false')
             done()
         })
 
