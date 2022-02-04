@@ -18,25 +18,19 @@ export default function usePersistPermissionDiff() {
 
     const isMounted = useIsMounted()
 
-    const {
-        changeset,
-        combinations,
-        raw,
-        resourceType,
-        resourceId,
-    } = usePermissionsState()
+    const { changeset, combinations, resourceId } = usePermissionsState()
 
     const busyRef = useRef(false)
 
     const saveRef = useRef(() => {})
 
     saveRef.current = async (onSuccess) => {
-        const changes = getPermissionsDiff(resourceType, raw, combinations, changeset)
+        const changes = getPermissionsDiff(combinations, changeset)
 
         // We have to remove current user's `share` permission last. Otherwise consecutive permission
         // updates fail, obviously. Let's store it here and remove at the end (if exists).
-        const sharePermission = changes.del.find((p) => (
-            p.user === userId && p.operation === toOperationName(resourceType, 'share')
+        const grantPermission = changes.revoke.find(([u, op]) => (
+            u === userId && op === toOperationName('grant')
         ))
 
         const errors = {}
@@ -46,36 +40,34 @@ export default function usePersistPermissionDiff() {
             return
         }
 
-        const add = async (data) => {
+        const grant = async ([u, op]) => {
             try {
-                await stream.grantPermission(data.operation, data.user)
+                await stream.grantUserPermission(op, u)
             } catch (error) {
                 console.error(error)
-                // Store failure but do not abort.
-                errors[data.anonymous ? 'anonymous' : data.user] = error
+                errors[u] = error // Store failure but do not abort.
             }
         }
 
-        const del = async (data) => {
+        const revoke = async ([u, op]) => {
             try {
-                await stream.revokePermission(data.id)
+                await stream.revokeUserPermission(op, u)
             } catch (error) {
                 console.error(error)
-                // Store failure but do not abort.
-                errors[data.anonymous ? 'anonymous' : data.user] = error
+                errors[u] = error // Store failure but do not abort.
             }
         }
 
-        await Promise.all([...changes.add.map(add), ...changes.del.map((p) => (
-            p !== sharePermission ? del(p) : Promise.resolve()
+        await Promise.all([...changes.grant.map(grant), ...changes.revoke.map((p) => (
+            p !== grantPermission ? revoke(p) : Promise.resolve()
         ))])
 
         if (!isMounted()) {
             return
         }
 
-        if (sharePermission) {
-            await del(sharePermission)
+        if (grantPermission) {
+            await revoke(grantPermission)
         }
 
         if (!isMounted()) {

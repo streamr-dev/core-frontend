@@ -1,4 +1,4 @@
-import { GET, EDIT } from '../operations'
+import { SUBSCRIBE, EDIT } from '../operations'
 import gok from './getOperationKeys'
 
 it('translates empty combination into []', () => {
@@ -6,5 +6,5 @@ it('translates empty combination into []', () => {
 })
 
 it('translates combination into an array of keys of combined operations', () => {
-    expect(gok(GET + EDIT).sort()).toEqual(['EDIT', 'GET'])
+    expect(gok(SUBSCRIBE + EDIT).sort()).toEqual(['EDIT', 'SUBSCRIBE'])
 })

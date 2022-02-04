@@ -10,6 +10,7 @@ import Text from '$ui/Text'
 import Errors from '$ui/Errors'
 import { usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import { ADD_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
+import address0 from '$utils/address0'
 
 const Inner = styled.div`
     display: grid;
@@ -26,7 +27,7 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
 
     const validationError = (() => {
         if (!isValidUserId(value)) { return 'Invalid User ID' }
-        if (value === 'anonymous') { return 'Can not share to anonymous' }
+        if (value.toLowerCase() === address0) { return 'Can not share to anonymous' }
     })()
 
     const dispatch = usePermissionsDispatch()

@@ -1,166 +1,90 @@
-import { GET, EDIT, DELETE, SHARE } from '../operations'
+import address0 from '$utils/address0'
+import { SUBSCRIBE, PUBLISH, EDIT, DELETE, GRANT } from '../operations'
 import gpd from './getPermissionsDiff'
 import combine from './combine'
 
 it('generates correct additions', () => {
-    const diff = gpd('STREAM', [], {}, {
-        FOO: GET + DELETE,
-        BAR: SHARE,
-        anonymous: GET + EDIT,
+    const diff = gpd({}, {
+        [address0]: SUBSCRIBE + PUBLISH,
+        BAR: GRANT,
+        FOO: SUBSCRIBE + DELETE,
     })
 
-    expect(diff.add).toHaveLength(5)
+    expect(diff.grant).toHaveLength(5)
 
-    expect(diff.del).toHaveLength(0)
+    expect(diff.grant).toContainEqual([address0, 'canSubscribe'])
 
-    expect(diff.add).toContainEqual({
-        operation: 'stream_get',
-        user: 'FOO',
-    })
+    expect(diff.grant).toContainEqual([address0, 'canPublish'])
 
-    expect(diff.add).toContainEqual({
-        operation: 'stream_delete',
-        user: 'FOO',
-    })
+    expect(diff.grant).toContainEqual(['BAR', 'canGrant'])
 
-    expect(diff.add).toContainEqual({
-        operation: 'stream_share',
-        user: 'BAR',
-    })
+    expect(diff.grant).toContainEqual(['FOO', 'canSubscribe'])
 
-    expect(diff.add).toContainEqual({
-        operation: 'stream_get',
-        anonymous: true,
-    })
+    expect(diff.grant).toContainEqual(['FOO', 'canDelete'])
 
-    expect(diff.add).toContainEqual({
-        operation: 'stream_edit',
-        anonymous: true,
-    })
+    expect(diff.revoke).toEqual([])
 })
 
 it('generates empty diff when there is nothing to add nor remove', () => {
-    const permissions = [{
-        id: 1,
-        operation: 'stream_get',
-        user: 'FOO',
-    }]
+    const rawPermissions = {
+        FOO: ['canPublish'],
+    }
 
-    expect(gpd('STREAM', permissions, combine(permissions), {})).toEqual({
-        add: [],
-        del: [],
+    expect(gpd(combine(rawPermissions), {})).toEqual({
+        grant: [],
+        revoke: [],
     })
 })
 
 it('generates correct deletions', () => {
-    const permissions = [{
-        id: 1,
-        operation: 'stream_get',
-        user: 'FOO',
-    }, {
-        id: 2,
-        operation: 'stream_edit',
-        user: 'FOO',
-    }, {
-        id: 3,
-        operation: 'stream_get',
-        user: 'BAR',
-    }, {
-        id: 4,
-        operation: 'stream_get',
-        anonymous: true,
-    }, {
-        id: 5,
-        operation: 'stream_edit',
-        anonymous: true,
-    }]
+    const rawPermissions = {
+        [address0]: ['canPublish', 'canSubscribe'],
+        BAR: ['canPublish'],
+        FOO: ['canEdit', 'canSubscribe'],
+    }
 
-    const diff = gpd('STREAM', permissions, combine(permissions), {
-        FOO: undefined,
+    const diff = gpd(combine(rawPermissions), {
+        [address0]: undefined,
         BAR: undefined,
-        anonymous: undefined,
+        FOO: undefined,
     })
 
-    expect(diff.add).toHaveLength(0)
+    expect(diff.revoke).toHaveLength(5)
 
-    expect(diff.del).toHaveLength(5)
+    expect(diff.revoke).toContainEqual([address0, 'canSubscribe'])
 
-    expect(diff.del).toContainEqual({
-        id: 1,
-        operation: 'stream_get',
-        user: 'FOO',
-    })
+    expect(diff.revoke).toContainEqual([address0, 'canPublish'])
 
-    expect(diff.del).toContainEqual({
-        id: 2,
-        operation: 'stream_edit',
-        user: 'FOO',
-    })
+    expect(diff.revoke).toContainEqual(['BAR', 'canPublish'])
 
-    expect(diff.del).toContainEqual({
-        id: 3,
-        operation: 'stream_get',
-        user: 'BAR',
-    })
+    expect(diff.revoke).toContainEqual(['FOO', 'canSubscribe'])
 
-    expect(diff.del).toContainEqual({
-        id: 4,
-        operation: 'stream_get',
-        anonymous: true,
-    })
+    expect(diff.revoke).toContainEqual(['FOO', 'canEdit'])
 
-    expect(diff.del).toContainEqual({
-        id: 5,
-        operation: 'stream_edit',
-        anonymous: true,
-    })
+    expect(diff.grant).toEqual([])
 })
 
 it('generates complete diff', () => {
-    const permissions = [{
-        id: 1,
-        operation: 'stream_get',
-        user: 'FOO',
-    }, {
-        id: 2,
-        operation: 'stream_edit',
-        anonymous: true,
-    }]
+    const rawPermissions = {
+        [address0]: ['canPublish'],
+        FOO: ['canSubscribe'],
+    }
 
-    const diff = gpd('STREAM', permissions, combine(permissions), {
+    const diff = gpd(combine(rawPermissions), {
+        [address0]: SUBSCRIBE + PUBLISH,
+        BAR: SUBSCRIBE,
         FOO: EDIT,
-        BAR: GET,
-        anonymous: GET,
     })
 
-    expect(diff.add).toHaveLength(3)
+    expect(diff.grant).toHaveLength(3)
 
-    expect(diff.del).toHaveLength(2)
+    expect(diff.grant).toContainEqual([address0, 'canSubscribe'])
 
-    expect(diff.add).toContainEqual({
-        operation: 'stream_edit',
-        user: 'FOO',
-    })
+    expect(diff.grant).toContainEqual(['BAR', 'canSubscribe'])
 
-    expect(diff.add).toContainEqual({
-        operation: 'stream_get',
-        user: 'BAR',
-    })
+    expect(diff.grant).toContainEqual(['FOO', 'canEdit'])
 
-    expect(diff.add).toContainEqual({
-        operation: 'stream_get',
-        anonymous: true,
-    })
+    expect(diff.revoke).toHaveLength(1)
 
-    expect(diff.del).toContainEqual({
-        id: 1,
-        operation: 'stream_get',
-        user: 'FOO',
-    })
-
-    expect(diff.del).toContainEqual({
-        id: 2,
-        operation: 'stream_edit',
-        anonymous: true,
-    })
+    expect(diff.revoke).toContainEqual(['FOO', 'canSubscribe'])
 })

@@ -1,14 +1,14 @@
 import tok from './toOperationKey'
 
 it('converts operation name into key', () => {
-    expect(tok('stream_get')).toBe('GET')
+    expect(tok('canEdit')).toBe('EDIT')
 })
 
 it('converts operation key into… key (smart enough, eh?)', () => {
-    expect(tok('GET')).toBe('GET')
+    expect(tok('EDIT')).toBe('EDIT')
 })
 
 it('is case insensitive', () => {
-    expect(tok('STREAM_GET')).toBe('GET')
-    expect(tok('get')).toBe('GET')
+    expect(tok('CANEDIT')).toBe('EDIT')
+    expect(tok('edit')).toBe('EDIT')
 })

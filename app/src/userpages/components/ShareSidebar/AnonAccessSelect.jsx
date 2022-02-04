@@ -6,6 +6,7 @@ import useUniqueId from '$shared/hooks/useUniqueId'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import { UPDATE_PERMISSION } from '$shared/components/PermissionsProvider/utils/reducer'
 import { DEFAULTS } from '$shared/components/PermissionsProvider/groups'
+import address0 from '$utils/address0'
 
 export const ALLOW_ONLY_INVITED = {
     id: 'onlyInvited',
@@ -30,14 +31,14 @@ const UnstyledAnonAccessSelect = ({ className }) => {
     const onChange = useCallback(({ value: v }) => {
         dispatch({
             type: UPDATE_PERMISSION,
-            user: 'anonymous',
+            user: address0,
             value: v === ALLOW_WITH_LINK.id ? DEFAULTS[resourceType] : undefined,
         })
     }, [dispatch, resourceType])
 
     const id = useUniqueId('ShareSidebar') // for html labels
 
-    const anonCombination = ({}).hasOwnProperty.call(changeset, 'anonymous') ? changeset.anonymous : combinations.anonymous
+    const anonCombination = (({}).hasOwnProperty.call(changeset, address0) ? changeset : combinations)[address0]
 
     const value = anonCombination ? ALLOW_WITH_LINK.id : ALLOW_ONLY_INVITED.id
 

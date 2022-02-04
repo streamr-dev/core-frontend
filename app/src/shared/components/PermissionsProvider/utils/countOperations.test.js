@@ -1,4 +1,4 @@
-import { GET, EDIT, DELETE, PUBLISH, SUBSCRIBE, STARTSTOP, INTERACT, SHARE } from '../operations'
+import { EDIT, DELETE, PUBLISH, SUBSCRIBE, GRANT } from '../operations'
 import countOperations from './countOperations'
 
 it('gives zero for empty combination', () => {
@@ -6,7 +6,7 @@ it('gives zero for empty combination', () => {
 })
 
 it('gives a number of combined operations', () => {
-    expect(countOperations(GET)).toBe(1)
-    expect(countOperations(GET + SHARE)).toBe(2)
-    expect(countOperations(GET + EDIT + DELETE + PUBLISH + SUBSCRIBE + STARTSTOP + INTERACT + SHARE)).toBe(8)
+    expect(countOperations(PUBLISH)).toBe(1)
+    expect(countOperations(PUBLISH + GRANT)).toBe(2)
+    expect(countOperations(PUBLISH + EDIT + DELETE + SUBSCRIBE + GRANT)).toBe(5)
 })

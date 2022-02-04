@@ -1,0 +1,3 @@
+const address0 = '0x0000000000000000000000000000000000000000'
+
+export default address0

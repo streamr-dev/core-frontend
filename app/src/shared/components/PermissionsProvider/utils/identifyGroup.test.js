@@ -1,5 +1,5 @@
 import groups, { DEFAULTS_KEYS } from '../groups'
-import { GET, SHARE } from '../operations'
+import { EDIT, GRANT } from '../operations'
 import ig from './identifyGroup'
 
 it('identifies empty combination as a default', () => {
@@ -13,7 +13,7 @@ it('identifies combinations correctly', () => {
 })
 
 it('identifies custom combinations correctly', () => {
-    expect(ig('STREAM', GET)).toBe('subscriber')
-    expect(ig('STREAM', groups.STREAM.owner - SHARE)).toBe('editor')
-    expect(ig('PRODUCT', groups.PRODUCT.owner - GET)).toBe('viewer')
+    expect(ig('STREAM', EDIT)).toBe('subscriber')
+    expect(ig('STREAM', groups.STREAM.owner - GRANT)).toBe('editor')
+    expect(ig('PRODUCT', groups.PRODUCT.owner - EDIT)).toBe('viewer')
 })

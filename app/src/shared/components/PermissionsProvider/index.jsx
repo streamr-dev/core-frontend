@@ -2,6 +2,7 @@ import React, { useReducer, createContext, useContext, useEffect, useRef, useMem
 import { useSelector } from 'react-redux'
 import { useClient } from 'streamr-client-react'
 
+import address0 from '$utils/address0'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUsername } from '$shared/modules/user/selectors'
 import reducer, { initialState, SET_RESOURCE, SET_PERMISSIONS } from './utils/reducer'
@@ -46,7 +47,7 @@ export const useEditableUserIds = () => {
             ...remainingUserIds(combinations, changeset),
         ])
 
-        set.delete('anonymous')
+        set.delete(address0)
 
         return [...set]
     }, [currentUserId, combinations, changeset])
