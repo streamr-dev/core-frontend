@@ -38,7 +38,6 @@ import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
 import PartitionsView from './PartitionsView'
-import SecurityView from './SecurityView'
 import StatusView from './StatusView'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import useNewStreamMode from './useNewStreamMode'
@@ -316,17 +315,6 @@ const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any)
                                         ['java', 'Java', pubSnippets.java],
                                     ]}
                                     title="Publish"
-                                />
-                            </TOCPage.Section>
-                            <TOCPage.Section
-                                id="security"
-                                title="Security"
-                                onlyDesktop
-                            >
-                                <SecurityView
-                                    stream={stream}
-                                    disabled={isDisabled}
-                                    updateStream={updateStream}
                                 />
                             </TOCPage.Section>
                             <TOCPage.Section

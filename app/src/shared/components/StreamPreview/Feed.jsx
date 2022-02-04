@@ -5,11 +5,6 @@ import stringifyObject from 'stringify-object'
 import { Tooltip } from '@streamr/streamr-layout'
 
 import { formatDateTime } from '$mp/utils/time'
-import {
-    SecurityIcon as PrestyledSecurityIcon,
-    getSecurityLevel,
-    getSecurityLevelTitle,
-} from '$userpages/components/StreamPage/Edit/SecurityView'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
@@ -24,11 +19,6 @@ const formatValue = (data) => (
         })
     ) : data.toString()
 )
-
-const SecurityIcon = styled(PrestyledSecurityIcon)`
-    height: 16px;
-    width: 16px;
-`
 
 const Inner = styled.div`
     display: grid;
@@ -103,10 +93,6 @@ const Lhs = styled(Side)`
     ${Inner} > div {
         min-width: 0;
     }
-`
-
-const StaticInner = styled(Inner)`
-    background: none !important;
 `
 
 const Rhs = styled(Side)`
@@ -273,24 +259,6 @@ const UnstyledFeed = ({
                     </Row>
                 </Header>
                 <Viewport>
-                    <Row>
-                        <StaticInner>
-                            <div>
-                                Security
-                            </div>
-                            <div>
-                                <Tooltip
-                                    value={getSecurityLevelTitle(stream)}
-                                    placement={Tooltip.BOTTOM}
-                                >
-                                    <SecurityIcon
-                                        level={getSecurityLevel(stream || {})}
-                                        mode="small"
-                                    />
-                                </Tooltip>
-                            </div>
-                        </StaticInner>
-                    </Row>
                     {!!selectedTimestamp && (
                         <Row>
                             <Inner
