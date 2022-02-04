@@ -1,5 +1,5 @@
 import toOperationKey from './toOperationKey'
 
-export default function toOperationName(resourceType, o) {
-    return `${resourceType}_${toOperationKey(o)}`.toLowerCase()
+export default function toOperationName(o) {
+    return `can${toOperationKey(o).toLowerCase().replace(/^\w/, (s) => s.toUpperCase())}`
 }

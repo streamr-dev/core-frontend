@@ -1,3 +1,4 @@
+import address0 from '$utils/address0'
 import { DEFAULTS } from '../groups'
 import combine from './combine'
 
@@ -25,6 +26,26 @@ export const initialState = {
     resourceType: undefined,
 }
 
+function sanitizeAddress0(rawPermissions) {
+    const sanitized = (() => {
+        if (!Object.prototype.hasOwnProperty.call(rawPermissions, 'public')) {
+            return rawPermissions
+        }
+
+        const { public: pub, ...permissions } = rawPermissions
+
+        return {
+            ...permissions,
+            [address0]: pub,
+        }
+    })()
+
+    return {
+        combinations: combine(sanitized),
+        raw: sanitized,
+    }
+}
+
 export default function reducer(state, action) {
     // SET_PERMISSIONS is allowed despite the `locked` flag being up. Other actions are shielded off
     // by the "is locked" check. See below.
@@ -37,10 +58,9 @@ export default function reducer(state, action) {
             })
         ), {
             ...state,
-            combinations: combine(action.permissions),
+            ...sanitizeAddress0(action.permissions),
             errors: action.errors || {},
             locked: false,
-            raw: action.permissions,
         })
     }
 

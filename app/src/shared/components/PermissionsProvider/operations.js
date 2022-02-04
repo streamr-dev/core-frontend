@@ -12,4 +12,4 @@ export const STARTSTOP = 0x20
 
 export const INTERACT = 0x40
 
-export const SHARE = 0x80
+export const GRANT = 0x80

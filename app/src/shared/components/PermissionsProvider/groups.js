@@ -3,22 +3,22 @@
 import {
     GET,
     EDIT,
-    SHARE,
+    GRANT,
     PUBLISH,
     SUBSCRIBE,
     DELETE,
 } from './operations'
 
 const STREAM = {
-    subscriber: GET | SUBSCRIBE,
-    publisher: GET | PUBLISH,
-    editor: GET | SUBSCRIBE | EDIT | PUBLISH,
-    owner: GET | EDIT | DELETE | PUBLISH | SUBSCRIBE | SHARE,
+    subscriber: SUBSCRIBE,
+    publisher: PUBLISH,
+    editor: SUBSCRIBE | EDIT | PUBLISH,
+    owner: EDIT | DELETE | PUBLISH | SUBSCRIBE | GRANT,
 }
 
 const PRODUCT = {
     viewer: GET,
-    owner: GET | EDIT | DELETE | SHARE,
+    owner: GET | EDIT | DELETE | GRANT,
 }
 
 export const DEFAULTS_KEYS = {

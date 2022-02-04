@@ -8,7 +8,7 @@ const permissionLabels = {
     DELETE: 'Delete',
     PUBLISH: 'Publish',
     SUBSCRIBE: 'Subscribe',
-    SHARE: 'Share',
+    GRANT: 'Grant',
     STARTSTOP: 'Start / Stop',
     INTERACT: 'Interact',
 }

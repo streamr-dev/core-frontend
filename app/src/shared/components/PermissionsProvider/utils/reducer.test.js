@@ -1,4 +1,5 @@
-import { GET, EDIT, SUBSCRIBE } from '../operations'
+import address0 from '$utils/address0'
+import { EDIT, PUBLISH, SUBSCRIBE } from '../operations'
 import r, {
     ADD_PERMISSION,
     PERSIST,
@@ -21,19 +22,10 @@ describe('SET_PERMISSIONS', () => {
     })
 
     it('sets raw permissions; combines', () => {
-        const permissions = [{
-            id: 1,
-            operation: 'stream_get',
-            user: 'FOO',
-        }, {
-            id: 2,
-            operation: 'stream_edit',
-            user: 'FOO',
-        }, {
-            id: 3,
-            operation: 'stream_get',
-            anonymous: true,
-        }]
+        const permissions = {
+            [address0]: ['canSubscribe'],
+            FOO: ['canSubscribe', 'canEdit'],
+        }
 
         const state = r({
             changeset: {},
@@ -45,33 +37,24 @@ describe('SET_PERMISSIONS', () => {
         expect(state.raw).toBe(permissions)
 
         expect(state.combinations).toEqual({
-            FOO: GET + EDIT,
-            anonymous: GET,
+            [address0]: SUBSCRIBE,
+            FOO: SUBSCRIBE + EDIT,
         })
 
         expect(state.changeset).toEqual({})
     })
 
     it('re-applies current changeset', () => {
-        const permissions = [{
-            id: 1,
-            operation: 'stream_get',
-            user: 'FOO',
-        }, {
-            id: 2,
-            operation: 'stream_edit',
-            user: 'FOO',
-        }, {
-            id: 3,
-            operation: 'stream_get',
-            anonymous: true,
-        }]
+        const permissions = {
+            [address0]: ['canSubscribe'],
+            FOO: ['canSubscribe', 'canEdit'],
+        }
 
         const state = r({
             changeset: {
-                FOO: GET + EDIT,
-                BAR: GET,
-                anonymous: GET,
+                [address0]: SUBSCRIBE,
+                BAR: SUBSCRIBE,
+                FOO: SUBSCRIBE + EDIT,
             },
         }, {
             type: SET_PERMISSIONS,
@@ -81,17 +64,17 @@ describe('SET_PERMISSIONS', () => {
         expect(state.raw).toBe(permissions)
 
         expect(state.combinations).toEqual({
-            FOO: GET + EDIT,
-            anonymous: GET,
+            [address0]: SUBSCRIBE,
+            FOO: SUBSCRIBE + EDIT,
         })
 
         expect(state.changeset).toEqual({
-            BAR: GET,
+            BAR: SUBSCRIBE,
         })
 
         expect(({}).hasOwnProperty.call(state.changeset, 'FOO')).toBe(false)
 
-        expect(({}).hasOwnProperty.call(state.changeset, 'anonymous')).toBe(false)
+        expect(({}).hasOwnProperty.call(state.changeset, address0)).toBe(false)
     })
 })
 
@@ -139,7 +122,7 @@ describe('ADD_PERMISSION', () => {
     it('does not overwrite recent changes', () => {
         const state = {
             changeset: {
-                FOO: GET,
+                FOO: SUBSCRIBE,
             },
         }
 
@@ -153,35 +136,32 @@ describe('ADD_PERMISSION', () => {
         const state = {
             changeset: {},
             combinations: {
-                FOO: GET,
+                FOO: SUBSCRIBE,
             },
         }
 
         expect(r(state, {
             type: ADD_PERMISSION,
             user: 'FOO',
-
         })).toBe(state)
     })
 
-    it('adds new combination if the old one was removed', () => {
+    it('reverts removed permissions', () => {
         expect(r({
             changeset: {
                 FOO: undefined,
             },
             combinations: {
-                FOO: GET,
+                FOO: SUBSCRIBE,
             },
             resourceType: 'STREAM',
         }, {
             type: ADD_PERMISSION,
             user: 'FOO',
         })).toEqual({
-            changeset: {
-                FOO: GET + SUBSCRIBE,
-            },
+            changeset: {}, // changeset == combinations? abandon.
             combinations: {
-                FOO: GET,
+                FOO: SUBSCRIBE,
             },
             resourceType: 'STREAM',
         })
@@ -197,7 +177,7 @@ describe('ADD_PERMISSION', () => {
             user: 'FOO',
         })).toEqual({
             changeset: {
-                FOO: GET + SUBSCRIBE,
+                FOO: SUBSCRIBE,
             },
             combinations: {},
             resourceType: 'STREAM',
@@ -243,10 +223,10 @@ describe('UPDATE_PERMISSION', () => {
         }, {
             type: UPDATE_PERMISSION,
             user: 'FOO',
-            value: GET + EDIT,
+            value: PUBLISH + EDIT,
         })).toEqual({
             changeset: {
-                FOO: GET + EDIT,
+                FOO: PUBLISH + EDIT,
             },
             combinations: {},
         })
@@ -261,10 +241,10 @@ describe('UPDATE_PERMISSION', () => {
         }, {
             type: UPDATE_PERMISSION,
             user: 'FOO',
-            value: GET + SUBSCRIBE,
+            value: PUBLISH + SUBSCRIBE,
         })).toEqual({
             changeset: {
-                FOO: GET + SUBSCRIBE,
+                FOO: PUBLISH + SUBSCRIBE,
             },
             combinations: {},
         })
@@ -274,18 +254,18 @@ describe('UPDATE_PERMISSION', () => {
         const newState = r({
             changeset: {},
             combinations: {
-                FOO: GET,
+                FOO: PUBLISH,
             },
         }, {
             type: UPDATE_PERMISSION,
             user: 'FOO',
-            value: GET,
+            value: PUBLISH,
         })
 
         expect(newState).toEqual({
             changeset: {},
             combinations: {
-                FOO: GET,
+                FOO: PUBLISH,
             },
         })
 
@@ -296,7 +276,7 @@ describe('UPDATE_PERMISSION', () => {
         it('drops changeset combination entirely if user does not exist in loaded combinations', () => {
             const newState = r({
                 changeset: {
-                    FOO: GET,
+                    FOO: PUBLISH,
                 },
                 combinations: {},
             }, {
@@ -317,7 +297,7 @@ describe('UPDATE_PERMISSION', () => {
             const newState = r({
                 changeset: {},
                 combinations: {
-                    FOO: GET,
+                    FOO: PUBLISH,
                 },
             }, {
                 type: UPDATE_PERMISSION,
@@ -330,7 +310,7 @@ describe('UPDATE_PERMISSION', () => {
                     FOO: undefined,
                 },
                 combinations: {
-                    FOO: GET,
+                    FOO: PUBLISH,
                 },
             })
 

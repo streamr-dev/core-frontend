@@ -1,59 +1,27 @@
-import { GET, EDIT, DELETE, SUBSCRIBE } from '../operations'
+import address0 from '$utils/address0'
+import { PUBLISH, EDIT, DELETE, SUBSCRIBE } from '../operations'
 import combine from './combine'
 
 it('turns permissions into combinations', () => {
-    const c = combine([{
-        operation: 'stream_get',
-        user: 'FOO',
-    }, {
-        operation: 'stream_edit',
-        user: 'FOO',
-    }, {
-        operation: 'stream_delete',
-        user: 'FOO',
-    }, {
-        operation: 'stream_get',
-        user: 'BAR',
-    }, {
-        operation: 'stream_get',
-        anonymous: true,
-    }, {
-        operation: 'stream_subscribe',
-        anonymous: true,
-    }])
+    const c = combine({
+        FOO: ['canPublish', 'canEdit', 'canDelete'],
+        BAR: ['canPublish'],
+        [address0]: ['canPublish', 'canSubscribe'],
+    })
 
-    expect(c.FOO).toBe(GET + EDIT + DELETE)
+    expect(c.FOO).toBe(PUBLISH + EDIT + DELETE)
 
-    expect(c.BAR).toBe(GET)
+    expect(c.BAR).toBe(PUBLISH)
 
-    expect(c.anonymous).toBe(GET + SUBSCRIBE)
-})
-
-it('makes anonymous flag take precedence over user', () => {
-    const c = combine([{
-        operation: 'stream_get',
-        user: 'FOO',
-        anonymous: true,
-    }])
-
-    expect(c.anonymous).toBe(GET)
-
-    expect(({}).hasOwnProperty.call(c, 'FOO')).toBe(false)
+    expect(c[address0]).toBe(PUBLISH + SUBSCRIBE)
 })
 
 it('ignores duplicates', () => {
-    const c = combine([{
-        operation: 'stream_get',
-        user: 'FOO',
-    }, {
-        operation: 'stream_edit',
-        user: 'FOO',
-    }, {
-        operation: 'stream_edit',
-        user: 'FOO',
-    }])
+    const c = combine({
+        FOO: ['canEdit', 'canEdit', 'canSubscribe'],
+    })
 
-    expect(c.FOO).toBe(GET + EDIT)
+    expect(c.FOO).toBe(SUBSCRIBE + EDIT)
 })
 
 it('turns empty permissions into empty combinations', () => {

@@ -1,20 +1,20 @@
-import { GET } from '../operations'
+import { EDIT } from '../operations'
 import toi from './toOperationId'
 
 it('converts operation NAME into its numeric representation', () => {
-    expect(toi('resource_get')).toBe(GET)
+    expect(toi('canEdit')).toBe(EDIT)
 })
 
 it('converts operation KEY into its numeric representation', () => {
-    expect(toi('GET')).toBe(GET)
+    expect(toi('EDIT')).toBe(EDIT)
 })
 
 it('is case insensitive', () => {
-    expect(toi('get')).toBe(GET)
-    expect(toi('RESOURCE_GET')).toBe(GET)
+    expect(toi('edit')).toBe(EDIT)
+    expect(toi('CANEDIT')).toBe(EDIT)
 })
 
 it('converts unknown operation into undefined', () => {
     expect(toi('FOO')).not.toBeDefined()
-    expect(toi('anything_foo')).not.toBeDefined()
+    expect(toi('canFOO')).not.toBeDefined()
 })
