@@ -25,7 +25,6 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import routes from '$routes'
 import { useController } from '../StreamController'
 import { convertFromStorageDays } from './Edit/HistoryView'
-import { getSecurityLevelConfig } from './Edit/SecurityView'
 import Preview from './Edit/PreviewView'
 
 import Storage from './shared/Storage'
@@ -74,7 +73,6 @@ const UnstyledView = (props) => {
     const { copy, isCopied } = useCopy()
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
     const { truncatedDomain: domain, pathname } = useStreamPath(stream.id)
-    const { shortDescription, longDescription } = getSecurityLevelConfig(stream)
     const currentUser = useSelector(selectUserData)
     const history = useHistory()
 
@@ -195,16 +193,6 @@ const UnstyledView = (props) => {
                         ]}
                         title="Subscribe"
                     />
-                </TOCSection>
-                <TOCSection
-                    id="security"
-                    title="Security"
-                >
-                    <p>
-                        <strong>{shortDescription}</strong>
-                        {' '}
-                        {longDescription}
-                    </p>
                 </TOCSection>
                 {!!stream.config.fields.length && (
                     <TOCSection
