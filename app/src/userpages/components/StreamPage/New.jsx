@@ -40,7 +40,6 @@ import PartitionsView from './Edit/PartitionsView'
 import HistoryView from './Edit/HistoryView'
 import ConfigureView from './Edit/ConfigureView'
 import { StatusView } from './Edit/StatusView'
-import SecurityView from './Edit/SecurityView'
 import Preview from './Edit/PreviewView'
 import {
     StreamIdFormGroup,
@@ -654,16 +653,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                         ['java', 'Java', newStreamSnippet],
                                     ]}
                                     title="Publish"
-                                    disabled
-                                />
-                            </TOCSection>
-                            <TOCSection
-                                id="security"
-                                title="Security"
-                                disabled
-                            >
-                                <SecurityView
-                                    stream={defaultStreamData}
                                     disabled
                                 />
                             </TOCSection>
