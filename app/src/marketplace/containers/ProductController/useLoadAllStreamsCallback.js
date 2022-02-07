@@ -14,7 +14,9 @@ export default function useLoadAllStreamsCallback({ setAllStreams }: {
     return useCallback(async () => (
         wrap(async () => {
             try {
-                const gen = await client.getAllStreams()
+                const gen = client.searchStreams(undefined, {
+                    user: await client.getAddress(),
+                })
                 const streams = []
 
                 // eslint-disable-next-line no-restricted-syntax
