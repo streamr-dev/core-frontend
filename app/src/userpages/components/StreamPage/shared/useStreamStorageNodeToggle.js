@@ -1,5 +1,7 @@
 import { useCallback, useState, useRef, useEffect } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import isProduction from '$mp/utils/isProduction'
+import patchStorageNodeUrlGetter from './patchStorageNodeUrlGetter'
 
 const useStreamStorageNodeToggle = (stream, address, isEnabled, isChanging) => {
     const [changing, setChanging] = useState(isChanging)
@@ -25,6 +27,10 @@ const useStreamStorageNodeToggle = (stream, address, isEnabled, isChanging) => {
         busyRef.current = true
 
         setChanging(true)
+
+        if (!isProduction()) {
+            patchStorageNodeUrlGetter(stream)
+        }
 
         try {
             if (enabled) {
