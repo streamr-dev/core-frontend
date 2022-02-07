@@ -46,7 +46,7 @@ const UnstyledStorage = ({ stream, disabled, ...props }) => {
                         address={address}
                         name={name}
                         changing={addresses == null}
-                        checked={(addresses || []).includes(address)}
+                        checked={(addresses || []).includes(address.toLowerCase())}
                         disabled={disabled}
                         key={address}
                         stream={stream}
