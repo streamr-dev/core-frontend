@@ -29,6 +29,7 @@ module.exports = {
         'no-unreachable': 'warn',
         'object-curly-newline': 'warn',
         'no-trailing-spaces': 'warn',
+        'no-void': 'off',
         // these promise/atomic rules should probably be turned on
         'promise/catch-or-return': 'off',
         'promise/always-return': 'off',
