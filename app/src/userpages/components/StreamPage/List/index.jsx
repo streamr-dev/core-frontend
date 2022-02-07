@@ -208,9 +208,9 @@ const StreamList = () => {
 
             const nextStreams = []
 
-            const gen = params.search
-                ? client.searchStreams(params.search)
-                : client.getAllStreams()
+            const gen = client.searchStreams(params.search, {
+                user: await client.getAddress(),
+            })
 
             // eslint-disable-next-line no-restricted-syntax
             for await (const stream of gen) {

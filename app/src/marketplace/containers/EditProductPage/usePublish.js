@@ -130,7 +130,9 @@ export default function usePublish() {
                     try {
                         // Get all streams and verify that the added streams actually exist,
                         // otherwise the product update will fail
-                        const gen = await client.getAllStreams()
+                        const gen = client.searchStreams(undefined, {
+                            user: await client.getAddress(),
+                        })
                         const streams = []
 
                         // eslint-disable-next-line no-restricted-syntax
