@@ -17,7 +17,7 @@ const useStreamStorageNodeAddresses = (stream) => {
             }
 
             if (isMounted()) {
-                setNodes(result.map(({ storageNodeAddress: address }) => address))
+                setNodes(result.map((address) => address.toLowerCase()))
             }
         }
 
