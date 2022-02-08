@@ -38,7 +38,7 @@ describe('SET_PERMISSIONS', () => {
 
         expect(state.combinations).toEqual({
             [address0]: SUBSCRIBE,
-            FOO: SUBSCRIBE + EDIT,
+            foo: SUBSCRIBE + EDIT,
         })
 
         expect(state.changeset).toEqual({})
@@ -53,8 +53,8 @@ describe('SET_PERMISSIONS', () => {
         const state = r({
             changeset: {
                 [address0]: SUBSCRIBE,
-                BAR: SUBSCRIBE,
-                FOO: SUBSCRIBE + EDIT,
+                bar: SUBSCRIBE,
+                foo: SUBSCRIBE + EDIT,
             },
         }, {
             type: SET_PERMISSIONS,
@@ -65,14 +65,14 @@ describe('SET_PERMISSIONS', () => {
 
         expect(state.combinations).toEqual({
             [address0]: SUBSCRIBE,
-            FOO: SUBSCRIBE + EDIT,
+            foo: SUBSCRIBE + EDIT,
         })
 
         expect(state.changeset).toEqual({
-            BAR: SUBSCRIBE,
+            bar: SUBSCRIBE,
         })
 
-        expect(({}).hasOwnProperty.call(state.changeset, 'FOO')).toBe(false)
+        expect(({}).hasOwnProperty.call(state.changeset, 'foo')).toBe(false)
 
         expect(({}).hasOwnProperty.call(state.changeset, address0)).toBe(false)
     })
@@ -122,13 +122,18 @@ describe('ADD_PERMISSION', () => {
     it('does not overwrite recent changes', () => {
         const state = {
             changeset: {
-                FOO: SUBSCRIBE,
+                foo: SUBSCRIBE,
             },
         }
 
         expect(r(state, {
             type: ADD_PERMISSION,
             user: 'FOO',
+        })).toBe(state)
+
+        expect(r(state, {
+            type: ADD_PERMISSION,
+            user: 'foo',
         })).toBe(state)
     })
 
@@ -144,15 +149,20 @@ describe('ADD_PERMISSION', () => {
             type: ADD_PERMISSION,
             user: 'FOO',
         })).toBe(state)
+
+        expect(r(state, {
+            type: ADD_PERMISSION,
+            user: 'foo',
+        })).toBe(state)
     })
 
     it('reverts removed permissions', () => {
         expect(r({
             changeset: {
-                FOO: undefined,
+                foo: undefined,
             },
             combinations: {
-                FOO: SUBSCRIBE,
+                foo: SUBSCRIBE,
             },
             resourceType: 'STREAM',
         }, {
@@ -161,7 +171,26 @@ describe('ADD_PERMISSION', () => {
         })).toEqual({
             changeset: {}, // changeset == combinations? abandon.
             combinations: {
-                FOO: SUBSCRIBE,
+                foo: SUBSCRIBE,
+            },
+            resourceType: 'STREAM',
+        })
+
+        expect(r({
+            changeset: {
+                foo: undefined,
+            },
+            combinations: {
+                foo: SUBSCRIBE,
+            },
+            resourceType: 'STREAM',
+        }, {
+            type: ADD_PERMISSION,
+            user: 'foo',
+        })).toEqual({
+            changeset: {}, // changeset == combinations? abandon.
+            combinations: {
+                foo: SUBSCRIBE,
             },
             resourceType: 'STREAM',
         })
@@ -177,7 +206,7 @@ describe('ADD_PERMISSION', () => {
             user: 'FOO',
         })).toEqual({
             changeset: {
-                FOO: SUBSCRIBE,
+                foo: SUBSCRIBE,
             },
             combinations: {},
             resourceType: 'STREAM',
@@ -222,11 +251,25 @@ describe('UPDATE_PERMISSION', () => {
             combinations: {},
         }, {
             type: UPDATE_PERMISSION,
+            user: 'foo',
+            value: PUBLISH + EDIT,
+        })).toEqual({
+            changeset: {
+                foo: PUBLISH + EDIT,
+            },
+            combinations: {},
+        })
+
+        expect(r({
+            changeset: {},
+            combinations: {},
+        }, {
+            type: UPDATE_PERMISSION,
             user: 'FOO',
             value: PUBLISH + EDIT,
         })).toEqual({
             changeset: {
-                FOO: PUBLISH + EDIT,
+                foo: PUBLISH + EDIT,
             },
             combinations: {},
         })
@@ -235,7 +278,7 @@ describe('UPDATE_PERMISSION', () => {
     it('changes existing changeset combination', () => {
         expect(r({
             changeset: {
-                FOO: EDIT,
+                foo: EDIT,
             },
             combinations: {},
         }, {
@@ -244,17 +287,33 @@ describe('UPDATE_PERMISSION', () => {
             value: PUBLISH + SUBSCRIBE,
         })).toEqual({
             changeset: {
-                FOO: PUBLISH + SUBSCRIBE,
+                foo: PUBLISH + SUBSCRIBE,
+            },
+            combinations: {},
+        })
+
+        expect(r({
+            changeset: {
+                foo: EDIT,
+            },
+            combinations: {},
+        }, {
+            type: UPDATE_PERMISSION,
+            user: 'foo',
+            value: PUBLISH + SUBSCRIBE,
+        })).toEqual({
+            changeset: {
+                foo: PUBLISH + SUBSCRIBE,
             },
             combinations: {},
         })
     })
 
     it('does not store changeset combination equal to one of loaded combinations', () => {
-        const newState = r({
+        let newState = r({
             changeset: {},
             combinations: {
-                FOO: PUBLISH,
+                foo: PUBLISH,
             },
         }, {
             type: UPDATE_PERMISSION,
@@ -265,18 +324,38 @@ describe('UPDATE_PERMISSION', () => {
         expect(newState).toEqual({
             changeset: {},
             combinations: {
-                FOO: PUBLISH,
+                foo: PUBLISH,
             },
         })
 
-        expect(({}).hasOwnProperty.call(newState.changeset, 'FOO')).toBe(false)
+        expect(({}).hasOwnProperty.call(newState.changeset, 'foo')).toBe(false)
+
+        newState = r({
+            changeset: {},
+            combinations: {
+                foo: PUBLISH,
+            },
+        }, {
+            type: UPDATE_PERMISSION,
+            user: 'foo',
+            value: PUBLISH,
+        })
+
+        expect(newState).toEqual({
+            changeset: {},
+            combinations: {
+                foo: PUBLISH,
+            },
+        })
+
+        expect(({}).hasOwnProperty.call(newState.changeset, 'foo')).toBe(false)
     })
 
     describe('undefined/null value', () => {
         it('drops changeset combination entirely if user does not exist in loaded combinations', () => {
-            const newState = r({
+            let newState = r({
                 changeset: {
-                    FOO: PUBLISH,
+                    foo: PUBLISH,
                 },
                 combinations: {},
             }, {
@@ -290,14 +369,32 @@ describe('UPDATE_PERMISSION', () => {
                 combinations: {},
             })
 
-            expect(({}).hasOwnProperty.call(newState.changeset, 'FOO')).toBe(false)
+            expect(({}).hasOwnProperty.call(newState.changeset, 'foo')).toBe(false)
+
+            newState = r({
+                changeset: {
+                    foo: PUBLISH,
+                },
+                combinations: {},
+            }, {
+                type: UPDATE_PERMISSION,
+                user: 'foo',
+                value: undefined,
+            })
+
+            expect(newState).toEqual({
+                changeset: {},
+                combinations: {},
+            })
+
+            expect(({}).hasOwnProperty.call(newState.changeset, 'foo')).toBe(false)
         })
 
         it('sets changeset to undefined if user exists in loaded combinations', () => {
-            const newState = r({
+            let newState = r({
                 changeset: {},
                 combinations: {
-                    FOO: PUBLISH,
+                    foo: PUBLISH,
                 },
             }, {
                 type: UPDATE_PERMISSION,
@@ -307,14 +404,36 @@ describe('UPDATE_PERMISSION', () => {
 
             expect(newState).toEqual({
                 changeset: {
-                    FOO: undefined,
+                    foo: undefined,
                 },
                 combinations: {
-                    FOO: PUBLISH,
+                    foo: PUBLISH,
                 },
             })
 
-            expect(({}).hasOwnProperty.call(newState.changeset, 'FOO')).toBe(true)
+            expect(({}).hasOwnProperty.call(newState.changeset, 'foo')).toBe(true)
+
+            newState = r({
+                changeset: {},
+                combinations: {
+                    foo: PUBLISH,
+                },
+            }, {
+                type: UPDATE_PERMISSION,
+                user: 'foo',
+                value: undefined,
+            })
+
+            expect(newState).toEqual({
+                changeset: {
+                    foo: undefined,
+                },
+                combinations: {
+                    foo: PUBLISH,
+                },
+            })
+
+            expect(({}).hasOwnProperty.call(newState.changeset, 'foo')).toBe(true)
         })
     })
 })

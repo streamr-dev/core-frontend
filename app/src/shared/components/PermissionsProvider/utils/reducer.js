@@ -46,6 +46,10 @@ function sanitizeAddress0(rawPermissions) {
     }
 }
 
+function norm(userId) {
+    return typeof userId === 'string' ? userId.toLowerCase() : userId
+}
+
 export default function reducer(state, action) {
     // SET_PERMISSIONS is allowed despite the `locked` flag being up. Other actions are shielded off
     // by the "is locked" check. See below.
@@ -69,6 +73,8 @@ export default function reducer(state, action) {
         return state
     }
 
+    let user
+
     switch (action.type) {
         case PERSIST:
             return {
@@ -88,12 +94,14 @@ export default function reducer(state, action) {
             }
 
         case ADD_PERMISSION:
-            if (state.changeset[action.user] != null) {
+            user = norm(action.user)
+
+            if (state.changeset[user] != null) {
                 // Don't overwrite user changes.
                 return state
             }
 
-            if (state.combinations[action.user] && !({}).hasOwnProperty.call(state.changeset, action.user)) {
+            if (state.combinations[user] && !({}).hasOwnProperty.call(state.changeset, user)) {
                 // Don't overwrite pristine combinations.
                 return state
             }
@@ -105,12 +113,14 @@ export default function reducer(state, action) {
             })
 
         case REMOVE_PERMISSION:
-            if (state.combinations[action.user] != null) {
+            user = norm(action.user)
+
+            if (state.combinations[user] != null) {
                 return {
                     ...state,
                     changeset: {
                         ...state.changeset,
-                        [action.user]: undefined,
+                        [user]: undefined,
                     },
                 }
             }
@@ -128,7 +138,9 @@ export default function reducer(state, action) {
                 })
             }
 
-            if (action.value === state.combinations[action.user]) {
+            user = norm(action.user)
+
+            if (action.value === state.combinations[user]) {
                 return reducer(state, {
                     type: ABANDON_CHANGES,
                     user: action.user,
@@ -139,18 +151,20 @@ export default function reducer(state, action) {
                 ...state,
                 changeset: {
                     ...state.changeset,
-                    [action.user]: action.value,
+                    [user]: action.value,
                 },
             }
 
         case ABANDON_CHANGES:
-            if (!({}).hasOwnProperty.call(state.changeset, action.user)) {
+            user = norm(action.user)
+
+            if (!({}).hasOwnProperty.call(state.changeset, user)) {
                 return state
             }
 
             return {
                 ...state,
-                changeset: (({ [action.user]: _, ...changeset }) => (
+                changeset: (({ [user]: _, ...changeset }) => (
                     changeset
                 ))(state.changeset),
             }

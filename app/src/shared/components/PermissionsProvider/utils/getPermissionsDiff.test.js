@@ -6,8 +6,8 @@ import combine from './combine'
 it('generates correct additions', () => {
     const diff = gpd({}, {
         [address0]: SUBSCRIBE + PUBLISH,
-        BAR: GRANT,
-        FOO: SUBSCRIBE + DELETE,
+        bar: GRANT,
+        foo: SUBSCRIBE + DELETE,
     })
 
     expect(diff.grant).toHaveLength(5)
@@ -16,11 +16,11 @@ it('generates correct additions', () => {
 
     expect(diff.grant).toContainEqual([address0, 'canPublish'])
 
-    expect(diff.grant).toContainEqual(['BAR', 'canGrant'])
+    expect(diff.grant).toContainEqual(['bar', 'canGrant'])
 
-    expect(diff.grant).toContainEqual(['FOO', 'canSubscribe'])
+    expect(diff.grant).toContainEqual(['foo', 'canSubscribe'])
 
-    expect(diff.grant).toContainEqual(['FOO', 'canDelete'])
+    expect(diff.grant).toContainEqual(['foo', 'canDelete'])
 
     expect(diff.revoke).toEqual([])
 })
@@ -45,8 +45,8 @@ it('generates correct deletions', () => {
 
     const diff = gpd(combine(rawPermissions), {
         [address0]: undefined,
-        BAR: undefined,
-        FOO: undefined,
+        bar: undefined,
+        foo: undefined,
     })
 
     expect(diff.revoke).toHaveLength(5)
@@ -55,11 +55,11 @@ it('generates correct deletions', () => {
 
     expect(diff.revoke).toContainEqual([address0, 'canPublish'])
 
-    expect(diff.revoke).toContainEqual(['BAR', 'canPublish'])
+    expect(diff.revoke).toContainEqual(['bar', 'canPublish'])
 
-    expect(diff.revoke).toContainEqual(['FOO', 'canSubscribe'])
+    expect(diff.revoke).toContainEqual(['foo', 'canSubscribe'])
 
-    expect(diff.revoke).toContainEqual(['FOO', 'canEdit'])
+    expect(diff.revoke).toContainEqual(['foo', 'canEdit'])
 
     expect(diff.grant).toEqual([])
 })
@@ -72,19 +72,19 @@ it('generates complete diff', () => {
 
     const diff = gpd(combine(rawPermissions), {
         [address0]: SUBSCRIBE + PUBLISH,
-        BAR: SUBSCRIBE,
-        FOO: EDIT,
+        bar: SUBSCRIBE,
+        foo: EDIT,
     })
 
     expect(diff.grant).toHaveLength(3)
 
     expect(diff.grant).toContainEqual([address0, 'canSubscribe'])
 
-    expect(diff.grant).toContainEqual(['BAR', 'canSubscribe'])
+    expect(diff.grant).toContainEqual(['bar', 'canSubscribe'])
 
-    expect(diff.grant).toContainEqual(['FOO', 'canEdit'])
+    expect(diff.grant).toContainEqual(['foo', 'canEdit'])
 
     expect(diff.revoke).toHaveLength(1)
 
-    expect(diff.revoke).toContainEqual(['FOO', 'canSubscribe'])
+    expect(diff.revoke).toContainEqual(['foo', 'canSubscribe'])
 })
