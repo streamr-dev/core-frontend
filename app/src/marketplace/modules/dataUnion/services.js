@@ -7,7 +7,6 @@ import Web3 from 'web3'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getConfig from '$shared/web3/config'
-import { getToken } from '$shared/utils/sessionToken'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
@@ -32,7 +31,6 @@ function createClient({ usePublicNode = false }: CreateClient = {}) {
 
     return new StreamrClient(getClientConfig({
         auth: {
-            sessionToken: getToken(),
             ethereum: web3 && web3.metamaskProvider,
         },
         autoConnect: false,
@@ -47,7 +45,7 @@ const getDataUnionObject = async (address: string, usePublicNode: boolean = fals
     const client = createClient({
         usePublicNode,
     })
-    const dataUnion = await client.safeGetDataUnion(address)
+    const dataUnion = await client.getDataUnion(address)
     const version = await dataUnion.getVersion()
     if (version !== 2) {
         throw new Error(`Unsupported DU version: ${version}`)
@@ -119,13 +117,8 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
         }),
     ])
         .then(([account]) => {
-            // eslint-disable-next-line no-underscore-dangle
-            const dataUnion = client._getDataUnionFromName({
-                dataUnionName: productId,
-                deployerAddress: account,
-            })
-
-            return dataUnion.getAddress()
+            const { mainnetAddress } = client.calculateDataUnionAddresses(productId, account)
+            return mainnetAddress
         })
         .then((futureAddress) => {
             // send calculated contract address as the transaction hash,
@@ -267,7 +260,7 @@ export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: nu
             const memberAddress = e.returnValues.member
             const block = await web3.eth.getBlock(e.blockHash)
             if (block) {
-                const dataUnion = await client.safeGetDataUnion(id)
+                const dataUnion = await client.getDataUnion(id)
                 const memberData = await dataUnion.getMemberStats(memberAddress)
                 yield {
                     ...memberData,
