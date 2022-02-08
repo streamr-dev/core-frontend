@@ -258,5 +258,8 @@
     "webpack-notifier": "^1.12.0",
     "yup": "^0.32.8"
   },
-  "#IMPORTANT": "Do not use dev dependencies!"
+  "#IMPORTANT": "Do not use dev dependencies!",
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
+  }
 }
