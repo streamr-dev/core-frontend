@@ -52,7 +52,6 @@ describe('getClientConfig', () => {
                 },
                 streamrNodeAddress: 'streamr node address',
                 streamStorageRegistryChainAddress: 'stream storage reg address',
-                storageNodeRegistryChainAddress: 'storage node reg address',
                 graphUrl: 'graph url',
                 mainchain: {
                     dataTokenAddress: 'mc token address',
@@ -79,7 +78,6 @@ describe('getClientConfig', () => {
             network: {
                 trackers: ['tracker1', 'tracker2'],
             },
-            storageNodeRegistryChainAddress: 'storage node reg address',
             restUrl: 'rest url',
             streamRegistryChainAddress: 'stream reg address',
             streamRegistryChainRPC: 'stream reg rpc',
