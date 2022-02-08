@@ -27,7 +27,6 @@ export default function getClientConfig(mods = {}) {
             ...DEFAULTS.network,
             trackers: formatTrackers(client?.network?.trackers) || DEFAULTS.network?.trackers,
         },
-        storageNodeRegistryChainAddress: client?.storageNodeRegistryChainAddress || DEFAULTS.storageNodeRegistryChainAddress,
         restUrl: formatConfigUrl(client?.restUrl) || DEFAULTS.restUrl,
         streamRegistryChainAddress: client?.streamRegistryChainAddress || DEFAULTS.streamRegistryChainAddress,
         streamRegistryChainRPC: formatRpc(client?.streamRegistryChain?.rpc) || DEFAULTS.streamRegistryChainRPC,
