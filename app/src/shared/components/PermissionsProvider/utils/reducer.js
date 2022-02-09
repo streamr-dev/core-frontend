@@ -56,6 +56,8 @@ export default function reducer(state, action) {
     if (action.type === SET_PERMISSIONS) {
         return Object.entries(state.changeset).reduce((memo, [user, value]) => (
             reducer(memo, {
+                // Drop empty permissions from `changeset`, too (`combine` skips empty ones).
+                removeEmpty: true,
                 type: UPDATE_PERMISSION,
                 user,
                 value,
@@ -115,21 +117,7 @@ export default function reducer(state, action) {
         case REMOVE_PERMISSION:
             user = norm(action.user)
 
-            if (state.combinations[user] === 0) {
-                // Drop `user` from both `changeset` and `combinations`.
-                return reducer({
-                    ...state,
-                    // Clean-up combinations.
-                    combinations: (({ [user]: _, ...combinations }) => (
-                        combinations
-                    ))(state.combinations),
-                }, {
-                    type: ABANDON_CHANGES,
-                    user: action.user,
-                })
-            }
-
-            if (state.combinations[user] != null) {
+            if (state.combinations[user]) {
                 return {
                     ...state,
                     changeset: {
@@ -145,7 +133,9 @@ export default function reducer(state, action) {
             })
 
         case UPDATE_PERMISSION:
-            if (action.value == null) {
+            // `removeEmpty` is false by default. That's how UI deals with it. This way we can unselect
+            // all operations for a given `userId` without getting its entry removed from UI.
+            if (action.value == null || (action.value === 0 && action.removeEmpty)) {
                 return reducer(state, {
                     type: REMOVE_PERMISSION,
                     user: action.user,

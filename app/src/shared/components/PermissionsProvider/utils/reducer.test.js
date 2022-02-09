@@ -80,12 +80,16 @@ describe('SET_PERMISSIONS', () => {
     it('does not re-list empty permissions', () => {
         const newState = r({
             changeset: {
-                foo: undefined,
+                foo0: undefined,
+                foo1: 0,
+                foo2: undefined,
+                foo3: 0,
             },
         }, {
             type: SET_PERMISSIONS,
             permissions: {
-                FOO: [],
+                FOO0: [],
+                Foo1: [],
             },
         })
 
