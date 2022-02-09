@@ -33,6 +33,7 @@ it('generates empty diff when there is nothing to add nor remove', () => {
     expect(gpd(combine(rawPermissions), {})).toEqual({
         grant: [],
         revoke: [],
+        revokeAll: [],
     })
 })
 
@@ -41,25 +42,21 @@ it('generates correct deletions', () => {
         [address0]: ['canPublish', 'canSubscribe'],
         BAR: ['canPublish'],
         FOO: ['canEdit', 'canSubscribe'],
+        XO: ['canEdit', 'canSubscribe'],
     }
 
     const diff = gpd(combine(rawPermissions), {
         [address0]: undefined,
         bar: undefined,
         foo: undefined,
+        xo: EDIT,
     })
 
-    expect(diff.revoke).toHaveLength(5)
+    expect(diff.revoke).toHaveLength(1)
 
-    expect(diff.revoke).toContainEqual([address0, 'canSubscribe'])
+    expect(diff.revoke).toContainEqual(['xo', 'canSubscribe'])
 
-    expect(diff.revoke).toContainEqual([address0, 'canPublish'])
-
-    expect(diff.revoke).toContainEqual(['bar', 'canPublish'])
-
-    expect(diff.revoke).toContainEqual(['foo', 'canSubscribe'])
-
-    expect(diff.revoke).toContainEqual(['foo', 'canEdit'])
+    expect(diff.revokeAll.sort()).toEqual([address0, 'bar', 'foo'].sort())
 
     expect(diff.grant).toEqual([])
 })
