@@ -27,3 +27,11 @@ it('ignores duplicates', () => {
 it('turns empty permissions into empty combinations', () => {
     expect(combine([])).toEqual({})
 })
+
+it('ignores empty ones', () => {
+    const c = combine({
+        foo: [],
+    })
+
+    expect(({}).hasOwnProperty.call(c, 'foo')).toBe(false)
+})
