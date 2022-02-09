@@ -7,7 +7,14 @@ export default function getPermissionsDiff(combinations, changeset) {
 
     const revoke = []
 
+    const revokeAll = []
+
     Object.entries(changeset).forEach(([userId, combination]) => {
+        if (combination == null) {
+            revokeAll.push(userId)
+            return
+        }
+
         // eslint-disable-next-line no-bitwise
         getOperationKeys(combinations[userId] ^ combination).forEach((key) => {
             const operationName = toOperationName(key)
@@ -21,5 +28,6 @@ export default function getPermissionsDiff(combinations, changeset) {
     return {
         grant,
         revoke,
+        revokeAll,
     }
 }

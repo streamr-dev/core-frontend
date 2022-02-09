@@ -5,6 +5,7 @@ import { useClient } from 'streamr-client-react'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUsername } from '$shared/modules/user/selectors'
+import address0 from '$utils/address0'
 import getPermissionsDiff from './utils/getPermissionsDiff'
 import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
 import toOperationName from './utils/toOperationName'
@@ -33,6 +34,8 @@ export default function usePersistPermissionDiff() {
             u === userId && op === toOperationName('grant')
         ))
 
+        const selfRevokeAll = changes.revokeAll.includes(userId)
+
         const errors = {}
 
         const stream = await client.getStream(resourceId)
@@ -42,7 +45,11 @@ export default function usePersistPermissionDiff() {
 
         const grant = async ([u, op]) => {
             try {
-                await stream.grantUserPermission(op, u)
+                if (u === address0) {
+                    await stream.grantPublicPermission(op)
+                } else {
+                    await stream.grantUserPermission(op, u)
+                }
             } catch (error) {
                 console.error(error)
                 errors[u] = error // Store failure but do not abort.
@@ -51,27 +58,60 @@ export default function usePersistPermissionDiff() {
 
         const revoke = async ([u, op]) => {
             try {
-                await stream.revokeUserPermission(op, u)
+                if (u === address0) {
+                    await stream.revokePublicPermission(op)
+                } else {
+                    await stream.revokeUserPermission(op, u)
+                }
             } catch (error) {
                 console.error(error)
                 errors[u] = error // Store failure but do not abort.
             }
         }
 
-        await Promise.all([...changes.grant.map(grant), ...changes.revoke.map((p) => (
-            p !== grantPermission ? revoke(p) : Promise.resolve()
-        ))])
+        const revokeAll = async (u) => {
+            try {
+                if (u === address0) {
+                    await stream.revokeAllPublicPermissions()
+                } else {
+                    await stream.revokeAllUserPermissions(u)
+                }
+            } catch (error) {
+                console.error(error)
+                errors[u] = error // Store failure but do not abort.
+            }
+        }
+
+        await Promise.all([
+            ...changes.grant.map(grant),
+            ...changes.revoke.map((p) => (
+                p !== grantPermission ? revoke(p) : Promise.resolve()
+            )),
+            ...changes.revokeAll.map((u) => (
+                u !== userId ? revokeAll(u) : Promise.resolve()
+            )),
+        ])
 
         if (!isMounted()) {
             return
         }
 
-        if (grantPermission) {
-            await revoke(grantPermission)
+        if (selfRevokeAll) {
+            await revokeAll(userId)
         }
 
         if (!isMounted()) {
             return
+        }
+
+        if (!selfRevokeAll) {
+            if (grantPermission) {
+                await revoke(grantPermission)
+            }
+
+            if (!isMounted()) {
+                return
+            }
         }
 
         try {
