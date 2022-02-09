@@ -76,6 +76,23 @@ describe('SET_PERMISSIONS', () => {
 
         expect(({}).hasOwnProperty.call(state.changeset, address0)).toBe(false)
     })
+
+    it('does not re-list empty permissions', () => {
+        const newState = r({
+            changeset: {
+                foo: undefined,
+            },
+        }, {
+            type: SET_PERMISSIONS,
+            permissions: {
+                FOO: [],
+            },
+        })
+
+        expect(newState.changeset).toEqual({})
+
+        expect(newState.combinations).toEqual({})
+    })
 })
 
 describe('SET_RESOURCE', () => {

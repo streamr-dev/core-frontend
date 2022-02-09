@@ -115,6 +115,20 @@ export default function reducer(state, action) {
         case REMOVE_PERMISSION:
             user = norm(action.user)
 
+            if (state.combinations[user] === 0) {
+                // Drop `user` from both `changeset` and `combinations`.
+                return reducer({
+                    ...state,
+                    // Clean-up combinations.
+                    combinations: (({ [user]: _, ...combinations }) => (
+                        combinations
+                    ))(state.combinations),
+                }, {
+                    type: ABANDON_CHANGES,
+                    user: action.user,
+                })
+            }
+
             if (state.combinations[user] != null) {
                 return {
                     ...state,
