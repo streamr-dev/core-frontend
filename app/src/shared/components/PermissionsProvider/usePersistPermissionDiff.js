@@ -96,20 +96,22 @@ export default function usePersistPermissionDiff() {
             return
         }
 
-        if (grantPermission) {
-            await revoke(grantPermission)
-        }
-
-        if (!isMounted()) {
-            return
-        }
-
         if (selfRevokeAll) {
             await revokeAll(userId)
         }
 
         if (!isMounted()) {
             return
+        }
+
+        if (!selfRevokeAll) {
+            if (grantPermission) {
+                await revoke(grantPermission)
+            }
+
+            if (!isMounted()) {
+                return
+            }
         }
 
         try {
