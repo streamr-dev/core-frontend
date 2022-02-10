@@ -6,7 +6,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
 import formatChangeset from './utils/formatChangeset'
 
-export default function usePersistPermissionDiff() {
+export default function usePersistChangeset() {
     const client = useClient()
 
     const dispatch = usePermissionsDispatch()

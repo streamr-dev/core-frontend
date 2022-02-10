@@ -7,7 +7,7 @@ import { useBeforeClose } from '$shared/components/Sidebar/SidebarProvider'
 import { selectUsername } from '$shared/modules/user/selectors'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import { usePermissionsState } from '$shared/components/PermissionsProvider'
-import usePersistPermissionDiff from '$shared/components/PermissionsProvider/usePersistPermissionDiff'
+import usePersistChangeset from '$shared/components/PermissionsProvider/usePersistChangeset'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import NewShareForm from './NewShareForm'
 import UserList from './UserList'
@@ -38,7 +38,7 @@ const UnstyledShareSidebar = (({ className, onClose }) => {
         return canClose
     })
 
-    const persist = usePersistPermissionDiff()
+    const persist = usePersistChangeset()
 
     const onSave = useCallback(() => {
         persist(() => {
