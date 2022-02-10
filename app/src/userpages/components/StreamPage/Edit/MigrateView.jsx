@@ -66,7 +66,17 @@ export function StatusView({ disabled, stream, updateStream }: Props) {
                 <br />
                 <br />
                 Note that messages in the stream are not automatically copied to the new network -
-                please update your data publishers to use the new network. <a href="#">Learn more</a> about migrating to Brubeck.
+                please update your data publishers to use the new network.
+                {' '}
+                <a
+                    href="https://blog.streamr.network/mainnet-launchpad-streamr-network-approaches-key-milestone-of-decentralization/"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                >
+                    Learn more
+                </a>
+                {' '}
+                about migrating to Brubeck.
             </Description>
             <OpacityContainer disabled={disabled}>
                 <InputContainer>
