@@ -32,7 +32,9 @@ import { truncate } from '$shared/utils/text'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
+import { WarningIcon } from '../shared/Icons'
 import InfoView from './InfoView'
+import MigrateView from './MigrateView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
@@ -278,6 +280,17 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
                                 title="Details"
                             >
                                 <InfoView
+                                    stream={stream}
+                                    disabled={isDisabled}
+                                    updateStream={updateStream}
+                                />
+                            </TOCPage.Section>
+                            <TOCPage.Section
+                                id="migrate"
+                                title="Migration to Brubeck"
+                                icon={<WarningIcon />}
+                            >
+                                <MigrateView
                                     stream={stream}
                                     disabled={isDisabled}
                                     updateStream={updateStream}
