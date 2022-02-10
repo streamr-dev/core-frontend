@@ -17,7 +17,7 @@ address = "0xde1112f631486CfC759A50196853011528bC5FA0"
 
 [client]
 graphUrl = ":8000/subgraphs/name/streamr-dev/network-contracts"
-restUrl = "/api/v1"
+restUrl = "/api/v2"
 streamRegistryChainAddress = "0x6cCdd5d866ea766f6DF5965aA98DeCCD629ff222"
 streamrNodeAddress = "0xFCAd0B19bB29D4674531d6f115237E16AfCE377c"
 streamStorageRegistryChainAddress = "0xd04af489677001444280366Dd0885B03dAaDe71D"
