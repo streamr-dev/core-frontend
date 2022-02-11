@@ -16,7 +16,6 @@ import routes from '$routes'
 const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 
 const MarketplaceRouter = () => ([
-    <Route exact path={routes.root()} component={Products} key="root" />, // edge case for localhost
     <Route exact path={routes.marketplace.index()} component={Products} key="Products" />,
     <Route exact path={routes.marketplace.streamPreview()} component={StreamPreviewPage} key="StreamPreview" />,
     <Route exact path={routes.marketplace.product()} component={ProductPage} key="ProductPage2" />,

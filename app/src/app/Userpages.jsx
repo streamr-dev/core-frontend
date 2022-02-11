@@ -45,6 +45,7 @@ const UserpagesRouter = () => ([
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
     <Route exact path={routes.dataunions.index()} component={DataUnionPageAuth} key="DataUnionPage" />,
     <Route exact path={routes.products.edit()} component={EditProductAuth} key="EditProduct" />,
+    <Redirect from={routes.root()} to={routes.streams.index()} component={StreamListViewAuth} key="RootRedirect" />, // edge case for localhost
     <Redirect from={routes.core()} to={routes.streams.index()} component={StreamListViewAuth} key="StreamListViewRedirect" />,
 ])
 
