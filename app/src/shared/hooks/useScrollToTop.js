@@ -7,7 +7,7 @@ export const scrollTop = () => {
     }
 }
 
-export default () => {
+export default function useScrollToTop() {
     const { pathname } = useLocation()
 
     useEffect(() => {
