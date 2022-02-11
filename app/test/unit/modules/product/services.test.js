@@ -70,7 +70,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('get')
-                expect(request.config.url).toBe('http://localhost/api/v1/products/123')
+                expect(request.config.url).toBe('http://localhost/api/v2/products/123')
             })
 
             const result = await all.getProductById('123')
@@ -153,7 +153,7 @@ describe('product - services', () => {
             })
 
             expect(request.config.method).toBe('put')
-            expect(request.config.url).toBe(`http://localhost/api/v1/products/${data.id}`)
+            expect(request.config.url).toBe(`http://localhost/api/v2/products/${data.id}`)
         })
         const result = await all.putProduct(data, data.id)
         expect(result).toStrictEqual(expectedResult)
@@ -172,7 +172,7 @@ describe('product - services', () => {
             })
 
             expect(request.config.method).toBe('post')
-            expect(request.config.url).toBe('http://localhost/api/v1/products')
+            expect(request.config.url).toBe('http://localhost/api/v2/products')
         })
         const result = await all.postProduct(data)
         expect(result).toStrictEqual(expectedResult)
@@ -191,7 +191,7 @@ describe('product - services', () => {
             })
 
             expect(request.config.method).toBe('post')
-            expect(request.config.url).toBe(`http://localhost/api/v1/products/${data.id}/images`)
+            expect(request.config.url).toBe(`http://localhost/api/v2/products/${data.id}/images`)
         })
         const result = await all.postImage(data.id, mockFile)
         expect(result).toStrictEqual(expectedResult)
@@ -214,7 +214,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`http://localhost/api/v1/products/${productId}/undeployFree`)
+                expect(request.config.url).toBe(`http://localhost/api/v2/products/${productId}/undeployFree`)
             })
 
             const result = await all.postUndeployFree(productId)
@@ -240,7 +240,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`http://localhost/api/v1/products/${productId}/setUndeploying`)
+                expect(request.config.url).toBe(`http://localhost/api/v2/products/${productId}/setUndeploying`)
                 expect(request.config.data).toBe(JSON.stringify({
                     transactionHash: txHash,
                 }))
@@ -268,7 +268,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`http://localhost/api/v1/products/${productId}/deployFree`)
+                expect(request.config.url).toBe(`http://localhost/api/v2/products/${productId}/deployFree`)
             })
 
             const result = await all.postDeployFree(productId)
@@ -294,7 +294,7 @@ describe('product - services', () => {
                 })
 
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe(`http://localhost/api/v1/products/${productId}/setDeploying`)
+                expect(request.config.url).toBe(`http://localhost/api/v2/products/${productId}/setDeploying`)
                 expect(request.config.data).toBe(JSON.stringify({
                     transactionHash: txHash,
                 }))
@@ -318,7 +318,7 @@ describe('product - services', () => {
                     response: null,
                 })
                 expect(request.config.method).toBe('post')
-                expect(request.config.url).toBe('http://localhost/api/v1/subscriptions')
+                expect(request.config.url).toBe('http://localhost/api/v2/subscriptions')
                 expect(request.config.data).toBe(JSON.stringify({
                     product: productId,
                     endsAt,

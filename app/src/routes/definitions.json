@@ -1,8 +1,8 @@
 {
     "auth": {
         "external": {
-            "login": "<streamr>/api/v1/login/response",
-            "logout": "<streamr>/api/v1/logout"
+            "login": "<api>/login/response",
+            "logout": "<api>/logout"
         },
         "login": "/login",
         "logout": "/logout"

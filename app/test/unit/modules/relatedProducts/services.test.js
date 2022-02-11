@@ -53,7 +53,7 @@ describe('relatedProducts - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe(`http://localhost/api/v1/products/${productId}/related`)
+            expect(request.config.url).toBe(`http://localhost/api/v2/products/${productId}/related`)
         })
 
         const result = await services.getRelatedProducts(productId)

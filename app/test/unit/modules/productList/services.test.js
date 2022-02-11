@@ -68,7 +68,7 @@ describe('productList - services', () => {
                 status: 200,
                 response: data,
             })
-            const expectedUrl = `http://localhost/api/v1\
+            const expectedUrl = `http://localhost/api/v2\
 /products?categories&grantedAccess=false&max=${productListPageSize + 1}&maxPrice&offset=0&publicAccess=true&search=&sortBy`
             expect(request.config.method).toBe('get')
             expect(request.config.url).toBe(`${expectedUrl}`)
