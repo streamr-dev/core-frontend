@@ -8,14 +8,21 @@ describe('formatChangeset', () => {
             foo: EDIT + PUBLISH,
         })
 
-        expect([...userIds].sort()).toEqual(['bar', 'foo'])
+        const barAt = userIds.indexOf('bar')
 
-        const foo = permissions[userIds.indexOf('foo')].sort()
+        expect(barAt).not.toEqual(-1)
+        
+        const fooAt = userIds.indexOf('foo')
+        
+        expect(fooAt).not.toEqual(-1)
 
-        expect(foo).toEqual(['canEdit', 'canPublish'])
+        expect(permissions[fooAt]).toEqual({
+            canEdit: true,
+            canPublish: true,
+        })
 
-        const bar = permissions[userIds.indexOf('bar')]
-
-        expect(bar).toEqual(['canEdit'])
+        expect(permissions[barAt]).toEqual({
+            canEdit: true,
+        })
     })
 })
