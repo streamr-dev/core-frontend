@@ -11,9 +11,9 @@ describe('formatChangeset', () => {
         const barAt = userIds.indexOf('bar')
 
         expect(barAt).not.toEqual(-1)
-        
+
         const fooAt = userIds.indexOf('foo')
-        
+
         expect(fooAt).not.toEqual(-1)
 
         expect(permissions[fooAt]).toEqual({
