@@ -15,7 +15,7 @@ import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import CoreLayout from '$shared/components/Layout/Core'
 import CodeSnippets from '$shared/components/CodeSnippets'
-import { subscribeSnippets, publishSnippets } from '$utils/streamSnippets'
+import { lightNodeSnippets, websocketSnippets, httpSnippets, mqttSnippets } from '$utils/streamSnippets'
 import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
@@ -193,14 +193,26 @@ const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any)
         }
     }, [confirmIsSaved, history, isMounted])
 
-    const subSnippets = useMemo(() => (
-        subscribeSnippets({
+    const lightNodeSnippet = useMemo(() => (
+        lightNodeSnippets({
             id: stream.id,
         })
     ), [stream.id])
 
-    const pubSnippets = useMemo(() => (
-        publishSnippets({
+    const websocketSnippet = useMemo(() => (
+        websocketSnippets({
+            id: stream.id,
+        })
+    ), [stream.id])
+
+    const httpSnippet = useMemo(() => (
+        httpSnippets({
+            id: stream.id,
+        })
+    ), [stream.id])
+
+    const mqttSnippet = useMemo(() => (
+        mqttSnippets({
             id: stream.id,
         })
     ), [stream.id])
@@ -304,17 +316,11 @@ const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any)
                                 </p>
                                 <CodeSnippets
                                     items={[
-                                        ['javascript', 'Js', subSnippets.javascript],
-                                        ['java', 'Java', subSnippets.java],
+                                        ['javascript', 'Light node (JS)', lightNodeSnippet.javascript],
+                                        ['javascript', 'Websocket', websocketSnippet.javascript],
+                                        ['javascript', 'HTTP', httpSnippet.javascript],
+                                        ['javascript', 'MQTT', mqttSnippet.javascript],
                                     ]}
-                                    title="Subscribe"
-                                />
-                                <CodeSnippets
-                                    items={[
-                                        ['javascript', 'Js', pubSnippets.javascript],
-                                        ['java', 'Java', pubSnippets.java],
-                                    ]}
-                                    title="Publish"
                                 />
                             </TOCPage.Section>
                             <TOCPage.Section

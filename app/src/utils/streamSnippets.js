@@ -31,31 +31,78 @@ export const subscribeSnippets = ({ id }) => ({
     `,
 })
 
-export const publishSnippets = ({ id }) => ({
+export const lightNodeSnippets = ({ id }) => ({
     javascript: `
+        // Run a Streamr node right inside your JS app
         const StreamrClient = require('streamr-client')
-
-        const client = new StreamrClient({
+        const streamr = new StreamrClient({
             auth: {
-                privateKey: 'YOUR-PRIVATE-KEY',
+                privateKey: 'ethereum-private-key'
             }
         })
-
-        client.publish('${id}', {
-            temperature: 25.4,
-            humidity: 10,
-            happy: true,
+        
+        // Publish messages to a stream
+        streamr.publish('${id}', {
+            hello: 'world',
+        })
+        
+        // Or subscribe to a stream of messages
+        streamr.subscribe('${id}', (msg) => {
+            // Handle incoming messages
         })
     `,
-    java: `
-        AuthenticationMethod method = new EthereumAuthenticationMethod("YOUR-PRIVATE-KEY");
-        StreamrClient client = new StreamrClient(method);
-        Stream stream = client.getStream("${id}");
+})
 
-        Map<String, Object> msg = new LinkedHashMap<>();
-        msg.put("foo", "bar");
-        msg.put("random", Math.random());
+export const websocketSnippets = ({ id }) => ({
+    javascript: `
+        // You'll want to URI-encode the stream id
+        const streamId = encodeURIComponent('${id}')
+        
+        // Connect to the Websocket plugin on your Streamr 
+        // node and send JSON messages to publish them
+        const pub = ws.connect(\`ws://my-streamr-node:7170/streams/\${streamId}/publish\`)
+        pub.send({
+            hello: 'world',
+        })
+        
+        // Or subscribe to a stream of messages
+        const sub = ws.connect(\`ws://my-streamr-node:7170/streams/\${streamId}/subscribe\`)
+        sub.onmessage = (msg) => {
+            // Handle incoming messages
+        }
+    `,
+})
 
-        client.publish(stream, msg);
+export const httpSnippets = ({ id }) => ({
+    javascript: `
+        // Use your favourite language and HTTP library!
+
+        // You'll want to URI-encode the stream id
+        const streamId = encodeURIComponent('${id}')
+        
+        // Publish messages to a stream by POSTing JSON 
+        // to the HTTP plugin on your Streamr node
+        http.post(\`http://my-streamr-node:7171/streams/\${streamId}\`, {
+            hello: 'world'
+        })
+    `,
+})
+
+export const mqttSnippets = ({ id }) => ({
+    javascript: `
+        // Use your favourite language and MQTT library!
+
+        // Connect to MQTT plugin on your Streamr node
+        mqtt.connect('mqtt://my-streamr-node')
+        
+        // Publish a message to a stream
+        mqtt.publish('${id}', {
+            hello: 'world',
+        })
+        
+        // Or subscribe to a stream of messages
+        mqtt.subscribe('${id}', (msg) => {
+            // Handle incoming messages
+        })
     `,
 })

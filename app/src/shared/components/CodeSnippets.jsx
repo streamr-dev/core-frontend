@@ -8,15 +8,13 @@ import { MEDIUM } from '$shared/utils/styled'
 const CodeSnippets = ({ items, title, disabled, ...props }) => {
     const { copy, isCopied } = useCopy()
 
-    const [[initial]] = items
-
-    const [language, setLanguage] = useState(initial)
+    const [currentTab, setCurrentTab] = useState(0)
 
     const codeRef = useRef({})
 
     const onCopyClick = useCallback(() => {
-        copy(codeRef.current[language])
-    }, [copy, language])
+        copy(codeRef.current[currentTab.toString()])
+    }, [copy, currentTab])
 
     const [showAll, setShowAll] = useState(false)
 
@@ -82,11 +80,12 @@ const CodeSnippets = ({ items, title, disabled, ...props }) => {
                         </Button>
                     </div>
                 }
-                onSelect={setLanguage}
-                selected={language}
+                onSelect={setCurrentTab}
+                selected={currentTab}
             >
-                {items.map(([lang, label, snippet]) => (
-                    <Tabs.Item label={label} value={lang} key={lang}>
+                {items.map(([lang, label, snippet], index) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <Tabs.Item label={label} value={index} key={index}>
                         <div
                             css={`
                                 ${!showAll && css`
@@ -95,7 +94,11 @@ const CodeSnippets = ({ items, title, disabled, ...props }) => {
                                 `}
                             `}
                         >
-                            <CodeSnippet language={lang} codeRef={codeRef}>
+                            {/*
+                                toString() is needed because otherwise first item will not work because
+                                of this check inside CodeSnippet: 'const idOrLanguage = id || language'
+                            */}
+                            <CodeSnippet id={index.toString()} language={lang} codeRef={codeRef}>
                                 {snippet}
                             </CodeSnippet>
                         </div>
