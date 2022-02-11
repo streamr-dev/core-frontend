@@ -37,7 +37,7 @@ const InputContainer = styled.div`
 `
 
 export function StatusView({ disabled, stream, updateStream }: Props) {
-    const { inactivityThresholdHours } = stream || {}
+    const { inactivityThresholdHours = 0 } = stream || {}
 
     // init units based on initial threshold value
     // don't calculate on the fly otherwise
