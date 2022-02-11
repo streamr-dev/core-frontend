@@ -55,7 +55,6 @@ const UnstyledRadioButtonGroup = ({
                         <div
                             key={option}
                             className={cx(styles.option, {
-                                [styles.selected]: selection === option,
                                 [styles.isCustom]: selection === option && isCustom,
                             })}
                         >
