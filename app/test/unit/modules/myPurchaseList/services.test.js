@@ -65,7 +65,7 @@ describe('myPurchaseList - services', () => {
                 response: data,
             })
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe('http://localhost/api/v1/subscriptions')
+            expect(request.config.url).toBe('http://localhost/api/v2/subscriptions')
         })
         const result = await services.getMyPurchases()
         expect(result).toStrictEqual(expectedResult)

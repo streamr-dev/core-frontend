@@ -108,7 +108,7 @@ if (process.env.SENTRY_DSN) {
 
 // empty the request body for these paths
 const urlBlackList = [
-    '/api/v1/login/password',
+    '/api/v2/login/password',
 ]
 
 if (process.env.LOGROCKET_SLUG) {

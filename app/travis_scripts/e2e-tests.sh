@@ -11,7 +11,7 @@ npx wait-on http://localhost:3333
 $(dirname $0)/start-docker-env.sh
 
 # Wait for e&e
-npx wait-on http-get://localhost/api/v1/categories
+npx wait-on http-get://localhost/api/v2/categories
 
 npm run cypress
 

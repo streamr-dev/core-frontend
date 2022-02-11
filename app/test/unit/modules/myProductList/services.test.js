@@ -61,7 +61,7 @@ describe('myProductList - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe('http://localhost/api/v1/users/me/products')
+            expect(request.config.url).toBe('http://localhost/api/v2/users/me/products')
         })
 
         const result = await getMyProducts()

@@ -38,7 +38,7 @@ describe('categories - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe('http://localhost/api/v1/categories?includeEmpty=true')
+            expect(request.config.url).toBe('http://localhost/api/v2/categories?includeEmpty=true')
             done()
         })
 
@@ -66,7 +66,7 @@ describe('categories - services', () => {
             })
 
             expect(request.config.method).toBe('get')
-            expect(request.config.url).toBe('http://localhost/api/v1/categories?includeEmpty=false')
+            expect(request.config.url).toBe('http://localhost/api/v2/categories?includeEmpty=false')
             done()
         })
 
