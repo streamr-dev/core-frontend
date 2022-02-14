@@ -14,7 +14,7 @@ import Toolbar from '$shared/components/Toolbar'
 import useCopy from '$shared/hooks/useCopy'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import CodeSnippets from '$shared/components/CodeSnippets'
-import { subscribeSnippets } from '$utils/streamSnippets'
+import { lightNodeSnippets, websocketSnippets, httpSnippets, mqttSnippets } from '$utils/streamSnippets'
 import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -86,8 +86,26 @@ const UnstyledView = (props) => {
         }
     }, [history, currentUser])
 
-    const snippets = useMemo(() => (
-        subscribeSnippets({
+    const lightNodeSnippet = useMemo(() => (
+        lightNodeSnippets({
+            id: stream.id,
+        })
+    ), [stream.id])
+
+    const websocketSnippet = useMemo(() => (
+        websocketSnippets({
+            id: stream.id,
+        })
+    ), [stream.id])
+
+    const httpSnippet = useMemo(() => (
+        httpSnippets({
+            id: stream.id,
+        })
+    ), [stream.id])
+
+    const mqttSnippet = useMemo(() => (
+        mqttSnippets({
             id: stream.id,
         })
     ), [stream.id])
@@ -188,10 +206,11 @@ const UnstyledView = (props) => {
                 >
                     <CodeSnippets
                         items={[
-                            ['javascript', 'Js', snippets.javascript],
-                            ['java', 'Java', snippets.java],
+                            ['javascript', 'Light node (JS)', lightNodeSnippet.javascript],
+                            ['javascript', 'Websocket', websocketSnippet.javascript],
+                            ['javascript', 'HTTP', httpSnippet.javascript],
+                            ['javascript', 'MQTT', mqttSnippet.javascript],
                         ]}
-                        title="Subscribe"
                     />
                 </TOCSection>
                 {!!stream.config.fields.length && (

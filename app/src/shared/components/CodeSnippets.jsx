@@ -89,7 +89,7 @@ const CodeSnippets = ({ items, title, disabled, ...props }) => {
                         <div
                             css={`
                                 ${!showAll && css`
-                                    max-height: 119px;
+                                    max-height: 265px;
                                     overflow: hidden;
                                 `}
                             `}

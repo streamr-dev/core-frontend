@@ -310,9 +310,8 @@ const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any)
                                 title="Code Snippets"
                             >
                                 <p>
-                                    You can grab the code (JS &amp; Java) you’ll need to use this stream in your applications below.
-                                    {' '}
-                                    Only users with appropriate permissions can publish or subscribe to the stream.
+                                    Bring your data to Streamr in the way that works best for you &mdash;
+                                    as a JS library within your app, or via MQTT, HTTP or Websocket.
                                 </p>
                                 <CodeSnippets
                                     items={[

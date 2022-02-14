@@ -641,18 +641,11 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             >
                                 <CodeSnippets
                                     items={[
-                                        ['javascript', 'Js', newStreamSnippet],
-                                        ['java', 'Java', newStreamSnippet],
+                                        ['javascript', 'Light node (JS)', newStreamSnippet],
+                                        ['javascript', 'Websocket', newStreamSnippet],
+                                        ['javascript', 'HTTP', newStreamSnippet],
+                                        ['javascript', 'MQTT', newStreamSnippet],
                                     ]}
-                                    title="Subscribe"
-                                    disabled
-                                />
-                                <CodeSnippets
-                                    items={[
-                                        ['javascript', 'Js', newStreamSnippet],
-                                        ['java', 'Java', newStreamSnippet],
-                                    ]}
-                                    title="Publish"
                                     disabled
                                 />
                             </TOCSection>
