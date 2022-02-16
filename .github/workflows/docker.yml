@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - master
-      - development
+      - brubeck
     tags:        
       - v*
   schedule:
@@ -46,7 +46,7 @@ jobs:
         run: echo ${{ steps.get_version.outputs.VERSION }}
       - name: Push streamr/platform:dev
         run: ../.ci_scripts/deploy_docker.sh dev
-        if: github.ref == 'refs/heads/development' && github.event_name != 'schedule'
+        if: github.ref == 'refs/heads/brubeck' && github.event_name != 'schedule'
       - name: Push streamr/platform:nightly
         run: ../.ci_scripts/deploy_docker.sh nightly
         if: github.event_name == 'schedule'
