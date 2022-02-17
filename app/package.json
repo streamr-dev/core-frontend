@@ -1,6 +1,6 @@
 {
   "name": "core-frontend",
-  "version": "2.4.35",
+  "version": "2.4.36",
   "description": "The Streamr Core App",
   "main": "src/index.jsx",
   "scripts": {
