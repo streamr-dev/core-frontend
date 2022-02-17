@@ -12,10 +12,73 @@ The mining process and associated token economics are described at a high level 
 ## Coming in Tatum
 The full token economics along with the mining features will be launched in the Tatum milestone in 2022. 
 
-In the meanwhile, a simplified form of mining was possible in the Brubeck milestone incentivized testnets in late 2021. At the time of writing, mining incentives for the Brubeck mainnet had not yet been decided by the Streamr governance process. 
+## Mining in Brubeck
+A simplified form of mining was possible in the Brubeck milestone incentivized testnets in late 2021. 
 
-<Warning>
+Mining incentives for the Brubeck mainnet has been decided by the Streamr governance process available here: [SIP-7](https://snapshot.org/#/streamr.eth/proposal/0x483729ba13a18c5630247d57a28e02241efb47cf52b7055d27488448e1f4e22c). 
 
-This section will be updated once mining becomes available.
+At the start of the Brubeck Mainnet, the only incentivised streams are special ones created for this purpose. When running the Broker Node, you are automatically subscribing to these special ‘rewards’ streams, which contain reward codes that are delivered on a random interval. When your Broker Node receives a reward code, it will then call our Rewards Backend, and based on this, we are able to verify that your node remains online and is eligible for reward. 
 
-</Warning>
+## Staking in Brubeck
+
+Running a Broker Node alone in the Brubeck Mainnet does not guarantee you qualify for rewards. Unlike the testnets — where it was enough to just show up — the rewards are now based on how many DATA tokens you have staked on your node address. When your Broker Node observes a reward code, it reports it to our Rewards Backend. We are aware of the amount of DATA tokens on the address of the node in the Polygon Blockchain. From this, we are then able to determine your share of the rewards. 
+
+You may choose to stake between 0 and 10,000 DATA tokens on your node address. You can, of course, have more DATA on your node address than that, but reward calculation will cap it to 10,000. For example, 30,000 DATA on address A1 will get rewards as if there were 10,000 DATA staked. In order to get the benefits from 30,000 DATA, you need to have three nodes running that each have 10,000 DATA staked. 
+
+At launch, staking is possible only on the Polygon Mainnet. If you have DATA token holdings on the Ethereum Mainnet, Gnosis Chain (xDai), or Binance Smart Chain—you need to move them to the Polygon Mainnet, to the address of your Broker Node or Broker Nodes. Only DATA can be used for staking. The stake needs to remain on the node’s address, if you take it out, the node will not accumulate rewards any more. Any rewards already claimed will not be affected. 
+
+## Accumulated rewards and payouts
+In order to see the rewards a Broker Node has accumulated, we have set up some endpoints where they can be checked:
+
+### Accumulated rewards for a node address
+
+Endpoint: https://brubeck1.streamr.network:3013/datarewards/:nodeAddress 
+
+```
+Example response:
+{
+    "DATA": 2.1341
+}
+```
+
+### Claimed rewards for a node address
+Endpoint: https://brubeck1.streamr.network:3013/stats/:nodeAddress 
+
+```
+Example response:
+{
+    "claimCount": 177,
+    "claimPercentage": 0.9888268156424581,
+    "claimedRewardCodes": [
+        {
+            "claimTime": "2022-02-11T13:52:31.958Z",
+            "id": "3c03ac2d-eca1-44f9-b376-66c0fda233c2"
+        },
+        {
+            "claimTime": "2022-02-11T14:13:52.179Z",
+            "id": "353531a9-e283-45a8-b840-e983b7a2d002"
+        }, …
+    ]
+}
+```
+
+### Annual percentage yield and annual percentage rate
+Endpoint: https://brubeck1.streamr.network:3013/apy  
+
+Spot is the value calculated from the last reward code, and the 24h value is a sliding average from the reward codes published in the last 24 hours.
+
+Example response:
+```
+{
+    "24h-APR": "22.40",
+    "24h-APY": "24.24",
+    "spot-APR": "18.9872",
+    "spot-APY": "19.99762"
+}
+```
+
+## Payouts
+
+Earned rewards will be automatically sent to the node’s address. The estimated payout date is the first business day of each month.
+
+Payouts cost gas. At the moment, the transaction prices in Polygon are small, so this is not an issue. Small gas costs are covered by reserving a tiny margin of the max inflation rate to cover gas, and distributing the rest as rewards. If gas costs become significant in the future, we might switch to a ‘payout on request’ model where the Broker Node runner can request a payout as often as they feel like it, and pay gas.
