@@ -53,7 +53,11 @@ const NoCreatedStreamsView = () => (
         <p>
             <span>You haven&apos;t created any streams yet.</span>
             <Message>
-                Click the button above to create one.
+                Not what you expected? Your streams might be in the
+                {' '}
+                <a target="_blank" rel="nofollow noopener noreferrer" href="https://corea.streamr.network/">previous network</a>
+                {' '}
+                and can be migrated.
             </Message>
             <MobileMessage>
                 Use the desktop app to make one.
