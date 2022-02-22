@@ -30,6 +30,7 @@ import SwitchNetworkModal from '../SwitchNetworkModal'
 import SnippetDialog from './SnippetDialog'
 import Row from './Row'
 import NoStreamsView from './NoStreams'
+import MigrationNote from './MigrationNote'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -387,6 +388,7 @@ const StreamList = () => {
                             })}
                             preserveSpace
                         />
+                        <MigrationNote />
                     </Fragment>
                 )}
             </StyledListContainer>
