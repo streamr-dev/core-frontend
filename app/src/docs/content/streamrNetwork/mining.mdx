@@ -65,15 +65,18 @@ Example response:
 ### Annual percentage yield and annual percentage rate
 Endpoint: https://brubeck1.streamr.network:3013/apy  
 
-Spot is the value calculated from the last reward code, and the 24h value is a sliding average from the reward codes published in the last 24 hours.
+"spot" is the value calculated from the last reward code, and the "24h" is a sliding average from the reward codes published in the last 24 hours. Stakepool is the total value of DATA staked on the Nodes in the network. Nodes that have more than 10,000 DATA staked are capped to 10,000.
+
 
 Example response:
 ```
 {
-    "24h-APR": "22.40",
-    "24h-APY": "24.24",
-    "spot-APR": "18.9872",
-    "spot-APY": "19.99762"
+    "24h-APR": 2733.52,
+    "24h-APY": 153887433.21,
+    "24h-stakepool": 827178.12,
+    "spot-APR": 945.45,
+    "spot-APY": 106573.19,
+    "spot-stakepool": 2038386
 }
 ```
 
