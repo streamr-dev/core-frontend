@@ -3,9 +3,8 @@ on:
   push:
     branches:
       - master
-      - brubeck
-    tags:        
-      - v*
+    tags:
+      - v*.*.*
   schedule:
     # Push nightly version at the end of every day
     - cron:  '0 0 * * *'
@@ -20,7 +19,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        node-version: [ 14.x ]
+        node-version: [ 16.x ]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
