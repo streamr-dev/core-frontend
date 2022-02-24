@@ -42,6 +42,7 @@ jobs:
           SENTRY_PROJECT: marketplace
           SENTRY_DSN: https://e012761929d24baa96ca82772f60b395@o151964.ingest.sentry.io/1203154
           SENTRY_INDEXER_DSN: https://8311f8e7df9046b781600f95eefd1aa0@o151964.ingest.sentry.io/5235991
+          TEST_HOOKS: off
         run: |
           npm run build-index
           npm run build --if-present
