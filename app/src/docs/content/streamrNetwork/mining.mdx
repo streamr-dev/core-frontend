@@ -62,7 +62,7 @@ Example response:
 }
 ```
 
-### Annual percentage yield and annual percentage rate
+### Annual percentage yield, annual percentage rate and amount of DATA staked
 Endpoint: https://brubeck1.streamr.network:3013/apy  
 
 Spot is the value calculated from the last reward code, and the 24h value is a sliding average from the reward codes published in the last 24 hours.
@@ -70,10 +70,12 @@ Spot is the value calculated from the last reward code, and the 24h value is a s
 Example response:
 ```
 {
-    "24h-APR": "22.40",
-    "24h-APY": "24.24",
-    "spot-APR": "18.9872",
-    "spot-APY": "19.99762"
+    "24h-APR": 20.29,
+    "24h-APY": 23.35,
+    "24h-data-staked": 12469942.4,
+    "spot-APR": 15.69,
+    "spot-APY": 20.36,
+    "spot-data-staked": 113080139
 }
 ```
 
