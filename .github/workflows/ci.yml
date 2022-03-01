@@ -53,7 +53,7 @@ jobs:
       - name: Build app
         run: npm run build
       - name: Start Streamr Docker Stack
-        uses: streamr-dev/streamr-docker-dev-action@v1.0.0-alpha.3
+        uses: streamr-dev/streamr-docker-dev-action@v1.0.0
         with:
           services-to-start: "mysql redis core-api cassandra parity-node0 parity-sidechain-node0 bridge broker-node-storage-1 nginx smtp"
       - name: Run Jest Tests
@@ -93,7 +93,7 @@ jobs:
       - name: Build app
         run: npm run build
       - name: Start Streamr Docker Stack
-        uses: streamr-dev/streamr-docker-dev-action@v1.0.0-alpha.3
+        uses: streamr-dev/streamr-docker-dev-action@v1.0.0
         with:
           services-to-start: "mysql redis core-api cassandra parity-node0 parity-sidechain-node0 bridge broker-node-storage-1 nginx smtp"
       - name: Run Cypress tests
