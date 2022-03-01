@@ -26,23 +26,17 @@ export const initialState = {
     resourceType: undefined,
 }
 
-function sanitizeAddress0(rawPermissions) {
-    const sanitized = (() => {
-        if (!Object.prototype.hasOwnProperty.call(rawPermissions, 'public')) {
-            return rawPermissions
-        }
+function normalize(rawPermissions) {
+    const result = {}
 
-        const { public: pub, ...permissions } = rawPermissions
-
-        return {
-            ...permissions,
-            [address0]: pub,
-        }
-    })()
+    rawPermissions.forEach(({ user, permissions }) => {
+        const u = user === 'public' ? address0 : user
+        result[u] = [...(result[0] || []), ...permissions]
+    })
 
     return {
-        combinations: combine(sanitized),
-        raw: sanitized,
+        combinations: combine(result),
+        raw: result,
     }
 }
 
@@ -64,7 +58,7 @@ export default function reducer(state, action) {
             })
         ), {
             ...state,
-            ...sanitizeAddress0(action.permissions),
+            ...normalize(action.permissions),
             errors: action.errors || {},
             locked: false,
         })
