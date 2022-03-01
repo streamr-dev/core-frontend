@@ -146,8 +146,6 @@
     "cypress": "^5.6.0",
     "dotenv": "^6.2.0",
     "dotenv-safe": "^6.1.0",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-config-streamr": "1.1.8",
