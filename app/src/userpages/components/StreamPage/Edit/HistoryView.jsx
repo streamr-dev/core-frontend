@@ -39,10 +39,6 @@ const Description = styled.p`
     margin-bottom: 3.125rem;
 `
 
-const StyledText = styled(Text)`
-    text-align: center;
-`
-
 const InputContainer = styled.div`
     display: grid;
     grid-template-columns: 5rem 11rem;
@@ -113,13 +109,13 @@ const HistoryView = ({
             {!!showStorageOptions && (
                 <Storage stream={originalStream} />
             )}
-            {stream && stream.storageDays !== undefined &&
+            {stream &&
                 <Fragment>
                     <Label htmlFor="storageAmount">
                         Store historical data for
                     </Label>
                     <InputContainer>
-                        <StyledText
+                        <Text
                             id="storageAmount"
                             value={storageAmount}
                             onChange={onStorageAmountChange}
