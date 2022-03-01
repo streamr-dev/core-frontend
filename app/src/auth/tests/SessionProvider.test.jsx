@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 
@@ -221,7 +221,7 @@ describe('SessionProvider', () => {
         expect(currentContext.token).toBe(null)
     })
 
-    it('stores new token when changed', async () => {
+    it('stores new token when changed', () => {
         let currentContext
 
         const Test = () => {
@@ -251,16 +251,14 @@ describe('SessionProvider', () => {
 
         const oldDate = new Date(global.localStorage.getItem(SESSION_LOGIN_TIME))
 
-        await act(async () => {
-            await (() => new Promise((resolve) => {
-                setTimeout(() => {
-                    currentContext.setSessionToken({
-                        token: 'anotherToken',
-                    })
-                    resolve()
-                }, 5000)
-            }))()
-        })
+        act(() => new Promise((resolve) => {
+            setTimeout(() => {
+                currentContext.setSessionToken({
+                    token: 'anotherToken',
+                })
+                resolve()
+            }, 5000)
+        }))
 
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('anotherToken')
         expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe('metamask')
