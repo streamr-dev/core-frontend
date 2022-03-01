@@ -1,19 +1,11 @@
-import { STREAM_CLIENT_DEFAULTS } from 'streamr-client'
+import { STREAM_CLIENT_DEFAULTS as DEFAULTS } from 'streamr-client'
 import getConfig from '$app/src/getters/getConfig'
 import g from './getClientConfig'
-
-// Filter out what's unexpected. FIXME: fix the client.
-const { ensCacheChainAddress, ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
 
 jest.mock('$app/src/getters/getConfig', () => ({
     __esModule: true,
     default: jest.fn(),
 }))
-
-xit('is ensCacheChainAddress in STREAM_CLIENT_DEFAULTS?', () => {
-    // `ensCacheChainAddress` should not be part of the config. It's going away soon. Let's keep
-    // this xitted example here as a clean-up reminder.
-})
 
 describe('getClientConfig', () => {
     it('when empty, defaults to streamr-client\'s configuration', () => {
@@ -73,14 +65,14 @@ describe('getClientConfig', () => {
                 factorySidechainAddress: 'side chain factory address',
                 templateSidechainAddress: 'side chain template address',
             },
-            dataUnionChainRPC: 'du chain rpc',
-            mainChainRPC: 'mc chain rpc',
+            dataUnionChainRPCs: 'du chain rpc',
+            mainChainRPCs: 'mc chain rpc',
             network: {
                 trackers: ['tracker1', 'tracker2'],
             },
             restUrl: 'rest url',
             streamRegistryChainAddress: 'stream reg address',
-            streamRegistryChainRPC: 'stream reg rpc',
+            streamRegistryChainRPCs: 'stream reg rpc',
             streamrNodeAddress: 'streamr node address',
             streamStorageRegistryChainAddress: 'stream storage reg address',
             theGraphUrl: 'graph url',

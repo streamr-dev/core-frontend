@@ -7,7 +7,7 @@ import getConfig from '$app/src/getters/getConfig'
 export default function getClientConfig(mods = {}) {
     const { client } = getConfig()
 
-    const { dataUnion, ensCacheChainAddress, ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
+    const { dataUnion, ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
 
     return {
         ...DEFAULTS,
@@ -21,15 +21,15 @@ export default function getClientConfig(mods = {}) {
             templateSidechainAddress: client?.dataUnion?.templateSidechainAddress || dataUnion?.templateSidechainAddress,
             ...mods.dataUnion,
         },
-        dataUnionChainRPC: formatRpc(client?.dataUnionChain?.rpc) || DEFAULTS.dataUnionChainRPC,
-        mainChainRPC: formatRpc(client?.mainchain?.rpc) || DEFAULTS.mainChainRPC,
+        dataUnionChainRPCs: formatRpc(client?.dataUnionChain?.rpc) || DEFAULTS.dataUnionChainRPCs,
+        mainChainRPCs: formatRpc(client?.mainchain?.rpc) || DEFAULTS.mainChainRPCs,
         network: {
             ...DEFAULTS.network,
             trackers: formatTrackers(client?.network?.trackers) || DEFAULTS.network?.trackers,
         },
         restUrl: formatConfigUrl(client?.restUrl) || DEFAULTS.restUrl,
         streamRegistryChainAddress: client?.streamRegistryChainAddress || DEFAULTS.streamRegistryChainAddress,
-        streamRegistryChainRPC: formatRpc(client?.streamRegistryChain?.rpc) || DEFAULTS.streamRegistryChainRPC,
+        streamRegistryChainRPCs: formatRpc(client?.streamRegistryChain?.rpc) || DEFAULTS.streamRegistryChainRPCs,
         streamrNodeAddress: client?.streamrNodeAddress || DEFAULTS.streamrNodeAddress,
         streamStorageRegistryChainAddress: client?.streamStorageRegistryChainAddress || DEFAULTS.streamStorageRegistryChainAddress,
         theGraphUrl: formatConfigUrl(client?.graphUrl) || DEFAULTS.theGraphUrl,
