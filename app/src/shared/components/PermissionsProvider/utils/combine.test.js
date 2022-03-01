@@ -4,9 +4,9 @@ import combine from './combine'
 
 it('turns permissions into combinations', () => {
     const c = combine({
-        FOO: ['canPublish', 'canEdit', 'canDelete'],
-        BAR: ['canPublish'],
-        [address0]: ['canPublish', 'canSubscribe'],
+        FOO: ['publish', 'edit', 'delete'],
+        BAR: ['publish'],
+        [address0]: ['publish', 'subscribe'],
     })
 
     expect(c.foo).toBe(PUBLISH + EDIT + DELETE)
@@ -18,7 +18,7 @@ it('turns permissions into combinations', () => {
 
 it('ignores duplicates', () => {
     const c = combine({
-        FOO: ['canEdit', 'canEdit', 'canSubscribe'],
+        FOO: ['edit', 'edit', 'subscribe'],
     })
 
     expect(c.foo).toBe(SUBSCRIBE + EDIT)

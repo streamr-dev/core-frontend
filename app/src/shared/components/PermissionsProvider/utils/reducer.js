@@ -29,14 +29,13 @@ export const initialState = {
 function normalize(rawPermissions) {
     const result = {}
 
-    rawPermissions.forEach(({ user, permissions }) => {
-        const u = user === 'public' ? address0 : user
-        result[u] = [...(result[0] || []), ...permissions]
+    rawPermissions.forEach(({ public: pub, user = pub ? address0 : undefined, permissions }) => {
+        result[user] = [...(result[user] || []), ...permissions]
     })
 
     return {
         combinations: combine(result),
-        raw: result,
+        raw: rawPermissions,
     }
 }
 

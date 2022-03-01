@@ -4,7 +4,7 @@ import { useClient } from 'streamr-client-react'
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
-import formatChangeset from './utils/formatChangeset'
+import formatAssignments from './utils/formatAssignments'
 
 export default function usePersistChangeset() {
     const client = useClient()
@@ -22,20 +22,17 @@ export default function usePersistChangeset() {
     saveRef.current = async (onSuccess) => {
         const errors = {}
 
-        const stream = await client.getStream(resourceId)
-
-        if (!isMounted()) {
-            return
-        }
-
         try {
-            await stream.setPermissions(...formatChangeset(changeset))
+            await client.setPermissions({
+                streamId: resourceId,
+                assignments: formatAssignments(changeset),
+            })
         } catch (e) {
             console.error(e)
         }
 
         try {
-            const result = await stream.getPermissions()
+            const result = await client.getPermissions(resourceId)
 
             if (!isMounted()) {
                 return
