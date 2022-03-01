@@ -4,6 +4,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const isProduction = require('../scripts/isProduction')
 
 process.env.NO_DOTENV = true
+process.env.STORYBOOK = true
+
 const origConfig = require('../webpack.config')
 
 module.exports = {

@@ -29,7 +29,7 @@ const gitRevisionPlugin = new GitRevisionPlugin({
     gitWorkTree: path.resolve(root, '..'),
 })
 
-if (isProduction()) {
+if (isProduction() && !process.env.STORYBOOK) {
     validateEnv(process.env)
 }
 
