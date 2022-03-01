@@ -1,6 +1,5 @@
 import React from 'react'
-import { act } from 'react-dom/test-utils'
-import { mount } from 'enzyme'
+import { cleanup, screen, render, fireEvent, waitFor } from '@testing-library/react'
 
 jest.mock('$shared/components/ModalPortal', () => ({
     __esModule: true,
@@ -33,8 +32,7 @@ describe('CropImageModal', () => {
         jest.restoreAllMocks()
     })
 
-    afterEach(() => {
-    })
+    afterEach(cleanup)
 
     describe('getResizedBlob', () => {
         it('returns the same canvas if smaller than max width', async () => {
@@ -77,24 +75,23 @@ describe('CropImageModal', () => {
 
     it('renders the avatar editor', async () => {
         const { default: CropImageModal } = await import('.')
-        let el
 
-        await act(async () => {
-            el = await mount((
-                <CropImageModal
-                    imageUrl="http://"
-                    onClose={jest.fn()}
-                    onSave={jest.fn()}
-                />
-            ))
-        })
-        expect(el.find({ id: 'AvatarEditor' }).exists()).toBe(true)
+        render((
+            <CropImageModal
+                imageUrl="http://"
+                onClose={jest.fn()}
+                onSave={jest.fn()}
+            />
+        ))
+
+        expect(screen.getByText(/Scale and crop your image/)).toBeInTheDocument()
     })
 
     it('closes the modal', async () => {
         const { default: CropImageModal } = await import('.')
         const closeStub = jest.fn()
-        const el = mount((
+
+        render((
             <CropImageModal
                 imageUrl="http://"
                 onClose={closeStub}
@@ -102,9 +99,7 @@ describe('CropImageModal', () => {
             />
         ))
 
-        await act(async () => {
-            await el.find('button').at(0).simulate('click')
-        })
+        fireEvent.click(screen.getByText(/cancel/i))
 
         expect(closeStub).toHaveBeenCalled()
     })
@@ -112,21 +107,18 @@ describe('CropImageModal', () => {
     it('calls the save prop with edited image', async () => {
         const { default: CropImageModal } = await import('.')
         const saveStub = jest.fn()
-        let el
-        await act(async () => {
-            el = await mount((
-                <CropImageModal
-                    imageUrl="http://"
-                    onClose={jest.fn()}
-                    onSave={saveStub}
-                />
-            ))
-        })
 
-        await act(async () => {
-            await el.find('button').at(1).simulate('click')
-        })
-        expect(saveStub).toHaveBeenCalled()
+        render((
+            <CropImageModal
+                imageUrl="http://"
+                onClose={jest.fn()}
+                onSave={saveStub}
+            />
+        ))
+
+        fireEvent.click(screen.getByText(/apply/i))
+
+        // `onSave` gets called within an async function, after `await`.
+        await waitFor(() => expect(saveStub).toHaveBeenCalled())
     })
 })
-/* eslint-enable object-curly-newline */

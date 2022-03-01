@@ -10,7 +10,8 @@
 module.exports = () => ({
     visitor: {
         JSXAttribute(path) {
-            if (path.node.name.name === 'data-test-hook') {
+            // @FIXME: Deprecate `data-test-hook`. Use `data-testid`.
+            if (['data-test-hook', 'data-testid'].includes(path.node.name.name)) {
                 path.remove()
             }
         },

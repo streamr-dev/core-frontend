@@ -38,6 +38,7 @@ const isSet = (status) => !!status && status !== statuses.EMPTY
 const isError = (status) => !!status && status === statuses.ERROR
 
 const NavSection = ({
+    id,
     heading,
     onClick,
     href,
@@ -64,6 +65,7 @@ const NavSection = ({
                 [styles.active]: !!active,
             })}
             aria-label={heading}
+            data-testid={`NavSection#${id}`}
         >
             <div className={styles.heading}>
                 {!!href && (
@@ -75,7 +77,7 @@ const NavSection = ({
             </div>
             <div className={styles.status}>
                 <div className={styles.marker}>
-                    <Icons name={iconName} className={styles.icon} />
+                    <Icons data-testid={`Icons#${iconName}`} name={iconName} className={styles.icon} />
                 </div>
             </div>
         </div>
