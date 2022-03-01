@@ -7,7 +7,7 @@ import getConfig from '$app/src/getters/getConfig'
 export default function getClientConfig(mods = {}) {
     const { client } = getConfig()
 
-    const { dataUnion, ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
+    const { dataUnion, ensCacheChainAddress, ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
 
     return {
         ...DEFAULTS,
