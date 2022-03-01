@@ -2,7 +2,7 @@ import formatConfigUrl from '$utils/formatConfigUrl'
 import getConfig from '$app/src/getters/getConfig'
 
 export default function formatRpc(rpc) {
-    if (!rpc || typeof rpc !== 'object') {
+    if (!rpc || typeof rpc !== 'object' || !('rpcs' in rpc)) {
         return rpc
     }
 
@@ -10,7 +10,9 @@ export default function formatRpc(rpc) {
 
     return {
         ...rpc,
-        timeout: rpc.timeout != null ? rpc.timeout : client?.chainTimeout,
-        url: formatConfigUrl(rpc.url),
+        rpcs: rpc.rpcs.map((r) => ({
+            timeout: r.timeout != null ? r.timeout : client?.chainTimeout,
+            url: formatConfigUrl(r.url),
+        })),
     }
 }

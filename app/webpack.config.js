@@ -200,6 +200,7 @@ module.exports = {
             TRAVIS_BRANCH: process.env.TRAVIS_BRANCH || '',
             TRAVIS_COMMIT: process.env.TRAVIS_COMMIT || '',
             TRAVIS_PULL_REQUEST_SHA: process.env.TRAVIS_PULL_REQUEST_SHA || '',
+            STREAMR_DOCKER_DEV_HOST: process.env.STREAMR_DOCKER_DEV_HOST || '',
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze ? [

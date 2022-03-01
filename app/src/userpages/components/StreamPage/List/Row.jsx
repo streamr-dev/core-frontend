@@ -20,6 +20,7 @@ import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useRequireNetwork from '$shared/hooks/useRequireNetwork'
 import { selectUserData } from '$shared/modules/user/selectors'
+import getUserPermissions from '$app/src/getters/getUserPermissions'
 import routes from '$routes'
 import useStreamPath from '../shared/useStreamPath'
 
@@ -62,17 +63,10 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
     ], [permissions])
 
     const fetchPermissions = useCallback(async () => {
-        let permissions = []
+        const permissions = await getUserPermissions(stream, username)
 
-        try {
-            permissions = await stream.getUserPermissions(username)
-
-            if (isMounted()) {
-                setPermissions(permissions)
-            }
-        } catch (e) {
-            // Noop.
-            console.error(e)
+        if (isMounted()) {
+            setPermissions(permissions)
         }
 
         return permissions

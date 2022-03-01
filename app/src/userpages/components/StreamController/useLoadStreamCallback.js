@@ -9,6 +9,7 @@ import { canHandleClientError, handleClientError } from '$auth/utils/loginInterc
 import ResourceNotFoundError from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import getUserPermissions from '$app/src/getters/getUserPermissions'
 
 import { useController } from '.'
 
@@ -62,7 +63,7 @@ export default function useLoadStreamCallback() {
 
             const permissions = await (async () => {
                 try {
-                    return await stream.getUserPermissions(username)
+                    return await getUserPermissions(stream, username)
                 } catch (e) {
                     console.error('useLoadStreamCallback', e)
                 }

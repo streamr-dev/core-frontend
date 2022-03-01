@@ -22,10 +22,13 @@ describe('SET_PERMISSIONS', () => {
     })
 
     it('sets raw permissions; combines', () => {
-        const permissions = {
-            [address0]: ['canSubscribe'],
-            FOO: ['canSubscribe', 'canEdit'],
-        }
+        const permissions = [{
+            public: true,
+            permissions: ['subscribe'],
+        }, {
+            user: 'FOO',
+            permissions: ['subscribe', 'edit'],
+        }]
 
         const state = r({
             changeset: {},
@@ -45,10 +48,13 @@ describe('SET_PERMISSIONS', () => {
     })
 
     it('re-applies current changeset', () => {
-        const permissions = {
-            [address0]: ['canSubscribe'],
-            FOO: ['canSubscribe', 'canEdit'],
-        }
+        const permissions = [{
+            public: true,
+            permissions: ['subscribe'],
+        }, {
+            user: 'FOO',
+            permissions: ['subscribe', 'edit'],
+        }]
 
         const state = r({
             changeset: {
@@ -87,10 +93,13 @@ describe('SET_PERMISSIONS', () => {
             },
         }, {
             type: SET_PERMISSIONS,
-            permissions: {
-                FOO0: [],
-                Foo1: [],
-            },
+            permissions: [{
+                user: 'FOO0',
+                permissions: [],
+            }, {
+                user: 'Foo1',
+                permissions: [],
+            }],
         })
 
         expect(newState.changeset).toEqual({})

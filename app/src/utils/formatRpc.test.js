@@ -23,28 +23,38 @@ describe('formatRpc', () => {
 
     it('formats empty RPC info', () => {
         expect(f({})).toMatchObject({
-            timeout: 42,
-            url: undefined,
+            rpcs: [{
+                timeout: 42,
+                url: undefined,
+            }],
         })
     })
 
     it('formats urls and timeouts', () => {
         expect(f({
-            timeout: 1,
-            url: 'url',
+            rpcs: [{
+                timeout: 1,
+                url: 'url',
+            }],
         })).toMatchObject({
-            timeout: 1,
-            url: 'url',
+            rpcs: [{
+                timeout: 1,
+                url: 'url',
+            }],
         })
     })
 
     it('forwards custom RPC props', () => {
         expect(f({
-            customRpcField: 'value',
+            rpcs: [{
+                customRpcField: 'value',
+            }],
         })).toMatchObject({
-            customRpcField: 'value',
-            timeout: 42,
-            url: undefined,
+            rpcs: [{
+                customRpcField: 'value',
+                timeout: 42,
+                url: undefined,
+            }],
         })
     })
 })
