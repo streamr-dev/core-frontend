@@ -2,6 +2,7 @@ import { format } from 'util'
 import moxios from 'moxios'
 import dotenv from '../../scripts/dotenv'
 import '@testing-library/jest-dom'
+import './enzyme'
 
 dotenv()
 
