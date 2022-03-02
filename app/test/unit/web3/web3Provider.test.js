@@ -18,7 +18,9 @@ jest.mock('$app/src/getters/getConfig', () => {
                     ...actualConfig.client.mainchain,
                     rpc: {
                         ...actualConfig.client.mainchain.rpc,
-                        url: 'http://mainchainrpc:8545',
+                        rpcs: [{
+                            url: 'http://mainchainrpc:8545',
+                        }],
                     },
                 },
             },

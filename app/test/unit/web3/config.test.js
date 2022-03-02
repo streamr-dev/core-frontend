@@ -34,21 +34,29 @@ jest.mock('$app/src/getters/getConfig', () => {
                     dataTokenAddress: 'tokenAddress',
                     rpc: {
                         ...actualConfig.client.mainchain.rpc,
-                        url: 'http://mainchainrpc:8545',
+                        rpcs: [{
+                            url: 'http://mainchainrpc:8545',
+                        }],
                     },
                 },
                 dataUnionChain: {
                     ...actualConfig.client.dataUnionChain,
                     rpc: {
+                        ...actualConfig.client.dataUnionChain.rpc,
                         chainId: 8995,
-                        url: 'https://dataunionschain',
+                        rpcs: [{
+                            url: 'https://dataunionschain',
+                        }],
                     },
                 },
                 streamRegistryChain: {
                     ...actualConfig.client.streamRegistryChain,
                     rpc: {
+                        ...actualConfig.client.streamRegistryChain.rpc,
                         chainId: 8996,
-                        url: 'https://streamschain',
+                        rpcs: [{
+                            url: 'https://streamschain',
+                        }],
                     },
                 },
             },
