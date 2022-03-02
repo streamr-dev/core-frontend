@@ -57,6 +57,7 @@ jobs:
     needs:
       - jestSetup
     strategy:
+      fail-fast: false
       matrix:
         node-version: [16.x]
         chunk: ${{ fromJson(needs.jestSetup.outputs['test-chunk-ids']) }}
