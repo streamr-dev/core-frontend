@@ -82,6 +82,7 @@ jobs:
           CHUNKS: ${{ needs.setup.outputs['test-chunks'] }}
 
   cypress:
+    if: ${{ false }}
     name: Cypress Tests
     runs-on: ubuntu-latest
     strategy:
