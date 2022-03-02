@@ -33,7 +33,7 @@ jobs:
           dockerfile: ./app/Dockerfile
           config: ./.hadolint.yaml
 
-  jest-setup:
+  jestSetup:
     name: 'Set up jest chunks'
     runs-on: ubuntu-latest
     outputs:
@@ -41,7 +41,7 @@ jobs:
       test-chunk-ids: ${{ steps['set-test-chunk-ids'].outputs['test-chunk-ids'] }}
     steps:
       - uses: actions/checkout@v2
-      # - run: npm ci
+      - run: npm ci
       - id: set-test-chunks
         name: Set Chunks
         run: echo "::set-output name=test-chunks::$(npx jest --listTests --json | jq -cM '[_nwise(length / 5 | ceil)]')"
@@ -55,11 +55,11 @@ jobs:
     name: Jest Tests (chunk ${{ matrix.chunk }})
     runs-on: ubuntu-latest
     needs:
-      - jest-setup
+      - jestSetup
     strategy:
       matrix:
         node-version: [16.x]
-        chunk: ${{ fromJson(needs.setup.outputs['test-chunk-ids']) }}
+        chunk: ${{ fromJson(needs.jestSetup.outputs['test-chunk-ids']) }}
     steps:
       # common steps
       - uses: actions/checkout@v2
@@ -79,7 +79,7 @@ jobs:
       - name: Run Jest Tests
         run: echo $CHUNKS | jq '.[${{ matrix.chunk }}] | .[] | @text' | xargs npx jest --verbose --useStderr --forceExit --coverage=false
         env:
-          CHUNKS: ${{ needs.setup.outputs['test-chunks'] }}
+          CHUNKS: ${{ needs.jestSetup.outputs['test-chunks'] }}
 
   cypress:
     if: ${{ false }}
