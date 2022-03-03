@@ -1,6 +1,5 @@
-import React, { useContext } from 'react'
-import { mount } from 'enzyme'
-import { act } from 'react-dom/test-utils'
+import React from 'react'
+import { act, render, cleanup } from '@testing-library/react'
 
 import { Provider as SessionProvider, useSession } from '$auth/components/SessionProvider'
 import { SESSION_TOKEN_KEY, SESSION_LOGIN_TIME, SESSION_LOGIN_METHOD } from '$shared/utils/sessionToken'
@@ -17,6 +16,8 @@ describe('SessionProvider', () => {
         global.Date.now = realDate
     })
 
+    afterEach(cleanup)
+
     afterAll(() => {
         global.localStorage.clear()
     })
@@ -30,7 +31,7 @@ describe('SessionProvider', () => {
             return null
         }
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -52,7 +53,7 @@ describe('SessionProvider', () => {
 
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -75,7 +76,7 @@ describe('SessionProvider', () => {
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
         global.localStorage.setItem(SESSION_LOGIN_TIME, date)
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -98,7 +99,7 @@ describe('SessionProvider', () => {
         global.localStorage.setItem(SESSION_TOKEN_KEY, 'myToken')
         global.localStorage.setItem(SESSION_LOGIN_TIME, date)
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -122,7 +123,7 @@ describe('SessionProvider', () => {
             return null
         }
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -146,7 +147,7 @@ describe('SessionProvider', () => {
             return null
         }
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -164,7 +165,7 @@ describe('SessionProvider', () => {
             return null
         }
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -193,7 +194,7 @@ describe('SessionProvider', () => {
             return null
         }
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -230,7 +231,7 @@ describe('SessionProvider', () => {
             return null
         }
 
-        mount((
+        render((
             <SessionProvider>
                 <Test />
             </SessionProvider>
@@ -251,16 +252,14 @@ describe('SessionProvider', () => {
 
         const oldDate = new Date(global.localStorage.getItem(SESSION_LOGIN_TIME))
 
-        await act(async () => {
-            await (() => new Promise((resolve) => {
-                setTimeout(() => {
-                    currentContext.setSessionToken({
-                        token: 'anotherToken',
-                    })
-                    resolve()
-                }, 5000)
-            }))()
-        })
+        await act(() => new Promise((resolve) => {
+            setTimeout(() => {
+                currentContext.setSessionToken({
+                    token: 'anotherToken',
+                })
+                resolve()
+            }, 1000)
+        }))
 
         expect(global.localStorage.getItem(SESSION_TOKEN_KEY)).toBe('anotherToken')
         expect(global.localStorage.getItem(SESSION_LOGIN_METHOD)).toBe('metamask')

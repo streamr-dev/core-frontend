@@ -1,13 +1,14 @@
 import React from 'react'
-import { shallow, mount } from 'enzyme'
-import { act } from 'react-dom/test-utils'
+import { render, cleanup } from '@testing-library/react'
 
 import EditorNav, { statuses } from '../'
 
 describe('EditorNav', () => {
+    afterEach(cleanup)
+
     it('renders an empty list by default', () => {
-        const el = shallow(<EditorNav />)
-        expect(el.find('NavSection')).toHaveLength(0)
+        const { queryAllByTestId } = render(<EditorNav />)
+        expect(queryAllByTestId(/^NavSection/)).toHaveLength(0)
     })
 
     it('renders sections', () => {
@@ -31,8 +32,8 @@ describe('EditorNav', () => {
             heading: 'Details',
         }]
 
-        const el = shallow(<EditorNav sections={sections} />)
-        expect(el.find('NavSection')).toHaveLength(6)
+        const { queryAllByTestId } = render(<EditorNav sections={sections} />)
+        expect(queryAllByTestId(/^NavSection/)).toHaveLength(6)
     })
 
     it('renders seen icons by default', () => {
@@ -50,16 +51,11 @@ describe('EditorNav', () => {
             heading: 'Streams',
         }]
 
-        let el
-        act(() => {
-            el = mount(<EditorNav sections={sections} />)
-        })
-        const icons = el.update().find('Icons')
+        const { queryAllByTestId } = render(<EditorNav sections={sections} />)
 
-        expect(icons.at(0).prop('name')).toBe('seen')
-        expect(icons.at(1).prop('name')).toBe('seen')
-        expect(icons.at(2).prop('name')).toBe('seen')
-        expect(icons.at(3).prop('name')).toBe('seen')
+        expect(queryAllByTestId(/^Icons/)).toHaveLength(4)
+
+        expect(queryAllByTestId('Icons#seen')).toHaveLength(4)
     })
 
     describe('active section', () => {
@@ -84,45 +80,13 @@ describe('EditorNav', () => {
                 heading: 'Details',
             }]
 
-            let el
-            act(() => {
-                el = mount(<EditorNav sections={sections} activeSection="price" />)
-            })
-            const nav = el.find('NavSection')
+            const { queryAllByTestId, getByTestId } = render(<EditorNav sections={sections} activeSection="price" />)
 
-            expect(nav.at(0).prop('active')).toBe(false)
-            expect(nav.at(1).prop('active')).toBe(false)
-            expect(nav.at(2).prop('active')).toBe(false)
-            expect(nav.at(3).prop('active')).toBe(false)
-            expect(nav.at(4).prop('active')).toBe(true)
-            expect(nav.at(5).prop('active')).toBe(false)
-        })
+            expect(queryAllByTestId('Icons#seen')).toHaveLength(5)
 
-        it('shows different icon for the active section', () => {
-            const sections = [{
-                id: 'name',
-                heading: 'Name',
-            }, {
-                id: 'coverImage',
-                heading: 'Cover Image',
-            }, {
-                id: 'description',
-                heading: 'Description',
-            }, {
-                id: 'streams',
-                heading: 'Streams',
-            }]
+            expect(queryAllByTestId('Icons#active')).toHaveLength(1)
 
-            let el
-            act(() => {
-                el = mount(<EditorNav sections={sections} activeSection="description" />)
-            })
-            const icons = el.update().find('Icons')
-
-            expect(icons.at(0).prop('name')).toBe('seen')
-            expect(icons.at(1).prop('name')).toBe('seen')
-            expect(icons.at(2).prop('name')).toBe('active')
-            expect(icons.at(3).prop('name')).toBe('seen')
+            expect(getByTestId('NavSection#price')).toHaveClass('active')
         })
     })
 
@@ -142,16 +106,9 @@ describe('EditorNav', () => {
                 heading: 'Streams',
             }]
 
-            let el
-            act(() => {
-                el = mount(<EditorNav sections={sections} trackScrolling />)
-            })
-            const icons = el.update().find('Icons')
+            const { queryAllByTestId } = render(<EditorNav sections={sections} trackScrolling />)
 
-            expect(icons.at(0).prop('name')).toBe('default')
-            expect(icons.at(1).prop('name')).toBe('default')
-            expect(icons.at(2).prop('name')).toBe('default')
-            expect(icons.at(3).prop('name')).toBe('default')
+            expect(queryAllByTestId('Icons#default')).toHaveLength(4)
         })
 
         it('renders sections as seen up the active section', () => {
@@ -169,28 +126,21 @@ describe('EditorNav', () => {
                 heading: 'Streams',
             }]
 
-            let el
-            act(() => {
-                el = mount(<EditorNav sections={sections} trackScrolling />)
-            })
+            const { queryAllByTestId, rerender } = render(<EditorNav sections={sections} trackScrolling />)
 
-            let icons = el.update().find('Icons')
-            expect(icons.at(0).prop('name')).toBe('default')
-            expect(icons.at(1).prop('name')).toBe('default')
-            expect(icons.at(2).prop('name')).toBe('default')
-            expect(icons.at(3).prop('name')).toBe('default')
+            expect(queryAllByTestId('Icons#default')).toHaveLength(4)
 
-            act(() => {
-                el.setProps({
-                    activeSection: 'description',
-                })
-            })
-            icons = el.update().find('Icons')
+            rerender(<EditorNav sections={sections} trackScrolling activeSection="description" />)
 
-            expect(icons.at(0).prop('name')).toBe('seen')
-            expect(icons.at(1).prop('name')).toBe('seen')
-            expect(icons.at(2).prop('name')).toBe('active')
-            expect(icons.at(3).prop('name')).toBe('default')
+            const icons = queryAllByTestId(/^Icons/)
+
+            expect(icons[0]).toHaveAttribute('data-testid', 'Icons#seen')
+
+            expect(icons[1]).toHaveAttribute('data-testid', 'Icons#seen')
+
+            expect(icons[2]).toHaveAttribute('data-testid', 'Icons#active')
+
+            expect(icons[3]).toHaveAttribute('data-testid', 'Icons#default')
         })
 
         it('renders sections as seen up to a section with status', () => {
@@ -209,16 +159,17 @@ describe('EditorNav', () => {
                 heading: 'Streams',
             }]
 
-            let el
-            act(() => {
-                el = mount(<EditorNav sections={sections} trackScrolling />)
-            })
-            const icons = el.update().find('Icons')
+            const { queryAllByTestId } = render(<EditorNav sections={sections} trackScrolling />)
 
-            expect(icons.at(0).prop('name')).toBe('seen')
-            expect(icons.at(1).prop('name')).toBe('seen')
-            expect(icons.at(2).prop('name')).toBe('valid')
-            expect(icons.at(3).prop('name')).toBe('default')
+            const icons = queryAllByTestId(/^Icons/)
+
+            expect(icons[0]).toHaveAttribute('data-testid', 'Icons#seen')
+
+            expect(icons[1]).toHaveAttribute('data-testid', 'Icons#seen')
+
+            expect(icons[2]).toHaveAttribute('data-testid', 'Icons#valid')
+
+            expect(icons[3]).toHaveAttribute('data-testid', 'Icons#default')
         })
     })
 
@@ -242,16 +193,17 @@ describe('EditorNav', () => {
                 status: statuses.EMPTY,
             }]
 
-            let el
-            act(() => {
-                el = mount(<EditorNav sections={sections} />)
-            })
-            const icons = el.update().find('Icons')
+            const { queryAllByTestId } = render(<EditorNav sections={sections} />)
 
-            expect(icons.at(0).prop('name')).toBe('seen')
-            expect(icons.at(1).prop('name')).toBe('valid')
-            expect(icons.at(2).prop('name')).toBe('unpublished')
-            expect(icons.at(3).prop('name')).toBe('seen')
+            const icons = queryAllByTestId(/^Icons/)
+
+            expect(icons[0]).toHaveAttribute('data-testid', 'Icons#seen')
+
+            expect(icons[1]).toHaveAttribute('data-testid', 'Icons#valid')
+
+            expect(icons[2]).toHaveAttribute('data-testid', 'Icons#unpublished')
+
+            expect(icons[3]).toHaveAttribute('data-testid', 'Icons#seen')
         })
 
         it('shows error icons when showErrors is true', () => {
@@ -273,15 +225,17 @@ describe('EditorNav', () => {
                 status: statuses.EMPTY,
             }]
 
-            let el
-            act(() => {
-                el = mount(<EditorNav sections={sections} showErrors />)
-            })
-            const icons = el.update().find('Icons')
-            expect(icons.at(0).prop('name')).toBe('error')
-            expect(icons.at(1).prop('name')).toBe('valid')
-            expect(icons.at(2).prop('name')).toBe('unpublished')
-            expect(icons.at(3).prop('name')).toBe('seen')
+            const { queryAllByTestId } = render(<EditorNav sections={sections} showErrors />)
+
+            const icons = queryAllByTestId(/^Icons/)
+
+            expect(icons[0]).toHaveAttribute('data-testid', 'Icons#error')
+
+            expect(icons[1]).toHaveAttribute('data-testid', 'Icons#valid')
+
+            expect(icons[2]).toHaveAttribute('data-testid', 'Icons#unpublished')
+
+            expect(icons[3]).toHaveAttribute('data-testid', 'Icons#seen')
         })
 
         it('shows different error icon for the active section', () => {
@@ -300,20 +254,17 @@ describe('EditorNav', () => {
                 heading: 'Streams',
             }]
 
-            let el
-            act(() => {
-                el = mount(<EditorNav
-                    sections={sections}
-                    activeSection="description"
-                    showErrors
-                />)
-            })
-            const icons = el.update().find('Icons')
+            const { queryAllByTestId } = render(<EditorNav sections={sections} activeSection="description" showErrors />)
 
-            expect(icons.at(0).prop('name')).toBe('seen')
-            expect(icons.at(1).prop('name')).toBe('seen')
-            expect(icons.at(2).prop('name')).toBe('activeError')
-            expect(icons.at(3).prop('name')).toBe('seen')
+            const icons = queryAllByTestId(/^Icons/)
+
+            expect(icons[0]).toHaveAttribute('data-testid', 'Icons#seen')
+
+            expect(icons[1]).toHaveAttribute('data-testid', 'Icons#seen')
+
+            expect(icons[2]).toHaveAttribute('data-testid', 'Icons#activeError')
+
+            expect(icons[3]).toHaveAttribute('data-testid', 'Icons#seen')
         })
     })
 })

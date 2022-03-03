@@ -22,7 +22,9 @@ describe('formatRpc', () => {
     })
 
     it('formats empty RPC info', () => {
-        expect(f({})).toMatchObject({
+        expect(f({
+            rpcs: [{}],
+        })).toMatchObject({
             rpcs: [{
                 timeout: 42,
                 url: undefined,
@@ -46,15 +48,11 @@ describe('formatRpc', () => {
 
     it('forwards custom RPC props', () => {
         expect(f({
-            rpcs: [{
-                customRpcField: 'value',
-            }],
+            customRpcField: 'value',
+            rpcs: [],
         })).toMatchObject({
-            rpcs: [{
-                customRpcField: 'value',
-                timeout: 42,
-                url: undefined,
-            }],
+            customRpcField: 'value',
+            rpcs: [],
         })
     })
 })

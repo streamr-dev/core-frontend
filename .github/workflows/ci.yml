@@ -32,34 +32,55 @@ jobs:
         with:
           dockerfile: ./app/Dockerfile
           config: ./.hadolint.yaml
-      
-  jest:
-    name: Jest Tests
+
+  jestSetup:
+    name: 'Set up jest chunks'
     runs-on: ubuntu-latest
+    outputs:
+      test-chunks: ${{ steps['set-test-chunks'].outputs['test-chunks'] }}
+      test-chunk-ids: ${{ steps['set-test-chunk-ids'].outputs['test-chunk-ids'] }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-test-chunks
+        name: Set Chunks
+        run: echo "::set-output name=test-chunks::$(npx jest --listTests --json | jq -cM '[_nwise(length / 5 | ceil)]')"
+      - id: set-test-chunk-ids
+        name: Set Chunk IDs
+        run: echo "::set-output name=test-chunk-ids::$(echo $CHUNKS | jq -cM 'to_entries | map(.key)')"
+        env:
+          CHUNKS: ${{ steps['set-test-chunks'].outputs['test-chunks'] }}
+
+  jest:
+    name: Jest Tests (chunk ${{ matrix.chunk }})
+    runs-on: ubuntu-latest
+    needs:
+      - jestSetup
     strategy:
+      fail-fast: false
       matrix:
         node-version: [16.x]
+        chunk: ${{ fromJson(needs.jestSetup.outputs['test-chunk-ids']) }}
     steps:
-      # common steps
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: |
-          npm ci
-      # job specific steps
-      - name: Build app
-        run: npm run build
+        run: npm ci
       - name: Start Streamr Docker Stack
         uses: streamr-dev/streamr-docker-dev-action@v1.0.0
         with:
           services-to-start: "mysql redis core-api cassandra parity-node0 parity-sidechain-node0 bridge broker-node-storage-1 nginx smtp"
       - name: Run Jest Tests
-        run: npm run test
+        run: echo $CHUNKS | jq '.[${{ matrix.chunk }}] | .[] | @text' | xargs npx jest --verbose --useStderr --forceExit --coverage=false
+        env:
+          CHUNKS: ${{ needs.jestSetup.outputs['test-chunks'] }}
+          TEST_HOOKS: 1
+
 
   cypress:
+    if: ${{ false }}
     name: Cypress Tests
     runs-on: ubuntu-latest
     strategy:

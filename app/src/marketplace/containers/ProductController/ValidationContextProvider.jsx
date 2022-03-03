@@ -117,14 +117,7 @@ function useValidationContext(): ContextProps {
             throw new Error('validation needs a name')
         }
 
-        setStatusState((prevState) => {
-            const newState = {
-                ...prevState,
-            }
-            delete newState[name]
-
-            return newState
-        })
+        setStatusState(({ [name]: _, ...newState }) => newState)
     }, [setStatusState, isMounted])
 
     const isValid = useCallback((name: string) => !status[name], [status])

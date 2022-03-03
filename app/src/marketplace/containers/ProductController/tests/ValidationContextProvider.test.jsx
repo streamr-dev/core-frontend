@@ -298,7 +298,7 @@ describe('validation context', () => {
             })
             act(() => {
                 result.unmount()
-                currentContext.clearStatus()
+                currentContext.clearStatus('myField')
             })
             expect(currentContext.status).toStrictEqual({
                 myField: {
