@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, useEffect, useState, useReducer, useCallback } from 'react'
+import React, { useMemo, useEffect, useState, useReducer, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
@@ -18,8 +18,9 @@ import useDataUnionStatsLoadCallback from './useDataUnionStatsLoadCallback'
 import useRelatedProductsLoadCallback from './useRelatedProductsLoadCallback'
 import useLoadAllStreamsCallback from './useLoadAllStreamsCallback'
 import useResetDataUnionCallback from './useResetDataUnionCallback'
+import useController, { ProductControllerContext } from './useController'
 
-const ProductControllerContext = React.createContext({})
+export { useController }
 
 function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthorization }) {
     const [loadedOnce, setLoadedOnce] = useState(false)
@@ -63,10 +64,6 @@ function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization
     useProductValidationEffect()
 
     return null
-}
-
-export function useController() {
-    return useContext(ProductControllerContext)
 }
 
 function reducer(state, action) {

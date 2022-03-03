@@ -8,7 +8,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 
 import { validate as validateProduct } from '$mp/utils/product'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
-import { useController } from '../ProductController'
+import useController from '../ProductController/useController'
 
 export const INFO = 'info'
 export const WARNING = 'warning'
