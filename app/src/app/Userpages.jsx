@@ -10,7 +10,7 @@ import ErrorPage from '$shared/components/ErrorPage'
 
 // Userpages
 import StreamPage from '$userpages/components/StreamPage'
-import StreamInspectorPage from '$userpages/components/StreamPage/Inspector'
+import StreamInspectorPage from '$app/src/pages/StreamInspectorPage'
 import NewStreamPage from '$userpages/components/StreamPage/New'
 import StreamListView from '$userpages/components/StreamPage/List'
 import TransactionList from '$userpages/components/TransactionPage/List'
