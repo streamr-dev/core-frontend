@@ -22,13 +22,13 @@ import StatusLabel from '$shared/components/StatusLabel'
 import { CoreHelmet } from '$shared/components/Helmet'
 import { fieldTypes } from '$userpages/utils/constants'
 import { selectUserData } from '$shared/modules/user/selectors'
+import getStreamPath from '$app/src/getters/getStreamPath'
 import routes from '$routes'
 import { useController } from '../StreamController'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import Preview from './Edit/PreviewView'
 
 import Storage from './shared/Storage'
-import useStreamPath from './shared/useStreamPath'
 import {
     StreamIdFormGroup,
     FormGroup,
@@ -72,7 +72,7 @@ const UnstyledView = (props) => {
     const { stream } = useController()
     const { copy, isCopied } = useCopy()
     const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
-    const { truncatedDomain: domain, pathname } = useStreamPath(stream.id)
+    const { truncatedDomain: domain, pathname } = getStreamPath(stream.id)
     const currentUser = useSelector(selectUserData)
     const history = useHistory()
 

@@ -21,8 +21,8 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useRequireNetwork from '$shared/hooks/useRequireNetwork'
 import { selectUserData } from '$shared/modules/user/selectors'
 import getUserPermissions from '$app/src/getters/getUserPermissions'
+import getStreamPath from '$app/src/getters/getStreamPath'
 import routes from '$routes'
-import useStreamPath from '../shared/useStreamPath'
 
 const DesktopOnlyButton = styled(Button)`
     && {
@@ -55,7 +55,7 @@ const Row = ({ stream, onShareClick: onShareClickProp, onRemoveStream: onRemoveS
 
     const { validateNetwork } = useRequireNetwork(networks.STREAMS, false)
     const { api: snippetDialog } = useModal('userpages.streamSnippet')
-    const { truncatedId } = useStreamPath(stream.id)
+    const { truncatedId } = getStreamPath(stream.id)
 
     const [canBeDeletedByCurrentUser, canBeSharedByCurrentUser] = useMemo(() => [
         !!permissions[StreamPermission.DELETE],
