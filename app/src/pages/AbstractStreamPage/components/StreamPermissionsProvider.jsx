@@ -50,11 +50,11 @@ export default function StreamPermissionsProvider({ children, preload = false })
         try {
             remotePermissions = await Promise.all(OPERATIONS.map(async (permission) => {
                 const publicallyPermitted = await (async () => {
-                    try {
-                        if (permission !== StreamPermission.SUBSCRIBE) {
-                            throw new Error(`Only "${StreamPermission.SUBSCRIBE}" can be public`)
-                        }
+                    if (permission !== StreamPermission.SUBSCRIBE) {
+                        return false
+                    }
 
+                    try {
                         return await client.hasPermission({
                             public: true,
                             permission,
