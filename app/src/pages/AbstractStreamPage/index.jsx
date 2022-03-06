@@ -11,7 +11,7 @@ export default function AbstractStreamPage({ children }) {
 
     return (
         <StreamIdContext.Provider value={streamId}>
-            <StreamPermissionsProvider>
+            <StreamPermissionsProvider preload>
                 <StreamProvider>
                     {children}
                 </StreamProvider>

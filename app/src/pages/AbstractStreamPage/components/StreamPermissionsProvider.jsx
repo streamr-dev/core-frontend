@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, useRef } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useClient } from 'streamr-client-react'
 import useRequireMounted from '$shared/hooks/useRequireMounted'
@@ -11,7 +11,7 @@ import StreamPermissionsReloaderContext from '../contexts/StreamPermissionsReloa
 
 const OPERATIONS = Object.keys(initialPermissions)
 
-export default function StreamPermissionsProvider({ children }) {
+export default function StreamPermissionsProvider({ children, preload = false }) {
     const streamId = useStreamId()
 
     const [permissions, setPermissions] = useState(initialPermissions)
@@ -100,6 +100,8 @@ export default function StreamPermissionsProvider({ children }) {
         return result
     }, [requireMounted, client, streamId])
 
+    const preloadRef = useRef(preload)
+
     useEffect(() => {
         let aborted = false
 
@@ -119,12 +121,15 @@ export default function StreamPermissionsProvider({ children }) {
             }
         }
 
-        fn()
+        if (preloadRef.current) {
+            // Load on mount!
+            fn()
+        }
 
         return () => {
             aborted = true
         }
-    }, [reload])
+    }, [reload, preload])
 
     return (
         <StreamPermissionsReloaderContext.Provider value={reload}>
