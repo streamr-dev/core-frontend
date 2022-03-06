@@ -16,8 +16,6 @@ const LOCAL_DATA_LIST_LENGTH = 20
 export default function useStreamData(streamId, partition) {
     const isMounted = useIsMounted()
 
-    // 22-0030 (2.5h)
-
     const cacheRef = useRef(getEmptyData())
 
     const [data, setData] = useState(getEmptyData())
