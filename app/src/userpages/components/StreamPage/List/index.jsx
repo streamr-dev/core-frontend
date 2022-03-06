@@ -1,28 +1,26 @@
 import React, { Fragment, useEffect, useState, useCallback, useMemo, useReducer } from 'react'
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useClient } from 'streamr-client-react'
 
+import CreateStreamButton from '$app/src/pages/StreamListPage/CreateStreamButton'
+import ListContainer from '$app/src/pages/StreamListPage/ListContainer'
 import { CoreHelmet } from '$shared/components/Helmet'
 import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
 import Layout from '$userpages/components/Layout'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import LoadMore from '$mp/components/LoadMore'
-import ListContainer from '$shared/components/Container/List'
-import Button from '$shared/components/Button'
 import useFilterSort from '$userpages/hooks/useFilterSort'
 import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
-import { MD, LG } from '$shared/utils/styled'
+import { LG } from '$shared/utils/styled'
 import { StreamList as StreamListComponent } from '$shared/components/List'
 import { getParamsForFilter } from '$userpages/utils/filters'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import routes from '$routes'
 
 import Search from '../../Header/Search'
 import SwitchNetworkModal from '../SwitchNetworkModal'
@@ -31,47 +29,6 @@ import SnippetDialog from './SnippetDialog'
 import Row from './Row'
 import NoStreamsView from './NoStreams'
 import MigrationNote from './MigrationNote'
-
-const DesktopOnlyButton = styled(Button)`
-    && {
-        display: none;
-    }
-
-    @media (min-width: ${LG}px) {
-        && {
-            display: inline-flex;
-        }
-    }
-`
-
-export const CreateStreamButton = () => (
-    <DesktopOnlyButton
-        tag={Link}
-        to={routes.streams.new()}
-    >
-        Create stream
-    </DesktopOnlyButton>
-)
-
-const StyledListContainer = styled(ListContainer)`
-    && {
-        padding: 0;
-        margin-bottom: 4em;
-    }
-
-    @media (min-width: ${MD}px) {
-        && {
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
-        }
-    }
-
-    @media (min-width: ${LG}px) {
-        && {
-            margin-bottom: 0;
-        }
-    }
-`
 
 // Hides sort dropdown in desktop mode, table headers can be used for sorting
 const TabletPopover = styled(Popover)`
@@ -329,7 +286,7 @@ const StreamList = () => {
             loading={fetching}
         >
             <CoreHelmet title="Streams" />
-            <StyledListContainer>
+            <ListContainer>
                 {!fetching && streams && streams.length <= 0 && (
                     <NoStreamsView
                         hasFilter={!!filter && (!!filter.search || !!filter.key)}
@@ -391,7 +348,7 @@ const StreamList = () => {
                         <MigrationNote />
                     </Fragment>
                 )}
-            </StyledListContainer>
+            </ListContainer>
             <SnippetDialog />
             <SwitchNetworkModal />
             <StreamPageSidebar stream={dialogTargetStream} onInvalidate={onInvalidate} />
