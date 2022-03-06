@@ -1,37 +1,41 @@
-// @flow
-
-import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
+import { useState, useCallback, useEffect, useMemo, useReducer } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
 
-export function useCopy() {
-    const [isCopied, setCopied] = useState(false)
-    const timeOutId = useRef(null)
+const SUSTAIN_IN_MILLIS = 3000
 
-    const reset = useCallback(() => {
-        clearTimeout(timeOutId.current)
+export default function useCopy() {
+    const [isCopied, setIsCopied] = useState(false)
+
+    const [copiedAt, touch] = useReducer((current) => (
+        Math.max(current + SUSTAIN_IN_MILLIS, Date.now())
+    ), -SUSTAIN_IN_MILLIS)
+
+    const copy = useCallback((value) => {
+        copyToClipboard(value)
+        touch()
     }, [])
 
-    const copy = useCallback((value: string) => {
-        if (!isCopied) {
-            copyToClipboard(value)
-            setCopied(true)
-
-            reset()
-            timeOutId.current = setTimeout(() => {
-                setCopied(false)
-            }, 3000)
+    useEffect(() => {
+        if (Date.now() > copiedAt + SUSTAIN_IN_MILLIS) {
+            return () => {}
         }
-    }, [isCopied, reset])
 
-    useEffect(() => () => {
-        reset()
-    }, [reset])
+        setIsCopied(true)
+
+        const timeout = setTimeout(() => {
+            setIsCopied(false)
+        }, SUSTAIN_IN_MILLIS)
+
+        return () => {
+            clearTimeout(timeout)
+        }
+    }, [copiedAt])
 
     return useMemo(() => ({
-        isCopied,
         copy,
-        reset,
-    }), [isCopied, copy, reset])
+        isCopied,
+    }), [
+        copy,
+        isCopied,
+    ])
 }
-
-export default useCopy
