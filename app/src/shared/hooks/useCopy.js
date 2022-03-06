@@ -6,31 +6,27 @@ const SUSTAIN_IN_MILLIS = 3000
 export default function useCopy(onAfterCopied) {
     const [isCopied, setIsCopied] = useState(false)
 
-    const [copiedAt, touch] = useReducer((current) => (
-        Math.max(current + SUSTAIN_IN_MILLIS, Date.now())
-    ), -SUSTAIN_IN_MILLIS)
-
-    const copy = useCallback((value) => {
-        copyToClipboard(value)
-        touch()
-    }, [])
-
     const onAfterCopiedRef = useRef(onAfterCopied)
 
     useEffect(() => {
         onAfterCopiedRef.current = onAfterCopied
     }, [onAfterCopied])
 
+    const [copiedAt, touch] = useReducer((current, now) => (
+        current + SUSTAIN_IN_MILLIS > now ? current : now
+    ), Number.NEGATIVE_INFINITY)
+
+    const copy = useCallback((value) => {
+        copyToClipboard(value)
+        touch(Date.now())
+    }, [])
+
     useEffect(() => {
-        if (Date.now() > copiedAt + SUSTAIN_IN_MILLIS) {
+        if (copiedAt < 0) {
             return () => {}
         }
 
         setIsCopied(true)
-
-        if (typeof onAfterCopiedRef.current === 'function') {
-            onAfterCopiedRef.current()
-        }
 
         const timeout = setTimeout(() => {
             setIsCopied(false)
@@ -40,6 +36,12 @@ export default function useCopy(onAfterCopied) {
             clearTimeout(timeout)
         }
     }, [copiedAt])
+
+    useEffect(() => {
+        if (isCopied && typeof onAfterCopiedRef.current === 'function') {
+            onAfterCopiedRef.current()
+        }
+    }, [isCopied])
 
     return useMemo(() => ({
         copy,
