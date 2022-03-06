@@ -1,9 +1,9 @@
-import { useState, useCallback, useEffect, useMemo, useReducer } from 'react'
+import { useState, useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
 
 const SUSTAIN_IN_MILLIS = 3000
 
-export default function useCopy() {
+export default function useCopy(onAfterCopied) {
     const [isCopied, setIsCopied] = useState(false)
 
     const [copiedAt, touch] = useReducer((current) => (
@@ -15,12 +15,22 @@ export default function useCopy() {
         touch()
     }, [])
 
+    const onAfterCopiedRef = useRef(onAfterCopied)
+
+    useEffect(() => {
+        onAfterCopiedRef.current = onAfterCopied
+    }, [onAfterCopied])
+
     useEffect(() => {
         if (Date.now() > copiedAt + SUSTAIN_IN_MILLIS) {
             return () => {}
         }
 
         setIsCopied(true)
+
+        if (typeof onAfterCopiedRef.current === 'function') {
+            onAfterCopiedRef.current()
+        }
 
         const timeout = setTimeout(() => {
             setIsCopied(false)
