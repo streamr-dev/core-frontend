@@ -1,11 +1,5 @@
 import { createContext } from 'react'
-import { StreamPermission } from 'streamr-client'
 
-export const initialPermissions = {
-    [StreamPermission.EDIT]: undefined,
-    [StreamPermission.SUBSCRIBE]: undefined,
-}
-
-const StreamPermissionsContext = createContext(initialPermissions)
+const StreamPermissionsContext = createContext({})
 
 export default StreamPermissionsContext

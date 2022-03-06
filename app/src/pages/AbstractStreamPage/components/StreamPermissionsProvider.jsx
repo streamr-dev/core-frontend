@@ -6,22 +6,36 @@ import UnmountedComponentError from '$shared/errors/UnmountedComponentError'
 import NoClientError from '$shared/errors/NoClientError'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
 import useStreamId from '../hooks/useStreamId'
-import StreamPermissionsContext, { initialPermissions } from '../contexts/StreamPermissionsContext'
+import StreamPermissionsContext from '../contexts/StreamPermissionsContext'
 import StreamPermissionsReloaderContext from '../contexts/StreamPermissionsReloaderContext'
 
-const OPERATIONS = Object.keys(initialPermissions)
+function getPermissionsMap(operations, formatFn) {
+    const result = {}
 
-export default function StreamPermissionsProvider({ children, preload = false }) {
+    operations.forEach((operation, index) => {
+        result[operation] = formatFn(index)
+    })
+
+    return result
+}
+
+function getInitialPermissions(operations) {
+    return getPermissionsMap(operations, () => undefined)
+}
+
+export default function StreamPermissionsProvider({ children, preload = false, operations }) {
     const streamId = useStreamId()
 
-    const [permissions, setPermissions] = useState(initialPermissions)
+    const operationsRef = useRef(operations)
+
+    const [permissions, setPermissions] = useState(getInitialPermissions(operationsRef.current))
 
     const client = useClient()
 
     const requireMounted = useRequireMounted()
 
     useEffect(() => {
-        setPermissions(initialPermissions)
+        setPermissions(getInitialPermissions(operationsRef.current))
     }, [streamId])
 
     const reload = useCallback(async () => {
@@ -33,7 +47,7 @@ export default function StreamPermissionsProvider({ children, preload = false })
             throw new NoClientError()
         }
 
-        let remotePermissions = OPERATIONS.map(() => false)
+        let remotePermissions = operationsRef.current.map(() => false)
 
         const user = await (async () => {
             try {
@@ -48,7 +62,7 @@ export default function StreamPermissionsProvider({ children, preload = false })
         requireMounted()
 
         try {
-            remotePermissions = await Promise.all(OPERATIONS.map(async (permission) => {
+            remotePermissions = await Promise.all(operationsRef.current.map(async (permission) => {
                 const publicallyPermitted = await (async () => {
                     if (permission !== StreamPermission.SUBSCRIBE) {
                         return false
@@ -91,13 +105,9 @@ export default function StreamPermissionsProvider({ children, preload = false })
 
         requireMounted()
 
-        const result = {}
-
-        OPERATIONS.forEach((operation, index) => {
-            result[operation] = Boolean(remotePermissions[index])
-        })
-
-        return result
+        return getPermissionsMap(operationsRef.current, (index) => (
+            Boolean(remotePermissions[index])
+        ))
     }, [requireMounted, client, streamId])
 
     const preloadRef = useRef(preload)
