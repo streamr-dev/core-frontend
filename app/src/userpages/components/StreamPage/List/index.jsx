@@ -4,6 +4,9 @@ import { useClient } from 'streamr-client-react'
 
 import CreateStreamButton from '$app/src/pages/StreamListPage/CreateStreamButton'
 import ListContainer from '$app/src/pages/StreamListPage/ListContainer'
+import SnippetDialog from '$app/src/pages/StreamListPage/SnippetDialog'
+import Zero from '$app/src/pages/StreamListPage/Zero'
+import MigrationNote from '$app/src/pages/StreamListPage/MigrationNote'
 import { CoreHelmet } from '$shared/components/Helmet'
 import { getFilters } from '$userpages/utils/constants'
 import Popover from '$shared/components/Popover'
@@ -25,10 +28,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import Search from '../../Header/Search'
 import SwitchNetworkModal from '../SwitchNetworkModal'
 
-import SnippetDialog from './SnippetDialog'
 import Row from './Row'
-import NoStreamsView from './NoStreams'
-import MigrationNote from './MigrationNote'
 
 // Hides sort dropdown in desktop mode, table headers can be used for sorting
 const TabletPopover = styled(Popover)`
@@ -288,10 +288,9 @@ const StreamList = () => {
             <CoreHelmet title="Streams" />
             <ListContainer>
                 {!fetching && streams && streams.length <= 0 && (
-                    <NoStreamsView
-                        hasFilter={!!filter && (!!filter.search || !!filter.key)}
-                        filter={filter}
-                        onResetFilter={resetFilter}
+                    <Zero
+                        filter={filter && (filter.search || filter.key)}
+                        onClearFilterClick={resetFilter}
                     />
                 )}
                 {streams && streams.length > 0 && (
