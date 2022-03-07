@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useClient } from 'streamr-client-react'
-import useRequireMounted from '$shared/hooks/useRequireMounted'
 import StaleError from '$shared/errors/StaleError'
 import NoClientError from '$shared/errors/NoClientError'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
@@ -34,8 +33,6 @@ export default function StreamPermissionsProvider({ children, preload = false, o
     const [cache, invalidate] = useReducer((current) => current + 1, Number(!!preload))
 
     const client = useClient()
-
-    const requireMounted = useRequireMounted()
 
     useEffect(() => {
         setPermissions(getInitialPermissions(operationsRef.current))
@@ -123,7 +120,7 @@ export default function StreamPermissionsProvider({ children, preload = false, o
         return () => {
             stale = true
         }
-    }, [requireMounted, client, streamId, cache])
+    }, [client, streamId, cache])
 
     return (
         <StreamPermissionsInvalidatorContext.Provider value={invalidate}>
