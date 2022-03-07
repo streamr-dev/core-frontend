@@ -1,13 +1,11 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
 import StreamIdContext from './contexts/StreamIdContext'
 import StreamPermissionsProvider from './components/StreamPermissionsProvider'
 import StreamProvider from './components/StreamProvider'
 
 export default function AbstractStreamPage({ children, streamOperations }) {
-    const { id } = useParams()
-
-    const streamId = decodeURIComponent(id)
+    const streamId = useDecodedStreamId()
 
     return (
         <StreamIdContext.Provider value={streamId}>
