@@ -31,8 +31,8 @@ export default function StreamPermissionsProvider({ children, preload = false, o
 
     const [permissions, setPermissions] = useState(getInitialPermissions(operationsRef.current))
 
-    // 0 `cache` means we're not gonna run the permission fetching logic down the pipe. `preload` is
-    // a on-mount only thing by design.
+    // 0 `cache` means we're not gonna run the permission fetching logic down the mounting
+    // pipe. `preload` is a on-mount only thing by design.
     const [cache, invalidate] = useReducer((current) => current + 1, Number(!!preload))
 
     const client = useClient()
