@@ -81,7 +81,7 @@ const PreviewTable = ({ streamData }) => (
                     <strong>Data</strong>
                 </Column>
             </Row>
-            {(streamData || []).map((d, index) => {
+            {[...Array(5).fill(undefined), ...(streamData || [])].slice(-20).map((d, index) => {
                 if (!d) {
                     return (
                         // eslint-disable-next-line react/no-array-index-key

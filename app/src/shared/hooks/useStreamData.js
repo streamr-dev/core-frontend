@@ -13,12 +13,20 @@ function areMessagesSame(a, b) {
 
 const LOCAL_DATA_LIST_LENGTH = 20
 
-export default function useStreamData(streamId, partition) {
+export default function useStreamData(streamId, { partition = 0, activeFn: activeFnProp, onError: onErrorProp } = {}) {
     const isMounted = useIsMounted()
 
     const cacheRef = useRef(getEmptyData())
 
     const [data, setData] = useState(getEmptyData())
+
+    const activeFn = typeof activeFnProp === 'function' ? activeFnProp : () => streamId
+
+    const onErrorRef = useRef(onErrorProp)
+
+    useEffect(() => {
+        onErrorRef.current = onErrorProp
+    }, [onErrorProp])
 
     useSubscription({
         stream: streamId,
@@ -36,7 +44,11 @@ export default function useStreamData(streamId, partition) {
                 case Message.Done:
                 case Message.Notification:
                 case Message.Warning:
+                    return
                 case Message.Error:
+                    if (typeof onErrorRef.current === 'function') {
+                        onErrorRef.current()
+                    }
                     return
                 default:
             }
@@ -63,7 +75,7 @@ export default function useStreamData(streamId, partition) {
 
             setData([...cache])
         },
-        isActive: !!(streamId),
+        isActive: !!activeFn(),
     })
 
     const firstRunRef = useRef(true)

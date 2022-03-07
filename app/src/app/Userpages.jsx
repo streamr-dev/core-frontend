@@ -37,7 +37,7 @@ const UserpagesRouter = () => ([
     <Route exact path={routes.profile()} component={ProfilePageAuth} key="ProfilePage" />,
     <Route exact path={routes.streams.new()} component={NewStreamPageAuth} key="newStreamPage" />,
     <Route exact path={routes.streams.show()} component={StreamPage} key="streamPage" />,
-    <Route exact path={routes.streams.public.show()} component={StreamPage} key="publicStreamPage" />,
+    <Redirect from={routes.streams.public.show()} to={routes.streams.show()} key="publicStreamPageRedir" />,
     <Redirect from={routes.streams.public.preview()} to={routes.streams.preview()} key="publicStreamPreviewPageRedir" />,
     <Route exact path={routes.streams.preview()} component={StreamInspectorPage} key="streamPreviewPage" />,
     <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,

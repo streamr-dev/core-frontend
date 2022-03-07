@@ -31,7 +31,7 @@ function StreamInspectorPage() {
                 streamData={data}
                 activePartition={partition}
                 onPartitionChange={setPartition}
-                onClose={() => history.replace(routes.streams.public.show({
+                onClose={() => history.replace(routes.streams.show({
                     id: streamId,
                 }))}
                 loading={stream == null}
