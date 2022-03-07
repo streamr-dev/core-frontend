@@ -8,7 +8,7 @@ import useStreamPermissions from '../hooks/useStreamPermissions'
 export default function StreamProvider({ children }) {
     const streamId = useStreamId()
 
-    const { [StreamPermission.SUBSCRIBE]: subscribe } = useStreamPermissions()
+    const { [StreamPermission.SUBSCRIBE]: canSubscribe } = useStreamPermissions()
 
     const [stream, setStream] = useState(undefined)
 
@@ -23,7 +23,7 @@ export default function StreamProvider({ children }) {
 
         async function fn() {
             try {
-                // `streamId` is known. `fn` gets called only when `subscribe` is true, meaning
+                // `streamId` is known. `fn` gets called only when `canSubscribe` is true, meaning
                 // we successfully loaded permissions using the `streamId`.
                 const remoteStream = await client.getStream(streamId)
 
@@ -37,14 +37,14 @@ export default function StreamProvider({ children }) {
             }
         }
 
-        if (subscribe === true) {
+        if (canSubscribe === true) {
             fn()
         }
 
         return () => {
             aborted = true
         }
-    }, [client, streamId, subscribe])
+    }, [client, streamId, canSubscribe])
 
     return (
         <StreamContext.Provider value={stream}>
