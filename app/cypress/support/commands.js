@@ -100,7 +100,6 @@ Cypress.Commands.add('addToStorageNode', (streamId) => {
             address: DEV_STORAGE_NODE_ADDRESS,
             url: DEV_STORAGE_NODE_URL,
         },
-        autoConnect: false,
     })
     const client = new StreamrClient(config)
     return client

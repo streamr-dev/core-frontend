@@ -33,7 +33,6 @@ function createClient({ usePublicNode = false }: CreateClient = {}) {
         auth: {
             ethereum: web3 && web3.metamaskProvider,
         },
-        autoConnect: false,
     }))
 }
 

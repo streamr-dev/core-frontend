@@ -20,7 +20,6 @@ describe('getClientConfig', () => {
         getConfig.mockImplementation(() => ({ /* emptiness */ }))
 
         const mods = {
-            autoDisconnect: false,
             verifySignatures: 'never',
         }
 
@@ -65,8 +64,6 @@ describe('getClientConfig', () => {
 
         expect(g()).toMatchObject({
             ...DEFAULTS,
-            autoConnect: true,
-            autoDisconnect: false,
             dataUnion: {
                 factoryMainnetAddress: 'mainnet factory address',
                 templateMainnetAddress: 'mainnet template address',

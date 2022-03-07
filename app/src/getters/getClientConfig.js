@@ -11,8 +11,6 @@ export default function getClientConfig(mods = {}) {
 
     return {
         ...DEFAULTS,
-        autoConnect: true,
-        autoDisconnect: false,
         dataUnion: {
             ...dataUnion,
             factoryMainnetAddress: client?.dataUnion?.factoryMainnetAddress || dataUnion?.factoryMainnetAddress,
