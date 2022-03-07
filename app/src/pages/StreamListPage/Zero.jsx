@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react'
 import styled from 'styled-components'
 
@@ -9,16 +7,7 @@ import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
-import type { Filter } from '$userpages/flowtype/common-types'
 import { LG } from '$shared/utils/styled'
-
-type NoResultsViewProps = {
-    onResetFilter: Function,
-    filter: ?Filter,
-}
-type Props = NoResultsViewProps & {
-    hasFilter: boolean,
-}
 
 const Message = styled.small`
     && {
@@ -66,7 +55,7 @@ const NoCreatedStreamsView = () => (
     </EmptyState>
 )
 
-const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
+const NoResultsView = ({ onClearFilterClick }) => (
     <EmptyState
         image={(
             <img
@@ -78,7 +67,7 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
         link={(
             <Button
                 kind="special"
-                onClick={onResetFilter}
+                onClick={onClearFilterClick}
             >
                 Clear filters
             </Button>
@@ -93,14 +82,8 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
     </EmptyState>
 )
 
-const NoStreamsView = ({ hasFilter, ...rest }: Props) => {
-    if (hasFilter) {
-        return (
-            <NoResultsView {...rest} />
-        )
-    }
-
-    return <NoCreatedStreamsView />
+export default function Zero({ filter, onClearFilterClick }) {
+    return filter
+        ? <NoResultsView onClearFilterClick={onClearFilterClick} />
+        : <NoCreatedStreamsView />
 }
-
-export default NoStreamsView
