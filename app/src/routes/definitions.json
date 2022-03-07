@@ -50,6 +50,7 @@
         "index": "/core/streams",
         "show": "/core/streams/:id",
         "new": "/core/streams/new",
+        "preview": "/core/streams/:id/preview",
         "public": {
             "stream": "<streamr>/streams/:id",
             "show": "/streams/:id",
