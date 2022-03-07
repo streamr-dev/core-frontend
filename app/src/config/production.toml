@@ -8,6 +8,9 @@ streamrUrl = "https://streamr.network"
 uniswapAdaptorContractAddress = "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
 web3TransactionConfirmationBlocks = 1
 
+[[client.mainchain.rpc.rpcs]]
+url = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
+
 [[core.storageNodes]]
 name = "Streamr Germany"
 address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
