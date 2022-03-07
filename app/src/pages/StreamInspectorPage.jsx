@@ -21,7 +21,9 @@ function StreamInspectorPage() {
 
     const [partition, setPartition] = useState(0)
 
-    const data = useStreamData(streamId)
+    const data = useStreamData(streamId, {
+        tail: 20,
+    })
 
     return (
         <ModalDialog onClose={() => {}} fullpage noScroll>
