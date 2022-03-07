@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import OperationNotPermittedError from '$shared/errors/OperationNotPermittedError'
-import useStreamPermissions from './useStreamPermissions'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 
 export default function useRequirePermittedEffect(operation) {
     const { [operation]: op } = useStreamPermissions()

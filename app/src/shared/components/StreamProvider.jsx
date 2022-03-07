@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useClient } from 'streamr-client-react'
-import StreamContext from '../contexts/StreamContext'
-import useStreamId from '../hooks/useStreamId'
-import useStreamPermissions from '../hooks/useStreamPermissions'
+import StreamContext from '$shared/contexts/StreamContext'
+import useStreamId from '$shared/hooks/useStreamId'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 
 export default function StreamProvider({ children }) {
     const streamId = useStreamId()

@@ -1,8 +1,8 @@
 import React from 'react'
 import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
-import StreamIdContext from './contexts/StreamIdContext'
-import StreamPermissionsProvider from './components/StreamPermissionsProvider'
-import StreamProvider from './components/StreamProvider'
+import StreamIdContext from '$shared/contexts/StreamIdContext'
+import StreamPermissionsProvider from '$shared/components/StreamPermissionsProvider'
+import StreamProvider from '$shared/components/StreamProvider'
 
 export default function AbstractStreamPage({ children, streamOperations }) {
     const streamId = useDecodedStreamId()

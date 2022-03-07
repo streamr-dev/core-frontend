@@ -5,9 +5,9 @@ import StaleError from '$shared/errors/StaleError'
 import NoClientError from '$shared/errors/NoClientError'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
 import getClientAddress from '$app/src/getters/getClientAddress'
-import useStreamId from '../hooks/useStreamId'
-import StreamPermissionsContext from '../contexts/StreamPermissionsContext'
-import StreamPermissionsInvalidatorContext from '../contexts/StreamPermissionsInvalidatorContext'
+import StreamPermissionsContext from '$shared/contexts/StreamPermissionsContext'
+import StreamPermissionsInvalidatorContext from '$shared/contexts/StreamPermissionsInvalidatorContext'
+import useStreamId from '$shared/hooks/useStreamId'
 
 function getPermissionsMap(operations, formatFn) {
     const result = {}
