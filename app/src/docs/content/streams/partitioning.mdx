@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 
 import Image from '$docs/components/Image'
-import Warning from '$docs/components/Warning'
 import docsLinks from '$shared/../docsLinks'
 
 import MessagePartitioningImage from './images/streams_partioning_01_desktop.jpg'
@@ -43,11 +42,5 @@ Internally, the library maps the `partitionKey` to a partition number using a ha
 ```
 partition = hash(partitionKey) % numberOfPartitions
 ```
-
-<Warning>
-
-At the time of writing, there are some limitations with multi-partition streams: The number of partitions can only be set when creating streams via the API, and the number cannot be changed afterwards.
-
-</Warning>
 
 Currently partitions don’t have well-defined rate limits, but future versions of the P2P network may enforce limits. For now, we recommend not exceeding around 100 msg/sec/partition.
