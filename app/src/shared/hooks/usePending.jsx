@@ -1,20 +1,9 @@
 // @flow
 
-import { useContext, useMemo, useCallback, useState, useLayoutEffect, useRef } from 'react'
+import { useReducer, useContext, useMemo, useCallback, useLayoutEffect, useRef } from 'react'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { Context as PendingContext } from '$shared/contexts/Pending'
-
-function useCounter() {
-    const [counter, setCounterState] = useState(0)
-    const updateCounter = useCallback((direction: number) => {
-        setCounterState((state) => {
-            const current = state || 0
-            return Math.max(0, current + direction)
-        })
-    }, [])
-    return [counter, updateCounter]
-}
 
 function useDiff(val) {
     const lastValRef = useRef(val)
@@ -25,19 +14,23 @@ function useDiff(val) {
 }
 
 export function usePending(name: string) {
-    const [selfPending, setSelfPending] = useCounter()
+    const [selfPending, setSelfPending] = useReducer((state, delta: number) => Math.max(0, state + delta), 0)
+
     const { checkPending, setPending } = useContext(PendingContext)
+
     const isMounted = useIsMounted()
 
     const start = useCallback(() => {
-        if (!isMounted()) { return }
-        setSelfPending(1)
-    }, [setSelfPending, isMounted])
+        if (isMounted()) {
+            setSelfPending(1)
+        }
+    }, [isMounted])
 
     const end = useCallback(() => {
-        if (!isMounted()) { return }
-        setSelfPending(-1)
-    }, [setSelfPending, isMounted])
+        if (isMounted()) {
+            setSelfPending(-1)
+        }
+    }, [isMounted])
 
     const diff = useDiff(selfPending)
     const pendingRef = useRef(selfPending)
@@ -51,9 +44,10 @@ export function usePending(name: string) {
     // undo any outstanding pending counts on unmount
     const setPendingRef = useRef(setPending)
     setPendingRef.current = setPending
+
     useLayoutEffect(() => () => {
         setPendingRef.current(name, -1 * pendingRef.current)
-    }, [name, pendingRef, setPendingRef])
+    }, [name])
 
     // call start() and end() around some async fn
     const wrap = useCallback(async (fn: Function) => {

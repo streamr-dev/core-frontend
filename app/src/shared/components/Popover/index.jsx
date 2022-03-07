@@ -1,6 +1,6 @@
 // @flow
 
-import React, { type Node, useState, useCallback, useEffect, useMemo } from 'react'
+import React, { type Node, useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Dropdown as RsDropdown, DropdownToggle, DropdownMenu } from 'reactstrap'
 import cx from 'classnames'
 import styled from 'styled-components'
@@ -252,9 +252,15 @@ const Popover = ({
         }
     }, [onChange, childrenArray])
 
+    const onMenuToggleRef = useRef(onMenuToggle)
+
     useEffect(() => {
-        if (onMenuToggle) {
-            onMenuToggle(open)
+        onMenuToggleRef.current = onMenuToggle
+    }, [onMenuToggle])
+
+    useEffect(() => {
+        if (typeof onMenuToggleRef.current === 'function') {
+            onMenuToggleRef.current(open)
         }
     }, [onMenuToggle, open])
 

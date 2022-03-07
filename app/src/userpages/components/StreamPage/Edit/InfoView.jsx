@@ -10,7 +10,7 @@ import type { StreamId, Stream } from '$shared/flowtype/stream-types'
 import Label from '$ui/Label'
 import Button from '$shared/components/Button'
 import SvgIcon from '$shared/components/SvgIcon'
-import useStreamPath from '../shared/useStreamPath'
+import getStreamPath from '$app/src/getters/getStreamPath'
 
 import {
     StreamIdFormGroup,
@@ -71,7 +71,7 @@ const Description = styled.p`
 export const InfoView = ({ stream, disabled, updateStream }: Props) => {
     const { copy, isCopied } = useCopy()
 
-    const { truncatedDomain: domain, pathname } = useStreamPath(stream.id)
+    const { truncatedDomain: domain, pathname } = getStreamPath(stream.id)
 
     const onDescriptionChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         const description = e.target.value
