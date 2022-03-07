@@ -13,6 +13,7 @@ export default function useCopy(onAfterCopied) {
     }, [onAfterCopied])
 
     const [copiedAt, touch] = useReducer((current, now) => (
+        // Throttle updates to `copiedAt`.
         current + SUSTAIN_IN_MILLIS > now ? current : now
     ), Number.NEGATIVE_INFINITY)
 
