@@ -79,9 +79,9 @@ export default function useStreamData(streamId, { partition = 0, activeFn: activ
 
     useEffect(() => {
         if (firstRunRef.current) {
+            firstRunRef.current = false
             return
         }
-        firstRunRef.current = false
 
         setData(getEmptyData())
         cacheRef.current = getEmptyData()
