@@ -13,6 +13,7 @@ import StreamPage from '$userpages/components/StreamPage'
 import StreamInspectorPage from '$app/src/pages/StreamInspectorPage'
 import NewStreamPage from '$userpages/components/StreamPage/New'
 import StreamListView from '$userpages/components/StreamPage/List'
+import StreamListView2 from '$app/src/pages/StreamListPage'
 import TransactionList from '$userpages/components/TransactionPage/List'
 import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
@@ -26,6 +27,7 @@ const Route = withErrorBoundary(ErrorPage)(RouterRoute)
 // Userpages Auth
 const ProfilePageAuth = userIsAuthenticated(ProfilePage)
 const StreamListViewAuth = userIsAuthenticated(StreamListView)
+const StreamListView2Auth = userIsAuthenticated(StreamListView2)
 const TransactionListAuth = userIsAuthenticated(TransactionList)
 const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
@@ -41,6 +43,7 @@ const UserpagesRouter = () => ([
     <Redirect exact from={routes.streams.public.preview()} to={routes.streams.preview()} key="publicStreamPreviewPageRedir" />,
     <Route exact path={routes.streams.preview()} component={StreamInspectorPage} key="streamPreviewPage" />,
     <Route exact path={routes.streams.index()} component={StreamListViewAuth} key="StreamListView" />,
+    <Route exact path="/core/streams2" component={StreamListView2Auth} key="StreamListView2" />,
     <Route exact path={routes.transactions()} component={TransactionListAuth} key="TransactionList" />,
     <Route exact path={routes.subscriptions()} component={PurchasesPageAuth} key="PurchasesPage" />,
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
