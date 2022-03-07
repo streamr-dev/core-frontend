@@ -18,6 +18,11 @@ export default function useCopy(onAfterCopied) {
 
     const copy = useCallback((value) => {
         copyToClipboard(value)
+
+        if (typeof onAfterCopiedRef.current === 'function') {
+            onAfterCopiedRef.current(value)
+        }
+
         touch(Date.now())
     }, [])
 
@@ -36,12 +41,6 @@ export default function useCopy(onAfterCopied) {
             clearTimeout(timeout)
         }
     }, [copiedAt])
-
-    useEffect(() => {
-        if (isCopied && typeof onAfterCopiedRef.current === 'function') {
-            onAfterCopiedRef.current()
-        }
-    }, [isCopied])
 
     return useMemo(() => ({
         copy,
