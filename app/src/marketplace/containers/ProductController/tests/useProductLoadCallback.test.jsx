@@ -11,6 +11,12 @@ import * as loginInterceptor from '$auth/utils/loginInterceptor'
 import * as entitiesUtils from '$shared/utils/entities'
 import * as ProductController from '../'
 import useProductLoadCallback from '../useProductLoadCallback'
+import useController from '../useController'
+
+jest.mock('../useController', () => ({
+    __esModule: true,
+    default: jest.fn(),
+}))
 
 describe('useProductLoadCallback', () => {
     afterEach(() => {
@@ -19,9 +25,10 @@ describe('useProductLoadCallback', () => {
     })
 
     it('loads a product', async () => {
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             setProduct: () => {},
         }))
+
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
@@ -62,9 +69,10 @@ describe('useProductLoadCallback', () => {
     })
 
     it('throws an error', async () => {
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             setProduct: () => {},
         }))
+
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
@@ -106,10 +114,11 @@ describe('useProductLoadCallback', () => {
     })
 
     it('loads the admin fee for data union products', async () => {
-        jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             setProduct: () => {},
         }))
+
+        jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
@@ -156,12 +165,13 @@ describe('useProductLoadCallback', () => {
     })
 
     it('sets dataUnionDeployed = false for data union products if admin fee call fails', async () => {
+        useController.mockImplementation(() => ({
+            setProduct: () => {},
+        }))
+
         jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
             throw new Error('not found')
         })
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
-            setProduct: () => {},
-        }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
@@ -208,9 +218,10 @@ describe('useProductLoadCallback', () => {
     })
 
     it('loads a product and sets default values for data product', async () => {
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             setProduct: () => {},
         }))
+
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
@@ -260,9 +271,10 @@ describe('useProductLoadCallback', () => {
     })
 
     it('loads a product with existing values', async () => {
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             setProduct: () => {},
         }))
+
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
@@ -311,9 +323,10 @@ describe('useProductLoadCallback', () => {
     it('sets the loaded product values to context without pending changes', async () => {
         const entityHandler = jest.fn()
 
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             setProduct: entityHandler,
         }))
+
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
@@ -373,9 +386,10 @@ describe('useProductLoadCallback', () => {
         const entityHandler = jest.fn()
         jest.spyOn(entitiesUtils, 'handleEntities').mockImplementation(() => entityHandler)
 
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             setProduct: () => {},
         }))
+
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()

@@ -5,7 +5,12 @@ import { act } from 'react-dom/test-utils'
 import * as productServices from '$mp/modules/product/services'
 import * as usePending from '$shared/hooks/usePending'
 import usePermissionContext, { Provider as PermissionContextProvider } from '../useProductPermissions'
-import * as ProductController from '../'
+import useController from '../useController'
+
+jest.mock('../useController', () => ({
+    __esModule: true,
+    default: jest.fn(),
+}))
 
 describe('PermissionContext', () => {
     afterEach(() => {
@@ -14,11 +19,12 @@ describe('PermissionContext', () => {
     })
 
     it('fetches permissions on mount', async () => {
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             product: {
                 id: '1',
             },
         }))
+
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
@@ -68,11 +74,12 @@ describe('PermissionContext', () => {
     })
 
     it('does not fetch permissions on mount if flag is not set', async () => {
-        jest.spyOn(ProductController, 'useController').mockImplementation(() => ({
+        useController.mockImplementation(() => ({
             product: {
                 id: '1',
             },
         }))
+
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
             wrap: async (fn) => {
                 await fn()
