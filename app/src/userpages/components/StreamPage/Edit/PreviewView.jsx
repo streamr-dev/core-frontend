@@ -58,6 +58,7 @@ const UnstyledPreviewView = ({ stream, subscribe = true, showDescription = true,
                 setDataError(true)
             }
         },
+        tail: 10,
     })
 
     if (!streamId) {

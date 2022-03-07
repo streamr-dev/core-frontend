@@ -70,7 +70,7 @@ const prettyPrintData = (data, compact = false) => stringifyObject(data, {
     inlineCharacterLimit: compact ? Infinity : 5,
 })
 
-const PreviewTable = ({ streamData }) => (
+const PreviewTable = ({ streamData = [] }) => (
     <div>
         <DataTable>
             <Row>
@@ -81,7 +81,7 @@ const PreviewTable = ({ streamData }) => (
                     <strong>Data</strong>
                 </Column>
             </Row>
-            {[...Array(5).fill(undefined), ...(streamData || [])].slice(-20).map((d, index) => {
+            {[...Array(Math.max(0, 5 - streamData.length)).fill(undefined), ...streamData].slice(-10).map((d, index) => {
                 if (!d) {
                     return (
                         // eslint-disable-next-line react/no-array-index-key

@@ -11,9 +11,8 @@ function areMessagesSame(a, b) {
     return a.toMessageRef().compareTo(b.toMessageRef()) === 0
 }
 
-const LOCAL_DATA_LIST_LENGTH = 20
-
-export default function useStreamData(streamId, { partition = 0, activeFn: activeFnProp, onError: onErrorProp } = {}) {
+// eslint-disable-next-line max-len
+export default function useStreamData(streamId, { partition = 0, activeFn: activeFnProp, onError: onErrorProp, tail = Number.POSITIVE_INFINITY } = {}) {
     const isMounted = useIsMounted()
 
     const cacheRef = useRef(getEmptyData())
@@ -31,16 +30,14 @@ export default function useStreamData(streamId, { partition = 0, activeFn: activ
     useSubscription({
         stream: streamId,
         partition,
-        resend: {
-            last: LOCAL_DATA_LIST_LENGTH,
-        },
+        gapFill: false,
     }, {
         onMessage(message, metadata) {
             if (!isMounted()) {
                 return
             }
 
-            switch (data.type) {
+            switch (message.type) {
                 case Message.Done:
                 case Message.Notification:
                 case Message.Warning:
@@ -54,7 +51,7 @@ export default function useStreamData(streamId, { partition = 0, activeFn: activ
             }
 
             const dataPoint = {
-                data,
+                data: message,
                 metadata,
             }
 
@@ -71,7 +68,7 @@ export default function useStreamData(streamId, { partition = 0, activeFn: activ
 
             cache.unshift(dataPoint)
 
-            cache.length = Math.min(cache.length, LOCAL_DATA_LIST_LENGTH)
+            cache.length = Math.min(cache.length, tail)
 
             setData([...cache])
         },
