@@ -54,7 +54,7 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                     <Button
                         kind="secondary"
                         tag={Link}
-                        href="https://uniswap.io"
+                        href="https://app.uniswap.org"
                         target="_blank"
                     >
                         Uniswap
