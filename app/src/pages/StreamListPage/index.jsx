@@ -22,6 +22,7 @@ import ShareSidebar from '$userpages/components/ShareSidebar'
 import DocsShortcuts from '$userpages/components/DocsShortcuts'
 import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
+import useRemoveStream from '$shared/hooks/useRemoveStream'
 import Sidebar from '$shared/components/Sidebar'
 import routes from '$routes'
 
@@ -34,7 +35,7 @@ function StreamListPage() {
 
     const sidebar = useSidebar()
 
-    const removeStream = useCallback(() => {}, [])
+    const removeStream = useRemoveStream()
 
     const [shareSidebarStreamId, setShareSidebarStreamId] = useState()
 
