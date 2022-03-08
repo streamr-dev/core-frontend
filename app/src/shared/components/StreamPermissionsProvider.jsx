@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef, useReducer } from 'react'
-import StaleError from '$shared/errors/StaleError'
+import InterruptionError from '$shared/errors/InterruptionError'
 import StreamPermissionsContext from '$shared/contexts/StreamPermissionsContext'
 import StreamPermissionsInvalidatorContext from '$shared/contexts/StreamPermissionsInvalidatorContext'
 import useStreamId from '$shared/hooks/useStreamId'
 import useFetchPermission from '$shared/hooks/useFetchPermission'
-import useFresh from '$shared/hooks/useFresh'
+import useInterrupt from '$shared/hooks/useInterrupt'
 
 function getPermissionsMap(operations, formatFn) {
     const result = {}
@@ -38,10 +38,10 @@ export default function StreamPermissionsProvider({ children, preload = false, o
 
     const fetchPermission = useFetchPermission()
 
-    const fresh = useFresh()
+    const itp = useInterrupt()
 
     useEffect(() => {
-        const { requireFresh, stale } = fresh()
+        const { requireUninterrupted, interrupt } = itp()
 
         async function fn() {
             try {
@@ -49,13 +49,15 @@ export default function StreamPermissionsProvider({ children, preload = false, o
                     fetchPermission(streamId, permission)
                 )))
 
-                requireFresh()
+                requireUninterrupted()
 
                 setPermissions(getPermissionsMap(operationsRef.current, (index) => (
                     Boolean(remotePermissions[index])
                 )))
             } catch (e) {
-                if (e instanceof StaleError) {
+                console.warn(e)
+
+                if (e instanceof InterruptionError) {
                     return
                 }
 
@@ -68,9 +70,9 @@ export default function StreamPermissionsProvider({ children, preload = false, o
         }
 
         return () => {
-            stale()
+            interrupt()
         }
-    }, [fresh, fetchPermission, cache, streamId])
+    }, [itp, fetchPermission, cache, streamId])
 
     return (
         <StreamPermissionsInvalidatorContext.Provider value={invalidate}>

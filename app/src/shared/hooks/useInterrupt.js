@@ -1,7 +1,7 @@
 import { useRef, useCallback, useEffect } from 'react'
-import StaleError from '$shared/errors/StaleError'
+import InterruptionError from '$shared/errors/InterruptionError'
 
-export default function useFresh() {
+export default function useInterrupt() {
     const countRef = useRef({})
 
     useEffect(() => () => {
@@ -17,16 +17,16 @@ export default function useFresh() {
 
         const count = countRef.current[cacheKey]
 
-        let isStale = false
+        let interrupted = false
 
         return {
-            requireFresh() {
-                if (isStale || countRef.current == null || count !== countRef.current[cacheKey]) {
-                    throw new StaleError()
-                }
+            interrupt() {
+                interrupted = true
             },
-            stale() {
-                isStale = true
+            requireUninterrupted() {
+                if (interrupted || countRef.current == null || count !== countRef.current[cacheKey]) {
+                    throw new InterruptionError()
+                }
             },
         }
     }, [])

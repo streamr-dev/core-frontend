@@ -4,15 +4,15 @@ import { useClient } from 'streamr-client-react'
 import NoClientError from '$shared/errors/NoClientError'
 import NoStreamIdError from '$shared/errors/NoStreamIdError'
 import getClientAddress from '$app/src/getters/getClientAddress'
-import useFresh from '$shared/hooks/useFresh'
+import useInterrupt from '$shared/hooks/useInterrupt'
 
 export default function useFetchPermission() {
     const client = useClient()
 
-    const fresh = useFresh()
+    const itp = useInterrupt()
 
     return useCallback(async (streamId, permission) => {
-        const { requireFresh } = fresh(`${streamId}/${permission}`)
+        const { requireUninterrupted } = itp(`${streamId}/${permission}`)
 
         if (!client) {
             throw new NoClientError()
@@ -22,7 +22,7 @@ export default function useFetchPermission() {
             suppressFailures: true,
         })
 
-        requireFresh()
+        requireUninterrupted()
 
         if (!streamId) {
             throw new NoStreamIdError()
@@ -46,7 +46,7 @@ export default function useFetchPermission() {
             return false
         })()
 
-        requireFresh()
+        requireUninterrupted()
 
         try {
             return publicallyPermitted || await client.hasPermission({
@@ -58,8 +58,8 @@ export default function useFetchPermission() {
             console.warn(e)
         }
 
-        requireFresh()
+        requireUninterrupted()
 
         return false
-    }, [fresh, client])
+    }, [itp, client])
 }

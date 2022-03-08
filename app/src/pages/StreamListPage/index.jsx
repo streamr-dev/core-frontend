@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useCallback, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { StreamPermission } from 'streamr-client'
 import CreateStreamButton from '$app/src/pages/StreamListPage/CreateStreamButton'
@@ -14,7 +14,7 @@ import SnippetDialog from '$app/src/pages/StreamListPage/SnippetDialog'
 import MigrationNote from '$app/src/pages/StreamListPage/MigrationNote'
 import { StreamList } from '$shared/components/List'
 import StreamIdContext from '$shared/contexts/StreamIdContext'
-import useStreams from '$shared/hooks/useStreams'
+import useFetchStreams from '$shared/hooks/useFetchStreams'
 import StreamContext from '$shared/contexts/StreamContext'
 import StreamPermissionsProvider from '$shared/components/StreamPermissionsProvider'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
@@ -24,12 +24,16 @@ import useCopy from '$shared/hooks/useCopy'
 import useModal from '$shared/hooks/useModal'
 import useRemoveStream from '$shared/hooks/useRemoveStream'
 import Sidebar from '$shared/components/Sidebar'
+import useInterrupt from '$shared/hooks/useInterrupt'
+import InterruptionError from '$shared/errors/InterruptionError'
 import routes from '$routes'
 
 function StreamListPage() {
     const [search, setSearch] = useState('')
 
-    const streams = useStreams(search)
+    const [streams, setStreams] = useState()
+
+    const fetchStreams = useFetchStreams()
 
     const fetching = streams == null
 
@@ -38,6 +42,38 @@ function StreamListPage() {
     const removeStream = useRemoveStream()
 
     const [shareSidebarStreamId, setShareSidebarStreamId] = useState()
+
+    const itp = useInterrupt()
+
+    useEffect(() => {
+        const { requireUninterrupted, interrupt } = itp()
+
+        async function fn() {
+            try {
+                const newStreams = await fetchStreams(search)
+
+                requireUninterrupted()
+
+                setStreams(newStreams)
+            } catch (e) {
+                if (e instanceof InterruptionError) {
+                    console.warn('Interrupted.')
+                    return
+                }
+
+                console.warn(e)
+
+                Notification.push({
+                    title: 'Failed to fetch streams',
+                    icon: NotificationIcon.ERROR,
+                })
+            }
+        }
+
+        fn()
+
+        return interrupt
+    }, [itp, fetchStreams, search])
 
     const openShareDialog = useCallback((id) => {
         setShareSidebarStreamId(id)
