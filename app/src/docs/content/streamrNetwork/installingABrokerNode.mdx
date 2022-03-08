@@ -44,14 +44,14 @@ mkdir ~/.streamrDocker
 **Linux / macOS**
 
 ```
-docker run -it -v $(cd ~/.streamrDocker; pwd):/root/.streamr streamr/broker-node:latest bin/config-wizard
+docker run -it -v $(cd ~/.streamrDocker; pwd):/home/streamr/.streamr streamr/broker-node:latest bin/config-wizard
 ```
 
 **Windows PowerShell**
 
 ```
 cd ~/.streamrDocker
-docker run -it -v ${pwd}:/root/.streamr streamr/broker-node:latest bin/config-wizard
+docker run -it -v ${pwd}:/home/streamr/.streamr streamr/broker-node:latest bin/config-wizard
 ```
 
 - Generate or Import Ethereum private key: generate one unless you have one you want to use with the node
@@ -68,14 +68,14 @@ Towards the end, the wizard asks if you would like it to display your Ethereum p
 **Linux / macOS**
 
 ```
-docker run -it -p 7170:7170 -p 7171:7171 -p 1883:1883 -v $(cd ~/.streamrDocker; pwd):/root/.streamr streamr/broker-node:latest
+docker run -it -p 7170:7170 -p 7171:7171 -p 1883:1883 -v $(cd ~/.streamrDocker; pwd):/home/streamr/.streamr streamr/broker-node:latest
 ```
 
 **Windows PowerShell**
 
 ```
 cd ~/.streamrDocker
-docker run -p 7170:7170 -p 7171:7171 -p 1883:1883 -it -v ${pwd}:/root/.streamr streamr/broker-node:latest
+docker run -p 7170:7170 -p 7171:7171 -p 1883:1883 -it -v ${pwd}:/home/streamr/.streamr streamr/broker-node:latest
 ```
 
 You should start to see logging similar to this:
