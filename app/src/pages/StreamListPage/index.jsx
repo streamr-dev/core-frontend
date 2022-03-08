@@ -41,9 +41,46 @@ function StreamListPage() {
 
     const removeStream = useRemoveStream()
 
-    const [shareSidebarStreamId, setShareSidebarStreamId] = useState()
-
     const itp = useInterrupt()
+
+    const onRemoveClick = useCallback(async (streamId) => {
+        const { requireUninterrupted } = itp(`delete ${streamId}`)
+
+        try {
+            const deleted = await removeStream(streamId)
+
+            requireUninterrupted()
+
+            if (deleted == null) {
+                // Nothing happened. User dismissed the confirmation dialog.
+                return
+            }
+
+            Notification.push({
+                title: `Stream ${deleted ? 'deleted' : 'removed'} successfully`,
+                icon: NotificationIcon.CHECKMARK,
+            })
+
+            setStreams((current) => (
+                current
+                    ? current.filter(({ id }) => id !== streamId)
+                    : current
+            ))
+        } catch (e) {
+            if (e instanceof InterruptionError) {
+                return
+            }
+
+            console.warn(e)
+
+            Notification.push({
+                title: 'Operation on a stream failed',
+                icon: NotificationIcon.ERROR,
+            })
+        }
+    }, [itp, removeStream])
+
+    const [shareSidebarStreamId, setShareSidebarStreamId] = useState()
 
     useEffect(() => {
         const { requireUninterrupted, interrupt } = itp()
@@ -170,7 +207,7 @@ function StreamListPage() {
                                                 onClick={visitStream}
                                                 onCopyId={copy}
                                                 onRefresh={onStreamRefresh}
-                                                onRemoveClick={removeStream}
+                                                onRemoveClick={onRemoveClick}
                                                 onShareClick={openShareDialog}
                                                 onSnippetsClick={openSnippetsDialog}
                                             />
