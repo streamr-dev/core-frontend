@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useClient } from 'streamr-client-react'
 import confirmDialog from '$shared/utils/confirm'
@@ -19,10 +19,15 @@ export default function useRemoveStream() {
 
     const client = useClient()
 
+    useEffect(() => {
+        // Interrupt deletion/removal if `client` changed. `itp` does not change.
+        itp().interruptAll()
+    }, [itp, client])
+
     return useCallback(async (streamId) => {
         const { requireUninterrupted } = itp(streamId)
 
-        const canDelete = fetchPermission(StreamPermission.DELETE)
+        const canDelete = await fetchPermission(StreamPermission.DELETE)
 
         requireUninterrupted()
 

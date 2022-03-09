@@ -49,8 +49,6 @@ function StreamListPage() {
         try {
             const deleted = await removeStream(streamId)
 
-            requireUninterrupted()
-
             if (deleted == null) {
                 // Nothing happened. User dismissed the confirmation dialog.
                 return
@@ -60,6 +58,8 @@ function StreamListPage() {
                 title: `Stream ${deleted ? 'deleted' : 'removed'} successfully`,
                 icon: NotificationIcon.CHECKMARK,
             })
+
+            requireUninterrupted()
 
             setStreams((current) => (
                 current

@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useClient } from 'streamr-client-react'
 import NoClientError from '$shared/errors/NoClientError'
@@ -10,6 +10,10 @@ export default function useFetchPermission() {
     const client = useClient()
 
     const itp = useInterrupt()
+
+    useEffect(() => {
+        itp().interruptAll()
+    }, [itp, client])
 
     return useCallback(async (streamId, permission) => {
         const { requireUninterrupted } = itp(`${streamId}/${permission}`)
