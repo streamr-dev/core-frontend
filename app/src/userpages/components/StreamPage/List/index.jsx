@@ -24,9 +24,8 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import useIsMounted from '$shared/hooks/useIsMounted'
-
+import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import Search from '../../Header/Search'
-import SwitchNetworkModal from '../SwitchNetworkModal'
 
 import Row from './Row'
 

@@ -7,12 +7,9 @@ import Toolbar from '$shared/components/Toolbar'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import { networks } from '$shared/utils/constants'
 import useRequireNetwork from '$shared/hooks/useRequireNetwork'
-
+import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import routes from '$routes'
-
 import StreamController, { useController } from '../StreamController'
-import SwitchNetworkModal from './SwitchNetworkModal'
-
 import View from './View'
 import Edit from './Edit'
 

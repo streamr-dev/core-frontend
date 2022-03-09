@@ -26,6 +26,7 @@ import useRemoveStream from '$shared/hooks/useRemoveStream'
 import Sidebar from '$shared/components/Sidebar'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import InterruptionError from '$shared/errors/InterruptionError'
+import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import routes from '$routes'
 
 function StreamListPage() {
@@ -224,7 +225,7 @@ function StreamListPage() {
                 )}
             </ListContainer>
             <SnippetDialog />
-            {/* @todo <SwitchNetworkModal /> */}
+            <SwitchNetworkModal />
             <Sidebar.WithErrorBoundary
                 isOpen={sidebar.isOpen()}
                 onClose={closeShareSidebar}
