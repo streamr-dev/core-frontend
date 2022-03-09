@@ -3,7 +3,7 @@ import InterruptionError from '$shared/errors/InterruptionError'
 
 function bump(collection, key) {
     Object.assign(collection, {
-        [key]: collection[key] + 1,
+        [key]: (collection[key] || 0) + 1,
     })
 }
 
@@ -24,15 +24,7 @@ export default function useInterrupt() {
     }, [])
 
     return useCallback((cacheKey = '') => {
-        function interrupt(key) {
-            countRef.current[key] += 1
-        }
-
-        if (countRef.current[cacheKey] == null) {
-            countRef.current[cacheKey] = 0
-        }
-
-        interrupt(cacheKey)
+        bump(countRef.current, cacheKey)
 
         const count = countRef.current[cacheKey]
 
