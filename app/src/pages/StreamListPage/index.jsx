@@ -83,18 +83,19 @@ function StreamListPage() {
     const [shareSidebarStreamId, setShareSidebarStreamId] = useState()
 
     useEffect(() => {
-        const { requireUninterrupted, interrupt } = itp()
+        let aborted = false
 
         async function fn() {
             try {
                 const newStreams = await fetchStreams(search)
 
-                requireUninterrupted()
+                if (aborted) {
+                    return
+                }
 
                 setStreams(newStreams)
             } catch (e) {
                 if (e instanceof InterruptionError) {
-                    console.warn('Interrupted.')
                     return
                 }
 
@@ -109,8 +110,10 @@ function StreamListPage() {
 
         fn()
 
-        return interrupt
-    }, [itp, fetchStreams, search])
+        return () => {
+            aborted = true
+        }
+    }, [fetchStreams, search])
 
     const openShareDialog = useCallback((id) => {
         setShareSidebarStreamId(id)

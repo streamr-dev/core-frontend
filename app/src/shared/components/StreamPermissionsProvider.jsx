@@ -4,7 +4,6 @@ import StreamPermissionsContext from '$shared/contexts/StreamPermissionsContext'
 import StreamPermissionsInvalidatorContext from '$shared/contexts/StreamPermissionsInvalidatorContext'
 import useStreamId from '$shared/hooks/useStreamId'
 import useFetchPermission from '$shared/hooks/useFetchPermission'
-import useInterrupt from '$shared/hooks/useInterrupt'
 
 function getPermissionsMap(operations, formatFn) {
     const result = {}
@@ -38,10 +37,8 @@ export default function StreamPermissionsProvider({ children, preload = false, o
 
     const fetchPermission = useFetchPermission()
 
-    const itp = useInterrupt()
-
     useEffect(() => {
-        const { requireUninterrupted, interrupt } = itp()
+        let aborted = false
 
         async function fn() {
             try {
@@ -49,17 +46,19 @@ export default function StreamPermissionsProvider({ children, preload = false, o
                     fetchPermission(streamId, permission)
                 )))
 
-                requireUninterrupted()
+                if (aborted) {
+                    return
+                }
 
                 setPermissions(getPermissionsMap(operationsRef.current, (index) => (
                     Boolean(remotePermissions[index])
                 )))
             } catch (e) {
-                console.warn(e)
-
                 if (e instanceof InterruptionError) {
                     return
                 }
+
+                console.warn(e)
 
                 throw e
             }
@@ -70,9 +69,9 @@ export default function StreamPermissionsProvider({ children, preload = false, o
         }
 
         return () => {
-            interrupt()
+            aborted = true
         }
-    }, [itp, fetchPermission, cache, streamId])
+    }, [fetchPermission, cache, streamId])
 
     return (
         <StreamPermissionsInvalidatorContext.Provider value={invalidate}>
