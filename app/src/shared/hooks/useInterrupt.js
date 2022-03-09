@@ -1,30 +1,50 @@
 import { useRef, useCallback, useEffect } from 'react'
 import InterruptionError from '$shared/errors/InterruptionError'
 
+function bump(collection, key) {
+    Object.assign(collection, {
+        [key]: collection[key] + 1,
+    })
+}
+
+function bumpAllMatching(collection, regExp) {
+    Object.keys(collection).forEach((key) => {
+        if (regExp.test(key)) {
+            bump(collection, key)
+        }
+    })
+}
+
 export default function useInterrupt() {
     const countRef = useRef({})
 
     useEffect(() => () => {
-        // Invalidate all on unmount.
-        countRef.current = undefined
+        // Interrupt all on unmount.
+        bumpAllMatching(countRef.current, /.*/)
     }, [])
 
     return useCallback((cacheKey = '') => {
+        function interrupt(key) {
+            countRef.current[key] += 1
+        }
+
         if (countRef.current[cacheKey] == null) {
             countRef.current[cacheKey] = 0
         }
-        countRef.current[cacheKey] += 1
+
+        interrupt(cacheKey)
 
         const count = countRef.current[cacheKey]
 
-        let interrupted = false
-
         return {
             interrupt() {
-                interrupted = true
+                bump(countRef.current, cacheKey)
+            },
+            interruptAll(regExp = /.*/) {
+                bumpAllMatching(countRef.current, regExp)
             },
             requireUninterrupted() {
-                if (interrupted || countRef.current == null || count !== countRef.current[cacheKey]) {
+                if (count !== countRef.current[cacheKey]) {
                     throw new InterruptionError()
                 }
             },
