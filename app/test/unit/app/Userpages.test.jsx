@@ -11,7 +11,7 @@ jest.mock('$userpages/components/StreamPage', () => ({
         `Stream ${match.params.id} view/edit page`
     ),
 }))
-jest.mock('$userpages/components/StreamPage/List', () => ({
+jest.mock('$app/src/pages/StreamListPage', () => ({
     __esModule: true,
     default: () => (
         'Stream list'
