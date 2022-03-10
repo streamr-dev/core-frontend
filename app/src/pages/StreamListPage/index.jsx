@@ -27,16 +27,21 @@ import Sidebar from '$shared/components/Sidebar'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import InterruptionError from '$shared/errors/InterruptionError'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
+import LoadMore from '$mp/components/LoadMore'
 import routes from '$routes'
+
+const BATCH_SIZE = 10
 
 function StreamListPage() {
     const [search, setSearch] = useState('')
 
     const [streams, setStreams] = useState()
 
-    const fetchStreams = useFetchStreams()
+    const [hasMore, setHasMore] = useState(undefined)
 
-    const fetching = streams == null
+    const fetching = typeof hasMore === 'undefined'
+
+    const fetchStreams = useFetchStreams()
 
     const sidebar = useSidebar()
 
@@ -83,38 +88,45 @@ function StreamListPage() {
 
     const [shareSidebarStreamId, setShareSidebarStreamId] = useState()
 
-    useEffect(() => {
-        let aborted = false
+    const fetch = useCallback(async () => {
+        const { requireUninterrupted } = itp(search)
 
-        async function fn() {
-            try {
-                const newStreams = await fetchStreams(search)
+        try {
+            const [newStreams, hasMore2, isFirstBatch] = await fetchStreams(search, {
+                batchSize: BATCH_SIZE,
+            })
 
-                if (aborted) {
-                    return
-                }
+            requireUninterrupted()
 
+            setHasMore(hasMore2)
+
+            if (isFirstBatch) {
                 setStreams(newStreams)
-            } catch (e) {
-                if (e instanceof InterruptionError) {
-                    return
-                }
-
-                console.warn(e)
-
-                Notification.push({
-                    title: 'Failed to fetch streams',
-                    icon: NotificationIcon.ERROR,
-                })
+                return
             }
-        }
 
-        fn()
+            setStreams((current = []) => [
+                ...current,
+                ...newStreams,
+            ])
+        } catch (e) {
+            if (e instanceof InterruptionError) {
+                return
+            }
 
-        return () => {
-            aborted = true
+            console.warn(e)
+
+            Notification.push({
+                title: 'Failed to fetch streams',
+                icon: NotificationIcon.ERROR,
+            })
         }
-    }, [fetchStreams, search])
+    }, [itp, search, fetchStreams])
+
+    useEffect(() => {
+        setHasMore(undefined)
+        fetch()
+    }, [fetch])
 
     const openShareDialog = useCallback((id) => {
         setShareSidebarStreamId(id)
@@ -220,6 +232,11 @@ function StreamListPage() {
                                 </StreamIdContext.Provider>
                             ))}
                         </StreamList>
+                        <LoadMore
+                            hasMoreSearchResults={!!hasMore}
+                            onClick={fetch}
+                            preserveSpace
+                        />
                         <MigrationNote />
                     </Fragment>
                 )}
