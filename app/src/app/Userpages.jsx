@@ -12,7 +12,7 @@ import ErrorPage from '$shared/components/ErrorPage'
 import StreamPage from '$userpages/components/StreamPage'
 import StreamInspectorPage from '$app/src/pages/StreamInspectorPage'
 import NewStreamPage from '$userpages/components/StreamPage/New'
-import StreamListView from '$userpages/components/StreamPage/List'
+import StreamListView from '$app/src/pages/StreamListPage'
 import TransactionList from '$userpages/components/TransactionPage/List'
 import ProfilePage from '$userpages/components/ProfilePage'
 import PurchasesPage from '$userpages/components/PurchasesPage'
@@ -46,8 +46,8 @@ const UserpagesRouter = () => ([
     <Route exact path={routes.products.index()} component={ProductsPageAuth} key="ProductsPage" />,
     <Route exact path={routes.dataunions.index()} component={DataUnionPageAuth} key="DataUnionPage" />,
     <Route exact path={routes.products.edit()} component={EditProductAuth} key="EditProduct" />,
-    <Redirect from={routes.root()} to={routes.streams.index()} component={StreamListViewAuth} key="RootRedirect" />, // edge case for localhost
-    <Redirect from={routes.core()} to={routes.streams.index()} component={StreamListViewAuth} key="StreamListViewRedirect" />,
+    <Redirect from={routes.root()} to={routes.streams.index()} key="RootRedirect" />, // edge case for localhost
+    <Redirect from={routes.core()} to={routes.streams.index()} key="StreamListViewRedirect" />,
 ])
 
 export default UserpagesRouter

@@ -1,3 +1,5 @@
+export const NONE = 0x0
+
 export const GET = 0x01
 
 export const EDIT = 0x02
