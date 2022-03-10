@@ -37,7 +37,7 @@ function StreamListPage() {
 
     const [streams, setStreams] = useState()
 
-    const [hasMore, setHasMore] = useState(undefined)
+    const [hasMore, setHasMore] = useState()
 
     const fetching = typeof hasMore === 'undefined'
 
