@@ -35,6 +35,7 @@ import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useRequireNetwork from '$shared/hooks/useRequireNetwork'
 import useRequireNativeTokenBalance from '$shared/hooks/useRequireNativeTokenBalance'
+import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import routes from '$routes'
@@ -256,6 +257,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const isMounted = useIsMounted()
     const { validateNetwork } = useRequireNetwork(networks.STREAMS)
     const { checkBalance } = useRequireNativeTokenBalance(0)
+    const nativeTokenName = useNativeTokenName()
     const [showBalanceDialog, setShowBalanceDialog] = useState(false)
     const currentUserRef = useRef(undefined)
     currentUserRef.current = currentUser
@@ -724,7 +726,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             <ConfirmExitModal />
             <SwitchNetworkModal />
             {showBalanceDialog && (
-                <GetCryptoDialog onCancel={() => setShowBalanceDialog(false)} />
+                <GetCryptoDialog
+                    onCancel={() => setShowBalanceDialog(false)}
+                    nativeTokenName={nativeTokenName}
+                />
             )}
         </Layout>
     )

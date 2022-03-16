@@ -17,15 +17,22 @@ export type Props = {
     required: Required,
     balances: Balances,
     paymentCurrency: PaymentCurrency,
+    nativeTokenName: string,
 }
 
-const NoBalanceDialog = ({ onCancel, required, balances, paymentCurrency }: Props) => {
+const NoBalanceDialog = ({
+    onCancel,
+    required,
+    balances,
+    paymentCurrency,
+    nativeTokenName,
+}: Props) => {
     const currentEthBalance = BN(balances.eth)
     const requiredGasBalance = BN(required.gas)
 
     // Not enough gas for any transaction
     if (currentEthBalance.isLessThan(requiredGasBalance) || currentEthBalance.isZero()) {
-        return <GetCryptoDialog onCancel={onCancel} />
+        return <GetCryptoDialog onCancel={onCancel} nativeTokenName={nativeTokenName} />
     }
 
     switch (paymentCurrency) {
@@ -57,7 +64,7 @@ const NoBalanceDialog = ({ onCancel, required, balances, paymentCurrency }: Prop
             break
         }
         default:
-            return <GetCryptoDialog onCancel={onCancel} />
+            return <GetCryptoDialog onCancel={onCancel} nativeTokenName={nativeTokenName} />
     }
 
     return null

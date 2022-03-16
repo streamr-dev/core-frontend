@@ -30,6 +30,7 @@ import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
+import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import usePurchase, { actionsTypes } from './usePurchase'
 
 type Props = {
@@ -43,6 +44,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const { web3Error, checkingWeb3, account } = useWeb3Status()
     const { isPending: isContractProductLoadPending } = usePending('contractProduct.LOAD')
     const { isPending: isPurchasePending, wrap: wrapPurchase } = usePending('product.PURCHASE')
+    const nativeTokenName = useNativeTokenName()
     const [step, setStep] = useState(null)
     const [purchaseError, setPurchaseError] = useState(null)
     const dataPerUsd = useSelector(selectDataPerUsd)
@@ -228,6 +230,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                     required={purchaseError.getRequired()}
                     balances={purchaseError.getBalances()}
                     paymentCurrency={paymentCurrency}
+                    nativeTokenName={nativeTokenName}
                 />
             )
         }
