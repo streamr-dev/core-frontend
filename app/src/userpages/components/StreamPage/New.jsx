@@ -34,7 +34,10 @@ import CodeSnippets from '$shared/components/CodeSnippets'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useRequireNetwork from '$shared/hooks/useRequireNetwork'
+import useRequireNativeTokenBalance from '$shared/hooks/useRequireNativeTokenBalance'
+import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
+import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import routes from '$routes'
 import PartitionsView from './Edit/PartitionsView'
 import HistoryView from './Edit/HistoryView'
@@ -253,6 +256,9 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const [loadingDomains, setLoadingDomains] = useState(true)
     const isMounted = useIsMounted()
     const { validateNetwork } = useRequireNetwork(networks.STREAMS)
+    const { checkBalance } = useRequireNativeTokenBalance(0)
+    const nativeTokenName = useNativeTokenName()
+    const [showBalanceDialog, setShowBalanceDialog] = useState(false)
     const currentUserRef = useRef(undefined)
     currentUserRef.current = currentUser
 
@@ -412,6 +418,14 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             const { domain, pathname, description } = streamDataRef.current
 
             await validateNetwork()
+            const hasBalance = await checkBalance()
+
+            if (!isMounted()) { return }
+
+            if (!hasBalance) {
+                setShowBalanceDialog(true)
+                return
+            }
 
             const newStream = await client.createStream({
                 id: getValidId({
@@ -463,7 +477,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 setLoading(false)
             }
         }
-    }, [client, isMounted, history, validateNetwork])
+    }, [client, isMounted, history, validateNetwork, checkBalance])
 
     useEffect(() => {
         streamDataRef.current = {
@@ -711,6 +725,12 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             ))}
             <ConfirmExitModal />
             <SwitchNetworkModal />
+            {showBalanceDialog && (
+                <GetCryptoDialog
+                    onCancel={() => setShowBalanceDialog(false)}
+                    nativeTokenName={nativeTokenName}
+                />
+            )}
         </Layout>
     )
 }

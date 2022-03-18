@@ -416,11 +416,13 @@ story('Marketplace/GetCryptoDialog')
     .add('default', () => (
         <GetCryptoDialog
             onCancel={action('onCancel')}
+            nativeTokenName="Ether"
         />
     ))
     .add('default (iPhone)', () => (
         <GetCryptoDialog
             onCancel={action('onCancel')}
+            nativeTokenName="Ether"
         />
     ), {
         viewport: {
@@ -486,6 +488,7 @@ story('Marketplace/NoBalanceDialog')
                 eth: BN(0),
             }}
             paymentCurrency="DATA"
+            nativeTokenName="Ether"
             onCancel={action('onCancel')}
         />
     ))
@@ -500,6 +503,7 @@ story('Marketplace/NoBalanceDialog')
                 data: BN(0),
             }}
             paymentCurrency="ETH"
+            nativeTokenName="Ether"
             onCancel={action('onCancel')}
         />
     ))
@@ -514,6 +518,7 @@ story('Marketplace/NoBalanceDialog')
                 data: BN(0),
             }}
             paymentCurrency="DATA"
+            nativeTokenName="Ether"
             onCancel={action('onCancel')}
         />
     ))
@@ -529,6 +534,7 @@ story('Marketplace/NoBalanceDialog')
                 data: BN(2),
             }}
             paymentCurrency="DATA"
+            nativeTokenName="Ether"
             onCancel={action('onCancel')}
         />
     ))
@@ -544,6 +550,7 @@ story('Marketplace/NoBalanceDialog')
                 dai: BN(2),
             }}
             paymentCurrency="DAI"
+            nativeTokenName="Ether"
             onCancel={action('onCancel')}
         />
     ))

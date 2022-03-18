@@ -26,15 +26,24 @@ const Message = styled.p`
 
 export type Props = {
     onCancel: () => void,
+    nativeTokenName: string,
 }
 
-const GetCryptoDialog = ({ onCancel }: Props) => (
+const GetCryptoDialog = ({ onCancel, nativeTokenName }: Props) => (
     <ModalPortal>
         <Dialog
-            title="No Ether balance"
+            title={`No ${nativeTokenName} balance`}
             onClose={onCancel}
             renderActions={() => (
                 <div className={styles.buttonContainer}>
+                    <Button
+                        kind="secondary"
+                        tag={Link}
+                        href="https://ramp.network/"
+                        target="_blank"
+                    >
+                        Ramp
+                    </Button>
                     <Button
                         kind="secondary"
                         tag={Link}
@@ -51,24 +60,16 @@ const GetCryptoDialog = ({ onCancel }: Props) => (
                     >
                         Binance
                     </Button>
-                    <Button
-                        kind="secondary"
-                        tag={Link}
-                        href="https://app.uniswap.org"
-                        target="_blank"
-                    >
-                        Uniswap
-                    </Button>
                 </div>
             )}
         >
             <PngIcon
                 className={styles.icon}
-                name="walletNoEth"
-                alt="No Ether balance"
+                name="walletError"
+                alt={`No ${nativeTokenName} balance`}
             />
             <Message>
-                <span>Ether is needed for gas, </span>
+                <span>{nativeTokenName} is needed for gas, </span>
                 <span>but you don&apos;t have any. </span>
             </Message>
             <p>
