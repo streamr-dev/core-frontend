@@ -1,7 +1,8 @@
 import React, { Fragment, useCallback, useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import { useHistory, Link } from 'react-router-dom'
 import { StreamPermission } from 'streamr-client'
-import CreateStreamButton from '$app/src/pages/StreamListPage/CreateStreamButton'
+import Button from '$shared/components/Button'
+import Display from '$shared/components/Display.styled'
 import Layout from '$userpages/components/Layout'
 import Search from '$userpages/components/Header/Search'
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -170,7 +171,13 @@ function StreamListPage() {
 
     return (
         <Layout
-            headerAdditionalComponent={<CreateStreamButton />}
+            headerAdditionalComponent={(
+                <Display $mobile="none" $tablet>
+                    <Button tag={Link} to={routes.streams.new()}>
+                        Create stream
+                    </Button>
+                </Display>
+            )}
             headerSearchComponent={
                 <Search.Active
                     placeholder="Filter streams"
