@@ -18,7 +18,6 @@ import { lightNodeSnippets, websocketSnippets, httpSnippets, mqttSnippets } from
 import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import StatusLabel from '$shared/components/StatusLabel'
 import { CoreHelmet } from '$shared/components/Helmet'
 import { fieldTypes } from '$userpages/utils/constants'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -63,10 +62,6 @@ const HistoricalStorage = styled.div`
     ${Text} + ${Text} {
         flex-grow: 1;
     }
-`
-
-const StreamPartitions = styled.div`
-    width: 136px;
 `
 
 const UnstyledView = (props) => {
@@ -270,25 +265,6 @@ const UnstyledView = (props) => {
                     disabled
                     partitions={stream.partitions || 1}
                 />
-                <TOCPage.Section
-                    id="stream-partitions"
-                    title="Stream partitions"
-                    linkTitle="Partitions"
-                    status={(<StatusLabel.Advanced />)}
-                >
-                    <FormGroup>
-                        <Field label="Partitions">
-                            <StreamPartitions>
-                                <Text
-                                    value={stream.partitions || '1'}
-                                    readOnly
-                                    disabled
-                                    centered
-                                />
-                            </StreamPartitions>
-                        </Field>
-                    </FormGroup>
-                </TOCPage.Section>
             </TOCPage>
         </Layout>
     )
