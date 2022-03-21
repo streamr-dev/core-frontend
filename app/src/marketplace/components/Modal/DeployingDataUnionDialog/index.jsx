@@ -17,6 +17,7 @@ export type Props = {
     onClose: () => void,
     onContinue: () => void,
     minimized?: boolean,
+    spin?: boolean,
 }
 
 const formatSeconds = (seconds) => {
@@ -31,6 +32,7 @@ const DeployingDataUnionDialog = ({
     onClose,
     onContinue,
     minimized,
+    spin = true,
 }: Props) => (
     <ModalPortal>
         <Dialog
@@ -69,7 +71,7 @@ const DeployingDataUnionDialog = ({
             )}
         >
             <div className={styles.spinner}>
-                <DeploySpinner isRunning showCounter />
+                <DeploySpinner isRunning={spin} showCounter />
             </div>
             {!minimized && (
                 <div className={styles.description}>

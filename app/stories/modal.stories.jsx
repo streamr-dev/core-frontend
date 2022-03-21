@@ -379,6 +379,7 @@ story('Product Editor/DeployingCommunityDialog')
             estimate={number('Estimate', 360)}
             onClose={action('onClose')}
             onContinue={action('onContinue')}
+            spin={false}
         />
     ))
     .add('minimized', () => (
@@ -393,6 +394,7 @@ story('Product Editor/DeployingCommunityDialog')
             onClose={action('onClose')}
             onContinue={action('onContinue')}
             minimized
+            spin={false}
         />
     ))
 
