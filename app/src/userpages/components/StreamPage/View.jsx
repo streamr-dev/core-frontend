@@ -22,13 +22,13 @@ import { CoreHelmet } from '$shared/components/Helmet'
 import { fieldTypes } from '$userpages/utils/constants'
 import { selectUserData } from '$shared/modules/user/selectors'
 import getStreamPath from '$app/src/getters/getStreamPath'
-import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection/index.unstyled'
+import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
+import Storage from '$app/src/pages/AbstractStreamEditPage/StorageNodes/Storage'
 import routes from '$routes'
 import { useController } from '../StreamController'
 import { convertFromStorageDays } from './Edit/HistoryView'
 import Preview from './Edit/PreviewView'
 
-import Storage from './shared/Storage'
 import {
     StreamIdFormGroup,
     FormGroup,

@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import StorageNode from '$shared/components/StorageNode'
 import Label from '$ui/Label'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import useStreamStorageNodeAddresses from './useStreamStorageNodeAddresses'
 import useStreamStorageNodeToggle from './useStreamStorageNodeToggle'
+import StorageNode from './StorageNode'
 
 const StorageNodeItem = ({
     stream,
