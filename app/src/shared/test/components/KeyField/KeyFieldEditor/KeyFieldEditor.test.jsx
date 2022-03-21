@@ -14,8 +14,8 @@ describe('KeyFieldEditor', () => {
             expect(el.find('#keyName').hostNodes()).toHaveLength(1)
             expect(el.exists('#keyValue')).toBe(true)
             expect(el.find('#keyValue').hostNodes()).toHaveLength(1)
-            expect(el.find('Label').at(0).text()).toBe('Key name')
-            expect(el.find('Label').at(1).text()).toBe('API key')
+            expect(el.find('label').at(0).text()).toMatch(/Key name/)
+            expect(el.find('label').at(1).text()).toMatch(/API key/)
         })
 
         it('shows correct text for save button', () => {
@@ -70,7 +70,7 @@ describe('KeyFieldEditor', () => {
             />)
 
             expect(el.find('Text').length).toBe(1)
-            expect(el.find('Label').text()).toBe('Key name')
+            expect(el.find('label').text()).toMatch(/Key name/)
         })
 
         it('shows correct text for save button', () => {
