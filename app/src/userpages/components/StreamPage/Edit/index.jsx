@@ -10,7 +10,6 @@ import set from 'lodash/set'
 import { StreamPermission } from 'streamr-client'
 
 import useIsMounted from '$shared/hooks/useIsMounted'
-import StatusLabel from '$shared/components/StatusLabel'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import CoreLayout from '$shared/components/Layout/Core'
@@ -30,6 +29,7 @@ import { CoreHelmet } from '$shared/components/Helmet'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { truncate } from '$shared/utils/text'
+import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
@@ -37,7 +37,6 @@ import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
 import HistoryView from './HistoryView'
-import PartitionsView from './PartitionsView'
 import StatusView from './StatusView'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import useNewStreamMode from './useNewStreamMode'
@@ -96,7 +95,7 @@ const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any)
 
     const canShare = useMemo(() => !!permissions[StreamPermission.GRANT], [permissions])
 
-    const updateStream = useCallback((change, additionalData) => {
+    const updateStream = useCallback((change, additionalData = {}) => {
         try {
             if (typeof change === 'string') {
                 updateState(`update "${change}"`, (s) => {
@@ -366,18 +365,13 @@ const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any)
                                     updateStream={updateStream}
                                 />
                             </TOCPage.Section>
-                            <TOCPage.Section
-                                id="stream-partitions"
-                                title="Stream partitions"
-                                linkTitle="Partitions"
-                                status={(<StatusLabel.Advanced />)}
-                            >
-                                <PartitionsView
-                                    stream={stream}
-                                    disabled={isDisabled}
-                                    updateStream={updateStream}
-                                />
-                            </TOCPage.Section>
+                            <PartitionsSection
+                                partitions={stream.partitions}
+                                disabled={isDisabled}
+                                onChange={(partitions) => void updateStream({
+                                    partitions,
+                                })}
+                            />
                         </TOCPage>
                     </animated.div>
                 )
