@@ -12,7 +12,7 @@ describe('KeyField', () => {
                 value="testValue"
             />)
 
-            expect(el.find('Label').text().replace(/\u200c/g, '')).toBe('myKey') // get rid of invisible &zwnj;
+            expect(el.find('label').text().replace(/\u200c/g, '')).toBe('myKey') // get rid of invisible &zwnj;
             expect(el.find(Text).prop('value')).toBe('testValue')
             expect(el.find(Text).prop('type')).toBe('text')
         })
