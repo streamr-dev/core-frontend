@@ -103,12 +103,4 @@ const StorageNode = styled(UnstyledStorageNode)`
     }
 `
 
-const List = styled.div`
-    max-width: 536px;
-`
-
-Object.assign(StorageNode, {
-    List,
-})
-
 export default StorageNode

@@ -39,25 +39,33 @@ const UnstyledStorage = ({ stream, disabled, ...props }) => {
             <Label>
                 {disabled ? 'Storage nodes' : 'Choose storage nodes (one or more)'}
             </Label>
-            <StorageNode.List data-test-hook="Storage nodes">
+            <ul data-test-hook="Storage nodes">
                 {storageNodes.map(({ address, name }) => (
-                    <StorageNodeItem
-                        address={address}
-                        name={name}
-                        changing={addresses == null}
-                        checked={(addresses || []).includes(address.toLowerCase())}
-                        disabled={disabled}
-                        key={address}
-                        stream={stream}
-                    />
+                    <li key={address}>
+                        <StorageNodeItem
+                            address={address}
+                            name={name}
+                            changing={addresses == null}
+                            checked={(addresses || []).includes(address.toLowerCase())}
+                            disabled={disabled}
+                            stream={stream}
+                        />
+                    </li>
                 ))}
-            </StorageNode.List>
+            </ul>
         </div>
     )
 }
 
 const Storage = styled(UnstyledStorage)`
     margin-bottom: 40px;
+
+    ul {
+        list-style: none;
+        margin: 0;
+        max-width: 536px;
+        padding: 0;
+    }
 `
 
 export default Storage
