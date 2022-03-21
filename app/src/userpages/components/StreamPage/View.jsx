@@ -23,6 +23,7 @@ import { CoreHelmet } from '$shared/components/Helmet'
 import { fieldTypes } from '$userpages/utils/constants'
 import { selectUserData } from '$shared/modules/user/selectors'
 import getStreamPath from '$app/src/getters/getStreamPath'
+import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection/index.unstyled'
 import routes from '$routes'
 import { useController } from '../StreamController'
 import { convertFromStorageDays } from './Edit/HistoryView'
@@ -264,6 +265,11 @@ const UnstyledView = (props) => {
                         </Field>
                     </FormGroup>
                 </TOCSection>
+                <PartitionsSection
+                    desc={null}
+                    disabled
+                    partitions={stream.partitions || 1}
+                />
                 <TOCPage.Section
                     id="stream-partitions"
                     title="Stream partitions"

@@ -14,7 +14,6 @@ import Toolbar from '$shared/components/Toolbar'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon, networks } from '$shared/utils/constants'
-import StatusLabel from '$shared/components/StatusLabel'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Layout from '$shared/components/Layout/Core'
@@ -40,8 +39,8 @@ import getClientAddress from '$app/src/getters/getClientAddress'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
+import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
 import routes from '$routes'
-import PartitionsView from './Edit/PartitionsView'
 import HistoryView from './Edit/HistoryView'
 import ConfigureView from './Edit/ConfigureView'
 import { StatusView } from './Edit/StatusView'
@@ -715,18 +714,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                     showStorageOptions={false}
                                 />
                             </TOCSection>
-                            <TOCPage.Section
-                                id="stream-partitions"
-                                title="Stream partitions"
-                                linkTitle="Partitions"
-                                status={(<StatusLabel.Advanced />)}
+                            <PartitionsSection
+                                partitions={defaultStreamData.partitions}
                                 disabled
-                            >
-                                <PartitionsView
-                                    stream={defaultStreamData}
-                                    disabled
-                                />
-                            </TOCPage.Section>
+                            />
                         </TOCPage>
                     </animated.div>
                 )
