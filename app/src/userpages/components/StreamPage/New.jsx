@@ -34,7 +34,9 @@ import CodeSnippets from '$shared/components/CodeSnippets'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useRequireNetwork from '$shared/hooks/useRequireNetwork'
-import useRequireNativeTokenBalance from '$shared/hooks/useRequireNativeTokenBalance'
+import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
+import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
+import getClientAddress from '$app/src/getters/getClientAddress'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
@@ -256,7 +258,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const [loadingDomains, setLoadingDomains] = useState(true)
     const isMounted = useIsMounted()
     const { validateNetwork } = useRequireNetwork(networks.STREAMS)
-    const { checkBalance } = useRequireNativeTokenBalance(0)
     const nativeTokenName = useNativeTokenName()
     const [showBalanceDialog, setShowBalanceDialog] = useState(false)
     const currentUserRef = useRef(undefined)
@@ -418,14 +419,16 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             const { domain, pathname, description } = streamDataRef.current
 
             await validateNetwork()
-            const hasBalance = await checkBalance()
 
             if (!isMounted()) { return }
 
-            if (!hasBalance) {
-                setShowBalanceDialog(true)
-                return
-            }
+            const address = await getClientAddress(client)
+
+            if (!isMounted()) { return }
+
+            await requirePositiveBalance(address)
+
+            if (!isMounted()) { return }
 
             const newStream = await client.createStream({
                 id: getValidId({
@@ -463,6 +466,11 @@ const UnstyledNew = ({ currentUser, ...props }) => {
 
             if (!isMounted()) { return }
 
+            if (e instanceof InsufficientFundsError) {
+                setShowBalanceDialog(true)
+                return
+            }
+
             // set validation error if another stream with the same id exists
             if (e.code === 'DUPLICATE_NOT_ALLOWED') {
                 setValidationError('That path already exists, please try a different one')
@@ -477,7 +485,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 setLoading(false)
             }
         }
-    }, [client, isMounted, history, validateNetwork, checkBalance])
+    }, [client, isMounted, history, validateNetwork])
 
     useEffect(() => {
         streamDataRef.current = {
