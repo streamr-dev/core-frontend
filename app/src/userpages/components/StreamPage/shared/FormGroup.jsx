@@ -24,7 +24,7 @@ const UnstyledField = ({
     ...props
 }) => (
     <div {...props}>
-        <Label>{label}&zwnj;</Label>
+        <Label>{label}</Label>
         {children}
     </div>
 )

@@ -1,10 +1,9 @@
-// @flow
-
 import styled from 'styled-components'
 import * as Colors from '$ui/StateColors'
 import { MEDIUM } from '$shared/utils/styled'
+import UnstyledLabel from '$ui/Label.unstyled'
 
-const Label = styled.label`
+const Label = styled(UnstyledLabel)`
     color: ${({ state }) => Colors[state] || Colors.DEFAULT};
     display: block;
     font-size: 12px;
