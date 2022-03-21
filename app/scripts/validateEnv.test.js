@@ -3,7 +3,6 @@ import { ValidationError } from 'yup'
 import validate from './validateEnv'
 
 const VALID_ENV = {
-    GOOGLE_ANALYTICS_ID: 'UA-12121212-1',
     PLATFORM_PUBLIC_PATH: 'https://cdn.streamr.com',
     PORT: '12345',
     SENTRY_DSN: 'https://user@pass.ingest.sentry.io/1337',
@@ -90,8 +89,6 @@ function nonNegativeNumericTest(key, { allowZero = true } = {}) {
 it('validates valid env successfully', async () => {
     await ex().resolves
 })
-
-it('ensures valid GOOGLE_ANALYTICS_ID', presenceTest('GOOGLE_ANALYTICS_ID'))
 
 it('ensures valid PLATFORM_PUBLIC_PATH', presenceTest('PLATFORM_PUBLIC_PATH'))
 

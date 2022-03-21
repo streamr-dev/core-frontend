@@ -7,7 +7,6 @@ const nonNegativeNumberic = () => lazy((v) => (
 ))
 
 const envSchema = object({
-    GOOGLE_ANALYTICS_ID: string().required(),
     PLATFORM_PUBLIC_PATH: string().required().url(),
     PORT: nonNegativeNumberic(),
     SENTRY_DSN: string().required().url(),

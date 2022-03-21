@@ -19,8 +19,7 @@ import Notifications from '$shared/components/Notifications'
 import ActivityResourceProvider from '$shared/components/ActivityList/ActivityResourceProvider'
 
 import NotFoundPage from '$shared/components/NotFoundPage'
-import GoogleAnalyticsTracker from '$mp/components/GoogleAnalyticsTracker'
-import isProduction from '$mp/utils/isProduction'
+import AnalyticsTracker from '$shared/components/AnalyticsTracker'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 import ErrorPage from '$shared/components/ErrorPage'
 import withErrorBoundary from '$shared/utils/withErrorBoundary'
@@ -80,7 +79,7 @@ const App = () => (
                                 </Switch>
                                 <Notifications />
                             </ActivityResourceProvider>
-                            {isProduction() && <GoogleAnalyticsTracker />}
+                            <AnalyticsTracker />
                         </GlobalInfoWatcher>
                     </ModalProvider>
                 </ModalPortalProvider>
