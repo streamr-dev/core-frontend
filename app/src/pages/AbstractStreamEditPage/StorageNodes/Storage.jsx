@@ -37,8 +37,7 @@ const UnstyledStorage = ({ stream, disabled, ...props }) => {
     return (
         <div {...props}>
             <Label>
-                {!disabled && 'Choose storage nodes (one or more)'}
-                {!!disabled && 'Storage nodes'}
+                {disabled ? 'Storage nodes' : 'Choose storage nodes (one or more)'}
             </Label>
             <StorageNode.List data-test-hook="Storage nodes">
                 {storageNodes.map(({ address, name }) => (
