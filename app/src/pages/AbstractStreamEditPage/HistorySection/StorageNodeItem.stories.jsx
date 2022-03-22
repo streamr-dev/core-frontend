@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, boolean, text } from '@storybook/addon-knobs'
-import StorageNode from '.'
+import StorageNodeItem from './StorageNodeItem'
 
 const story = (name) => storiesOf(`Shared/${name}`, module)
     .addDecorator(styles({
@@ -12,46 +12,58 @@ const story = (name) => storiesOf(`Shared/${name}`, module)
     }))
     .addDecorator(withKnobs)
 
-story('StorageNode').add('with knobs', () => (
-    <StorageNode
+story('StorageNodeItem').add('with knobs', () => (
+    <StorageNodeItem
         disabled={boolean('Disabled', false)}
-        checked={boolean('Checked', false)}
+        active={boolean('Active', false)}
         onClick={action('onClick')}
     >
         {text('Location name', 'United States of America')}
-    </StorageNode>
+    </StorageNodeItem>
 ))
 
-story('StorageNode').add('state line-up', () => (
+story('StorageNodeItem').add('state line-up', () => (
     <React.Fragment>
-        <StorageNode>Normal</StorageNode>
-        <StorageNode checked>Checked</StorageNode>
-        <StorageNode disabled>Disabled</StorageNode>
-        <StorageNode checked disabled>Checked + disabled</StorageNode>
+        <StorageNodeItem>Busy</StorageNodeItem>
+        <StorageNodeItem active>Active</StorageNodeItem>
+        <StorageNodeItem active={false}>Inactive</StorageNodeItem>
+        <StorageNodeItem disabled>Busy disabled</StorageNodeItem>
+        <StorageNodeItem active disabled>Active + disabled</StorageNodeItem>
+        <StorageNodeItem active={false} disabled>Inactive + disabled</StorageNodeItem>
     </React.Fragment>
 ))
 
-story('StorageNode').add('long location names handling', () => (
+story('StorageNodeItem').add('long location names handling', () => (
     <React.Fragment>
-        <StorageNode>
+        <StorageNodeItem>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus efficitur orci,
             at gravida purus varius quis. Pellentesque pulvinar ornare purus, eu commodo leo
             ornare ut. Sed fringilla nibh et urna elementum blandit.
-        </StorageNode>
-        <StorageNode checked>
+        </StorageNodeItem>
+        <StorageNodeItem active>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus efficitur orci,
             at gravida purus varius quis. Pellentesque pulvinar ornare purus, eu commodo leo
             ornare ut. Sed fringilla nibh et urna elementum blandit.
-        </StorageNode>
-        <StorageNode disabled>
+        </StorageNodeItem>
+        <StorageNodeItem active={false}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus efficitur orci,
             at gravida purus varius quis. Pellentesque pulvinar ornare purus, eu commodo leo
             ornare ut. Sed fringilla nibh et urna elementum blandit.
-        </StorageNode>
-        <StorageNode checked disabled>
+        </StorageNodeItem>
+        <StorageNodeItem disabled>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus efficitur orci,
             at gravida purus varius quis. Pellentesque pulvinar ornare purus, eu commodo leo
             ornare ut. Sed fringilla nibh et urna elementum blandit.
-        </StorageNode>
+        </StorageNodeItem>
+        <StorageNodeItem active disabled>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus efficitur orci,
+            at gravida purus varius quis. Pellentesque pulvinar ornare purus, eu commodo leo
+            ornare ut. Sed fringilla nibh et urna elementum blandit.
+        </StorageNodeItem>
+        <StorageNodeItem active={false} disabled>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam cursus efficitur orci,
+            at gravida purus varius quis. Pellentesque pulvinar ornare purus, eu commodo leo
+            ornare ut. Sed fringilla nibh et urna elementum blandit.
+        </StorageNodeItem>
     </React.Fragment>
 ))
