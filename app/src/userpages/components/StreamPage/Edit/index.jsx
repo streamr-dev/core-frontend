@@ -33,13 +33,13 @@ import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { truncate } from '$shared/utils/text'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
+import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection'
 import StreamIdContext from '$shared/contexts/StreamIdContext'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
-import PreviewView from './PreviewView'
 import StatusView from './StatusView'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import useNewStreamMode from './useNewStreamMode'
@@ -351,13 +351,8 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
                                     updateStream={updateStream}
                                 />
                             </TOCPage.Section>
-                            <TOCPage.Section
-                                id="preview"
-                                title="Preview"
-                            >
-                                <PreviewView stream={stream} />
-                            </TOCPage.Section>
                             <StreamIdContext.Provider value={stream.id}>
+                                <PreviewSection />
                                 <Display $mobile="none" $desktop>
                                     <HistorySection
                                         disabled={isDisabled}

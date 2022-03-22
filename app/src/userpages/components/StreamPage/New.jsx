@@ -42,10 +42,10 @@ import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
+import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection/index'
 import routes from '$routes'
 import ConfigureView from './Edit/ConfigureView'
 import { StatusView } from './Edit/StatusView'
-import Preview from './Edit/PreviewView'
 import {
     StreamIdFormGroup,
     FormGroup,
@@ -694,16 +694,10 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             >
                                 <StatusView disabled stream={defaultStreamData} />
                             </TOCPage.Section>
-                            <TOCSection
-                                id="preview"
-                                title="Preview"
+                            <PreviewSection
                                 disabled
-                            >
-                                <Preview
-                                    stream={defaultStreamData}
-                                    subscribe={false}
-                                />
-                            </TOCSection>
+                                subscribe={false}
+                            />
                             <Display $mobile="none" $desktop>
                                 <HistorySection
                                     desc={null}

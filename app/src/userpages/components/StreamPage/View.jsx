@@ -24,10 +24,10 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import getStreamPath from '$app/src/getters/getStreamPath'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
+import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection/index'
+import StreamIdContext from '$shared/contexts/StreamIdContext'
 import routes from '$routes'
 import { useController } from '../StreamController'
-import Preview from './Edit/PreviewView'
-
 import {
     StreamIdFormGroup,
     FormGroup,
@@ -213,12 +213,9 @@ const UnstyledView = (props) => {
                         ))}
                     </TOCSection>
                 )}
-                <TOCSection
-                    id="preview"
-                    title="Preview"
-                >
-                    <Preview stream={stream} showDescription={false} />
-                </TOCSection>
+                <StreamIdContext.Provider value={stream.id}>
+                    <PreviewSection desc={null} />
+                </StreamIdContext.Provider>
                 <Display $mobile="none" $desktop>
                     <HistorySection
                         desc={null}
