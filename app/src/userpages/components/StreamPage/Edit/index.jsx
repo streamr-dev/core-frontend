@@ -19,6 +19,7 @@ import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import BackButton from '$shared/components/BackButton'
+import Display from '$shared/components/Display'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Notification from '$shared/utils/Notification'
@@ -30,13 +31,14 @@ import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { truncate } from '$shared/utils/text'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
+import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
+import StreamIdContext from '$shared/contexts/StreamIdContext'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
 import PreviewView from './PreviewView'
-import HistoryView from './HistoryView'
 import StatusView from './StatusView'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import useNewStreamMode from './useNewStreamMode'
@@ -353,18 +355,17 @@ const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any)
                             >
                                 <PreviewView stream={stream} />
                             </TOCPage.Section>
-                            <TOCPage.Section
-                                id="historical-data"
-                                title="Data storage"
-                                onlyDesktop
-                            >
-                                <HistoryView
-                                    stream={stream}
-                                    originalStream={originalStream}
-                                    disabled={isDisabled}
-                                    updateStream={updateStream}
-                                />
-                            </TOCPage.Section>
+                            <StreamIdContext.Provider value={stream.id}>
+                                <Display $mobile="none" $desktop>
+                                    <HistorySection
+                                        disabled={isDisabled}
+                                        duration={stream.storageDays}
+                                        onChange={(storageDays) => void updateStream({
+                                            storageDays,
+                                        })}
+                                    />
+                                </Display>
+                            </StreamIdContext.Provider>
                             <PartitionsSection
                                 partitions={stream.partitions}
                                 disabled={isDisabled}

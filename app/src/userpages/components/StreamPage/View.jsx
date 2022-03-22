@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
-import startCase from 'lodash/startCase'
 import { useHistory } from 'react-router-dom'
 
 import Layout from '$shared/components/Layout/Core'
@@ -11,6 +10,7 @@ import TOCPage, { Title } from '$shared/components/TOCPage'
 import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
+import Display from '$shared/components/Display'
 import useCopy from '$shared/hooks/useCopy'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
 import CodeSnippets from '$shared/components/CodeSnippets'
@@ -23,10 +23,9 @@ import { fieldTypes } from '$userpages/utils/constants'
 import { selectUserData } from '$shared/modules/user/selectors'
 import getStreamPath from '$app/src/getters/getStreamPath'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
-import Storage from '$app/src/pages/AbstractStreamEditPage/StorageNodes/Storage'
+import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
 import routes from '$routes'
 import { useController } from '../StreamController'
-import { convertFromStorageDays } from './Edit/HistoryView'
 import Preview from './Edit/PreviewView'
 
 import {
@@ -48,26 +47,9 @@ const FieldGroup = styled(FormGroup)`
     }
 `
 
-const HistoricalStorage = styled.div`
-    display: flex;
-
-    @media (min-width: ${SM}px) {
-        width: 320px;
-    }
-
-    ${Text}:first-child {
-        width: 80px;
-    }
-
-    ${Text} + ${Text} {
-        flex-grow: 1;
-    }
-`
-
 const UnstyledView = (props) => {
     const { stream } = useController()
     const { copy, isCopied } = useCopy()
-    const { amount: storagePeriod, unit } = convertFromStorageDays(stream.storageDays)
     const { truncatedDomain: domain, pathname } = getStreamPath(stream.id)
     const currentUser = useSelector(selectUserData)
     const history = useHistory()
@@ -237,29 +219,13 @@ const UnstyledView = (props) => {
                 >
                     <Preview stream={stream} showDescription={false} />
                 </TOCSection>
-                <TOCSection
-                    id="historicalData"
-                    title="Data storage"
-                >
-                    <Storage stream={stream} disabled />
-                    <FormGroup>
-                        <Field label="Store historical data for">
-                            <HistoricalStorage>
-                                <Text
-                                    value={storagePeriod}
-                                    readOnly
-                                    disabled
-                                    centered
-                                />
-                                <Text
-                                    value={startCase(`${unit.replace(/s$/, '')}${storagePeriod === 1 ? '' : 's'}`)}
-                                    readOnly
-                                    disabled
-                                />
-                            </HistoricalStorage>
-                        </Field>
-                    </FormGroup>
-                </TOCSection>
+                <Display $mobile="none" $desktop>
+                    <HistorySection
+                        desc={null}
+                        disabled
+                        duration={stream.storageDays}
+                    />
+                </Display>
                 <PartitionsSection
                     desc={null}
                     disabled

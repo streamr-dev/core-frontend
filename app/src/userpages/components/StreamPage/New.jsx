@@ -27,6 +27,7 @@ import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import { getEnsDomains } from '$shared/modules/user/services'
 import Spinner from '$shared/components/Spinner'
 import Button from '$shared/components/Button'
+import Display from '$shared/components/Display'
 import { truncate } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
 import CodeSnippets from '$shared/components/CodeSnippets'
@@ -40,8 +41,8 @@ import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
+import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
 import routes from '$routes'
-import HistoryView from './Edit/HistoryView'
 import ConfigureView from './Edit/ConfigureView'
 import { StatusView } from './Edit/StatusView'
 import Preview from './Edit/PreviewView'
@@ -179,7 +180,7 @@ const defaultStreamData = {
     config: {
         fields: [],
     },
-    storageDays: 365,
+    storageDays: undefined,
     inactivityThresholdHours: 48,
     partitions: 1,
 }
@@ -703,17 +704,13 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                     subscribe={false}
                                 />
                             </TOCSection>
-                            <TOCSection
-                                id="historicalData"
-                                title="Data storage"
-                                disabled
-                            >
-                                <HistoryView
-                                    stream={defaultStreamData}
+                            <Display $mobile="none" $desktop>
+                                <HistorySection
+                                    desc={null}
                                     disabled
-                                    showStorageOptions={false}
+                                    duration={defaultStreamData.storageDays}
                                 />
-                            </TOCSection>
+                            </Display>
                             <PartitionsSection
                                 partitions={defaultStreamData.partitions}
                                 disabled
