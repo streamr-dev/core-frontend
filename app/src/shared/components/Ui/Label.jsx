@@ -1,7 +1,15 @@
+import React from 'react'
 import styled from 'styled-components'
 import * as Colors from '$ui/StateColors'
 import { MEDIUM } from '$shared/utils/styled'
-import UnstyledLabel from '$ui/Label.unstyled'
+
+function UnstyledLabel({ className, children }) {
+    return (
+        <label className={className}>
+            {children}&zwnj;
+        </label>
+    )
+}
 
 const Label = styled(UnstyledLabel)`
     color: ${({ state }) => Colors[state] || Colors.DEFAULT};

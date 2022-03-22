@@ -1,9 +1,9 @@
 import React, { useEffect, useReducer, useState } from 'react'
+import styled from 'styled-components'
 import StatusLabel from '$shared/components/StatusLabel'
 import TOCPage from '$shared/components/TOCPage'
 import Label from '$ui/Label'
 import Numeric from '$ui/Numeric'
-import Partitions from './Partitions'
 
 const PARTITIONS_MIN = 1
 
@@ -19,7 +19,7 @@ function sanitizer(value, newValue) {
     return Math.max(PARTITIONS_MIN, Math.min(PARTITIONS_MAX, n))
 }
 
-export default function PartitionsSection({
+function UnstyledPartitionsSection({
     className,
     onChange,
     disabled = false,
@@ -78,3 +78,15 @@ export default function PartitionsSection({
     )
 }
 
+const Partitions = styled.div`
+    max-width: 136px;
+`
+
+const PartitionsSection = styled(UnstyledPartitionsSection)`
+    > p {
+        margin-bottom: 3.125rem;
+        max-width: 660px;
+    }
+`
+
+export default PartitionsSection
