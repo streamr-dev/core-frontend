@@ -28,7 +28,7 @@ jobs:
       - name: Run Stylelint
         run: npm run stylelint
       - name: Hadolint for linting Dockerfile
-        uses: hadolint/hadolint-action@v1.6.0
+        uses: hadolint/hadolint-action@v1.7.0
         with:
           dockerfile: ./app/Dockerfile
           config: ./.hadolint.yaml
