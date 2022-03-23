@@ -214,7 +214,9 @@ const UnstyledView = (props) => {
                     </TOCSection>
                 )}
                 <StreamIdContext.Provider value={stream.id}>
-                    <PreviewSection desc={null} />
+                    <PreviewSection
+                        desc={null}
+                    />
                 </StreamIdContext.Provider>
                 <Display $mobile="none" $desktop>
                     <HistorySection

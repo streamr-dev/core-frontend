@@ -180,6 +180,7 @@ function UnstyledHistorySection({
 
     return (
         <TOCPage.Section
+            disabled={disabled}
             id="historical-data"
             title="Data storage"
         >

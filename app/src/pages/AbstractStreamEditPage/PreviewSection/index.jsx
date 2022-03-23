@@ -24,7 +24,7 @@ function DefaultDescription() {
     )
 }
 
-function UnstyledPreviewSection({ className, subscribe = true, desc = <DefaultDescription /> }) {
+function UnstyledPreviewSection({ className, subscribe = true, disabled, desc = <DefaultDescription /> }) {
     const streamId = useStreamId()
 
     const [isRunning, toggleIsRunning] = useReducer((current) => !current, true)
@@ -51,6 +51,7 @@ function UnstyledPreviewSection({ className, subscribe = true, desc = <DefaultDe
         <TOCPage.Section
             id="preview"
             title="Preview"
+            disabled={disabled}
         >
             {desc}
             <div className={className}>
