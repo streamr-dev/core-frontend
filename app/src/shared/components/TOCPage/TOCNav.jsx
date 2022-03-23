@@ -1,5 +1,4 @@
-// @flow
-
+import React, { createContext } from 'react'
 import styled, { css } from 'styled-components'
 
 export const Link = styled.a`
@@ -8,10 +7,20 @@ export const Link = styled.a`
         opacity: 0.5;
     `}
 
-    color: #${({ active }) => (active ? '0324ff' : '323232')} !important;
+    color: ${({ active }) => (active ? '#0324ff' : '#323232')} !important;
 `
 
-const TOCNav = styled.div`
+export const TOCNavContext = createContext(false)
+
+function UnstyledTOCNav(props) {
+    return (
+        <TOCNavContext.Provider value>
+            <div {...props} />
+        </TOCNavContext.Provider>
+    )
+}
+
+const TOCNav = styled(UnstyledTOCNav)`
     font-size: 16px;
     line-height: 2em;
     margin-top: 0px; /* Line up with TOCSection's title. */

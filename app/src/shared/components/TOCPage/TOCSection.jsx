@@ -1,17 +1,9 @@
-// @flow
-
-import React, { type Node, type Element } from 'react'
+import React, { useContext } from 'react'
 import styled, { css } from 'styled-components'
 import { REGULAR, MD, LG } from '$shared/utils/styled'
+import { useBusLine } from '$shared/components/BusLine'
 import TOCBusStop from './TOCBusStop'
-
-type Props = {
-    id: string,
-    title?: string | Element<any>,
-    status?: string | Element<any>,
-    children?: Node,
-    onlyDesktop?: boolean,
-}
+import { Link, TOCNavContext } from './TOCNav'
 
 const Section = styled.div`
     ${({ onlyDesktop }) => !!onlyDesktop && css`
@@ -47,35 +39,54 @@ const TitleText = styled.span``
 
 const Status = styled.span``
 
-export const UnstyledTOCSection = ({
+export function UnstyledTOCSection({
     id,
     title,
     status,
     children,
+    disabled,
+    linkTitle,
     onlyDesktop,
     ...props
-}: Props) => (
-    <Section {...props} onlyDesktop={onlyDesktop} data-test-hook={`TOCSection ${id}`}>
-        {(!!title || !!status) ? (
-            <Title>
-                <TOCBusStop name={id} />
-                <TitleWrapper>
-                    {!!title && (
-                        <TitleText>{title}</TitleText>
-                    )}
-                    {!!status && (
-                        <Status>{status}</Status>
-                    )}
-                </TitleWrapper>
-            </Title>
-        ) : (
-            <TOCBusStop name={id} />
-        )}
-        {children}
-    </Section>
-)
+}) {
+    const isNavItem = useContext(TOCNavContext)
 
-const TOCSection = styled(UnstyledTOCSection)`
-`
+    const active = id === useBusLine().stop
+
+    if (isNavItem) {
+        return (
+            <Link
+                active={active}
+                href={`#${id}`}
+                disabled={!!disabled}
+            >
+                {linkTitle || title}
+            </Link>
+        )
+    }
+
+    return (
+        <Section {...props} onlyDesktop={onlyDesktop} data-test-hook={`TOCSection ${id}`}>
+            {(!!title || !!status) ? (
+                <Title>
+                    <TOCBusStop name={id} />
+                    <TitleWrapper>
+                        {!!title && (
+                            <TitleText>{title}</TitleText>
+                        )}
+                        {!!status && (
+                            <Status>{status}</Status>
+                        )}
+                    </TitleWrapper>
+                </Title>
+            ) : (
+                <TOCBusStop name={id} />
+            )}
+            {children}
+        </Section>
+    )
+}
+
+const TOCSection = styled(UnstyledTOCSection)``
 
 export default TOCSection

@@ -18,4 +18,4 @@ export const SANS = "'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif"
 
 export const TABLET = `(min-width: ${MD}px)`
 
-export const DESKTOP = `(min-width: ${XL}px)`
+export const DESKTOP = `(min-width: ${LG}px)`
