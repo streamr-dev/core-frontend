@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
@@ -13,8 +13,6 @@ import Toolbar from '$shared/components/Toolbar'
 import Display from '$shared/components/Display'
 import useCopy from '$shared/hooks/useCopy'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
-import CodeSnippets from '$shared/components/CodeSnippets'
-import { lightNodeSnippets, websocketSnippets, httpSnippets, mqttSnippets } from '$utils/streamSnippets'
 import Button from '$shared/components/Button'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -25,6 +23,7 @@ import getStreamPath from '$app/src/getters/getStreamPath'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
 import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection/index'
+import CodeSnippetsSection from '$app/src/pages/AbstractStreamEditPage/CodeSnippetsSection'
 import StreamIdContext from '$shared/contexts/StreamIdContext'
 import routes from '$routes'
 import { useController } from '../StreamController'
@@ -63,30 +62,6 @@ const UnstyledView = (props) => {
             history.push(routes.root())
         }
     }, [history, currentUser])
-
-    const lightNodeSnippet = useMemo(() => (
-        lightNodeSnippets({
-            id: stream.id,
-        })
-    ), [stream.id])
-
-    const websocketSnippet = useMemo(() => (
-        websocketSnippets({
-            id: stream.id,
-        })
-    ), [stream.id])
-
-    const httpSnippet = useMemo(() => (
-        httpSnippets({
-            id: stream.id,
-        })
-    ), [stream.id])
-
-    const mqttSnippet = useMemo(() => (
-        mqttSnippets({
-            id: stream.id,
-        })
-    ), [stream.id])
 
     const onCopy = useCallback((id) => {
         copy(id)
@@ -178,19 +153,9 @@ const UnstyledView = (props) => {
                         </FormGroup>
                     )}
                 </TOCSection>
-                <TOCSection
-                    id="snippets"
-                    title="Code Snippets"
-                >
-                    <CodeSnippets
-                        items={[
-                            ['javascript', 'Light node (JS)', lightNodeSnippet.javascript],
-                            ['javascript', 'Websocket', websocketSnippet.javascript],
-                            ['javascript', 'HTTP', httpSnippet.javascript],
-                            ['javascript', 'MQTT', mqttSnippet.javascript],
-                        ]}
-                    />
-                </TOCSection>
+                <StreamIdContext.Provider value={stream.id}>
+                    <CodeSnippetsSection />
+                </StreamIdContext.Provider>
                 {!!stream.config.fields.length && (
                     <TOCSection
                         id="fields"

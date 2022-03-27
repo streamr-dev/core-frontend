@@ -1,11 +1,36 @@
-import React, { useState, useCallback, useRef } from 'react'
+import React, { useState, useCallback, useRef, useMemo } from 'react'
 import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
-import { css } from 'styled-components'
+import styled, { css } from 'styled-components'
 import Button from '$shared/components/Button'
 import useCopy from '$shared/hooks/useCopy'
-import { MEDIUM } from '$shared/utils/styled'
+import TOCPage from '$shared/components/TOCPage'
+import useStreamId from '$shared/hooks/useStreamId'
+import { lightNodeSnippets, websocketSnippets, httpSnippets, mqttSnippets } from '$utils/streamSnippets'
 
-const CodeSnippets = ({ items, title, disabled, ...props }) => {
+function getStreamSnippet(fn, id) {
+    if (id) {
+        return fn({
+            id,
+        }).javascript
+    }
+
+    return '// Create your stream above in order to get your code snippet.'
+}
+
+function UnstyledCodeSnippetsSection({ className, disabled }) {
+    const streamId = useStreamId()
+
+    const items = useMemo(() => [
+        ['Light node (JS)', lightNodeSnippets],
+        ['Websocket', websocketSnippets],
+        ['HTTP', httpSnippets],
+        ['MQTT', mqttSnippets],
+    ].map(([label, fn]) => [
+        'javascript',
+        label,
+        getStreamSnippet(fn, streamId),
+    ]), [streamId])
+
     const { copy, isCopied } = useCopy()
 
     const [currentTab, setCurrentTab] = useState(0)
@@ -23,48 +48,20 @@ const CodeSnippets = ({ items, title, disabled, ...props }) => {
     }, [])
 
     return (
-        <div
-            {...props}
-            css={`
-                margin-top: 2em;
-
-                & + & {
-                    margin-top: 3em;
-                }
-            `}
+        <TOCPage.Section
+            disabled={disabled}
+            id="snippets"
+            title="Code Snippets"
         >
-            <h4
-                css={`
-                    font-size: 18px;
-                    font-weight: ${MEDIUM};
-                    line-height: 1;
-                    margin: 0 0 1em;
-                    padding: 0;
-                `}
-            >
-                {title}
-            </h4>
+            <p>
+                Bring your data to Streamr in the way that works best for you &mdash;
+                as a JS library within your app, or via MQTT, HTTP or Websocket.
+            </p>
             <Tabs
+                className={className}
                 footer={
-                    <div
-                        // eslint-disable-next-line react/jsx-curly-brace-presence
-                        css={`
-                            display: flex;
-                            justify-content: space-between;
-                            text-aling: left;
-                        `}
-                    >
-                        <Button
-                            kind="secondary"
-                            onClick={onShowAllClick}
-                            css={`
-                                && {
-                                    border: 0;
-                                    padding: 8px;
-                                    width: 40px;
-                                }
-                            `}
-                        >
+                    <FooterWrap>
+                        <ShowAllButton kind="secondary" onClick={onShowAllClick}>
                             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 {!showAll ? (
                                     // eslint-disable-next-line max-len
@@ -74,11 +71,11 @@ const CodeSnippets = ({ items, title, disabled, ...props }) => {
                                     <path d="M8.121 12.404a.703.703 0 0 1-.99-.976l.075-.087 4.02-4.02.093-.083a1.093 1.093 0 0 1 1.362 0l.093.083 4.02 4.02.068.08c.182.244.184.58.007.827l-.075.088-.079.068a.704.704 0 0 1-.827.006l-.088-.074-3.8-3.8-3.8 3.8-.079.068zm-.836 4.656l-.08-.068a.703.703 0 0 1-.067-.916l.068-.079 4.022-4.021a1.094 1.094 0 0 1 1.45-.084l.095.085 4.021 4.02a.703.703 0 0 1-.915 1.063l-.08-.068-3.799-3.8-3.8 3.8a.703.703 0 0 1-.915.068z" />
                                 )}
                             </svg>
-                        </Button>
+                        </ShowAllButton>
                         <Button kind="secondary" onClick={onCopyClick} disabled={!!disabled}>
                             {isCopied ? 'Copied' : 'Copy'}
                         </Button>
-                    </div>
+                    </FooterWrap>
                 }
                 onSelect={setCurrentTab}
                 selected={currentTab}
@@ -86,14 +83,7 @@ const CodeSnippets = ({ items, title, disabled, ...props }) => {
                 {items.map(([lang, label, snippet], index) => (
                     // eslint-disable-next-line react/no-array-index-key
                     <Tabs.Item label={label} value={index} key={index}>
-                        <div
-                            css={`
-                                ${!showAll && css`
-                                    max-height: 265px;
-                                    overflow: hidden;
-                                `}
-                            `}
-                        >
+                        <ItemWrap $expand={showAll}>
                             {/*
                                 toString() is needed because otherwise first item will not work because
                                 of this check inside CodeSnippet: 'const idOrLanguage = id || language'
@@ -101,12 +91,37 @@ const CodeSnippets = ({ items, title, disabled, ...props }) => {
                             <CodeSnippet id={index.toString()} language={lang} codeRef={codeRef}>
                                 {snippet}
                             </CodeSnippet>
-                        </div>
+                        </ItemWrap>
                     </Tabs.Item>
                 ))}
             </Tabs>
-        </div>
+        </TOCPage.Section>
     )
 }
 
-export default CodeSnippets
+const CodeSnippetsSection = styled(UnstyledCodeSnippetsSection)`
+    margin-top: 2em;
+`
+
+const ShowAllButton = styled(Button)`
+    && {
+        border: 0;
+        padding: 8px;
+        width: 40px;
+    }
+`
+
+const FooterWrap = styled.div`
+    display: flex;
+    justify-content: space-between;
+    text-aling: left;
+`
+
+const ItemWrap = styled.div`
+    ${({ $expand }) => !$expand && css`
+        max-height: 265px;
+        overflow: hidden;
+    `}
+`
+
+export default CodeSnippetsSection

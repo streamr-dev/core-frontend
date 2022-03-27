@@ -13,8 +13,6 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
 import CoreLayout from '$shared/components/Layout/Core'
-import CodeSnippets from '$shared/components/CodeSnippets'
-import { lightNodeSnippets, websocketSnippets, httpSnippets, mqttSnippets } from '$utils/streamSnippets'
 import Sidebar from '$shared/components/Sidebar'
 import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
 import ShareSidebar from '$userpages/components/ShareSidebar'
@@ -36,6 +34,7 @@ import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection
 import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection'
 import StreamIdContext from '$shared/contexts/StreamIdContext'
 import StatusSection from '$app/src/pages/AbstractStreamEditPage/StatusSection'
+import CodeSnippetsSection from '$app/src/pages/AbstractStreamEditPage/CodeSnippetsSection'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
@@ -196,30 +195,6 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
         }
     }, [confirmIsSaved, history, isMounted])
 
-    const lightNodeSnippet = useMemo(() => (
-        lightNodeSnippets({
-            id: stream.id,
-        })
-    ), [stream.id])
-
-    const websocketSnippet = useMemo(() => (
-        websocketSnippets({
-            id: stream.id,
-        })
-    ), [stream.id])
-
-    const httpSnippet = useMemo(() => (
-        httpSnippets({
-            id: stream.id,
-        })
-    ), [stream.id])
-
-    const mqttSnippet = useMemo(() => (
-        mqttSnippets({
-            id: stream.id,
-        })
-    ), [stream.id])
-
     const openShareDialog = useCallback(async () => {
         const canProceed = await confirmIsSaved()
 
@@ -308,23 +283,9 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
                                     updateStream={updateStream}
                                 />
                             </TOCPage.Section>
-                            <TOCPage.Section
-                                id="snippets"
-                                title="Code Snippets"
-                            >
-                                <p>
-                                    Bring your data to Streamr in the way that works best for you &mdash;
-                                    as a JS library within your app, or via MQTT, HTTP or Websocket.
-                                </p>
-                                <CodeSnippets
-                                    items={[
-                                        ['javascript', 'Light node (JS)', lightNodeSnippet.javascript],
-                                        ['javascript', 'Websocket', websocketSnippet.javascript],
-                                        ['javascript', 'HTTP', httpSnippet.javascript],
-                                        ['javascript', 'MQTT', mqttSnippet.javascript],
-                                    ]}
-                                />
-                            </TOCPage.Section>
+                            <StreamIdContext.Provider value={stream.id}>
+                                <CodeSnippetsSection />
+                            </StreamIdContext.Provider>
                             <TOCPage.Section
                                 id="configure"
                                 title="Fields"

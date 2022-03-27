@@ -29,7 +29,6 @@ import Button from '$shared/components/Button'
 import Display from '$shared/components/Display'
 import { truncate } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
-import CodeSnippets from '$shared/components/CodeSnippets'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useRequireNetwork from '$shared/hooks/useRequireNetwork'
@@ -43,6 +42,7 @@ import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsS
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
 import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection'
 import StatusSection from '$app/src/pages/AbstractStreamEditPage/StatusSection'
+import CodeSnippetsSection from '$app/src/pages/AbstractStreamEditPage/CodeSnippetsSection'
 import routes from '$routes'
 import ConfigureView from './Edit/ConfigureView'
 import {
@@ -500,10 +500,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         () => contentChangedRef.current,
     )
 
-    const newStreamSnippet = useMemo(() => `
-        // Create your stream above in order to get your code snippet.
-    `, [])
-
     const saveEnabled = !!pathname && !!domain && !loading
     const isDisabled = !!loading
     const isDomainDisabled = isDisabled || domainOptions.length <= 1 || loadingDomains
@@ -655,21 +651,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                     </Field>
                                 </FormGroup>
                             </TOCSection>
-                            <TOCSection
-                                id="snippets"
-                                title="Code Snippets"
-                                disabled
-                            >
-                                <CodeSnippets
-                                    items={[
-                                        ['javascript', 'Light node (JS)', newStreamSnippet],
-                                        ['javascript', 'Websocket', newStreamSnippet],
-                                        ['javascript', 'HTTP', newStreamSnippet],
-                                        ['javascript', 'MQTT', newStreamSnippet],
-                                    ]}
-                                    disabled
-                                />
-                            </TOCSection>
+                            <CodeSnippetsSection disabled />
                             <TOCPage.Section
                                 id="configure"
                                 title="Fields"
