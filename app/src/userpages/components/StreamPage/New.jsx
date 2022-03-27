@@ -684,7 +684,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                             <Display $mobile="none" $desktop>
                                 <StatusSection
                                     duration={defaultStreamData.inactivityThresholdHours}
-                                    isDisabled={isDisabled}
+                                    disabled
                                     onChange={(inactivityThresholdHours) => void updateStream({
                                         inactivityThresholdHours,
                                     })}
