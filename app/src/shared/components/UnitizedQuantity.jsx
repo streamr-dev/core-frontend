@@ -36,22 +36,13 @@ function reducer(state, { type, value }) {
                     throw new Error('Native multiplier has to be 1')
                 }
 
-                if (typeof state.unit === 'undefined') {
-                    // eslint-disable-next-line no-restricted-syntax
-                    for (const [unit, mx] of units) {
-                        if (state.unit === unit && value / mx === state.quantity) {
-                            return state
-                        }
-                    }
-                } else {
-                    // eslint-disable-next-line no-restricted-syntax
-                    for (const [unit, mx] of units) {
-                        if (value % mx === 0) {
-                            return {
-                                ...state,
-                                quantity: value / mx,
-                                unit,
-                            }
+                // eslint-disable-next-line no-restricted-syntax
+                for (const [unit, mx] of units) {
+                    if (value % mx === 0) {
+                        return {
+                            ...state,
+                            quantity: value / mx,
+                            unit,
                         }
                     }
                 }
