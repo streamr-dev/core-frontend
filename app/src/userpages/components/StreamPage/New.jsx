@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { useTransition, animated } from 'react-spring'
 import { Link, useHistory } from 'react-router-dom'
-import { StatusIcon } from '@streamr/streamr-layout'
 import { useClient } from 'streamr-client-react'
 
 import { MEDIUM } from '$shared/utils/styled'
@@ -42,10 +41,10 @@ import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
-import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection/index'
+import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection'
+import StatusSection from '$app/src/pages/AbstractStreamEditPage/StatusSection'
 import routes from '$routes'
 import ConfigureView from './Edit/ConfigureView'
-import { StatusView } from './Edit/StatusView'
 import {
     StreamIdFormGroup,
     FormGroup,
@@ -682,18 +681,16 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                     disabled
                                 />
                             </TOCPage.Section>
-                            <TOCPage.Section
-                                id="status"
-                                title="Status"
-                                status={<StatusIcon
-                                    tooltip
+                            <Display $mobile="none" $desktop>
+                                <StatusSection
+                                    duration={defaultStreamData.inactivityThresholdHours}
+                                    isDisabled={isDisabled}
+                                    onChange={(inactivityThresholdHours) => void updateStream({
+                                        inactivityThresholdHours,
+                                    })}
                                     status="inactive"
-                                />}
-                                onlyDesktop
-                                disabled
-                            >
-                                <StatusView disabled stream={defaultStreamData} />
-                            </TOCPage.Section>
+                                />
+                            </Display>
                             <PreviewSection
                                 disabled
                                 subscribe={false}

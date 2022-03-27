@@ -35,12 +35,12 @@ import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsS
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
 import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection'
 import StreamIdContext from '$shared/contexts/StreamIdContext'
+import StatusSection from '$app/src/pages/AbstractStreamEditPage/StatusSection'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
 import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
-import StatusView from './StatusView'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import useNewStreamMode from './useNewStreamMode'
 
@@ -336,21 +336,16 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
                                     updateStream={updateStream}
                                 />
                             </TOCPage.Section>
-                            <TOCPage.Section
-                                id="status"
-                                title="Status"
-                                status={<StatusIcon
-                                    tooltip
-                                    status={status}
-                                />}
-                                onlyDesktop
-                            >
-                                <StatusView
-                                    stream={stream}
+                            <Display $mobile="none" $desktop>
+                                <StatusSection
                                     disabled={isDisabled}
-                                    updateStream={updateStream}
+                                    duration={stream.inactivityThresholdHours}
+                                    onChange={(inactivityThresholdHours) => void updateStream({
+                                        inactivityThresholdHours,
+                                    })}
+                                    status={status}
                                 />
-                            </TOCPage.Section>
+                            </Display>
                             <StreamIdContext.Provider value={stream.id}>
                                 <PreviewSection />
                                 <Display $mobile="none" $desktop>
