@@ -24,6 +24,7 @@ import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsS
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
 import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection/index'
 import CodeSnippetsSection from '$app/src/pages/AbstractStreamEditPage/CodeSnippetsSection'
+import InfoSection from '$app/src/pages/AbstractStreamEditPage/InfoSection/index'
 import StreamIdContext from '$shared/contexts/StreamIdContext'
 import routes from '$routes'
 import { useController } from '../StreamController'
@@ -87,6 +88,12 @@ const UnstyledView = (props) => {
         >
             <CoreHelmet title={stream.id} />
             <TOCPage title="Read only stream">
+                <StreamIdContext.Provider value={stream.id}>
+                    <InfoSection
+                        desc={null}
+                        disabled
+                    />
+                </StreamIdContext.Provider>
                 <TOCSection
                     id="details"
                     title="Details"

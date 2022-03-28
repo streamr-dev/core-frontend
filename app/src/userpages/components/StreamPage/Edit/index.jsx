@@ -35,6 +35,7 @@ import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection
 import StreamIdContext from '$shared/contexts/StreamIdContext'
 import StatusSection from '$app/src/pages/AbstractStreamEditPage/StatusSection'
 import CodeSnippetsSection from '$app/src/pages/AbstractStreamEditPage/CodeSnippetsSection'
+import InfoSection from '$app/src/pages/AbstractStreamEditPage/InfoSection'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
@@ -273,6 +274,14 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
                         {...(isNewStream ? { style } : {})}
                     >
                         <TOCPage title="Set up your Stream">
+                            <StreamIdContext.Provider value={stream.id}>
+                                <InfoSection
+                                    description={stream.description}
+                                    onDescriptionChange={(description) => void updateStream({
+                                        description,
+                                    })}
+                                />
+                            </StreamIdContext.Provider>
                             <TOCPage.Section
                                 id="details"
                                 title="Details"

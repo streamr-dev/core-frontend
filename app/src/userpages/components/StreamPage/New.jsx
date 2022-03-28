@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
-import { useTransition, animated } from 'react-spring'
 import { Link, useHistory } from 'react-router-dom'
 import { useClient } from 'streamr-client-react'
 
@@ -42,6 +41,7 @@ import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsS
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
 import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection'
 import StatusSection from '$app/src/pages/AbstractStreamEditPage/StatusSection'
+import InfoSection from '$app/src/pages/AbstractStreamEditPage/InfoSection'
 import CodeSnippetsSection from '$app/src/pages/AbstractStreamEditPage/CodeSnippetsSection'
 import routes from '$routes'
 import ConfigureView from './Edit/ConfigureView'
@@ -355,35 +355,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         }
     }, [confirmIsSaved, history, isMounted])
 
-    const onDomainChange = useCallback(({ value: domain }) => {
-        if (domain === ADD_ENS_DOMAIN) {
-            window.open(ADD_DOMAIN_URL, '_blank', 'noopener noreferrer')
-        } else {
-            updateStream('domain', (s) => ({
-                ...s,
-                domain,
-            }))
-        }
-    }, [updateStream])
-
-    const onPathnameChange = useCallback((e) => {
-        const pathname = e.target.value
-
-        updateStream('pathname', (s) => ({
-            ...s,
-            pathname,
-        }))
-    }, [updateStream])
-
-    const onDescriptionChange = useCallback((e) => {
-        const description = e.target.value
-
-        updateStream('description', (s) => ({
-            ...s,
-            description,
-        }))
-    }, [updateStream])
-
     const onClearPathname = useCallback(() => {
         updateStream('clear pathname', (s) => ({
             ...s,
@@ -504,24 +475,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const isDisabled = !!loading
     const isDomainDisabled = isDisabled || domainOptions.length <= 1 || loadingDomains
 
-    const transitions = useTransition(!finished, null, {
-        config: {
-            tension: 500,
-            friction: 50,
-            clamp: true,
-            duration: 300,
-        },
-        from: {
-            opacity: 1,
-        },
-        enter: {
-            opacity: 1,
-        },
-        leave: {
-            opacity: 0,
-        },
-    })
-
     return (
         <Layout
             {...props}
@@ -549,146 +502,162 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 />
             )}
         >
-            {transitions.map(({ item, key, props: style }) => (
-                item && (
-                    <animated.div
-                        key={key}
-                        style={style}
-                    >
-                        <TOCPage title="Name your Stream">
-                            <TOCSection
-                                id="details"
-                                title="Details"
+            <TOCPage title="Name your Stream">
+                <InfoSection
+                    description={description}
+                    domain={domain}
+                    onCreateClick={() => void onSave()}
+                    onDescriptionChange={(description) => void updateStream('description', (s) => ({
+                        ...s,
+                        description,
+                    }))}
+                    onDomainChange={(domain) => {
+                        if (domain === ADD_ENS_DOMAIN) {
+                            window.open(ADD_DOMAIN_URL, '_blank', 'noopener noreferrer')
+                            return
+                        }
+
+                        updateStream('domain', (s) => ({
+                            ...s,
+                            domain,
+                        }))
+                    }}
+                    onPathnameChange={(pathname) => void updateStream('pathname', (s) => ({
+                        ...s,
+                        pathname,
+                    }))}
+                    pathname={pathname}
+                />
+                <TOCSection
+                    id="details"
+                    title="Details"
+                >
+                    <Description>
+                        <span>
+                            All streams require a unique path in the format <strong>domain/pathname</strong>.
+                            {' '}
+                            Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
+                            {' '}
+                            <a href={ADD_DOMAIN_URL} target="_blank" rel="nofollow noopener noreferrer">
+                                register a new one
+                            </a>.
+                            {' '}
+                            Choose your stream name &amp; create it in order to adjust stream settings.
+                        </span>
+                    </Description>
+                    <StreamIdFormGroup hasDomain data-test-hook="StreamId">
+                        <Field
+                            label="Domain"
+                        >
+                            {!!isDomainDisabled && (
+                                <DisabledDomain>
+                                    {!loadingDomains && (
+                                        <span>{truncate(domain) || ''}</span>
+                                    )}
+                                    {!!loadingDomains && (
+                                        <React.Fragment>
+                                            <span>Loading domains</span>
+                                            <Spinner size="small" color="blue" />
+                                        </React.Fragment>
+                                    )}
+                                </DisabledDomain>
+                            )}
+                            {!isDomainDisabled && (
+                                <Select
+                                    options={groupedOptions}
+                                    value={domainOptions.find(({ value }) => value === domain)}
+                                    onChange={() => {}}
+                                    disabled={isDisabled}
+                                    name="domain"
+                                />
+                            )}
+                        </Field>
+                        <Field narrow>
+                            /
+                        </Field>
+                        <Field
+                            label="Path name"
+                        >
+                            <PathnameWrapper>
+                                <PathnameTooltip />
+                                <StreamIdText
+                                    value={pathname || ''}
+                                    onChange={() => {}}
+                                    disabled={isDisabled}
+                                    placeholder="Enter a unique stream path name"
+                                    name="pathname"
+                                    invalid={!!createAttempted && !!validationError}
+                                />
+                                {(pathname || '').length > 0 && (
+                                    <ClearButton type="button" onClick={() => onClearPathname()}>
+                                        <SvgIcon name="clear" />
+                                    </ClearButton>
+                                )}
+                            </PathnameWrapper>
+                            {!!createAttempted && !!validationError && (
+                                <Errors overlap theme={MarketplaceTheme}>
+                                    {validationError}
+                                </Errors>
+                            )}
+                        </Field>
+                        <Field narrow>
+                            <Button
+                                kind="secondary"
+                                onClick={() => onSave()}
+                                disabled={!saveEnabled}
                             >
-                                <Description>
-                                    <span>
-                                        All streams require a unique path in the format <strong>domain/pathname</strong>.
-                                        {' '}
-                                        Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
-                                        {' '}
-                                        <a href={ADD_DOMAIN_URL} target="_blank" rel="nofollow noopener noreferrer">
-                                            register a new one
-                                        </a>.
-                                        {' '}
-                                        Choose your stream name &amp; create it in order to adjust stream settings.
-                                    </span>
-                                </Description>
-                                <StreamIdFormGroup hasDomain data-test-hook="StreamId">
-                                    <Field
-                                        label="Domain"
-                                    >
-                                        {!!isDomainDisabled && (
-                                            <DisabledDomain>
-                                                {!loadingDomains && (
-                                                    <span>{truncate(domain) || ''}</span>
-                                                )}
-                                                {!!loadingDomains && (
-                                                    <React.Fragment>
-                                                        <span>Loading domains</span>
-                                                        <Spinner size="small" color="blue" />
-                                                    </React.Fragment>
-                                                )}
-                                            </DisabledDomain>
-                                        )}
-                                        {!isDomainDisabled && (
-                                            <Select
-                                                options={groupedOptions}
-                                                value={domainOptions.find(({ value }) => value === domain)}
-                                                onChange={onDomainChange}
-                                                disabled={isDisabled}
-                                                name="domain"
-                                            />
-                                        )}
-                                    </Field>
-                                    <Field narrow>
-                                        /
-                                    </Field>
-                                    <Field
-                                        label="Path name"
-                                    >
-                                        <PathnameWrapper>
-                                            <PathnameTooltip />
-                                            <StreamIdText
-                                                value={pathname || ''}
-                                                onChange={onPathnameChange}
-                                                disabled={isDisabled}
-                                                placeholder="Enter a unique stream path name"
-                                                name="pathname"
-                                                invalid={!!createAttempted && !!validationError}
-                                            />
-                                            {(pathname || '').length > 0 && (
-                                                <ClearButton type="button" onClick={() => onClearPathname()}>
-                                                    <SvgIcon name="clear" />
-                                                </ClearButton>
-                                            )}
-                                        </PathnameWrapper>
-                                        {!!createAttempted && !!validationError && (
-                                            <Errors overlap theme={MarketplaceTheme}>
-                                                {validationError}
-                                            </Errors>
-                                        )}
-                                    </Field>
-                                    <Field narrow>
-                                        <Button
-                                            kind="secondary"
-                                            onClick={() => onSave()}
-                                            disabled={!saveEnabled}
-                                        >
-                                            Create stream
-                                        </Button>
-                                    </Field>
-                                </StreamIdFormGroup>
-                                <FormGroup>
-                                    <Field label="Description">
-                                        <Text
-                                            value={description}
-                                            onChange={onDescriptionChange}
-                                            disabled={isDisabled}
-                                            name="description"
-                                            placeholder="Add a brief description"
-                                            autoComplete="off"
-                                        />
-                                    </Field>
-                                </FormGroup>
-                            </TOCSection>
-                            <CodeSnippetsSection disabled />
-                            <TOCPage.Section
-                                id="configure"
-                                title="Fields"
-                                onlyDesktop
-                                disabled
-                            >
-                                <ConfigureView
-                                    stream={defaultStreamData}
-                                    disabled
-                                />
-                            </TOCPage.Section>
-                            <Display $mobile="none" $desktop>
-                                <StatusSection
-                                    duration={defaultStreamData.inactivityThresholdHours}
-                                    disabled
-                                    status="inactive"
-                                />
-                            </Display>
-                            <PreviewSection
-                                disabled
-                                subscribe={false}
+                                Create stream
+                            </Button>
+                        </Field>
+                    </StreamIdFormGroup>
+                    <FormGroup>
+                        <Field label="Description">
+                            <Text
+                                value={description}
+                                onChange={() => {}}
+                                disabled={isDisabled}
+                                name="description"
+                                placeholder="Add a brief description"
+                                autoComplete="off"
                             />
-                            <Display $mobile="none" $desktop>
-                                <HistorySection
-                                    desc={null}
-                                    disabled
-                                    duration={defaultStreamData.storageDays}
-                                />
-                            </Display>
-                            <PartitionsSection
-                                partitions={defaultStreamData.partitions}
-                                disabled
-                            />
-                        </TOCPage>
-                    </animated.div>
-                )
-            ))}
+                        </Field>
+                    </FormGroup>
+                </TOCSection>
+                <CodeSnippetsSection disabled />
+                <TOCPage.Section
+                    id="configure"
+                    title="Fields"
+                    onlyDesktop
+                    disabled
+                >
+                    <ConfigureView
+                        stream={defaultStreamData}
+                        disabled
+                    />
+                </TOCPage.Section>
+                <Display $mobile="none" $desktop>
+                    <StatusSection
+                        duration={defaultStreamData.inactivityThresholdHours}
+                        disabled
+                        status="inactive"
+                    />
+                </Display>
+                <PreviewSection
+                    disabled
+                    subscribe={false}
+                />
+                <Display $mobile="none" $desktop>
+                    <HistorySection
+                        desc={null}
+                        disabled
+                        duration={defaultStreamData.storageDays}
+                    />
+                </Display>
+                <PartitionsSection
+                    partitions={defaultStreamData.partitions}
+                    disabled
+                />
+            </TOCPage>
             <ConfirmExitModal />
             <SwitchNetworkModal />
             {showBalanceDialog && (
