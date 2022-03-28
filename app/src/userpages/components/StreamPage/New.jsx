@@ -180,7 +180,7 @@ const defaultStreamData = {
         fields: [],
     },
     storageDays: undefined,
-    inactivityThresholdHours: 48,
+    inactivityThresholdHours: undefined,
     partitions: 1,
 }
 
@@ -667,9 +667,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                                 <StatusSection
                                     duration={defaultStreamData.inactivityThresholdHours}
                                     disabled
-                                    onChange={(inactivityThresholdHours) => void updateStream({
-                                        inactivityThresholdHours,
-                                    })}
                                     status="inactive"
                                 />
                             </Display>
