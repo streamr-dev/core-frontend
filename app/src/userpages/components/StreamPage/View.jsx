@@ -11,15 +11,10 @@ import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
 import Display from '$shared/components/Display'
-import useCopy from '$shared/hooks/useCopy'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
-import Button from '$shared/components/Button'
-import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
 import { CoreHelmet } from '$shared/components/Helmet'
 import { fieldTypes } from '$userpages/utils/constants'
 import { selectUserData } from '$shared/modules/user/selectors'
-import getStreamPath from '$app/src/getters/getStreamPath'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
 import HistorySection from '$app/src/pages/AbstractStreamEditPage/HistorySection'
 import PreviewSection from '$app/src/pages/AbstractStreamEditPage/PreviewSection/index'
@@ -29,7 +24,6 @@ import StreamIdContext from '$shared/contexts/StreamIdContext'
 import routes from '$routes'
 import { useController } from '../StreamController'
 import {
-    StreamIdFormGroup,
     FormGroup,
     Field,
     Text,
@@ -49,8 +43,6 @@ const FieldGroup = styled(FormGroup)`
 
 const UnstyledView = (props) => {
     const { stream } = useController()
-    const { copy, isCopied } = useCopy()
-    const { truncatedDomain: domain, pathname } = getStreamPath(stream.id)
     const currentUser = useSelector(selectUserData)
     const history = useHistory()
 
@@ -63,15 +55,6 @@ const UnstyledView = (props) => {
             history.push(routes.root())
         }
     }, [history, currentUser])
-
-    const onCopy = useCallback((id) => {
-        copy(id)
-
-        Notification.push({
-            title: 'Stream ID copied',
-            icon: NotificationIcon.CHECKMARK,
-        })
-    }, [copy])
 
     return (
         <Layout
@@ -89,78 +72,7 @@ const UnstyledView = (props) => {
             <CoreHelmet title={stream.id} />
             <TOCPage title="Read only stream">
                 <StreamIdContext.Provider value={stream.id}>
-                    <InfoSection
-                        desc={null}
-                        disabled
-                    />
-                </StreamIdContext.Provider>
-                <TOCSection
-                    id="details"
-                    title="Details"
-                >
-                    <StreamIdFormGroup hasDomain={!!domain} data-test-hook="StreamId">
-                        {!!domain && (
-                            <React.Fragment>
-                                <Field
-                                    label="Domain"
-                                >
-                                    <Text
-                                        value={domain}
-                                        readOnly
-                                        disabled
-                                        name="domain"
-                                    />
-                                </Field>
-                                <Field narrow>
-                                    /
-                                </Field>
-                                <Field
-                                    label="Path name"
-                                >
-                                    <Text
-                                        value={pathname}
-                                        readOnly
-                                        disabled
-                                        name="pathname"
-                                    />
-                                </Field>
-                            </React.Fragment>
-                        )}
-                        {!domain && (
-                            <Field
-                                label="Stream ID"
-                            >
-                                <Text
-                                    value={pathname}
-                                    readOnly
-                                    disabled
-                                    name="streamId"
-                                />
-                            </Field>
-                        )}
-                        <Field
-                            narrow
-                        >
-                            <Button kind="secondary" onClick={() => onCopy(stream.id)}>
-                                {!isCopied && 'Copy Stream ID'}
-                                {!!isCopied && 'Copied!'}
-                            </Button>
-                        </Field>
-                    </StreamIdFormGroup>
-                    {!!stream.description && (
-                        <FormGroup>
-                            <Field label="Description">
-                                <Text
-                                    value={stream.description || ''}
-                                    readOnly
-                                    disabled
-                                    name="description"
-                                />
-                            </Field>
-                        </FormGroup>
-                    )}
-                </TOCSection>
-                <StreamIdContext.Provider value={stream.id}>
+                    <InfoSection desc={null} disabled />
                     <CodeSnippetsSection />
                 </StreamIdContext.Provider>
                 {!!stream.config.fields.length && (
@@ -186,9 +98,7 @@ const UnstyledView = (props) => {
                     </TOCSection>
                 )}
                 <StreamIdContext.Provider value={stream.id}>
-                    <PreviewSection
-                        desc={null}
-                    />
+                    <PreviewSection desc={null} />
                 </StreamIdContext.Provider>
                 <Display $mobile="none" $desktop>
                     <HistorySection

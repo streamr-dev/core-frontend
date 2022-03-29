@@ -30,6 +30,8 @@ function DefaultDescription() {
     )
 }
 
+function noop() {}
+
 function UnstyledInfoSection({
     className,
     desc = <DefaultDescription />,
@@ -37,7 +39,8 @@ function UnstyledInfoSection({
     disabled = false,
     domain,
     hideDescription = false,
-    onDescriptionChange,
+    onCreateClick,
+    onDescriptionChange = noop,
     onDomainChange,
     onPathnameChange,
     pathname,
@@ -61,6 +64,7 @@ function UnstyledInfoSection({
                         <Creator
                             disabled={disabled}
                             domain={domain}
+                            onCreateClick={onCreateClick}
                             onDomainChange={onDomainChange}
                             onPathnameChange={onPathnameChange}
                             pathname={pathname}

@@ -4,7 +4,6 @@ import React, { useCallback, useState, useMemo, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import cloneDeep from 'lodash/cloneDeep'
-import { useTransition, animated } from 'react-spring'
 import { StatusIcon } from '@streamr/streamr-layout'
 import set from 'lodash/set'
 import { StreamPermission } from 'streamr-client'
@@ -39,7 +38,6 @@ import InfoSection from '$app/src/pages/AbstractStreamEditPage/InfoSection'
 import routes from '$routes'
 
 import { useController } from '../../StreamController'
-import InfoView from './InfoView'
 import ConfigureView from './ConfigureView'
 import ConfirmSaveModal from './ConfirmSaveModal'
 import useNewStreamMode from './useNewStreamMode'
@@ -210,24 +208,6 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
 
     const status = error ? StatusIcon.ERROR : getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
 
-    const transitions = useTransition(true, null, {
-        config: {
-            tension: 500,
-            friction: 50,
-            clamp: true,
-            duration: 300,
-        },
-        from: {
-            opacity: 0,
-        },
-        enter: {
-            opacity: 1,
-        },
-        leave: {
-            opacity: 1,
-        },
-    })
-
     return (
         <CoreLayout
             {...props}
@@ -267,78 +247,59 @@ const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
             )}
         >
             <CoreHelmet title={stream.id} />
-            {transitions.map(({ item, key, props: style }) => (
-                item && (
-                    <animated.div
-                        key={key}
-                        {...(isNewStream ? { style } : {})}
-                    >
-                        <TOCPage title="Set up your Stream">
-                            <StreamIdContext.Provider value={stream.id}>
-                                <InfoSection
-                                    description={stream.description}
-                                    onDescriptionChange={(description) => void updateStream({
-                                        description,
-                                    })}
-                                />
-                            </StreamIdContext.Provider>
-                            <TOCPage.Section
-                                id="details"
-                                title="Details"
-                            >
-                                <InfoView
-                                    stream={stream}
-                                    disabled={isDisabled}
-                                    updateStream={updateStream}
-                                />
-                            </TOCPage.Section>
-                            <StreamIdContext.Provider value={stream.id}>
-                                <CodeSnippetsSection />
-                            </StreamIdContext.Provider>
-                            <TOCPage.Section
-                                id="configure"
-                                title="Fields"
-                                onlyDesktop
-                            >
-                                <ConfigureView
-                                    stream={stream}
-                                    disabled={isDisabled}
-                                    updateStream={updateStream}
-                                />
-                            </TOCPage.Section>
-                            <Display $mobile="none" $desktop>
-                                <StatusSection
-                                    disabled={isDisabled}
-                                    duration={stream.inactivityThresholdHours}
-                                    onChange={(inactivityThresholdHours) => void updateStream({
-                                        inactivityThresholdHours,
-                                    })}
-                                    status={status}
-                                />
-                            </Display>
-                            <StreamIdContext.Provider value={stream.id}>
-                                <PreviewSection />
-                                <Display $mobile="none" $desktop>
-                                    <HistorySection
-                                        disabled={isDisabled}
-                                        duration={stream.storageDays}
-                                        onChange={(storageDays) => void updateStream({
-                                            storageDays,
-                                        })}
-                                    />
-                                </Display>
-                            </StreamIdContext.Provider>
-                            <PartitionsSection
-                                partitions={stream.partitions}
-                                disabled={isDisabled}
-                                onChange={(partitions) => void updateStream({
-                                    partitions,
-                                })}
-                            />
-                        </TOCPage>
-                    </animated.div>
-                )
-            ))}
+            <TOCPage title="Set up your Stream">
+                <StreamIdContext.Provider value={stream.id}>
+                    <InfoSection
+                        description={stream.description}
+                        onDescriptionChange={(description) => void updateStream({
+                            description,
+                        })}
+                    />
+                </StreamIdContext.Provider>
+                <StreamIdContext.Provider value={stream.id}>
+                    <CodeSnippetsSection />
+                </StreamIdContext.Provider>
+                <TOCPage.Section
+                    id="configure"
+                    title="Fields"
+                    onlyDesktop
+                >
+                    <ConfigureView
+                        stream={stream}
+                        disabled={isDisabled}
+                        updateStream={updateStream}
+                    />
+                </TOCPage.Section>
+                <Display $mobile="none" $desktop>
+                    <StatusSection
+                        disabled={isDisabled}
+                        duration={stream.inactivityThresholdHours}
+                        onChange={(inactivityThresholdHours) => void updateStream({
+                            inactivityThresholdHours,
+                        })}
+                        status={status}
+                    />
+                </Display>
+                <StreamIdContext.Provider value={stream.id}>
+                    <PreviewSection />
+                    <Display $mobile="none" $desktop>
+                        <HistorySection
+                            disabled={isDisabled}
+                            duration={stream.storageDays}
+                            onChange={(storageDays) => void updateStream({
+                                storageDays,
+                            })}
+                        />
+                    </Display>
+                </StreamIdContext.Provider>
+                <PartitionsSection
+                    partitions={stream.partitions}
+                    disabled={isDisabled}
+                    onChange={(partitions) => void updateStream({
+                        partitions,
+                    })}
+                />
+            </TOCPage>
             <StreamPageSidebar stream={stream} />
             <ConfirmSaveModal />
         </CoreLayout>

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, useRef, useEffect } from 'react'
+import React, { useCallback, useState, useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { Link, useHistory } from 'react-router-dom'
@@ -6,7 +6,6 @@ import { useClient } from 'streamr-client-react'
 
 import { MEDIUM } from '$shared/utils/styled'
 import TOCPage, { Title } from '$shared/components/TOCPage'
-import TOCSection from '$shared/components/TOCPage/TOCSection'
 import BackButton from '$shared/components/BackButton'
 import Toolbar from '$shared/components/Toolbar'
 import { scrollTop } from '$shared/hooks/useScrollToTop'
@@ -16,17 +15,11 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectUserData } from '$shared/modules/user/selectors'
 import Layout from '$shared/components/Layout/Core'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
-import Select from '$ui/Select'
-import Errors, { MarketplaceTheme } from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
 import SvgIcon from '$shared/components/SvgIcon'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
-import { getEnsDomains } from '$shared/modules/user/services'
-import Spinner from '$shared/components/Spinner'
-import Button from '$shared/components/Button'
 import Display from '$shared/components/Display'
-import { truncate } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { Provider as UndoContextProvider } from '$shared/contexts/Undo'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
@@ -45,21 +38,8 @@ import InfoSection from '$app/src/pages/AbstractStreamEditPage/InfoSection'
 import CodeSnippetsSection from '$app/src/pages/AbstractStreamEditPage/CodeSnippetsSection'
 import routes from '$routes'
 import ConfigureView from './Edit/ConfigureView'
-import {
-    StreamIdFormGroup,
-    FormGroup,
-    Field,
-    Text,
-} from './shared/FormGroup'
+import { Text } from './shared/FormGroup'
 import docsLinks from '$shared/../docsLinks'
-
-const Description = styled.p`
-    margin-bottom: 3rem;
-`
-
-const PathnameWrapper = styled.div`
-    position: relative;
-`
 
 const Tooltip = styled.div`
     position: absolute;
@@ -110,65 +90,6 @@ const QuestionIcon = styled.div`
 
         ${Tooltip} {
             visibility: visible;
-        }
-    }
-`
-
-const DisabledDomain = styled.div`
-    background-color: #efefef;
-    color: #525252;
-    border: 1px solid #EFEFEF;
-    border-radius: 4px;
-    font-size: 0.875rem;
-    height: 40px;
-    padding: 0 1rem;
-    width: 100%;
-    display: flex;
-    align-items: center;
-
-    > span {
-        flex: 1;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-    }
-`
-
-const StreamIdText = styled(Text)`
-    padding: 0 3rem 0 1rem;
-    text-overflow: ellipsis;
-`
-
-const ClearButton = styled.button`
-    width: 40px;
-    height: 40px;
-    color: #989898;
-    position: absolute;
-    top: 0;
-    line-height: 16px;
-    right: 0;
-    border: 0;
-    background: none;
-    outline: none;
-    appearance: none;
-
-    :focus {
-        outline: none;
-    }
-
-    svg {
-        width: 16px;
-        height: 16px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-
-    :hover {
-        circle {
-            fill: #525252;
-            stroke: #525252;
         }
     }
 `
@@ -246,78 +167,19 @@ const UnstyledNew = ({ currentUser, ...props }) => {
     const client = useClient()
 
     const [loading, setLoading] = useState(false)
-    const [createAttempted, setCreateAttempted] = useState(false)
-    const [finished, setFinished] = useState(false)
-    const [validationError, setValidationError] = useState(undefined)
+    const [, setCreateAttempted] = useState(false)
+    const [, setFinished] = useState(false)
+    const [, setValidationError] = useState(undefined)
     const streamDataRef = useRef()
     const contentChangedRef = useRef(false)
     const history = useHistory()
     const { api: confirmExitDialog } = useModal('confirmExit')
-    const [domains, setDomains] = useState([])
-    const [loadingDomains, setLoadingDomains] = useState(true)
     const isMounted = useIsMounted()
     const { validateNetwork } = useRequireNetwork(networks.STREAMS)
     const nativeTokenName = useNativeTokenName()
     const [showBalanceDialog, setShowBalanceDialog] = useState(false)
     const currentUserRef = useRef(undefined)
     currentUserRef.current = currentUser
-
-    const loadDomains = useCallback(async () => {
-        const { username } = currentUserRef.current || {}
-        const addresses = (!!username && isEthereumAddress(username)) ? [username] : []
-
-        try {
-            const { data } = await getEnsDomains({
-                addresses,
-            })
-
-            if (isMounted() && data && data.domains && Array.isArray(data.domains)) {
-                setDomains(data.domains)
-            }
-        } catch (e) {
-            console.warn(e)
-        } finally {
-            if (isMounted()) {
-                setLoadingDomains(false)
-            }
-        }
-    }, [isMounted])
-
-    useEffect(() => {
-        loadDomains()
-    }, [loadDomains])
-
-    const [groupedOptions, domainOptions] = useMemo(() => {
-        const { username } = currentUserRef.current || {}
-        const ethAccountOptions = (!!username && isEthereumAddress(username)) ? [{
-            label: truncate(username),
-            value: username,
-        }] : []
-
-        const ensOptions = [
-            ...domains.map(({ name }) => ({
-                value: name,
-                label: name,
-            })),
-            {
-                value: ADD_ENS_DOMAIN,
-                label: 'Add new domain',
-            },
-        ]
-
-        const groupedOptions = [{
-            label: 'ENS Domains',
-            options: ensOptions,
-        },
-        {
-            label: 'Eth Account',
-            options: ethAccountOptions,
-        }]
-
-        const domainOptions = groupedOptions.flatMap((group) => group.options)
-
-        return [groupedOptions, domainOptions]
-    }, [domains])
 
     // update default domain if undefined
     useEffect(() => {
@@ -329,7 +191,7 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                 domain: currentUser.username,
             }))
         }
-    }, [domain, currentUser, domainOptions, updateStream])
+    }, [domain, currentUser, updateStream])
 
     const confirmIsSaved = useCallback(async () => {
         const { pathname, description } = streamDataRef.current || {}
@@ -354,13 +216,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
             history.push(routes.streams.index())
         }
     }, [confirmIsSaved, history, isMounted])
-
-    const onClearPathname = useCallback(() => {
-        updateStream('clear pathname', (s) => ({
-            ...s,
-            pathname: '',
-        }))
-    }, [updateStream])
 
     useEffect(() => {
         setValidationError(() => {
@@ -471,10 +326,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
         () => contentChangedRef.current,
     )
 
-    const saveEnabled = !!pathname && !!domain && !loading
-    const isDisabled = !!loading
-    const isDomainDisabled = isDisabled || domainOptions.length <= 1 || loadingDomains
-
     return (
         <Layout
             {...props}
@@ -528,101 +379,6 @@ const UnstyledNew = ({ currentUser, ...props }) => {
                     }))}
                     pathname={pathname}
                 />
-                <TOCSection
-                    id="details"
-                    title="Details"
-                >
-                    <Description>
-                        <span>
-                            All streams require a unique path in the format <strong>domain/pathname</strong>.
-                            {' '}
-                            Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
-                            {' '}
-                            <a href={ADD_DOMAIN_URL} target="_blank" rel="nofollow noopener noreferrer">
-                                register a new one
-                            </a>.
-                            {' '}
-                            Choose your stream name &amp; create it in order to adjust stream settings.
-                        </span>
-                    </Description>
-                    <StreamIdFormGroup hasDomain data-test-hook="StreamId">
-                        <Field
-                            label="Domain"
-                        >
-                            {!!isDomainDisabled && (
-                                <DisabledDomain>
-                                    {!loadingDomains && (
-                                        <span>{truncate(domain) || ''}</span>
-                                    )}
-                                    {!!loadingDomains && (
-                                        <React.Fragment>
-                                            <span>Loading domains</span>
-                                            <Spinner size="small" color="blue" />
-                                        </React.Fragment>
-                                    )}
-                                </DisabledDomain>
-                            )}
-                            {!isDomainDisabled && (
-                                <Select
-                                    options={groupedOptions}
-                                    value={domainOptions.find(({ value }) => value === domain)}
-                                    onChange={() => {}}
-                                    disabled={isDisabled}
-                                    name="domain"
-                                />
-                            )}
-                        </Field>
-                        <Field narrow>
-                            /
-                        </Field>
-                        <Field
-                            label="Path name"
-                        >
-                            <PathnameWrapper>
-                                <PathnameTooltip />
-                                <StreamIdText
-                                    value={pathname || ''}
-                                    onChange={() => {}}
-                                    disabled={isDisabled}
-                                    placeholder="Enter a unique stream path name"
-                                    name="pathname"
-                                    invalid={!!createAttempted && !!validationError}
-                                />
-                                {(pathname || '').length > 0 && (
-                                    <ClearButton type="button" onClick={() => onClearPathname()}>
-                                        <SvgIcon name="clear" />
-                                    </ClearButton>
-                                )}
-                            </PathnameWrapper>
-                            {!!createAttempted && !!validationError && (
-                                <Errors overlap theme={MarketplaceTheme}>
-                                    {validationError}
-                                </Errors>
-                            )}
-                        </Field>
-                        <Field narrow>
-                            <Button
-                                kind="secondary"
-                                onClick={() => onSave()}
-                                disabled={!saveEnabled}
-                            >
-                                Create stream
-                            </Button>
-                        </Field>
-                    </StreamIdFormGroup>
-                    <FormGroup>
-                        <Field label="Description">
-                            <Text
-                                value={description}
-                                onChange={() => {}}
-                                disabled={isDisabled}
-                                name="description"
-                                placeholder="Add a brief description"
-                                autoComplete="off"
-                            />
-                        </Field>
-                    </FormGroup>
-                </TOCSection>
                 <CodeSnippetsSection disabled />
                 <TOCPage.Section
                     id="configure"

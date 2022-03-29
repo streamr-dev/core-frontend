@@ -7,6 +7,7 @@ import Spinner from '$shared/components/Spinner'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 import getStreamPath from '$app/src/getters/getStreamPath'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
@@ -68,13 +69,15 @@ export function Viewer({ streamId, disabled, className }) {
     )
 }
 
+function noop() {}
+
 export function Creator({
     className,
     disabled,
     domain = '',
-    onCreateClick,
-    onDomainChange,
-    onPathnameChange,
+    onCreateClick = noop,
+    onDomainChange = noop,
+    onPathnameChange = noop,
     pathname = '',
 }) {
     const ownerGroups = useStreamOwnerOptions()
@@ -93,7 +96,7 @@ export function Creator({
 
     const isOwnersLoading = typeof owners === 'undefined'
 
-    const invalid = false
+    const validationError = undefined
 
     return (
         <StreamId className={className}>
@@ -143,11 +146,11 @@ export function Creator({
                 </LabelWrap>
                 <PathnameField>
                     <Text
-                        value={pathname}
-                        onChange={({ target }) => void onPathnameChange(target.value)}
                         disabled={disabled}
+                        invalid={!!validationError}
+                        onChange={({ target }) => void onPathnameChange(target.value)}
                         placeholder="Enter a unique stream path name"
-                        invalid={invalid === true}
+                        value={pathname}
                     />
                     {pathname && (
                         <ClearButton type="button" onClick={() => void onPathnameChange('')}>
@@ -155,6 +158,9 @@ export function Creator({
                         </ClearButton>
                     )}
                 </PathnameField>
+                <Errors overlap theme={MarketplaceTheme}>
+                    {validationError}
+                </Errors>
             </Pathname>
             <div>
                 <Label />
