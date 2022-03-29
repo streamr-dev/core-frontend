@@ -3,15 +3,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { MarketplaceHelmet } from '$shared/components/Helmet'
-import Layout from '$shared/components/Layout'
-import Footer from '$shared/components/Layout/Footer'
 import EmptyState from '$shared/components/EmptyState'
 import marketplaceIcon from '$shared/assets/images/marketplace.png'
 import marketplaceIcon2x from '$shared/assets/images/marketplace@2x.png'
 import { MD } from '$shared/utils/styled'
-
-import styles from './comingsoon.pcss'
 
 const Text = styled.small`
     max-width: 600px;
@@ -23,7 +18,7 @@ const Text = styled.small`
     }
 `
 
-const Info = () => (
+const ComingSoon = () => (
     <EmptyState
         image={(
             <img
@@ -50,18 +45,6 @@ const Info = () => (
             </Text>
         </p>
     </EmptyState>
-)
-
-const ComingSoon = () => (
-    <Layout
-        framedClassname={styles.layoutFramed}
-        innerClassname={styles.layoutInner}
-        footer={false}
-    >
-        <MarketplaceHelmet />
-        <Info />
-        <Footer topBorder />
-    </Layout>
 )
 
 export default ComingSoon
