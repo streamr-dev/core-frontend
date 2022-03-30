@@ -11,7 +11,7 @@ import ErrorPage from '$shared/components/ErrorPage'
 // Userpages
 import StreamPage from '$userpages/components/StreamPage'
 import StreamInspectorPage from '$app/src/pages/StreamInspectorPage'
-import NewStreamPage from '$userpages/components/StreamPage/New'
+import StreamCreatePage from '$app/src/pages/StreamCreatePage'
 import StreamListView from '$app/src/pages/StreamListPage'
 import TransactionList from '$userpages/components/TransactionPage/List'
 import ProfilePage from '$userpages/components/ProfilePage'
@@ -31,11 +31,11 @@ const PurchasesPageAuth = userIsAuthenticated(PurchasesPage)
 const ProductsPageAuth = userIsAuthenticated(ProductsPage)
 const DataUnionPageAuth = userIsAuthenticated(DataUnionPage)
 const EditProductAuth = userIsAuthenticated(EditProductPage)
-const NewStreamPageAuth = userIsAuthenticated(NewStreamPage)
+const StreamCreatePageAuth = userIsAuthenticated(StreamCreatePage)
 
 const UserpagesRouter = () => ([
     <Route exact path={routes.profile()} component={ProfilePageAuth} key="ProfilePage" />,
-    <Route exact path={routes.streams.new()} component={NewStreamPageAuth} key="newStreamPage" />,
+    <Route exact path={routes.streams.new()} component={StreamCreatePageAuth} key="StreamCreatePage" />,
     <Route exact path={routes.streams.show()} component={StreamPage} key="streamPage" />,
     <Redirect exact from={routes.streams.public.show()} to={routes.streams.show()} key="publicStreamPageRedir" />,
     <Redirect exact from={routes.streams.public.preview()} to={routes.streams.preview()} key="publicStreamPreviewPageRedir" />,

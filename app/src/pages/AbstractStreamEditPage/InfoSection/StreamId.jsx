@@ -13,6 +13,7 @@ import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
+import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import useStreamOwnerOptions from './useStreamOwnerOptions'
 import docsLinks from '$shared/../docsLinks'
 
@@ -75,10 +76,10 @@ export function Creator({
     className,
     disabled,
     domain = '',
-    onCreateClick = noop,
     onDomainChange = noop,
     onPathnameChange = noop,
     pathname = '',
+    validationError,
 }) {
     const ownerGroups = useStreamOwnerOptions()
 
@@ -96,7 +97,7 @@ export function Creator({
 
     const isOwnersLoading = typeof owners === 'undefined'
 
-    const validationError = undefined
+    const { busy, clean } = useStreamModifierStatusContext()
 
     return (
         <StreamId className={className}>
@@ -152,22 +153,24 @@ export function Creator({
                         placeholder="Enter a unique stream path name"
                         value={pathname}
                     />
-                    {pathname && (
+                    {pathname && !disabled && (
                         <ClearButton type="button" onClick={() => void onPathnameChange('')}>
                             <SvgIcon name="clear" />
                         </ClearButton>
                     )}
                 </PathnameField>
-                <Errors overlap theme={MarketplaceTheme}>
-                    {validationError}
-                </Errors>
+                {!!validationError && (
+                    <Errors overlap theme={MarketplaceTheme}>
+                        {validationError}
+                    </Errors>
+                )}
             </Pathname>
             <div>
                 <Label />
                 <Button
-                    // @TODO disabled
+                    disabled={clean || busy}
                     kind="secondary"
-                    onClick={() => void onCreateClick()}
+                    type="submit"
                 >
                     Create stream
                 </Button>

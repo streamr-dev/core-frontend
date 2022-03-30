@@ -129,9 +129,7 @@ export default function UnitizedQuantity({ units: unitsProp, quantity: quantityP
             return q * mx
         })()
 
-        if (state.quantity !== newQuantity) {
-            state.onChange(newQuantity)
-        }
+        state.onChange(newQuantity)
     }, [cache])
 
     return (

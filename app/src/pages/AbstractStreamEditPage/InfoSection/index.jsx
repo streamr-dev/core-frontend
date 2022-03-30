@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import TOCPage from '$shared/components/TOCPage'
 import Text from '$ui/Text'
@@ -6,6 +6,9 @@ import useStreamId from '$shared/hooks/useStreamId'
 import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
 import { Viewer, Creator } from './StreamId'
+import { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
+
+const ENS_DOMAINS_URL = 'https://ens.domains'
 
 function DefaultDescription() {
     const streamId = useStreamId()
@@ -17,7 +20,7 @@ function DefaultDescription() {
                 Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
             </Surround>
             <Surround tail=".">
-                <a href="https://ens.domains" target="_blank" rel="nofollow noopener noreferrer">
+                <a href={ENS_DOMAINS_URL} target="_blank" rel="nofollow noopener noreferrer">
                     register a new one
                 </a>
             </Surround>
@@ -39,20 +42,41 @@ function UnstyledInfoSection({
     disabled = false,
     domain,
     hideDescription = false,
-    onCreateClick,
+    onSubmit = noop,
     onDescriptionChange = noop,
-    onDomainChange,
+    onDomainChange: onDomainChangeProp,
     onPathnameChange,
     pathname,
+    validationError,
 }) {
     const streamId = useStreamId()
+
+    const onDomainChange = useCallback((newDomain) => {
+        if (newDomain === ADD_ENS_DOMAIN_VALUE) {
+            window.open(ENS_DOMAINS_URL, '_blank', 'noopener noreferrer')
+            return
+        }
+
+        if (typeof onDomainChangeProp === 'function') {
+            onDomainChangeProp(newDomain)
+        }
+    }, [onDomainChangeProp])
 
     return (
         <TOCPage.Section
             id="details"
             title="Details"
         >
-            <div className={className}>
+            <form
+                className={className}
+                onSubmit={(e) => {
+                    if (typeof onSubmit === 'function') {
+                        onSubmit()
+                    }
+
+                    e.preventDefault()
+                }}
+            >
                 {desc}
                 <Row>
                     {streamId ? (
@@ -64,10 +88,10 @@ function UnstyledInfoSection({
                         <Creator
                             disabled={disabled}
                             domain={domain}
-                            onCreateClick={onCreateClick}
                             onDomainChange={onDomainChange}
                             onPathnameChange={onPathnameChange}
                             pathname={pathname}
+                            validationError={validationError}
                         />
                     )}
                 </Row>
@@ -89,7 +113,7 @@ function UnstyledInfoSection({
                         />
                     </Row>
                 )}
-            </div>
+            </form>
         </TOCPage.Section>
     )
 }

@@ -6,7 +6,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import useClientAddress from '$shared/hooks/useClientAddress'
 import { truncate } from '$shared/utils/text'
 
-const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
+export const ADD_ENS_DOMAIN_VALUE = '::ens/add_domain'
 
 export default function useStreamOwnerOptions() {
     const [domains, setDomains] = useState()
