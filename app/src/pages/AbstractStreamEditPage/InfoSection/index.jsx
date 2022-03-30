@@ -42,7 +42,6 @@ function UnstyledInfoSection({
     disabled = false,
     domain,
     hideDescription = false,
-    onSubmit = noop,
     onDescriptionChange = noop,
     onDomainChange: onDomainChangeProp,
     onPathnameChange,
@@ -67,16 +66,7 @@ function UnstyledInfoSection({
             id="details"
             title="Details"
         >
-            <form
-                className={className}
-                onSubmit={(e) => {
-                    if (typeof onSubmit === 'function') {
-                        onSubmit()
-                    }
-
-                    e.preventDefault()
-                }}
-            >
+            <div className={className}>
                 {desc}
                 <Row>
                     {streamId ? (
@@ -113,7 +103,7 @@ function UnstyledInfoSection({
                         />
                     </Row>
                 )}
-            </form>
+            </div>
         </TOCPage.Section>
     )
 }

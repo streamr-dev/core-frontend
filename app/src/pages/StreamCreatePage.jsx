@@ -198,99 +198,106 @@ function StreamCreatePage() {
     }, [domain, pathname, stage])
 
     return (
-        <Layout
-            nav={false}
-            navComponent={(
-                <Toolbar
-                    altMobileLayout
-                    loading={busy}
-                    left={(
-                        <BackButton onBack={onBack} />
-                    )}
-                    actions={{
-                        cancel: {
-                            kind: 'link',
-                            title: 'Cancel',
-                            outline: true,
-                            onClick: () => void onBack(),
-                        },
-                        saveChanges: {
-                            title: 'Save & Exit',
-                            kind: 'primary',
-                            disabled: true,
-                        },
-                    }}
-                />
-            )}
+        <form
+            onSubmit={(e) => {
+                save()
+                e.preventDefault()
+            }}
         >
-            <TOCPage title="Name your Stream">
-                <InfoSection
-                    description={description}
-                    domain={domain}
-                    onSubmit={save}
-                    onDescriptionChange={(value) => void stage({
-                        description: value,
-                    })}
-                    onDomainChange={setDomain}
-                    onPathnameChange={setPathname}
-                    pathname={pathname}
-                    validationError={validationError}
-                    disabled={busy}
-                />
-                <CodeSnippetsSection disabled />
-                <TOCPage.Section
-                    id="configure"
-                    title="Fields"
-                    onlyDesktop
-                    disabled
-                >
-                    {/* @TODO */}
-                    {/* <ConfigureView
-                        stream={defaultStreamData}
+            <Layout
+                nav={false}
+                navComponent={(
+                    <Toolbar
+                        altMobileLayout
+                        loading={busy}
+                        left={(
+                            <BackButton onBack={onBack} />
+                        )}
+                        actions={{
+                            cancel: {
+                                kind: 'link',
+                                title: 'Cancel',
+                                outline: true,
+                                onClick: () => void onBack(),
+                            },
+                            saveChanges: {
+                                disabled: clean || busy,
+                                kind: 'primary',
+                                title: 'Save & Exit',
+                                type: 'submit',
+                            },
+                        }}
+                    />
+                )}
+            >
+                <TOCPage title="Name your Stream">
+                    <InfoSection
+                        description={description}
+                        domain={domain}
+                        onDescriptionChange={(value) => void stage({
+                            description: value,
+                        })}
+                        onDomainChange={setDomain}
+                        onPathnameChange={setPathname}
+                        pathname={pathname}
+                        validationError={validationError}
+                        disabled={busy}
+                    />
+                    <CodeSnippetsSection disabled />
+                    <TOCPage.Section
+                        id="configure"
+                        title="Fields"
+                        onlyDesktop
                         disabled
-                    /> */}
-                </TOCPage.Section>
-                <Display $mobile="none" $desktop>
-                    <StatusSection
-                        disabled={busy}
-                        duration={inactivityThresholdHours}
-                        onChange={(value) => void stage({
-                            inactivityThresholdHours: value,
-                        })}
-                        status="inactive"
+                    >
+                        {/* @TODO */}
+                        {/* <ConfigureView
+                            stream={defaultStreamData}
+                            disabled
+                        /> */}
+                    </TOCPage.Section>
+                    <Display $mobile="none" $desktop>
+                        <StatusSection
+                            disabled={busy}
+                            duration={inactivityThresholdHours}
+                            onChange={(value) => void stage({
+                                inactivityThresholdHours: value,
+                            })}
+                            status="inactive"
+                        />
+                    </Display>
+                    <PreviewSection
+                        disabled
+                        subscribe={false}
                     />
-                </Display>
-                <PreviewSection
-                    disabled
-                    subscribe={false}
-                />
-                <Display $mobile="none" $desktop>
-                    <HistorySection
-                        desc={null}
+                    <Display $mobile="none" $desktop>
+                        <HistorySection
+                            desc={null}
+                            disabled={busy}
+                            duration={storageDays}
+                            onChange={(value) => void stage({
+                                storageDays: value,
+                            })}
+                        />
+                    </Display>
+                    <PartitionsSection
                         disabled={busy}
-                        duration={storageDays}
                         onChange={(value) => void stage({
-                            storageDays: value,
+                            partitions: value,
                         })}
+                        partitions={partitions}
                     />
-                </Display>
-                <PartitionsSection
-                    disabled={busy}
-                    onChange={(value) => void stage({
-                        partitions: value,
-                    })}
-                    partitions={partitions}
-                />
-            </TOCPage>
-            {/* <ConfirmExitModal /> */}
-            <SwitchNetworkModal />
-            {showGetCryptoDialog && (
-                <GetCryptoDialog
-                    onCancel={() => setShowGetCryptoDialog(false)}
-                    nativeTokenName={nativeTokenName}
-                />
-            )}
-        </Layout>
+                </TOCPage>
+                {/* <ConfirmExitModal /> */}
+                <SwitchNetworkModal />
+                {showGetCryptoDialog && (
+                    <GetCryptoDialog
+                        onCancel={() => setShowGetCryptoDialog(false)}
+                        nativeTokenName={nativeTokenName}
+                    />
+                )}
+            </Layout>
+        </form>
     )
 }
 
