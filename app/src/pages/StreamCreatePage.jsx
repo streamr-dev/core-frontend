@@ -30,9 +30,16 @@ import StatusSection from './AbstractStreamEditPage/StatusSection'
 import PreviewSection from './AbstractStreamEditPage/PreviewSection'
 import HistorySection from './AbstractStreamEditPage/HistorySection'
 import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
+import ConfigSection from './AbstractStreamEditPage/ConfigSection'
 
 function StreamCreatePage() {
-    const { description, inactivityThresholdHours, storageDays, partitions } = useStream()
+    const {
+        description,
+        inactivityThresholdHours,
+        storageDays,
+        partitions,
+        config,
+    } = useStream()
 
     const nativeTokenName = useNativeTokenName()
 
@@ -245,18 +252,15 @@ function StreamCreatePage() {
                         disabled={busy}
                     />
                     <CodeSnippetsSection disabled />
-                    <TOCPage.Section
-                        id="configure"
-                        title="Fields"
-                        onlyDesktop
-                        disabled
-                    >
-                        {/* @TODO */}
-                        {/* <ConfigureView
-                            stream={defaultStreamData}
-                            disabled
-                        /> */}
-                    </TOCPage.Section>
+                    <Display $mobile="none" $desktop>
+                        <ConfigSection
+                            config={config}
+                            onChange={(newConfig) => void stage({
+                                config: newConfig,
+                            })}
+                            disabled={busy}
+                        />
+                    </Display>
                     <Display $mobile="none" $desktop>
                         <StatusSection
                             disabled={busy}
