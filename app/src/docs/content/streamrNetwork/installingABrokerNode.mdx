@@ -70,14 +70,14 @@ Note that the `--publish` argument for Docker command is not required and only p
 **Linux / macOS**
 
 ```
-docker run --interactive --tty --publish 7170:7170 --publish 7171:7171 --publish 1883:1883 --volume $(cd ~/.streamrDocker && pwd):/home/streamr/.streamr streamr/broker-node:latest
+docker run --interactive --tty --publish 7170:7170 --publish 7171:7171 --publish 1883:1883 --env NODE_ENV=production --volume $(cd ~/.streamrDocker && pwd):/home/streamr/.streamr streamr/broker-node:latest
 ```
 
 **Windows PowerShell**
 
 ```
 cd ~/.streamrDocker
-docker run --interactive --tty --publish 7170:7170 --publish 7171:7171 --publish 1883:1883 --volume ${pwd}:/home/streamr/.streamr streamr/broker-node:latest
+docker run --interactive --tty --publish 7170:7170 --publish 7171:7171 --publish 1883:1883 --env NODE_ENV=production --volume ${pwd}:/home/streamr/.streamr streamr/broker-node:latest
 ```
 
 You should start to see logging similar to this:
