@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useReducer, useRef } from 'react'
 import styled from 'styled-components'
 import StatusLabel from '$shared/components/StatusLabel'
 import TOCPage from '$shared/components/TOCPage'
@@ -9,14 +9,38 @@ const PARTITIONS_MIN = 1
 
 const PARTITIONS_MAX = 99
 
-function sanitizer(value, newValue) {
-    const n = Number.parseInt(newValue, 10)
+const Init = 'init'
 
-    if (Number.isNaN(n)) {
-        return value
+const SetValue = 'set value'
+
+function reducer(state, { type, payload }) {
+    switch (type) {
+        case Init:
+            return {
+                cache: 0,
+                initializer: payload,
+                sanitizedValue: payload,
+                value: String(payload),
+            }
+        case SetValue:
+            return {
+                ...state,
+                cache: state.cache + 1,
+                value: String(payload),
+                sanitizedValue: (() => {
+                    const n = Number.parseInt(payload, 10)
+
+                    if (Number.isNaN(n)) {
+                        return state.sanitizedValue
+                    }
+
+                    return Math.max(PARTITIONS_MIN, Math.min(PARTITIONS_MAX, n))
+                })(),
+            }
+        default:
     }
 
-    return Math.max(PARTITIONS_MIN, Math.min(PARTITIONS_MAX, n))
+    return state
 }
 
 function UnstyledPartitionsSection({
@@ -32,17 +56,43 @@ function UnstyledPartitionsSection({
         </p>
     ),
 }) {
-    const [value, setValue] = useState(String(partitions))
-
-    const [sanitizedValue, setSanitizedValue] = useReducer(sanitizer, partitions)
+    const [state, dispatch] = useReducer(reducer, reducer(undefined, {
+        type: Init,
+        payload: partitions,
+    }))
 
     useEffect(() => {
-        setValue(partitions)
+        dispatch({
+            type: Init,
+            payload: partitions,
+        })
     }, [partitions])
 
+    const stateRef = useRef(state)
+
     useEffect(() => {
-        setSanitizedValue(value)
-    }, [value])
+        stateRef.current = state
+    }, [state])
+
+    const onChangeRef = useRef(onChange)
+
+    useEffect(() => {
+        onChangeRef.current = onChange
+    }, [onChange])
+
+    const { cache } = state
+
+    useEffect(() => {
+        if (!cache && typeof onChangeRef.current !== 'function') {
+            return
+        }
+
+        const { current: { sanitizedValue, initializer } } = stateRef
+
+        if (sanitizedValue !== initializer) {
+            onChangeRef.current(sanitizedValue)
+        }
+    }, [cache])
 
     return (
         <TOCPage.Section
@@ -59,16 +109,17 @@ function UnstyledPartitionsSection({
                     <Numeric
                         min={PARTITIONS_MIN}
                         max={PARTITIONS_MAX}
-                        value={value}
+                        value={state.value}
                         onChange={({ target }) => {
-                            setValue(target.value)
+                            dispatch({
+                                type: SetValue,
+                                payload: target.value,
+                            })
                         }}
-                        onBlur={() => {
-                            if (typeof onChange === 'function' && sanitizedValue !== partitions) {
-                                setValue(String(sanitizedValue))
-                                onChange(sanitizedValue)
-                            }
-                        }}
+                        onBlur={() => void dispatch({
+                            type: Init,
+                            payload: state.sanitizedValue,
+                        })}
                         disabled={disabled}
                         name="partitions"
                     />

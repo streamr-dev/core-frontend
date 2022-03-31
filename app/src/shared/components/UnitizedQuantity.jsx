@@ -59,12 +59,10 @@ function reducer(state, { type, value }) {
                 quantity: Number.isNaN(value) ? undefined : value,
             }
         case SetUnit:
-            return reducer({
+            return {
                 ...state,
                 unit: value,
-            }, {
-                type: Invalidate,
-            })
+            }
         default:
             return state
     }
@@ -137,23 +135,32 @@ export default function UnitizedQuantity({ units: unitsProp, quantity: quantityP
             <Text
                 id="storageAmount"
                 value={typeof quantity === 'undefined' ? '' : quantity}
-                onChange={({ target }) => void dispatch({
-                    type: SetQuantity,
-                    value: Number.parseInt(target.value, 10),
-                })}
-                onBlur={() => void dispatch({
-                    type: Invalidate,
-                })}
+                onChange={({ target }) => {
+                    dispatch({
+                        type: SetQuantity,
+                        value: Number.parseInt(target.value, 10),
+                    })
+
+                    dispatch({
+                        type: Invalidate,
+                    })
+                }}
                 disabled={disabled}
                 name="storageAmount"
             />
             <Select
                 options={unitOptions}
                 value={unitOptions.find((o) => o.value === unit)}
-                onChange={({ value }) => void dispatch({
-                    type: SetUnit,
-                    value,
-                })}
+                onChange={({ value }) => {
+                    dispatch({
+                        type: SetUnit,
+                        value,
+                    })
+
+                    dispatch({
+                        type: Invalidate,
+                    })
+                }}
                 disabled={disabled}
             />
         </InputContainer>
