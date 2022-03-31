@@ -289,7 +289,6 @@ function StreamCreatePage() {
                         partitions={partitions}
                     />
                 </TOCPage>
-                {/* <ConfirmExitModal /> */}
                 <SwitchNetworkModal />
                 {showGetCryptoDialog && (
                     <GetCryptoDialog

@@ -96,7 +96,6 @@ function UnstyledInfoSection({
                             name="description"
                             placeholder="Add a brief description"
                             value={description}
-                            // Move `onChange` to `onBlur`.
                             onChange={({ target }) => void onDescriptionChange(target.value || '')}
                             disabled={disabled}
                             autoComplete="off"
