@@ -223,7 +223,7 @@ function StreamCreatePage() {
                             saveChanges: {
                                 disabled: clean || busy,
                                 kind: 'primary',
-                                title: 'Save & Exit',
+                                title: 'Create stream',
                                 type: 'submit',
                             },
                         }}
