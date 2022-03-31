@@ -219,6 +219,7 @@ function StreamCreatePage() {
                                 title: 'Cancel',
                                 outline: true,
                                 onClick: () => void onBack(),
+                                type: 'button',
                             },
                             saveChanges: {
                                 disabled: clean || busy,

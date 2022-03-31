@@ -18,6 +18,7 @@ export type ButtonAction = {
     outline?: boolean,
     spinner?: boolean,
     className?: string,
+    type?: string,
 }
 
 export type ButtonActions = {
@@ -42,6 +43,7 @@ export const Buttons = ({ actions, className }: Props) => (
                 outline,
                 spinner,
                 className: cn,
+                type,
             } = (actions && actions[key]) || {}
             return (
                 <Button
@@ -55,6 +57,7 @@ export const Buttons = ({ actions, className }: Props) => (
                     kind={kind}
                     outline={outline}
                     waiting={spinner}
+                    type={type}
                     className={classNames(styles[kind], cn)}
                 >
                     {title}
