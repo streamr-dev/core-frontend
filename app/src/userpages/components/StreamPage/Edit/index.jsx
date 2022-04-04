@@ -23,11 +23,12 @@ import Display from '$shared/components/Display'
 import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
+import { NotificationIcon, networks } from '$shared/utils/constants'
 import { MEDIUM } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
 import { CoreHelmet } from '$shared/components/Helmet'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
+import useRequireNetwork from '$shared/hooks/useRequireNetwork'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { truncate } from '$shared/utils/text'
 import PartitionsSection from '$app/src/pages/AbstractStreamEditPage/PartitionsSection'
@@ -85,10 +86,11 @@ const didChange = (original, changed) => {
     return JSON.stringify(originalStripped) !== JSON.stringify(changedStripped)
 }
 
-const UnstyledEdit = ({ disabled, isNewStream, validateNetwork, ...props }: any) => {
+const UnstyledEdit = ({ disabled, isNewStream, ...props }: any) => {
     const { stream: originalStream, permissions } = useController()
     const { state: stream, updateState } = useEditableState()
     const sidebar = useSidebar()
+    const { validateNetwork } = useRequireNetwork(networks.STREAMS, false, false)
     const streamRef = useRef()
     streamRef.current = stream
     const { api: confirmSaveDialog } = useModal('confirmSave')
