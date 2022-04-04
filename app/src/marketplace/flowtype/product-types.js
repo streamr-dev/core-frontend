@@ -46,6 +46,7 @@ export type Product = {
     id: ?ProductId,
     name: string,
     description: string,
+    chain: string,
     owner: string,
     imageUrl: ?string,
     newImageToUpload?: ?File,

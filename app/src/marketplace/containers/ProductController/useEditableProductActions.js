@@ -49,6 +49,13 @@ export function useEditableProductActions() {
         }))
         setTouched('description')
     }, [commit, setTouched])
+    const updateChain = useCallback((chain: $ElementType<Product, 'chain'>) => {
+        commit('Update chain', (p) => ({
+            ...p,
+            chain,
+        }))
+        setTouched('chain')
+    }, [commit, setTouched])
     const updateImageUrl = useCallback((image: $ElementType<Product, 'imageUrl'>) => {
         commit('Update image url', (p) => ({
             ...p,
@@ -196,6 +203,7 @@ export function useEditableProductActions() {
         updateProduct,
         updateName,
         updateDescription,
+        updateChain,
         updateImageUrl,
         updateImageFile,
         updateStreams,
@@ -215,6 +223,7 @@ export function useEditableProductActions() {
         updateProduct,
         updateName,
         updateDescription,
+        updateChain,
         updateImageUrl,
         updateImageFile,
         updateStreams,
