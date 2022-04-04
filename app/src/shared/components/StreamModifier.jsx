@@ -4,6 +4,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import useModal from '$shared/hooks/useModal'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
+import ValidationErrorProvider from '$shared/components/ValidationErrorProvider'
 import StreamContext from '$shared/contexts/StreamContext'
 import StreamModifierContext from '$shared/contexts/StreamModifierContext'
 import StreamModifierStatusContext, { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
@@ -213,7 +214,9 @@ export default function StreamModifier({ children, onValidate }) {
         <StreamModifierContext.Provider value={value}>
             <StreamContext.Provider value={modifiedStream}>
                 <StreamModifierStatusContext.Provider value={status}>
-                    {children}
+                    <ValidationErrorProvider>
+                        {children}
+                    </ValidationErrorProvider>
                     <ConfirmExitModal />
                     <ChangeLossWatcher />
                 </StreamModifierStatusContext.Provider>
