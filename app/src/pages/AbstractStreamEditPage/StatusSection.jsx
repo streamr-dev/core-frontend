@@ -4,8 +4,16 @@ import { StatusIcon } from '@streamr/streamr-layout'
 import TOCPage from '$shared/components/TOCPage'
 import Label from '$ui/Label'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
+import useStreamModifier from '$shared/hooks/useStreamModifier'
+import useStream from '$shared/hooks/useStream'
 
-export default function StatusSection({ disabled, status = StatusIcon.INACTIVE, duration, onChange }) {
+export default function StatusSection({ disabled, status = StatusIcon.INACTIVE }) {
+    const { stage } = useStreamModifier()
+
+    const stream = useStream()
+
+    const { inactivityThresholdHours } = stream || {}
+
     return (
         <TOCPage.Section
             disabled={disabled}
@@ -30,8 +38,10 @@ export default function StatusSection({ disabled, status = StatusIcon.INACTIVE, 
                     day: 24,
                 }}
                 disabled={disabled}
-                onChange={onChange}
-                quantity={duration}
+                onChange={(value) => void stage({
+                    inactivityThresholdHours: value,
+                })}
+                quantity={inactivityThresholdHours}
             />
         </TOCPage.Section>
     )

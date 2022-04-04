@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useCallback, useReducer, useEffect, useRef } from 'react'
 import styled from 'styled-components'
-import { useClient } from 'streamr-client-react'
 import Button from '$shared/components/Button'
 import FieldList from '$shared/components/FieldList'
 import FieldItem from '$shared/components/FieldList/FieldItem'
@@ -15,13 +14,23 @@ import ValidationError from '$shared/errors/ValidationError'
 import InterruptionError from '$shared/errors/InterruptionError'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useStreamId from '$shared/hooks/useStreamId'
+import useStream from '$shared/hooks/useStream'
+import useStreamModifier from '$shared/hooks/useStreamModifier'
 import NewFieldEditor, { types } from './NewFieldEditor'
 import reducer, { Init, AddField, RearrangeFields, SetFieldName, SetFieldType, DeleteField, Invalidate } from './reducer'
 
-const ConfigSection = ({ config: configProp, disabled, onChange }) => {
+const fallbackConfig = {
+    fields: [],
+}
+
+const ConfigSection = ({ disabled }) => {
+    const stream = useStream()
+
+    const { config: configProp = fallbackConfig } = stream || {}
+
     const [{ cache, config }, dispatch] = useReducer(reducer, reducer(undefined, {
         type: Init,
-        payload: configProp,
+        payload: stream.config,
     }))
 
     useEffect(() => {
@@ -35,8 +44,6 @@ const ConfigSection = ({ config: configProp, disabled, onChange }) => {
 
     const [isDetectingFields, setIsDetectingFields] = useState(false)
 
-    const client = useClient()
-
     const itp = useInterrupt()
 
     const streamId = useStreamId()
@@ -47,11 +54,13 @@ const ConfigSection = ({ config: configProp, disabled, onChange }) => {
         configRef.current = config
     }, [config])
 
-    const onChangeRef = useRef(onChange)
+    const { stage } = useStreamModifier()
+
+    const stageRef = useRef(stage)
 
     useEffect(() => {
-        onChangeRef.current = onChange
-    }, [onChange])
+        stageRef.current = stage
+    }, [stage])
 
     useEffect(() => {
         if (!cache) {
@@ -59,15 +68,23 @@ const ConfigSection = ({ config: configProp, disabled, onChange }) => {
             return
         }
 
-        if (typeof onChangeRef.current === 'function') {
-            onChangeRef.current(configRef.current)
+        if (typeof stageRef.current === 'function') {
+            stageRef.current({
+                config: configRef.current,
+            })
         }
     }, [cache])
+
+    const streamRef = useRef(stream)
+
+    useEffect(() => {
+        streamRef.current = stream
+    }, [stream])
 
     async function onDetectFieldsClick() {
         const { requireUninterrupted } = itp('detect fields')
 
-        if (!streamId) {
+        if ('detectFields' in streamRef.current === false) {
             return
         }
 
@@ -75,11 +92,7 @@ const ConfigSection = ({ config: configProp, disabled, onChange }) => {
 
         try {
             try {
-                const stream = await client.getStream(streamId)
-
-                requireUninterrupted()
-
-                await stream.detectFields()
+                await streamRef.current.detectFields()
 
                 requireUninterrupted()
 
@@ -132,7 +145,7 @@ const ConfigSection = ({ config: configProp, disabled, onChange }) => {
         })
     }, [])
 
-    const canDetectFields = !!streamId && !disabled
+    const canDetectFields = 'detectFields' in stream && !disabled
 
     return (
         <TOCPage.Section

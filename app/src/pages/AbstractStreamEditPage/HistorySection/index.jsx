@@ -3,23 +3,27 @@ import styled from 'styled-components'
 import TOCPage from '$shared/components/TOCPage'
 import Label from '$ui/Label'
 import useStreamId from '$shared/hooks/useStreamId'
+import useStream from '$shared/hooks/useStream'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
+import useStreamModifier from '$shared/hooks/useStreamModifier'
 import StorageNodeList from './StorageNodeList'
 
-function UnstyledHistorySection({
-    className,
-    disabled = false,
-    duration,
-    onChange,
-    desc = (
-        <p>
-            Enable storage to retain historical data in one or more geographic locations of your choice.
-            {' '}
-            You can also choose how long to store your stream&apos;s historical data before auto-deletion.
-        </p>
-    ),
-}) {
+const defaultDesc = (
+    <p>
+        Enable storage to retain historical data in one or more geographic locations of your choice.
+        {' '}
+        You can also choose how long to store your stream&apos;s historical data before auto-deletion.
+    </p>
+)
+
+function UnstyledHistorySection({ className, disabled = false, desc = defaultDesc }) {
     const streamId = useStreamId()
+
+    const stream = useStream()
+
+    const { stage } = useStreamModifier()
+
+    const { storageDays } = stream || {}
 
     return (
         <TOCPage.Section
@@ -42,8 +46,10 @@ function UnstyledHistorySection({
                         week: 7,
                     }}
                     disabled={disabled}
-                    onChange={onChange}
-                    quantity={duration}
+                    onChange={(value) => void stage({
+                        storageDays: value,
+                    })}
+                    quantity={storageDays}
                 />
             </div>
         </TOCPage.Section>

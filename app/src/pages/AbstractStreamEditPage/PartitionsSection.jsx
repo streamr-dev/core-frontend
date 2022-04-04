@@ -2,6 +2,8 @@ import React, { useEffect, useReducer, useRef } from 'react'
 import styled from 'styled-components'
 import StatusLabel from '$shared/components/StatusLabel'
 import TOCPage from '$shared/components/TOCPage'
+import useStream from '$shared/hooks/useStream'
+import useStreamModifier from '$shared/hooks/useStreamModifier'
 import Label from '$ui/Label'
 import Numeric from '$ui/Numeric'
 
@@ -43,19 +45,19 @@ function reducer(state, { type, payload }) {
     return state
 }
 
-function UnstyledPartitionsSection({
-    className,
-    onChange,
-    disabled = false,
-    partitions = 1,
-    desc = (
-        <p>
-            Partitioning enables high-volume streams to scale beyond what a typical node can handle.
-            {' '}
-            If you&apos;re not sure if your stream needs partitions, leave it set to 1.
-        </p>
-    ),
-}) {
+const defaultDesc = (
+    <p>
+        Partitioning enables high-volume streams to scale beyond what a typical node can handle.
+        {' '}
+        If you&apos;re not sure if your stream needs partitions, leave it set to 1.
+    </p>
+)
+
+function UnstyledPartitionsSection({ className, disabled = false, desc = defaultDesc }) {
+    const stream = useStream()
+
+    const { partitions = 1 } = stream || {}
+
     const [state, dispatch] = useReducer(reducer, reducer(undefined, {
         type: Init,
         payload: partitions,
@@ -74,23 +76,27 @@ function UnstyledPartitionsSection({
         stateRef.current = state
     }, [state])
 
-    const onChangeRef = useRef(onChange)
+    const { stage } = useStreamModifier()
+
+    const stageRef = useRef(stage)
 
     useEffect(() => {
-        onChangeRef.current = onChange
-    }, [onChange])
+        stageRef.current = stage
+    }, [stage])
 
     const { cache } = state
 
     useEffect(() => {
-        if (!cache && typeof onChangeRef.current !== 'function') {
+        if (!cache && typeof stageRef.current !== 'function') {
             return
         }
 
         const { current: { sanitizedValue, initializer } } = stateRef
 
         if (sanitizedValue !== initializer) {
-            onChangeRef.current(sanitizedValue)
+            stageRef.current({
+                partitions: sanitizedValue,
+            })
         }
     }, [cache])
 

@@ -1,23 +1,32 @@
-import React, { Fragment, useMemo } from 'react'
+import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Button from '$shared/components/Button'
 import Spinner from '$shared/components/Spinner'
+import { useValidationErrorSetter, useValidationError } from '$shared/components/ValidationErrorProvider'
 import Label from '$ui/Label'
 import Text from '$ui/Text'
 import Select from '$ui/Select'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import getStreamPath from '$app/src/getters/getStreamPath'
+import useStreamId from '$shared/hooks/useStreamId'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
+import ValidationError from '$shared/errors/ValidationError'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
-import useStreamOwnerOptions from './useStreamOwnerOptions'
+import useClientAddress from '$shared/hooks/useClientAddress'
+import useStreamModifier from '$shared/hooks/useStreamModifier'
+import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
 import docsLinks from '$shared/../docsLinks'
 
-export function Viewer({ streamId, disabled, className }) {
+export const ENS_DOMAINS_URL = 'https://ens.domains'
+
+export function ReadonlyStreamId({ disabled, className }) {
+    const streamId = useStreamId()
+
     const { copy, isCopied } = useCopy(() => {
         Notification.push({
             title: 'Stream ID copied',
@@ -70,17 +79,7 @@ export function Viewer({ streamId, disabled, className }) {
     )
 }
 
-function noop() {}
-
-export function Creator({
-    className,
-    disabled,
-    domain = '',
-    onDomainChange = noop,
-    onPathnameChange = noop,
-    pathname = '',
-    validationError,
-}) {
+export function EditableStreamId({ className, disabled }) {
     const ownerGroups = useStreamOwnerOptions()
 
     const owners = useMemo(() => {
@@ -98,6 +97,91 @@ export function Creator({
     const isOwnersLoading = typeof owners === 'undefined'
 
     const { busy, clean } = useStreamModifierStatusContext()
+
+    const user = useClientAddress()
+
+    const [domain = '', setDomain] = useState()
+
+    useEffect(() => {
+        if (!domain) {
+            setDomain(user)
+        }
+    }, [user, domain])
+
+    const [pathname = '', setPathname] = useState()
+
+    const { stage } = useStreamModifier()
+
+    const stageRef = useRef(stage)
+
+    useEffect(() => {
+        stageRef.current = stage
+    }, [stage])
+
+    const setValidationError = useValidationErrorSetter()
+
+    const setValidationErrorRef = useRef(setValidationError)
+
+    useEffect(() => {
+        setValidationErrorRef.current = setValidationError
+    }, [setValidationError])
+
+    const { id: validationError } = useValidationError()
+
+    useEffect(() => {
+        const id = `${domain}/${pathname}`
+
+        if (typeof stageRef.current === 'function') {
+            stageRef.current({
+                id: undefined,
+            })
+        }
+
+        if (typeof setValidationErrorRef.current === 'function') {
+            setValidationErrorRef.current({
+                id: undefined,
+            })
+        }
+
+        if (!domain || /^\s*$/.test(pathname)) {
+            return
+        }
+
+        try {
+            if (/^\//.test(pathname)) {
+                throw new ValidationError('cannot start with a slash')
+            }
+
+            if (/\/{2,}/.test(pathname)) {
+                throw new ValidationError('cannot contain consecutive "/" characters')
+            }
+
+            if (/[^\w]$/.test(pathname)) {
+                throw new ValidationError('must end with an alpha-numeric character')
+            }
+
+            if (/[^\w.\-/_]/.test(pathname)) {
+                throw new ValidationError('may only contain alpha-numeric characters, underscores, and dashes')
+            }
+
+            if (typeof stageRef.current === 'function') {
+                stageRef.current({
+                    id,
+                })
+            }
+        } catch (e) {
+            if (e instanceof ValidationError) {
+                if (typeof setValidationErrorRef.current === 'function') {
+                    setValidationErrorRef.current({
+                        id: e.message,
+                    })
+                }
+                return
+            }
+
+            throw e
+        }
+    }, [domain, pathname])
 
     return (
         <StreamId className={className}>
@@ -118,7 +202,14 @@ export function Creator({
                     <Select
                         options={ownerGroups}
                         value={owners.find(({ value }) => value === domain)}
-                        onChange={({ value }) => void onDomainChange(value)}
+                        onChange={({ value }) => {
+                            if (value === ADD_ENS_DOMAIN_VALUE) {
+                                window.open(ENS_DOMAINS_URL, '_blank', 'noopener noreferrer')
+                                return
+                            }
+
+                            setDomain(value)
+                        }}
                         disabled={disabled}
                         name="domain"
                     />
@@ -149,12 +240,12 @@ export function Creator({
                     <Text
                         disabled={disabled}
                         invalid={!!validationError}
-                        onChange={({ target }) => void onPathnameChange(target.value)}
+                        onChange={({ target }) => void setPathname(target.value)}
                         placeholder="Enter a unique stream path name"
                         value={pathname}
                     />
                     {pathname && !disabled && (
-                        <ClearButton type="button" onClick={() => void onPathnameChange('')}>
+                        <ClearButton type="button" onClick={() => void setPathname('')}>
                             <SvgIcon name="clear" />
                         </ClearButton>
                     )}

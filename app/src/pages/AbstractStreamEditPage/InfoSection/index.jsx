@@ -1,14 +1,13 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import TOCPage from '$shared/components/TOCPage'
 import Text from '$ui/Text'
 import useStreamId from '$shared/hooks/useStreamId'
+import useStream from '$shared/hooks/useStream'
+import useStreamModifier from '$shared/hooks/useStreamModifier'
 import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
-import { Viewer, Creator } from './StreamId'
-import { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
-
-const ENS_DOMAINS_URL = 'https://ens.domains'
+import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
 
 function DefaultDescription() {
     const streamId = useStreamId()
@@ -33,33 +32,16 @@ function DefaultDescription() {
     )
 }
 
-function noop() {}
-
-function UnstyledInfoSection({
-    className,
-    desc = <DefaultDescription />,
-    description = '',
-    disabled = false,
-    domain,
-    hideDescription = false,
-    onDescriptionChange = noop,
-    onDomainChange: onDomainChangeProp,
-    onPathnameChange,
-    pathname,
-    validationError,
-}) {
+function UnstyledInfoSection({ className, desc = <DefaultDescription />, disabled = false, hideDescription = false }) {
     const streamId = useStreamId()
 
-    const onDomainChange = useCallback((newDomain) => {
-        if (newDomain === ADD_ENS_DOMAIN_VALUE) {
-            window.open(ENS_DOMAINS_URL, '_blank', 'noopener noreferrer')
-            return
-        }
+    const stream = useStream()
 
-        if (typeof onDomainChangeProp === 'function') {
-            onDomainChangeProp(newDomain)
-        }
-    }, [onDomainChangeProp])
+    const StreamIdComponent = streamId ? ReadonlyStreamId : EditableStreamId
+
+    const { description = '' } = stream || {}
+
+    const { stage } = useStreamModifier()
 
     return (
         <TOCPage.Section
@@ -69,21 +51,7 @@ function UnstyledInfoSection({
             <div className={className}>
                 {desc}
                 <Row>
-                    {streamId ? (
-                        <Viewer
-                            disabled={disabled}
-                            streamId={streamId}
-                        />
-                    ) : (
-                        <Creator
-                            disabled={disabled}
-                            domain={domain}
-                            onDomainChange={onDomainChange}
-                            onPathnameChange={onPathnameChange}
-                            pathname={pathname}
-                            validationError={validationError}
-                        />
-                    )}
+                    <StreamIdComponent disabled={disabled} />
                 </Row>
                 {!hideDescription && (
                     <Row>
@@ -96,7 +64,9 @@ function UnstyledInfoSection({
                             name="description"
                             placeholder="Add a brief description"
                             value={description}
-                            onChange={({ target }) => void onDescriptionChange(target.value || '')}
+                            onChange={({ target }) => void stage({
+                                description: target.value || '',
+                            })}
                             disabled={disabled}
                             autoComplete="off"
                         />
