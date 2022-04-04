@@ -11,6 +11,7 @@ import EditorNav from './EditorNav'
 import ProductName from './ProductName'
 import CoverImage from './CoverImage'
 import ProductDescription from './ProductDescription'
+import ProductChain from './ProductChain'
 import ProductStreams from './ProductStreams'
 import PriceSelector from './PriceSelector'
 import ProductDetails from './ProductDetails'
@@ -40,6 +41,7 @@ const Editor = ({ disabled }: Props) => {
                         <ProductName disabled={disabled} />
                         <CoverImage disabled={disabled} />
                         <ProductDescription disabled={disabled} />
+                        <ProductChain disabled={disabled} />
                         <ProductStreams disabled={disabled} />
                         <PriceSelector disabled={disabled} />
                         <ProductDetails disabled={disabled} />

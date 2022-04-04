@@ -133,6 +133,10 @@ const EditorNav = () => {
             heading: 'Description',
             status: getStatus('description'),
         }, {
+            id: 'chain',
+            heading: 'Chain',
+            status: getStatus('chain'),
+        }, {
             id: 'streams',
             heading: 'Streams',
             status: getStatus('streams'),
