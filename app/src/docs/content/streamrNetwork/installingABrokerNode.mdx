@@ -44,14 +44,14 @@ mkdir ~/.streamrDocker
 **Linux / macOS**
 
 ```
-docker run -it -v $(cd ~/.streamrDocker; pwd):/root/.streamr streamr/broker-node:latest bin/config-wizard
+docker run -it -v $(cd ~/.streamrDocker; pwd):/home/streamr/.streamr streamr/broker-node:latest bin/config-wizard
 ```
 
 **Windows PowerShell**
 
 ```
 cd ~/.streamrDocker
-docker run -it -v ${pwd}:/root/.streamr streamr/broker-node:latest bin/config-wizard
+docker run -it -v ${pwd}:/home/streamr/.streamr streamr/broker-node:latest bin/config-wizard
 ```
 
 - Generate or Import Ethereum private key: generate one unless you have one you want to use with the node
@@ -65,17 +65,19 @@ Towards the end, the wizard asks if you would like it to display your Ethereum p
 
 - Start the node with the below command:
 
+Note that the `--publish` argument for Docker command is not required and only provided for examples sake. Streamr Node is smart enough to find it's way to connect to another Streamr Node without punching holes in the firewall.
+
 **Linux / macOS**
 
 ```
-docker run -it -p 7170:7170 -p 7171:7171 -p 1883:1883 -v $(cd ~/.streamrDocker; pwd):/root/.streamr streamr/broker-node:latest
+docker run --interactive --tty --publish 7170:7170 --publish 7171:7171 --publish 1883:1883 --env NODE_ENV=production --volume $(cd ~/.streamrDocker && pwd):/home/streamr/.streamr streamr/broker-node:latest
 ```
 
 **Windows PowerShell**
 
 ```
 cd ~/.streamrDocker
-docker run -p 7170:7170 -p 7171:7171 -p 1883:1883 -it -v ${pwd}:/root/.streamr streamr/broker-node:latest
+docker run --interactive --tty --publish 7170:7170 --publish 7171:7171 --publish 1883:1883 --env NODE_ENV=production --volume ${pwd}:/home/streamr/.streamr streamr/broker-node:latest
 ```
 
 You should start to see logging similar to this:
