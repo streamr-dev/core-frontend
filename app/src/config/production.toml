@@ -3,6 +3,7 @@ daiTokenContractAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 dataUnionFactorySidechainCreationBlock = 14924666
 dataUnionPublishMemberLimit = 1
 marketplaceContractAddress = "0xdc8d23092b93f9bb7416f45dea36f55996f34867"
+marketplaceVisibleOnlyWithQueryParam = "takefive"
 platformOriginUrl = "https://streamr.network"
 streamrUrl = "https://streamr.network"
 uniswapAdaptorContractAddress = "0xBe99DB4Ea1964ea9A9E80de41517901Da6ef9307"
