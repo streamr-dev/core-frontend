@@ -34,6 +34,24 @@ const initialState = {
     originalStream: undefined,
 }
 
+function toParams({
+    id,
+    description,
+    config,
+    storageDays,
+    inactivityThresholdHours,
+    partitions,
+} = {}) {
+    return {
+        config: cloneDeep(config),
+        description,
+        id,
+        inactivityThresholdHours,
+        partitions,
+        storageDays,
+    }
+}
+
 function reducer(state, { type, payload }) {
     switch (type) {
         case Init:
@@ -51,7 +69,7 @@ function reducer(state, { type, payload }) {
             return ((modifiedStream) => ({
                 ...state,
                 modifiedStream,
-                clean: isEqual(state.originalStream, modifiedStream),
+                clean: isEqual(toParams(state.originalStream), toParams(modifiedStream)),
             }))({
                 ...state.modifiedStream,
                 ...payload,
