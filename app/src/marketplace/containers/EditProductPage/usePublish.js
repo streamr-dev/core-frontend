@@ -29,6 +29,7 @@ import ActionQueue from '$mp/utils/actionQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import { getPendingChanges, withPendingChanges } from './state'
 
 export const actionsTypes = {
@@ -238,7 +239,7 @@ export default function usePublish() {
                                 pricePerSecond: pricePerSecond || product.pricePerSecond,
                                 beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
                                 priceCurrency: priceCurrency || product.priceCurrency,
-                            }, isRedeploy)
+                            }, isRedeploy, getChainIdFromApiString(product.chain))
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()
@@ -293,7 +294,7 @@ export default function usePublish() {
                                 state: product.state,
                                 ownerAddress: '', // owner address is not needed when creating
                                 requiresWhitelist,
-                            })
+                            }, getChainIdFromApiString(product.chain))
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()

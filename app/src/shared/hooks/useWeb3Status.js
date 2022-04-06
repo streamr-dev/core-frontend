@@ -20,7 +20,7 @@ type Result = {
 
 type Web3Status = {
     requireWeb3: boolean,
-    requireNetwork?: $Values<typeof networks>,
+    requireNetwork?: number,
 }
 
 export default function useWeb3Status({ requireWeb3 = true, requireNetwork = networks.MAINNET }: Web3Status = {}): Result {

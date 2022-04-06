@@ -34,9 +34,8 @@ export const productStates = {
 }
 
 export const networks = {
-    MAINNET: 'mainnet',
-    DATAUNIONS: 'dataunionsChain',
-    STREAMS: 'streamsChain',
+    MAINNET: 1,
+    STREAMS: 137,
 }
 
 export const ethereumNetworks = {

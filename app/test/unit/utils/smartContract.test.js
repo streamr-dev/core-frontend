@@ -215,7 +215,7 @@ describe('smartContract utils', () => {
                 send: () => fakeEmitter,
                 estimateGas: () => Promise.resolve(0),
             }, {
-                network: networks.DATAUNIONS,
+                network: 8995,
             })
                 .onError((e) => {
                     expect(e.requiredNetwork).toBe('8995')

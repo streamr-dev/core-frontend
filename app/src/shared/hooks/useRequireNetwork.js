@@ -1,3 +1,5 @@
+// @flow
+
 import { useMemo, useCallback, useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
@@ -8,14 +10,14 @@ import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
 
-const useRequireNetwork = (requiredNetwork, check = true, monitorNetworkChange = true) => {
+const useRequireNetwork = (requiredNetwork: number, check: boolean = true, monitorNetworkChange: boolean = true) => {
     const { api: switchNetworkDialog } = useModal('switchNetwork')
     const { isPending, wrap } = usePending('network.CHECK')
     const [isCorrect, setIsCorrect] = useState(undefined)
     const isMounted = useIsMounted()
     const currentNetworkId = useSelector(selectEthereumNetworkId)
 
-    const validateNetwork = useCallback((rethrow = false) => (
+    const validateNetwork = useCallback((rethrow: boolean = false) => (
         wrap(async () => {
             try {
                 await validateWeb3({

@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import ChainSelector from '$shared/components/ChainSelector'
 import NetworkIcon from '$shared/components/NetworkIcon'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { getChainIdFromApiString, getApiStringFromChainId } from '$shared/utils/chains'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 
 const Section = styled.section`
@@ -30,31 +31,6 @@ const chainOptions = [{
     icon: <NetworkIcon chainId={137} />,
 }]
 
-// Match case with API-defined enum
-const apiChainMapping = {
-    ETHEREUM: 1,
-    XDAI: 100,
-    POLYGON: 137,
-    BSC: 56,
-    AVALANCHE: 43114,
-}
-
-const mapFromApi = (name: string) => {
-    const found = Object.entries(apiChainMapping).find((val) => val[0].toLowerCase() === name.toLowerCase())
-    if (found) {
-        return found[1]
-    }
-    throw Error(`Unknown chain name ${name}`)
-}
-
-const mapToApi = (id: number) => {
-    const found = Object.entries(apiChainMapping).find((val) => val[1] === id)
-    if (found) {
-        return found[0]
-    }
-    throw Error(`Unknown chain id ${id}`)
-}
-
 const ProductChain = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const { updateChain } = useEditableProductActions()
@@ -68,8 +44,8 @@ const ProductChain = ({ disabled }: Props) => {
                 </p>
                 <ChainSelector
                     chains={chainOptions}
-                    selectedChainId={mapFromApi(product.chain)}
-                    onChainSelected={(nextChainId) => updateChain(mapToApi(nextChainId))}
+                    selectedChainId={getChainIdFromApiString(product.chain)}
+                    onChainSelected={(nextChainId) => updateChain(getApiStringFromChainId(nextChainId))}
                     disabled={disabled}
                 />
             </div>

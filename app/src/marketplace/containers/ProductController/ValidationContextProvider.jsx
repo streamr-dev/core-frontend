@@ -39,6 +39,7 @@ const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 const validationErrors = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
+    chain: 'No chain selected',
     category: 'Product category cannot be empty',
     imageUrl: 'Product must have a cover image',
     streams: 'No streams selected',
