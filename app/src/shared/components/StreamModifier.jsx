@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect, useReducer, useRef } from 'react'
+import React, { useMemo, useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useClient } from 'streamr-client-react'
 import cloneDeep from 'lodash/cloneDeep'
@@ -14,6 +14,10 @@ import useInterrupt from '$shared/hooks/useInterrupt'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import getClientAddress from '$app/src/getters/getClientAddress'
+import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
+import useNativeTokenName from '$shared/hooks/useNativeTokenName'
+import InterruptionError from '$shared/errors/InterruptionError'
+import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
 import routes from '$routes'
 import DuplicateError from '../errors/DuplicateError'
 
@@ -128,6 +132,8 @@ export default function StreamModifier({ children, onValidate }) {
         onValidateRef.current = onValidate
     }, [onValidate])
 
+    const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
+
     const commit = useCallback(async () => {
         dispatch({
             type: SetBusy,
@@ -141,52 +147,64 @@ export default function StreamModifier({ children, onValidate }) {
         const { current: validate } = onValidateRef
 
         try {
-            if (typeof validate === 'function') {
-                validate(params)
-            }
-            // @TODO await validateNetwork()
-
-            const clientAddress = await getClientAddress(client)
-
-            requireUninterrupted()
-
-            await requirePositiveBalance(clientAddress)
-
-            requireUninterrupted()
-
-            const stream = await (async () => {
-                if (!originalStream.id) {
-                    try {
-                        return client.createStream(params)
-                    } catch (e) {
-                        if (e.code === 'DUPLICATE_NOT_ALLOWED') {
-                            throw new DuplicateError()
-                        }
-
-                        throw e
-                    }
+            try {
+                if (typeof validate === 'function') {
+                    validate(params)
                 }
+                // @TODO await validateNetwork()
 
-                await originalStream.update(params)
+                const clientAddress = await getClientAddress(client)
 
-                return originalStream
-            })()
+                requireUninterrupted()
 
-            requireUninterrupted()
+                await requirePositiveBalance(clientAddress)
 
-            dispatch({
-                type: Init,
-                payload: stream,
-            })
+                requireUninterrupted()
 
-            return stream
-        } finally {
-            requireUninterrupted()
+                const stream = await (async () => {
+                    if (!originalStream.id) {
+                        try {
+                            return client.createStream(params)
+                        } catch (e) {
+                            if (e.code === 'DUPLICATE_NOT_ALLOWED') {
+                                throw new DuplicateError()
+                            }
 
-            dispatch({
-                type: SetBusy,
-                payload: false,
-            })
+                            throw e
+                        }
+                    }
+
+                    await originalStream.update(params)
+
+                    return originalStream
+                })()
+
+                requireUninterrupted()
+
+                dispatch({
+                    type: Init,
+                    payload: stream,
+                })
+
+                return stream
+            } catch (e) {
+                requireUninterrupted()
+
+                throw e
+            }
+        } catch (e) {
+            if (e instanceof InsufficientFundsError) {
+                setShowGetCryptoDialog(true)
+            }
+
+            if (!(e instanceof InterruptionError)) {
+                dispatch({
+                    type: SetBusy,
+                    payload: false,
+                })
+            }
+
+            throw e
         }
     }, [itp, client, originalStream])
 
@@ -237,6 +255,8 @@ export default function StreamModifier({ children, onValidate }) {
         clean,
     }), [busy, clean])
 
+    const nativeTokenName = useNativeTokenName()
+
     useEffect(() => () => {
         itp().interruptAll()
     }, [itp])
@@ -250,6 +270,12 @@ export default function StreamModifier({ children, onValidate }) {
                     </ValidationErrorProvider>
                     <ConfirmExitModal />
                     <ChangeLossWatcher />
+                    {showGetCryptoDialog && (
+                        <GetCryptoDialog
+                            onCancel={() => setShowGetCryptoDialog(false)}
+                            nativeTokenName={nativeTokenName}
+                        />
+                    )}
                 </StreamModifierStatusContext.Provider>
             </StreamContext.Provider>
         </StreamModifierContext.Provider>
