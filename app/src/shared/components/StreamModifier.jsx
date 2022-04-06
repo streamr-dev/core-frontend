@@ -19,8 +19,6 @@ import DuplicateError from '../errors/DuplicateError'
 
 const Init = 'init'
 
-const Reset = 'clean'
-
 const SetBusy = 'set busy'
 
 const Modify = 'modify'
@@ -39,12 +37,6 @@ function reducer(state, { type, payload }) {
                 ...initialState,
                 originalStream: payload,
                 modifiedStream: cloneDeep(payload),
-            }
-        case Reset:
-            return {
-                ...initialState,
-                originalStream: state.originalStream,
-                modifiedStream: cloneDeep(state.originalStream),
             }
         case SetBusy:
             return {
@@ -210,9 +202,6 @@ export default function StreamModifier({ children, onValidate }) {
 
     const value = useMemo(() => ({
         commit,
-        discard: () => void dispatch({
-            type: Reset,
-        }),
         stage: (change) => void dispatch({
             type: Modify,
             payload: change,

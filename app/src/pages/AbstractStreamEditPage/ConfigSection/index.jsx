@@ -30,7 +30,7 @@ const ConfigSection = ({ disabled }) => {
 
     const [{ cache, config }, dispatch] = useReducer(reducer, reducer(undefined, {
         type: Init,
-        payload: stream.config,
+        payload: configProp,
     }))
 
     useEffect(() => {
@@ -64,7 +64,7 @@ const ConfigSection = ({ disabled }) => {
 
     useEffect(() => {
         if (!cache) {
-            // Skip negative cache (initial pass).
+            // Skip 0-cache (initial pass).
             return
         }
 
@@ -145,7 +145,7 @@ const ConfigSection = ({ disabled }) => {
         })
     }, [])
 
-    const canDetectFields = 'detectFields' in stream && !disabled
+    const canDetectFields = stream && 'detectFields' in stream && !disabled
 
     return (
         <TOCPage.Section
