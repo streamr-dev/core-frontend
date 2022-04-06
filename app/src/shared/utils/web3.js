@@ -2,24 +2,21 @@
 
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getWeb3 from '$utils/web3/getWeb3'
-import getConfig from '$shared/web3/config'
 import { networks } from '$shared/utils/constants'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import type { Hash } from '$shared/flowtype/web3-types'
 import getChainId from '$utils/web3/getChainId'
 
 type CheckNetworkParams = {
-    network?: $Values<typeof networks>,
+    network?: number,
 }
 
 export const checkEthereumNetworkIsCorrect = async ({ network = networks.MAINNET }: CheckNetworkParams = {}): Promise<void> => {
     const currentChainId = await getChainId()
 
-    const config = getConfig()
-    const requiredChainId = (config[network] || {}).chainId
-
-    if (!currentChainId || requiredChainId.toString() !== currentChainId.toString()) {
-        throw new WrongNetworkSelectedError(requiredChainId, currentChainId)
+    if (currentChainId == null || network.toString() !== currentChainId.toString()) {
+        // $FlowFixMe: currentChainId: "Promise is incompatible with number", nope
+        throw new WrongNetworkSelectedError(network, currentChainId)
     }
 }
 

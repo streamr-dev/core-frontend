@@ -65,7 +65,7 @@ export const call = (method: Callable): SmartContractCall<*> => method.call()
 export const send = (method: Sendable, options?: {
     gas?: number,
     value?: NumberString | BN,
-    network?: $Values<typeof networks>,
+    network?: number,
 }): SmartContractTransaction => {
     const emitter = new EventEmitter()
     // NOTE: looks like there's double handling of errors happening here

@@ -21,6 +21,7 @@ import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletD
 import usePending from '$shared/hooks/usePending'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import usePublish, { publishModes } from './usePublish'
 
 type Props = {
@@ -46,6 +47,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [web3Actions, setWeb3Actions] = useState(new Set([]))
     const { web3Error, checkingWeb3, account } = useWeb3Status({
         requireWeb3,
+        requireNetwork: getChainIdFromApiString(product.chain),
     })
     const { isPending, start: startPending, end: endPending } = usePending('product.PUBLISH_DIALOG_LOAD')
     const productId = product.id
@@ -93,7 +95,10 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                     setCurrentAction(id)
                 }
             })
-            .subscribe('status', (id, nextStatus) => {
+            .subscribe('status', (id, nextStatus, error) => {
+                if (error) {
+                    console.error('Error', error)
+                }
                 if (isMounted()) {
                     setStatus((prevStatus) => ({
                         ...prevStatus,

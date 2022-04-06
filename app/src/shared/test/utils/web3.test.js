@@ -1,7 +1,6 @@
 import Web3 from 'web3'
 import * as all from '$shared/utils/web3'
 import * as getConfig from '$shared/web3/config'
-import { networks } from '$shared/utils/constants'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getChainId from '$utils/web3/getChainId'
 
@@ -78,7 +77,7 @@ describe('web3 utils', () => {
 
             await all.checkEthereumNetworkIsCorrect({
                 web3,
-                network: networks.DATAUNIONS,
+                network: 8995,
             })
         })
 
@@ -97,7 +96,7 @@ describe('web3 utils', () => {
             try {
                 await all.checkEthereumNetworkIsCorrect({
                     web3,
-                    network: networks.DATAUNIONS,
+                    network: 8995,
                 })
             } catch (e) {
                 done()

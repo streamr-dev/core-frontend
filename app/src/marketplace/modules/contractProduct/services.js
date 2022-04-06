@@ -94,7 +94,7 @@ export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, 
     return subscriptions
 }
 
-const createContractProductWithoutWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
+const createContractProductWithoutWhitelist = (product: SmartContractProduct, networkChainId: number): SmartContractTransaction => {
     const {
         id,
         name,
@@ -115,10 +115,12 @@ const createContractProductWithoutWhitelist = (product: SmartContractProduct): S
         currencyIndex,
         minimumSubscriptionInSeconds,
     )
-    return send(methodToSend)
+    return send(methodToSend, {
+        network: networkChainId,
+    })
 }
 
-const createContractProductWithWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
+const createContractProductWithWhitelist = (product: SmartContractProduct, networkChainId: number): SmartContractTransaction => {
     const {
         id,
         name,
@@ -139,17 +141,19 @@ const createContractProductWithWhitelist = (product: SmartContractProduct): Smar
         currencyIndex,
         minimumSubscriptionInSeconds,
     )
-    return send(methodToSend)
+    return send(methodToSend, {
+        network: networkChainId,
+    })
 }
 
-export const createContractProduct = (product: SmartContractProduct): SmartContractTransaction => {
+export const createContractProduct = (product: SmartContractProduct, networkChainId: number): SmartContractTransaction => {
     if (product.requiresWhitelist) {
-        return createContractProductWithWhitelist(product)
+        return createContractProductWithWhitelist(product, networkChainId)
     }
-    return createContractProductWithoutWhitelist(product)
+    return createContractProductWithoutWhitelist(product, networkChainId)
 }
 
-export const updateContractProduct = (product: SmartContractProduct, redeploy: boolean = false): SmartContractTransaction => {
+export const updateContractProduct = (product: SmartContractProduct, redeploy: boolean = false, networkChainId: number): SmartContractTransaction => {
     const {
         id,
         name,
@@ -171,7 +175,9 @@ export const updateContractProduct = (product: SmartContractProduct, redeploy: b
         minimumSubscriptionInSeconds,
         redeploy,
     )
-    return send(methodToSend)
+    return send(methodToSend, {
+        network: networkChainId,
+    })
 }
 
 export const deleteProduct = (id: ProductId): SmartContractTransaction => (
