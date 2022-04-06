@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, useEffect, useReducer, useRef } from 'react'
+import { useHistory } from 'react-router-dom'
 import { useClient } from 'streamr-client-react'
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
@@ -13,6 +14,7 @@ import useInterrupt from '$shared/hooks/useInterrupt'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import getClientAddress from '$app/src/getters/getClientAddress'
+import routes from '$routes'
 import DuplicateError from '../errors/DuplicateError'
 
 const Init = 'init'
@@ -97,11 +99,11 @@ function ChangeLossWatcher() {
 }
 
 export default function StreamModifier({ children, onValidate }) {
-    const originalStream = useStream()
+    const source = useStream()
 
-    const [{ modifiedStream, clean, busy }, dispatch] = useReducer(reducer, reducer(initialState, {
+    const [{ modifiedStream, originalStream, clean, busy }, dispatch] = useReducer(reducer, reducer(initialState, {
         type: Init,
-        payload: originalStream,
+        payload: source,
     }))
 
     const firstRunRef = useRef(true)
@@ -114,9 +116,9 @@ export default function StreamModifier({ children, onValidate }) {
 
         dispatch({
             type: Init,
-            payload: originalStream,
+            payload: source,
         })
-    }, [originalStream])
+    }, [source])
 
     const modifiedStreamRef = useRef(modifiedStream)
 
@@ -160,26 +162,32 @@ export default function StreamModifier({ children, onValidate }) {
 
             requireUninterrupted()
 
-            const newStream = await (() => {
-                try {
-                    return client.createStream(params)
-                } catch (e) {
-                    if (e.code === 'DUPLICATE_NOT_ALLOWED') {
-                        throw new DuplicateError()
-                    }
+            const stream = await (async () => {
+                if (!originalStream.id) {
+                    try {
+                        return client.createStream(params)
+                    } catch (e) {
+                        if (e.code === 'DUPLICATE_NOT_ALLOWED') {
+                            throw new DuplicateError()
+                        }
 
-                    throw e
+                        throw e
+                    }
                 }
+
+                await originalStream.update(params)
+
+                return originalStream
             })()
 
             requireUninterrupted()
 
             dispatch({
                 type: Init,
-                payload: newStream,
+                payload: stream,
             })
 
-            return newStream
+            return stream
         } finally {
             requireUninterrupted()
 
@@ -188,11 +196,17 @@ export default function StreamModifier({ children, onValidate }) {
                 payload: false,
             })
         }
-    }, [itp, client])
+    }, [itp, client, originalStream])
 
-    useEffect(() => () => {
-        itp().interruptAll()
-    }, [itp])
+    const cleanRef = useRef(clean)
+
+    useEffect(() => {
+        cleanRef.current = clean
+    }, [clean])
+
+    const { api: confirmExitDialog } = useModal('confirmExit')
+
+    const history = useHistory()
 
     const value = useMemo(() => ({
         commit,
@@ -203,12 +217,40 @@ export default function StreamModifier({ children, onValidate }) {
             type: Modify,
             payload: change,
         }),
-    }), [commit])
+        goBack: () => {
+            const { requireUninterrupted } = itp('navigate')
+
+            if (cleanRef.current) {
+                history.push(routes.streams.index())
+                return
+            }
+
+            async function fn() {
+                try {
+                    const { canProceed } = await confirmExitDialog.open()
+
+                    requireUninterrupted()
+
+                    if (canProceed) {
+                        history.push(routes.streams.index())
+                    }
+                } catch (e) {
+                    // Noop.
+                }
+            }
+
+            fn()
+        },
+    }), [itp, commit, history, confirmExitDialog])
 
     const status = useMemo(() => ({
         busy,
         clean,
     }), [busy, clean])
+
+    useEffect(() => () => {
+        itp().interruptAll()
+    }, [itp])
 
     return (
         <StreamModifierContext.Provider value={value}>

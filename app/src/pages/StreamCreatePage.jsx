@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState, useEffect, useReducer } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import StreamContext from '$shared/contexts/StreamContext'
 import BackButton from '$shared/components/BackButton'
@@ -7,7 +7,6 @@ import Layout from '$shared/components/Layout/Core'
 import StreamModifier from '$shared/components/StreamModifier'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
-import useModal from '$shared/hooks/useModal'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
@@ -36,9 +35,7 @@ function StreamCreatePage() {
 
     const history = useHistory()
 
-    const { api: confirmExitDialog } = useModal('confirmExit')
-
-    const { commit } = useStreamModifier()
+    const { commit, goBack } = useStreamModifier()
 
     const { busy, clean } = useStreamModifierStatusContext()
 
@@ -51,31 +48,6 @@ function StreamCreatePage() {
     useEffect(() => () => {
         itp().interruptAll()
     }, [itp])
-
-    const onBack = useCallback(() => {
-        const { requireUninterrupted } = itp('go back')
-
-        if (clean) {
-            history.push(routes.streams.index())
-            return
-        }
-
-        async function fn() {
-            try {
-                const { canProceed } = await confirmExitDialog.open()
-
-                requireUninterrupted()
-
-                if (canProceed) {
-                    history.push(routes.streams.index())
-                }
-            } catch (e) {
-                // Noop.
-            }
-        }
-
-        fn()
-    }, [itp, history, clean, confirmExitDialog])
 
     async function save() {
         const { requireUninterrupted } = itp('save')
@@ -158,14 +130,14 @@ function StreamCreatePage() {
                         altMobileLayout
                         loading={busy}
                         left={(
-                            <BackButton onBack={onBack} />
+                            <BackButton onBack={goBack} />
                         )}
                         actions={{
                             cancel: {
                                 kind: 'link',
                                 title: 'Cancel',
                                 outline: true,
-                                onClick: () => void onBack(),
+                                onClick: () => void goBack(),
                                 type: 'button',
                             },
                             saveChanges: {
