@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback, useEffect, useReducer, useRef, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useClient } from 'streamr-client-react'
-import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import useModal from '$shared/hooks/useModal'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
@@ -30,8 +29,9 @@ const Modify = 'modify'
 const initialState = {
     busy: false,
     clean: true,
-    modifiedStream: undefined,
-    originalStream: undefined,
+    params: {},
+    paramsModified: {},
+    stream: undefined,
 }
 
 function toParams({
@@ -43,7 +43,7 @@ function toParams({
     partitions,
 } = {}) {
     return {
-        config: cloneDeep(config),
+        config,
         description,
         id,
         inactivityThresholdHours,
@@ -57,21 +57,22 @@ function reducer(state, { type, payload }) {
         case Init:
             return {
                 ...initialState,
-                originalStream: payload,
-                modifiedStream: cloneDeep(payload),
+                params: toParams(payload),
+                paramsModified: toParams(payload),
+                stream: payload,
             }
         case SetBusy:
             return {
                 ...state,
-                busy: Boolean(payload),
+                busy: !!payload,
             }
         case Modify:
-            return ((modifiedStream) => ({
+            return ((paramsModified) => ({
                 ...state,
-                modifiedStream,
-                clean: isEqual(toParams(state.originalStream), toParams(modifiedStream)),
+                paramsModified,
+                clean: isEqual(state.params, paramsModified),
             }))({
-                ...state.modifiedStream,
+                ...state.paramsModified,
                 ...payload,
             })
         default:
@@ -115,7 +116,7 @@ function ChangeLossWatcher() {
 export default function StreamModifier({ children, onValidate }) {
     const source = useStream()
 
-    const [{ modifiedStream, originalStream, clean, busy }, dispatch] = useReducer(reducer, reducer(initialState, {
+    const [{ paramsModified, stream, clean, busy }, dispatch] = useReducer(reducer, reducer(initialState, {
         type: Init,
         payload: source,
     }))
@@ -134,11 +135,11 @@ export default function StreamModifier({ children, onValidate }) {
         })
     }, [source])
 
-    const modifiedStreamRef = useRef(modifiedStream)
+    const paramsModifiedRef = useRef(paramsModified)
 
     useEffect(() => {
-        modifiedStreamRef.current = modifiedStream
-    }, [modifiedStream])
+        paramsModifiedRef.current = paramsModified
+    }, [paramsModified])
 
     const itp = useInterrupt()
 
@@ -158,7 +159,7 @@ export default function StreamModifier({ children, onValidate }) {
             payload: true,
         })
 
-        const { current: params } = modifiedStreamRef
+        const { current: newParams } = paramsModifiedRef
 
         const { requireUninterrupted } = itp()
 
@@ -167,7 +168,7 @@ export default function StreamModifier({ children, onValidate }) {
         try {
             try {
                 if (typeof validate === 'function') {
-                    validate(params)
+                    validate(newParams)
                 }
                 // @TODO await validateNetwork()
 
@@ -179,10 +180,10 @@ export default function StreamModifier({ children, onValidate }) {
 
                 requireUninterrupted()
 
-                const stream = await (async () => {
-                    if (!originalStream.id) {
+                const innerStream = await (async () => {
+                    if (!stream.id) {
                         try {
-                            return client.createStream(params)
+                            return client.createStream(newParams)
                         } catch (e) {
                             if (e.code === 'DUPLICATE_NOT_ALLOWED') {
                                 throw new DuplicateError()
@@ -192,19 +193,19 @@ export default function StreamModifier({ children, onValidate }) {
                         }
                     }
 
-                    await originalStream.update(params)
+                    await stream.update(newParams)
 
-                    return originalStream
+                    return stream
                 })()
 
                 requireUninterrupted()
 
                 dispatch({
                     type: Init,
-                    payload: stream,
+                    payload: innerStream,
                 })
 
-                return stream
+                return innerStream
             } catch (e) {
                 requireUninterrupted()
 
@@ -224,7 +225,7 @@ export default function StreamModifier({ children, onValidate }) {
 
             throw e
         }
-    }, [itp, client, originalStream])
+    }, [itp, client, stream])
 
     const cleanRef = useRef(clean)
 
@@ -281,7 +282,7 @@ export default function StreamModifier({ children, onValidate }) {
 
     return (
         <StreamModifierContext.Provider value={value}>
-            <StreamContext.Provider value={modifiedStream}>
+            <StreamContext.Provider value={paramsModified}>
                 <StreamModifierStatusContext.Provider value={status}>
                     <ValidationErrorProvider>
                         {children}

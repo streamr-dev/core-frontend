@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import BackButton from '$shared/components/BackButton'
-import Display from '$shared/components/Display'
 import Layout from '$shared/components/Layout/Core'
 import TOCPage from '$shared/components/TOCPage'
 import Toolbar from '$shared/components/Toolbar'
@@ -17,16 +16,10 @@ import { NotificationIcon } from '$shared/utils/constants'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import { useValidationErrorSetter } from '$shared/components/ValidationErrorProvider'
+import useStreamId from '$shared/hooks/useStreamId'
 import routes from '$routes'
-import InfoSection from './AbstractStreamEditPage/InfoSection'
-import CodeSnippetsSection from './AbstractStreamEditPage/CodeSnippetsSection'
-import StatusSection from './AbstractStreamEditPage/StatusSection'
-import PreviewSection from './AbstractStreamEditPage/PreviewSection'
-import HistorySection from './AbstractStreamEditPage/HistorySection'
-import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
-import ConfigSection from './AbstractStreamEditPage/ConfigSection'
 
-export default function StreamPage() {
+export default function StreamPage({ children }) {
     const history = useHistory()
 
     const { commit, goBack } = useStreamModifier()
@@ -41,6 +34,8 @@ export default function StreamPage() {
         itp().interruptAll()
     }, [itp])
 
+    const isNew = !useStreamId()
+
     async function save() {
         const { requireUninterrupted } = itp('save')
 
@@ -50,13 +45,21 @@ export default function StreamPage() {
 
                 requireUninterrupted()
 
+                const [notification, action] = isNew ? [
+                    'Stream created successfully',
+                    actionTypes.UPDATE,
+                ] : [
+                    'Stream updated successfully',
+                    actionTypes.UPDATE,
+                ]
+
                 Notification.push({
-                    title: 'Stream created successfully',
+                    title: notification,
                     icon: NotificationIcon.CHECKMARK,
                 })
 
                 Activity.push({
-                    action: actionTypes.CREATE,
+                    action,
                     resourceId: id,
                     resourceType: resourceTypes.STREAM,
                 })
@@ -70,7 +73,7 @@ export default function StreamPage() {
 
                 history.push(routes.streams.show({
                     id,
-                    newStream: 1,
+                    newStream: isNew ? 1 : undefined,
                 }))
             } catch (e) {
                 requireUninterrupted()
@@ -117,6 +120,14 @@ export default function StreamPage() {
         }
     }
 
+    const title = isNew
+        ? 'Name your Stream'
+        : 'Set up your stream'
+
+    const submitButtonLabel = isNew
+        ? 'Create stream'
+        : 'Save & exit'
+
     return (
         <form
             onSubmit={(e) => {
@@ -144,27 +155,15 @@ export default function StreamPage() {
                             saveChanges: {
                                 disabled: clean || busy,
                                 kind: 'primary',
-                                title: 'Create stream',
+                                title: submitButtonLabel,
                                 type: 'submit',
                             },
                         }}
                     />
                 )}
             >
-                <TOCPage title="Name your Stream">
-                    <InfoSection disabled={busy} />
-                    <CodeSnippetsSection disabled />
-                    <Display $mobile="none" $desktop>
-                        <ConfigSection disabled={busy} />
-                    </Display>
-                    <Display $mobile="none" $desktop>
-                        <StatusSection disabled={busy} status="inactive" />
-                    </Display>
-                    <PreviewSection disabled subscribe={false} />
-                    <Display $mobile="none" $desktop>
-                        <HistorySection desc={null} disabled={busy} />
-                    </Display>
-                    <PartitionsSection disabled={busy} />
+                <TOCPage title={title}>
+                    {children}
                 </TOCPage>
                 <SwitchNetworkModal />
             </Layout>
