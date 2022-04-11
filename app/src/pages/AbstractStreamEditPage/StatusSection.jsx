@@ -1,4 +1,5 @@
 import React from 'react'
+import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import { StatusIcon } from '@streamr/streamr-layout'
 import TOCPage from '$shared/components/TOCPage'
@@ -6,8 +7,13 @@ import Label from '$ui/Label'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStream from '$shared/hooks/useStream'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 
-export default function StatusSection({ disabled, status = StatusIcon.INACTIVE }) {
+export default function StatusSection({ disabled: disabledProp, status = StatusIcon.INACTIVE }) {
+    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+
+    const disabled = disabledProp || !canEdit
+
     const { stage } = useStreamModifier()
 
     const stream = useStream()

@@ -1,4 +1,5 @@
 import React from 'react'
+import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import TOCPage from '$shared/components/TOCPage'
 import Text from '$ui/Text'
@@ -7,6 +8,7 @@ import useStream from '$shared/hooks/useStream'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
 
 function DefaultDescription() {
@@ -32,7 +34,7 @@ function DefaultDescription() {
     )
 }
 
-function UnstyledInfoSection({ className, desc = <DefaultDescription />, disabled = false, hideDescription = false }) {
+function UnstyledInfoSection({ className, desc = <DefaultDescription />, disabled: disabledProp = false, hideDescription = false }) {
     const streamId = useStreamId()
 
     const stream = useStream()
@@ -42,6 +44,10 @@ function UnstyledInfoSection({ className, desc = <DefaultDescription />, disable
     const { description = '' } = stream || {}
 
     const { stage } = useStreamModifier()
+
+    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+
+    const disabled = disabledProp || !canEdit
 
     return (
         <TOCPage.Section

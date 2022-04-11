@@ -1,4 +1,5 @@
 import React from 'react'
+import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import TOCPage from '$shared/components/TOCPage'
 import Label from '$ui/Label'
@@ -6,6 +7,7 @@ import useStreamId from '$shared/hooks/useStreamId'
 import useStream from '$shared/hooks/useStream'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import StorageNodeList from './StorageNodeList'
 
 const defaultDesc = (
@@ -16,7 +18,11 @@ const defaultDesc = (
     </p>
 )
 
-function UnstyledHistorySection({ className, disabled = false, desc = defaultDesc }) {
+function UnstyledHistorySection({ className, disabled: disabledProp = false, desc = defaultDesc }) {
+    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+
+    const disabled = disabledProp || !canEdit
+
     const streamId = useStreamId()
 
     const stream = useStream()

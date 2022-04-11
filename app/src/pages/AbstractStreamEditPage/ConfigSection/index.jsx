@@ -1,4 +1,5 @@
 import React, { Fragment, useState, useCallback, useReducer, useEffect, useRef } from 'react'
+import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import Button from '$shared/components/Button'
 import FieldList from '$shared/components/FieldList'
@@ -16,6 +17,7 @@ import useInterrupt from '$shared/hooks/useInterrupt'
 import useStreamId from '$shared/hooks/useStreamId'
 import useStream from '$shared/hooks/useStream'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import NewFieldEditor, { types } from './NewFieldEditor'
 import reducer, { Init, AddField, RearrangeFields, SetFieldName, SetFieldType, DeleteField, Invalidate } from './reducer'
 
@@ -23,7 +25,11 @@ const fallbackConfig = {
     fields: [],
 }
 
-const ConfigSection = ({ disabled }) => {
+const ConfigSection = ({ disabled: disabledProp }) => {
+    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+
+    const disabled = disabledProp || !canEdit
+
     const stream = useStream()
 
     const { config: configProp = fallbackConfig } = stream || {}

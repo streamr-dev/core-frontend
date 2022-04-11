@@ -1,6 +1,8 @@
 import React, { useRef } from 'react'
+import { StreamPermission } from 'streamr-client'
 import StreamContext from '$shared/contexts/StreamContext'
 import StreamModifier from '$shared/components/StreamModifier'
+import StreamPermissionsContext from '$shared/contexts/StreamPermissionsContext'
 import Display from '$shared/components/Display'
 import ValidationError from '$shared/errors/ValidationError'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
@@ -33,51 +35,57 @@ export default function StreamCreatePage() {
 
     const { busy } = useStreamModifierStatusContext()
 
+    const { current: permissions } = useRef({
+        [StreamPermission.EDIT]: true,
+    })
+
     return (
         <StreamContext.Provider value={stream}>
-            <StreamModifier onValidate={onValidate}>
-                <StreamPage>
-                    <InfoSection
-                        disabled={busy}
-                    />
-                    <CodeSnippetsSection
-                        disabled
-                    />
-                    <Display
-                        $mobile="none"
-                        $desktop
-                    >
-                        <ConfigSection
+            <StreamPermissionsContext.Provider value={permissions}>
+                <StreamModifier onValidate={onValidate}>
+                    <StreamPage>
+                        <InfoSection
                             disabled={busy}
                         />
-                    </Display>
-                    <Display
-                        $mobile="none"
-                        $desktop
-                    >
-                        <StatusSection
-                            disabled={busy}
-                            status="inactive"
+                        <CodeSnippetsSection
+                            disabled
                         />
-                    </Display>
-                    <PreviewSection
-                        disabled
-                        subscribe={false}
-                    />
-                    <Display
-                        $mobile="none"
-                        $desktop
-                    >
-                        <HistorySection
-                            desc={null}
+                        <Display
+                            $mobile="none"
+                            $desktop
+                        >
+                            <ConfigSection
+                                disabled={busy}
+                            />
+                        </Display>
+                        <Display
+                            $mobile="none"
+                            $desktop
+                        >
+                            <StatusSection
+                                disabled={busy}
+                                status="inactive"
+                            />
+                        </Display>
+                        <PreviewSection
+                            disabled
+                            subscribe={false}
+                        />
+                        <Display
+                            $mobile="none"
+                            $desktop
+                        >
+                            <HistorySection
+                                desc={null}
+                                disabled={busy}
+                            />
+                        </Display>
+                        <PartitionsSection
                             disabled={busy}
                         />
-                    </Display>
-                    <PartitionsSection
-                        disabled={busy}
-                    />
-                </StreamPage>
-            </StreamModifier>
+                    </StreamPage>
+                </StreamModifier>
+            </StreamPermissionsContext.Provider>
         </StreamContext.Provider>
     )
 }

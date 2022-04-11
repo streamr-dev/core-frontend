@@ -24,7 +24,7 @@ import docsLinks from '$shared/../docsLinks'
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 
-export function ReadonlyStreamId({ disabled, className }) {
+export function ReadonlyStreamId({ className }) {
     const streamId = useStreamId()
 
     const { copy, isCopied } = useCopy(() => {
@@ -43,7 +43,6 @@ export function ReadonlyStreamId({ disabled, className }) {
                     <Domain>
                         <Label>Domain</Label>
                         <Text
-                            disabled={disabled}
                             name="domain"
                             readOnly
                             value={domain}
@@ -61,7 +60,6 @@ export function ReadonlyStreamId({ disabled, className }) {
                     <Text
                         readOnly
                         defaultValue={pathname}
-                        disabled={disabled}
                     />
                     <LockIcon>
                         <SvgIcon name="lock" />
