@@ -19,9 +19,40 @@ import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierS
 import { useValidationErrorSetter } from '$shared/components/ValidationErrorProvider'
 import useStreamId from '$shared/hooks/useStreamId'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarProvider'
+import ShareSidebar from '$userpages/components/ShareSidebar'
+import { truncate } from '$shared/utils/text'
+import Sidebar from '$shared/components/Sidebar'
 import routes from '$routes'
 
-export default function StreamPage({ title, children }) {
+function StreamPageSidebar() {
+    const streamId = useStreamId()
+
+    const sidebar = useSidebar()
+
+    function onClose() {
+        sidebar.close()
+    }
+
+    return !!streamId && (
+        <Sidebar.WithErrorBoundary
+            isOpen={sidebar.isOpen()}
+            onClose={onClose}
+        >
+            {sidebar.isOpen('share') && (
+                <ShareSidebar
+                    sidebarName="share"
+                    resourceTitle={truncate(streamId)}
+                    resourceType="STREAM"
+                    resourceId={streamId}
+                    onClose={onClose}
+                />
+            )}
+        </Sidebar.WithErrorBoundary>
+    )
+}
+
+function UnwrappedStreamPage({ title, children }) {
     const history = useHistory()
 
     const { commit, goBack } = useStreamModifier()
@@ -128,6 +159,8 @@ export default function StreamPage({ title, children }) {
         ? 'Create stream'
         : 'Save & exit'
 
+    const sidebar = useSidebar()
+
     const buttons = (() => {
         if (isNew) {
             return {
@@ -151,9 +184,7 @@ export default function StreamPage({ title, children }) {
             share: {
                 disabled: busy || !canGrant,
                 kind: 'primary',
-                onClick: () => {
-                    throw new Error('Not implemented.')
-                },
+                onClick: () => void sidebar.open('share'),
                 outline: true,
                 title: 'Share',
                 type: 'button',
@@ -190,8 +221,17 @@ export default function StreamPage({ title, children }) {
                 <TOCPage title={title}>
                     {children}
                 </TOCPage>
-                <SwitchNetworkModal />
             </Layout>
         </form>
+    )
+}
+
+export default function StreamPage(props) {
+    return (
+        <SidebarProvider>
+            <UnwrappedStreamPage {...props} />
+            <StreamPageSidebar />
+            <SwitchNetworkModal />
+        </SidebarProvider>
     )
 }
