@@ -19,7 +19,7 @@ const SetUnit = 'set unit'
 
 const Invalidate = 'invalidate'
 
-function reducer(state, { type, value }) {
+function reducer(state, { type, value, detectUnit = false }) {
     switch (type) {
         case Invalidate:
             return {
@@ -36,13 +36,26 @@ function reducer(state, { type, value }) {
                     throw new Error('Native multiplier has to be 1')
                 }
 
-                // eslint-disable-next-line no-restricted-syntax
-                for (const [unit, mx] of units) {
-                    if (value % mx === 0) {
-                        return {
-                            ...state,
-                            quantity: value / mx,
-                            unit,
+                if (detectUnit) {
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const [unit, mx] of units) {
+                        if (value % mx === 0) {
+                            return {
+                                ...state,
+                                quantity: value / mx,
+                                unit,
+                            }
+                        }
+                    }
+                } else {
+                    // eslint-disable-next-line no-restricted-syntax
+                    for (const [unit, mx] of units) {
+                        if (state.unit === unit && value % mx === 0) {
+                            return {
+                                ...state,
+                                quantity: value / mx,
+                                unit,
+                            }
                         }
                     }
                 }
@@ -74,10 +87,13 @@ export default function UnitizedQuantity({ units: unitsProp, quantity: quantityP
         units: Object.entries(unitsProp).sort(([, a], [, b]) => a - b),
     })
 
+    const detectUnitRef = useRef(true)
+
     useEffect(() => {
         dispatch({
             type: SetNativeQuantity,
             value: quantityProp,
+            detectUnit: detectUnitRef.current,
         })
     }, [quantityProp])
 
@@ -126,6 +142,8 @@ export default function UnitizedQuantity({ units: unitsProp, quantity: quantityP
 
             return q * mx
         })()
+
+        detectUnitRef.current = false
 
         state.onChange(newQuantity)
     }, [cache])
