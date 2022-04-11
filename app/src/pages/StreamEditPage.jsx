@@ -17,14 +17,19 @@ import ConfigSection from './AbstractStreamEditPage/ConfigSection'
 function UnwrappedStreamEditPage() {
     const { busy } = useStreamModifierStatusContext()
 
-    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+    const { [StreamPermission.EDIT]: canEdit } = useStreamPermissions()
 
     const title = canEdit
         ? 'Set up your stream'
         : 'Read only stream'
 
+    const loading = typeof canEdit === 'undefined'
+
     return (
-        <StreamPage title={title}>
+        <StreamPage
+            title={title}
+            loading={loading}
+        >
             <InfoSection
                 disabled={busy}
             />

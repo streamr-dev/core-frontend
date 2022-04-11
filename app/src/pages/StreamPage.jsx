@@ -52,7 +52,7 @@ function StreamPageSidebar() {
     )
 }
 
-function UnwrappedStreamPage({ title, children }) {
+function UnwrappedStreamPage({ title, children, loading = false }) {
     const history = useHistory()
 
     const { commit, goBack } = useStreamModifier()
@@ -210,7 +210,7 @@ function UnwrappedStreamPage({ title, children }) {
                 navComponent={(
                     <Toolbar
                         altMobileLayout
-                        loading={busy}
+                        loading={loading || busy}
                         left={(
                             <BackButton onBack={goBack} />
                         )}
@@ -218,9 +218,11 @@ function UnwrappedStreamPage({ title, children }) {
                     />
                 )}
             >
-                <TOCPage title={title}>
-                    {children}
-                </TOCPage>
+                {!loading && (
+                    <TOCPage title={title}>
+                        {children}
+                    </TOCPage>
+                )}
             </Layout>
         </form>
     )

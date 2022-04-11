@@ -2,6 +2,7 @@ import React, { useMemo, useCallback, useEffect, useReducer, useRef, useState } 
 import { useHistory } from 'react-router-dom'
 import { useClient } from 'streamr-client-react'
 import isEqual from 'lodash/isEqual'
+import cloneDeep from 'lodash/cloneDeep'
 import useModal from '$shared/hooks/useModal'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
 import ValidationErrorProvider from '$shared/components/ValidationErrorProvider'
@@ -193,9 +194,13 @@ export default function StreamModifier({ children, onValidate }) {
                         }
                     }
 
-                    await stream.update(newParams)
+                    const copy = cloneDeep(stream)
 
-                    return stream
+                    Object.assign(copy, newParams)
+
+                    await copy.update()
+
+                    return copy
                 })()
 
                 requireUninterrupted()
