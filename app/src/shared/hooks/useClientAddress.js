@@ -19,7 +19,7 @@ export default function useClientAddress() {
                 return
             }
 
-            setAddr(user)
+            setAddr(user.toLowerCase())
         }
 
         fn()

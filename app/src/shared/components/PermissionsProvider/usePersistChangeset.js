@@ -1,8 +1,10 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { useClient } from 'streamr-client-react'
 
 import { usePermissionsState, usePermissionsDispatch } from '$shared/components/PermissionsProvider'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useClientAddress from '$shared/hooks/useClientAddress'
+import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
 import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
 import formatAssignments from './utils/formatAssignments'
 
@@ -19,16 +21,40 @@ export default function usePersistChangeset() {
 
     const saveRef = useRef(() => {})
 
+    const userRef = useRef()
+
+    const user = useClientAddress()
+
+    useEffect(() => {
+        userRef.current = user
+    }, [user])
+
+    const invalidatePermissions = useStreamPermissionsInvalidator()
+
+    const invalidatePermissionsRef = useRef(invalidatePermissions)
+
+    useEffect(() => {
+        invalidatePermissionsRef.current = invalidatePermissions
+    }, [invalidatePermissions])
+
     saveRef.current = async (onSuccess) => {
         const errors = {}
+
+        const assignments = formatAssignments(changeset)
 
         try {
             await client.setPermissions({
                 streamId: resourceId,
-                assignments: formatAssignments(changeset),
+                assignments,
             })
         } catch (e) {
             console.error(e)
+        }
+
+        const { current: u } = userRef
+
+        if (u && assignments.find((a) => a.user === u)) {
+            invalidatePermissionsRef.current()
         }
 
         try {
