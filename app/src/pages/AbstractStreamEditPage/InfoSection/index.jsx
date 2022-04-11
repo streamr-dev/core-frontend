@@ -11,30 +11,7 @@ import Surround from '$shared/components/Surround'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
 
-function DefaultDescription() {
-    const streamId = useStreamId()
-
-    return (
-        <Description>
-            All streams require a unique path in the format <strong>domain/pathname</strong>.
-            <Surround head=" " tail=" ">
-                Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
-            </Surround>
-            <Surround tail=".">
-                <a href={ENS_DOMAINS_URL} target="_blank" rel="nofollow noopener noreferrer">
-                    register a new one
-                </a>
-            </Surround>
-            {!streamId && (
-                <Surround head=" ">
-                    Choose your stream name &amp; create it in order to adjust stream settings.
-                </Surround>
-            )}
-        </Description>
-    )
-}
-
-function UnstyledInfoSection({ className, desc = <DefaultDescription />, disabled: disabledProp = false, hideDescription = false }) {
+function UnstyledInfoSection({ className, disabled: disabledProp = false }) {
     const streamId = useStreamId()
 
     const stream = useStream()
@@ -55,11 +32,28 @@ function UnstyledInfoSection({ className, desc = <DefaultDescription />, disable
             title="Details"
         >
             <div className={className}>
-                {desc}
+                {!!canEdit && (
+                    <Description>
+                        All streams require a unique path in the format <strong>domain/pathname</strong>.
+                        <Surround head=" " tail=" ">
+                            Your default domain will be an Ethereum address, but you can also use an existing ENS domain or
+                        </Surround>
+                        <Surround tail=".">
+                            <a href={ENS_DOMAINS_URL} target="_blank" rel="nofollow noopener noreferrer">
+                                register a new one
+                            </a>
+                        </Surround>
+                        {!streamId && (
+                            <Surround head=" ">
+                                Choose your stream name &amp; create it in order to adjust stream settings.
+                            </Surround>
+                        )}
+                    </Description>
+                )}
                 <Row>
                     <StreamIdComponent disabled={disabled} />
                 </Row>
-                {!hideDescription && (
+                {!!(canEdit || description) && (
                     <Row>
                         <Label htmlFor="streamDescription">
                             Description

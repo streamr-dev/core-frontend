@@ -159,14 +159,18 @@ const ConfigSection = ({ disabled: disabledProp }) => {
             id="configure"
             title="Fields"
         >
-            <Description>
-                You can configure your stream&apos;s fields and data types here.
-                {' '}
-                If there already are stored messages in the stream,
-                {' '}
-                you can autoconfigure the fields based on the latest message.
-            </Description>
-            {!!config.fields.length && (
+            {!!canEdit && (
+                <Description>
+                    You can configure your stream&apos;s fields and data types here.
+                    {' '}
+                    If there already are stored messages in the stream,
+                    {' '}
+                    you can autoconfigure the fields based on the latest message.
+                </Description>
+            )}
+            {!config.fields.length ? (
+                <p>Stream has no predefined fields.</p>
+            ) : (
                 <Fragment>
                     <SplitControl>
                         <Label>Field name</Label>
@@ -227,7 +231,7 @@ const ConfigSection = ({ disabled: disabledProp }) => {
                     </StyledFieldList>
                 </Fragment>
             )}
-            {showAddField ? (
+            {!!canEdit && !!showAddField && (
                 <NewFieldEditor
                     disabled={disabled}
                     onStage={(payload) => {
@@ -255,7 +259,8 @@ const ConfigSection = ({ disabled: disabledProp }) => {
                         }
                     }}
                 />
-            ) : (
+            )}
+            {!!canEdit && !showAddField && (
                 <Buttons>
                     <Button
                         disabled={disabled}

@@ -47,15 +47,7 @@ function reducer(state, { type, payload }) {
     return state
 }
 
-const defaultDesc = (
-    <p>
-        Partitioning enables high-volume streams to scale beyond what a typical node can handle.
-        {' '}
-        If you&apos;re not sure if your stream needs partitions, leave it set to 1.
-    </p>
-)
-
-function UnstyledPartitionsSection({ className, disabled: disabledProp = false, desc = defaultDesc }) {
+function UnstyledPartitionsSection({ className, disabled: disabledProp = false }) {
     const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
 
     const disabled = disabledProp || !canEdit
@@ -115,7 +107,13 @@ function UnstyledPartitionsSection({ className, disabled: disabledProp = false, 
             disabled={disabled}
         >
             <div className={className}>
-                {desc}
+                {!!canEdit && (
+                    <p>
+                        Partitioning enables high-volume streams to scale beyond what a typical node can handle.
+                        {' '}
+                        If you&apos;re not sure if your stream needs partitions, leave it set to 1.
+                    </p>
+                )}
                 <Partitions>
                     <Label>Partitions</Label>
                     <Numeric

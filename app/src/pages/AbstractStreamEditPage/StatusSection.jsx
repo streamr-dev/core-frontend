@@ -30,11 +30,13 @@ export default function StatusSection({ disabled: disabledProp, status = StatusI
             />}
             title="Status"
         >
-            <Description>
-                If no new data is published to this stream, it will be shown as inactive after this period of time.
-                {' '}
-                Adjust the threshold to an appropriate period for your stream&apos;s frequency.
-            </Description>
+            {!!canEdit && (
+                <Description>
+                    If no new data is published to this stream, it will be shown as inactive after this period of time.
+                    {' '}
+                    Adjust the threshold to an appropriate period for your stream&apos;s frequency.
+                </Description>
+            )}
             <Label htmlFor="inactivityValue">
                 Inactivity threshold
             </Label>

@@ -10,15 +10,7 @@ import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import StorageNodeList from './StorageNodeList'
 
-const defaultDesc = (
-    <p>
-        Enable storage to retain historical data in one or more geographic locations of your choice.
-        {' '}
-        You can also choose how long to store your stream&apos;s historical data before auto-deletion.
-    </p>
-)
-
-function UnstyledHistorySection({ className, disabled: disabledProp = false, desc = defaultDesc }) {
+function UnstyledHistorySection({ className, disabled: disabledProp = false }) {
     const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
 
     const disabled = disabledProp || !canEdit
@@ -31,6 +23,8 @@ function UnstyledHistorySection({ className, disabled: disabledProp = false, des
 
     const { storageDays } = stream || {}
 
+    const canAssignStorageNodes = !!streamId && !!canEdit
+
     return (
         <TOCPage.Section
             disabled={disabled}
@@ -38,8 +32,14 @@ function UnstyledHistorySection({ className, disabled: disabledProp = false, des
             title="Data storage"
         >
             <div className={className}>
-                {desc}
-                {!!streamId && (
+                {!!canEdit && (
+                    <p>
+                        Enable storage to retain historical data in one or more geographic locations of your choice.
+                        {' '}
+                        You can also choose how long to store your stream&apos;s historical data before auto-deletion.
+                    </p>
+                )}
+                {canAssignStorageNodes && (
                     <StorageNodeList />
                 )}
                 <Label htmlFor="storageAmount">

@@ -24,7 +24,7 @@ function DefaultDescription() {
     )
 }
 
-function UnstyledPreviewSection({ className, subscribe = true, disabled, desc = <DefaultDescription /> }) {
+function UnstyledPreviewSection({ className, disabled, desc = <DefaultDescription /> }) {
     const streamId = useStreamId()
 
     const [isRunning, toggleIsRunning] = useReducer((current) => !current, true)
@@ -38,7 +38,7 @@ function UnstyledPreviewSection({ className, subscribe = true, disabled, desc = 
     const isMounted = useIsMounted()
 
     const streamData = useStreamData(streamId, {
-        activeFn: () => streamId && subscribe && isRunning,
+        activeFn: () => streamId && isRunning,
         onError: () => {
             if (isMounted()) {
                 setDataError(true)

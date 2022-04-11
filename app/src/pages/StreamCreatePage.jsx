@@ -15,6 +15,52 @@ import HistorySection from './AbstractStreamEditPage/HistorySection'
 import PartitionsSection from './AbstractStreamEditPage/PartitionsSection'
 import ConfigSection from './AbstractStreamEditPage/ConfigSection'
 
+function UnwrappedStreamCreatePage() {
+    const { busy } = useStreamModifierStatusContext()
+
+    return (
+        <StreamPage title="Name your Stream">
+            <InfoSection
+                disabled={busy}
+            />
+            <CodeSnippetsSection
+                disabled
+            />
+            <Display
+                $mobile="none"
+                $desktop
+            >
+                <ConfigSection
+                    disabled={busy}
+                />
+            </Display>
+            <Display
+                $mobile="none"
+                $desktop
+            >
+                <StatusSection
+                    disabled={busy}
+                    status="inactive"
+                />
+            </Display>
+            <PreviewSection
+                disabled
+            />
+            <Display
+                $mobile="none"
+                $desktop
+            >
+                <HistorySection
+                    disabled={busy}
+                />
+            </Display>
+            <PartitionsSection
+                disabled={busy}
+            />
+        </StreamPage>
+    )
+}
+
 export default function StreamCreatePage() {
     const { current: stream } = useRef({
         id: undefined,
@@ -33,8 +79,6 @@ export default function StreamCreatePage() {
         }
     })
 
-    const { busy } = useStreamModifierStatusContext()
-
     const { current: permissions } = useRef({
         [StreamPermission.EDIT]: true,
     })
@@ -43,47 +87,7 @@ export default function StreamCreatePage() {
         <StreamContext.Provider value={stream}>
             <StreamPermissionsContext.Provider value={permissions}>
                 <StreamModifier onValidate={onValidate}>
-                    <StreamPage>
-                        <InfoSection
-                            disabled={busy}
-                        />
-                        <CodeSnippetsSection
-                            disabled
-                        />
-                        <Display
-                            $mobile="none"
-                            $desktop
-                        >
-                            <ConfigSection
-                                disabled={busy}
-                            />
-                        </Display>
-                        <Display
-                            $mobile="none"
-                            $desktop
-                        >
-                            <StatusSection
-                                disabled={busy}
-                                status="inactive"
-                            />
-                        </Display>
-                        <PreviewSection
-                            disabled
-                            subscribe={false}
-                        />
-                        <Display
-                            $mobile="none"
-                            $desktop
-                        >
-                            <HistorySection
-                                desc={null}
-                                disabled={busy}
-                            />
-                        </Display>
-                        <PartitionsSection
-                            disabled={busy}
-                        />
-                    </StreamPage>
+                    <UnwrappedStreamCreatePage />
                 </StreamModifier>
             </StreamPermissionsContext.Provider>
         </StreamContext.Provider>

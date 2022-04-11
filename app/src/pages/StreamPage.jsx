@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { StreamPermission } from 'streamr-client'
 import { useHistory } from 'react-router-dom'
 import BackButton from '$shared/components/BackButton'
 import Layout from '$shared/components/Layout/Core'
@@ -17,9 +18,10 @@ import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
 import { useValidationErrorSetter } from '$shared/components/ValidationErrorProvider'
 import useStreamId from '$shared/hooks/useStreamId'
+import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import routes from '$routes'
 
-export default function StreamPage({ children }) {
+export default function StreamPage({ title, children }) {
     const history = useHistory()
 
     const { commit, goBack } = useStreamModifier()
@@ -29,6 +31,8 @@ export default function StreamPage({ children }) {
     const itp = useInterrupt()
 
     const setValidationError = useValidationErrorSetter()
+
+    const { [StreamPermission.GRANT]: canGrant = false } = useStreamPermissions()
 
     useEffect(() => () => {
         itp().interruptAll()
@@ -120,13 +124,48 @@ export default function StreamPage({ children }) {
         }
     }
 
-    const title = isNew
-        ? 'Name your Stream'
-        : 'Set up your stream'
-
     const submitButtonLabel = isNew
         ? 'Create stream'
         : 'Save & exit'
+
+    const buttons = (() => {
+        if (isNew) {
+            return {
+                cancel: {
+                    kind: 'link',
+                    onClick: () => void goBack(),
+                    outline: true,
+                    title: 'Cancel',
+                    type: 'button',
+                },
+                saveChanges: {
+                    disabled: clean || busy,
+                    kind: 'primary',
+                    title: submitButtonLabel,
+                    type: 'submit',
+                },
+            }
+        }
+
+        return {
+            share: {
+                disabled: busy || !canGrant,
+                kind: 'primary',
+                onClick: () => {
+                    throw new Error('Not implemented.')
+                },
+                outline: true,
+                title: 'Share',
+                type: 'button',
+            },
+            saveChanges: {
+                disabled: clean || busy,
+                kind: 'primary',
+                title: submitButtonLabel,
+                type: 'submit',
+            },
+        }
+    })()
 
     return (
         <form
@@ -144,21 +183,7 @@ export default function StreamPage({ children }) {
                         left={(
                             <BackButton onBack={goBack} />
                         )}
-                        actions={{
-                            cancel: {
-                                kind: 'link',
-                                title: 'Cancel',
-                                outline: true,
-                                onClick: () => void goBack(),
-                                type: 'button',
-                            },
-                            saveChanges: {
-                                disabled: clean || busy,
-                                kind: 'primary',
-                                title: submitButtonLabel,
-                                type: 'submit',
-                            },
-                        }}
+                        actions={buttons}
                     />
                 )}
             >
