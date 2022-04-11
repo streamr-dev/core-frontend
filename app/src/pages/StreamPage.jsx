@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useHistory } from 'react-router-dom'
 import BackButton from '$shared/components/BackButton'
@@ -23,6 +23,8 @@ import SidebarProvider, { useSidebar } from '$shared/components/Sidebar/SidebarP
 import ShareSidebar from '$userpages/components/ShareSidebar'
 import { truncate } from '$shared/utils/text'
 import Sidebar from '$shared/components/Sidebar'
+import useNativeTokenName from '$shared/hooks/useNativeTokenName'
+import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import routes from '$routes'
 
 function StreamPageSidebar() {
@@ -70,6 +72,10 @@ function UnwrappedStreamPage({ title, children, loading = false }) {
     }, [itp])
 
     const isNew = !useStreamId()
+
+    const nativeTokenName = useNativeTokenName()
+
+    const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
 
     async function save() {
         const { requireUninterrupted } = itp('save')
@@ -139,7 +145,9 @@ function UnwrappedStreamPage({ title, children, loading = false }) {
             }
 
             if (e instanceof InsufficientFundsError) {
-                return
+                setShowGetCryptoDialog(true)
+
+                handled = true
             }
 
             if (handled) {
@@ -199,32 +207,40 @@ function UnwrappedStreamPage({ title, children, loading = false }) {
     })()
 
     return (
-        <form
-            onSubmit={(e) => {
-                save()
-                e.preventDefault()
-            }}
-        >
-            <Layout
-                nav={false}
-                navComponent={(
-                    <Toolbar
-                        altMobileLayout
-                        loading={loading || busy}
-                        left={(
-                            <BackButton onBack={goBack} />
-                        )}
-                        actions={buttons}
-                    />
-                )}
+        <Fragment>
+            <form
+                onSubmit={(e) => {
+                    save()
+                    e.preventDefault()
+                }}
             >
-                {!loading && (
-                    <TOCPage title={title}>
-                        {children}
-                    </TOCPage>
-                )}
-            </Layout>
-        </form>
+                <Layout
+                    nav={false}
+                    navComponent={(
+                        <Toolbar
+                            altMobileLayout
+                            loading={loading || busy}
+                            left={(
+                                <BackButton onBack={goBack} />
+                            )}
+                            actions={buttons}
+                        />
+                    )}
+                >
+                    {!loading && (
+                        <TOCPage title={title}>
+                            {children}
+                        </TOCPage>
+                    )}
+                </Layout>
+            </form>
+            {showGetCryptoDialog && (
+                <GetCryptoDialog
+                    onCancel={() => void setShowGetCryptoDialog(false)}
+                    nativeTokenName={nativeTokenName}
+                />
+            )}
+        </Fragment>
     )
 }
 

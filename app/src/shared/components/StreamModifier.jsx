@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useEffect, useReducer, useRef, useState } from 'react'
+import React, { useMemo, useCallback, useEffect, useReducer, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useClient } from 'streamr-client-react'
 import isEqual from 'lodash/isEqual'
@@ -14,10 +14,9 @@ import useInterrupt from '$shared/hooks/useInterrupt'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import getClientAddress from '$app/src/getters/getClientAddress'
-import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
-import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import InterruptionError from '$shared/errors/InterruptionError'
-import InsufficientFundsError from '$shared/errors/InsufficientFundsError'
+import { networks } from '$shared/utils/constants'
+import { getWeb3, validateWeb3 } from '$shared/web3/web3Provider'
 import routes from '$routes'
 import DuplicateError from '../errors/DuplicateError'
 
@@ -152,8 +151,6 @@ export default function StreamModifier({ children, onValidate }) {
         onValidateRef.current = onValidate
     }, [onValidate])
 
-    const [showGetCryptoDialog, setShowGetCryptoDialog] = useState(false)
-
     const commit = useCallback(async () => {
         dispatch({
             type: SetBusy,
@@ -171,7 +168,11 @@ export default function StreamModifier({ children, onValidate }) {
                 if (typeof validate === 'function') {
                     validate(newParams)
                 }
-                // @TODO await validateNetwork()
+
+                await validateWeb3({
+                    web3: getWeb3(),
+                    requireNetwork: networks.STREAMS,
+                })
 
                 const clientAddress = await getClientAddress(client)
 
@@ -217,10 +218,6 @@ export default function StreamModifier({ children, onValidate }) {
                 throw e
             }
         } catch (e) {
-            if (e instanceof InsufficientFundsError) {
-                setShowGetCryptoDialog(true)
-            }
-
             if (!(e instanceof InterruptionError)) {
                 dispatch({
                     type: SetBusy,
@@ -279,8 +276,6 @@ export default function StreamModifier({ children, onValidate }) {
         clean,
     }), [busy, clean])
 
-    const nativeTokenName = useNativeTokenName()
-
     useEffect(() => () => {
         itp().interruptAll()
     }, [itp])
@@ -294,12 +289,6 @@ export default function StreamModifier({ children, onValidate }) {
                     </ValidationErrorProvider>
                     <ConfirmExitModal />
                     <ChangeLossWatcher />
-                    {showGetCryptoDialog && (
-                        <GetCryptoDialog
-                            onCancel={() => setShowGetCryptoDialog(false)}
-                            nativeTokenName={nativeTokenName}
-                        />
-                    )}
                 </StreamModifierStatusContext.Provider>
             </StreamContext.Provider>
         </StreamModifierContext.Provider>
