@@ -73,6 +73,7 @@ function UnstyledPreviewSection({ className, disabled, desc = <DefaultDescriptio
                         kind="secondary"
                         onClick={toggleIsRunning}
                         disabled={streamData.length === 0}
+                        type="button"
                     >
                         {!isRunning ? 'Start' : 'Stop'}
                     </Button>
