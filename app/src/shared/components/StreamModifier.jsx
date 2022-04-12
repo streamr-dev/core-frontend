@@ -12,6 +12,7 @@ import StreamModifierStatusContext, { useStreamModifierStatusContext } from '$sh
 import useStream from '$shared/hooks/useStream'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
+import { WrongNetworkSelectedError } from '$shared/errors/Web3'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import getClientAddress from '$app/src/getters/getClientAddress'
 import InterruptionError from '$shared/errors/InterruptionError'
@@ -151,6 +152,14 @@ export default function StreamModifier({ children, onValidate }) {
         onValidateRef.current = onValidate
     }, [onValidate])
 
+    const { api: switchNetworkDialog } = useModal('switchNetwork')
+
+    const switchNetworkDialogRef = useRef(switchNetworkDialog)
+
+    useEffect(() => {
+        switchNetworkDialogRef.current = switchNetworkDialog
+    }, [switchNetworkDialog])
+
     const commit = useCallback(async () => {
         dispatch({
             type: SetBusy,
@@ -169,10 +178,25 @@ export default function StreamModifier({ children, onValidate }) {
                     validate(newParams)
                 }
 
-                await validateWeb3({
-                    web3: getWeb3(),
-                    requireNetwork: networks.STREAMS,
-                })
+                try {
+                    await validateWeb3({
+                        web3: getWeb3(),
+                        requireNetwork: networks.STREAMS,
+                    })
+                } catch (e) {
+                    if (e instanceof WrongNetworkSelectedError) {
+                        const { proceed } = await switchNetworkDialogRef.current.open({
+                            requiredNetwork: e.requiredNetwork,
+                            initialNetwork: e.currentNetwork,
+                        })
+
+                        requireUninterrupted()
+
+                        if (!proceed) {
+                            throw e
+                        }
+                    }
+                }
 
                 const clientAddress = await getClientAddress(client)
 

@@ -13,21 +13,25 @@ import { networks } from '$shared/utils/constants'
 
 const SwitchNetworkModal = ({ api, requiredNetwork, initialNetwork }) => {
     const { switchChain, switchPending } = useSwitchChain()
+
     const { account, web3Error, checkingWeb3 } = useWeb3Status({
         requireWeb3: true,
         requireNetwork: networks.STREAMS,
     })
+
     const currentNetworkId = useSelector(selectEthereumNetworkId)
 
     const onSwitch = useCallback(async (nextNetwork) => {
-        try {
-            await switchChain(nextNetwork)
+        let proceed = false
 
-            api.close({
-                proceed: true,
-            })
+        try {
+            proceed = await switchChain(nextNetwork)
         } catch (e) {
             console.warn(e)
+        } finally {
+            api.close({
+                proceed,
+            })
         }
     }, [api, switchChain])
 
