@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import TOCPage from '$shared/components/TOCPage'
 import Label from '$ui/Label'
 import useStreamId from '$shared/hooks/useStreamId'
-import useStream from '$shared/hooks/useStream'
+import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
@@ -17,11 +17,9 @@ function UnstyledHistorySection({ className, disabled: disabledProp = false }) {
 
     const streamId = useStreamId()
 
-    const stream = useStream()
-
     const { stage } = useStreamModifier()
 
-    const { storageDays } = stream || {}
+    const { storageDays } = useTransientStream()
 
     const canAssignStorageNodes = !!streamId && !!canEdit
 

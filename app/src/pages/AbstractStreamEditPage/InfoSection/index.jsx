@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import TOCPage from '$shared/components/TOCPage'
 import Text from '$ui/Text'
 import useStreamId from '$shared/hooks/useStreamId'
-import useStream from '$shared/hooks/useStream'
+import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
@@ -14,11 +14,9 @@ import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
 function UnstyledInfoSection({ className, disabled: disabledProp = false }) {
     const streamId = useStreamId()
 
-    const stream = useStream()
-
     const StreamIdComponent = streamId ? ReadonlyStreamId : EditableStreamId
 
-    const { description = '' } = stream || {}
+    const { description = '' } = useTransientStream()
 
     const { stage } = useStreamModifier()
 

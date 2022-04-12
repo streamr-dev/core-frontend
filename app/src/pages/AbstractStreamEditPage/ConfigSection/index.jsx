@@ -16,6 +16,7 @@ import InterruptionError from '$shared/errors/InterruptionError'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import useStreamId from '$shared/hooks/useStreamId'
 import useStream from '$shared/hooks/useStream'
+import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import NewFieldEditor, { types } from './NewFieldEditor'
@@ -30,9 +31,9 @@ const ConfigSection = ({ disabled: disabledProp }) => {
 
     const disabled = disabledProp || !canEdit
 
-    const stream = useStream()
+    const { config: configProp = fallbackConfig } = useTransientStream()
 
-    const { config: configProp = fallbackConfig } = stream || {}
+    const stream = useStream()
 
     const [{ cache, config }, dispatch] = useReducer(reducer, reducer(undefined, {
         type: Init,
@@ -81,16 +82,10 @@ const ConfigSection = ({ disabled: disabledProp }) => {
         }
     }, [cache])
 
-    const streamRef = useRef(stream)
-
-    useEffect(() => {
-        streamRef.current = stream
-    }, [stream])
-
     async function onDetectFieldsClick() {
         const { requireUninterrupted } = itp('detect fields')
 
-        if ('detectFields' in streamRef.current === false) {
+        if (!stream || 'detectFields' in stream === false) {
             return
         }
 
@@ -98,7 +93,7 @@ const ConfigSection = ({ disabled: disabledProp }) => {
 
         try {
             try {
-                await streamRef.current.detectFields()
+                await stream.detectFields()
 
                 requireUninterrupted()
 

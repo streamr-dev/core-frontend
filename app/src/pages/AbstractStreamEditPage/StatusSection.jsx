@@ -6,7 +6,7 @@ import TOCPage from '$shared/components/TOCPage'
 import Label from '$ui/Label'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
-import useStream from '$shared/hooks/useStream'
+import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 
 export default function StatusSection({ disabled: disabledProp, status = StatusIcon.INACTIVE }) {
@@ -16,9 +16,7 @@ export default function StatusSection({ disabled: disabledProp, status = StatusI
 
     const { stage } = useStreamModifier()
 
-    const stream = useStream()
-
-    const { inactivityThresholdHours } = stream || {}
+    const { inactivityThresholdHours } = useTransientStream()
 
     return (
         <TOCPage.Section

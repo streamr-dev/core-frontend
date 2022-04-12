@@ -4,7 +4,7 @@ import { useClient } from 'streamr-client-react'
 import cloneDeep from 'lodash/cloneDeep'
 import useModal from '$shared/hooks/useModal'
 import ValidationErrorProvider from '$shared/components/ValidationErrorProvider'
-import StreamContext from '$shared/contexts/StreamContext'
+import TransientStreamContext from '$shared/contexts/TransientStreamContext'
 import StreamModifierContext from '$shared/contexts/StreamModifierContext'
 import StreamModifierStatusContext from '$shared/contexts/StreamModifierStatusContext'
 import useStream from '$shared/hooks/useStream'
@@ -221,7 +221,7 @@ export default function StreamModifier({ children, onValidate }) {
 
     return (
         <StreamModifierContext.Provider value={value}>
-            <StreamContext.Provider value={paramsModified}>
+            <TransientStreamContext.Provider value={paramsModified}>
                 <StreamModifierStatusContext.Provider value={status}>
                     <ValidationErrorProvider>
                         {children}
@@ -229,7 +229,7 @@ export default function StreamModifier({ children, onValidate }) {
                     <ConfirmExitModal />
                     <ChangeLossWatcher />
                 </StreamModifierStatusContext.Provider>
-            </StreamContext.Provider>
+            </TransientStreamContext.Provider>
         </StreamModifierContext.Provider>
     )
 }

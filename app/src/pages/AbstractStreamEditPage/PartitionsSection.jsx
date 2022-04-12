@@ -3,7 +3,7 @@ import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import StatusLabel from '$shared/components/StatusLabel'
 import TOCPage from '$shared/components/TOCPage'
-import useStream from '$shared/hooks/useStream'
+import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import Label from '$ui/Label'
@@ -52,9 +52,7 @@ function UnstyledPartitionsSection({ className, disabled: disabledProp = false }
 
     const disabled = disabledProp || !canEdit
 
-    const stream = useStream()
-
-    const { partitions = 1 } = stream || {}
+    const { partitions = 1 } = useTransientStream()
 
     const [state, dispatch] = useReducer(reducer, reducer(undefined, {
         type: Init,
