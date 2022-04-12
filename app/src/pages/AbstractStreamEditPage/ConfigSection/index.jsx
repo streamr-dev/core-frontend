@@ -19,6 +19,7 @@ import useStream from '$shared/hooks/useStream'
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import NewFieldEditor, { types } from './NewFieldEditor'
 import reducer, { Init, AddField, RearrangeFields, SetFieldName, SetFieldType, DeleteField, Invalidate } from './reducer'
 
@@ -26,11 +27,7 @@ const fallbackConfig = {
     fields: [],
 }
 
-const ConfigSection = ({ disabled: disabledProp }) => {
-    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
-
-    const disabled = disabledProp || !canEdit
-
+const UnwrappedConfigSection = ({ disabled, canEdit }) => {
     const { config: configProp = fallbackConfig } = useTransientStream()
 
     const stream = useStream()
@@ -149,11 +146,7 @@ const ConfigSection = ({ disabled: disabledProp }) => {
     const canDetectFields = stream && 'detectFields' in stream && !disabled
 
     return (
-        <TOCPage.Section
-            disabled={disabled}
-            id="configure"
-            title="Fields"
-        >
+        <Fragment>
             {!!canEdit && (
                 <Description>
                     You can configure your stream&apos;s fields and data types here.
@@ -278,7 +271,7 @@ const ConfigSection = ({ disabled: disabledProp }) => {
                     </Button>
                 </Buttons>
             )}
-        </TOCPage.Section>
+        </Fragment>
     )
 }
 
@@ -298,4 +291,26 @@ const StyledFieldList = styled(FieldList)`
     z-index: 1;
 `
 
-export default ConfigSection
+export default function ConfigSection({ disabled: disabledProp, ...props }) {
+    const { [StreamPermission.EDIT]: canEdit = false } = useStreamPermissions()
+
+    const disabled = disabledProp || !canEdit
+
+    const isWithinNav = useIsWithinNav()
+
+    return (
+        <TOCPage.Section
+            disabled={disabled}
+            id="configure"
+            title="Fields"
+        >
+            {!isWithinNav && (
+                <UnwrappedConfigSection
+                    {...props}
+                    disabled={disabled}
+                    canEdit={canEdit}
+                />
+            )}
+        </TOCPage.Section>
+    )
+}

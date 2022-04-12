@@ -1,5 +1,6 @@
-import React, { createContext } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
+import TOCNavContext from './TOCNavContext'
 
 export const Link = styled.a`
     ${({ disabled }) => !!disabled && css`
@@ -9,8 +10,6 @@ export const Link = styled.a`
 
     color: ${({ active }) => (active ? '#0324ff' : '#323232')} !important;
 `
-
-export const TOCNavContext = createContext(false)
 
 function UnstyledTOCNav(props) {
     return (

@@ -1,4 +1,4 @@
-import React, { useReducer, useState } from 'react'
+import React, { Fragment, useReducer, useState } from 'react'
 import styled from 'styled-components'
 import { useClient } from 'streamr-client-react'
 import { Link } from 'react-router-dom'
@@ -8,6 +8,7 @@ import Button from '$shared/components/Button'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 import useStreamData from '$shared/hooks/useStreamData'
+import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import routes from '$routes'
 import PreviewTable from './PreviewTable'
 import docsLinks from '$shared/../docsLinks'
@@ -24,7 +25,7 @@ function DefaultDescription() {
     )
 }
 
-function UnstyledPreviewSection({ className, disabled, desc = <DefaultDescription /> }) {
+function UnwrappedPreviewSection() {
     const streamId = useStreamId()
 
     const [isRunning, toggleIsRunning] = useReducer((current) => !current, true)
@@ -48,60 +49,52 @@ function UnstyledPreviewSection({ className, disabled, desc = <DefaultDescriptio
     })
 
     return (
-        <TOCPage.Section
-            id="preview"
-            title="Preview"
-            disabled={disabled}
-        >
-            {desc}
-            <div className={className}>
-                <PreviewTable streamData={streamData} />
-                <Controls>
-                    <ErrorNotice>
-                        {hasLoaded && !client && (
-                            <p>
-                                Error: Unable to process the stream data.
-                            </p>
-                        )}
-                        {dataError && (
-                            <p>
-                                Error: Some messages in the stream have invalid content and are not shown.
-                            </p>
-                        )}
-                    </ErrorNotice>
+        <Fragment>
+            <PreviewTable streamData={streamData} />
+            <Controls>
+                <ErrorNotice>
+                    {hasLoaded && !client && (
+                        <p>
+                            Error: Unable to process the stream data.
+                        </p>
+                    )}
+                    {dataError && (
+                        <p>
+                            Error: Some messages in the stream have invalid content and are not shown.
+                        </p>
+                    )}
+                </ErrorNotice>
+                <Button
+                    kind="secondary"
+                    onClick={toggleIsRunning}
+                    disabled={streamData.length === 0}
+                    type="button"
+                >
+                    {!isRunning ? 'Start' : 'Stop'}
+                </Button>
+                {streamId ? (
+                    <Button
+                        tag={Link}
+                        kind="secondary"
+                        to={routes.streams.preview({
+                            id: streamId,
+                        })}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                    >
+                        Inspect data
+                    </Button>
+                ) : (
                     <Button
                         kind="secondary"
-                        onClick={toggleIsRunning}
-                        disabled={streamData.length === 0}
                         type="button"
+                        disabled
                     >
-                        {!isRunning ? 'Start' : 'Stop'}
+                        Inspect data
                     </Button>
-                    {streamId ? (
-                        <Button
-                            tag={Link}
-                            kind="secondary"
-                            to={routes.streams.preview({
-                                id: streamId,
-                            })}
-                            rel="noopener noreferrer"
-                            target="_blank"
-                        >
-                            Inspect data
-                        </Button>
-                    ) : (
-                        <Button
-                            kind="secondary"
-                            type="button"
-                            disabled
-                        >
-                            Inspect data
-                        </Button>
-                    )}
-                </Controls>
-
-            </div>
-        </TOCPage.Section>
+                )}
+            </Controls>
+        </Fragment>
     )
 }
 
@@ -131,6 +124,25 @@ const Description = styled.p`
     margin-bottom: 3.125rem;
     max-width: 660px;
 `
+
+function UnstyledPreviewSection({ className, disabled, desc = <DefaultDescription /> }) {
+    const isWithinNav = useIsWithinNav()
+
+    return (
+        <TOCPage.Section
+            id="preview"
+            title="Preview"
+            disabled={disabled}
+        >
+            {desc}
+            <div className={className}>
+                {!isWithinNav && (
+                    <UnwrappedPreviewSection />
+                )}
+            </div>
+        </TOCPage.Section>
+    )
+}
 
 const PreviewSection = styled(UnstyledPreviewSection)`
     background-color: #fdfdfd;

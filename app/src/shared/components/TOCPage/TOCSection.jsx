@@ -1,9 +1,10 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import { REGULAR, MD, LG } from '$shared/utils/styled'
 import { useBusLine } from '$shared/components/BusLine'
 import TOCBusStop from './TOCBusStop'
-import { Link, TOCNavContext } from './TOCNav'
+import { Link } from './TOCNav'
+import { useIsWithinNav } from './TOCNavContext'
 
 const Section = styled.div`
     ${({ onlyDesktop }) => !!onlyDesktop && css`
@@ -49,11 +50,11 @@ export function UnstyledTOCSection({
     onlyDesktop,
     ...props
 }) {
-    const isNavItem = useContext(TOCNavContext)
+    const isWithinNav = useIsWithinNav()
 
     const active = id === useBusLine().stop
 
-    if (isNavItem) {
+    if (isWithinNav) {
         return (
             <Link
                 active={active}

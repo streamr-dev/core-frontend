@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react'
+import React, { useState, useCallback, useRef, useMemo, Fragment } from 'react'
 import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import styled, { css } from 'styled-components'
 import Button from '$shared/components/Button'
@@ -6,6 +6,7 @@ import useCopy from '$shared/hooks/useCopy'
 import TOCPage from '$shared/components/TOCPage'
 import useStreamId from '$shared/hooks/useStreamId'
 import { lightNodeSnippets, websocketSnippets, httpSnippets, mqttSnippets } from '$utils/streamSnippets'
+import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 
 function getStreamSnippet(fn, id) {
     if (id) {
@@ -17,7 +18,7 @@ function getStreamSnippet(fn, id) {
     return '// Create your stream above in order to get your code snippet.'
 }
 
-function UnstyledCodeSnippetsSection({ className, disabled }) {
+function UnstyledUnwrappedCodeSnippetsSection({ className, disabled }) {
     const streamId = useStreamId()
 
     const items = useMemo(() => [
@@ -48,11 +49,7 @@ function UnstyledCodeSnippetsSection({ className, disabled }) {
     }, [])
 
     return (
-        <TOCPage.Section
-            disabled={disabled}
-            id="snippets"
-            title="Code Snippets"
-        >
+        <Fragment>
             <p>
                 Bring your data to Streamr in the way that works best for you &mdash;
                 as a JS library within your app, or via MQTT, HTTP or Websocket.
@@ -95,11 +92,11 @@ function UnstyledCodeSnippetsSection({ className, disabled }) {
                     </Tabs.Item>
                 ))}
             </Tabs>
-        </TOCPage.Section>
+        </Fragment>
     )
 }
 
-const CodeSnippetsSection = styled(UnstyledCodeSnippetsSection)`
+const UnwrappedCodeSnippetsSection = styled(UnstyledUnwrappedCodeSnippetsSection)`
     margin-top: 2em;
 `
 
@@ -124,4 +121,21 @@ const ItemWrap = styled.div`
     `}
 `
 
-export default CodeSnippetsSection
+export default function CodeSnippetsSection({ disabled, ...props }) {
+    const isWithinNav = useIsWithinNav()
+
+    return (
+        <TOCPage.Section
+            disabled={disabled}
+            id="snippets"
+            title="Code Snippets"
+        >
+            {!isWithinNav && (
+                <UnwrappedCodeSnippetsSection
+                    {...props}
+                    disabled={disabled}
+                />
+            )}
+        </TOCPage.Section>
+    )
+}
