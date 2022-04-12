@@ -168,9 +168,10 @@ const ConfigSection = ({ disabled: disabledProp }) => {
                     you can autoconfigure the fields based on the latest message.
                 </Description>
             )}
-            {!config.fields.length ? (
+            {!config.fields.length && !canEdit && (
                 <p>Stream has no predefined fields.</p>
-            ) : (
+            )}
+            {!!config.fields.length && (
                 <Fragment>
                     <SplitControl>
                         <Label>Field name</Label>
