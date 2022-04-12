@@ -48,7 +48,6 @@ function UnwrappedStreamEditPage() {
             >
                 <StatusSection
                     disabled={busy}
-                    status="inactive"
                 />
             </Display>
             <PreviewSection />

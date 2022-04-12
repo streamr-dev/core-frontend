@@ -40,7 +40,6 @@ function UnwrappedStreamCreatePage() {
             >
                 <StatusSection
                     disabled={busy}
-                    status="inactive"
                 />
             </Display>
             <PreviewSection
