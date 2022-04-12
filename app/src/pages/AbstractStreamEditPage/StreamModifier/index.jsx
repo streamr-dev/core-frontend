@@ -10,13 +10,12 @@ import StreamModifierStatusContext from '$shared/contexts/StreamModifierStatusCo
 import useStream from '$shared/hooks/useStream'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3'
 import getClientAddress from '$app/src/getters/getClientAddress'
 import InterruptionError from '$shared/errors/InterruptionError'
 import { networks } from '$shared/utils/constants'
-import { getWeb3, validateWeb3 } from '$shared/web3/web3Provider'
 import DuplicateError from '$shared/errors/DuplicateError'
 import { useStreamSetter } from '$shared/contexts/StreamSetterContext'
+import useValidateNetwork from '$shared/hooks/useValidateNetwork'
 import routes from '$routes'
 import ConfirmExitModal from './ConfirmExitModal'
 import ChangeLossWatcher from './ChangeLossWatcher'
@@ -76,6 +75,14 @@ export default function StreamModifier({ children, onValidate }) {
         setStreamRef.current = setStream
     }, [setStream])
 
+    const validateNetwork = useValidateNetwork()
+
+    const validateNetworkRef = useRef(validateNetwork)
+
+    useEffect(() => {
+        validateNetworkRef.current = validateNetwork
+    }, [validateNetwork])
+
     const commit = useCallback(async () => {
         dispatch({
             type: SetBusy,
@@ -94,24 +101,8 @@ export default function StreamModifier({ children, onValidate }) {
                     validate(newParams)
                 }
 
-                try {
-                    await validateWeb3({
-                        web3: getWeb3(),
-                        requireNetwork: networks.STREAMS,
-                    })
-                } catch (e) {
-                    if (e instanceof WrongNetworkSelectedError) {
-                        const { proceed } = await switchNetworkDialogRef.current.open({
-                            requiredNetwork: e.requiredNetwork,
-                            initialNetwork: e.currentNetwork,
-                        })
-
-                        requireUninterrupted()
-
-                        if (!proceed) {
-                            throw e
-                        }
-                    }
+                if (typeof validateNetworkRef.current === 'function') {
+                    await validateNetworkRef.current(networks.STREAMS)
                 }
 
                 const clientAddress = await getClientAddress(client)

@@ -6,7 +6,8 @@ import Spinner from '$shared/components/Spinner'
 import useStreamId from '$shared/hooks/useStreamId'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon } from '$shared/utils/constants'
+import { NotificationIcon, networks } from '$shared/utils/constants'
+import useValidateNetwork from '$shared/hooks/useValidateNetwork'
 
 function UnstyledStorageNodeItem({
     address,
@@ -32,6 +33,8 @@ function UnstyledStorageNodeItem({
 
     const [busy, setBusy] = useState(typeof active === 'undefined')
 
+    const validateNetwork = useValidateNetwork()
+
     const onClick = useCallback(async () => {
         const { requireUninterrupted } = itp()
 
@@ -45,6 +48,10 @@ function UnstyledStorageNodeItem({
 
         try {
             try {
+                await validateNetwork(networks.STREAMS)
+
+                requireUninterrupted()
+
                 await (() => (
                     active
                         ? client.removeStreamFromStorageNode(streamId, address)
@@ -76,7 +83,7 @@ function UnstyledStorageNodeItem({
                 icon: NotificationIcon.CHECKMARK,
             })
         }
-    }, [itp, client, address, streamId, active])
+    }, [itp, client, address, streamId, active, validateNetwork])
 
     useEffect(() => () => {
         // Ignore the result of any in-the-air toggling if conditions change.
