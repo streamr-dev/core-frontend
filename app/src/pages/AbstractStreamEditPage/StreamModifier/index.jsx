@@ -1,125 +1,33 @@
 import React, { useMemo, useCallback, useEffect, useReducer, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useClient } from 'streamr-client-react'
-import isEqual from 'lodash/isEqual'
 import cloneDeep from 'lodash/cloneDeep'
 import useModal from '$shared/hooks/useModal'
-import ConfirmDialog from '$shared/components/ConfirmDialog'
 import ValidationErrorProvider from '$shared/components/ValidationErrorProvider'
 import StreamContext from '$shared/contexts/StreamContext'
 import StreamModifierContext from '$shared/contexts/StreamModifierContext'
-import StreamModifierStatusContext, { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierStatusContext'
+import StreamModifierStatusContext from '$shared/contexts/StreamModifierStatusContext'
 import useStream from '$shared/hooks/useStream'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import requirePositiveBalance from '$shared/utils/requirePositiveBalance'
 import { WrongNetworkSelectedError } from '$shared/errors/Web3'
-import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import getClientAddress from '$app/src/getters/getClientAddress'
 import InterruptionError from '$shared/errors/InterruptionError'
 import { networks } from '$shared/utils/constants'
 import { getWeb3, validateWeb3 } from '$shared/web3/web3Provider'
+import DuplicateError from '$shared/errors/DuplicateError'
+import { useStreamSetter } from '$shared/contexts/StreamSetterContext'
 import routes from '$routes'
-import DuplicateError from '../errors/DuplicateError'
-
-const Init = 'init'
-
-const SetBusy = 'set busy'
-
-const Modify = 'modify'
-
-const initialState = {
-    busy: false,
-    clean: true,
-    params: {},
-    paramsModified: {},
-    stream: undefined,
-}
-
-function toParams({
-    id,
-    description,
-    config,
-    storageDays,
-    inactivityThresholdHours,
-    partitions,
-} = {}) {
-    return {
-        config,
-        description,
-        id,
-        inactivityThresholdHours,
-        partitions,
-        storageDays,
-    }
-}
-
-function reducer(state, { type, payload }) {
-    switch (type) {
-        case Init:
-            return {
-                ...initialState,
-                params: toParams(payload),
-                paramsModified: toParams(payload),
-                stream: payload,
-            }
-        case SetBusy:
-            return {
-                ...state,
-                busy: !!payload,
-            }
-        case Modify:
-            return ((paramsModified) => ({
-                ...state,
-                paramsModified,
-                clean: isEqual(state.params, paramsModified),
-            }))({
-                ...state.paramsModified,
-                ...payload,
-            })
-        default:
-    }
-
-    return state
-}
-
-function ConfirmExitModal() {
-    const { api, isOpen } = useModal('confirmExit')
-
-    if (!isOpen) {
-        return null
-    }
-
-    return (
-        <ConfirmDialog
-            title="You have unsaved changes"
-            message="You have made changes to this stream. Do you still want to exit?"
-            onAccept={() => api.close({
-                canProceed: true,
-            })}
-            onReject={() => api.close({
-                canProceed: false,
-            })}
-        />
-    )
-}
-
-function ChangeLossWatcher() {
-    const { clean } = useStreamModifierStatusContext()
-
-    usePreventNavigatingAway(
-        'You have unsaved changes. Are you sure you want to leave?',
-        () => !clean,
-    )
-
-    return null
-}
+import ConfirmExitModal from './ConfirmExitModal'
+import ChangeLossWatcher from './ChangeLossWatcher'
+import reducer, { initialState, Init, SetBusy, Modify } from './reducer'
 
 export default function StreamModifier({ children, onValidate }) {
-    const source = useStream()
+    const stream = useStream()
 
-    const [{ paramsModified, stream, clean, busy }, dispatch] = useReducer(reducer, reducer(initialState, {
+    const [{ paramsModified, clean, busy }, dispatch] = useReducer(reducer, reducer(initialState, {
         type: Init,
-        payload: source,
+        payload: stream,
     }))
 
     const firstRunRef = useRef(true)
@@ -132,9 +40,9 @@ export default function StreamModifier({ children, onValidate }) {
 
         dispatch({
             type: Init,
-            payload: source,
+            payload: stream,
         })
-    }, [source])
+    }, [stream])
 
     const paramsModifiedRef = useRef(paramsModified)
 
@@ -159,6 +67,14 @@ export default function StreamModifier({ children, onValidate }) {
     useEffect(() => {
         switchNetworkDialogRef.current = switchNetworkDialog
     }, [switchNetworkDialog])
+
+    const setStream = useStreamSetter()
+
+    const setStreamRef = useRef(setStream)
+
+    useEffect(() => {
+        setStreamRef.current = setStream
+    }, [setStream])
 
     const commit = useCallback(async () => {
         dispatch({
@@ -230,10 +146,9 @@ export default function StreamModifier({ children, onValidate }) {
 
                 requireUninterrupted()
 
-                dispatch({
-                    type: Init,
-                    payload: innerStream,
-                })
+                if (typeof setStreamRef.current === 'function') {
+                    setStreamRef.current(innerStream)
+                }
 
                 return innerStream
             } catch (e) {
