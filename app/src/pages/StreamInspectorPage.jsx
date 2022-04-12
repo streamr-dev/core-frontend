@@ -44,7 +44,7 @@ function StreamInspectorPage() {
 
 export default function StreamInspectorPageWrapper() {
     return (
-        <AbstractStreamPage streamOperations={[StreamPermission.SUBSCRIBE]}>
+        <AbstractStreamPage>
             <StreamInspectorPage />
         </AbstractStreamPage>
     )
