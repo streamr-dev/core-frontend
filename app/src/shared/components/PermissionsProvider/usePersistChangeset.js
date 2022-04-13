@@ -54,6 +54,9 @@ export default function usePersistChangeset() {
         const { current: u } = userRef
 
         if (u && assignments.find((a) => a.user === u)) {
+            // Pick current user from the changeset collection and trigger permission invalidation
+            // via `StreamPermissionsInvalidatorContext`) which then updates controls
+            // on the stream page.
             invalidatePermissionsRef.current()
         }
 
