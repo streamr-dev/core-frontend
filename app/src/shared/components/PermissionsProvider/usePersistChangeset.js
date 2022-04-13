@@ -37,56 +37,58 @@ export default function usePersistChangeset() {
         invalidatePermissionsRef.current = invalidatePermissions
     }, [invalidatePermissions])
 
-    saveRef.current = async (onSuccess) => {
-        const errors = {}
+    useEffect(() => {
+        saveRef.current = async (onSuccess) => {
+            const errors = {}
 
-        const assignments = formatAssignments(changeset)
+            const assignments = formatAssignments(changeset)
 
-        try {
-            await client.setPermissions({
-                streamId: resourceId,
-                assignments,
-            })
-        } catch (e) {
-            console.error(e)
-        }
-
-        const { current: u } = userRef
-
-        if (u && assignments.find((a) => a.user === u)) {
-            // Pick current user from the changeset collection and trigger permission invalidation
-            // via `StreamPermissionsInvalidatorContext`) which then updates controls
-            // on the stream page.
-            invalidatePermissionsRef.current()
-        }
-
-        try {
-            const result = await client.getPermissions(resourceId)
-
-            if (!isMounted()) {
-                return
+            try {
+                await client.setPermissions({
+                    streamId: resourceId,
+                    assignments,
+                })
+            } catch (e) {
+                console.error(e)
             }
 
-            const { changeset: newChangeset } = reducer({
-                changeset,
-            }, {
-                permissions: result,
-                type: SET_PERMISSIONS,
-            })
+            const { current: u } = userRef
 
-            if (!Object.keys(newChangeset).length && !Object.keys(errors).length && typeof onSuccess === 'function') {
-                onSuccess()
-            } else {
-                dispatch({
-                    errors,
+            if (u && assignments.find((a) => a.user === u)) {
+                // Pick current user from the changeset collection and trigger permission invalidation
+                // via `StreamPermissionsInvalidatorContext`) which then updates controls
+                // on the stream page.
+                invalidatePermissionsRef.current()
+            }
+
+            try {
+                const result = await client.getPermissions(resourceId)
+
+                if (!isMounted()) {
+                    return
+                }
+
+                const { changeset: newChangeset } = reducer({
+                    changeset,
+                }, {
                     permissions: result,
                     type: SET_PERMISSIONS,
                 })
+
+                if (!Object.keys(newChangeset).length && !Object.keys(errors).length && typeof onSuccess === 'function') {
+                    onSuccess()
+                } else {
+                    dispatch({
+                        errors,
+                        permissions: result,
+                        type: SET_PERMISSIONS,
+                    })
+                }
+            } catch (e) {
+                console.error(e)
             }
-        } catch (e) {
-            console.error(e)
         }
-    }
+    }, [changeset, client, dispatch, isMounted, resourceId])
 
     return useCallback(async (onSuccess) => {
         if (busyRef.current) {
