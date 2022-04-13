@@ -19,7 +19,7 @@ function UnwrappedStatusSection({ disabled, canEdit, onStatusChange }) {
 
     const stream = useStream() || {}
 
-    const status = useStreamActivityStatus(stream.inactivityThresholdHours)
+    const [status] = useStreamActivityStatus(stream.inactivityThresholdHours)
 
     const onStatusChangeRef = useRef(onStatusChange)
 

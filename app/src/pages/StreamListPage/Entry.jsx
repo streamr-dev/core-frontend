@@ -1,15 +1,14 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useReducer, useRef } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { StatusIcon, titleize } from '@streamr/streamr-layout'
 import { StreamList } from '$shared/components/List'
-import useLastMessageTimestamp from '$shared/hooks/useLastMessageTimestamp'
 import getStreamPath from '$app/src/getters/getStreamPath'
 import { ago } from '$shared/utils/time'
-import getStreamActivityStatus from '$shared/utils/getStreamActivityStatus'
 import Popover from '$shared/components/Popover'
 import useStream from '$shared/hooks/useStream'
 import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
+import useStreamActivityStatus from '$shared/hooks/useStreamActivityStatus'
 import useEntryInteraction from './useEntryInteraction'
 
 export default function Entry({
@@ -26,8 +25,6 @@ export default function Entry({
 
     const { [StreamPermission.GRANT]: canGrant, [StreamPermission.DELETE]: canDelete } = useStreamPermissions()
 
-    const [timestamp, error, refresh, refreshedAt] = useLastMessageTimestamp(stream.id)
-
     const { truncatedId } = getStreamPath(stream.id)
 
     const onDropdownToggle = useCallback((open) => {
@@ -36,7 +33,11 @@ export default function Entry({
         }
     }, [invalidatePermissions])
 
-    const status = error ? StatusIcon.ERROR : getStreamActivityStatus(timestamp, stream.inactivityThresholdHours)
+    const [[statusCache, refreshedAt], refresh] = useReducer(([s], now) => [s + 1, now], [0, undefined])
+
+    const [status, timestamp] = useStreamActivityStatus(stream.inactivityThresholdHours, {
+        cache: statusCache,
+    })
 
     const onClick = useEntryInteraction(onClickProp)
 
@@ -102,7 +103,9 @@ export default function Entry({
                     <Popover.Item disabled={!canGrant} onClick={onShareClick}>
                         Share
                     </Popover.Item>
-                    <Popover.Item onClick={refresh}>
+                    <Popover.Item
+                        onClick={() => void refresh(Date.now())}
+                    >
                         Refresh
                     </Popover.Item>
                     <Popover.Item onClick={onRemoveClick}>

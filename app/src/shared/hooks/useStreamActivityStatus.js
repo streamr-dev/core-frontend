@@ -3,7 +3,7 @@ import { useClient } from 'streamr-client-react'
 import { StatusIcon } from '@streamr/streamr-layout'
 import useStreamId from '$shared/hooks/useStreamId'
 
-export default function useStreamActivityStatus(inactivityThresholdHours) {
+export default function useStreamActivityStatus(inactivityThresholdHours, { cache = 0 } = {}) {
     const [timestamp, setTimestamp] = useState()
 
     const client = useClient()
@@ -18,15 +18,13 @@ export default function useStreamActivityStatus(inactivityThresholdHours) {
         let aborted = false
 
         async function fn() {
-            let ts = -1
+            let ts
 
             try {
                 const [message] = await client.getStreamLast(streamId)
                 ts = (message || {}).timestamp
             } catch (e) {
-                if (/not_found/i.test(e.message)) {
-                    ts = undefined
-                }
+                // Noop.
             }
 
             if (!aborted) {
@@ -39,21 +37,17 @@ export default function useStreamActivityStatus(inactivityThresholdHours) {
         return () => {
             aborted = true
         }
-    }, [client, streamId])
+    }, [client, streamId, cache])
 
     return useMemo(() => {
         if (!timestamp || typeof inactivityThresholdHours === 'undefined') {
-            return StatusIcon.INACTIVE
-        }
-
-        if (timestamp === -1) {
-            return StatusIcon.ERROR
+            return [StatusIcon.INACTIVE, timestamp]
         }
 
         if (Date.now() - (inactivityThresholdHours * 60 * 60 * 1000) < timestamp) {
-            return StatusIcon.OK
+            return [StatusIcon.OK, timestamp]
         }
 
-        return StatusIcon.INACTIVE
+        return [StatusIcon.ERROR, timestamp]
     }, [timestamp, inactivityThresholdHours])
 }
