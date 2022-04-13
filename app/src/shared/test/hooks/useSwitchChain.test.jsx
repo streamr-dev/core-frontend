@@ -1,11 +1,11 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-
 import useSwitchChain from '$shared/hooks/useSwitchChain'
-
 import * as web3Provider from '$shared/web3/web3Provider'
 import * as getConfig from '$shared/web3/config'
+import MissingNetworkError from '$shared/errors/MissingNetworkError'
+import UnsupportedNetworkError from '$shared/errors/UnsupportedNetworkError'
 
 describe('useSwitchChain', () => {
     afterEach(() => {
@@ -89,7 +89,13 @@ describe('useSwitchChain', () => {
         jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
 
         await act(async () => {
-            await result.switchChain('123')
+            try {
+                await result.switchChain('123')
+            } catch (e) {
+                if (e instanceof MissingNetworkError === false) {
+                    throw e
+                }
+            }
         })
 
         expect(requestStub.mock.calls[0][0]).toStrictEqual({
@@ -108,7 +114,7 @@ describe('useSwitchChain', () => {
         })
     })
 
-    it('logs an error if chain is not supported', async () => {
+    it('throws a UnsupportedNetworkError if chain is not supported', async () => {
         let result
 
         function Test() {
@@ -126,18 +132,12 @@ describe('useSwitchChain', () => {
         }))
         jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
 
-        const consoleStub = jest.fn()
-        jest.spyOn(console, 'error').mockImplementation(consoleStub)
-
         await act(async () => {
-            await result.switchChain('1')
+            await expect(result.switchChain('1')).rejects.toThrow(UnsupportedNetworkError)
         })
-
-        expect(consoleStub).toHaveBeenCalledWith(new Error('Chain id "1" is not supported!'))
-        console.error.mockRestore()
     })
 
-    it('logs an error if chain switching fails', async () => {
+    it('throws an error if chain switching fails', async () => {
         let result
 
         function Test() {
@@ -166,18 +166,12 @@ describe('useSwitchChain', () => {
         }))
         jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
 
-        const consoleStub = jest.fn()
-        jest.spyOn(console, 'error').mockImplementation(consoleStub)
-
         await act(async () => {
-            await result.switchChain('123')
+            await expect(result.switchChain('123')).rejects.toThrow(/wallet_switchEthereumChain/)
         })
-
-        expect(consoleStub).toHaveBeenCalledWith(new Error('wallet_switchEthereumChain'))
-        console.error.mockRestore()
     })
 
-    it('logs an error if chain adding fails', async () => {
+    it('throws an error if chain adding fails', async () => {
         let result
 
         function Test() {
@@ -212,15 +206,9 @@ describe('useSwitchChain', () => {
         }))
         jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
 
-        const consoleStub = jest.fn()
-        jest.spyOn(console, 'error').mockImplementation(consoleStub)
-
         await act(async () => {
-            await result.switchChain('123')
+            await expect(result.switchChain('123')).rejects.toThrow(/wallet_addEthereumChain/)
         })
-
-        expect(consoleStub.mock.calls[0][0]).toStrictEqual(new Error('wallet_addEthereumChain'))
-        console.error.mockRestore()
     })
 
     it('sets penging status when switching succeeds', async () => {
@@ -297,12 +285,15 @@ describe('useSwitchChain', () => {
             },
         }))
         jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
-        jest.spyOn(console, 'error').mockImplementation(() => {})
 
         expect(result.switchPending).toBe(false)
 
         act(() => {
-            result.switchChain('123')
+            result.switchChain('123').catch((e) => {
+                if (!/fail/.test(e.message)) {
+                    throw e
+                }
+            })
         })
 
         expect(result.switchPending).toBe(true)
@@ -312,6 +303,5 @@ describe('useSwitchChain', () => {
         })
 
         expect(result.switchPending).toBe(false)
-        console.error.mockRestore()
     })
 })

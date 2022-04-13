@@ -7,7 +7,7 @@ export default function useSwitchChain() {
     const [switchPending, setSwitchPending] = useState(false)
     const isMounted = useIsMounted()
 
-    const switchChain = useCallback(async (nextChainId) => {
+    const switchChain = useCallback(async (nextChainId, { addMissingNetwork = true } = {}) => {
         setSwitchPending(true)
 
         let success = false
@@ -16,12 +16,14 @@ export default function useSwitchChain() {
             await switchNetwork(nextChainId)
             success = true
         } catch (e) {
-            if (e instanceof MissingNetworkError) {
+            if (addMissingNetwork && e instanceof MissingNetworkError) {
                 // Let's add the missing network.
                 await addNetwork(nextChainId)
 
                 // And switch to it immediately after.
-                return await switchChain(nextChainId)
+                return await switchChain(nextChainId, {
+                    addMissingNetwork: false,
+                })
             }
 
             throw e
