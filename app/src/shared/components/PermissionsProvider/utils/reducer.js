@@ -16,6 +16,8 @@ export const PERSIST = 'persist'
 
 export const UPDATE_PERMISSION = 'update permission'
 
+export const UNLOCK = 'unlock'
+
 export const initialState = {
     changeset: {},
     errors: {},
@@ -44,6 +46,13 @@ function norm(userId) {
 }
 
 export default function reducer(state, action) {
+    if (action.type === UNLOCK) {
+        return {
+            ...state,
+            locked: false,
+        }
+    }
+
     // SET_PERMISSIONS is allowed despite the `locked` flag being up. Other actions are shielded off
     // by the "is locked" check. See below.
     if (action.type === SET_PERMISSIONS) {

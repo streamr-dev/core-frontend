@@ -5,7 +5,11 @@ import { usePermissionsState, usePermissionsDispatch } from '$shared/components/
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useClientAddress from '$shared/hooks/useClientAddress'
 import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
-import reducer, { PERSIST, SET_PERMISSIONS } from './utils/reducer'
+import useValidateNetwork from '$shared/hooks/useValidateNetwork'
+import { networks } from '$shared/utils/constants'
+import useInterrupt from '$shared/hooks/useInterrupt'
+import InterruptionError from '$shared/errors/InterruptionError'
+import reducer, { PERSIST, SET_PERMISSIONS, UNLOCK } from './utils/reducer'
 import formatAssignments from './utils/formatAssignments'
 
 export default function usePersistChangeset() {
@@ -37,20 +41,20 @@ export default function usePersistChangeset() {
         invalidatePermissionsRef.current = invalidatePermissions
     }, [invalidatePermissions])
 
+    const validateNetwork = useValidateNetwork()
+
     useEffect(() => {
         saveRef.current = async (onSuccess) => {
             const errors = {}
 
             const assignments = formatAssignments(changeset)
 
-            try {
-                await client.setPermissions({
-                    streamId: resourceId,
-                    assignments,
-                })
-            } catch (e) {
-                console.error(e)
-            }
+            await validateNetwork(networks.STREAMS)
+
+            await client.setPermissions({
+                streamId: resourceId,
+                assignments,
+            })
 
             const { current: u } = userRef
 
@@ -61,36 +65,36 @@ export default function usePersistChangeset() {
                 invalidatePermissionsRef.current()
             }
 
-            try {
-                const result = await client.getPermissions(resourceId)
+            const result = await client.getPermissions(resourceId)
 
-                if (!isMounted()) {
-                    return
-                }
+            if (!isMounted()) {
+                return
+            }
 
-                const { changeset: newChangeset } = reducer({
-                    changeset,
-                }, {
+            const { changeset: newChangeset } = reducer({
+                changeset,
+            }, {
+                permissions: result,
+                type: SET_PERMISSIONS,
+            })
+
+            if (!Object.keys(newChangeset).length && !Object.keys(errors).length && typeof onSuccess === 'function') {
+                onSuccess()
+            } else {
+                dispatch({
+                    errors,
                     permissions: result,
                     type: SET_PERMISSIONS,
                 })
-
-                if (!Object.keys(newChangeset).length && !Object.keys(errors).length && typeof onSuccess === 'function') {
-                    onSuccess()
-                } else {
-                    dispatch({
-                        errors,
-                        permissions: result,
-                        type: SET_PERMISSIONS,
-                    })
-                }
-            } catch (e) {
-                console.error(e)
             }
         }
-    }, [changeset, client, dispatch, isMounted, resourceId])
+    }, [changeset, client, dispatch, isMounted, resourceId, validateNetwork])
+
+    const itp = useInterrupt()
 
     return useCallback(async (onSuccess) => {
+        const { requireUninterrupted } = itp('save')
+
         if (busyRef.current) {
             return
         }
@@ -99,8 +103,24 @@ export default function usePersistChangeset() {
             type: PERSIST,
         })
 
-        await saveRef.current(onSuccess)
+        try {
+            try {
+                await saveRef.current(onSuccess)
+            } catch (e) {
+                throw e
+            } finally {
+                requireUninterrupted()
+            }
+        } catch (e) {
+            if (e instanceof InterruptionError) {
+                return
+            }
+
+            dispatch({
+                type: UNLOCK,
+            })
+        }
 
         busyRef.current = false
-    }, [dispatch])
+    }, [itp, dispatch])
 }
