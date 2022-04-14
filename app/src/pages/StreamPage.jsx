@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useHistory } from 'react-router-dom'
 import BackButton from '$shared/components/BackButton'
