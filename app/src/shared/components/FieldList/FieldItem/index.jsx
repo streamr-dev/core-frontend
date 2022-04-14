@@ -1,6 +1,4 @@
-// @flow
-
-import React, { type Node } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import styled from 'styled-components'
 
 import SvgIcon from '$shared/components/SvgIcon'
@@ -36,22 +34,31 @@ const Trash = styled.button`
     }
 `
 
-type Props = {
-    children: Node,
-    onDelete: () => void,
-}
+function FieldItem({ children, onDelete: onDeleteProp, name }) {
+    const onDeleteRef = useRef(onDeleteProp)
 
-const FieldItem = ({ children, onDelete }: Props) => (
-    <div className={styles.root}>
-        <div className={styles.inner}>
-            <Handle className={styles.handle} />
-            {children}
-            <Trash onClick={onDelete} className={styles.trashIcon}>
-                <SvgIcon name="trash" />
-            </Trash>
+    useEffect(() => {
+        onDeleteRef.current = onDeleteProp
+    }, [onDeleteProp])
+
+    const onDelete = useCallback(() => {
+        if (typeof onDeleteRef.current === 'function') {
+            onDeleteRef.current(name)
+        }
+    }, [name])
+
+    return (
+        <div className={styles.root}>
+            <div className={styles.inner}>
+                <Handle className={styles.handle} />
+                {children}
+                <Trash onClick={onDelete} className={styles.trashIcon} type="button">
+                    <SvgIcon name="trash" />
+                </Trash>
+            </div>
         </div>
-    </div>
-)
+    )
+}
 
 FieldItem.styles = styles
 

@@ -11,7 +11,11 @@ type ContextProps = {
     closeModal: Function,
 }
 
-const ModalContext: Context<ContextProps> = React.createContext({})
+const ModalContext: Context<ContextProps> = React.createContext({
+    closeModal: () => {},
+    modals: {},
+    openModal: () => {},
+})
 
 function useModalContext(path: string): ContextProps {
     const [modals, setModals] = useState({})

@@ -1,11 +1,17 @@
 import { useRef, useEffect } from 'react'
 
 export default function usePreventNavigatingAway(message, fn) {
-    const fnRef = useRef()
-    fnRef.current = fn
+    const fnRef = useRef(fn)
+
+    useEffect(() => {
+        fnRef.current = fn
+    }, [fn])
 
     const messageRef = useRef()
-    messageRef.current = message
+
+    useEffect(() => {
+        messageRef.current = message
+    }, [message])
 
     useEffect(() => {
         const onBeforeUnload = (e) => {

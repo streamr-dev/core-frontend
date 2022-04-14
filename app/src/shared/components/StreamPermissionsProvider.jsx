@@ -5,6 +5,8 @@ import StreamPermissionsInvalidatorContext from '$shared/contexts/StreamPermissi
 import useStreamId from '$shared/hooks/useStreamId'
 import useFetchPermission from '$shared/hooks/useFetchPermission'
 
+const defaultOperations = []
+
 function getPermissionsMap(operations, formatFn) {
     const result = {}
 
@@ -19,7 +21,7 @@ function getInitialPermissions(operations) {
     return getPermissionsMap(operations, () => undefined)
 }
 
-export default function StreamPermissionsProvider({ children, preload = false, operations }) {
+export default function StreamPermissionsProvider({ children, preload = false, operations = defaultOperations }) {
     const streamId = useStreamId()
 
     // By design `operations` stay the same thoughout the life cycle of this component.

@@ -5,7 +5,7 @@ import { mount } from 'enzyme'
 import UserpagesRouter from '$mp/../app/Userpages'
 
 /* eslint-disable react/prop-types */
-jest.mock('$userpages/components/StreamPage', () => ({
+jest.mock('$app/src/pages/StreamEditPage', () => ({
     __esModule: true,
     default: ({ match }) => (
         `Stream ${match.params.id} view/edit page`
@@ -17,7 +17,7 @@ jest.mock('$app/src/pages/StreamListPage', () => ({
         'Stream list'
     ),
 }))
-jest.mock('$userpages/components/StreamPage/New', () => ({
+jest.mock('$app/src/pages/StreamCreatePage', () => ({
     __esModule: true,
     default: () => (
         'New stream page'

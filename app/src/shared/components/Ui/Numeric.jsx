@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useState, useRef } from 'react'
+import React, { useCallback, useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import Text from '$ui/Text'
@@ -105,6 +105,10 @@ const Numeric = ({
             onChangeProp(event)
         }
     }, [onChangeProp])
+
+    useEffect(() => {
+        setInternalValue(value)
+    }, [value])
 
     const addValue = useCallback((event: SyntheticInputEvent<EventTarget>, val) => {
         let parsedValue = Number.parseFloat(internalValue != null ? internalValue : '')

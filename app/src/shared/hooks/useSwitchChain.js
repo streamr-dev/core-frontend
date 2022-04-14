@@ -1,61 +1,39 @@
 import { useState, useMemo, useCallback } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
-import getConfig from '$shared/web3/config'
+import { switchNetwork, addNetwork } from '$shared/utils/network'
+import MissingNetworkError from '$shared/errors/MissingNetworkError'
 
 export default function useSwitchChain() {
     const [switchPending, setSwitchPending] = useState(false)
     const isMounted = useIsMounted()
 
-    const switchChain = useCallback(async (nextChainId) => {
-        const web3 = getWeb3()
-
+    const switchChain = useCallback(async (nextChainId, { addMissingNetwork = true } = {}) => {
         setSwitchPending(true)
 
-        const { metamask: networks } = getConfig()
+        let success = false
 
         try {
-            await validateWeb3({
-                web3,
-                requireNetwork: false,
-            })
+            await switchNetwork(nextChainId)
+            success = true
+        } catch (e) {
+            if (addMissingNetwork && e instanceof MissingNetworkError) {
+                // Let's add the missing network.
+                await addNetwork(nextChainId)
 
-            if (!networks[nextChainId]) {
-                throw new Error(`Chain id "${nextChainId}" is not supported!`)
+                // And switch to it immediately after.
+                return await switchChain(nextChainId, {
+                    addMissingNetwork: false,
+                })
             }
 
-            // try switching networks
-            await web3.currentProvider.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{
-                    chainId: web3.utils.toHex(nextChainId),
-                }],
-            })
-        } catch (switchError) {
-            const { getParams } = networks[nextChainId] || {}
-
-            // This error code indicates that the chain has not been added to MetaMask.
-            if (switchError.code === 4902 && typeof getParams === 'function') {
-                try {
-                    // add the new network
-                    await web3.currentProvider.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [{
-                            chainId: web3.utils.toHex(nextChainId),
-                            ...getParams(),
-                        }],
-                    })
-                } catch (addError) {
-                    console.error(addError)
-                }
-            } else {
-                console.error(switchError)
-            }
+            throw e
         } finally {
             if (isMounted()) {
                 setSwitchPending(false)
             }
         }
+
+        return success
     }, [isMounted])
 
     return useMemo(() => ({

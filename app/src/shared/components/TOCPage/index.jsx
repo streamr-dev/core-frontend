@@ -1,17 +1,10 @@
-// @flow
-
-import React, { type Node } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { MD, LG, XL, REGULAR } from '$shared/utils/styled'
-import BusLine, { useBusLine } from '$shared/components/BusLine'
+import BusLine from '$shared/components/BusLine'
+import Display from '$shared/components/Display'
 import TOCSection from './TOCSection'
-import TOCNav, { Link } from './TOCNav'
-
-type Props = {
-    title?: string,
-    children: ?Node,
-    className?: string,
-}
+import TOCNav from './TOCNav'
 
 const SectionWrapper = styled.div`
     > div {
@@ -23,13 +16,11 @@ const SectionWrapper = styled.div`
     }
 `
 
-const Wing = styled.div`
-    display: none;
-
-    @media (min-width: ${LG}px) {
-        display: block;
-    }
-`
+const Wing = ({ children }) => (
+    <Display $mobile="none" $desktop>
+        {children}
+    </Display>
+)
 
 export const Title = styled.h1`
     color: #323232;
@@ -56,9 +47,7 @@ export const Title = styled.h1`
     }
 `
 
-const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
-    const { stop } = useBusLine()
-
+function UnstyledTOCPage({ children, title, ...props }) {
     return (
         <div {...props} data-test-hook="TOCPage">
             <div>
@@ -71,17 +60,7 @@ const UnstyledTOCPage = ({ children, title, ...props }: Props) => {
                 )}
                 <Wing>
                     <TOCNav>
-                        {React.Children.map(children, (child) => (
-                            child && child.type === TOCSection ? (
-                                <Link
-                                    active={stop === child.props.id}
-                                    href={`#${child.props.id}`}
-                                    disabled={!!child.props.disabled}
-                                >
-                                    {child.props.linkTitle || child.props.title}
-                                </Link>
-                            ) : null
-                        ))}
+                        {children}
                     </TOCNav>
                 </Wing>
                 <SectionWrapper>
@@ -124,7 +103,7 @@ const StyledTOCPage = styled(UnstyledTOCPage)`
     }
 `
 
-const TOCPage = (props: any) => (
+const TOCPage = (props) => (
     <BusLine dynamicScrollPosition>
         <StyledTOCPage {...props} />
     </BusLine>
