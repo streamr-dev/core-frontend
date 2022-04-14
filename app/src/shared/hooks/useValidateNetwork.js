@@ -15,10 +15,6 @@ export default function useValidateNetwork() {
 
     const itp = useInterrupt()
 
-    useEffect(() => () => {
-        itp().interruptAll()
-    }, [itp])
-
     return useCallback(async (nextChainId) => {
         const { requireUninterrupted } = itp()
 

@@ -206,10 +206,6 @@ export default function StreamModifier({ children, onValidate }) {
         clean,
     }), [busy, clean])
 
-    useEffect(() => () => {
-        itp().interruptAll()
-    }, [itp])
-
     return (
         <StreamModifierContext.Provider value={value}>
             <TransientStreamContext.Provider value={paramsModified}>

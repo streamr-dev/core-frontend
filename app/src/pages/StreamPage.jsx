@@ -67,10 +67,6 @@ function UnwrappedStreamPage({ title, children, loading = false }) {
 
     const { [StreamPermission.GRANT]: canGrant = false } = useStreamPermissions()
 
-    useEffect(() => () => {
-        itp().interruptAll()
-    }, [itp])
-
     const isNew = !useStreamId()
 
     const nativeTokenName = useNativeTokenName()
