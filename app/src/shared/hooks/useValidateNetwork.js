@@ -19,12 +19,14 @@ export default function useValidateNetwork() {
         const { requireUninterrupted } = itp()
 
         try {
-            await validateWeb3({
-                web3: getWeb3(),
-                requireNetwork: nextChainId,
-            })
-
-            requireUninterrupted()
+            try {
+                await validateWeb3({
+                    web3: getWeb3(),
+                    requireNetwork: nextChainId,
+                })
+            } finally {
+                requireUninterrupted()
+            }
         } catch (e) {
             if (e instanceof WrongNetworkSelectedError) {
                 const { proceed } = await switchNetworkDialogRef.current.open({
