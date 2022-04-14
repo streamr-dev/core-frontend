@@ -58,7 +58,7 @@ function UnstyledUnwrappedCodeSnippetsSection({ className, disabled }) {
                 className={className}
                 footer={
                     <FooterWrap>
-                        <ShowAllButton kind="secondary" onClick={onShowAllClick}>
+                        <ShowAllButton kind="secondary" onClick={onShowAllClick} type="button">
                             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 {!showAll ? (
                                     // eslint-disable-next-line max-len
@@ -69,7 +69,7 @@ function UnstyledUnwrappedCodeSnippetsSection({ className, disabled }) {
                                 )}
                             </svg>
                         </ShowAllButton>
-                        <Button kind="secondary" onClick={onCopyClick} disabled={!!disabled}>
+                        <Button kind="secondary" onClick={onCopyClick} disabled={!!disabled} type="button">
                             {isCopied ? 'Copied' : 'Copy'}
                         </Button>
                     </FooterWrap>

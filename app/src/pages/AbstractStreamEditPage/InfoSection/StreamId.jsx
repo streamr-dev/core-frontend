@@ -68,7 +68,7 @@ export function ReadonlyStreamId({ className }) {
             </Pathname>
             <div>
                 <Label />
-                <Button kind="secondary" onClick={() => void copy(streamId)}>
+                <Button kind="secondary" onClick={() => void copy(streamId)} type="button">
                     {!isCopied && 'Copy Stream ID'}
                     {!!isCopied && 'Copied!'}
                 </Button>
