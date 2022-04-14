@@ -15,6 +15,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
 const validateEnv = require('./scripts/validateEnv')
+const pkg = require('./package')
 
 const dotenv = require('./scripts/dotenv')
 
@@ -175,6 +176,7 @@ module.exports = {
             template: 'src/index.html',
             templateParameters: {
                 gaId: process.env.GOOGLE_ANALYTICS_ID,
+                version: pkg.version,
             },
         }),
         new MiniCssExtractPlugin({
