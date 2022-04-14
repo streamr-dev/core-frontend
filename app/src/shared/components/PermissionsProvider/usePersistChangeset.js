@@ -106,8 +106,6 @@ export default function usePersistChangeset() {
         try {
             try {
                 await saveRef.current(onSuccess)
-            } catch (e) {
-                throw e
             } finally {
                 requireUninterrupted()
             }
