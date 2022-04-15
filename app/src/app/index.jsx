@@ -10,7 +10,7 @@ import '$utils/setupSnippets'
 // Auth
 import { Provider as SessionProvider } from '$shared/components/SessionProvider'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
-import LoginPage from '$auth/components/LoginPage'
+import LoginPage from '$app/src/pages/LoginPage'
 import LogoutPage from '$app/src/pages/LogoutPage'
 
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
