@@ -8,7 +8,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/hooks/useOnMount'
 import { logout as logoutAction } from '$shared/modules/user/actions'
 import useFailure from '$shared/hooks/useFailure'
-import { useSession } from '$auth/components/SessionProvider'
+import { useSession } from '$shared/components/SessionProvider'
 import routes from '$routes'
 
 const LogoutPage = () => {

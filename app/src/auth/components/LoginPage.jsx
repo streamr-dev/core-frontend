@@ -6,11 +6,11 @@ import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
 import Button from '$shared/components/Button'
 import { getUserData } from '$shared/modules/user/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { useSession } from '$shared/components/SessionProvider'
 
 import useMetamask from '../hooks/useMetamask'
 import useWalletConnect from '../hooks/useWalletConnect'
 
-import { useSession } from './SessionProvider'
 import AuthLayout from './AuthLayout'
 
 const METAMASK = 'metamask'
