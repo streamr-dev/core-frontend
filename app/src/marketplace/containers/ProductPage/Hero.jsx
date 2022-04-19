@@ -18,7 +18,6 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
-
 import { ImageTile } from '$shared/components/Tile'
 import { NotificationIcon } from '$shared/utils/constants'
 import Notification from '$shared/utils/Notification'
@@ -26,7 +25,7 @@ import { isAddressWhitelisted } from '$mp/modules/contractProduct/services'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import type { ProductId } from '$mp/flowtype/product-types'
 import { getWeb3, validateWeb3 } from '$shared/web3/web3Provider'
-
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 
 type WhitelistStatus = {
@@ -45,7 +44,8 @@ const getWhitelistStatus = async ({ productId, validate = false }: WhitelistStat
                 unlockTimeout: true,
             })
         }
-        const account = await web3.getDefaultAccount()
+
+        const account = await getDefaultWeb3Account(web3)
 
         return !!account && isAddressWhitelisted(productId, account)
     } catch (e) {

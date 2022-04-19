@@ -4,13 +4,15 @@ import BN from 'bignumber.js'
 import Web3 from 'web3'
 
 import NoBalanceError from '$mp/errors/NoBalanceError'
-import { getPublicWeb3, getWeb3 } from '$shared/web3/web3Provider'
+import { getWeb3 } from '$shared/web3/web3Provider'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getConfig from '$shared/web3/config'
 import type { SmartContractCall, Address } from '$shared/flowtype/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { getContract, call } from '../utils/smartContract'
 import { fromAtto } from './math'
 
@@ -57,15 +59,15 @@ export const getDaiTokenBalance = (address: Address, usePublicNode: boolean = fa
         .then(fromAtto)
 )
 
-export const getMyEthBalance = (): Promise<BN> => (getWeb3().getDefaultAccount()
+export const getMyEthBalance = (): Promise<BN> => (getDefaultWeb3Account(getWeb3())
     .then((myAccount) => getEthBalance(myAccount))
 )
 
-export const getMyDataTokenBalance = (): SmartContractCall<BN> => (getWeb3().getDefaultAccount()
+export const getMyDataTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account(getWeb3())
     .then((myAccount) => getDataTokenBalance(myAccount))
 )
 
-export const getMyDaiTokenBalance = (): SmartContractCall<BN> => (getWeb3().getDefaultAccount()
+export const getMyDaiTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account(getWeb3())
     .then((myAccount) => getDaiTokenBalance(myAccount))
 )
 

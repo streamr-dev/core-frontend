@@ -6,6 +6,7 @@ import getWeb3, { validateWeb3 } from '$shared/web3/web3Provider'
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import type { Address } from '$shared/flowtype/web3-types'
 import { networks } from '$shared/utils/constants'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Web3Poller from '$shared/web3/web3Poller'
 import useIsMounted from './useIsMounted'
 
@@ -40,7 +41,7 @@ export default function useWeb3Status({ requireWeb3 = true, requireNetwork = net
             })
             if (!isMounted()) { return }
 
-            const nextAccount = await web3.getDefaultAccount()
+            const nextAccount = await getDefaultWeb3Account(web3)
 
             if (!isMounted()) { return }
 

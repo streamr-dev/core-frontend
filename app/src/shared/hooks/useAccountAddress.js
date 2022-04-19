@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { getWeb3 } from '$shared/web3/web3Provider'
 import Web3Poller from '$shared/web3/web3Poller'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 
 export default (): ?string => {
     const [address, setAddress] = useState()
@@ -13,7 +14,7 @@ export default (): ?string => {
     useEffect(() => {
         (async () => {
             try {
-                return await getWeb3().getDefaultAccount()
+                return await getDefaultWeb3Account(getWeb3())
             } catch (e) {
                 return undefined
             }

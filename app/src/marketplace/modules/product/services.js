@@ -13,6 +13,7 @@ import type { Product, ProductId, Subscription, ProductType } from '$mp/flowtype
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto, toAtto } from '$mp/utils/math'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 import { getContract, call, send } from '../../utils/smartContract'
 
@@ -51,7 +52,7 @@ export const getProductById = async (id: ProductId, useAuthorization: boolean = 
 export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subscription> => (
     Promise.all([
         getProductFromContract(id),
-        getWeb3().getDefaultAccount(),
+        getDefaultWeb3Account(getWeb3()),
     ])
         .then(([, account]) => call(marketplaceContract().methods.getSubscription(getValidId(id), account)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
@@ -192,12 +193,11 @@ export const buyProduct = (
     }
 }
 
-export const getMyDataAllowance = (): SmartContractCall<BN> => {
-    const web3 = getWeb3()
-    return web3.getDefaultAccount()
+export const getMyDataAllowance = (): SmartContractCall<BN> => (
+    getDefaultWeb3Account(getWeb3())
         .then((myAddress) => call(dataTokenContractMethods().allowance(myAddress, marketplaceContract().options.address)))
         .then(fromAtto)
-}
+)
 
 export const setMyDataAllowance = (amount: string | BN): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
@@ -209,9 +209,8 @@ export const setMyDataAllowance = (amount: string | BN): SmartContractTransactio
 }
 
 export const getMyDaiAllowance = (): SmartContractCall<BN> => {
-    const web3 = getWeb3()
     const { uniswapAdaptorContractAddress } = getCoreConfig()
-    return web3.getDefaultAccount()
+    return getDefaultWeb3Account(getWeb3())
         .then((myAddress) => call(daiTokenContractMethods().allowance(myAddress, uniswapAdaptorContractAddress)))
         .then(fromAtto)
 }

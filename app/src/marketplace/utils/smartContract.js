@@ -7,8 +7,8 @@ import BN from 'bignumber.js'
 
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { networks } from '$shared/utils/constants'
-
-import getWeb3, { getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
+import getWeb3, { StreamrWeb3 } from '$shared/web3/web3Provider'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
 import type {
     SmartContractCall,
@@ -17,6 +17,7 @@ import type {
     SmartContractTransaction,
 } from '$shared/flowtype/web3-types'
 import type { NumberString } from '$shared/flowtype/common-types'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 
 import Transaction from '$shared/utils/Transaction'
 import type { Product, SmartContractProduct } from '../flowtype/product-types'
@@ -74,7 +75,7 @@ export const send = (method: Sendable, options?: {
     }
     const tx = new Transaction(emitter)
     Promise.all([
-        web3.getDefaultAccount(),
+        getDefaultWeb3Account(web3),
         checkEthereumNetworkIsCorrect({
             web3,
             network: (options && options.network) || networks.MAINNET,
