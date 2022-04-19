@@ -7,7 +7,7 @@ import WrongNetworkSelectedDialog from '$shared/components/WrongNetworkSelectedD
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
 import { networks } from '$shared/utils/constants'
 

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 
 import useModal from '$shared/hooks/useModal'
 import { getWeb3, validateWeb3 } from '$shared/web3/web3Provider'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectEthereumNetworkId } from '$mp/modules/global/selectors'

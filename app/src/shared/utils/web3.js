@@ -3,7 +3,7 @@
 import { StreamrWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
 import getConfig from '$shared/web3/config'
 import { networks } from '$shared/utils/constants'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import type { Hash } from '$shared/flowtype/web3-types'
 
 type CheckNetworkParams = {

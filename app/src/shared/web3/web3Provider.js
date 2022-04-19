@@ -5,11 +5,9 @@ import Web3 from 'web3'
 import FakeProvider from 'web3-fake-provider'
 import getConfig from '$shared/web3/config'
 import type { Address } from '$shared/flowtype/web3-types'
-import {
-    Web3NotSupportedError,
-    Web3NotEnabledError,
-    WalletLockedError,
-} from '$shared/errors/Web3/index'
+import Web3NotSupportedError from '$shared/errors/Web3NotSupportedError'
+import Web3NotEnabledError from '$shared/errors/Web3NotEnabledError'
+import WalletLockedError from '$shared/errors/WalletLockedError'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { networks } from '$shared/utils/constants'
 

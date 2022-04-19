@@ -3,7 +3,8 @@
 import React from 'react'
 
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import { Web3NotSupportedError, WalletLockedError } from '$shared/errors/Web3'
+import Web3NotSupportedError from '$shared/errors/Web3NotSupportedError'
+import WalletLockedError from '$shared/errors/WalletLockedError'
 
 import UnlockWalletDialog from './UnlockWalletDialog'
 import Web3NotDetectedDialog from './Web3NotDetectedDialog'

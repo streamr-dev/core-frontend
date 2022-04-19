@@ -1,15 +1,12 @@
 // @flow
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import getWeb3, { validateWeb3 } from '$shared/web3/web3Provider'
-import { WalletLockedError } from '$shared/errors/Web3'
+import WalletLockedError from '$shared/errors/WalletLockedError'
 import type { Address } from '$shared/flowtype/web3-types'
 import { networks } from '$shared/utils/constants'
-
 import Web3Poller from '$shared/web3/web3Poller'
-
 import useIsMounted from './useIsMounted'
 
 type Result = {
