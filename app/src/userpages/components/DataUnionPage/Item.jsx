@@ -35,6 +35,7 @@ import { DataUnionMembersProvider } from '$mp/modules/dataUnion/hooks/useDataUni
 import Initials from '$shared/components/AvatarImage/Initials'
 import useEntities from '$shared/hooks/useEntities'
 import { productSchema } from '$shared/modules/entities/schema'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import routes from '$routes'
 
 import Management from './Management'
@@ -293,6 +294,7 @@ const Item = ({ product, stats }: Props) => {
     const productId = product && product.id
     const productName = product && product.name
     const dataUnionId = product && product.beneficiaryAddress
+    const chainId = product && getChainIdFromApiString(product.chain)
 
     const [isOpen, setIsOpen] = useState(false)
     const [subscriberCount, setSubscriberCount] = useState(false)
@@ -317,7 +319,7 @@ const Item = ({ product, stats }: Props) => {
     useEffect(() => {
         const load = async () => {
             if (productId) {
-                const count = await getSubscriberCount(productId)
+                const count = await getSubscriberCount(productId, true, chainId)
 
                 if (isMounted()) {
                     setSubscriberCount(count)
@@ -325,7 +327,7 @@ const Item = ({ product, stats }: Props) => {
             }
         }
         wrapSubscriberLoad(() => load())
-    }, [productId, isMounted, wrapSubscriberLoad])
+    }, [productId, chainId, isMounted, wrapSubscriberLoad])
 
     useEffect(() => {
         const load = async () => {

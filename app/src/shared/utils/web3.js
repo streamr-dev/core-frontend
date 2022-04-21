@@ -14,7 +14,7 @@ type CheckNetworkParams = {
 export const checkEthereumNetworkIsCorrect = async ({ network = networks.MAINNET }: CheckNetworkParams = {}): Promise<void> => {
     const currentChainId = await getChainId()
 
-    if (currentChainId == null || network.toString() !== currentChainId.toString()) {
+    if (currentChainId == null || network == null || network.toString() !== currentChainId.toString()) {
         // $FlowFixMe: currentChainId: "Promise is incompatible with number", nope
         throw new WrongNetworkSelectedError(network, currentChainId)
     }

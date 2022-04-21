@@ -31,6 +31,7 @@ import { isDataUnionProduct } from '$mp/utils/product'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import usePurchase, { actionsTypes } from './usePurchase'
 
 type Props = {
@@ -41,7 +42,10 @@ type Props = {
 export const PurchaseDialog = ({ productId, api }: Props) => {
     const dispatch = useDispatch()
     const { product, loadContractProduct } = useController()
-    const { web3Error, checkingWeb3, account } = useWeb3Status()
+    const { web3Error, checkingWeb3, account } = useWeb3Status({
+        requireWeb3: true,
+        requireNetwork: getChainIdFromApiString(product.chain),
+    })
     const { isPending: isContractProductLoadPending } = usePending('contractProduct.LOAD')
     const { isPending: isPurchasePending, wrap: wrapPurchase } = usePending('product.PURCHASE')
     const nativeTokenName = useNativeTokenName()
@@ -69,16 +73,17 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const dataUnionRef = useRef()
     const isDataUnion = !!(product && isDataUnionProduct(product))
     dataUnionRef.current = isDataUnion ? dataUnion : undefined
+    const chainId = product && getChainIdFromApiString(product.chain)
 
     // Start loading the contract product & clear allowance state
     useEffect(() => {
-        loadContractProduct(productId)
+        loadContractProduct(productId, chainId)
             .then(() => {
                 if (isMounted()) {
                     setStep(purchaseFlowSteps.ACCESS_PERIOD)
                 }
             })
-    }, [dispatch, loadContractProduct, productId, isMounted])
+    }, [dispatch, loadContractProduct, productId, chainId, isMounted])
 
     useEffect(() => {
         if (!account) { return }

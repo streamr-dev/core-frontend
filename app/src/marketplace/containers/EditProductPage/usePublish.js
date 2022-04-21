@@ -62,11 +62,12 @@ export default function usePublish() {
         if (!product) {
             throw new Error('no product')
         }
+        const chainId = getChainIdFromApiString(product.chain)
 
         // load contract product
         let contractProduct
         try {
-            contractProduct = await getProductFromContract(product.id || '')
+            contractProduct = await getProductFromContract(product.id || '', true, chainId)
         } catch (e) {
             // don't need to do anything with this error necessarily,
             // it just means that the product wasn't deployed
@@ -167,7 +168,7 @@ export default function usePublish() {
                     requireOwner: dataUnionOwner,
                     handler: (update, done) => {
                         try {
-                            return setAdminFee(product.beneficiaryAddress, adminFee)
+                            return setAdminFee(product.beneficiaryAddress, chainId, adminFee)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     if (hash) {
@@ -201,7 +202,7 @@ export default function usePublish() {
                     requireWeb3: true,
                     requireOwner: contractProduct.ownerAddress,
                     handler: (update, done) => (
-                        setRequiresWhitelist(product.id || '', requiresWhitelist)
+                        setRequiresWhitelist(product.id || '', requiresWhitelist, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING)
                                 dispatch(addTransaction(hash, transactionTypes.SET_REQUIRES_WHITELIST))
@@ -239,7 +240,8 @@ export default function usePublish() {
                                 pricePerSecond: pricePerSecond || product.pricePerSecond,
                                 beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
                                 priceCurrency: priceCurrency || product.priceCurrency,
-                            }, isRedeploy, getChainIdFromApiString(product.chain))
+                                chainId,
+                            }, isRedeploy)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()
@@ -294,7 +296,8 @@ export default function usePublish() {
                                 state: product.state,
                                 ownerAddress: '', // owner address is not needed when creating
                                 requiresWhitelist,
-                            }, getChainIdFromApiString(product.chain))
+                                chainId,
+                            })
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()
@@ -361,7 +364,7 @@ export default function usePublish() {
                 requireOwner: contractProduct.ownerAddress,
                 handler: (update, done) => {
                     try {
-                        return redeployProduct(product.id || '')
+                        return redeployProduct(product.id || '', chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING)
                                 done()
@@ -401,7 +404,7 @@ export default function usePublish() {
                     requireOwner: contractProduct.ownerAddress,
                     handler: (update, done) => {
                         try {
-                            return deleteProduct(product.id || '')
+                            return deleteProduct(product.id || '', chainId)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()

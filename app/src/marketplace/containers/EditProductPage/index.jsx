@@ -20,6 +20,7 @@ import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotF
 import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
 import useModal from '$shared/hooks/useModal'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 
 import BackButton from '$shared/components/BackButton'
 import useProductPermissions from '../ProductController/useProductPermissions'
@@ -56,6 +57,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadAllStreams,
         resetDataUnion,
     } = useController()
+    const chainId = getChainIdFromApiString(product.chain)
 
     const { load: loadDataUnionSecrets, reset: resetDataUnionSecrets } = useDataUnionSecrets()
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
@@ -66,9 +68,11 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const productId = product.id
     // Load categories and streams
     useEffect(() => {
-        loadContractProductSubscription(productId)
+        if (productId && chainId) {
+            loadContractProductSubscription(productId, chainId)
+            loadWhiteWhitelistedAdresses(productId, chainId)
+        }
         loadCategories()
-        loadWhiteWhitelistedAdresses(productId)
         loadAllStreams()
     }, [
         loadCategories,
@@ -76,6 +80,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         productId,
         loadAllStreams,
         loadWhiteWhitelistedAdresses,
+        chainId,
     ])
 
     const { beneficiaryAddress } = originalProduct
@@ -110,7 +115,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     // clear whitelisted addresses when unmounting
     useEffect(() => () => {
-        resetWhiteWhitelistedAdresses(productId)
+        if (productId) {
+            resetWhiteWhitelistedAdresses(productId)
+        }
     }, [resetWhiteWhitelistedAdresses, productId])
 
     const saveAndExitButton = useMemo(() => ({

@@ -53,10 +53,10 @@ const getTransactionsFailure = (error: ErrorInUi) => ({
     error,
 })
 
-export const fetchProducts = (ids: ProductIdList) => (dispatch: Function) => {
+export const fetchProducts = (ids: ProductIdList, chainId: number) => (dispatch: Function) => {
     (ids || []).forEach((id) => {
         try {
-            getProductFromContract(id)
+            getProductFromContract(id, true, chainId)
                 .then(handleEntities(contractProductSchema, dispatch))
                 .catch((e) => {
                     console.warn(e)
@@ -78,6 +78,9 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
     const events = selectTransactionEvents(state) || []
     const entities = selectEntities(state)
     const offset = selectOffset(state)
+    // FIXME: Where to get?
+    const chainId = 1
+    console.log('TODO: FIX ChainId')
 
     const eventsToShow = events.splice(offset, 10)
     const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.id]))
@@ -93,7 +96,7 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
                     result.includes(transaction.productId) ? result : [...result, (transaction.productId || '')]
                 ), [])
 
-            dispatch(fetchProducts(productsToFetch))
+            dispatch(fetchProducts(productsToFetch, chainId))
             return data
         })
         .then(handleEntities(transactionsSchema, dispatch))

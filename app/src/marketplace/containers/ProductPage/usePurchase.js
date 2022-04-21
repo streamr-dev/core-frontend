@@ -226,7 +226,7 @@ export default function usePurchase() {
                         })
                         .onTransactionComplete(() => {
                             update(transactionStates.CONFIRMED)
-                            dispatch(getProductSubscription(contractProduct.id))
+                            dispatch(getProductSubscription(contractProduct.id, contractProduct.chainId))
                         })
                         .onError((error) => {
                             done()

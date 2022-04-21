@@ -8,11 +8,12 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 type Props = {
     productId: string,
     shownDays?: number,
+    chainId: number,
 }
 
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
-const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
+const SubscriberGraph = ({ productId, shownDays = 7, chainId }: Props) => {
     const [graphData, setGraphData] = useState([])
     const [subscriptionData, setSubscriptionData] = useState([])
     const [isLoading, setIsLoading] = useState(false)
@@ -25,14 +26,14 @@ const SubscriberGraph = ({ productId, shownDays = 7 }: Props) => {
     useEffect(() => {
         const getSubscriptions = async () => {
             setIsLoading(true)
-            const subscriptions = await getSubscribedEvents(productId, startDate)
+            const subscriptions = await getSubscribedEvents(productId, startDate, true, chainId)
             if (isMounted) {
                 setSubscriptionData(subscriptions)
                 setIsLoading(false)
             }
         }
         getSubscriptions()
-    }, [productId, isMounted, startDate])
+    }, [productId, chainId, isMounted, startDate])
 
     useEffect(() => {
         const data = []

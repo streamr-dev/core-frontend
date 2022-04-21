@@ -10,17 +10,17 @@ const chainNameToIdMapping = {
 }
 
 export const getChainIdFromApiString = (name: string): number => {
+    // TODO: Kind of ugly hack to map production values to development environment
+    if (process.env.NODE_ENV === 'development') {
+        if (name === 'ETHEREUM') {
+            return 8995
+        }
+        return 8997
+    }
+
     const found = Object.entries(chainNameToIdMapping).find((val) => val[0].toLowerCase() === name.toLowerCase())
     if (found) {
         const chainId = found[1]
-
-        // TODO: Kind of ugly hack to map production values to development environment
-        if (process.env.NODE_ENV === 'development') {
-            if (chainId === 1) {
-                return 8995
-            }
-            return 8997
-        }
 
         // $FlowFixMe: mixed is incompatible with number (╯°□°）╯︵ ┻━┻
         return chainId
@@ -29,9 +29,20 @@ export const getChainIdFromApiString = (name: string): number => {
 }
 
 export const getApiStringFromChainId = (id: number): string => {
+    /*
+    // TODO: Kind of ugly hack to map production values to development environment
+    if (process.env.NODE_ENV === 'development') {
+        if (id === 1) {
+            return 'ETHEREUM'
+        }
+        return 'XDAI'
+    }
+    */
+
     const found = Object.entries(chainNameToIdMapping).find((val) => val[1] === id)
     if (found) {
-        return found[0]
+        const chainName = found[0]
+        return chainName
     }
     throw Error(`Unknown chain id ${id}`)
 }

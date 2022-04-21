@@ -7,7 +7,7 @@ import unlock from '$utils/web3/unlock'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 
 type ValidateParams = {
-    requireNetwork?: $Values<typeof networks> | boolean,
+    requireNetwork?: number | boolean,
     unlockTimeout?: number | boolean,
 }
 
@@ -30,7 +30,7 @@ export default async function validateWeb3({ requireNetwork = networks.MAINNET, 
     // `WalletLockedError` if we don't.
     await getDefaultWeb3Account()
 
-    if (typeof requireNetwork !== 'string' || !Object.values(networks).includes(requireNetwork)) {
+    if (typeof requireNetwork !== 'number') {
         return
     }
 

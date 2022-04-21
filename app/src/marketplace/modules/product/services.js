@@ -49,9 +49,9 @@ export const getProductById = async (id: ProductId, useAuthorization: boolean = 
 })
     .then(mapProductFromApi)
 
-export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subscription> => (
+export const getMyProductSubscription = (id: ProductId, chainId: number): SmartContractCall<Subscription> => (
     Promise.all([
-        getProductFromContract(id),
+        getProductFromContract(id, true, chainId),
         getDefaultWeb3Account(),
     ])
         .then(([, account]) => call(marketplaceContract().methods.getSubscription(getValidId(id), account)))

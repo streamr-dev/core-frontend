@@ -16,6 +16,7 @@ import Nav from '$shared/components/Layout/Nav'
 
 import { selectUserData } from '$shared/modules/user/selectors'
 import { useSessionToken } from '$shared/reducers/session'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import ProductController, { useController } from '../ProductController'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import PurchaseModal from './PurchaseModal'
@@ -41,13 +42,14 @@ const ProductPage = () => {
     const { isPending } = usePending('contractProduct.LOAD')
 
     const { id: productId } = useParams()
+    const chainId = getChainIdFromApiString(product.chain)
 
     const loadAdditionalProductData = useCallback(async (id: ProductId) => {
-        loadContractProductSubscription(id)
+        loadContractProductSubscription(id, chainId)
         loadCategories()
         loadRelatedProducts(id, isLoggedIn)
         if (isLoggedIn) {
-            dispatch(getProductSubscription(id))
+            dispatch(getProductSubscription(id, chainId))
         }
     }, [
         dispatch,
@@ -55,6 +57,7 @@ const ProductPage = () => {
         loadContractProductSubscription,
         loadCategories,
         loadRelatedProducts,
+        chainId,
     ])
 
     useEffect(() => {

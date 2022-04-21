@@ -7,7 +7,6 @@ import { isHex } from 'web3-utils'
 import BN from 'bignumber.js'
 
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
-import { networks } from '$shared/utils/constants'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
@@ -77,7 +76,7 @@ export const send = (method: Sendable, options?: {
     Promise.all([
         getDefaultWeb3Account(),
         checkEthereumNetworkIsCorrect({
-            network: (options && options.network) || networks.MAINNET,
+            network: (options && options.network),
         }),
     ])
         .then(([account]) => (

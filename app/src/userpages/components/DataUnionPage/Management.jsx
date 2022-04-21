@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import DaysPopover from '$shared/components/DaysPopover'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
 import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
@@ -62,6 +63,7 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
     const { loadDataUnion } = useController()
     const { startPolling, stopPolling, memberCount } = useDataUnionServerStats()
     const { beneficiaryAddress } = product
+    const chainId = getChainIdFromApiString(product.chain)
 
     useEffect(() => {
         if (beneficiaryAddress) {
@@ -92,6 +94,7 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
                 <SubscriberGraph
                     productId={product.id}
                     shownDays={subsDays}
+                    chainId={chainId}
                 />
             </Box>
             <Box>

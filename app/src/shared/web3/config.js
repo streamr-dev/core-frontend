@@ -1,5 +1,6 @@
 // @flow
 
+import { Chains } from '@streamr/config'
 import type { SmartContractConfig } from '$shared/flowtype/web3-types'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
@@ -36,6 +37,26 @@ type Config = {
     mainnet: MainnetConfig,
     dataunionsChain: DataUnionChainConfig,
     streamsChain: SidechainConfig,
+}
+
+const chainConfigs = Chains.loadFromNodeEnv()
+
+export const getConfigForChain = (chainId: number) => {
+    // $FlowFixMe: Object.entries loses type information
+    const configEntry = Object.entries(chainConfigs).find((c) => c[1].id.toString() === chainId.toString())
+
+    if (configEntry == null) {
+        throw new Error(`Could not find config for chainId ${chainId}`)
+    }
+
+    const config: any = configEntry[1]
+
+    return {
+        marketplace: {
+            abi: marketplaceAbi,
+            address: config.contracts.Marketplace,
+        },
+    }
 }
 
 const getConfig = (): Config => {

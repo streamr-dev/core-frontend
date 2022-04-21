@@ -20,6 +20,7 @@ import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 
 type DeployDialogProps = {
     product: Product,
@@ -55,7 +56,10 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     const [estimate, setEstimate] = useState(0)
     const [address, setAddress] = useState(undefined)
     const isMounted = useIsMounted()
-    const { web3Error, checkingWeb3 } = useWeb3Status()
+    const { web3Error, checkingWeb3 } = useWeb3Status({
+        requireWeb3: true,
+        requireNetwork: getChainIdFromApiString(product.chain),
+    })
 
     const onClose = useCallback(() => {
         api.close(!!address && isEthereumAddress(address))
@@ -64,6 +68,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
     onCloseRef.current = onClose
 
     const productId = product.id
+    const chainId = product && getChainIdFromApiString(product.chain)
     const { adminFee = '0' } = product || {}
     const onDeploy = useCallback(async () => {
         // Set estimate
@@ -82,6 +87,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         return new Promise((resolve) => (
             deployDataUnion({
                 productId: productId || '',
+                chainId,
                 adminFee,
             })
                 .onTransactionHash((contractAddress) => {
@@ -121,7 +127,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     resolve()
                 })
         ))
-    }, [isMounted, productId, adminFee])
+    }, [isMounted, productId, adminFee, chainId])
 
     const onGuideContinue = useCallback((dontShow) => {
         setSkipGuide(dontShow)

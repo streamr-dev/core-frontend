@@ -1,12 +1,22 @@
+// @flow
+
 import { useMemo, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { getWhitelistAddresses } from '$mp/modules/contractProduct/services'
 import { whiteListedAddressesSchema, whiteListedAddressSchema } from '$shared/modules/entities/schema'
 import useEntities from '$shared/hooks/useEntities'
+import type { ProductId } from '$mp/flowtype/product-types'
 
 import { setWhiteListedAddresses, addWhiteListedAddress, removeWhiteListedAddress } from '../actions'
 import { selectWhiteListedAddresses } from '../selectors'
+
+type WhitelistParams = {
+    productId: ProductId,
+    address: string,
+    status: string,
+    isPending: boolean,
+}
 
 export function useWhitelist() {
     const dispatch = useDispatch()
@@ -14,9 +24,9 @@ export function useWhitelist() {
 
     const items = useSelector(selectWhiteListedAddresses)
 
-    const load = useCallback(async (productId) => {
+    const load = useCallback(async (productId: ProductId, chainId: number) => {
         try {
-            const addresses = await getWhitelistAddresses(productId)
+            const addresses = await getWhitelistAddresses(productId, true, chainId)
 
             const result = update({
                 data: addresses,
@@ -29,7 +39,7 @@ export function useWhitelist() {
         }
     }, [dispatch, update])
 
-    const add = useCallback(({ productId, address, status, isPending }) => {
+    const add = useCallback(({ productId, address, status, isPending }: WhitelistParams) => {
         try {
             const result = update({
                 data: {
@@ -46,7 +56,7 @@ export function useWhitelist() {
         }
     }, [dispatch, update])
 
-    const edit = useCallback(({ address, status, isPending }) => {
+    const edit = useCallback(({ address, status, isPending }: WhitelistParams) => {
         try {
             update({
                 data: {
@@ -62,7 +72,7 @@ export function useWhitelist() {
         }
     }, [update])
 
-    const remove = useCallback(({ productId, address }) => {
+    const remove = useCallback(({ productId, address }: WhitelistParams) => {
         try {
             const result = update({
                 data: {
@@ -78,7 +88,7 @@ export function useWhitelist() {
         }
     }, [dispatch, update])
 
-    const reset = useCallback((productId) => {
+    const reset = useCallback((productId: ProductId) => {
         dispatch(setWhiteListedAddresses(productId, []))
     }, [dispatch])
 
