@@ -71,10 +71,10 @@ export const removeWhiteListedAddress: WhiteListedAddressActionCreator = createA
     }),
 )
 
-export const getProductFromContract = (id: ProductId) => (dispatch: Function) => {
+export const getProductFromContract = (id: ProductId, chainId: number) => (dispatch: Function) => {
     dispatch(getProductFromContractRequest(id))
     return services
-        .getProductFromContract(id)
+        .getProductFromContract(id, true, chainId)
         .then((data) => handleEntities(contractProductSchema, dispatch)({
             id,
             ...data,
@@ -88,9 +88,9 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
         })
 }
 
-export const loadSubscriptionDataFromContract = (id: ProductId) => async (dispatch: Function) => {
-    const subscriberCount = await services.getSubscriberCount(id)
-    const purchaseTimestamp = await services.getMostRecentPurchaseTimestamp(id)
+export const loadSubscriptionDataFromContract = (id: ProductId, chainId: number) => async (dispatch: Function) => {
+    const subscriberCount = await services.getSubscriberCount(id, true, chainId)
+    const purchaseTimestamp = await services.getMostRecentPurchaseTimestamp(id, true, chainId)
 
     return handleEntities(contractProductSchema, dispatch)({
         id,

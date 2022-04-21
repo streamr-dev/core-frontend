@@ -14,6 +14,7 @@ import { addFreeProduct } from '$mp/modules/product/services'
 import { getMyPurchases } from '$mp/modules/myPurchaseList/actions'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 
 import ProductDetails from '$mp/components/ProductPage/ProductDetails'
 import HeroComponent from '$mp/components/Hero'
@@ -31,9 +32,10 @@ import routes from '$routes'
 type WhitelistStatus = {
     productId: ProductId,
     validate?: boolean,
+    chainId: number,
 }
 
-const getWhitelistStatus = async ({ productId, validate = false }: WhitelistStatus) => {
+const getWhitelistStatus = async ({ productId, validate = false, chainId }: WhitelistStatus) => {
     try {
         if (validate) {
             await validateWeb3({
@@ -44,7 +46,7 @@ const getWhitelistStatus = async ({ productId, validate = false }: WhitelistStat
 
         const account = await getDefaultWeb3Account()
 
-        return !!account && isAddressWhitelisted(productId, account)
+        return !!account && isAddressWhitelisted(productId, account, true, chainId)
     } catch (e) {
         // log error but ignore otherwise
         console.warn(e)
@@ -69,6 +71,7 @@ const Hero = () => {
     const account = useAccountAddress()
 
     const productId = product.id
+    const chainId = product && getChainIdFromApiString(product.chain)
     const contactEmail = product && product.contact && product.contact.email
     const productName = product && product.name
     const isPaid = isPaidProduct(product)
@@ -85,6 +88,7 @@ const Hero = () => {
                         const canPurchase = await getWhitelistStatus({
                             productId,
                             validate: true, // prompts metamask if locked
+                            chainId,
                         })
 
                         if (!isMounted()) { return }
@@ -107,7 +111,7 @@ const Hero = () => {
                         if (viewInCore) {
                             history.replace(routes.subscriptions())
                         } else {
-                            dispatch(getProductSubscription(productId))
+                            dispatch(getProductSubscription(productId, chainId))
                         }
                     }
                 } else {
@@ -148,6 +152,7 @@ const Hero = () => {
         requestAccessDialog,
         contactEmail,
         productName,
+        chainId,
     ])
 
     useEffect(() => {
@@ -157,6 +162,7 @@ const Hero = () => {
             // 2) metamask is unlocked and user has access
             const whitelisted = !isWhitelistEnabled || await getWhitelistStatus({
                 productId,
+                chainId,
             })
 
             if (isMounted()) {
@@ -167,7 +173,7 @@ const Hero = () => {
         if (productId && !isPending) {
             loadWhitelistStatus()
         }
-    }, [productId, account, isWhitelistEnabled, isPending, isMounted])
+    }, [productId, chainId, account, isWhitelistEnabled, isPending, isMounted])
 
     return (
         <HeroComponent

@@ -41,12 +41,12 @@ const getProductSubscriptionFromContractFailure: ProductErrorActionCreator = cre
     }),
 )
 
-export const getProductSubscription = (id: ProductId) => (dispatch: Function) => {
+export const getProductSubscription = (id: ProductId, chainId: number) => (dispatch: Function) => {
     dispatch(getProductSubscriptionFromContractRequest(id))
     return dispatch(getMyPurchases())
         .then(() => (
             services
-                .getMyProductSubscription(id)
+                .getMyProductSubscription(id, chainId)
                 .then(
                     (result) => dispatch(getProductSubscriptionFromContractSuccess(id, result)),
                     (error) => dispatch(getProductSubscriptionFromContractFailure(id, {

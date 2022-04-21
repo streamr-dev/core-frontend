@@ -73,6 +73,11 @@ const ProductDetails = ({
                                 currency={product.priceCurrency}
                                 timeUnit={timeUnits.hour}
                             />
+                            <span className={styles.priceHeading}>Chain</span>
+                            &nbsp;
+                            <span className={styles.price}>
+                                {product.chain}
+                            </span>
                         </React.Fragment>
                     )}
                 </div>

@@ -11,6 +11,7 @@ import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY, productStates } from '$shared/utils/constants'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
@@ -76,7 +77,8 @@ export default function useProductLoadCallback() {
             // Fetch whitelist status from contract product
             let requiresWhitelist = false
             try {
-                const contractProduct = await getProductFromContract(productId)
+                const chainId = getChainIdFromApiString(product.chain)
+                const contractProduct = await getProductFromContract(productId, true, chainId)
                 // eslint-disable-next-line prefer-destructuring
                 requiresWhitelist = contractProduct.requiresWhitelist
 

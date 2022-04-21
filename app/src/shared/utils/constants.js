@@ -34,8 +34,7 @@ export const productStates = {
 }
 
 export const networks = {
-    MAINNET: 1,
-    STREAMS: 137,
+    STREAMS: process.env.NODE_ENV === 'development' ? 8997 : 137,
 }
 
 export const ethereumNetworks = {

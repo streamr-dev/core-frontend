@@ -96,9 +96,10 @@ export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = tru
 type DeployDataUnion = {
     productId: ProductId,
     adminFee: string,
+    chainId: number,
 }
 
-export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): SmartContractTransaction => {
+export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnion): SmartContractTransaction => {
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         emitter.emit('error', error)
@@ -109,7 +110,9 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
 
     Promise.all([
         getDefaultWeb3Account(),
-        checkEthereumNetworkIsCorrect(),
+        checkEthereumNetworkIsCorrect({
+            network: chainId,
+        }),
     ])
         .then(([account]) => {
             const { mainnetAddress } = client.calculateDataUnionAddresses(productId, account)
@@ -120,6 +123,7 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
             // streamr-client doesn't tell us the actual tx hash
             emitter.emit('transactionHash', futureAddress)
 
+            // FIXME: Provide chainId to client when supported
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
@@ -139,7 +143,7 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
     return tx
 }
 
-export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContractTransaction => {
+export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: string): SmartContractTransaction => {
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         console.warn(error)
@@ -148,11 +152,14 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
     const tx = new Transaction(emitter)
     Promise.all([
         getDataUnionObject(address),
-        checkEthereumNetworkIsCorrect(),
+        checkEthereumNetworkIsCorrect({
+            network: chainId,
+        }),
     ])
         .then(([dataUnion]) => {
             emitter.emit('transactionHash')
 
+            // FIXME: Provide chainId to client when supported
             dataUnion.setAdminFee(+adminFee)
                 .then((receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {

@@ -12,9 +12,9 @@ export default function useContractProductSubscriptionLoadCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('contractProduct.LOAD_SUBSCRIPTION')
 
-    return useCallback(async (productId: ProductId) => (
+    return useCallback(async (productId: ProductId, chainId: number) => (
         wrap(async () => {
-            await dispatch(loadSubscriptionDataFromContract(productId))
+            await dispatch(loadSubscriptionDataFromContract(productId, chainId))
         })
     ), [wrap, dispatch])
 }

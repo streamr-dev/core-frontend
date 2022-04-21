@@ -27,11 +27,12 @@ import useUpdateWhitelist, { actionsTypes } from './useUpdateWhitelist'
 
 type Props = {
     productId: ProductId,
+    chainId: number,
     removedAddress: Address,
     api: Object,
 }
 
-export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: Props) => {
+export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress, api }: Props) => {
     const updateWhitelist = useUpdateWhitelist()
     const isMounted = useIsMounted()
 
@@ -45,7 +46,10 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
     statusRef.current = status
     const [modalError, setModalError] = useState(null)
     const [web3Actions, setWeb3Actions] = useState(new Set([]))
-    const { web3Error, checkingWeb3, account } = useWeb3Status()
+    const { web3Error, checkingWeb3, account } = useWeb3Status({
+        requireWeb3: true,
+        requireNetwork: chainId,
+    })
     const { isPending, wrap: wrapPending } = usePending('product.WHITELIST')
 
     const { ownerAddress, requiresWhitelist } = contractProduct || {}
@@ -57,7 +61,7 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
                     throw new Error('No product id')
                 }
 
-                const nextContractProduct = await getProductFromContract(productId)
+                const nextContractProduct = await getProductFromContract(productId, true, chainId)
 
                 if (isMounted()) {
                     setContractProduct(nextContractProduct)
@@ -68,7 +72,7 @@ export const AddOrRemoveWhitelistAddress = ({ productId, removedAddress, api }: 
                 }
             }
         })
-    ), [productId, wrapPending, isMounted])
+    ), [productId, chainId, wrapPending, isMounted])
 
     useEffect(() => {
         load()
@@ -241,12 +245,13 @@ export default () => {
         return null
     }
 
-    const { productId, removedAddress } = value || {}
+    const { productId, removedAddress, chainId } = value || {}
 
     return (
         <AddOrRemoveWhitelistAddress
             productId={productId}
             removedAddress={removedAddress}
+            chainId={chainId}
             api={api}
         />
     )

@@ -100,6 +100,7 @@ export type SmartContractProduct = {
     minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>,
     state: $ElementType<Product, 'state'>,
     requiresWhitelist: $ElementType<Product, 'requiresWhitelist'>,
+    chainId: number,
 }
 
 export type WhitelistStatus = 'added' | 'removed' | 'subscribed'
