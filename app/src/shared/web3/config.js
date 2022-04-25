@@ -52,6 +52,7 @@ export const getConfigForChain = (chainId: number) => {
     const config: any = configEntry[1]
 
     return {
+        ...config,
         marketplace: {
             abi: marketplaceAbi,
             address: config.contracts.Marketplace,
