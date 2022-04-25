@@ -24,7 +24,7 @@ const getMarketplaceAbiAndAddressForNetwork = (networkChainId: number) => {
 
 const contractMethods = (usePublicNode: boolean = false, networkChainId: number) => {
     const abiAndAddress = getMarketplaceAbiAndAddressForNetwork(networkChainId)
-    return getContract(abiAndAddress, usePublicNode).methods
+    return getContract(abiAndAddress, usePublicNode, networkChainId).methods
 }
 
 const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
@@ -50,7 +50,7 @@ export const getMarketplaceEvents = async (
     networkChainId: number,
 ) => {
     const abiAndAddress = getMarketplaceAbiAndAddressForNetwork(networkChainId)
-    const contract = getContract(abiAndAddress, usePublicNode)
+    const contract = getContract(abiAndAddress, usePublicNode, networkChainId)
     const events = await contract.getPastEvents(eventName, {
         filter: {
             productId: getValidId(id),
@@ -70,7 +70,7 @@ export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean =
 }
 
 export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNode: boolean = true, networkChainId: number) => {
-    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+    const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
     const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode, networkChainId)
 
     if (events.length === 0) {
@@ -87,7 +87,7 @@ export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNod
 }
 
 export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = true, networkChainId: number) => {
-    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+    const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
     const events = await getMarketplaceEvents(id, 'Subscribed', fromBlock, usePublicNode, networkChainId)
     const subscriptions = []

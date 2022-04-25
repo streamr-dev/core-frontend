@@ -1,7 +1,6 @@
 // @flow
 
 import EventEmitter from 'events'
-import Web3 from 'web3'
 import type { PromiEvent } from 'web3'
 import { isHex } from 'web3-utils'
 import BN from 'bignumber.js'
@@ -48,8 +47,12 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  */
 export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && isHex(hex)
 
-export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): Web3.eth.Contract => {
-    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false, chainId?: number): StreamrWeb3.eth.Contract => {
+    if (usePublicNode && chainId == null) {
+        throw new Error('ChainId must be provided!')
+    }
+
+    const web3 = usePublicNode ? getPublicWeb3(chainId) : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
 

@@ -1,3 +1,5 @@
+// @flow
+
 import { createAction } from 'redux-actions'
 
 import {
@@ -24,10 +26,10 @@ const getDataPerUsdError = createAction(
     }),
 )
 
-export const getDataPerUsd = () => (dispatch) => {
+export const getDataPerUsd = (chainId: number) => (dispatch: Function) => {
     dispatch(getDataPerUsdRequest())
     return services
-        .getDataPerUsd()
+        .getDataPerUsd(chainId)
         .then(
             (dataPerUsd) => dispatch(getDataPerUsdSuccess(dataPerUsd)),
             (error) => {
