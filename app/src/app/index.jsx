@@ -11,7 +11,7 @@ import '$utils/setupSnippets'
 import { Provider as SessionProvider } from '$shared/components/SessionProvider'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import LoginPage from '$auth/components/LoginPage'
-import LogoutPage from '$auth/components/LogoutPage'
+import LogoutPage from '$app/src/pages/LogoutPage'
 
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import { Provider as ModalProvider } from '$shared/contexts/ModalApi'
