@@ -3,11 +3,13 @@
 import abiDecoder from 'abi-decoder'
 
 import { transactionTypes, paymentCurrencies } from '$shared/utils/constants'
-import getPublicWeb3 from '$utils/web3/getPublicWeb3'
-import getConfig from '$shared/web3/config'
+import getWeb3 from '$utils/web3/getPublicWeb3'
+import { getMarketplaceAddress } from '$mp/utils/web3'
 import type { HashList, TransactionEntityList, TransactionEntity, EventLog, EventLogList } from '$shared/flowtype/web3-types'
 import TransactionError from '$shared/errors/TransactionError'
 import type { ProductIdList } from '$mp/flowtype/product-types'
+import tokenAbi from '$shared/web3/abis/token'
+import marketplaceAbi from '$shared/web3/abis/marketplace'
 
 const eventTypeToTransactionType = {
     ProductCreated: transactionTypes.CREATE_CONTRACT_PRODUCT,
@@ -120,15 +122,16 @@ const getInputValues = (type, logs) => {
     }
 }
 
-export const getTransactionEvents = (addresses: HashList, products: ProductIdList): Promise<EventLogList> => {
-    const web3 = getPublicWeb3()
-    const { marketplace, dataToken } = getConfig().mainnet
+export const getTransactionEvents = async (addresses: HashList, products: ProductIdList): Promise<EventLogList> => {
+    const web3 = getWeb3()
+    const chainId = await web3.eth.getChainId()
+    const marketplaceAddress = getMarketplaceAddress(chainId)
 
     // these are needed to decode log values
-    abiDecoder.addABI(marketplace.abi)
-    abiDecoder.addABI(dataToken.abi)
+    abiDecoder.addABI(marketplaceAbi)
+    abiDecoder.addABI(tokenAbi)
 
-    const marketPlaceContract = new web3.eth.Contract(marketplace.abi, marketplace.address)
+    const marketPlaceContract = new web3.eth.Contract(marketplaceAbi, marketplaceAddress)
     const rawEvents = []
 
     // Get past events by filtering with the indexed address parameter.
@@ -177,7 +180,7 @@ export const getTransactionEvents = (addresses: HashList, products: ProductIdLis
 }
 
 export const getTransactionsFromEvents = (events: EventLogList): Promise<TransactionEntityList> => {
-    const web3 = getPublicWeb3()
+    const web3 = getWeb3()
 
     // Fetch transaction data for the given events
     return Promise.all(events.map((event: EventLog) => Promise.all([

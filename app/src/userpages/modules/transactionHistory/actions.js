@@ -7,6 +7,7 @@ import { transactionsSchema, contractProductSchema } from '$shared/modules/entit
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
+import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
 import type { ProductIdList } from '$mp/flowtype/product-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { selectMyProductList } from '$mp/modules/myProductList/selectors'
@@ -78,9 +79,7 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
     const events = selectTransactionEvents(state) || []
     const entities = selectEntities(state)
     const offset = selectOffset(state)
-    // FIXME: Where to get?
-    const chainId = 1
-    console.log('TODO: FIX ChainId')
+    const chainId = selectEthereumNetworkId(state)
 
     const eventsToShow = events.splice(offset, 10)
     const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.id]))

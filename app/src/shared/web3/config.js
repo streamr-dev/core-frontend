@@ -1,23 +1,16 @@
 // @flow
 
 import { Chains } from '@streamr/config'
-import type { SmartContractConfig } from '$shared/flowtype/web3-types'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import marketplaceAbi from './abis/marketplace'
 import tokenAbi from './abis/token'
-import uniswapAdaptorAbi from './abis/uniswapAdaptor'
 import dataUnionAbi from './abis/dataunion'
 import dataUnionSidechainAbi from './abis/dataunionSidechain'
 
 type MainnetConfig = {
     chainId: string,
     rpcUrl: string,
-    marketplace: SmartContractConfig,
-    dataToken: SmartContractConfig,
-    daiToken: SmartContractConfig,
-    uniswapAdaptor: SmartContractConfig,
     dataUnionAbi: string,
     transactionConfirmationBlocks: number,
 }
@@ -50,21 +43,14 @@ export const getConfigForChain = (chainId: number) => {
     }
 
     const config: any = configEntry[1]
-
-    return {
-        ...config,
-        marketplace: {
-            abi: marketplaceAbi,
-            address: config.contracts.Marketplace,
-        },
-    }
+    return config
 }
 
 const getConfig = (): Config => {
     const { tokenAddress, dataUnionChainRPCs, mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
 
     // eslint-disable-next-line max-len
-    const { daiTokenContractAddress: DAI, marketplaceContractAddress, uniswapAdaptorContractAddress, web3TransactionConfirmationBlocks } = getCoreConfig()
+    const { web3TransactionConfirmationBlocks } = getCoreConfig()
 
     const mainChainId = getMainChainId()
 
@@ -76,18 +62,6 @@ const getConfig = (): Config => {
             dataToken: {
                 abi: tokenAbi,
                 address: tokenAddress,
-            },
-            daiToken: {
-                abi: tokenAbi,
-                address: DAI,
-            },
-            marketplace: {
-                abi: marketplaceAbi,
-                address: marketplaceContractAddress,
-            },
-            uniswapAdaptor: {
-                abi: uniswapAdaptorAbi,
-                address: uniswapAdaptorContractAddress,
             },
             dataUnionAbi,
         },

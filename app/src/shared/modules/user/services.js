@@ -52,17 +52,21 @@ type GetBalance = {
     address: Address,
     type: $Values<typeof BalanceType>,
     usePublicNode?: boolean,
+    chainId?: number,
 }
 
-export async function getBalance({ address, type, usePublicNode = false }: GetBalance) {
+export async function getBalance({ address, type, usePublicNode = false, chainId }: GetBalance) {
     let balance
 
     if (type === BalanceType.ETH) {
         balance = await getEthBalance(address, usePublicNode)
     } else if (type === BalanceType.DATA) {
-        balance = await getDataTokenBalance(address, usePublicNode)
+        if (chainId == null) {
+            throw new Error('chainId must be provided!')
+        }
+        balance = await getDataTokenBalance(address, usePublicNode, chainId)
     } else {
-        throw new Error('Unknown balance type!')
+        throw new Error(`Unknown balance type ${type}!`)
     }
 
     return balance

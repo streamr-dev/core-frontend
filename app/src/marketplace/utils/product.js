@@ -6,7 +6,6 @@ import * as yup from 'yup'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { contractCurrencies as currencies, productStates } from '$shared/utils/constants'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
-import { getChainIdFromApiString } from '$shared/utils/chains'
 import type { Product, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
 import { isEthereumAddress } from './validate'
 import { isPriceValid } from './price'
@@ -46,7 +45,7 @@ export const validateContractProductPricePerSecond = (pricePerSecond: NumberStri
 
 export const mapPriceFromContract = (pricePerSecond: NumberString): string => fromAtto(pricePerSecond).toString()
 
-export const mapProductFromContract = (id: ProductId, result: any): SmartContractProduct => {
+export const mapProductFromContract = (id: ProductId, result: any, chainId: number): SmartContractProduct => {
     const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)
 
     return {
@@ -59,7 +58,7 @@ export const mapProductFromContract = (id: ProductId, result: any): SmartContrac
         minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
         state: Object.keys(productStates)[result.state],
         requiresWhitelist: result.requiresWhitelist,
-        chainId: getChainIdFromApiString(result.chain),
+        chainId,
     }
 }
 

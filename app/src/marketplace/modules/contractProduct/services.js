@@ -1,7 +1,6 @@
 // @flow
 
 import { getContract, call, send, hexEqualsZero } from '$mp/utils/smartContract'
-import getConfig, { getConfigForChain } from '$shared/web3/config'
 import type { SmartContractProduct, ProductId } from '$mp/flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import {
@@ -15,17 +14,12 @@ import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
+import { marketplaceContract, getMarketplaceAbiAndAddress } from '$mp/utils/web3'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
 
-const getMarketplaceAbiAndAddressForNetwork = (networkChainId: number) => {
-    const { marketplace } = getConfigForChain(networkChainId)
-    return marketplace
-}
-
-const contractMethods = (usePublicNode: boolean = false, networkChainId: number) => {
-    const abiAndAddress = getMarketplaceAbiAndAddressForNetwork(networkChainId)
-    return getContract(abiAndAddress, usePublicNode, networkChainId).methods
-}
+const contractMethods = (usePublicNode: boolean = false, networkChainId: number) => (
+    marketplaceContract(usePublicNode, networkChainId).methods
+)
 
 const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
 
@@ -39,7 +33,7 @@ export const getProductFromContract = async (
             if (!result || hexEqualsZero(result.owner)) {
                 throw new Error(`No product found with id ${id}`)
             }
-            return mapProductFromContract(id, result)
+            return mapProductFromContract(id, result, networkChainId)
         })
 )
 
@@ -49,7 +43,7 @@ export const getMarketplaceEvents = async (
     usePublicNode: boolean = true,
     networkChainId: number,
 ) => {
-    const abiAndAddress = getMarketplaceAbiAndAddressForNetwork(networkChainId)
+    const abiAndAddress = getMarketplaceAbiAndAddress(networkChainId)
     const contract = getContract(abiAndAddress, usePublicNode, networkChainId)
     const events = await contract.getPastEvents(eventName, {
         filter: {
