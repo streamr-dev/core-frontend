@@ -6,12 +6,14 @@ import Web3 from 'web3'
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
-import getConfig from '$shared/web3/config'
 import type { SmartContractCall, Address } from '$shared/flowtype/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
-import getClientConfig from '$app/src/getters/getClientConfig'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { getConfigForChain } from '$shared/web3/config'
+import getChainId from '$utils/web3/getChainId'
+import tokenAbi from '$shared/web3/abis/token'
+import marketplaceAbi from '$shared/web3/abis/marketplace'
+import uniswapAdaptorAbi from '$shared/web3/abis/uniswapAdaptor'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { getContract, call } from '../utils/smartContract'
 import { fromAtto } from './math'
@@ -20,25 +22,64 @@ declare var ethereum: Web3
 
 const UNISWAP_SAFETY_MARGIN = 1.05
 const ETH = '0x0000000000000000000000000000000000000000'
-const { daiTokenContractAddress: DAI } = getCoreConfig()
-const { tokenAddress: DATA } = getClientConfig()
 
-const dataTokenContractMethods = (usePublicNode: boolean = false) => {
-    const { mainnet } = getConfig()
+export const getDaiAddress = (chainId: number) => (
+    // Not available in @streamr/config yet
+    // NOTE: 0x64... is OTHERcoin in docker mainchain and 0x33... is LINK token in sidechain. That works for testing.
+    chainId === 8995 ? '0x642D2B84A32A9A92FEc78CeAA9488388b3704898' : '0x3387F44140ea19100232873a5aAf9E46608c791E'
+)
 
-    return getContract(mainnet.dataToken, usePublicNode).methods
+const getDataAddress = (chainId: number) => {
+    const { contracts } = getConfigForChain(chainId)
+    const dataTokenAddress = contracts['DATA-token'] || contracts.Token
+    if (dataTokenAddress == null) {
+        throw new Error('No contract address for DATA token provided!')
+    }
+    return dataTokenAddress
 }
 
-const daiTokenContractMethods = (usePublicNode: boolean = false) => {
-    const { mainnet } = getConfig()
-
-    return getContract(mainnet.daiToken, usePublicNode).methods
+export const getMarketplaceAddress = (chainId: number) => {
+    const { contracts } = getConfigForChain(chainId)
+    const marketplaceAddress = contracts.Marketplace
+    if (marketplaceAddress == null) {
+        throw new Error('No contract address for Marketplace provided!')
+    }
+    return marketplaceAddress
 }
 
-const uniswapAdaptorMethods = (usePublicNode: boolean = false) => {
-    const { mainnet } = getConfig()
+export const getMarketplaceAbiAndAddress = (chainId: number) => ({
+    abi: marketplaceAbi,
+    address: getMarketplaceAddress(chainId),
+})
 
-    return getContract(mainnet.uniswapAdaptor, usePublicNode).methods
+export const marketplaceContract = (usePublicNode: boolean = false, chainId: number) => (
+    getContract(getMarketplaceAbiAndAddress(chainId), usePublicNode, chainId)
+)
+
+export const dataTokenContractMethods = (usePublicNode: boolean = false, chainId: number) => {
+    const instance = {
+        abi: tokenAbi,
+        address: getDataAddress(chainId),
+    }
+    return getContract(instance, usePublicNode, chainId).methods
+}
+
+export const daiTokenContractMethods = (usePublicNode: boolean = false, chainId: number) => {
+    const instance = {
+        abi: tokenAbi,
+        address: getDaiAddress(chainId),
+    }
+    return getContract(instance, usePublicNode, chainId).methods
+}
+
+export const uniswapAdaptorContractMethods = (usePublicNode: boolean = false, chainId: number) => {
+    const { contracts } = getConfigForChain(chainId)
+    const uniswapAdapterAddress = contracts.UniswapAdapter
+    const instance = {
+        abi: uniswapAdaptorAbi,
+        address: uniswapAdapterAddress,
+    }
+    return getContract(instance, usePublicNode, chainId).methods
 }
 
 export const getEthBalance = (address: Address, usePublicNode: boolean = false): Promise<BN> => {
@@ -49,13 +90,13 @@ export const getEthBalance = (address: Address, usePublicNode: boolean = false):
         .then(fromAtto)
 }
 
-export const getDataTokenBalance = (address: Address, usePublicNode: boolean = false): SmartContractCall<BN> => (
-    call(dataTokenContractMethods(usePublicNode).balanceOf(address))
+export const getDataTokenBalance = (address: Address, usePublicNode: boolean = false, chainId: number): SmartContractCall<BN> => (
+    call(dataTokenContractMethods(usePublicNode, chainId).balanceOf(address))
         .then(fromAtto)
 )
 
-export const getDaiTokenBalance = (address: Address, usePublicNode: boolean = false): SmartContractCall<BN> => (
-    call(daiTokenContractMethods(usePublicNode).balanceOf(address))
+export const getDaiTokenBalance = (address: Address, usePublicNode: boolean = false, chainId: number): SmartContractCall<BN> => (
+    call(daiTokenContractMethods(usePublicNode, chainId).balanceOf(address))
         .then(fromAtto)
 )
 
@@ -63,13 +104,17 @@ export const getMyEthBalance = (): Promise<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getEthBalance(myAccount))
 )
 
-export const getMyDataTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account()
-    .then((myAccount) => getDataTokenBalance(myAccount))
-)
+export const getMyDataTokenBalance = async (): SmartContractCall<BN> => {
+    const myAccount = await getDefaultWeb3Account()
+    const chainId = await getChainId()
+    return getDataTokenBalance(myAccount, false, chainId)
+}
 
-export const getMyDaiTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account()
-    .then((myAccount) => getDaiTokenBalance(myAccount))
-)
+export const getMyDaiTokenBalance = async (): SmartContractCall<BN> => {
+    const myAccount = await getDefaultWeb3Account()
+    const chainId = await getChainId()
+    return getDaiTokenBalance(myAccount, false, chainId)
+}
 
 export const getBalances = (): Promise<[BN, BN, BN]> => {
     const ethPromise = getMyEthBalance()
@@ -95,8 +140,10 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: bool
             let productPriceDATA = web3.utils.toWei(dataQuantity)
             productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
             productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
+            const chainId = await web3.eth.getChainId()
 
-            let uniswapETH = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(ETH, DATA, productPriceDATA))
+            let uniswapETH = await call(uniswapAdaptorContractMethods(usePublicNode, chainId)
+                .getConversionRateOutput(ETH, getDataAddress(chainId), productPriceDATA))
             uniswapETH = BN(web3.utils.fromWei(uniswapETH.toString()))
 
             return uniswapETH
@@ -119,8 +166,10 @@ export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: bool
             let productPriceDATA = web3.utils.toWei(dataQuantity)
             productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
             productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
+            const chainId = await web3.eth.getChainId()
 
-            let uniswapDAI = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(DAI, DATA, productPriceDATA))
+            let uniswapDAI = await call(uniswapAdaptorContractMethods(usePublicNode, chainId)
+                .getConversionRateOutput(getDaiAddress(chainId), getDataAddress(chainId), productPriceDATA))
             uniswapDAI = BN(web3.utils.fromWei(uniswapDAI.toString()))
 
             return uniswapDAI
@@ -141,8 +190,10 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boole
         try {
             const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
             const ethWei = web3.utils.toWei(ethQuantity)
+            const chainId = await web3.eth.getChainId()
 
-            let uniswapDATA = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(DATA, ETH, ethWei))
+            let uniswapDATA = await call(uniswapAdaptorContractMethods(usePublicNode, chainId)
+                .getConversionRateOutput(getDataAddress(chainId), ETH, ethWei))
             uniswapDATA = BN(web3.utils.fromWei(uniswapDATA.toString()))
 
             return uniswapDATA

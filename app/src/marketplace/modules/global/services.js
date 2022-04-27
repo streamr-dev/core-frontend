@@ -1,15 +1,13 @@
 // @flow
 
-import { getContract, call } from '$mp/utils/smartContract'
-import { getConfigForChain } from '$shared/web3/config'
+import { call } from '$mp/utils/smartContract'
+
 import type { SmartContractCall } from '$shared/flowtype/web3-types'
 import { fromAtto } from '$mp/utils/math'
 import type { NumberString } from '$shared/flowtype/common-types'
+import { marketplaceContract } from '$mp/utils/web3'
 
-export const getDataPerUsd = (chainId: number): SmartContractCall<NumberString> => {
-    const { marketplace } = getConfigForChain(chainId)
-    const marketPlaceContract = getContract(marketplace, true, chainId)
-
-    return call(marketPlaceContract.methods.dataPerUsd())
+export const getDataPerUsd = (chainId: number): SmartContractCall<NumberString> => (
+    call(marketplaceContract(true, chainId).methods.dataPerUsd())
         .then((value) => fromAtto(value).toString())
-}
+)
