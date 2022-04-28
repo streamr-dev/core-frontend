@@ -33,6 +33,12 @@ export function useSessionToken() {
     return useSelector(selectSessionToken)
 }
 
+const selectSessionMethod = ({ session }) => session.method
+
+export function useSessionMethod() {
+    return useSelector(selectSessionMethod)
+}
+
 export function setupSession([token, method]) {
     return (dispatch) => {
         setMethod(method)

@@ -21,7 +21,7 @@ import { DevelopersMenu } from '$docs/components/DocsLayout/DocsNav'
 import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
 import ActivityList from '$shared/components/ActivityList'
-import { getMethod } from '$shared/utils/sessionToken'
+import { useSessionMethod } from '$shared/reducers/session'
 import routes from '$routes'
 import User from './User'
 import SiteSection from './SiteSection'
@@ -352,7 +352,7 @@ const methods = {
 const UnstyledMobileNav = ({ className }) => {
     const currentUser = useSelector(selectUserData)
 
-    const method = getMethod()
+    const method = useSessionMethod()
 
     const { pathname } = useLocation()
 
