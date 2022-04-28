@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux'
+import { createSelector } from 'reselect'
 import { setToken, getToken, setMethod, getMethod } from '$shared/utils/sessionToken'
 
 const cleanState = {
@@ -27,13 +28,17 @@ export default function reducer(state = initialState, action) {
     }
 }
 
-const selectSessionToken = ({ session }) => session.token
+function selectSession({ session = initialState } = {}) {
+    return session
+}
+
+const selectSessionToken = createSelector(selectSession, ({ token }) => token)
 
 export function useSessionToken() {
     return useSelector(selectSessionToken)
 }
 
-const selectSessionMethod = ({ session }) => session.method
+const selectSessionMethod = createSelector(selectSession, ({ method }) => method)
 
 export function useSessionMethod() {
     return useSelector(selectSessionMethod)
