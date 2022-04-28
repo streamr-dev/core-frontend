@@ -6,6 +6,22 @@ import * as all from '$mp/utils/smartContract'
 import { networks } from '$shared/utils/constants'
 import Transaction from '$shared/utils/Transaction'
 import TransactionError from '$shared/errors/TransactionError'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
+import getChainId from '$utils/web3/getChainId'
+
+jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+jest.mock('$utils/web3/getChainId', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+function mockChainId(chainId) {
+    getChainId.mockImplementation(() => Promise.resolve(chainId))
+}
 
 const PromiEvent = () => {
     const promiEvent = Promise.resolve()
@@ -26,12 +42,11 @@ const PromiEvent = () => {
 }
 
 describe('smartContract utils', () => {
-    beforeEach(() => {
-    })
-
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
+        getDefaultWeb3Account.mockReset()
+        getChainId.mockReset()
     })
 
     describe('hexEqualsZero', () => {
@@ -131,16 +146,11 @@ describe('smartContract utils', () => {
     })
 
     describe('send', () => {
-        let accountStub
-        let networkStub
-
         beforeEach(() => {
-            accountStub = jest.fn(() => Promise.resolve('testAccount'))
-            networkStub = jest.fn(() => Promise.resolve('1'))
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: accountStub,
-                getChainId: networkStub,
-            }))
+            getDefaultWeb3Account.mockImplementation(() => Promise.resolve('testAccount'))
+
+            mockChainId('1')
+
             jest.spyOn(getConfig, 'default').mockImplementation(() => ({
                 mainnet: {
                     chainId: '1',
@@ -149,10 +159,6 @@ describe('smartContract utils', () => {
                     chainId: '8995',
                 },
             }))
-        })
-
-        afterEach(() => {
-            accountStub = undefined
         })
 
         it('must return a Transaction', () => {
@@ -176,7 +182,8 @@ describe('smartContract utils', () => {
         })
 
         it('must fail if checkEthereumNetworkIsCorrect fails in mainnet', (done) => {
-            networkStub = jest.fn(() => Promise.resolve('2'))
+            mockChainId('2')
+
             const fakeEmitter = {
                 on: () => fakeEmitter,
                 off: () => fakeEmitter,
@@ -193,7 +200,8 @@ describe('smartContract utils', () => {
         })
 
         it('must fail if checkEthereumNetworkIsCorrect fails in mainnet', (done) => {
-            networkStub = jest.fn(() => Promise.resolve('2'))
+            mockChainId('2')
+
             const fakeEmitter = {
                 on: () => fakeEmitter,
                 off: () => fakeEmitter,

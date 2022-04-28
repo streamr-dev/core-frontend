@@ -2,16 +2,25 @@ import EventEmitter from 'events'
 import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-
 import * as web3Provider from '$shared/web3/web3Provider'
 import Web3Poller from '$shared/web3/web3Poller'
-
 import useWeb3Status from '$shared/hooks/useWeb3Status'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
+
+jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+function mockDefaultAccount(defaultAccount) {
+    return getDefaultWeb3Account.mockImplementation(() => Promise.resolve(defaultAccount))
+}
 
 describe('useWeb3Status', () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
+        getDefaultWeb3Account.mockReset()
     })
 
     it('does nothing if requireWeb3 parameter is false', () => {
@@ -40,10 +49,8 @@ describe('useWeb3Status', () => {
 
         const account = '0x123'
 
-        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
-        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
-            getDefaultAccount: defaultAccountStub,
-        }))
+        const stub = mockDefaultAccount(account)
+
         const validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
 
         await act(async () => {
@@ -51,7 +58,7 @@ describe('useWeb3Status', () => {
         })
 
         expect(result.account).toBe(account)
-        expect(defaultAccountStub).toHaveBeenCalledTimes(1)
+        expect(stub).toHaveBeenCalledTimes(1)
         expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(false)
     })
@@ -64,11 +71,9 @@ describe('useWeb3Status', () => {
         }
 
         const account = '0x123'
-        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
-            getDefaultAccount: defaultAccountStub,
-        }))
+        const stub = mockDefaultAccount(account)
+
         const validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => {
             throw new Error('unlocked')
         })
@@ -80,25 +85,20 @@ describe('useWeb3Status', () => {
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
         expect(result.web3Error.message).toBe('unlocked')
-        expect(defaultAccountStub).not.toBeCalled()
+        expect(stub).not.toBeCalled()
         expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(true)
     })
 
-    it('returns an error if web3.getDefaultAccount() fails', async () => {
+    it('returns an error if `getDefaultWeb3Account` fails', async () => {
         let result
         const Test = () => {
             result = useWeb3Status()
             return null
         }
 
-        const defaultAccountStub = jest.fn(() => {
-            throw new Error('no account')
-        })
+        const stub = getDefaultWeb3Account.mockImplementation(() => Promise.reject(new Error('no account')))
 
-        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
-            getDefaultAccount: defaultAccountStub,
-        }))
         const validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
 
         await act(async () => {
@@ -108,7 +108,7 @@ describe('useWeb3Status', () => {
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
         expect(result.web3Error.message).toBe('no account')
-        expect(defaultAccountStub).toHaveBeenCalledTimes(1)
+        expect(stub).toHaveBeenCalledTimes(1)
         expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
         expect(result.isLocked).toBe(true)
     })
@@ -197,11 +197,8 @@ describe('useWeb3Status', () => {
         expect(result.isLocked).toBe(true)
 
         const account = '0x123'
-        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
-            getDefaultAccount: defaultAccountStub,
-        }))
+        mockDefaultAccount(account)
 
         validateWeb3Stub.mockRestore()
         validateWeb3Stub = jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
@@ -246,11 +243,8 @@ describe('useWeb3Status', () => {
         expect(result.isLocked).toBe(true)
 
         const account = '0x123'
-        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
-            getDefaultAccount: defaultAccountStub,
-        }))
+        mockDefaultAccount(account)
 
         await act(async () => {
             emitter.emit(Web3Poller.events.ACCOUNT, account)
@@ -264,11 +258,9 @@ describe('useWeb3Status', () => {
 
     it('subscribes to listen to account error when an account is received', async () => {
         const account = '0x123'
-        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
-            getDefaultAccount: defaultAccountStub,
-        }))
+        mockDefaultAccount(account)
+
         jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
         const handlers = {}
         const subscribeStub = jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
@@ -308,11 +300,9 @@ describe('useWeb3Status', () => {
         }
 
         const account = '0x123'
-        const defaultAccountStub = jest.fn(() => Promise.resolve(account))
 
-        jest.spyOn(web3Provider, 'default').mockImplementation(() => ({
-            getDefaultAccount: defaultAccountStub,
-        }))
+        mockDefaultAccount(account)
+
         jest.spyOn(web3Provider, 'validateWeb3').mockImplementation()
 
         await act(async () => {
