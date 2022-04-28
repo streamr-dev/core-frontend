@@ -8,7 +8,7 @@ import { TABLET, MEDIUM } from '$shared/utils/styled'
 import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
 import useInterrupt from '$shared/hooks/useInterrupt'
 import { getUserData } from '$shared/modules/user/actions'
-import { useSession } from '$shared/components/SessionProvider'
+import { setupSession } from '$shared/reducers/session'
 import InterruptionError from '$shared/errors/InterruptionError'
 import routes from '$routes'
 import reducer, { Connect, Fail, initialState } from './reducer'
@@ -25,8 +25,6 @@ function UnstyledUnwrappedLoginPage({ className }) {
     const itp = useInterrupt()
 
     const cancelPromiseRef = useRef()
-
-    const { setSessionToken } = useSession()
 
     function cancel() {
         const { current: { reject } = {} } = cancelPromiseRef
@@ -74,10 +72,7 @@ function UnstyledUnwrappedLoginPage({ className }) {
                 throw new Error('No token')
             }
 
-            setSessionToken({
-                token,
-                method: newMethod.id,
-            })
+            dispatch(setupSession([token, newMethod.id]))
 
             let user
 

@@ -19,7 +19,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
-import { useSession } from '$shared/components/SessionProvider'
+import { setupSession } from '$shared/reducers/session'
 import SwitchAccountModal from './SwitchAccountModal'
 
 type Props = {
@@ -34,7 +34,6 @@ const PENDING_TX_WAIT = 1000 // 1s
 export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
     const address = useAccountAddress()
-    const { resetSessionToken } = useSession()
 
     // Poll usd rate from contract
     const dataPerUsdRatePollTimeout = useRef()
@@ -167,8 +166,8 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     const onContinue = useCallback(() => {
         setAccountChanged(false)
         dispatch(logout())
-        resetSessionToken()
-    }, [dispatch, resetSessionToken])
+        dispatch(setupSession([]))
+    }, [dispatch])
 
     return (
         <Fragment>
