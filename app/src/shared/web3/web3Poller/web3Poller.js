@@ -2,13 +2,16 @@
 
 import EventEmitter from 'events'
 
-import getWeb3, { getPublicWeb3 } from '$shared/web3/web3Provider'
+import getWeb3 from '$shared/web3/web3Provider'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import type { StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { hasTransactionCompleted } from '$shared/utils/web3'
 import { getTransactionsFromSessionStorage } from '$shared/utils/transactions'
 import TransactionError from '$shared/errors/TransactionError'
+import getChainId from '$utils/web3/getChainId'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 
 export const events = {
     ACCOUNT: 'WEB3POLLER/ACCOUNT',
@@ -118,7 +121,7 @@ export default class Web3Poller {
     }
 
     fetchWeb3Account = () => (
-        this.web3.getDefaultAccount()
+        getDefaultWeb3Account(this.web3)
             .then((account) => {
                 this.handleAccount(account)
                 // needed to avoid warnings about creating promise inside a handler
@@ -147,7 +150,7 @@ export default class Web3Poller {
     }
 
     fetchChosenEthereumNetwork = () => {
-        const fetchPromise = this.web3.getChainId()
+        const fetchPromise = getChainId(this.web3)
 
         // make sure getting the network does not hang longer than the poll timeout
         const cancelPromise = new Promise((resolve, reject) => {

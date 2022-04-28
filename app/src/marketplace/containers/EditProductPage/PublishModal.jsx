@@ -19,7 +19,7 @@ import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletDialog'
 import usePending from '$shared/hooks/usePending'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import usePublish, { publishModes } from './usePublish'
 

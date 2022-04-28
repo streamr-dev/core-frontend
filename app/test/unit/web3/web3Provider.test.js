@@ -1,32 +1,5 @@
 import Web3 from 'web3'
-import FakeProvider from 'web3-fake-provider'
-
-import { getWeb3, getPublicWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
-
-jest.mock('$app/src/getters/getConfig', () => {
-    const { default: gc } = jest.requireActual('$app/src/getters/getConfig')
-
-    const actualConfig = gc()
-
-    return {
-        __esModule: true,
-        default: () => ({
-            ...actualConfig,
-            client: {
-                ...actualConfig.client,
-                mainchain: {
-                    ...actualConfig.client.mainchain,
-                    rpc: {
-                        ...actualConfig.client.mainchain.rpc,
-                        rpcs: [{
-                            url: 'http://mainchainrpc:8545',
-                        }],
-                    },
-                },
-            },
-        }),
-    }
-})
+import { getWeb3, StreamrWeb3 } from '$shared/web3/web3Provider'
 
 describe('web3Provider', () => {
     afterEach(() => {
@@ -37,61 +10,6 @@ describe('web3Provider', () => {
     describe('StreamrWeb3', () => {
         it('must extend Web3', () => {
             expect(StreamrWeb3.prototype).toBeInstanceOf(Web3)
-        })
-
-        describe('getDefaultAccount', () => {
-            let web3
-            beforeEach(() => {
-                web3 = new StreamrWeb3()
-            })
-            afterEach(() => {
-                web3 = null
-            })
-            it('must resolve with getAccounts()[0]', async () => {
-                const getAccSpy = jest.fn(() => Promise.resolve(['testAccount']))
-                jest.spyOn(web3.eth, 'getAccounts').mockImplementation(getAccSpy)
-                const acc = await web3.getDefaultAccount()
-                expect(acc).toBe('testAccount')
-                expect(getAccSpy).toHaveBeenCalledTimes(1)
-            })
-            it('must throw error if getAccounts gives undefined/null', async (done) => {
-                try {
-                    const anotherWeb3 = new StreamrWeb3(new FakeProvider())
-                    await anotherWeb3.getDefaultAccount()
-                } catch (e) {
-                    expect(e.message).toMatch('is locked')
-                    done()
-                }
-            })
-            it('must throw error if getAccounts gives empty list', async (done) => {
-                jest.spyOn(web3.eth, 'getAccounts').mockImplementation(jest.fn(() => Promise.resolve([])))
-                try {
-                    await web3.getDefaultAccount()
-                } catch (e) {
-                    expect(e.message).toMatch('is locked')
-                    done()
-                }
-            })
-        })
-
-        describe('getChainId', () => {
-            it('must return the network', async () => {
-                const web3 = new StreamrWeb3()
-                const getNetStub = jest.fn(() => Promise.resolve(6))
-                jest.spyOn(web3.eth.net, 'getId').mockImplementation(getNetStub)
-                const net = await web3.getChainId()
-                expect(net).toBe('6')
-                expect(getNetStub).toHaveBeenCalledTimes(1)
-            })
-        })
-
-        describe('isEnabled', () => {
-            it('must return correct value', () => {
-                const web3 = new StreamrWeb3()
-                expect(web3.isEnabled()).toBe(false)
-                const anotherWeb3 = new StreamrWeb3(new FakeProvider())
-                expect(anotherWeb3.isEnabled()).toBe(true)
-            })
         })
     })
     describe('getWeb3', () => {
@@ -111,13 +29,6 @@ describe('web3Provider', () => {
             global.ethereum = new StreamrWeb3.providers.HttpProvider('http://vitalik:300')
             const web3 = getWeb3()
             expect(web3.currentProvider.host).toBe('http://vitalik:300')
-        })
-    })
-
-    describe('getPublicWeb3', () => {
-        it('must return web3 with the public provider', () => {
-            const web3 = getPublicWeb3()
-            expect(web3.currentProvider.host).toBe('http://mainchainrpc:8545')
         })
     })
 })

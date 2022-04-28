@@ -3,7 +3,7 @@
 import abiDecoder from 'abi-decoder'
 
 import { transactionTypes, paymentCurrencies } from '$shared/utils/constants'
-import { getPublicWeb3 } from '$shared/web3/web3Provider'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getConfig from '$shared/web3/config'
 import type { HashList, TransactionEntityList, TransactionEntity, EventLog, EventLogList } from '$shared/flowtype/web3-types'
 import TransactionError from '$shared/errors/TransactionError'

@@ -1,7 +1,6 @@
 import React from 'react'
 import { act, render, cleanup } from '@testing-library/react'
-
-import { Provider as SessionProvider, useSession } from '$auth/components/SessionProvider'
+import { Provider as SessionProvider, useSession } from '$shared/components/SessionProvider'
 import { SESSION_TOKEN_KEY, SESSION_LOGIN_TIME, SESSION_LOGIN_METHOD } from '$shared/utils/sessionToken'
 
 describe('SessionProvider', () => {

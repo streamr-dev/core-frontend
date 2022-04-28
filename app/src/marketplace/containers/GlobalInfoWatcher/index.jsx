@@ -19,7 +19,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
-import { useSession } from '$auth/components/SessionProvider'
+import { useSession } from '$shared/components/SessionProvider'
 import SwitchAccountModal from './SwitchAccountModal'
 
 type Props = {

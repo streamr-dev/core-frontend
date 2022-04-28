@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import Provider from 'streamr-client-react'
 import getClientConfig from '$app/src/getters/getClientConfig'
-import { useSession } from '$auth/components/SessionProvider'
+import { useSession } from '$shared/components/SessionProvider'
 import { getWeb3 } from '$shared/web3/web3Provider'
 
 export default function StreamrClientProvider({ children }) {

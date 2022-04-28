@@ -1,10 +1,12 @@
 // @flow
 
-import { StreamrWeb3, getPublicWeb3 } from '$shared/web3/web3Provider'
+import { StreamrWeb3 } from '$shared/web3/web3Provider'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getConfig from '$shared/web3/config'
 import { networks } from '$shared/utils/constants'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import type { Hash } from '$shared/flowtype/web3-types'
+import getChainId from '$utils/web3/getChainId'
 
 type CheckNetworkParams = {
     web3: StreamrWeb3,
@@ -12,7 +14,7 @@ type CheckNetworkParams = {
 }
 
 export const checkEthereumNetworkIsCorrect = async ({ web3, network = networks.MAINNET }: CheckNetworkParams): Promise<void> => {
-    const currentChainId = await web3.getChainId()
+    const currentChainId = await getChainId(web3)
 
     const config = getConfig()
     const requiredChainId = (config[network] || {}).chainId

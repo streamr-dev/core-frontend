@@ -1,17 +1,14 @@
 // @flow
 
 import Web3 from 'web3'
-
 import FakeProvider from 'web3-fake-provider'
 import getConfig from '$shared/web3/config'
-import type { Address } from '$shared/flowtype/web3-types'
-import {
-    Web3NotSupportedError,
-    Web3NotEnabledError,
-    WalletLockedError,
-} from '$shared/errors/Web3/index'
+import Web3NotSupportedError from '$shared/errors/Web3NotSupportedError'
+import Web3NotEnabledError from '$shared/errors/Web3NotEnabledError'
+import WalletLockedError from '$shared/errors/WalletLockedError'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { networks } from '$shared/utils/constants'
+import enableMetamask from '$utils/web3/enableMetamask'
 
 declare var ethereum: Web3
 declare var web3: Web3
@@ -39,32 +36,6 @@ export class StreamrWeb3 extends Web3 {
         const { mainnet } = getConfig()
         this.transactionConfirmationBlocks = mainnet.transactionConfirmationBlocks
     }
-
-    getDefaultAccount = (): Promise<Address> => this.eth.getAccounts()
-        .then((accounts) => {
-            if (!Array.isArray(accounts) || accounts.length === 0) {
-                throw new WalletLockedError('MetaMask browser extension is locked')
-            }
-            return accounts[0]
-        })
-
-    getChainId = async (): Promise<?string> => {
-        const network = await this.eth.net.getId()
-
-        return Number.isInteger(network) ? network.toString() : undefined
-    }
-
-    isEnabled = (): boolean => !!this.currentProvider
-}
-
-const publicWeb3Options = {
-    timeout: 20000, // milliseconds,
-}
-
-export const getPublicWeb3 = (): StreamrWeb3 => {
-    const { mainnet } = getConfig()
-
-    return new StreamrWeb3(new Web3.providers.HttpProvider(mainnet.rpcUrl, publicWeb3Options))
 }
 
 export const getWeb3 = (): StreamrWeb3 => {
@@ -94,38 +65,19 @@ export const validateWeb3 = async ({ web3: _web3, requireNetwork = networks.MAIN
 
     // enable metamask
     if (!_web3.isLegacy) {
-        try {
-            // ethereum.enable() is deprecated and may be removed in the future.
-            // Prefer 'eth_requestAccounts' RPC method instead
-            if (typeof ethereum.request === 'function') {
-                const accountsPromise = ethereum.request({
-                    method: 'eth_requestAccounts',
-                })
-
-                try {
-                    if (unlockTimeout === false) {
-                        await accountsPromise
-                    } else {
-                        // If MetaMask is locked, eth_requestAccounts will wait user to unlock without timeout.
-                        // Let's add a timeout to end that madness.
-                        const cancelPromise = new Promise((resolve, reject) => {
-                            setTimeout(() => reject(new Error('Cancelled')), (typeof unlockTimeout === 'number') ? unlockTimeout : 100)
-                        })
-
-                        await Promise.race([cancelPromise, accountsPromise])
-                    }
-                } catch (e) {
-                    console.warn('Unlock timeout')
-                    throw new WalletLockedError()
+        await enableMetamask(ethereum, {
+            timeoutAfter: (() => {
+                if (unlockTimeout === false) {
+                    return undefined
                 }
-            } else {
-                // ethereum.request is available since MetaMask v. 8, fallback to ethereum.enable()
-                await ethereum.enable()
-            }
-        } catch (e) {
-            console.warn(e)
-            throw new Web3NotEnabledError()
-        }
+
+                if (typeof unlockTimeout === 'number') {
+                    return unlockTimeout
+                }
+
+                return 100
+            })(),
+        })
     }
 
     if (!_web3.currentProvider) {

@@ -1,9 +1,13 @@
-import { useCallback } from 'react'
+import React from 'react'
+import { SignInMethod } from '@streamr/streamr-layout'
 import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
 import getSessionToken from '$auth/utils/getSessionToken'
 
-const useMetamask = () => (
-    useCallback(async () => {
+const Metamask = {
+    id: 'metamask',
+    label: 'MetaMask',
+    icon: <SignInMethod.Icon.Metamask />,
+    async connect() {
         const web3 = getWeb3()
 
         await validateWeb3({
@@ -16,7 +20,7 @@ const useMetamask = () => (
         })
 
         return token
-    }, [])
-)
+    },
+}
 
-export default useMetamask
+export default Metamask

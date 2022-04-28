@@ -5,10 +5,19 @@ import BN from 'bignumber.js'
 
 import * as all from '$mp/modules/product/services'
 import * as utils from '$mp/utils/smartContract'
-import * as getWeb3 from '$shared/web3/web3Provider'
 import * as productUtils from '$mp/utils/product'
 import setTempEnv from '$testUtils/setTempEnv'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { existingProduct } from './mockData'
+
+jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+function mockDefaultAccount(defaultAccount) {
+    return getDefaultWeb3Account.mockImplementation(() => Promise.resolve(defaultAccount))
+}
 
 jest.mock('$app/src/getters/getConfig', () => {
     const { default: gc } = jest.requireActual('$app/src/getters/getConfig')
@@ -50,6 +59,7 @@ describe('product - services', () => {
         moxios.uninstall()
         jest.clearAllMocks()
         jest.restoreAllMocks()
+        getDefaultWeb3Account.mockReset()
         process.env.DAI_TOKEN_CONTRACT_ADDRESS = oldDaiTokenAddress
     })
 
@@ -82,10 +92,8 @@ describe('product - services', () => {
 
     describe('getMyProductSubscription', () => {
         it('works as intended', async () => {
-            const accountStub = jest.fn(() => Promise.resolve('testAccount'))
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: accountStub,
-            }))
+            mockDefaultAccount('testAccount')
+
             const getProductStub = jest.fn(() => ({
                 call: () => Promise.resolve({
                     status: '0x1',
@@ -117,10 +125,8 @@ describe('product - services', () => {
         })
 
         it('throws an error if no product was found', async (done) => {
-            const accountStub = jest.fn(() => Promise.resolve('testAccount'))
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: accountStub,
-            }))
+            mockDefaultAccount('testAccount')
+
             const getProductStub = jest.fn(() => ({
                 call: () => Promise.resolve({
                     owner: '0x000',
@@ -457,9 +463,8 @@ describe('product - services', () => {
 
     describe('getMyDataAllowance', () => {
         it('must call the correct method', async () => {
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
+            mockDefaultAccount('testAccount')
+
             const allowanceStub = jest.fn(() => ({
                 call: () => Promise.resolve('1000'),
             }))
@@ -485,9 +490,8 @@ describe('product - services', () => {
             expect(allowanceStub.mock.calls[0][1]).toBe('marketplaceAddress')
         })
         it('must transform the result from wei to tokens', async () => {
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
+            mockDefaultAccount('testAccount')
+
             const allowanceStub = jest.fn(() => ({
                 call: () => Promise.resolve(('276000000000000000000').toString()),
             }))
@@ -512,11 +516,10 @@ describe('product - services', () => {
 
     describe('setMyDataAllowance', () => {
         it('must call the correct method', async () => {
+            mockDefaultAccount('testAccount')
+
             const approveStub = jest.fn(() => ({
                 send: () => 'test',
-            }))
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
             }))
             jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
@@ -540,9 +543,8 @@ describe('product - services', () => {
             }
         })
         it('must return the result of send', async () => {
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
+            mockDefaultAccount('testAccount')
+
             const approveStub = jest.fn(() => ({
                 send: () => 'test',
             }))

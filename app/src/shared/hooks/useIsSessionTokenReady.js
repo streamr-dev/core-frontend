@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux'
-import { useSession } from '$auth/components/SessionProvider'
+import { useSession } from '$shared/components/SessionProvider'
 import { selectAuthState } from '$shared/modules/user/selectors'
 
 export default function useIsSessionTokenReady() {

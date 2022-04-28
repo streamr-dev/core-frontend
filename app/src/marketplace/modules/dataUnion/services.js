@@ -19,6 +19,7 @@ import { post, del, get, put } from '$shared/utils/api'
 import { getWeb3 } from '$shared/web3/web3Provider'
 import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 import type { Secret } from './types'
 
@@ -110,7 +111,7 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
     const client = createClient()
 
     Promise.all([
-        web3.getDefaultAccount(),
+        getDefaultWeb3Account(web3),
         checkEthereumNetworkIsCorrect({
             web3,
         }),

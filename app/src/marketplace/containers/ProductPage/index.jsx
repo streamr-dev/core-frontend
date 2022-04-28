@@ -15,7 +15,7 @@ import PrestyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import Nav from '$shared/components/Layout/Nav'
 
 import { selectUserData } from '$shared/modules/user/selectors'
-import { useSession } from '$auth/components/SessionProvider'
+import { useSession } from '$shared/components/SessionProvider'
 import ProductController, { useController } from '../ProductController'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import PurchaseModal from './PurchaseModal'

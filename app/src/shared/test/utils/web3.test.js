@@ -1,11 +1,30 @@
+import Web3 from 'web3'
 import * as all from '$shared/utils/web3'
 import * as getConfig from '$shared/web3/config'
-import * as getWeb3 from '$shared/web3/web3Provider'
 import { networks } from '$shared/utils/constants'
+import getPublicWeb3 from '$utils/web3/getPublicWeb3'
+import getChainId from '$utils/web3/getChainId'
+
+jest.mock('$utils/web3/getPublicWeb3', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+function mockPublicWeb3(publicWeb3) {
+    return getPublicWeb3.mockImplementation(() => publicWeb3)
+}
+
+jest.mock('$utils/web3/getChainId', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+function mockChainId(chainId) {
+    return getChainId.mockImplementation(() => Promise.resolve(chainId))
+}
 
 describe('web3 utils', () => {
-    beforeEach(() => {
-    })
+    const web3 = new Web3()
 
     afterEach(() => {
         jest.clearAllMocks()
@@ -19,10 +38,11 @@ describe('web3 utils', () => {
                     chainId: '1',
                 },
             }))
+
+            mockChainId('1')
+
             await all.checkEthereumNetworkIsCorrect({
-                web3: {
-                    getChainId: () => Promise.resolve('1'),
-                },
+                web3,
             })
         })
 
@@ -32,11 +52,12 @@ describe('web3 utils', () => {
                     chainId: '2',
                 },
             }))
+
+            mockChainId('1')
+
             try {
                 await all.checkEthereumNetworkIsCorrect({
-                    web3: {
-                        getChainId: () => Promise.resolve('1'),
-                    },
+                    web3,
                 })
             } catch (e) {
                 done()
@@ -52,10 +73,11 @@ describe('web3 utils', () => {
                     chainId: '8995',
                 },
             }))
+
+            mockChainId('8995')
+
             await all.checkEthereumNetworkIsCorrect({
-                web3: {
-                    getChainId: () => Promise.resolve('8995'),
-                },
+                web3,
                 network: networks.DATAUNIONS,
             })
         })
@@ -69,11 +91,12 @@ describe('web3 utils', () => {
                     chainId: '8995',
                 },
             }))
+
+            mockChainId('1')
+
             try {
                 await all.checkEthereumNetworkIsCorrect({
-                    web3: {
-                        getChainId: () => Promise.resolve('1'),
-                    },
+                    web3,
                     network: networks.DATAUNIONS,
                 })
             } catch (e) {
@@ -93,7 +116,8 @@ describe('web3 utils', () => {
                     getTransaction: transactionStub,
                 },
             }
-            jest.spyOn(getWeb3, 'getPublicWeb3').mockImplementation(() => publicWeb3Stub)
+
+            mockPublicWeb3(publicWeb3Stub)
 
             const result = await all.hasTransactionCompleted('0x123')
             expect(result).toBe(true)
@@ -109,7 +133,8 @@ describe('web3 utils', () => {
                     getTransaction: transactionStub,
                 },
             }
-            jest.spyOn(getWeb3, 'getPublicWeb3').mockImplementation(() => publicWeb3Stub)
+
+            mockPublicWeb3(publicWeb3Stub)
 
             const result = await all.hasTransactionCompleted('0x123')
             expect(result).toBe(false)
@@ -123,7 +148,8 @@ describe('web3 utils', () => {
                     getTransaction: transactionStub,
                 },
             }
-            jest.spyOn(getWeb3, 'getPublicWeb3').mockImplementation(() => publicWeb3Stub)
+
+            mockPublicWeb3(publicWeb3Stub)
 
             const result = await all.hasTransactionCompleted('0x123')
             expect(result).toBe(false)

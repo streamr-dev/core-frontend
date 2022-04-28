@@ -19,7 +19,7 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
-import { WrongNetworkSelectedError } from '$shared/errors/Web3/index'
+import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 
 type DeployDialogProps = {
