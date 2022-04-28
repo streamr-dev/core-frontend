@@ -8,6 +8,7 @@ import Web3NotEnabledError from '$shared/errors/Web3NotEnabledError'
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { networks } from '$shared/utils/constants'
+import enableMetamask from '$utils/web3/enableMetamask'
 
 declare var ethereum: Web3
 declare var web3: Web3
@@ -64,38 +65,19 @@ export const validateWeb3 = async ({ web3: _web3, requireNetwork = networks.MAIN
 
     // enable metamask
     if (!_web3.isLegacy) {
-        try {
-            // ethereum.enable() is deprecated and may be removed in the future.
-            // Prefer 'eth_requestAccounts' RPC method instead
-            if (typeof ethereum.request === 'function') {
-                const accountsPromise = ethereum.request({
-                    method: 'eth_requestAccounts',
-                })
-
-                try {
-                    if (unlockTimeout === false) {
-                        await accountsPromise
-                    } else {
-                        // If MetaMask is locked, eth_requestAccounts will wait user to unlock without timeout.
-                        // Let's add a timeout to end that madness.
-                        const cancelPromise = new Promise((resolve, reject) => {
-                            setTimeout(() => reject(new Error('Cancelled')), (typeof unlockTimeout === 'number') ? unlockTimeout : 100)
-                        })
-
-                        await Promise.race([cancelPromise, accountsPromise])
-                    }
-                } catch (e) {
-                    console.warn('Unlock timeout')
-                    throw new WalletLockedError()
+        await enableMetamask(ethereum, {
+            timeoutAfter: (() => {
+                if (unlockTimeout === false) {
+                    return undefined
                 }
-            } else {
-                // ethereum.request is available since MetaMask v. 8, fallback to ethereum.enable()
-                await ethereum.enable()
-            }
-        } catch (e) {
-            console.warn(e)
-            throw new Web3NotEnabledError()
-        }
+
+                if (typeof unlockTimeout === 'number') {
+                    return unlockTimeout
+                }
+
+                return 100
+            })(),
+        })
     }
 
     if (!_web3.currentProvider) {
