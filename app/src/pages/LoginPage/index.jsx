@@ -10,12 +10,9 @@ import useInterrupt from '$shared/hooks/useInterrupt'
 import { getUserData } from '$shared/modules/user/actions'
 import { setupSession } from '$shared/reducers/session'
 import InterruptionError from '$shared/errors/InterruptionError'
+import methods from '$shared/reducers/session/methods'
 import routes from '$routes'
 import reducer, { Connect, Fail, initialState } from './reducer'
-import Metamask from './adapters/Metamask'
-import WalletConnect from './adapters/WalletConnect'
-
-const methods = [Metamask, WalletConnect]
 
 function UnstyledUnwrappedLoginPage({ className }) {
     const [{ method, connecting, error }, trigger] = useReducer(reducer, initialState)
