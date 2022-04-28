@@ -5,6 +5,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 
 import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
+import session from '$shared/reducers/session'
 import productsReducer from './marketplace/modules/productList/reducer'
 import myProductsReducer from './marketplace/modules/myProductList/reducer'
 import myPurchasesReducer from './marketplace/modules/myPurchaseList/reducer'
@@ -43,6 +44,7 @@ export function initStore() {
             user: userReducer,
             relatedProducts: relatedProductsReducer,
             transactions: transactionsReducer,
+            session,
             ...userpagesReducers,
         }),
         compose(...toBeComposed),

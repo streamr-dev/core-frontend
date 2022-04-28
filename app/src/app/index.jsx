@@ -8,7 +8,6 @@ import '@ibm/plex/css/ibm-plex.css'
 import '$utils/setupSnippets'
 
 // Auth
-import { Provider as SessionProvider } from '$shared/components/SessionProvider'
 import StreamrClientProvider from '$shared/components/StreamrClientProvider'
 import LoginPage from '$app/src/pages/LoginPage'
 import LogoutPage from '$app/src/pages/LogoutPage'
@@ -63,28 +62,26 @@ const MiscRouter = () => ([
 
 const App = () => (
     <Router history={history}>
-        <SessionProvider>
-            <StreamrClientProvider>
-                <ModalPortalProvider>
-                    <ModalProvider>
-                        <GlobalInfoWatcher>
-                            <ActivityResourceProvider>
-                                <Analytics />
-                                <Switch>
-                                    {AuthenticationRouter()}
-                                    {MarketplaceRouter()}
-                                    {DocsRouter()}
-                                    {UserpagesRouter()}
-                                    {MiscRouter()}
-                                </Switch>
-                                <Notifications />
-                            </ActivityResourceProvider>
-                            <AnalyticsTracker />
-                        </GlobalInfoWatcher>
-                    </ModalProvider>
-                </ModalPortalProvider>
-            </StreamrClientProvider>
-        </SessionProvider>
+        <StreamrClientProvider>
+            <ModalPortalProvider>
+                <ModalProvider>
+                    <GlobalInfoWatcher>
+                        <ActivityResourceProvider>
+                            <Analytics />
+                            <Switch>
+                                {AuthenticationRouter()}
+                                {MarketplaceRouter()}
+                                {DocsRouter()}
+                                {UserpagesRouter()}
+                                {MiscRouter()}
+                            </Switch>
+                            <Notifications />
+                        </ActivityResourceProvider>
+                        <AnalyticsTracker />
+                    </GlobalInfoWatcher>
+                </ModalProvider>
+            </ModalPortalProvider>
+        </StreamrClientProvider>
     </Router>
 )
 

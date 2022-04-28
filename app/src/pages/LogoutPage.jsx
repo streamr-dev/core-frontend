@@ -5,13 +5,11 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 import useOnMount from '$shared/hooks/useOnMount'
 import { logout as logoutAction } from '$shared/modules/user/actions'
 import useFailure from '$shared/hooks/useFailure'
-import { useSession } from '$shared/components/SessionProvider'
+import { setupSession } from '$shared/reducers/session'
 import routes from '$routes'
 
 const LogoutPage = () => {
     const isMounted = useIsMounted()
-
-    const { resetSessionToken } = useSession()
 
     const fail = useFailure()
 
@@ -26,7 +24,7 @@ const LogoutPage = () => {
             })
             if (isMounted()) {
                 dispatch(logoutAction())
-                resetSessionToken()
+                dispatch(setupSession([]))
                 history.push(routes.root())
             }
         } catch (e) {

@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 import Provider from 'streamr-client-react'
 import getClientConfig from '$app/src/getters/getClientConfig'
-import { useSession } from '$shared/components/SessionProvider'
+import { useSessionToken } from '$shared/reducers/session'
 import { getWeb3 } from '$shared/web3/web3Provider'
 
 export default function StreamrClientProvider({ children }) {
-    const { token } = useSession()
+    const token = useSessionToken()
 
     const config = useMemo(() => {
         const nextConfig = getClientConfig()
