@@ -13,7 +13,7 @@ import {
 } from '$mp/modules/transactions/actions'
 import { getTransactionsFromSessionStorage } from '$shared/utils/transactions'
 import TransactionError from '$shared/errors/TransactionError'
-import Web3Poller from '$shared/web3/web3Poller'
+import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import { useBalances } from '$shared/hooks/useBalances'
 import { selectUserData } from '$shared/modules/user/selectors'
 import type { NumberString } from '$shared/flowtype/common-types'
@@ -93,12 +93,12 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     }, [dispatch])
 
     useEffect(() => {
-        Web3Poller.subscribe(Web3Poller.events.TRANSACTION_COMPLETE, handleTransactionComplete)
-        Web3Poller.subscribe(Web3Poller.events.TRANSACTION_ERROR, handleTransactionError)
+        Web3Poller.subscribe(events.TRANSACTION_COMPLETE, handleTransactionComplete)
+        Web3Poller.subscribe(events.TRANSACTION_ERROR, handleTransactionError)
 
         return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.TRANSACTION_COMPLETE, handleTransactionComplete)
-            Web3Poller.unsubscribe(Web3Poller.events.TRANSACTION_ERROR, handleTransactionError)
+            Web3Poller.unsubscribe(events.TRANSACTION_COMPLETE, handleTransactionComplete)
+            Web3Poller.unsubscribe(events.TRANSACTION_ERROR, handleTransactionError)
         }
     }, [handleTransactionComplete, handleTransactionError])
 
@@ -139,12 +139,12 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
             currentNetworkId = networkId
         }
 
-        Web3Poller.subscribe(Web3Poller.events.NETWORK, onNetworkChange)
-        Web3Poller.subscribe(Web3Poller.events.NETWORK_ERROR, onNetworkChange)
+        Web3Poller.subscribe(events.NETWORK, onNetworkChange)
+        Web3Poller.subscribe(events.NETWORK_ERROR, onNetworkChange)
 
         return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.NETWORK, onNetworkChange)
-            Web3Poller.unsubscribe(Web3Poller.events.NETWORK_ERROR, onNetworkChange)
+            Web3Poller.unsubscribe(events.NETWORK, onNetworkChange)
+            Web3Poller.unsubscribe(events.NETWORK_ERROR, onNetworkChange)
         }
     }, [dispatch])
 

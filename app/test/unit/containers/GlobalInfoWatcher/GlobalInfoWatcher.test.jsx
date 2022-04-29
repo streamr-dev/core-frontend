@@ -9,7 +9,7 @@ import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as transactionUtils from '$shared/utils/transactions'
 import * as web3Utils from '$shared/utils/web3'
-import Web3Poller from '$shared/web3/web3Poller'
+import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import * as useBalances from '$shared/hooks/useBalances'
 
 import GlobalInfoWatcher from '$mp/containers/GlobalInfoWatcher'
@@ -159,13 +159,13 @@ describe('GlobalInfoWatcher', () => {
 
         // defining first time should not reload
         act(() => {
-            emitter.emit(Web3Poller.events.NETWORK, '8995')
+            emitter.emit(events.NETWORK, '8995')
         })
         expect(setEthereumNetworkIdStub).toHaveBeenCalledTimes(1)
 
         // should reload if network was defined
         act(() => {
-            emitter.emit(Web3Poller.events.NETWORK, '5')
+            emitter.emit(events.NETWORK, '5')
         })
         expect(setEthereumNetworkIdStub).toHaveBeenCalledTimes(2)
     })
