@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useRef } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Logo, Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
@@ -7,15 +7,16 @@ import Button from '$shared/components/Button'
 import { TABLET, MEDIUM } from '$shared/utils/styled'
 import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import { getUserData } from '$shared/modules/user/actions'
-import { setupSession } from '$shared/reducers/session'
-import InterruptionError from '$shared/errors/InterruptionError'
+import { initSession, useSessionConnecting, useSessionError, useSessionMethod } from '$shared/reducers/session'
 import methods from '$shared/reducers/session/methods'
 import routes from '$routes'
-import reducer, { Connect, Fail, initialState } from './reducer'
 
 function UnstyledUnwrappedLoginPage({ className }) {
-    const [{ method, connecting, error }, trigger] = useReducer(reducer, initialState)
+    const method = useSessionMethod()
+
+    const connecting = useSessionConnecting()
+
+    const error = useSessionError()
 
     const dispatch = useDispatch()
 
@@ -31,10 +32,8 @@ function UnstyledUnwrappedLoginPage({ className }) {
         }
     }
 
-    async function connect(newMethod) {
-        const { requireUninterrupted } = itp('connect')
-
-        trigger([Connect, newMethod])
+    async function connect(newMethodId) {
+        const { interrupted } = itp('connect')
 
         const cancelPromise = new Promise((resolve, reject) => {
             cancelPromiseRef.current = {
@@ -43,60 +42,14 @@ function UnstyledUnwrappedLoginPage({ className }) {
             }
         })
 
-        try {
-            let token
+        await dispatch(initSession(newMethodId, {
+            cancelPromise,
+            aborted() {
+                return interrupted()
+            },
+        }))
 
-            try {
-                try {
-                    token = await Promise.race([
-                        newMethod.connect(),
-                        cancelPromise,
-                    ])
-                } finally {
-                    requireUninterrupted()
-                }
-            } catch (e) {
-                if (e instanceof InterruptionError) {
-                    return
-                }
-
-                throw e
-            }
-
-            cancelPromiseRef.current = undefined
-
-            if (!token) {
-                throw new Error('No token')
-            }
-
-            dispatch(setupSession([token, newMethod.id]))
-
-            let user
-
-            try {
-                try {
-                    // This will redirect the user from the login page if succesful.
-                    // @FIXME: That magic is confusing. — Mariusz.
-                    user = await dispatch(getUserData())
-                } finally {
-                    requireUninterrupted()
-                }
-            } catch (e) {
-                if (e instanceof InterruptionError) {
-                    return
-                }
-
-                throw e
-            }
-
-            if (!user) {
-                throw new Error('No user data')
-            }
-        } catch (e) {
-            console.warn(e)
-
-            trigger([Fail, e])
-        }
+        cancelPromiseRef.current = undefined
     }
 
     function label(m) {
@@ -132,7 +85,7 @@ function UnstyledUnwrappedLoginPage({ className }) {
                                 <Auth.PanelRow key={m.id}>
                                     <SignInMethod
                                         disabled={connecting}
-                                        onClick={() => connect(m)}
+                                        onClick={() => connect(m.id)}
                                         theme={error && method === m ? SignInMethod.themes.Error : undefined}
                                     >
                                         <SignInMethod.Title>
@@ -169,7 +122,7 @@ function UnstyledUnwrappedLoginPage({ className }) {
                                         <Button
                                             kind="secondary"
                                             size="mini"
-                                            onClick={() => connect(method)}
+                                            onClick={() => connect(method.id)}
                                             disabled={connecting}
                                             waiting={connecting}
                                             type="button"

@@ -9,11 +9,10 @@ import Button from '$shared/components/Button'
 import useModal from '$shared/hooks/useModal'
 import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { logout } from '$shared/modules/user/actions'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { MD, LG } from '$shared/utils/styled'
-import { setupSession } from '$shared/reducers/session'
+import { teardownSession } from '$shared/reducers/session'
 import routes from '$routes'
 import Description from '../Description'
 import DeleteAccountDialog from './DeleteAccountDialog'
@@ -40,26 +39,34 @@ const DeleteAccount = () => {
         wrap(async () => {
             const { deleted, error } = await deleteAccountDialog.open()
 
-            if (isMounted()) {
-                if (error) {
-                    Notification.push({
-                        title: 'Account not disabled',
-                        icon: NotificationIcon.ERROR,
-                    })
-                } else if (deleted) {
-                    Notification.push({
-                        title: 'Account disabled!',
-                        icon: NotificationIcon.CHECKMARK,
-                    })
-                    setTimeout(() => {
-                        if (isMounted()) {
-                            dispatch(logout())
-                            dispatch(setupSession([]))
-                            history.push(routes.root())
-                        }
-                    }, 500)
-                }
+            if (!isMounted()) {
+                return
             }
+
+            if (error) {
+                Notification.push({
+                    title: 'Account not disabled',
+                    icon: NotificationIcon.ERROR,
+                })
+                return
+            }
+
+            if (!deleted) {
+                return
+            }
+
+            Notification.push({
+                title: 'Account disabled!',
+                icon: NotificationIcon.CHECKMARK,
+            })
+
+            setTimeout(() => {
+                dispatch(teardownSession())
+
+                if (isMounted()) {
+                    history.push(routes.root())
+                }
+            }, 500)
         })
     ), [wrap, deleteAccountDialog, isMounted, dispatch, history])
 

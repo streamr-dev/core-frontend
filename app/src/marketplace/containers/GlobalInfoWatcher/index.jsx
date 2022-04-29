@@ -4,7 +4,7 @@ import React, { type Node, useCallback, useEffect, useRef, useState, Fragment } 
 import { useDispatch, useSelector } from 'react-redux'
 
 import type { Hash, Receipt } from '$shared/flowtype/web3-types'
-import { getUserData, logout } from '$shared/modules/user/actions'
+import { getUserData } from '$shared/modules/user/actions'
 import { getDataPerUsd, setEthereumNetworkId } from '$mp/modules/global/actions'
 import {
     addTransaction,
@@ -19,7 +19,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
-import { setupSession } from '$shared/reducers/session'
+import { teardownSession } from '$shared/reducers/session'
 import SwitchAccountModal from './SwitchAccountModal'
 
 type Props = {
@@ -165,8 +165,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
 
     const onContinue = useCallback(() => {
         setAccountChanged(false)
-        dispatch(logout())
-        dispatch(setupSession([]))
+        dispatch(teardownSession())
     }, [dispatch])
 
     return (

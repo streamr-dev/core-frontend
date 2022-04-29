@@ -5,7 +5,7 @@ const WalletConnect = {
     id: 'walletConnect',
     label: 'WalletConnect',
     icon: <SignInMethod.Icon.WalletConnect />,
-    async connect() {
+    getEthereumProvider() {
         throw new Error('Not implemented')
     },
 }

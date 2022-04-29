@@ -28,6 +28,10 @@ export default function useInterrupt() {
 
         const count = countRef.current[cacheKey]
 
+        function interrupted() {
+            return count !== countRef.current[cacheKey]
+        }
+
         return {
             interrupt() {
                 bump(countRef.current, cacheKey)
@@ -36,10 +40,11 @@ export default function useInterrupt() {
                 bumpAllMatching(countRef.current, regExp)
             },
             requireUninterrupted() {
-                if (count !== countRef.current[cacheKey]) {
+                if (interrupted()) {
                     throw new InterruptionError()
                 }
             },
+            interrupted,
         }
     }, [])
 }
