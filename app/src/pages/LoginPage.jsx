@@ -1,4 +1,4 @@
-import React, { Fragment, useRef } from 'react'
+import React, { Fragment, useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Logo, Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
@@ -7,8 +7,9 @@ import Button from '$shared/components/Button'
 import { TABLET, MEDIUM } from '$shared/utils/styled'
 import { userIsNotAuthenticated } from '$auth/utils/userAuthenticated'
 import useInterrupt from '$shared/hooks/useInterrupt'
-import { initSession, useSessionConnecting, useSessionError, useSessionMethod } from '$shared/reducers/session'
+import { initSession, useSessionConnecting, useSessionError, useSessionMethod, useSessionToken } from '$shared/reducers/session'
 import methods from '$shared/reducers/session/methods'
+import { getUserData } from '$shared/modules/user/actions'
 import routes from '$routes'
 
 function UnstyledUnwrappedLoginPage({ className }) {
@@ -23,6 +24,24 @@ function UnstyledUnwrappedLoginPage({ className }) {
     const itp = useInterrupt()
 
     const cancelPromiseRef = useRef()
+
+    const token = useSessionToken()
+
+    useEffect(() => {
+        async function fn() {
+            try {
+                // This will take the user to stream listing page if the user
+                // signed in successfully. Magic.
+                await dispatch(getUserData())
+            } catch (e) {
+                // No-op. Error not essential.
+            }
+        }
+
+        if (token) {
+            fn()
+        }
+    }, [dispatch, token])
 
     function cancel() {
         const { current: { reject } = {} } = cancelPromiseRef
