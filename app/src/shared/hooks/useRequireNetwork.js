@@ -2,7 +2,7 @@ import { useMemo, useCallback, useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 import useModal from '$shared/hooks/useModal'
-import { validateWeb3 } from '$shared/web3/web3Provider'
+import validateWeb3 from '$utils/web3/validateWeb3'
 import getWeb3 from '$utils/web3/getWeb3'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import usePending from '$shared/hooks/usePending'

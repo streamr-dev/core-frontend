@@ -1,6 +1,6 @@
 import React from 'react'
 import { SignInMethod } from '@streamr/streamr-layout'
-import { validateWeb3 } from '$shared/web3/web3Provider'
+import validateWeb3 from '$utils/web3/validateWeb3'
 import getWeb3 from '$utils/web3/getWeb3'
 import getSessionToken from '$auth/utils/getSessionToken'
 

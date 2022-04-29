@@ -8,18 +8,17 @@ import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { networks } from '$shared/utils/constants'
 import enableMetamask from '$utils/web3/enableMetamask'
 
-declare var ethereum: Web3
-declare var web3: Web3
-
 type ValidateParams = {
     web3: Web3,
     requireNetwork?: $Values<typeof networks> | boolean,
     unlockTimeout?: number | boolean,
 }
 
-export const validateWeb3 = async ({ web3: _web3, requireNetwork = networks.MAINNET, unlockTimeout = false }: ValidateParams): Web3 => {
-    if ((_web3.isLegacy && !window.web3) ||
-        (!_web3.isLegacy && !window.ethereum)) {
+export default async function validateWeb3({ web3: _web3, requireNetwork = networks.MAINNET, unlockTimeout = false }: ValidateParams): Web3 {
+    const { ethereum, web3 } = window
+
+    if ((_web3.isLegacy && !web3) ||
+        (!_web3.isLegacy && !ethereum)) {
         throw new Web3NotSupportedError()
     }
 
