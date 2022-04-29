@@ -2,10 +2,10 @@ import BN from 'bignumber.js'
 
 import * as all from '$mp/utils/web3'
 import * as utils from '$mp/utils/smartContract'
-import * as getWeb3 from '$shared/web3/web3Provider'
 import * as getConfig from '$shared/web3/config'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
+import getWeb3 from '$utils/web3/getWeb3'
 
 jest.mock('$utils/web3/getPublicWeb3', () => ({
     __esModule: true,
@@ -17,21 +17,29 @@ jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
     default: jest.fn(),
 }))
 
-function mockDefaultAccountOnce(defaultAccount) {
-    getDefaultWeb3Account.mockImplementationOnce(() => Promise.resolve(defaultAccount))
+jest.mock('$utils/web3/getWeb3', () => ({
+    __esModule: true,
+    default: jest.fn(),
+}))
+
+function mockDefaultAccount(defaultAccount) {
+    return getDefaultWeb3Account.mockImplementation(() => Promise.resolve(defaultAccount))
 }
 
 describe('web3 utils', () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
+        getPublicWeb3.mockReset()
+        getDefaultWeb3Account.mockReset()
+        getWeb3.mockReset()
     })
 
     describe('getEthBalance', () => {
         it('gets balance with web3 from metamask', async () => {
             const accountBalance = BN(123450000000000000)
             const balanceStub = jest.fn(() => Promise.resolve(accountBalance))
-            jest.spyOn(getWeb3, 'getWeb3').mockImplementation(() => ({
+            getWeb3.mockImplementation(() => ({
                 eth: {
                     getBalance: balanceStub,
                 },
@@ -113,9 +121,9 @@ describe('web3 utils', () => {
         it('gets ethereum balance', async () => {
             const accountBalance = BN(123450000000000000)
 
-            mockDefaultAccountOnce('testAccount')
+            mockDefaultAccount('testAccount')
 
-            jest.spyOn(getWeb3, 'getWeb3').mockImplementation(() => ({
+            getWeb3.mockImplementation(() => ({
                 eth: {
                     getBalance: jest.fn(() => Promise.resolve(accountBalance)),
                 },
@@ -128,7 +136,7 @@ describe('web3 utils', () => {
 
     describe('getMyDataTokenBalance', () => {
         it('must call the correct method', async () => {
-            mockDefaultAccountOnce('testAccount')
+            mockDefaultAccount('testAccount')
 
             const balanceStub = jest.fn(() => ({
                 call: () => Promise.resolve('100000'),
@@ -147,7 +155,7 @@ describe('web3 utils', () => {
         })
 
         it('must transform the result from wei to tokens', async () => {
-            mockDefaultAccountOnce('testAccount')
+            mockDefaultAccount('testAccount')
 
             const accountBalance = BN('2209000000000000000000')
             const balanceStub = jest.fn(() => ({

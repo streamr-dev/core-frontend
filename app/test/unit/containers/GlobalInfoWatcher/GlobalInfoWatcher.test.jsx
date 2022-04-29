@@ -4,7 +4,6 @@ import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import * as redux from 'react-redux'
 
-import * as getWeb3 from '$shared/web3/web3Provider'
 import * as userActions from '$shared/modules/user/actions'
 import * as globalActions from '$mp/modules/global/actions'
 import * as transactionActions from '$mp/modules/transactions/actions'
@@ -122,12 +121,6 @@ describe('GlobalInfoWatcher', () => {
         jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
         jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
-        }))
-        const defaultAccountStub = jest.fn(() => Promise.resolve('testAccount'))
-        const networkStub = jest.fn(() => Promise.resolve('1'))
-        jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-            getDefaultAccount: defaultAccountStub,
-            getChainId: networkStub,
         }))
         jest.spyOn(web3Utils, 'hasTransactionCompleted').mockImplementation(() => Promise.resolve(false))
         jest.spyOn(transactionUtils, 'getTransactionsFromSessionStorage').mockImplementation(() => transactions)

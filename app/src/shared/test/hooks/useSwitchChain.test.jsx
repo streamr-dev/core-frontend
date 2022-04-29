@@ -2,15 +2,36 @@ import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
-import * as web3Provider from '$shared/web3/web3Provider'
 import * as getConfig from '$shared/web3/config'
 import MissingNetworkError from '$shared/errors/MissingNetworkError'
 import UnsupportedNetworkError from '$shared/errors/UnsupportedNetworkError'
+import getWeb3 from '$utils/web3/getWeb3'
+import validateWeb3 from '$utils/web3/validateWeb3'
+
+jest.mock('$utils/web3/getWeb3', () => ({
+    __esModule: true,
+    default: jest.fn(),
+}))
+
+jest.mock('$utils/web3/validateWeb3', () => ({
+    __esModule: true,
+    default: jest.fn(),
+}))
+
+function mockGetWeb3(value) {
+    return getWeb3.mockImplementation(() => value)
+}
+
+function mockValidateWeb3(value) {
+    return validateWeb3.mockImplementation(() => value)
+}
 
 describe('useSwitchChain', () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
+        getWeb3.mockReset()
+        validateWeb3.mockReset()
     })
 
     it('prompts to switch chain', async () => {
@@ -29,15 +50,17 @@ describe('useSwitchChain', () => {
             },
         }))
         const requestStub = jest.fn()
-        jest.spyOn(web3Provider, 'getWeb3').mockImplementation(() => ({
+
+        mockGetWeb3({
             currentProvider: {
                 request: requestStub,
             },
             utils: {
                 toHex: (number) => number,
             },
-        }))
-        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
+        })
+
+        mockValidateWeb3(Promise.resolve())
 
         await act(async () => {
             await result.switchChain('123')
@@ -78,15 +101,17 @@ describe('useSwitchChain', () => {
                 throw error
             }
         })
-        jest.spyOn(web3Provider, 'getWeb3').mockImplementation(() => ({
+
+        mockGetWeb3({
             currentProvider: {
                 request: requestStub,
             },
             utils: {
                 toHex: (number) => number,
             },
-        }))
-        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
+        })
+
+        mockValidateWeb3(Promise.resolve())
 
         await act(async () => {
             try {
@@ -124,13 +149,15 @@ describe('useSwitchChain', () => {
 
         mount(<Test />)
 
-        jest.spyOn(web3Provider, 'getWeb3').mockImplementation(() => ({}))
+        mockGetWeb3({})
+
         jest.spyOn(getConfig, 'default').mockImplementation(() => ({
             metamask: {
                 '123': {},
             },
         }))
-        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
+
+        mockValidateWeb3(Promise.resolve())
 
         await act(async () => {
             await expect(result.switchChain('1')).rejects.toThrow(UnsupportedNetworkError)
@@ -151,20 +178,23 @@ describe('useSwitchChain', () => {
             const error = new Error(method)
             throw error
         })
-        jest.spyOn(web3Provider, 'getWeb3').mockImplementation(() => ({
+
+        mockGetWeb3({
             currentProvider: {
                 request: requestStub,
             },
             utils: {
                 toHex: (number) => number,
             },
-        }))
+        })
+
         jest.spyOn(getConfig, 'default').mockImplementation(() => ({
             metamask: {
                 '123': {},
             },
         }))
-        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
+
+        mockValidateWeb3(Promise.resolve())
 
         await act(async () => {
             await expect(result.switchChain('123')).rejects.toThrow(/wallet_switchEthereumChain/)
@@ -186,14 +216,16 @@ describe('useSwitchChain', () => {
             error.code = 4902
             throw error
         })
-        jest.spyOn(web3Provider, 'getWeb3').mockImplementation(() => ({
+
+        mockGetWeb3({
             currentProvider: {
                 request: requestStub,
             },
             utils: {
                 toHex: (number) => number,
             },
-        }))
+        })
+
         jest.spyOn(getConfig, 'default').mockImplementation(() => ({
             metamask: {
                 '123': {
@@ -204,7 +236,8 @@ describe('useSwitchChain', () => {
                 },
             },
         }))
-        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
+
+        mockValidateWeb3(Promise.resolve())
 
         await act(async () => {
             await expect(result.switchChain('123')).rejects.toThrow(/wallet_addEthereumChain/)
@@ -231,15 +264,17 @@ describe('useSwitchChain', () => {
             requestResolve = resolve
         })
         const requestStub = jest.fn(() => requestPromise)
-        jest.spyOn(web3Provider, 'getWeb3').mockImplementation(() => ({
+
+        mockGetWeb3({
             currentProvider: {
                 request: requestStub,
             },
             utils: {
                 toHex: (number) => number,
             },
-        }))
-        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
+        })
+
+        mockValidateWeb3(Promise.resolve())
 
         expect(result.switchPending).toBe(false)
 
@@ -276,15 +311,17 @@ describe('useSwitchChain', () => {
             requestReject = reject
         })
         const requestStub = jest.fn(() => requestPromise)
-        jest.spyOn(web3Provider, 'getWeb3').mockImplementation(() => ({
+
+        mockGetWeb3({
             currentProvider: {
                 request: requestStub,
             },
             utils: {
                 toHex: (number) => number,
             },
-        }))
-        jest.spyOn(web3Provider, 'validateWeb3').mockImplementation(() => Promise.resolve())
+        })
+
+        mockValidateWeb3(Promise.resolve())
 
         expect(result.switchPending).toBe(false)
 

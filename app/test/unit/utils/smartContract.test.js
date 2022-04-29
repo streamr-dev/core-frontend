@@ -1,6 +1,5 @@
 import EventEmitter from 'events'
 
-import * as getWeb3 from '$shared/web3/web3Provider'
 import * as getConfig from '$shared/web3/config'
 import * as all from '$mp/utils/smartContract'
 import { networks } from '$shared/utils/constants'
@@ -8,6 +7,7 @@ import Transaction from '$shared/utils/Transaction'
 import TransactionError from '$shared/errors/TransactionError'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import getChainId from '$utils/web3/getChainId'
+import getWeb3 from '$utils/web3/getWeb3'
 
 jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
     __esModule: true,
@@ -22,6 +22,11 @@ jest.mock('$utils/web3/getChainId', () => ({
 function mockChainId(chainId) {
     getChainId.mockImplementation(() => Promise.resolve(chainId))
 }
+
+jest.mock('$utils/web3/getWeb3', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
 
 const PromiEvent = () => {
     const promiEvent = Promise.resolve()
@@ -121,7 +126,7 @@ describe('smartContract utils', () => {
 
             class Test {}
 
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
+            getWeb3.mockImplementation(() => ({
                 eth: {
                     Contract: Test,
                 },
