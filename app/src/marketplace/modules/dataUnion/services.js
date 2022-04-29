@@ -32,7 +32,7 @@ function createClient({ usePublicNode = false }: CreateClient = {}) {
 
     return new StreamrClient(getClientConfig({
         auth: {
-            ethereum: web3 && web3.metamaskProvider,
+            ethereum: (web3 || {}).currentProvider,
         },
     }))
 }

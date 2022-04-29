@@ -17,7 +17,7 @@ const Metamask = {
         })
 
         const token = await getSessionToken({
-            ethereum: web3.metamaskProvider,
+            ethereum: web3.currentProvider,
         })
 
         return token

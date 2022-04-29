@@ -16,7 +16,7 @@ export default function StreamrClientProvider({ children }) {
             nextConfig.auth = {
                 ...nextConfig.auth,
                 sessionToken: token || undefined,
-                ethereum: web3 && web3.metamaskProvider,
+                ethereum: (web3 || {}).currentProvider,
             }
         }
 
