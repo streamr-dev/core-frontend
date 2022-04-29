@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import getWeb3 from '$utils/web3/getWeb3'
-import Web3Poller from '$shared/web3/web3Poller'
+import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 
@@ -30,12 +30,12 @@ export default (): ?string => {
             }
         }
 
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT, setAddress)
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
+        Web3Poller.subscribe(events.ACCOUNT, setAddress)
+        Web3Poller.subscribe(events.ACCOUNT_ERROR, setLocked)
 
         return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, setAddress)
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
+            Web3Poller.unsubscribe(events.ACCOUNT, setAddress)
+            Web3Poller.unsubscribe(events.ACCOUNT_ERROR, setLocked)
         }
     }, [isMounted])
 

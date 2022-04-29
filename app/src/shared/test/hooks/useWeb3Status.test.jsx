@@ -2,7 +2,7 @@ import EventEmitter from 'events'
 import React from 'react'
 import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
-import Web3Poller from '$shared/web3/web3Poller'
+import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import validateWeb3 from '$utils/web3/validateWeb3'
@@ -215,12 +215,12 @@ describe('useWeb3Status', () => {
         validateWeb3Stub = mockValidateWeb3(() => {})
 
         await act(async () => {
-            emitter.emit(Web3Poller.events.ACCOUNT, account)
+            emitter.emit(events.ACCOUNT, account)
         })
 
         expect(result.account).toBe(account)
         expect(result.web3Error).toBeFalsy()
-        expect(subscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT, handlers[Web3Poller.events.ACCOUNT])
+        expect(subscribeStub).toBeCalledWith(events.ACCOUNT, handlers[events.ACCOUNT])
         expect(result.isLocked).toBe(false)
         expect(validateWeb3Stub).toHaveBeenCalledTimes(1)
     })
@@ -259,7 +259,7 @@ describe('useWeb3Status', () => {
         mockDefaultAccount(account)
 
         await act(async () => {
-            emitter.emit(Web3Poller.events.ACCOUNT, account)
+            emitter.emit(events.ACCOUNT, account)
         })
 
         expect(result.account).toBeFalsy()
@@ -291,7 +291,7 @@ describe('useWeb3Status', () => {
 
         expect(result.account).toBe(account)
         expect(result.web3Error).toBeFalsy()
-        expect(subscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])
+        expect(subscribeStub).toBeCalledWith(events.ACCOUNT_ERROR, handlers[events.ACCOUNT_ERROR])
         expect(result.isLocked).toBe(false)
     })
 
@@ -327,14 +327,14 @@ describe('useWeb3Status', () => {
         expect(result.isLocked).toBe(false)
 
         await act(async () => {
-            emitter.emit(Web3Poller.events.ACCOUNT_ERROR)
+            emitter.emit(events.ACCOUNT_ERROR)
         })
 
         expect(result.account).toBeFalsy()
         expect(result.web3Error).toBeTruthy()
         expect(result.isLocked).toBe(true)
-        expect(unsubscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])
-        expect(unsubscribeStub).toBeCalledWith(Web3Poller.events.NETWORK_ERROR, handlers[Web3Poller.events.NETWORK_ERROR])
+        expect(unsubscribeStub).toBeCalledWith(events.ACCOUNT_ERROR, handlers[events.ACCOUNT_ERROR])
+        expect(unsubscribeStub).toBeCalledWith(events.NETWORK_ERROR, handlers[events.NETWORK_ERROR])
     })
 
     it('unsubscribes error account error listener on unmount', async () => {
@@ -359,6 +359,6 @@ describe('useWeb3Status', () => {
             el.unmount()
         })
 
-        expect(unsubscribeStub).toBeCalledWith(Web3Poller.events.ACCOUNT_ERROR, handlers[Web3Poller.events.ACCOUNT_ERROR])
+        expect(unsubscribeStub).toBeCalledWith(events.ACCOUNT_ERROR, handlers[events.ACCOUNT_ERROR])
     })
 })

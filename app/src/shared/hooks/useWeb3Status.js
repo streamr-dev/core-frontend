@@ -8,7 +8,7 @@ import WalletLockedError from '$shared/errors/WalletLockedError'
 import type { Address } from '$shared/flowtype/web3-types'
 import { networks } from '$shared/utils/constants'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
-import Web3Poller from '$shared/web3/web3Poller'
+import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import useIsMounted from './useIsMounted'
 
 type Result = {
@@ -64,12 +64,12 @@ export default function useWeb3Status({ requireWeb3 = true, requireNetwork = net
             validate()
         }
 
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT, onChange)
-        Web3Poller.subscribe(Web3Poller.events.NETWORK, onChange)
+        Web3Poller.subscribe(events.ACCOUNT, onChange)
+        Web3Poller.subscribe(events.NETWORK, onChange)
 
         return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT, onChange)
-            Web3Poller.unsubscribe(Web3Poller.events.NETWORK, onChange)
+            Web3Poller.unsubscribe(events.ACCOUNT, onChange)
+            Web3Poller.unsubscribe(events.NETWORK, onChange)
         }
     }, [requireWeb3, checkingWeb3, isMounted, validate])
 
@@ -82,12 +82,12 @@ export default function useWeb3Status({ requireWeb3 = true, requireNetwork = net
             setAccount(null)
         }
 
-        Web3Poller.subscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
-        Web3Poller.subscribe(Web3Poller.events.NETWORK_ERROR, setLocked)
+        Web3Poller.subscribe(events.ACCOUNT_ERROR, setLocked)
+        Web3Poller.subscribe(events.NETWORK_ERROR, setLocked)
 
         return () => {
-            Web3Poller.unsubscribe(Web3Poller.events.ACCOUNT_ERROR, setLocked)
-            Web3Poller.unsubscribe(Web3Poller.events.NETWORK_ERROR, setLocked)
+            Web3Poller.unsubscribe(events.ACCOUNT_ERROR, setLocked)
+            Web3Poller.unsubscribe(events.NETWORK_ERROR, setLocked)
         }
     }, [requireWeb3, account, isMounted])
 

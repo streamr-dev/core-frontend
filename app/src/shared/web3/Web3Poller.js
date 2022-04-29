@@ -49,7 +49,11 @@ class CancelError extends Error {
     }
 }
 
-export default class Web3Poller {
+let instance
+
+const allowedCaller = {}
+
+class Web3Poller {
     web3PollTimeout: ?TimeoutID = null
     ethereumNetworkPollTimeout: ?TimeoutID = null
     pendingTransactionsPollTimeout: ?TimeoutID = null
@@ -58,7 +62,19 @@ export default class Web3Poller {
     networkId: ?NumberString = ''
     emitter: EventEmitter = new EventEmitter()
 
-    constructor() {
+    static subscribe(event: Event, handler: Handler) {
+        instance.subscribe(event, handler)
+    }
+
+    static unsubscribe(event: Event, handler: Handler) {
+        instance.unsubscribe(event, handler)
+    }
+
+    constructor(caller: any) {
+        if (allowedCaller !== caller) {
+            throw new Error('Use `subscribe` or `unsubscribe` to interract with Web3Poller.')
+        }
+
         // Start polling for info
         this.pollWeb3()
         this.pollEthereumNetwork()
@@ -225,3 +241,7 @@ export default class Web3Poller {
         }))
     }
 }
+
+instance = new Web3Poller(allowedCaller)
+
+export default Web3Poller
