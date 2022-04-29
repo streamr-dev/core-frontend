@@ -13,7 +13,7 @@ import {
 } from '$mp/utils/product'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
-import { getWeb3 } from '$shared/web3/web3Provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
 

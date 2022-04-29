@@ -2,9 +2,9 @@
 
 import EventEmitter from 'events'
 
-import getWeb3 from '$shared/web3/web3Provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
-import type { StreamrWeb3 as StreamrWeb3Type } from '$shared/web3/web3Provider'
+import type StreamrWeb3Type from '$utils/web3/StreamrWeb3'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { hasTransactionCompleted } from '$shared/utils/web3'

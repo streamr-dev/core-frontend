@@ -4,7 +4,7 @@ import BN from 'bignumber.js'
 import Web3 from 'web3'
 
 import NoBalanceError from '$mp/errors/NoBalanceError'
-import { getWeb3 } from '$shared/web3/web3Provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getConfig from '$shared/web3/config'
 import type { SmartContractCall, Address } from '$shared/flowtype/web3-types'

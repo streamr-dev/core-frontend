@@ -1,6 +1,6 @@
 // @flow
 
-import { StreamrWeb3 } from '$shared/web3/web3Provider'
+import StreamrWeb3 from '$utils/web3/StreamrWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getConfig from '$shared/web3/config'
 import { networks } from '$shared/utils/constants'

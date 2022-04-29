@@ -1,7 +1,7 @@
 // @flow
 
 import { useState, useEffect } from 'react'
-import { getWeb3 } from '$shared/web3/web3Provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import Web3Poller from '$shared/web3/web3Poller'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'

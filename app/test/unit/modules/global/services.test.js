@@ -1,11 +1,7 @@
 import * as all from '$mp/modules/global/services'
 import * as smartContractUtils from '$mp/utils/smartContract'
-import * as getWeb3 from '$shared/web3/web3Provider'
 
 describe('global - services', () => {
-    beforeEach(() => {
-    })
-
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
@@ -13,9 +9,6 @@ describe('global - services', () => {
 
     describe('getDataPerUsd', () => {
         it('must call the correct method', async () => {
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
             const balanceStub = jest.fn(() => ({
                 call: () => Promise.resolve('10000'),
             }))
@@ -32,9 +25,6 @@ describe('global - services', () => {
         })
 
         it('must transform the result from attoUnit to unit', async () => {
-            jest.spyOn(getWeb3, 'default').mockImplementation(() => ({
-                getDefaultAccount: () => Promise.resolve('testAccount'),
-            }))
             const dataPerUsdStub = jest.fn(() => ({
                 call: () => Promise.resolve(('209000000000000000000').toString()),
             }))
