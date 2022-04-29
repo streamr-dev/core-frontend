@@ -2,7 +2,7 @@
 
 import BN from 'bignumber.js'
 import getConfig from '$shared/web3/config'
-import getWeb3 from '$shared/web3/web3Provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import { get, put, post } from '$shared/utils/api'
 
 import getCoreConfig from '$app/src/getters/getCoreConfig'

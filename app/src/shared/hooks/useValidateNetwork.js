@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react'
 import useModal from '$shared/hooks/useModal'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
-import { getWeb3, validateWeb3 } from '$shared/web3/web3Provider'
+import { validateWeb3 } from '$shared/web3/web3Provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import useInterrupt from '$shared/hooks/useInterrupt'
 
 export default function useValidateNetwork() {

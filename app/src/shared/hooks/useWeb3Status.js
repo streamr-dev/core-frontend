@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
-import getWeb3, { validateWeb3 } from '$shared/web3/web3Provider'
+import { validateWeb3 } from '$shared/web3/web3Provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import type { Address } from '$shared/flowtype/web3-types'
 import { networks } from '$shared/utils/constants'

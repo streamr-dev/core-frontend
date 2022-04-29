@@ -1,4 +1,5 @@
-import { validateWeb3, getWeb3 } from '$shared/web3/web3Provider'
+import { validateWeb3 } from '$shared/web3/web3Provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import getConfig from '$shared/web3/config'
 import UnsupportedNetworkError from '$shared/errors/UnsupportedNetworkError'
 import MissingNetworkParamsError from '$shared/errors/MissingNetworkParamsError'

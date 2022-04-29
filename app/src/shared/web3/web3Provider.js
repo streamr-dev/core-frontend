@@ -1,7 +1,6 @@
 // @flow
 
 import Web3 from 'web3'
-import FakeProvider from 'web3-fake-provider'
 import getConfig from '$shared/web3/config'
 import Web3NotSupportedError from '$shared/errors/Web3NotSupportedError'
 import Web3NotEnabledError from '$shared/errors/Web3NotEnabledError'
@@ -12,12 +11,6 @@ import enableMetamask from '$utils/web3/enableMetamask'
 
 declare var ethereum: Web3
 declare var web3: Web3
-
-// Disable automatic reload when network is changed in Metamask,
-// reload is handled in GlobalInfoWatcher component
-if (window.ethereum) {
-    window.ethereum.autoRefreshOnNetworkChange = false
-}
 
 type StreamrWeb3Options = {
     isLegacy?: boolean,
@@ -36,19 +29,6 @@ export class StreamrWeb3 extends Web3 {
         const { mainnet } = getConfig()
         this.transactionConfirmationBlocks = mainnet.transactionConfirmationBlocks
     }
-}
-
-export const getWeb3 = (): StreamrWeb3 => {
-    if (typeof ethereum !== 'undefined') {
-        return new StreamrWeb3(ethereum)
-    } else if (typeof web3 !== 'undefined') {
-        return new StreamrWeb3(web3.currentProvider, {
-            isLegacy: true,
-        })
-    }
-    return new StreamrWeb3(new FakeProvider(), {
-        isLegacy: true,
-    })
 }
 
 type ValidateParams = {
@@ -106,5 +86,3 @@ export const validateWeb3 = async ({ web3: _web3, requireNetwork = networks.MAIN
 
     return _web3
 }
-
-export default getWeb3
