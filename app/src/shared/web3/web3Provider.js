@@ -1,7 +1,6 @@
 // @flow
 
 import Web3 from 'web3'
-import getConfig from '$shared/web3/config'
 import Web3NotSupportedError from '$shared/errors/Web3NotSupportedError'
 import Web3NotEnabledError from '$shared/errors/Web3NotEnabledError'
 import WalletLockedError from '$shared/errors/WalletLockedError'
@@ -11,25 +10,6 @@ import enableMetamask from '$utils/web3/enableMetamask'
 
 declare var ethereum: Web3
 declare var web3: Web3
-
-type StreamrWeb3Options = {
-    isLegacy?: boolean,
-}
-
-export class StreamrWeb3 extends Web3 {
-    isLegacy: boolean
-    metamaskProvider: any
-
-    constructor(provider: any, options: StreamrWeb3Options = {}) {
-        super(provider)
-        this.metamaskProvider = provider
-        this.isLegacy = options && !!options.isLegacy
-        // Set number of desired confirmations for transactions.
-        // This needs to be 1 for local Ganache chain. Default is 24.
-        const { mainnet } = getConfig()
-        this.transactionConfirmationBlocks = mainnet.transactionConfirmationBlocks
-    }
-}
 
 type ValidateParams = {
     web3: Web3,

@@ -7,7 +7,7 @@ import BN from 'bignumber.js'
 
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { networks } from '$shared/utils/constants'
-import { StreamrWeb3 } from '$shared/web3/web3Provider'
+import StreamrWeb3 from '$utils/web3/StreamrWeb3'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'

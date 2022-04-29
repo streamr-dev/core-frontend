@@ -1,5 +1,5 @@
 import FakeProvider from 'web3-fake-provider'
-import { StreamrWeb3 } from '$shared/web3/web3Provider'
+import StreamrWeb3 from '$utils/web3/StreamrWeb3'
 
 // Disable automatic reload when network is changed in Metamask,
 // reload is handled in GlobalInfoWatcher component
