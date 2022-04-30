@@ -1,7 +1,7 @@
 // @flow
 
+import Web3 from 'web3'
 import type Transaction from '$shared/utils/Transaction'
-import StreamrWeb3 from '$utils/web3/StreamrWeb3'
 import type TransactionError from '$shared/errors/TransactionError'
 import type { ProductId } from '$mp/flowtype/product-types'
 
@@ -14,7 +14,7 @@ export type Receipt = {
     contractAddress?: Address,
 }
 export type Abi = Array<{}>
-export type Web3Provider = StreamrWeb3.providers.HTTPProvider | StreamrWeb3.providers.WebsocketProvider | StreamrWeb3.providers.IpcProvider | {
+export type Web3Provider = Web3.providers.HTTPProvider | Web3.providers.WebsocketProvider | Web3.providers.IpcProvider | {
     isMetaMask: true
 }
 

@@ -1,10 +1,9 @@
 // @flow
 
 import EventEmitter from 'events'
-
+import Web3 from 'web3'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
-import type StreamrWeb3Type from '$utils/web3/StreamrWeb3'
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { hasTransactionCompleted } from '$shared/utils/web3'
@@ -57,7 +56,7 @@ class Web3Poller {
     web3PollTimeout: ?TimeoutID = null
     ethereumNetworkPollTimeout: ?TimeoutID = null
     pendingTransactionsPollTimeout: ?TimeoutID = null
-    web3: StreamrWeb3Type = getWeb3()
+    web3: Web3 = getWeb3()
     account: any = null
     networkId: ?NumberString = ''
     emitter: EventEmitter = new EventEmitter()

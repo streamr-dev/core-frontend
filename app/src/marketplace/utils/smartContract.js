@@ -1,13 +1,13 @@
 // @flow
 
 import EventEmitter from 'events'
+import Web3 from 'web3'
 import type { PromiEvent } from 'web3'
 import { isHex } from 'web3-utils'
 import BN from 'bignumber.js'
 
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { networks } from '$shared/utils/constants'
-import StreamrWeb3 from '$utils/web3/StreamrWeb3'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
@@ -49,7 +49,7 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  */
 export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && isHex(hex)
 
-export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): StreamrWeb3.eth.Contract => {
+export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): Web3.eth.Contract => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     return new web3.eth.Contract(abi, address)
 }

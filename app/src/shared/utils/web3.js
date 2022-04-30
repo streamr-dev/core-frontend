@@ -1,6 +1,6 @@
 // @flow
 
-import StreamrWeb3 from '$utils/web3/StreamrWeb3'
+import Web3 from 'web3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getConfig from '$shared/web3/config'
 import { networks } from '$shared/utils/constants'
@@ -9,7 +9,7 @@ import type { Hash } from '$shared/flowtype/web3-types'
 import getChainId from '$utils/web3/getChainId'
 
 type CheckNetworkParams = {
-    web3: StreamrWeb3,
+    web3: Web3,
     network?: $Values<typeof networks>,
 }
 
@@ -38,7 +38,7 @@ export const hasTransactionCompleted = (txHash: Hash): Promise<boolean> => {
  * @param {*} web3Instance Web3 instance
  * @param {*} blocksAgo How many previous blocks to include
  */
-export const averageBlockTime = async (web3Instance: StreamrWeb3, blocksAgo: number = 500) => {
+export const averageBlockTime = async (web3Instance: Web3, blocksAgo: number = 500) => {
     // Get the current block number
     const currentBlockNumber = await web3Instance.eth.getBlockNumber()
     const numberOfBlocks = Math.min(currentBlockNumber, blocksAgo)
