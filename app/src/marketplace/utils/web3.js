@@ -42,9 +42,9 @@ const uniswapAdaptorMethods = (usePublicNode: boolean = false) => {
 }
 
 export const getEthBalance = (address: Address, usePublicNode: boolean = false): Promise<BN> => {
-    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+    const { eth } = usePublicNode ? getPublicWeb3() : getWeb3()
 
-    return web3.eth.getBalance(address)
+    return eth.getBalance(address)
         .then((balance) => BN(balance))
         .then(fromAtto)
 }
@@ -59,15 +59,15 @@ export const getDaiTokenBalance = (address: Address, usePublicNode: boolean = fa
         .then(fromAtto)
 )
 
-export const getMyEthBalance = (): Promise<BN> => (getDefaultWeb3Account(getWeb3())
+export const getMyEthBalance = (): Promise<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getEthBalance(myAccount))
 )
 
-export const getMyDataTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account(getWeb3())
+export const getMyDataTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getDataTokenBalance(myAccount))
 )
 
-export const getMyDaiTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account(getWeb3())
+export const getMyDaiTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getDaiTokenBalance(myAccount))
 )
 
@@ -91,13 +91,13 @@ export const getBalances = (): Promise<[BN, BN, BN]> => {
 export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
     if (dataQuantity !== '0') {
         try {
-            const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-            let productPriceDATA = web3.utils.toWei(dataQuantity)
+            const { utils } = usePublicNode ? getPublicWeb3() : getWeb3()
+            let productPriceDATA = utils.toWei(dataQuantity)
             productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
             productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
 
             let uniswapETH = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(ETH, DATA, productPriceDATA))
-            uniswapETH = BN(web3.utils.fromWei(uniswapETH.toString()))
+            uniswapETH = BN(utils.fromWei(uniswapETH.toString()))
 
             return uniswapETH
         } catch (e) {
@@ -115,13 +115,13 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: bool
 export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
     if (dataQuantity !== '0') {
         try {
-            const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-            let productPriceDATA = web3.utils.toWei(dataQuantity)
+            const { utils } = usePublicNode ? getPublicWeb3() : getWeb3()
+            let productPriceDATA = utils.toWei(dataQuantity)
             productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
             productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
 
             let uniswapDAI = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(DAI, DATA, productPriceDATA))
-            uniswapDAI = BN(web3.utils.fromWei(uniswapDAI.toString()))
+            uniswapDAI = BN(utils.fromWei(uniswapDAI.toString()))
 
             return uniswapDAI
         } catch (e) {
@@ -139,11 +139,11 @@ export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: bool
 export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
     if (ethQuantity !== '0') {
         try {
-            const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-            const ethWei = web3.utils.toWei(ethQuantity)
+            const { utils } = usePublicNode ? getPublicWeb3() : getWeb3()
+            const ethWei = utils.toWei(ethQuantity)
 
             let uniswapDATA = await call(uniswapAdaptorMethods(usePublicNode).getConversionRateOutput(DATA, ETH, ethWei))
-            uniswapDATA = BN(web3.utils.fromWei(uniswapDATA.toString()))
+            uniswapDATA = BN(utils.fromWei(uniswapDATA.toString()))
 
             return uniswapDATA
         } catch (e) {

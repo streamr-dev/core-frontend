@@ -7,13 +7,12 @@ import unlock from '$utils/web3/unlock'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 
 type ValidateParams = {
-    web3: Web3,
     requireNetwork?: $Values<typeof networks> | boolean,
     unlockTimeout?: number | boolean,
 }
 
-export default async function validateWeb3({ web3: _web3, requireNetwork = networks.MAINNET, unlockTimeout = false }: ValidateParams): Web3 {
-    await unlock(_web3.currentProvider, {
+export default async function validateWeb3({ requireNetwork = networks.MAINNET, unlockTimeout = false }: ValidateParams): Web3 {
+    await unlock({
         timeoutAfter: (() => {
             if (unlockTimeout === false) {
                 return undefined
@@ -29,16 +28,13 @@ export default async function validateWeb3({ web3: _web3, requireNetwork = netwo
 
     // Check if we have access to the accounts. It'll explode with
     // `WalletLockedError` if we don't.
-    await getDefaultWeb3Account(_web3)
+    await getDefaultWeb3Account()
 
     if (typeof requireNetwork !== 'string' || !Object.values(networks).includes(requireNetwork)) {
-        return _web3
+        return
     }
 
     await checkEthereumNetworkIsCorrect({
-        web3: _web3,
         network: requireNetwork,
     })
-
-    return _web3
 }

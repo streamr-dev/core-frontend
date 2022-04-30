@@ -50,8 +50,8 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
 export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && isHex(hex)
 
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): Web3.eth.Contract => {
-    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-    return new web3.eth.Contract(abi, address)
+    const { eth } = usePublicNode ? getPublicWeb3() : getWeb3()
+    return new eth.Contract(abi, address)
 }
 
 export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: Product) => (
@@ -67,7 +67,6 @@ export const send = (method: Sendable, options?: {
     value?: NumberString | BN,
     network?: $Values<typeof networks>,
 }): SmartContractTransaction => {
-    const web3 = getWeb3()
     const emitter = new EventEmitter()
     // NOTE: looks like there's double handling of errors happening here
     // i.e. .catch + on('error')
@@ -76,9 +75,8 @@ export const send = (method: Sendable, options?: {
     }
     const tx = new Transaction(emitter)
     Promise.all([
-        getDefaultWeb3Account(web3),
+        getDefaultWeb3Account(),
         checkEthereumNetworkIsCorrect({
-            web3,
             network: (options && options.network) || networks.MAINNET,
         }),
     ])

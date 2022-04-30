@@ -1,10 +1,9 @@
-import Web3 from 'web3'
 import FakeProvider from 'web3-fake-provider'
+import getWeb3 from '$utils/web3/getWeb3'
 import getDefaultWeb3Account from './getDefaultWeb3Account'
 
 describe('getDefaultWeb3Account', () => {
     it('resolves to present getAccounts()[0]', async () => {
-        const web3 = new Web3()
         const getAccSpy = jest.fn(() => Promise.resolve(['testAccount']))
 
         jest.spyOn(web3.eth, 'getAccounts').mockImplementation(getAccSpy)

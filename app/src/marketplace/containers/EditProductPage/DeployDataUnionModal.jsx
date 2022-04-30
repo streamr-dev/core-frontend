@@ -13,7 +13,6 @@ import { isLocalStorageAvailable } from '$shared/utils/storage'
 import { deployDataUnion } from '$mp/modules/dataUnion/services'
 import { isEthereumAddress } from '$mp/utils/validate'
 import type { Address } from '$shared/flowtype/web3-types'
-import getWeb3 from '$utils/web3/getWeb3'
 import { averageBlockTime } from '$shared/utils/web3'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
@@ -71,7 +70,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         let blockEstimate = 0
 
         try {
-            blockEstimate = await averageBlockTime(getWeb3())
+            blockEstimate = await averageBlockTime()
         } catch (e) {
             // just log the error if estimate fails, otherwise we can continue
             console.warn(e)

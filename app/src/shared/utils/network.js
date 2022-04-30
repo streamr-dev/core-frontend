@@ -1,9 +1,9 @@
 import validateWeb3 from '$utils/web3/validateWeb3'
-import getWeb3 from '$utils/web3/getWeb3'
 import getConfig from '$shared/web3/config'
 import UnsupportedNetworkError from '$shared/errors/UnsupportedNetworkError'
 import MissingNetworkParamsError from '$shared/errors/MissingNetworkParamsError'
 import MissingNetworkError from '$shared/errors/MissingNetworkError'
+import getWeb3 from '$utils/web3/getWeb3'
 
 export async function switchNetwork(nextChainId) {
     const web3 = getWeb3()
@@ -11,7 +11,6 @@ export async function switchNetwork(nextChainId) {
     const { metamask: networks } = getConfig()
 
     await validateWeb3({
-        web3,
         requireNetwork: false,
     })
 

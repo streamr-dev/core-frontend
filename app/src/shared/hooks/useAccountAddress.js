@@ -1,7 +1,6 @@
 // @flow
 
 import { useState, useEffect } from 'react'
-import getWeb3 from '$utils/web3/getWeb3'
 import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
@@ -14,7 +13,7 @@ export default (): ?string => {
     useEffect(() => {
         (async () => {
             try {
-                return await getDefaultWeb3Account(getWeb3())
+                return await getDefaultWeb3Account()
             } catch (e) {
                 return undefined
             }

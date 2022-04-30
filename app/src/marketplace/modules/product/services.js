@@ -52,7 +52,7 @@ export const getProductById = async (id: ProductId, useAuthorization: boolean = 
 export const getMyProductSubscription = (id: ProductId): SmartContractCall<Subscription> => (
     Promise.all([
         getProductFromContract(id),
-        getDefaultWeb3Account(getWeb3()),
+        getDefaultWeb3Account(),
     ])
         .then(([, account]) => call(marketplaceContract().methods.getSubscription(getValidId(id), account)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
@@ -162,8 +162,9 @@ export const buyProduct = (
     price: BN,
     gasIncrease?: number = 0,
 ): SmartContractTransaction => {
-    const web3 = getWeb3()
     const { daiTokenContractAddress: DAI } = getCoreConfig()
+
+    const web3 = getWeb3()
 
     switch (paymentCurrency) {
         case paymentCurrencies.ETH:
@@ -194,7 +195,7 @@ export const buyProduct = (
 }
 
 export const getMyDataAllowance = (): SmartContractCall<BN> => (
-    getDefaultWeb3Account(getWeb3())
+    getDefaultWeb3Account()
         .then((myAddress) => call(dataTokenContractMethods().allowance(myAddress, marketplaceContract().options.address)))
         .then(fromAtto)
 )
@@ -210,7 +211,7 @@ export const setMyDataAllowance = (amount: string | BN): SmartContractTransactio
 
 export const getMyDaiAllowance = (): SmartContractCall<BN> => {
     const { uniswapAdaptorContractAddress } = getCoreConfig()
-    return getDefaultWeb3Account(getWeb3())
+    return getDefaultWeb3Account()
         .then((myAddress) => call(daiTokenContractMethods().allowance(myAddress, uniswapAdaptorContractAddress)))
         .then(fromAtto)
 }

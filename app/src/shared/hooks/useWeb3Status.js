@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import type { ErrorInUi } from '$shared/flowtype/common-types'
 import validateWeb3 from '$utils/web3/validateWeb3'
-import getWeb3 from '$utils/web3/getWeb3'
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import type { Address } from '$shared/flowtype/web3-types'
 import { networks } from '$shared/utils/constants'
@@ -33,16 +32,14 @@ export default function useWeb3Status({ requireWeb3 = true, requireNetwork = net
     const validate = useCallback(async () => {
         setCheckingWeb3(true)
 
-        const web3 = getWeb3()
         try {
             await validateWeb3({
-                web3,
                 requireNetwork,
                 unlockTimeout: true,
             })
             if (!isMounted()) { return }
 
-            const nextAccount = await getDefaultWeb3Account(web3)
+            const nextAccount = await getDefaultWeb3Account()
 
             if (!isMounted()) { return }
 

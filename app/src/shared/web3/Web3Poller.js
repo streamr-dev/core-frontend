@@ -1,7 +1,6 @@
 // @flow
 
 import EventEmitter from 'events'
-import Web3 from 'web3'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { areAddressesEqual } from '$mp/utils/smartContract'
@@ -56,7 +55,6 @@ class Web3Poller {
     web3PollTimeout: ?TimeoutID = null
     ethereumNetworkPollTimeout: ?TimeoutID = null
     pendingTransactionsPollTimeout: ?TimeoutID = null
-    web3: Web3 = getWeb3()
     account: any = null
     networkId: ?NumberString = ''
     emitter: EventEmitter = new EventEmitter()
@@ -136,7 +134,7 @@ class Web3Poller {
     }
 
     fetchWeb3Account = () => (
-        getDefaultWeb3Account(this.web3)
+        getDefaultWeb3Account()
             .then((account) => {
                 this.handleAccount(account)
                 // needed to avoid warnings about creating promise inside a handler
@@ -158,14 +156,14 @@ class Web3Poller {
 
         // Check current provider so that account event is not sent prematurely
         // (ie. wait for user to approve access to Metamask)
-        if (this.web3.currentProvider !== null && (didDefine || didChange)) {
+        if (getWeb3().currentProvider !== null && (didDefine || didChange)) {
             this.account = next
             this.emitter.emit(events.ACCOUNT, next)
         }
     }
 
     fetchChosenEthereumNetwork = () => {
-        const fetchPromise = getChainId(this.web3)
+        const fetchPromise = getChainId()
 
         // make sure getting the network does not hang longer than the poll timeout
         const cancelPromise = new Promise((resolve, reject) => {
@@ -206,15 +204,13 @@ class Web3Poller {
             })
     )
 
-    handlePendingTransactions = () => {
-        const web3 = getPublicWeb3()
-
-        return Promise.all(Object.keys(getTransactionsFromSessionStorage()).map(async (txHash) => {
+    handlePendingTransactions = () => (
+        Promise.all(Object.keys(getTransactionsFromSessionStorage()).map(async (txHash) => {
             let completed
             let receipt
             try {
                 completed = await hasTransactionCompleted(txHash)
-                receipt = !!completed && await web3.eth.getTransactionReceipt(txHash)
+                receipt = !!completed && await getPublicWeb3().eth.getTransactionReceipt(txHash)
             } catch (err) {
                 warnOnce(err)
                 return // bail out
@@ -238,7 +234,7 @@ class Web3Poller {
                 }
             }
         }))
-    }
+    )
 }
 
 instance = new Web3Poller(allowedCaller)

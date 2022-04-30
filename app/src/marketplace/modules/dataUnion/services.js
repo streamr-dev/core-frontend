@@ -3,7 +3,7 @@
 import EventEmitter from 'events'
 import StreamrClient from 'streamr-client'
 import BN from 'bignumber.js'
-import Web3 from 'web3'
+import getWeb3 from '$utils/web3/getWeb3'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getConfig from '$shared/web3/config'
@@ -16,7 +16,7 @@ import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { post, del, get, put } from '$shared/utils/api'
-import getWeb3 from '$utils/web3/getWeb3'
+import getDataUnionChainWeb3 from '$utils/web3/getDataUnionChainWeb3'
 import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
@@ -28,11 +28,9 @@ type CreateClient = {
 }
 
 function createClient({ usePublicNode = false }: CreateClient = {}) {
-    const web3 = usePublicNode ? undefined : getWeb3()
-
     return new StreamrClient(getClientConfig({
         auth: {
-            ethereum: (web3 || {}).currentProvider,
+            ethereum: usePublicNode ? undefined : getWeb3().currentProvider,
         },
     }))
 }
@@ -101,7 +99,6 @@ type DeployDataUnion = {
 }
 
 export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): SmartContractTransaction => {
-    const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         emitter.emit('error', error)
@@ -111,10 +108,8 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
     const client = createClient()
 
     Promise.all([
-        getDefaultWeb3Account(web3),
-        checkEthereumNetworkIsCorrect({
-            web3,
-        }),
+        getDefaultWeb3Account(),
+        checkEthereumNetworkIsCorrect(),
     ])
         .then(([account]) => {
             const { mainnetAddress } = client.calculateDataUnionAddresses(productId, account)
@@ -145,7 +140,6 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
 }
 
 export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContractTransaction => {
-    const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         console.warn(error)
@@ -154,9 +148,7 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
     const tx = new Transaction(emitter)
     Promise.all([
         getDataUnionObject(address),
-        checkEthereumNetworkIsCorrect({
-            web3,
-        }),
+        checkEthereumNetworkIsCorrect(),
     ])
         .then(([dataUnion]) => {
             emitter.emit('transactionHash')
@@ -183,19 +175,14 @@ export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) 
 // getting events (TODO: move to streamr-client)
 // ----------------------
 
-const getDataUnionChainWeb3 = () => {
-    const { dataUnionChainRPC: { url } } = getClientConfig()
-    return new Web3(new Web3.providers.HttpProvider(url))
-}
-
 export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number): any {
     const dataUnion = await getDataUnionObject(address, true)
     const sidechainAddress = await dataUnion.getSidechainAddress()
 
-    const web3 = getDataUnionChainWeb3()
+    const duWeb3 = getDataUnionChainWeb3()
     const { dataunionsChain } = getConfig()
-    const contract = new web3.eth.Contract(dataunionsChain.dataUnionAbi, sidechainAddress)
-    const latestBlock = await web3.eth.getBlock('latest')
+    const contract = new duWeb3.eth.Contract(dataunionsChain.dataUnionAbi, sidechainAddress)
+    const latestBlock = await duWeb3.eth.getBlock('latest')
 
     // Get events in batches since xDai RPC seems to timeout if fetching too large sets
     const batchSize = 10000
@@ -216,12 +203,12 @@ export async function* getSidechainEvents(address: string, eventName: string, fr
 }
 
 export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number): any {
-    const web3 = getDataUnionChainWeb3()
-    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
+    const duWeb3 = getDataUnionChainWeb3()
+    const fromBlock = await getBlockNumberForTimestamp(duWeb3, Math.floor(fromTimestamp / 1000))
 
     const handleEvent = async (e, type) => {
         // eslint-disable-next-line no-await-in-loop
-        const block = await web3.eth.getBlock(e.blockHash)
+        const block = await duWeb3.eth.getBlock(e.blockHash)
         if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
             const event = {
                 timestamp: block.timestamp * 1000,
@@ -252,13 +239,13 @@ export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number):
 
 export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: number): any {
     const client = createClient()
-    const web3 = getDataUnionChainWeb3()
+    const duWeb3 = getDataUnionChainWeb3()
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for await (const joins of getSidechainEvents(id, 'MemberJoined', blockNumber)) {
         for (const e of joins) {
             const memberAddress = e.returnValues.member
-            const block = await web3.eth.getBlock(e.blockHash)
+            const block = await duWeb3.eth.getBlock(e.blockHash)
             if (block) {
                 const dataUnion = await client.getDataUnion(id)
                 const memberData = await dataUnion.getMemberStats(memberAddress)
@@ -273,8 +260,8 @@ export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: nu
 }
 
 export async function* getMemberEventsFromTimestamp(id: DataUnionId, timestamp: number = 0): any {
-    const web3 = getDataUnionChainWeb3()
-    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(timestamp / 1000))
+    const duWeb3 = getDataUnionChainWeb3()
+    const fromBlock = await getBlockNumberForTimestamp(duWeb3, Math.floor(timestamp / 1000))
 
     yield* getMemberEventsFromBlock(id, fromBlock)
 }

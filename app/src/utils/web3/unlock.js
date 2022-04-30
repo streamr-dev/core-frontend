@@ -1,20 +1,23 @@
 import TimeoutError from '$shared/errors/TimeoutError'
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import Web3NotEnabledError from '$shared/errors/Web3NotEnabledError'
+import getWeb3 from '$utils/web3/getWeb3'
 
-export default async function unlock(provider, { timeoutAfter = Number.POSITIVE_INFINITY } = {}) {
-    if (!provider) {
+export default async function unlock({ timeoutAfter = Number.POSITIVE_INFINITY } = {}) {
+    const { currentProvider } = getWeb3()
+
+    if (!currentProvider) {
         throw new Web3NotEnabledError()
     }
 
-    const promise = typeof provider.request === 'function' ? (
+    const promise = typeof currentProvider.request === 'function' ? (
         // `request(…)` is available since MetaMask v8.
-        provider.request({
+        currentProvider.request({
             method: 'eth_requestAccounts',
         })
     ) : (
         // Fallback to `enable()`.
-        provider.enable()
+        currentProvider.enable()
     )
 
     try {
