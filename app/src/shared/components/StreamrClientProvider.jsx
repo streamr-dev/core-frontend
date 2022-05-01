@@ -10,13 +10,11 @@ export default function StreamrClientProvider({ children }) {
     const config = useMemo(() => {
         const nextConfig = getClientConfig()
 
-        const web3 = getWeb3()
-
         if (token) {
             nextConfig.auth = {
                 ...nextConfig.auth,
                 sessionToken: token || undefined,
-                ethereum: web3 && web3.metamaskProvider,
+                ethereum: getWeb3().currentProvider,
             }
         }
 

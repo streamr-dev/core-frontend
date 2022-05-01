@@ -1,10 +1,11 @@
 import WalletLockedError from '$shared/errors/WalletLockedError'
+import getWeb3 from '$utils/web3/getWeb3'
 
-export default async function getDefaultWeb3Account({ eth }) {
+export default async function getDefaultWeb3Account() {
     let accounts
 
     try {
-        accounts = await eth.getAccounts()
+        accounts = await getWeb3().eth.getAccounts()
     } catch (e) {
         throw new WalletLockedError()
     }

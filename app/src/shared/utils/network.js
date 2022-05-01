@@ -11,7 +11,6 @@ export async function switchNetwork(nextChainId) {
     const { metamask: networks } = getConfig()
 
     await validateWeb3({
-        web3,
         requireNetwork: false,
     })
 

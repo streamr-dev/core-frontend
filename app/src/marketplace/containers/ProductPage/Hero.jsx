@@ -25,7 +25,6 @@ import { isAddressWhitelisted } from '$mp/modules/contractProduct/services'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
 import type { ProductId } from '$mp/flowtype/product-types'
 import validateWeb3 from '$utils/web3/validateWeb3'
-import getWeb3 from '$utils/web3/getWeb3'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 
@@ -35,18 +34,15 @@ type WhitelistStatus = {
 }
 
 const getWhitelistStatus = async ({ productId, validate = false }: WhitelistStatus) => {
-    const web3 = getWeb3()
-
     try {
         if (validate) {
             await validateWeb3({
-                web3,
                 requireNetwork: false, // network check is done later if purchase is possible
                 unlockTimeout: true,
             })
         }
 
-        const account = await getDefaultWeb3Account(web3)
+        const account = await getDefaultWeb3Account()
 
         return !!account && isAddressWhitelisted(productId, account)
     } catch (e) {

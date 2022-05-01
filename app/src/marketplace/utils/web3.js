@@ -59,15 +59,15 @@ export const getDaiTokenBalance = (address: Address, usePublicNode: boolean = fa
         .then(fromAtto)
 )
 
-export const getMyEthBalance = (): Promise<BN> => (getDefaultWeb3Account(getWeb3())
+export const getMyEthBalance = (): Promise<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getEthBalance(myAccount))
 )
 
-export const getMyDataTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account(getWeb3())
+export const getMyDataTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getDataTokenBalance(myAccount))
 )
 
-export const getMyDaiTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account(getWeb3())
+export const getMyDaiTokenBalance = (): SmartContractCall<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getDaiTokenBalance(myAccount))
 )
 

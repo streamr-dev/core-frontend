@@ -3,7 +3,6 @@
 import EventEmitter from 'events'
 import StreamrClient from 'streamr-client'
 import BN from 'bignumber.js'
-import Web3 from 'web3'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getConfig from '$shared/web3/config'
@@ -17,6 +16,7 @@ import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { post, del, get, put } from '$shared/utils/api'
 import getWeb3 from '$utils/web3/getWeb3'
+import getDataUnionChainWeb3 from '$utils/web3/getDataUnionChainWeb3'
 import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
@@ -28,11 +28,9 @@ type CreateClient = {
 }
 
 function createClient({ usePublicNode = false }: CreateClient = {}) {
-    const web3 = usePublicNode ? undefined : getWeb3()
-
     return new StreamrClient(getClientConfig({
         auth: {
-            ethereum: web3 && web3.metamaskProvider,
+            ethereum: usePublicNode ? undefined : getWeb3().currentProvider,
         },
     }))
 }
@@ -101,7 +99,6 @@ type DeployDataUnion = {
 }
 
 export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): SmartContractTransaction => {
-    const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         emitter.emit('error', error)
@@ -111,10 +108,8 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
     const client = createClient()
 
     Promise.all([
-        getDefaultWeb3Account(web3),
-        checkEthereumNetworkIsCorrect({
-            web3,
-        }),
+        getDefaultWeb3Account(),
+        checkEthereumNetworkIsCorrect(),
     ])
         .then(([account]) => {
             const { mainnetAddress } = client.calculateDataUnionAddresses(productId, account)
@@ -145,7 +140,6 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
 }
 
 export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContractTransaction => {
-    const web3 = getWeb3()
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         console.warn(error)
@@ -154,9 +148,7 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
     const tx = new Transaction(emitter)
     Promise.all([
         getDataUnionObject(address),
-        checkEthereumNetworkIsCorrect({
-            web3,
-        }),
+        checkEthereumNetworkIsCorrect(),
     ])
         .then(([dataUnion]) => {
             emitter.emit('transactionHash')
@@ -182,11 +174,6 @@ export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) 
 // ----------------------
 // getting events (TODO: move to streamr-client)
 // ----------------------
-
-const getDataUnionChainWeb3 = () => {
-    const { dataUnionChainRPC: { url } } = getClientConfig()
-    return new Web3(new Web3.providers.HttpProvider(url))
-}
 
 export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number): any {
     const dataUnion = await getDataUnionObject(address, true)

@@ -1,23 +1,20 @@
+import Web3 from 'web3'
 import FakeProvider from 'web3-fake-provider'
-import StreamrWeb3 from '$utils/web3/StreamrWeb3'
 
-// Disable automatic reload when network is changed in Metamask,
-// reload is handled in GlobalInfoWatcher component
-if (window.ethereum) {
-    window.ethereum.autoRefreshOnNetworkChange = false
-}
+const web3 = new Web3()
+
+const defaultFallbackProvider = new FakeProvider()
 
 export default function getWeb3() {
-    const { ethereum, web3 } = window
+    const ethereumProvider = window.ethereum || (window.web3 || {}).currentProvider || defaultFallbackProvider
 
-    if (typeof ethereum !== 'undefined') {
-        return new StreamrWeb3(ethereum)
-    } else if (typeof web3 !== 'undefined') {
-        return new StreamrWeb3(web3.currentProvider, {
-            isLegacy: true,
-        })
+    // Disable automatic reload when network is changed in Metamask,
+    // reload is handled in GlobalInfoWatcher component.
+    ethereumProvider.autoRefreshOnNetworkChange = false
+
+    if (ethereumProvider !== web3.currentProvider) {
+        web3.setProvider(ethereumProvider)
     }
-    return new StreamrWeb3(new FakeProvider(), {
-        isLegacy: true,
-    })
+
+    return web3
 }
