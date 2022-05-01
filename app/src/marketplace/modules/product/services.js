@@ -162,9 +162,8 @@ export const buyProduct = (
     price: BN,
     gasIncrease?: number = 0,
 ): SmartContractTransaction => {
-    const { daiTokenContractAddress: DAI } = getCoreConfig()
-
     const web3 = getWeb3()
+    const { daiTokenContractAddress: DAI } = getCoreConfig()
 
     switch (paymentCurrency) {
         case paymentCurrencies.ETH:

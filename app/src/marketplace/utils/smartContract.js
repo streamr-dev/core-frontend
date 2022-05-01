@@ -50,8 +50,8 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
 export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && isHex(hex)
 
 export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): Web3.eth.Contract => {
-    const { eth } = usePublicNode ? getPublicWeb3() : getWeb3()
-    return new eth.Contract(abi, address)
+    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+    return new web3.eth.Contract(abi, address)
 }
 
 export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: Product) => (

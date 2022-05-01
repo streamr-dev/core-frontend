@@ -57,7 +57,7 @@ export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean =
 }
 
 export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNode: boolean = true) => {
-    const { eth } = usePublicNode ? getPublicWeb3() : getWeb3()
+    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode)
 
     if (events.length === 0) {
@@ -65,7 +65,7 @@ export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNod
     }
 
     const lastEvent = events[events.length - 1]
-    const lastBlock = await eth.getBlock(lastEvent.blockHash)
+    const lastBlock = await web3.eth.getBlock(lastEvent.blockHash)
     if (lastBlock && lastBlock.timestamp) {
         return lastBlock.timestamp * 1000
     }
@@ -74,7 +74,6 @@ export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNod
 }
 
 export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = true) => {
-    // eslint-disable-next-line no-underscore-dangle
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
     const events = await getMarketplaceEvents(id, 'Subscribed', fromBlock, usePublicNode)

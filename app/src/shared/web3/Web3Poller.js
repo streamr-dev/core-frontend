@@ -204,13 +204,15 @@ class Web3Poller {
             })
     )
 
-    handlePendingTransactions = () => (
-        Promise.all(Object.keys(getTransactionsFromSessionStorage()).map(async (txHash) => {
+    handlePendingTransactions = () => {
+        const web3 = getPublicWeb3()
+
+        return Promise.all(Object.keys(getTransactionsFromSessionStorage()).map(async (txHash) => {
             let completed
             let receipt
             try {
                 completed = await hasTransactionCompleted(txHash)
-                receipt = !!completed && await getPublicWeb3().eth.getTransactionReceipt(txHash)
+                receipt = !!completed && await web3.eth.getTransactionReceipt(txHash)
             } catch (err) {
                 warnOnce(err)
                 return // bail out
@@ -234,7 +236,7 @@ class Web3Poller {
                 }
             }
         }))
-    )
+    }
 }
 
 instance = new Web3Poller(allowedCaller)
