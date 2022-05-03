@@ -292,6 +292,7 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                chainId: 1337,
             }
             const accessPeriod = {
                 time: 1,
@@ -408,16 +409,16 @@ describe('usePurchase', () => {
             expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
-            expect(setAllowanceStub).toHaveBeenCalledWith('0')
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', 1337)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, 1337)
             expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DATA', purchasePrice, 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1')
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
         })
 
         it('purchases the product & sets allowance', async () => {
@@ -438,6 +439,7 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                chainId: 1337,
             }
             const accessPeriod = {
                 time: 1,
@@ -526,15 +528,15 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, 1337)
             expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: false,
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DATA', purchasePrice, 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1')
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
         })
 
         it('purchases the product when there is enough allowance', async () => {
@@ -555,6 +557,7 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                chainId: 1337,
             }
             const accessPeriod = {
                 time: 1,
@@ -632,8 +635,8 @@ describe('usePurchase', () => {
                 includeGasForSetAllowance: false,
                 includeGasForResetAllowance: false,
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DATA', purchasePrice, 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1')
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
         })
     })
 
@@ -656,6 +659,7 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                chainId: 1337,
             }
             const accessPeriod = {
                 time: 1,
@@ -764,16 +768,16 @@ describe('usePurchase', () => {
             expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DAI_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DAI_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
-            expect(setAllowanceStub).toHaveBeenCalledWith('0')
-            expect(setAllowanceStub).toHaveBeenCalledWith('1234')
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', 1337)
+            expect(setAllowanceStub).toHaveBeenCalledWith('1234', 1337)
             expect(validateStub).toHaveBeenCalledWith({
                 price: '1234',
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DAI', '1234', 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1')
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
         })
 
         it('purchases the product & sets allowance', async () => {
@@ -794,6 +798,7 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                chainId: 1337,
             }
             const accessPeriod = {
                 time: 1,
@@ -874,15 +879,15 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(setAllowanceStub).toHaveBeenCalledWith('1234')
+            expect(setAllowanceStub).toHaveBeenCalledWith('1234', 1337)
             expect(validateStub).toHaveBeenCalledWith({
                 price: '1234',
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: false,
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DAI', '1234', 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1')
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
         })
 
         it('purchases the product when there is enough allowance', async () => {
@@ -903,6 +908,7 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                chainId: 1337,
             }
             const accessPeriod = {
                 time: 1,
@@ -972,8 +978,8 @@ describe('usePurchase', () => {
                 includeGasForSetAllowance: false,
                 includeGasForResetAllowance: false,
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'DAI', '1234', 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1')
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
         })
     })
 
@@ -996,6 +1002,7 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                chainId: 1337,
             }
             const accessPeriod = {
                 time: 1,
@@ -1058,8 +1065,8 @@ describe('usePurchase', () => {
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(buyProductStub).toHaveBeenCalledWith('1', '3600', 'ETH', '1234', 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1')
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'ETH', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
         })
     })
 })

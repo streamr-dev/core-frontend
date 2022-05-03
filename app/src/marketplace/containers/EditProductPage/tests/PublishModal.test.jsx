@@ -49,6 +49,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -73,6 +74,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(1),
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
+                chain: 'ETHEREUM',
             }
 
             let productResolver
@@ -95,6 +97,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -125,6 +128,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(1),
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
@@ -144,6 +148,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -169,6 +174,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(1),
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
@@ -188,6 +194,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -211,6 +218,7 @@ describe('Publish modal', () => {
             const product = {
                 id: '1',
                 state: 'NOT_DEPLOYED',
+                chain: 'ETHEREUM',
             }
 
             let resolveProduct
@@ -233,6 +241,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -264,6 +273,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(2),
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
@@ -289,6 +299,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -313,6 +324,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(2),
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
@@ -338,6 +350,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -363,6 +376,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(2),
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
@@ -388,6 +402,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -410,6 +425,7 @@ describe('Publish modal', () => {
             const product = {
                 id: '1',
                 state: 'DEPLOYED',
+                chain: 'ETHEREUM',
             }
 
             let resolveProduct
@@ -432,6 +448,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -463,6 +480,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(2),
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
@@ -488,6 +506,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -512,6 +531,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(2),
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
@@ -533,6 +553,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />
@@ -558,6 +579,7 @@ describe('Publish modal', () => {
                 pricePerSecond: BN(2),
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
@@ -579,6 +601,7 @@ describe('Publish modal', () => {
                     <PublishOrUnpublishModal
                         product={{
                             id: '1',
+                            chain: 'ETHEREUM',
                         }}
                         api={{}}
                     />

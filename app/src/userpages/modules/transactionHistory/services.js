@@ -124,7 +124,7 @@ const getInputValues = (type, logs) => {
 
 export const getTransactionEvents = async (addresses: HashList, products: ProductIdList): Promise<EventLogList> => {
     const web3 = getWeb3()
-    const chainId = await web3.eth.getChainId()
+    const chainId = await web3.getChainId()
     const marketplaceAddress = getMarketplaceAddress(chainId)
 
     // these are needed to decode log values

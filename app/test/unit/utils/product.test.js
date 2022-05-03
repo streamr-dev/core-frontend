@@ -325,9 +325,10 @@ describe('product utils', () => {
                 priceCurrency: 'DATA',
                 state: 'NOT_DEPLOYED',
                 requiresWhitelist: true,
+                chainId: 1337,
             }
 
-            expect(all.mapProductFromContract(inProduct.id, inProduct)).toStrictEqual(outProduct)
+            expect(all.mapProductFromContract(inProduct.id, inProduct, 1337)).toStrictEqual(outProduct)
         })
     })
 

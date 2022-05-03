@@ -6,6 +6,7 @@ import BN from 'bignumber.js'
 import * as all from '$mp/modules/product/services'
 import * as utils from '$mp/utils/smartContract'
 import * as productUtils from '$mp/utils/product'
+import { getDaiAddress } from '$mp/utils/web3'
 import setTempEnv from '$testUtils/setTempEnv'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { existingProduct } from './mockData'
@@ -47,12 +48,8 @@ describe('product - services', () => {
         STREAMR_DOCKER_DEV_HOST: 'localhost',
     })
 
-    let oldDaiTokenAddress
-
     beforeEach(() => {
         moxios.install()
-        oldDaiTokenAddress = process.env.DAI_TOKEN_CONTRACT_ADDRESS
-        process.env.DAI_TOKEN_CONTRACT_ADDRESS = 'daiTokenAddress'
     })
 
     afterEach(() => {
@@ -60,7 +57,6 @@ describe('product - services', () => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
         getDefaultWeb3Account.mockReset()
-        process.env.DAI_TOKEN_CONTRACT_ADDRESS = oldDaiTokenAddress
     })
 
     describe('getProductById', () => {
@@ -112,7 +108,7 @@ describe('product - services', () => {
                 },
             }))
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
-            const result = await all.getMyProductSubscription('1234abcdef')
+            const result = await all.getMyProductSubscription('1234abcdef', 8995)
             expect(result).toStrictEqual({
                 productId: '1234abcdef',
                 endTimestamp: 0,
@@ -138,7 +134,7 @@ describe('product - services', () => {
                 },
             }))
             try {
-                await all.getMyProductSubscription('1234abcdef')
+                await all.getMyProductSubscription('1234abcdef', 8995)
             } catch (e) {
                 expect(e.message).toMatch(/No product found/)
                 done()
@@ -351,7 +347,7 @@ describe('product - services', () => {
                     buy: buyStub,
                 },
             }))
-            all.buyProduct('1234', '1000', 'DATA', '4321')
+            all.buyProduct('1234', 8995, '1000', 'DATA', '4321')
             expect(buyStub).toHaveBeenCalledTimes(1)
             expect(buyStub).toBeCalledWith('0x1234', '1000')
             expect(getIdSpy).toHaveBeenCalledTimes(1)
@@ -369,7 +365,7 @@ describe('product - services', () => {
                     buyWithETH: buyStub,
                 },
             }))
-            all.buyProduct('1234', '1000', 'ETH', '4321')
+            all.buyProduct('1234', 8995, '1000', 'ETH', '4321')
             expect(buyStub).toHaveBeenCalledTimes(1)
             expect(buyStub).toBeCalledWith('0x1234', '1000', ONE_DAY)
             expect(getIdSpy).toHaveBeenCalledTimes(1)
@@ -387,9 +383,9 @@ describe('product - services', () => {
                     buyWithERC20: buyStub,
                 },
             }))
-            all.buyProduct('1234', '1000', 'DAI', '4321')
+            all.buyProduct('1234', 8995, '1000', 'DAI', '4321')
             expect(buyStub).toHaveBeenCalledTimes(1)
-            expect(buyStub).toBeCalledWith('0x1234', '1000', ONE_DAY, process.env.DAI_TOKEN_CONTRACT_ADDRESS, '4321000000000000000000')
+            expect(buyStub).toBeCalledWith('0x1234', '1000', ONE_DAY, getDaiAddress(8995), '4321000000000000000000')
             expect(getIdSpy).toHaveBeenCalledTimes(1)
             expect(getIdSpy).toBeCalledWith('1234')
         })
@@ -403,7 +399,7 @@ describe('product - services', () => {
                     buy: () => 'test',
                 },
             }))
-            all.buyProduct('1234', 1000, 'DATA', '4321')
+            all.buyProduct('1234', 8995, 1000, 'DATA', '4321')
         })
         it('must call send with correct object when bying with ETH', (done) => {
             jest.spyOn(utils, 'send').mockImplementation((a) => {
@@ -415,7 +411,7 @@ describe('product - services', () => {
                     buyWithETH: () => 'test',
                 },
             }))
-            all.buyProduct('1234', 1000, 'ETH', '4321')
+            all.buyProduct('1234', 8995, 1000, 'ETH', '4321')
         })
         it('must call send with correct object when bying with DAI', (done) => {
             jest.spyOn(utils, 'send').mockImplementation((a) => {
@@ -427,7 +423,7 @@ describe('product - services', () => {
                     buyWithERC20: () => 'test',
                 },
             }))
-            all.buyProduct('1234', 1000, 'DAI', '4321')
+            all.buyProduct('1234', 8995, 1000, 'DAI', '4321')
         })
         it('must return the result of send when bying with DATA', () => {
             jest.spyOn(utils, 'send').mockImplementation(() => 'test')
@@ -437,7 +433,7 @@ describe('product - services', () => {
                     },
                 },
             }))
-            expect(all.buyProduct('1234', 1000, 'DATA', '4321')).toBe('test')
+            expect(all.buyProduct('1234', 8995, 1000, 'DATA', '4321')).toBe('test')
         })
         it('must return the result of send when bying with ETH', () => {
             jest.spyOn(utils, 'send').mockImplementation(() => 'test')
@@ -447,7 +443,7 @@ describe('product - services', () => {
                     },
                 },
             }))
-            expect(all.buyProduct('1234', 1000, 'ETH', '4321')).toBe('test')
+            expect(all.buyProduct('1234', 8995, 1000, 'ETH', '4321')).toBe('test')
         })
         it('must return the result of send when bying with DAI', () => {
             jest.spyOn(utils, 'send').mockImplementation(() => 'test')
@@ -457,7 +453,7 @@ describe('product - services', () => {
                     },
                 },
             }))
-            expect(all.buyProduct('1234', 1000, 'DAI', '4321')).toBe('test')
+            expect(all.buyProduct('1234', 8995, 1000, 'DAI', '4321')).toBe('test')
         })
     })
 
@@ -483,7 +479,7 @@ describe('product - services', () => {
                 }
             })
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
-            await all.getMyDataAllowance()
+            await all.getMyDataAllowance(8995)
             expect(allowanceStub).toHaveBeenCalledTimes(1)
             expect(getContractStub).toHaveBeenCalledTimes(2)
             expect(allowanceStub.mock.calls[0][0]).toBe('testAccount')
@@ -509,7 +505,7 @@ describe('product - services', () => {
                     },
                 }
             })
-            const result = await all.getMyDataAllowance()
+            const result = await all.getMyDataAllowance(8995)
             expect(result).toStrictEqual(BN(276))
         })
     })
@@ -530,13 +526,13 @@ describe('product - services', () => {
                     address: 'marketplaceAddress',
                 },
             }))
-            await all.setMyDataAllowance(100)
+            await all.setMyDataAllowance(100, 8995)
             expect(approveStub).toHaveBeenCalledTimes(1)
             expect(approveStub).toBeCalledWith('marketplaceAddress', '100000000000000000000')
         })
         it('must not approve negative values', (done) => {
             try {
-                all.setMyDataAllowance(-100)
+                all.setMyDataAllowance(-100, 8995)
             } catch (e) {
                 expect(e.message).toBe('Amount must be non-negative!')
                 done()
@@ -567,7 +563,7 @@ describe('product - services', () => {
                     },
                 }
             })
-            const result = await all.setMyDataAllowance(100)
+            const result = await all.setMyDataAllowance(100, 8995)
             expect(result).toBe('test')
         })
     })

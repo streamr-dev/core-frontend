@@ -9,6 +9,8 @@ import type { Product, Subscription } from '$mp/flowtype/product-types'
 import PaymentRate from '$mp/components/PaymentRate'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
 import { timeUnits, productStates } from '$shared/utils/constants'
+import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
+import NetworkIcon from '$shared/components/NetworkIcon'
 
 import SocialIcons from './SocialIcons'
 import styles from './productDetails2.pcss'
@@ -64,21 +66,29 @@ const ProductDetails = ({
             <div className={styles.offer}>
                 <div className={styles.paymentRate}>
                     {product.isFree ? 'Free' : (
-                        <React.Fragment>
-                            <span className={styles.priceHeading}>Price</span>
-                            &nbsp;
-                            <PaymentRate
-                                className={styles.price}
-                                amount={product.pricePerSecond}
-                                currency={product.priceCurrency}
-                                timeUnit={timeUnits.hour}
-                            />
-                            <span className={styles.priceHeading}>Chain</span>
-                            &nbsp;
-                            <span className={styles.price}>
-                                {product.chain}
-                            </span>
-                        </React.Fragment>
+                        <div className={styles.priceDetails}>
+                            <div className={styles.detailRow}>
+                                <span className={styles.priceHeading}>Price</span>
+                                &nbsp;
+                                <PaymentRate
+                                    className={styles.price}
+                                    amount={product.pricePerSecond}
+                                    currency={product.priceCurrency}
+                                    timeUnit={timeUnits.hour}
+                                />
+                            </div>
+                            <div className={styles.detailRow}>
+                                <span className={styles.priceHeading}>Chain</span>
+                                &nbsp;
+                                <span className={styles.price}>
+                                    {formatChainName(product.chain)}
+                                </span>
+                                <NetworkIcon
+                                    className={styles.networkIcon}
+                                    chainId={getChainIdFromApiString(product.chain)}
+                                />
+                            </div>
+                        </div>
                     )}
                 </div>
                 {productSubscription != null && !!productSubscription.endTimestamp && shouldShowCounter(productSubscription.endTimestamp) && (
