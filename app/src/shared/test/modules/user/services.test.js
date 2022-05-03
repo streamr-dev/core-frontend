@@ -171,6 +171,7 @@ describe('user - services', () => {
             const balance = await services.getBalance({
                 address: 'testAccount',
                 type: BalanceType.DATA,
+                chainId: 8995,
             })
             expect(balance).toBe('123')
         })

@@ -18,7 +18,7 @@ describe('global - services', () => {
                 },
             }))
             jest.spyOn(smartContractUtils, 'getContract').mockImplementation(getContractStub)
-            await all.getDataPerUsd()
+            await all.getDataPerUsd(8995)
             expect(getContractStub).toHaveBeenCalledTimes(1)
             expect(getContractStub.mock.calls[0][0].abi.find((f) => f.name === 'dataPerUsd')).toBeTruthy()
             expect(balanceStub).toHaveBeenCalledTimes(1)
@@ -33,7 +33,7 @@ describe('global - services', () => {
                     dataPerUsd: dataPerUsdStub,
                 },
             }))
-            const result = await all.getDataPerUsd()
+            const result = await all.getDataPerUsd(8995)
             expect(result).toBe('209')
         })
     })

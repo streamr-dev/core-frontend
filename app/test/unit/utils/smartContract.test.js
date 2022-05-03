@@ -2,7 +2,6 @@ import EventEmitter from 'events'
 
 import * as getConfig from '$shared/web3/config'
 import * as all from '$mp/utils/smartContract'
-import { networks } from '$shared/utils/constants'
 import Transaction from '$shared/utils/Transaction'
 import TransactionError from '$shared/errors/TransactionError'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
@@ -172,7 +171,9 @@ describe('smartContract utils', () => {
                 send: () => fakeEmitter,
                 estimateGas: () => Promise.resolve(0),
             }
-            expect(all.send(method)).toBeInstanceOf(Transaction)
+            expect(all.send(method, {
+                network: 1,
+            })).toBeInstanceOf(Transaction)
         })
 
         it('must ask for the default address and send the transaction with it', (done) => {
@@ -183,6 +184,8 @@ describe('smartContract utils', () => {
                     return fakeEmitter
                 },
                 estimateGas: () => Promise.resolve(0),
+            }, {
+                network: 1,
             })
         })
 
@@ -196,9 +199,11 @@ describe('smartContract utils', () => {
             all.send({
                 send: () => fakeEmitter,
                 estimateGas: () => Promise.resolve(0),
+            }, {
+                network: 1337,
             })
                 .onError((e) => {
-                    expect(e.requiredNetwork).toBe('1')
+                    expect(e.requiredNetwork).toBe(1337)
                     expect(e.currentNetwork).toBe('2')
                     done()
                 })
@@ -215,10 +220,10 @@ describe('smartContract utils', () => {
                 send: () => fakeEmitter,
                 estimateGas: () => Promise.resolve(0),
             }, {
-                network: 8995,
+                network: 1337,
             })
                 .onError((e) => {
-                    expect(e.requiredNetwork).toBe('8995')
+                    expect(e.requiredNetwork).toBe(1337)
                     expect(e.currentNetwork).toBe('2')
                     done()
                 })
@@ -233,7 +238,9 @@ describe('smartContract utils', () => {
                     estimateGas: () => {},
                 }
 
-                all.send(method)
+                all.send(method, {
+                    network: 1,
+                })
                     .onError((e) => {
                         expect(e).toBe('test')
                         done()
@@ -252,7 +259,9 @@ describe('smartContract utils', () => {
                     send: () => promiEvent,
                     estimateGas: () => {},
                 }
-                all.send(method)
+                all.send(method, {
+                    network: 1,
+                })
                     .onError((e) => {
                         expect(e).toBeInstanceOf(TransactionError)
                         expect(e.message).toBe('test')
@@ -274,7 +283,9 @@ describe('smartContract utils', () => {
                     send: () => emitter,
                     estimateGas: () => {},
                 }
-                all.send(method)
+                all.send(method, {
+                    network: 1,
+                })
                     .onTransactionHash((hash) => {
                         expect(hash).toBe('test')
                         done()
@@ -297,7 +308,9 @@ describe('smartContract utils', () => {
                     send: () => emitter,
                     estimateGas: () => {},
                 }
-                all.send(method)
+                all.send(method, {
+                    network: 1,
+                })
                     .onTransactionComplete((receipt2) => {
                         expect(receipt2.test).toBe(receipt.test)
                         done()
@@ -317,7 +330,9 @@ describe('smartContract utils', () => {
                     send: () => emitter,
                     estimateGas: () => {},
                 }
-                all.send(method)
+                all.send(method, {
+                    network: 1,
+                })
                     .onTransactionComplete(() => {
                         expect(false).toBe(true)
                     })
@@ -346,6 +361,7 @@ describe('smartContract utils', () => {
                 }
                 all.send(method, {
                     gas: 123321,
+                    network: 1,
                 })
             })
         })

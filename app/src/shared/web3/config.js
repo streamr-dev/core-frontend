@@ -21,20 +21,24 @@ type DataUnionChainConfig = {
     dataUnionAbi: string,
 }
 
-type SidechainConfig = {
-    chainId: string,
-    rpcUrl: string,
-}
-
 type Config = {
     mainnet: MainnetConfig,
     dataunionsChain: DataUnionChainConfig,
-    streamsChain: SidechainConfig,
 }
 
-const chainConfigs = Chains.loadFromNodeEnv()
+let chainConfigs = []
+if (process.env.NODE_ENV === 'production') {
+    chainConfigs = Chains.load('production')
+} else {
+    // Use development for tests too
+    chainConfigs = Chains.load('development')
+}
 
 export const getConfigForChain = (chainId: number) => {
+    if (chainId == null) {
+        throw new Error('ChainId must be provided!')
+    }
+
     // $FlowFixMe: Object.entries loses type information
     const configEntry = Object.entries(chainConfigs).find((c) => c[1].id.toString() === chainId.toString())
 
@@ -69,10 +73,6 @@ const getConfig = (): Config => {
             chainId: dataUnionChainRPCs.chainId,
             rpcUrl: dataUnionChainRPCs.rpcs[0].url,
             dataUnionAbi: dataUnionSidechainAbi,
-        },
-        streamsChain: {
-            chainId: streamRegistryChainRPCs.chainId,
-            rpcUrl: streamRegistryChainRPCs.rpcs[0].url,
         },
         metamask: {
             // local development values

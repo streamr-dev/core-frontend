@@ -24,7 +24,7 @@ describe('Product services', () => {
                 },
             }))
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
-            const result = await all.getProductFromContract('1234abcdef')
+            const result = await all.getProductFromContract('1234abcdef', false, 8995)
             expect({
                 priceCurrency: undefined,
                 state: undefined,
@@ -35,6 +35,7 @@ describe('Product services', () => {
                 beneficiaryAddress: undefined,
                 minimumSubscriptionInSeconds: 0,
                 requiresWhitelist: undefined,
+                chainId: 8995,
             }).toStrictEqual(result)
             expect(getContractStub).toBeCalled()
             expect(getProductStub).toBeCalled()
@@ -54,7 +55,7 @@ describe('Product services', () => {
                 },
             }))
             try {
-                await all.getProductFromContract('1234abcdef')
+                await all.getProductFromContract('1234abcdef', false, 8995)
             } catch (e) {
                 expect(e.message).toMatch(/No product found/)
                 done()
@@ -80,6 +81,7 @@ describe('Product services', () => {
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
+                chainId: 8995,
             }
         })
         it('must fail if no id', (done) => {
@@ -283,6 +285,7 @@ describe('Product services', () => {
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
+                chainId: 8995,
             }
         })
         it('must fail if no id', (done) => {
@@ -506,7 +509,7 @@ describe('Product services', () => {
                     deleteProduct: deleteProductStub,
                 },
             }))
-            await all.deleteProduct('1')
+            await all.deleteProduct('1', 8995)
             expect(deleteProductStub).toBeCalledWith('0x1')
             expect(deleteProductStub).toHaveBeenCalledTimes(1)
         })
@@ -523,7 +526,7 @@ describe('Product services', () => {
                     redeployProduct: redeployProductStub,
                 },
             }))
-            await all.redeployProduct('1')
+            await all.redeployProduct('1', 8995)
             expect(redeployProductStub).toBeCalledWith('0x1')
             expect(redeployProductStub).toHaveBeenCalledTimes(1)
         })

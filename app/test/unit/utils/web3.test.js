@@ -2,7 +2,6 @@ import BN from 'bignumber.js'
 
 import * as all from '$mp/utils/web3'
 import * as utils from '$mp/utils/smartContract'
-import * as getConfig from '$shared/web3/config'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import getWeb3 from '$utils/web3/getWeb3'
@@ -25,6 +24,7 @@ jest.mock('$utils/web3/getWeb3', () => ({
 function mockDefaultAccount(defaultAccount) {
     return getDefaultWeb3Account.mockImplementation(() => Promise.resolve(defaultAccount))
 }
+import { getDataTokenAbiAndAddress } from '$mp/utils/web3'
 
 describe('web3 utils', () => {
     afterEach(() => {
@@ -43,6 +43,7 @@ describe('web3 utils', () => {
                 eth: {
                     getBalance: balanceStub,
                 },
+                getChainId: jest.fn(() => Promise.resolve(8995)),
             }))
             const balance = await all.getEthBalance('testAccount')
             expect(balanceStub).toHaveBeenCalledTimes(1)
@@ -58,6 +59,7 @@ describe('web3 utils', () => {
                 eth: {
                     getBalance: balanceStub,
                 },
+                getChainId: jest.fn(() => Promise.resolve(8995)),
             }))
 
             const balance = await all.getEthBalance('testAccount', true)
@@ -73,21 +75,16 @@ describe('web3 utils', () => {
             const balanceStub = jest.fn(() => ({
                 call: () => Promise.resolve(accountBalance),
             }))
-            jest.spyOn(getConfig, 'default').mockImplementation(() => ({
-                mainnet: {
-                    dataToken: 'dataToken',
-                },
-            }))
             const getContractStub = jest.fn(() => ({
                 methods: {
                     balanceOf: balanceStub,
                 },
             }))
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
-            const result = await all.getDataTokenBalance('testAccount')
+            const result = await all.getDataTokenBalance('testAccount', false, 8995)
             expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
             expect(getContractStub).toHaveBeenCalledTimes(1)
-            expect(getContractStub).toBeCalledWith('dataToken', false)
+            expect(getContractStub).toBeCalledWith(getDataTokenAbiAndAddress(8995), false, 8995)
             expect(balanceStub).toHaveBeenCalledTimes(1)
             expect(balanceStub).toBeCalledWith('testAccount')
         })
@@ -97,21 +94,16 @@ describe('web3 utils', () => {
             const balanceStub = jest.fn(() => ({
                 call: () => Promise.resolve(accountBalance),
             }))
-            jest.spyOn(getConfig, 'default').mockImplementation(() => ({
-                mainnet: {
-                    dataToken: 'dataToken',
-                },
-            }))
             const getContractStub = jest.fn(() => ({
                 methods: {
                     balanceOf: balanceStub,
                 },
             }))
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
-            const result = await all.getDataTokenBalance('testAccount', true)
+            const result = await all.getDataTokenBalance('testAccount', true, 8995)
             expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
             expect(getContractStub).toHaveBeenCalledTimes(1)
-            expect(getContractStub).toBeCalledWith('dataToken', true)
+            expect(getContractStub).toBeCalledWith(getDataTokenAbiAndAddress(8995), true, 8995)
             expect(balanceStub).toHaveBeenCalledTimes(1)
             expect(balanceStub).toBeCalledWith('testAccount')
         })
@@ -127,6 +119,7 @@ describe('web3 utils', () => {
                 eth: {
                     getBalance: jest.fn(() => Promise.resolve(accountBalance)),
                 },
+                getChainId: jest.fn(() => Promise.resolve(8995)),
             }))
 
             const balance = await all.getMyEthBalance()
@@ -147,7 +140,7 @@ describe('web3 utils', () => {
                 },
             }))
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
-            await all.getMyDataTokenBalance()
+            await all.getMyDataTokenBalance(8995)
             expect(getContractStub).toHaveBeenCalledTimes(1)
             expect(getContractStub.mock.calls[0][0].abi.find((f) => f.name === 'balanceOf')).toBeDefined()
             expect(balanceStub).toHaveBeenCalledTimes(1)
@@ -166,7 +159,7 @@ describe('web3 utils', () => {
                     balanceOf: balanceStub,
                 },
             }))
-            const result = await all.getMyDataTokenBalance()
+            const result = await all.getMyDataTokenBalance(8995)
             expect(result.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
         })
     })

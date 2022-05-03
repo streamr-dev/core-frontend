@@ -7,16 +7,13 @@ import polygonIcon from './assets/polygon.svg'
 import bscIcon from './assets/bsc.svg'
 import unknownIcon from './assets/unknown.svg'
 
-const MAINNET_CHAIN_ID = 1
-const XDAI_CHAIN_ID = 100
-const POLYGON_CHAIN_ID = 137
-const BSC_CHAIN_ID = 56
-
 const icons = {
-    [MAINNET_CHAIN_ID]: ethereumIcon,
-    [XDAI_CHAIN_ID]: xDaiIcon,
-    [POLYGON_CHAIN_ID]: polygonIcon,
-    [BSC_CHAIN_ID]: bscIcon,
+    '1': ethereumIcon,
+    '100': xDaiIcon,
+    '137': polygonIcon,
+    '56': bscIcon,
+    '8995': ethereumIcon,
+    '8997': xDaiIcon,
 }
 
 const UnstyledNetworkIcon = ({ chainId, className, emptyIcon, alt = '' }) => (
