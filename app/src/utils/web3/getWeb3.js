@@ -1,11 +1,10 @@
 import Web3 from 'web3'
-import FakeProvider from 'web3-fake-provider'
 import getConfig from '$shared/web3/config'
 import { getRecentMethod } from '$shared/reducers/session/methods'
 
 let instance
 
-export const defaultFallbackProvider = new FakeProvider()
+export const defaultFallbackProvider = void 0
 
 export default function getWeb3() {
     if (!instance) {

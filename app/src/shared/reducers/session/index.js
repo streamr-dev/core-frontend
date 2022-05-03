@@ -72,8 +72,6 @@ export function teardownSession() {
             // No-op.
         }
 
-        getWeb3().setProvider(defaultFallbackProvider)
-
         dispatch(logout())
 
         dispatch({

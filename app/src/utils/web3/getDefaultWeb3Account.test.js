@@ -1,5 +1,4 @@
 import Web3 from 'web3'
-import FakeProvider from 'web3-fake-provider'
 import getWeb3 from '$utils/web3/getWeb3'
 import getDefaultWeb3Account from './getDefaultWeb3Account'
 
@@ -25,11 +24,11 @@ describe('getDefaultWeb3Account', () => {
     })
 
     it('throws an error if getAccounts gives nullish value', async () => {
-        const web3 = new Web3(new FakeProvider())
+        const web3 = new Web3()
 
         getWeb3.mockImplementation(() => web3)
 
-        await expect(getDefaultWeb3Account()).rejects.toThrow(/please unlock/i)
+        await expect(getDefaultWeb3Account()).rejects.toThrow(/please unlock your/i)
     })
 
     it('throws an error if getAccounts gives an empty list', async () => {
@@ -39,6 +38,6 @@ describe('getDefaultWeb3Account', () => {
 
         jest.spyOn(web3.eth, 'getAccounts').mockImplementation(jest.fn(() => Promise.resolve([])))
 
-        await expect(getDefaultWeb3Account()).rejects.toThrow(/please unlock/i)
+        await expect(getDefaultWeb3Account()).rejects.toThrow(/please unlock your/i)
     })
 })
