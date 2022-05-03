@@ -7,7 +7,7 @@ import { getUserData } from '$shared/modules/user/services'
 import validateWeb3 from '$utils/web3/validateWeb3'
 import getSessionToken from '$auth/utils/getSessionToken'
 import { post } from '$shared/utils/api'
-import getWeb3, { defaultFallbackProvider } from '$utils/web3/getWeb3'
+import getWeb3 from '$utils/web3/getWeb3'
 import routes from '$routes'
 import methods, { getRecentMethod } from './methods'
 
