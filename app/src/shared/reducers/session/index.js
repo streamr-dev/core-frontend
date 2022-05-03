@@ -56,6 +56,7 @@ export default function reducer(state = initialState, action) {
         case Teardown:
             return {
                 ...cleanState,
+                method: state.method,
             }
         default:
             return state
