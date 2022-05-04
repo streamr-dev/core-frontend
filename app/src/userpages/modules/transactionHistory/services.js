@@ -4,6 +4,7 @@ import abiDecoder from 'abi-decoder'
 
 import { transactionTypes, paymentCurrencies } from '$shared/utils/constants'
 import getWeb3 from '$utils/web3/getPublicWeb3'
+import getChainId from '$utils/web3/getChainId'
 import { getMarketplaceAddress } from '$mp/utils/web3'
 import type { HashList, TransactionEntityList, TransactionEntity, EventLog, EventLogList } from '$shared/flowtype/web3-types'
 import TransactionError from '$shared/errors/TransactionError'
@@ -124,7 +125,7 @@ const getInputValues = (type, logs) => {
 
 export const getTransactionEvents = async (addresses: HashList, products: ProductIdList): Promise<EventLogList> => {
     const web3 = getWeb3()
-    const chainId = await web3.getChainId()
+    const chainId = await getChainId()
     const marketplaceAddress = getMarketplaceAddress(chainId)
 
     // these are needed to decode log values
