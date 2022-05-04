@@ -22,7 +22,7 @@ export default async function validateWeb3({ requireNetwork = networks.MAINNET, 
                 return unlockTimeout
             }
 
-            return 100
+            return 200
         })(),
     })
 
