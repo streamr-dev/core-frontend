@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 import * as all from '$shared/utils/web3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getChainId from '$utils/web3/getChainId'
@@ -22,8 +21,6 @@ function mockChainId(chainId) {
 }
 
 describe('web3 utils', () => {
-    const web3 = new Web3()
-
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
@@ -34,7 +31,6 @@ describe('web3 utils', () => {
             mockChainId('1')
 
             await all.checkEthereumNetworkIsCorrect({
-                web3,
                 network: 1,
             })
         })
@@ -44,7 +40,6 @@ describe('web3 utils', () => {
 
             try {
                 await all.checkEthereumNetworkIsCorrect({
-                    web3,
                     network: 2,
                 })
             } catch (e) {
@@ -56,7 +51,6 @@ describe('web3 utils', () => {
             mockChainId('8995')
 
             await all.checkEthereumNetworkIsCorrect({
-                web3,
                 network: 8995,
             })
         })
@@ -66,7 +60,6 @@ describe('web3 utils', () => {
 
             try {
                 await all.checkEthereumNetworkIsCorrect({
-                    web3,
                     network: 8995,
                 })
             } catch (e) {
