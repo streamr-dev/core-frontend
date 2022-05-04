@@ -141,7 +141,7 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: bool
             let productPriceDATA = web3.utils.toWei(dataQuantity)
             productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
             productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
-            const chainId = await web3.getChainId()
+            const chainId = await getChainId()
 
             let uniswapETH = await call(uniswapAdaptorContractMethods(usePublicNode, chainId)
                 .getConversionRateOutput(ETH, getDataAddress(chainId), productPriceDATA))
@@ -167,7 +167,7 @@ export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: bool
             let productPriceDATA = web3.utils.toWei(dataQuantity)
             productPriceDATA = BN(productPriceDATA).multipliedBy((UNISWAP_SAFETY_MARGIN))
             productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
-            const chainId = await web3.getChainId()
+            const chainId = await getChainId()
 
             let uniswapDAI = await call(uniswapAdaptorContractMethods(usePublicNode, chainId)
                 .getConversionRateOutput(getDaiAddress(chainId), getDataAddress(chainId), productPriceDATA))
@@ -191,7 +191,7 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boole
         try {
             const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
             const ethWei = web3.utils.toWei(ethQuantity)
-            const chainId = await web3.getChainId()
+            const chainId = await getChainId()
 
             let uniswapDATA = await call(uniswapAdaptorContractMethods(usePublicNode, chainId)
                 .getConversionRateOutput(getDataAddress(chainId), ETH, ethWei))
