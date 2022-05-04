@@ -3,6 +3,7 @@ import BN from 'bignumber.js'
 import * as all from '$mp/utils/web3'
 import * as utils from '$mp/utils/smartContract'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
+import getChainId from '$utils/web3/getChainId'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import getWeb3 from '$utils/web3/getWeb3'
 
@@ -20,6 +21,15 @@ jest.mock('$utils/web3/getWeb3', () => ({
     __esModule: true,
     default: jest.fn(),
 }))
+
+jest.mock('$utils/web3/getChainId', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+function mockChainId(chainId) {
+    return getChainId.mockImplementation(() => Promise.resolve(chainId))
+}
 
 function mockDefaultAccount(defaultAccount) {
     return getDefaultWeb3Account.mockImplementation(() => Promise.resolve(defaultAccount))
@@ -130,6 +140,7 @@ describe('web3 utils', () => {
     describe('getMyDataTokenBalance', () => {
         it('must call the correct method', async () => {
             mockDefaultAccount('testAccount')
+            mockChainId(8995)
 
             const balanceStub = jest.fn(() => ({
                 call: () => Promise.resolve('100000'),
@@ -149,6 +160,7 @@ describe('web3 utils', () => {
 
         it('must transform the result from wei to tokens', async () => {
             mockDefaultAccount('testAccount')
+            mockChainId(8995)
 
             const accountBalance = BN('2209000000000000000000')
             const balanceStub = jest.fn(() => ({
