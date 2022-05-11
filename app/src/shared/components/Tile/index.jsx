@@ -12,11 +12,12 @@ import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits } from '$shared/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
+import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import routes from '$routes'
 import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import Summary from './Summary'
 import Menu from './Menu'
-import Badge, { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
+import Badge, { DataUnionBadge, IconBadge, DeployingBadge, ChainBadge as UnstyledChainBadge } from './Badge'
 
 const Image = styled(Img)`
     img& {
@@ -140,7 +141,7 @@ const UnstyledImageContainer = ({
 }
 
 const ImageContainer = styled(UnstyledImageContainer)`
-    border-radius: 2px;
+    border-radius: 8px;
     border-radius: ${({ theme }) => theme.borderRadius};
     overflow: hidden;
     position: relative;
@@ -219,6 +220,16 @@ const ExpirationLabel = ({ expiresAt, now }: any) => {
         </Label>
     )
 }
+
+const ChainBadge = styled(UnstyledChainBadge)`
+    visibility: hidden;
+    transition-property: visibility;
+    transition: 40ms;
+
+    ${Tile}:hover & {
+        visibility: visible;
+    }
+`
 
 const PurchaseTile = ({
     expiresAt,
@@ -382,6 +393,14 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                 >
                     {product.members}
                 </IconBadge>
+            )}
+            {product.chain != null && (
+                <ChainBadge
+                    bottom
+                    left
+                    chainId={getChainIdFromApiString(product.chain)}
+                    chainName={formatChainName(product.chain)}
+                />
             )}
         </Tile.ImageContainer>
         <Link

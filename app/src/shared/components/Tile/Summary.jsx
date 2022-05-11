@@ -6,7 +6,6 @@ import Skeleton from '$shared/components/Skeleton'
 import { MEDIUM } from '$shared/utils/styled'
 
 const Name = styled.div`
-    margin-bottom: 2px;
 `
 
 const Secondary = styled.div`
@@ -20,9 +19,13 @@ const Description = styled(Secondary)`
 `
 
 const Label = styled(Secondary)`
+    text-align: right;
 `
 
 const Root = styled.div`
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-gap: 0.5em;
     color: #323232;
     font-size: 16px;
     font-weight: ${MEDIUM};
@@ -45,18 +48,20 @@ const Summary = ({
     ...props
 }: Props) => (
     <Root {...props}>
-        <Name>
-            <Skeleton disabled={!skeletonize}>
-                {name}
-            </Skeleton>
-        </Name>
-        {!!description && (
-            <Description>
-                <Skeleton disabled={!skeletonize} width="45%">
-                    {description}
+        <div>
+            <Name>
+                <Skeleton disabled={!skeletonize}>
+                    {name}
                 </Skeleton>
-            </Description>
-        )}
+            </Name>
+            {!!description && (
+                <Description>
+                    <Skeleton disabled={!skeletonize} width="45%">
+                        {description}
+                    </Skeleton>
+                </Description>
+            )}
+        </div>
         {!!label && (
             <Label>
                 <Skeleton disabled={!skeletonize} width="30%">
