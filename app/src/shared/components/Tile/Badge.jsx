@@ -9,16 +9,39 @@ const SharedTheme = {
     backgroundColor: '#525252',
 }
 
-const BadgeBase = styled.div`
+const SingleBadge = styled.div`
+    display: flex;
+    align-items: center;
+    font-size: 10px;
+    height: 15px;
+    line-height: 12px;
+    padding: 0 4px;
+    background-color: #0324ff;
+    background-color: ${({ theme }) => theme.backgroundColor};
+    color: white !important;
+
+    a,
+    a:link,
+    a:active,
+    a:focus,
+    a:hover,
+    a:visited {
+        color: white !important;
+    }
+
+    > * + * {
+        margin-left: 8px;
+    }
+`
+
+const BadgeContainer = styled.div`
     align-items: center;
     color: white !important;
-    cursor: default;
     display: flex;
-    font-size: 12px;
-    height: 24px;
-    line-height: 1em;    
+    cursor: default;
     pointer-events: none;
     user-select: none;
+    margin: 0.5em;
 
     a& {
         cursor: pointer;
@@ -46,24 +69,38 @@ const BadgeBase = styled.div`
         top: 0;
     `}
 
-    > * + * {
-        margin-left: 12px;
+    > ${SingleBadge} {
+        margin-left: 1px;
+    }
+
+    ${SingleBadge}:first-child {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+    }
+
+    ${SingleBadge}:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+
+    ${SingleBadge}:only-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
     }
 `
 
-const Badge = styled(BadgeBase)`
-    padding: 0 12px;
-    background-color: #0324ff;
-    background-color: ${({ theme }) => theme.backgroundColor};
-    border-bottom-left-radius: ${({ bottom, left }) => (bottom || left ? 0 : 2)}px;
-    border-bottom-right-radius: ${({ bottom, left, right }) => (bottom || (!left && right) ? 0 : 2)}px;
-    border-top-left-radius: ${({ top, left }) => (top || left ? 0 : 2)}px;
-    border-top-right-radius: ${({ top, left, right }) => (top || (!left && right) ? 0 : 2)}px;
-`
+const Badge = styled(BadgeContainer)``
 
-const StyledChainBadge = styled(BadgeBase)`
+const StyledChainBadge = styled(Badge)`
     font-size: 18px;
-    margin: 0.5em;
+    line-height: 18px;
+    background-color: transparent;
 
     ${NetworkIcon} {
         height: 24px;
@@ -76,29 +113,45 @@ const StyledChainBadge = styled(BadgeBase)`
 `
 
 const Spinner = styled(UnstyledSpinner)`
-    height: 12px;
-    min-height: 0;
-    min-width: 0;
-    width: 12px;
+    height: 10px;
+    min-height: 0 !important;
+    min-width: 0 !important;
+    width: 10px;
 `
 
 const DeployingBadge = (props) => (
-    <Badge {...props}>
-        <span>Deploying</span>
-        <Spinner size="small" color="white" />
-    </Badge>
+    <BadgeContainer {...props}>
+        <SingleBadge>
+            <span>Deploying</span>
+            <Spinner size="tiny" color="white" />
+        </SingleBadge>
+    </BadgeContainer>
 )
 
-const DataUnionBadge = (props) => (
-    <Badge {...props}>
-        <span>Data Union</span>
-    </Badge>
+const DataUnionBadge = ({ memberCount, linkTo, linkHref, ...props }) => (
+    <BadgeContainer {...props}>
+        <SingleBadge>Data Union</SingleBadge>
+        {memberCount != null && (
+            <SingleBadge>
+                <Badge.Link
+                    to={linkTo}
+                    href={linkHref}
+                >
+                    {memberCount}
+                </Badge.Link>
+                &nbsp;
+                members
+            </SingleBadge>
+        )}
+    </BadgeContainer>
 )
 
 const SharedBadge = (props) => (
-    <Badge {...props} theme={SharedTheme}>
-        <span>Shared</span>
-    </Badge>
+    <BadgeContainer {...props}>
+        <SingleBadge theme={SharedTheme}>
+            <span>Shared</span>
+        </SingleBadge>
+    </BadgeContainer>
 )
 
 const ChainBadge = ({ chainId, chainName, ...props }) => (
@@ -109,12 +162,14 @@ const ChainBadge = ({ chainId, chainName, ...props }) => (
 )
 
 const UnstyledIconBadge = ({ forwardAs, children, icon, ...props }) => (
-    <Badge {...props} as={forwardAs}>
-        <SvgIcon name={icon} />
-        {children != null && (
-            <div>{children}</div>
-        )}
-    </Badge>
+    <BadgeContainer {...props} as={forwardAs}>
+        <SingleBadge>
+            <SvgIcon name={icon} />
+            {children != null && (
+                <div>{children}</div>
+            )}
+        </SingleBadge>
+    </BadgeContainer>
 )
 
 const IconBadge = styled(UnstyledIconBadge)`

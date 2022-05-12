@@ -4,7 +4,7 @@ import styles from '@sambego/storybook-styles'
 import { action } from '@storybook/addon-actions'
 import { withKnobs, boolean } from '@storybook/addon-knobs'
 import sample from './sample.stories.png'
-import Badge, { DeployingBadge, DataUnionBadge, SharedBadge, IconBadge } from './Badge'
+import Badge, { DeployingBadge, DataUnionBadge, SharedBadge, ChainBadge } from './Badge'
 import Grid from './Grid'
 import Summary from './Summary'
 import Menu, { MenuItem } from './Menu'
@@ -40,12 +40,9 @@ stories.add('with sample image and badge', () => (
         <Tile>
             <Tile.ImageContainer autoSize>
                 <Tile.Thumbnail src={sample} />
-                <DataUnionBadge top left />
+                <DataUnionBadge top left memberCount={16} linkHref="http://google.com" />
                 <DeployingBadge bottom right />
                 <SharedBadge bottom left />
-                <IconBadge icon="dataUnion" top right>
-                    15
-                </IconBadge>
             </Tile.ImageContainer>
         </Tile>
     </Grid>
@@ -73,7 +70,7 @@ stories.add('fixed thumbnail height', () => (
                         <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
                     </Tile.ImageContainer>
                 </a>
-                <DataUnionBadge top left />
+                <DataUnionBadge top left memberCount={16} />
                 <DeployingBadge bottom right />
             </Tile.ImageContainer>
         </Tile>
@@ -102,7 +99,7 @@ stories.add('square thumbnails', () => (
                         <Tile.Thumbnail skeletonize={boolean('Skeletonize')} src={sample} />
                     </Tile.ImageContainer>
                 </a>
-                <DataUnionBadge top left />
+                <DataUnionBadge top left memberCount={16} />
                 <DeployingBadge bottom right />
             </Tile.ImageContainer>
         </Tile>
@@ -138,7 +135,9 @@ stories.add('with Data Union badge being a link', () => (
                     href="https://google.com/"
                     rel="noopener noreferrer"
                     target="_blank"
+                    memberCount={16}
                 />
+                <ChainBadge bottom left chainId={1} chainName="Ethereum" />
             </Tile.ImageContainer>
         </Tile>
     </Grid>
