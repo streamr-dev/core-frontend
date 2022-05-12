@@ -26,13 +26,7 @@ type Config = {
     dataunionsChain: DataUnionChainConfig,
 }
 
-let chainConfigs = []
-if (process.env.NODE_ENV === 'production') {
-    chainConfigs = Chains.load('production')
-} else {
-    // Use development for tests too
-    chainConfigs = Chains.load('development')
-}
+const chainConfigs = Chains.load()
 
 export const getConfigForChain = (chainId: number) => {
     if (chainId == null) {

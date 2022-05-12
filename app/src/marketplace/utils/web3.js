@@ -23,15 +23,28 @@ declare var ethereum: Web3
 const UNISWAP_SAFETY_MARGIN = 1.05
 const ETH = '0x0000000000000000000000000000000000000000'
 
-export const getDaiAddress = (chainId: number) => (
+export const getDaiAddress = (chainId: number) => {
     // Not available in @streamr/config yet
-    // NOTE: 0x64... is OTHERcoin in docker mainchain and 0x33... is LINK token in sidechain. That works for testing.
-    chainId === 8995 ? '0x642D2B84A32A9A92FEc78CeAA9488388b3704898' : '0x3387F44140ea19100232873a5aAf9E46608c791E'
-)
+    switch (chainId) {
+        case 1:
+            return '0x6B175474E89094C44Da98b954EedeAC495271d0F'
+        case 137:
+            return '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'
+        case 8995:
+            // OTHERcoin in docker mainchain
+            return '0x642D2B84A32A9A92FEc78CeAA9488388b3704898'
+        case 8997:
+            // LINK token works for now on sidechain
+            return '0x3387F44140ea19100232873a5aAf9E46608c791E'
+        default:
+            console.error(`No Dai address found for chainId ${chainId}`)
+            throw new Error(`No Dai address found for chainId ${chainId}`)
+    }
+}
 
 const getDataAddress = (chainId: number) => {
     const { contracts } = getConfigForChain(chainId)
-    const dataTokenAddress = contracts['DATA-token'] || contracts.Token
+    const dataTokenAddress = contracts.DATA
     if (dataTokenAddress == null) {
         throw new Error('No contract address for DATA token provided!')
     }
