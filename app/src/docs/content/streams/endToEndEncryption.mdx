@@ -6,7 +6,7 @@ Confidentiality of events published on a stream can be guaranteed with end-to-en
 
 ## Key exchange
 
-The subscribers need this symmetric group key in order to decrypt the data. They automatically obtain the key by performing a key exchange with the publisher. The key exchange happens using asymmetric encryption: 
+The subscribers need the symmetric group key in order to decrypt the data. They automatically obtain this key by performing a key exchange with the publisher. The key exchange happens using asymmetric encryption: 
 
 - Both the publisher and subscriber generate a temporary RSA key pair to be used for the key exchange
 - The subscriber sends a key request to the publisher, containing the subscriber's public key, signed with the subscriber's Ethereum key
@@ -14,7 +14,7 @@ The subscribers need this symmetric group key in order to decrypt the data. They
 
 ## Publisher liveness
 
-To perform key exchange with subscribers, the publisher must be online and present in the network. As the Streamr Network deals with real-time messages, publishers are often constantly online. Especially with old stored data it may happen, however, that the publisher has disappeared since publishing the data, making those messages inaccessible to subscribers who didn't receive the key at the time. This is a consequence of publishers being fully and solely in control of who can access their data on the network.
+To perform the key exchange with the subscribers, the publisher must be online and present in the Network. As the Streamr Network deals with real-time messages, publishers are often constantly online. However, it may happen that the publisher has disappeared since publishing the data, making those messages inaccessible to subscribers who have yet to receive the key. This is a consequence of the data publisher being in full control of who can access their data on the Network.
 
 ## Key rotation and re-key
 
