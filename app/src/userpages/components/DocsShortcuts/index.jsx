@@ -1,10 +1,10 @@
 // @flow
 
 import React from 'react'
+import docsLinks from '$shared/../docsLinks'
 import Link from '$shared/components/Link'
 import Onboarding from '$shared/components/Onboarding'
 import routes from '$routes'
-import docsLinks from '$shared/../docsLinks'
 
 const DocsShortcuts = () => (
     <Onboarding title="Docs">

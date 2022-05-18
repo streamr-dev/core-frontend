@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
 
+import docsLinks from '$shared/../docsLinks'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
@@ -25,7 +26,6 @@ import { Context as EditControllerContext } from './EditControllerProvider'
 import BeneficiaryAddress from './BeneficiaryAddress'
 
 import styles from './PriceSelector.pcss'
-import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     disabled?: boolean,

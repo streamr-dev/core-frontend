@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useRef } from 'react'
+import React, { Fragment, useReducer, useRef, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import styled, { createGlobalStyle } from 'styled-components'
 import { Logo, Auth, SignInMethod, LoadingIndicator } from '@streamr/streamr-layout'
@@ -23,13 +23,13 @@ function UnstyledUnwrappedLoginPage({ className }) {
 
     const cancelPromiseRef = useRef()
 
-    function cancel() {
+    const cancel = useCallback(() => {
         const { current: { reject } = {} } = cancelPromiseRef
 
         if (typeof reject === 'function') {
             reject(new Error('User cancelled action'))
         }
-    }
+    }, [])
 
     async function connect(newMethod) {
         const { requireUninterrupted } = itp('connect')

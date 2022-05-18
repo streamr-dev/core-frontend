@@ -123,7 +123,7 @@ const NewFieldEditor = ({ onStage, onDiscard, onValidate, disabled }) => {
                             payload: e.target.value,
                         })}
                         autoFocus
-                        onKeyPress={onKeyPress}
+                        onKeyPress={onKeyPress /* eslint-disable-line react/jsx-no-bind */}
                         disabled={disabled}
                     />
                     <Errors overlap>

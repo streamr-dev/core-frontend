@@ -4,6 +4,7 @@ import React, { useContext, useCallback, useEffect } from 'react'
 import cx from 'classnames'
 import { Link } from 'react-router-dom'
 
+import docsLinks from '$shared/../docsLinks'
 import ImageUpload from '$shared/components/ImageUpload'
 import Errors from '$ui/Errors'
 import useModal from '$shared/hooks/useModal'
@@ -14,7 +15,6 @@ import useValidation from '../ProductController/useValidation'
 import { Context as EditControllerContext } from './EditControllerProvider'
 
 import styles from './coverImage.pcss'
-import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     disabled?: boolean,
