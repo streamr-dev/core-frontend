@@ -85,7 +85,15 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
+                include: [
+                    // transpile @dataunions packages to support optional chaining syntax ?.
+                    // this should be handled by babel, but webpack can't parse the AST to pass to babel
+                    // not needed with webpack 5.
+                    // See: https://github.com/babel/babel-loader/issues/871#issuecomment-703932695
+                    path.resolve(root, 'node_modules/@dataunions'),
+                    path.resolve(root, 'src'),
+                    path.resolve(root, 'scripts'),
+                ],
                 options: {
                     rootMode: 'upward',
                     cacheDirectory: !isProduction(),
