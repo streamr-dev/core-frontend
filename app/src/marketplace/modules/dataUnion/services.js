@@ -1,7 +1,7 @@
 // @flow
 
 import EventEmitter from 'events'
-import StreamrClient from 'streamr-client'
+import DataUnionClient from '@dataunions/client'
 import BN from 'bignumber.js'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
@@ -28,7 +28,7 @@ type CreateClient = {
 }
 
 function createClient({ usePublicNode = false }: CreateClient = {}) {
-    return new StreamrClient(getClientConfig({
+    return new DataUnionClient(getClientConfig({
         auth: {
             ethereum: usePublicNode ? undefined : getWeb3().currentProvider,
         },
