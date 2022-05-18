@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useCallback } from 'react'
 import { StreamPermission } from 'streamr-client'
 import { useHistory } from 'react-router-dom'
 import BackButton from '$shared/components/BackButton'
@@ -32,9 +32,9 @@ function StreamPageSidebar() {
 
     const sidebar = useSidebar()
 
-    function onClose() {
+    const onClose = useCallback(() => {
         sidebar.close()
-    }
+    }, [sidebar])
 
     return !!streamId && (
         <Sidebar.WithErrorBoundary

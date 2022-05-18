@@ -2,6 +2,7 @@ import React, { Fragment, useReducer, useState } from 'react'
 import styled from 'styled-components'
 import { useClient } from 'streamr-client-react'
 import { Link } from 'react-router-dom'
+import docsLinks from '$shared/../docsLinks'
 import TOCPage from '$shared/components/TOCPage'
 import useStreamId from '$shared/hooks/useStreamId'
 import Button from '$shared/components/Button'
@@ -11,7 +12,6 @@ import useStreamData from '$shared/hooks/useStreamData'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import routes from '$routes'
 import PreviewTable from './PreviewTable'
-import docsLinks from '$shared/../docsLinks'
 
 function DefaultDescription() {
     return (
