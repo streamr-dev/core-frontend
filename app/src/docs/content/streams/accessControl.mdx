@@ -27,15 +27,7 @@ The matrix below outlines the role types and permissions for streams.
         </thead>
         <tbody>
             <tr>
-                <td>stream_get</td>
-                <td>Fetch stream details</td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>stream_edit</td>
+                <td>StreamPermission.EDIT</td>
                 <td>Edit stream details</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
@@ -43,7 +35,7 @@ The matrix below outlines the role types and permissions for streams.
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
             </tr>
             <tr>
-                <td>stream_delete</td>
+                <td>StreamPermission.DELETE</td>
                 <td>Delete the stream</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
@@ -51,7 +43,7 @@ The matrix below outlines the role types and permissions for streams.
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
             </tr>
             <tr>
-                <td>stream_publish</td>
+                <td>StreamPermission.PUBLISH</td>
                 <td>Publish to stream</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
@@ -59,7 +51,7 @@ The matrix below outlines the role types and permissions for streams.
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
             </tr>
             <tr>
-                <td>stream_subscribe</td>
+                <td>StreamPermission.SUBSCRIBE</td>
                 <td>Subscribe to stream</td>
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
@@ -67,7 +59,7 @@ The matrix below outlines the role types and permissions for streams.
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
             </tr>
             <tr>
-                <td>stream_share</td>
+                <td>StreamPermission.GRANT</td>
                 <td>Edit stream permissions</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
@@ -96,3 +88,42 @@ To update and edit a stream's access control, follow these steps:
 4. Add, remove or adjust permissions for as many people as you want
 5. Click Save to finalise any changes button before you close the side bar
 6. Get a confirmation “Your permissions have been updated” notification
+
+## Using the Streamr Client
+You can also grant, revoke and view the permissions of a stream using the Streamr Client and the StreamPermission enum:
+
+```javascript
+import { StreamrClient, StreamPermission } from 'streamr-client'
+const client = new StreamrClient({...})
+```
+To grant a permission for a user:
+```javascript
+// Requires MATIC tokens (Polygon blockchain gas token)
+await stream.grantPermissions({
+    user: '0x12345...',
+    permissions: [StreamPermission.PUBLISH],
+})
+```
+
+To revoke a permission from a user:
+```javascript
+
+// Requires MATIC tokens (Polygon blockchain gas token)
+await stream.revokePermissions({
+    user: '0x12345...',
+    permissions: [StreamPermission.PUBLISH]
+})
+```
+The full list of permissions for a stream can be queried by calling stream.getPermissions():
+```javascript
+const permissions = await stream.getPermissions()
+```
+The returned value is an array of permissions containing an item for each user, and possibly one for public permissions:
+```javascript
+permissions = [
+    { user: '0x12345...', permissions: ['subscribe', 'publish'] },
+    { public: true, permissions: ['subscribe']}
+]
+```
+
+You can read more on permissions and their usage with the Streamr Client [in the docs](https://github.com/streamr-dev/network-monorepo/tree/main/packages/client#stream-permissions).
