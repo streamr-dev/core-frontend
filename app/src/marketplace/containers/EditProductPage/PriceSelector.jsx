@@ -74,8 +74,9 @@ const PriceSelector = ({ disabled }: Props) => {
                 <h1>Set a price</h1>
                 <p>
                     Set the price for your product here. Note that once published,
-                    you will not be able to make a free product into a paid one or vice versa.
-                    But you can edit this while your product is a draft. For help,
+                    you will not be able to make a free product into a paid one or vice versa. 
+                    But you can edit this while your product is a draft. 
+                    You will be able to update the pricing of a paid product after launching your Data Union. For help,
                     see the <Link to={docsLinks.creatingDataProducts}>docs</Link>.
                 </p>
                 <RadioButtonGroup
