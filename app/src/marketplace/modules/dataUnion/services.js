@@ -114,25 +114,18 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
             network: chainId,
         }),
     ])
-        .then(([account]) => {
-            const { mainnetAddress } = client.calculateDataUnionAddresses(productId, account)
-            return mainnetAddress
-        })
-        .then((futureAddress) => {
-            // send calculated contract address as the transaction hash,
-            // streamr-client doesn't tell us the actual tx hash
-            emitter.emit('transactionHash', futureAddress)
-
+        .then(() => (
             // FIXME: Provide chainId to client when supported
-            return client.deployDataUnion({
+            client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
             })
-        })
+        ))
         .then((dataUnion) => {
             if (!dataUnion || !dataUnion.contractAddress) {
                 errorHandler(new TransactionError('Transaction failed'))
             } else {
+                emitter.emit('transactionHash', dataUnion.getAddress())
                 emitter.emit('receipt', {
                     contractAddress: dataUnion.getAddress(),
                 })
