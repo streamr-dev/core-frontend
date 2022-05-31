@@ -24,6 +24,8 @@ import streamsStyles from '$docs/components/Pages/Streams/streamsStyles.pcss'
 # Creating streams
 Streams are identified by a unique and immutable stream ID, which consists of a domain and a user-given path, just like an Internet URL. The domain is either an Ethereum address of the logged in user, or it can also be an ENS (Ethereum Name Service) name owned by the Ethereum address of the logged in user. All streams require a unique path in the format of `domain/pathname` and can contain single or multi-level paths.
 
+In order to create a stream you will need a small amount of `MATIC` tokens to pay for the stream creation and permission assignment transactions. `MATIC` is the native token of the Polygon blockchain which is where the on-chain stream registry contract is located.
+
 ENS names allow streams to have human readable names, for example `mydomain.eth/traffic/helsinki`. If you haven’t used an ENS name before, you can easily create one with a small amount of ETH on <a href="https://ens.domains" target="_blank" rel="noopener noreferrer">ENS Domains</a>. Your purchased addresses will automatically appear in the <Link to={routes.streams.index()}>Core app</Link> for immediate usage. At a future date, the stream registry will live on the blockchain.
 
 <Image
