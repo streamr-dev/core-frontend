@@ -4,6 +4,7 @@ import { Chains } from '@streamr/config'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
+import formatConfigUrl from '$utils/formatConfigUrl'
 import tokenAbi from './abis/token'
 import dataUnionAbi from './abis/dataunion'
 import dataUnionSidechainAbi from './abis/dataunionSidechain'
@@ -41,6 +42,24 @@ export const getConfigForChain = (chainId: number) => {
     }
 
     const config: any = configEntry[1]
+
+    // Fix local rpc urls
+    config.rpcEndpoints = config.rpcEndpoints.map((rpc) => {
+        let { url } = rpc
+
+        // Config contains references to local docker environment (10.200.10.1).
+        // Use formatConfigUrl to make sure we are compatible with other docker hosts as well.
+        if (url.includes('10.200.10.1')) {
+            // Leave only port
+            url = url.replace('http://10.200.10.1', '')
+            url = formatConfigUrl(url)
+        }
+
+        return {
+            url,
+        }
+    })
+
     return config
 }
 
