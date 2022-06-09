@@ -124,6 +124,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                     if (!isMounted()) { return }
                     setAddress(null) // clear beneficiary address
                     setDeployError(e)
+                    console.error(e)
                     resolve()
                 })
         ))

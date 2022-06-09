@@ -5,7 +5,7 @@ import DataUnionClient from '@dataunions/client'
 import BN from 'bignumber.js'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
-import getConfig from '$shared/web3/config'
+import getConfig, { getConfigForChain } from '$shared/web3/config'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
@@ -28,9 +28,20 @@ type CreateClient = {
 }
 
 function createClient({ usePublicNode = false }: CreateClient = {}) {
+    const provider = getWeb3().currentProvider
+    const chainId = provider.networkVersion
+    const config = getConfigForChain(chainId)
+
     return new DataUnionClient(getClientConfig({
         auth: {
-            ethereum: usePublicNode ? undefined : getWeb3().currentProvider,
+            ethereum: usePublicNode ? undefined : provider,
+        },
+        network: {
+            chainId,
+            rpcs: [{
+                url: config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http')),
+                timeout: 120 * 1000,
+            }],
         },
     }))
 }
@@ -115,7 +126,6 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
         }),
     ])
         .then(() => (
-            // FIXME: Provide chainId to client when supported
             client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
@@ -152,7 +162,6 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
         .then(([dataUnion]) => {
             emitter.emit('transactionHash')
 
-            // FIXME: Provide chainId to client when supported
             dataUnion.setAdminFee(+adminFee)
                 .then((receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
