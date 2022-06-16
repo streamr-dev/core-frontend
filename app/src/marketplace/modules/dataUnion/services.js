@@ -31,19 +31,29 @@ function createClient({ usePublicNode = false }: CreateClient = {}) {
     const provider = getWeb3().currentProvider
     const chainId = provider.networkVersion
     const config = getConfigForChain(chainId)
+    const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
+    const factoryAddress = config.contracts.UnichainDataUnionFactory
 
-    return new DataUnionClient(getClientConfig({
+    if (factoryAddress == null) {
+        throw new Error(`No UnichainDataUnionFactory found for chain ${chainId}`)
+    }
+
+    const clientConfig = getClientConfig({
         auth: {
             ethereum: usePublicNode ? undefined : provider,
         },
         network: {
             chainId,
             rpcs: [{
-                url: config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http')),
+                url: providerUrl,
                 timeout: 120 * 1000,
             }],
         },
-    }))
+        dataUnion: {
+            factoryAddress,
+        },
+    })
+    return new DataUnionClient(clientConfig)
 }
 
 // ----------------------
@@ -55,10 +65,6 @@ const getDataUnionObject = async (address: string, usePublicNode: boolean = fals
         usePublicNode,
     })
     const dataUnion = await client.getDataUnion(address)
-    const version = await dataUnion.getVersion()
-    if (version !== 2) {
-        throw new Error(`Unsupported DU version: ${version}`)
-    }
     return dataUnion
 }
 
@@ -117,20 +123,19 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
     }
     const tx = new Transaction(emitter)
 
-    const client = createClient()
-
     Promise.all([
         getDefaultWeb3Account(),
         checkEthereumNetworkIsCorrect({
             network: chainId,
         }),
     ])
-        .then(() => (
-            client.deployDataUnion({
+        .then(() => {
+            const client = createClient()
+            return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
             })
-        ))
+        })
         .then((dataUnion) => {
             if (!dataUnion || !dataUnion.contractAddress) {
                 errorHandler(new TransactionError('Transaction failed'))
