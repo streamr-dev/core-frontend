@@ -77,8 +77,15 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
 
     return (
         <Container className={className}>
-            <ManageJoinRequests dataUnion={dataUnion} joinRequests={joinRequests} />
-            <ManageMembers dataUnion={dataUnion} />
+            <ManageJoinRequests
+                dataUnion={dataUnion}
+                chainId={chainId}
+                joinRequests={joinRequests}
+            />
+            <ManageMembers
+                dataUnion={dataUnion}
+                chainId={chainId}
+            />
             <Box>
                 <GraphHeader>
                     <TimeSeriesGraph.Header>
@@ -112,6 +119,7 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
                         memberCount={(memberCount && memberCount.total) || 0}
                         shownDays={days}
                         dataUnionAddress={dataUnion && dataUnion.id}
+                        chainId={chainId}
                     />
                 )}
             </Box>

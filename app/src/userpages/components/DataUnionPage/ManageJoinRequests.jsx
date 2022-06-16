@@ -122,11 +122,12 @@ const Approving = styled.div`
 
 type Props = {
     dataUnion: any,
+    chainId: number,
     joinRequests: Array<any>,
     className?: string,
 }
 
-const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
+const ManageJoinRequests = ({ dataUnion, chainId, joinRequests, className }: Props) => {
     const isMounted = useIsMounted()
     const [processingRequests, setProcessingRequests] = useState([])
     const [approveAllProcessing, setApproveAllProcessing] = useState(false)
@@ -159,10 +160,10 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                 setProcessingRequests((prev) => prev.filter((req) => req !== id))
 
                 // Refresh member listing
-                await loadMembers(dataUnionId)
+                await loadMembers(dataUnionId, chainId)
             }
         }
-    }, [approve, dataUnionId, loadMembers, isMounted])
+    }, [approve, dataUnionId, chainId, loadMembers, isMounted])
 
     const approveAll = useCallback(async () => {
         setApproveAllProcessing(true)

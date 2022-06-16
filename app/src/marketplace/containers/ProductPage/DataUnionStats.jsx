@@ -21,6 +21,7 @@ type Props = {
     },
     showDeploying?: boolean,
     dataUnion: any,
+    chainId: number,
 }
 
 const Members = styled.div`
@@ -58,6 +59,7 @@ const UnstyledDataUnionStats = ({
     memberCount,
     showDeploying,
     dataUnion,
+    chainId,
     ...props
 }: Props) => {
     const [days, setDays] = useState(7)
@@ -97,6 +99,7 @@ const UnstyledDataUnionStats = ({
                                         memberCount={memberCount.total}
                                         shownDays={days}
                                         dataUnionAddress={dataUnion.id}
+                                        chainId={chainId}
                                     />
                                 )}
                             </TimeSeriesGraph.Body>

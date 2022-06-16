@@ -8,13 +8,14 @@ import { getJoinsAndParts } from '$mp/modules/dataUnion/services'
 
 type Props = {
     dataUnionAddress: string,
+    chainId: number,
     memberCount: number,
     shownDays?: number,
 }
 
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
-const MembersGraph = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props) => {
+const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }: Props) => {
     const isMounted = useIsMounted()
     const [memberCountUpdatedAt, setMemberCountUpdatedAt] = useState(Date.now())
     const [memberData, setMemberData] = useState([])
@@ -42,7 +43,7 @@ const MembersGraph = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props) =
                     generator.current = null
                     reset()
                 }
-                generator.current = getJoinsAndParts(dataUnionAddress, startDate)
+                generator.current = getJoinsAndParts(dataUnionAddress, chainId, startDate)
 
                 // eslint-disable-next-line no-restricted-syntax
                 for await (const event of generator.current) {
@@ -61,7 +62,7 @@ const MembersGraph = ({ dataUnionAddress, memberCount, shownDays = 7 }: Props) =
         if (dataUnionAddress) {
             loadData()
         }
-    }, [dataUnionAddress, startDate, reset, isMounted])
+    }, [dataUnionAddress, chainId, startDate, reset, isMounted])
 
     useEffect(() => () => {
         // Cancel generator on unmount

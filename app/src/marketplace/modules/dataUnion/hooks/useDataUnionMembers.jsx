@@ -31,7 +31,7 @@ function useDataUnionMembers() {
         }
     }, [])
 
-    const load = useCallback(async (dataUnionId) => {
+    const load = useCallback(async (dataUnionId, chainId) => {
         setLoading(true)
         try {
             if (generator.current != null) {
@@ -39,7 +39,7 @@ function useDataUnionMembers() {
                 generator.current = null
                 reset()
             }
-            generator.current = getAllMemberEvents(dataUnionId)
+            generator.current = getAllMemberEvents(dataUnionId, chainId)
 
             // eslint-disable-next-line no-restricted-syntax
             for await (const event of generator.current) {
