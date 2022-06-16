@@ -166,10 +166,11 @@ const Removing = styled.div`
 
 type Props = {
     dataUnion: any,
+    chainId: number,
     className?: string,
 }
 
-const ManageMembers = ({ dataUnion, className }: Props) => {
+const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
     const isMounted = useIsMounted()
     const dataUnionId = dataUnion && dataUnion.id
     const [search, setSearch] = useState('')
@@ -186,13 +187,13 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
     useEffect(() => {
         const load = async () => {
             try {
-                await loadMembers(dataUnionId)
+                await loadMembers(dataUnionId, chainId)
             } catch (e) {
                 console.error('Could not load member list', e)
             }
         }
         load()
-    }, [loadMembers, dataUnionId])
+    }, [loadMembers, dataUnionId, chainId])
 
     const onSearchChange = useCallback((e) => {
         const search = e.target.value.trim()
