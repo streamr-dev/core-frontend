@@ -32,10 +32,10 @@ function createClient({ usePublicNode = false }: CreateClient = {}) {
     const chainId = provider.networkVersion
     const config = getConfigForChain(chainId)
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
-    const factoryAddress = config.contracts.UnichainDataUnionFactory
+    const factoryAddress = config.contracts.DataUnionFactory
 
     if (factoryAddress == null) {
-        throw new Error(`No UnichainDataUnionFactory found for chain ${chainId}`)
+        throw new Error(`No contract address for DataUnionFactory found for chain ${chainId}. Try a different chain.`)
     }
 
     const clientConfig = getClientConfig({

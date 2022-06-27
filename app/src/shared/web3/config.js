@@ -63,6 +63,17 @@ export const getConfigForChain = (chainId: number) => {
     return config
 }
 
+export const getConfigForChainByName = (chainName: string) => {
+    const configEntry = Object.entries(chainConfigs).find((c) => c[0] === chainName)
+
+    if (configEntry == null) {
+        throw new Error(`Could not find config for chain with name ${chainName}`)
+    }
+
+    const config: any = configEntry[1]
+    return getConfigForChain(config.id)
+}
+
 const getConfig = (): Config => {
     const { tokenAddress, dataUnionChainRPCs, mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
 
