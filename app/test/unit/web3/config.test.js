@@ -21,8 +21,6 @@ jest.mock('$app/src/getters/getConfig', () => {
             ...actualConfig,
             core: {
                 ...actualConfig.core,
-                daiTokenContractAddress: 'daiTokenAddress',
-                marketplaceContractAddress: 'mpAddress',
                 uniswapAdaptorContractAddress: 'uniAddress',
                 web3TransactionConfirmationBlocks: 1337,
             },
