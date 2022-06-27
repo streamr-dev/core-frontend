@@ -31,7 +31,6 @@ jest.mock('$app/src/getters/getConfig', () => {
             ...actualConfig,
             core: {
                 ...actualConfig.core,
-                daiTokenContractAddress: 'daiTokenAddress',
             },
         }),
     }
