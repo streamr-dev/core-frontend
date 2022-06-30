@@ -1,6 +1,6 @@
 // @flow
 
-import { getContract, call, send, hexEqualsZero } from '$mp/utils/smartContract'
+import { call, send, hexEqualsZero } from '$mp/utils/smartContract'
 import type { SmartContractProduct, ProductId } from '$mp/flowtype/product-types'
 import type { SmartContractCall, SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import {
@@ -16,6 +16,7 @@ import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { marketplaceContract, getMarketplaceAbiAndAddress } from '$mp/utils/web3'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
+import { getContractEvents } from '$shared/utils/contractEvents'
 
 const contractMethods = (usePublicNode: boolean = false, networkChainId: number) => (
     marketplaceContract(usePublicNode, networkChainId).methods
@@ -37,35 +38,45 @@ export const getProductFromContract = async (
         })
 )
 
-export const getMarketplaceEvents = async (
-    id: ProductId, eventName: string,
+async function* getMarketplaceEvents(
+    id: ProductId,
+    eventName: string,
     fromBlock: number = 0,
-    usePublicNode: boolean = true,
-    networkChainId: number,
-) => {
-    const abiAndAddress = getMarketplaceAbiAndAddress(networkChainId)
-    const contract = getContract(abiAndAddress, usePublicNode, networkChainId)
-    const events = await contract.getPastEvents(eventName, {
-        filter: {
-            productId: getValidId(id),
-        },
-        fromBlock,
-        toBlock: 'latest',
-    })
-    return events
+    chainId: number,
+): any {
+    const web3 = getPublicWeb3(chainId)
+    const abiAndAddress = getMarketplaceAbiAndAddress(chainId)
+    const filter = {
+        productId: getValidId(id),
+    }
+    yield* getContractEvents(web3, abiAndAddress.abi, abiAndAddress.address, chainId, eventName, fromBlock, filter)
 }
 
-export const getSubscriberCount = async (id: ProductId, usePublicNode: boolean = true, networkChainId: number) => {
-    const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode, networkChainId)
-    const validSubs = events.filter((e) => (
-        e.returnValues && e.returnValues.endTimestamp && (parseTimestamp(e.returnValues.endTimestamp) > Date.now())
-    ))
-    return validSubs.length
+export const getSubscriberCount = async (id: ProductId, networkChainId: number) => {
+    let validSubsCount = 0
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const e of getMarketplaceEvents(id, 'Subscribed', 30075584, networkChainId)) {
+        for (const subEvent of e) {
+            if (subEvent.returnValues && subEvent.returnValues.endTimestamp && (parseTimestamp(subEvent.returnValues.endTimestamp) > Date.now())) {
+                validSubsCount += 1
+            }
+        }
+    }
+
+    return validSubsCount
 }
 
 export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNode: boolean = true, networkChainId: number) => {
     const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
-    const events = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode, networkChainId)
+    const events = []
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const e of getMarketplaceEvents(id, 'Subscribed', 30075584, networkChainId)) {
+        for (const subEvent of e) {
+            events.push(subEvent)
+        }
+    }
 
     if (events.length === 0) {
         return null
@@ -83,18 +94,18 @@ export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNod
 export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = true, networkChainId: number) => {
     const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
-    const events = await getMarketplaceEvents(id, 'Subscribed', fromBlock, usePublicNode, networkChainId)
     const subscriptions = []
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const e of events) {
-        // eslint-disable-next-line no-await-in-loop
-        const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
-            subscriptions.push({
-                start: block.timestamp * 1000,
-                end: e.returnValues && e.returnValues.endTimestamp && parseTimestamp(e.returnValues.endTimestamp),
-            })
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const e of getMarketplaceEvents(id, 'Subscribed', fromBlock, networkChainId)) {
+        for (const subEvent of e) {
+            const block = await web3.eth.getBlock(subEvent.blockHash)
+            if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
+                subscriptions.push({
+                    start: block.timestamp * 1000,
+                    end: subEvent.returnValues && subEvent.returnValues.endTimestamp && parseTimestamp(subEvent.returnValues.endTimestamp),
+                })
+            }
         }
     }
 
@@ -214,21 +225,39 @@ export const whitelistRequest = (id: ProductId, address: Address, networkChainId
     send(contractMethods(false, networkChainId).whitelistRequest(getValidId(id), address))
 )
 
-export const getWhitelistAddresses = async (id: ProductId, usePublicNode: boolean = true, networkChainId: number): Promise<Array<WhitelistItem>> => {
-    const subscriptionEvents = await getMarketplaceEvents(id, 'Subscribed', 0, usePublicNode, networkChainId)
-    const approvedEvents = await getMarketplaceEvents(id, 'WhitelistApproved', 0, usePublicNode, networkChainId)
-    const rejectedEvents = await getMarketplaceEvents(id, 'WhitelistRejected', 0, usePublicNode, networkChainId)
+export const getWhitelistAddresses = async (id: ProductId, networkChainId: number): Promise<Array<WhitelistItem>> => {
+    const subscriptionEvents = []
+    const approvedItems = []
+    const rejectedItems = []
 
-    const approvedItems = approvedEvents.map((event) => ({
-        address: event.returnValues.subscriber,
-        blockNumber: event.blockNumber,
-        approved: true,
-    }))
-    const rejectedItems = rejectedEvents.map((event) => ({
-        address: event.returnValues.subscriber,
-        blockNumber: event.blockNumber,
-        approved: false,
-    }))
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const e of getMarketplaceEvents(id, 'WhitelistApproved', 30075584, networkChainId)) {
+        for (const approveEvent of e) {
+            approvedItems.push({
+                address: approveEvent.returnValues.subscriber,
+                blockNumber: approveEvent.blockNumber,
+                approved: true,
+            })
+        }
+    }
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const e of getMarketplaceEvents(id, 'WhitelistRejected', 30075584, networkChainId)) {
+        for (const approveEvent of e) {
+            rejectedItems.push({
+                address: approveEvent.returnValues.subscriber,
+                blockNumber: approveEvent.blockNumber,
+                approved: false,
+            })
+        }
+    }
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const e of getMarketplaceEvents(id, 'Subscribed', 30075584, networkChainId)) {
+        for (const subEvent of e) {
+            subscriptionEvents.push(subEvent)
+        }
+    }
 
     const isActiveSubscription = (address) => {
         const activeSubs = subscriptionEvents.filter((e) => (
