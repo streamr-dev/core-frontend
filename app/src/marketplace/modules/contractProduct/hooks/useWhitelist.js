@@ -26,7 +26,7 @@ export function useWhitelist() {
 
     const load = useCallback(async (productId: ProductId, chainId: number) => {
         try {
-            const addresses = await getWhitelistAddresses(productId, true, chainId)
+            const addresses = await getWhitelistAddresses(productId, chainId)
 
             const result = update({
                 data: addresses,

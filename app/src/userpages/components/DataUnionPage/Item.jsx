@@ -319,7 +319,7 @@ const Item = ({ product, stats }: Props) => {
     useEffect(() => {
         const load = async () => {
             if (productId) {
-                const count = await getSubscriberCount(productId, true, chainId)
+                const count = await getSubscriberCount(productId, chainId)
 
                 if (isMounted()) {
                     setSubscriberCount(count)
