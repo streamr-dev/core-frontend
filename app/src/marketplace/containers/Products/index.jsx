@@ -1,19 +1,16 @@
 // @flow
 
-import React, { useCallback, useEffect, useRef, useMemo } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import merge from 'lodash/merge'
-import { useLocation } from 'react-router-dom'
 
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import ProductsComponent from '$mp/components/Products'
 import ActionBar from '$mp/components/ActionBar'
-import ComingSoon from '$mp/components/ComingSoon'
 import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 import type { Filter, SearchFilter } from '$mp/flowtype/product-types'
 
@@ -37,11 +34,6 @@ import useIsMounted from '$shared/hooks/useIsMounted'
 
 import styles from './products.pcss'
 
-function useQuery() {
-    const { search } = useLocation()
-    return useMemo(() => new URLSearchParams(search), [search])
-}
-
 const Products = () => {
     const categories = useSelector(selectAllCategories)
     const products = useSelector(selectProductList)
@@ -60,12 +52,6 @@ const Products = () => {
     const { load: loadDataUnionStats, members, reset: resetStats } = useAllDataUnionStats()
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
-
-    // Show coming soon notice unless we provide a secret query param to reveal products
-    const query = useQuery()
-    const { marketplaceVisibleOnlyWithQueryParam: secretQuery } = getCoreConfig()
-    const key = query.get(secretQuery)
-    const showComingSoon = useMemo(() => secretQuery != null && key == null, [key, secretQuery])
 
     const onFilterChange = useCallback((filter: Filter) => {
         dispatch(updateFilter(filter))
@@ -102,10 +88,6 @@ const Products = () => {
     }, [dispatch, isMounted, loadDataUnionStats])
 
     useEffect(() => {
-        if (showComingSoon) {
-            return
-        }
-
         loadCategories()
 
         if (productsRef.current && productsRef.current.length === 0) {
@@ -114,7 +96,7 @@ const Products = () => {
             // just reload DU stats if product list was cached
             loadDataUnionStats(productsRef.current.map(({ id }) => id))
         }
-    }, [loadCategories, clearFiltersAndReloadProducts, loadDataUnionStats, showComingSoon])
+    }, [loadCategories, clearFiltersAndReloadProducts, loadDataUnionStats])
 
     useEffect(() => () => {
         resetStats()
@@ -127,38 +109,31 @@ const Products = () => {
             footer={false}
         >
             <MarketplaceHelmet />
-            {!showComingSoon && (
-                <ActionBar
-                    filter={selectedFilter}
-                    categories={categories}
-                    onFilterChange={onFilterChange}
-                    onSearchChange={onSearchChange}
-                    onCreateProduct={() => createProductModal.open()}
-                />
-            )}
+            <ActionBar
+                filter={selectedFilter}
+                categories={categories}
+                onFilterChange={onFilterChange}
+                onSearchChange={onSearchChange}
+                onCreateProduct={() => createProductModal.open()}
+            />
             <CreateProductModal />
-            {showComingSoon && (
-                <ComingSoon />
-            )}
-            {!showComingSoon && (
-                <ProductsComponent.Container fluid>
-                    <ProductsComponent
-                        products={products.map((p, i) => {
-                            const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
+            <ProductsComponent.Container fluid>
+                <ProductsComponent
+                    products={products.map((p, i) => {
+                        const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
 
-                            return merge({}, p, {
-                                key: `${i}-${p.id || ''}`,
-                                members: members[beneficiaryAddress],
-                            })
-                        })}
-                        error={productsError}
-                        type="products"
-                        isFetching={isFetching}
-                        loadProducts={loadProducts}
-                        hasMoreSearchResults={hasMoreSearchResults}
-                    />
-                </ProductsComponent.Container>
-            )}
+                        return merge({}, p, {
+                            key: `${i}-${p.id || ''}`,
+                            members: members[beneficiaryAddress],
+                        })
+                    })}
+                    error={productsError}
+                    type="products"
+                    isFetching={isFetching}
+                    loadProducts={loadProducts}
+                    hasMoreSearchResults={hasMoreSearchResults}
+                />
+            </ProductsComponent.Container>
             <Footer topBorder />
         </Layout>
     )

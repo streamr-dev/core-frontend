@@ -2,7 +2,6 @@
 host = "localhost"
 
 [core]
-dataUnionFactorySidechainCreationBlock = 0
 dataUnionPublishMemberLimit = 0
 platformOriginUrl = ""
 streamrUrl = ""
@@ -10,6 +9,7 @@ uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
 web3TransactionConfirmationBlocks = 1
 marketplaceChains = ['dev0', 'dev1']
 dataunionChains = ['dev1']
+streamChains = ['dev1']
 
 [[core.storageNodes]]
 name = "Local (broker-node-storage-1)"
