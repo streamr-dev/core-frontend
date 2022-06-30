@@ -29,12 +29,14 @@ export const formatChainName = (apiChainName: string): string => {
 export const getChainIdFromApiString = (name: string): number => {
     // TODO: Kind of ugly hack to map production values to development environment.
     //       This is needed because core-api uses production values in prepopulated data.
+    /*
     if (process.env.NODE_ENV === 'development') {
         if (name === 'ETHEREUM') {
             return 8995
         }
         return 8997
     }
+    */
 
     const found = Object.entries(chainNameToIdMapping).find((val) => val[0].toLowerCase() === name.toLowerCase())
     if (found) {

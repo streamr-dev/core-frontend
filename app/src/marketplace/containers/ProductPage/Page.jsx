@@ -9,6 +9,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import Terms from '$mp/components/ProductPage/Terms'
 import ProductPage from '$shared/components/ProductPage'
 import Segment from '$shared/components/Segment'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import useDataUnionServerStats from './useDataUnionServerStats'
 
 import Hero from './Hero'
@@ -21,6 +22,7 @@ import usePreviewStats from './usePreviewStats'
 
 const ProductDetailsPage = () => {
     const { product } = useController()
+    const chainId = getChainIdFromApiString(product.chain)
     const contractProduct = useContractProduct()
 
     const { subscriberCount } = contractProduct || {}
@@ -68,6 +70,7 @@ const ProductDetailsPage = () => {
                         stats={stats}
                         memberCount={memberCount}
                         dataUnion={dataUnion}
+                        chainId={chainId}
                     />
                 )}
                 <Streams />

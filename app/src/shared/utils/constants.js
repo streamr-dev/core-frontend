@@ -1,6 +1,7 @@
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { getConfigForChainByName } from '$shared/web3/config'
 
 /*
     These are all type
@@ -34,7 +35,7 @@ export const productStates = {
 }
 
 export const networks = {
-    STREAMS: process.env.NODE_ENV === 'development' ? 8997 : 137,
+    STREAMS: getConfigForChainByName(getCoreConfig().streamChains[0]).id,
 }
 
 export const ethereumNetworks = {

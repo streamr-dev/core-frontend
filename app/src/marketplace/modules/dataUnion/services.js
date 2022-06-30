@@ -13,8 +13,8 @@ import type { ApiResult } from '$shared/flowtype/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { post, del, get, put } from '$shared/utils/api'
+import { getContractEvents } from '$shared/utils/contractEvents'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
@@ -60,7 +60,7 @@ function createClient({ usePublicNode = false }: CreateClient = {}) {
 // smart contract queries
 // ----------------------
 
-const getDataUnionObject = async (address: string, usePublicNode: boolean = false) => {
+const getDataUnionObject = async (address: string, usePublicNode: boolean = true) => {
     const client = createClient({
         usePublicNode,
     })
@@ -68,18 +68,18 @@ const getDataUnionObject = async (address: string, usePublicNode: boolean = fals
     return dataUnion
 }
 
-export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
+export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = true) => {
     const dataUnion = await getDataUnionObject(address, usePublicNode)
     return dataUnion.getAdminAddress()
 }
 
-export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean = false) => {
+export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean = true) => {
     const dataUnion = await getDataUnionObject(address, usePublicNode)
     const adminFee = await dataUnion.getAdminFee()
     return `${adminFee}`
 }
 
-export const getDataUnionStats = async (address: DataUnionId, usePublicNode: boolean = false): ApiResult<Object> => {
+export const getDataUnionStats = async (address: DataUnionId, usePublicNode: boolean = true): ApiResult<Object> => {
     const dataUnion = await getDataUnionObject(address, usePublicNode)
     const { activeMemberCount, inactiveMemberCount, totalEarnings } = await dataUnion.getStats()
 
@@ -192,25 +192,7 @@ export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) 
 async function* getEvents(address: string, chainId: number, eventName: string, fromBlock: number): any {
     const web3 = getPublicWeb3(chainId)
     const { dataunionsChain } = getConfig()
-    const contract = new web3.eth.Contract(dataunionsChain.dataUnionAbi, address)
-    const latestBlock = await web3.eth.getBlock('latest')
-
-    // Get events in batches since xDai RPC seems to timeout if fetching too large sets
-    const batchSize = 10000
-
-    for (let blockNumber = fromBlock; blockNumber < latestBlock.number; blockNumber += (batchSize + 1)) {
-        let toBlockNumber = blockNumber + batchSize
-        if (toBlockNumber > latestBlock.number) {
-            toBlockNumber = latestBlock.number
-        }
-
-        // eslint-disable-next-line no-await-in-loop
-        const events = await contract.getPastEvents(eventName, {
-            fromBlock: blockNumber,
-            toBlock: toBlockNumber,
-        })
-        yield events
-    }
+    yield* getContractEvents(web3, dataunionsChain.dataUnionAbi, address, chainId, eventName, fromBlock)
 }
 
 export async function* getJoinsAndParts(id: DataUnionId, chainId: number, fromTimestamp: number): any {
@@ -278,7 +260,7 @@ export async function* getMemberEventsFromTimestamp(id: DataUnionId, chainId: nu
 }
 
 export async function* getAllMemberEvents(id: DataUnionId, chainId: number): any {
-    yield* getMemberEventsFromBlock(id, chainId, getCoreConfig().dataUnionFactorySidechainCreationBlock)
+    yield* getMemberEventsFromBlock(id, chainId, 1)
 }
 
 // ----------------------
