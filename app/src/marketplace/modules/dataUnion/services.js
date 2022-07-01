@@ -25,11 +25,11 @@ import type { Secret } from './types'
 
 type CreateClient = {
     usePublicNode?: boolean,
+    chainId: number,
 }
 
-function createClient({ usePublicNode = false }: CreateClient = {}) {
+function createClient({ usePublicNode = false, chainId }: CreateClient = {}) {
     const provider = getWeb3().currentProvider
-    const chainId = provider.networkVersion
     const config = getConfigForChain(chainId)
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
     const factoryAddress = config.contracts.DataUnionFactory
@@ -60,27 +60,28 @@ function createClient({ usePublicNode = false }: CreateClient = {}) {
 // smart contract queries
 // ----------------------
 
-const getDataUnionObject = async (address: string, usePublicNode: boolean = true) => {
+const getDataUnionObject = async (address: string, chainId: number, usePublicNode: boolean = true) => {
     const client = createClient({
         usePublicNode,
+        chainId,
     })
     const dataUnion = await client.getDataUnion(address)
     return dataUnion
 }
 
-export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = true) => {
-    const dataUnion = await getDataUnionObject(address, usePublicNode)
+export const getDataUnionOwner = async (address: DataUnionId, chainId: number, usePublicNode: boolean = true) => {
+    const dataUnion = await getDataUnionObject(address, chainId, usePublicNode)
     return dataUnion.getAdminAddress()
 }
 
-export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean = true) => {
-    const dataUnion = await getDataUnionObject(address, usePublicNode)
+export const getAdminFee = async (address: DataUnionId, chainId: number, usePublicNode: boolean = true) => {
+    const dataUnion = await getDataUnionObject(address, chainId, usePublicNode)
     const adminFee = await dataUnion.getAdminFee()
     return `${adminFee}`
 }
 
-export const getDataUnionStats = async (address: DataUnionId, usePublicNode: boolean = true): ApiResult<Object> => {
-    const dataUnion = await getDataUnionObject(address, usePublicNode)
+export const getDataUnionStats = async (address: DataUnionId, chainId: number, usePublicNode: boolean = true): ApiResult<Object> => {
+    const dataUnion = await getDataUnionObject(address, chainId, usePublicNode)
     const { activeMemberCount, inactiveMemberCount, totalEarnings } = await dataUnion.getStats()
 
     const active = (activeMemberCount && BN(activeMemberCount.toString()).toNumber()) || 0
@@ -95,9 +96,9 @@ export const getDataUnionStats = async (address: DataUnionId, usePublicNode: boo
     }
 }
 
-export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = true): ApiResult<Object> => {
-    const adminFee = await getAdminFee(id, usePublicNode)
-    const owner = await getDataUnionOwner(id, usePublicNode)
+export const getDataUnion = async (id: DataUnionId, chainId: number, usePublicNode: boolean = true): ApiResult<Object> => {
+    const adminFee = await getAdminFee(id, chainId, usePublicNode)
+    const owner = await getDataUnionOwner(id, chainId, usePublicNode)
     return {
         id: id.toLowerCase(),
         adminFee,
@@ -130,7 +131,9 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
         }),
     ])
         .then(() => {
-            const client = createClient()
+            const client = createClient({
+                chainId,
+            })
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
@@ -159,7 +162,7 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
     }
     const tx = new Transaction(emitter)
     Promise.all([
-        getDataUnionObject(address),
+        getDataUnionObject(address, chainId),
         checkEthereumNetworkIsCorrect({
             network: chainId,
         }),
@@ -179,8 +182,8 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
     return tx
 }
 
-export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) => {
-    const dataUnion = await getDataUnionObject(id, true)
+export const removeMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
+    const dataUnion = await getDataUnionObject(id, chainId, true)
     const receipt = await dataUnion.removeMembers(memberAddresses)
     return receipt
 }

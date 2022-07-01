@@ -26,6 +26,7 @@ import ProductPage from '$shared/components/ProductPage'
 import { MD, XL } from '$shared/utils/styled'
 import usePreviewStats from '$mp/containers/ProductPage/usePreviewStats'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import { useController } from '../ProductController'
 
 const Hero = () => {
@@ -106,6 +107,7 @@ const Description = () => {
 
 const DataUnionStats = () => {
     const { state: product } = useEditableState()
+    const chainId = product && getChainIdFromApiString(product.chain)
 
     const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
 
@@ -127,13 +129,13 @@ const DataUnionStats = () => {
 
     useEffect(() => {
         if (beneficiaryAddress) {
-            startPolling(beneficiaryAddress)
+            startPolling(beneficiaryAddress, chainId)
 
             return () => stopPolling()
         }
 
         return () => {}
-    }, [startPolling, stopPolling, beneficiaryAddress])
+    }, [startPolling, stopPolling, beneficiaryAddress, chainId])
 
     const statsProps = useMemo(() => {
         if (isDuDeployed) {

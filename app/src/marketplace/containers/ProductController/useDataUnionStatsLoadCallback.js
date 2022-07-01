@@ -12,10 +12,10 @@ export default function useDataUnionStatsLoadCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('dataUnion.LOAD_STATS')
 
-    return useCallback(async (id: DataUnionId) => (
+    return useCallback(async (id: DataUnionId, chainId: number) => (
         wrap(async () => {
             try {
-                await dispatch(getDataUnionStats(id))
+                await dispatch(getDataUnionStats(id, chainId))
             } catch (e) {
                 // ignore error, stats might not respond if DU not yet deployed
                 console.warn(e)

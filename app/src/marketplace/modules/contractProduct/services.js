@@ -17,12 +17,24 @@ import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { marketplaceContract, getMarketplaceAbiAndAddress } from '$mp/utils/web3'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
 import { getContractEvents } from '$shared/utils/contractEvents'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 const contractMethods = (usePublicNode: boolean = false, networkChainId: number) => (
     marketplaceContract(usePublicNode, networkChainId).methods
 )
 
 const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
+
+const getMarketplaceContractCreationBlock = (chainId: number): number => {
+    const map = getCoreConfig().marketplaceContractCreationBlocks
+    const blockItem = map.find((i) => i.chainId === chainId)
+
+    if (blockItem == null || blockItem.blockNumber == null) {
+        throw new Error('No marketplaceContractCreationBlocks defined in config for this chain!')
+    }
+
+    return blockItem.blockNumber
+}
 
 export const getProductFromContract = async (
     id: ProductId,
@@ -56,7 +68,7 @@ export const getSubscriberCount = async (id: ProductId, networkChainId: number) 
     let validSubsCount = 0
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'Subscribed', 30075584, networkChainId)) {
+    for await (const e of getMarketplaceEvents(id, 'Subscribed', getMarketplaceContractCreationBlock(networkChainId), networkChainId)) {
         for (const subEvent of e) {
             if (subEvent.returnValues && subEvent.returnValues.endTimestamp && (parseTimestamp(subEvent.returnValues.endTimestamp) > Date.now())) {
                 validSubsCount += 1
@@ -72,7 +84,7 @@ export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNod
     const events = []
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'Subscribed', 30075584, networkChainId)) {
+    for await (const e of getMarketplaceEvents(id, 'Subscribed', getMarketplaceContractCreationBlock(networkChainId), networkChainId)) {
         for (const subEvent of e) {
             events.push(subEvent)
         }
@@ -229,9 +241,10 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
     const subscriptionEvents = []
     const approvedItems = []
     const rejectedItems = []
+    const fromBlock = getMarketplaceContractCreationBlock(networkChainId)
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'WhitelistApproved', 30075584, networkChainId)) {
+    for await (const e of getMarketplaceEvents(id, 'WhitelistApproved', fromBlock, networkChainId)) {
         for (const approveEvent of e) {
             approvedItems.push({
                 address: approveEvent.returnValues.subscriber,
@@ -242,7 +255,7 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
     }
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'WhitelistRejected', 30075584, networkChainId)) {
+    for await (const e of getMarketplaceEvents(id, 'WhitelistRejected', fromBlock, networkChainId)) {
         for (const approveEvent of e) {
             rejectedItems.push({
                 address: approveEvent.returnValues.subscriber,
@@ -253,7 +266,7 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
     }
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'Subscribed', 30075584, networkChainId)) {
+    for await (const e of getMarketplaceEvents(id, 'Subscribed', fromBlock, networkChainId)) {
         for (const subEvent of e) {
             subscriptionEvents.push(subEvent)
         }

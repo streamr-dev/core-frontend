@@ -95,9 +95,9 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     useEffect(() => {
         if (isDataUnion && isEthereumAddress(beneficiaryAddress)) {
-            loadDataUnion(beneficiaryAddress)
-            loadDataUnionStats(beneficiaryAddress)
-            loadDataUnionSecrets(beneficiaryAddress)
+            loadDataUnion(beneficiaryAddress, chainId)
+            loadDataUnionStats(beneficiaryAddress, chainId)
+            loadDataUnionSecrets(beneficiaryAddress, chainId)
         }
     }, [
         isDataUnion,
@@ -105,6 +105,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
         loadDataUnion,
         loadDataUnionStats,
         loadDataUnionSecrets,
+        chainId,
     ])
 
     // clear streams & data union secrets when unmounting

@@ -44,13 +44,13 @@ const ProductDetailsPage = () => {
 
     useEffect(() => {
         if (isDataUnion) {
-            startPolling(beneficiaryAddress)
+            startPolling(beneficiaryAddress, chainId)
 
             return () => stopPolling()
         }
 
         return () => {}
-    }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress])
+    }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress, chainId])
 
     return (
         <ProductPage>
