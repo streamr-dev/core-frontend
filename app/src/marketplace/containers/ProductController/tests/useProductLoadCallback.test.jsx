@@ -37,6 +37,7 @@ describe('useProductLoadCallback', () => {
         jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
+            chain: 'ETHEREUM',
         }))
 
         let loadProduct
@@ -129,6 +130,7 @@ describe('useProductLoadCallback', () => {
             name: 'Product',
             type: 'DATAUNION',
             beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+            chain: 'ETHEREUM',
         }))
 
         let loadProduct
@@ -182,6 +184,7 @@ describe('useProductLoadCallback', () => {
             name: 'Product',
             type: 'DATAUNION',
             beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+            chain: 'ETHEREUM',
         }))
 
         let loadProduct
@@ -212,6 +215,7 @@ describe('useProductLoadCallback', () => {
             name: 'Product',
             type: 'DATAUNION',
             beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+            chain: 'ETHEREUM',
             adminFee: undefined,
             dataUnionDeployed: false,
         })
@@ -231,6 +235,7 @@ describe('useProductLoadCallback', () => {
             id,
             name: 'Product',
             type: 'NORMAL',
+            chain: 'ETHEREUM',
         }))
 
         let loadProduct
@@ -260,6 +265,7 @@ describe('useProductLoadCallback', () => {
             id: '1',
             name: 'Product',
             type: 'NORMAL',
+            chain: 'ETHEREUM',
             isFree: true,
             price: BN(0),
             priceCurrency: 'DATA',
@@ -284,6 +290,7 @@ describe('useProductLoadCallback', () => {
             id,
             name: 'Product',
             type: 'NORMAL',
+            chain: 'ETHEREUM',
             isFree: false,
             pricePerSecond: BN(1),
             priceCurrency: 'DATA',
@@ -336,6 +343,7 @@ describe('useProductLoadCallback', () => {
             id,
             name: 'Product',
             type: 'NORMAL',
+            chain: 'ETHEREUM',
             isFree: false,
             pricePerSecond: BN(1),
             priceCurrency: 'DATA',
@@ -371,6 +379,7 @@ describe('useProductLoadCallback', () => {
             id: '1',
             name: 'Product',
             type: 'NORMAL',
+            chain: 'ETHEREUM',
             isFree: false,
             pricePerSecond: BN(1),
             price: BN(3600),
@@ -399,6 +408,7 @@ describe('useProductLoadCallback', () => {
             id,
             name: 'Product',
             type: 'NORMAL',
+            chain: 'ETHEREUM',
             isFree: false,
             pricePerSecond: BN(1),
             priceCurrency: 'DATA',
