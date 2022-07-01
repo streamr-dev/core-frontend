@@ -332,7 +332,7 @@ const Item = ({ product, stats }: Props) => {
     useEffect(() => {
         const load = async () => {
             if (dataUnionId) {
-                const du = await getDataUnion(dataUnionId)
+                const du = await getDataUnion(dataUnionId, chainId)
 
                 if (isMounted()) {
                     setDataUnion(du)
@@ -340,7 +340,7 @@ const Item = ({ product, stats }: Props) => {
             }
         }
         wrapDataUnionLoad(() => load())
-    }, [dataUnionId, isMounted, wrapDataUnionLoad])
+    }, [dataUnionId, chainId, isMounted, wrapDataUnionLoad])
 
     useEffect(() => {
         const load = async () => {

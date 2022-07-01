@@ -76,8 +76,8 @@ export default function usePublish() {
         let currentAdminFee
         let dataUnionOwner
         try {
-            currentAdminFee = await getAdminFee(product.beneficiaryAddress)
-            dataUnionOwner = await getDataUnionOwner(product.beneficiaryAddress)
+            currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId)
+            dataUnionOwner = await getDataUnionOwner(product.beneficiaryAddress, chainId)
         } catch (e) {
             // ignore error, assume contract has not been deployed
         }

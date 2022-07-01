@@ -68,9 +68,9 @@ const ProductPage = () => {
 
     useEffect(() => {
         if (dataUnionDeployed && beneficiaryAddress) {
-            loadDataUnion(beneficiaryAddress)
+            loadDataUnion(beneficiaryAddress, chainId)
         }
-    }, [dataUnionDeployed, beneficiaryAddress, loadDataUnion])
+    }, [dataUnionDeployed, beneficiaryAddress, chainId, loadDataUnion])
 
     return (
         <Layout nav={(<Nav shadow />)}>

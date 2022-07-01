@@ -67,13 +67,13 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
 
     useEffect(() => {
         if (beneficiaryAddress) {
-            loadDataUnion(beneficiaryAddress)
-            startPolling(beneficiaryAddress)
+            loadDataUnion(beneficiaryAddress, chainId)
+            startPolling(beneficiaryAddress, chainId)
             return () => stopPolling()
         }
 
         return () => {}
-    }, [startPolling, stopPolling, beneficiaryAddress, loadDataUnion])
+    }, [startPolling, stopPolling, beneficiaryAddress, chainId, loadDataUnion])
 
     return (
         <Container className={className}>

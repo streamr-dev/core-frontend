@@ -10,6 +10,7 @@ import type { DataUnionId, DataUnionSecretId, ProductIdList } from '$mp/flowtype
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import * as services from './services'
 import {
     GET_DATA_UNION_REQUEST,
@@ -112,12 +113,12 @@ const getAllDataUnionStatsRequest: DataUnionIdsActionCreator = createAction(
 export const resetDataUnion: ReduxActionCreator = createAction(RESET_DATA_UNION)
 export const resetDataUnionStats: ReduxActionCreator = createAction(RESET_DATA_UNION_STATS)
 
-export const getDataUnionById = (dataUnionId: DataUnionId) => async (dispatch: Function) => {
+export const getDataUnionById = (dataUnionId: DataUnionId, chainId: number) => async (dispatch: Function) => {
     const id = dataUnionId.toLowerCase()
     dispatch(getDataUnionRequest(id))
 
     try {
-        const result = await services.getDataUnion(id, true)
+        const result = await services.getDataUnion(id, chainId, true)
         handleEntities(dataUnionSchema, dispatch)(result)
         dispatch(getDataUnionSuccess(id))
     } catch (e) {
@@ -125,12 +126,12 @@ export const getDataUnionById = (dataUnionId: DataUnionId) => async (dispatch: F
     }
 }
 
-export const getDataUnionStats = (dataUnionId: DataUnionId) => async (dispatch: Function) => {
+export const getDataUnionStats = (dataUnionId: DataUnionId, chainId: number) => async (dispatch: Function) => {
     const id = dataUnionId.toLowerCase()
     dispatch(getDataUnionStatsRequest(id))
 
     try {
-        const result = await services.getDataUnionStats(id)
+        const result = await services.getDataUnionStats(id, chainId)
         result.id = id
         handleEntities(dataUnionStatSchema, dispatch)(result)
         dispatch(getDataUnionStatsSuccess(id))
@@ -147,14 +148,25 @@ export const cancelDataUnionStatsFetch = () => {
     dataUnionStatsCancel()
 }
 
-export const startUpdateDataUnionStats = (ids: Array<DataUnionId>) => (dispatch: Function) => {
+export const startUpdateDataUnionStats = (productIds: ProductIdList) => (dispatch: Function, getState: Function) => {
     let cancelled = false
+    const state = getState()
+    const entities = selectEntities(state)
+    const products = denormalize(productIds, productsSchema, entities)
 
     const fetchStats = async () => {
-        for (let index = 0; index < ids.length && !cancelled; index += 1) {
+        for (let index = 0; index < productIds.length && !cancelled; index += 1) {
             try {
+                const product = products.find((p) => p.id === productIds[index])
+
+                if (product == null) {
+                    break
+                }
+
+                const chainId = getChainIdFromApiString(product.chain)
+                const dataunionId = product.beneficiaryAddress
                 // eslint-disable-next-line no-await-in-loop
-                await dispatch(getDataUnionStats(ids[index]))
+                await dispatch(getDataUnionStats(dataunionId, chainId))
             } catch (e) {
                 // ignore error and continue
             }
@@ -191,5 +203,5 @@ export const updateDataUnionStats = (productIds: ProductIdList) => (dispatch: Fu
         }, [])
 
     dispatch(getAllDataUnionStatsRequest(dataUnionIds))
-    dataUnionStatsCancel = dispatch(startUpdateDataUnionStats(dataUnionIds))
+    dataUnionStatsCancel = dispatch(startUpdateDataUnionStats(productIds))
 }

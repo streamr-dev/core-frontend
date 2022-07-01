@@ -11,6 +11,14 @@ marketplaceChains = ['dev0', 'dev1']
 dataunionChains = ['dev1']
 streamChains = ['dev1']
 
+[[core.marketplaceContractCreationBlocks]]
+chainId = 8995
+blockNumber = 1
+
+[[core.marketplaceContractCreationBlocks]]
+chainId = 8997
+blockNumber = 1
+
 [[core.storageNodes]]
 name = "Local (broker-node-storage-1)"
 address = "0xde1112f631486CfC759A50196853011528bC5FA0"

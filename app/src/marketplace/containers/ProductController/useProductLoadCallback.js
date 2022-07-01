@@ -54,6 +54,8 @@ export default function useProductLoadCallback() {
             }
             if (!isMounted()) { return }
 
+            const chainId = getChainIdFromApiString(product.chain)
+
             // bail if the product is not actually published - this is an edge case
             // because this should only happen with user's own products, otherwise
             // the product load will fail due to permissions
@@ -66,7 +68,7 @@ export default function useProductLoadCallback() {
             let dataUnionDeployed = false
             if (isDataUnionProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
                 try {
-                    currentAdminFee = await getAdminFee(product.beneficiaryAddress, true)
+                    currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId, true)
                     dataUnionDeployed = true
                 } catch (e) {
                     // ignore error, assume contract has not been deployed
@@ -77,7 +79,6 @@ export default function useProductLoadCallback() {
             // Fetch whitelist status from contract product
             let requiresWhitelist = false
             try {
-                const chainId = getChainIdFromApiString(product.chain)
                 const contractProduct = await getProductFromContract(productId, true, chainId)
                 // eslint-disable-next-line prefer-destructuring
                 requiresWhitelist = contractProduct.requiresWhitelist
