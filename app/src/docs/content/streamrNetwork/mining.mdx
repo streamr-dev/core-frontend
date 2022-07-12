@@ -5,30 +5,37 @@ import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
 
 # Mining
-Broker nodes will be able to participate in mining via a mining plugin that is included with the Broker node. Mining means that the Broker node subscribes to selected incentivized streams and helps propagate the messages in those streams, essentially contributing bandwidth to the stream in exchange for earning DATA tokens from associated Bounty smart contracts.
+Mining means that a Broker node subscribes to selected incentivized streams and helps propagate the messages in those streams, essentially contributing bandwidth to the stream in exchange for earning DATA tokens. Technically, the mining process is controlled by a mining plugin that is included with the Broker node. 
 
 The mining process and associated token economics are described at a high level on the <a target="_blank" rel="noopener noreferrer" href={routes.site.discover.dataToken()}>DATA token page</a> on the project website, as well as in the <Link to={docsLinks.tokenomics}>Tokenomics</Link> section of the docs.
 
 ## Coming in Tatum
-The full token economics along with the mining features will be launched in the Tatum milestone in 2022. 
+The full token economics, along with delegated staking and the ability to incentivize any stream, will be launched in the Tatum milestone. 
 
 ## Mining in Brubeck
-A simplified form of mining was possible in the Brubeck milestone incentivized testnets in late 2021. 
+A simplified form of mining is possible in the current mainnet, called Brubeck. Mining incentives for the Brubeck mainnet have been decided by the Streamr governance process here: [SIP-7](https://snapshot.org/#/streamr.eth/proposal/0x483729ba13a18c5630247d57a28e02241efb47cf52b7055d27488448e1f4e22c). 
 
-Mining incentives for the Brubeck mainnet has been decided by the Streamr governance process available here: [SIP-7](https://snapshot.org/#/streamr.eth/proposal/0x483729ba13a18c5630247d57a28e02241efb47cf52b7055d27488448e1f4e22c). 
-
-At the start of the Brubeck Mainnet, the only incentivised streams are special ones created for this purpose. When running the Broker Node, you are automatically subscribing to these special ‘rewards’ streams, which contain reward codes that are delivered on a random interval. When your Broker Node receives a reward code, it will then call our Rewards Backend, and based on this, we are able to verify that your node remains online and is eligible for reward. 
+In Brubeck, the only incentivised streams are special ones created for this purpose. The simplified mining in Brubeck works as follows: When running the Broker node, you are automatically subscribing to these special ‘rewards’ streams, which contain reward codes that are delivered on a random interval. When your Broker node receives a reward code, it will then call our Rewards Backend, and based on this, we are able to verify that your node remains online and is eligible for mining rewards. Additionally, your node's DATA balance is checked - see below for more information on staking.
 
 ## Staking in Brubeck
 
-Running a Broker Node alone in the Brubeck Mainnet does not guarantee you qualify for rewards. Unlike the testnets — where it was enough to just show up — the rewards are now based on how many DATA tokens you have staked on your node address. When your Broker Node observes a reward code, it reports it to our Rewards Backend. We are aware of the amount of DATA tokens on the address of the node in the Polygon Blockchain. From this, we are then able to determine your share of the rewards. 
+Staking happens by simply transferring DATA tokens to your node's address. Your node's mining rewards are determined by its stake. Before the Rewards Backend publishes a new reward code, it takes a snapshot of DATA balances on the Polygon blockchain. When your Broker node observes a reward code and proves its presence in the incentivized stream to the Rewards Backend, your share of the reward is determined by the DATA balance of your node, relative to the balances of other nodes that also claim the reward code.
 
-You may choose to stake between 0 and 10,000 DATA tokens on your node address. You can, of course, have more DATA on your node address than that, but reward calculation will cap it to 10,000. For example, 30,000 DATA on address A1 will get rewards as if there were 10,000 DATA staked. In order to get the benefits from 30,000 DATA, you need to have three nodes running that each have 10,000 DATA staked. 
+You can stake between 0 and 10,000 DATA tokens on your node address. You can, of course, have more DATA on your node address than that, but reward calculation will cap it to 10,000. For example, if the node has 30,000 DATA, can only earn rewards as if it had 10,000 DATA. In order to get the benefits from 30,000 DATA, you need to have three nodes running that each have 10,000 DATA.
 
-At launch, staking is possible only on the Polygon Mainnet. If you have DATA token holdings on the Ethereum Mainnet, Gnosis Chain (xDai), or Binance Smart Chain—you need to move them to the Polygon Mainnet, to the address of your Broker Node or Broker Nodes. Only DATA can be used for staking. The stake needs to remain on the node’s address, if you take it out, the node will not accumulate rewards any more. Any rewards already claimed will not be affected. 
+At launch, staking is possible only on the Polygon Mainnet. If you have DATA token holdings on the Ethereum Mainnet or some other chain, you need to move them to the Polygon Mainnet and deposit them to the address of your Broker node(s). Only DATA can be used for staking. The stake needs to remain on the node’s address - if you transfer it out, the node will not accumulate rewards anymore. Rewards already claimed will not be affected. 
 
-## Accumulated rewards and payouts
-In order to see the rewards a Broker Node has accumulated, we have set up some endpoints where they can be checked:
+For a step-by-step tutorial on how to run a Broker node and stake tokens on it, see [this blog post](https://blog.streamr.network/streamr-network-staking-how-to-mine-rewards-in-the-brubeck-mainnet/).
+
+## Payouts
+
+Earned rewards will be automatically sent to the node’s address and therefore compounded (up to the 10,000 DATA cap). The estimated payout date is the first business day of each month.
+
+## Dashboards and API
+
+There is an API as well as a community-built [BrubeckScan dashboard](https://brubeckscan.app/) for checking earnings and other mining and staking statistics.
+
+In order to see the rewards a Broker node has accumulated, the following API endpoints are available:
 
 ### Accumulated rewards for a node address
 
@@ -77,8 +84,3 @@ Example response:
 }
 ```
 
-## Payouts
-
-Earned rewards will be automatically sent to the node’s address. The estimated payout date is the first business day of each month.
-
-Payouts cost gas. At the moment, the transaction prices in Polygon are small, so this is not an issue. Small gas costs are covered by reserving a tiny margin of the max inflation rate to cover gas, and distributing the rest as rewards. If gas costs become significant in the future, we might switch to a ‘payout on request’ model where the Broker Node runner can request a payout as often as they feel like it, and pay gas.
