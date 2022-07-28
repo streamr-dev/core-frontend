@@ -33,7 +33,7 @@ const ComingSoon = () => (
                 Coming soon
             </span>
             <Text>
-                We&apos;re reworking the Marketplace to make it multi-chain, and it will relaunch in Q2/2022.
+                We&apos;re reworking the Marketplace to make it multi-chain, and it will relaunch in Q3/2022.
                 This will make transaction fees a tiny fraction of what they were on Ethereum mainnet, along with other improvements. Stay tuned!
             </Text>
             <Text>
