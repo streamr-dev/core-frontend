@@ -101,7 +101,7 @@
         "@babel/preset-react": "^7.17.12",
         "@babel/runtime": "^7.17.9",
         "@cypress/webpack-preprocessor": "^5.5.0",
-        "@dataunions/client": "^3.0.0-alpha.2",
+        "@dataunions/client": "^3.0.0-beta.6",
         "@ibm/plex": "^4.0.2",
         "@mdx-js/loader": "^1.6.22",
         "@mdx-js/react": "^1.6.22",
