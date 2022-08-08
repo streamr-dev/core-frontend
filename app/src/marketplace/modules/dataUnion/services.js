@@ -40,7 +40,7 @@ function createClient({ usePublicNode = false, chainId }: CreateClient = {}) {
 
     const clientConfig = getClientConfig({
         auth: {
-            ethereum: usePublicNode ? undefined : provider,
+            ethereum: provider,
         },
         network: {
             chainId,
