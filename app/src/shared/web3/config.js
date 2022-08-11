@@ -123,9 +123,9 @@ const getConfig = (): Config => {
             },
             '100': {
                 getParams: () => ({
-                    chainName: 'xDAI',
-                    rpcUrls: ['https://rpc.xdaichain.com/'],
-                    blockExplorerUrls: ['https://blockscout.com/poa/xdai'],
+                    chainName: 'Gnosis Chain',
+                    rpcUrls: ['https://rpc.gnosischain.com'],
+                    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet/'],
                     nativeCurrency: {
                         name: 'xDAI',
                         symbol: 'xDAI',
