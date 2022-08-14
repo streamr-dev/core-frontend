@@ -21,6 +21,8 @@ export type DataUnionErrorActionCreator = (id: DataUnionId, error: ErrorInUi) =>
 
 export type Secret = {
     id: string,
+    chain: string,
+    dataUnion: string,
     name: string,
     secret: string,
 }

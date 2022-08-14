@@ -111,8 +111,8 @@ const EditProductPage = ({ product }: { product: Product }) => {
     // clear streams & data union secrets when unmounting
     useEffect(() => () => {
         resetDataUnion()
-        resetDataUnionSecrets()
-    }, [resetDataUnion, resetDataUnionSecrets])
+        resetDataUnionSecrets(beneficiaryAddress)
+    }, [resetDataUnion, resetDataUnionSecrets, beneficiaryAddress])
 
     // clear whitelisted addresses when unmounting
     useEffect(() => () => {

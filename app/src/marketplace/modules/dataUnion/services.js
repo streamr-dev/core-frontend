@@ -28,7 +28,7 @@ type CreateClient = {
     chainId: number,
 }
 
-function createClient({ usePublicNode = false, chainId }: CreateClient = {}) {
+const createClient = ({ usePublicNode = false, chainId }: CreateClient = {}) => {
     const provider = getWeb3().currentProvider
     const config = getConfigForChain(chainId)
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
@@ -52,6 +52,7 @@ function createClient({ usePublicNode = false, chainId }: CreateClient = {}) {
         dataUnion: {
             factoryAddress,
         },
+        joinServerUrl: 'http://localhost:5555',
     })
     return new DataUnionClient(clientConfig)
 }
@@ -272,35 +273,46 @@ export async function* getAllMemberEvents(id: DataUnionId, chainId: number): any
 
 type GetSecrets = {
     dataUnionId: DataUnionId,
+    chainId: number,
 }
 
-export const getSecrets = ({ dataUnionId }: GetSecrets): ApiResult<Array<Secret>> => get({
-    url: routes.api.dataunions.secrets.index({
-        dataUnionId,
-    }),
-})
+export const getSecrets = async ({ dataUnionId, chainId }: GetSecrets): Promise<Array<Secret>> => {
+    const client = createClient({ chainId })
+    const dataUnion = await client.getDataUnion(dataUnionId)
+    const secrets = await dataUnion.listSecrets()
+    console.log(secrets)
+    return secrets.map((s) => ({
+        ...s,
+        id: s.name,
+    }))
+}
 
-type PostSecrect = {
+type CreateSecret = {
     dataUnionId: DataUnionId,
     name: string,
+    chainId: number,
 }
 
-export const postSecret = ({ dataUnionId, name }: PostSecrect): ApiResult<Secret> => post({
-    url: routes.api.dataunions.secrets.index({
-        dataUnionId,
-    }),
-    data: {
-        name,
-    },
-})
+export const createSecret = async ({ dataUnionId, name, chainId }: CreateSecret): Promise<Secret> => {
+    const client = createClient({ chainId })
+    const dataUnion = await client.getDataUnion(dataUnionId)
+    const secret = await dataUnion.createSecret(name)
+    const outSecret = {
+        ...secret,
+        id: secret.name,
+    }
+    console.log(outSecret)
+    return outSecret
+}
 
-type PutSecrect = {
+type EditSecret = {
     dataUnionId: DataUnionId,
     id: string,
     name: string,
+    chainId: number,
 }
 
-export const putSecret = ({ dataUnionId, id, name }: PutSecrect): ApiResult<Secret> => put({
+export const editSecret = ({ dataUnionId, id, name }: EditSecret): ApiResult<Secret> => put({
     url: routes.api.dataunions.secrets.show({
         dataUnionId,
         id,
@@ -313,6 +325,7 @@ export const putSecret = ({ dataUnionId, id, name }: PutSecrect): ApiResult<Secr
 type DeleteSecrect = {
     dataUnionId: DataUnionId,
     id: string,
+    chainId: number,
 }
 
 export const deleteSecret = ({ dataUnionId, id }: DeleteSecrect): ApiResult<void> => del({
