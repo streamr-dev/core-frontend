@@ -237,7 +237,7 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
                                 {editFilePath && (
                                     <Button
                                         tag="a"
-                                        href={`https://github.com/streamr-dev/streamr-platform/edit/development/app/src/docs/content/${editFilePath}`}
+                                        href={`https://github.com/streamr-dev/core-frontend/edit/master/app/src/docs/content/${editFilePath}`}
                                         kind="secondary"
                                         size="mini"
                                         target="_blank"

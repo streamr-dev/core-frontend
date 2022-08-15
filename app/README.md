@@ -81,27 +81,17 @@ Note that the instructions also include login credentials for the local app.
 
 ### Git Branches
 
-Development Branch -> Local environment (bleeding edge)
-
 Master Branch (untagged) -> Production ready code
 
 Master Branch (tagged releases) -> Production code - https://streamr.network/core
 
-### Deploying to Staging
-
-Merging a PR to `development` will trigger a release to staging.
 
 ### Deploying to Production
 
 Follow these steps to push a new production release:
 
-First check that there are no open tickets for critical/major bugs discovered on the development branch recently that should not be pushed to production.
-
-To make life easier, nobody should push to the `development` branch while you're deploying, so let the team know you're deploying before you start.
-
 ```
 git checkout master
-git merge origin/development
 npm version patch
 git add package.json package-lock.json
 git commit -m "Upgrade to 2.1.15"
@@ -113,14 +103,6 @@ At this point it's a good idea to check that Travis confirms all tests are passi
 ```
 git tag -a v2.1.15 -m 'v2.1.15'
 git push --tags
-```
-
-Following a deployment, `package.json` on `master` will have a higher version that on `development` so it's important to update `development` with this change.
-
-```
-git checkout development
-git merge origin/master
-git push
 ```
 
 The parameter patch means updating the last number of the version, eg. 1.0.0 -> 1.0.1. Possible parameter values are [<VERSION>, patch, minor, major]
@@ -146,23 +128,6 @@ git tag -a v2.1.15 -m 'v2.1.15'
 git push --tags
 ```
 
-Remember to mirror the same fix in the `development` branch with new tests or new test conditions that prove the new functionality if required.
-
-```
-git checkout development
-git merge origin/master
-git push
-```
-
-### Adding new Features
-
-```
-git checkout development
-git pull
-git checkout -b ticket-id-issue-title
-```
-
-Then write your code, and get the pull request approved by two developers, ideally with tests proving the functionality. Then, merge the PR into `development`.
 
 ### Storybook
 
