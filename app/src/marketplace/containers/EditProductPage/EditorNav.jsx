@@ -153,7 +153,11 @@ const EditorNav = () => {
             id: 'whitelist',
             heading: 'Whitelist',
             status: getStatus('requiresWhitelist'),
-        }]),
+        }]), {
+            id: 'terms',
+            heading: 'Terms of use',
+            status: getStatus('termsOfUse'),
+        },
         ...includeIf(!!isDataUnion, [{
             id: 'shared-secrets',
             heading: 'Shared secrets',
