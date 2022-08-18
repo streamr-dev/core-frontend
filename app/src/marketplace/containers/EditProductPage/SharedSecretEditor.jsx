@@ -64,14 +64,15 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
         <div {...props}>
             {secrets.map((s: Secret) => (
                 <KeyField
-                    key={s.id}
+                    key={s.secret}
                     keyName={s.name}
                     value={s.secret}
                     hideValue
-                    allowEdit={!isDisabled}
+                    /* Editing secret's name is disabled for now as there is no support for it in DU client */
+                    allowEdit={false}
                     allowDelete={!isDisabled}
-                    onSave={async (name) => editSecret(s.id, name)}
-                    onDelete={async () => removeSecret(s.id)}
+                    onSave={async (name) => editSecret(s.secret, name)}
+                    onDelete={async () => removeSecret(s.secret)}
                     labelType="sharedSecret"
                 />
             ))}

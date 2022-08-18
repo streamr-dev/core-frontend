@@ -68,7 +68,7 @@ export default function useProductLoadCallback() {
             let dataUnionDeployed = false
             if (isDataUnionProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
                 try {
-                    currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId, true)
+                    currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId)
                     dataUnionDeployed = true
                 } catch (e) {
                     // ignore error, assume contract has not been deployed

@@ -23,7 +23,10 @@ function useDataUnionSecrets() {
                 chainId,
             })
             const result = update({
-                data: response,
+                data: response.map((r) => ({
+                    ...r,
+                    id: r.secret,
+                })),
                 schema: dataUnionSecretsSchema,
             })
             dispatch(setDataUnionSecrets(dataUnionId, result))
@@ -41,7 +44,10 @@ function useDataUnionSecrets() {
                 chainId,
             })
             const result = update({
-                data: response,
+                data: {
+                    ...response,
+                    id: response.secret,
+                },
                 schema: dataUnionSecretSchema,
             })
             dispatch(addDataUnionSecret(dataUnionId, result))
@@ -60,7 +66,10 @@ function useDataUnionSecrets() {
                 chainId,
             })
             update({
-                data: response,
+                data: {
+                    ...response,
+                    id: response.secret,
+                },
                 schema: dataUnionSecretSchema,
             })
         } catch (e) {

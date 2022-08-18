@@ -23,12 +23,7 @@ import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 import type { Secret } from './types'
 
-type CreateClient = {
-    usePublicNode?: boolean,
-    chainId: number,
-}
-
-const createClient = ({ usePublicNode = false, chainId }: CreateClient = {}) => {
+const createClient = (chainId: number) => {
     const provider = getWeb3().currentProvider
     const config = getConfigForChain(chainId)
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
@@ -61,28 +56,25 @@ const createClient = ({ usePublicNode = false, chainId }: CreateClient = {}) => 
 // smart contract queries
 // ----------------------
 
-const getDataUnionObject = async (address: string, chainId: number, usePublicNode: boolean = true) => {
-    const client = createClient({
-        usePublicNode,
-        chainId,
-    })
+const getDataUnionObject = async (address: string, chainId: number) => {
+    const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(address)
     return dataUnion
 }
 
-export const getDataUnionOwner = async (address: DataUnionId, chainId: number, usePublicNode: boolean = true) => {
-    const dataUnion = await getDataUnionObject(address, chainId, usePublicNode)
+export const getDataUnionOwner = async (address: DataUnionId, chainId: number) => {
+    const dataUnion = await getDataUnionObject(address, chainId)
     return dataUnion.getAdminAddress()
 }
 
-export const getAdminFee = async (address: DataUnionId, chainId: number, usePublicNode: boolean = true) => {
-    const dataUnion = await getDataUnionObject(address, chainId, usePublicNode)
+export const getAdminFee = async (address: DataUnionId, chainId: number) => {
+    const dataUnion = await getDataUnionObject(address, chainId)
     const adminFee = await dataUnion.getAdminFee()
     return `${adminFee}`
 }
 
-export const getDataUnionStats = async (address: DataUnionId, chainId: number, usePublicNode: boolean = true): ApiResult<Object> => {
-    const dataUnion = await getDataUnionObject(address, chainId, usePublicNode)
+export const getDataUnionStats = async (address: DataUnionId, chainId: number): ApiResult<Object> => {
+    const dataUnion = await getDataUnionObject(address, chainId)
     const { activeMemberCount, inactiveMemberCount, totalEarnings } = await dataUnion.getStats()
 
     const active = (activeMemberCount && BN(activeMemberCount.toString()).toNumber()) || 0
@@ -97,9 +89,9 @@ export const getDataUnionStats = async (address: DataUnionId, chainId: number, u
     }
 }
 
-export const getDataUnion = async (id: DataUnionId, chainId: number, usePublicNode: boolean = true): ApiResult<Object> => {
-    const adminFee = await getAdminFee(id, chainId, usePublicNode)
-    const owner = await getDataUnionOwner(id, chainId, usePublicNode)
+export const getDataUnion = async (id: DataUnionId, chainId: number): ApiResult<Object> => {
+    const adminFee = await getAdminFee(id, chainId)
+    const owner = await getDataUnionOwner(id, chainId)
     return {
         id: id.toLowerCase(),
         adminFee,
@@ -132,9 +124,7 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
         }),
     ])
         .then(() => {
-            const client = createClient({
-                chainId,
-            })
+            const client = createClient(chainId)
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
@@ -184,7 +174,7 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
 }
 
 export const removeMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
-    const dataUnion = await getDataUnionObject(id, chainId, true)
+    const dataUnion = await getDataUnionObject(id, chainId)
     const receipt = await dataUnion.removeMembers(memberAddresses)
     return receipt
 }
@@ -235,7 +225,7 @@ export async function* getJoinsAndParts(id: DataUnionId, chainId: number, fromTi
 }
 
 async function* getMemberEventsFromBlock(id: DataUnionId, chainId: number, blockNumber: number): any {
-    const client = createClient()
+    const client = createClient(chainId)
     const web3 = getPublicWeb3(chainId)
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
@@ -277,14 +267,10 @@ type GetSecrets = {
 }
 
 export const getSecrets = async ({ dataUnionId, chainId }: GetSecrets): Promise<Array<Secret>> => {
-    const client = createClient({ chainId })
+    const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     const secrets = await dataUnion.listSecrets()
-    console.log(secrets)
-    return secrets.map((s) => ({
-        ...s,
-        id: s.name,
-    }))
+    return secrets
 }
 
 type CreateSecret = {
@@ -294,15 +280,10 @@ type CreateSecret = {
 }
 
 export const createSecret = async ({ dataUnionId, name, chainId }: CreateSecret): Promise<Secret> => {
-    const client = createClient({ chainId })
+    const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
     const secret = await dataUnion.createSecret(name)
-    const outSecret = {
-        ...secret,
-        id: secret.name,
-    }
-    console.log(outSecret)
-    return outSecret
+    return secret
 }
 
 type EditSecret = {
@@ -312,15 +293,12 @@ type EditSecret = {
     chainId: number,
 }
 
-export const editSecret = ({ dataUnionId, id, name }: EditSecret): ApiResult<Secret> => put({
-    url: routes.api.dataunions.secrets.show({
-        dataUnionId,
-        id,
-    }),
-    data: {
-        name,
-    },
-})
+export const editSecret = async ({ dataUnionId, id, name, chainId }: EditSecret): Promise<Secret> => {
+    const client = createClient(chainId)
+    const dataUnion = await client.getDataUnion(dataUnionId)
+    const result = await dataUnion.editSecret(id, name)
+    return result
+}
 
 type DeleteSecrect = {
     dataUnionId: DataUnionId,
@@ -328,12 +306,11 @@ type DeleteSecrect = {
     chainId: number,
 }
 
-export const deleteSecret = ({ dataUnionId, id }: DeleteSecrect): ApiResult<void> => del({
-    url: routes.api.dataunions.secrets.show({
-        dataUnionId,
-        id,
-    }),
-})
+export const deleteSecret = async ({ dataUnionId, id, chainId }: DeleteSecrect): Promise<void> => {
+    const client = createClient(chainId)
+    const dataUnion = await client.getDataUnion(dataUnionId)
+    await dataUnion.deleteSecret(id)
+}
 
 type GetJoinRequests = {
     dataUnionId: DataUnionId,
