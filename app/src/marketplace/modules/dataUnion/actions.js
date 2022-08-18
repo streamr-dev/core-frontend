@@ -118,7 +118,7 @@ export const getDataUnionById = (dataUnionId: DataUnionId, chainId: number) => a
     dispatch(getDataUnionRequest(id))
 
     try {
-        const result = await services.getDataUnion(id, chainId, true)
+        const result = await services.getDataUnion(id, chainId)
         handleEntities(dataUnionSchema, dispatch)(result)
         dispatch(getDataUnionSuccess(id))
     } catch (e) {
