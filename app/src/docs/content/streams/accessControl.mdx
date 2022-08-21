@@ -11,6 +11,8 @@ import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import coreStyles from '$docs/components/Pages/Streams/coreStyles.pcss'
 
 # Stream access control
+Who gets to read, write and edit streams is enforced by the on-chain stream registry. Every modification to the registry requires a small amount of MATIC to pay for the transaction.
+
 The matrix below outlines the role types and permissions for streams.
 
 <div className={coreStyles.tableWrapper}>
@@ -27,15 +29,23 @@ The matrix below outlines the role types and permissions for streams.
         </thead>
         <tbody>
             <tr>
-                <td>stream_get</td>
-                <td>Fetch stream details</td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td>PUBLISH</td>
+                <td>Publish data to a stream (write)</td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
             </tr>
             <tr>
-                <td>stream_edit</td>
+                <td>SUBSCRIBE</td>
+                <td>Subscribe to stream (read)</td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
+            </tr>
+            <tr>
+                <td>EDIT</td>
                 <td>Edit stream details</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
@@ -43,7 +53,7 @@ The matrix below outlines the role types and permissions for streams.
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
             </tr>
             <tr>
-                <td>stream_delete</td>
+                <td>DELETE</td>
                 <td>Delete the stream</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
@@ -51,24 +61,8 @@ The matrix below outlines the role types and permissions for streams.
                 <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
             </tr>
             <tr>
-                <td>stream_publish</td>
-                <td>Publish to stream</td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>stream_subscribe</td>
-                <td>Subscribe to stream</td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-                <td><SvgIcon name="tick" className={coreStyles.tick}/></td>
-            </tr>
-            <tr>
-                <td>stream_share</td>
-                <td>Edit stream permissions</td>
+                <td>GRANT</td>
+                <td>Share stream permissions</td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
                 <td><SvgIcon name="crossMedium" className={coreStyles.cross}/></td>
@@ -78,7 +72,48 @@ The matrix below outlines the role types and permissions for streams.
     </table>
 </div>
 
-## Sharing streams in core 
+The `publish` and `subscribe` stream permissions may also be `public`, meaning that anyone could `subscribe` and/or `publish` to the stream. Public `publish` permission is not recommended.
+
+## Using the Streamr Client
+You can grant, revoke and view the permissions of a stream using the [Streamr Client](https://github.com/streamr-dev/network-monorepo/tree/main/packages/client#stream-access-control) and the `StreamPermission` enum:
+
+```javascript
+import { StreamrClient, StreamPermission } from 'streamr-client'
+const client = new StreamrClient({...})
+```
+To grant a permission for a user:
+```javascript
+// Requires MATIC tokens (Polygon blockchain gas token)
+await stream.grantPermissions({
+    user: '0x12345...',
+    permissions: [StreamPermission.PUBLISH],
+})
+```
+
+To revoke a permission from a user:
+```javascript
+
+// Requires MATIC tokens (Polygon blockchain gas token)
+await stream.revokePermissions({
+    user: '0x12345...',
+    permissions: [StreamPermission.PUBLISH]
+})
+```
+To get the complete list of permissions for any stream:
+```javascript
+const permissions = await stream.getPermissions()
+```
+The returned value is an array of permissions containing an item for each user, along with any public permissions the stream may have:
+```javascript
+permissions = [
+    { user: '0x12345...', permissions: ['subscribe', 'publish'] },
+    { public: true, permissions: ['subscribe']}
+]
+```
+
+You can read more on permissions and their usage in the [Streamr Client docs](https://github.com/streamr-dev/network-monorepo/tree/main/packages/client#stream-access-control).
+
+## Sharing streams using the Core UI
 When using the Core app, you can share streams with other Etheruem accounts using the Share sidebar. This sidebar can be accessed from the stream list item menu or the share button in the stream edit view.
 
 <Image
