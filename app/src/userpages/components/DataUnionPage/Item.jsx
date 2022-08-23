@@ -20,10 +20,7 @@ import { getSubscriberCount } from '$mp/modules/contractProduct/services'
 import { getDataUnion } from '$mp/modules/dataUnion/services'
 import { fromAtto } from '$mp/utils/math'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
 import { withPendingChanges } from '$mp/containers/EditProductPage/state'
-import useFilterSort from '$userpages/hooks/useFilterSort'
-import { getFilters } from '$userpages/utils/constants'
 import { truncate, numberToText } from '$shared/utils/text'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
@@ -35,7 +32,7 @@ import { DataUnionMembersProvider } from '$mp/modules/dataUnion/hooks/useDataUni
 import Initials from '$shared/components/AvatarImage/Initials'
 import useEntities from '$shared/hooks/useEntities'
 import { productSchema } from '$shared/modules/entities/schema'
-import { getChainIdFromApiString } from '$shared/utils/chains'
+import { getChainIdFromApiString, formatChainName } from '$shared/utils/chains'
 import routes from '$routes'
 
 import Management from './Management'
@@ -302,19 +299,12 @@ const Item = ({ product, stats }: Props) => {
     const { update: updateEntities } = useEntities()
     const { wrap: wrapSubscriberLoad, isPending: loadingSubscriberCount } = usePending(`dataunion.item.${productId || ''}.SUBSCRIBERS`)
     const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
-    const { wrap: wrapJoinRequestLoad, isPending: loadingJoinRequests } = usePending(`dataunion.item.${productId || ''}.JOINREQUESTS`)
     const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
     const { wrap: wrapDeploy, isPending: isDeployPending } = usePending(`dataunion.item.${productId || ''}.DEPLOY`)
-    const loading = loadingSubscriberCount || loadingDataUnion || loadingJoinRequests || isPublishPending || isDeployPending
+    const loading = loadingSubscriberCount || loadingDataUnion || isPublishPending || isDeployPending
 
     const { api: publishDialog } = useModal('publish')
     const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
-    const { load: loadJoinRequests, members: joinRequests } = useJoinRequests()
-    const filters = getFilters('dataunion')
-    const sortOptions = useMemo(() => ([
-        filters.APPROVE,
-    ]), [filters])
-    const { filter } = useFilterSort(sortOptions)
 
     useEffect(() => {
         const load = async () => {
@@ -341,18 +331,6 @@ const Item = ({ product, stats }: Props) => {
         }
         wrapDataUnionLoad(() => load())
     }, [dataUnionId, chainId, isMounted, wrapDataUnionLoad])
-
-    useEffect(() => {
-        const load = async () => {
-            if (dataUnionId) {
-                await loadJoinRequests({
-                    dataUnionId,
-                    filter,
-                })
-            }
-        }
-        wrapJoinRequestLoad(() => load())
-    }, [loadJoinRequests, dataUnionId, filter, wrapJoinRequestLoad])
 
     const productState = useMemo(() => {
         if (product.state === productStates.DEPLOYED &&
@@ -611,8 +589,8 @@ const Item = ({ product, stats }: Props) => {
             <LoadingIndicator loading={loading} />
             <Stats>
                 <Stat>
-                    <Key>Join requests</Key>
-                    <Value>{joinRequests.length}</Value>
+                    <Key>Chain</Key>
+                    <Value>{formatChainName(product.chain)}</Value>
                 </Stat>
                 <Stat>
                     <Key>Members</Key>
@@ -639,7 +617,6 @@ const Item = ({ product, stats }: Props) => {
                 <StyledManagement
                     product={product}
                     dataUnion={dataUnion}
-                    joinRequests={joinRequests}
                 />
             )}
         </Container>

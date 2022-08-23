@@ -1,6 +1,6 @@
 // @flow
 
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { dataUnionSecretSchema, dataUnionSecretsSchema } from '$shared/modules/entities/schema'
@@ -15,9 +15,11 @@ function useDataUnionSecrets() {
     const dispatch = useDispatch()
     const secrets = useSelector(selectDataUnionSecrets)
     const { update } = useEntities()
+    const [isLoading, setIsLoading] = useState(null)
 
     const load = useCallback(async (dataUnionId: DataUnionId, chainId: number) => {
         try {
+            setIsLoading(true)
             const response = await getSecrets({
                 dataUnionId,
                 chainId,
@@ -33,6 +35,8 @@ function useDataUnionSecrets() {
         } catch (e) {
             console.warn(e)
             throw e
+        } finally {
+            setIsLoading(false)
         }
     }, [dispatch, update])
 
@@ -103,6 +107,7 @@ function useDataUnionSecrets() {
         edit,
         remove,
         reset,
+        isLoading,
     }), [
         load,
         secrets,
@@ -110,6 +115,7 @@ function useDataUnionSecrets() {
         edit,
         remove,
         reset,
+        isLoading,
     ])
 }
 

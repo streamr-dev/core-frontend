@@ -59,7 +59,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     } = useController()
     const chainId = getChainIdFromApiString(product.chain)
 
-    const { load: loadDataUnionSecrets, reset: resetDataUnionSecrets } = useDataUnionSecrets()
+    const { reset: resetDataUnionSecrets } = useDataUnionSecrets()
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
     const { isOpen: isDataUnionDeployDialogOpen } = useModal('dataUnion.DEPLOY')
     const { isOpen: isConfirmSaveDialogOpen } = useModal('confirmSave')
@@ -97,14 +97,12 @@ const EditProductPage = ({ product }: { product: Product }) => {
         if (isDataUnion && isEthereumAddress(beneficiaryAddress)) {
             loadDataUnion(beneficiaryAddress, chainId)
             loadDataUnionStats(beneficiaryAddress, chainId)
-            loadDataUnionSecrets(beneficiaryAddress, chainId)
         }
     }, [
         isDataUnion,
         beneficiaryAddress,
         loadDataUnion,
         loadDataUnionStats,
-        loadDataUnionSecrets,
         chainId,
     ])
 
