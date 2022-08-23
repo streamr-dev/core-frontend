@@ -12,7 +12,6 @@ import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServ
 import ProductController, { useController } from '$mp/containers/ProductController'
 import { MEDIUM } from '$shared/utils/styled'
 
-import ManageJoinRequests from './ManageJoinRequests'
 import ManageMembers from './ManageMembers'
 
 const Container = styled.div`
@@ -41,6 +40,11 @@ const Heading = styled.div`
     color: #323232;
 `
 
+const StyledManageMembers = styled(ManageMembers)`
+    grid-column: 1 / 3;
+    grid-row: 1;
+`
+
 const GraphHeader = styled.div`
     margin-bottom: 32px;
 `
@@ -52,12 +56,11 @@ const StyledDaysPopover = styled(DaysPopover)`
 
 type Props = {
     product: any,
-    joinRequests: Array<any>,
     dataUnion: any,
     className?: string,
 }
 
-const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
+const Management = ({ product, dataUnion, className }: Props) => {
     const [days, setDays] = useState(7)
     const [subsDays, setSubsDays] = useState(7)
     const { loadDataUnion } = useController()
@@ -77,12 +80,7 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
 
     return (
         <Container className={className}>
-            <ManageJoinRequests
-                dataUnion={dataUnion}
-                chainId={chainId}
-                joinRequests={joinRequests}
-            />
-            <ManageMembers
+            <StyledManageMembers
                 dataUnion={dataUnion}
                 chainId={chainId}
             />

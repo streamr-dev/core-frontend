@@ -131,7 +131,7 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
             })
         })
         .then((dataUnion) => {
-            if (!dataUnion || !dataUnion.contractAddress) {
+            if (!dataUnion || !dataUnion.getAddress()) {
                 errorHandler(new TransactionError('Transaction failed'))
             } else {
                 emitter.emit('transactionHash', dataUnion.getAddress())
