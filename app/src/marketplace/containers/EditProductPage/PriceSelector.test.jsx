@@ -21,9 +21,6 @@ const mockState = {
     dataUnion: {
         id: 'dataUnionId',
     },
-    global: {
-        dataPerUsd: 10,
-    },
     entities: {
         products: {
             '1': {

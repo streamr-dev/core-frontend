@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
 
 import type { SmartContractProduct, AccessPeriod } from '$mp/flowtype/product-types'
-import type { NumberString } from '$shared/flowtype/common-types'
 import { dataForTimeUnits } from '$mp/utils/price'
 import { validateBalanceForPurchase } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
@@ -32,20 +31,15 @@ export const actionsTypes = {
 type Purchase = {
     contractProduct: SmartContractProduct,
     accessPeriod: AccessPeriod,
-    dataPerUsd: NumberString,
     gasIncrease?: number,
 }
 
 export default function usePurchase() {
     const dispatch = useDispatch()
 
-    return useCallback(async ({ contractProduct, accessPeriod, dataPerUsd, gasIncrease }: Purchase = {}) => {
+    return useCallback(async ({ contractProduct, accessPeriod, gasIncrease }: Purchase = {}) => {
         if (!contractProduct) {
             throw new Error('no product')
-        }
-
-        if (!dataPerUsd) {
-            throw new Error('no dataPerUsd')
         }
 
         const { paymentCurrency, time, timeUnit, price } = accessPeriod || {}
@@ -72,7 +66,6 @@ export default function usePurchase() {
 
             purchasePrice = dataForTimeUnits(
                 pricePerSecond,
-                dataPerUsd,
                 priceCurrency,
                 time,
                 timeUnit,

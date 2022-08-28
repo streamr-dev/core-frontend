@@ -133,8 +133,8 @@ const createContractProductWithoutWhitelist = (product: SmartContractProduct): S
         priceCurrency,
         minimumSubscriptionInSeconds,
         chainId,
+        pricingTokenAddress,
     } = product
-    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     validateContractProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
@@ -143,7 +143,7 @@ const createContractProductWithoutWhitelist = (product: SmartContractProduct): S
         name,
         beneficiaryAddress,
         transformedPricePerSecond,
-        currencyIndex,
+        pricingTokenAddress,
         minimumSubscriptionInSeconds,
     )
     return send(methodToSend, {
@@ -160,8 +160,8 @@ const createContractProductWithWhitelist = (product: SmartContractProduct): Smar
         priceCurrency,
         minimumSubscriptionInSeconds,
         chainId,
+        pricingTokenAddress,
     } = product
-    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     validateContractProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
@@ -170,7 +170,7 @@ const createContractProductWithWhitelist = (product: SmartContractProduct): Smar
         name,
         beneficiaryAddress,
         transformedPricePerSecond,
-        currencyIndex,
+        pricingTokenAddress,
         minimumSubscriptionInSeconds,
     )
     return send(methodToSend, {

@@ -314,6 +314,7 @@ describe('product utils', () => {
                 currency: 0,
                 state: 0,
                 requiresWhitelist: true,
+                pricingTokenAddress: '0x1337',
             }
             const outProduct = {
                 id: 1,
@@ -325,6 +326,7 @@ describe('product utils', () => {
                 priceCurrency: 'DATA',
                 state: 'NOT_DEPLOYED',
                 requiresWhitelist: true,
+                pricingTokenAddress: '0x1337',
                 chainId: 1337,
             }
 
@@ -400,6 +402,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
         })
 
@@ -418,6 +421,7 @@ describe('product utils', () => {
                 adminFee: true,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
         })
 
@@ -436,6 +440,7 @@ describe('product utils', () => {
                 adminFee: true,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
         })
 
@@ -454,6 +459,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: true,
             })
         })
 
@@ -472,6 +478,7 @@ describe('product utils', () => {
                 adminFee: true,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: true,
             })
         })
 
@@ -492,6 +499,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
         })
 
@@ -510,6 +518,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
             expect(all.validate({
                 type: 'NORMAL',
@@ -525,6 +534,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
         })
 
@@ -543,6 +553,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
         })
 
@@ -561,6 +572,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
             expect(all.validate({
                 type: 'DATAUNION',
@@ -576,6 +588,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
             expect(all.validate({
                 type: 'DATAUNION',
@@ -591,6 +604,7 @@ describe('product utils', () => {
                 adminFee: true,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
         })
 
@@ -610,6 +624,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: true,
             })
             expect(all.validate({
                 type: 'NORMAL',
@@ -626,6 +641,7 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: true,
             })
         })
 
@@ -634,6 +650,7 @@ describe('product utils', () => {
                 type: 'NORMAL',
                 isFree: false,
                 pricePerSecond: '-10',
+                pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
             })).toStrictEqual({
                 name: true,
                 description: true,
@@ -645,11 +662,13 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
             })
             expect(all.validate({
                 type: 'NORMAL',
                 isFree: false,
                 pricePerSecond: '123',
+                pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
             })).toStrictEqual({
                 name: true,
                 description: true,
@@ -661,6 +680,46 @@ describe('product utils', () => {
                 adminFee: false,
                 termsOfUse: false,
                 'contact.email': false,
+                pricingTokenAddress: false,
+            })
+        })
+
+        it('validates pricingTokenAddress', () => {
+            expect(all.validate({
+                type: 'NORMAL',
+                isFree: false,
+                pricePerSecond: '123',
+                pricingTokenAddress: '0x1233',
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: true,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+                pricingTokenAddress: true,
+            })
+            expect(all.validate({
+                type: 'NORMAL',
+                isFree: false,
+                pricePerSecond: '123',
+                pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
+            })).toStrictEqual({
+                name: true,
+                description: true,
+                category: true,
+                imageUrl: true,
+                streams: true,
+                pricePerSecond: false,
+                beneficiaryAddress: true,
+                adminFee: false,
+                termsOfUse: false,
+                'contact.email': false,
+                pricingTokenAddress: false,
             })
         })
     })

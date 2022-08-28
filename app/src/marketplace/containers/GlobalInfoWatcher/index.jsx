@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import type { Hash, Receipt } from '$shared/flowtype/web3-types'
 import { getUserData, logout } from '$shared/modules/user/actions'
-import { getDataPerUsd, setEthereumNetworkId } from '$mp/modules/global/actions'
+import { setEthereumNetworkId } from '$mp/modules/global/actions'
 import {
     addTransaction,
     completeTransaction,
@@ -16,7 +16,6 @@ import TransactionError from '$shared/errors/TransactionError'
 import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import { useBalances } from '$shared/hooks/useBalances'
 import { selectUserData } from '$shared/modules/user/selectors'
-import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
 import type { NumberString } from '$shared/flowtype/common-types'
 import { isEthereumAddress } from '$mp/utils/validate'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
@@ -29,34 +28,11 @@ type Props = {
 
 const LOGIN_POLL_INTERVAL = 1000 * 60 * 5 // 5min
 const ACCOUNT_BALANCE_POLL_INTERVAL = 1000 * 60 * 5 // 5min
-const USD_RATE_POLL_INTERVAL = 1000 * 60 * 60 * 6 // 6h
 const PENDING_TX_WAIT = 1000 // 1s
 
 export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
     const address = useAccountAddress()
-    const chainId = useSelector(selectEthereumNetworkId)
-
-    // Poll usd rate from contract
-    const dataPerUsdRatePollTimeout = useRef()
-    const dataPerUsdRatePoll = useCallback(() => {
-        if (chainId == null) {
-            return
-        }
-
-        clearTimeout(dataPerUsdRatePollTimeout.current)
-        dispatch(getDataPerUsd(chainId))
-
-        dataPerUsdRatePollTimeout.current = setTimeout(dataPerUsdRatePoll, USD_RATE_POLL_INTERVAL)
-    }, [dispatch, chainId])
-
-    useEffect(() => {
-        dataPerUsdRatePoll()
-
-        return () => {
-            clearTimeout(dataPerUsdRatePollTimeout.current)
-        }
-    }, [dataPerUsdRatePoll])
 
     // Poll login info
     const loginPollTimeout = useRef()

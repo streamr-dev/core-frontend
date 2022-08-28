@@ -6,7 +6,6 @@ import BN from 'bignumber.js'
 
 import type { NumberString, TimeUnit, ContractCurrency as Currency } from '$shared/flowtype/common-types'
 import { timeUnits, contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
-import { convert } from '$mp/utils/price'
 import SvgIcon from '$shared/components/SvgIcon'
 import PriceField from '$mp/components/PriceField'
 import SelectField from '$mp/components/SelectField'
@@ -20,7 +19,6 @@ type Props = {
     onTimeUnitChange: (TimeUnit) => void,
     currency: Currency,
     onCurrencyChange: (Currency) => void,
-    dataPerUsd: NumberString,
     disabled: boolean,
     className?: string,
     error?: string,
@@ -42,7 +40,6 @@ const SetPrice = ({
     onTimeUnitChange,
     currency,
     onCurrencyChange: onCurrencyChangeProp,
-    dataPerUsd,
     disabled,
     className,
     error,
@@ -59,9 +56,9 @@ const SetPrice = ({
     }, [onCurrencyChangeProp, currency, disabled])
 
     useEffect(() => {
-        const quoteAmount = convert(price || '0', dataPerUsd, currency, getQuoteCurrencyFor(currency))
+        const quoteAmount = price
         setQuotePrice(quoteAmount)
-    }, [price, dataPerUsd, currency])
+    }, [price, currency])
 
     const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === timeUnit), [timeUnit])
 

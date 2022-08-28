@@ -9,7 +9,6 @@ import docsLinks from '$shared/../docsLinks'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
 import { contractCurrencies as currencies } from '$shared/utils/constants'
-import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
 import Toggle from '$shared/components/Toggle'
@@ -17,7 +16,6 @@ import SvgIcon from '$shared/components/SvgIcon'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 
-import { convert } from '$mp/utils/price'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
@@ -35,7 +33,6 @@ const PriceSelector = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const { publishAttempted, preferredCurrency: currency, setPreferredCurrency: setCurrency } = useContext(EditControllerContext)
     const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
-    const dataPerUsd = useSelector(selectDataPerUsd)
     const { isPending: contractProductLoadPending } = usePending('contractProduct.LOAD')
     const isPublic = isPublished(product)
     const contractProduct = useSelector(selectContractProduct)
@@ -47,9 +44,9 @@ const PriceSelector = ({ disabled }: Props) => {
     }, [updateIsFree])
 
     const onPriceChange = useCallback((p) => {
-        const price = convert(p, dataPerUsd, currency, product.priceCurrency)
+        const price = p
         updatePrice(price, product.priceCurrency, product.timeUnit)
-    }, [updatePrice, dataPerUsd, currency, product.priceCurrency, product.timeUnit])
+    }, [updatePrice, product.priceCurrency, product.timeUnit])
 
     const onTimeUnitChange = useCallback((t) => {
         updatePrice(product.price, product.priceCurrency, t)
@@ -59,9 +56,9 @@ const PriceSelector = ({ disabled }: Props) => {
 
     const onFixPriceChange = useCallback((checked) => {
         const newCurrency = checked ? currencies.USD : currencies.DATA
-        const newPrice = convert(product.price, dataPerUsd, product.priceCurrency, newCurrency)
+        const newPrice = product.price
         updatePrice(newPrice, newCurrency, product.timeUnit)
-    }, [updatePrice, product.price, product.priceCurrency, product.timeUnit, dataPerUsd])
+    }, [updatePrice, product.price, product.timeUnit])
 
     const isFreeProduct = !!product.isFree
     const isDataUnion = isDataUnionProduct(product)
@@ -93,13 +90,12 @@ const PriceSelector = ({ disabled }: Props) => {
                     <SetPrice
                         className={styles.priceSelector}
                         disabled={isFreeProduct || isDisabled}
-                        price={convert(product.price, dataPerUsd, product.priceCurrency, currency)}
+                        price={product.price}
                         onPriceChange={onPriceChange}
                         currency={currency}
                         onCurrencyChange={setCurrency}
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
-                        dataPerUsd={dataPerUsd}
                         error={publishAttempted && !isValid ? message : undefined}
                     />
                     <div

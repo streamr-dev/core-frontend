@@ -50,28 +50,6 @@ describe('GlobalInfoWatcher', () => {
         expect(wrapper.length).toEqual(1)
     })
 
-    it('polls usd rate', () => {
-        jest.spyOn(redux, 'useSelector').mockImplementation(() => 8995)
-        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
-        jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
-            update: () => {},
-        }))
-        const dataPerUsdStub = jest.spyOn(globalActions, 'getDataPerUsd').mockImplementation()
-
-        act(() => {
-            mount(<GlobalInfoWatcher />)
-        })
-
-        expect(dataPerUsdStub).toHaveBeenCalledTimes(1)
-        expect(dataPerUsdStub).toHaveBeenCalledWith(8995)
-
-        // Advance clock for 7h
-        act(() => {
-            jest.advanceTimersByTime(1000 * 60 * 60 * 7)
-        })
-        expect(dataPerUsdStub).toHaveBeenCalledTimes(2)
-    })
-
     it('polls login', () => {
         jest.spyOn(redux, 'useSelector').mockImplementation()
         jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
@@ -90,7 +68,7 @@ describe('GlobalInfoWatcher', () => {
         act(() => {
             jest.advanceTimersByTime(1000 * 60 * 6)
         })
-        expect(userDataStub).toHaveBeenCalledTimes(4)
+        expect(userDataStub).toHaveBeenCalledTimes(3)
     })
 
     it('stops polling on unmount', () => {
@@ -108,7 +86,7 @@ describe('GlobalInfoWatcher', () => {
             wrapper.unmount()
         })
 
-        expect(clockSpy).toHaveBeenCalledTimes(5)
+        expect(clockSpy).toHaveBeenCalledTimes(3)
         expect(Web3Poller.unsubscribe).toHaveBeenCalledTimes(6)
     })
 

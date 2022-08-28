@@ -26,44 +26,14 @@ export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeU
         .dividedBy(toSeconds(1, timeUnit))
 )
 
-/**
- * Convert DATA to USD.
- * @param data Number of DATA to convert.
- * @param dataPerUsd Number of DATA units per 1 USD.
- */
-export const dataToUsd = (data: BN, dataPerUsd: BN): BN => (BN(dataPerUsd).isZero() ? BN(0) : BN(data).dividedBy(dataPerUsd))
-
-/**
- * Convert USD to DATA.
- * @param usd Number of USD to convert.
- * @param dataPerUsd Number of DATA units per 1 USD.
- */
-export const usdToData = (usd: BN, dataPerUsd: BN): BN => BN(usd).multipliedBy(dataPerUsd)
-
-/**
- * Convert amount between fromCurrency and toCurrency.
- * @param amount Amount of units to convert.
- * @param dataPerUsd Number of DATA units per 1 USD.
- * @param fromCurrency Input currency.
- * @param toCurrency Output currency.
- */
-export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: ContractCurrency, toCurrency: ContractCurrency): BN => {
-    if (fromCurrency === toCurrency) {
-        return amount
-    }
-    const calc = fromCurrency === contractCurrencies.DATA ? dataToUsd : usdToData
-    return calc(amount, dataPerUsd)
-}
-
 export const dataForTimeUnits = (
     pricePerSecond: NumberString | BN,
-    dataPerUsd: BN,
     fromCurrency: ContractCurrency,
     timeAmount: number | NumberString | BN,
     timeUnit: TimeUnit,
 ): BN => (
     priceForTimeUnits(
-        convert(pricePerSecond, dataPerUsd, fromCurrency, contractCurrencies.DATA),
+        pricePerSecond,
         timeAmount,
         timeUnit,
     )

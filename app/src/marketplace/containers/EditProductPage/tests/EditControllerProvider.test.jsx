@@ -22,9 +22,6 @@ const mockState = {
     dataUnion: {
         id: 'dataUnionId',
     },
-    global: {
-        dataPerUsd: 10,
-    },
     entities: {
         products: {
             '1': {
@@ -132,6 +129,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 adminFee: '0.3',
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const notificationStub = jest.spyOn(Notification, 'push')
@@ -656,6 +654,7 @@ describe('EditControllerProvider', () => {
                 category: 'test',
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const modalOpenStub = jest.fn(() => Promise.resolve({
@@ -723,6 +722,7 @@ describe('EditControllerProvider', () => {
                 category: 'test',
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const modalOpenStub = jest.fn(() => Promise.resolve({
@@ -801,6 +801,7 @@ describe('EditControllerProvider', () => {
                 category: 'test',
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const modalOpenStub = jest.fn(() => Promise.resolve({
@@ -879,6 +880,7 @@ describe('EditControllerProvider', () => {
                 category: 'test',
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const modalOpenStub = jest.fn(() => Promise.resolve({
@@ -957,6 +959,7 @@ describe('EditControllerProvider', () => {
                 category: 'test',
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const modalOpenStub = jest.fn(() => Promise.resolve({
@@ -1036,6 +1039,7 @@ describe('EditControllerProvider', () => {
                 category: 'test',
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const modalOpenStub = jest.fn(() => Promise.resolve({
@@ -1167,6 +1171,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 adminFee: '0.3',
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const modalOpenStub = jest.fn(() => Promise.resolve(false))
@@ -1210,7 +1215,7 @@ describe('EditControllerProvider', () => {
             sharedConstants.dataUnionMemberLimit = oldLimit
         })
 
-        it('updates and saves beneficiary address if deploy succeeds', async () => {
+        fit('updates and saves beneficiary address if deploy succeeds', async () => {
             const oldLimit = sharedConstants.dataUnionMemberLimit
             sharedConstants.dataUnionMemberLimit = 0
 
@@ -1235,6 +1240,7 @@ describe('EditControllerProvider', () => {
                 imageUrl: 'http://...',
                 streams: ['1', '2'],
                 adminFee: '0.3',
+                pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
 
             const beneficiaryAddress = '0x538a2Fa87E03B280e10C83AA8dD7E5B15B868BD9'
@@ -1298,6 +1304,7 @@ describe('EditControllerProvider', () => {
                 ...product,
             }
             delete expectedProduct.adminFee
+            delete expectedProduct.pricingTokenAddress
 
             expect(currentContext.publishAttempted).toBe(true)
             expect(modalOpenStub).toHaveBeenCalledTimes(1)

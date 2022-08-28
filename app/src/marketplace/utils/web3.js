@@ -42,7 +42,7 @@ export const getDaiAddress = (chainId: number) => {
     }
 }
 
-const getDataAddress = (chainId: number) => {
+export const getDataAddress = (chainId: number) => {
     const { contracts } = getConfigForChain(chainId)
     const dataTokenAddress = contracts.DATA
     if (dataTokenAddress == null) {
@@ -53,7 +53,7 @@ const getDataAddress = (chainId: number) => {
 
 export const getMarketplaceAddress = (chainId: number) => {
     const { contracts } = getConfigForChain(chainId)
-    const marketplaceAddress = contracts.Marketplace
+    const marketplaceAddress = contracts.MarketplaceV3
     if (marketplaceAddress == null) {
         throw new Error('No contract address for Marketplace provided!')
     }

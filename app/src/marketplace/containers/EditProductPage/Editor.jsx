@@ -14,6 +14,7 @@ import ProductDescription from './ProductDescription'
 import ProductChain from './ProductChain'
 import ProductStreams from './ProductStreams'
 import PriceSelector from './PriceSelector'
+import PaymentToken from './PaymentToken'
 import ProductDetails from './ProductDetails'
 import Whitelist from './Whitelist'
 import SharedSecrets from './SharedSecrets'
@@ -44,6 +45,9 @@ const Editor = ({ disabled }: Props) => {
                         <ProductChain disabled={disabled} />
                         <ProductStreams disabled={disabled} />
                         <PriceSelector disabled={disabled} />
+                        {!!isPaid && (
+                            <PaymentToken disabled={disabled} />
+                        )}
                         <ProductDetails disabled={disabled} />
                         {!!isPaid && (
                             <Whitelist disabled={disabled} />

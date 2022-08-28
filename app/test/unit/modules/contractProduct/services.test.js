@@ -36,6 +36,7 @@ describe('Product services', () => {
                 minimumSubscriptionInSeconds: 0,
                 requiresWhitelist: undefined,
                 chainId: 8995,
+                pricingTokenAddress: undefined,
             }).toStrictEqual(result)
             expect(getContractStub).toBeCalled()
             expect(getProductStub).toBeCalled()
@@ -82,6 +83,7 @@ describe('Product services', () => {
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
                 chainId: 8995,
+                pricingTokenAddress: '0x123',
             }
         })
         it('must fail if no id', (done) => {
@@ -129,7 +131,7 @@ describe('Product services', () => {
                 exampleProduct.name,
                 exampleProduct.beneficiaryAddress,
                 mapPriceToContract(exampleProduct.pricePerSecond),
-                1,
+                '0x1234',
                 0,
             )
             expect(createContractProductStub).toHaveBeenNthCalledWith(
@@ -138,7 +140,7 @@ describe('Product services', () => {
                 exampleProduct.name,
                 exampleProduct.beneficiaryAddress,
                 mapPriceToContract(exampleProduct.pricePerSecond),
-                0,
+                '0x1234',
                 0,
             )
         })

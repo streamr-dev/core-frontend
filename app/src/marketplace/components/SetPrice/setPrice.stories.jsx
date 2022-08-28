@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { storiesOf } from '@storybook/react'
-import { withKnobs, number } from '@storybook/addon-knobs'
+import { withKnobs } from '@storybook/addon-knobs'
 import styles from '@sambego/storybook-styles'
 
 import SetPrice from '.'
@@ -35,7 +35,6 @@ const SetPriceController = ({ error, disabled }: SetPriceControllerProps) => {
             onCurrencyChange={setCurrency}
             timeUnit={timeUnit}
             onTimeUnitChange={setTimeUnit}
-            dataPerUsd={number('dataPerUsd', 0.5)}
             error={error}
         />
     )

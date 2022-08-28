@@ -20,6 +20,7 @@ export type ProductType = $Values<typeof productTypes>
 export type PendingChanges = {
     adminFee?: string,
     requiresWhitelist?: boolean,
+    pricingTokenAddress?: Address,
 }
 
 export type TermsOfUse = {
@@ -72,6 +73,7 @@ export type Product = {
     termsOfUse: TermsOfUse,
     contact: ?ContactDetails,
     dataUnionDeployed?: boolean,
+    pricingTokenAddress: Address,
 }
 
 export type ProductSubscriptionId = string
@@ -101,6 +103,7 @@ export type SmartContractProduct = {
     state: $ElementType<Product, 'state'>,
     requiresWhitelist: $ElementType<Product, 'requiresWhitelist'>,
     chainId: number,
+    pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>,
 }
 
 export type WhitelistStatus = 'added' | 'removed' | 'subscribed'

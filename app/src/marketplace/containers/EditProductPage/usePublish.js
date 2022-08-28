@@ -92,6 +92,7 @@ export default function usePublish() {
             beneficiaryAddress,
             priceCurrency,
             requiresWhitelist,
+            pricingTokenAddress,
             ...productDataChanges
         } = pendingChanges || {}
         const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
@@ -297,6 +298,7 @@ export default function usePublish() {
                                 ownerAddress: '', // owner address is not needed when creating
                                 requiresWhitelist,
                                 chainId,
+                                pricingTokenAddress,
                             })
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)

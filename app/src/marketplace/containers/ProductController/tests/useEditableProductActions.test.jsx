@@ -9,9 +9,6 @@ import { Provider as ValidationContextProvider, Context as ValidationContext } f
 import useEditableProductActions from '../useEditableProductActions'
 
 const mockState = {
-    global: {
-        dataPerUsd: 10,
-    },
     dataUnion: {
         id: 'dataUnionId',
     },
