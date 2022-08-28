@@ -11,7 +11,6 @@ import { useController } from '$mp/containers/ProductController'
 import { usePending } from '$shared/hooks/usePending'
 import { purchaseFlowSteps } from '$mp/utils/constants'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
-import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import { transactionStates, DEFAULT_CURRENCY, paymentCurrencies, gasLimits } from '$shared/utils/constants'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import NoBalanceError from '$mp/errors/NoBalanceError'
@@ -51,7 +50,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const nativeTokenName = useNativeTokenName()
     const [step, setStep] = useState(null)
     const [purchaseError, setPurchaseError] = useState(null)
-    const dataPerUsd = useSelector(selectDataPerUsd)
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
     const contractProductError = useSelector(selectContractProductError)
@@ -118,7 +116,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 const { queue: nextQueue } = await purchase({
                     contractProduct,
                     accessPeriod: accessPeriodParams.current,
-                    dataPerUsd,
                     // Buying a DU2 product requires more gas
                     gasIncrease: version === 2 ? gasLimits.BUY_PRODUCT_DU2_INCREASE : 0,
                 })
@@ -134,7 +131,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 }
             }
         })
-    ), [wrapPurchase, purchase, contractProduct, dataPerUsd, isMounted])
+    ), [wrapPurchase, purchase, contractProduct, isMounted])
 
     useEffect(() => {
         if (!queue) { return () => {} }
@@ -252,7 +249,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     if (step === purchaseFlowSteps.ACCESS_PERIOD) {
         return (
             <ChooseAccessPeriodDialog
-                dataPerUsd={dataPerUsd}
                 pricePerSecond={pricePerSecond}
                 priceCurrency={priceCurrency}
                 balances={balances}

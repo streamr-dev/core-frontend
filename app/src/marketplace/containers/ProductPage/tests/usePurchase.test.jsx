@@ -13,11 +13,7 @@ import * as productServices from '$mp/modules/product/services'
 import * as productActions from '$mp/modules/product/actions'
 import usePurchase, { actionsTypes } from '../usePurchase'
 
-const mockState = {
-    global: {
-        dataPerUsd: 10,
-    },
-}
+const mockState = {}
 
 jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
@@ -63,39 +59,6 @@ describe('usePurchase', () => {
             })
         })
 
-        it('throws an error if dataPerUsd is not defined', async () => {
-            let purchase
-            function Test() {
-                purchase = usePurchase()
-                return null
-            }
-
-            mount((
-                <Test />
-            ))
-
-            const contractProduct = {
-                id: '1',
-                pricePerSecond: BN(1),
-                ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
-                beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
-                priceCurrency: 'DATA',
-                minimumSubscriptionInSeconds: '0',
-            }
-
-            await act(async () => {
-                try {
-                    await purchase({
-                        contractProduct,
-                    })
-                    expect(true).toBe(false) // shouldn't come here
-                } catch (e) {
-                    expect(e).toBeTruthy()
-                    expect(e.message).toBe('no dataPerUsd')
-                }
-            })
-        })
-
         it('throws an error if access period is not defined', async () => {
             let purchase
             function Test() {
@@ -120,7 +83,6 @@ describe('usePurchase', () => {
                 try {
                     await purchase({
                         contractProduct,
-                        dataPerUsd: '10',
                     })
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
@@ -161,7 +123,6 @@ describe('usePurchase', () => {
                     await purchase({
                         contractProduct,
                         accessPeriod,
-                        dataPerUsd: '10',
                     })
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
@@ -200,7 +161,6 @@ describe('usePurchase', () => {
                             timeUnit: 'hour',
                             paymentCurrency: paymentCurrencies.ETH,
                         },
-                        dataPerUsd: '10',
                     })
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
@@ -218,7 +178,6 @@ describe('usePurchase', () => {
                             timeUnit: 'hour',
                             paymentCurrency: paymentCurrencies.DAI,
                         },
-                        dataPerUsd: '10',
                     })
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
@@ -262,7 +221,6 @@ describe('usePurchase', () => {
                     await purchase({
                         contractProduct,
                         accessPeriod,
-                        dataPerUsd: '10',
                     })
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
@@ -300,10 +258,8 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.DATA,
                 price: '1234',
             }
-            const dataPerUsd = '10'
             const purchasePrice = priceUtils.dataForTimeUnits(
                 contractProduct.pricePerSecond,
-                dataPerUsd,
                 contractProduct.priceCurrency,
                 accessPeriod.time,
                 accessPeriod.timeUnit,
@@ -315,7 +271,6 @@ describe('usePurchase', () => {
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
-                dataPerUsd,
                 gasIncrease: 123,
             })
 
@@ -447,10 +402,8 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.DATA,
                 price: '1234',
             }
-            const dataPerUsd = '10'
             const purchasePrice = priceUtils.dataForTimeUnits(
                 contractProduct.pricePerSecond,
-                dataPerUsd,
                 contractProduct.priceCurrency,
                 accessPeriod.time,
                 accessPeriod.timeUnit,
@@ -462,7 +415,6 @@ describe('usePurchase', () => {
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
-                dataPerUsd,
                 gasIncrease: 123,
             })
 
@@ -565,10 +517,8 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.DATA,
                 price: '1234',
             }
-            const dataPerUsd = '10'
             const purchasePrice = priceUtils.dataForTimeUnits(
                 contractProduct.pricePerSecond,
-                dataPerUsd,
                 contractProduct.priceCurrency,
                 accessPeriod.time,
                 accessPeriod.timeUnit,
@@ -580,7 +530,6 @@ describe('usePurchase', () => {
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
-                dataPerUsd,
                 gasIncrease: 123,
             })
 
@@ -674,7 +623,6 @@ describe('usePurchase', () => {
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
-                dataPerUsd: '10',
                 gasIncrease: 123,
             })
 
@@ -813,7 +761,6 @@ describe('usePurchase', () => {
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
-                dataPerUsd: '10',
                 gasIncrease: 123,
             })
 
@@ -923,7 +870,6 @@ describe('usePurchase', () => {
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
-                dataPerUsd: '10',
                 gasIncrease: 123,
             })
 
@@ -1016,7 +962,6 @@ describe('usePurchase', () => {
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
-                dataPerUsd: '10',
                 gasIncrease: 123,
             })
 

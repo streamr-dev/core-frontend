@@ -560,7 +560,6 @@ story('Marketplace/NoBalanceDialog')
 story('Marketplace/ChooseAccessPeriodDialog')
     .add('default', () => (
         <ChooseAccessPeriodDialog
-            dataPerUsd={BN(10)}
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             balances={{
@@ -574,7 +573,6 @@ story('Marketplace/ChooseAccessPeriodDialog')
     ))
     .add('default (iPhone)', () => (
         <ChooseAccessPeriodDialog
-            dataPerUsd={BN(10)}
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             balances={{
@@ -592,7 +590,6 @@ story('Marketplace/ChooseAccessPeriodDialog')
     })
     .add('initial values', () => (
         <ChooseAccessPeriodDialog
-            dataPerUsd={BN(10)}
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             balances={{

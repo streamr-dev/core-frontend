@@ -131,10 +131,7 @@ export type Web3State = {
 
 // global things
 export type GlobalState = {
-    dataPerUsd: ?NumberString,
     networkId: ?string,
-    fetchingDataPerUsdRate: boolean,
-    dataPerUsdRateError: ?TransactionError,
 }
 
 // transactions

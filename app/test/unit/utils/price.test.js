@@ -49,24 +49,22 @@ describe('price utils', () => {
     describe('dataForTimeUnits', () => {
         it('converts from USD to DATA', () => {
             const pricePerSecond = 2
-            const dataPerUsd = 10
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 0, 'second')).toStrictEqual(BN(0))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'second')).toStrictEqual(BN(140))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'minute')).toStrictEqual(BN(8400))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'hour')).toStrictEqual(BN(504000))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'day')).toStrictEqual(BN(12096000))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'USD', 7, 'week')).toStrictEqual(BN(84672000))
+            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 0, 'second')).toStrictEqual(BN(0))
+            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'second')).toStrictEqual(BN(140))
+            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'minute')).toStrictEqual(BN(8400))
+            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'hour')).toStrictEqual(BN(504000))
+            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'day')).toStrictEqual(BN(12096000))
+            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'week')).toStrictEqual(BN(84672000))
         })
 
         it('does not convert DATA', () => {
             const pricePerSecond = 2
-            const dataPerUsd = 10
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 0, 'second')).toStrictEqual(BN(0))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'second')).toStrictEqual(BN(14))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'minute')).toStrictEqual(BN(840))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'hour')).toStrictEqual(BN(50400))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'day')).toStrictEqual(BN(1209600))
-            expect(all.dataForTimeUnits(pricePerSecond, dataPerUsd, 'DATA', 7, 'week')).toStrictEqual(BN(8467200))
+            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 0, 'second')).toStrictEqual(BN(0))
+            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'second')).toStrictEqual(BN(14))
+            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'minute')).toStrictEqual(BN(840))
+            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'hour')).toStrictEqual(BN(50400))
+            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'day')).toStrictEqual(BN(1209600))
+            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'week')).toStrictEqual(BN(8467200))
         })
     })
 

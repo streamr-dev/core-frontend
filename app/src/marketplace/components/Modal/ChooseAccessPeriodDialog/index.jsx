@@ -9,7 +9,7 @@ import Text from '$ui/Text'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } from '$mp/utils/web3'
-import { dataToUsd, formatDecimals, dataForTimeUnits } from '$mp/utils/price'
+import { formatDecimals, dataForTimeUnits } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
 import type { Product, AccessPeriod } from '$mp/flowtype/product-types'
 import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
@@ -26,7 +26,6 @@ export type Balances = {
 }
 
 export type Props = {
-    dataPerUsd: ?NumberString,
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
     balances: Balances,
@@ -48,7 +47,6 @@ export const ChooseAccessPeriodDialog = ({
     balances,
     onNext,
     onCancel,
-    dataPerUsd,
     disabled,
     initialValues,
 }: Props) => {
@@ -67,7 +65,6 @@ export const ChooseAccessPeriodDialog = ({
     const [priceInData, priceInUsd] = useMemo(() => {
         const inData = dataForTimeUnits(
             pricePerSecond,
-            dataPerUsd,
             priceCurrency,
             time,
             timeUnit,
@@ -75,9 +72,9 @@ export const ChooseAccessPeriodDialog = ({
 
         return [
             inData,
-            dataToUsd(inData, dataPerUsd),
+            inData,
         ]
-    }, [dataPerUsd, priceCurrency, pricePerSecond, time, timeUnit])
+    }, [priceCurrency, pricePerSecond, time, timeUnit])
 
     const isValidTime = useMemo(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
 
@@ -96,7 +93,6 @@ export const ChooseAccessPeriodDialog = ({
     }, [paymentCurrency, priceInUsd, currentPrice])
 
     const setExternalPrices = useDebounced(useCallback(async ({
-        dataPerUsd: perUsd,
         priceInData: inData,
         priceInUsd: inUsd,
         paymentCurrency: currency,
@@ -108,7 +104,6 @@ export const ChooseAccessPeriodDialog = ({
         if (currency === paymentCurrencies.ETH) {
             price = await uniswapDATAtoETH(inData.toString(), true)
             usdEstimate = await uniswapETHtoDATA(price.toString(), true)
-            usdEstimate = usdEstimate.dividedBy(Number(perUsd) || 1)
         } else if (currency === paymentCurrencies.DAI) {
             price = await uniswapDATAtoDAI(inData.toString(), true)
             usdEstimate = price
@@ -133,12 +128,11 @@ export const ChooseAccessPeriodDialog = ({
 
     useEffect(() => {
         setExternalPrices({
-            dataPerUsd,
             priceInData,
             priceInUsd,
             paymentCurrency,
         })
-    }, [setExternalPrices, dataPerUsd, priceInData, paymentCurrency, priceInUsd])
+    }, [setExternalPrices, priceInData, paymentCurrency, priceInUsd])
 
     const currentBalance = useMemo(() => (
         (balances && balances[paymentCurrency]) ? formatDecimals(balances[paymentCurrency], paymentCurrency) : '-'

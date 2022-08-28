@@ -118,7 +118,7 @@
         "@storybook/addon-viewport": "^5.3.21",
         "@storybook/addons": "^5.3.21",
         "@storybook/react": "^5.3.21",
-        "@streamr/config": "^2.1.1",
+        "@streamr/config": "^2.3.0",
         "@streamr/po-loader": "^1.0.0",
         "@streamr/streamr-icons": "^0.1.9",
         "@streamr/streamr-layout": "^2.5.2",

@@ -59,6 +59,7 @@ export const mapProductFromContract = (id: ProductId, result: any, chainId: numb
         state: Object.keys(productStates)[result.state],
         requiresWhitelist: result.requiresWhitelist,
         chainId,
+        pricingTokenAddress: result.pricingTokenAddress,
     }
 }
 
@@ -147,8 +148,10 @@ export const validate = (product: Product): Object => {
 
     if (isPaid) {
         invalidFields.pricePerSecond = (!isPriceValid(product.pricePerSecond))
+        invalidFields.pricingTokenAddress = (!isEthereumAddress(product.pricingTokenAddress))
     } else {
         invalidFields.pricePerSecond = false
+        invalidFields.pricingTokenAddress = false
     }
 
     if (product.contact) {

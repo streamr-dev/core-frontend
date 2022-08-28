@@ -144,7 +144,12 @@ const EditorNav = () => {
             id: 'price',
             heading: 'Set price',
             status: priceStatus,
-        }, {
+        },
+        ...includeIf(!!isPaid, [{
+            id: 'pricingToken',
+            heading: 'Payment token',
+            status: getStatus('pricingTokenAddress'),
+        }]), {
             id: 'details',
             heading: 'Details',
             status: detailsStatus,
