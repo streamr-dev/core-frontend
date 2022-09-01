@@ -8,7 +8,7 @@ import Buttons from '$shared/components/Buttons'
 import Text from '$ui/Text'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
-import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } from '$mp/utils/web3'
+import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA, getDataAddress } from '$mp/utils/web3'
 import { formatDecimals, dataForTimeUnits } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
 import type { Product, AccessPeriod } from '$mp/flowtype/product-types'
@@ -28,6 +28,8 @@ export type Balances = {
 export type Props = {
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
     priceCurrency: $ElementType<Product, 'priceCurrency'>,
+    pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>,
+    chainId: number,
     balances: Balances,
     onNext: (AccessPeriod) => Promise<void>,
     onCancel: () => void,
@@ -44,6 +46,8 @@ const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month]
 export const ChooseAccessPeriodDialog = ({
     pricePerSecond,
     priceCurrency,
+    pricingTokenAddress,
+    chainId,
     balances,
     onNext,
     onCancel,
@@ -61,6 +65,17 @@ export const ChooseAccessPeriodDialog = ({
     const [loading, setLoading] = useState(false)
     const [currentPrice, setCurrentPrice] = useState('-')
     const [approxUsd, setApproxUsd] = useState('-')
+
+    const availableCurrencies = useMemo(() => {
+        if (pricingTokenAddress === getDataAddress(chainId)) {
+            return [
+                paymentCurrencies.DATA,
+                paymentCurrencies.ETH,
+                paymentCurrencies.DAI,
+            ]
+        }
+        return [paymentCurrencies.DATA]
+    }, [pricingTokenAddress, chainId])
 
     const [priceInData, priceInUsd] = useMemo(() => {
         const inData = dataForTimeUnits(
@@ -276,6 +291,7 @@ export const ChooseAccessPeriodDialog = ({
                     <CurrencySelector
                         onChange={onPaymentCurrencyChange}
                         paymentCurrency={paymentCurrency}
+                        availableCurrencies={availableCurrencies}
                     />
                     {paymentCurrency !== paymentCurrencies.DATA && (
                         <p className={styles.uniswapMsg}>

@@ -3,24 +3,19 @@
 import React from 'react'
 import cx from 'classnames'
 
-import { paymentCurrencies } from '$shared/utils/constants'
 import type { PaymentCurrency } from '$shared/flowtype/common-types'
 import SvgIcon from '$shared/components/SvgIcon'
+import { paymentCurrencies } from '$shared/utils/constants'
 
 import styles from './currencySelector.pcss'
 
 type Props = {
     onChange: (currency: PaymentCurrency) => void,
     paymentCurrency: PaymentCurrency,
+    availableCurrencies: Array<paymentCurrencies>,
 }
 
-const availableCurrencies = [
-    paymentCurrencies.DATA,
-    paymentCurrencies.ETH,
-    paymentCurrencies.DAI,
-]
-
-const CurrencySelector = ({ onChange, paymentCurrency }: Props) => (
+const CurrencySelector = ({ onChange, paymentCurrency, availableCurrencies }: Props) => (
     <div className={styles.root}>
         {availableCurrencies.map((currency, index) => // eslint-disable-next-line react/no-array-index-key
             <CurrencyButton key={index} currency={currency} onChange={onChange} selected={currency === paymentCurrency} />)}

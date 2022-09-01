@@ -562,6 +562,8 @@ story('Marketplace/ChooseAccessPeriodDialog')
         <ChooseAccessPeriodDialog
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
+            pricingTokenAddress="0x123"
+            chainId={1}
             balances={{
                 ETH: BN(10),
                 DATA: BN(200),
@@ -575,6 +577,8 @@ story('Marketplace/ChooseAccessPeriodDialog')
         <ChooseAccessPeriodDialog
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
+            pricingTokenAddress="0x123"
+            chainId={1}
             balances={{
                 ETH: BN(10),
                 DATA: BN(200),
@@ -592,6 +596,8 @@ story('Marketplace/ChooseAccessPeriodDialog')
         <ChooseAccessPeriodDialog
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
+            pricingTokenAddress="0x123"
+            chainId={1}
             balances={{
                 ETH: BN(10),
                 DATA: BN(200),

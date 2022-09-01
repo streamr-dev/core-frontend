@@ -118,7 +118,7 @@ const TokenSelector = ({ disabled }: Props) => {
                         disabled={disabled}
                     />
                     DATA token
-                    <Icon name="DATA" />
+                    <Icon name="DATAColor" />
                 </RadioContainer>
             </Item>
             <Item>

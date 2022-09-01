@@ -251,6 +251,8 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <ChooseAccessPeriodDialog
                 pricePerSecond={pricePerSecond}
                 priceCurrency={priceCurrency}
+                pricingTokenAddress={contractProduct.pricingTokenAddress}
+                chainId={chainId}
                 balances={balances}
                 onCancel={onClose}
                 onNext={onSetAccessPeriod}

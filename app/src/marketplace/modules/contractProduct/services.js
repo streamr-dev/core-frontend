@@ -15,7 +15,6 @@ import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import { marketplaceContract, getMarketplaceAbiAndAddress } from '$mp/utils/web3'
-import { contractCurrencies as currencies } from '$shared/utils/constants'
 import { getContractEvents } from '$shared/utils/contractEvents'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 
@@ -194,8 +193,8 @@ export const updateContractProduct = (product: SmartContractProduct, redeploy: b
         priceCurrency,
         minimumSubscriptionInSeconds,
         chainId,
+        pricingTokenAddress,
     } = product
-    const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
     validateContractProductPricePerSecond(pricePerSecond)
     validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
@@ -204,7 +203,7 @@ export const updateContractProduct = (product: SmartContractProduct, redeploy: b
         name,
         beneficiaryAddress,
         transformedPricePerSecond,
-        currencyIndex,
+        pricingTokenAddress,
         minimumSubscriptionInSeconds,
         redeploy,
     )
