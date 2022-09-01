@@ -86,6 +86,14 @@ export const daiTokenContractMethods = (usePublicNode: boolean = false, chainId:
     return getContract(instance, usePublicNode, chainId).methods
 }
 
+export const erc20TokenContractMethods = (address: Address, usePublicNode: boolean = false, chainId: number) => {
+    const instance = {
+        abi: tokenAbi,
+        address,
+    }
+    return getContract(instance, usePublicNode, chainId).methods
+}
+
 export const uniswapAdaptorContractMethods = (usePublicNode: boolean = false, chainId: number) => {
     const { contracts } = getConfigForChain(chainId)
     const uniswapAdapterAddress = contracts.UniswapAdapter
