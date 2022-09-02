@@ -12,9 +12,9 @@ import ActionQueue from '$mp/utils/actionQueue'
 import {
     buyProduct,
     getMyDaiAllowance,
-    getMyDataAllowance,
     setMyDaiAllowance,
-    setMyDataAllowance,
+    getMyTokenAllowance,
+    setMyTokenAllowance,
 } from '$mp/modules/product/services'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import { addTransaction } from '$mp/modules/transactions/actions'
@@ -40,6 +40,10 @@ export default function usePurchase() {
     return useCallback(async ({ contractProduct, accessPeriod, gasIncrease }: Purchase = {}) => {
         if (!contractProduct) {
             throw new Error('no product')
+        }
+
+        if (!contractProduct.pricingTokenAddress) {
+            throw new Error('no pricingTokenAddress')
         }
 
         const { paymentCurrency, time, timeUnit, price } = accessPeriod || {}
@@ -80,7 +84,7 @@ export default function usePurchase() {
         if (isDaiPurchase) {
             allowance = await getMyDaiAllowance(chainId)
         } else if (!isEthPurchase) {
-            allowance = await getMyDataAllowance(chainId)
+            allowance = await getMyTokenAllowance(contractProduct.pricingTokenAddress, chainId)
         }
 
         allowance = BN(allowance || 0)
@@ -129,7 +133,7 @@ export default function usePurchase() {
                 id: actionsTypes.RESET_DATA_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyDataAllowance('0', chainId)
+                        return setMyTokenAllowance('0', contractProduct.pricingTokenAddress, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.RESET_DATA_ALLOWANCE))
@@ -185,7 +189,7 @@ export default function usePurchase() {
                 id: actionsTypes.SET_DATA_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyDataAllowance(purchasePrice, chainId)
+                        return setMyTokenAllowance(purchasePrice, contractProduct.pricingTokenAddress, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.SET_DATA_ALLOWANCE))
