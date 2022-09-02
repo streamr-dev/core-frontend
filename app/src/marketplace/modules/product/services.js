@@ -5,9 +5,16 @@ import getWeb3 from '$utils/web3/getWeb3'
 import { get, put, post } from '$shared/utils/api'
 
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import type { SmartContractTransaction, SmartContractCall, Hash } from '$shared/flowtype/web3-types'
+import type { SmartContractTransaction, SmartContractCall, Hash, Address } from '$shared/flowtype/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
-import { marketplaceContract, dataTokenContractMethods, daiTokenContractMethods, uniswapAdaptorContractMethods, getDaiAddress } from '$mp/utils/web3'
+import {
+    marketplaceContract,
+    dataTokenContractMethods,
+    daiTokenContractMethods,
+    uniswapAdaptorContractMethods,
+    getDaiAddress,
+    erc20TokenContractMethods,
+} from '$mp/utils/web3'
 import type { NumberString, ApiResult, PaymentCurrency } from '$shared/flowtype/common-types'
 import type { Product, ProductId, Subscription, ProductType } from '$mp/flowtype/product-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
@@ -203,6 +210,26 @@ export const setMyDaiAllowance = (amount: string | BN, chainId: number): SmartCo
 
     const { uniswapAdaptorContractAddress } = getCoreConfig()
     const method = daiTokenContractMethods(false, chainId).approve(uniswapAdaptorContractAddress, toAtto(amount).toFixed(0))
+    return send(method, {
+        network: chainId,
+    })
+}
+
+export const getMyTokenAllowance = (tokenAddress: Address, chainId: number): SmartContractCall<BN> => (
+    getDefaultWeb3Account()
+        .then((myAddress) =>
+            call(erc20TokenContractMethods(tokenAddress, false, chainId).allowance(myAddress, marketplaceContract(false, chainId).options.address)))
+        .then(fromAtto)
+)
+
+export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, chainId: number): SmartContractTransaction => {
+    if (BN(amount).isLessThan(0)) {
+        throw new Error('Amount must be non-negative!')
+    }
+
+    const method = erc20TokenContractMethods(tokenAddress, false, chainId)
+        .approve(marketplaceContract(false, chainId).options.address, toAtto(amount).toFixed(0))
+
     return send(method, {
         network: chainId,
     })
