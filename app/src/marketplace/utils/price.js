@@ -26,19 +26,6 @@ export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeU
         .dividedBy(toSeconds(1, timeUnit))
 )
 
-export const dataForTimeUnits = (
-    pricePerSecond: NumberString | BN,
-    fromCurrency: ContractCurrency,
-    timeAmount: number | NumberString | BN,
-    timeUnit: TimeUnit,
-): BN => (
-    priceForTimeUnits(
-        pricePerSecond,
-        timeAmount,
-        timeUnit,
-    )
-)
-
 /**
  * Make sure the amount is a non-negative number.
  * @param amount Number to sanitize.

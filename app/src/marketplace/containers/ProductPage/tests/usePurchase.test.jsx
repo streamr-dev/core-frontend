@@ -116,7 +116,6 @@ describe('usePurchase', () => {
                 timeUnit: 'hour',
                 paymentCurrency: paymentCurrencies.DATA,
             }
-            jest.spyOn(priceUtils, 'dataForTimeUnits').mockImplementation(() => undefined)
 
             await act(async () => {
                 try {
@@ -258,9 +257,8 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.DATA,
                 price: '1234',
             }
-            const purchasePrice = priceUtils.dataForTimeUnits(
+            const purchasePrice = priceUtils.priceForTimeUnits(
                 contractProduct.pricePerSecond,
-                contractProduct.priceCurrency,
                 accessPeriod.time,
                 accessPeriod.timeUnit,
             )
@@ -402,9 +400,8 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.DATA,
                 price: '1234',
             }
-            const purchasePrice = priceUtils.dataForTimeUnits(
+            const purchasePrice = priceUtils.priceForTimeUnits(
                 contractProduct.pricePerSecond,
-                contractProduct.priceCurrency,
                 accessPeriod.time,
                 accessPeriod.timeUnit,
             )
@@ -517,9 +514,8 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.DATA,
                 price: '1234',
             }
-            const purchasePrice = priceUtils.dataForTimeUnits(
+            const purchasePrice = priceUtils.priceForTimeUnits(
                 contractProduct.pricePerSecond,
-                contractProduct.priceCurrency,
                 accessPeriod.time,
                 accessPeriod.timeUnit,
             )

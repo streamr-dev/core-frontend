@@ -96,8 +96,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             })
     }, [account])
 
-    const { pricePerSecond, priceCurrency } = contractProduct || {}
-
     const onSetAccessPeriod = useCallback(async (accessPeriod: AccessPeriod) => {
         accessPeriodParams.current = accessPeriod
 
@@ -249,8 +247,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     if (step === purchaseFlowSteps.ACCESS_PERIOD) {
         return (
             <ChooseAccessPeriodDialog
-                pricePerSecond={pricePerSecond}
-                priceCurrency={priceCurrency}
+                pricePerSecond={contractProduct.pricePerSecond}
                 pricingTokenAddress={contractProduct.pricingTokenAddress}
                 chainId={chainId}
                 balances={balances}

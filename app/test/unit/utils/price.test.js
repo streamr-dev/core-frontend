@@ -46,28 +46,6 @@ describe('price utils', () => {
         })
     })
 
-    describe('dataForTimeUnits', () => {
-        it('converts from USD to DATA', () => {
-            const pricePerSecond = 2
-            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 0, 'second')).toStrictEqual(BN(0))
-            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'second')).toStrictEqual(BN(140))
-            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'minute')).toStrictEqual(BN(8400))
-            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'hour')).toStrictEqual(BN(504000))
-            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'day')).toStrictEqual(BN(12096000))
-            expect(all.dataForTimeUnits(pricePerSecond, 'USD', 7, 'week')).toStrictEqual(BN(84672000))
-        })
-
-        it('does not convert DATA', () => {
-            const pricePerSecond = 2
-            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 0, 'second')).toStrictEqual(BN(0))
-            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'second')).toStrictEqual(BN(14))
-            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'minute')).toStrictEqual(BN(840))
-            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'hour')).toStrictEqual(BN(50400))
-            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'day')).toStrictEqual(BN(1209600))
-            expect(all.dataForTimeUnits(pricePerSecond, 'DATA', 7, 'week')).toStrictEqual(BN(8467200))
-        })
-    })
-
     describe('pricePerSecondFromTimeUnit', () => {
         it('calculates PPS for time units', () => {
             expect(all.pricePerSecondFromTimeUnit(0, 'second')).toStrictEqual(BN(0))
@@ -77,24 +55,6 @@ describe('price utils', () => {
             expect(all.pricePerSecondFromTimeUnit(1, 'day').toFixed(20)).toStrictEqual('0.00001157407407407407')
             expect(all.pricePerSecondFromTimeUnit(1, 'week').toFixed(20)).toStrictEqual('0.00000165343915343915')
             expect(() => all.pricePerSecondFromTimeUnit(0, 'asdf')).toThrow()
-        })
-    })
-
-    describe('dataToUsd', () => {
-        it('converts currency with given rate', () => {
-            expect(all.dataToUsd(10, 0)).toStrictEqual(BN(0))
-            expect(all.dataToUsd(0, 10)).toStrictEqual(BN(0))
-            expect(all.dataToUsd(1, 0.5)).toStrictEqual(BN(2))
-            expect(all.dataToUsd(1, 4)).toStrictEqual(BN(0.25))
-        })
-    })
-
-    describe('usdToData', () => {
-        it('converts currency with given rate', () => {
-            expect(all.usdToData(10, 0)).toStrictEqual(BN(0))
-            expect(all.usdToData(0, 10)).toStrictEqual(BN(0))
-            expect(all.usdToData(1, 0.5)).toStrictEqual(BN(0.5))
-            expect(all.usdToData(10, 80)).toStrictEqual(BN(800))
         })
     })
 
