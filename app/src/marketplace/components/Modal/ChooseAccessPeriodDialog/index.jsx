@@ -9,7 +9,7 @@ import Text from '$ui/Text'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA, getDataAddress } from '$mp/utils/web3'
-import { formatDecimals, dataForTimeUnits } from '$mp/utils/price'
+import { formatDecimals, priceForTimeUnits } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
 import type { Product, AccessPeriod } from '$mp/flowtype/product-types'
 import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
@@ -17,6 +17,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import { useDebounced } from '$shared/hooks/wrapCallback'
+import { getUsdRate } from '$shared/utils/coingecko'
 import CurrencySelector from './CurrencySelector'
 
 import styles from './chooseAccessPeriod.pcss'
@@ -27,7 +28,6 @@ export type Balances = {
 
 export type Props = {
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
-    priceCurrency: $ElementType<Product, 'priceCurrency'>,
     pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>,
     chainId: number,
     balances: Balances,
@@ -45,7 +45,6 @@ const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month]
 /* eslint-disable object-curly-newline */
 export const ChooseAccessPeriodDialog = ({
     pricePerSecond,
-    priceCurrency,
     pricingTokenAddress,
     chainId,
     balances,
@@ -65,6 +64,7 @@ export const ChooseAccessPeriodDialog = ({
     const [loading, setLoading] = useState(false)
     const [currentPrice, setCurrentPrice] = useState('-')
     const [approxUsd, setApproxUsd] = useState('-')
+    const [priceInUsd, setPriceInUsd] = useState(null)
 
     const availableCurrencies = useMemo(() => {
         if (pricingTokenAddress === getDataAddress(chainId)) {
@@ -77,19 +77,25 @@ export const ChooseAccessPeriodDialog = ({
         return [paymentCurrencies.DATA]
     }, [pricingTokenAddress, chainId])
 
-    const [priceInData, priceInUsd] = useMemo(() => {
-        const inData = dataForTimeUnits(
+    const priceInData = useMemo(() => {
+        const price = priceForTimeUnits(
             pricePerSecond,
-            priceCurrency,
             time,
             timeUnit,
         )
 
-        return [
-            inData,
-            inData,
-        ]
-    }, [priceCurrency, pricePerSecond, time, timeUnit])
+        return price
+    }, [pricePerSecond, time, timeUnit])
+
+    useEffect(() => {
+        const load = async () => {
+            const rate = await getUsdRate(pricingTokenAddress, chainId)
+            if (rate !== 0) {
+                setPriceInUsd(priceInData * rate)
+            }
+        }
+        load()
+    }, [priceInData, pricingTokenAddress, chainId])
 
     const isValidTime = useMemo(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
 

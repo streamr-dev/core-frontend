@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
 
 import type { SmartContractProduct, AccessPeriod } from '$mp/flowtype/product-types'
-import { dataForTimeUnits } from '$mp/utils/price'
+import { priceForTimeUnits } from '$mp/utils/price'
 import { validateBalanceForPurchase } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
 import ActionQueue from '$mp/utils/actionQueue'
@@ -66,11 +66,10 @@ export default function usePurchase() {
 
             purchasePrice = price
         } else {
-            const { pricePerSecond, priceCurrency } = contractProduct
+            const { pricePerSecond } = contractProduct
 
-            purchasePrice = dataForTimeUnits(
+            purchasePrice = priceForTimeUnits(
                 pricePerSecond,
-                priceCurrency,
                 time,
                 timeUnit,
             )
