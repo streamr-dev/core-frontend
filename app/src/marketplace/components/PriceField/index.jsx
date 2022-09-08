@@ -6,18 +6,19 @@ import cx from 'classnames'
 import Text from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import { useLastError, type LastErrorProps } from '$shared/hooks/useLastError'
+import { getTokenInformation } from '$mp/utils/web3'
 
 import styles from './priceField.pcss'
 
 type Props = LastErrorProps & {
-    currency: string,
+    pricingTokenAddress: string,
     className?: string,
     value?: string | number,
     onChange?: ?(SyntheticInputEvent<EventTarget>) => void,
 }
 
 const PriceField = ({
-    currency,
+    pricingTokenAddress,
     className,
     value: valueProp,
     onChange: onChangeProp,
@@ -25,10 +26,19 @@ const PriceField = ({
     error,
     ...inputProps
 }: Props) => {
+    const [symbol, setSymbol] = useState('DATA')
     const { hasError, error: lastError } = useLastError({
         error,
         isProcessing,
     })
+
+    useEffect(() => {
+        const load = async () => {
+            const info = await getTokenInformation(pricingTokenAddress)
+            setSymbol(info.symbol)
+        }
+        load()
+    }, [pricingTokenAddress])
 
     const [value, setValue] = useState(valueProp)
 
@@ -61,7 +71,7 @@ const PriceField = ({
                     {...inputProps}
                 />
                 <div>
-                    <span className={styles.currency}>{currency}</span>
+                    <span className={styles.currency}>{symbol}</span>
                 </div>
             </div>
             {hasError && !!lastError && (

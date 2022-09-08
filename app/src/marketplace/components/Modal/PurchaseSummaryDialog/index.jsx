@@ -16,6 +16,7 @@ export type Props = {
     time: string,
     timeUnit: TimeUnit,
     paymentCurrency: PaymentCurrency,
+    tokenSymbol: string,
     price: BN,
     approxUsd: BN,
     waiting?: boolean,
@@ -30,6 +31,7 @@ export const PurchaseSummaryDialog = ({
     timeUnit,
     price: priceProp,
     paymentCurrency,
+    tokenSymbol,
     approxUsd: approxUsdProp,
     waiting,
     onCancel,
@@ -72,7 +74,7 @@ export const PurchaseSummaryDialog = ({
                     <span className={styles.priceValue}>
                         {price}
                         <span className={styles.priceCurrency}>
-                            {paymentCurrency}
+                            {paymentCurrency === contractCurrencies.PRODUCT_DEFINED ? tokenSymbol : paymentCurrency}
                         </span>
                     </span>
                     <p className={styles.usdEquiv}>

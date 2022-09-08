@@ -563,6 +563,7 @@ story('Marketplace/ChooseAccessPeriodDialog')
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             pricingTokenAddress="0x123"
+            tokenSymbol="TEST"
             chainId={1}
             balances={{
                 ETH: BN(10),
@@ -578,6 +579,7 @@ story('Marketplace/ChooseAccessPeriodDialog')
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             pricingTokenAddress="0x123"
+            tokenSymbol="TEST"
             chainId={1}
             balances={{
                 ETH: BN(10),
@@ -597,6 +599,7 @@ story('Marketplace/ChooseAccessPeriodDialog')
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             pricingTokenAddress="0x123"
+            tokenSymbol="TEST"
             chainId={1}
             balances={{
                 ETH: BN(10),
@@ -621,6 +624,7 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
+            tokenSymbol="TEST"
             time={text('Time', '24')}
             timeUnit={select('Time unit', timeUnits, 'hour')}
             approxUsd="0.11"
@@ -634,6 +638,7 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
+            tokenSymbol="TEST"
             time="24"
             timeUnit="hour"
             approxUsd="0.11"
@@ -651,6 +656,7 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
+            tokenSymbol="TEST"
             time="24"
             timeUnit="hour"
             approxUsd="0.11"
@@ -665,6 +671,7 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
+            tokenSymbol="TEST"
             time="24"
             timeUnit="hour"
             approxUsd="0.11"

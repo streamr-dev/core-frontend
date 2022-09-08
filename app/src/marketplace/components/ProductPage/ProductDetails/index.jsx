@@ -6,6 +6,7 @@ import cx from 'classnames'
 import Button from '$shared/components/Button'
 import { isPaidProduct } from '$mp/utils/product'
 import type { Product, Subscription } from '$mp/flowtype/product-types'
+import type { Address } from '$shared/flowtype/web3-types'
 import PaymentRate from '$mp/components/PaymentRate'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
 import { timeUnits, productStates } from '$shared/utils/constants'
@@ -19,6 +20,7 @@ type Props = {
     product: Product,
     isValidSubscription: boolean,
     productSubscription?: Subscription,
+    pricingTokenAddress: Address,
     onPurchase: () => void | Promise<void>,
     isPurchasing?: boolean,
     isWhitelisted?: ?boolean,
@@ -50,6 +52,7 @@ const ProductDetails = ({
     product,
     isValidSubscription,
     productSubscription,
+    pricingTokenAddress,
     onPurchase,
     isPurchasing,
     isWhitelisted,
@@ -73,7 +76,8 @@ const ProductDetails = ({
                                 <PaymentRate
                                     className={styles.price}
                                     amount={product.pricePerSecond}
-                                    currency={product.priceCurrency}
+                                    pricingTokenAddress={pricingTokenAddress}
+                                    chainId={getChainIdFromApiString(product.chain)}
                                     timeUnit={timeUnits.hour}
                                 />
                             </div>

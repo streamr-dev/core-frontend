@@ -21,6 +21,7 @@ import ProductPageDataUnionStats from '$mp/containers/ProductPage/DataUnionStats
 import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
+import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import usePending from '$shared/hooks/usePending'
 import ProductPage from '$shared/components/ProductPage'
 import { MD, XL } from '$shared/utils/styled'
@@ -32,6 +33,7 @@ import { useController } from '../ProductController'
 const Hero = () => {
     const { state: product } = useEditableState()
     const isDataUnion = !!(product && isDataUnionProduct(product))
+    const contractProduct = useSelector(selectContractProduct)
     const { preview, createPreview } = useFilePreview()
 
     const uploadedImage = product.newImageToUpload
@@ -54,6 +56,7 @@ const Hero = () => {
             rightContent={
                 <ProductDetails
                     product={product}
+                    pricingTokenAddress={contractProduct && contractProduct.pricingTokenAddress}
                     isValidSubscription={false}
                     productSubscription={undefined}
                     onPurchase={() => {}}

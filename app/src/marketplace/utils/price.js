@@ -96,11 +96,18 @@ export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
  * @param pricePerSecond Price per second.
  * @param currency Currency.
  * @param timeUnit TimeUnit to use. If omitted, the most relevant time unit is calculated.
+ * @param symbol Symbol to use if currency === PRODUCT_DEFINED.
  */
-export const formatPrice = (pricePerSecond: BN, currency: PaymentCurrency | ContractCurrency, timeUnit?: TimeUnit): string => {
+export const formatPrice = (pricePerSecond: BN, currency: PaymentCurrency | ContractCurrency, timeUnit?: TimeUnit, symbol?: string): string => {
     const actualTimeUnit = timeUnit || getMostRelevantTimeUnit(pricePerSecond)
     const price = priceForTimeUnits(pricePerSecond, 1, actualTimeUnit)
     const timeUnitAbbreviation = getAbbreviation(actualTimeUnit)
     const roundedPrice = formatDecimals(price, currency)
-    return `${roundedPrice} ${currency} / ${timeUnitAbbreviation}`
+    let actualSymbol = currency
+
+    if (currency === contractCurrencies.PRODUCT_DEFINED && symbol != null) {
+        actualSymbol = symbol
+    }
+
+    return `${roundedPrice} ${actualSymbol} / ${timeUnitAbbreviation}`
 }

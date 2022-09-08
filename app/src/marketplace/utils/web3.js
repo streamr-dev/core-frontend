@@ -122,6 +122,16 @@ export const getDaiTokenBalance = (address: Address, usePublicNode: boolean = fa
         .then(fromAtto)
 )
 
+export const getCustomTokenBalance = (
+    contractAddress: Address,
+    userAddress: Address,
+    usePublicNode: boolean = false,
+    chainId: number,
+): SmartContractCall<BN> => (
+    call(erc20TokenContractMethods(contractAddress, usePublicNode, chainId).balanceOf(userAddress))
+        .then(fromAtto)
+)
+
 export const getMyEthBalance = (): Promise<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getEthBalance(myAccount))
 )
@@ -144,6 +154,18 @@ export const getBalances = (): Promise<[BN, BN, BN]> => {
     const daiPromise = getMyDaiTokenBalance()
 
     return Promise.all([ethPromise, dataPromise, daiPromise])
+}
+
+export const getTokenInformation = async (address: Address, chainId?: number): Promise<Object> => {
+    const actualChainId = chainId || await getChainId()
+    const contract = erc20TokenContractMethods(address, true, actualChainId)
+    const symbol = await contract.symbol().call()
+    const name = await contract.name().call()
+
+    return {
+        symbol,
+        name,
+    }
 }
 
 /**

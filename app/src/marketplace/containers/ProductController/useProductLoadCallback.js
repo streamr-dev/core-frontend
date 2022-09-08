@@ -76,22 +76,29 @@ export default function useProductLoadCallback() {
             }
             if (!isMounted()) { return }
 
-            // Fetch whitelist status from contract product
+            // Fetch status from contract product and adjust pending changes
             let requiresWhitelist = false
+            let pricingTokenAddress = null
             try {
-                const contractProduct = await getProductFromContract(productId, true, chainId)
-                // eslint-disable-next-line prefer-destructuring
-                requiresWhitelist = contractProduct.requiresWhitelist
+                const contractProduct = await getProductFromContract(productId, true, chainId);
+                ({ requiresWhitelist, pricingTokenAddress } = contractProduct)
 
                 // remove from pending changes if whitelist setting is correct
                 if (product.pendingChanges && requiresWhitelist === product.pendingChanges.requiresWhitelist) {
+                    // $FlowFixMe: (ノಠ益ಠ)ノ彡┻━┻
                     delete product.pendingChanges.requiresWhitelist
+                }
+
+                // remove from pending changes if pricingTokenAddress setting is correct
+                if (product.pendingChanges && pricingTokenAddress === product.pendingChanges.pricingTokenAddress) {
+                    delete product.pendingChanges.pricingTokenAddress
                 }
             } catch (e) {
                 // ignore error, assume product is not published
-                // eslint-disable-next-line prefer-destructuring
                 requiresWhitelist = product && product.pendingChanges && product.pendingChanges.requiresWhitelist
+                pricingTokenAddress = product && product.pendingChanges && product.pendingChanges.pricingTokenAddress
             }
+
             if (!isMounted()) { return }
 
             const nextProduct = {
@@ -103,6 +110,7 @@ export default function useProductLoadCallback() {
                 adminFee: currentAdminFee,
                 dataUnionDeployed,
                 requiresWhitelist,
+                pricingTokenAddress,
             }
 
             setProduct({

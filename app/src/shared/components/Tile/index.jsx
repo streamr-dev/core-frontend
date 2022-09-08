@@ -390,7 +390,8 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                 label={isPaidProduct(product) ? (
                     <PaymentRate
                         amount={product.pricePerSecond}
-                        currency={product.priceCurrency}
+                        pricingTokenAddress={product.pricingTokenAddress}
+                        chainId={getChainIdFromApiString(product.chain)}
                         timeUnit={timeUnits.hour}
                         maxDigits={4}
                     />

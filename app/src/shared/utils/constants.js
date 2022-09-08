@@ -14,12 +14,14 @@ import { getConfigForChainByName } from '$shared/web3/config'
 export const contractCurrencies = {
     DATA: 'DATA',
     USD: 'USD',
+    PRODUCT_DEFINED: 'PRODUCT_DEFINED',
 }
 
 export const paymentCurrencies = {
     DATA: 'DATA',
     ETH: 'ETH',
     DAI: 'DAI',
+    PRODUCT_DEFINED: 'PRODUCT_DEFINED',
 }
 
 export const DEFAULT_CURRENCY = contractCurrencies.DATA
