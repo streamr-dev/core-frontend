@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import merge from 'lodash/merge'
 
@@ -31,6 +31,7 @@ import {
     selectHasMoreSearchResults,
 } from '$mp/modules/productList/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useContractProducts from '$shared/hooks/useContractProducts'
 
 import styles from './products.pcss'
 
@@ -45,6 +46,7 @@ const Products = () => {
     const isMounted = useIsMounted()
     const productsRef = useRef()
     productsRef.current = products
+    const [contractProducts, setContractProducts] = useState([])
 
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
@@ -53,15 +55,26 @@ const Products = () => {
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 
+    const { load: loadContractProducts } = useContractProducts()
+    const loadProductsFromContract = useCallback(async () => {
+        if (productsRef.current) {
+            const cps = await loadContractProducts(productsRef.current)
+            if (isMounted()) {
+                setContractProducts(cps)
+            }
+        }
+    }, [loadContractProducts, isMounted])
+
     const onFilterChange = useCallback((filter: Filter) => {
         dispatch(updateFilter(filter))
         dispatch(getProducts(true))
             .then((productIds) => {
                 if (isMounted()) {
                     loadDataUnionStats(productIds)
+                    loadProductsFromContract()
                 }
             })
-    }, [dispatch, isMounted, loadDataUnionStats])
+    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
 
     const onSearchChange = useCallback((search: SearchFilter) => {
         dispatch(updateFilter({
@@ -72,10 +85,11 @@ const Products = () => {
             onSuccess: (productIds) => {
                 if (isMounted()) {
                     loadDataUnionStats(productIds)
+                    loadProductsFromContract()
                 }
             },
         }))
-    }, [dispatch, isMounted, loadDataUnionStats])
+    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
 
     const clearFiltersAndReloadProducts = useCallback(() => {
         dispatch(clearFilters())
@@ -83,9 +97,10 @@ const Products = () => {
             .then((productIds) => {
                 if (isMounted()) {
                     loadDataUnionStats(productIds)
+                    loadProductsFromContract()
                 }
             })
-    }, [dispatch, isMounted, loadDataUnionStats])
+    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
 
     useEffect(() => {
         loadCategories()
@@ -95,8 +110,9 @@ const Products = () => {
         } else if (productsRef.current && productsRef.current.length > 0) {
             // just reload DU stats if product list was cached
             loadDataUnionStats(productsRef.current.map(({ id }) => id))
+            loadProductsFromContract()
         }
-    }, [loadCategories, clearFiltersAndReloadProducts, loadDataUnionStats])
+    }, [loadCategories, clearFiltersAndReloadProducts, loadDataUnionStats, loadProductsFromContract])
 
     useEffect(() => () => {
         resetStats()
@@ -121,10 +137,13 @@ const Products = () => {
                 <ProductsComponent
                     products={products.map((p, i) => {
                         const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
+                        const contractProd = contractProducts.find((cp) => cp.id === p.id)
+                        const pricingTokenAddress = contractProd ? contractProd.pricingTokenAddress : null
 
                         return merge({}, p, {
                             key: `${i}-${p.id || ''}`,
                             members: members[beneficiaryAddress],
+                            pricingTokenAddress,
                         })
                     })}
                     error={productsError}

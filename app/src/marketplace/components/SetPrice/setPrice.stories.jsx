@@ -23,7 +23,7 @@ type SetPriceControllerProps = {
 
 const SetPriceController = ({ error, disabled }: SetPriceControllerProps) => {
     const [price, setPrice] = useState('0')
-    const [currency, setCurrency] = useState('DATA')
+    const [currency] = useState('DATA')
     const [timeUnit, setTimeUnit] = useState('hour')
 
     return (
@@ -32,7 +32,7 @@ const SetPriceController = ({ error, disabled }: SetPriceControllerProps) => {
             price={price}
             onPriceChange={setPrice}
             currency={currency}
-            onCurrencyChange={setCurrency}
+            pricingTokenAddress="0xbAA81A0179015bE47Ad439566374F2Bae098686F"
             timeUnit={timeUnit}
             onTimeUnitChange={setTimeUnit}
             error={error}

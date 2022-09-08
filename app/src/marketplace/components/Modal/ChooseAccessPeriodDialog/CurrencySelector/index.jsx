@@ -12,13 +12,27 @@ import styles from './currencySelector.pcss'
 type Props = {
     onChange: (currency: PaymentCurrency) => void,
     paymentCurrency: PaymentCurrency,
-    availableCurrencies: Array<paymentCurrencies>,
+    availableCurrencies: Array<PaymentCurrency>,
+    tokenSymbol: string,
 }
 
-const CurrencySelector = ({ onChange, paymentCurrency, availableCurrencies }: Props) => (
+const CurrencySelector = ({ onChange, paymentCurrency, availableCurrencies, tokenSymbol }: Props) => (
     <div className={styles.root}>
-        {availableCurrencies.map((currency, index) => // eslint-disable-next-line react/no-array-index-key
-            <CurrencyButton key={index} currency={currency} onChange={onChange} selected={currency === paymentCurrency} />)}
+        {availableCurrencies.map((currency: PaymentCurrency, index) => {
+            const iconName = currency === paymentCurrencies.PRODUCT_DEFINED ? 'unknownToken' : currency.toString()
+
+            return (
+                <CurrencyButton
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={index}
+                    currency={currency}
+                    onChange={onChange}
+                    selected={currency === paymentCurrency}
+                    iconName={iconName}
+                    tokenSymbol={tokenSymbol}
+                />
+            )
+        })}
     </div>
 )
 
@@ -26,9 +40,17 @@ type CurrencyButtonProps = {
     onChange: (currency: PaymentCurrency) => void,
     selected: boolean,
     currency: PaymentCurrency,
+    iconName: string,
+    tokenSymbol: string,
 }
 
-const CurrencyButton = ({ currency, selected, onChange }: CurrencyButtonProps) => (
+const CurrencyButton = ({
+    currency,
+    selected,
+    onChange,
+    iconName,
+    tokenSymbol,
+}: CurrencyButtonProps) => (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div
         key={currency}
@@ -37,8 +59,9 @@ const CurrencyButton = ({ currency, selected, onChange }: CurrencyButtonProps) =
         })}
         onClick={() => onChange(currency)}
     >
-        <SvgIcon name={currency} className={styles.currencyIcon} />
-        <span className={styles.name}>{currency}</span>
+        {/* $FlowFixMe: what */}
+        <SvgIcon name={iconName} className={styles.currencyIcon} />
+        <span className={styles.name}>{currency === paymentCurrencies.PRODUCT_DEFINED ? tokenSymbol : currency}</span>
     </div>
 )
 

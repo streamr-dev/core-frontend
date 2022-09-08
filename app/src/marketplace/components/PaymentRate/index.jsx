@@ -1,25 +1,48 @@
 // @flow
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import BN from 'bignumber.js'
-import type { ContractCurrency as Currency, TimeUnit } from '$shared/flowtype/common-types'
+import type { TimeUnit } from '$shared/flowtype/common-types'
+import { contractCurrencies as currencies } from '$shared/utils/constants'
 import { formatPrice } from '$mp/utils/price'
+import { getTokenInformation } from '$mp/utils/web3'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 type Props = {
     amount: BN,
-    currency: Currency,
+    pricingTokenAddress: string,
+    chainId: number,
     timeUnit: TimeUnit,
     className?: string,
 }
 
 const PaymentRate = (props: Props) => {
-    const { amount,
-        currency,
+    const {
+        amount,
+        pricingTokenAddress,
+        chainId,
         timeUnit,
-        className } = props
+        className,
+    } = props
+    const [currency, setCurrency] = useState(currencies.DATA)
+    const [symbol, setSymbol] = useState(currencies.DATA)
+    const isMounted = useIsMounted()
+
+    useEffect(() => {
+        const check = async () => {
+            if (pricingTokenAddress != null) {
+                const info = await getTokenInformation(pricingTokenAddress, chainId)
+                if (isMounted()) {
+                    setCurrency(currencies.PRODUCT_DEFINED)
+                    setSymbol(info.symbol)
+                }
+            }
+        }
+        check()
+    }, [pricingTokenAddress, chainId, isMounted])
 
     return (
-        <div className={className}>{formatPrice(amount, currency, timeUnit)}</div>
+        <div className={className}>{formatPrice(amount, currency, timeUnit, symbol)}</div>
     )
 }
 

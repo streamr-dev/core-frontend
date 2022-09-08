@@ -13,6 +13,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import { addFreeProduct } from '$mp/modules/product/services'
 import { getMyPurchases } from '$mp/modules/myPurchaseList/actions'
 import { getProductSubscription } from '$mp/modules/product/actions'
+import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 
@@ -59,6 +60,7 @@ const Hero = () => {
     const dispatch = useDispatch()
     const history = useHistory()
     const { product } = useController()
+    const contractProduct = useSelector(selectContractProduct)
     const { api: purchaseDialog } = useModal('purchase')
     const { isPending, wrap } = usePending('product.PURCHASE_DIALOG')
     const isMounted = useIsMounted()
@@ -189,6 +191,7 @@ const Hero = () => {
                     product={product}
                     isValidSubscription={!!isSubscriptionValid}
                     productSubscription={contractSubscription}
+                    pricingTokenAddress={contractProduct && contractProduct.pricingTokenAddress}
                     onPurchase={onPurchase}
                     isPurchasing={isPending}
                     isWhitelisted={isWhitelisted}

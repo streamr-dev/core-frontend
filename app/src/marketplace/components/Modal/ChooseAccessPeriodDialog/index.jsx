@@ -29,6 +29,7 @@ export type Balances = {
 export type Props = {
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
     pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>,
+    tokenSymbol: string,
     chainId: number,
     balances: Balances,
     onNext: (AccessPeriod) => Promise<void>,
@@ -46,6 +47,7 @@ const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month]
 export const ChooseAccessPeriodDialog = ({
     pricePerSecond,
     pricingTokenAddress,
+    tokenSymbol,
     chainId,
     balances,
     onNext,
@@ -74,7 +76,7 @@ export const ChooseAccessPeriodDialog = ({
                 paymentCurrencies.DAI,
             ]
         }
-        return [paymentCurrencies.DATA]
+        return [paymentCurrencies.PRODUCT_DEFINED]
     }, [pricingTokenAddress, chainId])
 
     const priceInData = useMemo(() => {
@@ -207,10 +209,10 @@ export const ChooseAccessPeriodDialog = ({
                 actions={actions}
                 renderActions={() => (
                     <div className={cx(styles.footer, {
-                        [styles.onlyButtons]: paymentCurrency === paymentCurrencies.DATA,
+                        [styles.onlyButtons]: !(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI),
                     })}
                     >
-                        {paymentCurrency !== paymentCurrencies.DATA && (
+                        {(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && (
                             <span className={styles.uniswapFooter}>
                                 Exchange via Uniswap
                             </span>
@@ -286,7 +288,7 @@ export const ChooseAccessPeriodDialog = ({
                         <span className={styles.priceValue}>
                             {displayPrice}
                             <span className={styles.priceCurrency}>
-                                {paymentCurrency}
+                                {tokenSymbol}
                             </span>
                         </span>
                         <span className={styles.usdEquiv}>
@@ -298,8 +300,9 @@ export const ChooseAccessPeriodDialog = ({
                         onChange={onPaymentCurrencyChange}
                         paymentCurrency={paymentCurrency}
                         availableCurrencies={availableCurrencies}
+                        tokenSymbol={tokenSymbol}
                     />
-                    {paymentCurrency !== paymentCurrencies.DATA && (
+                    {(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && (
                         <p className={styles.uniswapMsg}>
                             Exchange via Uniswap
                         </p>

@@ -128,7 +128,10 @@ const TokenSelector = ({ disabled }: Props) => {
                         type="radio"
                         name="token"
                         checked={selection === TokenType.Custom}
-                        onChange={() => setSelection(TokenType.Custom)}
+                        onChange={() => {
+                            setSelection(TokenType.Custom)
+                            setSelectedTokenAddress(null)
+                        }}
                         disabled={disabled}
                     />
                     Custom token

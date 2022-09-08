@@ -8,11 +8,8 @@ import cx from 'classnames'
 import docsLinks from '$shared/../docsLinks'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
-import { contractCurrencies as currencies } from '$shared/utils/constants'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
-import Toggle from '$shared/components/Toggle'
-import SvgIcon from '$shared/components/SvgIcon'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 
@@ -31,7 +28,7 @@ type Props = {
 
 const PriceSelector = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
-    const { publishAttempted, preferredCurrency: currency, setPreferredCurrency: setCurrency } = useContext(EditControllerContext)
+    const { publishAttempted } = useContext(EditControllerContext)
     const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
     const { isPending: contractProductLoadPending } = usePending('contractProduct.LOAD')
     const isPublic = isPublished(product)
@@ -51,14 +48,6 @@ const PriceSelector = ({ disabled }: Props) => {
     const onTimeUnitChange = useCallback((t) => {
         updatePrice(product.price, product.priceCurrency, t)
     }, [updatePrice, product.price, product.priceCurrency])
-
-    const fixInFiat = product.priceCurrency === currencies.USD
-
-    const onFixPriceChange = useCallback((checked) => {
-        const newCurrency = checked ? currencies.USD : currencies.DATA
-        const newPrice = product.price
-        updatePrice(newPrice, newCurrency, product.timeUnit)
-    }, [updatePrice, product.price, product.timeUnit])
 
     const isFreeProduct = !!product.isFree
     const isDataUnion = isDataUnionProduct(product)
@@ -92,8 +81,7 @@ const PriceSelector = ({ disabled }: Props) => {
                         disabled={isFreeProduct || isDisabled}
                         price={product.price}
                         onPriceChange={onPriceChange}
-                        currency={currency}
-                        onCurrencyChange={setCurrency}
+                        pricingTokenAddress={product.pricingTokenAddress}
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
                         error={publishAttempted && !isValid ? message : undefined}
@@ -111,27 +99,6 @@ const PriceSelector = ({ disabled }: Props) => {
                                 disabled={isFreeProduct || isDisabled}
                             />
                         )}
-                        <div className={styles.fixPrice}>
-                            <label htmlFor="fixPrice">
-                                <span>
-                                    Fix price in fiat
-                                    {!!isDataUnion && ' for protection against shifts in the DATA price'}
-                                </span>
-                                <div className={styles.tooltipContainer}>
-                                    <SvgIcon name="outlineQuestionMark" className={styles.helpIcon} />
-                                    <div className={styles.tooltip}>
-                                        Fixing the price in fiat can give you protection against shifts in the DATA price
-                                    </div>
-                                </div>
-                            </label>
-                            <Toggle
-                                id="fixPrice"
-                                className={styles.toggle}
-                                value={fixInFiat}
-                                onChange={onFixPriceChange}
-                                disabled={isFreeProduct || isDisabled}
-                            />
-                        </div>
                     </div>
                 </div>
             </div>
