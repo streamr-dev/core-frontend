@@ -253,7 +253,7 @@ describe('product utils', () => {
             })
         })
 
-        it('returns removes smart contract fields for published paid product', () => {
+        it('removes smart contract fields for published paid product', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -274,7 +274,7 @@ describe('product utils', () => {
             })
         })
 
-        it('returns removes smart contract fields and returns pending changes for published paid product', () => {
+        it('removes smart contract fields and returns pending changes for published paid product', () => {
             const product = {
                 id: '1',
                 name: 'My Product',

@@ -201,6 +201,24 @@ describe('Product State', () => {
             })
         })
 
+        it('updates smart contract fields for unpublished product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                state: productStates.NOT_DEPLOYED,
+            }
+            expect(State.update(product, (p) => ({
+                ...p,
+                pricingTokenAddress: '0x123',
+                requiresWhitelist: true,
+            }))).toMatchObject({
+                id: '1',
+                state: productStates.NOT_DEPLOYED,
+                pricingTokenAddress: '0x123',
+                requiresWhitelist: true,
+            })
+        })
+
         it('puts admin fee as pending change for unpublished data union', () => {
             const product = {
                 id: '1',
@@ -244,6 +262,27 @@ describe('Product State', () => {
                 pendingChanges: {
                     name: 'Better Name',
                     description: 'A better description',
+                },
+            })
+        })
+
+        it('puts smart contract fields as pending changes for published product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                state: productStates.DEPLOYED,
+            }
+            expect(State.update(product, (p) => ({
+                ...p,
+                pricingTokenAddress: '0x123',
+                requiresWhitelist: true,
+            }))).toMatchObject({
+                id: '1',
+                name: 'My Product',
+                state: productStates.DEPLOYED,
+                pendingChanges: {
+                    pricingTokenAddress: '0x123',
+                    requiresWhitelist: true,
                 },
             })
         })
@@ -330,6 +369,25 @@ describe('Product State', () => {
             })).toMatchObject({
                 name: 'Better Name',
                 description: 'A better description',
+            })
+        })
+
+        it('returns smart contract pending changes for published product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.DEPLOYED,
+            }
+            expect(State.getPendingChanges({
+                ...product,
+                pendingChanges: {
+                    pricingTokenAddress: '0x123',
+                    requiresWhitelist: true,
+                },
+            })).toMatchObject({
+                pricingTokenAddress: '0x123',
+                requiresWhitelist: true,
             })
         })
 

@@ -59,7 +59,8 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
 export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: Product) => (
     (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
     !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
-    contractProduct.priceCurrency !== editProduct.priceCurrency)
+    !areAddressesEqual(contractProduct.pricingTokenAddress, editProduct.pricingTokenAddress) ||
+    contractProduct.requiresWhitelist !== editProduct.requiresWhitelist)
 )
 
 export const call = (method: Callable): SmartContractCall<*> => method.call()

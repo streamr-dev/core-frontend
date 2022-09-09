@@ -54,7 +54,7 @@ export function getPendingChanges(product: Product): Object {
     const isDataUnion = isDataUnionProduct(product)
 
     if (isPublic || isDataUnion) {
-        const { adminFee, requiresWhitelist, pricingTokenAddress, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
+        const { adminFee, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
 
         if (isPublic) {
             // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
@@ -63,33 +63,11 @@ export function getPendingChanges(product: Product): Object {
                 ...(adminFee ? {
                     adminFee,
                 } : {}),
-                ...(requiresWhitelist != null ? {
-                    requiresWhitelist,
-                } : {}),
-                ...(pricingTokenAddress ? {
-                    pricingTokenAddress,
-                } : {}),
             }
         } else if (isDataUnion && adminFee) {
             return {
                 adminFee,
-                requiresWhitelist,
-                pricingTokenAddress,
             }
-        }
-    }
-
-    if (!isPublic) {
-        const { requiresWhitelist, pricingTokenAddress } = getPendingObject(product.pendingChanges || {})
-
-        // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
-        return {
-            ...(requiresWhitelist != null ? {
-                requiresWhitelist,
-            } : {}),
-            ...(pricingTokenAddress ? {
-                pricingTokenAddress,
-            } : {}),
         }
     }
 
@@ -104,7 +82,7 @@ export function hasPendingChange(product: Product, field: string) {
 
 export function update(product: Product, fn: Function) {
     const result = fn(product)
-    const { adminFee, requiresWhitelist, pricingTokenAddress, ...otherChanges } = result
+    const { adminFee, ...otherChanges } = result
     const isPublic = isPublished(product)
 
     if (isPublic) {
@@ -119,21 +97,6 @@ export function update(product: Product, fn: Function) {
             ...otherChanges,
             pendingChanges: {
                 adminFee,
-                requiresWhitelist,
-                pricingTokenAddress,
-            },
-        }
-    } else if (!isPublic) {
-        return {
-            ...otherChanges,
-            // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
-            pendingChanges: {
-                ...(requiresWhitelist != null ? {
-                    requiresWhitelist,
-                } : {}),
-                ...(pricingTokenAddress != null ? {
-                    pricingTokenAddress,
-                } : {}),
             },
         }
     }

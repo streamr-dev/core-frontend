@@ -5,11 +5,20 @@ import { MemoryRouter } from 'react-router-dom'
 
 import * as UndoContext from '$shared/contexts/Undo'
 import Select from '$ui/Select'
-import Toggle from '$shared/components/Toggle'
+import getChainId from '$utils/web3/getChainId'
 import { Provider as ValidationContextProvider } from '../ProductController/ValidationContextProvider'
 import * as BeneficiaryAddress from './BeneficiaryAddress'
 import PriceSelector from './PriceSelector'
 import { Context as EditControllerContext } from './EditControllerProvider'
+
+jest.mock('$utils/web3/getChainId', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+function mockChainId(chainId) {
+    return getChainId.mockImplementation(() => Promise.resolve(chainId))
+}
 
 const mockState = {
     product: {
@@ -56,6 +65,7 @@ jest.mock('react-redux', () => ({
 describe('PriceSelector', () => {
     beforeEach(() => {
         jest.spyOn(BeneficiaryAddress, 'default').mockImplementation(() => null)
+        mockChainId(1)
     })
 
     afterEach(() => {
@@ -116,11 +126,11 @@ describe('PriceSelector', () => {
         return undoContext.state
     }
 
-    it('sets DATA amount', async () => {
-        const { price, pricePerSecond, priceCurrency, timeUnit } = await setup({
+    it('sets amount', async () => {
+        const { price, pricePerSecond, timeUnit } = await setup({
             id: '1',
             price: '1',
-            priceCurrency: 'DATA',
+            pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             timeUnit: 'second',
         }, (el) => {
             el
@@ -136,48 +146,14 @@ describe('PriceSelector', () => {
 
         expect(price.toString()).toBe('10')
         expect(pricePerSecond.toString()).toBe('10')
-        expect(priceCurrency.toString()).toBe('DATA')
-        expect(timeUnit).toBe('second')
-    })
-
-    it('sets USD amount', async () => {
-        const { price, pricePerSecond, priceCurrency, timeUnit } = await setup({
-            id: '1',
-            price: '1',
-            priceCurrency: 'DATA',
-            timeUnit: 'second',
-        }, (el) => {
-            expect(el.find('.currency').first().text()).toBe('DATA')
-
-            el
-                .find('.icon')
-                .first()
-                .simulate('click')
-
-            expect(el.find('.currency').first().text()).toBe('USD') /* It's USD now. */
-
-            el
-                .find('.inputWrapper input')
-                .first()
-                .simulate('change', {
-                    target: {
-                        value: '10',
-                    },
-                })
-                .simulate('blur')
-        })
-
-        expect(price.toString()).toBe('100')
-        expect(pricePerSecond.toString()).toBe('100')
-        expect(priceCurrency.toString()).toBe('DATA')
         expect(timeUnit).toBe('second')
     })
 
     it('changes time unit + updates amounts', async () => {
-        const { price, pricePerSecond, priceCurrency, timeUnit } = await setup({
+        const { price, pricePerSecond, timeUnit } = await setup({
             id: '1',
             price: '7200',
-            priceCurrency: 'DATA',
+            pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             pricePerSecond: '7200',
             timeUnit: 'second',
         }, (el) => {
@@ -190,47 +166,6 @@ describe('PriceSelector', () => {
 
         expect(price.toString()).toBe('7200')
         expect(pricePerSecond.toString()).toBe('2')
-        expect(priceCurrency.toString()).toBe('DATA')
         expect(timeUnit).toBe('hour')
-    })
-
-    describe('fixed fiat price', () => {
-        it('changes price currency to USD + converts', async () => {
-            const { price, pricePerSecond, priceCurrency, timeUnit } = await setup({
-                id: '1',
-                price: '1',
-                priceCurrency: 'DATA',
-                pricePerSecond: '1',
-                timeUnit: 'second',
-            }, (el) => {
-                act(() => {
-                    el.find(Toggle).props().onChange(true)
-                })
-            })
-
-            expect(price.toString()).toBe('0.1')
-            expect(pricePerSecond.toString()).toBe('0.1')
-            expect(priceCurrency.toString()).toBe('USD')
-            expect(timeUnit).toBe('second')
-        })
-
-        it('changes price currency to DATA + converts', async () => {
-            const { price, pricePerSecond, priceCurrency, timeUnit } = await setup({
-                id: '1',
-                price: '0.1',
-                priceCurrency: 'USD',
-                pricePerSecond: '0.1',
-                timeUnit: 'second',
-            }, (el) => {
-                act(() => {
-                    el.find(Toggle).props().onChange(false)
-                })
-            })
-
-            expect(price.toString()).toBe('1')
-            expect(pricePerSecond.toString()).toBe('1')
-            expect(priceCurrency.toString()).toBe('DATA')
-            expect(timeUnit).toBe('second')
-        })
     })
 })

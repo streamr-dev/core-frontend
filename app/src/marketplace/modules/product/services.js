@@ -171,7 +171,7 @@ export const buyProduct = (
                 network: chainId,
             })
 
-        default: // Pay with DATA
+        default: // Pay with DATA or PRODUCT_DEFINED
             return send(marketplaceContract(false, chainId).methods.buy(getValidId(id), subscriptionInSeconds.toString()), {
                 gas: gasLimits.BUY_PRODUCT + gasIncrease,
                 network: chainId,

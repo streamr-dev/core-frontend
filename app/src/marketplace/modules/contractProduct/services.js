@@ -129,13 +129,11 @@ const createContractProductWithoutWhitelist = (product: SmartContractProduct): S
         name,
         beneficiaryAddress,
         pricePerSecond,
-        priceCurrency,
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
     const methodToSend = contractMethods(false, chainId).createProduct(
         getValidId(id),
@@ -156,13 +154,11 @@ const createContractProductWithWhitelist = (product: SmartContractProduct): Smar
         name,
         beneficiaryAddress,
         pricePerSecond,
-        priceCurrency,
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
     const methodToSend = contractMethods(false, chainId).createProductWithWhitelist(
         getValidId(id),
@@ -190,13 +186,11 @@ export const updateContractProduct = (product: SmartContractProduct, redeploy: b
         name,
         beneficiaryAddress,
         pricePerSecond,
-        priceCurrency,
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    validateProductPriceCurrency(priceCurrency)
     const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
     const methodToSend = contractMethods(false, chainId).updateProduct(
         getValidId(id),

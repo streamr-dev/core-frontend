@@ -273,6 +273,7 @@ describe('useProductLoadCallback', () => {
             adminFee: undefined,
             dataUnionDeployed: false,
             requiresWhitelist: undefined,
+            pricingTokenAddress: undefined,
         })
     })
 
