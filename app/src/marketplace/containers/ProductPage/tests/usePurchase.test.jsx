@@ -11,7 +11,18 @@ import * as web3Utils from '$mp/utils/web3'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as productServices from '$mp/modules/product/services'
 import * as productActions from '$mp/modules/product/actions'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
+
 import usePurchase, { actionsTypes } from '../usePurchase'
+
+jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
+    __esModule: true,
+    default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
+}))
+
+function mockDefaultAccount(defaultAccount) {
+    return getDefaultWeb3Account.mockImplementation(() => Promise.resolve(defaultAccount))
+}
 
 const mockState = {}
 
@@ -24,12 +35,17 @@ describe('usePurchase', () => {
     beforeAll(() => {
         // don't show error as console.error
         jest.spyOn(console, 'error')
-        console.error.mockImplementation((...args) => console.warn(...args))
+        console.error.mockImplementation((...args) => console.warn(...args))        
+    })
+
+    beforeEach(() => {
+        mockDefaultAccount('0x0000000000000000000000000000000000000000')
     })
 
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
+        getDefaultWeb3Account.mockReset()
     })
 
     afterAll(() => {
@@ -77,6 +93,7 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                pricingTokenAddress: '0x1337',
             }
 
             await act(async () => {
@@ -92,7 +109,7 @@ describe('usePurchase', () => {
             })
         })
 
-        it('throws an error if currency is DATA and price cannot be calculated', async () => {
+        it('throws an error if pricing token is not defined', async () => {
             let purchase
             function Test() {
                 purchase = usePurchase()
@@ -111,6 +128,40 @@ describe('usePurchase', () => {
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
             }
+
+            await act(async () => {
+                try {
+                    await purchase({
+                        contractProduct,
+                    })
+                    expect(true).toBe(false) // shouldn't come here
+                } catch (e) {
+                    expect(e).toBeTruthy()
+                    expect(e.message).toBe('no pricingTokenAddress')
+                }
+            })
+        })
+
+        it('throws an error if pricingTokenAddress is not DATA and trying to pay with DATA', async () => {
+            let purchase
+            function Test() {
+                purchase = usePurchase()
+                return null
+            }
+
+            mount((
+                <Test />
+            ))
+
+            const contractProduct = {
+                id: '1',
+                pricePerSecond: BN(1),
+                ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                minimumSubscriptionInSeconds: '0',
+                pricingTokenAddress: '0x1337',
+                chainId: 1,
+            }
             const accessPeriod = {
                 time: 1,
                 timeUnit: 'hour',
@@ -126,7 +177,47 @@ describe('usePurchase', () => {
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
                     expect(e).toBeTruthy()
-                    expect(e.message).toBe('could not calculate price')
+                    expect(e.message).toBe('cannot pay for this product with DATA')
+                }
+            })
+        })
+
+        it('throws an error if pricingTokenAddress is not DATA and trying to pay with ETH', async () => {
+            let purchase
+            function Test() {
+                purchase = usePurchase()
+                return null
+            }
+
+            mount((
+                <Test />
+            ))
+
+            const contractProduct = {
+                id: '1',
+                pricePerSecond: BN(1),
+                ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                minimumSubscriptionInSeconds: '0',
+                pricingTokenAddress: '0x1337',
+                chainId: 1,
+            }
+            const accessPeriod = {
+                time: 1,
+                timeUnit: 'hour',
+                paymentCurrency: paymentCurrencies.ETH,
+            }
+
+            await act(async () => {
+                try {
+                    await purchase({
+                        contractProduct,
+                        accessPeriod,
+                    })
+                    expect(true).toBe(false) // shouldn't come here
+                } catch (e) {
+                    expect(e).toBeTruthy()
+                    expect(e.message).toBe('cannot pay for this product with ETH')
                 }
             })
         })
@@ -147,8 +238,9 @@ describe('usePurchase', () => {
                 pricePerSecond: BN(1),
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
-                priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
+                chainId: 1,
             }
 
             await act(async () => {
@@ -204,11 +296,13 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
+                chainId: 1,
             }
             const accessPeriod = {
                 time: 1,
                 timeUnit: 'hour',
-                paymentCurrency: paymentCurrencies.ETH,
+                paymentCurrency: paymentCurrencies.PRODUCT_DEFINED,
                 price: '1234',
             }
             jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => {
@@ -247,9 +341,9 @@ describe('usePurchase', () => {
                 pricePerSecond: BN(1),
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
-                priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
-                chainId: 1337,
+                chainId: 1,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             }
             const accessPeriod = {
                 time: 1,
@@ -263,7 +357,7 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            jest.spyOn(productServices, 'getMyDataAllowance').mockImplementation(() => Promise.resolve(BN(20)))
+            jest.spyOn(productServices, 'getMyTokenAllowance').mockImplementation(() => Promise.resolve(BN(20)))
             const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
@@ -299,7 +393,7 @@ describe('usePurchase', () => {
             }
 
             let callCount = 0
-            const setAllowanceStub = jest.spyOn(productServices, 'setMyDataAllowance').mockImplementation(() => {
+            const setAllowanceStub = jest.spyOn(productServices, 'setMyTokenAllowance').mockImplementation(() => {
                 if (callCount === 0) {
                     callCount += 1
                     return tx1
@@ -362,16 +456,17 @@ describe('usePurchase', () => {
             expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
-            expect(setAllowanceStub).toHaveBeenCalledWith('0', 1337)
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, 1337)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
             expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DATA', purchasePrice, 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
 
         it('purchases the product & sets allowance', async () => {
@@ -392,7 +487,8 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
-                chainId: 1337,
+                chainId: 1,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             }
             const accessPeriod = {
                 time: 1,
@@ -406,7 +502,7 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            jest.spyOn(productServices, 'getMyDataAllowance').mockImplementation(() => Promise.resolve(BN(0)))
+            jest.spyOn(productServices, 'getMyTokenAllowance').mockImplementation(() => Promise.resolve(BN(0)))
             const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
@@ -434,7 +530,7 @@ describe('usePurchase', () => {
                 transactionHash: hash2,
             }
 
-            const setAllowanceStub = jest.spyOn(productServices, 'setMyDataAllowance').mockImplementation(() => tx1)
+            const setAllowanceStub = jest.spyOn(productServices, 'setMyTokenAllowance').mockImplementation(() => tx1)
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx2)
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
 
@@ -477,15 +573,16 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, 1337)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
             expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: false,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DATA', purchasePrice, 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
 
         it('purchases the product when there is enough allowance', async () => {
@@ -506,7 +603,8 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
-                chainId: 1337,
+                chainId: 1,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             }
             const accessPeriod = {
                 time: 1,
@@ -520,7 +618,7 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
 
-            jest.spyOn(productServices, 'getMyDataAllowance').mockImplementation(() => Promise.resolve(BN(5000)))
+            jest.spyOn(productServices, 'getMyTokenAllowance').mockImplementation(() => Promise.resolve(BN(5000)))
             const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
 
             const result = await purchase({
@@ -579,9 +677,10 @@ describe('usePurchase', () => {
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: false,
                 includeGasForResetAllowance: false,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DATA', purchasePrice, 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DATA', purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
     })
 
@@ -604,7 +703,8 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
-                chainId: 1337,
+                chainId: 1,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             }
             const accessPeriod = {
                 time: 1,
@@ -712,16 +812,17 @@ describe('usePurchase', () => {
             expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DAI_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DAI_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
-            expect(setAllowanceStub).toHaveBeenCalledWith('0', 1337)
-            expect(setAllowanceStub).toHaveBeenCalledWith('1234', 1337)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', 1)
+            expect(setAllowanceStub).toHaveBeenCalledWith('1234', 1)
             expect(validateStub).toHaveBeenCalledWith({
                 price: '1234',
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DAI', '1234', 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
 
         it('purchases the product & sets allowance', async () => {
@@ -742,7 +843,8 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
-                chainId: 1337,
+                chainId: 1,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             }
             const accessPeriod = {
                 time: 1,
@@ -822,15 +924,16 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DAI_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(setAllowanceStub).toHaveBeenCalledWith('1234', 1337)
+            expect(setAllowanceStub).toHaveBeenCalledWith('1234', 1)
             expect(validateStub).toHaveBeenCalledWith({
                 price: '1234',
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: false,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DAI', '1234', 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
 
         it('purchases the product when there is enough allowance', async () => {
@@ -851,7 +954,8 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
-                chainId: 1337,
+                chainId: 1,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             }
             const accessPeriod = {
                 time: 1,
@@ -919,9 +1023,10 @@ describe('usePurchase', () => {
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: false,
                 includeGasForResetAllowance: false,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'DAI', '1234', 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
     })
 
@@ -944,7 +1049,8 @@ describe('usePurchase', () => {
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
-                chainId: 1337,
+                chainId: 1,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             }
             const accessPeriod = {
                 time: 1,
@@ -1006,8 +1112,154 @@ describe('usePurchase', () => {
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1337, '3600', 'ETH', '1234', 123)
-            expect(subscriptionStub).toHaveBeenCalledWith('1', 1337)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'ETH', '1234', 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
+        })
+    })
+
+    describe('Custom token purchase actions', () => {
+        it('purchases the product, resets existing allowance & sets allowance', async () => {
+            let purchase
+            function Test() {
+                purchase = usePurchase()
+                return null
+            }
+
+            mount((
+                <Test />
+            ))
+
+            const contractProduct = {
+                id: '1',
+                pricePerSecond: BN(1),
+                ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                minimumSubscriptionInSeconds: '0',
+                chainId: 1,
+                pricingTokenAddress: '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', // OtherCoin
+            }
+            const accessPeriod = {
+                time: 1,
+                timeUnit: 'hour',
+                paymentCurrency: paymentCurrencies.PRODUCT_DEFINED,
+                price: '1234',
+            }
+            const purchasePrice = priceUtils.priceForTimeUnits(
+                contractProduct.pricePerSecond,
+                accessPeriod.time,
+                accessPeriod.timeUnit,
+            )
+
+            jest.spyOn(productServices, 'getMyTokenAllowance').mockImplementation(() => Promise.resolve(BN(20)))
+            const validateStub = jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
+
+            const result = await purchase({
+                contractProduct,
+                accessPeriod,
+                gasIncrease: 123,
+            })
+
+            expect(result.queue).toBeTruthy()
+            expect(result.queue.getActions().map(({ id }) => id)).toStrictEqual([
+                actionsTypes.RESET_DATA_ALLOWANCE,
+                actionsTypes.SET_DATA_ALLOWANCE,
+                actionsTypes.SUBSCRIPTION,
+            ])
+
+            const emitter1 = new EventEmitter()
+            const tx1 = new Transaction(emitter1)
+            const hash1 = 'test1'
+            const receipt1 = {
+                transactionHash: hash1,
+            }
+            const emitter2 = new EventEmitter()
+            const tx2 = new Transaction(emitter2)
+            const hash2 = 'test2'
+            const receipt2 = {
+                transactionHash: hash2,
+            }
+            const emitter3 = new EventEmitter()
+            const tx3 = new Transaction(emitter3)
+            const hash3 = 'test3'
+            const receipt3 = {
+                transactionHash: hash3,
+            }
+
+            let callCount = 0
+            const setAllowanceStub = jest.spyOn(productServices, 'setMyTokenAllowance').mockImplementation(() => {
+                if (callCount === 0) {
+                    callCount += 1
+                    return tx1
+                }
+
+                return tx2
+            })
+            const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx3)
+            const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
+            const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
+
+            const txPromise = new Promise((resolve) => {
+                setTimeout(() => {
+                    emitter1.emit('transactionHash', hash1)
+                }, 200)
+                setTimeout(() => {
+                    emitter1.emit('receipt', receipt1)
+                }, 400)
+                setTimeout(() => {
+                    emitter2.emit('transactionHash', hash2)
+                }, 600)
+                setTimeout(() => {
+                    emitter2.emit('receipt', receipt2)
+                }, 800)
+                setTimeout(() => {
+                    emitter3.emit('transactionHash', hash3)
+                }, 1000)
+                setTimeout(() => {
+                    emitter3.emit('receipt', receipt3)
+                    resolve()
+                }, 1200)
+            })
+
+            const startedFn = jest.fn()
+            const statusFn = jest.fn()
+            const readyFn = jest.fn()
+            const finishFn = jest.fn()
+
+            result.queue
+                .subscribe('started', startedFn)
+                .subscribe('status', statusFn)
+                .subscribe('ready', readyFn)
+                .subscribe('finish', finishFn)
+
+            await Promise.all([
+                txPromise,
+                result.queue.start(),
+            ])
+
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.RESET_DATA_ALLOWANCE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
+            expect(startedFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.RESET_DATA_ALLOWANCE, transactionStates.CONFIRMED)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE, transactionStates.CONFIRMED)
+            expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.RESET_DATA_ALLOWANCE)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
+            expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
+            expect(finishFn).toHaveBeenCalled()
+            expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)
+            expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)
+            expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1)
+            expect(validateStub).toHaveBeenCalledWith({
+                price: purchasePrice,
+                paymentCurrency: paymentCurrencies.PRODUCT_DEFINED,
+                includeGasForSetAllowance: true,
+                includeGasForResetAllowance: true,
+                pricingTokenAddress: '0x642D2B84A32A9A92FEc78CeAA9488388b3704898',
+            })
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', paymentCurrencies.PRODUCT_DEFINED, purchasePrice, 123)
+            expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
     })
 })

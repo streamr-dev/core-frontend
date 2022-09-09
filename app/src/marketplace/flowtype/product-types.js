@@ -98,7 +98,6 @@ export type SmartContractProduct = {
     ownerAddress: $ElementType<Product, 'ownerAddress'>,
     beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>,
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
-    priceCurrency: $ElementType<Product, 'priceCurrency'>,
     minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>,
     state: $ElementType<Product, 'state'>,
     requiresWhitelist: $ElementType<Product, 'requiresWhitelist'>,

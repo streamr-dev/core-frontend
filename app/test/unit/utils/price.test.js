@@ -58,15 +58,6 @@ describe('price utils', () => {
         })
     })
 
-    describe('convert', () => {
-        it('converts currency with given rate', () => {
-            expect(all.convert(1, 0.5, 'USD', 'DATA')).toStrictEqual(BN(0.5))
-            expect(all.convert(1, 0.5, 'DATA', 'USD')).toStrictEqual(BN(2))
-            expect(all.convert(0, 0, 'USD', 'DATA')).toStrictEqual(BN(0))
-            expect(all.convert(0, 0, 'DATA', 'USD')).toStrictEqual(BN(0))
-        })
-    })
-
     describe('sanitize', () => {
         it('sanitizes correctly', () => {
             expect(all.sanitize(-500)).toStrictEqual(BN(0))

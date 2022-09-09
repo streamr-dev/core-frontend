@@ -750,9 +750,7 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pendingChanges: {
-                        requiresWhitelist: true,
-                    },
+                    requiresWhitelist: true,
                     chain: 'ETHEREUM',
                 })
 

@@ -53,7 +53,7 @@ export const getDataAddress = (chainId: number) => {
 
 export const getMarketplaceAddress = (chainId: number) => {
     const { contracts } = getConfigForChain(chainId)
-    const marketplaceAddress = contracts.MarketplaceV3
+    const marketplaceAddress = contracts.MarketplaceV3 || contracts.Marketplace
     if (marketplaceAddress == null) {
         throw new Error('No contract address for Marketplace provided!')
     }
@@ -146,6 +146,12 @@ export const getMyDaiTokenBalance = async (): SmartContractCall<BN> => {
     const myAccount = await getDefaultWeb3Account()
     const chainId = await getChainId()
     return getDaiTokenBalance(myAccount, false, chainId)
+}
+
+export const getMyCustomTokenBalance = async (pricingTokenAddress: Address): SmartContractCall<BN> => {
+    const myAccount = await getDefaultWeb3Account()
+    const chainId = await getChainId()
+    return getCustomTokenBalance(pricingTokenAddress, myAccount, false, chainId)
 }
 
 export const getBalances = (): Promise<[BN, BN, BN]> => {
@@ -256,6 +262,7 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boole
 type ValidateBalance = {
     price: BN,
     paymentCurrency: PaymentCurrency,
+    pricingTokenAddress: Address,
     includeGasForSetAllowance?: boolean,
     includeGasForResetAllowance?: boolean,
 }
@@ -264,6 +271,7 @@ type ValidateBalance = {
 export const validateBalanceForPurchase = async ({
     price,
     paymentCurrency,
+    pricingTokenAddress,
     includeGasForSetAllowance = false,
     includeGasForResetAllowance = false,
 }: ValidateBalance) => {
@@ -279,6 +287,21 @@ export const validateBalanceForPurchase = async ({
     }
 
     switch (paymentCurrency) {
+        case paymentCurrencies.PRODUCT_DEFINED: {
+            const tokenBalance = await getMyCustomTokenBalance(pricingTokenAddress)
+            if (tokenBalance.isLessThan(price)) {
+                throw new NoBalanceError({
+                    message: 'It looks like you don’t have enough balance to subscribe to this product.',
+                    required: {
+                        gas: requiredGas,
+                    },
+                    balances: {
+                        eth: ethBalance,
+                    },
+                })
+            }
+            break
+        }
         case paymentCurrencies.ETH: {
             const ethPrice = await uniswapDATAtoETH(price.toString())
             const requiredEth = BN(ethPrice).plus(requiredGas)

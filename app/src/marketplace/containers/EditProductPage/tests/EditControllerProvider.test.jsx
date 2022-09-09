@@ -1215,7 +1215,7 @@ describe('EditControllerProvider', () => {
             sharedConstants.dataUnionMemberLimit = oldLimit
         })
 
-        fit('updates and saves beneficiary address if deploy succeeds', async () => {
+        it('updates and saves beneficiary address if deploy succeeds', async () => {
             const oldLimit = sharedConstants.dataUnionMemberLimit
             sharedConstants.dataUnionMemberLimit = 0
 
@@ -1304,7 +1304,6 @@ describe('EditControllerProvider', () => {
                 ...product,
             }
             delete expectedProduct.adminFee
-            delete expectedProduct.pricingTokenAddress
 
             expect(currentContext.publishAttempted).toBe(true)
             expect(modalOpenStub).toHaveBeenCalledTimes(1)

@@ -96,13 +96,16 @@ export default function usePublish() {
             ...productDataChanges
         } = pendingChanges || {}
         const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-        const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChanges)
+        const hasContractProductChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChanges)
         const hasRequireWhitelistChanged = !!(
             !!contractProduct &&
             requiresWhitelist !== undefined &&
             contractProduct.requiresWhitelist !== requiresWhitelist
         )
-        const hasPendingChanges = Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasPriceChanged || hasRequireWhitelistChanged
+        const hasPendingChanges = Object.keys(productDataChanges).length > 0 ||
+            hasAdminFeeChanged ||
+            hasContractProductChanged ||
+            hasRequireWhitelistChanged
 
         let nextMode
 
@@ -223,7 +226,7 @@ export default function usePublish() {
 
         // update price, currency & beneficiary if changed
         if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
-            if (hasPriceChanged && contractProduct) {
+            if (hasContractProductChanged && contractProduct) {
                 const isRedeploy = !!(nextMode === publishModes.REDEPLOY)
 
                 queue.add({
@@ -297,9 +300,9 @@ export default function usePublish() {
                                 minimumSubscriptionInSeconds: product.minimumSubscriptionInSeconds,
                                 state: product.state,
                                 ownerAddress: '', // owner address is not needed when creating
-                                requiresWhitelist,
+                                requiresWhitelist: product.requiresWhitelist,
                                 chainId,
-                                pricingTokenAddress,
+                                pricingTokenAddress: product.pricingTokenAddress,
                             })
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
@@ -360,7 +363,7 @@ export default function usePublish() {
 
         // do a separate republish for products that have been at some point deployed
         // and we didn't do a contract update above
-        if (nextMode === publishModes.REDEPLOY && !hasPriceChanged && contractProduct) {
+        if (nextMode === publishModes.REDEPLOY && !hasContractProductChanged && contractProduct) {
             queue.add({
                 id: actionsTypes.REDEPLOY_PAID,
                 requireWeb3: true,

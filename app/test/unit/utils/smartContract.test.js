@@ -395,10 +395,17 @@ describe('smartContract utils', () => {
                 }
                 expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
             })
-            it('it must return true if product is paid and currency has been changed', () => {
+            it('it must return true if product is paid and pricingTokenAddress changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
-                    priceCurrency: 'USD',
+                    pricingTokenAddress: '0x1337',
+                }
+                expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
+            })
+            it('it must return true if product is paid and requiresWhitelist changed', () => {
+                const editProductUpdated = {
+                    ...editProduct,
+                    requiresWhitelist: true,
                 }
                 expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
             })

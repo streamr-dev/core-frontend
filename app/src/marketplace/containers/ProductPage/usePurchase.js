@@ -6,7 +6,7 @@ import BN from 'bignumber.js'
 
 import type { SmartContractProduct, AccessPeriod } from '$mp/flowtype/product-types'
 import { priceForTimeUnits } from '$mp/utils/price'
-import { validateBalanceForPurchase } from '$mp/utils/web3'
+import { validateBalanceForPurchase, getDataAddress } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
 import ActionQueue from '$mp/utils/actionQueue'
 import {
@@ -53,6 +53,10 @@ export default function usePurchase() {
             throw new Error('no access period')
         }
 
+        if (contractProduct.pricingTokenAddress !== getDataAddress(chainId) && paymentCurrency !== paymentCurrencies.PRODUCT_DEFINED) {
+            throw new Error(`cannot pay for this product with ${paymentCurrency}`)
+        }
+
         const isEthPurchase = !!(paymentCurrency === paymentCurrencies.ETH)
         const isDaiPurchase = !!(paymentCurrency === paymentCurrencies.DAI)
         const isUniswapPurchase = isEthPurchase || isDaiPurchase
@@ -94,6 +98,7 @@ export default function usePurchase() {
         await validateBalanceForPurchase({
             price: purchasePrice,
             paymentCurrency,
+            pricingTokenAddress: contractProduct.pricingTokenAddress,
             includeGasForSetAllowance: needsAllowance,
             includeGasForResetAllowance: needsAllowanceReset,
         })
