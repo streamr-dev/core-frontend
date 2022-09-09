@@ -16,9 +16,10 @@
     "beneficiaryAddress": "0x942e694ec12d009f45aead2563426adc182ff527",
     "pricePerSecond": "0",
     "isFree": true,
-    "priceCurrency": "DATA",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 313,
-    "owner": "Tester Two"
+    "owner": "Tester Two",
+    "chain": "ETHEREUM"
   },
   {
     "id": "88784dc0445dc39a27b9ce7d630e527ba368666dea5cf8dc955625f713a928d1",
@@ -37,9 +38,10 @@
     "beneficiaryAddress": "0x993b0c35a9474b5d99fa7302024932bc4ed54d3c",
     "pricePerSecond": "0",
     "isFree": true,
-    "priceCurrency": "DATA",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 21,
-    "owner": "Tester Admin"
+    "owner": "Tester Admin",
+    "chain": "ETHEREUM"
   },
   {
     "id": "5af088ad787786fa4f42695275bec834eeb8e16a45f65f4b5c657bf8ad505aba",
@@ -58,9 +60,10 @@
     "beneficiaryAddress": "0x996f0e99758d8fd32d196243fa178a95a6c71784",
     "pricePerSecond": "8096000",
     "isFree": false,
-    "priceCurrency": "USD",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 176,
-    "owner": "Tester One"
+    "owner": "Tester One",
+    "chain": "ETHEREUM"
   },
   {
     "id": "559c96dbfdf8242bbd65f92a7db4710ca193e408d4e7338d42cdf5657d8396f2",
@@ -79,9 +82,10 @@
     "beneficiaryAddress": "0x247c7ffcc5f9d3c46eb4621c1bf68e11eb75ac01",
     "pricePerSecond": "0",
     "isFree": true,
-    "priceCurrency": "DATA",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 48,
-    "owner": "Tester Admin"
+    "owner": "Tester Admin",
+    "chain": "ETHEREUM"
   },
   {
     "id": "c8462e1e5a4535e3e89fa256a0f9f0fa6ba809e0af81f2593c74c819702bc4af",
@@ -100,9 +104,10 @@
     "beneficiaryAddress": "0x4e702165bc042e38b4e22653751e49d40ed9e732",
     "pricePerSecond": "0",
     "isFree": true,
-    "priceCurrency": "DATA",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 432,
-    "owner": "Tester Admin"
+    "owner": "Tester Admin",
+    "chain": "ETHEREUM"
   },
   {
     "id": "48dd109e23aeb94a6ba9831d6078b13badc41b41546c147a4e1897e679160385",
@@ -121,9 +126,10 @@
     "beneficiaryAddress": "0x942e694ec12d009f45aead2563426adc182ff527",
     "pricePerSecond": "0",
     "isFree": true,
-    "priceCurrency": "DATA",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 104,
-    "owner": "Tester Two"
+    "owner": "Tester Two",
+    "chain": "ETHEREUM"
   },
   {
     "id": "8b1423f7458d78ab129682e7756ab85678f533e66dc083f22d353174c8216cf8",
@@ -142,9 +148,10 @@
     "beneficiaryAddress": "0x4e702165bc042e38b4e22653751e49d40ed9e732",
     "pricePerSecond": "13520",
     "isFree": false,
-    "priceCurrency": "USD",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 361,
-    "owner": "Tester Admin"
+    "owner": "Tester Admin",
+    "chain": "ETHEREUM"
   },
   {
     "id": "a6fc1d244b64bb6ba9b5e01df56c5b54d65a2d006d949e858bfc67ed2465df58",
@@ -163,9 +170,10 @@
     "beneficiaryAddress": "0xdb0ada416674557aa697cf33d261ce02d4016776",
     "pricePerSecond": "521900",
     "isFree": false,
-    "priceCurrency": "DATA",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 303,
-    "owner": "Tester One"
+    "owner": "Tester One",
+    "chain": "ETHEREUM"
   },
   {
     "id": "920a9a3d4b7eaa08349669b1c8cece3e6156587393a1689145541f55e3a36405",
@@ -184,9 +192,10 @@
     "beneficiaryAddress": "0x996f0e99758d8fd32d196243fa178a95a6c71784",
     "pricePerSecond": "998000",
     "isFree": false,
-    "priceCurrency": "DATA",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 505,
-    "owner": "Tester One"
+    "owner": "Tester One",
+    "chain": "ETHEREUM"
   },
   {
     "id": "4aa07d53461ce9b4904bcaf1f1c67c37daee99935656d1c303fa776ec5a20d88",
@@ -203,8 +212,9 @@
     "beneficiaryAddress": "0x66c595baf661c8dfcebc50dd431b727246d748d4",
     "pricePerSecond": "0",
     "isFree": true,
-    "priceCurrency": "DATA",
+    "pricingTokenAddress": "0x8f693ca8D21b157107184d29D398A8D082b38b76",
     "minimumSubscriptionInSeconds": 18,
-    "owner": "Tester One"
+    "owner": "Tester One",
+    "chain": "ETHEREUM"
   }
 ]
