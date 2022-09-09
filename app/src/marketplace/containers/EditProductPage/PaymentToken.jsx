@@ -17,7 +17,8 @@ const PaymentToken = ({ disabled }: Props) => (
     <Section id="pricingToken">
         <h1>Choose payment token</h1>
         <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Negat enim summo bono afferre incrementum diem. Qui enim existimabit posse se miserum esse beatus non erit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Negat enim summo bono afferre incrementum diem.
+            You can choose the token to price your product and receive payments in.
+            Any ERC-20 token on the selected chain can be used by pasting in the address of the token smart contract.
         </p>
         <TokenSelector disabled={disabled} />
     </Section>
