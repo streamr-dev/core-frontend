@@ -7,7 +7,6 @@ import {
     getValidId,
     mapProductFromContract,
     mapPriceToContract,
-    validateProductPriceCurrency,
     validateContractProductPricePerSecond,
 } from '$mp/utils/product'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
