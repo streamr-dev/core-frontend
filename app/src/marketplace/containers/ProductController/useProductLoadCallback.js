@@ -40,6 +40,7 @@ export default function useProductLoadCallback() {
         wrap(async () => {
             let product
             try {
+                // $FlowFixMe: possibly missing property beneficiaryAddress in Promise
                 product = await getProductById(productId, useAuthorization)
             } catch (error) {
                 if (!isMounted()) { return }
