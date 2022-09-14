@@ -60,16 +60,10 @@ type Props = {
     className?: string,
 }
 
-const Management = ({
-    product,
-    dataUnion,
-    stats,
-    className,
-}: Props) => {
+const Management = ({ product, dataUnion, stats, className }: Props) => {
     const [days, setDays] = useState(7)
     const [subsDays, setSubsDays] = useState(7)
     const { loadDataUnion } = useController()
-    const { joinPartStreamId } = dataUnion || {}
     const memberCount = (stats && stats.memberCount) || 0
     const { beneficiaryAddress } = product
     const chainId = getChainIdFromApiString(product.chain)
@@ -118,15 +112,9 @@ const Management = ({
                 </GraphHeader>
                 {dataUnion && !!dataUnion.id && (
                     <MembersGraph
-                        joinPartStreamId={joinPartStreamId}
+                        dataUnionAddress={dataUnion.id}
                         memberCount={(memberCount && memberCount.total) || 0}
                         shownDays={days}
-                    />
-                ) : (
-                    <MembersGraphV2
-                        memberCount={(memberCount && memberCount.active) || 0}
-                        shownDays={days}
-                        dataUnionAddress={dataUnion && dataUnion.id}
                         chainId={chainId}
                     />
                 )}

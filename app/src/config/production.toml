@@ -7,6 +7,7 @@ web3TransactionConfirmationBlocks = 1
 marketplaceChains = ['ethereum', 'gnosis', 'polygon']
 dataunionChains = ['gnosis', 'polygon']
 streamChains = ['polygon']
+theGraphUrl = "https://api.thegraph.com"
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 1

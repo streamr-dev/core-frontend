@@ -9,5 +9,6 @@ export default function getCoreConfig() {
         landingPageUrl: formatConfigUrl(core?.landingPageUrl) || 'https://streamr.network',
         platformOriginUrl: formatConfigUrl(core?.platformOriginUrl),
         streamrUrl: formatConfigUrl(core?.streamrUrl),
+        theGraphUrl: formatConfigUrl(core?.theGraphUrl),
     }
 }

@@ -32,7 +32,7 @@ const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }:
     useEffect(() => {
         const loadData = async () => {
             try {
-                const statistics = await getMemberStatistics(dataUnionAddress, startDate)
+                const statistics = await getMemberStatistics(dataUnionAddress, chainId, startDate)
                 if (isMounted()) {
                     setMemberData(statistics)
                 }
@@ -44,7 +44,7 @@ const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }:
         if (dataUnionAddress) {
             loadData()
         }
-    }, [dataUnionAddress, startDate, reset, isMounted, memberCount])
+    }, [dataUnionAddress, chainId, startDate, reset, isMounted, memberCount])
 
     useEffect(() => {
         const data = []

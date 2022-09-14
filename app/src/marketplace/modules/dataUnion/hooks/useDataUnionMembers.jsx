@@ -40,7 +40,7 @@ function useDataUnionMembers() {
                 generator.current = null
                 reset()
             }
-            generator.current = getMemberStatuses(dataUnionId)
+            generator.current = getMemberStatuses(dataUnionId, chainId)
 
             // eslint-disable-next-line no-restricted-syntax
             for await (const event of generator.current) {
@@ -74,9 +74,9 @@ function useDataUnionMembers() {
         }
     }, [isMounted])
 
-    const search = useCallback(async (dataUnionId, text) => {
+    const search = useCallback(async (dataUnionId, text, chainId) => {
         const searchResults = await searchDataUnionMembers(dataUnionId, text)
-        const resultsWithStatuses = await getSelectedMemberStatuses(dataUnionId, searchResults.slice(0, VISIBLE_MEMBERS_LIMIT))
+        const resultsWithStatuses = await getSelectedMemberStatuses(dataUnionId, searchResults.slice(0, VISIBLE_MEMBERS_LIMIT), chainId)
         return resultsWithStatuses
     }, [])
 
