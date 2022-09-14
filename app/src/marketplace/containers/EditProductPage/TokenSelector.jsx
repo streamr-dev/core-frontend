@@ -6,10 +6,12 @@ import styled from 'styled-components'
 import Text from '$ui/Text'
 import Label from '$ui/Label'
 import SvgIcon from '$shared/components/SvgIcon'
-import Button from '$shared/components/Button'
+import UnstyledButton from '$shared/components/Button'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
-import getChainId from '$utils/web3/getChainId'
-import { getDataAddress } from '$mp/utils/web3'
+import { getDataAddress, getTokenInformation } from '$mp/utils/web3'
+import { getChainIdFromApiString } from '$shared/utils/chains'
+import UnstyledTokenLogo from '$shared/components/TokenLogo'
+import useIsMounted from '$shared/hooks/useIsMounted'
 
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 
@@ -62,9 +64,24 @@ const CustomTokenContainer = styled.div`
     margin: 0 24px 24px 48px;
 `
 
-const AddButton = styled(Button)`
+const Button = styled(UnstyledButton)`
     width: fit-content;
     justify-self: right;
+`
+
+const TokenLogo = styled(UnstyledTokenLogo)`
+    margin-right: 8px;
+`
+
+const MatchedTokenField = styled.div`
+    background: #F8F8F8;
+    border-radius: 4px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    font-size: 16px;
+    line-height: 16px;
 `
 
 const TokenType = {
@@ -73,26 +90,52 @@ const TokenType = {
 }
 
 const TokenSelector = ({ disabled }: Props) => {
+    const isMounted = useIsMounted()
     const { state: product } = useEditableState()
     const { updatePricingToken } = useEditableProductActions()
     const [selection, setSelection] = useState(null)
     const [customTokenAddress, setCustomTokenAddress] = useState('')
     const [selectedTokenAddress, setSelectedTokenAddress] = useState(null)
+    const [tokenSymbol, setTokenSymbol] = useState(null)
+    const [isEditable, setIsEditable] = useState(false)
+    const chainId = getChainIdFromApiString(product.chain)
 
     useEffect(() => {
         const check = async () => {
-            const chainId = await getChainId()
             const dataAddress = getDataAddress(chainId)
             if (product.pricingTokenAddress === dataAddress) {
                 setSelection(TokenType.DATA)
-                setCustomTokenAddress('')
             } else if (product.pricingTokenAddress != null) {
                 setSelection(TokenType.Custom)
                 setCustomTokenAddress(product.pricingTokenAddress)
+
+                const info = await getTokenInformation(product.pricingTokenAddress, chainId)
+                if (!isMounted()) {
+                    return
+                }
+
+                if (info) {
+                    setTokenSymbol(info.symbol)
+                } else {
+                    setTokenSymbol(null)
+                }
             }
         }
         check()
-    }, [product.pricingTokenAddress])
+    }, [product.pricingTokenAddress, chainId, isMounted])
+
+    useEffect(() => {
+        if (selection === TokenType.DATA) {
+            setCustomTokenAddress('')
+            setSelectedTokenAddress(getDataAddress(chainId))
+            setIsEditable(false)
+            setTokenSymbol(null)
+        } else if (selection === TokenType.Custom) {
+            setSelectedTokenAddress(null)
+            setIsEditable(customTokenAddress.length === 0)
+            setTokenSymbol(null)
+        }
+    }, [selection, chainId, customTokenAddress])
 
     useEffect(() => {
         if (selectedTokenAddress) {
@@ -109,11 +152,8 @@ const TokenSelector = ({ disabled }: Props) => {
                         type="radio"
                         name="token"
                         checked={selection === TokenType.DATA}
-                        onChange={async () => {
+                        onChange={() => {
                             setSelection(TokenType.DATA)
-                            const chainId = await getChainId()
-                            const address = getDataAddress(chainId)
-                            setSelectedTokenAddress(address)
                         }}
                         disabled={disabled}
                     />
@@ -130,7 +170,6 @@ const TokenSelector = ({ disabled }: Props) => {
                         checked={selection === TokenType.Custom}
                         onChange={() => {
                             setSelection(TokenType.Custom)
-                            setSelectedTokenAddress(null)
                         }}
                         disabled={disabled}
                     />
@@ -138,24 +177,51 @@ const TokenSelector = ({ disabled }: Props) => {
                 </RadioContainer>
                 <CustomTokenContainer>
                     <SmallLabel htmlFor="tokenContractAddress">
-                        Add token contract address
-                        <Text
-                            id="tokenContractAddress"
-                            autoComplete="off"
-                            disabled={selection !== TokenType.Custom || disabled}
-                            placeholder="e.g 0xdac17f958d2ee523a2206206994597c13d831ec7"
-                            value={customTokenAddress}
-                            onChange={(e) => setCustomTokenAddress(e.target.value)}
-                            selectAllOnFocus
-                            smartCommit
-                        />
+                        Token contract address
+                        {tokenSymbol == null ? (
+                            <Text
+                                id="tokenContractAddress"
+                                autoComplete="off"
+                                disabled={selection !== TokenType.Custom || disabled || !isEditable}
+                                placeholder="e.g 0xdac17f958d2ee523a2206206994597c13d831ec7"
+                                value={customTokenAddress}
+                                onChange={(e) => setCustomTokenAddress(e.target.value)}
+                                selectAllOnFocus
+                                smartCommit
+                            />
+                        ) : (
+                            <MatchedTokenField>
+                                <TokenLogo
+                                    contractAddress={selectedTokenAddress}
+                                    chainId={chainId}
+                                />
+                                {' '}
+                                <span>{tokenSymbol}</span>
+                            </MatchedTokenField>
+                        )}
                     </SmallLabel>
-                    <AddButton
-                        disabled={selection !== TokenType.Custom || disabled}
-                        onClick={() => setSelectedTokenAddress(customTokenAddress)}
-                    >
-                        {customTokenAddress ? 'Change' : 'Add'} custom token
-                    </AddButton>
+                    {isEditable ? (
+                        <Button
+                            disabled={selection !== TokenType.Custom || disabled || (customTokenAddress != null && customTokenAddress.length === 0)}
+                            onClick={() => {
+                                setSelectedTokenAddress(customTokenAddress)
+                                setIsEditable(false)
+                            }}
+                        >
+                            Add custom token
+                        </Button>
+                    ) : (
+                        <Button
+                            disabled={selection !== TokenType.Custom || disabled || (customTokenAddress != null && customTokenAddress.length === 0)}
+                            onClick={() => {
+                                setIsEditable(true)
+                                setCustomTokenAddress('')
+                                setTokenSymbol(null)
+                            }}
+                        >
+                            Change custom token
+                        </Button>
+                    )}
                 </CustomTokenContainer>
             </Item>
         </Container>

@@ -35,7 +35,9 @@ const PriceField = ({
     useEffect(() => {
         const load = async () => {
             const info = await getTokenInformation(pricingTokenAddress)
-            setSymbol(info.symbol)
+            if (info) {
+                setSymbol(info.symbol)
+            }
         }
         load()
     }, [pricingTokenAddress])
