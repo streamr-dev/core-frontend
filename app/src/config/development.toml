@@ -10,6 +10,7 @@ web3TransactionConfirmationBlocks = 1
 marketplaceChains = ['dev0', 'dev1']
 dataunionChains = ['dev1']
 streamChains = ['dev1']
+theGraphUrl = ":8000"
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 8995

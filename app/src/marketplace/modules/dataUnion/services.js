@@ -5,6 +5,7 @@ import DataUnionClient from '@dataunions/client'
 import BN from 'bignumber.js'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import getConfig, { getConfigForChain } from '$shared/web3/config'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
@@ -224,7 +225,8 @@ export async function* getJoinsAndParts(id: DataUnionId, chainId: number, fromTi
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
+export const getMemberStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
+    const { theGraphUrl } = getCoreConfig()
     const accuracy = 'HOUR' // HOUR or DAY
     let toTimestampFixed = toTimestamp || Date.now()
 
@@ -233,7 +235,7 @@ export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number
     toTimestampFixed = Date.now() + offset
 
     const result = await post({
-        url: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/dataunion`,
+        url: `${theGraphUrl}/subgraphs/name/streamr-dev/dataunion`,
         data: {
             query: `
                 query {
@@ -258,9 +260,10 @@ export const getMemberStatistics = async (id: DataUnionId, fromTimestamp: number
     return result.data.dataUnionStatsBuckets
 }
 
-export const getDataUnionMembers = async (id: DataUnionId, limit: number = 100): Promise<Array<string>> => {
+export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit: number = 100): Promise<Array<string>> => {
+    const { theGraphUrl } = getCoreConfig()
     const result = await post({
-        url: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/dataunion`,
+        url: `${theGraphUrl}/subgraphs/name/streamr-dev/dataunion`,
         data: {
             query: `
                 query {
@@ -280,9 +283,10 @@ export const getDataUnionMembers = async (id: DataUnionId, limit: number = 100):
     return []
 }
 
-export const searchDataUnionMembers = async (id: DataUnionId, query: string, limit: number = 100): Promise<Array<string>> => {
+export const searchDataUnionMembers = async (id: DataUnionId, query: string, limit: number = 100, chainId: number): Promise<Array<string>> => {
+    const { theGraphUrl } = getCoreConfig()
     const result = await post({
-        url: `${process.env.THE_GRAPH_API_URL}/subgraphs/name/streamr-dev/dataunion`,
+        url: `${theGraphUrl}/subgraphs/name/streamr-dev/dataunion`,
         data: {
             query: `
                 query {
@@ -309,41 +313,11 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, lim
     return []
 }
 
-// eslint-disable-next-line camelcase
-async function* deprecated_getMemberStatuses(id: DataUnionId, timestampFrom: number = 0): any {
-    const dataUnion = await getDataUnion(id)
-    const client = createClient()
-    await client.ensureConnected()
-    const sub = await client.subscribe({
-        streamId: dataUnion.joinPartStreamId,
-        resend: {
-            from: {
-                timestamp: timestampFrom,
-            },
-        },
-    })
-
-    /* eslint-disable no-restricted-syntax */
-    for await (const msg of sub) {
-        if (msg.parsedContent.addresses != null) {
-            for (const address of msg.parsedContent.addresses) {
-                yield {
-                    address,
-                    earnings: NaN,
-                    withdrawable: NaN,
-                    status: 'NOT_AVAILABLE',
-                }
-            }
-        }
-    }
-    /* eslint-enable no-restricted-syntax */
-}
-
-export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<string>): any {
+export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<string>, chainId: number): any {
     const statuses = []
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const status of getMemberStatusesWithClient(id, members)) {
+    for await (const status of getMemberStatusesWithClient(id, members, chainId)) {
         statuses.push(status)
     }
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
@@ -351,8 +325,8 @@ export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<
     return statuses
 }
 
-async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>): any {
-    const client = createClient()
+async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>, chainId: number): any {
+    const client = createClient(chainId)
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for (const memberAddress of members) {
@@ -366,19 +340,13 @@ async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<stri
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-export async function* getMemberStatusesFromTheGraph(id: DataUnionId): any {
-    const members = await getDataUnionMembers(id)
-    yield* getMemberStatusesWithClient(id, members)
+export async function* getMemberStatusesFromTheGraph(id: DataUnionId, chainId: number): any {
+    const members = await getDataUnionMembers(id, chainId)
+    yield* getMemberStatusesWithClient(id, members, chainId)
 }
 
-export async function* getMemberStatuses(id: DataUnionId): any {
-    const version = await getDataUnionVersion(id)
-
-    if (version === 1) {
-        yield* deprecated_getMemberStatuses(id)
-    } else if (version === 2) {
-        yield* getMemberStatusesFromTheGraph(id)
-    }
+export async function* getMemberStatuses(id: DataUnionId, chainId: number): any {
+    yield* getMemberStatusesFromTheGraph(id, chainId)
 }
 
 // ----------------------

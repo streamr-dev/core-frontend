@@ -128,7 +128,7 @@ type Props = {
     className?: string,
 }
 
-const ManageJoinRequests = ({ dataUnion, chainId, joinRequests, className }: Props) => {
+const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
     const isMounted = useIsMounted()
     const [processingRequests, setProcessingRequests] = useState([])
     const [approveAllProcessing, setApproveAllProcessing] = useState(false)

@@ -226,7 +226,7 @@ const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
     useEffect(() => {
         const doSearch = async () => {
             try {
-                const results = await searchMembers(dataUnionId, search)
+                const results = await searchMembers(dataUnionId, search, chainId)
 
                 if (isMounted()) {
                     setSearchResults(results)
@@ -236,7 +236,7 @@ const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
             }
         }
         doSearch()
-    }, [search, dataUnionId, isMounted, searchMembers])
+    }, [search, dataUnionId, chainId, isMounted, searchMembers])
 
     const listing = search.length > 0 ? searchResults : members
 
@@ -296,7 +296,7 @@ const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
                             )
                         })
                     }
-                    {members.length === 0 && (
+                    {members.length === 0 && !search && (
                         <CenteredMessage>No members at the moment</CenteredMessage>
                     )}
                 </TableRows>
