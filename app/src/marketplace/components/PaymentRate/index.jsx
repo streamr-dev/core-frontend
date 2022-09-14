@@ -32,7 +32,7 @@ const PaymentRate = (props: Props) => {
         const check = async () => {
             if (pricingTokenAddress != null) {
                 const info = await getTokenInformation(pricingTokenAddress, chainId)
-                if (isMounted()) {
+                if (isMounted() && info) {
                     setCurrency(currencies.PRODUCT_DEFINED)
                     setSymbol(info.symbol)
                 }

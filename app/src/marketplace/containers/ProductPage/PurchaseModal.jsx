@@ -113,7 +113,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         const load = async () => {
             if (pricingTokenAddress != null) {
                 const info = await getTokenInformation(pricingTokenAddress, chainId)
-                if (isMounted()) {
+                if (isMounted() && info) {
                     setProductTokenSymbol(info.symbol)
                 }
             }

@@ -162,15 +162,20 @@ export const getBalances = (): Promise<[BN, BN, BN]> => {
     return Promise.all([ethPromise, dataPromise, daiPromise])
 }
 
-export const getTokenInformation = async (address: Address, chainId?: number): Promise<Object> => {
+export const getTokenInformation = async (address: Address, chainId?: number): Promise<?Object> => {
     const actualChainId = chainId || await getChainId()
-    const contract = erc20TokenContractMethods(address, true, actualChainId)
-    const symbol = await contract.symbol().call()
-    const name = await contract.name().call()
 
-    return {
-        symbol,
-        name,
+    try {
+        const contract = erc20TokenContractMethods(address, true, actualChainId)
+        const symbol = await contract.symbol().call()
+        const name = await contract.name().call()
+
+        return {
+            symbol,
+            name,
+        }
+    } catch (e) {
+        return null
     }
 }
 
