@@ -66,6 +66,7 @@ const Management = ({ product, dataUnion, stats, className }: Props) => {
     const { loadDataUnion } = useController()
     const memberCount = (stats && stats.memberCount) || 0
     const { beneficiaryAddress } = product
+    const dataUnionId = beneficiaryAddress
     const chainId = getChainIdFromApiString(product.chain)
 
     useEffect(() => {
@@ -79,6 +80,7 @@ const Management = ({ product, dataUnion, stats, className }: Props) => {
     return (
         <Container className={className}>
             <StyledManageMembers
+                dataUnionId={dataUnionId}
                 dataUnion={dataUnion}
                 chainId={chainId}
             />
@@ -110,9 +112,9 @@ const Management = ({ product, dataUnion, stats, className }: Props) => {
                         />
                     </TimeSeriesGraph.Header>
                 </GraphHeader>
-                {dataUnion && !!dataUnion.id && (
+                {dataUnionId && (
                     <MembersGraph
-                        dataUnionAddress={dataUnion.id}
+                        dataUnionAddress={dataUnionId}
                         memberCount={(memberCount && memberCount.total) || 0}
                         shownDays={days}
                         chainId={chainId}

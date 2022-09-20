@@ -168,13 +168,13 @@ const Removing = styled.div`
 
 type Props = {
     dataUnion: any,
+    dataUnionId: string,
     chainId: number,
     className?: string,
 }
 
-const ManageMembers = ({ dataUnion, chainId, className }: Props) => {
+const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) => {
     const isMounted = useIsMounted()
-    const dataUnionId = dataUnion && dataUnion.id
     const [search, setSearch] = useState('')
     const [searchResults, setSearchResults] = useState([])
     const [processingMembers, setProcessingMembers] = useState([])
