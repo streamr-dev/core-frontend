@@ -20,6 +20,10 @@ blockNumber = 1
 chainId = 8997
 blockNumber = 1
 
+[[core.dataunionGraphNames]]
+chainId = 8997
+name = "streamr-dev/dataunion"
+
 [[core.storageNodes]]
 name = "Local (broker-node-storage-1)"
 address = "0xde1112f631486CfC759A50196853011528bC5FA0"

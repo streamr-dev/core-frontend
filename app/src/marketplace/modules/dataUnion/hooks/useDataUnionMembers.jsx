@@ -75,7 +75,7 @@ function useDataUnionMembers() {
     }, [isMounted])
 
     const search = useCallback(async (dataUnionId, text, chainId) => {
-        const searchResults = await searchDataUnionMembers(dataUnionId, text)
+        const searchResults = await searchDataUnionMembers(dataUnionId, text, chainId)
         const resultsWithStatuses = await getSelectedMemberStatuses(dataUnionId, searchResults.slice(0, VISIBLE_MEMBERS_LIMIT), chainId)
         return resultsWithStatuses
     }, [])

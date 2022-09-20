@@ -41,6 +41,7 @@ const Icon = styled(SvgIcon)`
 const Radio = styled.input`
     width: 16px;
     justify-self: center;
+    align-self: center;
 `
 
 const RadioContainer = styled.label`

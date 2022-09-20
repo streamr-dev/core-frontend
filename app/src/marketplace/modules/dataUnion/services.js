@@ -3,6 +3,7 @@
 import EventEmitter from 'events'
 import DataUnionClient from '@dataunions/client'
 import BN from 'bignumber.js'
+import { hexToNumber } from 'web3-utils'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
@@ -34,6 +35,11 @@ const createClient = (chainId: number) => {
         throw new Error(`No contract address for DataUnionFactory found for chain ${chainId}. Try a different chain.`)
     }
 
+    const providerChainId = hexToNumber(provider.chainId)
+    if (providerChainId !== chainId) {
+        console.warn(`Current MetaMask provider is connected to ${providerChainId}. DU lives in ${chainId}.`)
+    }
+
     const clientConfig = getClientConfig({
         auth: {
             ethereum: provider,
@@ -51,6 +57,20 @@ const createClient = (chainId: number) => {
         joinServerUrl: 'http://localhost:5555',
     })
     return new DataUnionClient(clientConfig)
+}
+
+const getDataunionSubgraphUrlForChain = (chainId: number): string => {
+    const { theGraphUrl } = getCoreConfig()
+    const map = getCoreConfig().dataunionGraphNames
+    const item = map.find((i) => i.chainId === chainId)
+
+    if (item == null || item.name == null) {
+        throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
+    }
+
+    const url = `${theGraphUrl}/subgraphs/name/${item.name}`
+    console.log(url)
+    return url
 }
 
 // ----------------------
@@ -226,7 +246,7 @@ export async function* getJoinsAndParts(id: DataUnionId, chainId: number, fromTi
 }
 
 export const getMemberStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
-    const { theGraphUrl } = getCoreConfig()
+    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const accuracy = 'HOUR' // HOUR or DAY
     let toTimestampFixed = toTimestamp || Date.now()
 
@@ -235,12 +255,13 @@ export const getMemberStatistics = async (id: DataUnionId, chainId: number, from
     toTimestampFixed = Date.now() + offset
 
     const result = await post({
-        url: `${theGraphUrl}/subgraphs/name/streamr-dev/dataunion`,
+        url: theGraphUrl,
         data: {
             query: `
                 query {
                     dataUnionStatsBuckets(
                         where: {
+                            dataUnionAddress: "${id.toLowerCase()}",
                             type: "${accuracy}",
                             startDate_gte: ${Math.floor(fromTimestamp / 1000)},
                             endDate_lte: ${Math.ceil(toTimestampFixed / 1000)}
@@ -261,9 +282,9 @@ export const getMemberStatistics = async (id: DataUnionId, chainId: number, from
 }
 
 export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit: number = 100): Promise<Array<string>> => {
-    const { theGraphUrl } = getCoreConfig()
+    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
-        url: `${theGraphUrl}/subgraphs/name/streamr-dev/dataunion`,
+        url: theGraphUrl,
         data: {
             query: `
                 query {
@@ -283,10 +304,10 @@ export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limi
     return []
 }
 
-export const searchDataUnionMembers = async (id: DataUnionId, query: string, limit: number = 100, chainId: number): Promise<Array<string>> => {
-    const { theGraphUrl } = getCoreConfig()
+export const searchDataUnionMembers = async (id: DataUnionId, query: string, chainId: number, limit: number = 100): Promise<Array<string>> => {
+    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
-        url: `${theGraphUrl}/subgraphs/name/streamr-dev/dataunion`,
+        url: theGraphUrl,
         data: {
             query: `
                 query {
@@ -330,7 +351,7 @@ async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<stri
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
     for (const memberAddress of members) {
-        const dataUnion = client.getDataUnion(id)
+        const dataUnion = await client.getDataUnion(id)
         const memberData = await dataUnion.getMemberStats(memberAddress)
         yield {
             ...memberData,
