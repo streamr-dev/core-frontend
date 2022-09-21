@@ -1302,8 +1302,13 @@ describe('EditControllerProvider', () => {
 
             const expectedProduct = {
                 ...product,
+                pendingChanges: {
+                    adminFee: '0.3',
+                    pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
+                },
             }
             delete expectedProduct.adminFee
+            delete expectedProduct.pricingTokenAddress
 
             expect(currentContext.publishAttempted).toBe(true)
             expect(modalOpenStub).toHaveBeenCalledTimes(1)

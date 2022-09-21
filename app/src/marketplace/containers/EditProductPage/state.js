@@ -49,29 +49,39 @@ export const getChangeObject = (original: Product, next: Product): Object => (
     Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => !isEqual(value, original[key])))
 )
 
+// Returns smart contract field changes and other changes separated
+const getChanges = (product: Product) => {
+    const { adminFee, requiresWhitelist, pricingTokenAddress, ...otherChanges } = product
+
+    // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
+    const smartContractFields = {
+        ...(adminFee ? {
+            adminFee,
+        } : {}),
+        ...(requiresWhitelist ? {
+            requiresWhitelist,
+        } : {}),
+        ...(pricingTokenAddress ? {
+            pricingTokenAddress,
+        } : {}),
+    }
+    return [smartContractFields, otherChanges]
+}
+
 export function getPendingChanges(product: Product): Object {
-    const isPublic = isPublished(product)
-    const isDataUnion = isDataUnionProduct(product)
+    const isProductPublished = isPublished(product)
+    const [smartContractFields, otherChanges] = getChanges(getPendingObject(product.pendingChanges || {}))
 
-    if (isPublic || isDataUnion) {
-        const { adminFee, ...otherPendingChanges } = getPendingObject(product.pendingChanges || {})
-
-        if (isPublic) {
-            // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
-            return {
-                ...otherPendingChanges,
-                ...(adminFee ? {
-                    adminFee,
-                } : {}),
-            }
-        } else if (isDataUnion && adminFee) {
-            return {
-                adminFee,
-            }
+    if (isProductPublished) {
+        return {
+            ...otherChanges,
+            ...smartContractFields,
         }
     }
 
-    return {}
+    return {
+        ...smartContractFields,
+    }
 }
 
 export function hasPendingChange(product: Product, field: string) {
@@ -82,27 +92,23 @@ export function hasPendingChange(product: Product, field: string) {
 
 export function update(product: Product, fn: Function) {
     const result = fn(product)
-    const { adminFee, ...otherChanges } = result
-    const isPublic = isPublished(product)
+    const [smartContractFields, otherChanges] = getChanges(result)
+    const isProductPublished = isPublished(product)
 
-    if (isPublic) {
+    if (isProductPublished) {
         return {
             ...product,
             pendingChanges: {
                 ...getChangeObject(product, result),
             },
         }
-    } else if (isDataUnionProduct(product)) {
-        return {
-            ...otherChanges,
-            pendingChanges: {
-                adminFee,
-            },
-        }
     }
 
     return {
         ...otherChanges,
+        pendingChanges: {
+            ...smartContractFields,
+        },
     }
 }
 

@@ -750,8 +750,11 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    requiresWhitelist: true,
                     chain: 'ETHEREUM',
+                    pendingChanges: {
+                        requiresWhitelist: true,
+                        pricingTokenAddress: '0x124',
+                    },
                 })
 
                 expect(result.mode).toBe(publishModes.PUBLISH)
@@ -809,6 +812,7 @@ describe('usePublish', () => {
                     state: 'NOT_DEPLOYED',
                     ownerAddress: '',
                     requiresWhitelist: true,
+                    pricingTokenAddress: '0x124',
                 })
                 expect(putProductStub).not.toBeCalled()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)

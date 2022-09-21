@@ -28,6 +28,7 @@ import type { Secret } from './types'
 const createClient = (chainId: number) => {
     const provider = getWeb3().currentProvider
     const config = getConfigForChain(chainId)
+    const { dataUnionJoinServerUrl } = getCoreConfig()
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
     const factoryAddress = config.contracts.DataUnionFactory
 
@@ -36,13 +37,14 @@ const createClient = (chainId: number) => {
     }
 
     const providerChainId = hexToNumber(provider.chainId)
-    if (providerChainId !== chainId) {
-        console.warn(`Current MetaMask provider is connected to ${providerChainId}. DU lives in ${chainId}.`)
-    }
+    const isProviderInCorrectChain = providerChainId === chainId
 
     const clientConfig = getClientConfig({
         auth: {
-            ethereum: provider,
+            // If MetaMask is in right chain, use it to enable signing
+            ethereum: isProviderInCorrectChain ? provider : undefined,
+            // Otherwise use a throwaway private key to authenticate and allow read-only mode
+            privateKey: !isProviderInCorrectChain ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304' : undefined,
         },
         network: {
             chainId,
@@ -54,7 +56,7 @@ const createClient = (chainId: number) => {
         dataUnion: {
             factoryAddress,
         },
-        joinServerUrl: 'http://localhost:5555',
+        joinServerUrl: dataUnionJoinServerUrl || undefined,
     })
     return new DataUnionClient(clientConfig)
 }
@@ -69,7 +71,6 @@ const getDataunionSubgraphUrlForChain = (chainId: number): string => {
     }
 
     const url = `${theGraphUrl}/subgraphs/name/${item.name}`
-    console.log(url)
     return url
 }
 
@@ -327,7 +328,7 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
         // we cannot do filtering on the query itself so we
         // have to manually pick results only for this dataunion.
         const members = result.data.members
-            .filter((m) => m.dataunion.mainchainAddress === id)
+            .filter((m) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase())
             .map((m) => m.address)
         return members
     }
