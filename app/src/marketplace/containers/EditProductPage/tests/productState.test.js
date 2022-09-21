@@ -36,7 +36,7 @@ describe('Product State', () => {
             })).toMatchObject(allowed)
         })
 
-        it('it returns only defined values', () => {
+        it('returns only defined values', () => {
             expect(State.getPendingObject({
                 id: '1',
                 name: 'new name',
@@ -209,13 +209,17 @@ describe('Product State', () => {
             }
             expect(State.update(product, (p) => ({
                 ...p,
+                adminFee: '0.2',
                 pricingTokenAddress: '0x123',
                 requiresWhitelist: true,
             }))).toMatchObject({
                 id: '1',
                 state: productStates.NOT_DEPLOYED,
-                pricingTokenAddress: '0x123',
-                requiresWhitelist: true,
+                pendingChanges: {
+                    adminFee: '0.2',
+                    pricingTokenAddress: '0x123',
+                    requiresWhitelist: true,
+                },
             })
         })
 
@@ -433,6 +437,49 @@ describe('Product State', () => {
             })
         })
 
+        it('returns smart contract fields as pending changes for unpublished data union', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                adminFee: '0.2',
+                state: productStates.NOT_DEPLOYED,
+                type: productTypes.DATAUNION,
+            }
+            expect(State.getPendingChanges(State.update(product, (p) => ({
+                ...p,
+                name: 'Better Name',
+                description: 'A better description',
+                adminFee: '0.4',
+                pricingTokenAddress: '0x123',
+                requiresWhitelist: true,
+            })))).toMatchObject({
+                adminFee: '0.4',
+                pricingTokenAddress: '0x123',
+                requiresWhitelist: true,
+            })
+        })
+
+        it('returns smart contract fields as pending changes for unpublished normal product', () => {
+            const product = {
+                id: '1',
+                name: 'My Product',
+                description: 'My nice product',
+                state: productStates.NOT_DEPLOYED,
+                type: productTypes.NORMAL,
+            }
+            expect(State.getPendingChanges(State.update(product, (p) => ({
+                ...p,
+                name: 'Better Name',
+                description: 'A better description',
+                pricingTokenAddress: '0x123',
+                requiresWhitelist: true,
+            })))).toMatchObject({
+                pricingTokenAddress: '0x123',
+                requiresWhitelist: true,
+            })
+        })
+
         it('returns pending changes for nested objects', () => {
             const product = {
                 id: '1',
@@ -454,7 +501,7 @@ describe('Product State', () => {
     })
 
     describe('hasPendingChange', () => {
-        it('it returns false for unpublished product change', () => {
+        it('returns false for unpublished product change', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -472,7 +519,7 @@ describe('Product State', () => {
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(false)
         })
 
-        it('it returns true for unpublished data union admin fee change', () => {
+        it('returns true for unpublished data union admin fee change', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -493,7 +540,7 @@ describe('Product State', () => {
             expect(State.hasPendingChange(nextProduct, 'adminFee')).toBe(true)
         })
 
-        it('it returns true for published product change', () => {
+        it('returns true for published product change', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -511,7 +558,7 @@ describe('Product State', () => {
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(true)
         })
 
-        it('it returns true if pending fields are set to empty', () => {
+        it('returns true if pending fields are set to empty', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -534,7 +581,7 @@ describe('Product State', () => {
             expect(State.hasPendingChange(nextProduct, 'otherField')).toBe(false)
         })
 
-        it('it returns true for nested property changes', () => {
+        it('returns true for nested property changes', () => {
             const product = {
                 id: '1',
                 state: productStates.DEPLOYED,
@@ -555,7 +602,7 @@ describe('Product State', () => {
     })
 
     describe('withPendingChanges', () => {
-        it('it returns the current data for unpublished product', () => {
+        it('returns the current data for unpublished product', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -576,7 +623,7 @@ describe('Product State', () => {
             })
         })
 
-        it('it returns the current data and updated admin fee for unpublished data union', () => {
+        it('returns the current data and updated admin fee for unpublished data union', () => {
             const product = {
                 id: '1',
                 name: 'My Product',
@@ -602,7 +649,7 @@ describe('Product State', () => {
             })
         })
 
-        it('it returns the updated data for published product', () => {
+        it('returns the updated data for published product', () => {
             const product = {
                 id: '1',
                 name: 'My Product',

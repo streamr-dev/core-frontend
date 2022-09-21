@@ -133,6 +133,7 @@ function useEditController(product: Product) {
             }
 
             // save product (don't need to abort if unmounted)
+            // $FlowFixMe: object literal weirdness
             await putProduct(State.update(originalProduct, () => ({
                 ...nextProduct,
             })), nextProduct.id || '')
@@ -234,6 +235,7 @@ function useEditController(product: Product) {
             updateBeneficiaryAddress(address, false)
 
             // save the new address immediately to db
+            // $FlowFixMe: object literal weirdness
             await putProduct(State.update(productRef.current, () => ({
                 ...productRef.current,
                 beneficiaryAddress: address,
