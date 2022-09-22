@@ -15,11 +15,11 @@ blockNumber = 13575716
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 100
-blockNumber = 21618503
+blockNumber = 23758654
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 137
-blockNumber = 26043621
+blockNumber = 32026284
 
 [[core.dataunionGraphNames]]
 chainId = 100
