@@ -136,7 +136,8 @@ const TokenSelector = ({ disabled }: Props) => {
             setIsEditable(customTokenAddress.length === 0)
             setTokenSymbol(null)
         }
-    }, [selection, chainId, customTokenAddress])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selection, chainId])
 
     useEffect(() => {
         if (selectedTokenAddress) {
