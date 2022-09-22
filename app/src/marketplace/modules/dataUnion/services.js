@@ -7,18 +7,15 @@ import { hexToNumber } from 'web3-utils'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import getConfig, { getConfigForChain } from '$shared/web3/config'
+import { getConfigForChain } from '$shared/web3/config'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
-import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
 import { post, del, get, put } from '$shared/utils/api'
-import { getContractEvents } from '$shared/utils/contractEvents'
 import getWeb3 from '$utils/web3/getWeb3'
-import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
@@ -199,51 +196,6 @@ export const removeMembers = async (id: DataUnionId, chainId: number, memberAddr
     const dataUnion = await getDataUnionObject(id, chainId)
     const receipt = await dataUnion.removeMembers(memberAddresses)
     return receipt
-}
-
-// ----------------------
-// getting events (TODO: move to streamr-client)
-// ----------------------
-
-async function* getEvents(address: string, chainId: number, eventName: string, fromBlock: number): any {
-    const web3 = getPublicWeb3(chainId)
-    const { dataunionsChain } = getConfig()
-    yield* getContractEvents(web3, dataunionsChain.dataUnionAbi, address, chainId, eventName, fromBlock)
-}
-
-export async function* getJoinsAndParts(id: DataUnionId, chainId: number, fromTimestamp: number): any {
-    const web3 = getPublicWeb3(chainId)
-    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
-
-    const handleEvent = async (e, type) => {
-        // eslint-disable-next-line no-await-in-loop
-        const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
-            const event = {
-                timestamp: block.timestamp * 1000,
-                diff: type === 'join' ? 1 : -1,
-            }
-            return event
-        }
-
-        return null
-    }
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const joins of getEvents(id, chainId, 'MemberJoined', fromBlock)) {
-        for (const join of joins) {
-            const result = await handleEvent(join, 'join')
-            yield result
-        }
-    }
-
-    for await (const parts of getEvents(id, chainId, 'MemberParted', fromBlock)) {
-        for (const part of parts) {
-            const result = await handleEvent(part, 'part')
-            yield result
-        }
-    }
-    /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
 export const getMemberStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
