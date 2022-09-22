@@ -50,7 +50,6 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const { isPending: fetchingAllStreams } = usePending('product.LOAD_ALL_STREAMS')
     const {
         product: originalProduct,
-        loadContractProductSubscription,
         loadCategories,
         loadDataUnion,
         loadDataUnionStats,
@@ -69,14 +68,12 @@ const EditProductPage = ({ product }: { product: Product }) => {
     // Load categories and streams
     useEffect(() => {
         if (productId && chainId) {
-            loadContractProductSubscription(productId, chainId)
             loadWhiteWhitelistedAdresses(productId, chainId)
         }
         loadCategories()
         loadAllStreams()
     }, [
         loadCategories,
-        loadContractProductSubscription,
         productId,
         loadAllStreams,
         loadWhiteWhitelistedAdresses,
