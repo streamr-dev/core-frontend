@@ -291,7 +291,6 @@ export default function usePublish() {
                     requireOwner: dataUnionOwner,
                     handler: (update, done) => {
                         try {
-                            console.log('enable postSetDeploying')
                             return createContractProduct({
                                 id: product.id || '',
                                 name: product.name,
@@ -309,7 +308,7 @@ export default function usePublish() {
                                     update(transactionStates.PENDING)
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
-                                    // postSetDeploying(product.id || '', hash)
+                                    postSetDeploying(product.id || '', hash)
 
                                     Activity.push({
                                         action: actionTypes.PUBLISH,
