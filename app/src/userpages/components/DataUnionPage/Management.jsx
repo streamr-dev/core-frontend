@@ -96,11 +96,13 @@ const Management = ({ product, dataUnion, stats, className }: Props) => {
                         />
                     </TimeSeriesGraph.Header>
                 </GraphHeader>
-                <SubscriberGraph
-                    productId={product.id}
-                    shownDays={subsDays}
-                    chainId={chainId}
-                />
+                {dataUnionId && (
+                    <SubscriberGraph
+                        productId={product.id}
+                        shownDays={subsDays}
+                        chainId={chainId}
+                    />
+                )}
             </Box>
             <Box>
                 <GraphHeader>

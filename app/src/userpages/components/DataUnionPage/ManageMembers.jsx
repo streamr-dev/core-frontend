@@ -191,7 +191,9 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
     useEffect(() => {
         const load = async () => {
             try {
-                await loadMembers(dataUnionId, chainId)
+                if (dataUnionId) {
+                    await loadMembers(dataUnionId, chainId)
+                }
             } catch (e) {
                 console.error('Could not load member list', e)
             }
@@ -226,10 +228,12 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
     useEffect(() => {
         const doSearch = async () => {
             try {
-                const results = await searchMembers(dataUnionId, search, chainId)
+                if (dataUnionId) {
+                    const results = await searchMembers(dataUnionId, search, chainId)
 
-                if (isMounted()) {
-                    setSearchResults(results)
+                    if (isMounted()) {
+                        setSearchResults(results)
+                    }
                 }
             } catch (e) {
                 console.error('Could not load search results', e)
