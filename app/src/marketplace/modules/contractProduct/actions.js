@@ -88,15 +88,4 @@ export const getProductFromContract = (id: ProductId, chainId: number) => (dispa
         })
 }
 
-export const loadSubscriptionDataFromContract = (id: ProductId, chainId: number) => async (dispatch: Function) => {
-    const subscriberCount = await services.getSubscriberCount(id, chainId)
-    const purchaseTimestamp = await services.getMostRecentPurchaseTimestamp(id, true, chainId)
-
-    return handleEntities(contractProductSchema, dispatch)({
-        id,
-        subscriberCount,
-        purchaseTimestamp,
-    })
-}
-
 export const clearContractProduct: ReduxActionCreator = createAction(CLEAR_CONTRACT_PRODUCT)

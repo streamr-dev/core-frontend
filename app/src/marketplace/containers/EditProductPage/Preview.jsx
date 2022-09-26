@@ -3,13 +3,11 @@
 import React, { useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
-import { titleize } from '@streamr/streamr-layout'
 import Segment from '$shared/components/Segment'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { isEthereumAddress } from '$mp/utils/validate'
-import { ago } from '$shared/utils/time'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
@@ -75,30 +73,12 @@ const Description = () => {
         (categories || []).find(({ id }) => id === productCategory)
     ), [productCategory, categories])
 
-    const contractProduct = useContractProduct()
-    const { isPending } = usePending('contractProduct.LOAD_SUBSCRIPTION')
-    const { purchaseTimestamp, subscriberCount } = contractProduct || {}
-
-    const isProductFree = !!(product && !isPaidProduct(product))
-
     const sidebar = useMemo(() => ({
         category: {
             title: 'Product category',
             value: (category && category.name) || '-',
         },
-        ...(!isProductFree ? {
-            subscriberCount: {
-                title: 'Active subscribers',
-                loading: isPending,
-                value: subscriberCount || 0,
-            },
-            purchaseTimestamp: {
-                title: 'Last purchased',
-                loading: isPending,
-                value: purchaseTimestamp != null ? titleize(ago(new Date(purchaseTimestamp))) : '-',
-            },
-        } : {}),
-    }), [category, isProductFree, subscriberCount, purchaseTimestamp, isPending])
+    }), [category])
 
     return (
         <DescriptionComponent

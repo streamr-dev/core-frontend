@@ -16,7 +16,6 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { getProductById, putProduct } from '$mp/modules/product/services'
 import { validate as validateProduct } from '$mp/utils/product'
 import { MEDIUM, SM, LG } from '$shared/utils/styled'
-import { getSubscriberCount } from '$mp/modules/contractProduct/services'
 import { getDataUnion } from '$mp/modules/dataUnion/services'
 import { fromAtto } from '$mp/utils/math'
 import useIsMounted from '$shared/hooks/useIsMounted'
@@ -294,30 +293,15 @@ const Item = ({ product, stats }: Props) => {
     const chainId = product && getChainIdFromApiString(product.chain)
 
     const [isOpen, setIsOpen] = useState(false)
-    const [subscriberCount, setSubscriberCount] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
     const { update: updateEntities } = useEntities()
-    const { wrap: wrapSubscriberLoad, isPending: loadingSubscriberCount } = usePending(`dataunion.item.${productId || ''}.SUBSCRIBERS`)
     const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
     const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
     const { wrap: wrapDeploy, isPending: isDeployPending } = usePending(`dataunion.item.${productId || ''}.DEPLOY`)
-    const loading = loadingSubscriberCount || loadingDataUnion || isPublishPending || isDeployPending
+    const loading = loadingDataUnion || isPublishPending || isDeployPending
 
     const { api: publishDialog } = useModal('publish')
     const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
-
-    useEffect(() => {
-        const load = async () => {
-            if (productId) {
-                const count = await getSubscriberCount(productId, chainId)
-
-                if (isMounted()) {
-                    setSubscriberCount(count)
-                }
-            }
-        }
-        wrapSubscriberLoad(() => load())
-    }, [productId, chainId, isMounted, wrapSubscriberLoad])
 
     useEffect(() => {
         const load = async () => {
@@ -609,8 +593,8 @@ const Item = ({ product, stats }: Props) => {
                     <Value>{avgUserRevenue.toFixed(2)}</Value>
                 </Stat>
                 <Stat>
-                    <Key>Subscribers</Key>
-                    <Value>{subscriberCount}</Value>
+                    <Key>Revenue share</Key>
+                    <Value>{dataUnion ? `${((1 - dataUnion.adminFee) * 100).toFixed(0)}%` : '-'}</Value>
                 </Stat>
             </Stats>
             {isOpen && (

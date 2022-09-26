@@ -27,7 +27,7 @@ const SubscriberGraph = ({ productId, shownDays = 7, chainId }: Props) => {
         const getSubscriptions = async () => {
             setIsLoading(true)
             const subscriptions = await getSubscribedEvents(productId, startDate, true, chainId)
-            if (isMounted) {
+            if (isMounted()) {
                 setSubscriptionData(subscriptions)
                 setIsLoading(false)
             }

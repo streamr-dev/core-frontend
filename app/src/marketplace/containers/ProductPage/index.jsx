@@ -29,13 +29,7 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
 
 const ProductPage = () => {
     const dispatch = useDispatch()
-    const {
-        product,
-        loadContractProductSubscription,
-        loadCategories,
-        loadDataUnion,
-        loadRelatedProducts,
-    } = useController()
+    const { product, loadCategories, loadDataUnion, loadRelatedProducts } = useController()
     const userData = useSelector(selectUserData)
     const token = useSessionToken()
     const isLoggedIn = userData !== null && !!token
@@ -45,7 +39,6 @@ const ProductPage = () => {
     const chainId = getChainIdFromApiString(product.chain)
 
     const loadAdditionalProductData = useCallback(async (id: ProductId) => {
-        loadContractProductSubscription(id, chainId)
         loadCategories()
         loadRelatedProducts(id, isLoggedIn)
         if (isLoggedIn) {
@@ -54,7 +47,6 @@ const ProductPage = () => {
     }, [
         dispatch,
         isLoggedIn,
-        loadContractProductSubscription,
         loadCategories,
         loadRelatedProducts,
         chainId,

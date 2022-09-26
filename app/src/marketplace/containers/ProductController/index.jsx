@@ -11,7 +11,6 @@ import { Provider as ValidationContextProvider } from './ValidationContextProvid
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
 import useProductValidationEffect from './useProductValidationEffect'
-import useContractProductSubscriptionLoadCallback from './useContractProductSubscriptionLoadCallback'
 import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
 import useDataUnionLoadCallback from './useDataUnionLoadCallback'
@@ -135,7 +134,6 @@ function useProductController() {
 
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
-    const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
     const loadCategories = useLoadCategoriesCallback()
     const loadProductStreams = useLoadProductStreamsCallback({
         setProductStreams,
@@ -158,7 +156,6 @@ function useProductController() {
         setAllStreams,
         loadProduct,
         loadContractProduct,
-        loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
         loadDataUnion,
@@ -176,7 +173,6 @@ function useProductController() {
         setAllStreams,
         loadProduct,
         loadContractProduct,
-        loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
         loadDataUnion,

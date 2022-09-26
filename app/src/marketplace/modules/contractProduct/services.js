@@ -62,45 +62,6 @@ async function* getMarketplaceEvents(
     yield* getContractEvents(web3, abiAndAddress.abi, abiAndAddress.address, chainId, eventName, fromBlock, filter)
 }
 
-export const getSubscriberCount = async (id: ProductId, networkChainId: number) => {
-    let validSubsCount = 0
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'Subscribed', getMarketplaceContractCreationBlock(networkChainId), networkChainId)) {
-        for (const subEvent of e) {
-            if (subEvent.returnValues && subEvent.returnValues.endTimestamp && (parseTimestamp(subEvent.returnValues.endTimestamp) > Date.now())) {
-                validSubsCount += 1
-            }
-        }
-    }
-
-    return validSubsCount
-}
-
-export const getMostRecentPurchaseTimestamp = async (id: ProductId, usePublicNode: boolean = true, networkChainId: number) => {
-    const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
-    const events = []
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const e of getMarketplaceEvents(id, 'Subscribed', getMarketplaceContractCreationBlock(networkChainId), networkChainId)) {
-        for (const subEvent of e) {
-            events.push(subEvent)
-        }
-    }
-
-    if (events.length === 0) {
-        return null
-    }
-
-    const lastEvent = events[events.length - 1]
-    const lastBlock = await web3.eth.getBlock(lastEvent.blockHash)
-    if (lastBlock && lastBlock.timestamp) {
-        return lastBlock.timestamp * 1000
-    }
-
-    return null
-}
-
 export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = true, networkChainId: number) => {
     const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))

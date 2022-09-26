@@ -30,7 +30,7 @@ const createClient = (chainId: number) => {
     const factoryAddress = config.contracts.DataUnionFactory
 
     if (factoryAddress == null) {
-        throw new Error(`No contract address for DataUnionFactory found for chain ${chainId}. Try a different chain.`)
+        console.warn(`No contract address for DataUnionFactory found for chain ${chainId}.`)
     }
 
     const providerChainId = hexToNumber(provider.chainId)
