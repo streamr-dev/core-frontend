@@ -370,7 +370,7 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                     }
                 />
             )}
-            {product.chain != null && (
+            {product.chain != null && !product.isFree && (
                 <ChainBadge
                     bottom
                     left
