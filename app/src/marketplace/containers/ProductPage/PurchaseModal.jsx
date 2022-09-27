@@ -328,6 +328,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                         viewInCore: true,
                     })}
                     txHash={purchaseTransaction}
+                    chainId={chainId}
                 />
             )
         }

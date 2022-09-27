@@ -30,8 +30,10 @@
     "giveFeedback": "https://github.com/streamr-dev/streamr-platform/issues",
     "publisherTerms": "https://s3.amazonaws.com/streamr-public/streamr-data-provider-agreement.pdf",
     "resetAllowanceInfo": "https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729",
-    "etherscanTransaction": "https://etherscan.io/tx/:tx",
-    "etherscanAddress": "https://etherscan.io/address/:address",
+    "polygonTransaction": "https://polygonscan.com/tx/:tx",
+    "polygonAddress": "https://polygonscan.com/address/:address",
+    "gnosisTransaction": "https://blockscout.com/xdai/mainnet/tx/:tx",
+    "gnosisAddress": "https://blockscout.com/xdai/mainnet/address/:address",
     "allowanceInfo": "https://tokenallowance.io",
     "marketplace": {
         "index": "/marketplace",

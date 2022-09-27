@@ -32,6 +32,7 @@ import Initials from '$shared/components/AvatarImage/Initials'
 import useEntities from '$shared/hooks/useEntities'
 import { productSchema } from '$shared/modules/entities/schema'
 import { getChainIdFromApiString, formatChainName } from '$shared/utils/chains'
+import { getAddressLink } from '$shared/utils/blockexplorer'
 import routes from '$routes'
 
 import Management from './Management'
@@ -501,13 +502,9 @@ const Item = ({ product, stats }: Props) => {
                 </TitleContainer>
                 <Buttons>
                     {dataUnion && (
-                        <Tooltip value="View on Etherscan">
+                        <Tooltip value="View on block explorer">
                             <Button
-                                href={
-                                    routes.etherscanAddress({
-                                        address: dataUnion.id,
-                                    })
-                                }
+                                href={getAddressLink(chainId, dataUnion.id)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >

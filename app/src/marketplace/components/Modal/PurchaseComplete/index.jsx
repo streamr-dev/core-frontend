@@ -7,12 +7,13 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import useCopy from '$shared/hooks/useCopy'
 import type { Address } from '$shared/flowtype/web3-types'
-import routes from '$routes'
+import { getTransactionLink } from '$shared/utils/blockexplorer'
 
 export type Props = {
     onClose: () => void,
     onContinue: () => void,
     txHash: ?Address,
+    chainId: number,
 }
 
 const TranslatedText = styled.p`
@@ -53,11 +54,9 @@ const Copy = styled.div`
     }
 `
 
-const PurchaseComplete = ({ onContinue, onClose, txHash }: Props) => {
+const PurchaseComplete = ({ onContinue, onClose, txHash, chainId }: Props) => {
     const { copy, isCopied } = useCopy()
-    const productLink = routes.etherscanTransaction({
-        tx: txHash || '0x0',
-    })
+    const productLink = getTransactionLink(chainId, txHash)
 
     return (
         <ModalPortal>
@@ -73,7 +72,7 @@ const PurchaseComplete = ({ onContinue, onClose, txHash }: Props) => {
                 }}
             >
                 <TranslatedText>
-                    Verify your transaction on Etherscan
+                    View your transaction in block explorer
                 </TranslatedText>
                 <ProductLinkContainer>
                     <ProductLink>

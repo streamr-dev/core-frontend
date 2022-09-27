@@ -722,6 +722,7 @@ story('Marketplace/PurchaseComplete')
             onContinue={action('onContinue')}
             onClose={action('onClose')}
             txHash="0x68dda92ba60240b74b2a79c2b7c87c3316273b40b6d93d6367d95b5a467fe885"
+            chainId={137}
         />
     ))
 
