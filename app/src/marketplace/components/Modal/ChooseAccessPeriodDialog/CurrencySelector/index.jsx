@@ -19,7 +19,12 @@ type Props = {
 const CurrencySelector = ({ onChange, paymentCurrency, availableCurrencies, tokenSymbol }: Props) => (
     <div className={styles.root}>
         {availableCurrencies.map((currency: PaymentCurrency, index) => {
-            const iconName = currency === paymentCurrencies.PRODUCT_DEFINED ? 'unknownToken' : currency.toString()
+            let iconName = currency === paymentCurrencies.PRODUCT_DEFINED ? 'unknownToken' : currency.toString()
+
+            // $FlowFixMe: names
+            if (!SvgIcon.names.includes(iconName)) {
+                iconName = 'unknownToken'
+            }
 
             return (
                 <CurrencyButton

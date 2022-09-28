@@ -4,7 +4,7 @@ import { get, post, put, del } from '$shared/utils/api'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { type User, type Challenge, BalanceType } from '$shared/flowtype/user-types'
 import type { Address } from '$shared/flowtype/web3-types'
-import { getDataTokenBalance, getEthBalance } from '$mp/utils/web3'
+import { getDataTokenBalance, getNativeTokenBalance } from '$mp/utils/web3'
 import routes from '$routes'
 
 const GRAPH_API_URL = 'https://api.thegraph.com/subgraphs/name/ensdomains/ens'
@@ -59,7 +59,7 @@ export async function getBalance({ address, type, usePublicNode = false, chainId
     let balance
 
     if (type === BalanceType.ETH) {
-        balance = await getEthBalance(address, usePublicNode)
+        balance = await getNativeTokenBalance(address, usePublicNode)
     } else if (type === BalanceType.DATA) {
         if (chainId == null) {
             throw new Error('chainId must be provided!')

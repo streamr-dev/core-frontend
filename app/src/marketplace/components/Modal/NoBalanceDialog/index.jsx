@@ -10,7 +10,7 @@ import GetCryptoDialog from '../GetCryptoDialog'
 import GetDataTokensDialog from '../GetDataTokensDialog'
 import InsufficientDataDialog from '../InsufficientDataDialog'
 import InsufficientDaiDialog from '../InsufficientDaiDialog'
-import InsufficientEthDialog from '../InsufficientEthDialog'
+import InsufficientTokenDialog from '../InsufficientTokenDialog'
 
 export type Props = {
     onCancel: () => void,
@@ -18,6 +18,7 @@ export type Props = {
     balances: Balances,
     paymentCurrency: PaymentCurrency,
     nativeTokenName: string,
+    productTokenSymbol: string,
 }
 
 const NoBalanceDialog = ({
@@ -26,20 +27,21 @@ const NoBalanceDialog = ({
     balances,
     paymentCurrency,
     nativeTokenName,
+    productTokenSymbol,
 }: Props) => {
-    const currentEthBalance = BN(balances.eth)
+    const currentNativeBalance = BN(balances.native)
     const requiredGasBalance = BN(required.gas)
 
     // Not enough gas for any transaction
-    if (currentEthBalance.isLessThan(requiredGasBalance) || currentEthBalance.isZero()) {
+    if (currentNativeBalance.isLessThan(requiredGasBalance) || currentNativeBalance.isZero()) {
         return <GetCryptoDialog onCancel={onCancel} nativeTokenName={nativeTokenName} />
     }
 
     switch (paymentCurrency) {
         case paymentCurrencies.ETH: {
-            const requiredEthBalance = BN(required.eth)
-            if (currentEthBalance.isLessThan(requiredEthBalance)) {
-                return <InsufficientEthDialog onCancel={onCancel} />
+            const requiredEthBalance = BN(required.native)
+            if (currentNativeBalance.isLessThan(requiredEthBalance)) {
+                return <InsufficientTokenDialog onCancel={onCancel} tokenSymbol={nativeTokenName} />
             }
             break
         }
@@ -60,6 +62,14 @@ const NoBalanceDialog = ({
             const requiredDaiBalance = BN(required.dai)
             if (currentDaiBalance.isLessThan(requiredDaiBalance)) {
                 return <InsufficientDaiDialog onCancel={onCancel} />
+            }
+            break
+        }
+        case paymentCurrencies.PRODUCT_DEFINED: {
+            const currentProductTokenBalance = BN(balances.productToken)
+            const requiredProductTokenBalance = BN(required.productToken)
+            if (currentProductTokenBalance.isLessThan(requiredProductTokenBalance)) {
+                return <InsufficientTokenDialog onCancel={onCancel} tokenSymbol={productTokenSymbol} />
             }
             break
         }

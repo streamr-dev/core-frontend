@@ -45,7 +45,7 @@ describe('web3 utils', () => {
         getWeb3.mockReset()
     })
 
-    describe('getEthBalance', () => {
+    describe('getNativeTokenBalance', () => {
         it('gets balance with web3 from metamask', async () => {
             const accountBalance = BN(123450000000000000)
             const balanceStub = jest.fn(() => Promise.resolve(accountBalance))
@@ -55,7 +55,7 @@ describe('web3 utils', () => {
                 },
                 getChainId: jest.fn(() => Promise.resolve(8995)),
             }))
-            const balance = await all.getEthBalance('testAccount')
+            const balance = await all.getNativeTokenBalance('testAccount')
             expect(balanceStub).toHaveBeenCalledTimes(1)
             expect(balanceStub).toBeCalledWith('testAccount')
             expect(balance.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
@@ -72,7 +72,7 @@ describe('web3 utils', () => {
                 getChainId: jest.fn(() => Promise.resolve(8995)),
             }))
 
-            const balance = await all.getEthBalance('testAccount', true)
+            const balance = await all.getNativeTokenBalance('testAccount', true)
             expect(balanceStub).toHaveBeenCalledTimes(1)
             expect(balanceStub).toBeCalledWith('testAccount')
             expect(balance.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
@@ -119,8 +119,8 @@ describe('web3 utils', () => {
         })
     })
 
-    describe('getMyEthBalance', () => {
-        it('gets ethereum balance', async () => {
+    describe('getMyNativeTokenBalance', () => {
+        it('gets native token balance', async () => {
             const accountBalance = BN(123450000000000000)
 
             mockDefaultAccount('testAccount')
@@ -132,7 +132,7 @@ describe('web3 utils', () => {
                 getChainId: jest.fn(() => Promise.resolve(8995)),
             }))
 
-            const balance = await all.getMyEthBalance()
+            const balance = await all.getMyNativeTokenBalance()
             expect(balance.isEqualTo(accountBalance.dividedBy(1e18))).toBe(true)
         })
     })

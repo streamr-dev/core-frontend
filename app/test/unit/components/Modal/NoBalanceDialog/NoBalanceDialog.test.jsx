@@ -7,7 +7,7 @@ import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import GetDataTokensDialog from '$mp/components/Modal/GetDataTokensDialog'
 import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
 import InsufficientDaiDialog from '$mp/components/Modal/InsufficientDaiDialog'
-import InsufficientEthDialog from '$mp/components/Modal/InsufficientEthDialog'
+import InsufficientTokenDialog from '$mp/components/Modal/InsufficientTokenDialog'
 
 describe('NoBalanceDialog', () => {
     describe('render', () => {
@@ -17,7 +17,7 @@ describe('NoBalanceDialog', () => {
                     gas: BN(0),
                 }}
                 balances={{
-                    eth: BN(0),
+                    native: BN(0),
                     data: BN(0),
                 }}
                 paymentCurrency="DATA"
@@ -32,7 +32,7 @@ describe('NoBalanceDialog', () => {
                     gas: BN(2),
                 }}
                 balances={{
-                    eth: BN(1),
+                    native: BN(1),
                 }}
                 paymentCurrency="DATA"
                 onCancel={() => null}
@@ -47,7 +47,7 @@ describe('NoBalanceDialog', () => {
                     data: BN(1),
                 }}
                 balances={{
-                    eth: BN(1),
+                    native: BN(1),
                     data: BN(0),
                 }}
                 paymentCurrency="DATA"
@@ -63,7 +63,7 @@ describe('NoBalanceDialog', () => {
                     data: BN(3),
                 }}
                 balances={{
-                    eth: BN(1),
+                    native: BN(1),
                     data: BN(2),
                 }}
                 paymentCurrency="DATA"
@@ -80,7 +80,7 @@ describe('NoBalanceDialog', () => {
                     dai: BN(2),
                 }}
                 balances={{
-                    eth: BN(2),
+                    native: BN(2),
                     dai: BN(0),
                 }}
                 paymentCurrency="DAI"
@@ -97,7 +97,7 @@ describe('NoBalanceDialog', () => {
                     dai: BN(10),
                 }}
                 balances={{
-                    eth: BN(2),
+                    native: BN(2),
                     dai: BN(5),
                 }}
                 paymentCurrency="DAI"
@@ -110,15 +110,15 @@ describe('NoBalanceDialog', () => {
             const wrapper = shallow(<NoBalanceDialog
                 required={{
                     gas: BN(1),
-                    eth: BN(5),
+                    native: BN(5),
                 }}
                 balances={{
-                    eth: BN(2),
+                    native: BN(2),
                 }}
                 paymentCurrency="ETH"
                 onCancel={() => null}
             />)
-            expect(wrapper.is(InsufficientEthDialog)).toBe(true)
+            expect(wrapper.is(InsufficientTokenDialog)).toBe(true)
         })
     })
 })

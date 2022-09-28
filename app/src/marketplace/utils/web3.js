@@ -104,7 +104,7 @@ export const uniswapAdaptorContractMethods = (usePublicNode: boolean = false, ch
     return getContract(instance, usePublicNode, chainId).methods
 }
 
-export const getEthBalance = (address: Address, usePublicNode: boolean = false): Promise<BN> => {
+export const getNativeTokenBalance = (address: Address, usePublicNode: boolean = false): Promise<BN> => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
 
     return web3.eth.getBalance(address)
@@ -132,8 +132,8 @@ export const getCustomTokenBalance = (
         .then(fromAtto)
 )
 
-export const getMyEthBalance = (): Promise<BN> => (getDefaultWeb3Account()
-    .then((myAccount) => getEthBalance(myAccount))
+export const getMyNativeTokenBalance = (): Promise<BN> => (getDefaultWeb3Account()
+    .then((myAccount) => getNativeTokenBalance(myAccount))
 )
 
 export const getMyDataTokenBalance = async (): SmartContractCall<BN> => {
@@ -152,14 +152,6 @@ export const getMyCustomTokenBalance = async (pricingTokenAddress: Address): Sma
     const myAccount = await getDefaultWeb3Account()
     const chainId = await getChainId()
     return getCustomTokenBalance(pricingTokenAddress, myAccount, false, chainId)
-}
-
-export const getBalances = (): Promise<[BN, BN, BN]> => {
-    const ethPromise = getMyEthBalance()
-    const dataPromise = getMyDataTokenBalance()
-    const daiPromise = getMyDaiTokenBalance()
-
-    return Promise.all([ethPromise, dataPromise, daiPromise])
 }
 
 export const getTokenInformation = async (address: Address, chainId?: number): Promise<?Object> => {
@@ -207,7 +199,7 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: bool
             // This can happen when the order size exhausts the uniswap exchange.
             // In this case an invalid price is returned, primarily to block
             // progression in the purchase flow.
-
+            console.error(e)
             return BN('infinity')
         }
     }
@@ -280,7 +272,7 @@ export const validateBalanceForPurchase = async ({
     includeGasForSetAllowance = false,
     includeGasForResetAllowance = false,
 }: ValidateBalance) => {
-    const [ethBalance, dataBalance, daiBalance] = await getBalances()
+    const nativeTokenBalance = await getMyNativeTokenBalance()
     let requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
 
     if (includeGasForSetAllowance) {
@@ -299,9 +291,11 @@ export const validateBalanceForPurchase = async ({
                     message: 'It looks like you don’t have enough balance to subscribe to this product.',
                     required: {
                         gas: requiredGas,
+                        productToken: price,
                     },
                     balances: {
-                        eth: ethBalance,
+                        native: nativeTokenBalance,
+                        productToken: tokenBalance,
                     },
                 })
             }
@@ -310,22 +304,23 @@ export const validateBalanceForPurchase = async ({
         case paymentCurrencies.ETH: {
             const ethPrice = await uniswapDATAtoETH(price.toString())
             const requiredEth = BN(ethPrice).plus(requiredGas)
-            if (ethBalance.isLessThan(requiredEth)) {
+            if (nativeTokenBalance.isLessThan(requiredEth)) {
                 throw new NoBalanceError({
                     message: 'It looks like you don’t have enough balance to subscribe to this product.',
                     required: {
                         gas: requiredGas,
-                        eth: requiredEth,
+                        native: requiredEth,
                     },
                     balances: {
-                        eth: ethBalance,
+                        native: nativeTokenBalance,
                     },
                 })
             }
             break
         }
         case paymentCurrencies.DATA: {
-            if (ethBalance.isLessThan(requiredGas) || dataBalance.isLessThan(price)) {
+            const dataBalance = await getMyDataTokenBalance()
+            if (nativeTokenBalance.isLessThan(requiredGas) || dataBalance.isLessThan(price)) {
                 throw new NoBalanceError({
                     message: 'It looks like you don’t have enough balance to subscribe to this product.',
                     required: {
@@ -333,7 +328,7 @@ export const validateBalanceForPurchase = async ({
                         data: price,
                     },
                     balances: {
-                        eth: ethBalance,
+                        native: nativeTokenBalance,
                         data: dataBalance,
                     },
                 })
@@ -341,8 +336,9 @@ export const validateBalanceForPurchase = async ({
             break
         }
         case paymentCurrencies.DAI: {
+            const daiBalance = await getMyDaiTokenBalance()
             const daiPrice = await uniswapDATAtoDAI(price.toString())
-            if (ethBalance.isLessThan(requiredGas) || daiBalance.isLessThan(daiPrice)) {
+            if (nativeTokenBalance.isLessThan(requiredGas) || daiBalance.isLessThan(daiPrice)) {
                 throw new NoBalanceError({
                     message: 'It looks like you don’t have enough balance to subscribe to this product.',
                     required: {
@@ -350,7 +346,7 @@ export const validateBalanceForPurchase = async ({
                         dai: price,
                     },
                     balances: {
-                        eth: ethBalance,
+                        native: nativeTokenBalance,
                         dai: daiBalance,
                     },
                 })

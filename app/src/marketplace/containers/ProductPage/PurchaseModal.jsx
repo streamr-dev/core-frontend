@@ -14,7 +14,7 @@ import { selectContractProduct, selectContractProductError } from '$mp/modules/c
 import { transactionStates, paymentCurrencies, gasLimits } from '$shared/utils/constants'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import NoBalanceError from '$mp/errors/NoBalanceError'
-import { getBalances, getDataAddress, getTokenInformation, getCustomTokenBalance } from '$mp/utils/web3'
+import { getDataAddress, getTokenInformation, getCustomTokenBalance, getMyNativeTokenBalance, getMyDataTokenBalance } from '$mp/utils/web3'
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseComplete from '$mp/components/Modal/PurchaseComplete'
@@ -53,13 +53,14 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
     const contractProductError = useSelector(selectContractProductError)
+    const chainId = product && getChainIdFromApiString(product.chain)
     const accessPeriodParams: Ref<AccessPeriod> = useRef({
         time: '1',
         timeUnit: 'hour',
         paymentCurrency: (
             contractProduct &&
             contractProduct.pricingTokenAddress &&
-            contractProduct.pricingTokenAddress === getDataAddress(getChainIdFromApiString(product.chain))) ?
+            contractProduct.pricingTokenAddress === getDataAddress(chainId)) ?
             paymentCurrencies.DATA :
             paymentCurrencies.PRODUCT_DEFINED,
         price: undefined,
@@ -78,7 +79,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const dataUnionRef = useRef()
     const isDataUnion = !!(product && isDataUnionProduct(product))
     dataUnionRef.current = isDataUnion ? dataUnion : undefined
-    const chainId = product && getChainIdFromApiString(product.chain)
 
     // Start loading the contract product & clear allowance state
     useEffect(() => {
@@ -95,14 +95,14 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             if (!account) { return }
 
             const tokenBalance = await getCustomTokenBalance(pricingTokenAddress, account, true, chainId)
-            const [eth, data, dai] = await getBalances()
+            const nativeTokenBalance = await getMyNativeTokenBalance()
+            const dataBalance = await getMyDataTokenBalance()
 
             if (isMounted()) {
                 setBalances({
-                    [paymentCurrencies.ETH]: eth,
-                    [paymentCurrencies.DATA]: data,
-                    [paymentCurrencies.DAI]: dai,
+                    [paymentCurrencies.DATA]: dataBalance,
                     [paymentCurrencies.PRODUCT_DEFINED]: tokenBalance,
+                    [paymentCurrencies.NATIVE]: nativeTokenBalance,
                 })
             }
         }
@@ -256,6 +256,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                     balances={purchaseError.getBalances()}
                     paymentCurrency={paymentCurrency}
                     nativeTokenName={nativeTokenName}
+                    productTokenSymbol={productTokenSymbol}
                 />
             )
         }

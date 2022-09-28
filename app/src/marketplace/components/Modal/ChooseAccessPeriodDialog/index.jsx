@@ -72,8 +72,6 @@ export const ChooseAccessPeriodDialog = ({
         if (pricingTokenAddress === getDataAddress(chainId)) {
             return [
                 paymentCurrencies.DATA,
-                paymentCurrencies.ETH,
-                paymentCurrencies.DAI,
             ]
         }
         return [paymentCurrencies.PRODUCT_DEFINED]
@@ -102,7 +100,7 @@ export const ChooseAccessPeriodDialog = ({
     const isValidTime = useMemo(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
 
     const isValidPrice = useMemo(() => {
-        if (paymentCurrency === paymentCurrencies.ETH) {
+        if (paymentCurrency === paymentCurrencies.NATIVE) {
             if (Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD) { return false }
             return !(BN(currentPrice).isNaN() || !BN(currentPrice).isGreaterThan(0) || !BN(currentPrice).isFinite())
         }
@@ -124,7 +122,7 @@ export const ChooseAccessPeriodDialog = ({
 
         let price
         let usdEstimate
-        if (currency === paymentCurrencies.ETH) {
+        if (currency === paymentCurrencies.NATIVE) {
             price = await uniswapDATAtoETH(inData.toString(), true)
             usdEstimate = await uniswapETHtoDATA(price.toString(), true)
         } else if (currency === paymentCurrencies.DAI) {
@@ -209,10 +207,10 @@ export const ChooseAccessPeriodDialog = ({
                 actions={actions}
                 renderActions={() => (
                     <div className={cx(styles.footer, {
-                        [styles.onlyButtons]: !(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI),
+                        [styles.onlyButtons]: !(paymentCurrency === paymentCurrencies.NATIVE || paymentCurrency === paymentCurrencies.DAI),
                     })}
                     >
-                        {(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && (
+                        {(paymentCurrency === paymentCurrencies.NATIVE || paymentCurrency === paymentCurrencies.DAI) && (
                             <span className={styles.uniswapFooter}>
                                 Exchange via Uniswap
                             </span>
@@ -302,7 +300,7 @@ export const ChooseAccessPeriodDialog = ({
                         availableCurrencies={availableCurrencies}
                         tokenSymbol={tokenSymbol}
                     />
-                    {(paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && (
+                    {(paymentCurrency === paymentCurrencies.NATIVE || paymentCurrency === paymentCurrencies.DAI) && (
                         <p className={styles.uniswapMsg}>
                             Exchange via Uniswap
                         </p>

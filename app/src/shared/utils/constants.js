@@ -22,6 +22,7 @@ export const paymentCurrencies = {
     ETH: 'ETH',
     DAI: 'DAI',
     PRODUCT_DEFINED: 'PRODUCT_DEFINED',
+    NATIVE: 'NATIVE',
 }
 
 export const DEFAULT_CURRENCY = contractCurrencies.DATA
@@ -49,7 +50,7 @@ export const ethereumNetworks = {
     '4': 'Rinkeby',
     '5': 'Görli',
     '42': 'Kovan',
-    '100': 'xDAI',
+    '100': 'Gnosis',
     '137': 'Polygon',
 }
 
