@@ -53,7 +53,9 @@ const createClient = (chainId: number) => {
         dataUnion: {
             factoryAddress,
         },
-        joinServerUrl: dataUnionJoinServerUrl || undefined,
+        ...(dataUnionJoinServerUrl ? {
+            joinServerUrl: dataUnionJoinServerUrl,
+        } : {}),
     })
     return new DataUnionClient(clientConfig)
 }
