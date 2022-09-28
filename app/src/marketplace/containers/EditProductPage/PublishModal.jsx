@@ -22,7 +22,7 @@ import usePending from '$shared/hooks/usePending'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
-import useNativeTokenName from '$shared/hooks/useNativeTokenName'
+import getNativeTokenName from '$shared/utils/nativeToken'
 import usePublish, { publishModes } from './usePublish'
 
 type Props = {
@@ -35,7 +35,8 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const publishRef = useRef(publish)
     publishRef.current = publish
     const isMounted = useIsMounted()
-    const nativeTokenName = useNativeTokenName()
+    const chainId = product && getChainIdFromApiString(product.chain)
+    const nativeTokenName = getNativeTokenName(chainId)
 
     const [queue, setQueue] = useState(undefined)
     const [mode, setMode] = useState(null)
@@ -49,7 +50,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const [web3Actions, setWeb3Actions] = useState(new Set([]))
     const { web3Error, checkingWeb3, account } = useWeb3Status({
         requireWeb3,
-        requireNetwork: getChainIdFromApiString(product.chain),
+        requireNetwork: chainId,
     })
     const { isPending, start: startPending, end: endPending } = usePending('product.PUBLISH_DIALOG_LOAD')
     const productId = product.id
