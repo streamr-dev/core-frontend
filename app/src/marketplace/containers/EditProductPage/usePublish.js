@@ -245,7 +245,7 @@ export default function usePublish() {
                                 beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
                                 priceCurrency: priceCurrency || product.priceCurrency,
                                 chainId,
-                                pricingTokenAddress: pricingTokenAddress || product.pricingTokenAddress,
+                                pricingTokenAddress: pricingTokenAddress || contractProduct.pricingTokenAddress,
                             }, isRedeploy)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
