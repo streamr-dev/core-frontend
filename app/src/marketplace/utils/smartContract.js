@@ -88,6 +88,8 @@ export const send = (method: Sendable, options?: {
                 gas: (options && options.gas),
                 from: account,
                 value: options && options.value,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
             })
                 .on('error', (error, receipt) => {
                     if (receipt) {
