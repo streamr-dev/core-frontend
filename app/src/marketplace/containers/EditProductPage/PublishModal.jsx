@@ -22,6 +22,7 @@ import usePending from '$shared/hooks/usePending'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import usePublish, { publishModes } from './usePublish'
 
 type Props = {
@@ -34,6 +35,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const publishRef = useRef(publish)
     publishRef.current = publish
     const isMounted = useIsMounted()
+    const nativeTokenName = useNativeTokenName()
 
     const [queue, setQueue] = useState(undefined)
     const [mode, setMode] = useState(null)
@@ -205,6 +207,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 publishMode={mode}
                 onContinue={onConfirm}
                 onCancel={onClose}
+                nativeTokenName={nativeTokenName}
             />
         )
     } else if (somePending || (!finished && allCompleted)) {

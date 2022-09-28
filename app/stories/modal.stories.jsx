@@ -314,6 +314,7 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.PUBLISH}
+            nativeTokenName="ETH"
         />
     ))
     .add('Republish', () => (
@@ -321,6 +322,7 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.REPUBLISH}
+            nativeTokenName="ETH"
         />
     ))
     .add('Redeploy', () => (
@@ -328,6 +330,7 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.REDEPLOY}
+            nativeTokenName="ETH"
         />
     ))
     .add('Unpublish', () => (
@@ -335,6 +338,7 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.UNPUBLISH}
+            nativeTokenName="ETH"
         />
     ))
 
