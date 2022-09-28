@@ -16,7 +16,7 @@ import marketplaceAbi from '$shared/web3/abis/marketplace'
 import uniswapAdaptorAbi from '$shared/web3/abis/uniswapAdaptor'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { getContract, call } from '../utils/smartContract'
-import { fromAtto } from './math'
+import { fromAtto, fromDecimals } from './math'
 
 declare var ethereum: Web3
 
@@ -122,15 +122,24 @@ export const getDaiTokenBalance = (address: Address, usePublicNode: boolean = fa
         .then(fromAtto)
 )
 
-export const getCustomTokenBalance = (
+export const getCustomTokenBalance = async (
     contractAddress: Address,
     userAddress: Address,
     usePublicNode: boolean = false,
     chainId: number,
-): SmartContractCall<BN> => (
-    call(erc20TokenContractMethods(contractAddress, usePublicNode, chainId).balanceOf(userAddress))
-        .then(fromAtto)
-)
+): SmartContractCall<BN> => {
+    const balance = await call(erc20TokenContractMethods(contractAddress, usePublicNode, chainId).balanceOf(userAddress))
+    const decimals = await call(erc20TokenContractMethods(contractAddress, usePublicNode, chainId).decimals())
+    return fromDecimals(balance, decimals)
+}
+
+export const getCustomTokenDecimals = async (
+    contractAddress: Address,
+    chainId: number,
+): SmartContractCall<BN> => {
+    const decimals = await call(erc20TokenContractMethods(contractAddress, true, chainId).decimals())
+    return decimals
+}
 
 export const getMyNativeTokenBalance = (): Promise<BN> => (getDefaultWeb3Account()
     .then((myAccount) => getNativeTokenBalance(myAccount))

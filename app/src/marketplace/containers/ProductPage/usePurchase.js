@@ -6,7 +6,7 @@ import BN from 'bignumber.js'
 
 import type { SmartContractProduct, AccessPeriod } from '$mp/flowtype/product-types'
 import { priceForTimeUnits } from '$mp/utils/price'
-import { validateBalanceForPurchase, getDataAddress } from '$mp/utils/web3'
+import { validateBalanceForPurchase, getDataAddress, getCustomTokenDecimals } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
 import ActionQueue from '$mp/utils/actionQueue'
 import {
@@ -95,6 +95,8 @@ export default function usePurchase() {
         const needsAllowance = !!(isTokenPurchase && allowance.isLessThan(price))
         const needsAllowanceReset = !!(needsAllowance && allowance.isGreaterThan(0))
 
+        const pricingTokenDecimals = await getCustomTokenDecimals(contractProduct.pricingTokenAddress, chainId)
+
         await validateBalanceForPurchase({
             price: purchasePrice,
             paymentCurrency,
@@ -137,7 +139,7 @@ export default function usePurchase() {
                 id: actionsTypes.RESET_DATA_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyTokenAllowance('0', contractProduct.pricingTokenAddress, chainId)
+                        return setMyTokenAllowance('0', contractProduct.pricingTokenAddress, chainId, pricingTokenDecimals)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.RESET_DATA_ALLOWANCE))
@@ -193,7 +195,7 @@ export default function usePurchase() {
                 id: actionsTypes.SET_DATA_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyTokenAllowance(purchasePrice, contractProduct.pricingTokenAddress, chainId)
+                        return setMyTokenAllowance(purchasePrice, contractProduct.pricingTokenAddress, chainId, pricingTokenDecimals)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.SET_DATA_ALLOWANCE))
