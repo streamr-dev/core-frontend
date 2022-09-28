@@ -138,7 +138,7 @@ export const getCustomTokenDecimals = async (
     chainId: number,
 ): SmartContractCall<BN> => {
     const decimals = await call(erc20TokenContractMethods(contractAddress, true, chainId).decimals())
-    return decimals
+    return BN(decimals)
 }
 
 export const getMyNativeTokenBalance = (): Promise<BN> => (getDefaultWeb3Account()

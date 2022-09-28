@@ -223,7 +223,7 @@ export const getMyTokenAllowance = async (tokenAddress: Address, chainId: number
     return fromDecimals(allowance, decimals)
 }
 
-export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, chainId: number, tokenDecimals: number): SmartContractTransaction => {
+export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, chainId: number, tokenDecimals: BN): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }

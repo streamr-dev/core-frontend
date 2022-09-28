@@ -31,11 +31,16 @@ jest.mock('react-redux', () => ({
     useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
 
+jest.mock('$mp/utils/web3', () => ({
+    ...jest.requireActual('$mp/utils/web3'),
+    getCustomTokenDecimals: jest.fn().mockImplementation(() => 18),
+}))
+
 describe('usePurchase', () => {
     beforeAll(() => {
         // don't show error as console.error
         jest.spyOn(console, 'error')
-        console.error.mockImplementation((...args) => console.warn(...args))        
+        console.error.mockImplementation((...args) => console.warn(...args))
     })
 
     beforeEach(() => {
@@ -456,8 +461,8 @@ describe('usePurchase', () => {
             expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
-            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1, 18)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1, 18)
             expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
@@ -573,7 +578,7 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1, 18)
             expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: 'DATA',
@@ -1249,8 +1254,8 @@ describe('usePurchase', () => {
             expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
-            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1)
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1, 18)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1, 18)
             expect(validateStub).toHaveBeenCalledWith({
                 price: purchasePrice,
                 paymentCurrency: paymentCurrencies.PRODUCT_DEFINED,
