@@ -37,7 +37,7 @@ export const getMyProductSubscription = (id: ProductId, chainId: number): SmartC
         getProductFromContract(id, true, chainId),
         getDefaultWeb3Account(),
     ])
-        .then(([, account]) => call(marketplaceContract(false, chainId).methods.getSubscription(getValidId(id), account)))
+        .then(([, account]) => call(marketplaceContract(true, chainId).methods.getSubscription(getValidId(id), account)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),
