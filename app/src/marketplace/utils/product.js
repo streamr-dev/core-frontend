@@ -11,7 +11,7 @@ import { isEthereumAddress } from './validate'
 import { isPriceValid } from './price'
 
 import { productTypes } from './constants'
-import { fromAtto, fromNano, toAtto, toNano } from './math'
+import { toDecimals, fromDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
 
 export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
@@ -43,9 +43,15 @@ export const validateContractProductPricePerSecond = (pricePerSecond: NumberStri
     }
 }
 
-export const mapPriceFromContract = (pricePerSecond: NumberString): string => fromAtto(pricePerSecond).toString()
+export const mapPriceFromContract = (pricePerSecond: NumberString, decimals: BN): string => fromDecimals(pricePerSecond, decimals).toString()
 
-export const mapProductFromContract = (id: ProductId, result: any, chainId: number): SmartContractProduct => {
+export const mapPriceToContract = (pricePerSecond: NumberString | BN, decimals: BN): string => toDecimals(pricePerSecond, decimals).toFixed(0)
+
+export const mapPriceFromApi = (pricePerSecond: NumberString): string => pricePerSecond.toString()
+
+export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => pricePerSecond.toString()
+
+export const mapProductFromContract = (id: ProductId, result: any, chainId: number, pricingTokenDecimals: BN): SmartContractProduct => {
     const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)
 
     return {
@@ -53,21 +59,16 @@ export const mapProductFromContract = (id: ProductId, result: any, chainId: numb
         name: result.name,
         ownerAddress: result.owner,
         beneficiaryAddress: result.beneficiary,
-        pricePerSecond: mapPriceFromContract(result.pricePerSecond),
+        pricePerSecond: mapPriceFromContract(result.pricePerSecond, pricingTokenDecimals),
         priceCurrency: Object.keys(currencies)[result.currency],
         minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
         state: Object.keys(productStates)[result.state],
         requiresWhitelist: result.requiresWhitelist,
         chainId,
         pricingTokenAddress: result.pricingTokenAddress,
+        pricingTokenDecimals,
     }
 }
-
-export const mapPriceToContract = (pricePerSecond: NumberString | BN): string => toAtto(pricePerSecond).toFixed(0)
-
-export const mapPriceFromApi = (pricePerSecond: NumberString): string => fromNano(pricePerSecond).toString()
-
-export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => toNano(pricePerSecond).toFixed(0)
 
 export const mapProductFromApi = (product: Product): Product => {
     const pricePerSecond = mapPriceFromApi(product.pricePerSecond)

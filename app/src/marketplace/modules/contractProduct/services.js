@@ -13,7 +13,7 @@ import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
-import { marketplaceContract, getMarketplaceAbiAndAddress } from '$mp/utils/web3'
+import { marketplaceContract, getMarketplaceAbiAndAddress, getCustomTokenDecimals } from '$mp/utils/web3'
 import { getContractEvents } from '$shared/utils/contractEvents'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 
@@ -38,15 +38,14 @@ export const getProductFromContract = async (
     id: ProductId,
     usePublicNode: boolean = true,
     networkChainId: number,
-): SmartContractCall<SmartContractProduct> => (
-    call(contractMethods(usePublicNode, networkChainId).getProduct(getValidId(id)))
-        .then((result) => {
-            if (!result || hexEqualsZero(result.owner)) {
-                throw new Error(`No product found with id ${id}`)
-            }
-            return mapProductFromContract(id, result, networkChainId)
-        })
-)
+): SmartContractCall<SmartContractProduct> => {
+    const result = await call(contractMethods(usePublicNode, networkChainId).getProduct(getValidId(id)))
+    if (!result || hexEqualsZero(result.owner)) {
+        throw new Error(`No product found with id ${id}`)
+    }
+    const pricingTokenDecimals = await getCustomTokenDecimals(result.pricingTokenAddress, networkChainId)
+    return mapProductFromContract(id, result, networkChainId, pricingTokenDecimals)
+}
 
 async function* getMarketplaceEvents(
     id: ProductId,
@@ -92,9 +91,10 @@ const createContractProductWithoutWhitelist = (product: SmartContractProduct): S
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
+        pricingTokenDecimals,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
+    const transformedPricePerSecond = mapPriceToContract(pricePerSecond, pricingTokenDecimals)
     const methodToSend = contractMethods(false, chainId).createProduct(
         getValidId(id),
         name,
@@ -117,9 +117,10 @@ const createContractProductWithWhitelist = (product: SmartContractProduct): Smar
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
+        pricingTokenDecimals,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
+    const transformedPricePerSecond = mapPriceToContract(pricePerSecond, pricingTokenDecimals)
     const methodToSend = contractMethods(false, chainId).createProductWithWhitelist(
         getValidId(id),
         name,
@@ -149,9 +150,10 @@ export const updateContractProduct = (product: SmartContractProduct, redeploy: b
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
+        pricingTokenDecimals,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    const transformedPricePerSecond = mapPriceToContract(pricePerSecond)
+    const transformedPricePerSecond = mapPriceToContract(pricePerSecond, pricingTokenDecimals)
     const methodToSend = contractMethods(false, chainId).updateProduct(
         getValidId(id),
         name,

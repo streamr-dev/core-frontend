@@ -30,6 +30,7 @@ import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import { getCustomTokenDecimals } from '$mp/utils/web3'
 import { getPendingChanges, withPendingChanges } from './state'
 
 export const actionsTypes = {
@@ -106,6 +107,12 @@ export default function usePublish() {
             hasAdminFeeChanged ||
             hasContractProductChanged ||
             hasRequireWhitelistChanged
+
+        let pricingTokenDecimals = 18
+        if (pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)) {
+            const address = pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)
+            pricingTokenDecimals = await getCustomTokenDecimals(address, chainId)
+        }
 
         let nextMode
 
@@ -246,6 +253,7 @@ export default function usePublish() {
                                 priceCurrency: priceCurrency || product.priceCurrency,
                                 chainId,
                                 pricingTokenAddress: pricingTokenAddress || contractProduct.pricingTokenAddress,
+                                pricingTokenDecimals,
                             }, isRedeploy)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
@@ -303,6 +311,7 @@ export default function usePublish() {
                                 requiresWhitelist,
                                 chainId,
                                 pricingTokenAddress,
+                                pricingTokenDecimals,
                             })
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)

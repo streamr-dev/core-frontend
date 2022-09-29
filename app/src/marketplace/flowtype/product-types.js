@@ -103,6 +103,7 @@ export type SmartContractProduct = {
     requiresWhitelist: $ElementType<Product, 'requiresWhitelist'>,
     chainId: number,
     pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>,
+    pricingTokenDecimals: number, // this isn't actually stored on the contract but we need it to piggyback information
 }
 
 export type WhitelistStatus = 'added' | 'removed' | 'subscribed'
