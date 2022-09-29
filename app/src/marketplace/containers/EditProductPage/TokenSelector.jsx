@@ -100,17 +100,25 @@ const TokenSelector = ({ disabled }: Props) => {
     const [tokenSymbol, setTokenSymbol] = useState(null)
     const [isEditable, setIsEditable] = useState(false)
     const chainId = getChainIdFromApiString(product.chain)
+    const { pricingTokenAddress } = product
+
+    // Set default value to DATA
+    useEffect(() => {
+        if (!pricingTokenAddress) {
+            setSelection(TokenType.DATA)
+        }
+    }, [pricingTokenAddress])
 
     useEffect(() => {
         const check = async () => {
             const dataAddress = getDataAddress(chainId)
-            if (product.pricingTokenAddress === dataAddress) {
+            if (pricingTokenAddress === dataAddress) {
                 setSelection(TokenType.DATA)
-            } else if (product.pricingTokenAddress != null) {
+            } else if (pricingTokenAddress != null) {
                 setSelection(TokenType.Custom)
-                setCustomTokenAddress(product.pricingTokenAddress)
+                setCustomTokenAddress(pricingTokenAddress)
 
-                const info = await getTokenInformation(product.pricingTokenAddress, chainId)
+                const info = await getTokenInformation(pricingTokenAddress, chainId)
                 if (!isMounted()) {
                     return
                 }
@@ -123,7 +131,7 @@ const TokenSelector = ({ disabled }: Props) => {
             }
         }
         check()
-    }, [product.pricingTokenAddress, chainId, isMounted])
+    }, [pricingTokenAddress, chainId, isMounted])
 
     useEffect(() => {
         if (selection === TokenType.DATA) {
