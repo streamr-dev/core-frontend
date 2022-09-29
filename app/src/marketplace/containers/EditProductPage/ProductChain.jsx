@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 
 import ChainSelector from '$shared/components/ChainSelector'
@@ -42,11 +42,14 @@ const getChainOptions = (chains: Array<string>) => (
     })
 )
 
+const DEFAULT_CHAIN_ID = 137
+
 const ProductChain = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const { updateChain } = useEditableProductActions()
     const { marketplaceChains, dataunionChains } = getCoreConfig()
     const productType = product.type
+    const productChain = product.chain
 
     const chainOptions = useMemo(() => {
         let options = []
@@ -57,6 +60,16 @@ const ProductChain = ({ disabled }: Props) => {
         }
         return options
     }, [productType, marketplaceChains, dataunionChains])
+
+    // This is kind of a ugly hack but it's needed because API will return
+    // ETHEREUM as default chain for new products and we don't support it anymore.
+    useEffect(() => {
+        const matchedOption = chainOptions.find((o) => o.id === getChainIdFromApiString(productChain))
+
+        if (!productChain || matchedOption == null) {
+            updateChain(getApiStringFromChainId(DEFAULT_CHAIN_ID))
+        }
+    }, [productChain, updateChain, chainOptions])
 
     return (
         <Section id="chain">
