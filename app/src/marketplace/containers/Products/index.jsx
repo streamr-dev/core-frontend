@@ -139,11 +139,13 @@ const Products = () => {
                         const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
                         const contractProd = contractProducts.find((cp) => cp.id === p.id)
                         const pricingTokenAddress = contractProd ? contractProd.pricingTokenAddress : null
+                        const pricePerSecond = contractProd ? contractProd.pricePerSecond : p.pricePerSecond
 
                         return merge({}, p, {
                             key: `${i}-${p.id || ''}`,
                             members: members[beneficiaryAddress],
                             pricingTokenAddress,
+                            pricePerSecond,
                         })
                     })}
                     error={productsError}

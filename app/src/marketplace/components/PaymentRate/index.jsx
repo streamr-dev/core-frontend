@@ -26,6 +26,7 @@ const PaymentRate = (props: Props) => {
     } = props
     const [currency, setCurrency] = useState(currencies.DATA)
     const [symbol, setSymbol] = useState(currencies.DATA)
+    const [decimals, setDecimals] = useState(BN(18))
     const isMounted = useIsMounted()
 
     useEffect(() => {
@@ -35,6 +36,7 @@ const PaymentRate = (props: Props) => {
                 if (isMounted() && info) {
                     setCurrency(currencies.PRODUCT_DEFINED)
                     setSymbol(info.symbol)
+                    setDecimals(info.decimals)
                 }
             }
         }
@@ -42,7 +44,7 @@ const PaymentRate = (props: Props) => {
     }, [pricingTokenAddress, chainId, isMounted])
 
     return (
-        <div className={className}>{formatPrice(amount, currency, timeUnit, symbol)}</div>
+        <div className={className}>{formatPrice(amount, currency, decimals, timeUnit, symbol)}</div>
     )
 }
 

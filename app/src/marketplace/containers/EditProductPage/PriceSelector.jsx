@@ -12,6 +12,8 @@ import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { contractCurrencies } from '$shared/utils/constants'
+import { formatDecimals } from '$mp/utils/price'
 
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
@@ -35,19 +37,20 @@ const PriceSelector = ({ disabled }: Props) => {
     const contractProduct = useSelector(selectContractProduct)
     const isDisabled = !!(disabled || contractProductLoadPending)
     const isPriceTypeDisabled = !!(isDisabled || isPublic || !!contractProduct)
+    const { pricingTokenDecimals } = product
 
     const onPriceTypeChange = useCallback((type) => {
-        updateIsFree(type === 'Free')
-    }, [updateIsFree])
+        updateIsFree(type === 'Free', pricingTokenDecimals)
+    }, [updateIsFree, pricingTokenDecimals])
 
     const onPriceChange = useCallback((p) => {
         const price = p
-        updatePrice(price, product.priceCurrency, product.timeUnit)
-    }, [updatePrice, product.priceCurrency, product.timeUnit])
+        updatePrice(price, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
+    }, [updatePrice, product.priceCurrency, product.timeUnit, pricingTokenDecimals])
 
     const onTimeUnitChange = useCallback((t) => {
-        updatePrice(product.price, product.priceCurrency, t)
-    }, [updatePrice, product.price, product.priceCurrency])
+        updatePrice(product.price, product.priceCurrency, t, pricingTokenDecimals)
+    }, [updatePrice, product.price, product.priceCurrency, pricingTokenDecimals])
 
     const isFreeProduct = !!product.isFree
     const isDataUnion = isDataUnionProduct(product)
@@ -79,7 +82,7 @@ const PriceSelector = ({ disabled }: Props) => {
                     <SetPrice
                         className={styles.priceSelector}
                         disabled={isFreeProduct || isDisabled}
-                        price={product.price}
+                        price={formatDecimals(product.price, contractCurrencies.PRODUCT_DEFINED, pricingTokenDecimals)}
                         onPriceChange={onPriceChange}
                         pricingTokenAddress={product.pricingTokenAddress}
                         timeUnit={product.timeUnit}

@@ -98,6 +98,7 @@ const TokenSelector = ({ disabled }: Props) => {
     const [customTokenAddress, setCustomTokenAddress] = useState('')
     const [selectedTokenAddress, setSelectedTokenAddress] = useState(null)
     const [tokenSymbol, setTokenSymbol] = useState(null)
+    const [tokenDecimals, setTokenDecimals] = useState(18)
     const [isEditable, setIsEditable] = useState(false)
     const chainId = getChainIdFromApiString(product.chain)
     const { pricingTokenAddress } = product
@@ -114,6 +115,7 @@ const TokenSelector = ({ disabled }: Props) => {
             const dataAddress = getDataAddress(chainId)
             if (pricingTokenAddress === dataAddress) {
                 setSelection(TokenType.DATA)
+                setTokenDecimals(18)
             } else if (pricingTokenAddress != null) {
                 setSelection(TokenType.Custom)
                 setCustomTokenAddress(pricingTokenAddress)
@@ -125,8 +127,10 @@ const TokenSelector = ({ disabled }: Props) => {
 
                 if (info) {
                     setTokenSymbol(info.symbol)
+                    setTokenDecimals(info.decimals)
                 } else {
                     setTokenSymbol(null)
+                    setTokenDecimals(null)
                 }
             }
         }
@@ -149,9 +153,9 @@ const TokenSelector = ({ disabled }: Props) => {
 
     useEffect(() => {
         if (selectedTokenAddress) {
-            updatePricingToken(selectedTokenAddress)
+            updatePricingToken(selectedTokenAddress, tokenDecimals)
         }
-    }, [selectedTokenAddress, updatePricingToken])
+    }, [selectedTokenAddress, updatePricingToken, tokenDecimals])
 
     return (
         <Container>

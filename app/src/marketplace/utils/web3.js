@@ -170,10 +170,12 @@ export const getTokenInformation = async (address: Address, chainId?: number): P
         const contract = erc20TokenContractMethods(address, true, actualChainId)
         const symbol = await contract.symbol().call()
         const name = await contract.name().call()
+        const decimals = await contract.decimals().call()
 
         return {
             symbol,
             name,
+            decimals,
         }
     } catch (e) {
         return null

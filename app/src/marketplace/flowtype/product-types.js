@@ -1,5 +1,7 @@
 // @flow
 
+import BN from 'bignumber.js'
+
 import { productStates } from '$shared/utils/constants'
 import { productTypes } from '$mp/utils/constants'
 import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
@@ -74,6 +76,7 @@ export type Product = {
     contact: ?ContactDetails,
     dataUnionDeployed?: boolean,
     pricingTokenAddress: Address,
+    pricingTokenDecimals: BN,
 }
 
 export type ProductSubscriptionId = string

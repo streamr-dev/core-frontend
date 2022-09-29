@@ -16,6 +16,7 @@ export type Props = {
     time: string,
     timeUnit: TimeUnit,
     paymentCurrency: PaymentCurrency,
+    pricingTokenDecimals: BN,
     tokenSymbol: string,
     price: BN,
     approxUsd: BN,
@@ -30,6 +31,7 @@ export const PurchaseSummaryDialog = ({
     time,
     timeUnit,
     price: priceProp,
+    pricingTokenDecimals,
     paymentCurrency,
     tokenSymbol,
     approxUsd: approxUsdProp,
@@ -38,9 +40,13 @@ export const PurchaseSummaryDialog = ({
     onBack,
     onPay,
 }: Props) => {
-    const price = useMemo(() => formatDecimals(priceProp, paymentCurrency), [priceProp, paymentCurrency])
+    const price = useMemo(() => (
+        formatDecimals(priceProp, paymentCurrency, pricingTokenDecimals)
+    ), [priceProp, paymentCurrency, pricingTokenDecimals])
 
-    const approxUsd = useMemo(() => formatDecimals(approxUsdProp, contractCurrencies.USD), [approxUsdProp])
+    const approxUsd = useMemo(() => (
+        formatDecimals(approxUsdProp, contractCurrencies.USD, pricingTokenDecimals)
+    ), [approxUsdProp, pricingTokenDecimals])
 
     return (
         <ModalPortal>

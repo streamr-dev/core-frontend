@@ -19,6 +19,7 @@ import {
 import { getProductSubscription } from '$mp/modules/product/actions'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { toSeconds } from '$mp/utils/time'
+import { fromDecimals } from '$mp/utils/math'
 
 export const actionsTypes = {
     SET_DAI_ALLOWANCE: 'setDaiAllowance',
@@ -98,7 +99,7 @@ export default function usePurchase() {
         const pricingTokenDecimals = await getCustomTokenDecimals(contractProduct.pricingTokenAddress, chainId)
 
         await validateBalanceForPurchase({
-            price: purchasePrice,
+            price: fromDecimals(purchasePrice, pricingTokenDecimals),
             paymentCurrency,
             pricingTokenAddress: contractProduct.pricingTokenAddress,
             includeGasForSetAllowance: needsAllowance,
@@ -139,7 +140,7 @@ export default function usePurchase() {
                 id: actionsTypes.RESET_DATA_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyTokenAllowance('0', contractProduct.pricingTokenAddress, chainId, pricingTokenDecimals)
+                        return setMyTokenAllowance('0', contractProduct.pricingTokenAddress, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.RESET_DATA_ALLOWANCE))
@@ -195,7 +196,7 @@ export default function usePurchase() {
                 id: actionsTypes.SET_DATA_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyTokenAllowance(purchasePrice, contractProduct.pricingTokenAddress, chainId, pricingTokenDecimals)
+                        return setMyTokenAllowance(purchasePrice, contractProduct.pricingTokenAddress, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.SET_DATA_ALLOWANCE))

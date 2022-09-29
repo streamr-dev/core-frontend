@@ -6,7 +6,6 @@ import type { SmartContractCall, SmartContractTransaction, Address } from '$shar
 import {
     getValidId,
     mapProductFromContract,
-    mapPriceToContract,
     validateContractProductPricePerSecond,
 } from '$mp/utils/product'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
@@ -91,15 +90,13 @@ const createContractProductWithoutWhitelist = (product: SmartContractProduct): S
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
-        pricingTokenDecimals,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    const transformedPricePerSecond = mapPriceToContract(pricePerSecond, pricingTokenDecimals)
     const methodToSend = contractMethods(false, chainId).createProduct(
         getValidId(id),
         name,
         beneficiaryAddress,
-        transformedPricePerSecond,
+        pricePerSecond,
         pricingTokenAddress,
         minimumSubscriptionInSeconds,
     )
@@ -117,15 +114,13 @@ const createContractProductWithWhitelist = (product: SmartContractProduct): Smar
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
-        pricingTokenDecimals,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    const transformedPricePerSecond = mapPriceToContract(pricePerSecond, pricingTokenDecimals)
     const methodToSend = contractMethods(false, chainId).createProductWithWhitelist(
         getValidId(id),
         name,
         beneficiaryAddress,
-        transformedPricePerSecond,
+        pricePerSecond,
         pricingTokenAddress,
         minimumSubscriptionInSeconds,
     )
@@ -150,15 +145,13 @@ export const updateContractProduct = (product: SmartContractProduct, redeploy: b
         minimumSubscriptionInSeconds,
         chainId,
         pricingTokenAddress,
-        pricingTokenDecimals,
     } = product
     validateContractProductPricePerSecond(pricePerSecond)
-    const transformedPricePerSecond = mapPriceToContract(pricePerSecond, pricingTokenDecimals)
     const methodToSend = contractMethods(false, chainId).updateProduct(
         getValidId(id),
         name,
         beneficiaryAddress,
-        transformedPricePerSecond,
+        pricePerSecond,
         pricingTokenAddress,
         minimumSubscriptionInSeconds,
         redeploy,

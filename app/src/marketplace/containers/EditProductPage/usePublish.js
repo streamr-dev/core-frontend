@@ -248,7 +248,7 @@ export default function usePublish() {
                         try {
                             return updateContractProduct({
                                 ...contractProduct,
-                                pricePerSecond: pricePerSecond || product.pricePerSecond,
+                                pricePerSecond: pricePerSecond || contractProduct.pricePerSecond,
                                 beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
                                 priceCurrency: priceCurrency || product.priceCurrency,
                                 chainId,

@@ -24,7 +24,7 @@ const momentDurationFormatsByTimeUnit = {
 export const toSeconds = (quantity: NumberString | BN, timeUnit: TimeUnit): BN => {
     const format = momentDurationFormatsByTimeUnit[timeUnit]
     if (!format) {
-        throw new Error(`Invalid price unit: ${timeUnit}`)
+        throw new Error(`Invalid time unit: ${timeUnit}`)
     }
     return BN(moment.duration(BN(quantity).toNumber(), format).asSeconds())
 }

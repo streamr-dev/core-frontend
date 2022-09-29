@@ -18,6 +18,7 @@ import Dialog from '$shared/components/Dialog'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import { useDebounced } from '$shared/hooks/wrapCallback'
 import { getUsdRate } from '$shared/utils/coingecko'
+import { fromDecimals } from '$mp/utils/math'
 import CurrencySelector from './CurrencySelector'
 
 import styles from './chooseAccessPeriod.pcss'
@@ -29,6 +30,7 @@ export type Balances = {
 export type Props = {
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
     pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>,
+    pricingTokenDecimals: $ElementType<Product, 'pricingTokenDecimals'>,
     tokenSymbol: string,
     chainId: number,
     balances: Balances,
@@ -47,6 +49,7 @@ const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month]
 export const ChooseAccessPeriodDialog = ({
     pricePerSecond,
     pricingTokenAddress,
+    pricingTokenDecimals,
     tokenSymbol,
     chainId,
     balances,
@@ -77,7 +80,7 @@ export const ChooseAccessPeriodDialog = ({
         return [paymentCurrencies.PRODUCT_DEFINED]
     }, [pricingTokenAddress, chainId])
 
-    const priceInData = useMemo(() => {
+    const priceInToken = useMemo(() => {
         const price = priceForTimeUnits(
             pricePerSecond,
             time,
@@ -90,12 +93,12 @@ export const ChooseAccessPeriodDialog = ({
     useEffect(() => {
         const load = async () => {
             const rate = await getUsdRate(pricingTokenAddress, chainId)
-            if (rate !== 0) {
-                setPriceInUsd(priceInData * rate)
+            if (rate !== 0 && currentPrice !== '-') {
+                setPriceInUsd(currentPrice * rate)
             }
         }
         load()
-    }, [priceInData, pricingTokenAddress, chainId])
+    }, [currentPrice, pricingTokenAddress, chainId])
 
     const isValidTime = useMemo(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
 
@@ -114,7 +117,7 @@ export const ChooseAccessPeriodDialog = ({
     }, [paymentCurrency, priceInUsd, currentPrice])
 
     const setExternalPrices = useDebounced(useCallback(async ({
-        priceInData: inData,
+        priceInToken: inToken,
         priceInUsd: inUsd,
         paymentCurrency: currency,
     }) => {
@@ -123,41 +126,41 @@ export const ChooseAccessPeriodDialog = ({
         let price
         let usdEstimate
         if (currency === paymentCurrencies.NATIVE) {
-            price = await uniswapDATAtoETH(inData.toString(), true)
+            price = await uniswapDATAtoETH(inToken.toString(), true)
             usdEstimate = await uniswapETHtoDATA(price.toString(), true)
         } else if (currency === paymentCurrencies.DAI) {
-            price = await uniswapDATAtoDAI(inData.toString(), true)
+            price = await uniswapDATAtoDAI(inToken.toString(), true)
             usdEstimate = price
         } else {
-            price = inData
+            price = inToken
             usdEstimate = inUsd
         }
 
-        setCurrentPrice(price)
+        setCurrentPrice(fromDecimals(price, pricingTokenDecimals))
         setApproxUsd(usdEstimate)
 
         setLoading(false)
-    }, []), 250)
+    }, [pricingTokenDecimals]), 250)
 
     const displayPrice = useMemo(() => (
-        BN(currentPrice).isNaN() ? 'N/A' : formatDecimals(currentPrice, paymentCurrency)
-    ), [currentPrice, paymentCurrency])
+        BN(currentPrice).isNaN() ? 'N/A' : formatDecimals(currentPrice, paymentCurrency, pricingTokenDecimals)
+    ), [currentPrice, paymentCurrency, pricingTokenDecimals])
 
     const displayApproxUsd = useMemo(() => (
-        BN(approxUsd).isNaN() ? 'N/A' : formatDecimals(approxUsd, contractCurrencies.USD)
-    ), [approxUsd])
+        BN(approxUsd).isNaN() ? 'N/A' : formatDecimals(approxUsd, contractCurrencies.USD, pricingTokenDecimals)
+    ), [approxUsd, pricingTokenDecimals])
 
     useEffect(() => {
         setExternalPrices({
-            priceInData,
+            priceInToken,
             priceInUsd,
             paymentCurrency,
         })
-    }, [setExternalPrices, priceInData, paymentCurrency, priceInUsd])
+    }, [setExternalPrices, priceInToken, paymentCurrency, priceInUsd])
 
     const currentBalance = useMemo(() => (
-        (balances && balances[paymentCurrency]) ? formatDecimals(balances[paymentCurrency], paymentCurrency) : '-'
-    ), [balances, paymentCurrency])
+        (balances && balances[paymentCurrency]) ? formatDecimals(balances[paymentCurrency], paymentCurrency, pricingTokenDecimals) : '-'
+    ), [balances, paymentCurrency, pricingTokenDecimals])
 
     const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === timeUnit), [timeUnit])
 

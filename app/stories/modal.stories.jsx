@@ -574,6 +574,7 @@ story('Marketplace/ChooseAccessPeriodDialog')
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             pricingTokenAddress="0x123"
+            pricingTokenDecimals={BN(18)}
             tokenSymbol="TEST"
             chainId={1}
             balances={{
@@ -590,6 +591,7 @@ story('Marketplace/ChooseAccessPeriodDialog')
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             pricingTokenAddress="0x123"
+            pricingTokenDecimals={BN(18)}
             tokenSymbol="TEST"
             chainId={1}
             balances={{
@@ -610,6 +612,7 @@ story('Marketplace/ChooseAccessPeriodDialog')
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
             pricingTokenAddress="0x123"
+            pricingTokenDecimals={BN(18)}
             tokenSymbol="TEST"
             chainId={1}
             balances={{
@@ -634,6 +637,7 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
+            pricingTokenDecimals={BN(18)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time={text('Time', '24')}
@@ -648,6 +652,7 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
+            pricingTokenDecimals={BN(18)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time="24"
@@ -666,6 +671,7 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
+            pricingTokenDecimals={BN(18)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time="24"
@@ -681,6 +687,7 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
+            pricingTokenDecimals={BN(18)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time="24"

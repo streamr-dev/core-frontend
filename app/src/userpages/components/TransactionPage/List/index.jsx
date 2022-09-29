@@ -182,11 +182,11 @@ const TransactionList = () => {
                             const eventType = (!!type && eventTypes[type]) || ''
                             const price = BN(value)
                             const pricePrefix = type === transactionTypes.SUBSCRIPTION ? '-' : '+'
-                            const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
+                            const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA, 18)} DATA`
 
                             let displayPayment = ''
                             if ((paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && paymentValue) {
-                                displayPayment = ` (${formatDecimals(fromAtto(paymentValue), paymentCurrency)} ${paymentCurrency})`
+                                displayPayment = ` (${formatDecimals(fromAtto(paymentValue), paymentCurrency, 18)} ${paymentCurrency})`
                             }
 
                             return (

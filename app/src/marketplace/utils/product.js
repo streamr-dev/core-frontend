@@ -59,7 +59,7 @@ export const mapProductFromContract = (id: ProductId, result: any, chainId: numb
         name: result.name,
         ownerAddress: result.owner,
         beneficiaryAddress: result.beneficiary,
-        pricePerSecond: mapPriceFromContract(result.pricePerSecond, pricingTokenDecimals),
+        pricePerSecond: result.pricePerSecond,
         priceCurrency: Object.keys(currencies)[result.currency],
         minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
         state: Object.keys(productStates)[result.state],

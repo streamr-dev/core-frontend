@@ -6,6 +6,7 @@ import cx from 'classnames'
 import DetailsContainer from '$shared/components/Container/Details'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { productStates } from '$shared/utils/constants'
 
 import EditorNav from './EditorNav'
 import ProductName from './ProductName'
@@ -30,6 +31,7 @@ const Editor = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
     const isDataUnion = isDataUnionProduct(product)
     const isPaid = isPaidProduct(product)
+    const isChainSelectorDisabled = product.state === productStates.DEPLOYED
 
     return (
         <div className={cx(styles.root, styles.Editor)}>
@@ -42,7 +44,7 @@ const Editor = ({ disabled }: Props) => {
                         <ProductName disabled={disabled} />
                         <CoverImage disabled={disabled} />
                         <ProductDescription disabled={disabled} />
-                        <ProductChain disabled={disabled} />
+                        <ProductChain disabled={disabled || isChainSelectorDisabled} />
                         <ProductStreams disabled={disabled} />
                         <PriceSelector disabled={disabled} />
                         {!!isPaid && (

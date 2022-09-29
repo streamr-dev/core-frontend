@@ -19,7 +19,7 @@ import type { NumberString, ApiResult, PaymentCurrency } from '$shared/flowtype/
 import type { Product, ProductId, Subscription, ProductType } from '$mp/flowtype/product-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
-import { fromAtto, toAtto, fromDecimals, toDecimals } from '$mp/utils/math'
+import { fromAtto, toAtto } from '$mp/utils/math'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 import { call, send } from '../../utils/smartContract'
@@ -216,20 +216,19 @@ export const setMyDaiAllowance = (amount: string | BN, chainId: number): SmartCo
 }
 
 export const getMyTokenAllowance = async (tokenAddress: Address, chainId: number): SmartContractCall<BN> => {
-    const decimals = await call(erc20TokenContractMethods(tokenAddress, false, chainId).decimals())
     const account = await getDefaultWeb3Account()
     const allowance = await call(erc20TokenContractMethods(tokenAddress, false, chainId)
         .allowance(account, marketplaceContract(false, chainId).options.address))
-    return fromDecimals(allowance, decimals)
+    return allowance
 }
 
-export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, chainId: number, tokenDecimals: BN): SmartContractTransaction => {
+export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, chainId: number): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }
 
     const method = erc20TokenContractMethods(tokenAddress, false, chainId)
-        .approve(marketplaceContract(false, chainId).options.address, toDecimals(amount, tokenDecimals).toFixed(0))
+        .approve(marketplaceContract(false, chainId).options.address, amount)
 
     return send(method, {
         network: chainId,

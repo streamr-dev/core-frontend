@@ -14,6 +14,7 @@ import { timeUnits, DEFAULT_CURRENCY, productStates } from '$shared/utils/consta
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { getCustomTokenDecimals } from '$mp/utils/web3'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
@@ -80,9 +81,10 @@ export default function useProductLoadCallback() {
             // Fetch status from contract product and adjust pending changes
             let requiresWhitelist = false
             let pricingTokenAddress = null
+            let pricePerSecond = null
             try {
                 const contractProduct = await getProductFromContract(productId, true, chainId);
-                ({ requiresWhitelist, pricingTokenAddress } = contractProduct)
+                ({ requiresWhitelist, pricingTokenAddress, pricePerSecond } = contractProduct)
 
                 // remove from pending changes if requiresWhitelist setting is correct
                 if (product.pendingChanges && requiresWhitelist === product.pendingChanges.requiresWhitelist) {
@@ -99,6 +101,12 @@ export default function useProductLoadCallback() {
                 pricingTokenAddress = product && product.pendingChanges && product.pendingChanges.pricingTokenAddress
             }
 
+            // Load pricingToken decimal count
+            let pricingTokenDecimals = 18
+            if (pricingTokenAddress) {
+                pricingTokenDecimals = await getCustomTokenDecimals(pricingTokenAddress, chainId)
+            }
+
             if (!isMounted()) { return }
 
             const nextProduct = {
@@ -106,11 +114,13 @@ export default function useProductLoadCallback() {
                 isFree: !!product.isFree || !isPaidProduct(product),
                 timeUnit: timeUnits.hour,
                 priceCurrency: product.priceCurrency || DEFAULT_CURRENCY,
-                price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
+                price: product.price || priceForTimeUnits((pricePerSecond || product.pricePerSecond) || '0', 1, timeUnits.hour),
                 adminFee: currentAdminFee,
                 dataUnionDeployed,
                 requiresWhitelist,
                 pricingTokenAddress,
+                pricingTokenDecimals,
+                pricePerSecond: pricePerSecond || product.pricePerSecond,
             }
 
             setProduct({
