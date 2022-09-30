@@ -10,6 +10,7 @@ import * as contractProductServices from '$mp/modules/contractProduct/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as productServices from '$mp/modules/product/services'
+import * as web3Utils from '$mp/utils/web3'
 
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import usePublish, { publishModes, actionsTypes } from '../usePublish'
@@ -20,6 +21,11 @@ jest.mock('react-redux', () => ({
 
 jest.mock('streamr-client-react', () => ({
     useClient: jest.fn(),
+}))
+
+jest.mock('$mp/utils/web3', () => ({
+    ...jest.requireActual('$mp/utils/web3'),
+    getCustomTokenDecimals: jest.fn().mockImplementation(() => 18),
 }))
 
 function stubStreams(streams) {
@@ -750,7 +756,7 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    chain: 'ETHEREUM',                    
+                    chain: 'ETHEREUM',
                     pendingChanges: {
                         requiresWhitelist: true,
                         pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
