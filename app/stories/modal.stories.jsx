@@ -637,7 +637,6 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            pricingTokenDecimals={BN(18)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time={text('Time', '24')}
@@ -652,7 +651,6 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            pricingTokenDecimals={BN(18)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time="24"
@@ -671,7 +669,6 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            pricingTokenDecimals={BN(18)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time="24"
@@ -687,7 +684,6 @@ story('Marketplace/PurchaseSummaryDialog')
         <PurchaseSummaryDialog
             name="Example Product"
             price={BN(123)}
-            pricingTokenDecimals={BN(18)}
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time="24"

@@ -24,7 +24,7 @@ const PaymentRate = (props: Props) => {
         timeUnit,
         className,
     } = props
-    const [currency, setCurrency] = useState(currencies.DATA)
+    const [currency, setCurrency] = useState(currencies.PRODUCT_DEFINED)
     const [symbol, setSymbol] = useState(currencies.DATA)
     const [decimals, setDecimals] = useState(BN(18))
     const isMounted = useIsMounted()

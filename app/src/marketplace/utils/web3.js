@@ -163,8 +163,17 @@ export const getMyCustomTokenBalance = async (pricingTokenAddress: Address): Sma
     return getCustomTokenBalance(pricingTokenAddress, myAccount, false, chainId)
 }
 
+const tokenInformationCache = {}
+
 export const getTokenInformation = async (address: Address, chainId?: number): Promise<?Object> => {
     const actualChainId = chainId || await getChainId()
+
+    // Check from cache first
+    const cacheKey = address.toString() + actualChainId.toString()
+    const cacheItem = tokenInformationCache[cacheKey]
+    if (cacheItem) {
+        return cacheItem
+    }
 
     try {
         const contract = erc20TokenContractMethods(address, true, actualChainId)
@@ -172,11 +181,14 @@ export const getTokenInformation = async (address: Address, chainId?: number): P
         const name = await contract.name().call()
         const decimals = await contract.decimals().call()
 
-        return {
+        const infoObj = {
             symbol,
             name,
             decimals,
         }
+
+        tokenInformationCache[cacheKey] = infoObj
+        return infoObj
     } catch (e) {
         return null
     }

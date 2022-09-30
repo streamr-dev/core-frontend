@@ -22,6 +22,7 @@ stories.add('basic', () => (
         pricingTokenAddress="pricingTokenAddress"
         placeholder="Price"
         onCommit={action('commit')}
+        chainId={1}
     />
 ))
 
@@ -30,6 +31,7 @@ stories.add('disabled', () => (
         pricingTokenAddress="pricingTokenAddress"
         placeholder="Price"
         onCommit={action('commit')}
+        chainId={1}
         disabled
     />
 ))
@@ -40,5 +42,6 @@ stories.add('with error', () => (
         placeholder="Price"
         error="Something went wrong"
         onCommit={action('commit')}
+        chainId={1}
     />
 ))

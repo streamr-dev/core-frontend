@@ -15,6 +15,7 @@ type Props = LastErrorProps & {
     className?: string,
     value?: string | number,
     onChange?: ?(SyntheticInputEvent<EventTarget>) => void,
+    chainId: number,
 }
 
 const PriceField = ({
@@ -24,6 +25,7 @@ const PriceField = ({
     onChange: onChangeProp,
     isProcessing,
     error,
+    chainId,
     ...inputProps
 }: Props) => {
     const [symbol, setSymbol] = useState('DATA')
@@ -34,13 +36,13 @@ const PriceField = ({
 
     useEffect(() => {
         const load = async () => {
-            const info = await getTokenInformation(pricingTokenAddress)
+            const info = await getTokenInformation(pricingTokenAddress, chainId)
             if (info) {
                 setSymbol(info.symbol)
             }
         }
         load()
-    }, [pricingTokenAddress])
+    }, [pricingTokenAddress, chainId])
 
     const [value, setValue] = useState(valueProp)
 

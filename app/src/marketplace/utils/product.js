@@ -47,9 +47,9 @@ export const mapPriceFromContract = (pricePerSecond: NumberString, decimals: BN)
 
 export const mapPriceToContract = (pricePerSecond: NumberString | BN, decimals: BN): string => toDecimals(pricePerSecond, decimals).toFixed(0)
 
-export const mapPriceFromApi = (pricePerSecond: NumberString): string => pricePerSecond.toString()
+export const mapPriceFromApi = (pricePerSecond: NumberString): string => pricePerSecond
 
-export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => pricePerSecond.toString()
+export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => pricePerSecond
 
 export const mapProductFromContract = (id: ProductId, result: any, chainId: number, pricingTokenDecimals: BN): SmartContractProduct => {
     const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)

@@ -186,8 +186,13 @@ export const whitelistRequest = (id: ProductId, address: Address, networkChainId
 )
 
 export const getWhitelistAddresses = async (id: ProductId, networkChainId: number): Promise<Array<WhitelistItem>> => {
-    const contractProduct = await getProductFromContract(id, true, networkChainId)
-    if (!contractProduct || !contractProduct.requiresWhitelist) {
+    try {
+        const contractProduct = await getProductFromContract(id, true, networkChainId)
+        if (!contractProduct || !contractProduct.requiresWhitelist) {
+            return []
+        }
+    } catch (e) {
+        // Product not deployed
         return []
     }
 

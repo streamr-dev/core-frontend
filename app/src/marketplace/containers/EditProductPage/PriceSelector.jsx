@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
@@ -12,14 +12,12 @@ import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
-import { contractCurrencies } from '$shared/utils/constants'
-import { formatDecimals } from '$mp/utils/price'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
 import { Context as EditControllerContext } from './EditControllerProvider'
-
 import BeneficiaryAddress from './BeneficiaryAddress'
 
 import styles from './PriceSelector.pcss'
@@ -37,6 +35,7 @@ const PriceSelector = ({ disabled }: Props) => {
     const contractProduct = useSelector(selectContractProduct)
     const isDisabled = !!(disabled || contractProductLoadPending)
     const isPriceTypeDisabled = !!(isDisabled || isPublic || !!contractProduct)
+    const chainId = product && getChainIdFromApiString(product.chain)
     const { pricingTokenDecimals } = product
 
     const onPriceTypeChange = useCallback((type) => {
@@ -44,13 +43,18 @@ const PriceSelector = ({ disabled }: Props) => {
     }, [updateIsFree, pricingTokenDecimals])
 
     const onPriceChange = useCallback((p) => {
-        const price = p
-        updatePrice(price, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
+        updatePrice(p, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
     }, [updatePrice, product.priceCurrency, product.timeUnit, pricingTokenDecimals])
 
     const onTimeUnitChange = useCallback((t) => {
         updatePrice(product.price, product.priceCurrency, t, pricingTokenDecimals)
     }, [updatePrice, product.price, product.priceCurrency, pricingTokenDecimals])
+
+    useEffect(() => {
+        updatePrice(product.price, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
+    // We don't want to duplicate changes above callbacks already do
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pricingTokenDecimals, updatePrice])
 
     const isFreeProduct = !!product.isFree
     const isDataUnion = isDataUnionProduct(product)
@@ -82,12 +86,13 @@ const PriceSelector = ({ disabled }: Props) => {
                     <SetPrice
                         className={styles.priceSelector}
                         disabled={isFreeProduct || isDisabled}
-                        price={formatDecimals(product.price, contractCurrencies.PRODUCT_DEFINED, pricingTokenDecimals)}
+                        price={product.price}
                         onPriceChange={onPriceChange}
                         pricingTokenAddress={product.pricingTokenAddress}
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
                         error={publishAttempted && !isValid ? message : undefined}
+                        chainId={chainId}
                     />
                     <div
                         className={cx({

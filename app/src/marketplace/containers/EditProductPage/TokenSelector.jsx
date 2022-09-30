@@ -206,7 +206,7 @@ const TokenSelector = ({ disabled }: Props) => {
                         ) : (
                             <MatchedTokenField>
                                 <TokenLogo
-                                    contractAddress={selectedTokenAddress}
+                                    contractAddress={pricingTokenAddress}
                                     chainId={chainId}
                                 />
                                 {' '}

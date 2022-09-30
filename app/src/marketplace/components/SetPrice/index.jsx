@@ -20,6 +20,7 @@ type Props = {
     disabled: boolean,
     className?: string,
     error?: string,
+    chainId: number,
 }
 
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => ({
@@ -36,6 +37,7 @@ const SetPrice = ({
     disabled,
     className,
     error,
+    chainId,
 }: Props) => {
     const onPriceChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         onPriceChangeProp(e.target.value)
@@ -53,6 +55,7 @@ const SetPrice = ({
                 <div className={styles.priceControls}>
                     <PriceField
                         pricingTokenAddress={pricingTokenAddress}
+                        chainId={chainId}
                         onChange={onPriceChange}
                         disabled={disabled}
                         placeholder="Price"

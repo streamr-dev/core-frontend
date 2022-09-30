@@ -36,6 +36,7 @@ const SetPriceController = ({ error, disabled }: SetPriceControllerProps) => {
             timeUnit={timeUnit}
             onTimeUnitChange={setTimeUnit}
             error={error}
+            chainId={1}
         />
     )
 }

@@ -9,7 +9,7 @@ import Text from '$ui/Text'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA, getDataAddress } from '$mp/utils/web3'
-import { formatDecimals, priceForTimeUnits } from '$mp/utils/price'
+import { priceForTimeUnits } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
 import type { Product, AccessPeriod } from '$mp/flowtype/product-types'
 import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
@@ -143,12 +143,12 @@ export const ChooseAccessPeriodDialog = ({
     }, [pricingTokenDecimals]), 250)
 
     const displayPrice = useMemo(() => (
-        BN(currentPrice).isNaN() ? 'N/A' : formatDecimals(currentPrice, paymentCurrency, pricingTokenDecimals)
-    ), [currentPrice, paymentCurrency, pricingTokenDecimals])
+        BN(currentPrice).isNaN() ? 'N/A' : BN(currentPrice).toFixed(2)
+    ), [currentPrice])
 
     const displayApproxUsd = useMemo(() => (
-        BN(approxUsd).isNaN() ? 'N/A' : formatDecimals(approxUsd, contractCurrencies.USD, pricingTokenDecimals)
-    ), [approxUsd, pricingTokenDecimals])
+        BN(approxUsd).isNaN() ? 'N/A' : BN(approxUsd).toFixed(2)
+    ), [approxUsd])
 
     useEffect(() => {
         setExternalPrices({
@@ -159,8 +159,8 @@ export const ChooseAccessPeriodDialog = ({
     }, [setExternalPrices, priceInToken, paymentCurrency, priceInUsd])
 
     const currentBalance = useMemo(() => (
-        (balances && balances[paymentCurrency]) ? formatDecimals(balances[paymentCurrency], paymentCurrency, pricingTokenDecimals) : '-'
-    ), [balances, paymentCurrency, pricingTokenDecimals])
+        (balances && balances[paymentCurrency]) ? BN(balances[paymentCurrency]).toFixed(2) : '-'
+    ), [balances, paymentCurrency])
 
     const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === timeUnit), [timeUnit])
 

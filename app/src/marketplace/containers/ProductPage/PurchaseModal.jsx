@@ -307,7 +307,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 onCancel={onClose}
                 onPay={onApprovePurchase}
                 paymentCurrency={paymentCurrency}
-                pricingTokenDecimals={contractProduct.pricingTokenDecimals}
             />
         )
     }

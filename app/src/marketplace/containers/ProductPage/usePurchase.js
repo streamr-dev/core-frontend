@@ -93,7 +93,7 @@ export default function usePurchase() {
 
         allowance = BN(allowance || 0)
 
-        const needsAllowance = !!(isTokenPurchase && allowance.isLessThan(price))
+        const needsAllowance = !!(isTokenPurchase && allowance.isLessThan(purchasePrice))
         const needsAllowanceReset = !!(needsAllowance && allowance.isGreaterThan(0))
 
         const pricingTokenDecimals = await getCustomTokenDecimals(contractProduct.pricingTokenAddress, chainId)

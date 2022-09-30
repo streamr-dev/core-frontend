@@ -7,7 +7,6 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import type { TimeUnit, PaymentCurrency } from '$shared/flowtype/common-types'
 import { contractCurrencies } from '$shared/utils/constants'
-import { formatDecimals } from '$mp/utils/price'
 
 import styles from './purchaseSummaryDialog.pcss'
 
@@ -16,7 +15,6 @@ export type Props = {
     time: string,
     timeUnit: TimeUnit,
     paymentCurrency: PaymentCurrency,
-    pricingTokenDecimals: BN,
     tokenSymbol: string,
     price: BN,
     approxUsd: BN,
@@ -31,7 +29,6 @@ export const PurchaseSummaryDialog = ({
     time,
     timeUnit,
     price: priceProp,
-    pricingTokenDecimals,
     paymentCurrency,
     tokenSymbol,
     approxUsd: approxUsdProp,
@@ -41,12 +38,12 @@ export const PurchaseSummaryDialog = ({
     onPay,
 }: Props) => {
     const price = useMemo(() => (
-        formatDecimals(priceProp, paymentCurrency, pricingTokenDecimals)
-    ), [priceProp, paymentCurrency, pricingTokenDecimals])
+        BN(priceProp).toFixed(2)
+    ), [priceProp])
 
     const approxUsd = useMemo(() => (
-        formatDecimals(approxUsdProp, contractCurrencies.USD, pricingTokenDecimals)
-    ), [approxUsdProp, pricingTokenDecimals])
+        BN(approxUsdProp).toFixed(2)
+    ), [approxUsdProp])
 
     return (
         <ModalPortal>
