@@ -726,6 +726,7 @@ story('Marketplace/PurchaseTransactionProgress')
                 onCancel={action('cancel')}
                 status={statuses}
                 prompt={prompt}
+                tokenSymbol="DATA"
             />
         )
     })

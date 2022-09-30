@@ -1,6 +1,7 @@
 // @flow
 
 import BN from 'bignumber.js'
+
 import getWeb3 from '$utils/web3/getWeb3'
 import { get, put, post } from '$shared/utils/api'
 

@@ -317,6 +317,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 status={status}
                 onCancel={onClose}
                 prompt={currentAction && status[currentAction] === transactionStates.STARTED ? currentAction : undefined}
+                tokenSymbol={productTokenSymbol}
             />
         )
     }

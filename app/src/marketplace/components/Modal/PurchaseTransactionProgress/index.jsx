@@ -21,6 +21,7 @@ export type Props = {
     status: Status,
     onCancel: () => void,
     prompt?: $Values<typeof actionsTypes>,
+    tokenSymbol: string,
 }
 
 const PurchaseProgress = styled.div`
@@ -155,7 +156,7 @@ const purchaseProgress = {
     subscription: 'Subscribing to the product',
 }
 
-const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
+const PurchaseTransactionProgress = ({ onCancel, status, prompt, tokenSymbol }: Props) => {
     const { pending, progress } = useMemo(() => Object.keys(status).reduce((result, key) => {
         const value = status[key]
 
@@ -194,7 +195,7 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt }: Props) => {
             return (
                 <SetAllowancePrompt
                     onCancel={onCancel}
-                    paymentCurrency={paymentCurrencies.DATA}
+                    paymentCurrency={tokenSymbol}
                 />
             )
 
