@@ -130,8 +130,11 @@ describe('PriceSelector', () => {
         const { price, pricePerSecond, timeUnit } = await setup({
             id: '1',
             price: '1',
+            pricePerSecond: '1',
             pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
+            pricingTokenDecimals: 18,
             timeUnit: 'second',
+            chain: 'ETHEREUM',
         }, (el) => {
             el
                 .find('.inputWrapper input')
@@ -145,7 +148,7 @@ describe('PriceSelector', () => {
         })
 
         expect(price.toString()).toBe('10')
-        expect(pricePerSecond.toString()).toBe('10')
+        expect(pricePerSecond.toString()).toBe('10000000000000000000')
         expect(timeUnit).toBe('second')
     })
 
@@ -154,8 +157,10 @@ describe('PriceSelector', () => {
             id: '1',
             price: '7200',
             pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
+            pricingTokenDecimals: 18,
             pricePerSecond: '7200',
             timeUnit: 'second',
+            chain: 'ETHEREUM',
         }, (el) => {
             act(() => {
                 el.find(Select).props().onChange({
@@ -165,7 +170,7 @@ describe('PriceSelector', () => {
         })
 
         expect(price.toString()).toBe('7200')
-        expect(pricePerSecond.toString()).toBe('2')
+        expect(pricePerSecond.toString()).toBe('2000000000000000000')
         expect(timeUnit).toBe('hour')
     })
 })

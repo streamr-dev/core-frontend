@@ -12,6 +12,7 @@ import * as transactionActions from '$mp/modules/transactions/actions'
 import * as productServices from '$mp/modules/product/services'
 import * as productActions from '$mp/modules/product/actions'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
+import { fromDecimals } from '$mp/utils/math'
 
 import usePurchase, { actionsTypes } from '../usePurchase'
 
@@ -461,10 +462,10 @@ describe('usePurchase', () => {
             expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
-            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1, 18)
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1, 18)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
             expect(validateStub).toHaveBeenCalledWith({
-                price: purchasePrice,
+                price: fromDecimals(purchasePrice, 18),
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,
@@ -578,9 +579,9 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SET_DATA_ALLOWANCE)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1, 18)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x8f693ca8D21b157107184d29D398A8D082b38b76', 1)
             expect(validateStub).toHaveBeenCalledWith({
-                price: purchasePrice,
+                price: fromDecimals(purchasePrice, 18),
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: false,
@@ -678,7 +679,7 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(validateStub).toHaveBeenCalledWith({
-                price: purchasePrice,
+                price: fromDecimals(purchasePrice, 18),
                 paymentCurrency: 'DATA',
                 includeGasForSetAllowance: false,
                 includeGasForResetAllowance: false,
@@ -820,7 +821,7 @@ describe('usePurchase', () => {
             expect(setAllowanceStub).toHaveBeenCalledWith('0', 1)
             expect(setAllowanceStub).toHaveBeenCalledWith('1234', 1)
             expect(validateStub).toHaveBeenCalledWith({
-                price: '1234',
+                price: fromDecimals('1234', 18),
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,
@@ -931,7 +932,7 @@ describe('usePurchase', () => {
             expect(finishFn).toHaveBeenCalled()
             expect(setAllowanceStub).toHaveBeenCalledWith('1234', 1)
             expect(validateStub).toHaveBeenCalledWith({
-                price: '1234',
+                price: fromDecimals('1234', 18),
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: false,
@@ -1024,7 +1025,7 @@ describe('usePurchase', () => {
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
             expect(validateStub).toHaveBeenCalledWith({
-                price: '1234',
+                price: fromDecimals('1234', 18),
                 paymentCurrency: 'DAI',
                 includeGasForSetAllowance: false,
                 includeGasForResetAllowance: false,
@@ -1254,10 +1255,10 @@ describe('usePurchase', () => {
             expect(addTransactionStub).toHaveBeenCalledWith(hash1, transactionTypes.RESET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash2, transactionTypes.SET_DATA_ALLOWANCE)
             expect(addTransactionStub).toHaveBeenCalledWith(hash3, transactionTypes.SUBSCRIPTION)
-            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1, 18)
-            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1, 18)
+            expect(setAllowanceStub).toHaveBeenCalledWith('0', '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1)
+            expect(setAllowanceStub).toHaveBeenCalledWith(purchasePrice, '0x642D2B84A32A9A92FEc78CeAA9488388b3704898', 1)
             expect(validateStub).toHaveBeenCalledWith({
-                price: purchasePrice,
+                price: fromDecimals(purchasePrice, 18),
                 paymentCurrency: paymentCurrencies.PRODUCT_DEFINED,
                 includeGasForSetAllowance: true,
                 includeGasForResetAllowance: true,

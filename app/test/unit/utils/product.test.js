@@ -96,55 +96,28 @@ describe('product utils', () => {
 
     describe('mapPriceFromContract', () => {
         it('converts the price', () => {
-            expect(all.mapPriceFromContract('0,0000013314')).toBe('NaN')
-            expect(all.mapPriceFromContract('asdfasdf')).toBe('NaN')
-            expect(all.mapPriceFromContract('0')).toBe('0')
-            expect(all.mapPriceFromContract('1000000000000000000')).toBe('1')
-            expect(all.mapPriceFromContract('1')).toBe('1e-18')
-            expect(all.mapPriceFromContract('-1')).toBe('-1e-18')
+            expect(all.mapPriceFromContract('0,0000013314', 18)).toBe('NaN')
+            expect(all.mapPriceFromContract('asdfasdf', 18)).toBe('NaN')
+            expect(all.mapPriceFromContract('0', 18)).toBe('0')
+            expect(all.mapPriceFromContract('1000000000000000000', 18)).toBe('1')
+            expect(all.mapPriceFromContract('1', 18)).toBe('1e-18')
+            expect(all.mapPriceFromContract('-1', 18)).toBe('-1e-18')
         })
     })
 
     describe('mapPriceToContract', () => {
         it('converts the price', () => {
-            expect(all.mapPriceToContract('0,0000013314')).toBe('NaN')
-            expect(all.mapPriceToContract('asdfasdf')).toBe('NaN')
-            expect(all.mapPriceToContract('0')).toBe('0')
-            expect(all.mapPriceToContract('1')).toBe('1000000000000000000')
-            expect(all.mapPriceToContract('1e-18')).toBe('1')
-            expect(all.mapPriceToContract('-1e-18')).toBe('-1')
-            expect(all.mapPriceToContract('0.0000000000000000001')).toBe('0')
-            expect(all.mapPriceToContract('0.00000000000000000049')).toBe('0')
-            expect(all.mapPriceToContract('0.00000000000000000051')).toBe('1')
-            expect(all.mapPriceToContract('66666666666666.00000000000123456789')).toBe('66666666666666000000000001234568')
-            expect(all.mapPriceToContract('66666666666666.00000000000123456749')).toBe('66666666666666000000000001234567')
-        })
-    })
-
-    describe('mapPriceFromApi', () => {
-        it('converts the price', () => {
-            expect(all.mapPriceFromApi('0,0000013314')).toBe('NaN')
-            expect(all.mapPriceFromApi('lorem impsum')).toBe('NaN')
-            expect(all.mapPriceFromApi('0')).toBe('0')
-            expect(all.mapPriceFromApi('1000000000')).toBe('1')
-            expect(all.mapPriceFromApi('1')).toBe('1e-9')
-            expect(all.mapPriceFromApi('-1')).toBe('-1e-9')
-        })
-    })
-
-    describe('mapPriceToApi', () => {
-        it('converts the price', () => {
-            expect(all.mapPriceToApi('0,0000013314')).toBe('NaN')
-            expect(all.mapPriceToApi('lorem impsum')).toBe('NaN')
-            expect(all.mapPriceToApi('0')).toBe('0')
-            expect(all.mapPriceToApi('1')).toBe('1000000000')
-            expect(all.mapPriceToApi('1e-9')).toBe('1')
-            expect(all.mapPriceToApi('-1e-9')).toBe('-1')
-            expect(all.mapPriceToApi('0.0000000001')).toBe('0')
-            expect(all.mapPriceToApi('0.00000000049')).toBe('0')
-            expect(all.mapPriceToApi('0.00000000051')).toBe('1')
-            expect(all.mapPriceToApi('66666666666666.00123456789')).toBe('66666666666666001234568')
-            expect(all.mapPriceToApi('66666666666666.00123456749')).toBe('66666666666666001234567')
+            expect(all.mapPriceToContract('0,0000013314', 18)).toBe('NaN')
+            expect(all.mapPriceToContract('asdfasdf', 18)).toBe('NaN')
+            expect(all.mapPriceToContract('0', 18)).toBe('0')
+            expect(all.mapPriceToContract('1', 18)).toBe('1000000000000000000')
+            expect(all.mapPriceToContract('1e-18', 18)).toBe('1')
+            expect(all.mapPriceToContract('-1e-18', 18)).toBe('-1')
+            expect(all.mapPriceToContract('0.0000000000000000001', 18)).toBe('0')
+            expect(all.mapPriceToContract('0.00000000000000000049', 18)).toBe('0')
+            expect(all.mapPriceToContract('0.00000000000000000051', 18)).toBe('1')
+            expect(all.mapPriceToContract('66666666666666.00000000000123456789', 18)).toBe('66666666666666000000000001234568')
+            expect(all.mapPriceToContract('66666666666666.00000000000123456749', 18)).toBe('66666666666666000000000001234567')
         })
     })
 
@@ -152,7 +125,7 @@ describe('product utils', () => {
         it('maps product properties', () => {
             const inProduct = {
                 name: 'test',
-                pricePerSecond: 1000000000,
+                pricePerSecond: '1',
             }
             const outProduct = {
                 name: 'test',
@@ -167,12 +140,12 @@ describe('product utils', () => {
         it('maps product properties', () => {
             const inProduct = {
                 name: 'test',
-                pricePerSecond: 1,
+                pricePerSecond: '1',
                 priceCurrency: 'DATA',
             }
             const outProduct = {
                 name: 'test',
-                pricePerSecond: '1000000000',
+                pricePerSecond: '1',
                 priceCurrency: 'DATA',
             }
 
@@ -196,7 +169,7 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                pricePerSecond: 0,
+                pricePerSecond: '0',
                 state: productStates.DEPLOYED,
             }
 
@@ -214,7 +187,7 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                pricePerSecond: 1,
+                pricePerSecond: '1',
                 beneficiaryAddress: '0x12334',
                 isFree: false,
                 state: productStates.NOT_DEPLOYED,
@@ -224,7 +197,7 @@ describe('product utils', () => {
                 id: '1',
                 name: 'My Product',
                 description: 'My nice product',
-                pricePerSecond: '1000000000',
+                pricePerSecond: '1',
                 beneficiaryAddress: '0x12334',
                 isFree: false,
                 state: productStates.NOT_DEPLOYED,
@@ -308,7 +281,7 @@ describe('product utils', () => {
                 id: 1,
                 name: 'test',
                 minimumSubscriptionSeconds: 60,
-                pricePerSecond: 1,
+                pricePerSecond: '1',
                 owner: '0x123',
                 beneficiary: '0x1337',
                 currency: 0,
@@ -320,7 +293,7 @@ describe('product utils', () => {
                 id: 1,
                 name: 'test',
                 minimumSubscriptionInSeconds: 60,
-                pricePerSecond: '1e-18',
+                pricePerSecond: '1',
                 ownerAddress: '0x123',
                 beneficiaryAddress: '0x1337',
                 priceCurrency: 'DATA',
@@ -330,7 +303,7 @@ describe('product utils', () => {
                 chainId: 1337,
             }
 
-            expect(all.mapProductFromContract(inProduct.id, inProduct, 1337)).toStrictEqual(outProduct)
+            expect(all.mapProductFromContract(inProduct.id, inProduct, 1337)).toMatchObject(outProduct)
         })
     })
 

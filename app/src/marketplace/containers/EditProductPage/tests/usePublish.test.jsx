@@ -750,10 +750,10 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    chain: 'ETHEREUM',
+                    chain: 'ETHEREUM',                    
                     pendingChanges: {
                         requiresWhitelist: true,
-                        pricingTokenAddress: '0x124',
+                        pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
                     },
                 })
 
@@ -812,7 +812,7 @@ describe('usePublish', () => {
                     state: 'NOT_DEPLOYED',
                     ownerAddress: '',
                     requiresWhitelist: true,
-                    pricingTokenAddress: '0x124',
+                    pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
                 })
                 expect(putProductStub).not.toBeCalled()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
@@ -1009,7 +1009,7 @@ describe('usePublish', () => {
 
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '2',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1025,7 +1025,7 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(2),
+                    pricePerSecond: '2',
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     chain: 'ETHEREUM',
                 }
@@ -1104,7 +1104,7 @@ describe('usePublish', () => {
 
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '2',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1120,7 +1120,7 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(2),
+                    pricePerSecond: '2',
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     chain: 'ETHEREUM',
                 }
@@ -1595,7 +1595,7 @@ describe('usePublish', () => {
 
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '2',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1625,7 +1625,7 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(2),
+                    pricePerSecond: '2',
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     type: 'DATAUNION',
                     chain: 'ETHEREUM',
@@ -1694,7 +1694,7 @@ describe('usePublish', () => {
 
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '2',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1733,7 +1733,7 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(2),
+                    pricePerSecond: '2',
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     type: 'DATAUNION',
                     pendingChanges: {

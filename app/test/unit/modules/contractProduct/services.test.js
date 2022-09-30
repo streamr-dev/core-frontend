@@ -11,37 +11,6 @@ describe('Product services', () => {
     })
 
     describe('getProductFromContract', () => {
-        it('must convert weis to token', async () => {
-            const getProductStub = jest.fn(() => ({
-                call: () => Promise.resolve({
-                    pricePerSecond: '1000000000000000000',
-                }),
-            }))
-            const getContractStub = jest.fn(() => ({
-                methods: {
-                    getProduct: getProductStub,
-                },
-            }))
-            jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
-            const result = await all.getProductFromContract('1234abcdef', false, 8995)
-            expect({
-                priceCurrency: undefined,
-                state: undefined,
-                pricePerSecond: '1',
-                id: '1234abcdef',
-                name: undefined,
-                ownerAddress: undefined,
-                beneficiaryAddress: undefined,
-                minimumSubscriptionInSeconds: 0,
-                requiresWhitelist: undefined,
-                chainId: 8995,
-                pricingTokenAddress: undefined,
-            }).toStrictEqual(result)
-            expect(getContractStub).toBeCalled()
-            expect(getProductStub).toBeCalled()
-            expect(getProductStub).toBeCalledWith('0x1234abcdef')
-        })
-
         it('must throw error if owner is 0', async (done) => {
             const getProductStub = jest.fn(() => ({
                 call: () => Promise.resolve({
@@ -184,7 +153,7 @@ describe('Product services', () => {
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
+                '63',
                 '0x1337',
                 0,
             )
@@ -205,7 +174,7 @@ describe('Product services', () => {
                 lastUpdated: '2018-03-27T08:51:37.261Z',
                 ownerAddress: '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 beneficiaryAddress: '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                pricePerSecond: 63,
+                pricePerSecond: '63',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
@@ -309,7 +278,7 @@ describe('Product services', () => {
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
+                '63',
                 '0x123',
                 0,
                 false,
@@ -331,7 +300,7 @@ describe('Product services', () => {
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
+                '63',
                 '0x123',
                 0,
                 false,
@@ -353,7 +322,7 @@ describe('Product services', () => {
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
+                '63',
                 '0x123',
                 0,
                 true,

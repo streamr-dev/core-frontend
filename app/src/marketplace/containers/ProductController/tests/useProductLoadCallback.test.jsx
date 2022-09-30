@@ -274,6 +274,8 @@ describe('useProductLoadCallback', () => {
             dataUnionDeployed: false,
             requiresWhitelist: undefined,
             pricingTokenAddress: undefined,
+            pricePerSecond: undefined,
+            pricingTokenDecimals: 18,
         })
     })
 
@@ -321,7 +323,7 @@ describe('useProductLoadCallback', () => {
         })
 
         expect(product).toMatchObject({
-            price: BN(3600),
+            price: BN(3.6e-15),
             pricePerSecond: BN(1),
             priceCurrency: 'DATA',
             timeUnit: 'hour',
@@ -383,12 +385,15 @@ describe('useProductLoadCallback', () => {
             chain: 'ETHEREUM',
             isFree: false,
             pricePerSecond: BN(1),
-            price: BN(3600),
+            price: BN(3.6e-15),
             timeUnit: 'hour',
             priceCurrency: 'DATA',
             adminFee: undefined,
             dataUnionDeployed: false,
             pendingChanges: null,
+            pricingTokenAddress: undefined,
+            pricingTokenDecimals: 18,
+            requiresWhitelist: undefined,
         })
     })
 

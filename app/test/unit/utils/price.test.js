@@ -48,13 +48,13 @@ describe('price utils', () => {
 
     describe('pricePerSecondFromTimeUnit', () => {
         it('calculates PPS for time units', () => {
-            expect(all.pricePerSecondFromTimeUnit(0, 'second')).toStrictEqual(BN(0))
-            expect(all.pricePerSecondFromTimeUnit(1, 'second')).toStrictEqual(BN(1))
-            expect(all.pricePerSecondFromTimeUnit(1, 'minute').toFixed(20)).toStrictEqual('0.01666666666666666667')
-            expect(all.pricePerSecondFromTimeUnit(1, 'hour').toFixed(20)).toStrictEqual('0.00027777777777777778')
-            expect(all.pricePerSecondFromTimeUnit(1, 'day').toFixed(20)).toStrictEqual('0.00001157407407407407')
-            expect(all.pricePerSecondFromTimeUnit(1, 'week').toFixed(20)).toStrictEqual('0.00000165343915343915')
-            expect(() => all.pricePerSecondFromTimeUnit(0, 'asdf')).toThrow()
+            expect(all.pricePerSecondFromTimeUnit(0, 'second', 18)).toStrictEqual('0')
+            expect(all.pricePerSecondFromTimeUnit(1, 'second', 18)).toStrictEqual('1000000000000000000')
+            expect(all.pricePerSecondFromTimeUnit(1, 'minute', 18)).toStrictEqual('16666666666666667')
+            expect(all.pricePerSecondFromTimeUnit(1, 'hour', 18)).toStrictEqual('277777777777778')
+            expect(all.pricePerSecondFromTimeUnit(1, 'day', 18)).toStrictEqual('11574074074074')
+            expect(all.pricePerSecondFromTimeUnit(1, 'week', 18)).toStrictEqual('1653439153439')
+            expect(() => all.pricePerSecondFromTimeUnit(0, 'asdf', 18)).toThrow()
         })
     })
 

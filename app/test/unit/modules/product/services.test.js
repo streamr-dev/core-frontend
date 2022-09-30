@@ -6,7 +6,7 @@ import BN from 'bignumber.js'
 import * as all from '$mp/modules/product/services'
 import * as utils from '$mp/utils/smartContract'
 import * as productUtils from '$mp/utils/product'
-import { getDaiAddress } from '$mp/utils/web3'
+import * as web3Utils from '$mp/utils/web3'
 import setTempEnv from '$testUtils/setTempEnv'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { existingProduct } from './mockData'
@@ -100,13 +100,18 @@ describe('product - services', () => {
                     endTimestamp: '0',
                 }),
             }))
+            const getDecimalsStub = jest.fn(() => ({
+                call: () => Promise.resolve(18),
+            }))
             const getContractStub = jest.fn(() => ({
                 methods: {
                     getProduct: getProductStub,
                     getSubscription: getSubscriptionStub,
+                    decimals: getDecimalsStub,
                 },
             }))
             jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
+
             const result = await all.getMyProductSubscription('1234abcdef', 8995)
             expect(result).toStrictEqual({
                 productId: '1234abcdef',
@@ -114,7 +119,7 @@ describe('product - services', () => {
             })
             expect(getProductStub).toHaveBeenCalledTimes(1)
             expect(getSubscriptionStub).toHaveBeenCalledTimes(1)
-            expect(getContractStub).toHaveBeenCalledTimes(2)
+            expect(getContractStub).toHaveBeenCalledTimes(3)
             expect(getProductStub).toBeCalledWith('0x1234abcdef')
             expect(getSubscriptionStub).toBeCalledWith('0x1234abcdef', 'testAccount')
         })
@@ -144,7 +149,7 @@ describe('product - services', () => {
     it('puts product', async () => {
         const data = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
-        expectedResult.pricePerSecond = '1.898e-14'
+        expectedResult.pricePerSecond = '0.00001898'
 
         moxios.wait(() => {
             const request = moxios.requests.mostRecent()
@@ -163,7 +168,7 @@ describe('product - services', () => {
     it('posts product', async () => {
         const data = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
-        expectedResult.pricePerSecond = '1.898e-14'
+        expectedResult.pricePerSecond = '0.00001898'
 
         moxios.wait(() => {
             const request = moxios.requests.mostRecent()
@@ -182,7 +187,7 @@ describe('product - services', () => {
     it('posts image', async () => {
         const data = cloneDeep(existingProduct)
         const expectedResult = cloneDeep(existingProduct)
-        expectedResult.pricePerSecond = '1.898e-14'
+        expectedResult.pricePerSecond = '0.00001898'
 
         moxios.wait(() => {
             const request = moxios.requests.mostRecent()
@@ -384,7 +389,7 @@ describe('product - services', () => {
             }))
             all.buyProduct('1234', 8995, '1000', 'DAI', '4321')
             expect(buyStub).toHaveBeenCalledTimes(1)
-            expect(buyStub).toBeCalledWith('0x1234', '1000', ONE_DAY, getDaiAddress(8995), '4321000000000000000000')
+            expect(buyStub).toBeCalledWith('0x1234', '1000', ONE_DAY, web3Utils.getDaiAddress(8995), '4321000000000000000000')
             expect(getIdSpy).toHaveBeenCalledTimes(1)
             expect(getIdSpy).toBeCalledWith('1234')
         })
