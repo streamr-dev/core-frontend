@@ -219,7 +219,7 @@ export const getMyTokenAllowance = async (tokenAddress: Address, chainId: number
     const account = await getDefaultWeb3Account()
     const allowance = await call(erc20TokenContractMethods(tokenAddress, false, chainId)
         .allowance(account, marketplaceContract(false, chainId).options.address))
-    return allowance
+    return BN(allowance)
 }
 
 export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, chainId: number): SmartContractTransaction => {
@@ -228,7 +228,7 @@ export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, 
     }
 
     const method = erc20TokenContractMethods(tokenAddress, false, chainId)
-        .approve(marketplaceContract(false, chainId).options.address, amount)
+        .approve(marketplaceContract(false, chainId).options.address, BN(amount))
 
     return send(method, {
         network: chainId,
