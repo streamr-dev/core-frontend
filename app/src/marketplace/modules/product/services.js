@@ -228,7 +228,7 @@ export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, 
     }
 
     const method = erc20TokenContractMethods(tokenAddress, false, chainId)
-        .approve(marketplaceContract(false, chainId).options.address, BN(amount))
+        .approve(marketplaceContract(false, chainId).options.address, BN(amount).toString())
 
     return send(method, {
         network: chainId,
