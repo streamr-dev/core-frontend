@@ -14,7 +14,7 @@ export const formatChainName = (apiChainName: string): string => {
         case 'ETHEREUM':
             return 'Ethereum'
         case 'XDAI':
-            return 'Gnosis Chain'
+            return 'Gnosis'
         case 'POLYGON':
             return 'Polygon'
         case 'BSC':

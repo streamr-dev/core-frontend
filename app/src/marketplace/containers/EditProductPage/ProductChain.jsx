@@ -25,7 +25,7 @@ const configChainNameMapping = {
     dev0: 'Docker mainchain',
     dev1: 'Docker sidechain',
     ethereum: 'Ethereum',
-    gnosis: 'Gnosis Chain',
+    gnosis: 'Gnosis',
     binance: 'Binance Smart Chain',
     polygon: 'Polygon',
 }

@@ -35,7 +35,7 @@ const chainOptions = [{
     icon: <NetworkIcon chainId={1} />,
 }, {
     id: 100,
-    name: 'Gnosis Chain',
+    name: 'Gnosis',
     icon: <NetworkIcon chainId={100} />,
 }, {
     id: 137,
