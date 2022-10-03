@@ -10,6 +10,8 @@ import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets
 import type { Secret } from '$mp/modules/dataUnion/types'
 import { usePending } from '$shared/hooks/usePending'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import useRequireNetwork from '$shared/hooks/useRequireNetwork'
+import getProviderChainId from '$utils/web3/getProviderChainId'
 import { useController } from '../ProductController'
 
 const KeyField = styled(UnstyledKeyField)``
@@ -42,19 +44,35 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
     const { isPending: isAddPending, wrap: wrapAddSecret } = usePending('product.ADD_SECRET')
     const { isPending: isEditPending, wrap: wrapEditSecret } = usePending('product.EDIT_SECRET')
     const { isPending: isRemovePending, wrap: wrapRemoveSecret } = usePending('product.REMOVE_SECRET')
+    const { validateNetwork } = useRequireNetwork(chainId, false)
+
+    const checkNetwork = useCallback(async () => {
+        if (getProviderChainId() !== chainId) {
+            await validateNetwork(true)
+            // We need to wait a bit to make sure MetaMask has done it's thing
+            await new Promise((r) => setTimeout(r, 700))
+        }
+    }, [validateNetwork, chainId])
+
+    const loadSecrets = useCallback(async (id) => {
+        await checkNetwork()
+        await load(id, chainId)
+    }, [chainId, load, checkNetwork])
 
     const addSecret = useCallback(async (name) => (
         wrapAddSecret(async () => {
+            await checkNetwork()
             await add({
                 dataUnionId,
                 name,
                 chainId,
             })
         })
-    ), [wrapAddSecret, dataUnionId, add, chainId])
+    ), [wrapAddSecret, dataUnionId, add, chainId, checkNetwork])
 
     const editSecret = useCallback(async (id, name) => (
         wrapEditSecret(async () => {
+            await checkNetwork()
             await edit({
                 dataUnionId,
                 id,
@@ -62,17 +80,18 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
                 chainId,
             })
         })
-    ), [wrapEditSecret, dataUnionId, edit, chainId])
+    ), [wrapEditSecret, dataUnionId, edit, chainId, checkNetwork])
 
     const removeSecret = useCallback(async (id) => (
         wrapRemoveSecret(async () => {
+            await checkNetwork()
             await remove({
                 dataUnionId,
                 id,
                 chainId,
             })
         })
-    ), [wrapRemoveSecret, dataUnionId, remove, chainId])
+    ), [wrapRemoveSecret, dataUnionId, remove, chainId, checkNetwork])
 
     const isDisabled = !!(disabled || isAddPending || isEditPending || isRemovePending)
 
@@ -80,7 +99,7 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
         <div {...props}>
             {isLoading === null && (
                 <LoadButton
-                    onClick={() => load(dataUnionId, chainId)}
+                    onClick={() => loadSecrets(dataUnionId)}
                     disabled={isLoading || isDisabled}
                 >
                     Load secrets

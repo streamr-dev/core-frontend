@@ -21,6 +21,7 @@ import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
 import useModal from '$shared/hooks/useModal'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+import SwitchNetworkModal from '$shared/components/SwitchNetworkModal'
 
 import BackButton from '$shared/components/BackButton'
 import useProductPermissions from '../ProductController/useProductPermissions'
@@ -265,6 +266,7 @@ const EditWrap = () => {
                 key={key}
                 product={product}
             />
+            <SwitchNetworkModal />
         </EditControllerProvider>
     )
 }
