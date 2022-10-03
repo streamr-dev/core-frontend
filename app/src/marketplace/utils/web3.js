@@ -169,7 +169,7 @@ export const getTokenInformation = async (address: Address, chainId?: number): P
     const actualChainId = chainId || await getChainId()
 
     // Check from cache first
-    const cacheKey = address.toString() + actualChainId.toString()
+    const cacheKey = `${address ? address.toString() : 'noaddress'}-${actualChainId ? actualChainId.toString() : 'nochainid'}`
     const cacheItem = tokenInformationCache[cacheKey]
     if (cacheItem) {
         return cacheItem
@@ -309,7 +309,7 @@ export const validateBalanceForPurchase = async ({
     switch (paymentCurrency) {
         case paymentCurrencies.PRODUCT_DEFINED: {
             const tokenBalance = await getMyCustomTokenBalance(pricingTokenAddress)
-            if (tokenBalance.isLessThan(price)) {
+            if (nativeTokenBalance.isLessThan(requiredGas) || tokenBalance.isLessThan(price)) {
                 throw new NoBalanceError({
                     message: 'It looks like you don’t have enough balance to subscribe to this product.',
                     required: {
