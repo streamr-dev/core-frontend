@@ -172,7 +172,7 @@ class Web3Poller {
 
         return Promise.race([fetchPromise, cancelPromise])
             .then((network) => {
-                this.handleNetwork(network || '')
+                this.handleNetwork(network.toString() || '')
             }, (err) => {
                 if (!(err instanceof CancelError) && this.networkId) {
                     this.networkId = null

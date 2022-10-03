@@ -2,14 +2,28 @@
 host = "localhost"
 
 [core]
-daiTokenContractAddress = "0x642d2b84a32a9a92fec78ceaa9488388b3704898"
-dataUnionFactorySidechainCreationBlock = 0
-dataUnionPublishMemberLimit = 1
-marketplaceContractAddress = "0xF1371c0f40528406dc4f4cAf89924eA9Da49E866"
+dataUnionPublishMemberLimit = 0
 platformOriginUrl = ""
 streamrUrl = ""
 uniswapAdaptorContractAddress = "0xE4eA76e830a659282368cA2e7E4d18C4AE52D8B3"
 web3TransactionConfirmationBlocks = 1
+marketplaceChains = ['dev0', 'dev1']
+dataunionChains = ['dev1']
+streamChains = ['dev1']
+theGraphUrl = ":8000"
+dataUnionJoinServerUrl = "http://localhost:5555"
+
+[[core.marketplaceContractCreationBlocks]]
+chainId = 8995
+blockNumber = 1
+
+[[core.marketplaceContractCreationBlocks]]
+chainId = 8997
+blockNumber = 1
+
+[[core.dataunionGraphNames]]
+chainId = 8997
+name = "streamr-dev/dataunion"
 
 [[core.storageNodes]]
 name = "Local (broker-node-storage-1)"

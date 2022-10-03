@@ -29,6 +29,8 @@ import ActionQueue from '$mp/utils/actionQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
+import { getChainIdFromApiString } from '$shared/utils/chains'
+import { getCustomTokenDecimals } from '$mp/utils/web3'
 import { getPendingChanges, withPendingChanges } from './state'
 
 export const actionsTypes = {
@@ -61,11 +63,12 @@ export default function usePublish() {
         if (!product) {
             throw new Error('no product')
         }
+        const chainId = getChainIdFromApiString(product.chain)
 
         // load contract product
         let contractProduct
         try {
-            contractProduct = await getProductFromContract(product.id || '')
+            contractProduct = await getProductFromContract(product.id || '', true, chainId)
         } catch (e) {
             // don't need to do anything with this error necessarily,
             // it just means that the product wasn't deployed
@@ -74,8 +77,8 @@ export default function usePublish() {
         let currentAdminFee
         let dataUnionOwner
         try {
-            currentAdminFee = await getAdminFee(product.beneficiaryAddress)
-            dataUnionOwner = await getDataUnionOwner(product.beneficiaryAddress)
+            currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId)
+            dataUnionOwner = await getDataUnionOwner(product.beneficiaryAddress, chainId)
         } catch (e) {
             // ignore error, assume contract has not been deployed
         }
@@ -90,16 +93,26 @@ export default function usePublish() {
             beneficiaryAddress,
             priceCurrency,
             requiresWhitelist,
+            pricingTokenAddress,
             ...productDataChanges
         } = pendingChanges || {}
         const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-        const hasPriceChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChanges)
+        const hasContractProductChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChanges)
         const hasRequireWhitelistChanged = !!(
             !!contractProduct &&
             requiresWhitelist !== undefined &&
             contractProduct.requiresWhitelist !== requiresWhitelist
         )
-        const hasPendingChanges = Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasPriceChanged || hasRequireWhitelistChanged
+        const hasPendingChanges = Object.keys(productDataChanges).length > 0 ||
+            hasAdminFeeChanged ||
+            hasContractProductChanged ||
+            hasRequireWhitelistChanged
+
+        let pricingTokenDecimals = 18
+        if (pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)) {
+            const address = pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)
+            pricingTokenDecimals = await getCustomTokenDecimals(address, chainId)
+        }
 
         let nextMode
 
@@ -166,7 +179,7 @@ export default function usePublish() {
                     requireOwner: dataUnionOwner,
                     handler: (update, done) => {
                         try {
-                            return setAdminFee(product.beneficiaryAddress, adminFee)
+                            return setAdminFee(product.beneficiaryAddress, chainId, adminFee)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     if (hash) {
@@ -200,7 +213,7 @@ export default function usePublish() {
                     requireWeb3: true,
                     requireOwner: contractProduct.ownerAddress,
                     handler: (update, done) => (
-                        setRequiresWhitelist(product.id || '', requiresWhitelist)
+                        setRequiresWhitelist(product.id || '', requiresWhitelist, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING)
                                 dispatch(addTransaction(hash, transactionTypes.SET_REQUIRES_WHITELIST))
@@ -220,7 +233,7 @@ export default function usePublish() {
 
         // update price, currency & beneficiary if changed
         if ([publishModes.REPUBLISH, publishModes.REDEPLOY].includes(nextMode)) {
-            if (hasPriceChanged && contractProduct) {
+            if (hasContractProductChanged && contractProduct) {
                 const isRedeploy = !!(nextMode === publishModes.REDEPLOY)
 
                 queue.add({
@@ -235,9 +248,12 @@ export default function usePublish() {
                         try {
                             return updateContractProduct({
                                 ...contractProduct,
-                                pricePerSecond: pricePerSecond || product.pricePerSecond,
+                                pricePerSecond: pricePerSecond || contractProduct.pricePerSecond,
                                 beneficiaryAddress: beneficiaryAddress || product.beneficiaryAddress,
                                 priceCurrency: priceCurrency || product.priceCurrency,
+                                chainId,
+                                pricingTokenAddress: pricingTokenAddress || contractProduct.pricingTokenAddress,
+                                pricingTokenDecimals,
                             }, isRedeploy)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
@@ -293,6 +309,9 @@ export default function usePublish() {
                                 state: product.state,
                                 ownerAddress: '', // owner address is not needed when creating
                                 requiresWhitelist,
+                                chainId,
+                                pricingTokenAddress,
+                                pricingTokenDecimals,
                             })
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
@@ -353,14 +372,14 @@ export default function usePublish() {
 
         // do a separate republish for products that have been at some point deployed
         // and we didn't do a contract update above
-        if (nextMode === publishModes.REDEPLOY && !hasPriceChanged && contractProduct) {
+        if (nextMode === publishModes.REDEPLOY && !hasContractProductChanged && contractProduct) {
             queue.add({
                 id: actionsTypes.REDEPLOY_PAID,
                 requireWeb3: true,
                 requireOwner: contractProduct.ownerAddress,
                 handler: (update, done) => {
                     try {
-                        return redeployProduct(product.id || '')
+                        return redeployProduct(product.id || '', chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING)
                                 done()
@@ -400,7 +419,7 @@ export default function usePublish() {
                     requireOwner: contractProduct.ownerAddress,
                     handler: (update, done) => {
                         try {
-                            return deleteProduct(product.id || '')
+                            return deleteProduct(product.id || '', chainId)
                                 .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()

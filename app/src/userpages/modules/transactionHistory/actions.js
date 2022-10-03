@@ -7,6 +7,7 @@ import { transactionsSchema, contractProductSchema } from '$shared/modules/entit
 import type { StoreState } from '$shared/flowtype/store-state'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { selectEntities } from '$shared/modules/entities/selectors'
+import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
 import type { ProductIdList } from '$mp/flowtype/product-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { selectMyProductList } from '$mp/modules/myProductList/selectors'
@@ -53,10 +54,10 @@ const getTransactionsFailure = (error: ErrorInUi) => ({
     error,
 })
 
-export const fetchProducts = (ids: ProductIdList) => (dispatch: Function) => {
+export const fetchProducts = (ids: ProductIdList, chainId: number) => (dispatch: Function) => {
     (ids || []).forEach((id) => {
         try {
-            getProductFromContract(id)
+            getProductFromContract(id, true, chainId)
                 .then(handleEntities(contractProductSchema, dispatch))
                 .catch((e) => {
                     console.warn(e)
@@ -78,6 +79,7 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
     const events = selectTransactionEvents(state) || []
     const entities = selectEntities(state)
     const offset = selectOffset(state)
+    const chainId = selectEthereumNetworkId(state)
 
     const eventsToShow = events.splice(offset, 10)
     const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.id]))
@@ -93,7 +95,7 @@ export const showEvents = () => (dispatch: Function, getState: () => StoreState)
                     result.includes(transaction.productId) ? result : [...result, (transaction.productId || '')]
                 ), [])
 
-            dispatch(fetchProducts(productsToFetch))
+            dispatch(fetchProducts(productsToFetch, chainId))
             return data
         })
         .then(handleEntities(transactionsSchema, dispatch))

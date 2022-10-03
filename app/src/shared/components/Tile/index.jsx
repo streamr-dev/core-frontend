@@ -12,11 +12,12 @@ import { isPaidProduct } from '$mp/utils/product'
 import { timeUnits } from '$shared/utils/constants'
 import PaymentRate from '$mp/components/PaymentRate'
 import useExpiresIn, { formatRemainingTime } from '$shared/hooks/useExpiresIn'
+import { formatChainName, getChainIdFromApiString } from '$shared/utils/chains'
 import routes from '$routes'
 import Label, { HAPPY, ANGRY, WORRIED } from './Label'
 import Summary from './Summary'
 import Menu from './Menu'
-import Badge, { DataUnionBadge, IconBadge, DeployingBadge } from './Badge'
+import Badge, { DataUnionBadge, DeployingBadge, ChainBadge as UnstyledChainBadge } from './Badge'
 
 const Image = styled(Img)`
     img& {
@@ -91,10 +92,6 @@ const Tile = styled.div`
         visibility: hidden;
     }
 
-    ${Link}:not(${Badge}) {
-        display: block;
-    }
-
     ${Menu}.show,
     :hover ${Menu},
     :focus ${Menu} {
@@ -140,7 +137,7 @@ const UnstyledImageContainer = ({
 }
 
 const ImageContainer = styled(UnstyledImageContainer)`
-    border-radius: 2px;
+    border-radius: 8px;
     border-radius: ${({ theme }) => theme.borderRadius};
     overflow: hidden;
     position: relative;
@@ -220,6 +217,16 @@ const ExpirationLabel = ({ expiresAt, now }: any) => {
     )
 }
 
+const ChainBadge = styled(UnstyledChainBadge)`
+    visibility: hidden;
+    transition-property: visibility;
+    transition: 40ms;
+
+    ${Tile}:hover & {
+        visibility: visible;
+    }
+`
+
 const PurchaseTile = ({
     expiresAt,
     now,
@@ -240,20 +247,15 @@ const PurchaseTile = ({
                     <Tile.Thumbnail src={product.imageUrl || ''} />
                 </Tile.ImageContainer>
                 {!!showDataUnionBadge && (
-                    <DataUnionBadge top left />
-                )}
-                {typeof numMembers !== 'undefined' && (
-                    <IconBadge
-                        icon="dataUnion"
-                        bottom
-                        right
+                    <DataUnionBadge
+                        top
+                        left
+                        memberCount={numMembers}
                         forwardAs={Badge.Link}
-                        to={product.id && routes.marketplace.product({
+                        linkTo={product.id && routes.marketplace.product({
                             id: product.id,
                         }, 'stats')}
-                    >
-                        {numMembers}
-                    </IconBadge>
+                    />
                 )}
                 {!!showDeployingBadge && (
                     <DeployingBadge bottom right />
@@ -313,18 +315,7 @@ const ProductTile = ({
                 </Tile.ImageContainer>
             </Link>
             {!!showDataUnionBadge && (
-                <DataUnionBadge top left />
-            )}
-            {typeof numMembers !== 'undefined' && !showDeployingBadge && (
-                <IconBadge
-                    bottom
-                    right
-                    icon="dataUnion"
-                    forwardAs={Badge.Link}
-                    to={routes.dataunions.index()}
-                >
-                    {numMembers}
-                </IconBadge>
+                <DataUnionBadge top left memberCount={numMembers} linkTo={routes.dataunions.index()} />
             )}
             {!!showDeployingBadge && (
                 <DeployingBadge bottom right />
@@ -368,20 +359,24 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                 </Tile.ImageContainer>
             </Link>
             {!!showDataUnionBadge && (
-                <DataUnionBadge top left />
+                <DataUnionBadge
+                    top
+                    left
+                    memberCount={product.members}
+                    linkTo={
+                        routes.marketplace.product({
+                            id: product.id,
+                        }, 'stats')
+                    }
+                />
             )}
-            {!!showDataUnionBadge && typeof product.members !== 'undefined' && (
-                <IconBadge
-                    icon="dataUnion"
+            {product.chain != null && !product.isFree && (
+                <ChainBadge
                     bottom
-                    right
-                    forwardAs={Badge.Link}
-                    to={routes.marketplace.product({
-                        id: product.id,
-                    }, 'stats')}
-                >
-                    {product.members}
-                </IconBadge>
+                    left
+                    chainId={getChainIdFromApiString(product.chain)}
+                    chainName={formatChainName(product.chain)}
+                />
             )}
         </Tile.ImageContainer>
         <Link
@@ -395,7 +390,8 @@ const MarketplaceProductTile = ({ product, showDataUnionBadge, ...props }: Marke
                 label={isPaidProduct(product) ? (
                     <PaymentRate
                         amount={product.pricePerSecond}
-                        currency={product.priceCurrency}
+                        pricingTokenAddress={product.pricingTokenAddress}
+                        chainId={getChainIdFromApiString(product.chain)}
                         timeUnit={timeUnits.hour}
                         maxDigits={4}
                     />

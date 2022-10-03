@@ -5,21 +5,21 @@ import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
 
 import type { SmartContractProduct, AccessPeriod } from '$mp/flowtype/product-types'
-import type { NumberString } from '$shared/flowtype/common-types'
-import { dataForTimeUnits } from '$mp/utils/price'
-import { validateBalanceForPurchase } from '$mp/utils/web3'
+import { priceForTimeUnits } from '$mp/utils/price'
+import { validateBalanceForPurchase, getDataAddress, getCustomTokenDecimals } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
 import ActionQueue from '$mp/utils/actionQueue'
 import {
     buyProduct,
     getMyDaiAllowance,
-    getMyDataAllowance,
     setMyDaiAllowance,
-    setMyDataAllowance,
+    getMyTokenAllowance,
+    setMyTokenAllowance,
 } from '$mp/modules/product/services'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { toSeconds } from '$mp/utils/time'
+import { fromDecimals } from '$mp/utils/math'
 
 export const actionsTypes = {
     SET_DAI_ALLOWANCE: 'setDaiAllowance',
@@ -32,26 +32,30 @@ export const actionsTypes = {
 type Purchase = {
     contractProduct: SmartContractProduct,
     accessPeriod: AccessPeriod,
-    dataPerUsd: NumberString,
     gasIncrease?: number,
 }
 
 export default function usePurchase() {
     const dispatch = useDispatch()
 
-    return useCallback(async ({ contractProduct, accessPeriod, dataPerUsd, gasIncrease }: Purchase = {}) => {
+    return useCallback(async ({ contractProduct, accessPeriod, gasIncrease }: Purchase = {}) => {
         if (!contractProduct) {
             throw new Error('no product')
         }
 
-        if (!dataPerUsd) {
-            throw new Error('no dataPerUsd')
+        if (!contractProduct.pricingTokenAddress) {
+            throw new Error('no pricingTokenAddress')
         }
 
         const { paymentCurrency, time, timeUnit, price } = accessPeriod || {}
+        const { chainId } = contractProduct
 
         if (!accessPeriod || !time || !timeUnit || !paymentCurrency) {
             throw new Error('no access period')
+        }
+
+        if (contractProduct.pricingTokenAddress !== getDataAddress(chainId) && paymentCurrency !== paymentCurrencies.PRODUCT_DEFINED) {
+            throw new Error(`cannot pay for this product with ${paymentCurrency}`)
         }
 
         const isEthPurchase = !!(paymentCurrency === paymentCurrencies.ETH)
@@ -67,12 +71,10 @@ export default function usePurchase() {
 
             purchasePrice = price
         } else {
-            const { pricePerSecond, priceCurrency } = contractProduct
+            const { pricePerSecond } = contractProduct
 
-            purchasePrice = dataForTimeUnits(
+            purchasePrice = priceForTimeUnits(
                 pricePerSecond,
-                dataPerUsd,
-                priceCurrency,
                 time,
                 timeUnit,
             )
@@ -84,19 +86,22 @@ export default function usePurchase() {
 
         let allowance
         if (isDaiPurchase) {
-            allowance = await getMyDaiAllowance()
+            allowance = await getMyDaiAllowance(chainId)
         } else if (!isEthPurchase) {
-            allowance = await getMyDataAllowance()
+            allowance = await getMyTokenAllowance(contractProduct.pricingTokenAddress, chainId)
         }
 
         allowance = BN(allowance || 0)
 
-        const needsAllowance = !!(isTokenPurchase && allowance.isLessThan(price))
+        const needsAllowance = !!(isTokenPurchase && allowance.isLessThan(purchasePrice))
         const needsAllowanceReset = !!(needsAllowance && allowance.isGreaterThan(0))
 
+        const pricingTokenDecimals = await getCustomTokenDecimals(contractProduct.pricingTokenAddress, chainId)
+
         await validateBalanceForPurchase({
-            price: purchasePrice,
+            price: fromDecimals(purchasePrice, pricingTokenDecimals),
             paymentCurrency,
+            pricingTokenAddress: contractProduct.pricingTokenAddress,
             includeGasForSetAllowance: needsAllowance,
             includeGasForResetAllowance: needsAllowanceReset,
         })
@@ -108,7 +113,7 @@ export default function usePurchase() {
                 id: actionsTypes.RESET_DAI_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyDaiAllowance('0')
+                        return setMyDaiAllowance('0', chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.RESET_DAI_ALLOWANCE))
@@ -118,6 +123,7 @@ export default function usePurchase() {
                                 update(transactionStates.CONFIRMED)
                             })
                             .onError((error) => {
+                                console.error(error)
                                 done()
                                 update(transactionStates.FAILED, error)
                             })
@@ -134,7 +140,7 @@ export default function usePurchase() {
                 id: actionsTypes.RESET_DATA_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyDataAllowance('0')
+                        return setMyTokenAllowance('0', contractProduct.pricingTokenAddress, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.RESET_DATA_ALLOWANCE))
@@ -148,6 +154,7 @@ export default function usePurchase() {
                                 update(transactionStates.FAILED, error)
                             })
                     } catch (e) {
+                        console.error(e)
                         done()
                         update(transactionStates.FAILED, e)
                     }
@@ -162,7 +169,7 @@ export default function usePurchase() {
                 id: actionsTypes.SET_DAI_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyDaiAllowance(price)
+                        return setMyDaiAllowance(price, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.SET_DAI_ALLOWANCE))
@@ -172,6 +179,7 @@ export default function usePurchase() {
                                 update(transactionStates.CONFIRMED)
                             })
                             .onError((error) => {
+                                console.error(error)
                                 done()
                                 update(transactionStates.FAILED, error)
                             })
@@ -188,7 +196,7 @@ export default function usePurchase() {
                 id: actionsTypes.SET_DATA_ALLOWANCE,
                 handler: (update, done) => {
                     try {
-                        return setMyDataAllowance(purchasePrice)
+                        return setMyTokenAllowance(purchasePrice, contractProduct.pricingTokenAddress, chainId)
                             .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.SET_DATA_ALLOWANCE))
@@ -198,6 +206,7 @@ export default function usePurchase() {
                                 update(transactionStates.CONFIRMED)
                             })
                             .onError((error) => {
+                                console.error(error)
                                 done()
                                 update(transactionStates.FAILED, error)
                             })
@@ -218,7 +227,7 @@ export default function usePurchase() {
             id: actionsTypes.SUBSCRIPTION,
             handler: (update, done) => {
                 try {
-                    return buyProduct(contractProduct.id, subscriptionInSeconds, paymentCurrency, purchasePrice, gasIncrease)
+                    return buyProduct(contractProduct.id, contractProduct.chainId, subscriptionInSeconds, paymentCurrency, purchasePrice, gasIncrease)
                         .onTransactionHash((hash) => {
                             update(transactionStates.PENDING, hash)
                             dispatch(addTransaction(hash, transactionTypes.SUBSCRIPTION))
@@ -226,9 +235,10 @@ export default function usePurchase() {
                         })
                         .onTransactionComplete(() => {
                             update(transactionStates.CONFIRMED)
-                            dispatch(getProductSubscription(contractProduct.id))
+                            dispatch(getProductSubscription(contractProduct.id, contractProduct.chainId))
                         })
                         .onError((error) => {
+                            console.error(error)
                             done()
                             update(transactionStates.FAILED, error)
                         })

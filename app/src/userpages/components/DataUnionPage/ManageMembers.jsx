@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 
 import Button from '$shared/components/Button'
@@ -11,7 +11,9 @@ import Text from '$ui/Text'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { useDebounced } from '$shared/hooks/wrapCallback'
 import useDataUnionMembers from '$mp/modules/dataUnion/hooks/useDataUnionMembers'
+import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 
 const Container = styled.div`
     background: #FDFDFD;
@@ -166,13 +168,15 @@ const Removing = styled.div`
 
 type Props = {
     dataUnion: any,
+    dataUnionId: string,
+    chainId: number,
     className?: string,
 }
 
-const ManageMembers = ({ dataUnion, className }: Props) => {
+const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) => {
     const isMounted = useIsMounted()
-    const dataUnionId = dataUnion && dataUnion.id
     const [search, setSearch] = useState('')
+    const [searchResults, setSearchResults] = useState([])
     const [processingMembers, setProcessingMembers] = useState([])
     const {
         loading: loadingMembers,
@@ -182,22 +186,27 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
         search: searchMembers,
     } = useDataUnionMembers()
     const loading = loadingMembers || processingMembers.length > 0
+    const { loadByDataUnionId: loadDataUnionStats } = useAllDataUnionStats()
 
     useEffect(() => {
         const load = async () => {
             try {
-                await loadMembers(dataUnionId)
+                if (dataUnionId) {
+                    await loadMembers(dataUnionId, chainId)
+                }
             } catch (e) {
                 console.error('Could not load member list', e)
             }
         }
         load()
-    }, [loadMembers, dataUnionId])
+    }, [loadMembers, dataUnionId, chainId])
+
+    const debouncedSetSearch = useDebounced(setSearch, 250)
 
     const onSearchChange = useCallback((e) => {
         const search = e.target.value.trim()
-        setSearch(search)
-    }, [setSearch])
+        debouncedSetSearch(search)
+    }, [debouncedSetSearch])
 
     const removeMember = useCallback(async (memberAddress: string) => {
         setProcessingMembers((prev) => [
@@ -211,13 +220,27 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
         } finally {
             if (isMounted()) {
                 setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
+                loadDataUnionStats([dataUnionId])
             }
         }
-    }, [dataUnionId, removeMembers, isMounted])
+    }, [dataUnionId, removeMembers, isMounted, loadDataUnionStats])
 
-    const searchResults = useMemo(() => (
-        searchMembers(search)
-    ), [search, searchMembers])
+    useEffect(() => {
+        const doSearch = async () => {
+            try {
+                if (dataUnionId) {
+                    const results = await searchMembers(dataUnionId, search, chainId)
+
+                    if (isMounted()) {
+                        setSearchResults(results)
+                    }
+                }
+            } catch (e) {
+                console.error('Could not load search results', e)
+            }
+        }
+        doSearch()
+    }, [search, dataUnionId, chainId, isMounted, searchMembers])
 
     const listing = search.length > 0 ? searchResults : members
 
@@ -242,8 +265,8 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                     <span>Withdrawable</span>
                     <span>Status</span>
                 </TableHeader>
+                <LoadingIndicator loading={loading} />
                 <TableRows rowCount={4}>
-                    <LoadingIndicator loading={loading} />
                     {search && search.length > 0 && searchResults.length === 0 && (
                         <CenteredMessage>
                             <span>No members found that match {' '} <Heavy>{search}</Heavy></span>
@@ -277,7 +300,7 @@ const ManageMembers = ({ dataUnion, className }: Props) => {
                             )
                         })
                     }
-                    {members.length === 0 && (
+                    {members.length === 0 && !search && (
                         <CenteredMessage>No members at the moment</CenteredMessage>
                     )}
                 </TableRows>

@@ -1,7 +1,7 @@
 // @flow
 
 import React, { useEffect } from 'react'
-import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
+import { isDataUnionProduct } from '$mp/utils/product'
 import { useController } from '$mp/containers/ProductController'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
@@ -9,6 +9,7 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import Terms from '$mp/components/ProductPage/Terms'
 import ProductPage from '$shared/components/ProductPage'
 import Segment from '$shared/components/Segment'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import useDataUnionServerStats from './useDataUnionServerStats'
 
 import Hero from './Hero'
@@ -21,12 +22,12 @@ import usePreviewStats from './usePreviewStats'
 
 const ProductDetailsPage = () => {
     const { product } = useController()
+    const chainId = getChainIdFromApiString(product.chain)
     const contractProduct = useContractProduct()
 
     const { subscriberCount } = contractProduct || {}
     const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
     const isDataUnion = !!(product && isDataUnionProduct(product))
-    const isProductFree = !!(product && !isPaidProduct(product))
     const isDuDeployed = !!isDataUnion && !!dataUnionDeployed && isEthereumAddress(beneficiaryAddress)
 
     const { startPolling, stopPolling, totalEarnings, memberCount } = useDataUnionServerStats()
@@ -42,13 +43,13 @@ const ProductDetailsPage = () => {
 
     useEffect(() => {
         if (isDataUnion) {
-            startPolling(beneficiaryAddress)
+            startPolling(beneficiaryAddress, chainId)
 
             return () => stopPolling()
         }
 
         return () => {}
-    }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress])
+    }, [startPolling, stopPolling, isDataUnion, beneficiaryAddress, chainId])
 
     return (
         <ProductPage>
@@ -57,7 +58,7 @@ const ProductDetailsPage = () => {
                     <ProductPage.Container>
                         <Hero />
                         <ProductPage.Separator />
-                        <Description isProductFree={isProductFree} />
+                        <Description />
                     </ProductPage.Container>
                 </ProductPage.Container>
             </ProductPage.Hero>
@@ -68,6 +69,7 @@ const ProductDetailsPage = () => {
                         stats={stats}
                         memberCount={memberCount}
                         dataUnion={dataUnion}
+                        chainId={chainId}
                     />
                 )}
                 <Streams />

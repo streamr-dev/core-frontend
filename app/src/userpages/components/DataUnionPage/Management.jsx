@@ -5,13 +5,12 @@ import styled from 'styled-components'
 
 import DaysPopover from '$shared/components/DaysPopover'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
 import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
-import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import { MEDIUM } from '$shared/utils/styled'
 
-import ManageJoinRequests from './ManageJoinRequests'
 import ManageMembers from './ManageMembers'
 
 const Container = styled.div`
@@ -40,6 +39,11 @@ const Heading = styled.div`
     color: #323232;
 `
 
+const StyledManageMembers = styled(ManageMembers)`
+    grid-column: 1 / 3;
+    grid-row: 1;
+`
+
 const GraphHeader = styled.div`
     margin-bottom: 32px;
 `
@@ -51,32 +55,35 @@ const StyledDaysPopover = styled(DaysPopover)`
 
 type Props = {
     product: any,
-    joinRequests: Array<any>,
     dataUnion: any,
+    stats: any,
     className?: string,
 }
 
-const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
+const Management = ({ product, dataUnion, stats, className }: Props) => {
     const [days, setDays] = useState(7)
     const [subsDays, setSubsDays] = useState(7)
     const { loadDataUnion } = useController()
-    const { startPolling, stopPolling, memberCount } = useDataUnionServerStats()
+    const memberCount = (stats && stats.memberCount) || 0
     const { beneficiaryAddress } = product
+    const dataUnionId = beneficiaryAddress
+    const chainId = getChainIdFromApiString(product.chain)
 
     useEffect(() => {
         if (beneficiaryAddress) {
-            loadDataUnion(beneficiaryAddress)
-            startPolling(beneficiaryAddress)
-            return () => stopPolling()
+            loadDataUnion(beneficiaryAddress, chainId)
         }
 
         return () => {}
-    }, [startPolling, stopPolling, beneficiaryAddress, loadDataUnion])
+    }, [beneficiaryAddress, loadDataUnion, chainId])
 
     return (
         <Container className={className}>
-            <ManageJoinRequests dataUnion={dataUnion} joinRequests={joinRequests} />
-            <ManageMembers dataUnion={dataUnion} />
+            <StyledManageMembers
+                dataUnionId={dataUnionId}
+                dataUnion={dataUnion}
+                chainId={chainId}
+            />
             <Box>
                 <GraphHeader>
                     <TimeSeriesGraph.Header>
@@ -89,10 +96,13 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
                         />
                     </TimeSeriesGraph.Header>
                 </GraphHeader>
-                <SubscriberGraph
-                    productId={product.id}
-                    shownDays={subsDays}
-                />
+                {dataUnionId && (
+                    <SubscriberGraph
+                        productId={product.id}
+                        shownDays={subsDays}
+                        chainId={chainId}
+                    />
+                )}
             </Box>
             <Box>
                 <GraphHeader>
@@ -104,11 +114,12 @@ const Management = ({ product, joinRequests, dataUnion, className }: Props) => {
                         />
                     </TimeSeriesGraph.Header>
                 </GraphHeader>
-                {dataUnion && !!dataUnion.id && (
+                {dataUnionId && (
                     <MembersGraph
+                        dataUnionAddress={dataUnionId}
                         memberCount={(memberCount && memberCount.total) || 0}
                         shownDays={days}
-                        dataUnionAddress={dataUnion && dataUnion.id}
+                        chainId={chainId}
                     />
                 )}
             </Box>

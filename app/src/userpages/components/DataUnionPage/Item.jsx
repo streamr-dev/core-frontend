@@ -16,14 +16,10 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { getProductById, putProduct } from '$mp/modules/product/services'
 import { validate as validateProduct } from '$mp/utils/product'
 import { MEDIUM, SM, LG } from '$shared/utils/styled'
-import { getSubscriberCount } from '$mp/modules/contractProduct/services'
 import { getDataUnion } from '$mp/modules/dataUnion/services'
 import { fromAtto } from '$mp/utils/math'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import useJoinRequests from '$mp/modules/dataUnion/hooks/useJoinRequests'
 import { withPendingChanges } from '$mp/containers/EditProductPage/state'
-import useFilterSort from '$userpages/hooks/useFilterSort'
-import { getFilters } from '$userpages/utils/constants'
 import { truncate, numberToText } from '$shared/utils/text'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
@@ -35,6 +31,8 @@ import { DataUnionMembersProvider } from '$mp/modules/dataUnion/hooks/useDataUni
 import Initials from '$shared/components/AvatarImage/Initials'
 import useEntities from '$shared/hooks/useEntities'
 import { productSchema } from '$shared/modules/entities/schema'
+import { getChainIdFromApiString, formatChainName } from '$shared/utils/chains'
+import { getAddressLink } from '$shared/utils/blockexplorer'
 import routes from '$routes'
 
 import Management from './Management'
@@ -293,44 +291,23 @@ const Item = ({ product, stats }: Props) => {
     const productId = product && product.id
     const productName = product && product.name
     const dataUnionId = product && product.beneficiaryAddress
+    const chainId = product && getChainIdFromApiString(product.chain)
 
     const [isOpen, setIsOpen] = useState(false)
-    const [subscriberCount, setSubscriberCount] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
     const { update: updateEntities } = useEntities()
-    const { wrap: wrapSubscriberLoad, isPending: loadingSubscriberCount } = usePending(`dataunion.item.${productId || ''}.SUBSCRIBERS`)
     const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
-    const { wrap: wrapJoinRequestLoad, isPending: loadingJoinRequests } = usePending(`dataunion.item.${productId || ''}.JOINREQUESTS`)
     const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
     const { wrap: wrapDeploy, isPending: isDeployPending } = usePending(`dataunion.item.${productId || ''}.DEPLOY`)
-    const loading = loadingSubscriberCount || loadingDataUnion || loadingJoinRequests || isPublishPending || isDeployPending
+    const loading = loadingDataUnion || isPublishPending || isDeployPending
 
     const { api: publishDialog } = useModal('publish')
     const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
-    const { load: loadJoinRequests, members: joinRequests } = useJoinRequests()
-    const filters = getFilters('dataunion')
-    const sortOptions = useMemo(() => ([
-        filters.APPROVE,
-    ]), [filters])
-    const { filter } = useFilterSort(sortOptions)
-
-    useEffect(() => {
-        const load = async () => {
-            if (productId) {
-                const count = await getSubscriberCount(productId)
-
-                if (isMounted()) {
-                    setSubscriberCount(count)
-                }
-            }
-        }
-        wrapSubscriberLoad(() => load())
-    }, [productId, isMounted, wrapSubscriberLoad])
 
     useEffect(() => {
         const load = async () => {
             if (dataUnionId) {
-                const du = await getDataUnion(dataUnionId)
+                const du = await getDataUnion(dataUnionId, chainId)
 
                 if (isMounted()) {
                     setDataUnion(du)
@@ -338,19 +315,7 @@ const Item = ({ product, stats }: Props) => {
             }
         }
         wrapDataUnionLoad(() => load())
-    }, [dataUnionId, isMounted, wrapDataUnionLoad])
-
-    useEffect(() => {
-        const load = async () => {
-            if (dataUnionId) {
-                await loadJoinRequests({
-                    dataUnionId,
-                    filter,
-                })
-            }
-        }
-        wrapJoinRequestLoad(() => load())
-    }, [loadJoinRequests, dataUnionId, filter, wrapJoinRequestLoad])
+    }, [dataUnionId, chainId, isMounted, wrapDataUnionLoad])
 
     const productState = useMemo(() => {
         if (product.state === productStates.DEPLOYED &&
@@ -537,13 +502,9 @@ const Item = ({ product, stats }: Props) => {
                 </TitleContainer>
                 <Buttons>
                     {dataUnion && (
-                        <Tooltip value="View on Etherscan">
+                        <Tooltip value="View on block explorer">
                             <Button
-                                href={
-                                    routes.etherscanAddress({
-                                        address: dataUnion.id,
-                                    })
-                                }
+                                href={getAddressLink(chainId, dataUnion.id)}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
@@ -609,8 +570,8 @@ const Item = ({ product, stats }: Props) => {
             <LoadingIndicator loading={loading} />
             <Stats>
                 <Stat>
-                    <Key>Join requests</Key>
-                    <Value>{joinRequests.length}</Value>
+                    <Key>Chain</Key>
+                    <Value>{formatChainName(product.chain)}</Value>
                 </Stat>
                 <Stat>
                     <Key>Members</Key>
@@ -629,15 +590,15 @@ const Item = ({ product, stats }: Props) => {
                     <Value>{avgUserRevenue.toFixed(2)}</Value>
                 </Stat>
                 <Stat>
-                    <Key>Subscribers</Key>
-                    <Value>{subscriberCount}</Value>
+                    <Key>Revenue share</Key>
+                    <Value>{dataUnion ? `${((1 - dataUnion.adminFee) * 100).toFixed(0)}%` : '-'}</Value>
                 </Stat>
             </Stats>
             {isOpen && (
                 <StyledManagement
                     product={product}
                     dataUnion={dataUnion}
-                    joinRequests={joinRequests}
+                    stats={stats}
                 />
             )}
         </Container>

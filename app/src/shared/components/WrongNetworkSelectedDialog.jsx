@@ -22,11 +22,11 @@ const WrongNetworkSelectedDialog = ({
     currentNetwork,
 }) => {
     const requiredNetworkName = useMemo(() => (
-        ethereumNetworks[requiredNetwork] || `#${requiredNetwork}`
+        ethereumNetworks[requiredNetwork.toString()] || `#${requiredNetwork}`
     ), [requiredNetwork])
 
     const currentNetworkName = useMemo(() => (
-        ethereumNetworks[currentNetwork] || `#${currentNetwork}`
+        ethereumNetworks[currentNetwork.toString()] || `#${currentNetwork}`
     ), [currentNetwork])
 
     return (

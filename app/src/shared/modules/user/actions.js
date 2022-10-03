@@ -10,6 +10,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import { clearStorage } from '$shared/utils/storage'
 import type { Address } from '$shared/flowtype/web3-types'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
 import type {
     UserErrorActionCreator,
     UserDataActionCreator,
@@ -190,7 +191,10 @@ const setBalance: SetBalanceActionCreator = createAction(
     }),
 )
 
-export const updateBalance = (account: Address) => async (dispatch: Function) => {
+export const updateBalance = (account: Address) => async (dispatch: Function, getState: Function) => {
+    const state = getState()
+    const chainId = selectEthereumNetworkId(state)
+
     let accountEthBalance = BN(0)
     let accountDataBalance = BN(0)
 
@@ -199,6 +203,7 @@ export const updateBalance = (account: Address) => async (dispatch: Function) =>
             address: account,
             type: BalanceType.ETH,
             usePublicNode: true,
+            chainId,
         })
     } catch (e) {
         console.warn(e)
@@ -209,6 +214,7 @@ export const updateBalance = (account: Address) => async (dispatch: Function) =>
             address: account,
             type: BalanceType.DATA,
             usePublicNode: true,
+            chainId,
         })
     } catch (e) {
         console.warn(e)

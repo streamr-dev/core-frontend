@@ -44,12 +44,12 @@ describe('myProductList - services', () => {
             {
                 id: '456def',
                 name: 'Test 2',
-                pricePerSecond: '0.00001',
+                pricePerSecond: '10000',
             },
             {
                 id: '789ghi',
                 name: 'Test 3',
-                pricePerSecond: '0.00005',
+                pricePerSecond: '50000',
             },
         ]
 

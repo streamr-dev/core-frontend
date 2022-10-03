@@ -19,26 +19,29 @@ const stories =
 
 stories.add('basic', () => (
     <PriceField
-        currency="USD"
+        pricingTokenAddress="pricingTokenAddress"
         placeholder="Price"
         onCommit={action('commit')}
+        chainId={1}
     />
 ))
 
 stories.add('disabled', () => (
     <PriceField
-        currency="USD"
+        pricingTokenAddress="pricingTokenAddress"
         placeholder="Price"
         onCommit={action('commit')}
+        chainId={1}
         disabled
     />
 ))
 
 stories.add('with error', () => (
     <PriceField
-        currency="USD"
+        pricingTokenAddress="pricingTokenAddress"
         placeholder="Price"
         error="Something went wrong"
         onCommit={action('commit')}
+        chainId={1}
     />
 ))

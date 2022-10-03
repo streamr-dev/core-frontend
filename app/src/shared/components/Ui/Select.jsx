@@ -1,6 +1,6 @@
 // @flow
 
-import React from 'react'
+import React, { type Element } from 'react'
 import styled, { css } from 'styled-components'
 import ReactSelect, { components } from 'react-select'
 import cx from 'classnames'
@@ -9,6 +9,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 export type Option = {
     value: any,
     label: string,
+    icon?: Element<any>,
 }
 
 export type Props = {
@@ -66,6 +67,7 @@ const customStyles = {
     }),
     option: (provided, state) => ({
         ...provided,
+        display: 'flex',
         textAlign: 'left',
         padding: '0 1rem',
         paddingLeft: '1rem',
@@ -76,6 +78,7 @@ const customStyles = {
             backgroundColor: '#f8f8f8',
         },
         lineHeight: '2rem',
+        alignItems: 'center',
     }),
     placeholder: () => ({
         color: '#CDCDCD',
@@ -86,19 +89,24 @@ const customStyles = {
         padding: '0 1rem',
         color: '#323232',
         lineHeight: '1rem',
+        overflow: 'visible',
     }),
     singleValue: (provided) => ({
         ...provided,
         margin: 0,
         overflow: 'visible',
+        display: 'flex',
+        alignItems: 'center',
     }),
 }
 
-const Control = ({ className, ...props }) => {
+const Control = ({ className, children, ...props }) => {
     const { controlClassName } = props.selectProps
 
     return (
-        <components.Control {...props} className={cx(className, controlClassName)} />
+        <components.Control {...props} className={cx(className, controlClassName)}>
+            {children}
+        </components.Control>
     )
 }
 
@@ -115,9 +123,19 @@ const Tick = styled(UnstyledTick)`
     width: 10px;
 `
 
+const OptionIconWrapper = styled.div`
+    width: 20px;
+    margin-right: 0.5rem;
+`
+
 const IconOption = (props) => (
     <components.Option {...props}>
         {props.isSelected && <Tick />}
+        {props.data.icon != null && (
+            <OptionIconWrapper>
+                {props.data.icon}
+            </OptionIconWrapper>
+        )}
         {props.data.label}
     </components.Option>
 )
@@ -141,6 +159,26 @@ const DropdownIndicator = (props) => (
     )
 )
 
+const IconWrapper = styled.div`
+    width: 24px;
+    margin-right: 0.5rem;
+`
+
+const SingleValue = ({ children, ...props }) => {
+    const { icon } = props.getValue()[0] || {}
+
+    return (
+        <components.SingleValue {...props}>
+            {icon != null && (
+                <IconWrapper>
+                    {icon}
+                </IconWrapper>
+            )}
+            {children}
+        </components.SingleValue>
+    )
+}
+
 const UnstyledSelect = ({
     controlClassName,
     required = false,
@@ -155,6 +193,7 @@ const UnstyledSelect = ({
             IndicatorSeparator: null,
             Option: IconOption,
             DropdownIndicator,
+            SingleValue,
         }}
         controlClassName={controlClassName}
         required={required}

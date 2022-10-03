@@ -1,13 +1,11 @@
 // @flow
 
 import EventEmitter from 'events'
-import Web3 from 'web3'
-import type { PromiEvent } from 'web3'
+import type { Web3, PromiEvent } from 'web3'
 import { isHex } from 'web3-utils'
 import BN from 'bignumber.js'
 
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
-import { networks } from '$shared/utils/constants'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
@@ -49,15 +47,20 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  */
 export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && isHex(hex)
 
-export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false): Web3.eth.Contract => {
-    const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
+export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false, chainId?: number): Web3.eth.Contract => {
+    if (usePublicNode && chainId == null) {
+        throw new Error('ChainId must be provided!')
+    }
+
+    const web3 = usePublicNode ? getPublicWeb3(chainId) : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
 
 export const isUpdateContractProductRequired = (contractProduct: SmartContractProduct, editProduct: Product) => (
     (!arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond) ||
     !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress) ||
-    contractProduct.priceCurrency !== editProduct.priceCurrency)
+    !areAddressesEqual(contractProduct.pricingTokenAddress, editProduct.pricingTokenAddress) ||
+    contractProduct.requiresWhitelist !== editProduct.requiresWhitelist)
 )
 
 export const call = (method: Callable): SmartContractCall<*> => method.call()
@@ -65,7 +68,7 @@ export const call = (method: Callable): SmartContractCall<*> => method.call()
 export const send = (method: Sendable, options?: {
     gas?: number,
     value?: NumberString | BN,
-    network?: $Values<typeof networks>,
+    network?: number,
 }): SmartContractTransaction => {
     const emitter = new EventEmitter()
     // NOTE: looks like there's double handling of errors happening here
@@ -77,7 +80,7 @@ export const send = (method: Sendable, options?: {
     Promise.all([
         getDefaultWeb3Account(),
         checkEthereumNetworkIsCorrect({
-            network: (options && options.network) || networks.MAINNET,
+            network: (options && options.network),
         }),
     ])
         .then(([account]) => (
@@ -85,6 +88,8 @@ export const send = (method: Sendable, options?: {
                 gas: (options && options.gas),
                 from: account,
                 value: options && options.value,
+                maxPriorityFeePerGas: null,
+                maxFeePerGas: null,
             })
                 .on('error', (error, receipt) => {
                     if (receipt) {

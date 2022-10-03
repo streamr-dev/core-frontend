@@ -71,10 +71,10 @@ export const removeWhiteListedAddress: WhiteListedAddressActionCreator = createA
     }),
 )
 
-export const getProductFromContract = (id: ProductId) => (dispatch: Function) => {
+export const getProductFromContract = (id: ProductId, chainId: number) => (dispatch: Function) => {
     dispatch(getProductFromContractRequest(id))
     return services
-        .getProductFromContract(id)
+        .getProductFromContract(id, true, chainId)
         .then((data) => handleEntities(contractProductSchema, dispatch)({
             id,
             ...data,
@@ -86,17 +86,6 @@ export const getProductFromContract = (id: ProductId) => (dispatch: Function) =>
                 message: error.message,
             }))
         })
-}
-
-export const loadSubscriptionDataFromContract = (id: ProductId) => async (dispatch: Function) => {
-    const subscriberCount = await services.getSubscriberCount(id)
-    const purchaseTimestamp = await services.getMostRecentPurchaseTimestamp(id)
-
-    return handleEntities(contractProductSchema, dispatch)({
-        id,
-        subscriberCount,
-        purchaseTimestamp,
-    })
 }
 
 export const clearContractProduct: ReduxActionCreator = createAction(CLEAR_CONTRACT_PRODUCT)

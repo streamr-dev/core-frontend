@@ -22,17 +22,17 @@ describe('productList - services', () => {
             {
                 id: '123abc',
                 name: 'Test 1',
-                pricePerSecond: 5000000000,
+                pricePerSecond: '5000000000',
             },
             {
                 id: '456def',
                 name: 'Test 2',
-                pricePerSecond: 5000000000,
+                pricePerSecond: '5000000000',
             },
             {
                 id: '789ghi',
                 name: 'Test 3',
-                pricePerSecond: 5000000000,
+                pricePerSecond: '5000000000',
             },
         ]
         const expectedResult = {
@@ -41,17 +41,17 @@ describe('productList - services', () => {
                 {
                     id: '123abc',
                     name: 'Test 1',
-                    pricePerSecond: '5',
+                    pricePerSecond: '5000000000',
                 },
                 {
                     id: '456def',
                     name: 'Test 2',
-                    pricePerSecond: '5',
+                    pricePerSecond: '5000000000',
                 },
                 {
                     id: '789ghi',
                     name: 'Test 3',
-                    pricePerSecond: '5',
+                    pricePerSecond: '5000000000',
                 },
             ],
         }

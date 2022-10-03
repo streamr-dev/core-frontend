@@ -28,25 +28,27 @@ export const WhitelistEditor = () => {
     const onAdd = useCallback(async () => {
         const { didEnableWhitelist } = await whitelistEditDialog.open({
             productId,
+            chainId: contractProduct.chainId,
         })
 
         // reset white list enabled marker in nav if it was updated to contract
         if (didEnableWhitelist && isMounted()) {
             updateRequiresWhitelist(true, false)
         }
-    }, [productId, whitelistEditDialog, updateRequiresWhitelist, isMounted])
+    }, [productId, contractProduct, whitelistEditDialog, updateRequiresWhitelist, isMounted])
 
     const onRemove = useCallback(async (removedAddress: Address) => {
         const { didEnableWhitelist } = await whitelistEditDialog.open({
             productId,
             removedAddress,
+            chainId: contractProduct.chainId,
         })
 
         // reset white list enabled marker in nav if it was updated to contract
         if (didEnableWhitelist && isMounted()) {
             updateRequiresWhitelist(true, false)
         }
-    }, [productId, whitelistEditDialog, updateRequiresWhitelist, isMounted])
+    }, [productId, contractProduct, whitelistEditDialog, updateRequiresWhitelist, isMounted])
 
     // TODO: Email address must be provided when we enable whitelist!
     // Add this validation when we have contact email for products.

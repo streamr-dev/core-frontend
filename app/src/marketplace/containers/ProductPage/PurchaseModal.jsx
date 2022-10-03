@@ -11,11 +11,10 @@ import { useController } from '$mp/containers/ProductController'
 import { usePending } from '$shared/hooks/usePending'
 import { purchaseFlowSteps } from '$mp/utils/constants'
 import { selectContractProduct, selectContractProductError } from '$mp/modules/contractProduct/selectors'
-import { selectDataPerUsd } from '$mp/modules/global/selectors'
-import { transactionStates, DEFAULT_CURRENCY, paymentCurrencies, gasLimits } from '$shared/utils/constants'
+import { transactionStates, paymentCurrencies, gasLimits } from '$shared/utils/constants'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import NoBalanceError from '$mp/errors/NoBalanceError'
-import { getBalances } from '$mp/utils/web3'
+import { getDataAddress, getTokenInformation, getCustomTokenBalance, getMyNativeTokenBalance, getMyDataTokenBalance } from '$mp/utils/web3'
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseComplete from '$mp/components/Modal/PurchaseComplete'
@@ -31,6 +30,7 @@ import { isDataUnionProduct } from '$mp/utils/product'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import usePurchase, { actionsTypes } from './usePurchase'
 
 type Props = {
@@ -41,20 +41,28 @@ type Props = {
 export const PurchaseDialog = ({ productId, api }: Props) => {
     const dispatch = useDispatch()
     const { product, loadContractProduct } = useController()
-    const { web3Error, checkingWeb3, account } = useWeb3Status()
+    const { web3Error, checkingWeb3, account } = useWeb3Status({
+        requireWeb3: true,
+        requireNetwork: getChainIdFromApiString(product.chain),
+    })
     const { isPending: isContractProductLoadPending } = usePending('contractProduct.LOAD')
     const { isPending: isPurchasePending, wrap: wrapPurchase } = usePending('product.PURCHASE')
     const nativeTokenName = useNativeTokenName()
     const [step, setStep] = useState(null)
     const [purchaseError, setPurchaseError] = useState(null)
-    const dataPerUsd = useSelector(selectDataPerUsd)
     const isMounted = useIsMounted()
     const contractProduct = useSelector(selectContractProduct)
     const contractProductError = useSelector(selectContractProductError)
+    const chainId = product && getChainIdFromApiString(product.chain)
     const accessPeriodParams: Ref<AccessPeriod> = useRef({
         time: '1',
         timeUnit: 'hour',
-        paymentCurrency: DEFAULT_CURRENCY,
+        paymentCurrency: (
+            contractProduct &&
+            contractProduct.pricingTokenAddress &&
+            contractProduct.pricingTokenAddress === getDataAddress(chainId)) ?
+            paymentCurrencies.DATA :
+            paymentCurrencies.PRODUCT_DEFINED,
         price: undefined,
         approxUsd: undefined,
     })
@@ -65,6 +73,8 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     const [status, setStatus] = useState({})
     const [purchaseStarted, setPurchaseStarted] = useState(false)
     const [purchaseTransaction, setPurchaseTransaction] = useState(undefined)
+    const [productTokenSymbol, setProductTokenSymbol] = useState('DATA')
+    const pricingTokenAddress = contractProduct && contractProduct.pricingTokenAddress
     const dataUnion = useDataUnion()
     const dataUnionRef = useRef()
     const isDataUnion = !!(product && isDataUnionProduct(product))
@@ -72,28 +82,44 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
     // Start loading the contract product & clear allowance state
     useEffect(() => {
-        loadContractProduct(productId)
+        loadContractProduct(productId, chainId)
             .then(() => {
                 if (isMounted()) {
                     setStep(purchaseFlowSteps.ACCESS_PERIOD)
                 }
             })
-    }, [dispatch, loadContractProduct, productId, isMounted])
+    }, [dispatch, loadContractProduct, productId, chainId, isMounted])
 
     useEffect(() => {
-        if (!account) { return }
+        const loadBalances = async () => {
+            if (!account) { return }
 
-        getBalances()
-            .then(([eth, data, dai]) => {
+            const tokenBalance = await getCustomTokenBalance(pricingTokenAddress, account, true, chainId)
+            const nativeTokenBalance = await getMyNativeTokenBalance()
+            const dataBalance = await getMyDataTokenBalance()
+
+            if (isMounted()) {
                 setBalances({
-                    [paymentCurrencies.ETH]: eth,
-                    [paymentCurrencies.DATA]: data,
-                    [paymentCurrencies.DAI]: dai,
+                    [paymentCurrencies.DATA]: dataBalance,
+                    [paymentCurrencies.PRODUCT_DEFINED]: tokenBalance,
+                    [paymentCurrencies.NATIVE]: nativeTokenBalance,
                 })
-            })
-    }, [account])
+            }
+        }
+        loadBalances()
+    }, [account, chainId, pricingTokenAddress, isMounted])
 
-    const { pricePerSecond, priceCurrency } = contractProduct || {}
+    useEffect(() => {
+        const load = async () => {
+            if (pricingTokenAddress != null) {
+                const info = await getTokenInformation(pricingTokenAddress, chainId)
+                if (isMounted() && info) {
+                    setProductTokenSymbol(info.symbol)
+                }
+            }
+        }
+        load()
+    }, [pricingTokenAddress, chainId, isMounted])
 
     const onSetAccessPeriod = useCallback(async (accessPeriod: AccessPeriod) => {
         accessPeriodParams.current = accessPeriod
@@ -113,7 +139,6 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 const { queue: nextQueue } = await purchase({
                     contractProduct,
                     accessPeriod: accessPeriodParams.current,
-                    dataPerUsd,
                     // Buying a DU2 product requires more gas
                     gasIncrease: version === 2 ? gasLimits.BUY_PRODUCT_DU2_INCREASE : 0,
                 })
@@ -129,7 +154,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 }
             }
         })
-    ), [wrapPurchase, purchase, contractProduct, dataPerUsd, isMounted])
+    ), [wrapPurchase, purchase, contractProduct, isMounted])
 
     useEffect(() => {
         if (!queue) { return () => {} }
@@ -231,6 +256,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                     balances={purchaseError.getBalances()}
                     paymentCurrency={paymentCurrency}
                     nativeTokenName={nativeTokenName}
+                    productTokenSymbol={productTokenSymbol}
                 />
             )
         }
@@ -247,9 +273,11 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
     if (step === purchaseFlowSteps.ACCESS_PERIOD) {
         return (
             <ChooseAccessPeriodDialog
-                dataPerUsd={dataPerUsd}
-                pricePerSecond={pricePerSecond}
-                priceCurrency={priceCurrency}
+                pricePerSecond={contractProduct.pricePerSecond}
+                pricingTokenAddress={contractProduct.pricingTokenAddress}
+                pricingTokenDecimals={contractProduct.pricingTokenDecimals}
+                tokenSymbol={productTokenSymbol}
+                chainId={chainId}
                 balances={balances}
                 onCancel={onClose}
                 onNext={onSetAccessPeriod}
@@ -273,6 +301,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 time={time}
                 timeUnit={timeUnit}
                 price={price}
+                tokenSymbol={productTokenSymbol}
                 approxUsd={approxUsd}
                 onBack={() => setStep(purchaseFlowSteps.ACCESS_PERIOD)}
                 onCancel={onClose}
@@ -288,6 +317,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                 status={status}
                 onCancel={onClose}
                 prompt={currentAction && status[currentAction] === transactionStates.STARTED ? currentAction : undefined}
+                tokenSymbol={productTokenSymbol}
             />
         )
     }
@@ -301,6 +331,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
                         viewInCore: true,
                     })}
                     txHash={purchaseTransaction}
+                    chainId={chainId}
                 />
             )
         }

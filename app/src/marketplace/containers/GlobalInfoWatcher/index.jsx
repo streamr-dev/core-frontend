@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import type { Hash, Receipt } from '$shared/flowtype/web3-types'
 import { getUserData, logout } from '$shared/modules/user/actions'
-import { getDataPerUsd, setEthereumNetworkId } from '$mp/modules/global/actions'
+import { setEthereumNetworkId } from '$mp/modules/global/actions'
 import {
     addTransaction,
     completeTransaction,
@@ -28,29 +28,11 @@ type Props = {
 
 const LOGIN_POLL_INTERVAL = 1000 * 60 * 5 // 5min
 const ACCOUNT_BALANCE_POLL_INTERVAL = 1000 * 60 * 5 // 5min
-const USD_RATE_POLL_INTERVAL = 1000 * 60 * 60 * 6 // 6h
 const PENDING_TX_WAIT = 1000 // 1s
 
 export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
     const address = useAccountAddress()
-
-    // Poll usd rate from contract
-    const dataPerUsdRatePollTimeout = useRef()
-    const dataPerUsdRatePoll = useCallback(() => {
-        clearTimeout(dataPerUsdRatePollTimeout.current)
-        dispatch(getDataPerUsd())
-
-        dataPerUsdRatePollTimeout.current = setTimeout(dataPerUsdRatePoll, USD_RATE_POLL_INTERVAL)
-    }, [dispatch])
-
-    useEffect(() => {
-        dataPerUsdRatePoll()
-
-        return () => {
-            clearTimeout(dataPerUsdRatePollTimeout.current)
-        }
-    }, [dataPerUsdRatePoll])
 
     // Poll login info
     const loginPollTimeout = useRef()

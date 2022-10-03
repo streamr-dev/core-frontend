@@ -7,8 +7,8 @@ import {
     MadeBy as UnstyledMadeBy,
     SocialChannels,
 } from '@streamr/streamr-layout'
-import routes from '$routes'
 import docsLinks from '$shared/../docsLinks'
+import routes from '$routes'
 
 const MadeBy = styled(UnstyledMadeBy)`
     padding: 0 0 32px;

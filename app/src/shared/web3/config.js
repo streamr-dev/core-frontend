@@ -1,22 +1,17 @@
 // @flow
 
-import type { SmartContractConfig } from '$shared/flowtype/web3-types'
+import { Chains } from '@streamr/config'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import marketplaceAbi from './abis/marketplace'
+import formatConfigUrl from '$utils/formatConfigUrl'
 import tokenAbi from './abis/token'
-import uniswapAdaptorAbi from './abis/uniswapAdaptor'
 import dataUnionAbi from './abis/dataunion'
 import dataUnionSidechainAbi from './abis/dataunionSidechain'
 
 type MainnetConfig = {
     chainId: string,
     rpcUrl: string,
-    marketplace: SmartContractConfig,
-    dataToken: SmartContractConfig,
-    daiToken: SmartContractConfig,
-    uniswapAdaptor: SmartContractConfig,
     dataUnionAbi: string,
     transactionConfirmationBlocks: number,
 }
@@ -27,22 +22,63 @@ type DataUnionChainConfig = {
     dataUnionAbi: string,
 }
 
-type SidechainConfig = {
-    chainId: string,
-    rpcUrl: string,
-}
-
 type Config = {
     mainnet: MainnetConfig,
     dataunionsChain: DataUnionChainConfig,
-    streamsChain: SidechainConfig,
+}
+
+const chainConfigs = Chains.load()
+
+export const getConfigForChain = (chainId: number) => {
+    if (chainId == null) {
+        throw new Error('ChainId must be provided!')
+    }
+
+    // $FlowFixMe: Object.entries loses type information
+    const configEntry = Object.entries(chainConfigs).find((c) => c[1].id.toString() === chainId.toString())
+
+    if (configEntry == null) {
+        throw new Error(`Could not find config for chainId ${chainId}`)
+    }
+
+    const config: any = configEntry[1]
+
+    // Fix local rpc urls
+    config.rpcEndpoints = config.rpcEndpoints.map((rpc) => {
+        let { url } = rpc
+
+        // Config contains references to local docker environment (10.200.10.1).
+        // Use formatConfigUrl to make sure we are compatible with other docker hosts as well.
+        if (url.includes('10.200.10.1')) {
+            // Leave only port
+            url = url.replace('http://10.200.10.1', '')
+            url = formatConfigUrl(url)
+        }
+
+        return {
+            url,
+        }
+    })
+
+    return config
+}
+
+export const getConfigForChainByName = (chainName: string) => {
+    const configEntry = Object.entries(chainConfigs).find((c) => c[0] === chainName)
+
+    if (configEntry == null) {
+        throw new Error(`Could not find config for chain with name ${chainName}`)
+    }
+
+    const config: any = configEntry[1]
+    return getConfigForChain(config.id)
 }
 
 const getConfig = (): Config => {
     const { tokenAddress, dataUnionChainRPCs, mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
 
     // eslint-disable-next-line max-len
-    const { daiTokenContractAddress: DAI, marketplaceContractAddress, uniswapAdaptorContractAddress, web3TransactionConfirmationBlocks } = getCoreConfig()
+    const { web3TransactionConfirmationBlocks } = getCoreConfig()
 
     const mainChainId = getMainChainId()
 
@@ -55,28 +91,12 @@ const getConfig = (): Config => {
                 abi: tokenAbi,
                 address: tokenAddress,
             },
-            daiToken: {
-                abi: tokenAbi,
-                address: DAI,
-            },
-            marketplace: {
-                abi: marketplaceAbi,
-                address: marketplaceContractAddress,
-            },
-            uniswapAdaptor: {
-                abi: uniswapAdaptorAbi,
-                address: uniswapAdaptorContractAddress,
-            },
             dataUnionAbi,
         },
         dataunionsChain: {
             chainId: dataUnionChainRPCs.chainId,
             rpcUrl: dataUnionChainRPCs.rpcs[0].url,
             dataUnionAbi: dataUnionSidechainAbi,
-        },
-        streamsChain: {
-            chainId: streamRegistryChainRPCs.chainId,
-            rpcUrl: streamRegistryChainRPCs.rpcs[0].url,
         },
         metamask: {
             // local development values
@@ -123,9 +143,9 @@ const getConfig = (): Config => {
             },
             '100': {
                 getParams: () => ({
-                    chainName: 'Gnosis Chain',
-                    rpcUrls: ['https://rpc.gnosischain.com'],
-                    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet/'],
+                    chainName: 'Gnosis',
+                    rpcUrls: ['https://rpc.gnosischain.com/'],
+                    blockExplorerUrls: ['https://blockscout.com/xdai/mainnet'],
                     nativeCurrency: {
                         name: 'xDAI',
                         symbol: 'xDAI',

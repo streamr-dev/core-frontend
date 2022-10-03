@@ -155,7 +155,7 @@ describe('user - services', () => {
 
     describe('getBalance', () => {
         it('gets ETH balance', async () => {
-            jest.spyOn(utils, 'getEthBalance').mockImplementation(jest.fn(() => '123'))
+            jest.spyOn(utils, 'getNativeTokenBalance').mockImplementation(jest.fn(() => '123'))
 
             const balance = await services.getBalance({
                 address: 'testAccount',
@@ -171,6 +171,7 @@ describe('user - services', () => {
             const balance = await services.getBalance({
                 address: 'testAccount',
                 type: BalanceType.DATA,
+                chainId: 8995,
             })
             expect(balance).toBe('123')
         })

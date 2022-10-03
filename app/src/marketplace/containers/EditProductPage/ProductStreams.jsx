@@ -5,6 +5,7 @@ import cx from 'classnames'
 import { Link } from 'react-router-dom'
 import uniqBy from 'lodash/uniqBy'
 
+import docsLinks from '$shared/../docsLinks'
 import StreamSelectorComponent from '$mp/components/StreamSelector'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { usePending } from '$shared/hooks/usePending'
@@ -13,7 +14,6 @@ import useEditableProductActions from '../ProductController/useEditableProductAc
 import { useController } from '../ProductController'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import styles from './productStreams.pcss'
-import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     disabled?: boolean,

@@ -1,5 +1,7 @@
 // @flow
 
+import BN from 'bignumber.js'
+
 import { productStates } from '$shared/utils/constants'
 import { productTypes } from '$mp/utils/constants'
 import type { StreamIdList, StreamId } from '$shared/flowtype/stream-types'
@@ -20,6 +22,7 @@ export type ProductType = $Values<typeof productTypes>
 export type PendingChanges = {
     adminFee?: string,
     requiresWhitelist?: boolean,
+    pricingTokenAddress?: Address,
 }
 
 export type TermsOfUse = {
@@ -46,6 +49,7 @@ export type Product = {
     id: ?ProductId,
     name: string,
     description: string,
+    chain: string,
     owner: string,
     imageUrl: ?string,
     newImageToUpload?: ?File,
@@ -71,6 +75,8 @@ export type Product = {
     termsOfUse: TermsOfUse,
     contact: ?ContactDetails,
     dataUnionDeployed?: boolean,
+    pricingTokenAddress: Address,
+    pricingTokenDecimals: BN,
 }
 
 export type ProductSubscriptionId = string
@@ -95,10 +101,12 @@ export type SmartContractProduct = {
     ownerAddress: $ElementType<Product, 'ownerAddress'>,
     beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>,
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
-    priceCurrency: $ElementType<Product, 'priceCurrency'>,
     minimumSubscriptionInSeconds: $ElementType<Product, 'minimumSubscriptionInSeconds'>,
     state: $ElementType<Product, 'state'>,
     requiresWhitelist: $ElementType<Product, 'requiresWhitelist'>,
+    chainId: number,
+    pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>,
+    pricingTokenDecimals: number, // this isn't actually stored on the contract but we need it to piggyback information
 }
 
 export type WhitelistStatus = 'added' | 'removed' | 'subscribed'

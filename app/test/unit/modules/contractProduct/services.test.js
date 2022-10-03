@@ -1,6 +1,5 @@
 import * as all from '$mp/modules/contractProduct/services'
 import * as utils from '$mp/utils/smartContract'
-import { mapPriceToContract } from '$mp/utils/product'
 
 describe('Product services', () => {
     beforeEach(() => {
@@ -12,35 +11,6 @@ describe('Product services', () => {
     })
 
     describe('getProductFromContract', () => {
-        it('must convert weis to token', async () => {
-            const getProductStub = jest.fn(() => ({
-                call: () => Promise.resolve({
-                    pricePerSecond: '1000000000000000000',
-                }),
-            }))
-            const getContractStub = jest.fn(() => ({
-                methods: {
-                    getProduct: getProductStub,
-                },
-            }))
-            jest.spyOn(utils, 'getContract').mockImplementation(getContractStub)
-            const result = await all.getProductFromContract('1234abcdef')
-            expect({
-                priceCurrency: undefined,
-                state: undefined,
-                pricePerSecond: '1',
-                id: '1234abcdef',
-                name: undefined,
-                ownerAddress: undefined,
-                beneficiaryAddress: undefined,
-                minimumSubscriptionInSeconds: 0,
-                requiresWhitelist: undefined,
-            }).toStrictEqual(result)
-            expect(getContractStub).toBeCalled()
-            expect(getProductStub).toBeCalled()
-            expect(getProductStub).toBeCalledWith('0x1234abcdef')
-        })
-
         it('must throw error if owner is 0', async (done) => {
             const getProductStub = jest.fn(() => ({
                 call: () => Promise.resolve({
@@ -54,7 +24,7 @@ describe('Product services', () => {
                 },
             }))
             try {
-                await all.getProductFromContract('1234abcdef')
+                await all.getProductFromContract('1234abcdef', false, 8995)
             } catch (e) {
                 expect(e.message).toMatch(/No product found/)
                 done()
@@ -80,6 +50,8 @@ describe('Product services', () => {
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
+                chainId: 8995,
+                pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             }
         })
         it('must fail if no id', (done) => {
@@ -101,44 +73,6 @@ describe('Product services', () => {
                 expect(e.message).toMatch(/not a valid hex/)
                 done()
             }
-        })
-        it('must transform the currency to number', () => {
-            const createContractProductStub = jest.fn(() => ({
-                send: () => 'test',
-            }))
-            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
-            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
-                methods: {
-                    createProduct: createContractProductStub,
-                },
-            }))
-            all.createContractProduct({
-                ...exampleProduct,
-                priceCurrency: 'USD',
-            })
-            all.createContractProduct({
-                ...exampleProduct,
-                priceCurrency: 'DATA',
-            })
-            expect(createContractProductStub).toHaveBeenCalledTimes(2)
-            expect(createContractProductStub).toHaveBeenNthCalledWith(
-                1,
-                `0x${exampleProduct.id}`,
-                exampleProduct.name,
-                exampleProduct.beneficiaryAddress,
-                mapPriceToContract(exampleProduct.pricePerSecond),
-                1,
-                0,
-            )
-            expect(createContractProductStub).toHaveBeenNthCalledWith(
-                2,
-                `0x${exampleProduct.id}`,
-                exampleProduct.name,
-                exampleProduct.beneficiaryAddress,
-                mapPriceToContract(exampleProduct.pricePerSecond),
-                0,
-                0,
-            )
         })
         it('must fail if price is 0', (done) => {
             const createContractProductStub = jest.fn(() => ({
@@ -180,26 +114,6 @@ describe('Product services', () => {
                 done()
             }
         })
-        it('must fail if invalid currency', (done) => {
-            const createContractProductStub = jest.fn(() => ({
-                send: () => 'test',
-            }))
-            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
-            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
-                methods: {
-                    createProduct: createContractProductStub,
-                },
-            }))
-            try {
-                all.createContractProduct({
-                    ...exampleProduct,
-                    priceCurrency: 'foobar',
-                })
-            } catch (e) {
-                expect(e.message).toMatch('Invalid currency: foobar')
-                done()
-            }
-        })
         it('must call send with correct object', (done) => {
             jest.spyOn(utils, 'send').mockImplementation((a) => {
                 expect(a).toBe('test')
@@ -222,26 +136,7 @@ describe('Product services', () => {
             }))
             expect(all.createContractProduct(exampleProduct)).toBe('test')
         })
-        it('must call createProduct with correct params (when DATA)', () => {
-            const createProductSpy = jest.fn()
-            jest.spyOn(utils, 'send').mockImplementation(jest.fn())
-            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
-                methods: {
-                    createProduct: createProductSpy,
-                },
-            }))
-            all.createContractProduct(exampleProduct)
-            expect(createProductSpy).toBeCalled()
-            expect(createProductSpy).toBeCalledWith(
-                '0x1234abcdef',
-                'Awesome Granite Sausages',
-                '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
-                0,
-                0,
-            )
-        })
-        it('must call createProduct with correct params (when USD)', () => {
+        it('must call createProduct with correct params', () => {
             const createProductSpy = jest.fn()
             jest.spyOn(utils, 'send').mockImplementation(jest.fn())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
@@ -251,15 +146,15 @@ describe('Product services', () => {
             }))
             all.createContractProduct({
                 ...exampleProduct,
-                priceCurrency: 'USD',
+                pricingTokenAddress: '0x1337',
             })
             expect(createProductSpy).toBeCalled()
             expect(createProductSpy).toBeCalledWith(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
-                1,
+                '63',
+                '0x1337',
                 0,
             )
         })
@@ -279,10 +174,12 @@ describe('Product services', () => {
                 lastUpdated: '2018-03-27T08:51:37.261Z',
                 ownerAddress: '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
                 beneficiaryAddress: '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                pricePerSecond: 63,
+                pricePerSecond: '63',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: 0,
                 imageUrl: null,
+                chainId: 8995,
+                pricingTokenAddress: '0x123',
             }
         })
         it('must fail if no id', (done) => {
@@ -304,46 +201,6 @@ describe('Product services', () => {
                 expect(e.message).toMatch(/not a valid hex/)
                 done()
             }
-        })
-        it('must transform the currency to number', () => {
-            const updateContractProductStub = jest.fn(() => ({
-                send: () => 'test',
-            }))
-            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
-            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
-                methods: {
-                    updateProduct: updateContractProductStub,
-                },
-            }))
-            all.updateContractProduct({
-                ...exampleProduct,
-                priceCurrency: 'USD',
-            })
-            all.updateContractProduct({
-                ...exampleProduct,
-                priceCurrency: 'DATA',
-            })
-            expect(updateContractProductStub).toHaveBeenCalledTimes(2)
-            expect(updateContractProductStub).toHaveBeenNthCalledWith(
-                1,
-                `0x${exampleProduct.id}`,
-                exampleProduct.name,
-                exampleProduct.beneficiaryAddress,
-                mapPriceToContract(exampleProduct.pricePerSecond),
-                1,
-                0,
-                false,
-            )
-            expect(updateContractProductStub).toHaveBeenNthCalledWith(
-                2,
-                `0x${exampleProduct.id}`,
-                exampleProduct.name,
-                exampleProduct.beneficiaryAddress,
-                mapPriceToContract(exampleProduct.pricePerSecond),
-                0,
-                0,
-                false,
-            )
         })
         it('must fail if price is 0', (done) => {
             const updateContractProductStub = jest.fn(() => ({
@@ -385,26 +242,6 @@ describe('Product services', () => {
                 done()
             }
         })
-        it('must fail if invalid currency', (done) => {
-            const updateContractProductStub = jest.fn(() => ({
-                send: () => 'test',
-            }))
-            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
-            jest.spyOn(utils, 'getContract').mockImplementation(() => ({
-                methods: {
-                    updateProduct: updateContractProductStub,
-                },
-            }))
-            try {
-                all.updateContractProduct({
-                    ...exampleProduct,
-                    priceCurrency: 'foobar',
-                })
-            } catch (e) {
-                expect(e.message).toMatch('Invalid currency: foobar')
-                done()
-            }
-        })
         it('must call send with correct object', (done) => {
             jest.spyOn(utils, 'send').mockImplementation((a) => {
                 expect(a).toBe('test')
@@ -441,8 +278,8 @@ describe('Product services', () => {
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
-                0,
+                '63',
+                '0x123',
                 0,
                 false,
             )
@@ -457,15 +294,14 @@ describe('Product services', () => {
             }))
             all.updateContractProduct({
                 ...exampleProduct,
-                priceCurrency: 'USD',
             })
             expect(updateProductSpy).toHaveBeenCalledTimes(1)
             expect(updateProductSpy).toBeCalledWith(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
-                1,
+                '63',
+                '0x123',
                 0,
                 false,
             )
@@ -480,15 +316,14 @@ describe('Product services', () => {
             }))
             all.updateContractProduct({
                 ...exampleProduct,
-                priceCurrency: 'USD',
             }, true)
             expect(updateProductSpy).toHaveBeenCalledTimes(1)
             expect(updateProductSpy).toBeCalledWith(
                 '0x1234abcdef',
                 'Awesome Granite Sausages',
                 '0xaf16ea680090e81af0acf5e2664a19a37f5a3c43',
-                '63000000000000000000',
-                1,
+                '63',
+                '0x123',
                 0,
                 true,
             )
@@ -506,7 +341,7 @@ describe('Product services', () => {
                     deleteProduct: deleteProductStub,
                 },
             }))
-            await all.deleteProduct('1')
+            await all.deleteProduct('1', 8995)
             expect(deleteProductStub).toBeCalledWith('0x1')
             expect(deleteProductStub).toHaveBeenCalledTimes(1)
         })
@@ -523,7 +358,7 @@ describe('Product services', () => {
                     redeployProduct: redeployProductStub,
                 },
             }))
-            await all.redeployProduct('1')
+            await all.redeployProduct('1', 8995)
             expect(redeployProductStub).toBeCalledWith('0x1')
             expect(redeployProductStub).toHaveBeenCalledTimes(1)
         })

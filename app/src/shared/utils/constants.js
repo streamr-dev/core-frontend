@@ -1,6 +1,7 @@
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { getConfigForChainByName } from '$shared/web3/config'
 
 /*
     These are all type
@@ -13,12 +14,15 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 export const contractCurrencies = {
     DATA: 'DATA',
     USD: 'USD',
+    PRODUCT_DEFINED: 'PRODUCT_DEFINED',
 }
 
 export const paymentCurrencies = {
     DATA: 'DATA',
     ETH: 'ETH',
     DAI: 'DAI',
+    PRODUCT_DEFINED: 'PRODUCT_DEFINED',
+    NATIVE: 'NATIVE',
 }
 
 export const DEFAULT_CURRENCY = contractCurrencies.DATA
@@ -34,9 +38,7 @@ export const productStates = {
 }
 
 export const networks = {
-    MAINNET: 'mainnet',
-    DATAUNIONS: 'dataunionsChain',
-    STREAMS: 'streamsChain',
+    STREAMS: getConfigForChainByName(getCoreConfig().streamChains[0]).id,
 }
 
 export const ethereumNetworks = {
@@ -48,7 +50,7 @@ export const ethereumNetworks = {
     '4': 'Rinkeby',
     '5': 'Görli',
     '42': 'Kovan',
-    '100': 'xDAI',
+    '100': 'Gnosis',
     '137': 'Polygon',
 }
 

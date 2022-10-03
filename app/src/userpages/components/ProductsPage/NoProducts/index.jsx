@@ -4,6 +4,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
+import docsLinks from '$shared/../docsLinks'
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
@@ -12,7 +13,6 @@ import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
 import type { Filter } from '$userpages/flowtype/common-types'
 import { LG } from '$shared/utils/styled'
-import docsLinks from '$shared/../docsLinks'
 
 type NoResultsViewProps = {
     onResetFilter: Function,

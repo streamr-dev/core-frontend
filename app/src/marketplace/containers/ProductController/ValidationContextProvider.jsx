@@ -39,6 +39,7 @@ const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
 const validationErrors = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
+    chain: 'No chain selected',
     category: 'Product category cannot be empty',
     imageUrl: 'Product must have a cover image',
     streams: 'No streams selected',
@@ -46,6 +47,7 @@ const validationErrors = {
     adminFee: 'Admin fee cannot be empty',
     beneficiaryAddress: 'A valid ethereum address is needed',
     pricePerSecond: 'Price should be greater or equal to 0',
+    pricingTokenAddress: 'A valid contract address is needed for payment token',
     'contact.url': 'Invalid URL',
     'contact.social1': 'Invalid URL',
     'contact.social2': 'Invalid URL',

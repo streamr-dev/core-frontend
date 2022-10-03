@@ -3,15 +3,25 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
+import Button from '$shared/components/Button'
 import UnstyledKeyField from '$shared/components/KeyField'
 import AddKeyField from '$shared/components/KeyField/AddKeyField'
 import useDataUnionSecrets from '$mp/modules/dataUnion/hooks/useDataUnionSecrets'
 import type { Secret } from '$mp/modules/dataUnion/types'
 import { usePending } from '$shared/hooks/usePending'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import { useController } from '../ProductController'
 
 const KeyField = styled(UnstyledKeyField)``
 const AddKeyFieldWrapper = styled.div``
+
+const LoadButton = styled(Button)`
+    margin-bottom: 2rem;
+`
+
+const Empty = styled.div`
+    font-size: 14px;
+`
 
 type Props = {
     disabled?: boolean,
@@ -19,8 +29,16 @@ type Props = {
 
 const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
     const { product } = useController()
-    const { secrets, edit, add, remove } = useDataUnionSecrets()
+    const {
+        load,
+        isLoading,
+        secrets,
+        edit,
+        add,
+        remove,
+    } = useDataUnionSecrets()
     const dataUnionId = (product && product.beneficiaryAddress) || ''
+    const chainId = getChainIdFromApiString(product.chain)
     const { isPending: isAddPending, wrap: wrapAddSecret } = usePending('product.ADD_SECRET')
     const { isPending: isEditPending, wrap: wrapEditSecret } = usePending('product.EDIT_SECRET')
     const { isPending: isRemovePending, wrap: wrapRemoveSecret } = usePending('product.REMOVE_SECRET')
@@ -30,9 +48,10 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
             await add({
                 dataUnionId,
                 name,
+                chainId,
             })
         })
-    ), [wrapAddSecret, dataUnionId, add])
+    ), [wrapAddSecret, dataUnionId, add, chainId])
 
     const editSecret = useCallback(async (id, name) => (
         wrapEditSecret(async () => {
@@ -40,44 +59,60 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
                 dataUnionId,
                 id,
                 name,
+                chainId,
             })
         })
-    ), [wrapEditSecret, dataUnionId, edit])
+    ), [wrapEditSecret, dataUnionId, edit, chainId])
 
     const removeSecret = useCallback(async (id) => (
         wrapRemoveSecret(async () => {
             await remove({
                 dataUnionId,
                 id,
+                chainId,
             })
         })
-    ), [wrapRemoveSecret, dataUnionId, remove])
+    ), [wrapRemoveSecret, dataUnionId, remove, chainId])
 
     const isDisabled = !!(disabled || isAddPending || isEditPending || isRemovePending)
 
     return (
         <div {...props}>
+            {isLoading === null && (
+                <LoadButton
+                    onClick={() => load(dataUnionId, chainId)}
+                    disabled={isLoading || isDisabled}
+                >
+                    Load secrets
+                </LoadButton>
+            )}
             {secrets.map((s: Secret) => (
                 <KeyField
-                    key={s.id}
+                    key={s.secret}
                     keyName={s.name}
                     value={s.secret}
                     hideValue
-                    allowEdit={!isDisabled}
+                    /* Editing secret's name is disabled for now as there is no support for it in DU client */
+                    allowEdit={false}
                     allowDelete={!isDisabled}
-                    onSave={async (name) => editSecret(s.id, name)}
-                    onDelete={async () => removeSecret(s.id)}
+                    onSave={async (name) => editSecret(s.secret, name)}
+                    onDelete={async () => removeSecret(s.secret)}
                     labelType="sharedSecret"
                 />
             ))}
-            <AddKeyFieldWrapper>
-                <AddKeyField
-                    label="Add shared secret"
-                    addKeyFieldAllowed={!isDisabled}
-                    labelType="sharedSecret"
-                    onSave={async (name) => addSecret(name)}
-                />
-            </AddKeyFieldWrapper>
+            {isLoading === false && secrets.length === 0 && (
+                <Empty>You haven&apos;t created any secrets yet</Empty>
+            )}
+            {isLoading === false && (
+                <AddKeyFieldWrapper>
+                    <AddKeyField
+                        label="Add shared secret"
+                        addKeyFieldAllowed={!isDisabled}
+                        labelType="sharedSecret"
+                        onSave={async (name) => addSecret(name)}
+                    />
+                </AddKeyFieldWrapper>
+            )}
         </div>
     )
 }

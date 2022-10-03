@@ -1,69 +1,101 @@
 // @flow
 
 import EventEmitter from 'events'
-import StreamrClient from 'streamr-client'
+import DataUnionClient from '@dataunions/client'
 import BN from 'bignumber.js'
+import { hexToNumber } from 'web3-utils'
 
 import getClientConfig from '$app/src/getters/getClientConfig'
-import getConfig from '$shared/web3/config'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { getConfigForChain } from '$shared/web3/config'
 
 import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
 import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
 import type { ApiResult } from '$shared/flowtype/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
-import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
 
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { post, del, get, put } from '$shared/utils/api'
 import getWeb3 from '$utils/web3/getWeb3'
-import getDataUnionChainWeb3 from '$utils/web3/getDataUnionChainWeb3'
 import TransactionError from '$shared/errors/TransactionError'
 import Transaction from '$shared/utils/Transaction'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 import type { Secret } from './types'
 
-type CreateClient = {
-    usePublicNode?: boolean,
+const createClient = (chainId: number) => {
+    const provider = getWeb3().currentProvider
+    const config = getConfigForChain(chainId)
+    const { dataUnionJoinServerUrl } = getCoreConfig()
+    const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
+    const factoryAddress = config.contracts.DataUnionFactory
+
+    if (factoryAddress == null) {
+        console.warn(`No contract address for DataUnionFactory found for chain ${chainId}.`)
+    }
+
+    const providerChainId = hexToNumber(provider.chainId)
+    const isProviderInCorrectChain = providerChainId === chainId
+
+    const clientConfig = getClientConfig({
+        auth: {
+            // If MetaMask is in right chain, use it to enable signing
+            ethereum: isProviderInCorrectChain ? provider : undefined,
+            // Otherwise use a throwaway private key to authenticate and allow read-only mode
+            privateKey: !isProviderInCorrectChain ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304' : undefined,
+        },
+        network: {
+            chainId,
+            rpcs: [{
+                url: providerUrl,
+                timeout: 120 * 1000,
+            }],
+        },
+        dataUnion: {
+            factoryAddress,
+        },
+        ...(dataUnionJoinServerUrl ? {
+            joinServerUrl: dataUnionJoinServerUrl,
+        } : {}),
+    })
+    return new DataUnionClient(clientConfig)
 }
 
-function createClient({ usePublicNode = false }: CreateClient = {}) {
-    return new StreamrClient(getClientConfig({
-        auth: {
-            ethereum: usePublicNode ? undefined : getWeb3().currentProvider,
-        },
-    }))
+const getDataunionSubgraphUrlForChain = (chainId: number): string => {
+    const { theGraphUrl } = getCoreConfig()
+    const map = getCoreConfig().dataunionGraphNames
+    const item = map.find((i) => i.chainId === chainId)
+
+    if (item == null || item.name == null) {
+        throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
+    }
+
+    const url = `${theGraphUrl}/subgraphs/name/${item.name}`
+    return url
 }
 
 // ----------------------
 // smart contract queries
 // ----------------------
 
-const getDataUnionObject = async (address: string, usePublicNode: boolean = false) => {
-    const client = createClient({
-        usePublicNode,
-    })
+const getDataUnionObject = async (address: string, chainId: number) => {
+    const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(address)
-    const version = await dataUnion.getVersion()
-    if (version !== 2) {
-        throw new Error(`Unsupported DU version: ${version}`)
-    }
     return dataUnion
 }
 
-export const getDataUnionOwner = async (address: DataUnionId, usePublicNode: boolean = false) => {
-    const dataUnion = await getDataUnionObject(address, usePublicNode)
+export const getDataUnionOwner = async (address: DataUnionId, chainId: number) => {
+    const dataUnion = await getDataUnionObject(address, chainId)
     return dataUnion.getAdminAddress()
 }
 
-export const getAdminFee = async (address: DataUnionId, usePublicNode: boolean = false) => {
-    const dataUnion = await getDataUnionObject(address, usePublicNode)
+export const getAdminFee = async (address: DataUnionId, chainId: number) => {
+    const dataUnion = await getDataUnionObject(address, chainId)
     const adminFee = await dataUnion.getAdminFee()
     return `${adminFee}`
 }
 
-export const getDataUnionStats = async (address: DataUnionId, usePublicNode: boolean = false): ApiResult<Object> => {
-    const dataUnion = await getDataUnionObject(address, usePublicNode)
+export const getDataUnionStats = async (address: DataUnionId, chainId: number): ApiResult<Object> => {
+    const dataUnion = await getDataUnionObject(address, chainId)
     const { activeMemberCount, inactiveMemberCount, totalEarnings } = await dataUnion.getStats()
 
     const active = (activeMemberCount && BN(activeMemberCount.toString()).toNumber()) || 0
@@ -78,9 +110,9 @@ export const getDataUnionStats = async (address: DataUnionId, usePublicNode: boo
     }
 }
 
-export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = true): ApiResult<Object> => {
-    const adminFee = await getAdminFee(id, usePublicNode)
-    const owner = await getDataUnionOwner(id, usePublicNode)
+export const getDataUnion = async (id: DataUnionId, chainId: number): ApiResult<Object> => {
+    const adminFee = await getAdminFee(id, chainId)
+    const owner = await getDataUnionOwner(id, chainId)
     return {
         id: id.toLowerCase(),
         adminFee,
@@ -96,39 +128,34 @@ export const getDataUnion = async (id: DataUnionId, usePublicNode: boolean = tru
 type DeployDataUnion = {
     productId: ProductId,
     adminFee: string,
+    chainId: number,
 }
 
-export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): SmartContractTransaction => {
+export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnion): SmartContractTransaction => {
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         emitter.emit('error', error)
     }
     const tx = new Transaction(emitter)
 
-    const client = createClient()
-
     Promise.all([
         getDefaultWeb3Account(),
-        checkEthereumNetworkIsCorrect(),
+        checkEthereumNetworkIsCorrect({
+            network: chainId,
+        }),
     ])
-        .then(([account]) => {
-            const { mainnetAddress } = client.calculateDataUnionAddresses(productId, account)
-            return mainnetAddress
-        })
-        .then((futureAddress) => {
-            // send calculated contract address as the transaction hash,
-            // streamr-client doesn't tell us the actual tx hash
-            emitter.emit('transactionHash', futureAddress)
-
+        .then(() => {
+            const client = createClient(chainId)
             return client.deployDataUnion({
                 dataUnionName: productId,
                 adminFee: +adminFee,
             })
         })
         .then((dataUnion) => {
-            if (!dataUnion || !dataUnion.contractAddress) {
+            if (!dataUnion || !dataUnion.getAddress()) {
                 errorHandler(new TransactionError('Transaction failed'))
             } else {
+                emitter.emit('transactionHash', dataUnion.getAddress())
                 emitter.emit('receipt', {
                     contractAddress: dataUnion.getAddress(),
                 })
@@ -139,7 +166,7 @@ export const deployDataUnion = ({ productId, adminFee }: DeployDataUnion): Smart
     return tx
 }
 
-export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContractTransaction => {
+export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: string): SmartContractTransaction => {
     const emitter = new EventEmitter()
     const errorHandler = (error: Error) => {
         console.warn(error)
@@ -147,8 +174,10 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
     }
     const tx = new Transaction(emitter)
     Promise.all([
-        getDataUnionObject(address),
-        checkEthereumNetworkIsCorrect(),
+        getDataUnionObject(address, chainId),
+        checkEthereumNetworkIsCorrect({
+            network: chainId,
+        }),
     ])
         .then(([dataUnion]) => {
             emitter.emit('transactionHash')
@@ -165,109 +194,135 @@ export const setAdminFee = (address: DataUnionId, adminFee: string): SmartContra
     return tx
 }
 
-export const removeMembers = async (id: DataUnionId, memberAddresses: string[]) => {
-    const dataUnion = await getDataUnionObject(id, true)
+export const removeMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
+    const dataUnion = await getDataUnionObject(id, chainId)
     const receipt = await dataUnion.removeMembers(memberAddresses)
     return receipt
 }
 
-// ----------------------
-// getting events (TODO: move to streamr-client)
-// ----------------------
+export const getMemberStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
+    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
+    const accuracy = 'HOUR' // HOUR or DAY
+    let toTimestampFixed = toTimestamp || Date.now()
 
-export async function* getSidechainEvents(address: string, eventName: string, fromBlock: number): any {
-    const dataUnion = await getDataUnionObject(address, true)
-    const sidechainAddress = await dataUnion.getSidechainAddress()
+    // Make sure we take buckets that extend into the future into account
+    const offset = accuracy === 'DAY' ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000
+    toTimestampFixed = Date.now() + offset
 
-    const web3 = getDataUnionChainWeb3()
-    const { dataunionsChain } = getConfig()
-    const contract = new web3.eth.Contract(dataunionsChain.dataUnionAbi, sidechainAddress)
-    const latestBlock = await web3.eth.getBlock('latest')
-
-    // Get events in batches since xDai RPC seems to timeout if fetching too large sets
-    const batchSize = 10000
-
-    for (let blockNumber = fromBlock; blockNumber < latestBlock.number; blockNumber += (batchSize + 1)) {
-        let toBlockNumber = blockNumber + batchSize
-        if (toBlockNumber > latestBlock.number) {
-            toBlockNumber = latestBlock.number
-        }
-
-        // eslint-disable-next-line no-await-in-loop
-        const events = await contract.getPastEvents(eventName, {
-            fromBlock: blockNumber,
-            toBlock: toBlockNumber,
-        })
-        yield events
-    }
-}
-
-export async function* getJoinsAndParts(id: DataUnionId, fromTimestamp: number): any {
-    const web3 = getDataUnionChainWeb3()
-    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
-
-    const handleEvent = async (e, type) => {
-        // eslint-disable-next-line no-await-in-loop
-        const block = await web3.eth.getBlock(e.blockHash)
-        if (block && block.timestamp && (block.timestamp * 1000 >= fromTimestamp)) {
-            const event = {
-                timestamp: block.timestamp * 1000,
-                diff: type === 'join' ? 1 : -1,
-            }
-            return event
-        }
-
-        return null
-    }
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const joins of getSidechainEvents(id, 'MemberJoined', fromBlock)) {
-        for (const join of joins) {
-            const result = await handleEvent(join, 'join')
-            yield result
-        }
-    }
-
-    for await (const parts of getSidechainEvents(id, 'MemberParted', fromBlock)) {
-        for (const part of parts) {
-            const result = await handleEvent(part, 'part')
-            yield result
-        }
-    }
-    /* eslint-enable no-restricted-syntax, no-await-in-loop */
-}
-
-export async function* getMemberEventsFromBlock(id: DataUnionId, blockNumber: number): any {
-    const client = createClient()
-    const web3 = getDataUnionChainWeb3()
-
-    /* eslint-disable no-restricted-syntax, no-await-in-loop */
-    for await (const joins of getSidechainEvents(id, 'MemberJoined', blockNumber)) {
-        for (const e of joins) {
-            const memberAddress = e.returnValues.member
-            const block = await web3.eth.getBlock(e.blockHash)
-            if (block) {
-                const dataUnion = await client.getDataUnion(id)
-                const memberData = await dataUnion.getMemberStats(memberAddress)
-                yield {
-                    ...memberData,
-                    address: memberAddress,
+    const result = await post({
+        url: theGraphUrl,
+        data: {
+            query: `
+                query {
+                    dataUnionStatsBuckets(
+                        where: {
+                            dataUnionAddress: "${id.toLowerCase()}",
+                            type: "${accuracy}",
+                            startDate_gte: ${Math.floor(fromTimestamp / 1000)},
+                            endDate_lte: ${Math.ceil(toTimestampFixed / 1000)}
+                        },
+                        orderBy: startDate,
+                    ) {
+                        startDate,
+                        endDate,
+                        memberCountAtStart,
+                        memberCountChange,
+                    }
                 }
-            }
+            `,
+        },
+        useAuthorization: false,
+    })
+    return result.data.dataUnionStatsBuckets
+}
+
+export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit: number = 100): Promise<Array<string>> => {
+    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
+    const result = await post({
+        url: theGraphUrl,
+        data: {
+            query: `
+                query {
+                    dataUnions(where: { mainchainAddress: "${id.toLowerCase()}" }) {
+                        members(first: ${Math.floor(limit)}, orderBy: address, orderDirection: asc) {
+                            address
+                        }
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+    if (result.data.dataUnions.length > 0) {
+        return result.data.dataUnions[0].members.map((m) => m.address)
+    }
+    return []
+}
+
+export const searchDataUnionMembers = async (id: DataUnionId, query: string, chainId: number, limit: number = 100): Promise<Array<string>> => {
+    const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
+    const result = await post({
+        url: theGraphUrl,
+        data: {
+            query: `
+                query {
+                    members(where: { addressString_contains: "${query}"}, first: ${Math.floor(limit)}) {
+                        address
+                        dataunion {
+                            mainchainAddress
+                        }
+                    }
+                }
+            `,
+        },
+        useAuthorization: false,
+    })
+    if (result && result.data && result.data.members) {
+        // With limitations in full text search in The Graph,
+        // we cannot do filtering on the query itself so we
+        // have to manually pick results only for this dataunion.
+        const members = result.data.members
+            .filter((m) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase())
+            .map((m) => m.address)
+        return members
+    }
+    return []
+}
+
+export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<string>, chainId: number): any {
+    const statuses = []
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for await (const status of getMemberStatusesWithClient(id, members, chainId)) {
+        statuses.push(status)
+    }
+    /* eslint-enable no-restricted-syntax, no-await-in-loop */
+
+    return statuses
+}
+
+async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>, chainId: number): any {
+    const client = createClient(chainId)
+
+    /* eslint-disable no-restricted-syntax, no-await-in-loop */
+    for (const memberAddress of members) {
+        const dataUnion = await client.getDataUnion(id)
+        const memberData = await dataUnion.getMemberStats(memberAddress)
+        yield {
+            ...memberData,
+            address: memberAddress,
         }
     }
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-export async function* getMemberEventsFromTimestamp(id: DataUnionId, timestamp: number = 0): any {
-    const web3 = getDataUnionChainWeb3()
-    const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(timestamp / 1000))
-
-    yield* getMemberEventsFromBlock(id, fromBlock)
+export async function* getMemberStatusesFromTheGraph(id: DataUnionId, chainId: number): any {
+    const members = await getDataUnionMembers(id, chainId)
+    yield* getMemberStatusesWithClient(id, members, chainId)
 }
 
-export async function* getAllMemberEvents(id: DataUnionId): any {
-    yield* getMemberEventsFromBlock(id, getCoreConfig().dataUnionFactorySidechainCreationBlock)
+export async function* getMemberStatuses(id: DataUnionId, chainId: number): any {
+    yield* getMemberStatusesFromTheGraph(id, chainId)
 }
 
 // ----------------------
@@ -276,55 +331,54 @@ export async function* getAllMemberEvents(id: DataUnionId): any {
 
 type GetSecrets = {
     dataUnionId: DataUnionId,
+    chainId: number,
 }
 
-export const getSecrets = ({ dataUnionId }: GetSecrets): ApiResult<Array<Secret>> => get({
-    url: routes.api.dataunions.secrets.index({
-        dataUnionId,
-    }),
-})
+export const getSecrets = async ({ dataUnionId, chainId }: GetSecrets): Promise<Array<Secret>> => {
+    const client = createClient(chainId)
+    const dataUnion = await client.getDataUnion(dataUnionId)
+    const secrets = await dataUnion.listSecrets()
+    return secrets
+}
 
-type PostSecrect = {
+type CreateSecret = {
     dataUnionId: DataUnionId,
     name: string,
+    chainId: number,
 }
 
-export const postSecret = ({ dataUnionId, name }: PostSecrect): ApiResult<Secret> => post({
-    url: routes.api.dataunions.secrets.index({
-        dataUnionId,
-    }),
-    data: {
-        name,
-    },
-})
+export const createSecret = async ({ dataUnionId, name, chainId }: CreateSecret): Promise<Secret> => {
+    const client = createClient(chainId)
+    const dataUnion = await client.getDataUnion(dataUnionId)
+    const secret = await dataUnion.createSecret(name)
+    return secret
+}
 
-type PutSecrect = {
+type EditSecret = {
     dataUnionId: DataUnionId,
     id: string,
     name: string,
+    chainId: number,
 }
 
-export const putSecret = ({ dataUnionId, id, name }: PutSecrect): ApiResult<Secret> => put({
-    url: routes.api.dataunions.secrets.show({
-        dataUnionId,
-        id,
-    }),
-    data: {
-        name,
-    },
-})
+export const editSecret = async ({ dataUnionId, id, name, chainId }: EditSecret): Promise<Secret> => {
+    const client = createClient(chainId)
+    const dataUnion = await client.getDataUnion(dataUnionId)
+    const result = await dataUnion.editSecret(id, name)
+    return result
+}
 
 type DeleteSecrect = {
     dataUnionId: DataUnionId,
     id: string,
+    chainId: number,
 }
 
-export const deleteSecret = ({ dataUnionId, id }: DeleteSecrect): ApiResult<void> => del({
-    url: routes.api.dataunions.secrets.show({
-        dataUnionId,
-        id,
-    }),
-})
+export const deleteSecret = async ({ dataUnionId, id, chainId }: DeleteSecrect): Promise<void> => {
+    const client = createClient(chainId)
+    const dataUnion = await client.getDataUnion(dataUnionId)
+    await dataUnion.deleteSecret(id)
+}
 
 type GetJoinRequests = {
     dataUnionId: DataUnionId,

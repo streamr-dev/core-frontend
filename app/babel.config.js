@@ -12,6 +12,7 @@ module.exports = function BabelConfig(api) {
                     ? {
                         useBuiltIns: 'usage',
                         corejs: 3,
+                        loose: true,
                         targets: {
                             node: 'current',
                         },
@@ -19,6 +20,7 @@ module.exports = function BabelConfig(api) {
                         useBuiltIns: 'usage',
                         modules: false,
                         corejs: 3,
+                        loose: true,
                         exclude: ['transform-typeof-symbol'],
                         targets: [
                             '> 1.5%',
@@ -40,10 +42,11 @@ module.exports = function BabelConfig(api) {
         plugins: [
             '@babel/plugin-syntax-flow',
             '@babel/plugin-transform-flow-strip-types',
+            '@babel/plugin-proposal-optional-chaining',
             ['@babel/plugin-transform-destructuring', {
                 // Use loose mode for performance:
                 // https://github.com/facebook/create-react-app/issues/5602
-                loose: false,
+                loose: true,
                 selectiveLoose: [
                     'useState',
                     'useEffect',

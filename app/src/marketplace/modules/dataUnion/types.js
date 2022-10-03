@@ -20,7 +20,8 @@ export type DataUnionErrorAction = PayloadAction<{
 export type DataUnionErrorActionCreator = (id: DataUnionId, error: ErrorInUi) => DataUnionErrorAction
 
 export type Secret = {
-    id: string,
+    chain: string,
+    dataUnion: string,
     name: string,
     secret: string,
 }

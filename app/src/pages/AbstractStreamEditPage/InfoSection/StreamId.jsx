@@ -1,5 +1,6 @@
 import React, { Fragment, useMemo, useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
+import docsLinks from '$shared/../docsLinks'
 import { SM, MONO, MEDIUM } from '$shared/utils/styled'
 import SvgIcon from '$shared/components/SvgIcon'
 import Button from '$shared/components/Button'
@@ -20,7 +21,6 @@ import { useStreamModifierStatusContext } from '$shared/contexts/StreamModifierS
 import useClientAddress from '$shared/hooks/useClientAddress'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamOwnerOptions, { ADD_ENS_DOMAIN_VALUE } from './useStreamOwnerOptions'
-import docsLinks from '$shared/../docsLinks'
 
 export const ENS_DOMAINS_URL = 'https://ens.domains'
 

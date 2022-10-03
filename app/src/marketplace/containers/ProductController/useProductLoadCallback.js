@@ -11,8 +11,11 @@ import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
 import { timeUnits, DEFAULT_CURRENCY, productStates } from '$shared/utils/constants'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { isEthereumAddress } from '$mp/utils/validate'
+import { getCustomTokenDecimals } from '$mp/utils/web3'
+import { fromDecimals } from '$mp/utils/math'
 import { getAdminFee } from '$mp/modules/dataUnion/services'
 import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotFoundError'
 import useFailure from '$shared/hooks/useFailure'
@@ -39,6 +42,7 @@ export default function useProductLoadCallback() {
         wrap(async () => {
             let product
             try {
+                // $FlowFixMe: possibly missing property beneficiaryAddress in Promise
                 product = await getProductById(productId, useAuthorization)
             } catch (error) {
                 if (!isMounted()) { return }
@@ -53,6 +57,8 @@ export default function useProductLoadCallback() {
             }
             if (!isMounted()) { return }
 
+            const chainId = getChainIdFromApiString(product.chain)
+
             // bail if the product is not actually published - this is an edge case
             // because this should only happen with user's own products, otherwise
             // the product load will fail due to permissions
@@ -65,7 +71,7 @@ export default function useProductLoadCallback() {
             let dataUnionDeployed = false
             if (isDataUnionProduct(product) && isEthereumAddress(product.beneficiaryAddress)) {
                 try {
-                    currentAdminFee = await getAdminFee(product.beneficiaryAddress, true)
+                    currentAdminFee = await getAdminFee(product.beneficiaryAddress, chainId)
                     dataUnionDeployed = true
                 } catch (e) {
                     // ignore error, assume contract has not been deployed
@@ -73,22 +79,35 @@ export default function useProductLoadCallback() {
             }
             if (!isMounted()) { return }
 
-            // Fetch whitelist status from contract product
+            // Fetch status from contract product and adjust pending changes
             let requiresWhitelist = false
+            let pricingTokenAddress = null
+            let pricePerSecond = null
             try {
-                const contractProduct = await getProductFromContract(productId)
-                // eslint-disable-next-line prefer-destructuring
-                requiresWhitelist = contractProduct.requiresWhitelist
+                const contractProduct = await getProductFromContract(productId, true, chainId);
+                ({ requiresWhitelist, pricingTokenAddress, pricePerSecond } = contractProduct)
 
-                // remove from pending changes if whitelist setting is correct
+                // remove from pending changes if requiresWhitelist setting is correct
                 if (product.pendingChanges && requiresWhitelist === product.pendingChanges.requiresWhitelist) {
                     delete product.pendingChanges.requiresWhitelist
                 }
+
+                // remove from pending changes if pricingTokenAddress setting is correct
+                if (product.pendingChanges && pricingTokenAddress === product.pendingChanges.pricingTokenAddress) {
+                    delete product.pendingChanges.pricingTokenAddress
+                }
             } catch (e) {
                 // ignore error, assume product is not published
-                // eslint-disable-next-line prefer-destructuring
                 requiresWhitelist = product && product.pendingChanges && product.pendingChanges.requiresWhitelist
+                pricingTokenAddress = product && product.pendingChanges && product.pendingChanges.pricingTokenAddress
             }
+
+            // Load pricingToken decimal count
+            let pricingTokenDecimals = 18
+            if (pricingTokenAddress) {
+                pricingTokenDecimals = await getCustomTokenDecimals(pricingTokenAddress, chainId)
+            }
+
             if (!isMounted()) { return }
 
             const nextProduct = {
@@ -96,10 +115,14 @@ export default function useProductLoadCallback() {
                 isFree: !!product.isFree || !isPaidProduct(product),
                 timeUnit: timeUnits.hour,
                 priceCurrency: product.priceCurrency || DEFAULT_CURRENCY,
-                price: product.price || priceForTimeUnits(product.pricePerSecond || '0', 1, timeUnits.hour),
+                price: product.price ||
+                    fromDecimals(priceForTimeUnits((pricePerSecond || product.pricePerSecond) || '0', 1, timeUnits.hour), pricingTokenDecimals),
                 adminFee: currentAdminFee,
                 dataUnionDeployed,
                 requiresWhitelist,
+                pricingTokenAddress,
+                pricingTokenDecimals,
+                pricePerSecond: pricePerSecond || product.pricePerSecond,
             }
 
             setProduct({

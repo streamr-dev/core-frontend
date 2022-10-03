@@ -1,13 +1,11 @@
 // @flow
 
-import React, { useState, useCallback, useEffect, useMemo } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import BN from 'bignumber.js'
 
-import type { NumberString, TimeUnit, ContractCurrency as Currency } from '$shared/flowtype/common-types'
-import { timeUnits, contractCurrencies as currencies, DEFAULT_CURRENCY } from '$shared/utils/constants'
-import { convert } from '$mp/utils/price'
-import SvgIcon from '$shared/components/SvgIcon'
+import type { NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import { timeUnits } from '$shared/utils/constants'
 import PriceField from '$mp/components/PriceField'
 import SelectField from '$mp/components/SelectField'
 
@@ -18,17 +16,12 @@ type Props = {
     onPriceChange: (NumberString) => void,
     timeUnit: TimeUnit,
     onTimeUnitChange: (TimeUnit) => void,
-    currency: Currency,
-    onCurrencyChange: (Currency) => void,
-    dataPerUsd: NumberString,
+    pricingTokenAddress: string,
     disabled: boolean,
     className?: string,
     error?: string,
+    chainId: number,
 }
-
-const getQuoteCurrencyFor = (currency: Currency) => (
-    currency === currencies.DATA ? currencies.USD : currencies.DATA
-)
 
 const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month].map((unit: TimeUnit) => ({
     label: unit,
@@ -40,28 +33,15 @@ const SetPrice = ({
     onPriceChange: onPriceChangeProp,
     timeUnit,
     onTimeUnitChange,
-    currency,
-    onCurrencyChange: onCurrencyChangeProp,
-    dataPerUsd,
+    pricingTokenAddress,
     disabled,
     className,
     error,
+    chainId,
 }: Props) => {
-    const [quotePrice, setQuotePrice] = useState(BN(0))
-
     const onPriceChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         onPriceChangeProp(e.target.value)
     }, [onPriceChangeProp])
-
-    const onCurrencyChange = useCallback(() => {
-        if (disabled) { return }
-        onCurrencyChangeProp(getQuoteCurrencyFor(currency))
-    }, [onCurrencyChangeProp, currency, disabled])
-
-    useEffect(() => {
-        const quoteAmount = convert(price || '0', dataPerUsd, currency, getQuoteCurrencyFor(currency))
-        setQuotePrice(quoteAmount)
-    }, [price, dataPerUsd, currency])
 
     const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === timeUnit), [timeUnit])
 
@@ -74,23 +54,13 @@ const SetPrice = ({
             >
                 <div className={styles.priceControls}>
                     <PriceField
-                        currency={currency}
+                        pricingTokenAddress={pricingTokenAddress}
+                        chainId={chainId}
                         onChange={onPriceChange}
                         disabled={disabled}
                         placeholder="Price"
                         value={price.toString()}
                         error={error}
-                        className={styles.input}
-                    />
-                    <div>
-                        <SvgIcon name="transfer" className={styles.icon} onClick={onCurrencyChange} />
-                    </div>
-                    <PriceField
-                        currency={getQuoteCurrencyFor(currency)}
-                        placeholder="Price"
-                        value={BN(quotePrice).isNaN() ? '0' : quotePrice.toString()}
-                        readOnly
-                        disabled={disabled}
                         className={styles.input}
                     />
                     <div>
@@ -115,8 +85,7 @@ SetPrice.defaultProps = {
     onPriceChange: () => {},
     timeUnit: timeUnits.hour,
     onTimeUnitChange: () => {},
-    currency: DEFAULT_CURRENCY,
-    onCurrencyChange: () => {},
+    pricingTokenAddress: null,
     disabled: false,
 }
 

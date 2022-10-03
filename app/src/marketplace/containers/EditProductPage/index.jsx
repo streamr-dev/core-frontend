@@ -20,6 +20,7 @@ import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotF
 import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
 import useModal from '$shared/hooks/useModal'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 
 import BackButton from '$shared/components/BackButton'
 import useProductPermissions from '../ProductController/useProductPermissions'
@@ -49,15 +50,15 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const { isPending: fetchingAllStreams } = usePending('product.LOAD_ALL_STREAMS')
     const {
         product: originalProduct,
-        loadContractProductSubscription,
         loadCategories,
         loadDataUnion,
         loadDataUnionStats,
         loadAllStreams,
         resetDataUnion,
     } = useController()
+    const chainId = getChainIdFromApiString(product.chain)
 
-    const { load: loadDataUnionSecrets, reset: resetDataUnionSecrets } = useDataUnionSecrets()
+    const { reset: resetDataUnionSecrets } = useDataUnionSecrets()
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
     const { isOpen: isDataUnionDeployDialogOpen } = useModal('dataUnion.DEPLOY')
     const { isOpen: isConfirmSaveDialogOpen } = useModal('confirmSave')
@@ -66,16 +67,17 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const productId = product.id
     // Load categories and streams
     useEffect(() => {
-        loadContractProductSubscription(productId)
+        if (productId && chainId) {
+            loadWhiteWhitelistedAdresses(productId, chainId)
+        }
         loadCategories()
-        loadWhiteWhitelistedAdresses(productId)
         loadAllStreams()
     }, [
         loadCategories,
-        loadContractProductSubscription,
         productId,
         loadAllStreams,
         loadWhiteWhitelistedAdresses,
+        chainId,
     ])
 
     const { beneficiaryAddress } = originalProduct
@@ -90,27 +92,28 @@ const EditProductPage = ({ product }: { product: Product }) => {
 
     useEffect(() => {
         if (isDataUnion && isEthereumAddress(beneficiaryAddress)) {
-            loadDataUnion(beneficiaryAddress)
-            loadDataUnionStats(beneficiaryAddress)
-            loadDataUnionSecrets(beneficiaryAddress)
+            loadDataUnion(beneficiaryAddress, chainId)
+            loadDataUnionStats(beneficiaryAddress, chainId)
         }
     }, [
         isDataUnion,
         beneficiaryAddress,
         loadDataUnion,
         loadDataUnionStats,
-        loadDataUnionSecrets,
+        chainId,
     ])
 
     // clear streams & data union secrets when unmounting
     useEffect(() => () => {
         resetDataUnion()
-        resetDataUnionSecrets()
-    }, [resetDataUnion, resetDataUnionSecrets])
+        resetDataUnionSecrets(beneficiaryAddress)
+    }, [resetDataUnion, resetDataUnionSecrets, beneficiaryAddress])
 
     // clear whitelisted addresses when unmounting
     useEffect(() => () => {
-        resetWhiteWhitelistedAdresses(productId)
+        if (productId) {
+            resetWhiteWhitelistedAdresses(productId)
+        }
     }, [resetWhiteWhitelistedAdresses, productId])
 
     const saveAndExitButton = useMemo(() => ({

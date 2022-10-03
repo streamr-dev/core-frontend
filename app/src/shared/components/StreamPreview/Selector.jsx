@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import IconButton from './IconButton'
@@ -22,22 +22,23 @@ const Button = styled(IconButton)`
 const UnstyledSelector = ({
     active,
     onChange,
-    options,
+    options = [],
     title,
     ...props
 }) => {
-    if (!options || options.length <= 1) {
-        return null
-    }
-
     const current = options.indexOf(active)
+    const prevOption = options[Math.max(0, current - 1)]
+    const prev = useCallback(() => {
+        onChange(prevOption)
+    }, [onChange, prevOption])
 
-    function prev() {
-        onChange(options[Math.max(0, current - 1)])
-    }
+    const nextOption = options[Math.min(current + 1, options.length)]
+    const next = useCallback(() => {
+        onChange(nextOption)
+    }, [onChange, nextOption])
 
-    function next() {
-        onChange(options[Math.min(current + 1, options.length)])
+    if (options.length <= 1) {
+        return null
     }
 
     return (

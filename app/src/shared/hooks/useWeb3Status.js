@@ -5,7 +5,6 @@ import type { ErrorInUi } from '$shared/flowtype/common-types'
 import validateWeb3 from '$utils/web3/validateWeb3'
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import type { Address } from '$shared/flowtype/web3-types'
-import { networks } from '$shared/utils/constants'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Web3Poller, { events } from '$shared/web3/Web3Poller'
 import useIsMounted from './useIsMounted'
@@ -20,10 +19,10 @@ type Result = {
 
 type Web3Status = {
     requireWeb3: boolean,
-    requireNetwork?: $Values<typeof networks>,
+    requireNetwork?: number,
 }
 
-export default function useWeb3Status({ requireWeb3 = true, requireNetwork = networks.MAINNET }: Web3Status = {}): Result {
+export default function useWeb3Status({ requireWeb3 = true, requireNetwork }: Web3Status = {}): Result {
     const [web3Error, setWeb3Error] = useState(null)
     const [checkingWeb3, setCheckingWeb3] = useState(false)
     const isMounted = useIsMounted()

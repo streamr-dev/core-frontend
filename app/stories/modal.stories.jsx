@@ -28,7 +28,7 @@ import GetDataTokensDialog from '$mp/components/Modal/GetDataTokensDialog'
 import GetCryptoDialog from '$mp/components/Modal/GetCryptoDialog'
 import InsufficientDataDialog from '$mp/components/Modal/InsufficientDataDialog'
 import InsufficientDaiDialog from '$mp/components/Modal/InsufficientDaiDialog'
-import InsufficientEthDialog from '$mp/components/Modal/InsufficientEthDialog'
+import InsufficientTokenDialog from '$mp/components/Modal/InsufficientTokenDialog'
 import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
@@ -314,6 +314,7 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.PUBLISH}
+            nativeTokenName="ETH"
         />
     ))
     .add('Republish', () => (
@@ -321,6 +322,7 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.REPUBLISH}
+            nativeTokenName="ETH"
         />
     ))
     .add('Redeploy', () => (
@@ -328,6 +330,7 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.REDEPLOY}
+            nativeTokenName="ETH"
         />
     ))
     .add('Unpublish', () => (
@@ -335,6 +338,7 @@ story('Product Editor/ReadyToPublishDialog')
             onCancel={action('onCancel')}
             onContinue={action('onContinue')}
             publishMode={publishModes.UNPUBLISH}
+            nativeTokenName="ETH"
         />
     ))
 
@@ -464,15 +468,17 @@ story('Marketplace/InsufficientDaiDialog')
         },
     })
 
-story('Marketplace/InsufficientEthDialog')
+story('Marketplace/InsufficientTokenDialog')
     .add('default', () => (
-        <InsufficientEthDialog
+        <InsufficientTokenDialog
             onCancel={action('onCancel')}
+            tokenSymbol="ETH"
         />
     ))
     .add('default (iPhone)', () => (
-        <InsufficientEthDialog
+        <InsufficientTokenDialog
             onCancel={action('onCancel')}
+            tokenSymbol="ETH"
         />
     ), {
         viewport: {
@@ -487,10 +493,11 @@ story('Marketplace/NoBalanceDialog')
                 gas: BN(0),
             }}
             balances={{
-                eth: BN(0),
+                native: BN(0),
             }}
             paymentCurrency="DATA"
             nativeTokenName="Ether"
+            productTokenSymbol="DATA"
             onCancel={action('onCancel')}
         />
     ))
@@ -501,11 +508,12 @@ story('Marketplace/NoBalanceDialog')
                 eth: BN(2),
             }}
             balances={{
-                eth: BN(1),
+                native: BN(1),
                 data: BN(0),
             }}
             paymentCurrency="ETH"
             nativeTokenName="Ether"
+            productTokenSymbol="DATA"
             onCancel={action('onCancel')}
         />
     ))
@@ -516,11 +524,12 @@ story('Marketplace/NoBalanceDialog')
                 eth: BN(2),
             }}
             balances={{
-                eth: BN(3),
+                native: BN(3),
                 data: BN(0),
             }}
             paymentCurrency="DATA"
             nativeTokenName="Ether"
+            productTokenSymbol="DATA"
             onCancel={action('onCancel')}
         />
     ))
@@ -532,11 +541,12 @@ story('Marketplace/NoBalanceDialog')
                 data: BN(3),
             }}
             balances={{
-                eth: BN(3),
+                native: BN(3),
                 data: BN(2),
             }}
             paymentCurrency="DATA"
             nativeTokenName="Ether"
+            productTokenSymbol="DATA"
             onCancel={action('onCancel')}
         />
     ))
@@ -548,11 +558,12 @@ story('Marketplace/NoBalanceDialog')
                 dai: BN(3),
             }}
             balances={{
-                eth: BN(3),
+                native: BN(3),
                 dai: BN(2),
             }}
             paymentCurrency="DAI"
             nativeTokenName="Ether"
+            productTokenSymbol="DATA"
             onCancel={action('onCancel')}
         />
     ))
@@ -560,9 +571,12 @@ story('Marketplace/NoBalanceDialog')
 story('Marketplace/ChooseAccessPeriodDialog')
     .add('default', () => (
         <ChooseAccessPeriodDialog
-            dataPerUsd={BN(10)}
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
+            pricingTokenAddress="0x123"
+            pricingTokenDecimals={BN(18)}
+            tokenSymbol="TEST"
+            chainId={1}
             balances={{
                 ETH: BN(10),
                 DATA: BN(200),
@@ -574,9 +588,12 @@ story('Marketplace/ChooseAccessPeriodDialog')
     ))
     .add('default (iPhone)', () => (
         <ChooseAccessPeriodDialog
-            dataPerUsd={BN(10)}
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
+            pricingTokenAddress="0x123"
+            pricingTokenDecimals={BN(18)}
+            tokenSymbol="TEST"
+            chainId={1}
             balances={{
                 ETH: BN(10),
                 DATA: BN(200),
@@ -592,9 +609,12 @@ story('Marketplace/ChooseAccessPeriodDialog')
     })
     .add('initial values', () => (
         <ChooseAccessPeriodDialog
-            dataPerUsd={BN(10)}
             pricePerSecond={BN(1).dividedBy(3600)}
             priceCurrency="DATA"
+            pricingTokenAddress="0x123"
+            pricingTokenDecimals={BN(18)}
+            tokenSymbol="TEST"
+            chainId={1}
             balances={{
                 ETH: BN(10),
                 DATA: BN(200),
@@ -618,6 +638,7 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
+            tokenSymbol="TEST"
             time={text('Time', '24')}
             timeUnit={select('Time unit', timeUnits, 'hour')}
             approxUsd="0.11"
@@ -631,6 +652,7 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
+            tokenSymbol="TEST"
             time="24"
             timeUnit="hour"
             approxUsd="0.11"
@@ -648,6 +670,7 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
+            tokenSymbol="TEST"
             time="24"
             timeUnit="hour"
             approxUsd="0.11"
@@ -662,6 +685,7 @@ story('Marketplace/PurchaseSummaryDialog')
             name="Example Product"
             price={BN(123)}
             paymentCurrency="DATA"
+            tokenSymbol="TEST"
             time="24"
             timeUnit="hour"
             approxUsd="0.11"
@@ -702,6 +726,7 @@ story('Marketplace/PurchaseTransactionProgress')
                 onCancel={action('cancel')}
                 status={statuses}
                 prompt={prompt}
+                tokenSymbol="DATA"
             />
         )
     })
@@ -712,6 +737,7 @@ story('Marketplace/PurchaseComplete')
             onContinue={action('onContinue')}
             onClose={action('onClose')}
             txHash="0x68dda92ba60240b74b2a79c2b7c87c3316273b40b6d93d6367d95b5a467fe885"
+            chainId={137}
         />
     ))
 

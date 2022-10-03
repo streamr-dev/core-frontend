@@ -15,13 +15,13 @@ function useDataUnionServerStats() {
         clearTimeout(timeOutId.current)
     }, [])
 
-    const getStats = useCallback(async (dataUnionId) => {
+    const getStats = useCallback(async (dataUnionId, chainId) => {
         if (!dataUnionId) {
             throw new Error('Data union id not given')
         }
 
         try {
-            const result = await getDataUnionStats(dataUnionId)
+            const result = await getDataUnionStats(dataUnionId, chainId)
             if (!isMounted()) {
                 return
             }
@@ -35,7 +35,7 @@ function useDataUnionServerStats() {
                 if (isMounted()) {
                     resetTimeout()
                     timeOutId.current = setTimeout(() => {
-                        getStats(dataUnionId)
+                        getStats(dataUnionId, chainId)
                     }, DATA_UNION_SERVER_POLL_INTERVAL_MS)
                 }
             } else {

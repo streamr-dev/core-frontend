@@ -12,9 +12,9 @@ export default function useDataUnionLoadCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('dataUnion.LOAD')
 
-    return useCallback(async (id: DataUnionId) => (
+    return useCallback(async (id: DataUnionId, chainId: number) => (
         wrap(async () => {
-            await dispatch(getDataUnionById(id))
+            await dispatch(getDataUnionById(id, chainId))
         })
     ), [wrap, dispatch])
 }

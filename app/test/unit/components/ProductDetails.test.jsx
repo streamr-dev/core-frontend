@@ -13,6 +13,7 @@ describe('Product Details', () => {
         id: 'product-1',
         name: 'Product 1',
         state: productStates.DEPLOYED,
+        chain: 'ETHEREUM',
     }
 
     props = {

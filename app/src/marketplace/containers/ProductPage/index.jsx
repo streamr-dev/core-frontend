@@ -16,6 +16,7 @@ import Nav from '$shared/components/Layout/Nav'
 
 import { selectUserData } from '$shared/modules/user/selectors'
 import { useSessionToken } from '$shared/reducers/session'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import ProductController, { useController } from '../ProductController'
 import WhitelistRequestAccessModal from './WhitelistRequestAccessModal'
 import PurchaseModal from './PurchaseModal'
@@ -28,33 +29,27 @@ const LoadingIndicator = styled(PrestyledLoadingIndicator)`
 
 const ProductPage = () => {
     const dispatch = useDispatch()
-    const {
-        product,
-        loadContractProductSubscription,
-        loadCategories,
-        loadDataUnion,
-        loadRelatedProducts,
-    } = useController()
+    const { product, loadCategories, loadDataUnion, loadRelatedProducts } = useController()
     const userData = useSelector(selectUserData)
     const token = useSessionToken()
     const isLoggedIn = userData !== null && !!token
     const { isPending } = usePending('contractProduct.LOAD')
 
     const { id: productId } = useParams()
+    const chainId = getChainIdFromApiString(product.chain)
 
     const loadAdditionalProductData = useCallback(async (id: ProductId) => {
-        loadContractProductSubscription(id)
         loadCategories()
         loadRelatedProducts(id, isLoggedIn)
         if (isLoggedIn) {
-            dispatch(getProductSubscription(id))
+            dispatch(getProductSubscription(id, chainId))
         }
     }, [
         dispatch,
         isLoggedIn,
-        loadContractProductSubscription,
         loadCategories,
         loadRelatedProducts,
+        chainId,
     ])
 
     useEffect(() => {
@@ -65,9 +60,9 @@ const ProductPage = () => {
 
     useEffect(() => {
         if (dataUnionDeployed && beneficiaryAddress) {
-            loadDataUnion(beneficiaryAddress)
+            loadDataUnion(beneficiaryAddress, chainId)
         }
-    }, [dataUnionDeployed, beneficiaryAddress, loadDataUnion])
+    }, [dataUnionDeployed, beneficiaryAddress, chainId, loadDataUnion])
 
     return (
         <Layout nav={(<Nav shadow />)}>

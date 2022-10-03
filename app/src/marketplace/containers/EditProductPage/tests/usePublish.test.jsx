@@ -10,6 +10,7 @@ import * as contractProductServices from '$mp/modules/contractProduct/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as productServices from '$mp/modules/product/services'
+import * as web3Utils from '$mp/utils/web3'
 
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import usePublish, { publishModes, actionsTypes } from '../usePublish'
@@ -20,6 +21,11 @@ jest.mock('react-redux', () => ({
 
 jest.mock('streamr-client-react', () => ({
     useClient: jest.fn(),
+}))
+
+jest.mock('$mp/utils/web3', () => ({
+    ...jest.requireActual('$mp/utils/web3'),
+    getCustomTokenDecimals: jest.fn().mockImplementation(() => 18),
 }))
 
 function stubStreams(streams) {
@@ -93,6 +99,7 @@ describe('usePublish', () => {
             const product = {
                 id: '1',
                 state: 'DEPLOYED',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
@@ -131,6 +138,7 @@ describe('usePublish', () => {
                 pendingChanges: {
                     name: 'New name',
                 },
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
@@ -166,6 +174,7 @@ describe('usePublish', () => {
                 id: '1',
                 name: 'Name',
                 state: 'NOT_DEPLOYED',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
@@ -201,6 +210,7 @@ describe('usePublish', () => {
                 id: '1',
                 name: 'Name',
                 state: 'NOT_DEPLOYED',
+                chain: 'ETHEREUM',
             }
 
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve({
@@ -249,6 +259,7 @@ describe('usePublish', () => {
                         id: '1',
                         name: 'Name',
                         state: 'DEPLOYING',
+                        chain: 'ETHEREUM',
                     })
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
@@ -265,6 +276,7 @@ describe('usePublish', () => {
                         id: '1',
                         name: 'Name',
                         state: 'UNDEPLOYING',
+                        chain: 'ETHEREUM',
                     })
                     expect(true).toBe(false) // shouldn't come here
                 } catch (e) {
@@ -294,6 +306,7 @@ describe('usePublish', () => {
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
+                    chain: 'ETHEREUM',
                 })
 
                 expect(result.mode).toBe(publishModes.PUBLISH)
@@ -340,6 +353,7 @@ describe('usePublish', () => {
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
+                    chain: 'ETHEREUM',
                 })
 
                 expect(result.mode).toBe(publishModes.PUBLISH)
@@ -389,6 +403,7 @@ describe('usePublish', () => {
                     id: '1',
                     name: 'Name',
                     state: 'DEPLOYED',
+                    chain: 'ETHEREUM',
                 }
 
                 let result
@@ -439,6 +454,7 @@ describe('usePublish', () => {
                     id: '1',
                     name: 'Name',
                     state: 'DEPLOYED',
+                    chain: 'ETHEREUM',
                 }
 
                 let result
@@ -509,6 +525,7 @@ describe('usePublish', () => {
                         name: 'New name',
                         streams: ['2', '3', '4'],
                     },
+                    chain: 'ETHEREUM',
                 }
 
                 let result
@@ -546,6 +563,7 @@ describe('usePublish', () => {
                     description: 'Description',
                     streams: ['2', '3', '4'],
                     pendingChanges: undefined,
+                    chain: 'ETHEREUM',
                 }, '1')
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
@@ -581,6 +599,7 @@ describe('usePublish', () => {
                         name: 'New name',
                         streams: ['2', '3', '4'],
                     },
+                    chain: 'ETHEREUM',
                 }
 
                 let result
@@ -617,6 +636,7 @@ describe('usePublish', () => {
                     description: 'Description',
                     streams: ['2'],
                     pendingChanges: undefined,
+                    chain: 'ETHEREUM',
                 }, '1')
                 expect(searchStreamsStub).toHaveBeenCalled()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
@@ -648,6 +668,7 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
+                    chain: 'ETHEREUM',
                 })
 
                 expect(result.mode).toBe(publishModes.PUBLISH)
@@ -735,8 +756,10 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
+                    chain: 'ETHEREUM',
                     pendingChanges: {
                         requiresWhitelist: true,
+                        pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
                     },
                 })
 
@@ -795,6 +818,7 @@ describe('usePublish', () => {
                     state: 'NOT_DEPLOYED',
                     ownerAddress: '',
                     requiresWhitelist: true,
+                    pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
                 })
                 expect(putProductStub).not.toBeCalled()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
@@ -834,6 +858,7 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
+                    chain: 'ETHEREUM',
                 })
 
                 expect(result.mode).toBe(publishModes.UNPUBLISH)
@@ -920,6 +945,7 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
+                    chain: 'ETHEREUM',
                 })
 
                 expect(result.mode).toBe(publishModes.REDEPLOY)
@@ -989,7 +1015,7 @@ describe('usePublish', () => {
 
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '2',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1005,8 +1031,9 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(2),
+                    pricePerSecond: '2',
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
+                    chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
 
@@ -1083,7 +1110,7 @@ describe('usePublish', () => {
 
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '2',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1099,8 +1126,9 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(2),
+                    pricePerSecond: '2',
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
+                    chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
 
@@ -1189,6 +1217,7 @@ describe('usePublish', () => {
                         name: 'New name',
                         streams: ['2', '3', '4'],
                     },
+                    chain: 'ETHEREUM',
                 })
 
                 expect(result.mode).toBe(publishModes.REPUBLISH)
@@ -1249,6 +1278,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     pendingChanges: undefined,
+                    chain: 'ETHEREUM',
                 })
                 expect(finishFn).toHaveBeenCalled()
             })
@@ -1311,6 +1341,7 @@ describe('usePublish', () => {
                         name: 'New name',
                         streams: ['2', '3', '4'],
                     },
+                    chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
 
@@ -1375,6 +1406,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     pendingChanges: undefined,
+                    chain: 'ETHEREUM',
                 })
                 expect(finishFn).toHaveBeenCalled()
             })
@@ -1407,6 +1439,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     type: 'DATAUNION',
+                    chain: 'ETHEREUM',
                 })
 
                 expect(result.mode).toBe(publishModes.PUBLISH)
@@ -1481,6 +1514,7 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
+                    chainId: 1,
                 }))
                 jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
                 jest.spyOn(dataUnionServices, 'getDataUnionOwner')
@@ -1508,6 +1542,7 @@ describe('usePublish', () => {
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     type: 'DATAUNION',
+                    chain: 'ETHEREUM',
                 })
 
                 expect(result.mode).toBe(publishModes.UNPUBLISH)
@@ -1566,7 +1601,7 @@ describe('usePublish', () => {
 
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '2',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1596,9 +1631,10 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(2),
+                    pricePerSecond: '2',
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     type: 'DATAUNION',
+                    chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
 
@@ -1664,11 +1700,12 @@ describe('usePublish', () => {
 
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '2',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
+                    chainId: 1,
                 }
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => Promise.resolve(contractProduct))
                 jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
@@ -1702,12 +1739,13 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(2),
+                    pricePerSecond: '2',
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                     type: 'DATAUNION',
                     pendingChanges: {
                         adminFee: '0.2',
                     },
+                    chain: 'ETHEREUM',
                 }
                 const result = await publish(product)
 
@@ -1754,7 +1792,7 @@ describe('usePublish', () => {
 
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_ADMIN_FEE)
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UPDATE_CONTRACT_PRODUCT)
-                expect(setAdminFeeStub).toBeCalledWith(product.beneficiaryAddress, product.pendingChanges.adminFee)
+                expect(setAdminFeeStub).toBeCalledWith(product.beneficiaryAddress, 1, product.pendingChanges.adminFee)
                 expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pricePerSecond,
@@ -1835,6 +1873,7 @@ describe('usePublish', () => {
                         adminFee: '0.5',
                         streams: ['2', '3', '4'],
                     },
+                    chain: 'ETHEREUM',
                 }
 
                 const result = await publish(product)
@@ -1890,8 +1929,9 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     type: 'DATAUNION',
                     pendingChanges: undefined,
+                    chain: 'ETHEREUM',
                 }, '1')
-                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')
+                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', 1, '0.5')
                 expect(addTransactionStub).toBeCalledWith(hash, transactionTypes.UPDATE_ADMIN_FEE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)
                 expect(readyFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES)
@@ -1973,6 +2013,7 @@ describe('usePublish', () => {
                         beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                         priceCurrency: 'EUR',
                     },
+                    chain: 'ETHEREUM',
                 }
 
                 const result = await publish(product)
@@ -2036,14 +2077,16 @@ describe('usePublish', () => {
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     type: 'DATAUNION',
                     pendingChanges: undefined,
+                    chain: 'ETHEREUM',
                 })
                 expect(updateContractStub.mock.calls[0][0]).toMatchObject({
                     ...contractProduct,
                     pricePerSecond: product.pendingChanges.pricePerSecond,
                     beneficiaryAddress: product.pendingChanges.beneficiaryAddress,
                     priceCurrency: product.pendingChanges.priceCurrency,
+                    chainId: 1,
                 })
-                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', '0.5')
+                expect(setAdminFeeStub).toBeCalledWith('0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0', 1, '0.5')
                 expect(addTransactionStub).toBeCalledWith(hash1, transactionTypes.UPDATE_ADMIN_FEE)
                 expect(addTransactionStub).toBeCalledWith(hash2, transactionTypes.UPDATE_CONTRACT_PRODUCT)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_PENDING_CHANGES, transactionStates.CONFIRMED)

@@ -69,10 +69,10 @@ describe('useDataUnionServerStats', () => {
         services.getDataUnionStats.mockImplementation(getDataUnionStatsMock)
 
         await act(async () => {
-            await result.startPolling('0x123')
+            await result.startPolling('0x123', 8995)
         })
 
-        expect(getDataUnionStatsMock).toBeCalledWith('0x123')
+        expect(getDataUnionStatsMock).toBeCalledWith('0x123', 8995)
         expect(result.totalEarnings).toStrictEqual(123)
         expect(result.memberCount).toStrictEqual({
             total: 10,
@@ -98,13 +98,13 @@ describe('useDataUnionServerStats', () => {
 
         await act(async () => {
             try {
-                await result.startPolling('0x123')
+                await result.startPolling('0x123', 8995)
             } catch (e) {
                 expect(e.message).toStrictEqual('something happened')
             }
         })
 
-        expect(getDataUnionStatsMock).toBeCalledWith('0x123')
+        expect(getDataUnionStatsMock).toBeCalledWith('0x123', 8995)
     })
 
     it('retries fetching if stats fetching fails with 404 error', async () => {
@@ -127,12 +127,12 @@ describe('useDataUnionServerStats', () => {
         services.getDataUnionStats.mockImplementation(getDataUnionStatsMock)
 
         await act(async () => {
-            await result.startPolling('0x123')
+            await result.startPolling('0x123', 8995)
         })
 
         jest.runAllTimers()
 
-        expect(getDataUnionStatsMock).toBeCalledWith('0x123')
+        expect(getDataUnionStatsMock).toBeCalledWith('0x123', 8995)
         expect(getDataUnionStatsMock).toHaveBeenCalledTimes(2)
     })
 })

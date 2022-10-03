@@ -4,15 +4,17 @@ import BN from 'bignumber.js'
 
 export type Required = {
     gas: BN,
-    eth?: BN,
+    native?: BN,
     data?: BN,
     dai?: BN,
+    productToken?: BN,
 }
 
 export type Balances = {
-    eth: BN,
+    native: BN,
     data?: BN,
     dai?: BN,
+    productToken?: BN,
 }
 
 type Constructor = {

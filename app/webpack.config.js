@@ -85,7 +85,10 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
+                include: [
+                    path.resolve(root, 'src'),
+                    path.resolve(root, 'scripts'),
+                ],
                 options: {
                     rootMode: 'upward',
                     cacheDirectory: !isProduction(),

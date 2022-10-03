@@ -3,13 +3,11 @@
 import React, { useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
-import { titleize } from '@streamr/streamr-layout'
 import Segment from '$shared/components/Segment'
 import { selectAllCategories } from '$mp/modules/categories/selectors'
 import { isDataUnionProduct, isPaidProduct } from '$mp/utils/product'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import { isEthereumAddress } from '$mp/utils/validate'
-import { ago } from '$shared/utils/time'
 
 import DescriptionComponent from '$mp/components/ProductPage/Description'
 import HeroComponent from '$mp/components/Hero'
@@ -21,16 +19,19 @@ import ProductPageDataUnionStats from '$mp/containers/ProductPage/DataUnionStats
 import useDataUnionServerStats from '$mp/containers/ProductPage/useDataUnionServerStats'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
+import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import usePending from '$shared/hooks/usePending'
 import ProductPage from '$shared/components/ProductPage'
 import { MD, XL } from '$shared/utils/styled'
 import usePreviewStats from '$mp/containers/ProductPage/usePreviewStats'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import { useController } from '../ProductController'
 
 const Hero = () => {
     const { state: product } = useEditableState()
     const isDataUnion = !!(product && isDataUnionProduct(product))
+    const contractProduct = useSelector(selectContractProduct)
     const { preview, createPreview } = useFilePreview()
 
     const uploadedImage = product.newImageToUpload
@@ -53,6 +54,7 @@ const Hero = () => {
             rightContent={
                 <ProductDetails
                     product={product}
+                    pricingTokenAddress={contractProduct && contractProduct.pricingTokenAddress}
                     isValidSubscription={false}
                     productSubscription={undefined}
                     onPurchase={() => {}}
@@ -71,30 +73,12 @@ const Description = () => {
         (categories || []).find(({ id }) => id === productCategory)
     ), [productCategory, categories])
 
-    const contractProduct = useContractProduct()
-    const { isPending } = usePending('contractProduct.LOAD_SUBSCRIPTION')
-    const { purchaseTimestamp, subscriberCount } = contractProduct || {}
-
-    const isProductFree = !!(product && !isPaidProduct(product))
-
     const sidebar = useMemo(() => ({
         category: {
             title: 'Product category',
             value: (category && category.name) || '-',
         },
-        ...(!isProductFree ? {
-            subscriberCount: {
-                title: 'Active subscribers',
-                loading: isPending,
-                value: subscriberCount || 0,
-            },
-            purchaseTimestamp: {
-                title: 'Last purchased',
-                loading: isPending,
-                value: purchaseTimestamp != null ? titleize(ago(new Date(purchaseTimestamp))) : '-',
-            },
-        } : {}),
-    }), [category, isProductFree, subscriberCount, purchaseTimestamp, isPending])
+    }), [category])
 
     return (
         <DescriptionComponent
@@ -106,6 +90,7 @@ const Description = () => {
 
 const DataUnionStats = () => {
     const { state: product } = useEditableState()
+    const chainId = product && getChainIdFromApiString(product.chain)
 
     const { created, adminFee, dataUnionDeployed, beneficiaryAddress } = product
 
@@ -127,13 +112,13 @@ const DataUnionStats = () => {
 
     useEffect(() => {
         if (beneficiaryAddress) {
-            startPolling(beneficiaryAddress)
+            startPolling(beneficiaryAddress, chainId)
 
             return () => stopPolling()
         }
 
         return () => {}
-    }, [startPolling, stopPolling, beneficiaryAddress])
+    }, [startPolling, stopPolling, beneficiaryAddress, chainId])
 
     const statsProps = useMemo(() => {
         if (isDuDeployed) {

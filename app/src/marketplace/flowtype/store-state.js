@@ -1,6 +1,5 @@
 // @flow
 
-import TransactionError from '$shared/errors/TransactionError'
 import type { Hash, Address, HashList } from '$shared/flowtype/web3-types'
 import type { StreamIdList } from '$shared/flowtype/stream-types'
 import type { ErrorInUi, NumberString } from '$shared/flowtype/common-types'
@@ -131,10 +130,7 @@ export type Web3State = {
 
 // global things
 export type GlobalState = {
-    dataPerUsd: ?NumberString,
     networkId: ?string,
-    fetchingDataPerUsdRate: boolean,
-    dataPerUsdRateError: ?TransactionError,
 }
 
 // transactions

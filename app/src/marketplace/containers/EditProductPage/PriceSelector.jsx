@@ -1,31 +1,26 @@
 // @flow
 
-import React, { useCallback, useContext } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
 
+import docsLinks from '$shared/../docsLinks'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { usePending } from '$shared/hooks/usePending'
-import { contractCurrencies as currencies } from '$shared/utils/constants'
-import { selectDataPerUsd } from '$mp/modules/global/selectors'
 import RadioButtonGroup from '$shared/components/RadioButtonGroup'
 import SetPrice from '$mp/components/SetPrice'
-import Toggle from '$shared/components/Toggle'
-import SvgIcon from '$shared/components/SvgIcon'
 import { selectContractProduct } from '$mp/modules/contractProduct/selectors'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 
-import { convert } from '$mp/utils/price'
 import useValidation from '../ProductController/useValidation'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { isPublished } from './state'
 import { Context as EditControllerContext } from './EditControllerProvider'
-
 import BeneficiaryAddress from './BeneficiaryAddress'
 
 import styles from './PriceSelector.pcss'
-import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     disabled?: boolean,
@@ -33,35 +28,33 @@ type Props = {
 
 const PriceSelector = ({ disabled }: Props) => {
     const { state: product } = useEditableState()
-    const { publishAttempted, preferredCurrency: currency, setPreferredCurrency: setCurrency } = useContext(EditControllerContext)
+    const { publishAttempted } = useContext(EditControllerContext)
     const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
-    const dataPerUsd = useSelector(selectDataPerUsd)
     const { isPending: contractProductLoadPending } = usePending('contractProduct.LOAD')
     const isPublic = isPublished(product)
     const contractProduct = useSelector(selectContractProduct)
     const isDisabled = !!(disabled || contractProductLoadPending)
     const isPriceTypeDisabled = !!(isDisabled || isPublic || !!contractProduct)
+    const chainId = product && getChainIdFromApiString(product.chain)
+    const { pricingTokenDecimals } = product
 
     const onPriceTypeChange = useCallback((type) => {
-        updateIsFree(type === 'Free')
-    }, [updateIsFree])
+        updateIsFree(type === 'Free', pricingTokenDecimals)
+    }, [updateIsFree, pricingTokenDecimals])
 
     const onPriceChange = useCallback((p) => {
-        const price = convert(p, dataPerUsd, currency, product.priceCurrency)
-        updatePrice(price, product.priceCurrency, product.timeUnit)
-    }, [updatePrice, dataPerUsd, currency, product.priceCurrency, product.timeUnit])
+        updatePrice(p, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
+    }, [updatePrice, product.priceCurrency, product.timeUnit, pricingTokenDecimals])
 
     const onTimeUnitChange = useCallback((t) => {
-        updatePrice(product.price, product.priceCurrency, t)
-    }, [updatePrice, product.price, product.priceCurrency])
+        updatePrice(product.price, product.priceCurrency, t, pricingTokenDecimals)
+    }, [updatePrice, product.price, product.priceCurrency, pricingTokenDecimals])
 
-    const fixInFiat = product.priceCurrency === currencies.USD
-
-    const onFixPriceChange = useCallback((checked) => {
-        const newCurrency = checked ? currencies.USD : currencies.DATA
-        const newPrice = convert(product.price, dataPerUsd, product.priceCurrency, newCurrency)
-        updatePrice(newPrice, newCurrency, product.timeUnit)
-    }, [updatePrice, product.price, product.priceCurrency, product.timeUnit, dataPerUsd])
+    useEffect(() => {
+        updatePrice(product.price, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
+    // We don't want to duplicate changes above callbacks already do
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pricingTokenDecimals, updatePrice])
 
     const isFreeProduct = !!product.isFree
     const isDataUnion = isDataUnionProduct(product)
@@ -93,14 +86,13 @@ const PriceSelector = ({ disabled }: Props) => {
                     <SetPrice
                         className={styles.priceSelector}
                         disabled={isFreeProduct || isDisabled}
-                        price={convert(product.price, dataPerUsd, product.priceCurrency, currency)}
+                        price={product.price}
                         onPriceChange={onPriceChange}
-                        currency={currency}
-                        onCurrencyChange={setCurrency}
+                        pricingTokenAddress={product.pricingTokenAddress}
                         timeUnit={product.timeUnit}
                         onTimeUnitChange={onTimeUnitChange}
-                        dataPerUsd={dataPerUsd}
                         error={publishAttempted && !isValid ? message : undefined}
+                        chainId={chainId}
                     />
                     <div
                         className={cx({
@@ -115,27 +107,6 @@ const PriceSelector = ({ disabled }: Props) => {
                                 disabled={isFreeProduct || isDisabled}
                             />
                         )}
-                        <div className={styles.fixPrice}>
-                            <label htmlFor="fixPrice">
-                                <span>
-                                    Fix price in fiat
-                                    {!!isDataUnion && ' for protection against shifts in the DATA price'}
-                                </span>
-                                <div className={styles.tooltipContainer}>
-                                    <SvgIcon name="outlineQuestionMark" className={styles.helpIcon} />
-                                    <div className={styles.tooltip}>
-                                        Fixing the price in fiat can give you protection against shifts in the DATA price
-                                    </div>
-                                </div>
-                            </label>
-                            <Toggle
-                                id="fixPrice"
-                                className={styles.toggle}
-                                value={fixInFiat}
-                                onChange={onFixPriceChange}
-                                disabled={isFreeProduct || isDisabled}
-                            />
-                        </div>
                     </div>
                 </div>
             </div>

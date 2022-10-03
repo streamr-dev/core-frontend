@@ -8,8 +8,8 @@ import Buttons from '$shared/components/Buttons'
 import Text from '$ui/Text'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
-import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA } from '$mp/utils/web3'
-import { dataToUsd, formatDecimals, dataForTimeUnits } from '$mp/utils/price'
+import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA, getDataAddress } from '$mp/utils/web3'
+import { priceForTimeUnits } from '$mp/utils/price'
 import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
 import type { Product, AccessPeriod } from '$mp/flowtype/product-types'
 import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
@@ -17,6 +17,8 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import { useDebounced } from '$shared/hooks/wrapCallback'
+import { getUsdRate } from '$shared/utils/coingecko'
+import { fromDecimals } from '$mp/utils/math'
 import CurrencySelector from './CurrencySelector'
 
 import styles from './chooseAccessPeriod.pcss'
@@ -26,9 +28,11 @@ export type Balances = {
 }
 
 export type Props = {
-    dataPerUsd: ?NumberString,
     pricePerSecond: $ElementType<Product, 'pricePerSecond'>,
-    priceCurrency: $ElementType<Product, 'priceCurrency'>,
+    pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>,
+    pricingTokenDecimals: $ElementType<Product, 'pricingTokenDecimals'>,
+    tokenSymbol: string,
+    chainId: number,
     balances: Balances,
     onNext: (AccessPeriod) => Promise<void>,
     onCancel: () => void,
@@ -44,11 +48,13 @@ const options = [timeUnits.hour, timeUnits.day, timeUnits.week, timeUnits.month]
 /* eslint-disable object-curly-newline */
 export const ChooseAccessPeriodDialog = ({
     pricePerSecond,
-    priceCurrency,
+    pricingTokenAddress,
+    pricingTokenDecimals,
+    tokenSymbol,
+    chainId,
     balances,
     onNext,
     onCancel,
-    dataPerUsd,
     disabled,
     initialValues,
 }: Props) => {
@@ -63,26 +69,41 @@ export const ChooseAccessPeriodDialog = ({
     const [loading, setLoading] = useState(false)
     const [currentPrice, setCurrentPrice] = useState('-')
     const [approxUsd, setApproxUsd] = useState('-')
+    const [priceInUsd, setPriceInUsd] = useState(null)
 
-    const [priceInData, priceInUsd] = useMemo(() => {
-        const inData = dataForTimeUnits(
+    const availableCurrencies = useMemo(() => {
+        if (pricingTokenAddress === getDataAddress(chainId)) {
+            return [
+                paymentCurrencies.DATA,
+            ]
+        }
+        return [paymentCurrencies.PRODUCT_DEFINED]
+    }, [pricingTokenAddress, chainId])
+
+    const priceInToken = useMemo(() => {
+        const price = priceForTimeUnits(
             pricePerSecond,
-            dataPerUsd,
-            priceCurrency,
             time,
             timeUnit,
         )
 
-        return [
-            inData,
-            dataToUsd(inData, dataPerUsd),
-        ]
-    }, [dataPerUsd, priceCurrency, pricePerSecond, time, timeUnit])
+        return price
+    }, [pricePerSecond, time, timeUnit])
+
+    useEffect(() => {
+        const load = async () => {
+            const rate = await getUsdRate(pricingTokenAddress, chainId)
+            if (rate !== 0 && currentPrice !== '-') {
+                setPriceInUsd(currentPrice * rate)
+            }
+        }
+        load()
+    }, [currentPrice, pricingTokenAddress, chainId])
 
     const isValidTime = useMemo(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
 
     const isValidPrice = useMemo(() => {
-        if (paymentCurrency === paymentCurrencies.ETH) {
+        if (paymentCurrency === paymentCurrencies.NATIVE) {
             if (Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD) { return false }
             return !(BN(currentPrice).isNaN() || !BN(currentPrice).isGreaterThan(0) || !BN(currentPrice).isFinite())
         }
@@ -96,8 +117,7 @@ export const ChooseAccessPeriodDialog = ({
     }, [paymentCurrency, priceInUsd, currentPrice])
 
     const setExternalPrices = useDebounced(useCallback(async ({
-        dataPerUsd: perUsd,
-        priceInData: inData,
+        priceInToken: inToken,
         priceInUsd: inUsd,
         paymentCurrency: currency,
     }) => {
@@ -105,43 +125,41 @@ export const ChooseAccessPeriodDialog = ({
 
         let price
         let usdEstimate
-        if (currency === paymentCurrencies.ETH) {
-            price = await uniswapDATAtoETH(inData.toString(), true)
+        if (currency === paymentCurrencies.NATIVE) {
+            price = await uniswapDATAtoETH(inToken.toString(), true)
             usdEstimate = await uniswapETHtoDATA(price.toString(), true)
-            usdEstimate = usdEstimate.dividedBy(Number(perUsd) || 1)
         } else if (currency === paymentCurrencies.DAI) {
-            price = await uniswapDATAtoDAI(inData.toString(), true)
+            price = await uniswapDATAtoDAI(inToken.toString(), true)
             usdEstimate = price
         } else {
-            price = inData
+            price = inToken
             usdEstimate = inUsd
         }
 
-        setCurrentPrice(price)
+        setCurrentPrice(fromDecimals(price, pricingTokenDecimals))
         setApproxUsd(usdEstimate)
 
         setLoading(false)
-    }, []), 250)
+    }, [pricingTokenDecimals]), 250)
 
     const displayPrice = useMemo(() => (
-        BN(currentPrice).isNaN() ? 'N/A' : formatDecimals(currentPrice, paymentCurrency)
-    ), [currentPrice, paymentCurrency])
+        BN(currentPrice).isNaN() ? 'N/A' : BN(currentPrice).toFixed(2)
+    ), [currentPrice])
 
     const displayApproxUsd = useMemo(() => (
-        BN(approxUsd).isNaN() ? 'N/A' : formatDecimals(approxUsd, contractCurrencies.USD)
+        BN(approxUsd).isNaN() ? 'N/A' : BN(approxUsd).toFixed(2)
     ), [approxUsd])
 
     useEffect(() => {
         setExternalPrices({
-            dataPerUsd,
-            priceInData,
+            priceInToken,
             priceInUsd,
             paymentCurrency,
         })
-    }, [setExternalPrices, dataPerUsd, priceInData, paymentCurrency, priceInUsd])
+    }, [setExternalPrices, priceInToken, paymentCurrency, priceInUsd])
 
     const currentBalance = useMemo(() => (
-        (balances && balances[paymentCurrency]) ? formatDecimals(balances[paymentCurrency], paymentCurrency) : '-'
+        (balances && balances[paymentCurrency]) ? BN(balances[paymentCurrency]).toFixed(2) : '-'
     ), [balances, paymentCurrency])
 
     const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === timeUnit), [timeUnit])
@@ -192,10 +210,10 @@ export const ChooseAccessPeriodDialog = ({
                 actions={actions}
                 renderActions={() => (
                     <div className={cx(styles.footer, {
-                        [styles.onlyButtons]: paymentCurrency === paymentCurrencies.DATA,
+                        [styles.onlyButtons]: !(paymentCurrency === paymentCurrencies.NATIVE || paymentCurrency === paymentCurrencies.DAI),
                     })}
                     >
-                        {paymentCurrency !== paymentCurrencies.DATA && (
+                        {(paymentCurrency === paymentCurrencies.NATIVE || paymentCurrency === paymentCurrencies.DAI) && (
                             <span className={styles.uniswapFooter}>
                                 Exchange via Uniswap
                             </span>
@@ -271,7 +289,7 @@ export const ChooseAccessPeriodDialog = ({
                         <span className={styles.priceValue}>
                             {displayPrice}
                             <span className={styles.priceCurrency}>
-                                {paymentCurrency}
+                                {tokenSymbol}
                             </span>
                         </span>
                         <span className={styles.usdEquiv}>
@@ -282,8 +300,10 @@ export const ChooseAccessPeriodDialog = ({
                     <CurrencySelector
                         onChange={onPaymentCurrencyChange}
                         paymentCurrency={paymentCurrency}
+                        availableCurrencies={availableCurrencies}
+                        tokenSymbol={tokenSymbol}
                     />
-                    {paymentCurrency !== paymentCurrencies.DATA && (
+                    {(paymentCurrency === paymentCurrencies.NATIVE || paymentCurrency === paymentCurrencies.DAI) && (
                         <p className={styles.uniswapMsg}>
                             Exchange via Uniswap
                         </p>

@@ -4,13 +4,13 @@ import { useParams } from 'react-router-dom'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { usePending } from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import { Provider as PermissionsProvider } from './useProductPermissions'
 import { Provider as ValidationContextProvider } from './ValidationContextProvider'
 
 import useProductLoadCallback from './useProductLoadCallback'
 import useContractProductLoadCallback from './useContractProductLoadCallback'
 import useProductValidationEffect from './useProductValidationEffect'
-import useContractProductSubscriptionLoadCallback from './useContractProductSubscriptionLoadCallback'
 import useLoadCategoriesCallback from './useLoadCategoriesCallback'
 import useLoadProductStreamsCallback from './useLoadProductStreamsCallback'
 import useDataUnionLoadCallback from './useDataUnionLoadCallback'
@@ -29,6 +29,8 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
     const { isPending } = usePending('product.LOAD')
     const isMounted = useIsMounted()
     const { id: urlId } = useParams()
+    const { product } = useController()
+    const chainId = product && getChainIdFromApiString(product.chain)
 
     useEffect(() => {
         if (urlId && !loadedOnce && !isPending) {
@@ -39,20 +41,24 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
                 requirePublished,
                 useAuthorization,
             })
-            loadContractProduct(urlId)
             setLoadedOnce(true)
         }
     }, [
         urlId,
         loadedOnce,
         loadProduct,
-        loadContractProduct,
         isPending,
         ignoreUnauthorized,
         useAuthorization,
         requirePublished,
         isMounted,
     ])
+
+    useEffect(() => {
+        if (urlId && chainId) {
+            loadContractProduct(urlId, chainId)
+        }
+    }, [urlId, chainId, loadContractProduct])
 }
 
 function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization }) {
@@ -128,7 +134,6 @@ function useProductController() {
 
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
-    const loadContractProductSubscription = useContractProductSubscriptionLoadCallback()
     const loadCategories = useLoadCategoriesCallback()
     const loadProductStreams = useLoadProductStreamsCallback({
         setProductStreams,
@@ -151,7 +156,6 @@ function useProductController() {
         setAllStreams,
         loadProduct,
         loadContractProduct,
-        loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
         loadDataUnion,
@@ -169,7 +173,6 @@ function useProductController() {
         setAllStreams,
         loadProduct,
         loadContractProduct,
-        loadContractProductSubscription,
         loadCategories,
         loadProductStreams,
         loadDataUnion,

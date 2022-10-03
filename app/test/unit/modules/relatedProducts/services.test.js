@@ -31,7 +31,6 @@ describe('relatedProducts - services', () => {
             },
         ]
 
-        // Note the conversion of pricePerSecond in expectedResult
         const expectedResult = [
             {
                 id: '123',
@@ -41,7 +40,7 @@ describe('relatedProducts - services', () => {
             {
                 id: '456',
                 name: 'Product 2',
-                pricePerSecond: '0.00001',
+                pricePerSecond: '10000',
             },
         ]
 

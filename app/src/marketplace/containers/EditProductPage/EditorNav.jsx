@@ -133,6 +133,10 @@ const EditorNav = () => {
             heading: 'Description',
             status: getStatus('description'),
         }, {
+            id: 'chain',
+            heading: 'Chain',
+            status: getStatus('chain'),
+        }, {
             id: 'streams',
             heading: 'Streams',
             status: getStatus('streams'),
@@ -140,7 +144,12 @@ const EditorNav = () => {
             id: 'price',
             heading: 'Set price',
             status: priceStatus,
-        }, {
+        },
+        ...includeIf(!!isPaid, [{
+            id: 'pricingToken',
+            heading: 'Payment token',
+            status: getStatus('pricingTokenAddress'),
+        }]), {
             id: 'details',
             heading: 'Details',
             status: detailsStatus,
@@ -149,7 +158,11 @@ const EditorNav = () => {
             id: 'whitelist',
             heading: 'Whitelist',
             status: getStatus('requiresWhitelist'),
-        }]),
+        }]), {
+            id: 'terms',
+            heading: 'Terms of use',
+            status: getStatus('termsOfUse'),
+        },
         ...includeIf(!!isDataUnion, [{
             id: 'shared-secrets',
             heading: 'Shared secrets',

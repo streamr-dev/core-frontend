@@ -14,9 +14,16 @@ export type BaseProps = {
 
 export type Props = BaseProps & {
     publishMode: PublishMode,
+    nativeTokenName: string,
 }
 
-export default ({ publishMode, onCancel, onContinue, disabled }: Props) => {
+export default ({
+    publishMode,
+    onCancel,
+    onContinue,
+    disabled,
+    nativeTokenName,
+}: Props) => {
     if (publishMode === publishModes.UNPUBLISH) {
         return (
             <ReadyToUnpublish
@@ -33,6 +40,7 @@ export default ({ publishMode, onCancel, onContinue, disabled }: Props) => {
             onContinue={onContinue}
             onCancel={onCancel}
             disabled={disabled}
+            nativeTokenName={nativeTokenName}
         />
     )
 }

@@ -55,7 +55,13 @@ const publishModes = {
     error: '',
 }
 
-const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: Props) => {
+const ReadyToPublishDialog = ({
+    onContinue,
+    onCancel,
+    publishMode,
+    disabled,
+    nativeTokenName,
+}: Props) => {
     const [termsAccepted, setTermsAccepted] = useState(false)
 
     return (
@@ -100,7 +106,7 @@ const ReadyToPublishDialog = ({ onContinue, onCancel, publishMode, disabled }: P
                 <p>
                     You&apos;re about to publish to the Marketplace.
                     <br />
-                    Paid products require an Eth balance for gas fees.
+                    Paid products require an {nativeTokenName} balance for gas fees.
                 </p>
             </Dialog>
         </ModalPortal>

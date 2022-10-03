@@ -32,7 +32,8 @@ import { fromAtto } from '$mp/utils/math'
 import { TransactionList as TransactionListComponent } from '$shared/components/List'
 import { MD, LG } from '$shared/utils/styled'
 import Search from '$userpages/components/Header/Search'
-import routes from '$routes'
+import getChainId from '$utils/web3/getChainId'
+import { getTransactionLink } from '$shared/utils/blockexplorer'
 import NoTransactionsView from './NoTransactions'
 
 const StyledListContainer = styled(ListContainer)`
@@ -106,10 +107,9 @@ const TransactionList = () => {
     const clearTransactionList = useCallback(() => dispatch(transactionActions.clearTransactionList()), [dispatch])
     const getTransactionEvents = useCallback(() => dispatch(transactionActions.getTransactionEvents()), [dispatch])
     const showEvents = useCallback(() => dispatch(transactionActions.showEvents()), [dispatch])
-    const openInEtherscan = useCallback((tx: string) => {
-        window.open(routes.etherscanTransaction({
-            tx,
-        }), '_blank')
+    const openInBlockExplorer = useCallback(async (tx: string) => {
+        const chainId = getChainId()
+        window.open(getTransactionLink(chainId, tx), '_blank')
     }, [])
 
     const loadProducts = useCallback(() => dispatch(getMyProducts({
@@ -182,11 +182,11 @@ const TransactionList = () => {
                             const eventType = (!!type && eventTypes[type]) || ''
                             const price = BN(value)
                             const pricePrefix = type === transactionTypes.SUBSCRIPTION ? '-' : '+'
-                            const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA)} DATA`
+                            const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA, 18)} DATA`
 
                             let displayPayment = ''
                             if ((paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && paymentValue) {
-                                displayPayment = ` (${formatDecimals(fromAtto(paymentValue), paymentCurrency)} ${paymentCurrency})`
+                                displayPayment = ` (${formatDecimals(fromAtto(paymentValue), paymentCurrency, 18)} ${paymentCurrency})`
                             }
 
                             return (
@@ -233,8 +233,8 @@ const TransactionList = () => {
                                             }}
                                             caret={false}
                                         >
-                                            <Popover.Item onClick={() => openInEtherscan(hash)}>
-                                                View on Etherscan
+                                            <Popover.Item onClick={() => openInBlockExplorer(hash)}>
+                                                View on block explorer
                                             </Popover.Item>
                                             <Popover.Item onClick={() => copyToClipboard(hash)}>
                                                 Copy TX hash

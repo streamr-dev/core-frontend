@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
+import docsLinks from '$shared/../docsLinks'
 import Button from '$shared/components/Button'
 import standardProductImage from '$mp/assets/product_standard.png'
 import standardProductImage2x from '$mp/assets/product_standard@2x.png'
@@ -11,7 +12,6 @@ import dataUnionImage from '$mp/assets/product_dataunion.png'
 import dataUnionImage2x from '$mp/assets/product_dataunion@2x.png'
 import { productTypes } from '$mp/utils/constants'
 import routes from '$routes'
-import docsLinks from '$shared/../docsLinks'
 
 type Props = {
     className?: string,

@@ -13,8 +13,8 @@ import type { StreamIdList } from '$shared/flowtype/stream-types'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import { Context as ValidationContext } from './ValidationContextProvider'
 
-const getPricePerSecond = (isFree, price, timeUnit) => (
-    isFree ? BN(0) : pricePerSecondFromTimeUnit(BN(price || 0), timeUnit || timeUnits.hour)
+const getPricePerSecond = (isFree, price, timeUnit, decimals) => (
+    isFree ? BN(0) : pricePerSecondFromTimeUnit(BN(price || 0), timeUnit || timeUnits.hour, decimals)
 )
 
 type SocialLinks = {
@@ -48,6 +48,21 @@ export function useEditableProductActions() {
             description,
         }))
         setTouched('description')
+    }, [commit, setTouched])
+    const updateChain = useCallback((chain: $ElementType<Product, 'chain'>) => {
+        commit('Update chain', (p) => ({
+            ...p,
+            chain,
+        }))
+        setTouched('chain')
+    }, [commit, setTouched])
+    const updatePricingToken = useCallback((pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>, pricingTokenDecimals: BN) => {
+        commit('Update payment token', (p) => ({
+            ...p,
+            pricingTokenAddress,
+            pricingTokenDecimals,
+        }))
+        setTouched('paymentTokenContract')
     }, [commit, setTouched])
     const updateImageUrl = useCallback((image: $ElementType<Product, 'imageUrl'>) => {
         commit('Update image url', (p) => ({
@@ -93,7 +108,7 @@ export function useEditableProductActions() {
         }))
         setTouched('requiresWhitelist', touched)
     }, [commit, setTouched])
-    const updateIsFree = useCallback((isFree: $ElementType<Product, 'isFree'>) => {
+    const updateIsFree = useCallback((isFree: $ElementType<Product, 'isFree'>, decimals: BN) => {
         commit('Update is free', (p) => {
             // Switching product from free to paid also changes its price from 0 (only
             // if it's 0) to 1. We're doing it to avoid premature validation errors.
@@ -103,7 +118,7 @@ export function useEditableProductActions() {
                 ...p,
                 isFree,
                 price,
-                pricePerSecond: getPricePerSecond(isFree, price, p.timeUnit),
+                pricePerSecond: getPricePerSecond(isFree, price, p.timeUnit, decimals),
             }
         })
         setTouched('pricePerSecond')
@@ -112,12 +127,13 @@ export function useEditableProductActions() {
         price: $ElementType<Product, 'price'>,
         priceCurrency: $ElementType<Product, 'priceCurrency'>,
         timeUnit: $ElementType<Product, 'timeUnit'>,
+        decimals: BN,
     ) => {
         commit('Update price', (p) => ({
             ...p,
             price,
             priceCurrency,
-            pricePerSecond: getPricePerSecond(p.isFree, price, timeUnit),
+            pricePerSecond: getPricePerSecond(p.isFree, price, timeUnit, decimals),
             timeUnit,
         }))
         setTouched('pricePerSecond')
@@ -196,6 +212,8 @@ export function useEditableProductActions() {
         updateProduct,
         updateName,
         updateDescription,
+        updateChain,
+        updatePricingToken,
         updateImageUrl,
         updateImageFile,
         updateStreams,
@@ -215,6 +233,8 @@ export function useEditableProductActions() {
         updateProduct,
         updateName,
         updateDescription,
+        updateChain,
+        updatePricingToken,
         updateImageUrl,
         updateImageFile,
         updateStreams,

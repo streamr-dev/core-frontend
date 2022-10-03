@@ -35,7 +35,10 @@ export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
 
 export const MarketplaceProductRow = styled(Row)``
 
-export const MarketplaceProductCol = styled(Col)``
+export const MarketplaceProductCol = styled(Col)`
+    padding-left: 1em;
+    padding-right: 1em;
+`
 
 const listProducts = (products, cols, isFetching: ?boolean) => (
     <MarketplaceProductRow

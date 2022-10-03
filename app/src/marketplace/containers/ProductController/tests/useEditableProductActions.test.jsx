@@ -9,9 +9,6 @@ import { Provider as ValidationContextProvider, Context as ValidationContext } f
 import useEditableProductActions from '../useEditableProductActions'
 
 const mockState = {
-    global: {
-        dataPerUsd: 10,
-    },
     dataUnion: {
         id: 'dataUnionId',
     },
@@ -379,7 +376,7 @@ describe('useEditableProductActions', () => {
                     priceCurrency: contractCurrencies.DATA,
                     price: BN(0),
                 })
-                updater.updateIsFree(false)
+                updater.updateIsFree(false, 18)
             })
 
             expect(product).toStrictEqual({
@@ -387,7 +384,7 @@ describe('useEditableProductActions', () => {
                 timeUnit: timeUnits.second,
                 isFree: false,
                 price: new BN(1),
-                pricePerSecond: new BN(1),
+                pricePerSecond: '1000000000000000000',
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
         })
@@ -423,7 +420,7 @@ describe('useEditableProductActions', () => {
                     priceCurrency: contractCurrencies.DATA,
                     price: BN(8),
                 })
-                updater.updateIsFree(false)
+                updater.updateIsFree(false, 18)
             })
 
             expect(product).toStrictEqual({
@@ -431,7 +428,7 @@ describe('useEditableProductActions', () => {
                 timeUnit: timeUnits.second,
                 isFree: false,
                 price: new BN(8),
-                pricePerSecond: new BN(8),
+                pricePerSecond: '8000000000000000000',
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
         })
@@ -513,7 +510,7 @@ describe('useEditableProductActions', () => {
                     priceCurrency: contractCurrencies.DATA,
                     price: BN(0),
                 })
-                updater.updatePrice(new BN(8), contractCurrencies.DATA, timeUnits.second)
+                updater.updatePrice(new BN(8), contractCurrencies.DATA, timeUnits.second, 18)
             })
 
             expect(product).toStrictEqual({
@@ -521,7 +518,7 @@ describe('useEditableProductActions', () => {
                 timeUnit: timeUnits.second,
                 isFree: false,
                 price: new BN(8),
-                pricePerSecond: new BN(8),
+                pricePerSecond: '8000000000000000000',
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
         })
@@ -557,7 +554,7 @@ describe('useEditableProductActions', () => {
                     priceCurrency: contractCurrencies.DATA,
                     price: BN(60),
                 })
-                updater.updatePrice(BN(60), contractCurrencies.DATA, timeUnits.minute)
+                updater.updatePrice(BN(60), contractCurrencies.DATA, timeUnits.minute, 18)
             })
 
             expect(product).toStrictEqual({
@@ -565,7 +562,7 @@ describe('useEditableProductActions', () => {
                 timeUnit: timeUnits.minute,
                 isFree: false,
                 price: new BN(60),
-                pricePerSecond: new BN(1),
+                pricePerSecond: '1000000000000000000',
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
         })
@@ -601,7 +598,7 @@ describe('useEditableProductActions', () => {
                     priceCurrency: contractCurrencies.DATA,
                     price: BN(10),
                 })
-                updater.updatePrice(BN(10), contractCurrencies.USD, timeUnits.second)
+                updater.updatePrice(BN(10), contractCurrencies.USD, timeUnits.second, 18)
             })
 
             expect(product).toStrictEqual({
@@ -609,7 +606,7 @@ describe('useEditableProductActions', () => {
                 timeUnit: timeUnits.second,
                 isFree: false,
                 price: new BN(10),
-                pricePerSecond: new BN(10),
+                pricePerSecond: '10000000000000000000',
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
         })

@@ -21,8 +21,6 @@ jest.mock('$app/src/getters/getConfig', () => {
             ...actualConfig,
             core: {
                 ...actualConfig.core,
-                daiTokenContractAddress: 'daiTokenAddress',
-                marketplaceContractAddress: 'mpAddress',
                 uniswapAdaptorContractAddress: 'uniAddress',
                 web3TransactionConfirmationBlocks: 1337,
             },
@@ -77,18 +75,6 @@ describe('config', () => {
                     abi: ['t_test', 't_values', 't_only'],
                     address: 'tokenAddress',
                 },
-                daiToken: {
-                    abi: ['t_test', 't_values', 't_only'],
-                    address: 'daiTokenAddress',
-                },
-                marketplace: {
-                    abi: ['m_test', 'm_values', 'm_only'],
-                    address: 'mpAddress',
-                },
-                uniswapAdaptor: {
-                    abi: ['u_test', 'u_values', 'u_only'],
-                    address: 'uniAddress',
-                },
                 dataUnionAbi: ['d_test', 'd_values', 'd_only'],
             })
         })
@@ -100,15 +86,6 @@ describe('config', () => {
                 chainId: 8995,
                 rpcUrl: 'https://dataunionschain',
                 dataUnionAbi: ['ds_test', 'ds_values', 'ds_only'],
-            })
-        })
-
-        it('gets the right streams chain config from env', () => {
-            const { streamsChain } = getConfig()
-
-            expect(streamsChain).toStrictEqual({
-                chainId: 8996,
-                rpcUrl: 'https://streamschain',
             })
         })
 

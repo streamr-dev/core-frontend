@@ -7,7 +7,6 @@ import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import type { TimeUnit, PaymentCurrency } from '$shared/flowtype/common-types'
 import { contractCurrencies } from '$shared/utils/constants'
-import { formatDecimals } from '$mp/utils/price'
 
 import styles from './purchaseSummaryDialog.pcss'
 
@@ -16,6 +15,7 @@ export type Props = {
     time: string,
     timeUnit: TimeUnit,
     paymentCurrency: PaymentCurrency,
+    tokenSymbol: string,
     price: BN,
     approxUsd: BN,
     waiting?: boolean,
@@ -30,15 +30,20 @@ export const PurchaseSummaryDialog = ({
     timeUnit,
     price: priceProp,
     paymentCurrency,
+    tokenSymbol,
     approxUsd: approxUsdProp,
     waiting,
     onCancel,
     onBack,
     onPay,
 }: Props) => {
-    const price = useMemo(() => formatDecimals(priceProp, paymentCurrency), [priceProp, paymentCurrency])
+    const price = useMemo(() => (
+        BN(priceProp).toFixed(2)
+    ), [priceProp])
 
-    const approxUsd = useMemo(() => formatDecimals(approxUsdProp, contractCurrencies.USD), [approxUsdProp])
+    const approxUsd = useMemo(() => (
+        BN(approxUsdProp).toFixed(2)
+    ), [approxUsdProp])
 
     return (
         <ModalPortal>
@@ -72,7 +77,7 @@ export const PurchaseSummaryDialog = ({
                     <span className={styles.priceValue}>
                         {price}
                         <span className={styles.priceCurrency}>
-                            {paymentCurrency}
+                            {paymentCurrency === contractCurrencies.PRODUCT_DEFINED ? tokenSymbol : paymentCurrency}
                         </span>
                     </span>
                     <p className={styles.usdEquiv}>

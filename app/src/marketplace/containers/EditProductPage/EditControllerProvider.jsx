@@ -15,8 +15,6 @@ import Notification from '$shared/utils/Notification'
 import {
     NotificationIcon,
     productStates,
-    contractCurrencies as currencies,
-    DEFAULT_CURRENCY,
     dataUnionMemberLimit,
 } from '$shared/utils/constants'
 import { numberToText } from '$shared/utils/text'
@@ -43,8 +41,6 @@ type ContextProps = {
     deployDataUnion: () => void | Promise<void>,
     lastSectionRef: any,
     publishAttempted: boolean,
-    preferredCurrency: $Values<typeof currencies>,
-    setPreferredCurrency: ($Values<typeof currencies>) => void,
 }
 
 const EditControllerContext: Context<ContextProps> = React.createContext({})
@@ -64,7 +60,6 @@ function useEditController(product: Product) {
     const { replaceState } = useEditableState()
     const dataUnion = useSelector(selectDataUnionStats)
     const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))
-    const [preferredCurrency, setPreferredCurrency] = useState(product.priceCurrency || DEFAULT_CURRENCY)
 
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
 
@@ -138,6 +133,7 @@ function useEditController(product: Product) {
             }
 
             // save product (don't need to abort if unmounted)
+            // $FlowFixMe: object literal weirdness
             await putProduct(State.update(originalProduct, () => ({
                 ...nextProduct,
             })), nextProduct.id || '')
@@ -239,6 +235,7 @@ function useEditController(product: Product) {
             updateBeneficiaryAddress(address, false)
 
             // save the new address immediately to db
+            // $FlowFixMe: object literal weirdness
             await putProduct(State.update(productRef.current, () => ({
                 ...productRef.current,
                 beneficiaryAddress: address,
@@ -305,8 +302,6 @@ function useEditController(product: Product) {
         deployDataUnion,
         lastSectionRef,
         publishAttempted,
-        preferredCurrency,
-        setPreferredCurrency,
     }), [
         isPreview,
         setIsPreview,
@@ -317,8 +312,6 @@ function useEditController(product: Product) {
         deployDataUnion,
         lastSectionRef,
         publishAttempted,
-        preferredCurrency,
-        setPreferredCurrency,
     ])
 }
 

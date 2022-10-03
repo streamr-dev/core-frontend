@@ -14,6 +14,7 @@ import { Message } from '$shared/utils/SubscriptionEvents'
 import { selectUserData } from '$shared/modules/user/selectors'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
+import { getChainIdFromApiString } from '$shared/utils/chains'
 import routes from '$routes'
 import ProductController, { useController } from '../ProductController'
 import useProductSubscription from '../ProductController/useProductSubscription'
@@ -130,6 +131,7 @@ const PreviewWrap = ({ productId, streamId }) => {
     const userData = useSelector(selectUserData)
     const isLoggedIn = userData !== null
     const { isSubscriptionValid } = useProductSubscription()
+    const chainId = product && getChainIdFromApiString(product.chain)
 
     const targetStream = useMemo(() => (
         streams && streams.find(({ id }) => id === streamId)
@@ -144,9 +146,9 @@ const PreviewWrap = ({ productId, streamId }) => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            dispatch(getProductSubscription(productId))
+            dispatch(getProductSubscription(productId, chainId))
         }
-    }, [dispatch, isLoggedIn, productId])
+    }, [dispatch, isLoggedIn, productId, chainId])
 
     const redirectToProduct = useCallback(() => {
         if (!isMounted()) { return }

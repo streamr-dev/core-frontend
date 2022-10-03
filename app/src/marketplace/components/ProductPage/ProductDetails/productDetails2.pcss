@@ -55,6 +55,25 @@
   justify-content: center;
 }
 
+.detailRow {
+  display: inline-flex;
+  align-items: flex-end;
+}
+
+.priceDetails {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: none;
+  row-gap: 0.5rem;
+  column-gap: 2.5rem;
+}
+
+.networkIcon {
+  width: 20px;
+  height: 20px;
+  margin: 0 0.25rem;
+}
+
 .paymentRate {
   color: var(--greyDark);
   display: inline-block;
@@ -132,5 +151,10 @@
 
   .socialIcons {
     margin-top: 0;
+  }
+
+  .priceDetails {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: none;
   }
 }

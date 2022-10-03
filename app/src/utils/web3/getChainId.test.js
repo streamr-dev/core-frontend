@@ -19,7 +19,7 @@ describe('getChainId', () => {
 
         const net = await getChainId()
 
-        expect(net).toBe('6')
+        expect(net).toBe(6)
         expect(getNetStub).toHaveBeenCalledTimes(1)
     })
 })

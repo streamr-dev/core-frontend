@@ -1,19 +1,16 @@
 // @flow
 
-import React, { useCallback, useEffect, useRef, useMemo } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import merge from 'lodash/merge'
-import { useLocation } from 'react-router-dom'
 
 import { MarketplaceHelmet } from '$shared/components/Helmet'
 import ProductsComponent from '$mp/components/Products'
 import ActionBar from '$mp/components/ActionBar'
-import ComingSoon from '$mp/components/ComingSoon'
 import Layout from '$shared/components/Layout'
 import Footer from '$shared/components/Layout/Footer'
 import useModal from '$shared/hooks/useModal'
 import CreateProductModal from '$mp/containers/CreateProductModal'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 import type { Filter, SearchFilter } from '$mp/flowtype/product-types'
 
@@ -34,13 +31,9 @@ import {
     selectHasMoreSearchResults,
 } from '$mp/modules/productList/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
+import useContractProducts from '$shared/hooks/useContractProducts'
 
 import styles from './products.pcss'
-
-function useQuery() {
-    const { search } = useLocation()
-    return useMemo(() => new URLSearchParams(search), [search])
-}
 
 const Products = () => {
     const categories = useSelector(selectAllCategories)
@@ -53,6 +46,7 @@ const Products = () => {
     const isMounted = useIsMounted()
     const productsRef = useRef()
     productsRef.current = products
+    const [contractProducts, setContractProducts] = useState([])
 
     const { api: createProductModal } = useModal('marketplace.createProduct')
 
@@ -61,11 +55,15 @@ const Products = () => {
 
     const loadProducts = useCallback(() => dispatch(getProducts()), [dispatch])
 
-    // Show coming soon notice unless we provide a secret query param to reveal products
-    const query = useQuery()
-    const { marketplaceVisibleOnlyWithQueryParam: secretQuery } = getCoreConfig()
-    const key = query.get(secretQuery)
-    const showComingSoon = useMemo(() => secretQuery != null && key == null, [key, secretQuery])
+    const { load: loadContractProducts } = useContractProducts()
+    const loadProductsFromContract = useCallback(async () => {
+        if (productsRef.current) {
+            const cps = await loadContractProducts(productsRef.current)
+            if (isMounted()) {
+                setContractProducts(cps)
+            }
+        }
+    }, [loadContractProducts, isMounted])
 
     const onFilterChange = useCallback((filter: Filter) => {
         dispatch(updateFilter(filter))
@@ -73,9 +71,10 @@ const Products = () => {
             .then((productIds) => {
                 if (isMounted()) {
                     loadDataUnionStats(productIds)
+                    loadProductsFromContract()
                 }
             })
-    }, [dispatch, isMounted, loadDataUnionStats])
+    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
 
     const onSearchChange = useCallback((search: SearchFilter) => {
         dispatch(updateFilter({
@@ -86,10 +85,11 @@ const Products = () => {
             onSuccess: (productIds) => {
                 if (isMounted()) {
                     loadDataUnionStats(productIds)
+                    loadProductsFromContract()
                 }
             },
         }))
-    }, [dispatch, isMounted, loadDataUnionStats])
+    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
 
     const clearFiltersAndReloadProducts = useCallback(() => {
         dispatch(clearFilters())
@@ -97,15 +97,12 @@ const Products = () => {
             .then((productIds) => {
                 if (isMounted()) {
                     loadDataUnionStats(productIds)
+                    loadProductsFromContract()
                 }
             })
-    }, [dispatch, isMounted, loadDataUnionStats])
+    }, [dispatch, isMounted, loadDataUnionStats, loadProductsFromContract])
 
     useEffect(() => {
-        if (showComingSoon) {
-            return
-        }
-
         loadCategories()
 
         if (productsRef.current && productsRef.current.length === 0) {
@@ -113,8 +110,9 @@ const Products = () => {
         } else if (productsRef.current && productsRef.current.length > 0) {
             // just reload DU stats if product list was cached
             loadDataUnionStats(productsRef.current.map(({ id }) => id))
+            loadProductsFromContract()
         }
-    }, [loadCategories, clearFiltersAndReloadProducts, loadDataUnionStats, showComingSoon])
+    }, [loadCategories, clearFiltersAndReloadProducts, loadDataUnionStats, loadProductsFromContract])
 
     useEffect(() => () => {
         resetStats()
@@ -127,38 +125,36 @@ const Products = () => {
             footer={false}
         >
             <MarketplaceHelmet />
-            {!showComingSoon && (
-                <ActionBar
-                    filter={selectedFilter}
-                    categories={categories}
-                    onFilterChange={onFilterChange}
-                    onSearchChange={onSearchChange}
-                    onCreateProduct={() => createProductModal.open()}
-                />
-            )}
+            <ActionBar
+                filter={selectedFilter}
+                categories={categories}
+                onFilterChange={onFilterChange}
+                onSearchChange={onSearchChange}
+                onCreateProduct={() => createProductModal.open()}
+            />
             <CreateProductModal />
-            {showComingSoon && (
-                <ComingSoon />
-            )}
-            {!showComingSoon && (
-                <ProductsComponent.Container fluid>
-                    <ProductsComponent
-                        products={products.map((p, i) => {
-                            const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
+            <ProductsComponent.Container fluid>
+                <ProductsComponent
+                    products={products.map((p, i) => {
+                        const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
+                        const contractProd = contractProducts.find((cp) => cp.id === p.id)
+                        const pricingTokenAddress = contractProd ? contractProd.pricingTokenAddress : null
+                        const pricePerSecond = contractProd ? contractProd.pricePerSecond : p.pricePerSecond
 
-                            return merge({}, p, {
-                                key: `${i}-${p.id || ''}`,
-                                members: members[beneficiaryAddress],
-                            })
-                        })}
-                        error={productsError}
-                        type="products"
-                        isFetching={isFetching}
-                        loadProducts={loadProducts}
-                        hasMoreSearchResults={hasMoreSearchResults}
-                    />
-                </ProductsComponent.Container>
-            )}
+                        return merge({}, p, {
+                            key: `${i}-${p.id || ''}`,
+                            members: members[beneficiaryAddress],
+                            pricingTokenAddress,
+                            pricePerSecond,
+                        })
+                    })}
+                    error={productsError}
+                    type="products"
+                    isFetching={isFetching}
+                    loadProducts={loadProducts}
+                    hasMoreSearchResults={hasMoreSearchResults}
+                />
+            </ProductsComponent.Container>
             <Footer topBorder />
         </Layout>
     )

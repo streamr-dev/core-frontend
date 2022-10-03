@@ -5,6 +5,7 @@ import BN from 'bignumber.js'
 import type { TimeUnit, PaymentCurrency, ContractCurrency, NumberString } from '$shared/flowtype/common-types'
 import { timeUnits, contractCurrencies, paymentCurrencies } from '$shared/utils/constants'
 import { toSeconds, getAbbreviation } from './time'
+import { fromDecimals, toDecimals } from './math'
 
 /**
  * Validates if given string can be used as price
@@ -21,53 +22,12 @@ export const priceForTimeUnits = (pricePerSecond: NumberString | BN, timeAmount:
     return BN(pricePerSecond).multipliedBy(seconds)
 }
 
-export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeUnit): BN => (
-    BN(pricePerTimeUnit)
+export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeUnit, decimals: BN): BN => {
+    const pptInTokens = toDecimals(pricePerTimeUnit, decimals)
+    return BN(pptInTokens)
         .dividedBy(toSeconds(1, timeUnit))
-)
-
-/**
- * Convert DATA to USD.
- * @param data Number of DATA to convert.
- * @param dataPerUsd Number of DATA units per 1 USD.
- */
-export const dataToUsd = (data: BN, dataPerUsd: BN): BN => (BN(dataPerUsd).isZero() ? BN(0) : BN(data).dividedBy(dataPerUsd))
-
-/**
- * Convert USD to DATA.
- * @param usd Number of USD to convert.
- * @param dataPerUsd Number of DATA units per 1 USD.
- */
-export const usdToData = (usd: BN, dataPerUsd: BN): BN => BN(usd).multipliedBy(dataPerUsd)
-
-/**
- * Convert amount between fromCurrency and toCurrency.
- * @param amount Amount of units to convert.
- * @param dataPerUsd Number of DATA units per 1 USD.
- * @param fromCurrency Input currency.
- * @param toCurrency Output currency.
- */
-export const convert = (amount: BN, dataPerUsd: BN, fromCurrency: ContractCurrency, toCurrency: ContractCurrency): BN => {
-    if (fromCurrency === toCurrency) {
-        return amount
-    }
-    const calc = fromCurrency === contractCurrencies.DATA ? dataToUsd : usdToData
-    return calc(amount, dataPerUsd)
+        .toFixed(0)
 }
-
-export const dataForTimeUnits = (
-    pricePerSecond: NumberString | BN,
-    dataPerUsd: BN,
-    fromCurrency: ContractCurrency,
-    timeAmount: number | NumberString | BN,
-    timeUnit: TimeUnit,
-): BN => (
-    priceForTimeUnits(
-        convert(pricePerSecond, dataPerUsd, fromCurrency, contractCurrencies.DATA),
-        timeAmount,
-        timeUnit,
-    )
-)
 
 /**
  * Make sure the amount is a non-negative number.
@@ -93,9 +53,10 @@ export const formatAmount = (value: BN, maxDigits: ?number): BN => {
  * DATA currency: Hide decimals for round numbers. 1000+ no decimals.
  * @param value
  * @param currency
+ * @param decimals PricingToken decimal count
  * @returns {*}
  */
-export const formatDecimals = (value: number | BN, currency: ContractCurrency | PaymentCurrency): string => {
+export const formatDecimals = (value: number | BN, currency: ContractCurrency | PaymentCurrency, decimals: BN): string => {
     let result
 
     if (currency === paymentCurrencies.ETH) {
@@ -104,6 +65,10 @@ export const formatDecimals = (value: number | BN, currency: ContractCurrency | 
 
     if (currency === paymentCurrencies.DAI) {
         return BN(value).toFixed(2)
+    }
+
+    if (currency === paymentCurrencies.PRODUCT_DEFINED) {
+        return fromDecimals(value, decimals).toFixed(2)
     }
 
     if (Math.abs(value) < 10) {
@@ -115,6 +80,7 @@ export const formatDecimals = (value: number | BN, currency: ContractCurrency | 
     } else {
         result = BN(value).decimalPlaces(0)
     }
+
     return result.toString()
 }
 
@@ -138,12 +104,26 @@ export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
  * Formats given price to a human readable string
  * @param pricePerSecond Price per second.
  * @param currency Currency.
+ * @param decimals Decimals.
  * @param timeUnit TimeUnit to use. If omitted, the most relevant time unit is calculated.
+ * @param symbol Symbol to use if currency === PRODUCT_DEFINED.
  */
-export const formatPrice = (pricePerSecond: BN, currency: PaymentCurrency | ContractCurrency, timeUnit?: TimeUnit): string => {
+export const formatPrice = (
+    pricePerSecond: BN,
+    currency: PaymentCurrency | ContractCurrency,
+    decimals: BN,
+    timeUnit?: TimeUnit,
+    symbol?: string,
+): string => {
     const actualTimeUnit = timeUnit || getMostRelevantTimeUnit(pricePerSecond)
     const price = priceForTimeUnits(pricePerSecond, 1, actualTimeUnit)
     const timeUnitAbbreviation = getAbbreviation(actualTimeUnit)
-    const roundedPrice = formatDecimals(price, currency)
-    return `${roundedPrice} ${currency} / ${timeUnitAbbreviation}`
+    const roundedPrice = formatDecimals(price, currency, decimals)
+    let actualSymbol = currency
+
+    if (currency === contractCurrencies.PRODUCT_DEFINED && symbol != null) {
+        actualSymbol = symbol
+    }
+
+    return `${roundedPrice} ${actualSymbol} / ${timeUnitAbbreviation}`
 }

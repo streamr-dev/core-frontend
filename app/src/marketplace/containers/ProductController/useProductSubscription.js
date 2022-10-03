@@ -35,9 +35,11 @@ export default function useProductSubscription() {
         isPurchased,
         isContractSubscriptionValid,
         isSubscriptionValid,
+        contractSubscription,
     }), [
         isPurchased,
         isContractSubscriptionValid,
         isSubscriptionValid,
+        contractSubscription,
     ])
 }
