@@ -133,22 +133,31 @@ const EditorNav = () => {
             heading: 'Description',
             status: getStatus('description'),
         }, {
-            id: 'chain',
-            heading: 'Chain',
-            status: getStatus('chain'),
-        }, {
             id: 'streams',
             heading: 'Streams',
             status: getStatus('streams'),
         }, {
-            id: 'price',
-            heading: 'Set price',
-            status: priceStatus,
+            id: 'type',
+            heading: 'Product type',
+            status: getStatus('isFree'),
         },
         ...includeIf(!!isPaid, [{
+            id: 'chain',
+            heading: 'Chain',
+            status: getStatus('chain'),
+        }, {
             id: 'pricingToken',
             heading: 'Payment token',
             status: getStatus('pricingTokenAddress'),
+        }, {
+            id: 'price',
+            heading: 'Price',
+            status: priceStatus,
+        }]),
+        ...includeIf(!!isPaid && !isDataUnion, [{
+            id: 'beneficiary',
+            heading: 'Beneficiary',
+            status: getStatus('beneficiaryAddress'),
         }]), {
             id: 'details',
             heading: 'Details',

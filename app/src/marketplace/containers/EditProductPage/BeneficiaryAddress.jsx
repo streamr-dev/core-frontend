@@ -1,7 +1,6 @@
 // @flow
 
-import React, { useContext, Fragment, useCallback, useEffect, useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useContext, Fragment, useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import styled from 'styled-components'
 
@@ -14,9 +13,6 @@ import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
-import Label from '$ui/Label'
-import { selectUserData } from '$shared/modules/user/selectors'
-import { isEthereumAddress } from '$mp/utils/validate'
 import useValidation from '../ProductController/useValidation'
 import { Context as EditControllerContext } from './EditControllerProvider'
 
@@ -27,8 +23,6 @@ type Props = {
     onChange: (string) => void,
     disabled: boolean,
     className?: string,
-    onFocus?: ?(SyntheticFocusEvent<EventTarget>) => void,
-    onBlur?: ?(SyntheticFocusEvent<EventTarget>) => void,
 }
 
 type AddressItemProps = {
@@ -60,21 +54,13 @@ const AddressItem = styled(UnstyledAddressItem)`
     }
 `
 
-const BeneficiaryAddress = ({
-    address: addressProp,
-    onChange,
-    disabled,
-    className,
-    onFocus: onFocusProp,
-    onBlur: onBlurProp,
-}: Props) => {
+const BeneficiaryAddress = ({ address: addressProp, onChange, disabled, className }: Props) => {
     const { isValid, message } = useValidation('beneficiaryAddress')
     const { publishAttempted } = useContext(EditControllerContext)
+    const [ownAddress, setOwnAddress] = useState(addressProp || '')
+    const accountAddress = useAccountAddress()
     const invalid = publishAttempted && !isValid
-
     const { copy } = useCopy()
-
-    const { username } = useSelector(selectUserData) || {}
 
     const onCopy = useCallback(() => {
         if (!addressProp) {
@@ -89,45 +75,24 @@ const BeneficiaryAddress = ({
         })
     }, [copy, addressProp])
 
-    const accountAddress = useAccountAddress()
-
     const useCurrentWalletAddress = useCallback(() => {
         if (accountAddress) {
             onChange(accountAddress)
         }
     }, [accountAddress, onChange])
 
-    const [focused, setFocused] = useState(false)
-
-    const [ownAddress, setOwnAddress] = useState(addressProp || '')
-
     useEffect(() => {
-        setOwnAddress(addressProp || '')
-    }, [addressProp])
+        setOwnAddress(addressProp)
+
+        // If no address was provided, prefill with accountAddress
+        if ((addressProp == null || addressProp.length === 0) && accountAddress) {
+            onChange(accountAddress)
+        }
+    }, [addressProp, onChange, accountAddress])
 
     const onOwnAddressChange = useCallback((e: SyntheticInputEvent<EventTarget>) => {
         setOwnAddress(e.target.value)
     }, [])
-
-    const address: string = useMemo(() => (
-        focused ? ownAddress : truncate(ownAddress)
-    ), [focused, ownAddress])
-
-    const onFocus = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
-        setFocused(true)
-
-        if (onFocusProp) {
-            onFocusProp(e)
-        }
-    }, [onFocusProp])
-
-    const onBlur = useCallback((e: SyntheticFocusEvent<EventTarget>) => {
-        setFocused(false)
-
-        if (onBlurProp) {
-            onBlurProp(e)
-        }
-    }, [onBlurProp])
 
     return (
         <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
@@ -135,9 +100,6 @@ const BeneficiaryAddress = ({
                 htmlFor="beneficiaryAddress"
                 className={cx(styles.root, className)}
             >
-                <Label>
-                    Set recipient ETH address
-                </Label>
                 <WithInputActions
                     disabled={disabled}
                     actions={[
@@ -148,14 +110,6 @@ const BeneficiaryAddress = ({
                         >
                             <AddressItem name="wallet address" address={accountAddress || 'Wallet locked'} />
                         </Popover.Item>,
-                        ...(!!username && isEthereumAddress(username) ? [
-                            <Popover.Item
-                                key="username"
-                                onClick={() => onChange(username)}
-                            >
-                                <AddressItem name="username" address={username} />
-                            </Popover.Item>,
-                        ] : []),
                         <Popover.Item
                             key="copy"
                             disabled={!addressProp}
@@ -169,16 +123,14 @@ const BeneficiaryAddress = ({
                         key={addressProp}
                         id="beneficiaryAddress"
                         autoComplete="off"
-                        value={address}
+                        value={ownAddress}
                         onCommit={onChange}
                         onChange={onOwnAddressChange}
-                        placeholder="Enter ETH address"
+                        placeholder="Beneficiary address"
                         invalid={invalid}
                         disabled={disabled}
                         selectAllOnFocus
                         smartCommit
-                        onBlur={onBlur}
-                        onFocus={onFocus}
                     />
                 </WithInputActions>
                 {invalid && (
