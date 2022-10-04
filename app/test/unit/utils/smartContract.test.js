@@ -366,7 +366,7 @@ describe('smartContract utils', () => {
             })
         })
 
-        describe('isUpdateContractProductRequired', () => {
+        describe('isContractProductUpdateRequired', () => {
             const contractProduct = {
                 id: 'product-1',
                 pricePerSecond: 1000,
@@ -386,28 +386,28 @@ describe('smartContract utils', () => {
                     ...editProduct,
                     beneficiaryAddress: 'test2',
                 }
-                expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
+                expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
             it('it must return true if product is paid and pricePerSecond has been changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     pricePerSecond: 2000,
                 }
-                expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
+                expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
             it('it must return true if product is paid and pricingTokenAddress changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     pricingTokenAddress: '0x1337',
                 }
-                expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
+                expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
             it('it must return true if product is paid and requiresWhitelist changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     requiresWhitelist: true,
                 }
-                expect(all.isUpdateContractProductRequired(contractProduct, editProductUpdated)).toBe(true)
+                expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
         })
     })
