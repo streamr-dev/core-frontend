@@ -147,16 +147,12 @@ const EditProductPage = ({ product }: { product: Product }) => {
         const titles = {
             [productStates.DEPLOYING]: 'Publishing',
             [productStates.UNDEPLOYING]: 'Unpublishing',
-            continue: 'Continue',
+            [productStates.NOT_DEPLOYED]: 'Publish',
+            [productStates.DEPLOYED]: 'Unpublish',
         }
 
-        const tmpState: any = [
-            productStates.DEPLOYING,
-            productStates.UNDEPLOYING,
-        ].includes(productState) ? productState : 'continue'
-
         return {
-            title: (productState && titles[tmpState]) || '',
+            title: (productState && titles[productState]) || 'Continue',
             kind: 'primary',
             onClick: publish,
             disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isDisabled,

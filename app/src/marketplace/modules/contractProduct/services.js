@@ -162,27 +162,39 @@ export const updateContractProduct = (product: SmartContractProduct, redeploy: b
 }
 
 export const deleteProduct = (id: ProductId, networkChainId: number): SmartContractTransaction => (
-    send(contractMethods(false, networkChainId).deleteProduct(getValidId(id)))
+    send(contractMethods(false, networkChainId).deleteProduct(getValidId(id)), {
+        network: networkChainId,
+    })
 )
 
 export const redeployProduct = (id: ProductId, networkChainId: number): SmartContractTransaction => (
-    send(contractMethods(false, networkChainId).redeployProduct(getValidId(id))) // TODO: figure out the gas for redeploying
+    send(contractMethods(false, networkChainId).redeployProduct(getValidId(id)), {
+        network: networkChainId,
+    }) // TODO: figure out the gas for redeploying
 )
 
 export const setRequiresWhitelist = (id: ProductId, requiresWhitelist: boolean, networkChainId: number): SmartContractTransaction => (
-    send(contractMethods(false, networkChainId).setRequiresWhitelist(getValidId(id), requiresWhitelist))
+    send(contractMethods(false, networkChainId).setRequiresWhitelist(getValidId(id), requiresWhitelist), {
+        network: networkChainId,
+    })
 )
 
 export const whitelistApprove = (id: ProductId, address: Address, networkChainId: number): SmartContractTransaction => (
-    send(contractMethods(false, networkChainId).whitelistApprove(getValidId(id), address))
+    send(contractMethods(false, networkChainId).whitelistApprove(getValidId(id), address), {
+        network: networkChainId,
+    })
 )
 
 export const whitelistReject = (id: ProductId, address: Address, networkChainId: number): SmartContractTransaction => (
-    send(contractMethods(false, networkChainId).whitelistReject(getValidId(id), address))
+    send(contractMethods(false, networkChainId).whitelistReject(getValidId(id), address), {
+        network: networkChainId,
+    })
 )
 
 export const whitelistRequest = (id: ProductId, address: Address, networkChainId: number): SmartContractTransaction => (
-    send(contractMethods(false, networkChainId).whitelistRequest(getValidId(id), address))
+    send(contractMethods(false, networkChainId).whitelistRequest(getValidId(id), address), {
+        network: networkChainId,
+    })
 )
 
 export const getWhitelistAddresses = async (id: ProductId, networkChainId: number): Promise<Array<WhitelistItem>> => {
