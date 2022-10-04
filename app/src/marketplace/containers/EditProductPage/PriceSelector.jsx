@@ -1,6 +1,6 @@
 // @flow
 
-import React, { useCallback, useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import cx from 'classnames'
@@ -27,6 +27,7 @@ type Props = {
 }
 
 const PriceSelector = ({ disabled }: Props) => {
+    const isMounted = useRef(false)
     const { state: product } = useEditableState()
     const { publishAttempted } = useContext(EditControllerContext)
     const { updateIsFree, updatePrice, updateBeneficiaryAddress } = useEditableProductActions()
@@ -51,7 +52,13 @@ const PriceSelector = ({ disabled }: Props) => {
     }, [updatePrice, product.price, product.priceCurrency, pricingTokenDecimals])
 
     useEffect(() => {
-        updatePrice(product.price, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
+        // Make sure we don't call updatePrice on component mount to not mess
+        // with touched status of price
+        if (isMounted.current) {
+            updatePrice(product.price, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
+        } else {
+            isMounted.current = true
+        }
     // We don't want to duplicate changes above callbacks already do
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pricingTokenDecimals, updatePrice])

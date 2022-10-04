@@ -24,7 +24,7 @@ import {
 } from '$mp/modules/product/services'
 
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
-import { isUpdateContractProductRequired } from '$mp/utils/smartContract'
+import { isContractProductUpdateRequired } from '$mp/utils/smartContract'
 import ActionQueue from '$mp/utils/actionQueue'
 import { isPaidProduct } from '$mp/utils/product'
 import { addTransaction } from '$mp/modules/transactions/actions'
@@ -97,7 +97,7 @@ export default function usePublish() {
             ...productDataChanges
         } = pendingChanges || {}
         const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-        const hasContractProductChanged = !!contractProduct && isUpdateContractProductRequired(contractProduct, productWithPendingChanges)
+        const hasContractProductChanged = !!contractProduct && isContractProductUpdateRequired(contractProduct, productWithPendingChanges)
         const hasRequireWhitelistChanged = !!(
             !!contractProduct &&
             requiresWhitelist !== undefined &&

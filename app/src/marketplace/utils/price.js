@@ -84,7 +84,7 @@ export const formatDecimals = (value: number | BN, currency: ContractCurrency | 
     return result.toString()
 }
 
-export const arePricesEqual = (first: NumberString, second: NumberString) => BN(first).isEqualTo(second)
+export const arePricesEqual = (first: NumberString, second: NumberString) => BN(first).isEqualTo(BN(second))
 
 /**
  * Gets most relevant time unit for given price per second.
