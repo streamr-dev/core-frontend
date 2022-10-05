@@ -37,15 +37,14 @@ if (isProduction() && !process.env.STORYBOOK) {
 // We have to make sure that publicPath ends with a slash. If it
 // doesn't then chunks are not gonna load correctly. #codesplitting
 const publicPath = `${process.env.PLATFORM_PUBLIC_PATH || ''}/`
-
 module.exports = {
     mode: isProduction() ? 'production' : 'development',
     entry: [
         // forcibly print diagnostics upfront
-        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.js'),
+        path.resolve(root, 'src', 'shared', 'utils', 'diagnostics.ts'),
         // always load setup first
-        path.resolve(root, 'src', 'setup.js'),
-        path.resolve(root, 'src', 'index.jsx'),
+        path.resolve(root, 'src', 'setup.ts'),
+        path.resolve(root, 'src', 'index.tsx'),
     ],
     output: {
         path: dist,
