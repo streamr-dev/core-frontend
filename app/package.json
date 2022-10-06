@@ -159,7 +159,7 @@
         "dotenv": "^6.2.0",
         "dotenv-safe": "^6.1.0",
         "enzyme": "^3.11.0",
-        "eslint": "^8.24.0",
+        "eslint": "^4.19.1",
         "eslint-config-airbnb": "^16.1.0",
         "eslint-config-streamr": "1.1.8",
         "eslint-config-streamr-ts": "^4.1.0",
