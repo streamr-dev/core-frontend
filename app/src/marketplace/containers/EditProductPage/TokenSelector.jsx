@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import Text from '$ui/Text'
 import Label from '$ui/Label'
+import Errors, { MarketplaceTheme } from '$ui/Errors'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledButton from '$shared/components/Button'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
@@ -85,6 +86,11 @@ const MatchedTokenField = styled.div`
     line-height: 16px;
 `
 
+const Grid = styled.div`
+    display: grid;
+    grid-template-columns: 1fr auto;
+`
+
 const TokenType = {
     DATA: 'data',
     Custom: 'custom',
@@ -98,6 +104,7 @@ const TokenSelector = ({ disabled }: Props) => {
     const [customTokenAddress, setCustomTokenAddress] = useState('')
     const [selectedTokenAddress, setSelectedTokenAddress] = useState(null)
     const [tokenSymbol, setTokenSymbol] = useState(null)
+    const [error, setError] = useState(null)
     const [tokenDecimals, setTokenDecimals] = useState(18)
     const [isEditable, setIsEditable] = useState(false)
     const chainId = getChainIdFromApiString(product.chain)
@@ -126,9 +133,11 @@ const TokenSelector = ({ disabled }: Props) => {
                 }
 
                 if (info) {
+                    setError(null)
                     setTokenSymbol(info.symbol)
                     setTokenDecimals(info.decimals)
                 } else {
+                    setError('This not an ERC-20 token contract')
                     setTokenSymbol(null)
                     setTokenDecimals(null)
                 }
@@ -208,34 +217,50 @@ const TokenSelector = ({ disabled }: Props) => {
                                 <TokenLogo
                                     contractAddress={pricingTokenAddress}
                                     chainId={chainId}
+                                    symbol={tokenSymbol}
                                 />
                                 {' '}
                                 <span>{tokenSymbol}</span>
                             </MatchedTokenField>
                         )}
                     </SmallLabel>
-                    {isEditable ? (
-                        <Button
-                            disabled={selection !== TokenType.Custom || disabled || (customTokenAddress != null && customTokenAddress.length === 0)}
-                            onClick={() => {
-                                setSelectedTokenAddress(customTokenAddress)
-                                setIsEditable(false)
-                            }}
-                        >
-                            Add custom token
-                        </Button>
-                    ) : (
-                        <Button
-                            disabled={selection !== TokenType.Custom || disabled || (customTokenAddress != null && customTokenAddress.length === 0)}
-                            onClick={() => {
-                                setIsEditable(true)
-                                setCustomTokenAddress('')
-                                setTokenSymbol(null)
-                            }}
-                        >
-                            Change custom token
-                        </Button>
-                    )}
+                    <Grid>
+                        {error && (
+                            <Errors theme={MarketplaceTheme}>
+                                {error}
+                            </Errors>
+                        )}
+                        {isEditable ? (
+                            <Button
+                                disabled={
+                                    selection !== TokenType.Custom ||
+                                    disabled ||
+                                    (customTokenAddress != null && customTokenAddress.length === 0)
+                                }
+                                onClick={() => {
+                                    setSelectedTokenAddress(customTokenAddress)
+                                    setIsEditable(false)
+                                }}
+                            >
+                                Add custom token
+                            </Button>
+                        ) : (
+                            <Button
+                                disabled={
+                                    selection !== TokenType.Custom ||
+                                    disabled ||
+                                    (customTokenAddress != null && customTokenAddress.length === 0)
+                                }
+                                onClick={() => {
+                                    setIsEditable(true)
+                                    setCustomTokenAddress('')
+                                    setTokenSymbol(null)
+                                }}
+                            >
+                                Change custom token
+                            </Button>
+                        )}
+                    </Grid>
                 </CustomTokenContainer>
             </Item>
         </Container>

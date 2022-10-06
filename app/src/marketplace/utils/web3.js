@@ -178,6 +178,12 @@ export const getTokenInformation = async (address: Address, chainId?: number): P
     try {
         const contract = erc20TokenContractMethods(address, true, actualChainId)
         const symbol = await contract.symbol().call()
+
+        if (symbol == null) {
+            // This is not an ERC-20 token
+            return null
+        }
+
         const name = await contract.name().call()
         const decimals = await contract.decimals().call()
 

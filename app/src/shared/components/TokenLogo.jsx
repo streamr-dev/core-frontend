@@ -5,10 +5,11 @@ import styled from 'styled-components'
 import { useImage } from 'react-image'
 
 import { getTokenLogoUrl } from '$shared/utils/tokenAssets'
-import unknownTokenSvg from '$shared/assets/images/unknownToken.svg'
+import GenericTokenLogo from './GenericTokenLogo'
 
 type Props = {
     contractAddress?: string,
+    symbol?: string,
     chainId: number,
 }
 
@@ -17,22 +18,29 @@ const Image = styled.img`
     height: 24px;
 `
 
-const TokenLogo = ({ contractAddress, chainId, ...props }: Props) => {
+const TokenLogo = ({ contractAddress, symbol, chainId, ...props }: Props) => {
     const logoUrl = contractAddress ? getTokenLogoUrl(contractAddress, chainId) : ''
     const { src: imgSrc } = useImage({
         useSuspense: false,
         srcList: [
             logoUrl,
-            unknownTokenSvg,
         ],
     })
 
     return (
-        <Image
-            {...props}
-            src={imgSrc}
-            alt="Token logo"
-        />
+        (imgSrc ? (
+            <Image
+                {...props}
+                src={imgSrc}
+                alt="Token logo"
+            />
+        ) : (
+            <GenericTokenLogo
+                contractAddress={contractAddress}
+                symbol={symbol}
+            />
+        ))
+
     )
 }
 
