@@ -2,7 +2,7 @@ const path = require('path')
 
 module.exports = {
     extends: [
-        'streamr',
+        'streamr-ts',
         'plugin:cypress/recommended',
     ],
     parser: 'babel-eslint',
