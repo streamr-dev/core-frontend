@@ -1,7 +1,5 @@
 import { useReducer, useMemo, useEffect } from 'react'
-
 import { fromAtto } from '$mp/utils/math'
-
 const initialStats = {
     revenue: {
         unit: 'DATA',
@@ -25,60 +23,32 @@ const initialStats = {
         loading: true,
     },
 }
-
 const MILLISECONDS_IN_MONTH = 1000 * 60 * 60 * 24 * 30
-
 const handlers = {
     subscribers: (state, { subscriberCount }) => ({
         ...state,
-        subscribers: {
-            ...state.subscribers,
-            value: subscriberCount || 0,
-            loading: false,
-        },
+        subscribers: { ...state.subscribers, value: subscriberCount || 0, loading: false },
     }),
-
     adminFee: (state, { adminFee }) => ({
         ...state,
-        revenueShare: {
-            ...state.revenueShare,
-            value: ((1 - adminFee) * 100).toFixed(0),
-            loading: false,
-        },
+        revenueShare: { ...state.revenueShare, value: ((1 - adminFee) * 100).toFixed(0), loading: false },
     }),
-
     created: (state, { created }) => ({
         ...state,
-        created: {
-            ...state.created,
-            value: new Date(created).toLocaleDateString(),
-            loading: false,
-        },
+        created: { ...state.created, value: new Date(created).toLocaleDateString(), loading: false },
     }),
-
     revenue: (state, { totalEarnings }) => ({
         ...state,
-        revenue: {
-            ...state.revenue,
-            value: fromAtto(totalEarnings || 0).toFixed(0),
-            loading: false,
-        },
+        revenue: { ...state.revenue, value: fromAtto(totalEarnings || 0).toFixed(0), loading: false },
     }),
-
     members: (state, { activeMembers }) => ({
         ...state,
-        members: {
-            ...state.members,
-            value: activeMembers || 0,
-            loading: false,
-        },
+        members: { ...state.members, value: activeMembers || 0, loading: false },
     }),
-
     averageRevenue: (state, { totalEarnings, created, totalMembers }) => {
         const productAgeMs = Date.now() - new Date(created).getTime()
-        const revenuePerMonth = totalEarnings !== 0 ? (totalEarnings / (productAgeMs / MILLISECONDS_IN_MONTH)) : 0
-        const revenuePerMonthPerMember = totalMembers > 0 ? (revenuePerMonth / totalMembers) : 0
-
+        const revenuePerMonth = totalEarnings !== 0 ? totalEarnings / (productAgeMs / MILLISECONDS_IN_MONTH) : 0
+        const revenuePerMonthPerMember = totalMembers > 0 ? revenuePerMonth / totalMembers : 0
         return {
             ...state,
             averageRevenue: {
@@ -90,27 +60,13 @@ const handlers = {
     },
 }
 
-const reducer = (state, action) => (
-    typeof handlers[action.type] === 'function' ?
-        handlers[action.type](state, action) :
-        state
-)
+const reducer = (state, action) =>
+    typeof handlers[action.type] === 'function' ? handlers[action.type](state, action) : state
 
-function usePreviewStats({
-    subscriberCount,
-    adminFee,
-    created,
-    totalEarnings,
-    memberCount,
-} = {}) {
+function usePreviewStats({ subscriberCount, adminFee, created, totalEarnings, memberCount } = {}) {
     const [stats, updateStats] = useReducer(reducer, initialStats)
     const { total: totalMembers, active: activeMembers } = memberCount || {}
-
-    const statsArray = useMemo(() => Object.keys(stats).map((key) => ({
-        ...stats[key],
-        id: key,
-    })), [stats])
-
+    const statsArray = useMemo(() => Object.keys(stats).map(key => ({ ...stats[key], id: key })), [stats])
     useEffect(() => {
         if (subscriberCount !== undefined) {
             updateStats({
@@ -119,7 +75,6 @@ function usePreviewStats({
             })
         }
     }, [subscriberCount])
-
     useEffect(() => {
         if (adminFee !== undefined) {
             updateStats({
@@ -128,7 +83,6 @@ function usePreviewStats({
             })
         }
     }, [adminFee])
-
     useEffect(() => {
         if (created !== undefined) {
             updateStats({
@@ -137,7 +91,6 @@ function usePreviewStats({
             })
         }
     }, [created])
-
     useEffect(() => {
         if (totalEarnings !== undefined) {
             updateStats({
@@ -146,7 +99,6 @@ function usePreviewStats({
             })
         }
     }, [totalEarnings])
-
     useEffect(() => {
         if (activeMembers !== undefined) {
             updateStats({
@@ -155,12 +107,8 @@ function usePreviewStats({
             })
         }
     }, [activeMembers])
-
     useEffect(() => {
-        if (totalEarnings !== undefined &&
-            created !== undefined &&
-            totalMembers !== undefined
-        ) {
+        if (totalEarnings !== undefined && created !== undefined && totalMembers !== undefined) {
             updateStats({
                 type: 'averageRevenue',
                 totalEarnings,
@@ -169,10 +117,7 @@ function usePreviewStats({
             })
         }
     }, [totalEarnings, created, totalMembers])
-
-    return useMemo(() => statsArray, [
-        statsArray,
-    ])
+    return useMemo(() => statsArray, [statsArray])
 }
 
 export default usePreviewStats

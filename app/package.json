@@ -264,6 +264,7 @@
         "typescript": "^4.8.4",
         "unused-files-webpack-plugin": "^3.4.0",
         "url-loader": "^1.1.2",
+        "utility-types": "^3.10.0",
         "uuid": "^3.4.0",
         "web3": "^1.3.4-rc.2",
         "web3-fake-provider": "^0.1.0",
