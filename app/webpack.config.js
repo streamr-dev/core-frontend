@@ -3,7 +3,6 @@ const path = require('path')
 const webpack = require('webpack')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const WebpackNotifierPlugin = require('webpack-notifier')
-const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
@@ -56,6 +55,18 @@ module.exports = {
     module: {
         strictExportPresence: true,
         rules: [
+            {
+                test: /\.(ts|tsx)?$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            transpileOnly: true,
+                        },
+                    },
+                ],
+            },
             {
                 test: /\.mdx$/,
                 use: [
@@ -275,7 +286,6 @@ module.exports = {
                 ],
             },
         }),
-        new FlowBabelWebpackPlugin(),
         new WebpackNotifierPlugin(),
     ]).concat(process.env.SENTRY_DSN ? [
         new SentryPlugin({
@@ -318,7 +328,7 @@ module.exports = {
         },
     },
     resolve: {
-        extensions: ['.js', '.jsx', '.json'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
         symlinks: false,
         alias: {
             // Make sure you set up aliases in flow and jest configs.
