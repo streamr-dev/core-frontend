@@ -49,17 +49,17 @@ const ActivityProvider = ({ children }) => {
                     get({
                         url,
                     }).then(
-                        thing => {
+                        (thing) => {
                             if (!_isMounted()) {
                                 return
                             }
 
-                            _setResources(state => ({
+                            _setResources((state) => ({
                                 ...state,
                                 [`${type}/${id}`]: thing,
                             }))
                         },
-                        e => {
+                        (e) => {
                             if (!_isMounted()) {
                                 return
                             }

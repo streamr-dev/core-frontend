@@ -34,7 +34,7 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
 
     const dispatch = usePermissionsDispatch()
     const onSubmit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault()
 
             if (validationError) {
@@ -54,7 +54,7 @@ const UnstyledNewShareForm = ({ className, onAdd }) => {
         },
         [value, validationError, dispatch, onAdd],
     )
-    const onChange = useCallback(e => {
+    const onChange = useCallback((e) => {
         setValue(e.target.value)
         setShowErrorsImmediately(false)
     }, [])

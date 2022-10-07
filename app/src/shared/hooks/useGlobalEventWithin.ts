@@ -34,11 +34,11 @@ export default (
         }
 
         const eventNames = eventName.split(/\s+/)
-        eventNames.forEach(name => {
+        eventNames.forEach((name) => {
             window.addEventListener(name, onEvent, useCapture)
         })
         return () => {
-            eventNames.forEach(name => {
+            eventNames.forEach((name) => {
                 window.removeEventListener(name, onEvent, useCapture)
             })
         }

@@ -42,7 +42,7 @@ function StreamListPage() {
     const removeStream = useRemoveStream()
     const itp = useInterrupt()
     const onRemoveClick = useCallback(
-        async streamId => {
+        async (streamId) => {
             const { requireUninterrupted } = itp(`delete ${streamId}`)
 
             try {
@@ -58,7 +58,7 @@ function StreamListPage() {
                     icon: NotificationIcon.CHECKMARK,
                 })
                 requireUninterrupted()
-                setStreams(current => (current ? current.filter(({ id }) => id !== streamId) : current))
+                setStreams((current) => (current ? current.filter(({ id }) => id !== streamId) : current))
             } catch (e) {
                 if (e instanceof InterruptionError) {
                     return
@@ -107,7 +107,7 @@ function StreamListPage() {
         fetch()
     }, [fetch])
     const openShareDialog = useCallback(
-        id => {
+        (id) => {
             setShareSidebarStreamId(id)
             sidebar.open('share')
         },
@@ -119,7 +119,7 @@ function StreamListPage() {
     }, [sidebar])
     const { api: snippetDialog } = useModal('userpages.streamSnippet')
     const openSnippetsDialog = useCallback(
-        streamId => {
+        (streamId) => {
             snippetDialog.open({
                 streamId,
             })
@@ -128,7 +128,7 @@ function StreamListPage() {
     )
     const history = useHistory()
     const visitStream = useCallback(
-        id => {
+        (id) => {
             history.push(
                 routes.streams.show({
                     id,
@@ -176,7 +176,7 @@ function StreamListPage() {
                                 <StreamList.HeaderItem>Last Data</StreamList.HeaderItem>
                                 <StreamList.HeaderItem center>Status</StreamList.HeaderItem>
                             </StreamList.Header>
-                            {streams.map(stream => (
+                            {streams.map((stream) => (
                                 <StreamIdContext.Provider key={stream.id} value={stream.id}>
                                     <StreamPermissionsProvider
                                         operations={[

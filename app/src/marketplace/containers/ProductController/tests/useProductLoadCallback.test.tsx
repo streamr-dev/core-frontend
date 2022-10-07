@@ -25,11 +25,11 @@ describe('useProductLoadCallback', () => {
             setProduct: () => {},
         }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation(id => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             chain: 'ETHEREUM',
@@ -65,7 +65,7 @@ describe('useProductLoadCallback', () => {
             setProduct: () => {},
         }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
         }))
@@ -106,11 +106,11 @@ describe('useProductLoadCallback', () => {
         }))
         jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation(id => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'DATAUNION',
@@ -155,11 +155,11 @@ describe('useProductLoadCallback', () => {
             throw new Error('not found')
         })
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation(id => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'DATAUNION',
@@ -202,11 +202,11 @@ describe('useProductLoadCallback', () => {
             setProduct: () => {},
         }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation(id => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'NORMAL',
@@ -255,11 +255,11 @@ describe('useProductLoadCallback', () => {
             setProduct: () => {},
         }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation(id => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'NORMAL',
@@ -302,11 +302,11 @@ describe('useProductLoadCallback', () => {
             setProduct: entityHandler,
         }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation(id => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'NORMAL',
@@ -365,11 +365,11 @@ describe('useProductLoadCallback', () => {
             setProduct: () => {},
         }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation(id => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
             id,
             name: 'Product',
             type: 'NORMAL',

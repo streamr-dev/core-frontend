@@ -8,7 +8,7 @@ export default function formatRpc(rpc) {
     const { client } = getConfig()
     return {
         ...rpc,
-        rpcs: rpc.rpcs.map(r => ({
+        rpcs: rpc.rpcs.map((r) => ({
             timeout: r.timeout != null ? r.timeout : client?.chainTimeout,
             url: formatConfigUrl(r.url),
         })),

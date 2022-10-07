@@ -56,7 +56,7 @@ export default function useStreamData(
                     metadata,
                 }
                 const { current: cache } = cacheRef
-                const existingMessage = cache.find(d => areMessagesSame(d.metadata.messageId, metadata.messageId))
+                const existingMessage = cache.find((d) => areMessagesSame(d.metadata.messageId, metadata.messageId))
 
                 if (existingMessage) {
                     // Duplicate message -> skip it

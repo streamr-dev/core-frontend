@@ -77,7 +77,7 @@ class Notifications extends React.Component<Props, State> {
     }
     removeNotification = (id: number): void => {
         this.setState(({ notifications }) => ({
-            notifications: notifications.filter(notification => notification.id !== id),
+            notifications: notifications.filter((notification) => notification.id !== id),
         }))
     }
     system: Ref<NotificationSystem> = React.createRef()

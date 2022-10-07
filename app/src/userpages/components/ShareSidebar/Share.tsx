@@ -77,7 +77,7 @@ const Role = styled.div`
         `}
 `
 
-const UnstyledRemoveButton = props => (
+const UnstyledRemoveButton = (props) => (
     <LayoutButton {...props} type="button" kind="secondary">
         <SvgIcon name="trash" />
     </LayoutButton>
@@ -209,7 +209,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
     const userCombination = changeset[userId] == null ? combinations[userId] : changeset[userId]
     const ownerCombination = groups[resourceType].owner
     const onClick = useCallback(
-        e => {
+        (e) => {
             if (!isFormElement(e.target) && !selected) {
                 onSelect(userId)
             }
@@ -242,7 +242,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
         [userId, userCombination, dispatch],
     )
     const onGroupClick = useCallback(
-        name => {
+        (name) => {
             dispatch({
                 type: UPDATE_PERMISSION,
                 user: userId,
@@ -272,7 +272,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                             {currentUserId === userId && ' (You)'}
                         </h4>
                         <Role visible={!selected}>
-                            {isCustom ? 'Custom' : group.replace(/^(\w)/, c => c.toUpperCase())}
+                            {isCustom ? 'Custom' : group.replace(/^(\w)/, (c) => c.toUpperCase())}
                         </Role>
                     </div>
                     <div>
@@ -294,7 +294,7 @@ const UnstyledShare = ({ className, userId, onSelect, selected }) => {
                                 isCustom={isCustom}
                             />
                             <Checkbox.List>
-                                {getOperationKeys(ownerCombination).map(key => (
+                                {getOperationKeys(ownerCombination).map((key) => (
                                     <Checkbox
                                         id={`${userId}-${key}`}
                                         key={key}

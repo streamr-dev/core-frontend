@@ -78,11 +78,11 @@ const deleteUserAccountFailure: UserErrorActionCreator = createAction(
 export const getUserData = () => (dispatch: (...args: Array<any>) => any) => {
     dispatch(getUserDataRequest())
     return services.getUserData().then(
-        user => {
+        (user) => {
             dispatch(getUserDataSuccess(user))
             return user
         },
-        error => {
+        (error) => {
             dispatch(getUserDataError(error))
         },
     )
@@ -118,11 +118,11 @@ export const updateCurrentUserImage =
 
         return services
             .uploadProfileAvatar(image)
-            .then(avatar => {
+            .then((avatar) => {
                 dispatch(updateAvatarSuccess())
                 dispatch(updateCurrentUser({ ...user, ...avatar }))
             })
-            .catch(e => {
+            .catch((e) => {
                 dispatch(updateAvatarFailure(e))
                 throw e
             })
@@ -143,10 +143,10 @@ export const saveCurrentUser =
 
         return services
             .putUser(user)
-            .then(data => {
+            .then((data) => {
                 dispatch(saveCurrentUserSuccess(data))
             })
-            .catch(e => {
+            .catch((e) => {
                 dispatch(saveCurrentUserFailure(e))
                 throw e
             })
@@ -157,7 +157,7 @@ export const deleteUserAccount = () => (dispatch: (...args: Array<any>) => any) 
         () => {
             dispatch(deleteUserAccountSuccess())
         },
-        error => {
+        (error) => {
             dispatch(
                 deleteUserAccountFailure({
                     message: error.message,

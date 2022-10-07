@@ -24,34 +24,34 @@ export function useEditableProductActions() {
     const { setTouched } = useContext(ValidationContext)
     const updateProduct = useCallback(
         (product: Record<string, any>, msg: string = 'Update product') => {
-            commit(msg, p => ({ ...p, ...product }))
+            commit(msg, (p) => ({ ...p, ...product }))
         },
         [commit],
     )
     const updateName = useCallback(
         (name: $ElementType<Product, 'name'>) => {
-            commit('Update name', p => ({ ...p, name }))
+            commit('Update name', (p) => ({ ...p, name }))
             setTouched('name')
         },
         [commit, setTouched],
     )
     const updateDescription = useCallback(
         (description: $ElementType<Product, 'description'>) => {
-            commit('Update description', p => ({ ...p, description }))
+            commit('Update description', (p) => ({ ...p, description }))
             setTouched('description')
         },
         [commit, setTouched],
     )
     const updateChain = useCallback(
         (chain: $ElementType<Product, 'chain'>) => {
-            commit('Update chain', p => ({ ...p, chain }))
+            commit('Update chain', (p) => ({ ...p, chain }))
             setTouched('chain')
         },
         [commit, setTouched],
     )
     const updatePricingToken = useCallback(
         (pricingTokenAddress: $ElementType<Product, 'pricingTokenAddress'>, pricingTokenDecimals: BN) => {
-            commit('Update payment token', p => ({
+            commit('Update payment token', (p) => ({
                 ...p,
                 pricingTokenAddress,
                 pricingTokenDecimals,
@@ -62,7 +62,7 @@ export function useEditableProductActions() {
     )
     const updateImageUrl = useCallback(
         (image: $ElementType<Product, 'imageUrl'>) => {
-            commit('Update image url', p => ({ ...p, imageUrl: image }))
+            commit('Update image url', (p) => ({ ...p, imageUrl: image }))
             setTouched('imageUrl')
         },
         [commit, setTouched],
@@ -79,14 +79,14 @@ export function useEditableProductActions() {
     )
     const updateStreams = useCallback(
         (streams: StreamIdList) => {
-            commit('Update streams', p => ({ ...p, streams }))
+            commit('Update streams', (p) => ({ ...p, streams }))
             setTouched('streams')
         },
         [commit, setTouched],
     )
     const updateCategory = useCallback(
         (category: $ElementType<Product, 'category'>) => {
-            commit('Update category', p => ({ ...p, category }))
+            commit('Update category', (p) => ({ ...p, category }))
             setTouched('category')
             setTouched('details')
         },
@@ -94,7 +94,7 @@ export function useEditableProductActions() {
     )
     const updateAdminFee = useCallback(
         (adminFee: string) => {
-            commit('Update admin fee', p => ({ ...p, adminFee }))
+            commit('Update admin fee', (p) => ({ ...p, adminFee }))
             setTouched('adminFee')
             setTouched('details')
         },
@@ -102,14 +102,14 @@ export function useEditableProductActions() {
     )
     const updateRequiresWhitelist = useCallback(
         (requiresWhitelist: boolean, touched: boolean = true) => {
-            commit('Update whitelist enabled', p => ({ ...p, requiresWhitelist }))
+            commit('Update whitelist enabled', (p) => ({ ...p, requiresWhitelist }))
             setTouched('requiresWhitelist', touched)
         },
         [commit, setTouched],
     )
     const updateIsFree = useCallback(
         (isFree: $ElementType<Product, 'isFree'>, decimals: BN) => {
-            commit('Update is free', p => {
+            commit('Update is free', (p) => {
                 // Switching product from free to paid also changes its price from 0 (only
                 // if it's 0) to 1. We're doing it to avoid premature validation errors.
                 const price = p.isFree && !isFree && BN(p.price).isZero() ? new BN(1) : p.price
@@ -131,7 +131,7 @@ export function useEditableProductActions() {
             timeUnit: $ElementType<Product, 'timeUnit'>,
             decimals: BN,
         ) => {
-            commit('Update price', p => ({
+            commit('Update price', (p) => ({
                 ...p,
                 price,
                 priceCurrency,
@@ -144,7 +144,7 @@ export function useEditableProductActions() {
     )
     const updateBeneficiaryAddress = useCallback(
         (beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>, didTouch: boolean = true) => {
-            commit('Update beneficiary address', p => ({
+            commit('Update beneficiary address', (p) => ({
                 ...p,
                 beneficiaryAddress,
             }))
@@ -157,21 +157,21 @@ export function useEditableProductActions() {
     )
     const updateType = useCallback(
         (type: $ElementType<Product, 'type'>) => {
-            commit('Update type', p => ({ ...p, type }))
+            commit('Update type', (p) => ({ ...p, type }))
             setTouched('type')
         },
         [commit, setTouched],
     )
     const updateTermsOfUse = useCallback(
         (termsOfUse: $ElementType<Product, 'termsOfUse'>) => {
-            commit('Update terms of use', p => ({ ...p, termsOfUse }))
+            commit('Update terms of use', (p) => ({ ...p, termsOfUse }))
             setTouched('termsOfUse')
         },
         [commit, setTouched],
     )
     const updateContactUrl = useCallback(
         (url: $ElementType<ContactDetails, 'url'>) => {
-            commit('Update contact url', p => ({
+            commit('Update contact url', (p) => ({
                 ...p,
                 contact: { ...(p.contact || {}), url },
             }))
@@ -181,7 +181,7 @@ export function useEditableProductActions() {
     )
     const updateContactEmail = useCallback(
         (email: $ElementType<ContactDetails, 'email'>) => {
-            commit('Update contact email', p => ({
+            commit('Update contact email', (p) => ({
                 ...p,
                 contact: { ...(p.contact || {}), email },
             }))
@@ -191,7 +191,7 @@ export function useEditableProductActions() {
     )
     const updateSocialLinks = useCallback(
         ({ social1, social2, social3, social4 }: SocialLinks) => {
-            commit('Update social links', p => ({
+            commit('Update social links', (p) => ({
                 ...p,
                 contact: {
                     ...(p.contact || {}),

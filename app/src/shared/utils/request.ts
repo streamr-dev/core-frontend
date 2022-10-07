@@ -33,7 +33,7 @@ export default function request({
     const requestOptions = merge(defaultOptions, options)
     return axios
         .request({ ...requestOptions, url, method, data })
-        .then(res => getData(res))
+        .then((res) => getData(res))
         .catch((res: any) => {
             throw new RequestError(res)
         })

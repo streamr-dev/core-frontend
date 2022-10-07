@@ -21,7 +21,7 @@ function usePermissionContextValue(autoLoadPermissions: boolean = true) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const productId = !!product && product.id
     const loadPermissions = useCallback(
-        async id =>
+        async (id) =>
             wrap(async () => {
                 const result = await getPermissions(id, 'me')
 

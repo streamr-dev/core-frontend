@@ -21,7 +21,7 @@ function useDataUnionSecrets() {
                     chainId,
                 })
                 const result = update({
-                    data: response.map(r => ({ ...r, id: r.secret })),
+                    data: response.map((r) => ({ ...r, id: r.secret })),
                     schema: dataUnionSecretsSchema,
                 })
                 dispatch(setDataUnionSecrets(dataUnionId, result))

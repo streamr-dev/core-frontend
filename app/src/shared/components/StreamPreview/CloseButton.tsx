@@ -4,7 +4,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 import { SM } from '$shared/utils/styled'
 import IconButton from './IconButton'
 
-const UnstyledCloseButton = props => (
+const UnstyledCloseButton = (props) => (
     <IconButton {...props}>
         <SvgIcon name="crossMedium" />
     </IconButton>

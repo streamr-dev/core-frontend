@@ -104,7 +104,7 @@ describe('product - services', () => {
             expect(getProductStub).toBeCalledWith('0x1234abcdef')
             expect(getSubscriptionStub).toBeCalledWith('0x1234abcdef', 'testAccount')
         })
-        it('throws an error if no product was found', async done => {
+        it('throws an error if no product was found', async (done) => {
             mockDefaultAccount('testAccount')
             const getProductStub = jest.fn(() => ({
                 call: () =>
@@ -302,7 +302,7 @@ describe('product - services', () => {
                 send: () => 'test',
             }))
             const getIdSpy = jest.spyOn(productUtils, 'getValidId')
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buy: buyStub,
@@ -319,7 +319,7 @@ describe('product - services', () => {
                 send: () => 'test',
             }))
             const getIdSpy = jest.spyOn(productUtils, 'getValidId')
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buyWithETH: buyStub,
@@ -336,7 +336,7 @@ describe('product - services', () => {
                 send: () => 'test',
             }))
             const getIdSpy = jest.spyOn(productUtils, 'getValidId')
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     buyWithERC20: buyStub,
@@ -354,8 +354,8 @@ describe('product - services', () => {
             expect(getIdSpy).toHaveBeenCalledTimes(1)
             expect(getIdSpy).toBeCalledWith('1234')
         })
-        it('must call send with correct object when bying with DATA', done => {
-            jest.spyOn(utils, 'send').mockImplementation(a => {
+        it('must call send with correct object when bying with DATA', (done) => {
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
                 expect(a).toBe('test')
                 done()
             })
@@ -366,8 +366,8 @@ describe('product - services', () => {
             }))
             all.buyProduct('1234', 8995, 1000, 'DATA', '4321')
         })
-        it('must call send with correct object when bying with ETH', done => {
-            jest.spyOn(utils, 'send').mockImplementation(a => {
+        it('must call send with correct object when bying with ETH', (done) => {
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
                 expect(a).toBe('test')
                 done()
             })
@@ -378,8 +378,8 @@ describe('product - services', () => {
             }))
             all.buyProduct('1234', 8995, 1000, 'ETH', '4321')
         })
-        it('must call send with correct object when bying with DAI', done => {
-            jest.spyOn(utils, 'send').mockImplementation(a => {
+        it('must call send with correct object when bying with DAI', (done) => {
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
                 expect(a).toBe('test')
                 done()
             })
@@ -425,7 +425,7 @@ describe('product - services', () => {
                 call: () => Promise.resolve('1000'),
             }))
             const getContractStub = jest.fn(({ abi }) => {
-                if (abi.find(f => f.name === 'allowance')) {
+                if (abi.find((f) => f.name === 'allowance')) {
                     return {
                         methods: {
                             allowance: allowanceStub,
@@ -452,7 +452,7 @@ describe('product - services', () => {
                 call: () => Promise.resolve('276000000000000000000'.toString()),
             }))
             jest.spyOn(utils, 'getContract').mockImplementation(({ abi }) => {
-                if (abi.find(f => f.name === 'allowance')) {
+                if (abi.find((f) => f.name === 'allowance')) {
                     return {
                         methods: {
                             allowance: allowanceStub,
@@ -476,7 +476,7 @@ describe('product - services', () => {
             const approveStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     approve: approveStub,
@@ -489,7 +489,7 @@ describe('product - services', () => {
             expect(approveStub).toHaveBeenCalledTimes(1)
             expect(approveStub).toBeCalledWith('marketplaceAddress', '100000000000000000000')
         })
-        it('must not approve negative values', done => {
+        it('must not approve negative values', (done) => {
             try {
                 all.setMyDataAllowance(-100, 8995)
             } catch (e) {
@@ -505,9 +505,9 @@ describe('product - services', () => {
             const balanceStub = jest.fn(() => ({
                 call: () => Promise.resolve('100000000000000000000'), // 100
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(({ abi }) => {
-                if (abi.find(f => f.name === 'approve')) {
+                if (abi.find((f) => f.name === 'approve')) {
                     return {
                         methods: {
                             approve: approveStub,

@@ -180,7 +180,7 @@ const UnstyledActionBar = ({
                 title: 'Everything',
             },
             ...(categories
-                ? categories.map(c => ({
+                ? categories.map((c) => ({
                       id: c.id,
                       value: c.id,
                       title: c.name,

@@ -26,7 +26,7 @@ const calculateSegments = (parts: Array<Segment>) => {
     const segments = []
     let currentProgress = 0
     const valueSum = parts.reduce((acc, val) => acc + val.value, 0)
-    parts.forEach(item => {
+    parts.forEach((item) => {
         const val = valueSum !== 0 ? item.value / valueSum : 0
         segments.push({
             percentage: val,

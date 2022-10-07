@@ -1,10 +1,7 @@
 const path = require('path')
 
 module.exports = {
-    extends: [
-        'streamr-ts',
-        'plugin:cypress/recommended',
-    ],
+    extends: ['plugin:react/recommended', 'streamr-ts', 'plugin:cypress/recommended', 'prettier'],
     parser: 'babel-eslint',
     settings: {
         'import/resolver': {
@@ -13,12 +10,7 @@ module.exports = {
             },
         },
     },
-    plugins: [
-        'react-hooks',
-        'import',
-        'react',
-        'jsx-a11y'
-    ],
+    plugins: ['react-hooks', 'import', 'react', 'jsx-a11y'],
     rules: {
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
@@ -38,9 +30,10 @@ module.exports = {
         'require-atomic-updates': 'off',
         'react/sort-comp': 0,
         'import/extensions': 'off',
-
     },
-    overrides: [{
-        files: ['*.tsx', '*.ts', '*.js'],
-    }],
+    overrides: [
+        {
+            files: ['*.tsx', '*.ts', '*.js'],
+        },
+    ],
 }

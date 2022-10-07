@@ -11,7 +11,7 @@ const AddKeyField = ({ label, addKeyFieldAllowed, labelType, onSave: onSaveProp 
     })
     const isMounted = useIsMounted()
     const onEdit = useCallback(
-        e => {
+        (e) => {
             e.preventDefault()
             updateState({
                 editing: true,
@@ -26,7 +26,7 @@ const AddKeyField = ({ label, addKeyFieldAllowed, labelType, onSave: onSaveProp 
         })
     }, [updateState])
     const onSave = useCallback(
-        async keyName => {
+        async (keyName) => {
             updateState({
                 waiting: true,
                 error: null,

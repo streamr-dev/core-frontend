@@ -353,7 +353,7 @@ const DesktopNav = styled(UnstyledDesktopNav)`
 `
 const MobileNav = styled(UnstyledMobileNav)``
 
-const N = props => (
+const N = (props) => (
     <Nav.Container {...props}>
         <DesktopNav />
         <MobileNav />

@@ -21,7 +21,7 @@ describe('PermissionContext', () => {
             },
         }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
             isPending: false,
@@ -29,7 +29,7 @@ describe('PermissionContext', () => {
         let resolvePermissions
         jest.spyOn(productServices, 'getPermissions').mockImplementation(
             () =>
-                new Promise(resolve => {
+                new Promise((resolve) => {
                     resolvePermissions = resolve
                 }),
         )
@@ -78,7 +78,7 @@ describe('PermissionContext', () => {
             },
         }))
         jest.spyOn(usePending, 'default').mockImplementation(() => ({
-            wrap: async fn => {
+            wrap: async (fn) => {
                 await fn()
             },
             isPending: false,

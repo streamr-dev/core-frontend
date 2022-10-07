@@ -11,7 +11,7 @@ const classCounters = {}
 
 function addClass(className) {
     const classNames = className.split(/\s+/)
-    classNames.forEach(name => {
+    classNames.forEach((name) => {
         // increment counter for each name
         classCounters[name] = classCounters[name] + 1 || 1
     })
@@ -25,13 +25,13 @@ function addClass(className) {
 
 function removeClass(className) {
     const classNames = className.split(/\s+/)
-    classNames.forEach(name => {
+    classNames.forEach((name) => {
         // decrement counter for each name
         classCounters[name] = Math.max(classCounters[name] - 1 || 0, 0)
     })
     // find items that no longer have any referencing components
-    const toRemove = Object.keys(classCounters).filter(name => !classCounters[name])
-    toRemove.forEach(name => {
+    const toRemove = Object.keys(classCounters).filter((name) => !classCounters[name])
+    toRemove.forEach((name) => {
         delete classCounters[name] // remove from index
     })
 

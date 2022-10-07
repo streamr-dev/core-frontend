@@ -26,16 +26,16 @@ export const getRelatedProducts =
         dispatch(getRelatedProductsRequest())
         return api
             .getRelatedProducts(id, useAuthorization)
-            .then(data => {
+            .then((data) => {
                 const { result, entities } = normalize(data, productsSchema)
                 dispatch(updateEntities(entities))
                 return result
             })
             .then(
-                result => {
+                (result) => {
                     dispatch(getRelatedProductsSuccess(result))
                 },
-                error => {
+                (error) => {
                     dispatch(getRelatedProductsFailure(error))
                 },
             )

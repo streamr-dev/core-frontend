@@ -176,7 +176,7 @@ const Streams = () => {
     )
 }
 
-const UnstyledPreview = props => {
+const UnstyledPreview = (props) => {
     const { state: product } = useEditableState()
     const isDataUnion = !!(product && isDataUnionProduct(product))
     // scroll to the top

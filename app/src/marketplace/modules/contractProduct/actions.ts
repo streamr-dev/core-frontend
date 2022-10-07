@@ -64,7 +64,7 @@ export const getProductFromContract = (id: ProductId, chainId: number) => (dispa
     dispatch(getProductFromContractRequest(id))
     return services
         .getProductFromContract(id, true, chainId)
-        .then(data =>
+        .then((data) =>
             handleEntities(
                 contractProductSchema,
                 dispatch,
@@ -74,10 +74,10 @@ export const getProductFromContract = (id: ProductId, chainId: number) => (dispa
             }),
         )
         .then(
-            result => {
+            (result) => {
                 dispatch(getProductFromContractSuccess(result))
             },
-            error => {
+            (error) => {
                 dispatch(
                     getProductFromContractFailure(id, {
                         message: error.message,

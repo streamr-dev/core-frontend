@@ -89,7 +89,7 @@ describe('config', () => {
             expect(chainIds.includes('9999')).toBe(true)
             expect(chainIds.includes('8995')).toBe(true)
             expect(chainIds.includes('8996')).toBe(true)
-            chainIds.forEach(chainId => {
+            chainIds.forEach((chainId) => {
                 const { getParams } = metamask[chainId]
                 expect(typeof getParams).toBe('function')
             })

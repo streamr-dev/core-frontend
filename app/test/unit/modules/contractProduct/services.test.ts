@@ -7,7 +7,7 @@ describe('Product services', () => {
         jest.restoreAllMocks()
     })
     describe('getProductFromContract', () => {
-        it('must throw error if owner is 0', async done => {
+        it('must throw error if owner is 0', async (done) => {
             const getProductStub = jest.fn(() => ({
                 call: () =>
                     Promise.resolve({
@@ -52,11 +52,11 @@ describe('Product services', () => {
                 pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76', // DATA
             }
         })
-        it('must fail if no id', done => {
+        it('must fail if no id', (done) => {
             const createContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createContractProductStub,
@@ -70,11 +70,11 @@ describe('Product services', () => {
                 done()
             }
         })
-        it('must fail if price is 0', done => {
+        it('must fail if price is 0', (done) => {
             const createContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createContractProductStub,
@@ -91,11 +91,11 @@ describe('Product services', () => {
                 done()
             }
         })
-        it('must fail if price is negative', done => {
+        it('must fail if price is negative', (done) => {
             const createContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     createProduct: createContractProductStub,
@@ -112,8 +112,8 @@ describe('Product services', () => {
                 done()
             }
         })
-        it('must call send with correct object', done => {
-            jest.spyOn(utils, 'send').mockImplementation(a => {
+        it('must call send with correct object', (done) => {
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
                 expect(a).toBe('test')
                 done()
             })
@@ -179,11 +179,11 @@ describe('Product services', () => {
                 pricingTokenAddress: '0x123',
             }
         })
-        it('must fail if no id', done => {
+        it('must fail if no id', (done) => {
             const updateContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateContractProductStub,
@@ -197,11 +197,11 @@ describe('Product services', () => {
                 done()
             }
         })
-        it('must fail if price is 0', done => {
+        it('must fail if price is 0', (done) => {
             const updateContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateContractProductStub,
@@ -218,11 +218,11 @@ describe('Product services', () => {
                 done()
             }
         })
-        it('must fail if price is negative', done => {
+        it('must fail if price is negative', (done) => {
             const updateContractProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     updateProduct: updateContractProductStub,
@@ -239,8 +239,8 @@ describe('Product services', () => {
                 done()
             }
         })
-        it('must call send with correct object', done => {
-            jest.spyOn(utils, 'send').mockImplementation(a => {
+        it('must call send with correct object', (done) => {
+            jest.spyOn(utils, 'send').mockImplementation((a) => {
                 expect(a).toBe('test')
                 done()
             })
@@ -326,7 +326,7 @@ describe('Product services', () => {
             const deleteProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     deleteProduct: deleteProductStub,
@@ -342,7 +342,7 @@ describe('Product services', () => {
             const redeployProductStub = jest.fn(() => ({
                 send: () => 'test',
             }))
-            jest.spyOn(utils, 'send').mockImplementation(method => method.send())
+            jest.spyOn(utils, 'send').mockImplementation((method) => method.send())
             jest.spyOn(utils, 'getContract').mockImplementation(() => ({
                 methods: {
                     redeployProduct: redeployProductStub,

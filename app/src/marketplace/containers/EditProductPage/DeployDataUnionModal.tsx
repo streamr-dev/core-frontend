@@ -81,13 +81,13 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         }
 
         setEstimate(blockEstimate + API_READY_ESTIMATE)
-        return new Promise(resolve =>
+        return new Promise((resolve) =>
             deployDataUnion({
                 productId: productId || '',
                 chainId,
                 adminFee,
             })
-                .onTransactionHash(contractAddress => {
+                .onTransactionHash((contractAddress) => {
                     if (!isMounted()) {
                         return
                     }
@@ -118,7 +118,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
                         }
                     }, API_READY_ESTIMATE * 1000)
                 })
-                .onError(e => {
+                .onError((e) => {
                     if (!isMounted()) {
                         return
                     }
@@ -132,7 +132,7 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
         )
     }, [isMounted, productId, adminFee, chainId])
     const onGuideContinue = useCallback(
-        dontShow => {
+        (dontShow) => {
             setSkipGuide(dontShow)
             return onDeploy()
         },

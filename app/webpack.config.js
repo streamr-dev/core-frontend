@@ -96,10 +96,7 @@ module.exports = {
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
-                include: [
-                    path.resolve(root, 'src'),
-                    path.resolve(root, 'scripts'),
-                ],
+                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 options: {
                     rootMode: 'upward',
                     cacheDirectory: !isProduction(),
@@ -163,9 +160,7 @@ module.exports = {
                     {
                         loader: 'sass-loader',
                         options: {
-                            includePaths: [
-                                path.resolve(__dirname, 'src/shared/assets/stylesheets'),
-                            ],
+                            includePaths: [path.resolve(__dirname, 'src/shared/assets/stylesheets')],
                         },
                     },
                 ],
@@ -203,10 +198,7 @@ module.exports = {
             chunkFilename: !isProduction() ? '[id].css' : '[id].[contenthash:8].css',
         }),
         new StyleLintPlugin({
-            files: [
-                'src/**/*.css',
-                'src/**/*.(p|s)css',
-            ],
+            files: ['src/**/*.css', 'src/**/*.(p|s)css'],
         }),
         new webpack.EnvironmentPlugin({
             GIT_VERSION: gitRevisionPlugin.version(),
@@ -223,95 +215,107 @@ module.exports = {
             GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID || '',
         }),
         new webpack.EnvironmentPlugin(loadedDotenv),
-        ...(analyze ? [
-            new BundleAnalyzerPlugin({
-                analyzerMode: 'static',
-                openAnalyzer: false,
-            }),
-        ] : []),
+        ...(analyze
+            ? [
+                  new BundleAnalyzerPlugin({
+                      analyzerMode: 'static',
+                      openAnalyzer: false,
+                  }),
+              ]
+            : []),
         // Ignore all locale files of moment.js
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    ].concat(isProduction() ? [
-        new CleanWebpackPlugin([dist]),
-        // Production plugins
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.EnvironmentPlugin({
-            NODE_ENV: 'production',
-        }),
-        new OptimizeCssAssetsPlugin({
-            cssProcessor,
-            cssProcessorOptions: {
-                discardComments: {
-                    removeAll: true,
-                },
-            },
-            canPrint: true,
-        }),
-        new ImageminPlugin({
-            disable: !isProduction(), // Disable during development
-            pngquant: {
-                quality: '50-75',
-            },
-        }),
-    ] : [
-        // Dev plugins
-        new UnusedFilesWebpackPlugin({
-            patterns: [
-                'src/marketplace/**/*.*',
-                'src/shared/**/*.*',
-                'src/routes/**/*.*',
-                'src/userpages/**/*.*',
-                'src/docs/**/*.*',
-                'src/*.*',
-            ].filter(Boolean),
-            globOptions: {
-                ignore: [
-                    'node_modules/**/*.*',
-                    // skip tests
-                    '**/tests/*.*',
-                    '**/tests/**/*.*',
-                    '**/test/*.*',
-                    '**/test/**/*.*',
-                    '**/*.test.ts',
-                    '**/*.test.tsx',
-                    // skip flowtype
-                    '**/flowtype/**/*.*',
-                    '**/flowtype/*.*',
-                    '**/types.ts',
-                    // skip conditional stubs
-                    '**/stub.tsx',
-                    // skip stories
-                    '**/*.stories.*',
-                    // skip MD documentation
-                    'src/docs/docsEditingGuide.md',
-                    // skip sketch files
-                    '**/*.sketch',
-                    'src/docs/scripts/*.*',
-                ],
-            },
-        }),
-        new WebpackNotifierPlugin(),
-    ]).concat(process.env.SENTRY_DSN ? [
-        new SentryPlugin({
-            include: dist,
-            validate: true,
-            ignore: [
-                '.cache',
-                '.DS_STORE',
-                '.env',
-                '.storybook',
-                'bin',
-                'coverage',
-                'node_modules',
-                'scripts',
-                'stories',
-                'test',
-                'travis_scripts',
-                'webpack.config.js',
-            ],
-            release: process.env.VERSION,
-        }),
-    ] : []),
+    ]
+        .concat(
+            isProduction()
+                ? [
+                      new CleanWebpackPlugin([dist]),
+                      // Production plugins
+                      new webpack.optimize.OccurrenceOrderPlugin(),
+                      new webpack.EnvironmentPlugin({
+                          NODE_ENV: 'production',
+                      }),
+                      new OptimizeCssAssetsPlugin({
+                          cssProcessor,
+                          cssProcessorOptions: {
+                              discardComments: {
+                                  removeAll: true,
+                              },
+                          },
+                          canPrint: true,
+                      }),
+                      new ImageminPlugin({
+                          disable: !isProduction(), // Disable during development
+                          pngquant: {
+                              quality: '50-75',
+                          },
+                      }),
+                  ]
+                : [
+                      // Dev plugins
+                      new UnusedFilesWebpackPlugin({
+                          patterns: [
+                              'src/marketplace/**/*.*',
+                              'src/shared/**/*.*',
+                              'src/routes/**/*.*',
+                              'src/userpages/**/*.*',
+                              'src/docs/**/*.*',
+                              'src/*.*',
+                          ].filter(Boolean),
+                          globOptions: {
+                              ignore: [
+                                  'node_modules/**/*.*',
+                                  // skip tests
+                                  '**/tests/*.*',
+                                  '**/tests/**/*.*',
+                                  '**/test/*.*',
+                                  '**/test/**/*.*',
+                                  '**/*.test.ts',
+                                  '**/*.test.tsx',
+                                  // skip flowtype
+                                  '**/flowtype/**/*.*',
+                                  '**/flowtype/*.*',
+                                  '**/types.ts',
+                                  // skip conditional stubs
+                                  '**/stub.tsx',
+                                  // skip stories
+                                  '**/*.stories.*',
+                                  // skip MD documentation
+                                  'src/docs/docsEditingGuide.md',
+                                  // skip sketch files
+                                  '**/*.sketch',
+                                  'src/docs/scripts/*.*',
+                              ],
+                          },
+                      }),
+                      new WebpackNotifierPlugin(),
+                  ],
+        )
+        .concat(
+            process.env.SENTRY_DSN
+                ? [
+                      new SentryPlugin({
+                          include: dist,
+                          validate: true,
+                          ignore: [
+                              '.cache',
+                              '.DS_STORE',
+                              '.env',
+                              '.storybook',
+                              'bin',
+                              'coverage',
+                              'node_modules',
+                              'scripts',
+                              'stories',
+                              'test',
+                              'travis_scripts',
+                              'webpack.config.js',
+                          ],
+                          release: process.env.VERSION,
+                      }),
+                  ]
+                : [],
+        ),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
     devServer: {
         historyApiFallback: {

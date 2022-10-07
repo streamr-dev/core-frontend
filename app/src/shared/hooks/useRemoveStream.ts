@@ -19,7 +19,7 @@ export default function useRemoveStream() {
         itp().interruptAll()
     }, [itp, client])
     return useCallback(
-        async streamId => {
+        async (streamId) => {
             const { requireUninterrupted } = itp(streamId)
             const canDelete = await fetchPermission(StreamPermission.DELETE)
             requireUninterrupted()

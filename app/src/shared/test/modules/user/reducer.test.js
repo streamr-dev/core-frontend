@@ -16,10 +16,12 @@ describe('user - reducer', () => {
                 fetchingUserData: true,
             }
 
-            expect(reducer(undefined, {
-                type: constants.USER_DATA_REQUEST,
-                payload: {},
-            })).toStrictEqual(expectedState)
+            expect(
+                reducer(undefined, {
+                    type: constants.USER_DATA_REQUEST,
+                    payload: {},
+                }),
+            ).toStrictEqual(expectedState)
         })
 
         it('handles success', () => {
@@ -34,12 +36,14 @@ describe('user - reducer', () => {
                 fetchingUserData: false,
             }
 
-            expect(reducer(undefined, {
-                type: constants.USER_DATA_SUCCESS,
-                payload: {
-                    user,
-                },
-            })).toStrictEqual(expectedState)
+            expect(
+                reducer(undefined, {
+                    type: constants.USER_DATA_SUCCESS,
+                    payload: {
+                        user,
+                    },
+                }),
+            ).toStrictEqual(expectedState)
         })
 
         it('handles failure', () => {
@@ -52,12 +56,14 @@ describe('user - reducer', () => {
                 userDataError: error,
             }
 
-            expect(reducer(undefined, {
-                type: constants.USER_DATA_FAILURE,
-                payload: {
-                    error,
-                },
-            })).toStrictEqual(expectedState)
+            expect(
+                reducer(undefined, {
+                    type: constants.USER_DATA_FAILURE,
+                    payload: {
+                        error,
+                    },
+                }),
+            ).toStrictEqual(expectedState)
         })
 
         it('resets current user when fetch fails', () => {
@@ -72,12 +78,14 @@ describe('user - reducer', () => {
                 fetchingUserData: false,
             }
 
-            expect(reducer(undefined, {
-                type: constants.USER_DATA_SUCCESS,
-                payload: {
-                    user,
-                },
-            })).toStrictEqual(expectedState1)
+            expect(
+                reducer(undefined, {
+                    type: constants.USER_DATA_SUCCESS,
+                    payload: {
+                        user,
+                    },
+                }),
+            ).toStrictEqual(expectedState1)
 
             const error = new Error('Test')
             const expectedState2 = {
@@ -87,31 +95,38 @@ describe('user - reducer', () => {
                 userDataError: error,
             }
 
-            expect(reducer(undefined, {
-                type: constants.USER_DATA_FAILURE,
-                payload: {
-                    error,
-                },
-            })).toStrictEqual(expectedState2)
+            expect(
+                reducer(undefined, {
+                    type: constants.USER_DATA_FAILURE,
+                    payload: {
+                        error,
+                    },
+                }),
+            ).toStrictEqual(expectedState2)
         })
     })
 
     describe('UPDATE_CURRENT_USER', () => {
         it('should update the user on UPDATE_CURRENT_USER', () => {
-            expect(reducer({
-                some: 'state',
-                user: {
-                    name: 'test',
-                    email: 'test2',
-                },
-            }, {
-                type: constants.UPDATE_CURRENT_USER,
-                payload: {
-                    user: {
-                        email: 'test3',
+            expect(
+                reducer(
+                    {
+                        some: 'state',
+                        user: {
+                            name: 'test',
+                            email: 'test2',
+                        },
                     },
-                },
-            })).toStrictEqual({
+                    {
+                        type: constants.UPDATE_CURRENT_USER,
+                        payload: {
+                            user: {
+                                email: 'test3',
+                            },
+                        },
+                    },
+                ),
+            ).toStrictEqual({
                 some: 'state',
                 saved: false,
                 user: {
@@ -121,18 +136,23 @@ describe('user - reducer', () => {
             })
         })
         it('should add the user if currentUser === null', () => {
-            expect(reducer({
-                some: 'state',
-                user: null,
-            }, {
-                type: constants.UPDATE_CURRENT_USER,
-                payload: {
-                    user: {
-                        name: 'test',
-                        email: 'test3',
+            expect(
+                reducer(
+                    {
+                        some: 'state',
+                        user: null,
                     },
-                },
-            })).toStrictEqual({
+                    {
+                        type: constants.UPDATE_CURRENT_USER,
+                        payload: {
+                            user: {
+                                name: 'test',
+                                email: 'test3',
+                            },
+                        },
+                    },
+                ),
+            ).toStrictEqual({
                 some: 'state',
                 saved: false,
                 user: {
@@ -145,27 +165,37 @@ describe('user - reducer', () => {
 
     describe('SAVE_CURRENT_USER', () => {
         it('should set fetching = true on SAVE_CURRENT_USER_REQUEST', () => {
-            expect(reducer({
-                some: 'state',
-            }, {
-                type: constants.SAVE_CURRENT_USER_REQUEST,
-            })).toStrictEqual({
+            expect(
+                reducer(
+                    {
+                        some: 'state',
+                    },
+                    {
+                        type: constants.SAVE_CURRENT_USER_REQUEST,
+                    },
+                ),
+            ).toStrictEqual({
                 some: 'state',
                 fetchingUserData: true,
             })
         })
 
         it('should set the user as currentUser on SAVE_CURRENT_USER_SUCCESS', () => {
-            expect(reducer({
-                some: 'state',
-            }, {
-                type: constants.SAVE_CURRENT_USER_SUCCESS,
-                payload: {
-                    user: {
-                        just: 'someField',
+            expect(
+                reducer(
+                    {
+                        some: 'state',
                     },
-                },
-            })).toStrictEqual({
+                    {
+                        type: constants.SAVE_CURRENT_USER_SUCCESS,
+                        payload: {
+                            user: {
+                                just: 'someField',
+                            },
+                        },
+                    },
+                ),
+            ).toStrictEqual({
                 some: 'state',
                 user: {
                     just: 'someField',
@@ -177,14 +207,19 @@ describe('user - reducer', () => {
         })
 
         it('should handle the error on SAVE_CURRENT_USER_FAILURE', () => {
-            expect(reducer({
-                some: 'field',
-            }, {
-                type: constants.SAVE_CURRENT_USER_FAILURE,
-                payload: {
-                    error: new Error('test-error'),
-                },
-            })).toStrictEqual({
+            expect(
+                reducer(
+                    {
+                        some: 'field',
+                    },
+                    {
+                        type: constants.SAVE_CURRENT_USER_FAILURE,
+                        payload: {
+                            error: new Error('test-error'),
+                        },
+                    },
+                ),
+            ).toStrictEqual({
                 some: 'field',
                 fetchingUserData: false,
                 userDataError: new Error('test-error'),

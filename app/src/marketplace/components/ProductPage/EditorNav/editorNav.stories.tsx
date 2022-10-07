@@ -39,7 +39,7 @@ const sections = [
     },
 ]
 
-const EditNavController = props => {
+const EditNavController = (props) => {
     const [activeSection, setActiveSection] = useState('')
     const nameStatus = select('Name', statuses, statuses.EMPTY)
     const coverImageStatus = select('Cover Image', statuses, statuses.EMPTY)

@@ -40,7 +40,7 @@ const streamList = [
     },
 ]
 
-const generateData = rows =>
+const generateData = (rows) =>
     [...new Array(rows)].map((value, index) => {
         const factor = index + 1
         const timestamp = new Date('2020-08-19T13:36:00')

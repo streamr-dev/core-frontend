@@ -30,7 +30,7 @@ function useNamedCounters() {
                 throw new Error('counter needs a name')
             }
 
-            setCountersState(state => {
+            setCountersState((state) => {
                 const current = state[name] || 0
                 return { ...state, [name]: Math.max(0, current + direction) }
             })
@@ -56,16 +56,16 @@ function usePendingContext(name: string): ContextProps {
                 return
             }
 
-            updatePendingChildren(c => ({ ...c, [childName]: value }))
+            updatePendingChildren((c) => ({ ...c, [childName]: value }))
         },
         [updatePendingChildren, isMounted],
     )
-    const isSelfPending = Object.values(selfPending).some(value => !!value)
+    const isSelfPending = Object.values(selfPending).some((value) => !!value)
     const pendingChildrenValues = Object.values(pendingChildren)
     const isChildrenPending =
         !!pendingChildrenValues.length && pendingChildrenValues.some(({ isPending }: any) => isPending)
     const isPending = isSelfPending || isChildrenPending
-    const checkPending = useCallback(key => !!selfPending[key], [selfPending])
+    const checkPending = useCallback((key) => !!selfPending[key], [selfPending])
     const value = useMemo(
         () => ({
             name,

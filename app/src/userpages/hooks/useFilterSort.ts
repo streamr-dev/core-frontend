@@ -11,11 +11,11 @@ function useFilterSort(sortOptions = []) {
     const [filterOptions, setFilterOptions] = useState(defaultFilter)
     const [search, setSearch] = useState(undefined)
     useEffect(() => {
-        setFilterOptions(previousFilterOptions => previousFilterOptions || defaultFilter)
+        setFilterOptions((previousFilterOptions) => previousFilterOptions || defaultFilter)
     }, [defaultFilter])
     const setSort = useCallback(
-        sortOptionId => {
-            const sortOption = sortOptions.find(opt => opt.filter.id === sortOptionId)
+        (sortOptionId) => {
+            const sortOption = sortOptions.find((opt) => opt.filter.id === sortOptionId)
 
             if (sortOption) {
                 setFilterOptions({ ...sortOption.filter })

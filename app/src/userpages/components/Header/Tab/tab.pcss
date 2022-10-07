@@ -1,53 +1,53 @@
 .root {
-  font-family: var(--mono);
-  font-size: 0.75um;
-  font-weight: var(--medium);
-  letter-spacing: 2px;
-  line-height: 1em;
-  outline: 0;
-  padding: 1.25um 0;
-  position: relative;
-  text-transform: uppercase;
-  transition: color 200ms ease-in-out;
+    font-family: var(--mono);
+    font-size: 0.75um;
+    font-weight: var(--medium);
+    letter-spacing: 2px;
+    line-height: 1em;
+    outline: 0;
+    padding: 1.25um 0;
+    position: relative;
+    text-transform: uppercase;
+    transition: color 200ms ease-in-out;
 }
 
 a.root {
-  text-decoration: none;
+    text-decoration: none;
 }
 
 .root,
 .root > span {
-  display: block;
+    display: block;
 }
 
 .root::after {
-  bottom: 0;
-  content: '';
-  display: block;
-  height: 2px;
-  left: 0;
-  position: absolute;
-  width: 100%;
-  background-color: #323232;
-  opacity: 0;
-  transition: opacity 200ms ease-in-out;
+    bottom: 0;
+    content: '';
+    display: block;
+    height: 2px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    background-color: #323232;
+    opacity: 0;
+    transition: opacity 200ms ease-in-out;
 }
 
 .root,
 .root:link,
 .root:--idle {
-  color: #989898;
+    color: #989898;
 }
 
 .root:--enter,
 .root.active {
-  color: #323232;
+    color: #323232;
 }
 
 .root.active::after {
-  opacity: 1;
+    opacity: 1;
 }
 
 .root + .root {
-  margin-left: 1.75um;
+    margin-left: 1.75um;
 }

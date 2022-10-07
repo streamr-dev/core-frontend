@@ -11,7 +11,7 @@ import Layout from './Layout'
 import Cell from './Cell'
 import ResizeHandle from './ResizeHandle'
 
-const formatValue = data =>
+const formatValue = (data) =>
     typeof data === 'object'
         ? stringifyObject(data, {
               inlineCharacterLimit: Number.POSITIVE_INFINITY,
@@ -156,7 +156,7 @@ const UnstyledFeed = ({
     const rowRef = useRef(null)
     const copyText = 'ontouchstart' in window ? 'Tap to copy' : 'Copy'
 
-    const onCopyClick = value => e => {
+    const onCopyClick = (value) => (e) => {
         const prevRow = rowRef.current
         rowRef.current = e.currentTarget
 
@@ -191,7 +191,7 @@ const UnstyledFeed = ({
                 </Header>
                 <Viewport>
                     {!!streamLoaded &&
-                        (streamData || []).map(d => {
+                        (streamData || []).map((d) => {
                             if (!d) {
                                 return null
                             }

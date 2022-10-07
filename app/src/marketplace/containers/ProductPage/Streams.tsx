@@ -23,7 +23,7 @@ const Streams = () => {
     const isProductFree = !!(product && !isPaidProduct(product))
     const [offset, setOffset] = useState(INITIAL_OFFSET)
     const onStreamPreview = useCallback(
-        streamId => {
+        (streamId) => {
             history.replace(
                 routes.marketplace.streamPreview({
                     id: productId,
@@ -34,7 +34,7 @@ const Streams = () => {
         [history, productId],
     )
     const onStreamSettings = useCallback(
-        id => {
+        (id) => {
             history.push(
                 routes.streams.show({
                     id,

@@ -150,7 +150,7 @@ export const ChooseAccessPeriodDialog = ({
         [balances, paymentCurrency],
     )
     const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === timeUnit), [timeUnit])
-    const onTimeUnitChange = useCallback(t => {
+    const onTimeUnitChange = useCallback((t) => {
         setTimeUnit(t)
     }, [])
     const onPaymentCurrencyChange = useCallback(

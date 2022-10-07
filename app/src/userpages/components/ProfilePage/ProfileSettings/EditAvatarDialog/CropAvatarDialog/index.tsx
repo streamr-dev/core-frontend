@@ -20,7 +20,7 @@ const CropAvatarDialog = ({ originalImage, onClose, onSave: onSaveProp, waiting 
         const editor = editorRef.current
 
         if (editor) {
-            const blob = await new Promise(resolve => editor.getImageScaledToCanvas().toBlob(resolve))
+            const blob = await new Promise((resolve) => editor.getImageScaledToCanvas().toBlob(resolve))
             const file = new File([blob], 'avatar.png')
             onSaveProp(file)
         }

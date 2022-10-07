@@ -1,90 +1,90 @@
 .emptyState {
-  color: var(--greyDark);
-  font-size: 16px;
-  font-weight: var(--regular);
-  padding: 6em 0;
-  text-align: center;
+    color: var(--greyDark);
+    font-size: 16px;
+    font-weight: var(--regular);
+    padding: 6em 0;
+    text-align: center;
 
-  .imageWrapper {
-    margin-bottom: 2.5em;
-  }
+    .imageWrapper {
+        margin-bottom: 2.5em;
+    }
 
-  img {
-    display: block;
-    margin: 0 auto;
-    max-width: 60%;
-  }
+    img {
+        display: block;
+        margin: 0 auto;
+        max-width: 60%;
+    }
 
-  .children {
-    line-height: 1.6em;
-    margin: 0;
-    padding: 0;
-  }
+    .children {
+        line-height: 1.6em;
+        margin: 0;
+        padding: 0;
+    }
 
-  small {
-    display: block;
-    font-size: 12px;
-    margin-top: 0.25em;
-  }
+    small {
+        display: block;
+        font-size: 12px;
+        margin-top: 0.25em;
+    }
 }
 
 .linkWrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin-top: 1.25em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 1.25em;
 
-  a + a {
-    margin-left: calc(2 * var(--um));
-  }
+    a + a {
+        margin-left: calc(2 * var(--um));
+    }
 }
 
 @media (--sm-down) {
-  .emptyState {
-    .linkWrapper {
-      flex-direction: column;
-      align-items: center;
+    .emptyState {
+        .linkWrapper {
+            flex-direction: column;
+            align-items: center;
 
-      a + a {
-        margin-left: 0;
-        margin-top: var(--um);
-      }
+            a + a {
+                margin-left: 0;
+                margin-top: var(--um);
+            }
+        }
     }
-  }
 }
 
 @media (--sm-up) {
-  .emptyState {
-    font-size: 16px;
+    .emptyState {
+        font-size: 16px;
 
-    .children {
-      line-height: 1.375em;
-    }
+        .children {
+            line-height: 1.375em;
+        }
 
-    small {
-      font-size: 12px;
+        small {
+            font-size: 12px;
+        }
     }
-  }
 }
 
 @media (--md-up) {
-  .emptyState {
-    font-size: 20px;
-    padding: 5em 0;
+    .emptyState {
+        font-size: 20px;
+        padding: 5em 0;
 
-    small {
-      font-size: 14px;
+        small {
+            font-size: 14px;
+        }
     }
-  }
 }
 
 @media (--lg-up) {
-  .emptyState {
-    font-size: 24px;
-    padding: 3.75em 0;
+    .emptyState {
+        font-size: 24px;
+        padding: 3.75em 0;
 
-    small {
-      font-size: 16px;
+        small {
+            font-size: 16px;
+        }
     }
-  }
 }

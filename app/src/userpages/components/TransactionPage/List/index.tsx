@@ -52,7 +52,7 @@ const StyledListContainer = styled(ListContainer)`
     }
 `
 
-const mapState = state => {
+const mapState = (state) => {
     switch (state) {
         case 'ok':
             return StatusIcon.OK
@@ -83,7 +83,7 @@ const TransactionList = () => {
     const dispatch = useDispatch()
     const { copy } = useCopy()
     const copyToClipboard = useCallback(
-        text => {
+        (text) => {
             copy(text)
             Notification.push({
                 title: 'TX hash copied',

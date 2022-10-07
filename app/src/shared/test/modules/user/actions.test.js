@@ -75,16 +75,18 @@ describe('user - actions', () => {
                 },
             })
             await store.dispatch(actions.updateCurrentUserName('test5'))
-            const expectedActions = [{
-                type: constants.UPDATE_CURRENT_USER,
-                payload: {
-                    user: {
-                        id: 'test',
-                        email: 'test2',
-                        name: 'test5',
+            const expectedActions = [
+                {
+                    type: constants.UPDATE_CURRENT_USER,
+                    payload: {
+                        user: {
+                            id: 'test',
+                            email: 'test2',
+                            name: 'test5',
+                        },
                     },
                 },
-            }]
+            ]
             expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
@@ -95,9 +97,11 @@ describe('user - actions', () => {
 
             await store.dispatch(actions.logout())
 
-            const expectedActions = [{
-                type: constants.RESET_USER_DATA,
-            }]
+            const expectedActions = [
+                {
+                    type: constants.RESET_USER_DATA,
+                },
+            ]
             expect(store.getActions()).toStrictEqual(expectedActions)
         })
     })
@@ -116,14 +120,17 @@ describe('user - actions', () => {
             })
             const serviceStub = jest.spyOn(services, 'putUser').mockImplementation(() => Promise.resolve(user))
 
-            const expectedActions = [{
-                type: constants.SAVE_CURRENT_USER_REQUEST,
-            }, {
-                type: constants.SAVE_CURRENT_USER_SUCCESS,
-                payload: {
-                    user,
+            const expectedActions = [
+                {
+                    type: constants.SAVE_CURRENT_USER_REQUEST,
                 },
-            }]
+                {
+                    type: constants.SAVE_CURRENT_USER_SUCCESS,
+                    payload: {
+                        user,
+                    },
+                },
+            ]
 
             await store.dispatch(actions.saveCurrentUser())
             expect(serviceStub).toHaveBeenCalledTimes(1)
@@ -145,13 +152,16 @@ describe('user - actions', () => {
             const error = new Error('error')
             const serviceStub = jest.spyOn(services, 'putUser').mockImplementation(() => Promise.reject(error))
 
-            const expectedActions = [{
-                type: constants.SAVE_CURRENT_USER_REQUEST,
-            }, {
-                type: constants.SAVE_CURRENT_USER_FAILURE,
-                error: true,
-                payload: error,
-            }]
+            const expectedActions = [
+                {
+                    type: constants.SAVE_CURRENT_USER_REQUEST,
+                },
+                {
+                    type: constants.SAVE_CURRENT_USER_FAILURE,
+                    error: true,
+                    payload: error,
+                },
+            ]
 
             try {
                 await store.dispatch(actions.saveCurrentUser())

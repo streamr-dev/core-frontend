@@ -32,8 +32,8 @@ describe('Product State', () => {
     })
     describe('getPendingObject', () => {
         it('returns only the allowed fields', () => {
-            const allowed = Object.fromEntries(State.PENDING_CHANGE_FIELDS.map(key => [key, key]))
-            const notAllowed = Object.fromEntries(['id', 'newImageToUpload', 'state'].map(key => [key, key]))
+            const allowed = Object.fromEntries(State.PENDING_CHANGE_FIELDS.map((key) => [key, key]))
+            const notAllowed = Object.fromEntries(['id', 'newImageToUpload', 'state'].map((key) => [key, key]))
             expect(State.getPendingObject({ ...allowed, ...notAllowed })).toMatchObject(allowed)
         })
         it('returns only defined values', () => {
@@ -195,7 +195,7 @@ describe('Product State', () => {
                 state: productStates.NOT_DEPLOYED,
             }
             expect(
-                State.update(product, p => ({
+                State.update(product, (p) => ({
                     ...p,
                     name: 'newName',
                     description: 'A better description',
@@ -214,7 +214,7 @@ describe('Product State', () => {
                 state: productStates.NOT_DEPLOYED,
             }
             expect(
-                State.update(product, p => ({
+                State.update(product, (p) => ({
                     ...p,
                     adminFee: '0.2',
                     pricingTokenAddress: '0x123',
@@ -239,7 +239,7 @@ describe('Product State', () => {
                 type: productTypes.DATAUNION,
             }
             expect(
-                State.update(product, p => ({
+                State.update(product, (p) => ({
                     ...p,
                     name: 'Better Name',
                     description: 'A better description',
@@ -263,7 +263,7 @@ describe('Product State', () => {
                 state: productStates.DEPLOYED,
             }
             expect(
-                State.update(product, p => ({
+                State.update(product, (p) => ({
                     ...p,
                     name: 'Better Name',
                     description: 'A better description',
@@ -286,7 +286,7 @@ describe('Product State', () => {
                 state: productStates.DEPLOYED,
             }
             expect(
-                State.update(product, p => ({
+                State.update(product, (p) => ({
                     ...p,
                     pricingTokenAddress: '0x123',
                     requiresWhitelist: true,
@@ -309,7 +309,7 @@ describe('Product State', () => {
                 state: productStates.DEPLOYING,
             }
             expect(
-                State.update(product, p => ({
+                State.update(product, (p) => ({
                     ...p,
                     name: 'Better Name',
                     description: 'A better description',
@@ -442,7 +442,7 @@ describe('Product State', () => {
             }
             expect(
                 State.getPendingChanges(
-                    State.update(product, p => ({
+                    State.update(product, (p) => ({
                         ...p,
                         name: 'Better Name',
                         description: 'A better description',
@@ -464,7 +464,7 @@ describe('Product State', () => {
             }
             expect(
                 State.getPendingChanges(
-                    State.update(product, p => ({
+                    State.update(product, (p) => ({
                         ...p,
                         name: 'Better Name',
                         description: 'A better description',
@@ -489,7 +489,7 @@ describe('Product State', () => {
             }
             expect(
                 State.getPendingChanges(
-                    State.update(product, p => ({
+                    State.update(product, (p) => ({
                         ...p,
                         name: 'Better Name',
                         description: 'A better description',

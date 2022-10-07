@@ -33,7 +33,7 @@ function UnwrappedHistorySection({ disabled, canEdit }) {
                     week: 7,
                 }}
                 disabled={disabled}
-                onChange={value =>
+                onChange={(value) =>
                     void stage({
                         storageDays: value,
                     })

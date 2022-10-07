@@ -47,7 +47,7 @@ const UnstyledTermCheckbox = ({
             id={id}
             name={id}
             value={product.termsOfUse[id]}
-            onChange={e => {
+            onChange={(e) => {
                 updateTermsOfUse({
                     ...product.termsOfUse,
                     [id]: e.target.checked,
@@ -119,7 +119,7 @@ const TermsOfUse = ({ className, disabled }: Props) => {
                     <Label>Link to detailed terms</Label>
                     <Text
                         defaultValue={product.termsOfUse.termsUrl}
-                        onCommit={text => {
+                        onCommit={(text) => {
                             updateTermsOfUse({
                                 ...product.termsOfUse,
                                 termsUrl: text,
@@ -137,7 +137,7 @@ const TermsOfUse = ({ className, disabled }: Props) => {
                     <Label>Display name for link</Label>
                     <Text
                         defaultValue={product.termsOfUse.termsName}
-                        onCommit={text => {
+                        onCommit={(text) => {
                             updateTermsOfUse({
                                 ...product.termsOfUse,
                                 termsName: text,

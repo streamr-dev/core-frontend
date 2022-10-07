@@ -182,7 +182,7 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
     }, [loadMembers, dataUnionId, chainId])
     const debouncedSetSearch = useDebounced(setSearch, 250)
     const onSearchChange = useCallback(
-        e => {
+        (e) => {
             const search = e.target.value.trim()
             debouncedSetSearch(search)
         },
@@ -190,7 +190,7 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
     )
     const removeMember = useCallback(
         async (memberAddress: string) => {
-            setProcessingMembers(prev => [...prev, memberAddress])
+            setProcessingMembers((prev) => [...prev, memberAddress])
 
             try {
                 await removeMembers(dataUnionId, [memberAddress])
@@ -198,7 +198,7 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
                 console.error('Could not remove member', e)
             } finally {
                 if (isMounted()) {
-                    setProcessingMembers(prev => prev.filter(member => member !== memberAddress))
+                    setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
                     loadDataUnionStats([dataUnionId])
                 }
             }
@@ -253,7 +253,7 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
                             </span>
                         </CenteredMessage>
                     )}
-                    {listing.map(member => {
+                    {listing.map((member) => {
                         const processing = processingMembers.includes(member.address)
                         return (
                             <TableRow key={member.address} processing={processing}>

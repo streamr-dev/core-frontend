@@ -25,7 +25,7 @@ const configChainNameMapping = {
 }
 
 const getChainOptions = (chains: Array<string>) =>
-    chains.map(c => {
+    chains.map((c) => {
         const config = getConfigForChainByName(c)
         const chainId = config.id
         return {
@@ -57,7 +57,7 @@ const ProductChain = ({ disabled }: Props) => {
     // This is kind of a ugly hack but it's needed because API will return
     // ETHEREUM as default chain for new products and we don't support it anymore.
     useEffect(() => {
-        const matchedOption = chainOptions.find(o => o.id === getChainIdFromApiString(productChain))
+        const matchedOption = chainOptions.find((o) => o.id === getChainIdFromApiString(productChain))
 
         if (!productChain || matchedOption == null) {
             updateChain(getApiStringFromChainId(DEFAULT_CHAIN_ID))
@@ -71,7 +71,7 @@ const ProductChain = ({ disabled }: Props) => {
                 <ChainSelector
                     chains={chainOptions}
                     selectedChainId={getChainIdFromApiString(product.chain)}
-                    onChainSelected={nextChainId => updateChain(getApiStringFromChainId(nextChainId))}
+                    onChainSelected={(nextChainId) => updateChain(getApiStringFromChainId(nextChainId))}
                     disabled={disabled}
                 />
             </div>

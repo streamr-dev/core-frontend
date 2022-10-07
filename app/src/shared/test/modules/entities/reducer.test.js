@@ -34,14 +34,20 @@ describe('entities - reducer', () => {
         const { entities: productEntities } = normalize(products, schemas.productsSchema)
 
         const expectedState = {
-            categories: categories.reduce((result, value) => ({
-                ...result,
-                [value.id]: value,
-            }), {}),
-            products: products.reduce((result, value) => ({
-                ...result,
-                [value.id]: value,
-            }), {}),
+            categories: categories.reduce(
+                (result, value) => ({
+                    ...result,
+                    [value.id]: value,
+                }),
+                {},
+            ),
+            products: products.reduce(
+                (result, value) => ({
+                    ...result,
+                    [value.id]: value,
+                }),
+                {},
+            ),
             contractProducts: {},
             dataUnions: {},
             dataUnionStats: {},
@@ -102,34 +108,42 @@ describe('entities - reducer', () => {
 
         const expectedState = {
             categories: {},
-            products: products.reduce((result, value) => ({
-                ...result,
-                [value.id]: value,
-            }), {}),
+            products: products.reduce(
+                (result, value) => ({
+                    ...result,
+                    [value.id]: value,
+                }),
+                {},
+            ),
             contractProducts: {},
             dataUnions: {},
             dataUnionStats: {},
             streams: {},
             relatedProducts: {},
             transactions: {},
-            subscriptions: subscriptions.reduce((result, value) => ({
-                ...result,
-                [value.product.id]: {
-                    id: value.product.id,
-                    endsAt: value.endsAt,
-                    product: value.product.id,
-                },
-            }), {}),
+            subscriptions: subscriptions.reduce(
+                (result, value) => ({
+                    ...result,
+                    [value.product.id]: {
+                        id: value.product.id,
+                        endsAt: value.endsAt,
+                        product: value.product.id,
+                    },
+                }),
+                {},
+            ),
             joinRequests: {},
             dataUnionSecrets: {},
             whitelistedAddresses: {},
         }
 
-        expect(reducer(undefined, {
-            type: constants.UPDATE_ENTITIES,
-            payload: {
-                entities,
-            },
-        })).toStrictEqual(expectedState)
+        expect(
+            reducer(undefined, {
+                type: constants.UPDATE_ENTITIES,
+                payload: {
+                    entities,
+                },
+            }),
+        ).toStrictEqual(expectedState)
     })
 })

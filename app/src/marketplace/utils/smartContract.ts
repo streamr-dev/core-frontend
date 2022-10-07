@@ -98,10 +98,10 @@ export const send = (
                         errorHandler(error)
                     }
                 })
-                .on('transactionHash', hash => {
+                .on('transactionHash', (hash) => {
                     emitter.emit('transactionHash', hash)
                 })
-                .on('receipt', receipt => {
+                .on('receipt', (receipt) => {
                     if (parseInt(receipt.status, 16) === 0) {
                         errorHandler(new TransactionError('Transaction failed', receipt))
                     } else {

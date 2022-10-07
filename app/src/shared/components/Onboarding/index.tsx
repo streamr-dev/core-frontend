@@ -17,7 +17,7 @@ type Props = {
 const Onboarding = ({ children, title }: Props) => {
     const [open, setOpen] = useState(false)
     const toggle = useCallback(() => {
-        setOpen(current => !current)
+        setOpen((current) => !current)
     }, [setOpen])
     const childrenRef: Ref<Element> = useRef(null)
     useGlobalEventWithin(
@@ -67,7 +67,7 @@ const Onboarding = ({ children, title }: Props) => {
             <div className={styles.inner}>
                 <div className={styles.children} ref={childrenRef}>
                     {!!title && <div className={styles.label}>{title}</div>}
-                    {React.Children.map(children, child => child || <div className={styles.separator} />)}
+                    {React.Children.map(children, (child) => child || <div className={styles.separator} />)}
                 </div>
                 <button type="button" className={styles.toggle} onClick={toggle}>
                     <SvgIcon name="questionMark" className={styles.icon} />

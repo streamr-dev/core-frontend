@@ -3,7 +3,7 @@ import useOnlyIfMountedCallback from '$shared/hooks/useOnlyIfMountedCallback'
 import { Context as UndoContext } from '$shared/contexts/Undo'
 
 function updater(fn) {
-    return state => {
+    return (state) => {
         const nextState = fn(state)
 
         if (nextState === null || nextState === state) {

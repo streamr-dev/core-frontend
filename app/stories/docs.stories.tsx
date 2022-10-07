@@ -10,7 +10,7 @@ import PageTurner from '$docs/components/PageTurner'
 import Search from '$docs/components/Search'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
-const story = name =>
+const story = (name) =>
     storiesOf(`Docs/${name}`, module)
         .addDecorator(
             styles({

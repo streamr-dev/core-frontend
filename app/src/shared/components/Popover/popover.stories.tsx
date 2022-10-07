@@ -14,7 +14,7 @@ const stories = storiesOf('Shared/Popover', module)
             color: 'white',
         }),
     )
-    .addDecorator(callback => <Container>{callback()}</Container>)
+    .addDecorator((callback) => <Container>{callback()}</Container>)
 stories.add('basic', () => (
     <Popover title="Select">
         <Popover.Item onClick={action('Click me')}>Click me</Popover.Item>
@@ -96,7 +96,7 @@ const WithActiveItem = ({ activeTitle, leftTick = false }: WithActiveItemProps) 
     const [selected, setSelected] = useState(undefined)
     const changeAction = action('onChange')
     const onChange = useCallback(
-        value => {
+        (value) => {
             changeAction(value)
             setSelected(value)
         },

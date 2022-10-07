@@ -42,7 +42,7 @@ describe('transactions - actions', () => {
             transactionTypes.CREATE_CONTRACT_PRODUCT,
             transactionTypes.UPDATE_CONTRACT_PRODUCT,
         ]
-        Object.values(transactionTypes).forEach(type => {
+        Object.values(transactionTypes).forEach((type) => {
             it(`adds transaction and handles notification correctly (${type})`, () => {
                 jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
                     type: 'updateEntities',

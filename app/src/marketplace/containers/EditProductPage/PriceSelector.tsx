@@ -22,13 +22,13 @@ const PriceSelector = ({ disabled }: Props) => {
     const chainId = product && getChainIdFromApiString(product.chain)
     const { pricingTokenDecimals } = product
     const onPriceChange = useCallback(
-        p => {
+        (p) => {
             updatePrice(p, product.priceCurrency, product.timeUnit, pricingTokenDecimals)
         },
         [updatePrice, product.priceCurrency, product.timeUnit, pricingTokenDecimals],
     )
     const onTimeUnitChange = useCallback(
-        t => {
+        (t) => {
             updatePrice(product.price, product.priceCurrency, t, pricingTokenDecimals)
         },
         [updatePrice, product.price, product.priceCurrency, pricingTokenDecimals],

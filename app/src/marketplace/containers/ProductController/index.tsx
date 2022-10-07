@@ -86,7 +86,7 @@ function useProductController() {
         allStreams: [],
     })
     const setProduct = useCallback(
-        nextProduct => {
+        (nextProduct) => {
             dispatch({
                 type: 'setProduct',
                 product: nextProduct,
@@ -95,7 +95,7 @@ function useProductController() {
         [dispatch],
     )
     const setProductStreams = useCallback(
-        nextStreams => {
+        (nextStreams) => {
             dispatch({
                 type: 'setProductStreams',
                 streams: nextStreams,
@@ -104,7 +104,7 @@ function useProductController() {
         [dispatch],
     )
     const setAllStreams = useCallback(
-        nextStreams => {
+        (nextStreams) => {
             dispatch({
                 type: 'setAllStreams',
                 streams: nextStreams,

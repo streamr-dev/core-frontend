@@ -22,7 +22,7 @@ const Details = styled.div`
 const Row = styled.div`
     grid-column-gap: 4rem;
     align-items: center;
-    visibility: ${props => (props.hide ? 'hidden' : 'visible')};
+    visibility: ${(props) => (props.hide ? 'hidden' : 'visible')};
 `
 const StyledLabel = styled.label`
     display: block;
@@ -77,7 +77,7 @@ const TextField = ({ id, label, defaultValue, onChange, placeholder, disabled, o
     </StyledLabel>
 )
 
-const adminFeeOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map(value => ({
+const adminFeeOptions = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90].map((value) => ({
     label: `${value} %`,
     value: `${value !== 0 ? value / 100 : 0}`,
 }))
@@ -105,7 +105,7 @@ const ProductDetails = ({ disabled }: Props) => {
     const selectedAdminFee = useMemo(() => adminFeeOptions.find(({ value }) => value === adminFee), [adminFee])
     const categoryOptions = useMemo(
         () =>
-            (categories || []).map(c => ({
+            (categories || []).map((c) => ({
                 label: c.name,
                 value: c.id,
             })),
@@ -113,7 +113,7 @@ const ProductDetails = ({ disabled }: Props) => {
     )
     const productCategory = product.category
     const selectedCategory = useMemo(
-        () => categoryOptions.find(o => o.value === productCategory),
+        () => categoryOptions.find((o) => o.value === productCategory),
         [categoryOptions, productCategory],
     )
     return (
@@ -128,7 +128,7 @@ const ProductDetails = ({ disabled }: Props) => {
                                 name="name"
                                 options={categoryOptions}
                                 value={selectedCategory}
-                                onChange={option => updateCategory(option.value)}
+                                onChange={(option) => updateCategory(option.value)}
                                 isSearchable={false}
                                 error={publishAttempted && !isCategoryValid ? categoryMessage : undefined}
                                 disabled={!!disabled}
@@ -142,7 +142,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             name="adminFee"
                             options={adminFeeOptions}
                             value={selectedAdminFee}
-                            onChange={option => updateAdminFee(option.value)}
+                            onChange={(option) => updateAdminFee(option.value)}
                             isSearchable={false}
                             error={publishAttempted && !isAdminFeeValid ? adminFeeMessage : undefined}
                             disabled={!!disabled}
@@ -154,7 +154,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="url"
                             label="Add a site URL"
                             defaultValue={product.contact && product.contact.url}
-                            onChange={value => updateContactUrl(value)}
+                            onChange={(value) => updateContactUrl(value)}
                             placeholder="http://siteinfo.com"
                             disabled={!!disabled}
                             optional
@@ -166,7 +166,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="email"
                             label="Add a contact email"
                             defaultValue={product.contact && product.contact.email}
-                            onChange={value => updateContactEmail(value)}
+                            onChange={(value) => updateContactEmail(value)}
                             placeholder="owner@example.com"
                             disabled={!!disabled}
                             optional={!product.requiresWhitelist}
@@ -181,7 +181,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="social_1"
                             label="Social media link"
                             defaultValue={product.contact && product.contact.social1}
-                            onChange={value =>
+                            onChange={(value) =>
                                 updateSocialLinks({
                                     social1: value,
                                 })
@@ -197,7 +197,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="social_2"
                             label="Social media link"
                             defaultValue={product.contact && product.contact.social2}
-                            onChange={value =>
+                            onChange={(value) =>
                                 updateSocialLinks({
                                     social2: value,
                                 })
@@ -213,7 +213,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="social_3"
                             label="Social media link"
                             defaultValue={product.contact && product.contact.social3}
-                            onChange={value =>
+                            onChange={(value) =>
                                 updateSocialLinks({
                                     social3: value,
                                 })
@@ -229,7 +229,7 @@ const ProductDetails = ({ disabled }: Props) => {
                             id="social_4"
                             label="Social media link"
                             defaultValue={product.contact && product.contact.social4}
-                            onChange={value =>
+                            onChange={(value) =>
                                 updateSocialLinks({
                                     social4: value,
                                 })

@@ -64,8 +64,8 @@ function useModalContext(path: string): ContextProps {
                 return
             }
 
-            setModals(prevModals => {
-                Object.keys(prevModals).forEach(modalId => {
+            setModals((prevModals) => {
+                Object.keys(prevModals).forEach((modalId) => {
                     if (prevModals[modalId].reject && typeof prevModals[modalId].reject === 'function') {
                         prevModals[modalId].reject()
                     }

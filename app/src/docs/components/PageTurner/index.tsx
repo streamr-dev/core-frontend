@@ -5,7 +5,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 import docsMap from '$docs/docsMap'
 import { SM, MD } from '$shared/utils/styled'
 // Flatten docs page hierarchy into a single array
-const docsPages = (Object.values(docsMap) || []).flatMap(subPages => {
+const docsPages = (Object.values(docsMap) || []).flatMap((subPages) => {
     const pages = Object.values(subPages)
 
     // if there are more than one page we can filter out the root page

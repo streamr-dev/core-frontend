@@ -1,194 +1,194 @@
 :global {
-  .btn {
-    background: rgba(0, 0, 0, 0);
-    border-radius: 2px;
-    cursor: pointer;
-    font-family: var(--mono);
-    height: 48px;
-    font-weight: bold;
-    overflow: hidden;
-    position: relative;
-    display: inline-block;
-    vertical-align: middle;
-    outline: none;
+    .btn {
+        background: rgba(0, 0, 0, 0);
+        border-radius: 2px;
+        cursor: pointer;
+        font-family: var(--mono);
+        height: 48px;
+        font-weight: bold;
+        overflow: hidden;
+        position: relative;
+        display: inline-block;
+        vertical-align: middle;
+        outline: none;
 
-    a,
-    a:hover,
-    a:active,
-    a:visited {
-      color: inherit;
-      text-decoration: none;
+        a,
+        a:hover,
+        a:active,
+        a:visited {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+
+        &.btn-default,
+        &.btn-primary {
+            border: none;
+            box-sizing: border-box;
+            box-shadow: none !important;
+            color: var(--white);
+            background-color: var(--streamrBlue);
+
+            &:hover {
+                background: #001bd0;
+                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            &:active,
+            &:focus,
+            &:visited {
+                background: #0d009a;
+            }
+        }
+
+        &.btn-secondary {
+            color: var(--white);
+            border: 1px solid var(--white);
+
+            &:hover {
+                background: #afafaf;
+            }
+
+            &:active,
+            &:focus,
+            &:visited {
+                border-color: #09006d !important;
+                color: #09006d !important;
+                box-shadow: none !important;
+                background-color: transparent !important;
+            }
+        }
+
+        &.btn-outline-default {
+            color: var(--white);
+            border: 1px solid var(--white);
+
+            &:hover,
+            &:active {
+                background-color: color(var(--white) alpha(10%));
+            }
+
+            &:hover::before,
+            &:active::before {
+                background-color: color(var(--purpleLight) alpha(20%));
+            }
+        }
+
+        &.btn-outline-primary {
+            color: var(--orange);
+            border: 1px solid var(--orange);
+            background: none !important;
+
+            &:hover,
+            &:active {
+                border-color: var(--orangeDark);
+            }
+
+            &:hover::before,
+            &:active::before {
+                background-color: color(var(--orangeDark) alpha(20%));
+            }
+        }
+
+        &.btn-outline-secondary {
+            color: var(--purpleLight2);
+            border: 1px solid var(--purpleLight2);
+            background: none !important;
+
+            &:hover,
+            &:active {
+                border-color: var(--purpleDark);
+            }
+
+            &:hover::before,
+            &:active::before {
+                background-color: color(var(--purpleDark) alpha(20%));
+            }
+        }
+
+        &.btn-link {
+            border: 0;
+            letter-spacing: 0;
+            padding-left: 0;
+            padding-right: 0;
+            min-width: 100px;
+            box-shadow: none;
+            text-decoration: none;
+            color: var(--greyDark2);
+            font-family: var(--mono);
+            text-transform: capitalize;
+            font-weight: var(--regular);
+
+            &:--enter {
+                background-color: var(--greyLight3);
+                color: var(--greyDark);
+            }
+        }
+
+        &.btn-outline-link {
+            background-color: transparent;
+            color: var(--greyDark2);
+            letter-spacing: 0;
+            text-transform: capitalize;
+            font-weight: var(--regular);
+
+            &:--enter {
+                background-color: var(--greyLight3);
+                color: var(--greyDark);
+            }
+        }
+
+        &.btn-outline-link.grey-container {
+            background-color: transparent;
+
+            &:--enter {
+                background-color: transparent;
+            }
+        }
+
+        &.btn-sm {
+            height: 32px;
+        }
+
+        &.btn-danger {
+            background-color: #ff0f2d;
+
+            &:hover,
+            &:focus {
+                background-color: #ea112c;
+            }
+
+            &:active {
+                background-color: #d50f28 !important;
+            }
+
+            &[disabled] {
+                background-color: #ff0f2d !important;
+                color: #ffffff !important;
+            }
+        }
     }
-
-    &:disabled {
-      opacity: 0.5;
-    }
-
-    &.btn-default,
-    &.btn-primary {
-      border: none;
-      box-sizing: border-box;
-      box-shadow: none !important;
-      color: var(--white);
-      background-color: var(--streamrBlue);
-
-      &:hover {
-        background: #001BD0;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-      }
-
-      &:active,
-      &:focus,
-      &:visited {
-        background: #0D009A;
-      }
-    }
-
-    &.btn-secondary {
-      color: var(--white);
-      border: 1px solid var(--white);
-
-      &:hover {
-        background: #AFAFAF;
-      }
-
-      &:active,
-      &:focus,
-      &:visited {
-        border-color: #09006D !important;
-        color: #09006D !important;
-        box-shadow: none !important;
-        background-color: transparent !important;
-      }
-    }
-
-    &.btn-outline-default {
-      color: var(--white);
-      border: 1px solid var(--white);
-
-      &:hover,
-      &:active {
-        background-color: color(var(--white) alpha(10%));
-      }
-
-      &:hover::before,
-      &:active::before {
-        background-color: color(var(--purpleLight) alpha(20%));
-      }
-    }
-
-    &.btn-outline-primary {
-      color: var(--orange);
-      border: 1px solid var(--orange);
-      background: none !important;
-
-      &:hover,
-      &:active {
-        border-color: var(--orangeDark);
-      }
-
-      &:hover::before,
-      &:active::before {
-        background-color: color(var(--orangeDark) alpha(20%));
-      }
-    }
-
-    &.btn-outline-secondary {
-      color: var(--purpleLight2);
-      border: 1px solid var(--purpleLight2);
-      background: none !important;
-
-      &:hover,
-      &:active {
-        border-color: var(--purpleDark);
-      }
-
-      &:hover::before,
-      &:active::before {
-        background-color: color(var(--purpleDark) alpha(20%));
-      }
-    }
-
-    &.btn-link {
-      border: 0;
-      letter-spacing: 0;
-      padding-left: 0;
-      padding-right: 0;
-      min-width: 100px;
-      box-shadow: none;
-      text-decoration: none;
-      color: var(--greyDark2);
-      font-family: var(--mono);
-      text-transform: capitalize;
-      font-weight: var(--regular);
-
-      &:--enter {
-        background-color: var(--greyLight3);
-        color: var(--greyDark);
-      }
-    }
-
-    &.btn-outline-link {
-      background-color: transparent;
-      color: var(--greyDark2);
-      letter-spacing: 0;
-      text-transform: capitalize;
-      font-weight: var(--regular);
-
-      &:--enter {
-        background-color: var(--greyLight3);
-        color: var(--greyDark);
-      }
-    }
-
-    &.btn-outline-link.grey-container {
-      background-color: transparent;
-
-      &:--enter {
-        background-color: transparent;
-      }
-    }
-
-    &.btn-sm {
-      height: 32px;
-    }
-
-    &.btn-danger {
-      background-color: #FF0F2D;
-
-      &:hover,
-      &:focus {
-        background-color: #EA112C;
-      }
-
-      &:active {
-        background-color: #D50F28 !important;
-      }
-
-      &[disabled] {
-        background-color: #FF0F2D !important;
-        color: #FFFFFF !important;
-      }
-    }
-  }
 }
 
 @media (--md-down) and (--sm-up) {
-  :global {
-    .btn {
-      height: 40px;
+    :global {
+        .btn {
+            height: 40px;
+        }
     }
-  }
 }
 
 @media (--xs) {
-  :global {
-    .btn {
-      font-size: 14px;
+    :global {
+        .btn {
+            font-size: 14px;
+        }
     }
-  }
 }
 
 :root {
-  --buttonHoverAnimationTime: 0.3s;
+    --buttonHoverAnimationTime: 0.3s;
 }

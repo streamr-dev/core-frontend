@@ -29,7 +29,7 @@ export default function usePersistChangeset() {
     }, [invalidatePermissions])
     const validateNetwork = useValidateNetwork()
     useEffect(() => {
-        saveRef.current = async onSuccess => {
+        saveRef.current = async (onSuccess) => {
             const errors = {}
             const assignments = formatAssignments(changeset)
             await validateNetwork(networks.STREAMS)
@@ -39,7 +39,7 @@ export default function usePersistChangeset() {
             })
             const { current: u } = userRef
 
-            if (u && assignments.find(a => a.user === u)) {
+            if (u && assignments.find((a) => a.user === u)) {
                 // Pick current user from the changeset collection and trigger permission invalidation
                 // via `StreamPermissionsInvalidatorContext` which then updates controls
                 // on the stream page.
@@ -75,7 +75,7 @@ export default function usePersistChangeset() {
     }, [changeset, client, dispatch, isMounted, resourceId, validateNetwork])
     const itp = useInterrupt()
     return useCallback(
-        async onSuccess => {
+        async (onSuccess) => {
             const { requireUninterrupted } = itp('save')
 
             if (busyRef.current) {

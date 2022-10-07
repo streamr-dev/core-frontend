@@ -39,7 +39,7 @@ const actions = {
 const PublishError = ({ publishMode, status, onClose }: Props) => {
     const failedAction = useMemo(() => {
         const keys = Object.keys(status)
-        const failed = keys.filter(key => status[key] === transactionStates.FAILED)
+        const failed = keys.filter((key) => status[key] === transactionStates.FAILED)
 
         if (failed.length === keys.length) {
             return 'allFailed'

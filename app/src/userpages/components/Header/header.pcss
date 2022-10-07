@@ -1,69 +1,69 @@
 .profile {
-  display: flex;
-  margin: 24px 0;
+    display: flex;
+    margin: 24px 0;
 }
 
 .avatar {
-  flex-grow: 1;
+    flex-grow: 1;
 }
 
 .additionalComponent {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .tabBar {
-  display: flex;
-  line-height: 32px;
-  overflow-x: auto;
+    display: flex;
+    line-height: 32px;
+    overflow-x: auto;
 }
 
 .searchBar {
-  display: flex;
-  margin-right: 36px;
+    display: flex;
+    margin-right: 36px;
 }
 
 .filterBar {
-  /* 36px - height of the dropdown toggle. */
-  height: 36px;
-  right: 16px;
+    /* 36px - height of the dropdown toggle. */
+    height: 36px;
+    right: 16px;
 }
 
 .tabContainer {
-  align-items: center;
-  display: flex;
-  height: calc(3.25 * var(--um));
-  justify-content: space-between;
-  position: relative;
+    align-items: center;
+    display: flex;
+    height: calc(3.25 * var(--um));
+    justify-content: space-between;
+    position: relative;
 }
 
 .tabs {
-  display: flex;
-  white-space: nowrap;
+    display: flex;
+    white-space: nowrap;
 }
 
 @media (--md-down) {
-  .tabContainer .filterBar {
-    display: flex;
-    position: absolute;
-    right: 18px;
-    top: 72px;
-  }
+    .tabContainer .filterBar {
+        display: flex;
+        position: absolute;
+        right: 18px;
+        top: 72px;
+    }
 
-  .containerOverrides {
-    width: 100%;
-    max-width: none;
-  }
+    .containerOverrides {
+        width: 100%;
+        max-width: none;
+    }
 }
 
 @media (--md-up) {
-  .profile {
-    margin: 24px 0 64px 0;
-  }
+    .profile {
+        margin: 24px 0 64px 0;
+    }
 }
 
 @media (--sm-down) {
-  .tabContainer .filterBar {
-    display: none;
-  }
+    .tabContainer .filterBar {
+        display: none;
+    }
 }

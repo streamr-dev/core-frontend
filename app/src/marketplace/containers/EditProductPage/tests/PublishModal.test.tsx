@@ -8,7 +8,7 @@ import * as contractProductServices from '$mp/modules/contractProduct/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
 import { PublishOrUnpublishModal } from '../PublishModal'
 jest.mock('react-redux', () => ({
-    useDispatch: jest.fn().mockImplementation(() => action => action),
+    useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
 jest.mock('$shared/components/ModalPortal', () => ({
     __esModule: true,
@@ -68,7 +68,7 @@ describe('Publish modal', () => {
             let productResolver
             jest.spyOn(productServices, 'getProductById').mockImplementation(
                 () =>
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         productResolver = resolve
                     }),
             )
@@ -201,7 +201,7 @@ describe('Publish modal', () => {
             let resolveProduct
             jest.spyOn(productServices, 'getProductById').mockImplementation(
                 () =>
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         resolveProduct = resolve
                     }),
             )
@@ -395,7 +395,7 @@ describe('Publish modal', () => {
             let resolveProduct
             jest.spyOn(productServices, 'getProductById').mockImplementation(
                 () =>
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         resolveProduct = resolve
                     }),
             )

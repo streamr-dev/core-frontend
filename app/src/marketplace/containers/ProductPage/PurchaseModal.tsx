@@ -172,14 +172,14 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         setPurchaseTransaction(undefined)
         setPurchaseStarted(true)
         queue
-            .subscribe('started', id => {
+            .subscribe('started', (id) => {
                 if (isMounted()) {
                     setCurrentAction(id)
                 }
             })
             .subscribe('status', (id, nextStatus, hash) => {
                 if (isMounted()) {
-                    setStatus(prevStatus => ({ ...prevStatus, [id]: nextStatus }))
+                    setStatus((prevStatus) => ({ ...prevStatus, [id]: nextStatus }))
 
                     if (id === actionsTypes.SUBSCRIPTION && nextStatus === transactionStates.PENDING && !!hash) {
                         setPurchaseTransaction(hash)
@@ -192,13 +192,13 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         }
     }, [queue, isMounted])
     const allSucceeded = useMemo(
-        () => Object.values(status).every(value => value === transactionStates.CONFIRMED),
+        () => Object.values(status).every((value) => value === transactionStates.CONFIRMED),
         [status],
     )
     const allCompleted = useMemo(
         () =>
             Object.values(status).every(
-                value => value === transactionStates.CONFIRMED || value === transactionStates.FAILED,
+                (value) => value === transactionStates.CONFIRMED || value === transactionStates.FAILED,
             ),
         [status],
     )

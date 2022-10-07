@@ -22,7 +22,7 @@ const mapChainForSelect = (chain: Chain) => ({
 
 const UnstyledChainSelector = ({ chains, selectedChainId, onChainSelected: onChainSelectedProp, disabled }: Props) => {
     const onChainSelected = useCallback(
-        chainId => {
+        (chainId) => {
             if (onChainSelectedProp && typeof onChainSelectedProp === 'function') {
                 onChainSelectedProp(chainId)
             }

@@ -31,7 +31,7 @@ export function useUpdateWhitelist() {
                     id: actionsTypes.SET_REQUIRES_WHITELIST,
                     handler: (update, done) =>
                         setRequiresWhitelist(productId, true)
-                            .onTransactionHash(hash => {
+                            .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING)
                                 dispatch(addTransaction(hash, transactionTypes.SET_REQUIRES_WHITELIST))
                                 done()
@@ -47,7 +47,7 @@ export function useUpdateWhitelist() {
                                 })
                                 update(transactionStates.CONFIRMED)
                             })
-                            .onError(error => {
+                            .onError((error) => {
                                 done()
                                 update(transactionStates.FAILED, error)
                             }),
@@ -60,7 +60,7 @@ export function useUpdateWhitelist() {
                         id: actionsTypes.REMOVE_WHITELIST_ADDRESS,
                         handler: (update, done) =>
                             whitelistReject(productId, address)
-                                .onTransactionHash(hash => {
+                                .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     dispatch(addTransaction(hash, transactionTypes.WHITELIST_REJECT))
                                     addToWhitelist({
@@ -79,7 +79,7 @@ export function useUpdateWhitelist() {
                                     })
                                     update(transactionStates.CONFIRMED)
                                 })
-                                .onError(error => {
+                                .onError((error) => {
                                     if (error.receipt && error.receipt.transactionHash) {
                                         editInWhitelist({
                                             productId,
@@ -97,7 +97,7 @@ export function useUpdateWhitelist() {
                         id: actionsTypes.ADD_WHITELIST_ADDRESS,
                         handler: (update, done) =>
                             whitelistApprove(productId, address)
-                                .onTransactionHash(hash => {
+                                .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     dispatch(addTransaction(hash, transactionTypes.WHITELIST_APPROVE))
                                     addToWhitelist({
@@ -116,7 +116,7 @@ export function useUpdateWhitelist() {
                                     })
                                     update(transactionStates.CONFIRMED)
                                 })
-                                .onError(error => {
+                                .onError((error) => {
                                     if (error.receipt && error.receipt.transactionHash) {
                                         removeFromWhitelist({
                                             productId,

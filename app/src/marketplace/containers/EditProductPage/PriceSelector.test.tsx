@@ -55,7 +55,7 @@ const mockState = {
     },
 }
 jest.mock('react-redux', () => ({
-    useSelector: jest.fn().mockImplementation(selectorFn => selectorFn(mockState)),
+    useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
     useDispatch: jest.fn(),
 }))
 describe('PriceSelector', () => {
@@ -125,7 +125,7 @@ describe('PriceSelector', () => {
                 timeUnit: 'second',
                 chain: 'ETHEREUM',
             },
-            el => {
+            (el) => {
                 el.find('.inputWrapper input')
                     .first()
                     .simulate('change', {
@@ -152,7 +152,7 @@ describe('PriceSelector', () => {
                 timeUnit: 'second',
                 chain: 'ETHEREUM',
             },
-            el => {
+            (el) => {
                 act(() => {
                     el.find(Select).props().onChange({
                         value: 'hour',

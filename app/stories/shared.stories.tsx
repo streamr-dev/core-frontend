@@ -27,7 +27,7 @@ import Spinner from '$shared/components/Spinner'
 import Text from '$ui/Text'
 import sharedStyles from './shared.pcss'
 
-const story = name =>
+const story = (name) =>
     storiesOf(`Shared/${name}`, module)
         .addDecorator(
             styles({
@@ -46,7 +46,7 @@ class ToggleContainer extends React.Component {
         return (
             <Toggle
                 value={this.state.value}
-                onChange={value => {
+                onChange={(value) => {
                     this.setState({
                         value,
                     })
@@ -74,7 +74,7 @@ class CheckboxContainer extends React.Component {
         return (
             <Checkbox
                 value={this.state.checked}
-                onChange={e => {
+                onChange={(e) => {
                     this.setState({
                         checked: e.target.checked,
                     })
@@ -106,7 +106,7 @@ class SortableListContainer extends React.Component {
         const { items } = this.state
         return (
             <SortableList onSortEnd={this.onSortEnd} lockAxis="y">
-                {items.map(item => (
+                {items.map((item) => (
                     <span key={item}>{item}</span>
                 ))}
             </SortableList>
@@ -129,7 +129,7 @@ class FieldListContainer extends React.Component {
         return (
             <div className={sharedStyles.fieldList}>
                 <FieldList onSortEnd={this.onSortEnd} lockAxis="y">
-                    {items.map(item => (
+                    {items.map((item) => (
                         <FieldItem key={item} name={item}>
                             <Text defaultValue={item} />
                         </FieldItem>
@@ -193,7 +193,7 @@ story('BackButton')
     ))
 story('SvgIcon').addWithJSX('all', () => (
     <Row>
-        {SvgIcon.names.map(name => (
+        {SvgIcon.names.map((name) => (
             <Col xs="4" key={name}>
                 <div key={name} className={sharedStyles.iconWrapper}>
                     <div className={sharedStyles.iconInner}>
@@ -215,7 +215,7 @@ story('SvgIcon').addWithJSX('all', () => (
 ))
 story('PngIcon').addWithJSX('all', () => (
     <Row>
-        {PngIcon.names.map(name => (
+        {PngIcon.names.map((name) => (
             <Col xs="4" key={name}>
                 <div key={name} className={sharedStyles.iconWrapper}>
                     <div className={sharedStyles.iconInner}>
@@ -232,7 +232,7 @@ class SliderContainer extends React.Component {
     state = {
         sliderValue: 1,
     }
-    onChange = value => {
+    onChange = (value) => {
         this.setState({
             sliderValue: value,
         })
@@ -282,7 +282,7 @@ story('Notifications').addWithJSX('basic', () => {
                 >
                     Add notification
                 </button>
-                {Object.values(NotificationIcon).map(icon => (
+                {Object.values(NotificationIcon).map((icon) => (
                     <button
                         key={icon}
                         type="button"

@@ -63,7 +63,7 @@ const ConfirmDialog = (props: Props) => {
         },
         save: {
             title: 'OK',
-            onClick: event => onAccept(event, checked),
+            onClick: (event) => onAccept(event, checked),
             kind: 'primary',
             ...acceptButtonProps,
         },
@@ -90,7 +90,7 @@ const ConfirmDialog = (props: Props) => {
                                     <Label check className={styles.label}>
                                         <Checkbox
                                             value={checked}
-                                            onChange={e => {
+                                            onChange={(e) => {
                                                 setChecked(e.target.checked)
                                             }}
                                         />

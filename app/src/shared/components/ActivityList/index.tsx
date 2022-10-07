@@ -10,7 +10,7 @@ export const ACTIVITY_FROM = 30 * 24 * 60 * 60 * 1000 // 30 days
 
 const notificationFilter = ({ action }) => action === actionTypes.PAYMENT || action === actionTypes.SHARE
 
-const activityFilter = item => !notificationFilter(item)
+const activityFilter = (item) => !notificationFilter(item)
 
 const storage = isLocalStorageAvailable() ? localStorage : null
 const initialState = {
@@ -40,7 +40,7 @@ const reducer = (state, action) => {
 
 export const StateContext = createContext(initialState)
 export const DispatchContext = createContext(() => {})
-export const useIsPendingTransaction = txHash => {
+export const useIsPendingTransaction = (txHash) => {
     const pendingTransactions = useSelector(selectPendingTransactions)
     return txHash && pendingTransactions.some(({ hash, state }) => hash === txHash && state === 'pending')
 }
@@ -49,7 +49,7 @@ const ActivityList = ({ children = <Items /> }) => {
     const itemsRef = useRef([])
     const [state, dispatch] = useReducer(reducer, initialState)
     const streamId = storage && process.env.ACTIVITY_QUEUE ? storage.getItem('user.activityStreamId') : undefined
-    const [touchCount, touch] = useReducer(x => x + 1, 0)
+    const [touchCount, touch] = useReducer((x) => x + 1, 0)
     useEffect(() => {
         dispatch({
             type: SET_ACTIVITIES,
@@ -58,7 +58,7 @@ const ActivityList = ({ children = <Items /> }) => {
     }, [state.category, touchCount])
     const fetchResource = useFetchResource()
     const onMessage = useCallback(
-        msg => {
+        (msg) => {
             const activity = Activity.deserialize(msg)
             itemsRef.current = [activity, ...itemsRef.current]
             fetchResource(activity.resourceType, activity.resourceId)

@@ -136,7 +136,7 @@ export const startUpdateDataUnionStats =
         const fetchStats = async () => {
             for (let index = 0; index < productIds.length && !cancelled; index += 1) {
                 try {
-                    const product = products.find(p => p.id === productIds[index])
+                    const product = products.find((p) => p.id === productIds[index])
 
                     if (product == null) {
                         break

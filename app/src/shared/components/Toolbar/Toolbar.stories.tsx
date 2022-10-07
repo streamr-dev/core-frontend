@@ -11,7 +11,7 @@ const Content = styled.div`
     height: 1000px;
 `
 
-const story = name =>
+const story = (name) =>
     storiesOf(`Shared/${name}`, module)
         .addDecorator(
             styles({

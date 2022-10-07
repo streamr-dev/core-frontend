@@ -23,7 +23,7 @@ export const BusStop = ({ name, ...props }) => {
     return <div {...props} ref={ref} />
 }
 
-const getElementTop = el => {
+const getElementTop = (el) => {
     const { width, top } = el ? el.getBoundingClientRect() : {}
     return width ? top : null
 }
@@ -33,10 +33,10 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
     const [positions, setPositions] = useState([])
     const defaultStop = useMemo(() => (positions.length ? positions[positions.length - 1] : [])[0], [positions])
     const link = useCallback(([name, ref]) => {
-        setRefs(current => [...current, [name, ref]])
+        setRefs((current) => [...current, [name, ref]])
     }, [])
-    const unlink = useCallback(name => {
-        setRefs(current => current.filter(([n]) => n !== name))
+    const unlink = useCallback((name) => {
+        setRefs((current) => current.filter(([n]) => n !== name))
     }, [])
     const [stop, setStop] = useState()
     const flags = useRef({
@@ -78,7 +78,7 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
             flags.current.wheel = true
         }
 
-        const onMouseDown = e => {
+        const onMouseDown = (e) => {
             flags.current.mouseDown = true
             flags.current.wheel = false
             flags.current.scrollbar = e.target instanceof HTMLHtmlElement

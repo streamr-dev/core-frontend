@@ -36,12 +36,12 @@ export class Analytics {
     }
     reportError = (error: Error, extra: Record<string, any> = {}) => {
         Object.keys(this.services).forEach(
-            id => this.services[id].reportError && this.services[id].reportError(error, extra),
+            (id) => this.services[id].reportError && this.services[id].reportError(error, extra),
         )
     }
     reportWarning = (error: Error, extra: Record<string, any> = {}) => {
         Object.keys(this.services).forEach(
-            id => this.services[id].reportWarning && this.services[id].reportWarning(error, extra),
+            (id) => this.services[id].reportWarning && this.services[id].reportWarning(error, extra),
         )
     }
     getMiddlewares = () =>
@@ -74,7 +74,7 @@ if (process.env.SENTRY_DSN) {
                 debug: true,
             }),
         reportError: (error: Error, extra: Record<string, any> = {}) => {
-            Sentry.withScope(scope => {
+            Sentry.withScope((scope) => {
                 scope.setTag('error_boundary', true)
 
                 if (extra) {
@@ -90,7 +90,7 @@ if (process.env.SENTRY_DSN) {
                 extra,
             })
             // eslint-disable-line no-console
-            Sentry.withScope(scope => {
+            Sentry.withScope((scope) => {
                 scope.setTag('error_boundary', true)
 
                 if (extra) {
@@ -113,11 +113,11 @@ if (process.env.LOGROCKET_SLUG) {
         init: () => {
             LogRocket.init(process.env.LOGROCKET_SLUG, {
                 network: {
-                    requestSanitizer: request => {
+                    requestSanitizer: (request) => {
                         const requestUrl = request.url.toLowerCase()
 
                         // if the url contains one of the blacklisted paths
-                        if (urlBlackList.some(search => requestUrl.indexOf(search) !== -1)) {
+                        if (urlBlackList.some((search) => requestUrl.indexOf(search) !== -1)) {
                             // scrub out the body
                             request.body = null
                         }

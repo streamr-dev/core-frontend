@@ -38,7 +38,7 @@ export const getChainIdFromApiString = (name: string): number => {
         return 8997
     }
 
-    const found = Object.entries(chainNameToIdMapping).find(val => val[0].toLowerCase() === name.toLowerCase())
+    const found = Object.entries(chainNameToIdMapping).find((val) => val[0].toLowerCase() === name.toLowerCase())
 
     if (found) {
         const chainId = found[1]
@@ -59,7 +59,7 @@ export const getApiStringFromChainId = (id: number): string => {
         return 'XDAI'
     }
 
-    const found = Object.entries(chainNameToIdMapping).find(val => val[1] === id)
+    const found = Object.entries(chainNameToIdMapping).find((val) => val[1] === id)
 
     if (found) {
         const chainName = found[0]

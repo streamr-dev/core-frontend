@@ -17,7 +17,7 @@ type Props = NoResultsViewProps & {
 }
 const NoAddedSubscriptionsView = withRouter(({ history }) => {
     const handleLink = useCallback(
-        event => {
+        (event) => {
             event.stopPropagation()
             event.preventDefault()
 

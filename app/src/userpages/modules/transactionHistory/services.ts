@@ -21,7 +21,7 @@ const eventTypeToTransactionType = {
     ProductRedeployed: transactionTypes.REDEPLOY_PRODUCT,
 }
 
-const getPurchaseTokens = logValues => {
+const getPurchaseTokens = (logValues) => {
     let dataEvent
     let currencyEvent
     let paymentCurrency
@@ -190,7 +190,7 @@ export const getTransactionEvents = async (addresses: HashList, products: Produc
     return Promise.all(eventPromises).then(([...eventLists]) => {
         eventLists.forEach((events, index) => {
             rawEvents.push(
-                ...events.map(event => {
+                ...events.map((event) => {
                     if (!transactionCounts[event.transactionHash]) {
                         transactionCounts[event.transactionHash] = 0
                     }

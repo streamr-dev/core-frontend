@@ -5,7 +5,7 @@ import useInterrupt from './useInterrupt'
 describe('useInterrupt', () => {
     function getPromise() {
         let resolve
-        const p = new Promise(res => {
+        const p = new Promise((res) => {
             resolve = res
         })
         return [
@@ -97,7 +97,7 @@ describe('useInterrupt', () => {
             function TestComponent({ cacheKey }) {
                 const itp = useInterrupt()
                 const onClick = useCallback(
-                    async id => {
+                    async (id) => {
                         const [promise, resolve] = getPromise()
                         onPromise(id, [promise, resolve])
                         const { requireUninterrupted } = itp(id)

@@ -6,7 +6,7 @@ import Share from './Share'
 const UnstyledUserList = ({ items, selectedUserId, setSelectedUserId, userErrors, ...props }) => {
     const editableUserIds = useEditableUserIds()
     const onClick = useCallback(
-        e => {
+        (e) => {
             if (e.target === e.currentTarget) {
                 // Select none on click background.
                 setSelectedUserId()
@@ -17,7 +17,7 @@ const UnstyledUserList = ({ items, selectedUserId, setSelectedUserId, userErrors
     return (
         // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
         <div {...props} onClick={onClick}>
-            {editableUserIds.map(userId => (
+            {editableUserIds.map((userId) => (
                 <Share key={userId} onSelect={setSelectedUserId} selected={selectedUserId === userId} userId={userId} />
             ))}
         </div>

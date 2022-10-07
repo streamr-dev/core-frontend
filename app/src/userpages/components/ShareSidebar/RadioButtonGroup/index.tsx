@@ -65,7 +65,7 @@ const UnstyledRadioButtonGroup = ({
                                     /* noop, use mousedown so can reset custom when click existing selection */
                                     /* have to supply onChange otherwise React makes input readOnly, thus mouse handlers don't work */
                                 }}
-                                onClick={event => {
+                                onClick={(event) => {
                                     onCheck(option, event)
                                 }}
                                 checked={selection === option}

@@ -14,7 +14,7 @@ const FlushHistoryDecorator = (WrappedComponent: ComponentType<any>) => {
             (e: React.FocusEvent<EventTarget>) => {
                 // `blurCount` is used as `key` of the actual control. Changing it replaces the control
                 // with a new instance thus the old instance along with its change history gets forgotten.
-                setBlurCount(count => count + 1)
+                setBlurCount((count) => count + 1)
 
                 if (onBlurProp) {
                     onBlurProp(e)

@@ -105,7 +105,7 @@ const UnstyledSearch = ({ toggleOverlay, nav, ...props }: Props) => {
     const [query, setQuery] = useState('')
     const searchResults = useLunr(query)
 
-    const onSearchChange = searchValue => {
+    const onSearchChange = (searchValue) => {
         setQuery(searchValue)
     }
 
@@ -127,7 +127,7 @@ const UnstyledSearch = ({ toggleOverlay, nav, ...props }: Props) => {
             <SearchResults>
                 <SearchResultsInner>
                     <ul>
-                        {formatSearchResults(searchResults).map(result => (
+                        {formatSearchResults(searchResults).map((result) => (
                             <li key={result.id}>
                                 <ResultHeading onClick={resultClick} to={result.id}>
                                     {result.title}

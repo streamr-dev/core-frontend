@@ -45,7 +45,7 @@ const Component = () => (
     <Container>
         <ChainSelector
             chains={chainOptions}
-            onChainSelected={nextChainId => action(`Chain selected ${nextChainId}`)}
+            onChainSelected={(nextChainId) => action(`Chain selected ${nextChainId}`)}
             disabled={false}
         />
     </Container>

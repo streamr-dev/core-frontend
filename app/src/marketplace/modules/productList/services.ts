@@ -14,7 +14,7 @@ export const getProducts = (filter: Filter, pageSize: number, offset: number): A
             offset,
         }),
         useAuthorization: false,
-    }).then(products => ({
+    }).then((products) => ({
         products: products.splice(0, pageSize).map(mapProductFromApi),
         hasMoreProducts: products.length > 0,
     }))

@@ -17,10 +17,12 @@ const currentUserIds = (currentUserId, combinations, changeset) =>
         ? [currentUserId]
         : []
 
-const newUserIds = (combinations, changeset) => Object.keys(changeset).filter(userId => combinations[userId] == null)
+const newUserIds = (combinations, changeset) => Object.keys(changeset).filter((userId) => combinations[userId] == null)
 
 const remainingUserIds = (combinations, changeset) =>
-    Object.keys(combinations).filter(userId => !{}.hasOwnProperty.call(changeset, userId) || changeset[userId] != null)
+    Object.keys(combinations).filter(
+        (userId) => !{}.hasOwnProperty.call(changeset, userId) || changeset[userId] != null,
+    )
 
 export const useEditableUserIds = () => {
     const { changeset, combinations } = usePermissionsState()

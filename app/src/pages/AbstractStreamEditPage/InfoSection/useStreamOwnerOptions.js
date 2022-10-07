@@ -22,12 +22,14 @@ export default function useStreamOwnerOptions() {
 
         async function fn() {
             try {
-                const { data: { domains: newDomains } } = user
+                const {
+                    data: { domains: newDomains },
+                } = user
                     ? await post({
-                        url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
-                        useAuthorization: false,
-                        data: {
-                            query: `
+                          url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+                          useAuthorization: false,
+                          data: {
+                              query: `
                                 query {
                                     domains(
                                         where: { owner_in: ["${user}"]}
@@ -40,13 +42,13 @@ export default function useStreamOwnerOptions() {
                                     }
                                 }
                             `,
-                        },
-                    })
+                          },
+                      })
                     : {
-                        data: {
-                            domains: [],
-                        },
-                    }
+                          data: {
+                              domains: [],
+                          },
+                      }
 
                 if (aborted) {
                     throw new InterruptionError()
@@ -113,13 +115,16 @@ export default function useStreamOwnerOptions() {
             })
         }
 
-        setOptions([{
-            label: 'ENS Domains',
-            options: ensOptions,
-        }, {
-            label: 'Eth Account',
-            options: ethAccountOptions,
-        }])
+        setOptions([
+            {
+                label: 'ENS Domains',
+                options: ensOptions,
+            },
+            {
+                label: 'Eth Account',
+                options: ethAccountOptions,
+            },
+        ])
     }, [user, domains])
 
     return options

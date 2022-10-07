@@ -85,7 +85,7 @@ const PublishTransactionProgress = ({ publishMode, onCancel, status, isPrompted 
             >
                 <PublishProgress>
                     <PendingTasks isPrompted={isPrompted}>
-                        {pending.length > 0 && pending.map(key => pendingTitles[key]).join(', ')}
+                        {pending.length > 0 && pending.map((key) => pendingTitles[key]).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={((progress + 1) / (Object.keys(status).length * 2 + 1)) * 100} />
                 </PublishProgress>

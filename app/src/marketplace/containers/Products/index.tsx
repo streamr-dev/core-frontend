@@ -53,7 +53,7 @@ const Products = () => {
     const onFilterChange = useCallback(
         (filter: Filter) => {
             dispatch(updateFilter(filter))
-            dispatch(getProducts(true)).then(productIds => {
+            dispatch(getProducts(true)).then((productIds) => {
                 if (isMounted()) {
                     loadDataUnionStats(productIds)
                     loadProductsFromContract()
@@ -72,7 +72,7 @@ const Products = () => {
             dispatch(
                 getProductsDebounced({
                     replace: true,
-                    onSuccess: productIds => {
+                    onSuccess: (productIds) => {
                         if (isMounted()) {
                             loadDataUnionStats(productIds)
                             loadProductsFromContract()
@@ -85,7 +85,7 @@ const Products = () => {
     )
     const clearFiltersAndReloadProducts = useCallback(() => {
         dispatch(clearFilters())
-        dispatch(getProducts(true)).then(productIds => {
+        dispatch(getProducts(true)).then((productIds) => {
             if (isMounted()) {
                 loadDataUnionStats(productIds)
                 loadProductsFromContract()
@@ -124,7 +124,7 @@ const Products = () => {
                 <ProductsComponent
                     products={products.map((p, i) => {
                         const beneficiaryAddress = (p.beneficiaryAddress || '').toLowerCase()
-                        const contractProd = contractProducts.find(cp => cp.id === p.id)
+                        const contractProd = contractProducts.find((cp) => cp.id === p.id)
                         const pricingTokenAddress = contractProd ? contractProd.pricingTokenAddress : null
                         const pricePerSecond = contractProd ? contractProd.pricePerSecond : p.pricePerSecond
                         return merge({}, p, {

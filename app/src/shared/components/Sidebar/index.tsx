@@ -21,7 +21,7 @@ const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
     const elRef = useRef()
     // close on esc
     const onKeyDown = useCallback(
-        event => {
+        (event) => {
             if (isEditableElement(event.target || event.srcElement)) {
                 return
             }
@@ -38,7 +38,7 @@ const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
     )
     // close on click outside
     const onClick = useCallback(
-        event => {
+        (event) => {
             if (!isOpen || typeof onClose !== 'function') {
                 return
             }
@@ -75,7 +75,7 @@ const Container = styled.div`
     padding: 24px 32px;
 `
 
-const UnstyledErrorComponentView = props => <Container {...props} as={SharedErrorComponentView} />
+const UnstyledErrorComponentView = (props) => <Container {...props} as={SharedErrorComponentView} />
 
 const ErrorComponentView = styled(UnstyledErrorComponentView)`
     align-items: initial;
@@ -184,7 +184,7 @@ const UnstyledCollapse = ({ label, children, isOpen: isOpenProp, ...props }) => 
         setIsOpen(isOpenProp)
     }, [isOpenProp])
     const toggle = useCallback(() => {
-        setIsOpen(state => !state)
+        setIsOpen((state) => !state)
     }, [])
     return (
         <Container {...props}>
@@ -246,7 +246,7 @@ const Collapse = styled(UnstyledCollapse)`
     }
 `
 Object.assign(Sidebar, {
-    Body: withErrorBoundary(props => (
+    Body: withErrorBoundary((props) => (
         <Body {...props}>
             <ErrorComponentView {...props} />
         </Body>

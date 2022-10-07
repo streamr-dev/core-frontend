@@ -42,7 +42,7 @@ const Item = styled.div`
     }
 `
 
-const UnstyledActions = props => <Item {...props} onClick={event => event.stopPropagation()} />
+const UnstyledActions = (props) => <Item {...props} onClick={(event) => event.stopPropagation()} />
 
 const Actions = styled(UnstyledActions)`
     visibility: hidden;

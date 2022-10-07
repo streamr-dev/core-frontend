@@ -5,7 +5,7 @@ import usePending, { useAnyPending } from '$shared/hooks/usePending'
 import * as PendingContext from '$shared/contexts/Pending'
 
 function wait(timeout) {
-    return new Promise(resolve => setTimeout(resolve, timeout))
+    return new Promise((resolve) => setTimeout(resolve, timeout))
 }
 
 function Unmounter({ children, unmountAfter }) {
@@ -24,7 +24,7 @@ function Unmounter({ children, unmountAfter }) {
 }
 
 describe('usePending', () => {
-    it('is pending while waiting for wrapped function', async done => {
+    it('is pending while waiting for wrapped function', async (done) => {
         let currentPendingState
         const timeout = 50
         const fn = jest.fn()
@@ -60,7 +60,7 @@ describe('usePending', () => {
         })
         done()
     })
-    it('can call wrapped function multiple times, will wait for all to complete', async done => {
+    it('can call wrapped function multiple times, will wait for all to complete', async (done) => {
         let currentPendingState
         const timeout = 100
         const started = jest.fn()
@@ -101,7 +101,7 @@ describe('usePending', () => {
         })
         done()
     })
-    it('can detect any pending', async done => {
+    it('can detect any pending', async (done) => {
         let currentPendingContext
         const timeout = 100
 
@@ -137,7 +137,7 @@ describe('usePending', () => {
         })
         done()
     })
-    it('can handle pending item unmounting', async done => {
+    it('can handle pending item unmounting', async (done) => {
         let currentPendingContext
         const timeout = 100
         const unmountTime = timeout * 0.5
@@ -175,7 +175,7 @@ describe('usePending', () => {
         })
         done()
     })
-    it('works with nested contexts', async done => {
+    it('works with nested contexts', async (done) => {
         let currentPendingContext
         const maxTimeout = 100
 

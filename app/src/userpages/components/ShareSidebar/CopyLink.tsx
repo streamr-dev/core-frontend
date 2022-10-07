@@ -35,7 +35,7 @@ const Button = styled.button`
         `}
 `
 
-const UnstyledCopyLink = props => {
+const UnstyledCopyLink = (props) => {
     const { isCopied, copy } = useCopy()
     const { resourceType, resourceId } = usePermissionsState()
     const onClick = useCallback(() => {

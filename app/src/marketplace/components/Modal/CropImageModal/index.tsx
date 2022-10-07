@@ -40,7 +40,7 @@ export function getResizedBlob(originalCanvas: HTMLCanvasElement): Promise<Blob>
         canvas = resizedCanvas
     }
 
-    return new Promise(resolve => canvas.toBlob(resolve))
+    return new Promise((resolve) => canvas.toBlob(resolve))
 }
 
 const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {

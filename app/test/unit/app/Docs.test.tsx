@@ -161,7 +161,7 @@ const links = ({ section, dataUnions }) => {
     const docsMap = generateMap({
         dataUnions,
     })
-    return Object.keys(docsMap[section]).map(doc => docsMap[section][doc].path)
+    return Object.keys(docsMap[section]).map((doc) => docsMap[section][doc].path)
 }
 
 // TODO: Fix this test
@@ -170,13 +170,13 @@ describe('Docs Routes', () => {
         sections({
             dataUnions: true,
         }),
-    )('Smoke test routes for %s', section => {
+    )('Smoke test routes for %s', (section) => {
         it.each(
             links({
                 section,
                 dataUnions: true,
             }),
-        )('shows route: %s', url => {
+        )('shows route: %s', (url) => {
             const el = mount(
                 <MemoryRouter initialEntries={[url]}>
                     <Switch>{DocsRouter()}</Switch>

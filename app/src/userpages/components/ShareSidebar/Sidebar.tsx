@@ -53,7 +53,7 @@ const UnstyledShareSidebar = ({ className, onClose }) => {
     const [selectedUserId, setSelectedUserId] = useState()
     const isMounted = useIsMounted()
     const onAdd = useCallback(
-        userId => {
+        (userId) => {
             // Delayed selecting of the newly added entries make it feel more natural.
             setTimeout(() => {
                 if (isMounted()) {

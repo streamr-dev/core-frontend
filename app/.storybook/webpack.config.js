@@ -10,9 +10,7 @@ const origConfig = require('../webpack.config')
 
 module.exports = {
     module: {
-        rules: [
-            ...origConfig.module.rules,
-        ],
+        rules: [...origConfig.module.rules],
     },
     output: {
         publicPath: process.env.STORYBOOK_BASE_PATH || '/',
@@ -29,5 +27,5 @@ module.exports = {
     ],
     resolve: {
         ...origConfig.resolve,
-    }
+    },
 }

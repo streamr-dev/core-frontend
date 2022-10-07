@@ -327,11 +327,11 @@ const Item = ({ product, stats }: Props) => {
         setIsOpen(!isOpen)
     }, [isOpen])
     const validate = useCallback(
-        product => {
+        (product) => {
             const invalidFields = validateProduct(product)
             const errors = Object.keys(invalidFields)
-                .filter(field => !!invalidFields[field])
-                .map(field => field)
+                .filter((field) => !!invalidFields[field])
+                .map((field) => field)
             const valid = !!(errors.length <= 0)
 
             if (!!valid && isEthereumAddress(product.beneficiaryAddress)) {
@@ -359,7 +359,7 @@ const Item = ({ product, stats }: Props) => {
         [stats],
     )
     const redirectToEditProduct = useCallback(
-        productId => {
+        (productId) => {
             if (!isMounted()) {
                 return
             }
@@ -374,7 +374,7 @@ const Item = ({ product, stats }: Props) => {
         [isMounted, history],
     )
     const publish = useCallback(
-        async productId =>
+        async (productId) =>
             wrapPublish(async () => {
                 const product = await getProductById(productId || '')
                 const productWithPendingChanges = withPendingChanges(product)
@@ -391,7 +391,7 @@ const Item = ({ product, stats }: Props) => {
         [wrapPublish, validate, publishDialog, redirectToEditProduct],
     )
     const deploy = useCallback(
-        async productId =>
+        async (productId) =>
             wrapDeploy(async () => {
                 const product = await getProductById(productId || '')
                 const productWithPendingChanges = withPendingChanges(product)
@@ -400,7 +400,7 @@ const Item = ({ product, stats }: Props) => {
                 if (valid) {
                     let updatedProduct = product
 
-                    const updateAddress = async beneficiaryAddress => {
+                    const updateAddress = async (beneficiaryAddress) => {
                         updatedProduct = await putProduct({ ...product, beneficiaryAddress }, product.id || '')
                     }
 
@@ -422,7 +422,7 @@ const Item = ({ product, stats }: Props) => {
         const initials = (productName || '')
             .split(/\s+/)
             .filter(Boolean)
-            .map(s => s[0])
+            .map((s) => s[0])
             .slice(0, 2)
             .join('')
             .toUpperCase()
@@ -445,7 +445,7 @@ const Item = ({ product, stats }: Props) => {
                         {dataUnion ? (
                             <Tooltip value="Copy DU address">
                                 <Address
-                                    onClick={event => {
+                                    onClick={(event) => {
                                         event.stopPropagation()
                                         copy(dataUnion.id)
                                         Notification.push({

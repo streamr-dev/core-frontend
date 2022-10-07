@@ -54,7 +54,7 @@ const Button = ({
             },
             className,
         )}
-        onClick={disabled ? e => e.preventDefault() : onClick}
+        onClick={disabled ? (e) => e.preventDefault() : onClick}
         disabled={disabled || waiting}
         tabIndex={disabled ? -1 : 0}
     >

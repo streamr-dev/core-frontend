@@ -5,7 +5,7 @@ import useFilePreview from '$shared/hooks/useFilePreview'
 describe('useFilePreview', () => {
     beforeEach(() => {
         URL.revokeObjectURL = jest.fn()
-        URL.createObjectURL = jest.fn().mockImplementation(file => file.name)
+        URL.createObjectURL = jest.fn().mockImplementation((file) => file.name)
     })
     afterEach(() => {
         URL.revokeObjectURL.mockReset()

@@ -11,7 +11,7 @@ export default function useValidateNetwork() {
     }, [switchNetworkDialog])
     const itp = useInterrupt()
     return useCallback(
-        async nextChainId => {
+        async (nextChainId) => {
             const { requireUninterrupted } = itp()
 
             try {

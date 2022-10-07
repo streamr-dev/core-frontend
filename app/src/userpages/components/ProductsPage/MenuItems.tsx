@@ -5,7 +5,7 @@ import useCopy from '$shared/hooks/useCopy'
 import routes from '$routes'
 
 // wrap link to avoid validation error in MenuItem
-const MenuLink = props => <Link {...props} />
+const MenuLink = (props) => <Link {...props} />
 
 export const Edit = ({ id }: any) => (
     <MenuItem

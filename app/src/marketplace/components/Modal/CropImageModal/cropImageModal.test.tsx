@@ -7,7 +7,7 @@ jest.mock('$shared/components/ModalPortal', () => ({
 const mockGetImage = jest.fn(() => ({
     width: 100,
     height: 100,
-    toBlob: resolve => resolve('image'),
+    toBlob: (resolve) => resolve('image'),
 }))
 jest.doMock('react-avatar-editor', () => ({
     __esModule: true,
@@ -33,7 +33,7 @@ describe('CropImageModal', () => {
             const originalCanvas = {
                 width: 100,
                 height: 100,
-                toBlob: resolve => resolve('image'),
+                toBlob: (resolve) => resolve('image'),
             }
             expect(originalCanvas.width).toBeLessThanOrEqual(MAX_WIDTH)
             const result = await getResizedBlob(originalCanvas)
@@ -47,7 +47,7 @@ describe('CropImageModal', () => {
                 getContext: () => ({
                     drawImage: jest.fn(),
                 }),
-                toBlob: resolve => resolve('nextImage'),
+                toBlob: (resolve) => resolve('nextImage'),
             }
             jest.spyOn(document, 'createElement').mockImplementation(() => nextCanvas)
             const originalCanvas = {

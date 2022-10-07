@@ -49,7 +49,7 @@ export const WhitelistEditor = () => {
         <WhitelistEditorComponent
             items={items}
             enabled={isEnabled}
-            onEnableChanged={value => updateRequiresWhitelist(value)}
+            onEnableChanged={(value) => updateRequiresWhitelist(value)}
             onAdd={onAdd}
             onRemove={onRemove}
             actionsEnabled={actionsEnabled}

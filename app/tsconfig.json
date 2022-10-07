@@ -1,36 +1,35 @@
 {
-  "compilerOptions": {
-    "outDir": "./dist/",
-    "noImplicitAny": true,
-    "module": "es6",
-    "target": "es2017",
-    "jsx": "react",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node",
+    "compilerOptions": {
+        "outDir": "./dist/",
+        "noImplicitAny": true,
+        "module": "es6",
+        "target": "es2017",
+        "jsx": "react",
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "moduleResolution": "node",
 
-    "resolveJsonModule": true,
+        "resolveJsonModule": true,
 
-    "lib": ["dom", "esnext"],
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "noEmit": true,
+        "lib": ["dom", "esnext"],
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "isolatedModules": true,
+        "noEmit": true,
 
-
-    "baseUrl": "./",
-    "paths": {
-      "$app/*": ["*"],
-      "$auth/*": ["src/auth/*"],
-      "$docs/*": ["src/docs/*"],
-      "$mp/*": ["src/marketplace/*"],
-      "$userpages/*": ["src/userpages/*"],
-      "$routes/*": ["src/routes/*"],
-      "$shared/*": ["src/shared/*"],
-      "$testUtils/*": ["src/test/test-utils/*"],
-      "$ui/*": ["src/shared/components/Ui/*"],
-      "$utils/*": ["src/utils/*"],
-      "$config": ["src/config/*.toml"]
+        "baseUrl": "./",
+        "paths": {
+            "$app/*": ["*"],
+            "$auth/*": ["src/auth/*"],
+            "$docs/*": ["src/docs/*"],
+            "$mp/*": ["src/marketplace/*"],
+            "$userpages/*": ["src/userpages/*"],
+            "$routes/*": ["src/routes/*"],
+            "$shared/*": ["src/shared/*"],
+            "$testUtils/*": ["src/test/test-utils/*"],
+            "$ui/*": ["src/shared/components/Ui/*"],
+            "$utils/*": ["src/utils/*"],
+            "$config": ["src/config/*.toml"]
+        }
     }
-  }
 }

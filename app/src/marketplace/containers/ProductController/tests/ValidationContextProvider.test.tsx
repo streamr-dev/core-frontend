@@ -28,7 +28,7 @@ const mockState = {
     },
 }
 jest.mock('react-redux', () => ({
-    useSelector: jest.fn().mockImplementation(selectorFn => selectorFn(mockState)),
+    useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
     useDispatch: jest.fn(),
 }))
 describe('validation context', () => {

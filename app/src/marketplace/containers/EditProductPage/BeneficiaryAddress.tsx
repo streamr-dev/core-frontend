@@ -79,7 +79,7 @@ const BeneficiaryAddress = ({ address: addressProp, onChange, disabled, classNam
         setOwnAddress(e.target.value)
     }, [])
     return (
-        <form autoComplete="off" onSubmit={e => e.preventDefault()}>
+        <form autoComplete="off" onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="beneficiaryAddress" className={cx(styles.root, className)}>
                 <WithInputActions
                     disabled={disabled}

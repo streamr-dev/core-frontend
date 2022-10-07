@@ -38,7 +38,7 @@ export const formatSearchResults = (results: Record<string, any>) => {
         return []
     }
 
-    return results.slice(0, 10).map(result => {
+    return results.slice(0, 10).map((result) => {
         const { content: fullText, matchData } = result
         const [matchPosition, matchLength] = matchData
         const highlightedFullText = highlightMatch(fullText, matchPosition, matchPosition + matchLength).replace(
@@ -50,7 +50,7 @@ export const formatSearchResults = (results: Record<string, any>) => {
     })
 }
 
-const formatSearchMatchData = matchData => {
+const formatSearchMatchData = (matchData) => {
     // matchPosition: The number of characters into the string where the match is located.
     // matchLength: The number of characters of the keyword matched.
     let matchPosition = 0
@@ -85,7 +85,7 @@ export const runSearchQuery = ({ query, index, store }: any) => {
         // Search on the 'content' field of the array only.
         // Store is built with the title as the first sentence of the 'content' field.
         // Exact matches get a boost. Trailing wildcard (type-ahead) matches get a lower score.
-        index.query(q => {
+        index.query((q) => {
             q.term(lunr.tokenizer(query), {
                 fields: ['content'],
                 boost: 100,

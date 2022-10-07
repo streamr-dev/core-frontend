@@ -4,12 +4,12 @@
 import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
 import { selectUserData } from '$shared/modules/user/selectors'
-export const mapStateToProps = state => ({
+export const mapStateToProps = (state) => ({
     user: selectUserData(state),
 })
 
 function Analytics({ user }) {
-    Sentry.configureScope(scope => {
+    Sentry.configureScope((scope) => {
         scope.setUser(user)
     })
     return null

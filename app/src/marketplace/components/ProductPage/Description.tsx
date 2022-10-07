@@ -69,7 +69,7 @@ const UnstyledDescription = ({ description, sidebar, ...props }: Props) => (
             <StyledMarkdownText text={description} />
             <SideBar>
                 {sidebar &&
-                    Object.keys(sidebar).map(id => {
+                    Object.keys(sidebar).map((id) => {
                         const { title, loading, value } = sidebar[id]
                         return (
                             <SideBarItem key={id}>

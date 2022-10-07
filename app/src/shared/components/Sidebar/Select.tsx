@@ -12,7 +12,7 @@ export type Props = {
     className?: string | null | undefined
 }
 
-const IconOption = props => (
+const IconOption = (props) => (
     <components.Option {...props}>
         {props.data.label}
         {props.isSelected && <SvgIcon name="tick" className={styles.tick} />}
@@ -26,8 +26,8 @@ const customStyles = {
         boxShadow: 'none',
         backgroundColor: state.isDisabled ? 'transparent' : provided.backgroundColor,
     }),
-    valueContainer: provided => ({ ...provided, padding: 0 }),
-    singleValue: provided => ({
+    valueContainer: (provided) => ({ ...provided, padding: 0 }),
+    singleValue: (provided) => ({
         ...provided,
         color: '#ADADAD',
         fontWeight: '400',
@@ -36,7 +36,7 @@ const customStyles = {
             fontWeight: '500',
         },
     }),
-    menu: provided => ({
+    menu: (provided) => ({
         ...provided,
         width: 'auto',
         margin: 0,

@@ -80,7 +80,7 @@ export const getEnsDomains = ({ addresses }: { addresses: Array<Address> }): Api
             query: `
             query {
                 domains(
-                    where: { owner_in: [${(addresses || []).map(address => `"${address}"`).join(', ')}]}
+                    where: { owner_in: [${(addresses || []).map((address) => `"${address}"`).join(', ')}]}
                     orderBy: name
                 ) {
                     id

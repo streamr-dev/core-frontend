@@ -18,7 +18,7 @@ const actions = {
 const UnstyledWhitelistEditErrorDialog = ({ publishMode, status, onClose, ...props }) => {
     const failedAction = useMemo(() => {
         const keys = Object.keys(status)
-        const failed = keys.filter(key => status[key] === transactionStates.FAILED)
+        const failed = keys.filter((key) => status[key] === transactionStates.FAILED)
 
         if (failed.length === keys.length) {
             return 'allFailed'

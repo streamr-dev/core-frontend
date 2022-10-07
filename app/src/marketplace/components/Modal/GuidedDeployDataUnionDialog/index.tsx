@@ -77,11 +77,11 @@ const GuidedDeployDataUnionDialog = ({
             setWaitingOnContinue(true)
             await onContinueProp(skipHelp)
         } else {
-            setStep(prev => prev + 1)
+            setStep((prev) => prev + 1)
         }
     }, [onContinueProp, isLastStep, skipHelp])
     const setSkipped = useCallback(
-        checked => {
+        (checked) => {
             setSkipHelp(checked)
         },
         [setSkipHelp],
@@ -159,7 +159,7 @@ const GuidedDeployDataUnionDialog = ({
                                 <Label check className={styles.label}>
                                     <Checkbox
                                         value={skipHelp}
-                                        onChange={e => {
+                                        onChange={(e) => {
                                             setSkipped(e.target.checked)
                                         }}
                                     />
@@ -196,7 +196,7 @@ const GuidedDeployDataUnionDialog = ({
             >
                 {helpContent}
                 <div className={styles.tabs}>
-                    {[0, 1, 2, 3].map(i => (
+                    {[0, 1, 2, 3].map((i) => (
                         <div key={i} className={styles.tab}>
                             <button type="button" onClick={() => setStep(i)} className={styles.tabButton}>
                                 <div

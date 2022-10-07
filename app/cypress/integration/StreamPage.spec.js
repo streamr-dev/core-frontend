@@ -128,13 +128,17 @@ describe('New stream page', () => {
         cy.login()
         cy.visit('/core/streams/new')
         cy.location('pathname').should('eq', '/core/streams/new')
-        cy.get('[data-test-hook=TOCPage]').find('h1').contains(/name your stream/i)
+        cy.get('[data-test-hook=TOCPage]')
+            .find('h1')
+            .contains(/name your stream/i)
 
         // Wait for domains to load
         // eslint-disable-next-line cypress/no-unnecessary-waiting
         cy.wait(3000)
 
-        cy.get('[name=domain]').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+        cy.get('[name=domain]')
+            .invoke('val')
+            .should('match', /^0x[0-9a-f.]+/i)
     })
 
     it.skip('creates a stream and takes the user to the edit page', () => {
@@ -146,10 +150,15 @@ describe('New stream page', () => {
             const streamId = `${domain}/test/${path}`
             cy.get('input[name=pathname]').clear().type(`test/${path}`)
             cy.get('input[name=description]').clear().type('Lorem ipsum.')
-            cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+            cy.get('[data-test-hook=StreamId]')
+                .find('button')
+                .contains(/create/i)
+                .click()
 
             cy.location().should((l) => {
-                const { params: { id } } = matchPath(l.pathname, {
+                const {
+                    params: { id },
+                } = matchPath(l.pathname, {
                     path: '/core/streams/:id',
                 })
                 const encodedId = encodeURIComponent(streamId)
@@ -162,8 +171,12 @@ describe('New stream page', () => {
             // eslint-disable-next-line cypress/no-unnecessary-waiting
             cy.wait(3000)
 
-            cy.get('[data-test-hook=TOCPage]').find('h1').contains(/set up your stream/i)
-            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('[data-test-hook=TOCPage]')
+                .find('h1')
+                .contains(/set up your stream/i)
+            cy.get('[name=domain')
+                .invoke('val')
+                .should('match', /^0x[0-9a-f.]+/i)
             cy.get('[name=pathname]').invoke('val').should('eq', `test/${path}`)
         })
     })
@@ -171,29 +184,50 @@ describe('New stream page', () => {
     it.skip('does not save until valid path is given', () => {
         cy.login()
         cy.visit('/core/streams/new')
-        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).should('exist')
+        cy.get('[data-test-hook=StreamId]')
+            .find('button')
+            .contains(/create/i)
+            .should('exist')
 
         cy.get('input[name=pathname]').clear().type('invalid path name')
 
-        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).should('exist')
+        cy.get('[data-test-hook=StreamId]')
+            .find('button')
+            .contains(/create/i)
+            .should('exist')
         cy.contains(/path may only contain alpha-numeric characters/i).should('not.exist')
-        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+        cy.get('[data-test-hook=StreamId]')
+            .find('button')
+            .contains(/create/i)
+            .click()
         cy.contains(/path may only contain alpha-numeric characters/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('path/*($)name')
-        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+        cy.get('[data-test-hook=StreamId]')
+            .find('button')
+            .contains(/create/i)
+            .click()
         cy.contains(/path may only contain alpha-numeric characters/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('/path/')
-        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+        cy.get('[data-test-hook=StreamId]')
+            .find('button')
+            .contains(/create/i)
+            .click()
         cy.contains(/path name cannot start with a slash/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('path/')
-        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+        cy.get('[data-test-hook=StreamId]')
+            .find('button')
+            .contains(/create/i)
+            .click()
         cy.contains(/path name must end with an alpha-numeric character/i).should('exist')
 
         cy.get('input[name=pathname]').clear().type('path//name')
-        cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+        cy.get('[data-test-hook=StreamId]')
+            .find('button')
+            .contains(/create/i)
+            .click()
         cy.contains(/use a single slash to separate paths/i).should('exist')
     })
 
@@ -204,7 +238,10 @@ describe('New stream page', () => {
 
             cy.visit('/core/streams/new')
             cy.get('input[name=pathname]').clear().type(pathname)
-            cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+            cy.get('[data-test-hook=StreamId]')
+                .find('button')
+                .contains(/create/i)
+                .click()
             cy.contains(`Stream with id ${streamId} already exists`).should('exist')
         })
     })
@@ -219,7 +256,10 @@ describe('New stream page', () => {
         cy.contains(/you have unsaved changes/i).should('exist')
 
         // dismiss with cancel
-        cy.get('#modal-root').find('button').contains(/cancel/i).click()
+        cy.get('#modal-root')
+            .find('button')
+            .contains(/cancel/i)
+            .click()
         cy.location('pathname').should('eq', '/core/streams/new')
 
         // click back again to exit
@@ -238,7 +278,10 @@ describe('New stream page', () => {
         cy.getDefaultEthAccount().then((domain) => {
             const streamId = `${domain}/${path}`
             cy.get('input[name=pathname]').clear().type(path)
-            cy.get('[data-test-hook=StreamId]').find('button').contains(/create/i).click()
+            cy.get('[data-test-hook=StreamId]')
+                .find('button')
+                .contains(/create/i)
+                .click()
             cy.location('pathname').should('eq', `/core/streams/${encodeURIComponent(streamId)}`)
 
             cy.visit('/core/streams')
@@ -249,7 +292,9 @@ describe('New stream page', () => {
             cy.wait(3000)
 
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Set up your Stream')
-            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('[name=domain')
+                .invoke('val')
+                .should('match', /^0x[0-9a-f.]+/i)
             cy.get('input[name=pathname]').invoke('val').should('eq', path)
         })
     })
@@ -331,7 +376,9 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
 
-            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('[name=domain')
+                .invoke('val')
+                .should('match', /^0x[0-9a-f.]+/i)
             cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
@@ -372,7 +419,9 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('[name=domain')
+                .invoke('val')
+                .should('match', /^0x[0-9a-f.]+/i)
             cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
@@ -414,7 +463,9 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('[name=domain')
+                .invoke('val')
+                .should('match', /^0x[0-9a-f.]+/i)
             cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('input[name=description]').invoke('val').should('eq', 'Lorem ipsum.')
             cy.get('h3').contains('Fields')
@@ -442,7 +493,9 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.login('tester two')
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('[name=domain')
+                .invoke('val')
+                .should('match', /^0x[0-9a-f.]+/i)
             cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('h3').contains('Fields').should('not.exist')
         })
@@ -462,7 +515,9 @@ describe('Stream read-only page (no edit permission)', () => {
             cy.logout()
             cy.visit(`/core/streams/${encodedId}`)
             cy.get('[data-test-hook=TOCPage]').find('h1').contains('Read only stream')
-            cy.get('[name=domain').invoke('val').should('match', /^0x[0-9a-f.]+/i)
+            cy.get('[name=domain')
+                .invoke('val')
+                .should('match', /^0x[0-9a-f.]+/i)
             cy.get('input[name=pathname]').invoke('val').should('eq', pathname)
             cy.get('label').contains('Description').should('not.exist')
         })
@@ -779,7 +834,10 @@ describe('Stream edit page', () => {
 
                 cy.server()
 
-                cy.route('DELETE', `/api/v1/streams/${streamId}/storageNodes/0xde1112f631486CfC759A50196853011528bC5FA0`).as('disableNode')
+                cy.route(
+                    'DELETE',
+                    `/api/v1/streams/${streamId}/storageNodes/0xde1112f631486CfC759A50196853011528bC5FA0`,
+                ).as('disableNode')
 
                 cy.visit(`/core/streams/${encodedId}`)
                 cy.get('[data-test-hook="Storage nodes"]').within(() => {

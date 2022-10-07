@@ -107,7 +107,7 @@ const urlValidator = yup.string().trim().url()
 const emailValidator = yup.string().trim().email()
 export const validate = (product: Product): Record<string, any> => {
     const invalidFields = {}
-    ;['name', 'description', 'category'].forEach(field => {
+    ;['name', 'description', 'category'].forEach((field) => {
         invalidFields[field] = !product[field]
     })
     invalidFields.imageUrl = !product.imageUrl && !product.newImageToUpload
@@ -134,7 +134,7 @@ export const validate = (product: Product): Record<string, any> => {
     }
 
     if (product.contact) {
-        ;['url', 'social1', 'social2', 'social3', 'social4'].forEach(field => {
+        ;['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
             // $FlowFixMe product.contact exists
             if (product.contact[field] && product.contact[field].length > 0) {
                 // $FlowFixMe product.contact exists

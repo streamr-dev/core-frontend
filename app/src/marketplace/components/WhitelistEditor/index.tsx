@@ -225,7 +225,7 @@ export const UnstyledWhitelistEditor = ({
                 <TableColumn>Status</TableColumn>
                 <TableColumn />
             </TableHeaderRow>
-            {items.map(item => (
+            {items.map((item) => (
                 <TableRowItem
                     key={item.address}
                     item={item}

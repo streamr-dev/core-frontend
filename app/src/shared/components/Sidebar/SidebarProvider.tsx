@@ -48,10 +48,10 @@ export default function SidebarProvider({ children }: Props) {
     const [currentSidebar, setCurrentSidebar] = React.useState(CLOSED)
     const transitionChecksRef = React.useRef([])
     const trySetCurrentSidebar = React.useCallback(
-        fn => {
-            setCurrentSidebar(prevValue => {
+        (fn) => {
+            setCurrentSidebar((prevValue) => {
                 const nextValue = typeof fn === 'function' ? fn(prevValue) : fn
-                const canTransition = transitionChecksRef.current.every(check => check(prevValue, nextValue))
+                const canTransition = transitionChecksRef.current.every((check) => check(prevValue, nextValue))
 
                 if (!canTransition) {
                     return prevValue
@@ -69,8 +69,8 @@ export default function SidebarProvider({ children }: Props) {
         [trySetCurrentSidebar],
     )
     const closeSidebar = React.useCallback(
-        sidebarName => {
-            trySetCurrentSidebar(prevSidebar => {
+        (sidebarName) => {
+            trySetCurrentSidebar((prevSidebar) => {
                 if (sidebarName) {
                     // only close if matching name
                     if (prevSidebar === sidebarName) {
@@ -88,8 +88,8 @@ export default function SidebarProvider({ children }: Props) {
         [trySetCurrentSidebar],
     )
     const toggleSidebar = React.useCallback(
-        sidebarName => {
-            trySetCurrentSidebar(prevSidebar => {
+        (sidebarName) => {
+            trySetCurrentSidebar((prevSidebar) => {
                 // only toggle to closed if specified sidebar currently open
                 if (prevSidebar === sidebarName) {
                     return CLOSED
@@ -102,7 +102,7 @@ export default function SidebarProvider({ children }: Props) {
         [trySetCurrentSidebar],
     )
     const isOpen = React.useCallback(
-        sidebarName => {
+        (sidebarName) => {
             if (sidebarName) {
                 return currentSidebar === sidebarName
             }
@@ -112,7 +112,7 @@ export default function SidebarProvider({ children }: Props) {
         [currentSidebar],
     )
     const addTransitionCheck = React.useCallback(
-        check => {
+        (check) => {
             const prevChecks = transitionChecksRef.current
 
             if (prevChecks.includes(check)) {
@@ -124,14 +124,14 @@ export default function SidebarProvider({ children }: Props) {
         [transitionChecksRef],
     )
     const removeTransitionCheck = React.useCallback(
-        check => {
+        (check) => {
             const prevChecks = transitionChecksRef.current
 
             if (!prevChecks.includes(check)) {
                 return
             }
 
-            transitionChecksRef.current = prevChecks.filter(c => c !== check)
+            transitionChecksRef.current = prevChecks.filter((c) => c !== check)
         },
         [transitionChecksRef],
     )

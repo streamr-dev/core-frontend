@@ -35,7 +35,7 @@ export function isPublished(product: Product) {
 }
 export const getPendingObject = (product: Product | PendingChanges): Record<string, any> => {
     let pendingObj = pick(product, PENDING_CHANGE_FIELDS)
-    pendingObj = pickBy(pendingObj, value => value !== undefined)
+    pendingObj = pickBy(pendingObj, (value) => value !== undefined)
     return pendingObj
 }
 export const getChangeObject = (original: Product, next: Product): Record<string, any> =>

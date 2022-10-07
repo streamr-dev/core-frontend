@@ -7,7 +7,7 @@ describe('UndoContext', () => {
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
-                        {props => {
+                        {(props) => {
                             expect(props.state).toBe(undefined)
                             expect(props.action).toBe(UndoContext.initialAction)
                             return null
@@ -21,7 +21,7 @@ describe('UndoContext', () => {
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
-                        {containerProps => {
+                        {(containerProps) => {
                             props = containerProps
                             return null
                         }}
@@ -40,7 +40,7 @@ describe('UndoContext', () => {
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
-                        {containerProps => {
+                        {(containerProps) => {
                             props = containerProps
                             return null
                         }}
@@ -64,7 +64,7 @@ describe('UndoContext', () => {
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
-                        {containerProps => {
+                        {(containerProps) => {
                             props = containerProps
                             return null
                         }}
@@ -99,7 +99,7 @@ describe('UndoContext', () => {
                 mount(
                     <UndoContext.Provider>
                         <UndoContext.Context.Consumer>
-                            {containerProps => {
+                            {(containerProps) => {
                                 props = containerProps
                                 return null
                             }}
@@ -123,7 +123,7 @@ describe('UndoContext', () => {
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
-                        {containerProps => {
+                        {(containerProps) => {
                             props = containerProps
                             return null
                         }}
@@ -134,7 +134,7 @@ describe('UndoContext', () => {
             const action = {
                 type: 'action',
             }
-            await props.push(action, prevState => {
+            await props.push(action, (prevState) => {
                 expect(prevState).toEqual(undefined) // history pointer should not change
 
                 return nextState
@@ -151,7 +151,7 @@ describe('UndoContext', () => {
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
-                        {containerProps => {
+                        {(containerProps) => {
                             props = containerProps
                             return null
                         }}
@@ -162,11 +162,11 @@ describe('UndoContext', () => {
             // none of the below should cause re-render so check strictly equal
             await props.push(action, () => null)
             expect(props).toBe(initialProps)
-            await props.push(action, prev => prev)
+            await props.push(action, (prev) => prev)
             expect(props).toBe(initialProps)
             await props.replace(() => null)
             expect(props).toBe(initialProps)
-            await props.replace(prev => prev)
+            await props.replace((prev) => prev)
             expect(props).toBe(initialProps)
         })
         it('can undo then redo after pushing state', async () => {
@@ -177,7 +177,7 @@ describe('UndoContext', () => {
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
-                        {containerProps => {
+                        {(containerProps) => {
                             props = containerProps
                             return null
                         }}
@@ -189,7 +189,7 @@ describe('UndoContext', () => {
                 type: 'action',
             }
             // add item
-            await props.push(action, prevState => {
+            await props.push(action, (prevState) => {
                 expect(prevState).toEqual(undefined) // history pointer should not change
 
                 return nextState
@@ -229,7 +229,7 @@ describe('UndoContext', () => {
         mount(
             <UndoContext.Provider>
                 <UndoContext.Context.Consumer>
-                    {containerProps => {
+                    {(containerProps) => {
                         props = containerProps
                         return null
                     }}
@@ -250,7 +250,7 @@ describe('UndoContext', () => {
         mount(
             <UndoContext.Provider>
                 <UndoContext.Context.Consumer>
-                    {containerProps => {
+                    {(containerProps) => {
                         props = containerProps
                         return null
                     }}
@@ -281,7 +281,7 @@ describe('UndoContext', () => {
         mount(
             <UndoContext.Provider>
                 <UndoContext.Context.Consumer>
-                    {containerProps => {
+                    {(containerProps) => {
                         props = containerProps
                         return null
                     }}

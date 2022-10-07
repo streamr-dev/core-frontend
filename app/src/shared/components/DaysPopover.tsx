@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Popover, { StyledDropdownToggle } from '$shared/components/Popover'
 
-const UnstyledDaysPopover = props => (
+const UnstyledDaysPopover = (props) => (
     <Popover
         {...props}
         title=""

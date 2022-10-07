@@ -13,11 +13,11 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 const contractMethods = (usePublicNode: boolean = false, networkChainId: number) =>
     marketplaceContract(usePublicNode, networkChainId).methods
 
-const parseTimestamp = timestamp => parseInt(timestamp, 10) * 1000
+const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
 
 const getMarketplaceContractCreationBlock = (chainId: number): number => {
     const map = getCoreConfig().marketplaceContractCreationBlocks
-    const blockItem = map.find(i => i.chainId === chainId)
+    const blockItem = map.find((i) => i.chainId === chainId)
 
     if (blockItem == null || blockItem.blockNumber == null) {
         throw new Error('No marketplaceContractCreationBlocks defined in config for this chain!')
@@ -215,9 +215,9 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
         }
     }
 
-    const isActiveSubscription = address => {
+    const isActiveSubscription = (address) => {
         const activeSubs = subscriptionEvents.filter(
-            e =>
+            (e) =>
                 e.returnValues &&
                 e.returnValues.subscriber === address &&
                 e.returnValues.endTimestamp &&
@@ -229,8 +229,8 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
     const events = [...approvedItems, ...rejectedItems]
     // Sort by blockNumber to make sure we take only the latest events into account
     events.sort((a, b) => a.blockNumber - b.blockNumber)
-    const addresses = new Map(events.map(item => [item.address, item]))
-    const whitelist: Array<WhitelistItem> = Array.from(addresses.values()).map(item => ({
+    const addresses = new Map(events.map((item) => [item.address, item]))
+    const whitelist: Array<WhitelistItem> = Array.from(addresses.values()).map((item) => ({
         address: item.address,
         status: (item.approved && (isActiveSubscription(item.address) ? 'subscribed' : 'added')) || 'removed',
         isPending: false,

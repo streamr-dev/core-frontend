@@ -138,7 +138,7 @@ export default function StreamModifier({ children, onValidate }) {
     const value = useMemo(
         () => ({
             commit,
-            stage: change =>
+            stage: (change) =>
                 void dispatch({
                     type: Modify,
                     payload: change,

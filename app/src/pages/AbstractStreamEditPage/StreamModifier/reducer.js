@@ -13,14 +13,7 @@ export const initialState = {
     paramsModified: {},
 }
 
-function toObject({
-    id,
-    description,
-    config,
-    storageDays,
-    inactivityThresholdHours,
-    partitions,
-} = {}) {
+function toObject({ id, description, config, storageDays, inactivityThresholdHours, partitions } = {}) {
     return {
         config,
         description,

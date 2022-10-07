@@ -121,10 +121,10 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
     const { load: loadMembers } = useDataUnionMembers()
     const { loadByDataUnionId: loadDataUnionStats } = useAllDataUnionStats()
     const dataUnionId = dataUnion && dataUnion.id
-    const pendingRequests = useMemo(() => joinRequests.filter(req => req.state === 'PENDING'), [joinRequests])
+    const pendingRequests = useMemo(() => joinRequests.filter((req) => req.state === 'PENDING'), [joinRequests])
     const approveSingle = useCallback(
-        async id => {
-            setProcessingRequests(prev => [...prev, id])
+        async (id) => {
+            setProcessingRequests((prev) => [...prev, id])
 
             try {
                 await approve({
@@ -138,7 +138,7 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                 })
             } finally {
                 if (isMounted()) {
-                    setProcessingRequests(prev => prev.filter(req => req !== id))
+                    setProcessingRequests((prev) => prev.filter((req) => req !== id))
                     // Refresh member listing
                     await loadMembers(dataUnionId)
                     loadDataUnionStats([dataUnionId])
@@ -173,7 +173,7 @@ const ManageJoinRequests = ({ dataUnion, joinRequests, className }: Props) => {
                 </TableHeader>
                 <LoadingIndicator loading={loading} />
                 <TableRows rowCount={3}>
-                    {pendingRequests.map(req => {
+                    {pendingRequests.map((req) => {
                         const processing = processingRequests.includes(req.id)
                         return (
                             <TableRow key={req.id} processing={processing}>

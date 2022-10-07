@@ -138,8 +138,8 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
     const { pathname } = useLocation()
     const editFilePath = useMemo(() => {
         let path = null
-        Object.values(docsMap).some(doc => {
-            const found = Object.values(doc).find(subdoc => subdoc.path === pathname)
+        Object.values(docsMap).some((doc) => {
+            const found = Object.values(doc).find((subdoc) => subdoc.path === pathname)
 
             if (found) {
                 path = found.filePath
@@ -151,11 +151,11 @@ const DocsLayout = ({ nav = <DocsNav />, staticContext, ...props }) => {
         return path
     }, [pathname])
     const toggleOverlay = useCallback(() => {
-        setIsSearching(wasSearching => !wasSearching)
+        setIsSearching((wasSearching) => !wasSearching)
     }, [])
     // Listen to key combination
     useEffect(() => {
-        const onKeyDown = event => {
+        const onKeyDown = (event) => {
             // ignore if event from form element, allow esc
             if (isEditableElement(event.target || event.srcElement) && event.key !== 'Escape') {
                 return

@@ -11,7 +11,7 @@ describe('categories - services', () => {
     setTempEnv({
         STREAMR_DOCKER_DEV_HOST: 'localhost',
     })
-    it('gets categories with empty', async done => {
+    it('gets categories with empty', async (done) => {
         const data = [
             {
                 id: 1,
@@ -37,7 +37,7 @@ describe('categories - services', () => {
         const result = await services.getCategories(true)
         expect(result).toStrictEqual(data)
     })
-    it('gets categories without empty', async done => {
+    it('gets categories without empty', async (done) => {
         const data = [
             {
                 id: 1,

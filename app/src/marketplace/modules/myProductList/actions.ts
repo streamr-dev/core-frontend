@@ -26,12 +26,12 @@ export const getMyProducts = (filter: Filter) => (dispatch: (...args: Array<any>
     dispatch(getMyProductsRequest())
     const params = getParamsForFilter(filter)
     return api.getMyProducts(params).then(
-        data => {
+        (data) => {
             const { result, entities } = normalize(data, productsSchema)
             dispatch(updateEntities(entities))
             dispatch(getMyProductsSuccess(result))
             return result
         },
-        error => dispatch(getMyProductsFailure(error)),
+        (error) => dispatch(getMyProductsFailure(error)),
     )
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const UnstyledErrorComponentView = props => <div {...props}>Oops. Something has broken down here.</div>
+const UnstyledErrorComponentView = (props) => <div {...props}>Oops. Something has broken down here.</div>
 
 const ErrorComponentView = styled(UnstyledErrorComponentView)`
     align-items: center;

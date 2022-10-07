@@ -3,7 +3,7 @@ import React, { useCallback, useRef, forwardRef } from 'react'
 import type { Ref } from '$shared/flowtype/common-types'
 import '$shared/flowtype/common-types'
 
-const sanitise = value => (value == null ? '' : value)
+const sanitise = (value) => (value == null ? '' : value)
 
 const normalize = (value: any): string => (typeof value === 'string' ? value.trim() : String(sanitise(value)))
 

@@ -219,7 +219,7 @@ const EditWrap = () => {
     )
 }
 
-const ProductContainer = withRouter(props => (
+const ProductContainer = withRouter((props) => (
     <UndoContext.Provider key={props.match.params.id}>
         <ProductController>
             <EditWrap />

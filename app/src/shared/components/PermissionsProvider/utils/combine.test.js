@@ -33,5 +33,5 @@ it('ignores empty ones', () => {
         foo: [],
     })
 
-    expect(({}).hasOwnProperty.call(c, 'foo')).toBe(false)
+    expect({}.hasOwnProperty.call(c, 'foo')).toBe(false)
 })

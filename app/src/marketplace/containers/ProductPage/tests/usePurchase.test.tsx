@@ -24,8 +24,8 @@ function mockDefaultAccount(defaultAccount) {
 
 const mockState = {}
 jest.mock('react-redux', () => ({
-    useSelector: jest.fn().mockImplementation(selectorFn => selectorFn(mockState)),
-    useDispatch: jest.fn().mockImplementation(() => action => action),
+    useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
+    useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
 jest.mock('$mp/utils/web3', () => ({
     ...jest.requireActual('$mp/utils/web3'),
@@ -369,7 +369,7 @@ describe('usePurchase', () => {
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx3)
             const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
-            const txPromise = new Promise(resolve => {
+            const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     emitter1.emit('transactionHash', hash1)
                 }, 200)
@@ -488,7 +488,7 @@ describe('usePurchase', () => {
             const setAllowanceStub = jest.spyOn(productServices, 'setMyTokenAllowance').mockImplementation(() => tx1)
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx2)
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
-            const txPromise = new Promise(resolve => {
+            const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     emitter1.emit('transactionHash', hash1)
                 }, 200)
@@ -584,7 +584,7 @@ describe('usePurchase', () => {
             }
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx)
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
-            const txPromise = new Promise(resolve => {
+            const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     emitter.emit('transactionHash', hash)
                 }, 200)
@@ -689,7 +689,7 @@ describe('usePurchase', () => {
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx3)
             const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
-            const txPromise = new Promise(resolve => {
+            const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     emitter1.emit('transactionHash', hash1)
                 }, 200)
@@ -799,7 +799,7 @@ describe('usePurchase', () => {
             const setAllowanceStub = jest.spyOn(productServices, 'setMyDaiAllowance').mockImplementation(() => tx1)
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx2)
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
-            const txPromise = new Promise(resolve => {
+            const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     emitter1.emit('transactionHash', hash1)
                 }, 200)
@@ -886,7 +886,7 @@ describe('usePurchase', () => {
             }
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx)
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
-            const txPromise = new Promise(resolve => {
+            const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     emitter.emit('transactionHash', hash)
                 }, 200)
@@ -962,7 +962,7 @@ describe('usePurchase', () => {
             }
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx)
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
-            const txPromise = new Promise(resolve => {
+            const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     emitter.emit('transactionHash', hash)
                 }, 200)
@@ -1064,7 +1064,7 @@ describe('usePurchase', () => {
             const buyProductStub = jest.spyOn(productServices, 'buyProduct').mockImplementation(() => tx3)
             const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
             const subscriptionStub = jest.spyOn(productActions, 'getProductSubscription')
-            const txPromise = new Promise(resolve => {
+            const txPromise = new Promise((resolve) => {
                 setTimeout(() => {
                     emitter1.emit('transactionHash', hash1)
                 }, 200)

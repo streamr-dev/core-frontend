@@ -170,7 +170,7 @@ export const buyProduct = (
 }
 export const getMyDataAllowance = (chainId: number): SmartContractCall<BN> =>
     getDefaultWeb3Account()
-        .then(myAddress =>
+        .then((myAddress) =>
             call(
                 dataTokenContractMethods(false, chainId).allowance(
                     myAddress,
@@ -195,7 +195,7 @@ export const setMyDataAllowance = (amount: string | BN, chainId: number): SmartC
 export const getMyDaiAllowance = (chainId: number): SmartContractCall<BN> => {
     const { uniswapAdaptorContractAddress } = getCoreConfig()
     return getDefaultWeb3Account()
-        .then(myAddress =>
+        .then((myAddress) =>
             call(daiTokenContractMethods(false, chainId).allowance(myAddress, uniswapAdaptorContractAddress)),
         )
         .then(fromAtto)

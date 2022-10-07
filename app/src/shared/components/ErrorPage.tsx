@@ -6,7 +6,7 @@ import OperationNotPermittedError from '$shared/errors/OperationNotPermittedErro
 const NOT_FOUND_ERRORS = [OperationNotPermittedError, ResourceNotFoundError]
 
 const ErrorPage = ({ error, ...props }) => {
-    if (NOT_FOUND_ERRORS.find(Err => error instanceof Err)) {
+    if (NOT_FOUND_ERRORS.find((Err) => error instanceof Err)) {
         return <NotFoundPage {...props} />
     }
 

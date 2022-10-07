@@ -56,11 +56,11 @@ const getTransactionsFailure = (error: ErrorInUi) => ({
 })
 
 export const fetchProducts = (ids: ProductIdList, chainId: number) => (dispatch: (...args: Array<any>) => any) => {
-    ;(ids || []).forEach(id => {
+    ;(ids || []).forEach((id) => {
         try {
             getProductFromContract(id, true, chainId)
                 .then(handleEntities(contractProductSchema, dispatch))
-                .catch(e => {
+                .catch((e) => {
                     console.warn(e)
                 })
         } catch (e) {
@@ -102,9 +102,9 @@ export const showEvents = () => (dispatch: (...args: Array<any>) => any, getStat
         })
         .then(handleEntities(transactionsSchema, dispatch))
         .then(() => {
-            dispatch(getTransactionsSuccess(eventsToShow.map(event => event.id)))
+            dispatch(getTransactionsSuccess(eventsToShow.map((event) => event.id)))
         })
-        .catch(error => {
+        .catch((error) => {
             dispatch(getTransactionsFailure(error))
         })
 }
@@ -124,11 +124,11 @@ export const getTransactionEvents = () => (dispatch: (...args: Array<any>) => an
     dispatch(getTransactionEventsRequest())
     return services
         .getTransactionEvents([address], ownedProductIds)
-        .then(result => {
+        .then((result) => {
             dispatch(getTransactionEventsSuccess(result))
             dispatch(showEvents())
         })
-        .catch(error => {
+        .catch((error) => {
             dispatch(getTransactionEventsFailure(error))
         })
 }

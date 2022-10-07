@@ -61,7 +61,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                         setQueue(nextQueue)
                         setMode(nextMode)
                     },
-                    e => {
+                    (e) => {
                         setModalError(e)
                     },
                 )
@@ -98,7 +98,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
             ),
         )
         queue
-            .subscribe('started', id => {
+            .subscribe('started', (id) => {
                 if (isMounted()) {
                     setCurrentAction(id)
                 }
@@ -109,7 +109,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 }
 
                 if (isMounted()) {
-                    setStatus(prevStatus => ({ ...prevStatus, [id]: nextStatus }))
+                    setStatus((prevStatus) => ({ ...prevStatus, [id]: nextStatus }))
                 }
             })
         return () => {
@@ -119,18 +119,18 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
     const somePending = useMemo(
         () =>
             Object.values(status).some(
-                value => value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED,
+                (value) => value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED,
             ),
         [status],
     )
     const allSucceeded = useMemo(
-        () => Object.values(status).every(value => value === transactionStates.CONFIRMED),
+        () => Object.values(status).every((value) => value === transactionStates.CONFIRMED),
         [status],
     )
     const allCompleted = useMemo(
         () =>
             Object.values(status).every(
-                value => value === transactionStates.CONFIRMED || value === transactionStates.FAILED,
+                (value) => value === transactionStates.CONFIRMED || value === transactionStates.FAILED,
             ),
         [status],
     )

@@ -20,9 +20,11 @@ export default function reducer(state, { type, payload }) {
         case Init:
             return {
                 cache: 0,
-                config: cloneDeep(payload || {
-                    fields: [],
-                }),
+                config: cloneDeep(
+                    payload || {
+                        fields: [],
+                    },
+                ),
             }
         case Invalidate:
             return {
@@ -34,10 +36,7 @@ export default function reducer(state, { type, payload }) {
                 ...state,
                 config: {
                     ...state.config,
-                    fields: [
-                        ...state.config.fields,
-                        payload,
-                    ],
+                    fields: [...state.config.fields, payload],
                 },
             }
         case RearrangeFields:
@@ -59,12 +58,14 @@ export default function reducer(state, { type, payload }) {
                     fields: (() => {
                         const [oldName, newName] = payload
 
-                        return state.config.fields.map((field) => (
-                            field.name === oldName ? {
-                                ...field,
-                                name: newName,
-                            } : field
-                        ))
+                        return state.config.fields.map((field) =>
+                            field.name === oldName
+                                ? {
+                                      ...field,
+                                      name: newName,
+                                  }
+                                : field,
+                        )
                     })(),
                 },
             }
@@ -76,12 +77,14 @@ export default function reducer(state, { type, payload }) {
                     fields: (() => {
                         const [name, newType] = payload
 
-                        return state.config.fields.map((field) => (
-                            field.name === name ? {
-                                ...field,
-                                type: newType,
-                            } : field
-                        ))
+                        return state.config.fields.map((field) =>
+                            field.name === name
+                                ? {
+                                      ...field,
+                                      type: newType,
+                                  }
+                                : field,
+                        )
                     })(),
                 },
             }

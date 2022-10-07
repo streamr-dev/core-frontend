@@ -166,7 +166,7 @@ const Popover = ({
     const [open, setOpen] = useState(false)
     const childrenArray = useMemo(() => React.Children.toArray(children), [children])
     const selectedIndex = useMemo(
-        () => childrenArray.findIndex(child => child.props.value === selectedItem),
+        () => childrenArray.findIndex((child) => child.props.value === selectedItem),
         [childrenArray, selectedItem],
     )
     const currentItem = useMemo(
@@ -212,7 +212,7 @@ const Popover = ({
         e.preventDefault()
     }, [])
     const toggle = useCallback(() => {
-        setOpen(wasOpen => !wasOpen)
+        setOpen((wasOpen) => !wasOpen)
     }, [])
     const getOnItemClick = useCallback(
         (index: number, originalHandler?: (...args: Array<any>) => any) =>

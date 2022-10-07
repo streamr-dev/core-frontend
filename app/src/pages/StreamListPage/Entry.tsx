@@ -23,7 +23,7 @@ export default function Entry({
     const { [StreamPermission.GRANT]: canGrant, [StreamPermission.DELETE]: canDelete } = useStreamPermissions()
     const { truncatedId } = getStreamPath(stream.id)
     const onDropdownToggle = useCallback(
-        open => {
+        (open) => {
             if (open) {
                 invalidatePermissions()
             }

@@ -94,7 +94,7 @@ class UndoContextProvider extends Component<Props, State> {
      * Move history pointer back.
      */
     undo = (done: (...args: Array<any>) => any) => {
-        const p: Promise<Record<string, any> | null> = new Promise(resolve =>
+        const p: Promise<Record<string, any> | null> = new Promise((resolve) =>
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) {
                     return null
@@ -119,7 +119,7 @@ class UndoContextProvider extends Component<Props, State> {
      * Move history pointer forward.
      */
     redo = (done: (...args: Array<any>) => any) => {
-        const p: Promise<Record<string, any> | null> = new Promise(resolve =>
+        const p: Promise<Record<string, any> | null> = new Promise((resolve) =>
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) {
                     return null
@@ -153,7 +153,7 @@ class UndoContextProvider extends Component<Props, State> {
                 : {
                       type: actionValue,
                   }
-        const p: Promise<Record<string, any> | null> = new Promise(resolve =>
+        const p: Promise<Record<string, any> | null> = new Promise((resolve) =>
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) {
                     return null
@@ -190,7 +190,7 @@ class UndoContextProvider extends Component<Props, State> {
      * No merge, only replace ala React.Component#replaceState.
      */
     replace = (fn: (...args: Array<any>) => any, done: (...args: Array<any>) => any) => {
-        const p: Promise<Record<string, any> | null> = new Promise(resolve =>
+        const p: Promise<Record<string, any> | null> = new Promise((resolve) =>
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) {
                     return null
@@ -220,7 +220,7 @@ class UndoContextProvider extends Component<Props, State> {
      * Set initialState which is used as the "reset" state value
      */
     setInitialState = (fn: (...args: Array<any>) => any, done: (...args: Array<any>) => any) => {
-        const p: Promise<void> = new Promise(resolve =>
+        const p: Promise<void> = new Promise((resolve) =>
             this.setState(({ initialState }) => {
                 const nextInitialState = typeof fn === 'function' ? fn(initialState) : initialState
                 return {
@@ -236,7 +236,7 @@ class UndoContextProvider extends Component<Props, State> {
      * Reset to initialState
      */
     reset = (done: (...args: Array<any>) => any) => {
-        const p: Promise<void> = new Promise(resolve =>
+        const p: Promise<void> = new Promise((resolve) =>
             this.setState(
                 ({ initialState }) => ({
                     history: [

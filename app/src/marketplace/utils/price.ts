@@ -94,7 +94,7 @@ export const arePricesEqual = (first: NumberString, second: NumberString) => BN(
 export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
     // Go from smallest time unit to the largest and see when we get a value bigger than 1.
     // This should be the most relevant unit for the user.
-    const guesses = Object.keys(timeUnits).filter(unit =>
+    const guesses = Object.keys(timeUnits).filter((unit) =>
         toSeconds(1, unit).multipliedBy(pricePerSecond).isGreaterThanOrEqualTo(1),
     )
     return guesses[0] || timeUnits.second

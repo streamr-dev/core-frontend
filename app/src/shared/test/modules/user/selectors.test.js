@@ -25,18 +25,18 @@ const state = {
     },
     entities: {
         products: {
-            '1': {
+            1: {
                 id: 1,
                 isFree: true,
                 pricePerSecond: BN(0),
             },
-            '2': {
+            2: {
                 id: 2,
                 isFree: false,
                 pricePerSecond: BN(200000000),
                 ownerAddress: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
             },
-            '3': {
+            3: {
                 id: 3,
                 isFree: false,
                 pricePerSecond: BN(200000000),
@@ -64,9 +64,11 @@ describe('user - selectors', () => {
 
     describe('isAuthenticating', () => {
         it('gives false on init', () => {
-            expect(all.isAuthenticating({
-                user: initialState,
-            })).toEqual(false)
+            expect(
+                all.isAuthenticating({
+                    user: initialState,
+                }),
+            ).toEqual(false)
         })
 
         it('gives false on success', () => {

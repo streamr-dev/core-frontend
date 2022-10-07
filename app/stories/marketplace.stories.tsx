@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react'
 import Products from '$mp/components/Products'
 import exampleProductList from './exampleProductList'
 
-const story = name => storiesOf(`Marketplace/${name}`, module).addDecorator(StoryRouter())
+const story = (name) => storiesOf(`Marketplace/${name}`, module).addDecorator(StoryRouter())
 
 story('ProductList')
     .addWithJSX('basic', () => (

@@ -4,8 +4,8 @@ import * as constants from '$mp/modules/product/constants'
 import * as services from '$mp/modules/product/services'
 import { initialState } from '$mp/modules/product/reducer'
 jest.mock('$mp/modules/myPurchaseList/actions', () => ({
-    getMyPurchases: () => dispatch =>
-        new Promise(resolve => {
+    getMyPurchases: () => (dispatch) =>
+        new Promise((resolve) => {
             dispatch({
                 type: 'TEST_GET_MY_PURCHASES',
             })

@@ -13,7 +13,7 @@ import * as web3Utils from '$mp/utils/web3'
 import { transactionStates, transactionTypes } from '$shared/utils/constants'
 import usePublish, { publishModes, actionsTypes } from '../usePublish'
 jest.mock('react-redux', () => ({
-    useDispatch: jest.fn().mockImplementation(() => action => action),
+    useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
 jest.mock('streamr-client-react', () => ({
     useClient: jest.fn(),
@@ -597,7 +597,7 @@ describe('usePublish', () => {
                 const statusFn = jest.fn()
                 const readyFn = jest.fn()
                 const finishFn = jest.fn()
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -682,7 +682,7 @@ describe('usePublish', () => {
                 const statusFn = jest.fn()
                 const readyFn = jest.fn()
                 const finishFn = jest.fn()
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -775,7 +775,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -852,7 +852,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -932,7 +932,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter1.emit('transactionHash', hash1)
                     }, 200)
@@ -1104,7 +1104,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1218,7 +1218,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1313,7 +1313,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1394,7 +1394,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1482,7 +1482,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter1.emit('transactionHash', hash1)
                     }, 200)
@@ -1585,7 +1585,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter1.emit('transactionHash', hash1)
                     }, 200)
@@ -1707,7 +1707,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1845,7 +1845,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise(resolve => {
+                const txPromise = new Promise((resolve) => {
                     setTimeout(() => {
                         emitter1.emit('transactionHash', hash1)
                     }, 200)

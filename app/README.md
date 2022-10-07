@@ -9,16 +9,16 @@ The Core frontend runs against an API backend and Ethereum smart contracts. For 
 
 Although the frontend consists of a single app, the code is structured into different folders based on the different functionalities of the app. The code is under the `src` folder:
 
-* `auth` contains components for login
-* `docs` contains the Streamr documentation
-* `marketplace` contains the data marketplace
-* `shared` has shared code and utilities
-* `userpages` contains the views for managing a user's Streamr resources
-* `routes` contains the list of App routes.
-* `utils` contains commonly used utilities, used throughout the App.
-* `stories` storybook stories.
-* `test` App unit tests.
-* `travis_scripts` Deployment scripts.
+-   `auth` contains components for login
+-   `docs` contains the Streamr documentation
+-   `marketplace` contains the data marketplace
+-   `shared` has shared code and utilities
+-   `userpages` contains the views for managing a user's Streamr resources
+-   `routes` contains the list of App routes.
+-   `utils` contains commonly used utilities, used throughout the App.
+-   `stories` storybook stories.
+-   `test` App unit tests.
+-   `travis_scripts` Deployment scripts.
 
 ## Getting Started
 
@@ -41,10 +41,10 @@ Community contributions are encouraged, please see the [Docs Editing Guide](http
 
 To be able to use the Marketplace, you'll need to configure these variables into your `.env` file:
 
-| Variable                                          | Description                                                          |
-|---------------------------------------------------|----------------------------------------------------------------------|
-| PORT                                              | Port used by webpack devServer                                       |
-| BUNDLE_ANALYSIS                                   | Optional, enables generating bundle size analysis report.            |
+| Variable        | Description                                               |
+| --------------- | --------------------------------------------------------- |
+| PORT            | Port used by webpack devServer                            |
+| BUNDLE_ANALYSIS | Optional, enables generating bundle size analysis report. |
 
 Default development values are taken from `.env.required` which can be overridden by values in your `.env` file.
 
@@ -65,7 +65,7 @@ Use `.travis.yml` to set the production values.
 
 Marketplace: [/marketplace](/marketplace)
 
-Core Pages:  [/core](/core)
+Core Pages: [/core](/core)
 
 Docs: [/docs](/docs)
 
@@ -78,13 +78,11 @@ Follow the instructions [https://github.com/streamr-dev/streamr-docker-dev](here
 
 Note that the instructions also include login credentials for the local app.
 
-
 ### Git Branches
 
 Master Branch (untagged) -> Production ready code
 
 Master Branch (tagged releases) -> Production code - https://streamr.network/core
-
 
 ### Deploying to Production
 
@@ -128,19 +126,18 @@ git tag -a v2.1.15 -m 'v2.1.15'
 git push --tags
 ```
 
-
 ### Storybook
 
 The project contains a Storybook including stories from the main components. The Storybook can be run with `npm run storybook` and built with `npm run build-storybook`. Storybook should be accessible after running `npm run storybook` at http://localhost:6006 or on your network at http://10.200.10.1:6006
 
 ## Deployment
 
-- When production builds:
-  - Webpack creates `.map`-file in `dist` -directory with bundled JS
-  - Travis has a script container (Runs when deploying in production)
-    - Creates a new release in Sentry by `TRAVIS_TAG`
-    - Pushes source map -file from `dist` into Sentry with tagged release
-    - Removes the `.map`-file so it doesn't end up in production
+-   When production builds:
+    -   Webpack creates `.map`-file in `dist` -directory with bundled JS
+    -   Travis has a script container (Runs when deploying in production)
+        -   Creates a new release in Sentry by `TRAVIS_TAG`
+        -   Pushes source map -file from `dist` into Sentry with tagged release
+        -   Removes the `.map`-file so it doesn't end up in production
 
 ### Sentry
 

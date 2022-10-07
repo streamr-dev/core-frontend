@@ -117,7 +117,7 @@ function UnstyledUnwrappedLoginPage({ className }) {
                             <Auth.PanelRow>
                                 <Auth.Header>Connect a wallet</Auth.Header>
                             </Auth.PanelRow>
-                            {methods.map(m => (
+                            {methods.map((m) => (
                                 <Auth.PanelRow key={m.id}>
                                     <SignInMethod
                                         disabled={connecting}

@@ -59,4 +59,4 @@ stories.add('tablet', () => <ProductStat.List items={stats} />, {
         defaultViewport: 'md',
     },
 })
-stories.add('loading', () => <ProductStat.List items={stats.map(stat => ({ ...stat, loading: true }))} />)
+stories.add('loading', () => <ProductStat.List items={stats.map((stat) => ({ ...stat, loading: true }))} />)

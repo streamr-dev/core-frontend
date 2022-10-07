@@ -84,7 +84,7 @@ const UnstyledKeyField = ({
     const isMounted = useIsMounted()
     const { copy } = useCopy()
     const toggleHidden = useCallback(() => {
-        setHidden(wasHidden => !wasHidden)
+        setHidden((wasHidden) => !wasHidden)
     }, [])
     useEffect(() => {
         if (onToggleEditorProp) {

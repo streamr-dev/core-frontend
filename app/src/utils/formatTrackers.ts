@@ -4,7 +4,7 @@ export default function formatTrackers(trackers) {
         return trackers
     }
 
-    return trackers.map(t => {
+    return trackers.map((t) => {
         if (!t || typeof t !== 'object') {
             return t
         }

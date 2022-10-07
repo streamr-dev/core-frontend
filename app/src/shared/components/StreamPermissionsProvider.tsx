@@ -25,7 +25,7 @@ export default function StreamPermissionsProvider({ children, preload = false, o
     const [permissions, setPermissions] = useState(getInitialPermissions(operationsRef.current))
     // 0 `cache` means we're not gonna run the permission fetching logic down the mounting
     // pipe. `preload` is a on-mount only thing by design.
-    const [cache, invalidate] = useReducer(current => current + 1, Number(!!preload))
+    const [cache, invalidate] = useReducer((current) => current + 1, Number(!!preload))
     useEffect(() => {
         setPermissions(getInitialPermissions(operationsRef.current))
     }, [streamId])
@@ -36,14 +36,14 @@ export default function StreamPermissionsProvider({ children, preload = false, o
         async function fn() {
             try {
                 const remotePermissions = await Promise.all(
-                    operationsRef.current.map(permission => fetchPermission(streamId, permission)),
+                    operationsRef.current.map((permission) => fetchPermission(streamId, permission)),
                 )
 
                 if (aborted) {
                     return
                 }
 
-                setPermissions(getPermissionsMap(operationsRef.current, index => Boolean(remotePermissions[index])))
+                setPermissions(getPermissionsMap(operationsRef.current, (index) => Boolean(remotePermissions[index])))
             } catch (e) {
                 if (e instanceof InterruptionError) {
                     return

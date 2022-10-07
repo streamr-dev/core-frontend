@@ -81,7 +81,7 @@ const renderIcon = (name: string | null | undefined, url: string | null | undefi
 const SocialIcons = ({ className, contactDetails }: Props) => {
     const [social1, social2, social3, social4] = useMemo(
         () =>
-            ['social1', 'social2', 'social3', 'social4'].map(name => {
+            ['social1', 'social2', 'social3', 'social4'].map((name) => {
                 const url = contactDetails[name]
                 return {
                     iconName: getIconForUrl(url),

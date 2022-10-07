@@ -98,7 +98,7 @@ export const getNativeTokenBalance = (address: Address, usePublicNode: boolean =
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     return web3.eth
         .getBalance(address)
-        .then(balance => BN(balance))
+        .then((balance) => BN(balance))
         .then(fromAtto)
 }
 export const getDataTokenBalance = (
@@ -128,7 +128,7 @@ export const getCustomTokenDecimals = async (contractAddress: Address, chainId: 
     return BN(decimals)
 }
 export const getMyNativeTokenBalance = (): Promise<BN> =>
-    getDefaultWeb3Account().then(myAccount => getNativeTokenBalance(myAccount))
+    getDefaultWeb3Account().then((myAccount) => getNativeTokenBalance(myAccount))
 export const getMyDataTokenBalance = async (): SmartContractCall<BN> => {
     const myAccount = await getDefaultWeb3Account()
     const chainId = await getChainId()

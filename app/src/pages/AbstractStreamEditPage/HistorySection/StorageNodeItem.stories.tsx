@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions'
 import { withKnobs, boolean, text } from '@storybook/addon-knobs'
 import StorageNodeItem from './StorageNodeItem'
 
-const story = name =>
+const story = (name) =>
     storiesOf(`Shared/${name}`, module)
         .addDecorator(
             styles({

@@ -22,8 +22,8 @@ const Tab = styled.div`
     font-weight: 500;
     line-height: 16px;
     color: #323232;
-    opacity: ${props => (props.active ? '1' : '0.5')};
-    border-bottom: ${props => (props.active ? '1px solid #323232' : 'none')};
+    opacity: ${(props) => (props.active ? '1' : '0.5')};
+    border-bottom: ${(props) => (props.active ? '1px solid #323232' : 'none')};
     position: relative;
     top: 1px;
     margin-right: 24px;
@@ -110,7 +110,7 @@ const Items = () => {
                         )}
                     </EmptyState>
                 )}
-                {activities.map(activity => (
+                {activities.map((activity) => (
                     <Item key={activity.id} activity={activity} />
                 ))}
             </Activities>

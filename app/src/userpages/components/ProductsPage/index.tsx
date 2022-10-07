@@ -54,7 +54,7 @@ const ProductsPage = () => {
     const { load: loadDataUnionStats, members, loadedIds, fetchingIds, reset: resetStats } = useAllDataUnionStats()
     // Make sure we show only normal products.
     // This is needed to avoid quick flash of possibly data union products.
-    const products = useMemo(() => allProducts.filter(p => p.type === productTypes.NORMAL), [allProducts])
+    const products = useMemo(() => allProducts.filter((p) => p.type === productTypes.NORMAL), [allProducts])
     useEffect(() => {
         // Modify filter to include only normal products
         const finalFilter = { ...filter, key: 'type', value: productTypes.NORMAL }
@@ -88,7 +88,7 @@ const ProductsPage = () => {
                         right: true,
                     }}
                 >
-                    {sortOptions.map(s => (
+                    {sortOptions.map((s) => (
                         <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
                         </Popover.Item>
@@ -107,7 +107,7 @@ const ProductsPage = () => {
                     />
                 )}
                 <Grid>
-                    {products.map(product => {
+                    {products.map((product) => {
                         const { id, beneficiaryAddress: originalBeneficiaryAddress, state, type } = product
                         const isDataUnion = isDataUnionProduct(type)
                         const beneficiaryAddress = (originalBeneficiaryAddress || '').toLowerCase()

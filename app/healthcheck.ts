@@ -1,7 +1,7 @@
 const axios = require('axios')
 
 /* eslint-disable no-console */
-const checkUrl = async url => {
+const checkUrl = async (url) => {
     try {
         const response = await axios({
             method: 'get',
@@ -46,7 +46,7 @@ const checkAll = async () => {
 }
 
 checkAll()
-    .then(result => {
+    .then((result) => {
         if (result) {
             console.log('Platform is UP')
             process.exit(0)
@@ -55,7 +55,7 @@ checkAll()
             process.exit(1)
         }
     })
-    .catch(error => {
+    .catch((error) => {
         console.error('Could not run checks!')
         console.error(error)
         process.exit(1)

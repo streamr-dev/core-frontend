@@ -53,7 +53,7 @@ stories.add('update prop on commit', () => (
         {(value, setValue) => (
             <TextControl
                 immediateCommit={false}
-                onCommit={v => {
+                onCommit={(v) => {
                     setValue(Number(v) + 1)
                 }}
                 value={value}

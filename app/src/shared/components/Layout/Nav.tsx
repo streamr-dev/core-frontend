@@ -91,7 +91,7 @@ const SignedInUserMenu = styled(NavDropdown)`
     }
 `
 
-const UnstyledNavDivider = props => (
+const UnstyledNavDivider = (props) => (
     <div {...props}>
         <div />
     </div>
@@ -110,7 +110,7 @@ const NavDivider = styled(UnstyledNavDivider)`
     }
 `
 
-const UnstyledDesktopNav = props => {
+const UnstyledDesktopNav = (props) => {
     const { highlight: current } = NavProvider.useState()
     const { pathname } = useLocation()
     const currentUser = useSelector(selectUserData)
@@ -449,7 +449,7 @@ const MobileNav = styled(UnstyledMobileNav)`
     }
 `
 
-const UnstyledContainer = props => <div {...props} />
+const UnstyledContainer = (props) => <div {...props} />
 
 export const Container = styled(UnstyledContainer)`
     background-color: #ffffff;

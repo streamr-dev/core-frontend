@@ -19,7 +19,7 @@ type Props = {
     value?: string | number
 }
 
-const sanitise = value => (value == null ? '' : value)
+const sanitise = (value) => (value == null ? '' : value)
 
 const normalize = (value: any): string => (typeof value === 'string' ? value.trim() : String(sanitise(value)))
 
@@ -59,7 +59,7 @@ const TextControl = ({
             if (flushHistoryOnBlur) {
                 // `blurCount` is used as `key` of the actual control. Changing it replaces the control
                 // with a new instance thus the old instance along with its change history gets forgotten.
-                setBlurCount(count => count + 1)
+                setBlurCount((count) => count + 1)
             }
 
             if (!immediateCommit) {

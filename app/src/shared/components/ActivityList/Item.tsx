@@ -37,9 +37,9 @@ const StyledSpinner = styled(Spinner)`
 `
 const StyledAvatarImage = styled(AvatarImage)`
     height: 32px;
-    border-radius: ${props => (props.circle ? '50%' : '4px')};
+    border-radius: ${(props) => (props.circle ? '50%' : '4px')};
     overflow: hidden;
-    filter: ${props => (props.isLoading ? 'brightness(70%)' : 'none')};
+    filter: ${(props) => (props.isLoading ? 'brightness(70%)' : 'none')};
 `
 const TextContent = styled.div`
     display: grid;

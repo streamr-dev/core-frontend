@@ -14,7 +14,7 @@ export default function useCopy(onAfterCopied) {
         ) => (current + SUSTAIN_IN_MILLIS > now ? current : now),
         Number.NEGATIVE_INFINITY,
     )
-    const copy = useCallback(value => {
+    const copy = useCallback((value) => {
         copyToClipboard(value)
 
         if (typeof onAfterCopiedRef.current === 'function') {

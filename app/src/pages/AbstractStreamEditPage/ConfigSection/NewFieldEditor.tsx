@@ -9,7 +9,7 @@ import Label from '$ui/Label'
 import Errors from '$ui/Errors'
 import { fieldTypes } from '$userpages/utils/constants'
 import ValidationError from '$shared/errors/ValidationError'
-export const types = Object.keys(fieldTypes).map(t => ({
+export const types = Object.keys(fieldTypes).map((t) => ({
     value: t,
     label: fieldTypes[t],
 }))
@@ -106,7 +106,7 @@ const NewFieldEditor = ({ onStage, onDiscard, onValidate, disabled }) => {
                         id="newFieldName"
                         type="text"
                         value={field.name}
-                        onChange={e =>
+                        onChange={(e) =>
                             void dispatch({
                                 type: SetName,
                                 payload: e.target.value,
@@ -127,7 +127,7 @@ const NewFieldEditor = ({ onStage, onDiscard, onValidate, disabled }) => {
                         id="newFieldType"
                         name="type"
                         options={types}
-                        value={types.find(t => t.value === field.type)}
+                        value={types.find((t) => t.value === field.type)}
                         onChange={({ value: payload }) =>
                             void dispatch({
                                 type: SetType,

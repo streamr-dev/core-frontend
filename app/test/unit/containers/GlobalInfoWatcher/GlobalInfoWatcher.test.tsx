@@ -33,7 +33,7 @@ describe('GlobalInfoWatcher', () => {
     })
     it('renders the component', () => {
         jest.spyOn(redux, 'useSelector').mockImplementation()
-        jest.spyOn(redux, 'useDispatch').mockImplementation(() => action => action)
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
         jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
@@ -42,7 +42,7 @@ describe('GlobalInfoWatcher', () => {
     })
     it('polls login', () => {
         jest.spyOn(redux, 'useSelector').mockImplementation()
-        jest.spyOn(redux, 'useDispatch').mockImplementation(() => action => action)
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
         jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
@@ -59,7 +59,7 @@ describe('GlobalInfoWatcher', () => {
     })
     it('stops polling on unmount', () => {
         jest.spyOn(redux, 'useSelector').mockImplementation(() => 8995)
-        jest.spyOn(redux, 'useDispatch').mockImplementation(() => action => action)
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
         jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
@@ -78,7 +78,7 @@ describe('GlobalInfoWatcher', () => {
             '0x456': 'purchase',
         }
         jest.spyOn(redux, 'useSelector').mockImplementation()
-        jest.spyOn(redux, 'useDispatch').mockImplementation(() => action => action)
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
         jest.spyOn(useBalances, 'useBalances').mockImplementation(() => ({
             update: () => {},
         }))
@@ -96,7 +96,7 @@ describe('GlobalInfoWatcher', () => {
     })
     it('reloads page on network change', () => {
         jest.spyOn(redux, 'useSelector').mockImplementation()
-        jest.spyOn(redux, 'useDispatch').mockImplementation(() => action => action)
+        jest.spyOn(redux, 'useDispatch').mockImplementation(() => (action) => action)
         const emitter = new EventEmitter()
         jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
             emitter.on(event, handler)

@@ -98,7 +98,7 @@ const StyledTOCPage = styled(UnstyledTOCPage)`
     }
 `
 
-const TOCPage = props => (
+const TOCPage = (props) => (
     <BusLine dynamicScrollPosition>
         <StyledTOCPage {...props} />
     </BusLine>

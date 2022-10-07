@@ -60,7 +60,7 @@ const Title = styled.span`
 
 const FilterModal = ({ title, options, onChange, onClose, selected }: Props) => {
     const onClick = useCallback(
-        value => {
+        (value) => {
             onChange(value)
         },
         [onChange],

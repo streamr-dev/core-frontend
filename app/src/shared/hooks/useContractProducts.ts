@@ -6,7 +6,7 @@ export default function useContractProducts() {
     const load = useCallback(async (products: ProductList) => {
         const contractProducts = []
         await Promise.all(
-            products.map(async p => {
+            products.map(async (p) => {
                 if (p.id) {
                     try {
                         const product = await getProductFromContract(p.id, true, getChainIdFromApiString(p.chain))

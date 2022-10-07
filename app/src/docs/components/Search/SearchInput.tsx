@@ -147,7 +147,7 @@ const ClearButton = styled(ButtonBase)`
 
 const UnstyledSearchInput = ({ value, onChange, onClose, ...props }: Props) => {
     // use the counter to re-render input in order to focus after clearing
-    const [refreshCounter, incrementRefreshCounter] = useReducer(x => x + 1, 0)
+    const [refreshCounter, incrementRefreshCounter] = useReducer((x) => x + 1, 0)
     const onClear = useCallback(() => {
         onChange('')
         incrementRefreshCounter()

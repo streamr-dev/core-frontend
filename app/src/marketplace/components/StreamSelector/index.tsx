@@ -43,7 +43,7 @@ export const StreamSelector = (props: Props) => {
     }
 
     const matchingStreams: StreamList = useMemo(
-        () => availableStreams.filter(stream => stream.id.toLowerCase().includes(search.toLowerCase())),
+        () => availableStreams.filter((stream) => stream.id.toLowerCase().includes(search.toLowerCase())),
         [availableStreams, search],
     )
     const streamSet = useMemo(() => new Set(streams), [streams])
@@ -63,7 +63,7 @@ export const StreamSelector = (props: Props) => {
         }
 
         return sortBy(
-            matchingStreams.map(s => ({
+            matchingStreams.map((s) => ({
                 ...s,
                 lowerName: s.id.toLowerCase(),
                 isAdded: -Number(streamSet.has(s.id)),
@@ -73,12 +73,12 @@ export const StreamSelector = (props: Props) => {
     }, [sort, streamSet, matchingStreams])
     const onToggle = useCallback(
         (id: StreamId) => {
-            onEdit(streams.includes(id) ? streams.filter(sid => sid !== id) : uniq(streams.concat(id)))
+            onEdit(streams.includes(id) ? streams.filter((sid) => sid !== id) : uniq(streams.concat(id)))
         },
         [streams, onEdit],
     )
     const matchingNextStreams = useMemo(
-        () => new Set(matchingStreams.filter(x => streamSet.has(x.id))),
+        () => new Set(matchingStreams.filter((x) => streamSet.has(x.id))),
         [matchingStreams, streamSet],
     )
     const allVisibleStreamsSelected = useMemo(
@@ -93,7 +93,7 @@ export const StreamSelector = (props: Props) => {
     )
     const onSelectNone = useCallback(
         (ids: StreamIdList) => {
-            onEdit(uniq(streams.filter(id => !ids.includes(id))))
+            onEdit(uniq(streams.filter((id) => !ids.includes(id))))
         },
         [streams, onEdit],
     )
@@ -189,7 +189,7 @@ export const StreamSelector = (props: Props) => {
                         <Button
                             kind="secondary"
                             onClick={() => {
-                                const toSelect = matchingStreams.map(s => s.id)
+                                const toSelect = matchingStreams.map((s) => s.id)
 
                                 if (allVisibleStreamsSelected) {
                                     onSelectNone(toSelect)

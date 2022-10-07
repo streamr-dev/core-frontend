@@ -35,18 +35,18 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
         if (getProviderChainId() !== chainId) {
             await validateNetwork(true)
             // We need to wait a bit to make sure MetaMask has done it's thing
-            await new Promise(r => setTimeout(r, 700))
+            await new Promise((r) => setTimeout(r, 700))
         }
     }, [validateNetwork, chainId])
     const loadSecrets = useCallback(
-        async id => {
+        async (id) => {
             await checkNetwork()
             await load(id, chainId)
         },
         [chainId, load, checkNetwork],
     )
     const addSecret = useCallback(
-        async name =>
+        async (name) =>
             wrapAddSecret(async () => {
                 await checkNetwork()
                 await add({
@@ -71,7 +71,7 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
         [wrapEditSecret, dataUnionId, edit, chainId, checkNetwork],
     )
     const removeSecret = useCallback(
-        async id =>
+        async (id) =>
             wrapRemoveSecret(async () => {
                 await checkNetwork()
                 await remove({
@@ -99,7 +99,7 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
                     /* Editing secret's name is disabled for now as there is no support for it in DU client */
                     allowEdit={false}
                     allowDelete={!isDisabled}
-                    onSave={async name => editSecret(s.secret, name)}
+                    onSave={async (name) => editSecret(s.secret, name)}
                     onDelete={async () => removeSecret(s.secret)}
                     labelType="sharedSecret"
                 />
@@ -111,7 +111,7 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
                         label="Add shared secret"
                         addKeyFieldAllowed={!isDisabled}
                         labelType="sharedSecret"
-                        onSave={async name => addSecret(name)}
+                        onSave={async (name) => addSecret(name)}
                     />
                 </AddKeyFieldWrapper>
             )}

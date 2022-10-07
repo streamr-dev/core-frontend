@@ -104,7 +104,7 @@ const NavListItem = styled.li`
 const UnstyledTableOfContents = ({ children, ...props }) => {
     const { pathname } = useLocation()
     const isActiveSection = useCallback(
-        subNavList => Object.keys(subNavList).some(subKey => pathname.includes(subNavList[subKey].path)),
+        (subNavList) => Object.keys(subNavList).some((subKey) => pathname.includes(subNavList[subKey].path)),
         [pathname],
     )
     return (
@@ -113,7 +113,7 @@ const UnstyledTableOfContents = ({ children, ...props }) => {
             {Object.keys(docsMap).map((topLevelNav, index) => {
                 const navItem = docsMap[topLevelNav]
                 const isActive = isActiveSection(navItem)
-                const subItems = Object.keys(navItem).filter(subKey => subKey !== 'root') || []
+                const subItems = Object.keys(navItem).filter((subKey) => subKey !== 'root') || []
                 return (
                     // eslint-disable-next-line react/no-array-index-key
                     <React.Fragment key={index}>
@@ -139,7 +139,7 @@ const UnstyledTableOfContents = ({ children, ...props }) => {
                         {subItems.length > 0 && (
                             <SubNavList>
                                 {/* Render subNav contents */}
-                                {subItems.map(subKey => (
+                                {subItems.map((subKey) => (
                                     <NavListItem $active={pathname.includes(navItem[subKey].path)} key={subKey}>
                                         <Link to={navItem[subKey].path}>{navItem[subKey].title}</Link>
                                     </NavListItem>
@@ -219,12 +219,12 @@ const ElevatedContainer = styled(UnstyledElevatedContainer)`
         `}
 `
 
-const UnstyledResponsive = props => {
+const UnstyledResponsive = (props) => {
     const [compressed, setCompressed] = useState(true)
     const { pathname } = useLocation()
     const [topLevelTitle, secondLevelTitle] = useMemo(() => {
         const docsMapKeys = Object.keys(docsMap)
-        let topTitle = docsMapKeys.find(topLevelNavItem => pathname.indexOf(docsMap[topLevelNavItem].root.path) === 0)
+        let topTitle = docsMapKeys.find((topLevelNavItem) => pathname.indexOf(docsMap[topLevelNavItem].root.path) === 0)
 
         if (!topTitle) {
             ;[topTitle] = docsMapKeys || []
@@ -234,7 +234,7 @@ const UnstyledResponsive = props => {
         let secondLevelKey =
             !!topTitle &&
             !!docsMap[topTitle] &&
-            secondLevelKeys.find(secondLevelNavItem => pathname === docsMap[topTitle][secondLevelNavItem].path)
+            secondLevelKeys.find((secondLevelNavItem) => pathname === docsMap[topTitle][secondLevelNavItem].path)
 
         if (!secondLevelKey) {
             ;[secondLevelKey] = secondLevelKeys || []
@@ -252,7 +252,7 @@ const UnstyledResponsive = props => {
     }, [secondLevelTitle, topLevelTitle])
     const toggleExpand = useCallback(() => {
         scrollTo(document.getElementById('root'))
-        setCompressed(wasCompressed => !wasCompressed)
+        setCompressed((wasCompressed) => !wasCompressed)
     }, [])
     return (
         <ElevatedContainer

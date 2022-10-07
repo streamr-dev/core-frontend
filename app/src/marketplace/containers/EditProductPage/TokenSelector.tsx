@@ -179,7 +179,7 @@ const TokenSelector = ({ disabled }: Props) => {
                                 disabled={selection !== TokenType.Custom || disabled || !isEditable}
                                 placeholder="e.g 0xdac17f958d2ee523a2206206994597c13d831ec7"
                                 value={customTokenAddress}
-                                onChange={e => setCustomTokenAddress(e.target.value)}
+                                onChange={(e) => setCustomTokenAddress(e.target.value)}
                                 selectAllOnFocus
                                 smartCommit
                             />

@@ -22,7 +22,7 @@ export const userIsAuthenticated = connectedRouterRedirect({
     allowRedirectBack: true,
     // If selector is true, wrapper will not redirect
     // For example let's check that state contains user data
-    authenticatedSelector: state => !!selectUserData(state),
+    authenticatedSelector: (state) => !!selectUserData(state),
     // A nice display name for this check
     wrapperDisplayName: 'UserIsAuthenticated',
 })
@@ -35,7 +35,7 @@ export const userIsNotAuthenticated = connectedRouterRedirect({
     allowRedirectBack: false,
     // If selector is true, wrapper will not redirect
     // So if there is no user data, then we show the page
-    authenticatedSelector: state => !selectUserData(state),
+    authenticatedSelector: (state) => !selectUserData(state),
     // A nice display name for this check
     wrapperDisplayName: 'UserIsNotAuthenticated',
     FailureComponent,

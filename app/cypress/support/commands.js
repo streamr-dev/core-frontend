@@ -23,37 +23,41 @@ const generatePrivateKey = (mnemonic) => {
     return cache[mnemonic]
 }
 
-Cypress.Commands.add('login', (mnemonic = 'tester one') => (
+Cypress.Commands.add('login', (mnemonic = 'tester one') =>
     new StreamrClient({
         auth: {
             privateKey: generatePrivateKey(mnemonic),
         },
-    }).session.getSessionToken().then(setToken)
-))
+    }).session
+        .getSessionToken()
+        .then(setToken),
+)
 
-Cypress.Commands.add('tokenLogin', (sessionToken) => (
+Cypress.Commands.add('tokenLogin', (sessionToken) =>
     new StreamrClient({
         auth: {
             sessionToken,
         },
-    }).session.getSessionToken().then(setToken)
-))
+    }).session
+        .getSessionToken()
+        .then(setToken),
+)
 
 Cypress.Commands.add('logout', () => {
     setToken(null)
 })
 
-Cypress.Commands.add('authenticatedRequest', (options = {}) => (
+Cypress.Commands.add('authenticatedRequest', (options = {}) =>
     cy.request({
         ...options,
         headers: {
             ...options.headers,
             ...getAuthorizationHeader(),
         },
-    })
-))
+    }),
+)
 
-Cypress.Commands.add('getDefaultEthAccount', () => (
+Cypress.Commands.add('getDefaultEthAccount', () =>
     cy
         .authenticatedRequest({
             url: 'http://localhost/api/v1/integration_keys',
@@ -63,32 +67,33 @@ Cypress.Commands.add('getDefaultEthAccount', () => (
             const { json } = (body || []).find(({ service }) => service === 'ETHEREUM_ID')
 
             return json && json.address
-        })
-))
+        }),
+)
 
-Cypress.Commands.add('createStream', ({ domain: customDomain, stream } = {
-    domain: undefined,
-}) => (
-    (!customDomain ? cy.getDefaultEthAccount() : Promise.resolve(customDomain))
-        .then((domain) => (
+Cypress.Commands.add(
+    'createStream',
+    (
+        { domain: customDomain, stream } = {
+            domain: undefined,
+        },
+    ) =>
+        (!customDomain ? cy.getDefaultEthAccount() : Promise.resolve(customDomain)).then((domain) =>
             cy
                 .authenticatedRequest({
                     url: 'http://localhost/api/v1/streams',
                     method: 'POST',
                     body: {
-                        id: `${domain}/test-${(
-                            new Date()
-                                .toISOString()
-                                .replace(/\W/g, '')
-                                .substr(4, 11)
-                                .replace(/T/, '-')
-                        )}`,
+                        id: `${domain}/test-${new Date()
+                            .toISOString()
+                            .replace(/\W/g, '')
+                            .substr(4, 11)
+                            .replace(/T/, '-')}`,
                         ...stream,
                     },
                 })
-                .then(({ body: { id } }) => id)
-        ))
-))
+                .then(({ body: { id } }) => id),
+        ),
+)
 
 Cypress.Commands.add('addToStorageNode', (streamId) => {
     // add the stream to DEV storage node ("broker-node-storage-1" on streamr-docker-dev environment)
@@ -102,17 +107,13 @@ Cypress.Commands.add('addToStorageNode', (streamId) => {
         },
     })
     const client = new StreamrClient(config)
-    return client
-        .getStream(streamId)
-        .then((stream) => stream.addToStorageNode(DEV_STORAGE_NODE_ADDRESS))
+    return client.getStream(streamId).then((stream) => stream.addToStorageNode(DEV_STORAGE_NODE_ADDRESS))
 })
 
 Cypress.Commands.add('getStream', (id) => {
-    cy
-        .authenticatedRequest({
-            url: `http://localhost/api/v1/streams/${encodeURIComponent(id)}`,
-        })
-        .then(({ body }) => body)
+    cy.authenticatedRequest({
+        url: `http://localhost/api/v1/streams/${encodeURIComponent(id)}`,
+    }).then(({ body }) => body)
 })
 
 Cypress.Commands.add('ignoreUncaughtError', (messageRegex) => {
@@ -122,49 +123,44 @@ Cypress.Commands.add('ignoreUncaughtError', (messageRegex) => {
     })
 })
 
-Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'stream_get') => (
-    cy
-        .authenticatedRequest({
-            url: `http://localhost/api/v1/streams/${encodeURIComponent(streamId)}/permissions`,
-            method: 'POST',
-            body: {
-                anonymous: !user,
-                new: true,
-                operation,
-                user: user != null ? getWallet(user).getAddressString() : null,
-            },
-        })
-))
+Cypress.Commands.add('createStreamPermission', (streamId, user = null, operation = 'stream_get') =>
+    cy.authenticatedRequest({
+        url: `http://localhost/api/v1/streams/${encodeURIComponent(streamId)}/permissions`,
+        method: 'POST',
+        body: {
+            anonymous: !user,
+            new: true,
+            operation,
+            user: user != null ? getWallet(user).getAddressString() : null,
+        },
+    }),
+)
 
-Cypress.Commands.add('createProduct', (body) => (
+Cypress.Commands.add('createProduct', (body) =>
     cy
         .authenticatedRequest({
             url: 'http://localhost/api/v1/products',
             method: 'POST',
             body: {
-                name: `Test Product #${(
-                    new Date()
-                        .toISOString()
-                        .replace(/\W/g, '')
-                        .substr(4, 11)
-                        .replace(/T/, '/')
-                )}`,
+                name: `Test Product #${new Date().toISOString().replace(/\W/g, '').substr(4, 11).replace(/T/, '/')}`,
                 ...body,
             },
         })
-        .then(({ body: { id } }) => id)
-))
+        .then(({ body: { id } }) => id),
+)
 
 Cypress.Commands.add('connectToClient', (options = {}) => {
-    const client = new StreamrClient(getClientConfig({
-        url: 'ws://localhost/api/v1/ws',
-        ...options,
-    }))
+    const client = new StreamrClient(
+        getClientConfig({
+            url: 'ws://localhost/api/v1/ws',
+            ...options,
+        }),
+    )
 
     return client.ensureConnected().then(() => client)
 })
 
-Cypress.Commands.add('sendToStream', (streamId, payload) => (
+Cypress.Commands.add('sendToStream', (streamId, payload) =>
     cy.connectToClient().then(async (client) => {
         const promise = new Promise((resolve) => {
             client.subscribe(streamId, () => {
@@ -177,5 +173,5 @@ Cypress.Commands.add('sendToStream', (streamId, payload) => (
         await promise
 
         return client.ensureConnected()
-    })
-))
+    }),
+)

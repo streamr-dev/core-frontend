@@ -37,7 +37,7 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
     const [activePartition, setActivePartition] = useState(0)
     const [subscribed, setSubscribed] = useState(false)
     const updateDataToState = useThrottled(
-        useCallback(data => {
+        useCallback((data) => {
             setVisibleData([...data])
         }, []),
         100,
@@ -159,7 +159,7 @@ const PreviewWrap = ({ productId, streamId }) => {
         )
     }, [productId, isMounted, history])
     const redirectToPreview = useCallback(
-        targetStreamId => {
+        (targetStreamId) => {
             if (!isMounted()) {
                 return
             }
@@ -174,7 +174,7 @@ const PreviewWrap = ({ productId, streamId }) => {
         [productId, isMounted, history],
     )
     const redirectToSettings = useCallback(
-        id => {
+        (id) => {
             if (!isMounted()) {
                 return
             }

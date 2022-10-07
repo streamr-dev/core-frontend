@@ -41,7 +41,7 @@ function UnwrappedStatusSection({ disabled, canEdit, onStatusChange }) {
                     day: 24,
                 }}
                 disabled={disabled}
-                onChange={value =>
+                onChange={(value) =>
                     void stage({
                         inactivityThresholdHours: value,
                     })

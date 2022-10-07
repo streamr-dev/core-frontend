@@ -78,7 +78,7 @@ const PurchasesPage = () => {
                         right: true,
                     }}
                 >
-                    {sortOptions.map(s => (
+                    {sortOptions.map((s) => (
                         <Popover.Item key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
                         </Popover.Item>
@@ -98,7 +98,7 @@ const PurchasesPage = () => {
                 )}
                 {purchases.length > 0 && (
                     <Grid>
-                        {purchases.map(product => {
+                        {purchases.map((product) => {
                             const isDataUnion = isDataUnionProduct(product)
                             const beneficiaryAddress = (product.beneficiaryAddress || '').toLowerCase()
                             const readyToFetch = loadedIds.includes(beneficiaryAddress)

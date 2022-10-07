@@ -48,11 +48,11 @@ describe('useEditableState', () => {
         )
         expect(product).toBeFalsy()
         act(() => {
-            updater.updateState('update1', prev => ({
+            updater.updateState('update1', (prev) => ({
                 ...prev,
                 name: 'My Product',
             }))
-            updater.updateState('update2', prev => ({
+            updater.updateState('update2', (prev) => ({
                 ...prev,
                 description: 'My Product Description',
             }))

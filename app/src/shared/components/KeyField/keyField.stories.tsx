@@ -23,7 +23,7 @@ stories.add('editable', () => {
     const saveAction = action('onSave')
 
     const onSave = (...args) =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
             saveAction(...args)
             setTimeout(resolve, 500)
         })

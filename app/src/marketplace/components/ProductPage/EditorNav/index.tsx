@@ -27,9 +27,9 @@ type Section = {
     active?: boolean
 }
 
-const isSet = status => !!status && status !== statuses.EMPTY
+const isSet = (status) => !!status && status !== statuses.EMPTY
 
-const isError = status => !!status && status === statuses.ERROR
+const isError = (status) => !!status && status === statuses.ERROR
 
 const NavSection = ({ id, heading, onClick, href, status = statuses.EMPTY, seen = false, active = false }: Section) => {
     const iconName = useMemo(() => {
@@ -86,7 +86,7 @@ const EditorNav = ({ sections, activeSection, showErrors, trackScrolling, classN
     const [highestSeenSection, setHighestSeenSection] = useState(-1)
     useEffect(
         () =>
-            setHighestSeenSection(prev => {
+            setHighestSeenSection((prev) => {
                 if (!trackScrolling) {
                     return sections.length - 1
                 }

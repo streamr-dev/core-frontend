@@ -58,7 +58,7 @@ stories.add('fixed thumbnail height', () => (
             <Tile.ImageContainer>
                 <a
                     href="/resource/1403"
-                    onClick={e => {
+                    onClick={(e) => {
                         e.preventDefault()
                         action('Navigate!')()
                     }}
@@ -86,7 +86,7 @@ stories.add('square thumbnails', () => (
             <Tile.ImageContainer>
                 <a
                     href="/resource/1403"
-                    onClick={e => {
+                    onClick={(e) => {
                         e.preventDefault()
                         action('Navigate!')()
                     }}
@@ -114,7 +114,7 @@ stories.add('with Data Union badge being a link', () => (
             <Tile.ImageContainer>
                 <a
                     href="/resource/1403"
-                    onClick={e => {
+                    onClick={(e) => {
                         e.preventDefault()
                         action('Navigate!')()
                     }}
@@ -154,7 +154,7 @@ stories.add('elastic grid', () => (
                     </Menu>
                     <a
                         href="/resource/1403"
-                        onClick={e => {
+                        onClick={(e) => {
                             e.preventDefault()
                             action('Navigate!')()
                         }}

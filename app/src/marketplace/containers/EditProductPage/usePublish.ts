@@ -150,7 +150,7 @@ export default function usePublish() {
                             }
 
                             const streamIds = new Set(streams.map(({ id }) => id))
-                            nextProduct.streams = (nextProduct.streams || []).filter(id => streamIds.has(id))
+                            nextProduct.streams = (nextProduct.streams || []).filter((id) => streamIds.has(id))
                             await putProduct(nextProduct, product.id || '')
                             update(transactionStates.CONFIRMED)
                             done()
@@ -174,7 +174,7 @@ export default function usePublish() {
                         handler: (update, done) => {
                             try {
                                 return setAdminFee(product.beneficiaryAddress, chainId, adminFee)
-                                    .onTransactionHash(hash => {
+                                    .onTransactionHash((hash) => {
                                         update(transactionStates.PENDING)
 
                                         if (hash) {
@@ -186,7 +186,7 @@ export default function usePublish() {
                                     .onTransactionComplete(() => {
                                         update(transactionStates.CONFIRMED)
                                     })
-                                    .onError(error => {
+                                    .onError((error) => {
                                         done()
                                         update(transactionStates.FAILED, error)
                                     })
@@ -210,7 +210,7 @@ export default function usePublish() {
                         requireOwner: contractProduct.ownerAddress,
                         handler: (update, done) =>
                             setRequiresWhitelist(product.id || '', requiresWhitelist, chainId)
-                                .onTransactionHash(hash => {
+                                .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     dispatch(addTransaction(hash, transactionTypes.SET_REQUIRES_WHITELIST))
                                     done()
@@ -218,7 +218,7 @@ export default function usePublish() {
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
                                 })
-                                .onError(error => {
+                                .onError((error) => {
                                     done()
                                     update(transactionStates.FAILED, error)
                                 }),
@@ -252,7 +252,7 @@ export default function usePublish() {
                                     },
                                     isRedeploy,
                                 )
-                                    .onTransactionHash(hash => {
+                                    .onTransactionHash((hash) => {
                                         update(transactionStates.PENDING)
                                         done()
                                         dispatch(addTransaction(hash, transactionTypes.UPDATE_CONTRACT_PRODUCT))
@@ -271,7 +271,7 @@ export default function usePublish() {
                                     .onTransactionComplete(() => {
                                         update(transactionStates.CONFIRMED)
                                     })
-                                    .onError(error => {
+                                    .onError((error) => {
                                         done()
                                         update(transactionStates.FAILED, error)
                                     })
@@ -312,7 +312,7 @@ export default function usePublish() {
                                     pricingTokenAddress,
                                     pricingTokenDecimals,
                                 })
-                                    .onTransactionHash(hash => {
+                                    .onTransactionHash((hash) => {
                                         update(transactionStates.PENDING)
                                         done()
                                         dispatch(addTransaction(hash, transactionTypes.CREATE_CONTRACT_PRODUCT))
@@ -327,7 +327,7 @@ export default function usePublish() {
                                     .onTransactionComplete(() => {
                                         update(transactionStates.CONFIRMED)
                                     })
-                                    .onError(error => {
+                                    .onError((error) => {
                                         update(transactionStates.FAILED, error)
                                         done()
                                     })
@@ -354,7 +354,7 @@ export default function usePublish() {
                                             resourceType: resourceTypes.PRODUCT,
                                         })
                                     },
-                                    error => {
+                                    (error) => {
                                         update(transactionStates.FAILED, error)
                                         done()
                                     },
@@ -380,7 +380,7 @@ export default function usePublish() {
                     handler: (update, done) => {
                         try {
                             return redeployProduct(product.id || '', chainId)
-                                .onTransactionHash(hash => {
+                                .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING)
                                     done()
                                     dispatch(addTransaction(hash, transactionTypes.REDEPLOY_PRODUCT))
@@ -395,7 +395,7 @@ export default function usePublish() {
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
                                 })
-                                .onError(error => {
+                                .onError((error) => {
                                     update(transactionStates.FAILED, error)
                                     done()
                                 })
@@ -419,7 +419,7 @@ export default function usePublish() {
                         handler: (update, done) => {
                             try {
                                 return deleteProduct(product.id || '', chainId)
-                                    .onTransactionHash(hash => {
+                                    .onTransactionHash((hash) => {
                                         update(transactionStates.PENDING)
                                         done()
                                         dispatch(addTransaction(hash, transactionTypes.UNDEPLOY_PRODUCT))
@@ -433,7 +433,7 @@ export default function usePublish() {
                                     .onTransactionComplete(() => {
                                         update(transactionStates.CONFIRMED)
                                     })
-                                    .onError(error => {
+                                    .onError((error) => {
                                         update(transactionStates.FAILED, error)
                                         done()
                                     })
@@ -460,7 +460,7 @@ export default function usePublish() {
                                             resourceType: resourceTypes.PRODUCT,
                                         })
                                     },
-                                    error => {
+                                    (error) => {
                                         update(transactionStates.FAILED, error)
                                         done()
                                     },

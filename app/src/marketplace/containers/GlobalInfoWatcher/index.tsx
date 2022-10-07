@@ -44,7 +44,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     useEffect(() => {
         const transactionsTimeout = setTimeout(() => {
             const pendingTransactions = getTransactionsFromSessionStorage()
-            Object.keys(pendingTransactions).forEach(txHash => {
+            Object.keys(pendingTransactions).forEach((txHash) => {
                 dispatch(addTransaction(txHash, pendingTransactions[txHash]))
             })
         }, PENDING_TX_WAIT)

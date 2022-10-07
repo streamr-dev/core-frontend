@@ -32,14 +32,14 @@ const SubscriberGraph = ({ productId, shownDays = 7, chainId }: Props) => {
         const data = []
         const subscriptions = subscriptionData || []
         const subs = subscriptions
-            .filter(e => e.start <= Date.now() && e.start >= startDate)
-            .map(e => ({
+            .filter((e) => e.start <= Date.now() && e.start >= startDate)
+            .map((e) => ({
                 time: e.start,
                 type: 's', // s = subscription
             }))
         const unsubs = subscriptions
-            .filter(e => e.end <= Date.now() && e.end >= startDate)
-            .map(e => ({
+            .filter((e) => e.end <= Date.now() && e.end >= startDate)
+            .map((e) => ({
                 time: e.end,
                 type: 'u', // u = unsubscription
             }))
@@ -62,7 +62,7 @@ const SubscriberGraph = ({ productId, shownDays = 7, chainId }: Props) => {
         }
 
         let subCount = 0
-        subscriptionEvents.forEach(e => {
+        subscriptionEvents.forEach((e) => {
             // Add a superficial datapoint with "old" count
             // to happen 1ms before actual one to form a
             // "staircase" graph

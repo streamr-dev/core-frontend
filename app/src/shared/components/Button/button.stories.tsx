@@ -6,7 +6,7 @@ import styles from '@sambego/storybook-styles'
 import styled, { css } from 'styled-components'
 import Button from '.'
 
-const story = name =>
+const story = (name) =>
     storiesOf(`Shared/${name}`, module)
         .addDecorator(
             styles({

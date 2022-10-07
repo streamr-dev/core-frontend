@@ -214,7 +214,7 @@ const PAGE_SIZE = 100
 const LoadingMoreListView = () => {
     const showPreview = boolean('Show preview', true)
     const showSettings = boolean('Show settings', true)
-    const [page, advancePage] = useReducer(p => p + 1, 1)
+    const [page, advancePage] = useReducer((p) => p + 1, 1)
     const [visibleStreams, hasMoreResults] = useMemo(() => {
         const nextItems = longStreamList.slice(0, page * PAGE_SIZE)
         return [nextItems, nextItems.length < longStreamList.length]

@@ -57,8 +57,8 @@ function useEditController(product: Product) {
     const errors = useMemo(
         () =>
             Object.keys(status)
-                .filter(key => status[key] && status[key].level === ERROR)
-                .map(key => ({
+                .filter((key) => status[key] && status[key].level === ERROR)
+                .map((key) => ({
                     key,
                     message: status[key].message,
                 })),
@@ -189,7 +189,7 @@ function useEditController(product: Product) {
             }
 
             if (started) {
-                replaceState(prevProduct => ({
+                replaceState((prevProduct) => ({
                     ...prevProduct,
                     state: isUnpublish ? productStates.UNDEPLOYING : productStates.DEPLOYING,
                 }))
@@ -203,7 +203,7 @@ function useEditController(product: Product) {
         }
     }, [validate, save, publishDialog, redirectToProductList, redirectToProduct, replaceState, isMounted])
     const updateBeneficiary = useCallback(
-        async address => {
+        async (address) => {
             const { beneficiaryAddress } = productRef.current
 
             if (

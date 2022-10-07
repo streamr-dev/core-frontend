@@ -110,7 +110,7 @@ const DeploySpinner = ({ isRunning, showCounter, className }: Props) => {
         isRunning ? 1000 : null,
     )
 
-    const toString = seconds => {
+    const toString = (seconds) => {
         const date = new Date(0)
         date.setSeconds(seconds)
         const timeString = date.toISOString().substr(14, 5) // mm:ss

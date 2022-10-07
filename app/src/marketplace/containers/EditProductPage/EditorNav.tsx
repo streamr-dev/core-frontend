@@ -191,7 +191,7 @@ const EditorNav = () => {
     }, [getStatus, priceStatus, detailsStatus, isDataUnion, sharedSecretStatus, isPaid])
     const sectionWithLinks = useMemo(
         () =>
-            sections.map(section => ({
+            sections.map((section) => ({
                 ...section,
                 onClick: onClickFn.bind(null, section.id),
             })),
@@ -199,7 +199,7 @@ const EditorNav = () => {
     )
     const sectionAnchors = useMemo(() => sections.map(({ id }) => id), [sections])
     const onUpdate = useCallback(
-        el => {
+        (el) => {
             if (el && typeof el.getAttribute === 'function') {
                 const scrolledId = el.getAttribute('id')
 

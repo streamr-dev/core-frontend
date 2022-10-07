@@ -4,7 +4,7 @@ import Link from '$shared/components/Link'
 import Onboarding from '.'
 const stories = storiesOf('Shared/Onboarding', module)
 
-const onClick = e => {
+const onClick = (e) => {
     e.preventDefault()
 }
 

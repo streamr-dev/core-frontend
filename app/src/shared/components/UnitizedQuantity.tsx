@@ -132,7 +132,7 @@ export default function UnitizedQuantity({ units: unitsProp, quantity: quantityP
             />
             <Select
                 options={unitOptions}
-                value={unitOptions.find(o => o.value === unit)}
+                value={unitOptions.find((o) => o.value === unit)}
                 onChange={({ value }) => {
                     dispatch({
                         type: SetUnit,

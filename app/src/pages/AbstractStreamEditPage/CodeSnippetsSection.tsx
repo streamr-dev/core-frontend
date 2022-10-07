@@ -38,7 +38,7 @@ function UnstyledUnwrappedCodeSnippetsSection({ className, disabled }) {
     }, [copy, currentTab])
     const [showAll, setShowAll] = useState(false)
     const onShowAllClick = useCallback(() => {
-        setShowAll(c => !c)
+        setShowAll((c) => !c)
     }, [])
     return (
         <Fragment>

@@ -2,8 +2,8 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import { ProfilePage } from '../../../components/ProfilePage'
 jest.mock('react-redux', () => ({
-    useDispatch: jest.fn().mockImplementation(() => action => action),
-    connect: jest.fn().mockImplementation(() => action => action),
+    useDispatch: jest.fn().mockImplementation(() => (action) => action),
+    connect: jest.fn().mockImplementation(() => (action) => action),
 }))
 jest.mock('react-router-dom', () => ({
     useHistory: jest.fn().mockImplementation(() => ({

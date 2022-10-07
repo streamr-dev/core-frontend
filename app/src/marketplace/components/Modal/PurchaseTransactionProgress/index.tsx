@@ -215,7 +215,7 @@ const PurchaseTransactionProgress = ({ onCancel, status, prompt, tokenSymbol }: 
             >
                 <PurchaseProgress>
                     <PendingTasks>
-                        {pending && pending.length > 0 && pending.map(key => purchaseProgress[key]).join(', ')}
+                        {pending && pending.length > 0 && pending.map((key) => purchaseProgress[key]).join(', ')}
                     </PendingTasks>
                     <ProgressBar value={((progress + 1) / (Object.keys(status).length * 2 + 1)) * 100} />
                 </PurchaseProgress>

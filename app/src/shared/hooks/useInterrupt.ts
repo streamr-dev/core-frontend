@@ -8,7 +8,7 @@ function bump(collection, key) {
 }
 
 function bumpAllMatching(collection, regExp) {
-    Object.keys(collection).forEach(key => {
+    Object.keys(collection).forEach((key) => {
         if (regExp.test(key)) {
             bump(collection, key)
         }

@@ -125,7 +125,7 @@ const Spinner = styled(UnstyledSpinner)`
     width: 10px;
 `
 
-const DeployingBadge = props => (
+const DeployingBadge = (props) => (
     <BadgeContainer {...props}>
         <SingleBadge>
             <span>Deploying</span>
@@ -148,7 +148,7 @@ const DataUnionBadge = ({ memberCount, linkTo, linkHref, ...props }) => (
     </BadgeContainer>
 )
 
-const SharedBadge = props => (
+const SharedBadge = (props) => (
     <BadgeContainer {...props}>
         <SingleBadge theme={SharedTheme}>
             <span>Shared</span>

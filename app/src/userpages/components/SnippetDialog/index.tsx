@@ -29,7 +29,7 @@ const SnippetDialog = ({ snippets, onClose }) => {
                                 <Popover
                                     title={<span className={styles.languageTitle}>{titleize(selectedLanguage)}</span>}
                                 >
-                                    {Object.keys(snippets).map(language => (
+                                    {Object.keys(snippets).map((language) => (
                                         <Popover.Item key={language} onClick={() => setSelectedLanguage(language)}>
                                             {titleize(language)}
                                         </Popover.Item>

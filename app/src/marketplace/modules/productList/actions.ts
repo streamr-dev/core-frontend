@@ -47,7 +47,7 @@ const doGetProducts = (
 
     dispatch(getProductsRequest())
     return api.getProducts(filter, pageSize, offset).then(
-        data => {
+        (data) => {
             const { result, entities } = normalize(data.products, productsSchema)
 
             if (replace) {
@@ -58,7 +58,7 @@ const doGetProducts = (
             dispatch(getProductsSuccess(result, data.hasMoreProducts))
             return result
         },
-        error => {
+        (error) => {
             dispatch(getProductsFailure(error))
         },
     )

@@ -24,7 +24,7 @@ function DefaultDescription() {
 
 function UnwrappedPreviewSection() {
     const streamId = useStreamId()
-    const [isRunning, toggleIsRunning] = useReducer(current => !current, true)
+    const [isRunning, toggleIsRunning] = useReducer((current) => !current, true)
     const [dataError, setDataError] = useState(false)
     const hasLoaded = useIsSessionTokenReady()
     const client = useClient()

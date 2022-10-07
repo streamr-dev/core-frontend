@@ -20,7 +20,7 @@ export const checkEthereumNetworkIsCorrect = async ({
 export const hasTransactionCompleted = (txHash: Hash): Promise<boolean> =>
     getPublicWeb3()
         .eth.getTransaction(txHash)
-        .then(trx => !!(trx && trx.blockNumber))
+        .then((trx) => !!(trx && trx.blockNumber))
 
 /**
  * Estimates time it takes to mine one block on the blockchain by counting the average time

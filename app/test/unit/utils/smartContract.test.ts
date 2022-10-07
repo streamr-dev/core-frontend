@@ -160,7 +160,7 @@ describe('smartContract utils', () => {
                 }),
             ).toBeInstanceOf(Transaction)
         })
-        it('must ask for the default address and send the transaction with it', done => {
+        it('must ask for the default address and send the transaction with it', (done) => {
             const fakeEmitter = PromiEvent()
             all.send(
                 {
@@ -175,7 +175,7 @@ describe('smartContract utils', () => {
                 },
             )
         })
-        it('must fail if checkEthereumNetworkIsCorrect fails in mainnet', done => {
+        it('must fail if checkEthereumNetworkIsCorrect fails in mainnet', (done) => {
             mockChainId('2')
             const fakeEmitter = {
                 on: () => fakeEmitter,
@@ -189,13 +189,13 @@ describe('smartContract utils', () => {
                 {
                     network: 1337,
                 },
-            ).onError(e => {
+            ).onError((e) => {
                 expect(e.requiredNetwork).toBe(1337)
                 expect(e.currentNetwork).toBe('2')
                 done()
             })
         })
-        it('must fail if checkEthereumNetworkIsCorrect fails in mainnet', done => {
+        it('must fail if checkEthereumNetworkIsCorrect fails in mainnet', (done) => {
             mockChainId('2')
             const fakeEmitter = {
                 on: () => fakeEmitter,
@@ -209,14 +209,14 @@ describe('smartContract utils', () => {
                 {
                     network: 1337,
                 },
-            ).onError(e => {
+            ).onError((e) => {
                 expect(e.requiredNetwork).toBe(1337)
                 expect(e.currentNetwork).toBe('2')
                 done()
             })
         })
         describe('error', () => {
-            it('must bind errorHandler before receipt', done => {
+            it('must bind errorHandler before receipt', (done) => {
                 const promiEvent = PromiEvent()
                 const method = {
                     send: () => promiEvent,
@@ -224,7 +224,7 @@ describe('smartContract utils', () => {
                 }
                 all.send(method, {
                     network: 1,
-                }).onError(e => {
+                }).onError((e) => {
                     expect(e).toBe('test')
                     done()
                 })
@@ -232,7 +232,7 @@ describe('smartContract utils', () => {
                     promiEvent.emit('error', 'test')
                 })
             })
-            it('must bind new errorHandler after receipt', done => {
+            it('must bind new errorHandler after receipt', (done) => {
                 const receipt = 'receipt'
                 const promiEvent = PromiEvent()
                 const error = new Error('test')
@@ -243,7 +243,7 @@ describe('smartContract utils', () => {
                 }
                 all.send(method, {
                     network: 1,
-                }).onError(e => {
+                }).onError((e) => {
                     expect(e).toBeInstanceOf(TransactionError)
                     expect(e.message).toBe('test')
                     expect(e.getReceipt()).toBe(receipt)
@@ -256,7 +256,7 @@ describe('smartContract utils', () => {
             })
         })
         describe('transactionHash', () => {
-            it('must work correctly', done => {
+            it('must work correctly', (done) => {
                 const emitter = PromiEvent()
                 const method = {
                     send: () => emitter,
@@ -264,7 +264,7 @@ describe('smartContract utils', () => {
                 }
                 all.send(method, {
                     network: 1,
-                }).onTransactionHash(hash => {
+                }).onTransactionHash((hash) => {
                     expect(hash).toBe('test')
                     done()
                 })
@@ -274,7 +274,7 @@ describe('smartContract utils', () => {
             })
         })
         describe('receipt', () => {
-            it('must emit transactionComplete', done => {
+            it('must emit transactionComplete', (done) => {
                 const emitter = PromiEvent()
                 const receipt = {
                     status: '0x1',
@@ -286,7 +286,7 @@ describe('smartContract utils', () => {
                 }
                 all.send(method, {
                     network: 1,
-                }).onTransactionComplete(receipt2 => {
+                }).onTransactionComplete((receipt2) => {
                     expect(receipt2.test).toBe(receipt.test)
                     done()
                 })
@@ -294,7 +294,7 @@ describe('smartContract utils', () => {
                     emitter.emit('receipt', receipt)
                 })
             })
-            it('must emit error if receipt.status === 0', done => {
+            it('must emit error if receipt.status === 0', (done) => {
                 const emitter = PromiEvent()
                 const receipt = {
                     status: '0x0',
@@ -310,7 +310,7 @@ describe('smartContract utils', () => {
                     .onTransactionComplete(() => {
                         expect(false).toBe(true)
                     })
-                    .onError(e => {
+                    .onError((e) => {
                         expect(e).toBeInstanceOf(TransactionError)
                         expect(e.message).toBe('Transaction failed')
                         expect(e.getReceipt()).toBe(receipt)
@@ -322,10 +322,10 @@ describe('smartContract utils', () => {
             })
         })
         describe('gasLimit', () => {
-            it('it must use the value given in options', done => {
+            it('it must use the value given in options', (done) => {
                 const emitter = PromiEvent()
                 const method = {
-                    send: options => {
+                    send: (options) => {
                         expect(options.gas).toBe(123321)
                         done()
                         return emitter

@@ -39,8 +39,8 @@ const Body = styled(Segment.Body)`
 const UnstyledTerms = ({ product, ...props }: Props) => {
     const terms = product.termsOfUse || {}
     const entries = Object.entries(terms)
-    const permitted = entries.filter(e => e[1] === true).map(e => e[0])
-    const notPermitted = entries.filter(e => e[1] === false).map(e => e[0])
+    const permitted = entries.filter((e) => e[1] === true).map((e) => e[0])
+    const notPermitted = entries.filter((e) => e[1] === false).map((e) => e[0])
     const permittedStr = useMemo(() => getTermStrings(permitted), [permitted])
     const notPermittedStr = useMemo(() => getTermStrings(notPermitted), [notPermitted])
 

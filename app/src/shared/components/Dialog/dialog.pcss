@@ -1,64 +1,67 @@
 /* backdrop shown behind each modal */
 .backdrop {
-  height: 100%;
-  width: 100%;
-  position: fixed;
-  z-index: 12;
-  top: 0;
-  left: 0;
-  background-color: rgba(255, 255, 255, 0.9);
-  overflow-x: hidden;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    z-index: 12;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    overflow-x: hidden;
 }
 
 .buttons {
-  border-top: 1px solid #F2F1F1;
+    border-top: 1px solid #f2f1f1;
 }
 
 .dialog {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  color: #323232;
-  line-height: 24px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #323232;
+    line-height: 24px;
 
-  p {
-    margin-bottom: 0;
-  }
+    p {
+        margin-bottom: 0;
+    }
 
-  .buttons {
-    padding: 1.5rem;
-  }
+    .buttons {
+        padding: 1.5rem;
+    }
 }
 
-.container { }
+.container {
+}
 
-.title { }
+.title {
+}
 
-.content { }
+.content {
+}
 
 .disabledModal {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  opacity: 0.5;
-  background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    opacity: 0.5;
+    background-color: white;
 }
 
 @media (--xs) {
-  .dialog {
-    width: 100%;
-    padding: 0 24px;
-  }
+    .dialog {
+        width: 100%;
+        padding: 0 24px;
+    }
 
-  .dialog .buttons {
-    justify-content: space-between;
-  }
+    .dialog .buttons {
+        justify-content: space-between;
+    }
 }
 
 .spinner {
-  margin: 12px 0 50px;
+    margin: 12px 0 50px;
 }

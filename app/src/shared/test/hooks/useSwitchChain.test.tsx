@@ -51,7 +51,7 @@ describe('useSwitchChain', () => {
                 request: requestStub,
             },
             utils: {
-                toHex: number => number,
+                toHex: (number) => number,
             },
         })
         mockValidateWeb3(Promise.resolve())
@@ -98,7 +98,7 @@ describe('useSwitchChain', () => {
                 request: requestStub,
             },
             utils: {
-                toHex: number => number,
+                toHex: (number) => number,
             },
         })
         mockValidateWeb3(Promise.resolve())
@@ -168,7 +168,7 @@ describe('useSwitchChain', () => {
                 request: requestStub,
             },
             utils: {
-                toHex: number => number,
+                toHex: (number) => number,
             },
         })
         jest.spyOn(getConfig, 'default').mockImplementation(() => ({
@@ -200,7 +200,7 @@ describe('useSwitchChain', () => {
                 request: requestStub,
             },
             utils: {
-                toHex: number => number,
+                toHex: (number) => number,
             },
         })
         jest.spyOn(getConfig, 'default').mockImplementation(() => ({
@@ -233,7 +233,7 @@ describe('useSwitchChain', () => {
             },
         }))
         let requestResolve
-        const requestPromise = new Promise(resolve => {
+        const requestPromise = new Promise((resolve) => {
             requestResolve = resolve
         })
         const requestStub = jest.fn(() => requestPromise)
@@ -242,7 +242,7 @@ describe('useSwitchChain', () => {
                 request: requestStub,
             },
             utils: {
-                toHex: number => number,
+                toHex: (number) => number,
             },
         })
         mockValidateWeb3(Promise.resolve())
@@ -280,13 +280,13 @@ describe('useSwitchChain', () => {
                 request: requestStub,
             },
             utils: {
-                toHex: number => number,
+                toHex: (number) => number,
             },
         })
         mockValidateWeb3(Promise.resolve())
         expect(result.switchPending).toBe(false)
         act(() => {
-            result.switchChain('123').catch(e => {
+            result.switchChain('123').catch((e) => {
                 if (!/fail/.test(e.message)) {
                     throw e
                 }

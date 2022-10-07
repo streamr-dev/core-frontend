@@ -42,7 +42,7 @@ jest.mock('$mp/containers/EditProductPage', () => ({
 }))
 jest.mock('$auth/utils/userAuthenticated', () => ({
     __esModule: true,
-    userIsAuthenticated: component => component,
+    userIsAuthenticated: (component) => component,
 }))
 
 /* eslint-enable react/prop-types */

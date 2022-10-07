@@ -5,10 +5,10 @@ export default function useLoadProductStreamsCallback({ setProductStreams }) {
     const { wrap } = usePending('product.LOAD_PRODUCT_STREAMS')
     const client = useClient()
     return useCallback(
-        async streamIds =>
+        async (streamIds) =>
             wrap(async () => {
                 const streams = await Promise.allSettled(
-                    (streamIds || []).map(async id => {
+                    (streamIds || []).map(async (id) => {
                         try {
                             const stream = await client.getStream(id)
                             return stream.toObject()

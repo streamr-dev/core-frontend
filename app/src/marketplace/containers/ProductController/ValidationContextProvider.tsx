@@ -59,11 +59,11 @@ function useValidationContext() {
     const { product: originalProduct } = useController()
     const setTouched = useCallback(
         (name, value = true) => {
-            setTouchedState(existing => ({ ...existing, [name]: !!value }))
+            setTouchedState((existing) => ({ ...existing, [name]: !!value }))
         },
         [setTouchedState],
     )
-    const isTouched = useCallback(name => !!touched[name], [touched])
+    const isTouched = useCallback((name) => !!touched[name], [touched])
     const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
     const resetTouched = useCallback(() => setTouchedState({}), [])
     const isMounted = useIsMounted()
@@ -77,11 +77,11 @@ function useValidationContext() {
                 throw new Error('pending change needs a name')
             }
 
-            setPendingChanges(state => set(name, isPending, state))
+            setPendingChanges((state) => set(name, isPending, state))
         },
         [setPendingChanges, isMounted],
     )
-    const isPendingChange = useCallback(name => !!get(pendingChanges, name), [pendingChanges])
+    const isPendingChange = useCallback((name) => !!get(pendingChanges, name), [pendingChanges])
     const isAnyChangePending = useCallback(
         () =>
             // flatten nested values
@@ -106,7 +106,7 @@ function useValidationContext() {
                 throw new Error('validation needs a name')
             }
 
-            setStatusState(state => ({
+            setStatusState((state) => ({
                 ...state,
                 [name]: {
                     level,
@@ -117,7 +117,7 @@ function useValidationContext() {
         [setStatusState, isMounted],
     )
     const clearStatus = useCallback(
-        name => {
+        (name) => {
             if (!isMounted()) {
                 return
             }
@@ -130,15 +130,15 @@ function useValidationContext() {
         },
         [setStatusState, isMounted],
     )
-    const isValid = useCallback(name => !status[name], [status])
+    const isValid = useCallback((name) => !status[name], [status])
     const validate = useCallback(
-        product => {
+        (product) => {
             if (!isMounted() || !product) {
                 return
             }
 
             const invalidFields = validateProduct(product)
-            Object.keys(validationErrors).forEach(field => {
+            Object.keys(validationErrors).forEach((field) => {
                 if (invalidFields[field]) {
                     setStatus(field, ERROR, validationErrors[field])
                 } else {
@@ -149,7 +149,7 @@ function useValidationContext() {
             // we made a change that is different from the loaded product
             const changes = getPendingChanges(product)
             const isPublic = isPublished(product)
-            PENDING_CHANGE_FIELDS.forEach(field => {
+            PENDING_CHANGE_FIELDS.forEach((field) => {
                 setPendingChange(
                     field,
                     get(changes, field) != null ||

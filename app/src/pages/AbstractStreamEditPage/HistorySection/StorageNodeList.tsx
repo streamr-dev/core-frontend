@@ -28,7 +28,7 @@ function UnstyledStorageNodeList({ className, disabled }) {
                 storageNodes.forEach(({ address }) => {
                     result[address.toLowerCase()] = false
                 })
-                addresses.forEach(address => {
+                addresses.forEach((address) => {
                     result[address.toLowerCase()] = true
                 })
                 setNodeAddresses(result)

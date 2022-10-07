@@ -12,7 +12,7 @@ export default (): string | null | undefined => {
             } catch (e) {
                 return undefined
             }
-        })().then(addr => {
+        })().then((addr) => {
             if (isMounted()) {
                 setAddress(addr)
             }

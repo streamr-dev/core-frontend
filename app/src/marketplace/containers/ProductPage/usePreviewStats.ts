@@ -66,7 +66,7 @@ const reducer = (state, action) =>
 function usePreviewStats({ subscriberCount, adminFee, created, totalEarnings, memberCount } = {}) {
     const [stats, updateStats] = useReducer(reducer, initialStats)
     const { total: totalMembers, active: activeMembers } = memberCount || {}
-    const statsArray = useMemo(() => Object.keys(stats).map(key => ({ ...stats[key], id: key })), [stats])
+    const statsArray = useMemo(() => Object.keys(stats).map((key) => ({ ...stats[key], id: key })), [stats])
     useEffect(() => {
         if (subscriberCount !== undefined) {
             updateStats({

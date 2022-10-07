@@ -53,7 +53,7 @@ import InstallSupportedBrowserDialog from '$shared/components/Web3ErrorDialog/We
 import ConfirmSaveDialog from '$shared/components/ConfirmSaveDialog'
 import WrongNetworkSelectedDialog from '$shared/components/WrongNetworkSelectedDialog'
 
-const story = name =>
+const story = (name) =>
     storiesOf(`Modal/${name}`, module)
         .addDecorator(StoryRouter())
         .addDecorator(withKnobs)
@@ -65,7 +65,7 @@ const story = name =>
                 fontSize: '16px',
             }),
         )
-        .addDecorator(storyFn => (
+        .addDecorator((storyFn) => (
             <div>
                 <div id="content">{storyFn()}</div>
                 <div id="modal-root" />

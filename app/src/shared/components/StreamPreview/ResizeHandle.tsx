@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Layout from './Layout'
 
-const UnstyledResizeHandle = props => {
+const UnstyledResizeHandle = (props) => {
     const ref = useRef(null)
     const [x, drag] = useState()
     const isMounted = useIsMounted()
@@ -16,13 +16,13 @@ const UnstyledResizeHandle = props => {
 
     const touch = ({ touches }) => touches[0]
 
-    const onTouchStart = e => {
+    const onTouchStart = (e) => {
         const { current: el } = ref
         const width = el.offsetWidth
         const t = touch(e)
         const x0 = t.clientX
 
-        const onMove = evt => {
+        const onMove = (evt) => {
             safeDrag(width + (x0 - touch(evt).clientX))
         }
 
@@ -39,7 +39,7 @@ const UnstyledResizeHandle = props => {
         const { current: el } = ref
         const width = el.offsetWidth
 
-        const onMove = e => {
+        const onMove = (e) => {
             e.preventDefault()
             safeDrag(width + (x0 - e.clientX))
         }

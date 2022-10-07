@@ -93,7 +93,7 @@ const EditableText = ({
             onMount.current()
         }
     }, [])
-    const renderValue = useCallback(val => (!isBlank(val) ? val : placeholder || ''), [placeholder])
+    const renderValue = useCallback((val) => (!isBlank(val) ? val : placeholder || ''), [placeholder])
     const valueIsBlank = isBlank(editing ? value : children)
     return (
         <div

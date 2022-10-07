@@ -14,7 +14,7 @@ const permissionLabels = {
 
 const UnstyledCheckbox = ({ className, id, operationKey, onChange: onChangeProp, ...props }) => {
     const onChange = useCallback(
-        e => {
+        (e) => {
             onChangeProp(operationKey, !!e.target.checked)
         },
         [onChangeProp, operationKey],

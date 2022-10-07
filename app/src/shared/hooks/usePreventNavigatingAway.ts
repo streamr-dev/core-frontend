@@ -9,7 +9,7 @@ export default function usePreventNavigatingAway(message, fn) {
         messageRef.current = message
     }, [message])
     useEffect(() => {
-        const onBeforeUnload = e => {
+        const onBeforeUnload = (e) => {
             if (fnRef.current()) {
                 const event = e || window.event
                 event.returnValue = messageRef.current // Gecko + IE

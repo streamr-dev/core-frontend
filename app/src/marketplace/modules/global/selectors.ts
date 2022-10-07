@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
 
-const selectGlobalState = state => state.global
+const selectGlobalState = (state) => state.global
 
-export const selectEthereumNetworkId = createSelector(selectGlobalState, subState => subState.networkId)
+export const selectEthereumNetworkId = createSelector(selectGlobalState, (subState) => subState.networkId)

@@ -7,7 +7,7 @@ export default function getPublicWeb3(chainId?) {
 
     if (chainId) {
         const config = getConfigForChain(chainId)
-        const httpEntry = config.rpcEndpoints.find(rpc => rpc.url.startsWith('http'))
+        const httpEntry = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))
 
         if (httpEntry) {
             const { url } = httpEntry

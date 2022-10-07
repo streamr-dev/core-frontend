@@ -84,14 +84,14 @@ export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress
         )
         setWeb3Actions(new Set(queue.getActions().map(({ id }) => id)))
         queue
-            .subscribe('started', id => {
+            .subscribe('started', (id) => {
                 if (isMounted()) {
                     setCurrentAction(id)
                 }
             })
             .subscribe('status', (id, nextStatus) => {
                 if (isMounted()) {
-                    setStatus(prevStatus => ({ ...prevStatus, [id]: nextStatus }))
+                    setStatus((prevStatus) => ({ ...prevStatus, [id]: nextStatus }))
                 }
             })
             .start()
@@ -103,12 +103,12 @@ export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress
     const somePending = useMemo(
         () =>
             Object.values(status).some(
-                value => value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED,
+                (value) => value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED,
             ),
         [status],
     )
     const allSucceeded = useMemo(
-        () => Object.values(status).every(value => value === transactionStates.CONFIRMED),
+        () => Object.values(status).every((value) => value === transactionStates.CONFIRMED),
         [status],
     )
     useEffect(() => {
@@ -199,7 +199,7 @@ export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress
         return (
             <AddWhitelistedAddressDialog
                 disabled={checkingWeb3 || isPending}
-                onContinue={addedAddress => onStart(addedAddress)}
+                onContinue={(addedAddress) => onStart(addedAddress)}
                 onClose={onClose}
             />
         )

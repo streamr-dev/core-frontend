@@ -31,7 +31,7 @@ export class ActionQueue {
     }
 
     startAction(id: string, nextAction: (...args: Array<any>) => any): Promise<void> {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const update = (...args) => this.emitter.emit('status', ...args)
 
             const done = (...args) => {

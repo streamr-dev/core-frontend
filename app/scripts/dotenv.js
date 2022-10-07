@@ -12,18 +12,22 @@ const TEMPLATE_DOTENV_PATH = path.resolve(__dirname, '../.env.template')
  * Loads .env into process.env in non-production environment.
  * @returns An object of environment variable key-value pairs
  */
-const loadLocalDotenv = () => (!isProduction() ? dotenv.config({
-    path: LOCAL_DOTENV_PATH,
-}).parsed : {})
+const loadLocalDotenv = () =>
+    !isProduction()
+        ? dotenv.config({
+              path: LOCAL_DOTENV_PATH,
+          }).parsed
+        : {}
 
 /**
  * Loads .env.required into process.env in non-production environment.
  * @returns An object of environment variable key-value pairs
  */
-const loadRequiredDotenv = () => dotenvSafe.config({
-    example: REQUIRED_DOTENV_PATH,
-    path: !isProduction() ? REQUIRED_DOTENV_PATH : '',
-}).required
+const loadRequiredDotenv = () =>
+    dotenvSafe.config({
+        example: REQUIRED_DOTENV_PATH,
+        path: !isProduction() ? REQUIRED_DOTENV_PATH : '',
+    }).required
 
 /**
  * Loads .env.template (optional env vars) keys and overrides the values with nulls
@@ -33,10 +37,13 @@ const loadTemplateDotenv = () => {
     const file = fs.readFileSync(TEMPLATE_DOTENV_PATH)
     // Use dotenv.parse so that the values will not be set to process.env
     const vars = dotenv.parse(file)
-    return Object.keys(vars || {}).reduce((acc, val) => ({
-        ...acc,
-        [val]: null,
-    }), {})
+    return Object.keys(vars || {}).reduce(
+        (acc, val) => ({
+            ...acc,
+            [val]: null,
+        }),
+        {},
+    )
 }
 
 /**

@@ -33,8 +33,8 @@ export const getProductSubscription = (id: ProductId, chainId: number) => (dispa
     dispatch(getProductSubscriptionFromContractRequest(id))
     return dispatch(getMyPurchases()).then(() =>
         services.getMyProductSubscription(id, chainId).then(
-            result => dispatch(getProductSubscriptionFromContractSuccess(id, result)),
-            error =>
+            (result) => dispatch(getProductSubscriptionFromContractSuccess(id, result)),
+            (error) =>
                 dispatch(
                     getProductSubscriptionFromContractFailure(id, {
                         message: error.message,

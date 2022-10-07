@@ -22,7 +22,7 @@ const ProductType = ({ disabled }: Props) => {
     const isPriceTypeDisabled = !!(isDisabled || isPublic || !!contractProduct)
     const { pricingTokenDecimals } = product
     const onPriceTypeChange = useCallback(
-        type => {
+        (type) => {
             updateIsFree(type === 'Free', pricingTokenDecimals)
         },
         [updateIsFree, pricingTokenDecimals],

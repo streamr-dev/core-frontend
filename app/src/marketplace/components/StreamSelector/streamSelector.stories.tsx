@@ -65,7 +65,7 @@ const StreamController = ({ error, disabled, availableStreams = [], loading = fa
     return (
         <StreamSelector
             streams={streams}
-            onEdit={list => {
+            onEdit={(list) => {
                 setStreams(list)
             }}
             availableStreams={availableStreams}

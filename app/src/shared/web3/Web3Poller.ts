@@ -92,7 +92,7 @@ class Web3Poller {
         this.web3PollTimeout = setTimeout(this.pollWeb3, WEB3_POLL_INTERVAL)
     }
     pollWeb3 = () =>
-        this.fetchWeb3Account().then(this.startWeb3Poll, error => {
+        this.fetchWeb3Account().then(this.startWeb3Poll, (error) => {
             warnOnce(error)
             this.startWeb3Poll()
         })
@@ -101,7 +101,7 @@ class Web3Poller {
         this.ethereumNetworkPollTimeout = setTimeout(this.pollEthereumNetwork, NETWORK_POLL_INTERVAL)
     }
     pollEthereumNetwork = () =>
-        this.fetchChosenEthereumNetwork().then(this.startEthereumNetworkPoll, error => {
+        this.fetchChosenEthereumNetwork().then(this.startEthereumNetworkPoll, (error) => {
             warnOnce(error)
             this.startEthereumNetworkPoll()
         })
@@ -125,13 +125,13 @@ class Web3Poller {
     }
     fetchWeb3Account = () =>
         getDefaultWeb3Account().then(
-            account => {
+            (account) => {
                 this.handleAccount(account)
                 // needed to avoid warnings about creating promise inside a handler
                 // if any other web3 actions are dispatched.
                 return Promise.resolve()
             },
-            err => {
+            (err) => {
                 if (this.account) {
                     this.account = null
                     this.emitter.emit(events.ACCOUNT_ERROR, err)
@@ -157,10 +157,10 @@ class Web3Poller {
             setTimeout(() => reject(new CancelError()), NETWORK_POLL_INTERVAL)
         })
         return Promise.race([fetchPromise, cancelPromise]).then(
-            network => {
+            (network) => {
                 this.handleNetwork(network.toString() || '')
             },
-            err => {
+            (err) => {
                 if (!(err instanceof CancelError) && this.networkId) {
                     this.networkId = null
                     this.emitter.emit(events.NETWORK_ERROR, err)
@@ -183,14 +183,14 @@ class Web3Poller {
         this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, PENDING_TX_POLL_INTERVAL)
     }
     pollPendingTransactions = () =>
-        this.handlePendingTransactions().then(this.startPendingTransactionsPoll, error => {
+        this.handlePendingTransactions().then(this.startPendingTransactionsPoll, (error) => {
             warnOnce(error)
             this.startPendingTransactionsPoll()
         })
     handlePendingTransactions = () => {
         const web3 = getPublicWeb3()
         return Promise.all(
-            Object.keys(getTransactionsFromSessionStorage()).map(async txHash => {
+            Object.keys(getTransactionsFromSessionStorage()).map(async (txHash) => {
                 let completed
                 let receipt
 

@@ -1,91 +1,91 @@
 .root {
-  align-items: center;
-  display: flex;
-  height: 1em;
+    align-items: center;
+    display: flex;
+    height: 1em;
 }
 
 .inner {
-  overflow: hidden;
-  position: relative;
-  white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
 }
 
 .inner,
 .inner input {
-  color: inherit;
-  font: inherit;
+    color: inherit;
+    font: inherit;
 }
 
 .inner input {
-  background: none;
-  border: 0;
-  height: 100%;
-  line-height: normal;
-  outline: 0;
-  padding: 0;
-  position: absolute;
-  width: 100%;
+    background: none;
+    border: 0;
+    height: 100%;
+    line-height: normal;
+    outline: 0;
+    padding: 0;
+    position: absolute;
+    width: 100%;
 
-  /* prevent input content jumping down 1px when entering edit mode */
-  margin-top: -1px;
+    /* prevent input content jumping down 1px when entering edit mode */
+    margin-top: -1px;
 }
 
 .inner input::selection {
-  background-color: #CCE9FD;
+    background-color: #cce9fd;
 }
 
 .inner input::placeholder {
-  overflow: visible;
+    overflow: visible;
 }
 
 .idle {
-  cursor: default;
+    cursor: default;
 }
 
 .idle .inner {
-  text-overflow: ellipsis;
+    text-overflow: ellipsis;
 }
 
 .disabled {
-  cursor: default;
-  pointer-events: none;
+    cursor: default;
+    pointer-events: none;
 }
 
 .spaceholder {
-  max-width: 100%;
-  overflow: hidden;
-  visibility: hidden;
-  white-space: pre;
-  padding-right: 0.05em; /* also balance extra width added by input when editing */
+    max-width: 100%;
+    overflow: hidden;
+    visibility: hidden;
+    white-space: pre;
+    padding-right: 0.05em; /* also balance extra width added by input when editing */
 }
 
 .blank {
-  font-style: italic;
+    font-style: italic;
 }
 
 .idle.blank .inner {
-  /* ensures right-hand side of italic spaceholder text is not cut off */
-  padding-right: 0.25em; /* also balance extra width added by input when editing */
+    /* ensures right-hand side of italic spaceholder text is not cut off */
+    padding-right: 0.25em; /* also balance extra width added by input when editing */
 }
 
 .root input.hiddenInput {
-  /* this must never get into layout flow so setting !important */
-  width: 0 !important;
-  height: 0 !important;
-  position: absolute !important;
-  opacity: 0 !important;
-  pointer-events: none !important;
+    /* this must never get into layout flow so setting !important */
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 .idle .spaceholder,
 .blank .spaceholder {
-  color: #CDCDCD;
-  overflow: auto;
-  visibility: visible;
+    color: #cdcdcd;
+    overflow: auto;
+    visibility: visible;
 }
 
 .hidePlaceholderOnFocus.idle .spaceholder,
 .hidePlaceholderOnFocus.blank .spaceholder {
-  overflow: hidden;
-  visibility: hidden;
+    overflow: hidden;
+    visibility: hidden;
 }

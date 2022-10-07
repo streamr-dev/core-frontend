@@ -31,7 +31,7 @@ describe('web3 utils', () => {
                 network: 1,
             })
         })
-        it('must fail if required network is not the same as the actual network', async done => {
+        it('must fail if required network is not the same as the actual network', async (done) => {
             mockChainId('1')
 
             try {
@@ -48,7 +48,7 @@ describe('web3 utils', () => {
                 network: 8995,
             })
         })
-        it('must fail if required sidechain is not the same as the actual network', async done => {
+        it('must fail if required sidechain is not the same as the actual network', async (done) => {
             mockChainId('1')
 
             try {

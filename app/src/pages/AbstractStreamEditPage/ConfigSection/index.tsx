@@ -125,7 +125,7 @@ const UnwrappedConfigSection = ({ disabled, canEdit }) => {
         [itp, streamId],
     )
     const canModifyItems = !disabled && !showAddField
-    const onFieldDelete = useCallback(fieldName => {
+    const onFieldDelete = useCallback((fieldName) => {
         dispatch({
             type: DeleteField,
             payload: fieldName,
@@ -162,12 +162,12 @@ const UnwrappedConfigSection = ({ disabled, canEdit }) => {
                         }}
                         disabled={!canModifyItems}
                     >
-                        {config.fields.map(field => (
+                        {config.fields.map((field) => (
                             <FieldItem key={field.id} name={field.name} onDelete={onFieldDelete}>
                                 <SplitControl>
                                     <Text
                                         disabled={!canModifyItems}
-                                        onChange={e => {
+                                        onChange={(e) => {
                                             dispatch({
                                                 type: SetFieldName,
                                                 payload: [field.name, e.target.value],
@@ -201,7 +201,7 @@ const UnwrappedConfigSection = ({ disabled, canEdit }) => {
             {!!canEdit && !!showAddField && (
                 <NewFieldEditor
                     disabled={disabled}
-                    onStage={payload => {
+                    onStage={(payload) => {
                         dispatch({
                             type: AddField,
                             payload,
@@ -219,7 +219,7 @@ const UnwrappedConfigSection = ({ disabled, canEdit }) => {
 
                         const { fields = [] } = config || {}
 
-                        if (fields.find(f => f.name === name)) {
+                        if (fields.find((f) => f.name === name)) {
                             throw new ValidationError('Name cannot be duplicate')
                         }
                     }}

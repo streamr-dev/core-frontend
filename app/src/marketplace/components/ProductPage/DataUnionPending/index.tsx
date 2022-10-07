@@ -10,7 +10,7 @@ const Heading = styled.div`
 const DeploySpinner = styled(UnstyledDeploySpinner)``
 const DeploySpinnerWrapper = styled.div``
 
-const UnstyledDataUnionPending = props => (
+const UnstyledDataUnionPending = (props) => (
     <div {...props}>
         <DeploySpinnerWrapper>
             <DeploySpinner isRunning showCounter={false} />

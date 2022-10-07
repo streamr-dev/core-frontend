@@ -50,13 +50,13 @@ const customStyles = {
         marginRight: '8px',
     }),
     indicatorSeparator: () => ({}),
-    menu: provided => ({
+    menu: (provided) => ({
         ...provided,
         marginTop: '0.5rem',
         padding: '0',
         zIndex: '10',
     }),
-    menuList: provided => ({ ...provided, margin: '0.2rem 0', padding: '0' }),
+    menuList: (provided) => ({ ...provided, margin: '0.2rem 0', padding: '0' }),
     option: (provided, state) => ({
         ...provided,
         display: 'flex',
@@ -76,14 +76,14 @@ const customStyles = {
         color: '#CDCDCD',
         lineHeight: '1rem',
     }),
-    valueContainer: provided => ({
+    valueContainer: (provided) => ({
         ...provided,
         padding: '0 1rem',
         color: '#323232',
         lineHeight: '1rem',
         overflow: 'visible',
     }),
-    singleValue: provided => ({
+    singleValue: (provided) => ({
         ...provided,
         margin: 0,
         overflow: 'visible',
@@ -116,7 +116,7 @@ const OptionIconWrapper = styled.div`
     margin-right: 0.5rem;
 `
 
-const IconOption = props => (
+const IconOption = (props) => (
     <components.Option {...props}>
         {props.isSelected && <Tick />}
         {props.data.icon != null && <OptionIconWrapper>{props.data.icon}</OptionIconWrapper>}
@@ -130,7 +130,7 @@ const Caret = styled(SvgIcon)`
     transition: transform 180ms ease-in-out;
 `
 
-const DropdownIndicator = props =>
+const DropdownIndicator = (props) =>
     components.DropdownIndicator && (
         <components.DropdownIndicator {...props}>
             <Caret

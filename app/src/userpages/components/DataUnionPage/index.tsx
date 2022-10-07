@@ -63,7 +63,7 @@ const DataUnionPage = () => {
     const { load: loadDataUnionStats, stats } = useAllDataUnionStats()
     // Make sure we show only data unions.
     // This is needed to avoid quick flash of possibly normal products.
-    const products = useMemo(() => allProducts.filter(p => p.type === productTypes.DATAUNION), [allProducts])
+    const products = useMemo(() => allProducts.filter((p) => p.type === productTypes.DATAUNION), [allProducts])
     useEffect(() => {
         // Modify filter to include only dataunions
         const finalFilter = {
@@ -71,7 +71,7 @@ const DataUnionPage = () => {
             key: 'type',
             value: productTypes.DATAUNION,
         }
-        dispatch(getMyProducts(finalFilter)).then(results => {
+        dispatch(getMyProducts(finalFilter)).then((results) => {
             loadDataUnionStats(results)
         })
     }, [dispatch, filter, loadDataUnionStats])
@@ -105,9 +105,9 @@ const DataUnionPage = () => {
                         onResetFilter={resetFilter}
                     />
                 )}
-                {products.map(product => {
+                {products.map((product) => {
                     const duStats = stats.find(
-                        s =>
+                        (s) =>
                             s.id &&
                             product.beneficiaryAddress &&
                             s.id.toLowerCase() === product.beneficiaryAddress.toLowerCase(),

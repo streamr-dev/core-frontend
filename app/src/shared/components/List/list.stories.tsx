@@ -135,7 +135,7 @@ const SortableList = () => {
     }, [sort])
     const onHeaderSortUpdate = useCallback(
         (asc, desc) => {
-            setSort(prevFilter => {
+            setSort((prevFilter) => {
                 let nextSort
 
                 if (![asc, desc].includes(prevFilter)) {
@@ -213,8 +213,8 @@ const selectableList = [
 
 const SelectableList = () => {
     const [selected, setSelected] = useState(new Set([]))
-    const onSelect = useCallback(id => {
-        setSelected(prevSelected => {
+    const onSelect = useCallback((id) => {
+        setSelected((prevSelected) => {
             if (prevSelected.has(id)) {
                 prevSelected.delete(id)
                 return new Set([...prevSelected])
@@ -341,8 +341,8 @@ const memberList = [
 
 const MemberList = () => {
     const [selected, setSelected] = useState(new Set([]))
-    const onSelect = useCallback(id => {
-        setSelected(prevSelected => {
+    const onSelect = useCallback((id) => {
+        setSelected((prevSelected) => {
             if (prevSelected.has(id)) {
                 prevSelected.delete(id)
                 return new Set([...prevSelected])

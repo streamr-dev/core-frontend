@@ -2,7 +2,7 @@ import startCase from 'lodash/startCase'
 import * as all from '$shared/utils/platform'
 import UserAgents from './useragents'
 describe('platform utils', () => {
-    describe.each(Object.keys(UserAgents))('isMac/isWindows detection', key => {
+    describe.each(Object.keys(UserAgents))('isMac/isWindows detection', (key) => {
         if (key.startsWith('Mac')) {
             test(`${startCase(key)} is Mac`, () => {
                 expect(all.isMac(UserAgents[key])).toEqual(true)

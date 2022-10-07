@@ -12,7 +12,7 @@ function useDataUnionMembers() {
     const generator = useRef(null)
     const membersRef = useRef([])
     const updateDataToState = useThrottled(
-        useCallback(data => {
+        useCallback((data) => {
             setMembers([...data.slice(0, VISIBLE_MEMBERS_LIMIT)])
         }, []),
         100,
@@ -48,7 +48,7 @@ function useDataUnionMembers() {
                 // eslint-disable-next-line no-restricted-syntax
                 for await (const event of generator.current) {
                     if (isMounted()) {
-                        if (membersRef.current.find(m => m.address === event.address) === undefined) {
+                        if (membersRef.current.find((m) => m.address === event.address) === undefined) {
                             membersRef.current.push(event)
                             updateDataToState(membersRef.current)
                         }
@@ -71,7 +71,7 @@ function useDataUnionMembers() {
                 await removeMembers(dataUnionId, memberAddresses)
 
                 if (isMounted()) {
-                    setMembers(prev => prev.filter(m => !memberAddresses.includes(m.address)))
+                    setMembers((prev) => prev.filter((m) => !memberAddresses.includes(m.address)))
                 }
             } catch (e) {
                 console.warn(e)

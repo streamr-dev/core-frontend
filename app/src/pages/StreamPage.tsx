@@ -81,7 +81,7 @@ function UnwrappedStreamPage({ title, children, loading = false }) {
                     resourceType: resourceTypes.STREAM,
                 })
                 // Give the notification some time before navigating away in the next step.
-                await new Promise(resolve => {
+                await new Promise((resolve) => {
                     setTimeout(resolve, 300)
                 })
                 requireUninterrupted()
@@ -176,7 +176,7 @@ function UnwrappedStreamPage({ title, children, loading = false }) {
     return (
         <Fragment>
             <form
-                onSubmit={e => {
+                onSubmit={(e) => {
                     save()
                     e.preventDefault()
                 }}

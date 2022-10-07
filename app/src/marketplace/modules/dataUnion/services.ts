@@ -21,7 +21,7 @@ const createClient = (chainId: number) => {
     const provider = getWeb3().currentProvider
     const config = getConfigForChain(chainId)
     const { dataUnionJoinServerUrl } = getCoreConfig()
-    const providerUrl = config.rpcEndpoints.find(rpc => rpc.url.startsWith('http'))?.url
+    const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
     const factoryAddress = config.contracts.DataUnionFactory
 
     if (factoryAddress == null) {
@@ -63,7 +63,7 @@ const createClient = (chainId: number) => {
 const getDataunionSubgraphUrlForChain = (chainId: number): string => {
     const { theGraphUrl } = getCoreConfig()
     const map = getCoreConfig().dataunionGraphNames
-    const item = map.find(i => i.chainId === chainId)
+    const item = map.find((i) => i.chainId === chainId)
 
     if (item == null || item.name == null) {
         throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
@@ -144,7 +144,7 @@ export const deployDataUnion = ({ productId, adminFee, chainId }: DeployDataUnio
                 adminFee: +adminFee,
             })
         })
-        .then(dataUnion => {
+        .then((dataUnion) => {
             if (!dataUnion || !dataUnion.getAddress()) {
                 errorHandler(new TransactionError('Transaction failed'))
             } else {
@@ -173,7 +173,7 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
         }),
     ]).then(([dataUnion]) => {
         emitter.emit('transactionHash')
-        dataUnion.setAdminFee(+adminFee).then(receipt => {
+        dataUnion.setAdminFee(+adminFee).then((receipt) => {
             if (parseInt(receipt.status, 16) === 0) {
                 errorHandler(new TransactionError('Transaction failed', receipt))
             } else {
@@ -250,7 +250,7 @@ export const getDataUnionMembers = async (
     })
 
     if (result.data.dataUnions.length > 0) {
-        return result.data.dataUnions[0].members.map(m => m.address)
+        return result.data.dataUnions[0].members.map((m) => m.address)
     }
 
     return []
@@ -284,8 +284,8 @@ export const searchDataUnionMembers = async (
         // we cannot do filtering on the query itself so we
         // have to manually pick results only for this dataunion.
         const members = result.data.members
-            .filter(m => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase())
-            .map(m => m.address)
+            .filter((m) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase())
+            .map((m) => m.address)
         return members
     }
 

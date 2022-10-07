@@ -44,7 +44,7 @@ const mockState = {
     },
 }
 jest.mock('react-redux', () => ({
-    useSelector: jest.fn().mockImplementation(selectorFn => selectorFn(mockState)),
+    useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
 }))
 jest.mock('../../ProductController', () => ({
     useController: () => ({
@@ -312,7 +312,7 @@ describe('EditControllerProvider', () => {
                 },
             }))
             jest.spyOn(usePending, 'default').mockImplementation(() => ({
-                wrap: async fn => {
+                wrap: async (fn) => {
                     const result = await fn()
                     return result
                 },
@@ -362,7 +362,7 @@ describe('EditControllerProvider', () => {
                 api: {},
             }))
             jest.spyOn(usePending, 'default').mockImplementation(() => ({
-                wrap: async fn => {
+                wrap: async (fn) => {
                     const result = await fn()
                     return result
                 },
@@ -408,14 +408,14 @@ describe('EditControllerProvider', () => {
                 api: {},
             }))
             jest.spyOn(usePending, 'default').mockImplementation(() => ({
-                wrap: async fn => {
+                wrap: async (fn) => {
                     const result = await fn()
                     return result
                 },
             }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
-                replaceState: fn => replaceStateStub(fn(product)),
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
             const postImageStub = jest.spyOn(productServices, 'postImage').mockImplementation(() =>
                 Promise.resolve({
@@ -474,7 +474,7 @@ describe('EditControllerProvider', () => {
                 api: {},
             }))
             jest.spyOn(usePending, 'default').mockImplementation(() => ({
-                wrap: async fn => {
+                wrap: async (fn) => {
                     const result = await fn()
                     return result
                 },
@@ -682,7 +682,7 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
-                replaceState: fn => replaceStateStub(fn(product)),
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
@@ -756,7 +756,7 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
-                replaceState: fn => replaceStateStub(fn(product)),
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
@@ -830,7 +830,7 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
-                replaceState: fn => replaceStateStub(fn(product)),
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
@@ -905,7 +905,7 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
-                replaceState: fn => replaceStateStub(fn(product)),
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
@@ -979,7 +979,7 @@ describe('EditControllerProvider', () => {
             jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
-                replaceState: fn => replaceStateStub(fn(product)),
+                replaceState: (fn) => replaceStateStub(fn(product)),
             }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
@@ -1150,7 +1150,7 @@ describe('EditControllerProvider', () => {
             const beneficiaryAddress = '0x538a2Fa87E03B280e10C83AA8dD7E5B15B868BD9'
             const modalOpenStub = jest.fn(
                 ({ updateAddress }) =>
-                    new Promise(resolve => {
+                    new Promise((resolve) => {
                         updateAddress(beneficiaryAddress)
                         resolve(true)
                     }),
@@ -1162,7 +1162,7 @@ describe('EditControllerProvider', () => {
             }))
             const putProductStub = jest
                 .spyOn(productServices, 'putProduct')
-                .mockImplementation(p => Promise.resolve({ ...p }))
+                .mockImplementation((p) => Promise.resolve({ ...p }))
             let undoContext
 
             const ControllerWrap = () => {

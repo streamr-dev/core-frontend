@@ -9,7 +9,7 @@ const Handler = () => {
     const [streamId, setStreamId] = useState(storage ? storage.getItem('user.activityStreamId') : null)
     const client = useClient()
     useEffect(() => {
-        const publishActivity = activity => {
+        const publishActivity = (activity) => {
             if (client && streamId) {
                 const data = activity.serialize()
                 client.publish(streamId, data)

@@ -78,7 +78,7 @@ type Props = {
 
 const UnstyledTimeSeriesGraph = ({ graphData, shownDays, isLoading, ...props }: Props) => {
     const dataDomain = useMemo(() => {
-        const dataValues = (graphData || []).map(d => d.y)
+        const dataValues = (graphData || []).map((d) => d.y)
         let max = Math.max(...dataValues)
         let min = Math.min(...dataValues)
 

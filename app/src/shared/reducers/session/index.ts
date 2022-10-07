@@ -32,7 +32,7 @@ export function useSessionMethod() {
     return useSelector(selectSessionMethod)
 }
 export function setupSession([token, method]) {
-    return dispatch => {
+    return (dispatch) => {
         setMethod(method)
         setToken(token)
         dispatch({

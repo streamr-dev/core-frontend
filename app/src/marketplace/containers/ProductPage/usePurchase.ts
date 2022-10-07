@@ -103,7 +103,7 @@ export default function usePurchase() {
                     handler: (update, done) => {
                         try {
                             return setMyDaiAllowance('0', chainId)
-                                .onTransactionHash(hash => {
+                                .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING, hash)
                                     dispatch(addTransaction(hash, transactionTypes.RESET_DAI_ALLOWANCE))
                                     done()
@@ -111,7 +111,7 @@ export default function usePurchase() {
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
                                 })
-                                .onError(error => {
+                                .onError((error) => {
                                     console.error(error)
                                     done()
                                     update(transactionStates.FAILED, error)
@@ -130,7 +130,7 @@ export default function usePurchase() {
                     handler: (update, done) => {
                         try {
                             return setMyTokenAllowance('0', contractProduct.pricingTokenAddress, chainId)
-                                .onTransactionHash(hash => {
+                                .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING, hash)
                                     dispatch(addTransaction(hash, transactionTypes.RESET_DATA_ALLOWANCE))
                                     done()
@@ -138,7 +138,7 @@ export default function usePurchase() {
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
                                 })
-                                .onError(error => {
+                                .onError((error) => {
                                     done()
                                     update(transactionStates.FAILED, error)
                                 })
@@ -159,7 +159,7 @@ export default function usePurchase() {
                     handler: (update, done) => {
                         try {
                             return setMyDaiAllowance(price, chainId)
-                                .onTransactionHash(hash => {
+                                .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING, hash)
                                     dispatch(addTransaction(hash, transactionTypes.SET_DAI_ALLOWANCE))
                                     done()
@@ -167,7 +167,7 @@ export default function usePurchase() {
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
                                 })
-                                .onError(error => {
+                                .onError((error) => {
                                     console.error(error)
                                     done()
                                     update(transactionStates.FAILED, error)
@@ -186,7 +186,7 @@ export default function usePurchase() {
                     handler: (update, done) => {
                         try {
                             return setMyTokenAllowance(purchasePrice, contractProduct.pricingTokenAddress, chainId)
-                                .onTransactionHash(hash => {
+                                .onTransactionHash((hash) => {
                                     update(transactionStates.PENDING, hash)
                                     dispatch(addTransaction(hash, transactionTypes.SET_DATA_ALLOWANCE))
                                     done()
@@ -194,7 +194,7 @@ export default function usePurchase() {
                                 .onTransactionComplete(() => {
                                     update(transactionStates.CONFIRMED)
                                 })
-                                .onError(error => {
+                                .onError((error) => {
                                     console.error(error)
                                     done()
                                     update(transactionStates.FAILED, error)
@@ -223,7 +223,7 @@ export default function usePurchase() {
                             purchasePrice,
                             gasIncrease,
                         )
-                            .onTransactionHash(hash => {
+                            .onTransactionHash((hash) => {
                                 update(transactionStates.PENDING, hash)
                                 dispatch(addTransaction(hash, transactionTypes.SUBSCRIPTION))
                                 done()
@@ -232,7 +232,7 @@ export default function usePurchase() {
                                 update(transactionStates.CONFIRMED)
                                 dispatch(getProductSubscription(contractProduct.id, contractProduct.chainId))
                             })
-                            .onError(error => {
+                            .onError((error) => {
                                 console.error(error)
                                 done()
                                 update(transactionStates.FAILED, error)

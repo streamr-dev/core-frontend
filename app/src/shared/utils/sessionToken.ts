@@ -14,10 +14,10 @@ const storage = isLocalStorageAvailable()
           setItem: (key, value) => {
               cache[key] = value || null
           },
-          getItem: key => cache[key] || null,
-          removeItem: key => storage.setItem(key, null),
+          getItem: (key) => cache[key] || null,
+          removeItem: (key) => storage.setItem(key, null),
       }
-export const setToken = token => {
+export const setToken = (token) => {
     if (token) {
         storage.setItem(SESSION_TOKEN_KEY, token)
         storage.setItem(SESSION_LOGIN_TIME, new Date())
@@ -27,11 +27,11 @@ export const setToken = token => {
     }
 }
 
-const expired = date => Date.now() > new Date(date || 0).getTime() + EXPIRES_AT_VALID_HOURS * 1000 * 3600
+const expired = (date) => Date.now() > new Date(date || 0).getTime() + EXPIRES_AT_VALID_HOURS * 1000 * 3600
 
 export const getToken = () =>
     (!expired(storage.getItem(SESSION_LOGIN_TIME)) && storage.getItem(SESSION_TOKEN_KEY)) || null
-export const setMethod = method => {
+export const setMethod = (method) => {
     if (method) {
         storage.setItem(SESSION_LOGIN_METHOD, method)
     } else {

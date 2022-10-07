@@ -8,10 +8,12 @@ export default function combine(rawPermissions) {
             return
         }
 
-        result[userId.toLowerCase()] = permissions.reduce((memo, operationName) => (
-            // eslint-disable-next-line no-bitwise
-            memo | toOperationId(operationName)
-        ), 0)
+        result[userId.toLowerCase()] = permissions.reduce(
+            (memo, operationName) =>
+                // eslint-disable-next-line no-bitwise
+                memo | toOperationId(operationName),
+            0,
+        )
     })
 
     return result

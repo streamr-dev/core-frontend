@@ -21,7 +21,7 @@ const SwitchNetworkModal = ({ api, requiredNetwork, initialNetwork }: Props) => 
     })
     const currentNetworkId = useSelector(selectEthereumNetworkId)
     const onSwitch = useCallback(
-        async nextNetwork => {
+        async (nextNetwork) => {
             let proceed = false
 
             try {

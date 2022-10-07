@@ -23,7 +23,7 @@ const WhiteListEditor = ({ items }: Props) => {
         <WhitelistEditor
             enabled={isEnabled}
             items={items}
-            onEnableChanged={val => setIsEnabled(val)}
+            onEnableChanged={(val) => setIsEnabled(val)}
             onAdd={action('onAdd')}
             onRemove={action('onRemove')}
             actionsEnabled

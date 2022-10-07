@@ -24,7 +24,7 @@ describe('StreamSelector', () => {
                     id: 'stream-4',
                 },
             ],
-            translate: key => key,
+            translate: (key) => key,
         }
     })
     describe('Rendering', () => {
@@ -64,7 +64,7 @@ describe('StreamSelector', () => {
             const sortElements = wrapper
                 .find('Item')
                 .findWhere(
-                    node =>
+                    (node) =>
                         node.prop('children') === 'Name' ||
                         node.prop('children') === 'Created' ||
                         node.prop('children') === 'Added',
@@ -80,7 +80,7 @@ describe('StreamSelector', () => {
                     <StreamSelector
                         {...props}
                         streams={streams}
-                        onEdit={s => {
+                        onEdit={(s) => {
                             setStreams(s)
                         }}
                     />
@@ -109,7 +109,7 @@ describe('StreamSelector', () => {
                     <StreamSelector
                         {...props}
                         streams={streams}
-                        onEdit={s => {
+                        onEdit={(s) => {
                             setStreams(s)
                         }}
                     />
@@ -136,13 +136,13 @@ describe('StreamSelector', () => {
         it('sets the sort order', () => {
             wrapper = mount(<StreamSelector {...props} />)
             expect(wrapper.find(`.${styles.sortDropdownTitle}`).text()).toMatch(/sort by\s*name/i)
-            const sortByAdded = wrapper.find('Item').findWhere(node => node.prop('children') === 'Added')
+            const sortByAdded = wrapper.find('Item').findWhere((node) => node.prop('children') === 'Added')
             act(() => {
                 sortByAdded.simulate('click')
             })
             wrapper.update()
             expect(wrapper.find(`.${styles.sortDropdownTitle}`).text()).toMatch(/sort by\s*added/i)
-            const sortByCreated = wrapper.find('Item').findWhere(node => node.prop('children') === 'Created')
+            const sortByCreated = wrapper.find('Item').findWhere((node) => node.prop('children') === 'Created')
             act(() => {
                 sortByCreated.simulate('click')
             })

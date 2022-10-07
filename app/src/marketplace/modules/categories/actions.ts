@@ -21,16 +21,16 @@ export const getCategories = (includeEmpty: boolean) => (dispatch: (...args: Arr
     dispatch(getCategoriesRequest())
     return api
         .getCategories(includeEmpty)
-        .then(data => {
+        .then((data) => {
             const { result, entities } = normalize(data, categoriesSchema)
             dispatch(updateEntities(entities))
             return result
         })
         .then(
-            result => {
+            (result) => {
                 dispatch(getCategoriesSuccess(result))
             },
-            error => {
+            (error) => {
                 dispatch(getCategoriesFailure(error))
             },
         )

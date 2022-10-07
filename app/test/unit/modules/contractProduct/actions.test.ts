@@ -20,7 +20,9 @@ describe('contractProduct - actions', () => {
                 description: 'testDescription',
             }
             const { result, entities } = normalize(product, contractProductSchema)
-            jest.spyOn(services, 'getProductFromContract').mockImplementation(id => Promise.resolve({ ...product, id }))
+            jest.spyOn(services, 'getProductFromContract').mockImplementation((id) =>
+                Promise.resolve({ ...product, id }),
+            )
             await store.dispatch(actions.getProductFromContract('test'))
             const expectedActions = [
                 {

@@ -40,8 +40,8 @@ const RelatedProducts = () => {
     return (
         <RelatedProductsContainer
             header="Related products"
-            products={products.map(p => {
-                const contractProd = contractProducts.find(cp => cp.id === p.id)
+            products={products.map((p) => {
+                const contractProd = contractProducts.find((cp) => cp.id === p.id)
                 const pricingTokenAddress = contractProd ? contractProd.pricingTokenAddress : null
                 return merge({}, p, {
                     pricingTokenAddress,

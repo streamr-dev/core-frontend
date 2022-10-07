@@ -26,9 +26,9 @@ export const define =
 
         if (params) {
             const tokenNames = parse(path)
-                .map(t => t.name)
+                .map((t) => t.name)
                 .filter(Boolean)
-            const queryKeys = Object.keys(params).filter(key => !tokenNames.includes(key))
+            const queryKeys = Object.keys(params).filter((key) => !tokenNames.includes(key))
             const { encode, validate, hash } = {
                 encode: true,
                 validate: true,
@@ -37,7 +37,7 @@ export const define =
             }
             const toPath = compile(path)
             const uri = `${toPath(params, {
-                encode: value => (encode ? encodeURIComponent(value) : value),
+                encode: (value) => (encode ? encodeURIComponent(value) : value),
                 validate: !!validate,
             })}?${qs.stringify(pick(params, queryKeys))}`.replace(/\?$/, '')
             path = hash ? `${uri}#${hash}` : uri
@@ -48,10 +48,10 @@ export const define =
             const strippedValue: string = val.length > 1 ? val.replace(/\/$/, '') : val
             return acc.replace(new RegExp(`<${name}>`, 'g'), strippedValue)
         }, path)
-        const unsetVariableNames = (route.match(/<[^>]+>/g) || []).map(s => s.replace(/[<>]/g, ''))
+        const unsetVariableNames = (route.match(/<[^>]+>/g) || []).map((s) => s.replace(/[<>]/g, ''))
 
         if (unsetVariableNames.length) {
-            throw new Error(`Expected ${unsetVariableNames.map(s => `"${s}"`).join(', ')} variable(s) to be defined`)
+            throw new Error(`Expected ${unsetVariableNames.map((s) => `"${s}"`).join(', ')} variable(s) to be defined`)
         }
 
         return route

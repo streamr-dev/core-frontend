@@ -48,7 +48,7 @@ export const getMyPurchases = () => (dispatch: (...args: Array<any>) => any) => 
     dispatch(getMyPurchasesRequest())
     return api
         .getMyPurchases()
-        .then(data => {
+        .then((data) => {
             // Reduce subscriptions to remove duplicate products
             const uniqueSubscriptions = data.reduce((result, subscription: ProductSubscription) => {
                 const { product } = subscription
@@ -74,10 +74,10 @@ export const getMyPurchases = () => (dispatch: (...args: Array<any>) => any) => 
             return result
         })
         .then(
-            result => {
+            (result) => {
                 dispatch(getMyPurchasesSuccess(result))
             },
-            error => {
+            (error) => {
                 dispatch(getMyPurchasesFailure(error))
             },
         )
@@ -90,7 +90,7 @@ const filterPurchases = (data: ProductSubscriptionList, filter: Filter | null | 
         return data
     }
 
-    const filtered = data.filter(sub => {
+    const filtered = data.filter((sub) => {
         let hasTextMatch = true
         let hasKeyValueMatch = true
 
@@ -128,7 +128,7 @@ const filterPurchases = (data: ProductSubscriptionList, filter: Filter | null | 
         // When sorting by recent, the sort value is in the subscription object
         // otherwise use the nested product value
         const sortByField = filter.id === 'recent' ? filter.sortBy : `product.${filter.sortBy}`
-        return orderBy(filtered, subscription => get(subscription, sortByField).toLowerCase(), filter.order)
+        return orderBy(filtered, (subscription) => get(subscription, sortByField).toLowerCase(), filter.order)
     }
 
     return filtered

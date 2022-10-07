@@ -15,7 +15,7 @@ export default function useProductSubscription() {
             return false
         }
 
-        const subscription = subscriptions && subscriptions.find(s => s.id === productId)
+        const subscription = subscriptions && subscriptions.find((s) => s.id === productId)
         return !!subscription && isActive(subscription.endsAt || '')
     }, [productId, subscriptions])
     const isContractSubscriptionValid = useMemo(

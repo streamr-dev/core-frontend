@@ -56,20 +56,22 @@ export default function reducer(state, action) {
     // SET_PERMISSIONS is allowed despite the `locked` flag being up. Other actions are shielded off
     // by the "is locked" check. See below.
     if (action.type === SET_PERMISSIONS) {
-        return Object.entries(state.changeset).reduce((memo, [user, value]) => (
-            reducer(memo, {
-                // Drop empty permissions from `changeset`, too (`combine` skips empty ones).
-                removeEmpty: true,
-                type: UPDATE_PERMISSION,
-                user,
-                value,
-            })
-        ), {
-            ...state,
-            ...normalize(action.permissions),
-            errors: action.errors || {},
-            locked: false,
-        })
+        return Object.entries(state.changeset).reduce(
+            (memo, [user, value]) =>
+                reducer(memo, {
+                    // Drop empty permissions from `changeset`, too (`combine` skips empty ones).
+                    removeEmpty: true,
+                    type: UPDATE_PERMISSION,
+                    user,
+                    value,
+                }),
+            {
+                ...state,
+                ...normalize(action.permissions),
+                errors: action.errors || {},
+                locked: false,
+            },
+        )
     }
 
     // Further actions require "unlocked" state.
@@ -105,7 +107,7 @@ export default function reducer(state, action) {
                 return state
             }
 
-            if (state.combinations[user] && !({}).hasOwnProperty.call(state.changeset, user)) {
+            if (state.combinations[user] && !{}.hasOwnProperty.call(state.changeset, user)) {
                 // Don't overwrite pristine combinations.
                 return state
             }
@@ -164,15 +166,13 @@ export default function reducer(state, action) {
         case ABANDON_CHANGES:
             user = norm(action.user)
 
-            if (!({}).hasOwnProperty.call(state.changeset, user)) {
+            if (!{}.hasOwnProperty.call(state.changeset, user)) {
                 return state
             }
 
             return {
                 ...state,
-                changeset: (({ [user]: _, ...changeset }) => (
-                    changeset
-                ))(state.changeset),
+                changeset: (({ [user]: _, ...changeset }) => changeset)(state.changeset),
             }
 
         default:

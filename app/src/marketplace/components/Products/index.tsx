@@ -37,7 +37,7 @@ const listProducts = (products, cols, isFetching: boolean | null | undefined) =>
             [styles.fetching]: isFetching,
         })}
     >
-        {products.map(product => (
+        {products.map((product) => (
             <MarketplaceProductCol {...cols} key={product.key || product.id}>
                 <MarketplaceProductTile product={product} showDataUnionBadge={isDataUnionProduct(product.type)} />
             </MarketplaceProductCol>

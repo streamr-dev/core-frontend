@@ -1,10 +1,7 @@
 const { object, string, number, lazy } = require('yup')
 
-const nonNegativeNumberic = () => lazy((v) => (
-    typeof v === 'string'
-        ? string().required().matches(/^\d+$/)
-        : number().required().min(0)
-))
+const nonNegativeNumberic = () =>
+    lazy((v) => (typeof v === 'string' ? string().required().matches(/^\d+$/) : number().required().min(0)))
 
 const envSchema = object({
     PLATFORM_PUBLIC_PATH: string().required().url(),
@@ -16,6 +13,4 @@ const envSchema = object({
     SENTRY_PROJECT: string().required(),
 })
 
-module.exports = (env) => (
-    envSchema.validate(env)
-)
+module.exports = (env) => envSchema.validate(env)

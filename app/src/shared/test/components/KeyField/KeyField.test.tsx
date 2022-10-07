@@ -21,7 +21,7 @@ describe('KeyField', () => {
             const actions = el
                 .find('WithInputActions')
                 .prop('actions')
-                .map(action => mount(action))
+                .map((action) => mount(action))
             expect(actions.length).toBe(1)
             expect(actions[0].text()).toBe('Copy')
         })

@@ -13,7 +13,7 @@ const LoadingIndicator = ({ loading: loadingProp, className }: Props) => {
     const [loadingState, setLoadingState] = useState(isLoading)
     // debounce loading flag changes to avoid flickering loading indicator
     const updateLoading = useDebounced(
-        useCallback(value => {
+        useCallback((value) => {
             setLoadingState(value)
         }, []),
         1000,

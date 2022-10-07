@@ -6,7 +6,7 @@ export type LastErrorProps = {
 export function useLastError({ isProcessing, error }: LastErrorProps) {
     const [lastKnownError, setLastKnownError] = useState(error)
     useEffect(() => {
-        setLastKnownError(prevError => {
+        setLastKnownError((prevError) => {
             if (error && prevError !== error) {
                 return error
             }

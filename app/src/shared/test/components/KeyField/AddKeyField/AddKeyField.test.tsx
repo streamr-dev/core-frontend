@@ -33,7 +33,7 @@ describe('AddKeyField', () => {
         })
     })
     describe('saving', () => {
-        it('hides the editor when saved', done => {
+        it('hides the editor when saved', (done) => {
             const label = 'Add new'
 
             const onSave = () => Promise.resolve()
@@ -56,7 +56,7 @@ describe('AddKeyField', () => {
                 0,
             )
         })
-        it('shows an error when saving fails', done => {
+        it('shows an error when saving fails', (done) => {
             const label = 'Add new'
             const errorMessage = 'error'
             const error = new Error(errorMessage)
