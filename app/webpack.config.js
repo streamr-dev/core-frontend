@@ -272,14 +272,14 @@ module.exports = {
                     '**/tests/**/*.*',
                     '**/test/*.*',
                     '**/test/**/*.*',
-                    '**/*.test.js',
-                    '**/*.test.jsx',
+                    '**/*.test.ts',
+                    '**/*.test.tsx',
                     // skip flowtype
                     '**/flowtype/**/*.*',
                     '**/flowtype/*.*',
-                    '**/types.js',
+                    '**/types.ts',
                     // skip conditional stubs
-                    '**/stub.jsx',
+                    '**/stub.tsx',
                     // skip stories
                     '**/*.stories.*',
                     // skip MD documentation

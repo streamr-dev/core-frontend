@@ -27,7 +27,6 @@ module.exports = {
         'jsx-a11y/no-noninteractive-tabindex': 'warn',
         'react/jsx-indent': 'warn',
         'max-len': 'warn',
-        'flowtype/no-flow-fix-me-comments': ['warn', '\\s.+'],
         'react/prop-types': 0,
         'no-unreachable': 'warn',
         'object-curly-newline': 'warn',

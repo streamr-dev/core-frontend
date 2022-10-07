@@ -40,8 +40,6 @@ module.exports = function BabelConfig(api) {
             }],
         ],
         plugins: [
-            '@babel/plugin-syntax-flow',
-            '@babel/plugin-transform-flow-strip-types',
             '@babel/plugin-proposal-optional-chaining',
             ['@babel/plugin-transform-destructuring', {
                 // Use loose mode for performance:
