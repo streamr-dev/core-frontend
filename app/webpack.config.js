@@ -15,6 +15,7 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
 const validateEnv = require('./scripts/validateEnv')
 const pkg = require('./package')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 const dotenv = require('./scripts/dotenv')
 
@@ -81,17 +82,17 @@ module.exports = {
                     '@mdx-js/loader',
                 ],
             },
-            {
-                test: /\.jsx?$/,
+            /*{
+                test: /\.(ts|tsx)?$/,
                 include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
                 enforce: 'pre',
                 use: [{
                     loader: 'eslint-loader',
                     options: {
-                        cache: !isProduction(),
+                        cache: !isProduction()
                     },
                 }],
-            },
+            },*/
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
@@ -184,6 +185,9 @@ module.exports = {
         ],
     },
     plugins: [
+        new ESLintPlugin({
+            extensions: ['*.tsx', '*.ts'],
+        }),
         // Common plugins between prod and dev
         new HtmlWebpackPlugin({
             template: 'src/index.html',

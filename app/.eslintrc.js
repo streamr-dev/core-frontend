@@ -15,6 +15,9 @@ module.exports = {
     },
     plugins: [
         'react-hooks',
+        'import',
+        'react',
+        'jsx-a11y'
     ],
     rules: {
         'react-hooks/rules-of-hooks': 'error',
@@ -36,41 +39,9 @@ module.exports = {
         'require-atomic-updates': 'off',
         'react/sort-comp': 0,
         'import/extensions': 'off',
-        'import/order': ['error', {
-            groups: [
-                'builtin',
-                'external',
-                'internal',
-                'parent',
-                'sibling',
-                'index',
-                'object',
-            ],
-            pathGroups: [
-                {
-                    pattern: '$*/**',
-                    group: 'internal',
-                    position: 'after',
-                },
-                {
-                    pattern: '@*/**',
-                    group: 'internal',
-                    position: 'after',
-                },
-                {
-                    pattern: '@*',
-                    group: 'internal',
-                    position: 'after',
-                },
-                {
-                    pattern: '$*',
-                    group: 'internal',
-                    position: 'after',
-                },
-            ],
-        }],
+
     },
     overrides: [{
-        files: ['*.jsx', '*.js'],
+        files: ['*.tsx', '*.ts', '*.js'],
     }],
 }
