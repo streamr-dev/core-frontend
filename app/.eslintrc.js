@@ -14,7 +14,8 @@ module.exports = {
     rules: {
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
-        'no-unused-vars': 'warn',
+        'no-unused-vars': 'off', // as we prefer the typescript version of this rule
+        '@typescript-eslint/no-unused-vars': 'off',
         'no-multiple-empty-lines': 'warn',
         'jsx-a11y/no-noninteractive-tabindex': 'warn',
         'react/jsx-indent': 'warn',
@@ -30,6 +31,7 @@ module.exports = {
         'require-atomic-updates': 'off',
         'react/sort-comp': 0,
         'import/extensions': 'off',
+
     },
     overrides: [
         {

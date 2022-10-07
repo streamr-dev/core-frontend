@@ -1,9 +1,9 @@
 import defaults from 'lodash/defaults'
 import type { Filter } from '$userpages/flowtype/common-types'
 type FilterDefaults = {
-    sortBy?: string
-    search?: string
-    order?: string
+    sortBy?: string;
+    search?: string;
+    order?: string;
 }
 export const getParamsForFilter = (filter: Filter | null | undefined, defaultValues: FilterDefaults = {}) => {
     // special handling for key+value

@@ -1,6 +1,7 @@
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import getWeb3 from '$utils/web3/getWeb3'
-export default async function getDefaultWeb3Account() {
+// TODO add typing
+export default async function getDefaultWeb3Account(): Promise<any> {
     let accounts
 
     try {

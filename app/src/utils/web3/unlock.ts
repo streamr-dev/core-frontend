@@ -2,7 +2,7 @@ import TimeoutError from '$shared/errors/TimeoutError'
 import WalletLockedError from '$shared/errors/WalletLockedError'
 import Web3NotEnabledError from '$shared/errors/Web3NotEnabledError'
 import getWeb3 from '$utils/web3/getWeb3'
-export default async function unlock({ timeoutAfter = Number.POSITIVE_INFINITY } = {}) {
+export default async function unlock({ timeoutAfter = Number.POSITIVE_INFINITY } = {}): Promise<void> {
     const { currentProvider } = getWeb3()
 
     if (!currentProvider) {
@@ -19,7 +19,7 @@ export default async function unlock({ timeoutAfter = Number.POSITIVE_INFINITY }
     try {
         await Promise.race([
             promise,
-            new Promise((_, reject) => {
+            new Promise((resolve, reject) => {
                 if (timeoutAfter === Number.POSITIVE_INFINITY) {
                     return
                 }

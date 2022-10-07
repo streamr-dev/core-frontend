@@ -17,7 +17,6 @@ import BackButton from '$shared/components/BackButton'
 import SvgIcon from '$shared/components/SvgIcon'
 import PngIcon from '$shared/components/PngIcon'
 import Slider from '$shared/components/Slider'
-import ModalPortal from '$shared/components/ModalPortal'
 import { Provider as ModalPortalProvider } from '$shared/contexts/ModalPortal'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
 import Notifications from '$shared/components/Notifications'
@@ -27,7 +26,7 @@ import Spinner from '$shared/components/Spinner'
 import Text from '$ui/Text'
 import sharedStyles from './shared.pcss'
 
-const story = (name) =>
+const story = (name: string) =>
     storiesOf(`Shared/${name}`, module)
         .addDecorator(
             styles({

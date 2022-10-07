@@ -223,14 +223,10 @@ export const getTransactionsFromEvents = (events: EventLogList): Promise<Transac
         ),
     ).then(([...transactions]) =>
         transactions.map(([event, tx, receipt, block]): TransactionEntity => {
-            const rest = {}
-
-            if (receipt.status === true) {
-                rest.receipt = receipt
-            } else {
-                rest.error = new TransactionError('Transaction failed', receipt)
+            const rest: Partial<TransactionEntity> = {
+                receipt: receipt.status === true ? receipt : undefined,
+                error: receipt.status === false ? new TransactionError('Transaction failed', receipt) : undefined
             }
-
             let inputValues
 
             try {

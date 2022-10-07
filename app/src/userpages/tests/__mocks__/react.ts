@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const react = require('react')
 
 // Resolution for requestAnimationFrame not supported in jest error :

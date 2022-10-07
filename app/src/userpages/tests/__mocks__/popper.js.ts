@@ -1,5 +1,5 @@
 // https://github.com/popperjs/popper-core/issues/478#issuecomment-341494703
-// eslint-disable-next-line import/no-extraneous-dependencies
+// eslint-disable-next-line import/no-extraneous-dependencies,@typescript-eslint/no-var-requires
 const PopperJS = require('popper.js')
 
 class MockedPopperJS {

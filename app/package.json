@@ -129,6 +129,7 @@
         "@types/react-dom": "^18.0.6",
         "@types/react-router-dom": "^5.3.3",
         "@types/redux-actions": "^2.6.2",
+        "@types/styled-components": "^5.1.26",
         "@typescript-eslint/eslint-plugin": "^5.39.0",
         "@typescript-eslint/parser": "^5.39.0",
         "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",

@@ -1,6 +1,7 @@
 import formatConfigUrl from '$utils/formatConfigUrl'
 import getConfig from '$app/src/getters/getConfig'
-export default function formatRpc(rpc) {
+// TODO add typing
+export default function formatRpc(rpc: any): any {
     if (!rpc || typeof rpc !== 'object' || !('rpcs' in rpc)) {
         return rpc
     }
@@ -8,7 +9,7 @@ export default function formatRpc(rpc) {
     const { client } = getConfig()
     return {
         ...rpc,
-        rpcs: rpc.rpcs.map((r) => ({
+        rpcs: rpc.rpcs.map((r: any) => ({
             timeout: r.timeout != null ? r.timeout : client?.chainTimeout,
             url: formatConfigUrl(r.url),
         })),

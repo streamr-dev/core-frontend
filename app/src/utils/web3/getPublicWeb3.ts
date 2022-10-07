@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 import getConfig, { getConfigForChain } from '$shared/web3/config'
-export default function getPublicWeb3(chainId?) {
+export default function getPublicWeb3(chainId?: number): Web3 {
     const options = {
         timeout: 20000, // milliseconds
     }
