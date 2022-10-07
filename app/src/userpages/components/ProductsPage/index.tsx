@@ -47,17 +47,23 @@ const ProductsPage = () => {
         const filters = getFilters('product')
         return [filters.RECENT_DESC, filters.NAME_ASC, filters.NAME_DESC, filters.PUBLISHED, filters.DRAFTS]
     }, [])
-    const { defaultFilter, filter, setSearch, setSort, resetFilter } = useFilterSort(sortOptions)
+    const {
+ defaultFilter, filter, setSearch, setSort, resetFilter
+} = useFilterSort(sortOptions)
     const allProducts = useSelector(selectMyProductList)
     const fetching = useSelector(selectFetching)
     const dispatch = useDispatch()
-    const { load: loadDataUnionStats, members, loadedIds, fetchingIds, reset: resetStats } = useAllDataUnionStats()
+    const {
+ load: loadDataUnionStats, members, loadedIds, fetchingIds, reset: resetStats
+} = useAllDataUnionStats()
     // Make sure we show only normal products.
     // This is needed to avoid quick flash of possibly data union products.
     const products = useMemo(() => allProducts.filter((p) => p.type === productTypes.NORMAL), [allProducts])
     useEffect(() => {
         // Modify filter to include only normal products
-        const finalFilter = { ...filter, key: 'type', value: productTypes.NORMAL }
+        const finalFilter = {
+ ...filter, key: 'type', value: productTypes.NORMAL
+}
         dispatch(getMyProducts(finalFilter)).then(loadDataUnionStats)
     }, [dispatch, filter, loadDataUnionStats])
     useEffect(

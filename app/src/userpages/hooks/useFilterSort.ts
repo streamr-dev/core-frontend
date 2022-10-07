@@ -27,7 +27,9 @@ function useFilterSort(sortOptions = []) {
         setFilterOptions({ ...defaultFilter })
         setSearch(undefined)
     }, [defaultFilter])
-    const filter = useMemo(() => ({ ...filterOptions, search }), [filterOptions, search])
+    const filter = useMemo(() => ({
+ ...filterOptions, search
+}), [filterOptions, search])
     return useMemo(
         () => ({
             search,

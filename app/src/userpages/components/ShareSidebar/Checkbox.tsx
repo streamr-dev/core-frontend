@@ -12,7 +12,9 @@ const permissionLabels = {
     INTERACT: 'Interact',
 }
 
-const UnstyledCheckbox = ({ className, id, operationKey, onChange: onChangeProp, ...props }) => {
+const UnstyledCheckbox = ({
+ className, id, operationKey, onChange: onChangeProp, ...props
+}) => {
     const onChange = useCallback(
         (e) => {
             onChangeProp(operationKey, !!e.target.checked)

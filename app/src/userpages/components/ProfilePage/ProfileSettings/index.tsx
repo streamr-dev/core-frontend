@@ -69,9 +69,7 @@ const ProfileSettings = () => {
         [dispatch],
     )
     const onNameChange = useCallback(
-        ({
-            target,
-        }: {
+        ({target,}: {
             target: {
                 value: $ElementType<User, 'name'>
             }
@@ -81,9 +79,7 @@ const ProfileSettings = () => {
         [doUpdateUserName],
     )
     const onEmailChange = useCallback(
-        ({
-            target,
-        }: {
+        ({target,}: {
             target: {
                 value: $ElementType<User, 'email'>
             }

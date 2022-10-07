@@ -1,5 +1,5 @@
 import getConfig from '$app/src/getters/getConfig'
-export default function formatConfigUrl(url, { protocol = 'http' } = {}) {
+export default function formatConfigUrl(url: string, { protocol = 'http' } = {}): string {
     const { docker } = getConfig()
 
     if (typeof url !== 'string' || (url && !/^[:/]/.test(url))) {

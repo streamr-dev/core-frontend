@@ -13,7 +13,9 @@ const SaveButton = styled(Button)`
     overflow: hidden;
 `
 
-const UnstyledFooter = ({ disabled, onCancel, onSave, waiting, ...props }) => (
+const UnstyledFooter = ({
+ disabled, onCancel, onSave, waiting, ...props
+}) => (
     <div {...props}>
         <div>
             <CopyLink />

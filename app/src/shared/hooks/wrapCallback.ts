@@ -3,7 +3,7 @@ import debounce from 'lodash/debounce'
 import throttle from 'lodash/throttle'
 export default function wrapCallback(wrapperFn) {
     return (fn, ...args) => {
-        const wrappedFn = useMemo(() => wrapperFn(fn, ...args), [fn, ...args])
+        const wrappedFn = useMemo(() => wrapperFn(fn, ...args), [args, fn])
         // eslint-disable-line react-hooks/exhaustive-deps
         // cancel existing on unmount/change
         useLayoutEffect(
