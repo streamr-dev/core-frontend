@@ -1,56 +1,56 @@
 :root {
-    --fontSize: 1rem;
-    --mono: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace;
-    --sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
-    --um: 16px; /* Wishful thinking: Future 1rem? — Mariusz */
+  --fontSize: 1rem;
+  --mono: 'IBM Plex Mono', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', Courier, monospace;
+  --sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --um: 16px; /* Wishful thinking: Future 1rem? — Mariusz */
 
-    /* Colors */
-    --white: #ffffff;
-    --orangeOld: #e9570f;
-    --orange: #ff5c00;
-    --orangeDark: #e9570f;
-    --blueLight: #cce9fd;
-    --streamrBlue: #0324ff;
-    --blue2: #37a0e9;
-    --blueDark: #28026b;
-    --blueDark2: #1b0157;
-    --blueDark3: #13013d;
-    --blueDark4: #36049d;
-    --blueDark5: #33037f;
-    --blueDark6: #0d009a;
-    --blueDark7: #1d004e;
-    --blueDark8: #010002;
-    --blueDark9: #09006d;
-    --greenGoLive: #2ac437;
-    --greyLight: #adadad;
-    --greyLight2: #cecece;
-    --greyLight3: #f8f8f8;
-    --greyLight4: #f5f5f5;
-    --greyLight5: #a1a1a1;
-    --grey: #d3d3d3;
-    --grey2: #adadad;
-    --grey3: #c3c3c3;
-    --grey4: #e7e7e7;
-    --greyDark: #323232;
-    --greyDark2: #525252;
-    --purpleLight: #9173ff;
-    --purpleLight2: #d4b8ff;
-    --purple: #7549d9;
-    --purple2: #6240af;
-    --purpleDark: #53407f;
-    --purpleDark2: #3c00a3;
-    --purpleDark3: #0d002b;
-    --purpleDark4: #4a3086;
+  /* Colors */
+  --white: #FFFFFF;
+  --orangeOld: #E9570F;
+  --orange: #FF5C00;
+  --orangeDark: #E9570F;
+  --blueLight: #CCE9FD;
+  --streamrBlue: #0324FF;
+  --blue2: #37A0E9;
+  --blueDark: #28026B;
+  --blueDark2: #1B0157;
+  --blueDark3: #13013D;
+  --blueDark4: #36049D;
+  --blueDark5: #33037F;
+  --blueDark6: #0D009A;
+  --blueDark7: #1D004E;
+  --blueDark8: #010002;
+  --blueDark9: #09006D;
+  --greenGoLive: #2AC437;
+  --greyLight: #ADADAD;
+  --greyLight2: #CECECE;
+  --greyLight3: #F8F8F8;
+  --greyLight4: #F5F5F5;
+  --greyLight5: #A1A1A1;
+  --grey: #D3D3D3;
+  --grey2: #ADADAD;
+  --grey3: #C3C3C3;
+  --grey4: #E7E7E7;
+  --greyDark: #323232;
+  --greyDark2: #525252;
+  --purpleLight: #9173FF;
+  --purpleLight2: #D4B8FF;
+  --purple: #7549D9;
+  --purple2: #6240AF;
+  --purpleDark: #53407F;
+  --purpleDark2: #3C00A3;
+  --purpleDark3: #0D002B;
+  --purpleDark4: #4A3086;
 
-    /* Font weights */
-    --light: 300;
-    --regular: 400;
-    --medium: 500;
-    --semiBold: 600;
-    --bold: 700;
+  /* Font weights */
+  --light: 300;
+  --regular: 400;
+  --medium: 500;
+  --semiBold: 600;
+  --bold: 700;
 
-    /* shared vars */
-    --nav-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
+  /* shared vars */
+  --nav-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
 }
 
 @custom-selector :--enter :hover, :focus, :global(.active);

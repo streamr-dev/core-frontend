@@ -1,38 +1,38 @@
 .docsImage {
-    picture img {
-        display: block;
-        margin: 0 auto;
-        max-width: 100%;
+  picture img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
 
-        &.bordered {
-            border: 1px solid #d8d8d8;
-        }
+    &.bordered {
+      border: 1px solid #D8D8D8;
     }
+  }
 }
 
 .lightboxWrapper {
-    position: relative;
-    cursor: pointer;
+  position: relative;
+  cursor: pointer;
 
-    .hoverIcon {
-        display: none;
-        transition: all 180ms ease-in-out;
-        position: absolute;
-        bottom: 1.5rem;
-        right: 1.5rem;
+  .hoverIcon {
+    display: none;
+    transition: all 180ms ease-in-out;
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
 
-        &.captioned {
-            bottom: 4rem;
-        }
+    &.captioned {
+      bottom: 4rem;
     }
+  }
 }
 
 .lightboxWrapper:hover {
-    cursor: pointer;
+  cursor: pointer;
 
-    .hoverIcon {
-        pointer-events: none;
-        cursor: pointer;
-        display: block;
-    }
+  .hoverIcon {
+    pointer-events: none;
+    cursor: pointer;
+    display: block;
+  }
 }

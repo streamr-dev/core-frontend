@@ -1,44 +1,44 @@
 :global {
-    form {
-        input {
-            font-family: var(--sans);
-        }
-
-        .form-control {
-            border: none !important;
-            border-radius: 0;
-            font-size: 1rem;
-            padding: 0.9rem 1rem;
-            color: var(--purple2);
-            font-family: var(--sans);
-            background: var(--white) none;
-
-            &:active,
-            &:focus {
-                color: inherit;
-                border: none;
-            }
-
-            &::placeholder {
-                color: var(--purple2);
-                transition: color 0.15s ease;
-            }
-
-            &:active::placeholder,
-            &:focus::placeholder {
-                color: var(--purple2);
-            }
-        }
-
-        input.form-control {
-            border: none;
-            color: var(--purple2);
-        }
+  form {
+    input {
+      font-family: var(--sans);
     }
 
-    @media (--xs) {
-        form .form-control::placeholder {
-            font-size: 14px;
-        }
+    .form-control {
+      border: none !important;
+      border-radius: 0;
+      font-size: 1rem;
+      padding: 0.9rem 1rem;
+      color: var(--purple2);
+      font-family: var(--sans);
+      background: var(--white) none;
+
+      &:active,
+      &:focus {
+        color: inherit;
+        border: none;
+      }
+
+      &::placeholder {
+        color: var(--purple2);
+        transition: color 0.15s ease;
+      }
+
+      &:active::placeholder,
+      &:focus::placeholder {
+        color: var(--purple2);
+      }
     }
+
+    input.form-control {
+      border: none;
+      color: var(--purple2);
+    }
+  }
+
+  @media (--xs) {
+    form .form-control::placeholder {
+      font-size: 14px;
+    }
+  }
 }

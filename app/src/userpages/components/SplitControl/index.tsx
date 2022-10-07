@@ -3,7 +3,7 @@ import React from 'react'
 import cx from 'classnames'
 import styles from './splitControl.pcss'
 type Props = {
-    className?: string
+    className?: string;
     children?: Node
 }
 

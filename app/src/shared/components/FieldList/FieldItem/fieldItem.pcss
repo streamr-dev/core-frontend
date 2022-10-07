@@ -2,45 +2,45 @@
 }
 
 .handle {
-    cursor: ns-resize;
-    display: none;
-    left: 0;
-    position: absolute;
-    top: 50%;
-    z-index: 3;
-    transform: translateY(-50%);
+  cursor: ns-resize;
+  display: none;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  transform: translateY(-50%);
 }
 
 .inner {
-    box-sizing: content-box;
-    border-radius: 4px;
-    left: -32px;
-    padding: 1em 56px 1em 32px;
-    position: relative;
-    width: 100%;
+  box-sizing: content-box;
+  border-radius: 4px;
+  left: -32px;
+  padding: 1em 56px 1em 32px;
+  position: relative;
+  width: 100%;
 }
 
 .helper .handle,
 .root:--enter .handle,
 .root:--enter .trashIcon {
-    display: block;
+  display: block;
 }
 
 .locked .root .handle,
 .locked .root .trashIcon {
-    display: none;
+  display: none;
 }
 
 .helper .inner,
 .root:--enter .inner {
-    background: #f5f5f5;
+  background: #F5F5F5;
 }
 
 .locked .root .inner {
-    background: none;
+  background: none;
 }
 
 .handle:active .inner {
-    background-color: blue;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  background-color: blue;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }

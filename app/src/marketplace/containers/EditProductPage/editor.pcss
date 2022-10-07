@@ -1,6 +1,6 @@
 .root {
-    padding: 3.75rem 0 8.1235rem;
-    min-height: 100vh;
+  padding: 3.75rem 0 8.1235rem;
+  min-height: 100vh;
 }
 
 .Editor {
@@ -10,66 +10,66 @@
 }
 
 .nav {
-    display: none;
+  display: none;
 }
 
 .grid {
-    display: grid;
-    grid-column-gap: 2.25rem;
+  display: grid;
+  grid-column-gap: 2.25rem;
 }
 
 .info {
-    font-size: 1rem;
+  font-size: 1rem;
+  letter-spacing: 0;
+  line-height: 1.5rem;
+  margin-bottom: 10rem;
+
+  h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.5rem;
     letter-spacing: 0;
     line-height: 1.5rem;
-    margin-bottom: 10rem;
+    color: var(--greyDark);
+    font-weight: var(--regular);
+    border-bottom: 1px solid var(--grey4);
+    padding-bottom: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
 
-    h1 {
-        margin: 0;
-        padding: 0;
-        font-size: 1.5rem;
-        letter-spacing: 0;
-        line-height: 1.5rem;
-        color: var(--greyDark);
-        font-weight: var(--regular);
-        border-bottom: 1px solid var(--grey4);
-        padding-bottom: 1.25rem;
-        margin-bottom: 2.5rem;
-    }
+  a,
+  p a {
+    text-decoration: none;
+  }
 
-    a,
-    p a {
-        text-decoration: none;
-    }
+  > section {
+    margin: 0;
+    padding: 0;
+  }
 
-    > section {
-        margin: 0;
-        padding: 0;
-    }
-
-    > section + section {
-        margin-top: 7rem;
-    }
+  > section + section {
+    margin-top: 7rem;
+  }
 }
 
 @media (--md-up) {
-    .grid {
-        grid-template-columns: 120px auto;
-    }
+  .grid {
+    grid-template-columns: 120px auto;
+  }
 
-    .nav {
-        display: block;
-    }
+  .nav {
+    display: block;
+  }
 }
 
 @media (--lg-up) {
-    .grid {
-        grid-template-columns: 180px auto;
-    }
+  .grid {
+    grid-template-columns: 180px auto;
+  }
 }
 
 @media (--xl) {
-    .grid {
-        grid-template-columns: auto 660px;
-    }
+  .grid {
+    grid-template-columns: auto 660px;
+  }
 }

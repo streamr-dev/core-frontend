@@ -1,37 +1,37 @@
 /* stylelint-disable max-nesting-depth */
 
 :global {
+  section {
+    z-index: 2;
+    padding: 50px 0;
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      margin-top: 50px;
+      padding-bottom: 15px;
+      position: relative;
+      font-size: 38px;
+      line-height: 49px;
+
+      .subtitle {
+        font-family: var(--mono);
+        font-weight: var(--medium);
+        text-transform: uppercase;
+        margin: 6px 0 0 0;
+        font-size: 16px;
+        letter-spacing: 1px;
+      }
+    }
+  }
+
+  @media (--sm-down) {
     section {
-        z-index: 2;
-        padding: 50px 0;
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            margin-top: 50px;
-            padding-bottom: 15px;
-            position: relative;
-            font-size: 38px;
-            line-height: 49px;
-
-            .subtitle {
-                font-family: var(--mono);
-                font-weight: var(--medium);
-                text-transform: uppercase;
-                margin: 6px 0 0 0;
-                font-size: 16px;
-                letter-spacing: 1px;
-            }
+      h2 {
+        .subtitle {
+          font-size: 12px;
         }
+      }
     }
-
-    @media (--sm-down) {
-        section {
-            h2 {
-                .subtitle {
-                    font-size: 12px;
-                }
-            }
-        }
-    }
+  }
 }

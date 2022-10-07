@@ -1,24 +1,24 @@
 .buttons {
-    display: flex;
-    justify-content: flex-end;
+  display: flex;
+  justify-content: flex-end;
 
-    /* prevents border rendering glitches in chrome */
-    transform: translate3d(0, 0, 0);
+  /* prevents border rendering glitches in chrome */
+  transform: translate3d(0, 0, 0);
 }
 
 .buttons:empty {
-    display: none;
+  display: none;
 }
 
 .buttons > * {
-    padding-right: 15px;
-    padding-left: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
 }
 
 .buttons > :not(.link) {
-    min-width: 7rem;
+  min-width: 7rem;
 }
 
 .buttons > * + * {
-    margin-left: 1rem;
+  margin-left: 1rem;
 }

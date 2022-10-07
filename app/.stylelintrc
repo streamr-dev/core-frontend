@@ -1,6 +1,6 @@
 {
-    "ignoreFiles": ["**/*.jsx"],
-    "extends": ["stylelint-config-streamr"],
+    "ignoreFiles": ["**/*.tsx"],
+    "extends": ["stylelint-config-streamr", "prettier"],
     "rules": {
         "unit-no-unknown": [
             true,

@@ -1,48 +1,48 @@
 :root {
-    --size: 16px;
-    --gap: 7px;
-    --duration: 1s;
-    --color: #0052ec;
+  --size: 16px;
+  --gap: 7px;
+  --duration: 1s;
+  --color: #0052EC;
 }
 
 .spinner {
+  width: var(--size);
+  height: 16px;
+  border-radius: 50%;
+  position: relative;
+  animation: loader10 var(--duration) ease alternate infinite;
+  animation-delay: calc(var(--duration) / 5 * 2);
+  margin-left: auto;
+  margin-right: auto;
+  top: calc(-1 * var(--size));
+
+  &::after,
+  &::before {
+    content: '';
+    position: absolute;
     width: var(--size);
-    height: 16px;
+    height: var(--size);
     border-radius: 50%;
-    position: relative;
     animation: loader10 var(--duration) ease alternate infinite;
-    animation-delay: calc(var(--duration) / 5 * 2);
-    margin-left: auto;
-    margin-right: auto;
-    top: calc(-1 * var(--size));
+  }
 
-    &::after,
-    &::before {
-        content: '';
-        position: absolute;
-        width: var(--size);
-        height: var(--size);
-        border-radius: 50%;
-        animation: loader10 var(--duration) ease alternate infinite;
-    }
+  &::before {
+    left: calc(-1 * (var(--size) + var(--gap)));
+    animation-delay: calc((var(--duration) / 5) * 1);
+  }
 
-    &::before {
-        left: calc(-1 * (var(--size) + var(--gap)));
-        animation-delay: calc((var(--duration) / 5) * 1);
-    }
-
-    &::after {
-        right: calc(-1 * (var(--size) + var(--gap)));
-        animation-delay: calc((var(--duration) / 5) * 3);
-    }
+  &::after {
+    right: calc(-1 * (var(--size) + var(--gap)));
+    animation-delay: calc((var(--duration) / 5) * 3);
+  }
 }
 
 @keyframes :local(loader10) {
-    0% {
-        box-shadow: 0 var(--size) 0 calc(-1 * var(--size)) var(--color);
-    }
+  0% {
+    box-shadow: 0 var(--size) 0 calc(-1 * var(--size)) var(--color);
+  }
 
-    100% {
-        box-shadow: 0 var(--size) 0 var(--color);
-    }
+  100% {
+    box-shadow: 0 var(--size) 0 var(--color);
+  }
 }

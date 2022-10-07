@@ -1,32 +1,32 @@
 :global {
-    .container-fluid {
-        max-width: 2400px;
+  .container-fluid {
+    max-width: 2400px;
+  }
+
+  section {
+    z-index: initial;
+  }
+
+  body {
+    &.overflow-hidden {
+      overflow: hidden !important;
+      overflow-y: hidden !important;
+      overflow-x: hidden !important;
     }
 
-    section {
-        z-index: initial;
+    a {
+      text-decoration: none;
     }
+  }
 
-    body {
-        &.overflow-hidden {
-            overflow: hidden !important;
-            overflow-y: hidden !important;
-            overflow-x: hidden !important;
-        }
+  p a {
+    text-decoration: underline;
+  }
 
-        a {
-            text-decoration: none;
-        }
+  table {
+    th,
+    td {
+      height: 56px;
     }
-
-    p a {
-        text-decoration: underline;
-    }
-
-    table {
-        th,
-        td {
-            height: 56px;
-        }
-    }
+  }
 }

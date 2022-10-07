@@ -1,47 +1,47 @@
 .modalTitle {
+  margin: 0;
+  padding: 24px;
+  font-size: 20px;
+  line-height: 32px;
+  font-family: var(--sans);
+  font-weight: normal;
+  text-align: center;
+  position: relative;
+
+  &:empty {
+    display: none;
+  }
+
+  hr {
     margin: 0;
-    padding: 24px;
-    font-size: 20px;
-    line-height: 32px;
-    font-family: var(--sans);
-    font-weight: normal;
-    text-align: center;
-    position: relative;
-
-    &:empty {
-        display: none;
-    }
-
-    hr {
-        margin: 0;
-    }
+  }
 }
 
 .closeButton {
-    appearance: none;
-    border: none;
-    padding: 0;
-    background: none;
-    cursor: pointer;
-    width: 32px;
-    height: 32px;
-    position: absolute;
-    right: 1.5rem;
+  appearance: none;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  right: 1.5rem;
 
-    &:focus {
-        outline: none;
-    }
+  &:focus {
+    outline: none;
+  }
 }
 
 .closeIcon {
-    width: 10px;
-    height: 10px;
-    color: #a3a3a3;
+  width: 10px;
+  height: 10px;
+  color: #A3A3A3;
 }
 
 @media (--xs) {
-    .modalTitle {
-        font-size: 16px;
-        line-height: 32px;
-    }
+  .modalTitle {
+    font-size: 16px;
+    line-height: 32px;
+  }
 }

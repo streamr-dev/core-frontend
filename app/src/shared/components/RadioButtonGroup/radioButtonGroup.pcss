@@ -1,72 +1,72 @@
 .root {
-    width: 100%;
-    font-family: var(--sans);
-    font-size: 1.25rem;
-    letter-spacing: 0;
-    line-height: 4rem;
-    text-align: center;
-    background-color: #f1f1f1;
-    padding: 1rem;
-    border-radius: 0.5rem;
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 1.25rem;
+  letter-spacing: 0;
+  line-height: 4rem;
+  text-align: center;
+  background-color: #F1F1F1;
+  padding: 1rem;
+  border-radius: 0.5rem;
 }
 
 .disabled {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 .inner {
-    position: relative;
+  position: relative;
 }
 
 .buttonGrid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    grid-column-gap: 0.5rem;
-    position: absolute;
-    width: 100%;
-    top: 0;
-    z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-column-gap: 0.5rem;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  z-index: 1;
 }
 
 .slider {
-    outline: none;
-    cursor: pointer;
-    user-select: none;
-    transition: all 250ms ease-in;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    border-radius: 0.5rem;
-    color: #0324ff;
-    background-color: white;
-    box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
-    height: 4rem;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  transition: all 250ms ease-in;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border-radius: 0.5rem;
+  color: #0324FF;
+  background-color: white;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.1);
+  height: 4rem;
 }
 
 .radio {
-    display: none;
+  display: none;
 }
 
 .radio:checked + label {
-    color: #0324ff;
+  color: #0324FF;
 }
 
 .label {
-    color: #a3a3a3;
-    outline: none;
-    cursor: pointer;
-    user-select: none;
-    transition: all 250ms ease-in;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    border-radius: 0.5rem;
+  color: #A3A3A3;
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  transition: all 250ms ease-in;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border-radius: 0.5rem;
 
-    &:hover {
-        color: #323232;
-    }
+  &:hover {
+    color: #323232;
+  }
 }
 
 .radio:disabled:not(:checked) + .label:hover {
-    color: #a3a3a3;
+  color: #A3A3A3;
 }
