@@ -6,16 +6,11 @@ import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import TransactionError from '$shared/errors/TransactionError'
-import type {
-    SmartContractCall,
-    Address,
-    SmartContractConfig,
-    SmartContractTransaction,
-} from '$shared/flowtype/web3-types'
-import type { NumberString } from '$shared/flowtype/common-types'
+import type { SmartContractCall, Address, SmartContractConfig, SmartContractTransaction } from '$shared/types/web3-types'
+import type { NumberString } from '$shared/types/common-types'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Transaction from '$shared/utils/Transaction'
-import type { Product, SmartContractProduct } from '../flowtype/product-types'
+import type { Product, SmartContractProduct } from '../types/product-types'
 import { arePricesEqual } from '../utils/price'
 export type Callable = {
     call: () => SmartContractCall<any>
@@ -23,8 +18,7 @@ export type Callable = {
 export type Sendable = {
     send: (arg0: { from: Address }) => PromiEvent
 }
-export const areAddressesEqual = (first: Address, second: Address) =>
-    (first || '').toLowerCase() === (second || '').toLowerCase()
+export const areAddressesEqual = (first: Address, second: Address) => (first || '').toLowerCase() === (second || '').toLowerCase()
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 export const getPrefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '0x')
 export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '')
@@ -34,13 +28,8 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  * @param hex string to validate. Can have the 0x prefix or not
  * @returns {boolean}
  */
-export const isValidHexString = (hex: string): boolean =>
-    (typeof hex === 'string' || hex instanceof String) && isHex(hex)
-export const getContract = (
-    { abi, address }: SmartContractConfig,
-    usePublicNode: boolean = false,
-    chainId?: number,
-): Web3.eth.Contract => {
+export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && isHex(hex)
+export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false, chainId?: number): Web3.eth.Contract => {
     if (usePublicNode && chainId == null) {
         throw new Error('ChainId must be provided!')
     }
@@ -52,10 +41,8 @@ export const isContractProductUpdateRequired = (contractProduct: SmartContractPr
     const hasPriceChanged = !arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond)
     const hasBeneficiaryChanged = !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress)
     const hasPricingTokenChanged =
-        editProduct.pricingTokenAddress != null &&
-        !areAddressesEqual(contractProduct.pricingTokenAddress, editProduct.pricingTokenAddress)
-    const hasWhitelistChanged =
-        editProduct.requiresWhitelist != null && contractProduct.requiresWhitelist !== editProduct.requiresWhitelist
+        editProduct.pricingTokenAddress != null && !areAddressesEqual(contractProduct.pricingTokenAddress, editProduct.pricingTokenAddress)
+    const hasWhitelistChanged = editProduct.requiresWhitelist != null && contractProduct.requiresWhitelist !== editProduct.requiresWhitelist
     return hasPriceChanged || hasBeneficiaryChanged || hasPricingTokenChanged || hasWhitelistChanged
 }
 export const call = (method: Callable): SmartContractCall<any> => method.call()

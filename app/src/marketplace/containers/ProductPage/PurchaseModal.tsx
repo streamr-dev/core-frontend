@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback, useState, useMemo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import type { ProductId, AccessPeriod } from '$mp/flowtype/product-types'
+import type { ProductId, AccessPeriod } from '$mp/types/product-types'
 import useModal from '$shared/hooks/useModal'
 import useWeb3Status from '$shared/hooks/useWeb3Status'
 import { useController } from '$mp/containers/ProductController'
@@ -10,13 +10,7 @@ import { selectContractProduct, selectContractProductError } from '$mp/modules/c
 import { transactionStates, paymentCurrencies, gasLimits } from '$shared/utils/constants'
 import useDataUnion from '$mp/containers/ProductController/useDataUnion'
 import NoBalanceError from '$mp/errors/NoBalanceError'
-import {
-    getDataAddress,
-    getTokenInformation,
-    getCustomTokenBalance,
-    getMyNativeTokenBalance,
-    getMyDataTokenBalance,
-} from '$mp/utils/web3'
+import { getDataAddress, getTokenInformation, getCustomTokenBalance, getMyNativeTokenBalance, getMyDataTokenBalance } from '$mp/utils/web3'
 import PurchaseTransactionProgress from '$mp/components/Modal/PurchaseTransactionProgress'
 import PurchaseSummaryDialog from '$mp/components/Modal/PurchaseSummaryDialog'
 import PurchaseComplete from '$mp/components/Modal/PurchaseComplete'
@@ -26,7 +20,7 @@ import NoBalanceDialog from '$mp/components/Modal/NoBalanceDialog'
 import ChooseAccessPeriodDialog from '$mp/components/Modal/ChooseAccessPeriodDialog'
 import WrongNetworkSelectedDialog from '$shared/components/WrongNetworkSelectedDialog'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import type { Ref, UseStateTuple } from '$shared/flowtype/common-types'
+import type { Ref, UseStateTuple } from '$shared/types/common-types'
 import Web3ErrorDialog from '$shared/components/Web3ErrorDialog'
 import { isDataUnionProduct } from '$mp/utils/product'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
@@ -58,9 +52,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
         time: '1',
         timeUnit: 'hour',
         paymentCurrency:
-            contractProduct &&
-            contractProduct.pricingTokenAddress &&
-            contractProduct.pricingTokenAddress === getDataAddress(chainId)
+            contractProduct && contractProduct.pricingTokenAddress && contractProduct.pricingTokenAddress === getDataAddress(chainId)
                 ? paymentCurrencies.DATA
                 : paymentCurrencies.PRODUCT_DEFINED,
         price: undefined,
@@ -191,15 +183,9 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             queue.unsubscribeAll()
         }
     }, [queue, isMounted])
-    const allSucceeded = useMemo(
-        () => Object.values(status).every((value) => value === transactionStates.CONFIRMED),
-        [status],
-    )
+    const allSucceeded = useMemo(() => Object.values(status).every((value) => value === transactionStates.CONFIRMED), [status])
     const allCompleted = useMemo(
-        () =>
-            Object.values(status).every(
-                (value) => value === transactionStates.CONFIRMED || value === transactionStates.FAILED,
-            ),
+        () => Object.values(status).every((value) => value === transactionStates.CONFIRMED || value === transactionStates.FAILED),
         [status],
     )
     useEffect(() => {
@@ -261,13 +247,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             )
         }
 
-        return (
-            <ErrorDialog
-                title="An error occurred"
-                message={(purchaseError || contractProductError).message}
-                onClose={onClose}
-            />
-        )
+        return <ErrorDialog title="An error occurred" message={(purchaseError || contractProductError).message} onClose={onClose} />
     }
 
     if (step === purchaseFlowSteps.ACCESS_PERIOD) {
@@ -316,9 +296,7 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
             <PurchaseTransactionProgress
                 status={status}
                 onCancel={onClose}
-                prompt={
-                    currentAction && status[currentAction] === transactionStates.STARTED ? currentAction : undefined
-                }
+                prompt={currentAction && status[currentAction] === transactionStates.STARTED ? currentAction : undefined}
                 tokenSymbol={productTokenSymbol}
             />
         )

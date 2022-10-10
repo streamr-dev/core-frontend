@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import type { ProductList } from '$mp/flowtype/product-types'
+import type { ProductList } from '$mp/types/product-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 export default function useContractProducts() {

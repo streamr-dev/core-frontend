@@ -1,16 +1,15 @@
 import BN from 'bignumber.js'
 import * as yup from 'yup'
-import type { NumberString } from '$shared/flowtype/common-types'
+import type { NumberString } from '$shared/types/common-types'
 import { contractCurrencies as currencies, productStates } from '$shared/utils/constants'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
-import type { Product, ProductId, SmartContractProduct, ProductType } from '../flowtype/product-types'
+import type { Product, ProductId, SmartContractProduct, ProductType } from '../types/product-types'
 import { isEthereumAddress } from './validate'
 import { isPriceValid } from './price'
 import { productTypes } from './constants'
 import { toDecimals, fromDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
-export const isPaidProduct = (product: Product) =>
-    product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
+export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
 export const isDataUnionProduct = (productOrProductType?: Product | ProductType) => {
     const { type } =
         typeof productOrProductType === 'string'
@@ -37,20 +36,11 @@ export const validateContractProductPricePerSecond = (pricePerSecond: NumberStri
         throw new Error('Product price must be greater than 0 to publish')
     }
 }
-export const mapPriceFromContract = (pricePerSecond: NumberString, decimals: BN): string =>
-    fromDecimals(pricePerSecond, decimals).toString()
-export const mapPriceToContract = (pricePerSecond: NumberString | BN, decimals: BN): string =>
-    toDecimals(pricePerSecond, decimals).toFixed(0)
-export const mapPriceFromApi = (pricePerSecond: NumberString): string =>
-    pricePerSecond ? pricePerSecond.toString() : '0'
-export const mapPriceToApi = (pricePerSecond: NumberString | BN): string =>
-    pricePerSecond ? pricePerSecond.toString() : '0'
-export const mapProductFromContract = (
-    id: ProductId,
-    result: any,
-    chainId: number,
-    pricingTokenDecimals: BN,
-): SmartContractProduct => {
+export const mapPriceFromContract = (pricePerSecond: NumberString, decimals: BN): string => fromDecimals(pricePerSecond, decimals).toString()
+export const mapPriceToContract = (pricePerSecond: NumberString | BN, decimals: BN): string => toDecimals(pricePerSecond, decimals).toFixed(0)
+export const mapPriceFromApi = (pricePerSecond: NumberString): string => (pricePerSecond ? pricePerSecond.toString() : '0')
+export const mapPriceToApi = (pricePerSecond: NumberString | BN): string => (pricePerSecond ? pricePerSecond.toString() : '0')
+export const mapProductFromContract = (id: ProductId, result: any, chainId: number, pricingTokenDecimals: BN): SmartContractProduct => {
     const minimumSubscriptionSeconds = parseInt(result.minimumSubscriptionSeconds, 10)
     return {
         id,
@@ -82,14 +72,7 @@ export const isPublishedProduct = (p: Product) => p.state === productStates.DEPL
 export const mapProductToPutApi = (product: Product): Record<string, any> => {
     // For published paid products, the some fields can only be updated on the smart contract
     if (isPaidProduct(product) && isPublishedProduct(product)) {
-        const {
-            ownerAddress,
-            beneficiaryAddress,
-            pricePerSecond,
-            priceCurrency,
-            minimumSubscriptionInSeconds,
-            ...otherData
-        } = product
+        const { ownerAddress, beneficiaryAddress, pricePerSecond, priceCurrency, minimumSubscriptionInSeconds, ...otherData } = product
         return otherData
     }
 
@@ -120,8 +103,7 @@ export const validate = (product: Product): Record<string, any> => {
         invalidFields.adminFee = product.adminFee === undefined || +product.adminFee < 0 || +product.adminFee > 1
         invalidFields.beneficiaryAddress = false
     } else {
-        invalidFields.beneficiaryAddress =
-            isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress))
+        invalidFields.beneficiaryAddress = isPaid && (!product.beneficiaryAddress || !isEthereumAddress(product.beneficiaryAddress))
         invalidFields.adminFee = false
     }
 
@@ -154,10 +136,7 @@ export const validate = (product: Product): Record<string, any> => {
         }
     }
 
-    if (
-        product.requiresWhitelist &&
-        (product.contact == null || product.contact.email == null || product.contact.email.length === 0)
-    ) {
+    if (product.requiresWhitelist && (product.contact == null || product.contact.email == null || product.contact.email.length === 0)) {
         invalidFields['contact.email'] = true
     } else if (!product.requiresWhitelist) {
         invalidFields['contact.email'] = false

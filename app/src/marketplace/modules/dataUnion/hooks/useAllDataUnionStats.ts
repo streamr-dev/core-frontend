@@ -12,7 +12,7 @@ import {
     selectDataUnionFetchingIds,
     selectDataUnionDeployedIds,
 } from '$mp/modules/dataUnion/selectors'
-import type { ProductIdList, DataUnionId } from '$mp/flowtype/product-types'
+import type { ProductIdList, DataUnionId } from '$mp/types/product-types'
 
 function useAllDataUnionStats() {
     const dispatch = useDispatch()

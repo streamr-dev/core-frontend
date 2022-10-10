@@ -1,17 +1,12 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
-import type { EntitiesState } from '$shared/flowtype/store-state'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
-import type { Filter } from '$userpages/flowtype/common-types'
+import type { EntitiesState } from '$shared/types/store-state'
+import type { ErrorInUi } from '$shared/types/common-types'
+import type { Filter } from '$userpages/types/common-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
-import type {
-    ProductIdList,
-    ProductList,
-    ProductSubscriptionList,
-    ProductSubscriptionIdList,
-} from '../../flowtype/product-types'
-import type { MyPurchaseListState, StoreState } from '../../flowtype/store-state'
+import type { ProductIdList, ProductList, ProductSubscriptionList, ProductSubscriptionIdList } from '../../types/product-types'
+import type { MyPurchaseListState, StoreState } from '../../types/store-state'
 
 const selectMyPurchaseListState = (state: StoreState): MyPurchaseListState => state.myPurchaseList
 
@@ -43,8 +38,7 @@ export const selectMyPurchaseListError: (arg0: StoreState) => ErrorInUi | null |
 export const selectSubscriptions: (arg0: StoreState) => ProductSubscriptionList = createSelector(
     selectMyPurchaseListSubscriptionIds,
     selectEntities,
-    (result: ProductSubscriptionIdList, entities: EntitiesState): ProductSubscriptionList =>
-        denormalize(result, subscriptionsSchema, entities),
+    (result: ProductSubscriptionIdList, entities: EntitiesState): ProductSubscriptionList => denormalize(result, subscriptionsSchema, entities),
 )
 export const selectFilter: (arg0: StoreState) => Filter | null | undefined = createSelector(
     selectMyPurchaseListState,

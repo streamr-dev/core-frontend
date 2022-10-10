@@ -1,18 +1,12 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import BN from 'bignumber.js'
-import type { SmartContractProduct, AccessPeriod } from '$mp/flowtype/product-types'
+import type { SmartContractProduct, AccessPeriod } from '$mp/types/product-types'
 import { priceForTimeUnits } from '$mp/utils/price'
 import { validateBalanceForPurchase, getDataAddress, getCustomTokenDecimals } from '$mp/utils/web3'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
 import ActionQueue from '$mp/utils/actionQueue'
-import {
-    buyProduct,
-    getMyDaiAllowance,
-    setMyDaiAllowance,
-    getMyTokenAllowance,
-    setMyTokenAllowance,
-} from '$mp/modules/product/services'
+import { buyProduct, getMyDaiAllowance, setMyDaiAllowance, getMyTokenAllowance, setMyTokenAllowance } from '$mp/modules/product/services'
 import { getProductSubscription } from '$mp/modules/product/actions'
 import { addTransaction } from '$mp/modules/transactions/actions'
 import { toSeconds } from '$mp/utils/time'
@@ -48,10 +42,7 @@ export default function usePurchase() {
                 throw new Error('no access period')
             }
 
-            if (
-                contractProduct.pricingTokenAddress !== getDataAddress(chainId) &&
-                paymentCurrency !== paymentCurrencies.PRODUCT_DEFINED
-            ) {
+            if (contractProduct.pricingTokenAddress !== getDataAddress(chainId) && paymentCurrency !== paymentCurrencies.PRODUCT_DEFINED) {
                 throw new Error(`cannot pay for this product with ${paymentCurrency}`)
             }
 

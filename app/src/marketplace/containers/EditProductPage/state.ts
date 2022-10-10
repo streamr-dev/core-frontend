@@ -4,7 +4,7 @@ import get from 'lodash/get'
 import isEqual from 'lodash/isEqual'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { productStates } from '$shared/utils/constants'
-import type { Product, PendingChanges } from '$mp/flowtype/product-types'
+import type { Product, PendingChanges } from '$mp/types/product-types'
 export const PENDING_CHANGE_FIELDS = [
     'name',
     'description',

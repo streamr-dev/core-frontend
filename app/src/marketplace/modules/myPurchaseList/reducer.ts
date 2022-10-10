@@ -1,12 +1,6 @@
 import { handleActions } from 'redux-actions'
-import type { MyPurchaseListState } from '../../flowtype/store-state'
-import {
-    GET_MY_PURCHASES_REQUEST,
-    GET_MY_PURCHASES_SUCCESS,
-    GET_MY_PURCHASES_FAILURE,
-    UPDATE_FILTER,
-    UPDATE_RESULTS,
-} from './constants'
+import type { MyPurchaseListState } from '../../types/store-state'
+import { GET_MY_PURCHASES_REQUEST, GET_MY_PURCHASES_SUCCESS, GET_MY_PURCHASES_FAILURE, UPDATE_FILTER, UPDATE_RESULTS } from './constants'
 import type { MyPurchasesAction, MyPurchasesErrorAction, MyPurchasesFilterAction, MySubscriptionsAction } from './types'
 export const initialState: MyPurchaseListState = {
     products: [],

@@ -2,8 +2,8 @@ import type { Node } from 'react'
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import Popover from '$shared/components/Popover'
-import type { UseStateTuple } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { UseStateTuple } from '$shared/types/common-types'
+import '$shared/types/common-types'
 const ActionContainer = styled.div`
     display: inline-block;
     position: absolute;

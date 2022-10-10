@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 import { denormalize } from 'normalizr'
-import type { TransactionsState } from '$mp/flowtype/store-state'
-import type { StoreState, EntitiesState } from '$shared/flowtype/store-state'
-import type { Hash, TransactionEntity, TransactionEntityList, HashList } from '$shared/flowtype/web3-types'
+import type { TransactionsState } from '$mp/types/store-state'
+import type { StoreState, EntitiesState } from '$shared/types/store-state'
+import type { Hash, TransactionEntity, TransactionEntityList, HashList } from '$shared/types/web3-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { transactionSchema, transactionsSchema } from '$shared/modules/entities/schema'
 
@@ -27,7 +27,4 @@ export const selectCompletedTransactions: (state: StoreState) => TransactionEnti
     (ids: HashList, entities: EntitiesState): TransactionEntityList => denormalize(ids, transactionsSchema, entities),
 )
 export const makeSelectTransaction: (arg0: Hash) => (arg0: StoreState) => TransactionEntity = (id: Hash) =>
-    createSelector(
-        selectEntities,
-        (entities: EntitiesState): TransactionEntity => denormalize(id, transactionSchema, entities),
-    )
+    createSelector(selectEntities, (entities: EntitiesState): TransactionEntity => denormalize(id, transactionSchema, entities))

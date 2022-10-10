@@ -3,15 +3,9 @@ import { transactionTypes, paymentCurrencies } from '$shared/utils/constants'
 import getWeb3 from '$utils/web3/getPublicWeb3'
 import getChainId from '$utils/web3/getChainId'
 import { getMarketplaceAddress } from '$mp/utils/web3'
-import type {
-    HashList,
-    TransactionEntityList,
-    TransactionEntity,
-    EventLog,
-    EventLogList,
-} from '$shared/flowtype/web3-types'
+import type { HashList, TransactionEntityList, TransactionEntity, EventLog, EventLogList } from '$shared/types/web3-types'
 import TransactionError from '$shared/errors/TransactionError'
-import type { ProductIdList } from '$mp/flowtype/product-types'
+import type { ProductIdList } from '$mp/types/product-types'
 import tokenAbi from '$shared/web3/abis/token'
 import marketplaceAbi from '$shared/web3/abis/marketplace'
 const eventTypeToTransactionType = {
@@ -59,8 +53,7 @@ const getPurchaseTokens = (logValues) => {
     const { events: tokenTransferEvents } = dataEvent || {}
     const { events: currencyTransferEvents } = currencyEvent || {}
     const { value: tokens } = (tokenTransferEvents && tokenTransferEvents.find(({ name }) => name === 'tokens')) || {}
-    const { value: paymentValue } =
-        (currencyTransferEvents && currencyTransferEvents.find(({ name }) => name === 'tokens')) || {}
+    const { value: paymentValue } = (currencyTransferEvents && currencyTransferEvents.find(({ name }) => name === 'tokens')) || {}
     return {
         tokens,
         paymentValue,
@@ -74,8 +67,7 @@ const getInputValues = (type, logs) => {
     switch (type) {
         case 'PaymentReceived': {
             const { events: subscribedEvents } = logValues.find(({ name }) => name === 'Subscribed') || {}
-            const { value: productId } =
-                (subscribedEvents && subscribedEvents.find(({ name }) => name === 'productId')) || {}
+            const { value: productId } = (subscribedEvents && subscribedEvents.find(({ name }) => name === 'productId')) || {}
             const { tokens, paymentValue, paymentCurrency } = getPurchaseTokens(logValues)
             return {
                 productId,
@@ -88,8 +80,7 @@ const getInputValues = (type, logs) => {
 
         case 'PaymentSent': {
             const { events: subscribedEvents } = logValues.find(({ name }) => name === 'Subscribed') || {}
-            const { value: productId } =
-                (subscribedEvents && subscribedEvents.find(({ name }) => name === 'productId')) || {}
+            const { value: productId } = (subscribedEvents && subscribedEvents.find(({ name }) => name === 'productId')) || {}
             const { tokens, paymentValue, paymentCurrency } = getPurchaseTokens(logValues)
             return {
                 productId,
@@ -225,7 +216,7 @@ export const getTransactionsFromEvents = (events: EventLogList): Promise<Transac
         transactions.map(([event, tx, receipt, block]): TransactionEntity => {
             const rest: Partial<TransactionEntity> = {
                 receipt: receipt.status === true ? receipt : undefined,
-                error: receipt.status === false ? new TransactionError('Transaction failed', receipt) : undefined
+                error: receipt.status === false ? new TransactionError('Transaction failed', receipt) : undefined,
             }
             let inputValues
 

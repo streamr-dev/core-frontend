@@ -1,4 +1,4 @@
-import type { Receipt } from '../../flowtype/web3-types'
+import type { Receipt } from '../../types/web3-types'
 export default class TransactionError extends Error {
     receipt: Receipt | null | undefined
     __proto__: any

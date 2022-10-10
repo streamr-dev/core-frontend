@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import get from 'lodash/get'
 import { useHistory } from 'react-router-dom'
 import { Tooltip } from '@streamr/streamr-layout'
-import type { Product } from '$mp/flowtype/product-types'
-import '$mp/flowtype/product-types'
+import type { Product } from '$mp/types/product-types'
+import '$mp/types/product-types'
 import { ago } from '$shared/utils/time'
 import { productStates, NotificationIcon, dataUnionMemberLimit } from '$shared/utils/constants'
 import SvgIcon from '$shared/components/SvgIcon'
@@ -270,9 +270,7 @@ const Item = ({ product, stats }: Props) => {
     const [isOpen, setIsOpen] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
     const { update: updateEntities } = useEntities()
-    const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(
-        `dataunion.item.${productId || ''}.DATAUNION`,
-    )
+    const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
     const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
     const { wrap: wrapDeploy, isPending: isDeployPending } = usePending(`dataunion.item.${productId || ''}.DEPLOY`)
     const loading = loadingDataUnion || isPublishPending || isDeployPending
@@ -432,11 +430,7 @@ const Item = ({ product, stats }: Props) => {
         <Container>
             <Header>
                 <ImageContainer onClick={onHeaderClick}>
-                    <FallbackImage
-                        alt={product.name || ''}
-                        src={product.imageUrl || ''}
-                        placeholder={productInitials}
-                    />
+                    <FallbackImage alt={product.name || ''} src={product.imageUrl || ''} placeholder={productInitials} />
                 </ImageContainer>
                 <TitleContainer onClick={onHeaderClick}>
                     <Name>{product.name}</Name>
@@ -465,11 +459,7 @@ const Item = ({ product, stats }: Props) => {
                 <Buttons>
                     {dataUnion && (
                         <Tooltip value="View on block explorer">
-                            <Button
-                                href={getAddressLink(chainId, dataUnion.id)}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
+                            <Button href={getAddressLink(chainId, dataUnion.id)} target="_blank" rel="noopener noreferrer">
                                 <Icon name="externalLink" />
                             </Button>
                         </Tooltip>

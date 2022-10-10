@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
-import type { ContactDetails } from '$mp/flowtype/product-types'
-import '$mp/flowtype/product-types'
+import type { ContactDetails } from '$mp/types/product-types'
+import '$mp/types/product-types'
 const Container = styled.div`
     display: flex;
     width: 100%;

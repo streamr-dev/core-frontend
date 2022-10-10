@@ -8,15 +8,9 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import SelectField from '$mp/components/SelectField'
 import { uniswapDATAtoETH, uniswapDATAtoDAI, uniswapETHtoDATA, getDataAddress } from '$mp/utils/web3'
 import { priceForTimeUnits } from '$mp/utils/price'
-import {
-    timeUnits,
-    contractCurrencies,
-    paymentCurrencies,
-    DEFAULT_CURRENCY,
-    MIN_UNISWAP_AMOUNT_USD,
-} from '$shared/utils/constants'
-import type { Product, AccessPeriod } from '$mp/flowtype/product-types'
-import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import { timeUnits, contractCurrencies, paymentCurrencies, DEFAULT_CURRENCY, MIN_UNISWAP_AMOUNT_USD } from '$shared/utils/constants'
+import type { Product, AccessPeriod } from '$mp/types/product-types'
+import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/types/common-types'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
@@ -194,14 +188,10 @@ export const ChooseAccessPeriodDialog = ({
                 renderActions={() => (
                     <div
                         className={cx(styles.footer, {
-                            [styles.onlyButtons]: !(
-                                paymentCurrency === paymentCurrencies.NATIVE ||
-                                paymentCurrency === paymentCurrencies.DAI
-                            ),
+                            [styles.onlyButtons]: !(paymentCurrency === paymentCurrencies.NATIVE || paymentCurrency === paymentCurrencies.DAI),
                         })}
                     >
-                        {(paymentCurrency === paymentCurrencies.NATIVE ||
-                            paymentCurrency === paymentCurrencies.DAI) && (
+                        {(paymentCurrency === paymentCurrencies.NATIVE || paymentCurrency === paymentCurrencies.DAI) && (
                             <span className={styles.uniswapFooter}>Exchange via Uniswap</span>
                         )}
                         <Buttons actions={actions} />
@@ -232,17 +222,13 @@ export const ChooseAccessPeriodDialog = ({
                             paymentCurrency !== paymentCurrencies.DATA &&
                             currentPrice !== '-' && ( // prevent false positives during load
                                 <Errors theme={MarketplaceTheme} className={styles.uniswapErrors}>
-                                    {!isValidTime && (
-                                        <p className={styles.invalidInputDesktop}>Access period must be a number</p>
-                                    )}
+                                    {!isValidTime && <p className={styles.invalidInputDesktop}>Access period must be a number</p>}
                                     {!isValidPrice && Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD && (
                                         <React.Fragment>
                                             <p className={styles.invalidInputDesktop}>
                                                 Transaction too small for Uniswap. Please try a longer period.
                                             </p>
-                                            <p className={styles.invalidInputMobile}>
-                                                Transaction too small. Please try a longer period.
-                                            </p>
+                                            <p className={styles.invalidInputMobile}>Transaction too small. Please try a longer period.</p>
                                         </React.Fragment>
                                     )}
                                     {!isValidPrice && Number(priceInUsd) > MIN_UNISWAP_AMOUNT_USD && (
@@ -250,9 +236,7 @@ export const ChooseAccessPeriodDialog = ({
                                             <p className={styles.invalidInputDesktop}>
                                                 Transaction too large for Uniswap. Please try a shorter period.
                                             </p>
-                                            <p className={styles.invalidInputMobile}>
-                                                Transaction too large. Please try a shorter period.
-                                            </p>
+                                            <p className={styles.invalidInputMobile}>Transaction too large. Please try a shorter period.</p>
                                         </React.Fragment>
                                     )}
                                 </Errors>

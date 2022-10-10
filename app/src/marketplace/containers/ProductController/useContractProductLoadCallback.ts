@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import usePending from '$shared/hooks/usePending'
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { ProductId } from '$mp/types/product-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/actions'
 export default function useContractProductLoadCallback() {
     const dispatch = useDispatch()

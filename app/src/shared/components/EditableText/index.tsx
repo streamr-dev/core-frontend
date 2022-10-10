@@ -1,8 +1,8 @@
 import type { Node } from 'react'
 import React, { useState, useCallback, Fragment, useEffect, useRef } from 'react'
 import cx from 'classnames'
-import type { Ref } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { Ref } from '$shared/types/common-types'
+import '$shared/types/common-types'
 import TextControl from '../TextControl'
 import styles from './editableText.pcss'
 type Props = {

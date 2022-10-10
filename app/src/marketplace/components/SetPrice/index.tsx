@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import BN from 'bignumber.js'
-import type { NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import type { NumberString, TimeUnit } from '$shared/types/common-types'
 import { timeUnits } from '$shared/utils/constants'
 import PriceField from '$mp/components/PriceField'
 import SelectField from '$mp/components/SelectField'

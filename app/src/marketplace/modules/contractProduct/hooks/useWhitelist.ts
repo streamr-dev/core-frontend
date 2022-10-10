@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getWhitelistAddresses } from '$mp/modules/contractProduct/services'
 import { whiteListedAddressesSchema, whiteListedAddressSchema } from '$shared/modules/entities/schema'
 import useEntities from '$shared/hooks/useEntities'
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { ProductId } from '$mp/types/product-types'
 import { setWhiteListedAddresses, addWhiteListedAddress, removeWhiteListedAddress } from '../actions'
 import { selectWhiteListedAddresses } from '../selectors'
 type WhitelistParams = {

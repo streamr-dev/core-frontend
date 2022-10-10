@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { dataUnionSecretSchema, dataUnionSecretsSchema } from '$shared/modules/entities/schema'
-import type { DataUnionId } from '$mp/flowtype/product-types'
+import type { DataUnionId } from '$mp/types/product-types'
 import useEntities from '$shared/hooks/useEntities'
 import { setDataUnionSecrets, addDataUnionSecret, removeDataUnionSecret } from '../actions'
 import { selectDataUnionSecrets } from '../selectors'
@@ -55,17 +55,7 @@ function useDataUnionSecrets() {
         [dispatch, update],
     )
     const edit = useCallback(
-        async ({
-            dataUnionId,
-            id,
-            name,
-            chainId,
-        }: {
-            dataUnionId: DataUnionId
-            id: string
-            name: string
-            chainId: number
-        }) => {
+        async ({ dataUnionId, id, name, chainId }: { dataUnionId: DataUnionId; id: string; name: string; chainId: number }) => {
             try {
                 const response = await editSecret({
                     dataUnionId,

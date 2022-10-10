@@ -1,6 +1,6 @@
 import axios from 'axios'
 import merge from 'lodash/merge'
-import type { ApiResult, RequestMethod } from '$shared/flowtype/common-types'
+import type { ApiResult, RequestMethod } from '$shared/types/common-types'
 import RequestError from '$shared/errors/RequestError'
 import getAuthorizationHeader from './getAuthorizationHeader'
 export const getData = ({ data }: { data: any }): any => data

@@ -6,7 +6,7 @@ import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import useModal from '$shared/hooks/useModal'
 import Popover from '$shared/components/Popover'
-import type { AnyFilter } from '$mp/flowtype/product-types'
+import type { AnyFilter } from '$mp/types/product-types'
 import type { Options } from './FilterSelector'
 import './FilterSelector'
 type Props = {
@@ -78,13 +78,7 @@ const FilterModal = ({ title, options, onChange, onClose, selected }: Props) => 
                     <Body>
                         <Dropdown isOpen toggle={() => {}}>
                             {options.map(({ id, value, title: optionTitle }) => (
-                                <Popover.Item
-                                    key={id}
-                                    value={value}
-                                    onClick={() => onClick(value)}
-                                    active={selected === value}
-                                    leftTick
-                                >
+                                <Popover.Item key={id} value={value} onClick={() => onClick(value)} active={selected === value} leftTick>
                                     {optionTitle}
                                 </Popover.Item>
                             ))}
@@ -104,14 +98,5 @@ export default () => {
     }
 
     const { title, options, selected, onChange, onClear } = value || {}
-    return (
-        <FilterModal
-            title={title}
-            onChange={onChange}
-            onClear={onClear}
-            onClose={() => api.close()}
-            options={options}
-            selected={selected}
-        />
-    )
+    return <FilterModal title={title} onChange={onChange} onClear={onClear} onClose={() => api.close()} options={options} selected={selected} />
 }

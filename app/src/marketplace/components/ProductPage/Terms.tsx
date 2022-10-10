@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product } from '$mp/types/product-types'
 import { MEDIUM } from '$shared/utils/styled'
 import Segment from '$shared/components/Segment'
 type Props = {
@@ -74,9 +74,7 @@ const UnstyledTerms = ({ product, ...props }: Props) => {
                         <strong>Detailed terms</strong>{' '}
                         <strong>
                             <a href={terms.termsUrl} target="_blank" rel="noopener noreferrer">
-                                {terms.termsName != null && terms.termsName.length > 0
-                                    ? terms.termsName
-                                    : terms.termsUrl}
+                                {terms.termsName != null && terms.termsName.length > 0 ? terms.termsName : terms.termsUrl}
                             </a>
                         </strong>
                     </p>

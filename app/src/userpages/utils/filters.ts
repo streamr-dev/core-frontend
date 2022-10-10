@@ -1,5 +1,5 @@
 import defaults from 'lodash/defaults'
-import type { Filter, SortOrder } from '$userpages/flowtype/common-types'
+import type { Filter, SortOrder } from '$userpages/types/common-types'
 type FilterDefaults = {
     sortBy?: string
     search?: string

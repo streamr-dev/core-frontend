@@ -5,8 +5,8 @@ import styled from 'styled-components'
 import qs from 'query-string'
 import { postEmptyProduct } from '$mp/modules/product/services'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
-import type { ProductType } from '$mp/flowtype/product-types'
-import '$mp/flowtype/product-types'
+import type { ProductType } from '$mp/types/product-types'
+import '$mp/types/product-types'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { productTypes } from '$mp/utils/constants'
 import useFailure from '$shared/hooks/useFailure'
@@ -17,8 +17,7 @@ type Props = {
     location: Location
 }
 
-const sanitizedType = (type: string | null | undefined): ProductType =>
-    productTypes[(type || '').toUpperCase()] || productTypes.NORMAL
+const sanitizedType = (type: string | null | undefined): ProductType => productTypes[(type || '').toUpperCase()] || productTypes.NORMAL
 
 const UnstyledNewProductPage = ({ className, location: { search } }: Props) => {
     const history = useHistory()

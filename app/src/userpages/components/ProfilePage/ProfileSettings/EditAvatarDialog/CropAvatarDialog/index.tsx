@@ -3,8 +3,8 @@ import AvatarEditor from 'react-avatar-editor'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Slider from '$shared/components/Slider'
-import type { Ref } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { Ref } from '$shared/types/common-types'
+import '$shared/types/common-types'
 import styles from './cropAvatarDialog.pcss'
 type Props = {
     originalImage: string

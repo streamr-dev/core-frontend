@@ -8,7 +8,7 @@ import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
 import noResultIcon from '$shared/assets/images/search_no_result.png'
 import noResultemptyStateIcon2x from '$shared/assets/images/search_no_result@2x.png'
-import type { Filter } from '$userpages/flowtype/common-types'
+import type { Filter } from '$userpages/types/common-types'
 import { LG } from '$shared/utils/styled'
 type NoResultsViewProps = {
     onResetFilter: (...args: Array<any>) => any

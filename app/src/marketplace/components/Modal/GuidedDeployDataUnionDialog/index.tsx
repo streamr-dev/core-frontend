@@ -8,8 +8,8 @@ import Dialog from '$shared/components/Dialog'
 import Buttons from '$shared/components/Buttons'
 import Checkbox from '$shared/components/Checkbox'
 import { ProductTile, ImageTile } from '$shared/components/Tile'
-import type { Product } from '$mp/flowtype/product-types'
-import '$mp/flowtype/product-types'
+import type { Product } from '$mp/types/product-types'
+import '$mp/types/product-types'
 import { numberToText } from '$shared/utils/text'
 import { dataUnionMemberLimit } from '$shared/utils/constants'
 import dataUnionStats from '$mp/assets/deploy-modal-stats.png'
@@ -58,13 +58,7 @@ export type Props = {
     disabled?: boolean
 }
 
-const GuidedDeployDataUnionDialog = ({
-    product,
-    onClose,
-    onContinue: onContinueProp,
-    dontShowAgain,
-    disabled,
-}: Props) => {
+const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueProp, dontShowAgain, disabled }: Props) => {
     const [skipHelp, setSkipHelp] = useState(!!dontShowAgain)
     const [step, setStep] = useState(0)
     const [waitingOnContinue, setWaitingOnContinue] = useState(false)
@@ -118,11 +112,8 @@ const GuidedDeployDataUnionDialog = ({
                             <ProductCard name={name} image={image} className={styles.highlightMembers} />
                         </PreviewContainer>
                         <TextContainer>
-                            A minimum of{' '}
-                            {dataUnionMemberLimit === 1
-                                ? 'one member'
-                                : `${numberToText(dataUnionMemberLimit)} members`}{' '}
-                            is needed to publish the product.
+                            A minimum of {dataUnionMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionMemberLimit)} members`} is needed to
+                            publish the product.
                             <br />
                             In Core, Data Union size is shown on the members badge.
                         </TextContainer>

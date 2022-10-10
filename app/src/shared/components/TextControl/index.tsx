@@ -1,7 +1,7 @@
 import type { Node } from 'react'
 import React, { useCallback, useRef, useState, useEffect } from 'react'
-import type { Ref } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { Ref } from '$shared/types/common-types'
+import '$shared/types/common-types'
 type TextControlRef = Ref<HTMLTextAreaElement | HTMLInputElement>
 type Props = {
     commitEmpty?: boolean

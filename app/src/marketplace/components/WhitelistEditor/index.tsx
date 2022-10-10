@@ -8,7 +8,7 @@ import useCopy from '$shared/hooks/useCopy'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
-import type { Address } from '$shared/flowtype/web3-types'
+import type { Address } from '$shared/types/web3-types'
 const MIN_ROWS = 5
 const Rows = styled.div`
     max-height: ${({ theme }) => (theme.rowCount + 1) * 56 - 1}px; /* +1 for header, -1 for bottom border */

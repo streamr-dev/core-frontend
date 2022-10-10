@@ -3,7 +3,7 @@ import cx from 'classnames'
 import SvgIcon from '$shared/components/SvgIcon'
 import EditableText from '$shared/components/EditableText'
 import UseState from '$shared/components/UseState'
-import type { SearchFilter } from '../../../flowtype/product-types'
+import type { SearchFilter } from '../../../types/product-types'
 import styles from './searchInput.pcss'
 type Props = {
     value: SearchFilter | null | undefined
@@ -48,12 +48,7 @@ const SearchInput = ({
                 </EditableText>
             )}
         </UseState>
-        <button
-            type="button"
-            className={styles.clearButton}
-            onClick={onClear}
-            hidden={hideClearButton || (value === '' && !hideClearButton)}
-        >
+        <button type="button" className={styles.clearButton} onClick={onClear} hidden={hideClearButton || (value === '' && !hideClearButton)}>
             <SvgIcon name="cross" />
         </button>
     </div>

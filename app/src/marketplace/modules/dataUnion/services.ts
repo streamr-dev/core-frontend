@@ -5,9 +5,9 @@ import { hexToNumber } from 'web3-utils'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import { getConfigForChain } from '$shared/web3/config'
-import type { SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
-import type { ProductId, DataUnionId } from '$mp/flowtype/product-types'
-import type { ApiResult } from '$shared/flowtype/common-types'
+import type { SmartContractTransaction, Address } from '$shared/types/web3-types'
+import type { ProductId, DataUnionId } from '$mp/types/product-types'
+import type { ApiResult } from '$shared/types/common-types'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
 import { post, del, get, put } from '$shared/utils/api'
 import getWeb3 from '$utils/web3/getWeb3'
@@ -35,9 +35,7 @@ const createClient = (chainId: number) => {
             // If MetaMask is in right chain, use it to enable signing
             ethereum: isProviderInCorrectChain ? provider : undefined,
             // Otherwise use a throwaway private key to authenticate and allow read-only mode
-            privateKey: !isProviderInCorrectChain
-                ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304'
-                : undefined,
+            privateKey: !isProviderInCorrectChain ? '531479d5645596f264e7e3cbe80c4a52a505d60fad45193d1f6b8e4724bf0304' : undefined,
         },
         network: {
             chainId,
@@ -227,11 +225,7 @@ export const getMemberStatistics = async (
     })
     return result.data.dataUnionStatsBuckets
 }
-export const getDataUnionMembers = async (
-    id: DataUnionId,
-    chainId: number,
-    limit: number = 100,
-): Promise<Array<string>> => {
+export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit: number = 100): Promise<Array<string>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
         url: theGraphUrl,
@@ -255,12 +249,7 @@ export const getDataUnionMembers = async (
 
     return []
 }
-export const searchDataUnionMembers = async (
-    id: DataUnionId,
-    query: string,
-    chainId: number,
-    limit: number = 100,
-): Promise<Array<string>> => {
+export const searchDataUnionMembers = async (id: DataUnionId, query: string, chainId: number, limit: number = 100): Promise<Array<string>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
         url: theGraphUrl,
@@ -283,9 +272,7 @@ export const searchDataUnionMembers = async (
         // With limitations in full text search in The Graph,
         // we cannot do filtering on the query itself so we
         // have to manually pick results only for this dataunion.
-        const members = result.data.members
-            .filter((m) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase())
-            .map((m) => m.address)
+        const members = result.data.members.filter((m) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase()).map((m) => m.address)
         return members
     }
 

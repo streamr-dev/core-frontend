@@ -1,7 +1,7 @@
 import { createAction } from 'redux-actions'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { ErrorInUi } from '$shared/types/common-types'
 import { getMyPurchases } from '../myPurchaseList/actions'
-import type { ProductId, Subscription } from '../../flowtype/product-types'
+import type { ProductId, Subscription } from '../../types/product-types'
 import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,

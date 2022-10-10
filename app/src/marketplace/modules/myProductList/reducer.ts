@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import type { MyProductListState } from '../../flowtype/store-state'
+import type { MyProductListState } from '../../types/store-state'
 import { GET_MY_PRODUCTS_REQUEST, GET_MY_PRODUCTS_SUCCESS, GET_MY_PRODUCTS_FAILURE } from './constants'
 import type { MyProductsAction, MyProductsErrorAction } from './types'
 export const initialState: MyProductListState = {

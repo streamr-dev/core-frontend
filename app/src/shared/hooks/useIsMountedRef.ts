@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
-import type { Ref } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { Ref } from '$shared/types/common-types'
+import '$shared/types/common-types'
 export default () => {
     const ref: Ref<boolean> = useRef(true)
     useEffect(

@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
 import React, { useCallback, useRef, forwardRef } from 'react'
-import type { Ref } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { Ref } from '$shared/types/common-types'
+import '$shared/types/common-types'
 
 const sanitise = (value) => (value == null ? '' : value)
 

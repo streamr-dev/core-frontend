@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import useModal from '$shared/hooks/useModal'
 import useWhitelist from '$mp/modules/contractProduct/hooks/useWhitelist'
-import type { Address } from '$shared/flowtype/web3-types'
+import type { Address } from '$shared/types/web3-types'
 import WhitelistEditorComponent from '$mp/components/WhitelistEditor'
 import useContractProduct from '$mp/containers/ProductController/useContractProduct'
 import useEditableState from '$shared/contexts/Undo/useEditableState'

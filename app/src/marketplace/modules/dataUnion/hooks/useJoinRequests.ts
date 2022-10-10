@@ -1,9 +1,9 @@
 import { useState, useCallback, useMemo } from 'react'
 import { denormalize } from 'normalizr'
 import useEntities from '$shared/hooks/useEntities'
-import type { Filter } from '$userpages/flowtype/common-types'
-import type { DataUnionId } from '$mp/flowtype/product-types'
-import type { Address } from '$shared/flowtype/web3-types'
+import type { Filter } from '$userpages/types/common-types'
+import type { DataUnionId } from '$mp/types/product-types'
+import type { Address } from '$shared/types/web3-types'
 import { joinRequestSchema, joinRequestsSchema } from '$shared/modules/entities/schema'
 import { getJoinRequests, updateJoinRequest, addJoinRequest, removeJoinRequest } from '$mp/modules/dataUnion/services'
 import { getParamsForFilter } from '$userpages/utils/filters'
@@ -98,10 +98,7 @@ function useJoinRequests() {
         }
     }, [])
     const members = useMemo(
-        () =>
-            denormalize(ids, joinRequestsSchema, entities).sort(
-                (a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime(),
-            ),
+        () => denormalize(ids, joinRequestsSchema, entities).sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime()),
         [ids, entities],
     )
     return useMemo(

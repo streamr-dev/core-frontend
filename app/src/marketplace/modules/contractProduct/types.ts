@@ -1,6 +1,6 @@
-import type { ErrorFromApi, PayloadAction } from '$shared/flowtype/common-types'
-import type { Address } from '$shared/flowtype/web3-types'
-import type { ProductId, WhitelistStatus } from '../../flowtype/product-types'
+import type { ErrorFromApi, PayloadAction } from '$shared/types/common-types'
+import type { Address } from '$shared/types/web3-types'
+import type { ProductId, WhitelistStatus } from '../../types/product-types'
 export type ProductIdAction = PayloadAction<{
     id: ProductId
 }>

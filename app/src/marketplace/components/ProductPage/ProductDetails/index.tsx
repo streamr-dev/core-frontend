@@ -2,8 +2,8 @@ import React from 'react'
 import cx from 'classnames'
 import Button from '$shared/components/Button'
 import { isPaidProduct } from '$mp/utils/product'
-import type { Product, Subscription } from '$mp/flowtype/product-types'
-import type { Address } from '$shared/flowtype/web3-types'
+import type { Product, Subscription } from '$mp/types/product-types'
+import type { Address } from '$shared/types/web3-types'
 import PaymentRate from '$mp/components/PaymentRate'
 import ExpirationCounter from '$mp/components/ExpirationCounter'
 import { timeUnits, productStates } from '$shared/utils/constants'
@@ -74,19 +74,14 @@ const ProductDetails = ({
                                 <span className={styles.priceHeading}>Chain</span>
                                 &nbsp;
                                 <span className={styles.price}>{formatChainName(product.chain)}</span>
-                                <NetworkIcon
-                                    className={styles.networkIcon}
-                                    chainId={getChainIdFromApiString(product.chain)}
-                                />
+                                <NetworkIcon className={styles.networkIcon} chainId={getChainIdFromApiString(product.chain)} />
                             </div>
                         </div>
                     )}
                 </div>
-                {productSubscription != null &&
-                    !!productSubscription.endTimestamp &&
-                    shouldShowCounter(productSubscription.endTimestamp) && (
-                        <ExpirationCounter expiresAt={new Date(productSubscription.endTimestamp * 1000)} />
-                    )}
+                {productSubscription != null && !!productSubscription.endTimestamp && shouldShowCounter(productSubscription.endTimestamp) && (
+                    <ExpirationCounter expiresAt={new Date(productSubscription.endTimestamp * 1000)} />
+                )}
             </div>
         </div>
         <div className={cx(styles.separator, styles.titleSeparator)} />

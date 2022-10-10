@@ -2,7 +2,7 @@ import { $Values } from 'utility-types'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { useClient } from 'streamr-client-react'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product } from '$mp/types/product-types'
 import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
 import {
     getProductFromContract,
@@ -12,13 +12,7 @@ import {
     redeployProduct,
     setRequiresWhitelist,
 } from '$mp/modules/contractProduct/services'
-import {
-    putProduct,
-    postUndeployFree,
-    postSetUndeploying,
-    postDeployFree,
-    postSetDeploying,
-} from '$mp/modules/product/services'
+import { putProduct, postUndeployFree, postSetUndeploying, postDeployFree, postSetDeploying } from '$mp/modules/product/services'
 import { getDataUnionOwner, getAdminFee, setAdminFee } from '$mp/modules/dataUnion/services'
 import { isContractProductUpdateRequired } from '$mp/utils/smartContract'
 import ActionQueue from '$mp/utils/actionQueue'
@@ -83,28 +77,17 @@ export default function usePublish() {
             const { state: productState } = product
             const pendingChanges = getPendingChanges(product)
             const productWithPendingChanges = withPendingChanges(product)
-            const {
-                adminFee,
-                pricePerSecond,
-                beneficiaryAddress,
-                priceCurrency,
-                requiresWhitelist,
-                pricingTokenAddress,
-                ...productDataChanges
-            } = pendingChanges || {}
+            const { adminFee, pricePerSecond, beneficiaryAddress, priceCurrency, requiresWhitelist, pricingTokenAddress, ...productDataChanges } =
+                pendingChanges || {}
             const hasAdminFeeChanged = !!currentAdminFee && adminFee && currentAdminFee !== adminFee
-            const hasContractProductChanged =
-                !!contractProduct && isContractProductUpdateRequired(contractProduct, productWithPendingChanges)
+            const hasContractProductChanged = !!contractProduct && isContractProductUpdateRequired(contractProduct, productWithPendingChanges)
             const hasRequireWhitelistChanged = !!(
                 !!contractProduct &&
                 requiresWhitelist !== undefined &&
                 contractProduct.requiresWhitelist !== requiresWhitelist
             )
             const hasPendingChanges =
-                Object.keys(productDataChanges).length > 0 ||
-                hasAdminFeeChanged ||
-                hasContractProductChanged ||
-                hasRequireWhitelistChanged
+                Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasContractProductChanged || hasRequireWhitelistChanged
             let pricingTokenDecimals = 18
 
             if (pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)) {
@@ -127,10 +110,7 @@ export default function usePublish() {
             const queue = new ActionQueue()
 
             // update product data if needed
-            if (
-                nextMode === publishModes.REPUBLISH ||
-                (nextMode === publishModes.PUBLISH && Object.keys(productDataChanges).length > 0)
-            ) {
+            if (nextMode === publishModes.REPUBLISH || (nextMode === publishModes.PUBLISH && Object.keys(productDataChanges).length > 0)) {
                 const nextProduct = { ...product, ...productDataChanges, pendingChanges: undefined }
                 delete nextProduct.state
                 queue.add({

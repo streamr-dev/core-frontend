@@ -2,8 +2,8 @@ import { createAction } from 'redux-actions'
 import { denormalize } from 'normalizr'
 import { dataUnionSchema, dataUnionStatSchema, productsSchema } from '$shared/modules/entities/schema'
 import { handleEntities } from '$shared/utils/entities'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
-import type { DataUnionId, DataUnionSecretId, ProductIdList } from '$mp/flowtype/product-types'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
+import type { DataUnionId, DataUnionSecretId, ProductIdList } from '$mp/types/product-types'
 import { selectEntities } from '$shared/modules/entities/selectors'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { isEthereumAddress } from '$mp/utils/validate'
@@ -37,32 +37,20 @@ const getDataUnionRequest: DataUnionIdActionCreator = createAction(GET_DATA_UNIO
 const getDataUnionSuccess: DataUnionIdActionCreator = createAction(GET_DATA_UNION_SUCCESS, (id: DataUnionId) => ({
     id,
 }))
-const getDataUnionFailure: DataUnionErrorActionCreator = createAction(
-    GET_DATA_UNION_FAILURE,
-    (id: DataUnionId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
-const getDataUnionStatsRequest: DataUnionIdActionCreator = createAction(
-    GET_DATA_UNION_STATS_REQUEST,
-    (id: DataUnionId) => ({
-        id,
-    }),
-)
-const getDataUnionStatsSuccess: DataUnionIdActionCreator = createAction(
-    GET_DATA_UNION_STATS_SUCCESS,
-    (id: DataUnionId) => ({
-        id,
-    }),
-)
-const getDataUnionStatsFailure: DataUnionErrorActionCreator = createAction(
-    GET_DATA_UNION_STATS_FAILURE,
-    (id: DataUnionId, error: ErrorInUi) => ({
-        id,
-        error,
-    }),
-)
+const getDataUnionFailure: DataUnionErrorActionCreator = createAction(GET_DATA_UNION_FAILURE, (id: DataUnionId, error: ErrorInUi) => ({
+    id,
+    error,
+}))
+const getDataUnionStatsRequest: DataUnionIdActionCreator = createAction(GET_DATA_UNION_STATS_REQUEST, (id: DataUnionId) => ({
+    id,
+}))
+const getDataUnionStatsSuccess: DataUnionIdActionCreator = createAction(GET_DATA_UNION_STATS_SUCCESS, (id: DataUnionId) => ({
+    id,
+}))
+const getDataUnionStatsFailure: DataUnionErrorActionCreator = createAction(GET_DATA_UNION_STATS_FAILURE, (id: DataUnionId, error: ErrorInUi) => ({
+    id,
+    error,
+}))
 export const setDataUnionSecrets: DataUnionSecretsActionCreator = createAction(
     SET_DATA_UNION_SECRETS,
     (id: DataUnionId, secrets: Array<DataUnionSecretId>) => ({
@@ -70,13 +58,10 @@ export const setDataUnionSecrets: DataUnionSecretsActionCreator = createAction(
         secrets,
     }),
 )
-export const addDataUnionSecret: DataUnionSecretActionCreator = createAction(
-    ADD_DATA_UNION_SECRET,
-    (id: DataUnionId, secret: DataUnionSecretId) => ({
-        id,
-        secret,
-    }),
-)
+export const addDataUnionSecret: DataUnionSecretActionCreator = createAction(ADD_DATA_UNION_SECRET, (id: DataUnionId, secret: DataUnionSecretId) => ({
+    id,
+    secret,
+}))
 export const removeDataUnionSecret: DataUnionSecretActionCreator = createAction(
     REMOVE_DATA_UNION_SECRET,
     (id: DataUnionId, secret: DataUnionSecretId) => ({
@@ -84,42 +69,37 @@ export const removeDataUnionSecret: DataUnionSecretActionCreator = createAction(
         secret,
     }),
 )
-const getAllDataUnionStatsRequest: DataUnionIdsActionCreator = createAction(
-    GET_ALL_DATA_UNION_STATS_REQUEST,
-    (ids: Array<DataUnionId>) => ({
-        ids,
-    }),
-)
+const getAllDataUnionStatsRequest: DataUnionIdsActionCreator = createAction(GET_ALL_DATA_UNION_STATS_REQUEST, (ids: Array<DataUnionId>) => ({
+    ids,
+}))
 export const resetDataUnion: ReduxActionCreator = createAction(RESET_DATA_UNION)
 export const resetDataUnionStats: ReduxActionCreator = createAction(RESET_DATA_UNION_STATS)
-export const getDataUnionById =
-    (dataUnionId: DataUnionId, chainId: number) => async (dispatch: (...args: Array<any>) => any) => {
-        const id = dataUnionId.toLowerCase()
-        dispatch(getDataUnionRequest(id))
+export const getDataUnionById = (dataUnionId: DataUnionId, chainId: number) => async (dispatch: (...args: Array<any>) => any) => {
+    const id = dataUnionId.toLowerCase()
+    dispatch(getDataUnionRequest(id))
 
-        try {
-            const result = await services.getDataUnion(id, chainId)
-            handleEntities(dataUnionSchema, dispatch)(result)
-            dispatch(getDataUnionSuccess(id))
-        } catch (e) {
-            dispatch(getDataUnionFailure(id, e))
-        }
+    try {
+        const result = await services.getDataUnion(id, chainId)
+        handleEntities(dataUnionSchema, dispatch)(result)
+        dispatch(getDataUnionSuccess(id))
+    } catch (e) {
+        dispatch(getDataUnionFailure(id, e))
     }
-export const getDataUnionStats =
-    (dataUnionId: DataUnionId, chainId: number) => async (dispatch: (...args: Array<any>) => any) => {
-        const id = dataUnionId.toLowerCase()
-        dispatch(getDataUnionStatsRequest(id))
+}
+export const getDataUnionStats = (dataUnionId: DataUnionId, chainId: number) => async (dispatch: (...args: Array<any>) => any) => {
+    const id = dataUnionId.toLowerCase()
+    dispatch(getDataUnionStatsRequest(id))
 
-        try {
-            const result = await services.getDataUnionStats(id, chainId)
-            result.id = id
-            handleEntities(dataUnionStatSchema, dispatch)(result)
-            dispatch(getDataUnionStatsSuccess(id))
-        } catch (e) {
-            dispatch(getDataUnionStatsFailure(id, e))
-            throw e
-        }
+    try {
+        const result = await services.getDataUnionStats(id, chainId)
+        result.id = id
+        handleEntities(dataUnionStatSchema, dispatch)(result)
+        dispatch(getDataUnionStatsSuccess(id))
+    } catch (e) {
+        dispatch(getDataUnionStatsFailure(id, e))
+        throw e
     }
+}
 
 let dataUnionStatsCancel = () => null
 
@@ -176,9 +156,8 @@ export const updateDataUnionStats =
         dispatch(getAllDataUnionStatsRequest(dataUnionIds))
         dataUnionStatsCancel = dispatch(startUpdateDataUnionStats(productIds))
     }
-export const updateDataUnionStatsByDataUnionId =
-    (dataUnionIds: Array<DataUnionId>) => (dispatch: (...args: Array<any>) => any) => {
-        dataUnionStatsCancel()
-        dispatch(getAllDataUnionStatsRequest(dataUnionIds))
-        dataUnionStatsCancel = dispatch(startUpdateDataUnionStats(dataUnionIds))
-    }
+export const updateDataUnionStatsByDataUnionId = (dataUnionIds: Array<DataUnionId>) => (dispatch: (...args: Array<any>) => any) => {
+    dataUnionStatsCancel()
+    dispatch(getAllDataUnionStatsRequest(dataUnionIds))
+    dataUnionStatsCancel = dispatch(startUpdateDataUnionStats(dataUnionIds))
+}

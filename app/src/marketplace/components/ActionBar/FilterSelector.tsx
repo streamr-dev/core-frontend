@@ -1,7 +1,7 @@
 import type { Node } from 'react'
 import React, { useCallback, useMemo } from 'react'
 import styled from 'styled-components'
-import type { AnyFilter } from '$mp/flowtype/product-types'
+import type { AnyFilter } from '$mp/types/product-types'
 import UnstyledPopover from '$shared/components/Popover'
 import { LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
@@ -48,13 +48,7 @@ const MobileButton = styled.button`
     }
 `
 
-const UnstyledFilterSelector = ({
-    title: popoverTitle,
-    selected,
-    options,
-    onChange: onChangeProp,
-    ...props
-}: Props) => {
+const UnstyledFilterSelector = ({ title: popoverTitle, selected, options, onChange: onChangeProp, ...props }: Props) => {
     const { api: filterDialog } = useModal('marketplace.filter')
     const onClick = useCallback(() => {
         filterDialog.open({
@@ -70,14 +64,7 @@ const UnstyledFilterSelector = ({
     )
     return (
         <div {...props}>
-            <DesktopPopover
-                title={popoverTitle}
-                caret="svg"
-                selectedItem={selected}
-                activeTitle
-                onChange={onChangeProp}
-                leftTick
-            >
+            <DesktopPopover title={popoverTitle} caret="svg" selectedItem={selected} activeTitle onChange={onChangeProp} leftTick>
                 {options.map(({ id, value, title }) => (
                     <Popover.Item key={id} value={value}>
                         {title}

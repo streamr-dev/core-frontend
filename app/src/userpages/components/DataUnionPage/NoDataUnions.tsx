@@ -1,6 +1,6 @@
 import React from 'react'
 import docsLinks from '$shared/../docsLinks'
-import type { Filter } from '$userpages/flowtype/common-types'
+import type { Filter } from '$userpages/types/common-types'
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import BN from 'bignumber.js'
 import Balance from '$userpages/components/Balance'
-import { BalanceType } from '$shared/flowtype/user-types'
+import { BalanceType } from '$shared/types/user-types'
 import { useBalances } from '$shared/hooks/useBalances'
 
 const AccountsBalance = () => {

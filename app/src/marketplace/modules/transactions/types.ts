@@ -1,5 +1,5 @@
-import type { PayloadAction } from '$shared/flowtype/common-types'
-import type { Hash } from '$shared/flowtype/web3-types'
+import type { PayloadAction } from '$shared/types/common-types'
+import type { Hash } from '$shared/types/web3-types'
 export type TransactionIdAction = PayloadAction<{
     id: Hash
 }>

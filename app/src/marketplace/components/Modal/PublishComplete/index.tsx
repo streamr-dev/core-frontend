@@ -1,7 +1,7 @@
 import React from 'react'
 import type { PublishMode } from '$mp/containers/EditProductPage/usePublish'
 import { publishModes } from '$mp/containers/EditProductPage/usePublish'
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { ProductId } from '$mp/types/product-types'
 import PublishComplete from './PublishComplete'
 import UnpublishComplete from './UnpublishComplete'
 export type BaseProps = {

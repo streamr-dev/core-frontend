@@ -6,7 +6,7 @@ import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import * as UndoContext from '$shared/contexts/Undo'
 import Toolbar from '$shared/components/Toolbar'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product } from '$mp/types/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { productStates } from '$shared/utils/constants'
@@ -36,14 +36,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     const { isPending: savePending } = usePending('product.SAVE')
     const { isPending: publishDialogLoading } = usePending('product.PUBLISH_DIALOG_LOAD')
     const { isPending: fetchingAllStreams } = usePending('product.LOAD_ALL_STREAMS')
-    const {
-        product: originalProduct,
-        loadCategories,
-        loadDataUnion,
-        loadDataUnionStats,
-        loadAllStreams,
-        resetDataUnion,
-    } = useController()
+    const { product: originalProduct, loadCategories, loadDataUnion, loadDataUnionStats, loadAllStreams, resetDataUnion } = useController()
     const chainId = getChainIdFromApiString(product.chain)
     const { reset: resetDataUnionSecrets } = useDataUnionSecrets()
     const { load: loadWhiteWhitelistedAdresses, reset: resetWhiteWhitelistedAdresses } = useWhitelist()
@@ -128,8 +121,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
             title: (productState && titles[productState]) || 'Continue',
             kind: 'primary',
             onClick: publish,
-            disabled:
-                !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isDisabled,
+            disabled: !(productState === productStates.NOT_DEPLOYED || productState === productStates.DEPLOYED) || isDisabled,
         }
     }, [productState, publish, isDisabled])
     const deployButton = useMemo(() => {
@@ -151,11 +143,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     }
     const toolbarMiddle = useMemo(() => {
         if (isPreview) {
-            return (
-                <span className={styles.toolbarMiddle}>
-                    This is a preview of how your product will appear when published
-                </span>
-            )
+            return <span className={styles.toolbarMiddle}>This is a preview of how your product will appear when published</span>
         }
 
         return undefined
@@ -191,9 +179,7 @@ const EditProductPage = ({ product }: { product: Product }) => {
     )
 }
 
-const LoadingView = () => (
-    <CoreLayout className={styles.layout} nav={false} navComponent={<Toolbar loading actions={{}} altMobileLayout />} />
-)
+const LoadingView = () => <CoreLayout className={styles.layout} nav={false} navComponent={<Toolbar loading actions={{}} altMobileLayout />} />
 
 const EditWrap = () => {
     const { state: product } = useEditableState()

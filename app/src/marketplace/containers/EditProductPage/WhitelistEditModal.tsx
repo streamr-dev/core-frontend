@@ -6,8 +6,8 @@ import UnlockWalletDialog from '$shared/components/Web3ErrorDialog/UnlockWalletD
 import { areAddressesEqual } from '$mp/utils/smartContract'
 import usePending from '$shared/hooks/usePending'
 import { transactionStates } from '$shared/utils/constants'
-import type { Address } from '$shared/flowtype/web3-types'
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { Address } from '$shared/types/web3-types'
+import type { ProductId } from '$mp/types/product-types'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import ErrorDialog from '$mp/components/Modal/ErrorDialog'
@@ -101,16 +101,10 @@ export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress
         }
     }, [queue, isMounted])
     const somePending = useMemo(
-        () =>
-            Object.values(status).some(
-                (value) => value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED,
-            ),
+        () => Object.values(status).some((value) => value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED),
         [status],
     )
-    const allSucceeded = useMemo(
-        () => Object.values(status).every((value) => value === transactionStates.CONFIRMED),
-        [status],
-    )
+    const allSucceeded = useMemo(() => Object.values(status).every((value) => value === transactionStates.CONFIRMED), [status])
     useEffect(() => {
         if (!started || !allSucceeded) {
             return
@@ -189,11 +183,7 @@ export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress
 
     if (!started && !!removedAddress) {
         return (
-            <RemoveWhitelistedAddressDialog
-                disabled={checkingWeb3 || isPending}
-                onContinue={() => onStart(removedAddress, true)}
-                onClose={onClose}
-            />
+            <RemoveWhitelistedAddressDialog disabled={checkingWeb3 || isPending} onContinue={() => onStart(removedAddress, true)} onClose={onClose} />
         )
     } else if (!started) {
         return (
@@ -208,11 +198,7 @@ export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress
             <WhitelistEditProgressDialog
                 status={status}
                 onClose={onClose}
-                isPrompted={
-                    web3Actions.has(currentAction) &&
-                    currentAction &&
-                    status[currentAction] === transactionStates.STARTED
-                }
+                isPrompted={web3Actions.has(currentAction) && currentAction && status[currentAction] === transactionStates.STARTED}
             />
         )
     }
@@ -227,12 +213,5 @@ export default () => {
     }
 
     const { productId, removedAddress, chainId } = value || {}
-    return (
-        <AddOrRemoveWhitelistAddress
-            productId={productId}
-            removedAddress={removedAddress}
-            chainId={chainId}
-            api={api}
-        />
-    )
+    return <AddOrRemoveWhitelistAddress productId={productId} removedAddress={removedAddress} chainId={chainId} api={api} />
 }

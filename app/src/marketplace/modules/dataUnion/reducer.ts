@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import type { DataUnionState } from '../../flowtype/store-state'
+import type { DataUnionState } from '../../types/store-state'
 import {
     GET_DATA_UNION_REQUEST,
     GET_DATA_UNION_SUCCESS,

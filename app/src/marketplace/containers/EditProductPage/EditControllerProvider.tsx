@@ -3,7 +3,7 @@ import React, { useState, useMemo, useCallback, useContext, useRef } from 'react
 import { useSelector } from 'react-redux'
 import qs from 'query-string'
 import { useLocation, useHistory } from 'react-router-dom'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product } from '$mp/types/product-types'
 import { isDataUnionProduct } from '$mp/utils/product'
 import usePending from '$shared/hooks/usePending'
 import { putProduct, postImage } from '$mp/modules/product/services'
@@ -206,10 +206,7 @@ function useEditController(product: Product) {
         async (address) => {
             const { beneficiaryAddress } = productRef.current
 
-            if (
-                (!address || isEthereumAddress(address)) &&
-                (!beneficiaryAddress || !areAddressesEqual(beneficiaryAddress, address))
-            ) {
+            if ((!address || isEthereumAddress(address)) && (!beneficiaryAddress || !areAddressesEqual(beneficiaryAddress, address))) {
                 updateBeneficiaryAddress(address, false)
                 // save the new address immediately to db
                 // $FlowFixMe: object literal weirdness
@@ -282,11 +279,7 @@ type ControllerProps = {
 }
 
 function EditControllerProvider({ children, product }: ControllerProps) {
-    return (
-        <EditControllerContext.Provider value={useEditController(product)}>
-            {children || null}
-        </EditControllerContext.Provider>
-    )
+    return <EditControllerContext.Provider value={useEditController(product)}>{children || null}</EditControllerContext.Provider>
 }
 
 export { EditControllerContext as Context, EditControllerProvider as Provider }

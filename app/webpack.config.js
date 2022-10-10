@@ -272,10 +272,6 @@ module.exports = {
                                   '**/test/**/*.*',
                                   '**/*.test.ts',
                                   '**/*.test.tsx',
-                                  // skip flowtype
-                                  '**/flowtype/**/*.*',
-                                  '**/flowtype/*.*',
-                                  '**/types.ts',
                                   // skip conditional stubs
                                   '**/stub.tsx',
                                   // skip stories

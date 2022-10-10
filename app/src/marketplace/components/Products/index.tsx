@@ -5,7 +5,7 @@ import { Row, Container as RsContainer, Col } from 'reactstrap'
 import { isDataUnionProduct } from '$mp/utils/product'
 import { MarketplaceProductTile as UnstyledMarketplaceProductTile } from '$shared/components/Tile'
 import { MD, LG, REGULAR } from '$shared/utils/styled'
-import type { ProductList } from '../../flowtype/product-types'
+import type { ProductList } from '../../types/product-types'
 import ProductPageSpinner from '../ProductPageSpinner'
 import LoadMore from '../LoadMore'
 import Error from '../Error'
@@ -61,23 +61,12 @@ const Header = styled.h3`
     }
 `
 
-const UnstyledProducts = ({
-    products,
-    type,
-    error,
-    isFetching,
-    loadProducts,
-    hasMoreSearchResults,
-    header,
-    ...props
-}: OwnProps) => (
+const UnstyledProducts = ({ products, type, error, isFetching, loadProducts, hasMoreSearchResults, header, ...props }: OwnProps) => (
     <div {...props}>
         {header && <Header>{header}</Header>}
         <Error source={error} />
         {isFetching || products.length > 0 ? listProducts(products, getCols(type), isFetching) : getErrorView(type)}
-        {loadProducts && !isFetching && (
-            <LoadMore onClick={loadProducts} hasMoreSearchResults={!!hasMoreSearchResults} />
-        )}
+        {loadProducts && !isFetching && <LoadMore onClick={loadProducts} hasMoreSearchResults={!!hasMoreSearchResults} />}
         {isFetching && <ProductPageSpinner className={styles.spinner} />}
     </div>
 )

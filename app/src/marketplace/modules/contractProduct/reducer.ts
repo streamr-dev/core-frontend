@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import type { ContractProductState } from '../../flowtype/store-state'
+import type { ContractProductState } from '../../types/store-state'
 import {
     GET_PRODUCT_FROM_CONTRACT_FAILURE,
     GET_PRODUCT_FROM_CONTRACT_REQUEST,

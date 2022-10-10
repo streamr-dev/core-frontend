@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
-import type { ProductId } from '$mp/flowtype/product-types'
+import type { ProductId } from '$mp/types/product-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
@@ -104,8 +104,7 @@ export default function useProductLoadCallback() {
                 } catch (e) {
                     // ignore error, assume product is not published
                     requiresWhitelist = product && product.pendingChanges && product.pendingChanges.requiresWhitelist
-                    pricingTokenAddress =
-                        product && product.pendingChanges && product.pendingChanges.pricingTokenAddress
+                    pricingTokenAddress = product && product.pendingChanges && product.pendingChanges.pricingTokenAddress
                 }
 
                 // Load pricingToken decimal count
@@ -126,10 +125,7 @@ export default function useProductLoadCallback() {
                     priceCurrency: product.priceCurrency || DEFAULT_CURRENCY,
                     price:
                         product.price ||
-                        fromDecimals(
-                            priceForTimeUnits(pricePerSecond || product.pricePerSecond || '0', 1, timeUnits.hour),
-                            pricingTokenDecimals,
-                        ),
+                        fromDecimals(priceForTimeUnits(pricePerSecond || product.pricePerSecond || '0', 1, timeUnits.hour), pricingTokenDecimals),
                     adminFee: currentAdminFee,
                     dataUnionDeployed,
                     requiresWhitelist,

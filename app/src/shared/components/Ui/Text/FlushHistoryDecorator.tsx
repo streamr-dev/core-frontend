@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
 import React, { useCallback, useState, forwardRef } from 'react'
-import type { UseStateTuple } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { UseStateTuple } from '$shared/types/common-types'
+import '$shared/types/common-types'
 export type Props = {
     flushHistoryOnBlur?: boolean
     onBlur?: ((arg0: React.FocusEvent<EventTarget>) => void) | null | undefined

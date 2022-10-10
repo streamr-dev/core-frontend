@@ -1,6 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
-import type { PaymentCurrency } from '$shared/flowtype/common-types'
+import type { PaymentCurrency } from '$shared/types/common-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import { paymentCurrencies } from '$shared/utils/constants'
 import styles from './currencySelector.pcss'

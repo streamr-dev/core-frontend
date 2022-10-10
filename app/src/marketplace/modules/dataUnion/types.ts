@@ -1,5 +1,5 @@
-import type { ErrorInUi, PayloadAction } from '$shared/flowtype/common-types'
-import type { DataUnionId, DataUnionSecretId } from '$mp/flowtype/product-types'
+import type { ErrorInUi, PayloadAction } from '$shared/types/common-types'
+import type { DataUnionId, DataUnionSecretId } from '$mp/types/product-types'
 export type DataUnionIdAction = PayloadAction<{
     id: DataUnionId
 }>
@@ -27,10 +27,7 @@ export type DataUnionSecretsAction = PayloadAction<{
     id: DataUnionId
     secrets: Array<DataUnionSecretId>
 }>
-export type DataUnionSecretsActionCreator = (
-    id: DataUnionId,
-    secrets: Array<DataUnionSecretId>,
-) => DataUnionSecretsAction
+export type DataUnionSecretsActionCreator = (id: DataUnionId, secrets: Array<DataUnionSecretId>) => DataUnionSecretsAction
 export type DataUnionSecretAction = PayloadAction<{
     id: DataUnionId
     secret: DataUnionSecretId

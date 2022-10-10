@@ -1,7 +1,7 @@
 import type { Node } from 'react'
 import React, { Fragment } from 'react'
 import cx from 'classnames'
-import type { NumberString } from '$shared/flowtype/common-types'
+import type { NumberString } from '$shared/types/common-types'
 import styles from './balance.pcss'
 type AccountProps = {
     name: string

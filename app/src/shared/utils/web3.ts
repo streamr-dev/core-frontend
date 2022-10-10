@@ -2,7 +2,7 @@ import getPublicWeb3 from '$utils/web3/getPublicWeb3'
 import getWeb3 from '$utils/web3/getWeb3'
 import { networks } from '$shared/utils/constants'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
-import type { Hash } from '$shared/flowtype/web3-types'
+import type { Hash } from '$shared/types/web3-types'
 import getChainId from '$utils/web3/getChainId'
 type CheckNetworkParams = {
     network?: number

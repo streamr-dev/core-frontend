@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'
 import debounce from 'lodash/debounce'
 import styled, { css } from 'styled-components'
-import type { Ref } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { Ref } from '$shared/types/common-types'
+import '$shared/types/common-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import useIsMounted from '$shared/hooks/useIsMounted'
 type Props = {

@@ -1,5 +1,5 @@
-import type { PayloadAction, ErrorInUi } from '$shared/flowtype/common-types'
-import type { User, Balances } from '$shared/flowtype/user-types'
+import type { PayloadAction, ErrorInUi } from '$shared/types/common-types'
+import type { User, Balances } from '$shared/types/user-types'
 export type UserDataAction = PayloadAction<{
     user: User
 }>

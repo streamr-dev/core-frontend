@@ -1,6 +1,6 @@
 import { isSessionStorageAvailable } from '$shared/utils/storage'
-import type { Hash } from '$shared/flowtype/web3-types'
-import type { TransactionType } from '$shared/flowtype/common-types'
+import type { Hash } from '$shared/types/web3-types'
+import type { TransactionType } from '$shared/types/common-types'
 export const getTransactionsFromSessionStorage = (): Record<string, any> =>
     isSessionStorageAvailable() ? JSON.parse(sessionStorage.getItem('pendingTransactions') || '{}') : {}
 

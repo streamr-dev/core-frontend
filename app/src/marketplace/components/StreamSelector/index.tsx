@@ -11,7 +11,7 @@ import LoadingIndicator from '$shared/components/LoadingIndicator'
 import { truncate } from '$shared/utils/text'
 import type { LastErrorProps } from '$shared/hooks/useLastError'
 import { useLastError } from '$shared/hooks/useLastError'
-import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/flowtype/stream-types'
+import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/types/stream-types'
 import routes from '$routes'
 import styles from './streamSelector.pcss'
 type Props = LastErrorProps & {

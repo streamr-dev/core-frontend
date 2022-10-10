@@ -1,6 +1,6 @@
 import { call, send, hexEqualsZero } from '$mp/utils/smartContract'
-import type { SmartContractProduct, ProductId } from '$mp/flowtype/product-types'
-import type { SmartContractCall, SmartContractTransaction, Address } from '$shared/flowtype/web3-types'
+import type { SmartContractProduct, ProductId } from '$mp/types/product-types'
+import type { SmartContractCall, SmartContractTransaction, Address } from '$shared/types/web3-types'
 import { getValidId, mapProductFromContract, validateContractProductPricePerSecond } from '$mp/utils/product'
 import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 import { getBlockNumberForTimestamp } from '$shared/utils/ethereum'
@@ -10,8 +10,7 @@ import { marketplaceContract, getMarketplaceAbiAndAddress, getCustomTokenDecimal
 import { getContractEvents } from '$shared/utils/contractEvents'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 
-const contractMethods = (usePublicNode: boolean = false, networkChainId: number) =>
-    marketplaceContract(usePublicNode, networkChainId).methods
+const contractMethods = (usePublicNode: boolean = false, networkChainId: number) => marketplaceContract(usePublicNode, networkChainId).methods
 
 const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
 
@@ -50,12 +49,7 @@ async function* getMarketplaceEvents(id: ProductId, eventName: string, fromBlock
     yield* getContractEvents(web3, abiAndAddress.abi, abiAndAddress.address, chainId, eventName, fromBlock, filter)
 }
 
-export const getSubscribedEvents = async (
-    id: ProductId,
-    fromTimestamp: number,
-    usePublicNode: boolean = true,
-    networkChainId: number,
-) => {
+export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = true, networkChainId: number) => {
     const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
     const subscriptions = []
@@ -68,10 +62,7 @@ export const getSubscribedEvents = async (
             if (block && block.timestamp && block.timestamp * 1000 >= fromTimestamp) {
                 subscriptions.push({
                     start: block.timestamp * 1000,
-                    end:
-                        subEvent.returnValues &&
-                        subEvent.returnValues.endTimestamp &&
-                        parseTimestamp(subEvent.returnValues.endTimestamp),
+                    end: subEvent.returnValues && subEvent.returnValues.endTimestamp && parseTimestamp(subEvent.returnValues.endTimestamp),
                 })
             }
         }
@@ -81,8 +72,7 @@ export const getSubscribedEvents = async (
 }
 
 const createContractProductWithoutWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
-    const { id, name, beneficiaryAddress, pricePerSecond, minimumSubscriptionInSeconds, chainId, pricingTokenAddress } =
-        product
+    const { id, name, beneficiaryAddress, pricePerSecond, minimumSubscriptionInSeconds, chainId, pricingTokenAddress } = product
     validateContractProductPricePerSecond(pricePerSecond)
     const methodToSend = contractMethods(false, chainId).createProduct(
         getValidId(id),
@@ -98,8 +88,7 @@ const createContractProductWithoutWhitelist = (product: SmartContractProduct): S
 }
 
 const createContractProductWithWhitelist = (product: SmartContractProduct): SmartContractTransaction => {
-    const { id, name, beneficiaryAddress, pricePerSecond, minimumSubscriptionInSeconds, chainId, pricingTokenAddress } =
-        product
+    const { id, name, beneficiaryAddress, pricePerSecond, minimumSubscriptionInSeconds, chainId, pricingTokenAddress } = product
     validateContractProductPricePerSecond(pricePerSecond)
     const methodToSend = contractMethods(false, chainId).createProductWithWhitelist(
         getValidId(id),
@@ -121,12 +110,8 @@ export const createContractProduct = (product: SmartContractProduct): SmartContr
 
     return createContractProductWithoutWhitelist(product)
 }
-export const updateContractProduct = (
-    product: SmartContractProduct,
-    redeploy: boolean = false,
-): SmartContractTransaction => {
-    const { id, name, beneficiaryAddress, pricePerSecond, minimumSubscriptionInSeconds, chainId, pricingTokenAddress } =
-        product
+export const updateContractProduct = (product: SmartContractProduct, redeploy: boolean = false): SmartContractTransaction => {
+    const { id, name, beneficiaryAddress, pricePerSecond, minimumSubscriptionInSeconds, chainId, pricingTokenAddress } = product
     validateContractProductPricePerSecond(pricePerSecond)
     const methodToSend = contractMethods(false, chainId).updateProduct(
         getValidId(id),
@@ -149,11 +134,7 @@ export const redeployProduct = (id: ProductId, networkChainId: number): SmartCon
     send(contractMethods(false, networkChainId).redeployProduct(getValidId(id)), {
         network: networkChainId,
     }) // TODO: figure out the gas for redeploying
-export const setRequiresWhitelist = (
-    id: ProductId,
-    requiresWhitelist: boolean,
-    networkChainId: number,
-): SmartContractTransaction =>
+export const setRequiresWhitelist = (id: ProductId, requiresWhitelist: boolean, networkChainId: number): SmartContractTransaction =>
     send(contractMethods(false, networkChainId).setRequiresWhitelist(getValidId(id), requiresWhitelist), {
         network: networkChainId,
     })
@@ -237,14 +218,7 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
     }))
     return whitelist
 }
-export const isAddressWhitelisted = async (
-    id: ProductId,
-    address: Address,
-    usePublicNode: boolean = true,
-    networkChainId: number,
-) => {
-    const isWhitelistStatus = await call(
-        contractMethods(usePublicNode, networkChainId).getWhitelistState(getValidId(id), address),
-    )
+export const isAddressWhitelisted = async (id: ProductId, address: Address, usePublicNode: boolean = true, networkChainId: number) => {
+    const isWhitelistStatus = await call(contractMethods(usePublicNode, networkChainId).getWhitelistState(getValidId(id), address))
     return !!(isWhitelistStatus === 2)
 }

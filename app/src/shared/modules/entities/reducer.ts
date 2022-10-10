@@ -1,6 +1,6 @@
 import { handleActions } from 'redux-actions'
 import mergeWith from 'lodash/mergeWith'
-import type { EntitiesState } from '$shared/flowtype/store-state'
+import type { EntitiesState } from '$shared/types/store-state'
 import { UPDATE_ENTITIES } from './constants'
 import type { UpdateEntitiesAction } from './types'
 export const initialState: EntitiesState = {

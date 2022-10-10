@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import type { UserState } from '$shared/flowtype/store-state'
+import type { UserState } from '$shared/types/store-state'
 import type { UserDataAction, UserErrorAction, SetBalanceAction } from './types'
 import {
     USER_DATA_REQUEST,

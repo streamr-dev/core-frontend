@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect'
-import type { UserState, StoreState } from '$shared/flowtype/store-state'
-import type { User, Balances } from '$shared/flowtype/user-types'
-import type { ErrorInUi } from '$shared/flowtype/common-types'
+import type { UserState, StoreState } from '$shared/types/store-state'
+import type { User, Balances } from '$shared/types/user-types'
+import type { ErrorInUi } from '$shared/types/common-types'
 
 const selectUserState = (state: StoreState): UserState => state.user
 

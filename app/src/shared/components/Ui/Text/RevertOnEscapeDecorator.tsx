@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react'
 import React, { useState, forwardRef, useEffect, useCallback } from 'react'
-import type { UseStateTuple } from '$shared/flowtype/common-types'
-import '$shared/flowtype/common-types'
+import type { UseStateTuple } from '$shared/types/common-types'
+import '$shared/types/common-types'
 export type Props = {
     onChange?: ((arg0: React.SyntheticEvent<EventTarget>) => void) | null | undefined
     onKeyDown?: ((arg0: React.KeyboardEvent<EventTarget>) => void) | null | undefined

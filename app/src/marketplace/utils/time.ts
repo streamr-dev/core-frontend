@@ -1,7 +1,7 @@
 import type { Moment } from 'moment'
 import moment from 'moment'
 import BN from 'bignumber.js'
-import type { NumberString, TimeUnit } from '$shared/flowtype/common-types'
+import type { NumberString, TimeUnit } from '$shared/types/common-types'
 import { timeUnits } from '$shared/utils/constants'
 const momentDurationFormatsByTimeUnit = {
     second: 's',

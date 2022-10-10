@@ -1,14 +1,7 @@
 import { handleActions } from 'redux-actions'
-import type { ProductListState } from '../../flowtype/store-state'
+import type { ProductListState } from '../../types/store-state'
 import { productListPageSize } from '../../utils/constants'
-import {
-    GET_PRODUCTS_REQUEST,
-    GET_PRODUCTS_SUCCESS,
-    GET_PRODUCTS_FAILURE,
-    UPDATE_FILTER,
-    CLEAR_FILTERS,
-    CLEAR_PRODUCT_LIST,
-} from './constants'
+import { GET_PRODUCTS_REQUEST, GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAILURE, UPDATE_FILTER, CLEAR_FILTERS, CLEAR_PRODUCT_LIST } from './constants'
 import type { ProductsAction, ProductsErrorAction, FilterAction } from './types'
 export const initialState: ProductListState = {
     ids: [],

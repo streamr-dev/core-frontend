@@ -5,14 +5,8 @@ import styled from 'styled-components'
 import Button from '$shared/components/Button'
 import { LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
-import type {
-    Filter,
-    SearchFilter,
-    CategoryFilter,
-    SortByFilter,
-    ProductTypeFilter,
-} from '../../flowtype/product-types'
-import type { Category } from '../../flowtype/category-types'
+import type { Filter, SearchFilter, CategoryFilter, SortByFilter, ProductTypeFilter } from '../../types/product-types'
+import type { Category } from '../../types/category-types'
 import { isValidSearchQuery } from '../../utils/validate'
 import SearchInput from './SearchInput'
 import FilterSelector from './FilterSelector'
@@ -201,9 +195,7 @@ const UnstyledActionBar = ({
     const { categories: category, maxPrice, sortBy, type } = filter
     const currentSortByFilter = useMemo(() => {
         const { id: currentId } =
-            (BN(maxPrice).isEqualTo('0')
-                ? sortByOptions.find(({ id }) => id === 'free')
-                : sortByOptions.find(({ id }) => id === sortBy)) || {}
+            (BN(maxPrice).isEqualTo('0') ? sortByOptions.find(({ id }) => id === 'free') : sortByOptions.find(({ id }) => id === sortBy)) || {}
         return currentId
     }, [maxPrice, sortBy])
     return (
@@ -214,28 +206,13 @@ const UnstyledActionBar = ({
                 <Container fluid>
                     <ul>
                         <li>
-                            <FilterSelector
-                                title="Product type"
-                                selected={type}
-                                onChange={onProductTypeChange}
-                                options={productTypeOptions}
-                            />
+                            <FilterSelector title="Product type" selected={type} onChange={onProductTypeChange} options={productTypeOptions} />
                         </li>
                         <li>
-                            <FilterSelector
-                                title="Category"
-                                selected={category}
-                                onChange={onCategoryChange}
-                                options={categoryOptions}
-                            />
+                            <FilterSelector title="Category" selected={category} onChange={onCategoryChange} options={categoryOptions} />
                         </li>
                         <li>
-                            <FilterSelector
-                                title="Sort by"
-                                selected={currentSortByFilter}
-                                onChange={onSortByChange}
-                                options={sortOptions}
-                            />
+                            <FilterSelector title="Sort by" selected={currentSortByFilter} onChange={onSortByChange} options={sortOptions} />
                         </li>
                         <li>
                             <Button kind="secondary" type="button" onClick={() => onCreateProduct()}>

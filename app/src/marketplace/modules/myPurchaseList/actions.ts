@@ -2,42 +2,25 @@ import { createAction } from 'redux-actions'
 import { normalize } from 'normalizr'
 import orderBy from 'lodash/orderBy'
 import get from 'lodash/get'
-import type { ErrorInUi, ReduxActionCreator } from '$shared/flowtype/common-types'
+import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
 import { subscriptionsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
-import type { StoreState } from '$shared/flowtype/store-state'
-import type { Filter } from '$userpages/flowtype/common-types'
+import type { StoreState } from '$shared/types/store-state'
+import type { Filter } from '$userpages/types/common-types'
 import { getFilters } from '$userpages/utils/constants'
 import { isActive } from '$mp/utils/time'
-import type {
-    ProductSubscription,
-    ProductIdList,
-    ProductSubscriptionIdList,
-    ProductSubscriptionList,
-} from '../../flowtype/product-types'
+import type { ProductSubscription, ProductIdList, ProductSubscriptionIdList, ProductSubscriptionList } from '../../types/product-types'
 import * as api from './services'
-import {
-    GET_MY_PURCHASES_REQUEST,
-    GET_MY_PURCHASES_SUCCESS,
-    GET_MY_PURCHASES_FAILURE,
-    UPDATE_FILTER,
-    UPDATE_RESULTS,
-} from './constants'
+import { GET_MY_PURCHASES_REQUEST, GET_MY_PURCHASES_SUCCESS, GET_MY_PURCHASES_FAILURE, UPDATE_FILTER, UPDATE_RESULTS } from './constants'
 import type { MyPurchasesActionCreator, MyPurchasesErrorActionCreator, MySubscriptionsActionCreator } from './types'
 import { selectSubscriptions, selectFilter } from './selectors'
 const getMyPurchasesRequest: ReduxActionCreator = createAction(GET_MY_PURCHASES_REQUEST)
-const getMyPurchasesSuccess: MySubscriptionsActionCreator = createAction(
-    GET_MY_PURCHASES_SUCCESS,
-    (subscriptions: ProductSubscriptionIdList) => ({
-        subscriptions,
-    }),
-)
-const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction(
-    GET_MY_PURCHASES_FAILURE,
-    (error: ErrorInUi) => ({
-        error,
-    }),
-)
+const getMyPurchasesSuccess: MySubscriptionsActionCreator = createAction(GET_MY_PURCHASES_SUCCESS, (subscriptions: ProductSubscriptionIdList) => ({
+    subscriptions,
+}))
+const getMyPurchasesFailure: MyPurchasesErrorActionCreator = createAction(GET_MY_PURCHASES_FAILURE, (error: ErrorInUi) => ({
+    error,
+}))
 const updateFilterAction = createAction(UPDATE_FILTER, (filter: Filter) => ({
     filter,
 }))
@@ -62,8 +45,7 @@ export const getMyPurchases = () => (dispatch: (...args: Array<any>) => any) => 
                 // if we encounter the same product again, update the subscription times
                 if (result[product.id]) {
                     const { lastUpdated: prevLastUpdated, endsAt: prevEndsAt } = result[product.id]
-                    newSubscription.lastUpdated =
-                        subscription.lastUpdated > prevLastUpdated ? subscription.lastUpdated : prevLastUpdated
+                    newSubscription.lastUpdated = subscription.lastUpdated > prevLastUpdated ? subscription.lastUpdated : prevLastUpdated
                     newSubscription.endsAt = subscription.endsAt > prevEndsAt ? subscription.endsAt : prevEndsAt
                 }
 

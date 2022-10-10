@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import type { Product } from '$mp/flowtype/product-types'
+import type { Product } from '$mp/types/product-types'
 import { transactionStates } from '$shared/utils/constants'
 import useModal from '$shared/hooks/useModal'
 import { getProductById } from '$mp/modules/product/services'
@@ -117,21 +117,12 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
         }
     }, [queue, isMounted])
     const somePending = useMemo(
-        () =>
-            Object.values(status).some(
-                (value) => value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED,
-            ),
+        () => Object.values(status).some((value) => value !== transactionStates.CONFIRMED && value !== transactionStates.FAILED),
         [status],
     )
-    const allSucceeded = useMemo(
-        () => Object.values(status).every((value) => value === transactionStates.CONFIRMED),
-        [status],
-    )
+    const allSucceeded = useMemo(() => Object.values(status).every((value) => value === transactionStates.CONFIRMED), [status])
     const allCompleted = useMemo(
-        () =>
-            Object.values(status).every(
-                (value) => value === transactionStates.CONFIRMED || value === transactionStates.FAILED,
-            ),
+        () => Object.values(status).every((value) => value === transactionStates.CONFIRMED || value === transactionStates.FAILED),
         [status],
     )
     useEffect(() => {
@@ -221,11 +212,7 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
                 publishMode={mode}
                 status={status}
                 onCancel={onClose}
-                isPrompted={
-                    web3Actions.has(currentAction) &&
-                    currentAction &&
-                    status[currentAction] === transactionStates.STARTED
-                }
+                isPrompted={web3Actions.has(currentAction) && currentAction && status[currentAction] === transactionStates.STARTED}
             />
         )
     } else if (finished && allSucceeded) {

@@ -1,4 +1,4 @@
-import type { TransactionHistoryState } from '$userpages/flowtype/states/transaction-history-state'
+import type { TransactionHistoryState } from '$userpages/types/states/transaction-history-state'
 import {
     GET_TRANSACTION_EVENTS_REQUEST,
     GET_TRANSACTION_EVENTS_SUCCESS,
@@ -21,8 +21,12 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
         case CLEAR_TRANSACTION_LIST:
         case GET_TRANSACTION_EVENTS_REQUEST:
             return {
- ...state, ids: [], events: [], offset: 0, fetching: true
-}
+                ...state,
+                ids: [],
+                events: [],
+                offset: 0,
+                fetching: true,
+            }
 
         case GET_TRANSACTION_EVENTS_SUCCESS:
             return {
@@ -33,13 +37,16 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
 
         case GET_TRANSACTION_EVENTS_FAILURE:
             return {
- ...state, error: action.error, fetching: false
-}
+                ...state,
+                error: action.error,
+                fetching: false,
+            }
 
         case GET_TRANSACTIONS_REQUEST:
             return {
- ...state, fetching: true
-}
+                ...state,
+                fetching: true,
+            }
 
         case GET_TRANSACTIONS_SUCCESS: {
             const ids = new Set([...state.ids, ...action.ids])
@@ -53,8 +60,10 @@ const transactionHistory = (state: TransactionHistoryState = initialState, actio
 
         case GET_TRANSACTIONS_FAILURE:
             return {
- ...state, error: action.error, fetching: false
-}
+                ...state,
+                error: action.error,
+                fetching: false,
+            }
 
         default:
             return state

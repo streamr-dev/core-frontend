@@ -2,7 +2,7 @@ import BN from 'bignumber.js'
 import getWeb3 from '$utils/web3/getWeb3'
 import { get, put, post } from '$shared/utils/api'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import type { SmartContractTransaction, SmartContractCall, Hash, Address } from '$shared/flowtype/web3-types'
+import type { SmartContractTransaction, SmartContractCall, Hash, Address } from '$shared/types/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import {
     marketplaceContract,
@@ -12,8 +12,8 @@ import {
     getDaiAddress,
     erc20TokenContractMethods,
 } from '$mp/utils/web3'
-import type { NumberString, ApiResult, PaymentCurrency } from '$shared/flowtype/common-types'
-import type { Product, ProductId, Subscription, ProductType } from '$mp/flowtype/product-types'
+import type { NumberString, ApiResult, PaymentCurrency } from '$shared/types/common-types'
+import type { Product, ProductId, Subscription, ProductType } from '$mp/types/product-types'
 import { getValidId, mapProductFromApi, mapProductToPostApi, mapProductToPutApi } from '$mp/utils/product'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto, toAtto } from '$mp/utils/math'
@@ -29,9 +29,7 @@ export const getProductById = async (id: ProductId, useAuthorization: boolean = 
     }).then(mapProductFromApi)
 export const getMyProductSubscription = (id: ProductId, chainId: number): SmartContractCall<Subscription> =>
     Promise.all([getProductFromContract(id, true, chainId), getDefaultWeb3Account()])
-        .then(([, account]) =>
-            call(marketplaceContract(true, chainId).methods.getSubscription(getValidId(id), account)),
-        )
+        .then(([, account]) => call(marketplaceContract(true, chainId).methods.getSubscription(getValidId(id), account)))
         .then(({ endTimestamp }: { endTimestamp: string }) => ({
             productId: id,
             endTimestamp: parseInt(endTimestamp, 10),
@@ -129,18 +127,11 @@ export const buyProduct = (
 
     switch (paymentCurrency) {
         case paymentCurrencies.ETH:
-            return send(
-                uniswapAdaptorContractMethods(false, chainId).buyWithETH(
-                    getValidId(id),
-                    subscriptionInSeconds.toString(),
-                    ONE_DAY,
-                ),
-                {
-                    value: web3.utils.toWei(price.toString()).toString(),
-                    gas: gasLimits.BUY_PRODUCT_WITH_ETH + gasIncrease,
-                    network: chainId,
-                },
-            )
+            return send(uniswapAdaptorContractMethods(false, chainId).buyWithETH(getValidId(id), subscriptionInSeconds.toString(), ONE_DAY), {
+                value: web3.utils.toWei(price.toString()).toString(),
+                gas: gasLimits.BUY_PRODUCT_WITH_ETH + gasIncrease,
+                network: chainId,
+            })
 
         case paymentCurrencies.DAI:
             return send(
@@ -159,35 +150,22 @@ export const buyProduct = (
 
         default:
             // Pay with DATA or PRODUCT_DEFINED
-            return send(
-                marketplaceContract(false, chainId).methods.buy(getValidId(id), subscriptionInSeconds.toString()),
-                {
-                    gas: gasLimits.BUY_PRODUCT + gasIncrease,
-                    network: chainId,
-                },
-            )
+            return send(marketplaceContract(false, chainId).methods.buy(getValidId(id), subscriptionInSeconds.toString()), {
+                gas: gasLimits.BUY_PRODUCT + gasIncrease,
+                network: chainId,
+            })
     }
 }
 export const getMyDataAllowance = (chainId: number): SmartContractCall<BN> =>
     getDefaultWeb3Account()
-        .then((myAddress) =>
-            call(
-                dataTokenContractMethods(false, chainId).allowance(
-                    myAddress,
-                    marketplaceContract(false, chainId).options.address,
-                ),
-            ),
-        )
+        .then((myAddress) => call(dataTokenContractMethods(false, chainId).allowance(myAddress, marketplaceContract(false, chainId).options.address)))
         .then(fromAtto)
 export const setMyDataAllowance = (amount: string | BN, chainId: number): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }
 
-    const method = dataTokenContractMethods(false, chainId).approve(
-        marketplaceContract(false, chainId).options.address,
-        toAtto(amount).toFixed(0),
-    )
+    const method = dataTokenContractMethods(false, chainId).approve(marketplaceContract(false, chainId).options.address, toAtto(amount).toFixed(0))
     return send(method, {
         network: chainId,
     })
@@ -195,9 +173,7 @@ export const setMyDataAllowance = (amount: string | BN, chainId: number): SmartC
 export const getMyDaiAllowance = (chainId: number): SmartContractCall<BN> => {
     const { uniswapAdaptorContractAddress } = getCoreConfig()
     return getDefaultWeb3Account()
-        .then((myAddress) =>
-            call(daiTokenContractMethods(false, chainId).allowance(myAddress, uniswapAdaptorContractAddress)),
-        )
+        .then((myAddress) => call(daiTokenContractMethods(false, chainId).allowance(myAddress, uniswapAdaptorContractAddress)))
         .then(fromAtto)
 }
 export const setMyDaiAllowance = (amount: string | BN, chainId: number): SmartContractTransaction => {
@@ -206,10 +182,7 @@ export const setMyDaiAllowance = (amount: string | BN, chainId: number): SmartCo
     }
 
     const { uniswapAdaptorContractAddress } = getCoreConfig()
-    const method = daiTokenContractMethods(false, chainId).approve(
-        uniswapAdaptorContractAddress,
-        toAtto(amount).toFixed(0),
-    )
+    const method = daiTokenContractMethods(false, chainId).approve(uniswapAdaptorContractAddress, toAtto(amount).toFixed(0))
     return send(method, {
         network: chainId,
     })
@@ -217,18 +190,11 @@ export const setMyDaiAllowance = (amount: string | BN, chainId: number): SmartCo
 export const getMyTokenAllowance = async (tokenAddress: Address, chainId: number): SmartContractCall<BN> => {
     const account = await getDefaultWeb3Account()
     const allowance = await call(
-        erc20TokenContractMethods(tokenAddress, false, chainId).allowance(
-            account,
-            marketplaceContract(false, chainId).options.address,
-        ),
+        erc20TokenContractMethods(tokenAddress, false, chainId).allowance(account, marketplaceContract(false, chainId).options.address),
     )
     return BN(allowance)
 }
-export const setMyTokenAllowance = (
-    amount: string | BN,
-    tokenAddress: Address,
-    chainId: number,
-): SmartContractTransaction => {
+export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, chainId: number): SmartContractTransaction => {
     if (BN(amount).isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }

@@ -1,4 +1,4 @@
-import type { SortOption } from '$userpages/flowtype/common-types'
+import type { SortOption } from '$userpages/types/common-types'
 export const defaultColumns = {
     xs: 12,
     sm: 6,

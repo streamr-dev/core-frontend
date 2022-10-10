@@ -6,7 +6,7 @@ import Dialog from '$shared/components/Dialog'
 import ProgressBar from '$shared/components/ProgressBar'
 import { transactionStates, paymentCurrencies } from '$shared/utils/constants'
 import { actionsTypes } from '$mp/containers/ProductPage/usePurchase'
-import type { PaymentCurrency } from '$shared/flowtype/common-types'
+import type { PaymentCurrency } from '$shared/types/common-types'
 import routes from '$routes'
 import PendingTasks from '../PendingTasks'
 export type Status = Record<string, string>

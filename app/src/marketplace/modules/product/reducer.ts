@@ -1,5 +1,5 @@
 import { handleActions } from 'redux-actions'
-import type { ProductState } from '../../flowtype/store-state'
+import type { ProductState } from '../../types/store-state'
 import {
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
     GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_SUCCESS,
