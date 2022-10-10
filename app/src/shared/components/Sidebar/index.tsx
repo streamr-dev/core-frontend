@@ -1,4 +1,4 @@
-import type { Node } from 'react'
+import type { FunctionComponent, ReactNode } from 'react'
 import React, { useEffect, useCallback, useRef, useState } from 'react'
 import cx from 'classnames'
 import styled from 'styled-components'
@@ -10,18 +10,17 @@ import SharedErrorComponentView from '$shared/components/ErrorComponentView'
 import SvgIcon from '$shared/components/SvgIcon'
 import Select from './Select'
 import styles from './Sidebar.pcss'
-type Props = {
+
+const Sidebar: FunctionComponent<{
     className?: string
     isOpen: boolean
-    children?: Node
+    children?: ReactNode
     onClose?: (...args: Array<any>) => any
-}
-
-const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
+}> = ({ className, isOpen, onClose, children }) => {
     const elRef = useRef()
     // close on esc
     const onKeyDown = useCallback(
-        (event) => {
+        (event: KeyboardEvent) => {
             if (isEditableElement(event.target || event.srcElement)) {
                 return
             }
@@ -38,7 +37,7 @@ const Sidebar = ({ className, isOpen, onClose, children }: Props) => {
     )
     // close on click outside
     const onClick = useCallback(
-        (event) => {
+        (event: PointerEvent) => {
             if (!isOpen || typeof onClose !== 'function') {
                 return
             }
@@ -75,7 +74,7 @@ const Container = styled.div`
     padding: 24px 32px;
 `
 
-const UnstyledErrorComponentView = (props) => <Container {...props} as={SharedErrorComponentView} />
+const UnstyledErrorComponentView = (props: object) => <Container {...props} as={SharedErrorComponentView} />
 
 const ErrorComponentView = styled(UnstyledErrorComponentView)`
     align-items: initial;
@@ -86,7 +85,7 @@ const ErrorComponentView = styled(UnstyledErrorComponentView)`
     text-align: left;
 `
 
-const UnstyledHeader = ({ onClose, title, subtitle, ...props }) => (
+const UnstyledHeader: FunctionComponent<{ onClose: () => void; title: string; subtitle: string }> = ({ onClose, title, subtitle, ...props }) => (
     <Container {...props}>
         <div>
             <h3 title={title}>{title}</h3>
@@ -178,8 +177,13 @@ const Body = styled.div`
     overflow: auto;
 `
 
-const UnstyledCollapse = ({ label, children, isOpen: isOpenProp, ...props }) => {
-    const [isOpen, setIsOpen] = useState(isOpenProp)
+const UnstyledCollapse: FunctionComponent<{ label: string; children: ReactNode; isOpen: boolean }> = ({
+    label,
+    children,
+    isOpen: isOpenProp,
+    ...props
+}) => {
+    const [isOpen, setIsOpen] = useState<boolean>(isOpenProp)
     useEffect(() => {
         setIsOpen(isOpenProp)
     }, [isOpenProp])
