@@ -1,4 +1,11 @@
-export const subscribeSnippets = ({ id }) => ({
+export interface StreamSnippet {
+    javascript: string,
+    java?: string
+}
+
+export type StreamSnippetGetter = (streamData: {id: string}) => StreamSnippet
+
+export const subscribeSnippets: StreamSnippetGetter = ({ id }: {id: string}): StreamSnippet => ({
     javascript: `
         const StreamrClient = require('streamr-client')
 
@@ -30,7 +37,7 @@ export const subscribeSnippets = ({ id }) => ({
         });
     `,
 })
-export const lightNodeSnippets = ({ id }) => ({
+export const lightNodeSnippets: StreamSnippetGetter = ({ id }: {id: string}): StreamSnippet => ({
     javascript: `
         // Run a Streamr node right inside your JS app
         const StreamrClient = require('streamr-client')
@@ -51,7 +58,7 @@ export const lightNodeSnippets = ({ id }) => ({
         })
     `,
 })
-export const websocketSnippets = ({ id }) => ({
+export const websocketSnippets: StreamSnippetGetter = ({ id }: {id: string}): StreamSnippet => ({
     javascript: `
         // You'll want to URI-encode the stream id
         const streamId = encodeURIComponent('${id}')
@@ -70,7 +77,7 @@ export const websocketSnippets = ({ id }) => ({
         }
     `,
 })
-export const httpSnippets = ({ id }) => ({
+export const httpSnippets: StreamSnippetGetter = ({ id }: {id: string}): StreamSnippet => ({
     javascript: `
         // Use your favourite language and HTTP library!
 
@@ -84,7 +91,7 @@ export const httpSnippets = ({ id }) => ({
         })
     `,
 })
-export const mqttSnippets = ({ id }) => ({
+export const mqttSnippets: StreamSnippetGetter = ({ id }: {id: string}): StreamSnippet => ({
     javascript: `
         // Use your favourite language and MQTT library!
 

@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 
-function useFilterSort(sortOptions = []) {
+// TODO add typing
+function useFilterSort(sortOptions: any[] = []): any {
     const defaultFilter = useMemo(() => {
         if (sortOptions && sortOptions.length > 0) {
             return sortOptions[0].filter
@@ -11,10 +12,10 @@ function useFilterSort(sortOptions = []) {
     const [filterOptions, setFilterOptions] = useState(defaultFilter)
     const [search, setSearch] = useState(undefined)
     useEffect(() => {
-        setFilterOptions((previousFilterOptions) => previousFilterOptions || defaultFilter)
+        setFilterOptions((previousFilterOptions: any) => previousFilterOptions || defaultFilter)
     }, [defaultFilter])
     const setSort = useCallback(
-        (sortOptionId) => {
+        (sortOptionId: any) => {
             const sortOption = sortOptions.find((opt) => opt.filter.id === sortOptionId)
 
             if (sortOption) {
@@ -27,9 +28,13 @@ function useFilterSort(sortOptions = []) {
         setFilterOptions({ ...defaultFilter })
         setSearch(undefined)
     }, [defaultFilter])
-    const filter = useMemo(() => ({
- ...filterOptions, search
-}), [filterOptions, search])
+    const filter = useMemo(
+        () => ({
+            ...filterOptions,
+            search,
+        }),
+        [filterOptions, search],
+    )
     return useMemo(
         () => ({
             search,

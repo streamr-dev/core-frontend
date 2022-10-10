@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
 import copyToClipboard from 'copy-to-clipboard'
+
 const SUSTAIN_IN_MILLIS = 3000
-export default function useCopy(onAfterCopied) {
+
+const useCopy = (onAfterCopied?: (value: string) => void): { copy: (value: string) => void; isCopied: boolean } => {
     const [isCopied, setIsCopied] = useState(false)
     const onAfterCopiedRef = useRef(onAfterCopied)
     useEffect(() => {
@@ -9,12 +11,12 @@ export default function useCopy(onAfterCopied) {
     }, [onAfterCopied])
     const [copiedAt, touch] = useReducer(
         (
-            current,
-            now, // Throttle updates to `copiedAt`.
+            current: number,
+            now: number, // Throttle updates to `copiedAt`.
         ) => (current + SUSTAIN_IN_MILLIS > now ? current : now),
         Number.NEGATIVE_INFINITY,
     )
-    const copy = useCallback((value) => {
+    const copy = useCallback((value: string) => {
         copyToClipboard(value)
 
         if (typeof onAfterCopiedRef.current === 'function') {
@@ -44,3 +46,5 @@ export default function useCopy(onAfterCopied) {
         [copy, isCopied],
     )
 }
+
+export default useCopy

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { FunctionComponent, useCallback, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import BN from 'bignumber.js'
 import { StatusIcon, titleize } from '@streamr/streamr-layout'
@@ -32,6 +32,7 @@ import Search from '$userpages/components/Header/Search'
 import getChainId from '$utils/web3/getChainId'
 import { getTransactionLink } from '$shared/utils/blockexplorer'
 import NoTransactionsView from './NoTransactions'
+
 const StyledListContainer = styled(ListContainer)`
     && {
         padding: 0;
@@ -79,7 +80,7 @@ const eventTypes = {
     updateContractProduct: 'Update',
 }
 
-const TransactionList = () => {
+const TransactionList: FunctionComponent = () => {
     const dispatch = useDispatch()
     const { copy } = useCopy()
     const copyToClipboard = useCallback(
@@ -137,41 +138,16 @@ const TransactionList = () => {
                             <TransactionListComponent.HeaderItem center>Status</TransactionListComponent.HeaderItem>
                         </TransactionListComponent.Header>
                         {transactions.map(
-                            ({
-                                id,
-                                productId,
-                                hash,
-                                timestamp,
-                                gasUsed,
-                                gasPrice,
-                                state,
-                                type,
-                                value,
-                                paymentValue,
-                                paymentCurrency,
-                            }) => {
-                                const productTitle =
-                                    id && productId && products[productId] ? products[productId].name : '-'
+                            ({ id, productId, hash, timestamp, gasUsed, gasPrice, state, type, value, paymentValue, paymentCurrency }) => {
+                                const productTitle = id && productId && products[productId] ? products[productId].name : '-'
                                 const eventType = (!!type && eventTypes[type]) || ''
                                 const price = BN(value)
                                 const pricePrefix = type === transactionTypes.SUBSCRIPTION ? '-' : '+'
-                                const displayPrice = `${formatDecimals(
-                                    fromAtto(price),
-                                    paymentCurrencies.DATA,
-                                    18,
-                                )} DATA`
+                                const displayPrice = `${formatDecimals(fromAtto(price), paymentCurrencies.DATA, 18)} DATA`
                                 let displayPayment = ''
 
-                                if (
-                                    (paymentCurrency === paymentCurrencies.ETH ||
-                                        paymentCurrency === paymentCurrencies.DAI) &&
-                                    paymentValue
-                                ) {
-                                    displayPayment = ` (${formatDecimals(
-                                        fromAtto(paymentValue),
-                                        paymentCurrency,
-                                        18,
-                                    )} ${paymentCurrency})`
+                                if ((paymentCurrency === paymentCurrencies.ETH || paymentCurrency === paymentCurrencies.DAI) && paymentValue) {
+                                    displayPayment = ` (${formatDecimals(fromAtto(paymentValue), paymentCurrency, 18)} ${paymentCurrency})`
                                 }
 
                                 return (
@@ -184,9 +160,7 @@ const TransactionList = () => {
                                             {productTitle}
                                         </TransactionListComponent.Title>
                                         <TransactionListComponent.Item>{eventType}</TransactionListComponent.Item>
-                                        <TransactionListComponent.Item title={hash}>
-                                            {truncate(hash)}
-                                        </TransactionListComponent.Item>
+                                        <TransactionListComponent.Item title={hash}>{truncate(hash)}</TransactionListComponent.Item>
                                         <TransactionListComponent.Item>
                                             {timestamp ? titleize(ago(new Date(timestamp))) : '-'}
                                         </TransactionListComponent.Item>
@@ -210,12 +184,8 @@ const TransactionList = () => {
                                                 }}
                                                 caret={false}
                                             >
-                                                <Popover.Item onClick={() => openInBlockExplorer(hash)}>
-                                                    View on block explorer
-                                                </Popover.Item>
-                                                <Popover.Item onClick={() => copyToClipboard(hash)}>
-                                                    Copy TX hash
-                                                </Popover.Item>
+                                                <Popover.Item onClick={() => openInBlockExplorer(hash)}>View on block explorer</Popover.Item>
+                                                <Popover.Item onClick={() => copyToClipboard(hash)}>Copy TX hash</Popover.Item>
                                             </Popover>
                                         </TransactionListComponent.Actions>
                                     </TransactionListComponent.Row>
@@ -224,9 +194,7 @@ const TransactionList = () => {
                         )}
                     </TransactionListComponent>
                 )}
-                {!fetchingTransactions && (
-                    <LoadMore hasMoreSearchResults={hasMoreResults} onClick={showEvents} preserveSpace />
-                )}
+                {!fetchingTransactions && <LoadMore hasMoreSearchResults={hasMoreResults} onClick={showEvents} preserveSpace />}
             </StyledListContainer>
             <DocsShortcuts />
         </Layout>

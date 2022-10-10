@@ -1,17 +1,18 @@
 import type { PayloadAction } from '$shared/flowtype/common-types'
 export type UpdateEntitiesParam = {
-    entities: {
-        products?: {}
-        contractProducts?: {}
-        dataUnions?: {}
-        relatedProducts?: {}
-        subscriptions?: {}
-        categories?: {}
-        streams?: {}
-        transactions?: {}
-        joinRequests: {}
-        whitelistedAddresses: {}
-    }
+    entities: EntitiesValue
+}
+export interface EntitiesValue {
+    products?: object
+    contractProducts?: object
+    dataUnions?: object
+    relatedProducts?: object
+    subscriptions?: object
+    categories?: object
+    streams?: object
+    transactions?: object
+    joinRequests?: object
+    whitelistedAddresses?: object
 }
 export type UpdateEntitiesAction = PayloadAction<UpdateEntitiesParam>
-export type UpdateEntitiesActionCreator = (arg0: UpdateEntitiesParam) => UpdateEntitiesAction
+export type UpdateEntitiesActionCreator = (arg0: EntitiesValue) => UpdateEntitiesAction

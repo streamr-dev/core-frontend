@@ -26,7 +26,7 @@ describe('getDisplayName', () => {
         ).toBe('DisplayName')
     })
     it('gives expected value for real components', () => {
-        class Komponent1 extends React.Component<{}> {} // eslint-disable-line react/prefer-stateless-function
+        class Komponent1 extends React.Component<any> {} // eslint-disable-line react/prefer-stateless-function
 
         expect(getDisplayName(Komponent1)).toEqual('Komponent1')
 

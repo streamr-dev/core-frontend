@@ -6,6 +6,7 @@ const WebpackNotifierPlugin = require('webpack-notifier')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const ImageminPlugin = require('imagemin-webpack-plugin').default
 const StyleLintPlugin = require('stylelint-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const { UnusedFilesWebpackPlugin } = require('unused-files-webpack-plugin')
 const cssProcessor = require('clean-css')
@@ -15,7 +16,6 @@ const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const SentryPlugin = require('@sentry/webpack-plugin')
 const validateEnv = require('./scripts/validateEnv')
 const pkg = require('./package')
-const ESLintPlugin = require('eslint-webpack-plugin')
 
 const dotenv = require('./scripts/dotenv')
 

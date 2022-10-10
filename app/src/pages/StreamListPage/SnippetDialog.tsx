@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import SnippetDialogComponent from '$userpages/components/SnippetDialog/index'
 import useModal from '$shared/hooks/useModal'
 import { subscribeSnippets } from '$utils/streamSnippets'
-export default function SnippetDialog() {
+const SnippetDialog: FunctionComponent = () => {
     const { api, isOpen, value: { streamId } = {} } = useModal('userpages.streamSnippet')
     return (
         !!isOpen && (
@@ -15,3 +15,5 @@ export default function SnippetDialog() {
         )
     )
 }
+
+export default SnippetDialog

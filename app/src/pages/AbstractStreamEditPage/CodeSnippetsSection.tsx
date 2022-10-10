@@ -1,14 +1,20 @@
-import React, { useState, useCallback, useRef, useMemo, Fragment } from 'react'
+import React, { useState, useCallback, useRef, useMemo, Fragment, FunctionComponent } from 'react'
 import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import styled, { css } from 'styled-components'
 import Button from '$shared/components/Button'
 import useCopy from '$shared/hooks/useCopy'
 import TOCPage from '$shared/components/TOCPage'
 import useStreamId from '$shared/hooks/useStreamId'
-import { lightNodeSnippets, websocketSnippets, httpSnippets, mqttSnippets } from '$utils/streamSnippets'
+import {
+  lightNodeSnippets,
+  websocketSnippets,
+  httpSnippets,
+  mqttSnippets,
+  StreamSnippetGetter
+} from '$utils/streamSnippets'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 
-function getStreamSnippet(fn, id) {
+function getStreamSnippet(fn: StreamSnippetGetter, id: string): string {
     if (id) {
         return fn({
             id,
@@ -18,16 +24,16 @@ function getStreamSnippet(fn, id) {
     return '// Create your stream above in order to get your code snippet.'
 }
 
-function UnstyledUnwrappedCodeSnippetsSection({ className, disabled }) {
+function UnstyledUnwrappedCodeSnippetsSection({ className, disabled }: {className: string, disabled: boolean}) {
     const streamId = useStreamId()
-    const items = useMemo(
+    const items = useMemo<Array<['javascript', string, string]>>(
         () =>
             [
                 ['Light node (JS)', lightNodeSnippets],
                 ['Websocket', websocketSnippets],
                 ['HTTP', httpSnippets],
                 ['MQTT', mqttSnippets],
-            ].map(([label, fn]) => ['javascript', label, getStreamSnippet(fn, streamId)]),
+            ].map(([label, fn]: [string, StreamSnippetGetter]) => ['javascript', label, getStreamSnippet(fn, streamId)]),
         [streamId],
     )
     const { copy, isCopied } = useCopy()
@@ -113,11 +119,13 @@ const ItemWrap = styled.div`
             overflow: hidden;
         `}
 `
-export default function CodeSnippetsSection({ disabled, ...props }) {
+const CodeSnippetsSection: FunctionComponent<{disabled: boolean, className?: string}> = ({ disabled, className, ...props }) =>{
     const isWithinNav = useIsWithinNav()
     return (
         <TOCPage.Section disabled={disabled} id="snippets" title="Code Snippets">
-            {!isWithinNav && <UnwrappedCodeSnippetsSection {...props} disabled={disabled} />}
+            {!isWithinNav && <UnwrappedCodeSnippetsSection {...props} disabled={disabled} className={className} />}
         </TOCPage.Section>
     )
 }
+
+export default CodeSnippetsSection;

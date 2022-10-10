@@ -1,9 +1,9 @@
 import React from 'react'
 import { MemoryRouter, Route, Switch } from 'react-router-dom'
 import { mount } from 'enzyme'
+import DocsRouter from '$mp/../app/Docs'
 import GenericErrorPage from '$shared/components/GenericErrorPage'
 import { generateMap } from '$docs/docsMap'
-import DocsRouter from '$mp/../app/Docs'
 jest.mock('$shared/components/GenericErrorPage', () => ({
     __esModule: true,
     default: () => 'Error page',

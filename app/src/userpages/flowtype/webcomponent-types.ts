@@ -7,6 +7,6 @@ export type Webcomponent = {
         | 'streamr-map'
         | 'streamr-switcher'
         | 'streamr-table'
-        | 'streamr-text-field'
-    url: string
-}
+        | 'streamr-text-field';
+    url: string;
+};
