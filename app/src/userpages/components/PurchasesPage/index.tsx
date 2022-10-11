@@ -27,15 +27,15 @@ const PurchasesPage = () => {
         return [filters.RECENT_DESC, filters.NAME_ASC, filters.NAME_DESC, filters.ACTIVE, filters.EXPIRED]
     }, [])
     const {
- defaultFilter, filter, setSearch, setSort, resetFilter
-} = useFilterSort(sortOptions)
+        defaultFilter, filter, setSearch, setSort, resetFilter
+    } = useFilterSort(sortOptions)
     const purchases = useSelector(selectMyPurchaseList)
     const subscriptions = useSelector(selectSubscriptions)
     const fetching = useSelector(selectFetchingMyPurchaseList)
     const dispatch = useDispatch()
     const {
- load: loadDataUnionStats, members, loadedIds, fetchingIds, reset: resetStats
-} = useAllDataUnionStats()
+        load: loadDataUnionStats, members, loadedIds, fetchingIds, reset: resetStats
+    } = useAllDataUnionStats()
     useEffect(() => {
         dispatch(updateFilter(filter))
         dispatch(getMyPurchases()).then(() => {

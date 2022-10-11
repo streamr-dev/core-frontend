@@ -14,8 +14,8 @@ import ResizeHandle from './ResizeHandle'
 const formatValue = (data) =>
     typeof data === 'object'
         ? stringifyObject(data, {
-              inlineCharacterLimit: Number.POSITIVE_INFINITY,
-          })
+            inlineCharacterLimit: Number.POSITIVE_INFINITY,
+        })
         : data.toString()
 
 const Inner = styled.div`

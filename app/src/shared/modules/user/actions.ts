@@ -108,25 +108,25 @@ export const updateCurrentUserEmail =
     }
 export const updateCurrentUserImage =
     (image: File | null | undefined) =>
-    (dispatch: (...args: Array<any>) => any, getState: (...args: Array<any>) => any) => {
-        dispatch(updateAvatarRequest())
-        const user = selectUserData(getState())
+        (dispatch: (...args: Array<any>) => any, getState: (...args: Array<any>) => any) => {
+            dispatch(updateAvatarRequest())
+            const user = selectUserData(getState())
 
-        if (!user || !image) {
-            throw new Error('Invalid user data or uploaded image')
+            if (!user || !image) {
+                throw new Error('Invalid user data or uploaded image')
+            }
+
+            return services
+                .uploadProfileAvatar(image)
+                .then((avatar) => {
+                    dispatch(updateAvatarSuccess())
+                    dispatch(updateCurrentUser({ ...user, ...avatar }))
+                })
+                .catch((e) => {
+                    dispatch(updateAvatarFailure(e))
+                    throw e
+                })
         }
-
-        return services
-            .uploadProfileAvatar(image)
-            .then((avatar) => {
-                dispatch(updateAvatarSuccess())
-                dispatch(updateCurrentUser({ ...user, ...avatar }))
-            })
-            .catch((e) => {
-                dispatch(updateAvatarFailure(e))
-                throw e
-            })
-    }
 const emailValidator = yup.string().trim().email()
 export const saveCurrentUser =
     () => async (dispatch: (...args: Array<any>) => any, getState: (...args: Array<any>) => any) => {

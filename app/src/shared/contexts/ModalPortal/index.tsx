@@ -25,7 +25,7 @@ export class ModalPortalProvider extends React.Component<Props, State> {
         registerModal: this.registerModal.bind(this),
         unregisterModal: this.unregisterModal.bind(this),
     }
-    count: number = 0
+    count = 0
 
     registerModal() {
         this.count = this.count + 1

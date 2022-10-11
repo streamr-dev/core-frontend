@@ -4,7 +4,7 @@ import { useEditableUserIds } from '$shared/components/PermissionsProvider'
 import Share from './Share'
 
 const UnstyledUserList = ({
- items, selectedUserId, setSelectedUserId, userErrors, ...props
+    items, selectedUserId, setSelectedUserId, userErrors, ...props
 }) => {
     const editableUserIds = useEditableUserIds()
     const onClick = useCallback(

@@ -27,11 +27,11 @@ const UnstyledWrapper = ({ visible, className, children }) => {
         () =>
             visible
                 ? {
-                      height,
-                  }
+                    height,
+                }
                 : {
-                      transitionDelay: '0.5s',
-                  },
+                    transitionDelay: '0.5s',
+                },
         [visible, height],
     )
     return (

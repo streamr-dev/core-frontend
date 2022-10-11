@@ -12,8 +12,8 @@ export default async function unlock({ timeoutAfter = Number.POSITIVE_INFINITY }
     const promise =
         typeof currentProvider.request === 'function' // `request(…)` is available since MetaMask v8.
             ? currentProvider.request({
-                  method: 'eth_requestAccounts',
-              }) // Fallback to `enable()`.
+                method: 'eth_requestAccounts',
+            }) // Fallback to `enable()`.
             : currentProvider.enable()
 
     try {

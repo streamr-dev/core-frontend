@@ -14,7 +14,7 @@ const SaveButton = styled(Button)`
 `
 
 const UnstyledFooter = ({
- disabled, onCancel, onSave, waiting, ...props
+    disabled, onCancel, onSave, waiting, ...props
 }) => (
     <div {...props}>
         <div>

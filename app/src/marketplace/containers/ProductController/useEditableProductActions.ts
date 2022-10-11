@@ -23,7 +23,7 @@ export function useEditableProductActions() {
     const { undo } = useContext(UndoContext)
     const { setTouched } = useContext(ValidationContext)
     const updateProduct = useCallback(
-        (product: Record<string, any>, msg: string = 'Update product') => {
+        (product: Record<string, any>, msg = 'Update product') => {
             commit(msg, (p) => ({ ...p, ...product }))
         },
         [commit],
@@ -101,7 +101,7 @@ export function useEditableProductActions() {
         [commit, setTouched],
     )
     const updateRequiresWhitelist = useCallback(
-        (requiresWhitelist: boolean, touched: boolean = true) => {
+        (requiresWhitelist: boolean, touched = true) => {
             commit('Update whitelist enabled', (p) => ({ ...p, requiresWhitelist }))
             setTouched('requiresWhitelist', touched)
         },
@@ -143,7 +143,7 @@ export function useEditableProductActions() {
         [commit, setTouched],
     )
     const updateBeneficiaryAddress = useCallback(
-        (beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>, didTouch: boolean = true) => {
+        (beneficiaryAddress: $ElementType<Product, 'beneficiaryAddress'>, didTouch = true) => {
             commit('Update beneficiary address', (p) => ({
                 ...p,
                 beneficiaryAddress,

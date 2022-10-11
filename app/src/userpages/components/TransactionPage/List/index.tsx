@@ -138,7 +138,9 @@ const TransactionList: FunctionComponent = () => {
                             <TransactionListComponent.HeaderItem center>Status</TransactionListComponent.HeaderItem>
                         </TransactionListComponent.Header>
                         {transactions.map(
-                            ({ id, productId, hash, timestamp, gasUsed, gasPrice, state, type, value, paymentValue, paymentCurrency }) => {
+                            ({
+                                id, productId, hash, timestamp, gasUsed, gasPrice, state, type, value, paymentValue, paymentCurrency
+                            }) => {
                                 const productTitle = id && productId && products[productId] ? products[productId].name : '-'
                                 const eventType = (!!type && eventTypes[type]) || ''
                                 const price = BN(value)

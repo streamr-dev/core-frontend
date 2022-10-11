@@ -151,8 +151,8 @@ class UndoContextProvider extends Component<Props, State> {
             typeof actionValue !== 'string'
                 ? actionValue
                 : {
-                      type: actionValue,
-                  }
+                    type: actionValue,
+                }
         const p: Promise<Record<string, any> | null> = new Promise((resolve) =>
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) {

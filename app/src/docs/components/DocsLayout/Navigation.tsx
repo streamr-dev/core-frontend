@@ -227,7 +227,7 @@ const UnstyledResponsive = (props) => {
         let topTitle = docsMapKeys.find((topLevelNavItem) => pathname.indexOf(docsMap[topLevelNavItem].root.path) === 0)
 
         if (!topTitle) {
-            ;[topTitle] = docsMapKeys || []
+            [topTitle] = docsMapKeys || []
         }
 
         const secondLevelKeys = Object.keys(docsMap[topTitle])
@@ -237,7 +237,7 @@ const UnstyledResponsive = (props) => {
             secondLevelKeys.find((secondLevelNavItem) => pathname === docsMap[topTitle][secondLevelNavItem].path)
 
         if (!secondLevelKey) {
-            ;[secondLevelKey] = secondLevelKeys || []
+            [secondLevelKey] = secondLevelKeys || []
         }
 
         const { title: secondTitle } = (!!secondLevelKey && docsMap[topTitle][secondLevelKey]) || {}

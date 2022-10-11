@@ -51,8 +51,8 @@ const createClient = (chainId: number) => {
         },
         ...(dataUnionJoinServerUrl
             ? {
-                  joinServerUrl: dataUnionJoinServerUrl,
-              }
+                joinServerUrl: dataUnionJoinServerUrl,
+            }
             : {}),
     })
     return new DataUnionClient(clientConfig)
@@ -225,7 +225,7 @@ export const getMemberStatistics = async (
     })
     return result.data.dataUnionStatsBuckets
 }
-export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit: number = 100): Promise<Array<string>> => {
+export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limit = 100): Promise<Array<string>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
         url: theGraphUrl,
@@ -249,7 +249,7 @@ export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limi
 
     return []
 }
-export const searchDataUnionMembers = async (id: DataUnionId, query: string, chainId: number, limit: number = 100): Promise<Array<string>> => {
+export const searchDataUnionMembers = async (id: DataUnionId, query: string, chainId: number, limit = 100): Promise<Array<string>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const result = await post({
         url: theGraphUrl,

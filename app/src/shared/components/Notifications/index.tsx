@@ -43,7 +43,7 @@ class Notifications extends React.Component<Props, State> {
     }
 
     componentDidUpdate() {
-        ;[...this.state.notifications].reverse().forEach(this.showNotification)
+        [...this.state.notifications].reverse().forEach(this.showNotification)
     }
 
     componentWillUnmount() {

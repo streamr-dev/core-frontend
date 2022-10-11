@@ -14,7 +14,7 @@ import uniswapAdaptorAbi from '$shared/web3/abis/uniswapAdaptor'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { getContract, call } from '../utils/smartContract'
 import { fromAtto, fromDecimals } from './math'
-declare var ethereum: Web3
+declare let ethereum: Web3
 const UNISWAP_SAFETY_MARGIN = 1.05
 const ETH = '0x0000000000000000000000000000000000000000'
 export const getDaiAddress = (chainId: number) => {
@@ -63,29 +63,29 @@ export const getMarketplaceAbiAndAddress = (chainId: number) => ({
     abi: marketplaceAbi,
     address: getMarketplaceAddress(chainId),
 })
-export const marketplaceContract = (usePublicNode: boolean = false, chainId: number) =>
+export const marketplaceContract = (usePublicNode = false, chainId: number) =>
     getContract(getMarketplaceAbiAndAddress(chainId), usePublicNode, chainId)
 export const getDataTokenAbiAndAddress = (chainId: number) => ({
     abi: tokenAbi,
     address: getDataAddress(chainId),
 })
-export const dataTokenContractMethods = (usePublicNode: boolean = false, chainId: number) =>
+export const dataTokenContractMethods = (usePublicNode = false, chainId: number) =>
     getContract(getDataTokenAbiAndAddress(chainId), usePublicNode, chainId).methods
-export const daiTokenContractMethods = (usePublicNode: boolean = false, chainId: number) => {
+export const daiTokenContractMethods = (usePublicNode = false, chainId: number) => {
     const instance = {
         abi: tokenAbi,
         address: getDaiAddress(chainId),
     }
     return getContract(instance, usePublicNode, chainId).methods
 }
-export const erc20TokenContractMethods = (address: Address, usePublicNode: boolean = false, chainId: number) => {
+export const erc20TokenContractMethods = (address: Address, usePublicNode = false, chainId: number) => {
     const instance = {
         abi: tokenAbi,
         address,
     }
     return getContract(instance, usePublicNode, chainId).methods
 }
-export const uniswapAdaptorContractMethods = (usePublicNode: boolean = false, chainId: number) => {
+export const uniswapAdaptorContractMethods = (usePublicNode = false, chainId: number) => {
     const { contracts } = getConfigForChain(chainId)
     const uniswapAdapterAddress = contracts.UniswapAdapter
     const instance = {
@@ -94,7 +94,7 @@ export const uniswapAdaptorContractMethods = (usePublicNode: boolean = false, ch
     }
     return getContract(instance, usePublicNode, chainId).methods
 }
-export const getNativeTokenBalance = (address: Address, usePublicNode: boolean = false): Promise<BN> => {
+export const getNativeTokenBalance = (address: Address, usePublicNode = false): Promise<BN> => {
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     return web3.eth
         .getBalance(address)
@@ -103,18 +103,18 @@ export const getNativeTokenBalance = (address: Address, usePublicNode: boolean =
 }
 export const getDataTokenBalance = (
     address: Address,
-    usePublicNode: boolean = false,
+    usePublicNode = false,
     chainId: number,
 ): SmartContractCall<BN> => call(dataTokenContractMethods(usePublicNode, chainId).balanceOf(address)).then(fromAtto)
 export const getDaiTokenBalance = (
     address: Address,
-    usePublicNode: boolean = false,
+    usePublicNode = false,
     chainId: number,
 ): SmartContractCall<BN> => call(daiTokenContractMethods(usePublicNode, chainId).balanceOf(address)).then(fromAtto)
 export const getCustomTokenBalance = async (
     contractAddress: Address,
     userAddress: Address,
-    usePublicNode: boolean = false,
+    usePublicNode = false,
     chainId: number,
 ): SmartContractCall<BN> => {
     const balance = await call(
@@ -186,7 +186,7 @@ export const getTokenInformation = async (
  * different prototype compared with BigNumber (BN). This is why extra BNs are used in this function.
  * @param dataQuantity Number of DATA coins.
  */
-export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
+export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode = false): Promise<BN> => {
     if (dataQuantity !== '0') {
         try {
             const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
@@ -215,7 +215,7 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode: bool
 
     return BN('infinity')
 }
-export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
+export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode = false): Promise<BN> => {
     if (dataQuantity !== '0') {
         try {
             const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
@@ -243,7 +243,7 @@ export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode: bool
 
     return BN('infinity')
 }
-export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode: boolean = false): Promise<BN> => {
+export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode = false): Promise<BN> => {
     if (ethQuantity !== '0') {
         try {
             const web3 = usePublicNode ? getPublicWeb3() : getWeb3()

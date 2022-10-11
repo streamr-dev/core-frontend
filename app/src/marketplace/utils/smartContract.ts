@@ -29,7 +29,7 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  * @returns {boolean}
  */
 export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && isHex(hex)
-export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode: boolean = false, chainId?: number): Web3.eth.Contract => {
+export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode = false, chainId?: number): Web3.eth.Contract => {
     if (usePublicNode && chainId == null) {
         throw new Error('ChainId must be provided!')
     }

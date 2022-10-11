@@ -10,14 +10,14 @@ type Props = {
 const Wrapper = styled.span`
     && {
         ${({ expiresSoon }) =>
-            !!expiresSoon &&
+        !!expiresSoon &&
             css`
                 border-color: #ff5c00;
                 color: #ff5c00;
             `}
 
         ${({ expired }) =>
-            !!expired &&
+        !!expired &&
             css`
                 border-color: #fb0606;
                 color: #fb0606;

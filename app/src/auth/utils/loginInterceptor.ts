@@ -69,8 +69,8 @@ async function loginRedirect() {
         window.location = routes.auth.login(
             redirect
                 ? {
-                      redirect,
-                  }
+                    redirect,
+                }
                 : {},
         )
     }

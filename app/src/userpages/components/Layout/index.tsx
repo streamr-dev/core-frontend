@@ -23,7 +23,9 @@ class UserpagesLayout extends Component<Props, State> {
     }
 
     render() {
-        const { headerAdditionalComponent, headerSearchComponent, headerFilterComponent, noHeader, loading, ...props } =
+        const {
+            headerAdditionalComponent, headerSearchComponent, headerFilterComponent, noHeader, loading, ...props
+        } =
             this.props
         return (
             <CoreLayout

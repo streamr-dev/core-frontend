@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './components/DocsLayout/docsLayout.pcss'
 type Props = {
-    children: String
+    children: string
 }
 
 const H1 = ({ children, ...props }: Props) => (

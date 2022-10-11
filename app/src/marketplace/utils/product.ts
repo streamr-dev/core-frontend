@@ -14,8 +14,8 @@ export const isDataUnionProduct = (productOrProductType?: Product | ProductType)
     const { type } =
         typeof productOrProductType === 'string'
             ? {
-                  type: productOrProductType,
-              }
+                type: productOrProductType,
+            }
             : productOrProductType || {}
     return type === productTypes.DATAUNION
 }
@@ -79,7 +79,7 @@ export const mapProductToPutApi = (product: Product): Record<string, any> => {
     const pricePerSecond = mapPriceToApi(product.pricePerSecond)
     return { ...product, pricePerSecond }
 }
-export const getValidId = (id: string, prefix: boolean = true): string => {
+export const getValidId = (id: string, prefix = true): string => {
     if (!isValidHexString(id) || parseInt(id, 16) === 0) {
         throw new InvalidHexStringError(id)
     }
@@ -116,7 +116,7 @@ export const validate = (product: Product): Record<string, any> => {
     }
 
     if (product.contact) {
-        ;['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
+        ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
             // $FlowFixMe product.contact exists
             if (product.contact[field] && product.contact[field].length > 0) {
                 // $FlowFixMe product.contact exists

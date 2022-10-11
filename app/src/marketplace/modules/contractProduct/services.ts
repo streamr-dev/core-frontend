@@ -10,7 +10,7 @@ import { marketplaceContract, getMarketplaceAbiAndAddress, getCustomTokenDecimal
 import { getContractEvents } from '$shared/utils/contractEvents'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 
-const contractMethods = (usePublicNode: boolean = false, networkChainId: number) => marketplaceContract(usePublicNode, networkChainId).methods
+const contractMethods = (usePublicNode = false, networkChainId: number) => marketplaceContract(usePublicNode, networkChainId).methods
 
 const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
 
@@ -27,7 +27,7 @@ const getMarketplaceContractCreationBlock = (chainId: number): number => {
 
 export const getProductFromContract = async (
     id: ProductId,
-    usePublicNode: boolean = true,
+    usePublicNode = true,
     networkChainId: number,
 ): SmartContractCall<SmartContractProduct> => {
     const result = await call(contractMethods(usePublicNode, networkChainId).getProduct(getValidId(id)))
@@ -40,7 +40,7 @@ export const getProductFromContract = async (
     return mapProductFromContract(id, result, networkChainId, pricingTokenDecimals)
 }
 
-async function* getMarketplaceEvents(id: ProductId, eventName: string, fromBlock: number = 0, chainId: number): any {
+async function* getMarketplaceEvents(id: ProductId, eventName: string, fromBlock = 0, chainId: number): any {
     const web3 = getPublicWeb3(chainId)
     const abiAndAddress = getMarketplaceAbiAndAddress(chainId)
     const filter = {
@@ -49,7 +49,7 @@ async function* getMarketplaceEvents(id: ProductId, eventName: string, fromBlock
     yield* getContractEvents(web3, abiAndAddress.abi, abiAndAddress.address, chainId, eventName, fromBlock, filter)
 }
 
-export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode: boolean = true, networkChainId: number) => {
+export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode = true, networkChainId: number) => {
     const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
     const subscriptions = []
@@ -110,7 +110,7 @@ export const createContractProduct = (product: SmartContractProduct): SmartContr
 
     return createContractProductWithoutWhitelist(product)
 }
-export const updateContractProduct = (product: SmartContractProduct, redeploy: boolean = false): SmartContractTransaction => {
+export const updateContractProduct = (product: SmartContractProduct, redeploy = false): SmartContractTransaction => {
     const { id, name, beneficiaryAddress, pricePerSecond, minimumSubscriptionInSeconds, chainId, pricingTokenAddress } = product
     validateContractProductPricePerSecond(pricePerSecond)
     const methodToSend = contractMethods(false, chainId).updateProduct(
@@ -218,7 +218,7 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
     }))
     return whitelist
 }
-export const isAddressWhitelisted = async (id: ProductId, address: Address, usePublicNode: boolean = true, networkChainId: number) => {
+export const isAddressWhitelisted = async (id: ProductId, address: Address, usePublicNode = true, networkChainId: number) => {
     const isWhitelistStatus = await call(contractMethods(usePublicNode, networkChainId).getWhitelistState(getValidId(id), address))
     return !!(isWhitelistStatus === 2)
 }

@@ -52,83 +52,83 @@ const getTransactionsFailure = (error: ErrorInUi): AnyAction => ({
 
 export const fetchProducts =
     (ids: ProductIdList, chainId: number) =>
-    (dispatch: (...args: Array<any>) => void): void => {
-        ;(ids || []).forEach((id) => {
-            try {
-                getProductFromContract(id, true, chainId)
-                    .then(handleEntities(contractProductSchema, dispatch))
-                    .catch((e) => {
-                        console.warn(e)
-                    })
-            } catch (e) {
-                console.warn(e)
-            }
-        })
-    }
+        (dispatch: (...args: Array<any>) => void): void => {
+            (ids || []).forEach((id) => {
+                try {
+                    getProductFromContract(id, true, chainId)
+                        .then(handleEntities(contractProductSchema, dispatch))
+                        .catch((e) => {
+                            console.warn(e)
+                        })
+                } catch (e) {
+                    console.warn(e)
+                }
+            })
+        }
 export const clearTransactionList = (): Action => ({
     type: CLEAR_TRANSACTION_LIST,
 })
 
 export const showEvents =
     () =>
-    (dispatch: (...args: Array<any>) => void, getState: () => StoreState): Promise<void> => {
-        dispatch(getTransactionsRequest())
-        const state = getState()
-        const events = selectTransactionEvents(state) || []
-        const entities = selectEntities(state)
-        const offset = selectOffset(state)
-        const chainId = selectEthereumNetworkId(state)
-        const eventsToShow = events.splice(offset, 10)
-        const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.id]))
-        return services
-            .getTransactionsFromEvents(eventsToFetch)
-            .then((data: TransactionEntityList) => {
-                const productsToFetch: ProductIdList = data
-                    .filter(
-                        (transaction: TransactionEntity) =>
-                            transaction.productId &&
+        (dispatch: (...args: Array<any>) => void, getState: () => StoreState): Promise<void> => {
+            dispatch(getTransactionsRequest())
+            const state = getState()
+            const events = selectTransactionEvents(state) || []
+            const entities = selectEntities(state)
+            const offset = selectOffset(state)
+            const chainId = selectEthereumNetworkId(state)
+            const eventsToShow = events.splice(offset, 10)
+            const eventsToFetch = eventsToShow.filter((event: EventLog) => !(entities.transactions && entities.transactions[event.id]))
+            return services
+                .getTransactionsFromEvents(eventsToFetch)
+                .then((data: TransactionEntityList) => {
+                    const productsToFetch: ProductIdList = data
+                        .filter(
+                            (transaction: TransactionEntity) =>
+                                transaction.productId &&
                             transaction.productId !== '0x0' &&
                             !(entities.contractProducts && entities.contractProducts[transaction.productId]),
-                    )
-                    .reduce(
-                        (result, transaction: TransactionEntity) =>
-                            result.includes(transaction.productId) ? result : [...result, transaction.productId || ''],
-                        [],
-                    )
-                dispatch(fetchProducts(productsToFetch, chainId))
-                return data
-            })
-            .then(handleEntities(transactionsSchema, dispatch))
-            .then(() => {
-                dispatch(getTransactionsSuccess(eventsToShow.map((event) => event.id)))
-            })
-            .catch((error) => {
-                dispatch(getTransactionsFailure(error))
-            })
-    }
+                        )
+                        .reduce(
+                            (result, transaction: TransactionEntity) =>
+                                result.includes(transaction.productId) ? result : [...result, transaction.productId || ''],
+                            [],
+                        )
+                    dispatch(fetchProducts(productsToFetch, chainId))
+                    return data
+                })
+                .then(handleEntities(transactionsSchema, dispatch))
+                .then(() => {
+                    dispatch(getTransactionsSuccess(eventsToShow.map((event) => event.id)))
+                })
+                .catch((error) => {
+                    dispatch(getTransactionsFailure(error))
+                })
+        }
 export const getTransactionEvents =
     () =>
-    (dispatch: (...args: Array<any>) => void, getState: () => StoreState): Promise<void> => {
-        const state = getState()
-        const { username } = selectUserData(state) || {}
+        (dispatch: (...args: Array<any>) => void, getState: () => StoreState): Promise<void> => {
+            const state = getState()
+            const { username } = selectUserData(state) || {}
 
-        if (!username || !isEthereumAddress(username)) {
-            return dispatch(getTransactionsSuccess([]))
+            if (!username || !isEthereumAddress(username)) {
+                return dispatch(getTransactionsSuccess([]))
+            }
+
+            const address = username.toLowerCase()
+            const products = selectMyProductList(state)
+            const ownedProductIds: ProductIdList = (products || [])
+                .filter(({ ownerAddress }) => (ownerAddress || '').toLowerCase() === address)
+                .map(({ id }) => getValidId(id || ''))
+            dispatch(getTransactionEventsRequest())
+            return services
+                .getTransactionEvents([address], ownedProductIds)
+                .then((result) => {
+                    dispatch(getTransactionEventsSuccess(result))
+                    dispatch(showEvents())
+                })
+                .catch((error) => {
+                    dispatch(getTransactionEventsFailure(error))
+                })
         }
-
-        const address = username.toLowerCase()
-        const products = selectMyProductList(state)
-        const ownedProductIds: ProductIdList = (products || [])
-            .filter(({ ownerAddress }) => (ownerAddress || '').toLowerCase() === address)
-            .map(({ id }) => getValidId(id || ''))
-        dispatch(getTransactionEventsRequest())
-        return services
-            .getTransactionEvents([address], ownedProductIds)
-            .then((result) => {
-                dispatch(getTransactionEventsSuccess(result))
-                dispatch(showEvents())
-            })
-            .catch((error) => {
-                dispatch(getTransactionEventsFailure(error))
-            })
-    }

@@ -6,7 +6,7 @@ export default (): string | null | undefined => {
     const [address, setAddress] = useState()
     const isMounted = useIsMounted()
     useEffect(() => {
-        ;(async () => {
+        (async () => {
             try {
                 return await getDefaultWeb3Account()
             } catch (e) {

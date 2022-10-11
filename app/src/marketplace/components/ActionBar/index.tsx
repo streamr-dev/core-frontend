@@ -175,10 +175,10 @@ const UnstyledActionBar = ({
             },
             ...(categories
                 ? categories.map((c) => ({
-                      id: c.id,
-                      value: c.id,
-                      title: c.name,
-                  }))
+                    id: c.id,
+                    value: c.id,
+                    title: c.name,
+                }))
                 : []),
         ],
         [categories],

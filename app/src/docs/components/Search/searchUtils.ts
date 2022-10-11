@@ -63,7 +63,7 @@ const formatSearchMatchData = (matchData) => {
                 const { position } = content
 
                 if (contentIndex === 0 && content && position) {
-                    ;[[matchPosition, matchLength]] = position
+                    [[matchPosition, matchLength]] = position
                 }
             })
         }

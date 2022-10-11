@@ -38,7 +38,7 @@ const calculateSegments = (parts: Array<Segment>) => {
     return segments
 }
 
-const renderLabels = (segments: Array<Segment>, disabled: boolean = false) =>
+const renderLabels = (segments: Array<Segment>, disabled = false) =>
     segments.map((segment, index) => (
         <span // eslint-disable-next-line react/no-array-index-key
             key={index}

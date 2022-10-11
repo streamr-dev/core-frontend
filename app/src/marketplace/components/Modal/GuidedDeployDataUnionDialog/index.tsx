@@ -168,17 +168,17 @@ const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueP
                                 },
                                 continue: isLastStep
                                     ? {
-                                          title: 'Deploy',
-                                          kind: 'primary',
-                                          onClick: onContinue,
-                                          spinner: waitingOnContinue,
-                                          disabled: waitingOnContinue,
-                                      }
+                                        title: 'Deploy',
+                                        kind: 'primary',
+                                        onClick: onContinue,
+                                        spinner: waitingOnContinue,
+                                        disabled: waitingOnContinue,
+                                    }
                                     : {
-                                          title: 'Next',
-                                          outline: true,
-                                          onClick: onContinue,
-                                      },
+                                        title: 'Next',
+                                        outline: true,
+                                        onClick: onContinue,
+                                    },
                             }}
                         />
                     </div>

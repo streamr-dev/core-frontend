@@ -23,7 +23,9 @@ type StateProps = {
 }
 type Props = StateProps & OwnProps
 
-const Header = ({ className, additionalComponent, searchComponent, filterComponent, user, noHeader }: Props) => (
+const Header = ({
+    className, additionalComponent, searchComponent, filterComponent, user, noHeader
+}: Props) => (
     <ListContainer className={cx(styles.listTemp, className)}>
         {!noHeader && user && (
             <div className={styles.profile}>

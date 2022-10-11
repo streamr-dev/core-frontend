@@ -1,1 +1,1 @@
-export const UPDATE_ENTITIES: string = 'shared/entities/UPDATE_ENTITIES'
+export const UPDATE_ENTITIES = 'shared/entities/UPDATE_ENTITIES'

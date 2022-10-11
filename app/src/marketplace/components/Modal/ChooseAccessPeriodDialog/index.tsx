@@ -221,26 +221,26 @@ export const ChooseAccessPeriodDialog = ({
                         {(!isValidTime || !isValidPrice) &&
                             paymentCurrency !== paymentCurrencies.DATA &&
                             currentPrice !== '-' && ( // prevent false positives during load
-                                <Errors theme={MarketplaceTheme} className={styles.uniswapErrors}>
-                                    {!isValidTime && <p className={styles.invalidInputDesktop}>Access period must be a number</p>}
-                                    {!isValidPrice && Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD && (
-                                        <React.Fragment>
-                                            <p className={styles.invalidInputDesktop}>
-                                                Transaction too small for Uniswap. Please try a longer period.
-                                            </p>
-                                            <p className={styles.invalidInputMobile}>Transaction too small. Please try a longer period.</p>
-                                        </React.Fragment>
-                                    )}
-                                    {!isValidPrice && Number(priceInUsd) > MIN_UNISWAP_AMOUNT_USD && (
-                                        <React.Fragment>
-                                            <p className={styles.invalidInputDesktop}>
-                                                Transaction too large for Uniswap. Please try a shorter period.
-                                            </p>
-                                            <p className={styles.invalidInputMobile}>Transaction too large. Please try a shorter period.</p>
-                                        </React.Fragment>
-                                    )}
-                                </Errors>
-                            )}
+                            <Errors theme={MarketplaceTheme} className={styles.uniswapErrors}>
+                                {!isValidTime && <p className={styles.invalidInputDesktop}>Access period must be a number</p>}
+                                {!isValidPrice && Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD && (
+                                    <React.Fragment>
+                                        <p className={styles.invalidInputDesktop}>
+                                            Transaction too small for Uniswap. Please try a longer period.
+                                        </p>
+                                        <p className={styles.invalidInputMobile}>Transaction too small. Please try a longer period.</p>
+                                    </React.Fragment>
+                                )}
+                                {!isValidPrice && Number(priceInUsd) > MIN_UNISWAP_AMOUNT_USD && (
+                                    <React.Fragment>
+                                        <p className={styles.invalidInputDesktop}>
+                                            Transaction too large for Uniswap. Please try a shorter period.
+                                        </p>
+                                        <p className={styles.invalidInputMobile}>Transaction too large. Please try a shorter period.</p>
+                                    </React.Fragment>
+                                )}
+                            </Errors>
+                        )}
                     </div>
                     <div className={styles.balanceAndPrice}>
                         <span className={styles.balance}>

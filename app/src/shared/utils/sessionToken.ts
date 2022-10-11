@@ -11,12 +11,12 @@ const cache = {
 const storage = isLocalStorageAvailable()
     ? window.localStorage
     : {
-          setItem: (key, value) => {
-              cache[key] = value || null
-          },
-          getItem: (key) => cache[key] || null,
-          removeItem: (key) => storage.setItem(key, null),
-      }
+        setItem: (key, value) => {
+            cache[key] = value || null
+        },
+        getItem: (key) => cache[key] || null,
+        removeItem: (key) => storage.setItem(key, null),
+    }
 export const setToken = (token) => {
     if (token) {
         storage.setItem(SESSION_TOKEN_KEY, token)

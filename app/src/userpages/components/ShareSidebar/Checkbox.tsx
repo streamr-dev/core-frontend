@@ -13,7 +13,7 @@ const permissionLabels = {
 }
 
 const UnstyledCheckbox = ({
- className, id, operationKey, onChange: onChangeProp, ...props
+    className, id, operationKey, onChange: onChangeProp, ...props
 }) => {
     const onChange = useCallback(
         (e) => {

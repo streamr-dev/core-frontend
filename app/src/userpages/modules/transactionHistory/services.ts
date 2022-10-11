@@ -26,7 +26,7 @@ const getPurchaseTokens = (logValues) => {
     switch (transferEvents.length) {
         // DATA
         case 1: {
-            ;[dataEvent] = transferEvents
+            [dataEvent] = transferEvents
             break
         }
 
@@ -35,7 +35,7 @@ const getPurchaseTokens = (logValues) => {
             // TODO: approximate ETH from currencyEvent token amount
             // paymentCurrency = paymentCurrencies.ETH;
             // [currencyEvent, dataEvent] = transferEvents
-            ;[, dataEvent] = transferEvents
+            [, dataEvent] = transferEvents
             break
         }
 

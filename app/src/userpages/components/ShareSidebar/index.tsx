@@ -8,7 +8,9 @@ const ShareSidebar: FunctionComponent<{
     onClose: () => void
     resourceType: string
     resourceId: string
-}> = ({ sidebarName, resourceTitle, onClose, resourceType, resourceId, ...props }) => (
+}> = ({
+    sidebarName, resourceTitle, onClose, resourceType, resourceId, ...props
+}) => (
     <React.Fragment>
         <Sidebar.Header title="Share settings" onClose={onClose} subtitle={resourceTitle} />
         <Sidebar.Body>

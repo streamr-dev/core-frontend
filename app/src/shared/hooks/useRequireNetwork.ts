@@ -7,14 +7,14 @@ import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { selectEthereumNetworkId } from '$mp/modules/global/selectors'
 
-const useRequireNetwork = (requiredNetwork: number, check: boolean = true, monitorNetworkChange: boolean = true) => {
+const useRequireNetwork = (requiredNetwork: number, check = true, monitorNetworkChange = true) => {
     const { api: switchNetworkDialog } = useModal('switchNetwork')
     const { isPending, wrap } = usePending('network.CHECK')
     const [isCorrect, setIsCorrect] = useState(undefined)
     const isMounted = useIsMounted()
     const currentNetworkId = useSelector(selectEthereumNetworkId)
     const validateNetwork = useCallback(
-        (rethrow: boolean = false) =>
+        (rethrow = false) =>
             wrap(async () => {
                 try {
                     await validateWeb3({

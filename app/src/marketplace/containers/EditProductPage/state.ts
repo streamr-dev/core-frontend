@@ -48,18 +48,18 @@ const getChanges = (product: Product) => {
     const smartContractFields = {
         ...(adminFee
             ? {
-                  adminFee,
-              }
+                adminFee,
+            }
             : {}),
         ...(requiresWhitelist
             ? {
-                  requiresWhitelist,
-              }
+                requiresWhitelist,
+            }
             : {}),
         ...(pricingTokenAddress
             ? {
-                  pricingTokenAddress,
-              }
+                pricingTokenAddress,
+            }
             : {}),
     }
     return [smartContractFields, otherChanges]

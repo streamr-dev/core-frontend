@@ -1,2 +1,2 @@
-export const ADD_TRANSACTION: string = 'marketplace/transactions/ADD_TRANSACTION'
-export const COMPLETE_TRANSACTION: string = 'marketplace/transactions/COMPLETE_TRANSACTION'
+export const ADD_TRANSACTION = 'marketplace/transactions/ADD_TRANSACTION'
+export const COMPLETE_TRANSACTION = 'marketplace/transactions/COMPLETE_TRANSACTION'

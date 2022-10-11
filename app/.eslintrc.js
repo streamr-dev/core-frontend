@@ -1,7 +1,7 @@
 const path = require('path')
 
 module.exports = {
-    extends: ['plugin:react/recommended', 'streamr-ts', 'plugin:cypress/recommended', 'prettier'],
+    extends: ['plugin:react/recommended', 'streamr-ts', 'plugin:cypress/recommended'],
     parser: '@typescript-eslint/parser',
     settings: {
         'import/resolver': {
@@ -22,7 +22,7 @@ module.exports = {
         'max-len': 'warn',
         'react/prop-types': 0,
         'no-unreachable': 'warn',
-        'object-curly-newline': 'off',
+        'object-curly-newline': 0,
         'no-trailing-spaces': 'warn',
         'no-void': 'off',
         // these promise/atomic rules should probably be turned on

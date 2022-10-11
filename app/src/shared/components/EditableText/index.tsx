@@ -111,11 +111,11 @@ const EditableText = ({
             onDoubleClick={startEditing}
             {...(editOnFocus && !disabled
                 ? {
-                      onFocus: startEditing,
-                      // In order to allow shift-tabbing through interactive elements
-                      // we can't let the span be focusable when the input is.
-                      tabIndex: hasFocus ? -1 : 0,
-                  }
+                    onFocus: startEditing,
+                    // In order to allow shift-tabbing through interactive elements
+                    // we can't let the span be focusable when the input is.
+                    tabIndex: hasFocus ? -1 : 0,
+                }
                 : {})}
             title={title}
         >

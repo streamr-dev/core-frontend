@@ -6,7 +6,7 @@ export default function useLoadCategoriesCallback() {
     const dispatch = useDispatch()
     const { wrap } = usePending('categories.LOAD')
     return useCallback(
-        async (includeEmpty: boolean = true) =>
+        async (includeEmpty = true) =>
             wrap(async () => {
                 await dispatch(getCategories(includeEmpty))
             }),

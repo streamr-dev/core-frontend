@@ -6,11 +6,11 @@ import useCopy from '$shared/hooks/useCopy'
 import TOCPage from '$shared/components/TOCPage'
 import useStreamId from '$shared/hooks/useStreamId'
 import {
-  lightNodeSnippets,
-  websocketSnippets,
-  httpSnippets,
-  mqttSnippets,
-  StreamSnippetGetter
+    lightNodeSnippets,
+    websocketSnippets,
+    httpSnippets,
+    mqttSnippets,
+    StreamSnippetGetter
 } from '$utils/streamSnippets'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 
@@ -128,4 +128,4 @@ const CodeSnippetsSection: FunctionComponent<{disabled: boolean, className?: str
     )
 }
 
-export default CodeSnippetsSection;
+export default CodeSnippetsSection

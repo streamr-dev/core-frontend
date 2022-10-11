@@ -20,10 +20,10 @@ export default function useStreamOwnerOptions() {
                     data: { domains: newDomains },
                 } = user
                     ? await post({
-                          url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
-                          useAuthorization: false,
-                          data: {
-                              query: `
+                        url: 'https://api.thegraph.com/subgraphs/name/ensdomains/ens',
+                        useAuthorization: false,
+                        data: {
+                            query: `
                                 query {
                                     domains(
                                         where: { owner_in: ["${user}"]}
@@ -36,13 +36,13 @@ export default function useStreamOwnerOptions() {
                                     }
                                 }
                             `,
-                          },
-                      })
+                        },
+                    })
                     : {
-                          data: {
-                              domains: [],
-                          },
-                      }
+                        data: {
+                            domains: [],
+                        },
+                    }
 
                 if (aborted) {
                     throw new InterruptionError()

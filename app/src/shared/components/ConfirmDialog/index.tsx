@@ -37,22 +37,22 @@ const ConfirmDialog = (props: Props) => {
         typeof cancelButton === 'object'
             ? { ...cancelButton }
             : {
-                  ...(cancelButton
-                      ? {
-                            title: cancelButton,
-                        }
-                      : {}),
-              }
+                ...(cancelButton
+                    ? {
+                        title: cancelButton,
+                    }
+                    : {}),
+            }
     const acceptButtonProps: Record<string, any> =
         typeof acceptButton === 'object'
             ? { ...acceptButton }
             : {
-                  ...(acceptButton
-                      ? {
-                            title: acceptButton,
-                        }
-                      : {}),
-              }
+                ...(acceptButton
+                    ? {
+                        title: acceptButton,
+                    }
+                    : {}),
+            }
     const actions = {
         cancel: {
             title: 'Cancel',

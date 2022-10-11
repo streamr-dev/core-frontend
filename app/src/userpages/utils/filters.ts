@@ -18,8 +18,8 @@ export const getParamsForFilter = (
         ...options,
         ...(key && value
             ? {
-                  [key]: value,
-              }
+                [key]: value,
+            }
             : {}),
     }
 }

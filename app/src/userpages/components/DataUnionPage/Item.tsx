@@ -399,7 +399,9 @@ const Item = ({ product, stats }: Props) => {
                     let updatedProduct = product
 
                     const updateAddress = async (beneficiaryAddress) => {
-                        updatedProduct = await putProduct({ ...product, beneficiaryAddress }, product.id || '')
+                        updatedProduct = await putProduct({
+                            ...product, beneficiaryAddress
+                        }, product.id || '')
                     }
 
                     await deployDataUnionDialog.open({

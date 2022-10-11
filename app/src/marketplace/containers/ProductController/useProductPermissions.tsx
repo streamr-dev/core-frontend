@@ -13,7 +13,7 @@ type ContextProps = {
 }
 const PermissionContext: Context<ContextProps> = React.createContext({})
 
-function usePermissionContextValue(autoLoadPermissions: boolean = true) {
+function usePermissionContextValue(autoLoadPermissions = true) {
     const [permissions, setPermissions] = useState()
     const isMounted = useIsMounted()
     const { product } = useController()

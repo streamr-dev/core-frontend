@@ -20,7 +20,7 @@ import { fromAtto, toAtto } from '$mp/utils/math'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import routes from '$routes'
 import { call, send } from '../../utils/smartContract'
-export const getProductById = async (id: ProductId, useAuthorization: boolean = true): ApiResult<Product> =>
+export const getProductById = async (id: ProductId, useAuthorization = true): ApiResult<Product> =>
     get({
         url: routes.api.products.show({
             id: getValidId(id, false),
@@ -121,7 +121,7 @@ export const buyProduct = (
     subscriptionInSeconds: NumberString | BN,
     paymentCurrency: PaymentCurrency,
     price: BN,
-    gasIncrease: number = 0,
+    gasIncrease = 0,
 ): SmartContractTransaction => {
     const web3 = getWeb3()
 

@@ -4,8 +4,8 @@ export const ResourceType = {
     STREAM: 'Stream',
 }
 export default class ResourceNotFoundError extends Error {
-    noReport: boolean = true
-    name: string = 'ResourceNotFoundError'
+    noReport = true
+    name = 'ResourceNotFoundError'
     resourceType: string
     resourceId: string | null | undefined
 

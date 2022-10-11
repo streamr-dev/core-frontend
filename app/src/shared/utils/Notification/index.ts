@@ -23,7 +23,7 @@ export default class Notification {
     icon: Icon | null | undefined
     autoDismissAfter: number // seconds
 
-    static ID: number = 0
+    static ID = 0
 
     static push(params: Params) {
         emitter.emit(Notification.events.PUSH, new Notification(params))

@@ -28,7 +28,7 @@ export const hasTransactionCompleted = (txHash: Hash): Promise<boolean> =>
  *
  * @param {*} blocksAgo How many previous blocks to include
  */
-export const averageBlockTime = async (blocksAgo: number = 500) => {
+export const averageBlockTime = async (blocksAgo = 500) => {
     const web3 = getWeb3()
     // Get the current block number
     const currentBlockNumber = await web3.eth.getBlockNumber()

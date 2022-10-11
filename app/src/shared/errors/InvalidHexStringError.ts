@@ -1,6 +1,6 @@
 export default class InvalidHexStringError extends Error {
     id: string | null | undefined
-    name: string = 'InvalidHexStringError'
+    name = 'InvalidHexStringError'
 
     constructor(id: string | null | undefined, ...args: any) {
         super(`"${id || ''}" is not a valid hex string`, ...args)

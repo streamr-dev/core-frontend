@@ -15,22 +15,22 @@ export const getRelatedProductsFailure: RelatedProductsErrorActionCreator = crea
     error,
 }))
 export const getRelatedProducts =
-    (id: ProductId, useAuthorization: boolean = true) =>
-    (dispatch: (...args: Array<any>) => any) => {
-        dispatch(getRelatedProductsRequest())
-        return api
-            .getRelatedProducts(id, useAuthorization)
-            .then((data) => {
-                const { result, entities } = normalize(data, productsSchema)
-                dispatch(updateEntities(entities))
-                return result
-            })
-            .then(
-                (result) => {
-                    dispatch(getRelatedProductsSuccess(result))
-                },
-                (error) => {
-                    dispatch(getRelatedProductsFailure(error))
-                },
-            )
-    }
+    (id: ProductId, useAuthorization = true) =>
+        (dispatch: (...args: Array<any>) => any) => {
+            dispatch(getRelatedProductsRequest())
+            return api
+                .getRelatedProducts(id, useAuthorization)
+                .then((data) => {
+                    const { result, entities } = normalize(data, productsSchema)
+                    dispatch(updateEntities(entities))
+                    return result
+                })
+                .then(
+                    (result) => {
+                        dispatch(getRelatedProductsSuccess(result))
+                    },
+                    (error) => {
+                        dispatch(getRelatedProductsFailure(error))
+                    },
+                )
+        }
