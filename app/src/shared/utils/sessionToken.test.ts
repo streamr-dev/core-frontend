@@ -84,8 +84,7 @@ describe('session token utility', () => {
             __esModule: true,
             isLocalStorageAvailable: () => false,
         }))
-
-        // eslint-disable-next-line global-require
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { setToken: setToken2, getToken: getToken2 } = require('$shared/utils/sessionToken')
 
         afterEach(() => {

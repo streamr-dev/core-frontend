@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import ImageUpload from '$shared/components/ImageUpload'
@@ -9,7 +9,7 @@ type Props = {
     onUpload: (arg0: File | null | undefined) => void
 }
 
-const AvatarUploadDialog = ({ originalImage, onClose, onUpload }: Props) => (
+const AvatarUploadDialog: FunctionComponent = ({ originalImage, onClose, onUpload }: Props) => (
     <ModalPortal>
         <Dialog
             contentClassName={styles.content}

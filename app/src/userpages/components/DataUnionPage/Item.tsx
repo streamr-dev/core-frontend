@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react'
+import React, { useMemo, useCallback, useState, useEffect, FunctionComponent } from 'react'
 import styled from 'styled-components'
 import get from 'lodash/get'
 import { useHistory } from 'react-router-dom'
@@ -549,7 +549,7 @@ const Item = ({ product, stats }: Props) => {
     )
 }
 
-const WrappedItem = (props: Props) => (
+const WrappedItem: FunctionComponent = (props: Props) => (
     <DataUnionMembersProvider>
         <Item {...props} />
     </DataUnionMembersProvider>

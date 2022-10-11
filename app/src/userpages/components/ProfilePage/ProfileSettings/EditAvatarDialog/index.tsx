@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, FunctionComponent } from 'react'
 import { useDispatch } from 'react-redux'
 import useModal from '$shared/hooks/useModal'
 import usePending from '$shared/hooks/usePending'
@@ -77,7 +77,7 @@ const EditAvatarDialog = ({ api, originalImage }: Props) => {
     }
 }
 
-export default () => {
+const EditAvatarDialogWrap: FunctionComponent = () => {
     const { api, isOpen, value } = useModal('userpages.uploadAvatar')
 
     if (!isOpen) {
@@ -87,3 +87,5 @@ export default () => {
     const { originalImage } = value || {}
     return <EditAvatarDialog api={api} originalImage={originalImage} />
 }
+
+export default EditAvatarDialogWrap

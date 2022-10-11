@@ -1,5 +1,5 @@
 import thunk from 'redux-thunk'
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
+import { createStore, applyMiddleware, compose, combineReducers, Store } from 'redux'
 import entitiesReducer from '$shared/modules/entities/reducer'
 import userReducer from '$shared/modules/user/reducer'
 import session from '$shared/reducers/session'
@@ -24,7 +24,7 @@ if (window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 }
 
 /* eslint-enable no-underscore-dangle */
-export function initStore() {
+export function initStore(): Store {
     const store = createStore(
         combineReducers({
             categories: categoriesReducer,

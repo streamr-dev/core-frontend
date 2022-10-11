@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from 'react'
+import React, { useMemo, useEffect, FunctionComponent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { CoreHelmet } from '$shared/components/Helmet'
 import { getMyPurchases, updateFilter, applyFilter } from '$mp/modules/myPurchaseList/actions'
@@ -21,7 +21,7 @@ import Layout from '../Layout'
 import NoPurchasesView from './NoPurchases'
 import styles from './purchases.pcss'
 
-const PurchasesPage = () => {
+const PurchasesPage: FunctionComponent = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters('product')
         return [filters.RECENT_DESC, filters.NAME_ASC, filters.NAME_DESC, filters.ACTIVE, filters.EXPIRED]

@@ -1,13 +1,13 @@
-import React, { useCallback } from 'react'
+import React, { FunctionComponent, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { MenuItem } from '$shared/components/Tile/Menu'
 import useCopy from '$shared/hooks/useCopy'
 import routes from '$routes'
 
 // wrap link to avoid validation error in MenuItem
-const MenuLink = (props) => <Link {...props} />
+const MenuLink: FunctionComponent = (props: any) => <Link {...props} />
 
-export const Edit = ({ id }: any) => (
+export const Edit: FunctionComponent<{id: string}> = ({ id }: any) => (
     <MenuItem
         tag={MenuLink}
         to={routes.products.edit({
@@ -17,7 +17,7 @@ export const Edit = ({ id }: any) => (
         Edit
     </MenuItem>
 )
-export const View = ({ id, disabled }: any) => {
+export const View: FunctionComponent<{id: string, disabled: boolean}> = ({ id, disabled }) => {
     const onClick = useCallback(() => {
         window.open(
             routes.marketplace.product({
@@ -33,7 +33,7 @@ export const View = ({ id, disabled }: any) => {
         </MenuItem>
     )
 }
-export const Copy = ({ id, disabled }: any) => {
+export const Copy: FunctionComponent<{id: string, disabled: boolean}> = ({ id, disabled }) => {
     const { copy } = useCopy()
     const onClick = useCallback(() => {
         copy(

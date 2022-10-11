@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, Fragment } from 'react'
+import React, { useEffect, useMemo, Fragment, FunctionComponent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -23,10 +23,11 @@ import Layout from '../Layout'
 import NoProductsView from './NoProducts'
 import * as MenuItems from './MenuItems'
 import styles from './products.pcss'
-export const CreateProductButton = () => {
+export const CreateProductButton: FunctionComponent = () => {
     const history = useHistory()
     return (
         <Button
+            tag={'button'}
             type="button"
             className={styles.createProductButton}
             onClick={() => {
@@ -42,7 +43,7 @@ export const CreateProductButton = () => {
     )
 }
 
-const ProductsPage = () => {
+const ProductsPage: FunctionComponent = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters('product')
         return [filters.RECENT_DESC, filters.NAME_ASC, filters.NAME_DESC, filters.PUBLISHED, filters.DRAFTS]

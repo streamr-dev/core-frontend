@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { FunctionComponent, useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
@@ -51,7 +51,7 @@ const StyledListContainer = styled(ListContainer)`
     }
 `
 
-const DataUnionPage = () => {
+const DataUnionPage: FunctionComponent = () => {
     const sortOptions = useMemo(() => {
         const filters = getFilters('product')
         return [filters.RECENT_DESC]
@@ -122,8 +122,10 @@ const DataUnionPage = () => {
     )
 }
 
-export default () => (
+const DataUnionPageWrap: FunctionComponent = () => (
     <PendingProvider name="dataunion">
         <DataUnionPage />
     </PendingProvider>
 )
+
+export default DataUnionPageWrap

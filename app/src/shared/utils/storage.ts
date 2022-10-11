@@ -27,9 +27,9 @@ const storageAvailable = (type: string): boolean => {
     }
 }
 
-export const isLocalStorageAvailable = () => storageAvailable('localStorage')
-export const isSessionStorageAvailable = () => storageAvailable('sessionStorage')
-export const clearStorage = () => {
+export const isLocalStorageAvailable = (): boolean => storageAvailable('localStorage')
+export const isSessionStorageAvailable = (): boolean => storageAvailable('sessionStorage')
+export const clearStorage = (): void => {
     if (isLocalStorageAvailable()) {
         localStorage.clear()
     }

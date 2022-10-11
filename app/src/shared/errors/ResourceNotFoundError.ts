@@ -10,11 +10,7 @@ export default class ResourceNotFoundError extends Error {
     resourceId: string | null | undefined
 
     constructor(resourceType: $Values<typeof ResourceType>, resourceId: string | null | undefined, ...args: any) {
-        if (resourceId) {
-            super(`${resourceType}#${resourceId} could not be found`, ...args)
-        } else {
-            super(`${resourceType} without an ID could not be found`, ...args)
-        }
+        super(resourceId ? `${resourceType}#${resourceId} could not be found` : `${resourceType} without an ID could not be found`, ...args)
 
         this.resourceType = resourceType
         this.resourceId = resourceId

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import docsLinks from '$shared/../docsLinks'
 import type { Filter } from '$userpages/types/common-types'
 import Button from '$shared/components/Button'
@@ -15,7 +15,7 @@ type Props = NoResultsViewProps & {
     hasFilter: boolean
 }
 
-const NoCreatedDataUnionsView = () => (
+const NoCreatedDataUnionsView: FunctionComponent = () => (
     <EmptyState image={<img src={emptyStateIcon} srcSet={`${emptyStateIcon2x} 2x`} alt="Not found" />}>
         You haven&apos;t created any Data Unions
         <small>
@@ -24,7 +24,7 @@ const NoCreatedDataUnionsView = () => (
     </EmptyState>
 )
 
-const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
+const NoResultsView: FunctionComponent<NoResultsViewProps> = ({ onResetFilter }) => (
     <EmptyState
         image={<img src={noResultIcon} srcSet={`${noResultemptyStateIcon2x} 2x`} alt="Not found" />}
         link={
@@ -40,7 +40,7 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
     </EmptyState>
 )
 
-const NoDataUnionsView = ({ hasFilter, ...rest }: Props) => {
+const NoDataUnionsView: FunctionComponent<Props> = ({ hasFilter, ...rest }) => {
     if (hasFilter) {
         return <NoResultsView {...rest} />
     }

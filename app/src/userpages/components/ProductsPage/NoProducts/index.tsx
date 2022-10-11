@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import docsLinks from '$shared/../docsLinks'
@@ -66,7 +66,7 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
     </EmptyState>
 )
 
-const NoProductsView = ({ hasFilter, ...rest }: Props) => {
+const NoProductsView: FunctionComponent = ({ hasFilter, ...rest }: Props) => {
     if (hasFilter) {
         return <NoResultsView {...rest} />
     }

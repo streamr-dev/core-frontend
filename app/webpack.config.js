@@ -217,11 +217,11 @@ module.exports = {
         new webpack.EnvironmentPlugin(loadedDotenv),
         ...(analyze
             ? [
-                  new BundleAnalyzerPlugin({
-                      analyzerMode: 'static',
-                      openAnalyzer: false,
-                  }),
-              ]
+                new BundleAnalyzerPlugin({
+                    analyzerMode: 'static',
+                    openAnalyzer: false,
+                }),
+            ]
             : []),
         // Ignore all locale files of moment.js
         new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
@@ -229,87 +229,87 @@ module.exports = {
         .concat(
             isProduction()
                 ? [
-                      new CleanWebpackPlugin([dist]),
-                      // Production plugins
-                      new webpack.optimize.OccurrenceOrderPlugin(),
-                      new webpack.EnvironmentPlugin({
-                          NODE_ENV: 'production',
-                      }),
-                      new OptimizeCssAssetsPlugin({
-                          cssProcessor,
-                          cssProcessorOptions: {
-                              discardComments: {
-                                  removeAll: true,
-                              },
-                          },
-                          canPrint: true,
-                      }),
-                      new ImageminPlugin({
-                          disable: !isProduction(), // Disable during development
-                          pngquant: {
-                              quality: '50-75',
-                          },
-                      }),
-                  ]
+                    new CleanWebpackPlugin([dist]),
+                    // Production plugins
+                    new webpack.optimize.OccurrenceOrderPlugin(),
+                    new webpack.EnvironmentPlugin({
+                        NODE_ENV: 'production',
+                    }),
+                    new OptimizeCssAssetsPlugin({
+                        cssProcessor,
+                        cssProcessorOptions: {
+                            discardComments: {
+                                removeAll: true,
+                            },
+                        },
+                        canPrint: true,
+                    }),
+                    new ImageminPlugin({
+                        disable: !isProduction(), // Disable during development
+                        pngquant: {
+                            quality: '50-75',
+                        },
+                    }),
+                ]
                 : [
-                      // Dev plugins
-                      new UnusedFilesWebpackPlugin({
-                          patterns: [
-                              'src/marketplace/**/*.*',
-                              'src/shared/**/*.*',
-                              'src/routes/**/*.*',
-                              'src/userpages/**/*.*',
-                              'src/docs/**/*.*',
-                              'src/*.*',
-                          ].filter(Boolean),
-                          globOptions: {
-                              ignore: [
-                                  'node_modules/**/*.*',
-                                  // skip tests
-                                  '**/tests/*.*',
-                                  '**/tests/**/*.*',
-                                  '**/test/*.*',
-                                  '**/test/**/*.*',
-                                  '**/*.test.ts',
-                                  '**/*.test.tsx',
-                                  // skip conditional stubs
-                                  '**/stub.tsx',
-                                  // skip stories
-                                  '**/*.stories.*',
-                                  // skip MD documentation
-                                  'src/docs/docsEditingGuide.md',
-                                  // skip sketch files
-                                  '**/*.sketch',
-                                  'src/docs/scripts/*.*',
-                              ],
-                          },
-                      }),
-                      new WebpackNotifierPlugin(),
-                  ],
+                    // Dev plugins
+                    new UnusedFilesWebpackPlugin({
+                        patterns: [
+                            'src/marketplace/**/*.*',
+                            'src/shared/**/*.*',
+                            'src/routes/**/*.*',
+                            'src/userpages/**/*.*',
+                            'src/docs/**/*.*',
+                            'src/*.*',
+                        ].filter(Boolean),
+                        globOptions: {
+                            ignore: [
+                                'node_modules/**/*.*',
+                                // skip tests
+                                '**/tests/*.*',
+                                '**/tests/**/*.*',
+                                '**/test/*.*',
+                                '**/test/**/*.*',
+                                '**/*.test.ts',
+                                '**/*.test.tsx',
+                                // skip conditional stubs
+                                '**/stub.tsx',
+                                // skip stories
+                                '**/*.stories.*',
+                                // skip MD documentation
+                                'src/docs/docsEditingGuide.md',
+                                // skip sketch files
+                                '**/*.sketch',
+                                'src/docs/scripts/*.*',
+                            ],
+                        },
+                    }),
+                    new WebpackNotifierPlugin(),
+                ],
         )
         .concat(
             process.env.SENTRY_DSN
                 ? [
-                      new SentryPlugin({
-                          include: dist,
-                          validate: true,
-                          ignore: [
-                              '.cache',
-                              '.DS_STORE',
-                              '.env',
-                              '.storybook',
-                              'bin',
-                              'coverage',
-                              'node_modules',
-                              'scripts',
-                              'stories',
-                              'test',
-                              'travis_scripts',
-                              'webpack.config.js',
-                          ],
-                          release: process.env.VERSION,
-                      }),
-                  ]
+                    new SentryPlugin({
+                        include: dist,
+                        validate: true,
+                        ignore: [
+                            '.cache',
+                            '.DS_STORE',
+                            '.env',
+                            '.storybook',
+                            'bin',
+                            'coverage',
+                            'node_modules',
+                            'scripts',
+                            'stories',
+                            'test',
+                            'travis_scripts',
+                            'webpack.config.js',
+                        ],
+                        release: process.env.VERSION,
+                    }),
+                ]
                 : [],
         ),
     devtool: isProduction() ? 'source-map' : 'eval-source-map',
@@ -343,7 +343,7 @@ module.exports = {
             $userpages: path.resolve(__dirname, 'src/userpages/'),
             $shared: path.resolve(__dirname, 'src/shared/'),
             $testUtils: path.resolve(__dirname, 'test/test-utils/'),
-            $routes: path.resolve(__dirname, 'src/routes'),
+            $routes: path.resolve(__dirname, 'src/routes/'),
             $utils: path.resolve(__dirname, 'src/utils/'),
             $ui: path.resolve(__dirname, 'src/shared/components/Ui'),
             $config: path.resolve(__dirname, `src/config/${process.env.NODE_ENV}.toml`),

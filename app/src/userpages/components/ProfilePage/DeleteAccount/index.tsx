@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { FunctionComponent, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
@@ -24,7 +24,7 @@ const RemoveButton = styled(Button)`
     }
 `
 
-const DeleteAccount = () => {
+const DeleteAccount: FunctionComponent = () => {
     const { api: deleteAccountDialog, isOpen } = useModal('userpages.deleteAccount')
     const { wrap, isPending: isDeleteDialogPending } = usePending('user.DELETE_ACCOUNT_DIALOG')
     const { isPending: isSavePending } = usePending('user.SAVE')

@@ -1,5 +1,5 @@
 import type { Node } from 'react'
-import React, { Component } from 'react'
+import React, { Component, ReactNode } from 'react'
 import CoreLayout from '$shared/components/Layout/Core'
 import coreLayoutStyles from '$shared/components/Layout/core.pcss'
 import BodyClass from '$shared/components/BodyClass'
@@ -14,15 +14,14 @@ type Props = {
     noHeader?: boolean
     loading?: boolean
 }
-type State = {}
 
-class UserpagesLayout extends Component<Props, State> {
+class UserpagesLayout extends Component<Props, object> {
     static defaultProps = {
         noHeader: false,
         loading: false,
     }
 
-    render() {
+    render(): ReactNode {
         const {
             headerAdditionalComponent, headerSearchComponent, headerFilterComponent, noHeader, loading, ...props
         } =

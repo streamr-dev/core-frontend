@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import BN from 'bignumber.js'
-import Balance from '$userpages/components/Balance'
+import Balance, { Account } from '$userpages/components/Balance'
 import { BalanceType } from '$shared/types/user-types'
 import { useBalances } from '$shared/hooks/useBalances'
 
-const AccountsBalance = () => {
+const AccountsBalance: FunctionComponent = () => {
     // Use the balances stored in redux state to calculate the combined
     // value of all accounts (including the generated private key accounts).
     // Balances are polled in GlobalInfoWatcher component and we can assume
@@ -23,8 +23,8 @@ const AccountsBalance = () => {
     )
     return (
         <Balance>
-            <Balance.Account name="DATA" value={dataBalance} />
-            <Balance.Account name="ETH" value={ethBalance} />
+            <Account name="DATA" value={dataBalance} />
+            <Account name="ETH" value={ethBalance} />
         </Balance>
     )
 }

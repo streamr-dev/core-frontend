@@ -1,5 +1,5 @@
 import scrollIntoView from 'smooth-scroll-into-view-if-needed'
-export default (el, ifNeeded = false) => {
+export default (el: Element, ifNeeded = false): void => {
     if (el) {
         scrollIntoView(el, {
             behavior: 'smooth',

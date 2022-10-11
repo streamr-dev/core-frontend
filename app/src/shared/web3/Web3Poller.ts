@@ -27,7 +27,7 @@ const PENDING_TX_POLL_INTERVAL = 1000 * 5 // 5s
 
 let lastWarning = ''
 
-function warnOnce(error) {
+function warnOnce(error: Error) {
     // do not print warning if same as last warning
     if (error.message) {
         if (lastWarning === error.message) {
@@ -49,22 +49,23 @@ class CancelError extends Error {
     }
 }
 
-let instance
+// eslint-disable-next-line prefer-const
+let instance: Web3Poller
 const allowedCaller = {}
 
 class Web3Poller {
-    web3PollTimeout: TimeoutID | null | undefined = null
-    ethereumNetworkPollTimeout: TimeoutID | null | undefined = null
-    pendingTransactionsPollTimeout: TimeoutID | null | undefined = null
+    web3PollTimeout:  ReturnType<typeof setTimeout> | null | undefined = null
+    ethereumNetworkPollTimeout:  ReturnType<typeof setTimeout> | null | undefined = null
+    pendingTransactionsPollTimeout:  ReturnType<typeof setTimeout> | null | undefined = null
     account: any = null
     networkId: NumberString | null | undefined = ''
     emitter: EventEmitter = new EventEmitter()
 
-    static subscribe(event: Event, handler: Handler) {
+    static subscribe(event: Event, handler: Handler): void {
         instance.subscribe(event, handler)
     }
 
-    static unsubscribe(event: Event, handler: Handler) {
+    static unsubscribe(event: Event, handler: Handler): void {
         instance.unsubscribe(event, handler)
     }
 
@@ -79,56 +80,57 @@ class Web3Poller {
         this.pollPendingTransactions()
     }
 
-    subscribe(event: Event, handler: Handler) {
+    subscribe(event: Event, handler: Handler): void {
         this.emitter.on(event, handler)
     }
 
-    unsubscribe(event: Event, handler: Handler) {
+    unsubscribe(event: Event, handler: Handler): void {
         this.emitter.removeListener(event, handler)
     }
 
-    startWeb3Poll = () => {
+    startWeb3Poll = (): void => {
         this.clearWeb3Poll()
         this.web3PollTimeout = setTimeout(this.pollWeb3, WEB3_POLL_INTERVAL)
     }
-    pollWeb3 = () =>
+    pollWeb3 = (): Promise<void> =>
         this.fetchWeb3Account().then(this.startWeb3Poll, (error) => {
             warnOnce(error)
             this.startWeb3Poll()
         })
-    startEthereumNetworkPoll = () => {
+    startEthereumNetworkPoll = (): void => {
         this.clearEthereumNetworkPoll()
         this.ethereumNetworkPollTimeout = setTimeout(this.pollEthereumNetwork, NETWORK_POLL_INTERVAL)
     }
-    pollEthereumNetwork = () =>
+    pollEthereumNetwork = (): Promise<void> =>
         this.fetchChosenEthereumNetwork().then(this.startEthereumNetworkPoll, (error) => {
             warnOnce(error)
             this.startEthereumNetworkPoll()
         })
-    clearWeb3Poll = () => {
+    clearWeb3Poll = (): void => {
         if (this.web3PollTimeout) {
             clearTimeout(this.web3PollTimeout)
             this.web3PollTimeout = null
         }
     }
-    clearEthereumNetworkPoll = () => {
+    clearEthereumNetworkPoll = (): void => {
         if (this.ethereumNetworkPollTimeout) {
             clearTimeout(this.ethereumNetworkPollTimeout)
             this.ethereumNetworkPollTimeout = null
         }
     }
-    clearPendingTransactionsPoll = () => {
+    clearPendingTransactionsPoll = (): void => {
         if (this.pendingTransactionsPollTimeout) {
             clearTimeout(this.pendingTransactionsPollTimeout)
             this.pendingTransactionsPollTimeout = null
         }
     }
-    fetchWeb3Account = () =>
+    fetchWeb3Account = (): Promise<void> =>
         getDefaultWeb3Account().then(
             (account) => {
                 this.handleAccount(account)
                 // needed to avoid warnings about creating promise inside a handler
                 // if any other web3 actions are dispatched.
+                // eslint-disable-next-line promise/no-return-wrap
                 return Promise.resolve()
             },
             (err) => {
@@ -138,7 +140,7 @@ class Web3Poller {
                 }
             },
         )
-    handleAccount = (account: string) => {
+    handleAccount = (account: string): void => {
         const next = account
         const didChange = !!(this.account && next && !areAddressesEqual(this.account, next))
         const didDefine = !!(!this.account && next)
@@ -150,7 +152,7 @@ class Web3Poller {
             this.emitter.emit(events.ACCOUNT, next)
         }
     }
-    fetchChosenEthereumNetwork = () => {
+    fetchChosenEthereumNetwork = (): Promise<void> => {
         const fetchPromise = getChainId()
         // make sure getting the network does not hang longer than the poll timeout
         const cancelPromise = new Promise((resolve, reject) => {
@@ -168,7 +170,7 @@ class Web3Poller {
             },
         )
     }
-    handleNetwork = (network: NumberString) => {
+    handleNetwork = (network: NumberString): void => {
         const next = network
         const didChange = this.networkId && next && this.networkId !== next
         const didDefine = !this.networkId && next
@@ -178,16 +180,16 @@ class Web3Poller {
             this.emitter.emit(events.NETWORK, next)
         }
     }
-    startPendingTransactionsPoll = () => {
+    startPendingTransactionsPoll = (): void => {
         this.clearPendingTransactionsPoll()
         this.pendingTransactionsPollTimeout = setTimeout(this.pollPendingTransactions, PENDING_TX_POLL_INTERVAL)
     }
-    pollPendingTransactions = () =>
+    pollPendingTransactions = (): Promise<void> =>
         this.handlePendingTransactions().then(this.startPendingTransactionsPoll, (error) => {
             warnOnce(error)
             this.startPendingTransactionsPoll()
         })
-    handlePendingTransactions = () => {
+    handlePendingTransactions = (): Promise<void[]> => {
         const web3 = getPublicWeb3()
         return Promise.all(
             Object.keys(getTransactionsFromSessionStorage()).map(async (txHash) => {

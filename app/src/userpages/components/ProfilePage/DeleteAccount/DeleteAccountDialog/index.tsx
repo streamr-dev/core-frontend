@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, FunctionComponent } from 'react'
 import { useDispatch } from 'react-redux'
 import ConfirmDialog from '$shared/components/ConfirmDialog'
 import ConfirmCheckbox from '$shared/components/ConfirmCheckbox'
@@ -6,12 +6,11 @@ import { deleteUserAccount } from '$shared/modules/user/actions'
 import usePending from '$shared/hooks/usePending'
 import useModal from '$shared/hooks/useModal'
 import styles from './deleteAccountDialog.pcss'
-type Props = {
-    waiting?: boolean
-    onClose: () => void
-    onSave: () => void | Promise<void>
-}
-export const DeleteAccountDialogComponent = ({ waiting, onClose, onSave }: Props) => {
+export const DeleteAccountDialogComponent: FunctionComponent<{
+  waiting?: boolean
+  onClose: () => void
+  onSave: () => void | Promise<void>
+}> = ({ waiting, onClose, onSave }) => {
     const [confirmed, setConfirmed] = useState(false)
     return (
         <ConfirmDialog
@@ -79,7 +78,7 @@ const DeleteAccountDialog = ({ api }: ContainerProps) => {
     return <DeleteAccountDialogComponent onClose={onClose} onSave={onSave} waiting={isPending} />
 }
 
-export default () => {
+const DeleteAccountDialogWrap: FunctionComponent = () => {
     const { api, isOpen } = useModal('userpages.deleteAccount')
 
     if (!isOpen) {
@@ -88,3 +87,5 @@ export default () => {
 
     return <DeleteAccountDialog api={api} />
 }
+
+export default DeleteAccountDialogWrap

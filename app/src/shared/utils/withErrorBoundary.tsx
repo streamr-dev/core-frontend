@@ -1,23 +1,24 @@
-import type { ComponentType, Node } from 'react'
-import React, { Component } from 'react'
+import React, { Component, ComponentType, ReactNode } from 'react'
 import analytics from '../../analytics'
 type Props = {
     path?: string
-    children?: Node | null | undefined
+    children?: ReactNode | null | undefined
 }
 type State = {
     error: Error | null | undefined
 }
 
-function getDisplayName(WrappedComponent) {
+function getDisplayName(WrappedComponent: ComponentType) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component'
 }
 
-const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (OriginalComponent: ComponentType<any>) => {
+const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (OriginalComponent: ComponentType<any>): any => {
     class ErrorBoundary extends Component<Props, State> {
-        state = {
+        state: State = {
             error: undefined,
         }
+
+        displayName = `With${getDisplayName(ErrorComponent)}(${getDisplayName(OriginalComponent)})`
 
         static getDerivedStateFromError(error: any, extra: any) {
             if (error && !error.noReport) {
@@ -54,7 +55,6 @@ const withErrorBoundary = (ErrorComponent: ComponentType<any>) => (OriginalCompo
         }
     }
 
-    ErrorBoundary.displayName = `With${getDisplayName(ErrorComponent)}(${getDisplayName(OriginalComponent)})`
     return ErrorBoundary
 }
 

@@ -1,11 +1,11 @@
-import { Chains } from '@streamr/config'
+import { Chain, Chains } from '@streamr/config'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import formatConfigUrl from '$utils/formatConfigUrl'
-import tokenAbi from './abis/token'
-import dataUnionAbi from './abis/dataunion'
-import dataUnionSidechainAbi from './abis/dataunionSidechain'
+import tokenAbi from './abis/token.json'
+import dataUnionAbi from './abis/dataunion.json'
+import dataUnionSidechainAbi from './abis/dataunionSidechain.json'
 type MainnetConfig = {
     chainId: string
     rpcUrl: string
@@ -17,12 +17,30 @@ type DataUnionChainConfig = {
     rpcUrl: string
     dataUnionAbi: string
 }
+
+type MetamaskNetworkConfig = {
+    chainName: string
+    rpcUrls: string[]
+    blockExplorerUrls: string[]
+    nativeCurrency: {
+        name: string
+        symbol: string
+        decimals: number
+    },
+}
+
 type Config = {
     mainnet: MainnetConfig
-    dataunionsChain: DataUnionChainConfig
+    dataunionsChain: DataUnionChainConfig,
+    metamask: {
+        [key: number]: {
+            getParams: () => MetamaskNetworkConfig
+        }
+    }
 }
 const chainConfigs = Chains.load()
-export const getConfigForChain = (chainId: number) => {
+
+export const getConfigForChain = (chainId: number): Chain => {
     if (chainId == null) {
         throw new Error('ChainId must be provided!')
     }
@@ -34,7 +52,7 @@ export const getConfigForChain = (chainId: number) => {
         throw new Error(`Could not find config for chainId ${chainId}`)
     }
 
-    const config: any = configEntry[1]
+    const config: Chain = configEntry[1]
     // Fix local rpc urls
     config.rpcEndpoints = config.rpcEndpoints.map((rpc) => {
         let { url } = rpc
@@ -53,14 +71,14 @@ export const getConfigForChain = (chainId: number) => {
     })
     return config
 }
-export const getConfigForChainByName = (chainName: string) => {
+export const getConfigForChainByName = (chainName: string): Chain => {
     const configEntry = Object.entries(chainConfigs).find((c) => c[0] === chainName)
 
     if (configEntry == null) {
         throw new Error(`Could not find config for chain with name ${chainName}`)
     }
 
-    const config: any = configEntry[1]
+    const config: Chain = configEntry[1]
     return getConfigForChain(config.id)
 }
 
@@ -78,7 +96,7 @@ const getConfig = (): Config => {
                 abi: tokenAbi,
                 address: tokenAddress,
             },
-            dataUnionAbi,
+            dataUnionAbi: dataUnionAbi,
         },
         dataunionsChain: {
             chainId: dataUnionChainRPCs.chainId,

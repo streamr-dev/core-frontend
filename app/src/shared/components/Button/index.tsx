@@ -1,4 +1,4 @@
-import type { Node, ComponentType } from 'react'
+import type { ComponentType, FunctionComponent, ReactNode } from 'react'
 import React from 'react'
 import cx from 'classnames'
 import Spinner from '$shared/components/Spinner'
@@ -6,7 +6,7 @@ import styles from './newButton.pcss'
 export type Size = 'mini' | 'normal' | 'big'
 export type Kind = 'primary' | 'secondary' | 'destructive' | 'link' | 'special'
 export type Variant = 'dark' | 'light'
-type Props = {
+type ButtonProps = {
     className?: string
     tag: string | ComponentType<any>
     size?: Size
@@ -16,13 +16,14 @@ type Props = {
     disabled?: boolean
     waiting?: boolean
     onClick?: (e: React.SyntheticEvent<EventTarget>) => void | Promise<any>
-    children?: Node
+    children?: ReactNode
     external?: boolean
     href?: string
+    type?: string
 }
 const darkBgs = new Set(['primary', 'destructive'])
 
-const Button = ({
+const Button: FunctionComponent<ButtonProps> = ({
     className,
     tag: Tag,
     size,
@@ -35,7 +36,7 @@ const Button = ({
     children,
     external,
     ...args
-}: Props) => (
+}) => (
     <Tag
         {...args}
         className={cx(
@@ -54,7 +55,7 @@ const Button = ({
             },
             className,
         )}
-        onClick={disabled ? (e) => e.preventDefault() : onClick}
+        onClick={disabled ? (e: Event) => e.preventDefault() : onClick}
         disabled={disabled || waiting}
         tabIndex={disabled ? -1 : 0}
     >

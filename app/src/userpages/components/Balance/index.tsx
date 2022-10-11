@@ -1,4 +1,4 @@
-import type { Node } from 'react'
+import type { FunctionComponent, ReactNode } from 'react'
 import React, { Fragment } from 'react'
 import cx from 'classnames'
 import type { NumberString } from '$shared/types/common-types'
@@ -8,7 +8,7 @@ type AccountProps = {
     value: NumberString
 }
 
-const Account = ({ name, value }: AccountProps) => (
+export const Account: FunctionComponent = ({ name, value }: AccountProps) => (
     <Fragment>
         <span className={styles.balanceLabel}>{name}</span>
         <span className={styles.balanceValue}>{value}</span>
@@ -16,13 +16,12 @@ const Account = ({ name, value }: AccountProps) => (
 )
 
 type BalanceProps = {
-    children?: Node
+    children?: ReactNode
     className?: string
 }
 
-const Balance = ({ children, className }: BalanceProps) => (
+const Balance: FunctionComponent = ({ children, className }: BalanceProps) => (
     <div className={cx(styles.balances, className)}>{children}</div>
 )
 
-Balance.Account = Account
 export default Balance

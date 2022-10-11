@@ -3,7 +3,7 @@ import routes from '$routes'
 import type { ResourceID } from './resourceUrl'
 import { ResourceType } from './resourceUrl'
 
-const resourcePath = (resourceType: $Keys<typeof ResourceType>, id: ResourceID) => {
+const resourcePath = (resourceType: $Keys<typeof ResourceType>, id: ResourceID): string => {
     switch (resourceType) {
         case ResourceType.STREAM:
             return routes.streams.show({

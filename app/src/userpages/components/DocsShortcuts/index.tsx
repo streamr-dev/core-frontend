@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import docsLinks from '$shared/../docsLinks'
 import Link from '$shared/components/Link'
 import Onboarding from '$shared/components/Onboarding'
 import routes from '$routes'
 
-const DocsShortcuts = () => (
+const DocsShortcuts: FunctionComponent = () => (
     <Onboarding title="Docs">
         <Link to={docsLinks.gettingStarted} target="_blank" rel="noopener noreferrer">
             Getting started

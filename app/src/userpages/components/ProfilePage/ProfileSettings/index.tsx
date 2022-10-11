@@ -1,5 +1,5 @@
 import { $ElementType } from 'utility-types'
-import React, { useCallback } from 'react'
+import React, { FunctionComponent, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import Label from '$ui/Label'
@@ -53,7 +53,7 @@ const InputRow = styled.div`
     }
 `
 
-const ProfileSettings = () => {
+const ProfileSettings: FunctionComponent = () => {
     const user = useSelector(selectUserData)
     const dispatch = useDispatch()
     const isMounted = useIsMounted()

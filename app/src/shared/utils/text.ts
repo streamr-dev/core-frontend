@@ -1,8 +1,9 @@
-export const truncate = (path) =>
+export const truncate = (path: string): string =>
     typeof path !== 'string'
         ? path
         : path.replace(/0x[a-f\d]{40,}/gi, (match) => `${match.substr(0, 5)}...${match.substring(match.length - 5)}`)
-const translatedNumbers = {
+
+const translatedNumbers: {[key: string]: string} = {
     '0': 'zero',
     '1': 'one',
     '2': 'two',
@@ -20,7 +21,7 @@ const translatedNumbers = {
     '100000': 'a hundred thousand',
     '1000000': 'a million',
 }
-export const numberToText = (number) => {
+export const numberToText = (number: number): string => {
     const numberStr = String(number)
 
     if (number < 0) {

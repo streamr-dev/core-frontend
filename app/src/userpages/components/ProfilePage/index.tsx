@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, FunctionComponent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { CoreHelmet } from '$shared/components/Helmet'
@@ -15,7 +15,7 @@ import { NotificationIcon } from '$shared/utils/constants'
 import routes from '$routes'
 import ProfileSettings from './ProfileSettings'
 import DeleteAccount from './DeleteAccount'
-export const ProfilePage = () => {
+export const ProfilePage: FunctionComponent = () => {
     const { isPending: isSavePending, wrap } = usePending('user.SAVE')
     const { isPending: isDeleteAccountPending } = usePending('user.DELETE_ACCOUNT')
     const { isPending: isAvatarUploadPending } = usePending('user.UPLOAD_AVATAR')
@@ -110,8 +110,10 @@ const ProfileWrap = () => {
     return <ProfilePage key={key} />
 }
 
-export default () => (
-    <PendingProvider name="profile">
+const ProfilePageWrap: FunctionComponent = () => {
+    return <PendingProvider name="profile">
         <ProfileWrap />
     </PendingProvider>
-)
+}
+
+export default ProfilePageWrap

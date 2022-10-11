@@ -1,15 +1,11 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, FunctionComponent } from 'react'
 import debounce from 'lodash/debounce'
 import styled, { css } from 'styled-components'
 import type { Ref } from '$shared/types/common-types'
 import '$shared/types/common-types'
 import SvgIcon from '$shared/components/SvgIcon'
 import useIsMounted from '$shared/hooks/useIsMounted'
-type Props = {
-    onChange?: ((arg0: string) => void) | null | undefined
-    placeholder?: string | null | undefined
-    value: string | null | undefined
-}
+
 const CursorHolder = styled.div`
     position: absolute;
     top: 50%;
@@ -137,7 +133,11 @@ const InputWrapper = styled.div`
     overflow: hidden;
     width: 100%;
 `
-export const Active = ({ value: valueProp, onChange: onChangeProp, placeholder }: Props) => {
+export const Active: FunctionComponent<{
+    onChange?: ((arg0: string) => void) | null | undefined
+    placeholder?: string | null | undefined
+    value: string | null | undefined
+}> = ({ value: valueProp, onChange: onChangeProp, placeholder }) => {
     const isMounted = useIsMounted()
     const [value, setValue] = useState(valueProp || '')
     const [focused, setFocused] = useState(false)
@@ -236,7 +236,7 @@ const SearchPlaceholder = styled.div`
         width: var(--um);
     }
 `
-export const Disabled = () => (
+export const Disabled: FunctionComponent = () => (
     <SearchPlaceholder>
         <SvgIcon name="search" />
     </SearchPlaceholder>

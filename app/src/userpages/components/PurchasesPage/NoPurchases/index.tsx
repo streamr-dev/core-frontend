@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { FunctionComponent, useCallback } from 'react'
 import { withRouter, Link } from 'react-router-dom'
 import Button from '$shared/components/Button'
 import EmptyState from '$shared/components/EmptyState'
@@ -57,7 +57,7 @@ const NoResultsView = ({ onResetFilter }: NoResultsViewProps) => (
     </EmptyState>
 )
 
-const NoSubscriptionsView = ({ hasFilter, ...rest }: Props) => {
+const NoSubscriptionsView: FunctionComponent = ({ hasFilter, ...rest }: Props) => {
     if (hasFilter) {
         return <NoResultsView {...rest} />
     }

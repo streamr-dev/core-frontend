@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FunctionComponent } from 'react'
 import styled from 'styled-components'
 import DaysPopover from '$shared/components/DaysPopover'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
@@ -96,7 +96,7 @@ const Management = ({ product, dataUnion, stats, className }: Props) => {
     )
 }
 
-const WrappedManagement = (props: Props) => (
+const WrappedManagement: FunctionComponent = (props: Props) => (
     <ProductController>
         <Management {...props} />
     </ProductController>

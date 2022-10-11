@@ -31,12 +31,12 @@ const units = [
     }, // max: 11 months
 ]
 
-function format(diff, divisor, unit, prev) {
+function format(diff: number, divisor: number, unit: string, prev: string) {
     const val = Math.round(diff / divisor)
     return val <= 1 ? prev : `${val} ${unit}s ago`
 }
 
-export function ago(date: Date) {
+export function ago(date: Date): string {
     const diff = Math.abs(Date.now() - date.getTime())
 
     // less than a minute

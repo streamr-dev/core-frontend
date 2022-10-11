@@ -4,7 +4,8 @@ import getConfig from '$shared/web3/config'
 import UnsupportedNetworkError from '$shared/errors/UnsupportedNetworkError'
 import MissingNetworkParamsError from '$shared/errors/MissingNetworkParamsError'
 import MissingNetworkError from '$shared/errors/MissingNetworkError'
-export async function switchNetwork(nextChainId) {
+export async function switchNetwork(nextChainId: number): Promise<void> {
+    console.log(typeof nextChainId)
     const web3 = getWeb3()
     const { metamask: networks } = getConfig()
     await validateWeb3({
@@ -33,7 +34,7 @@ export async function switchNetwork(nextChainId) {
         throw e
     }
 }
-export async function addNetwork(nextChainId) {
+export async function addNetwork(nextChainId: number): Promise<void> {
     const web3 = getWeb3()
     const { metamask: networks } = getConfig()
     const { getParams = () => void 0 } = networks[nextChainId] || {}
