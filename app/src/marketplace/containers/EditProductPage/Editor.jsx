@@ -50,9 +50,11 @@ const Editor = ({ disabled }: Props) => {
                         <ProductDescription disabled={disabled} />
                         <ProductStreams disabled={disabled} />
                         <ProductType disabled={disabled} />
+                        {(isDataUnion || isPaid) && (
+                            <ProductChain disabled={disabled || isChainSelectorDisabled} />
+                        )}
                         {isPaid && (
                             <React.Fragment>
-                                <ProductChain disabled={disabled || isChainSelectorDisabled} />
                                 <PaymentToken disabled={disabled} />
                                 <PriceSelector disabled={disabled} />
                                 {!isDataUnion && (

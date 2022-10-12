@@ -141,11 +141,12 @@ const EditorNav = () => {
             heading: 'Product type',
             status: getStatus('isFree'),
         },
-        ...includeIf(!!isPaid, [{
+        ...includeIf(!!isPaid || !!isDataUnion, [{
             id: 'chain',
             heading: 'Chain',
             status: getStatus('chain'),
-        }, {
+        }]),
+        ...includeIf(!!isPaid, [{
             id: 'pricingToken',
             heading: 'Payment token',
             status: getStatus('pricingTokenAddress'),
