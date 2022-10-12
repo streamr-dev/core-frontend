@@ -216,7 +216,7 @@ export const getMemberStatistics = async (id: DataUnionId, chainId: number, from
                 query {
                     dataUnionStatsBuckets(
                         where: {
-                            dataUnion: { dataUnion_: { id: "${id.toLowerCase()}"}},
+                            dataUnion: "${id.toLowerCase()}",
                             type: "${accuracy}",
                             startDate_gte: ${Math.floor(fromTimestamp / 1000)},
                             endDate_lte: ${Math.ceil(toTimestampFixed / 1000)}
