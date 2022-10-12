@@ -1,7 +1,7 @@
 /**
  * True if element is a form control or editable element.
  */
-export default function isEditableElement(element) {
+export default function isEditableElement(element: HTMLElement): boolean {
     if (!element || !element.tagName) {
         return false
     } // doesn't look like an element
@@ -15,7 +15,7 @@ export default function isEditableElement(element) {
         element.classList.contains('ace_content')
     )
 }
-export function isFormElement(element) {
+export function isFormElement(element: HTMLElement): boolean {
     if (!element || !element.tagName) {
         return false
     } // doesn't look like an element

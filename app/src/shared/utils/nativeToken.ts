@@ -1,4 +1,4 @@
-const getNativeTokenName = (chainId: number) => {
+const getNativeTokenName = (chainId: number): string => {
     switch (`${chainId}`) {
         case '137':
         case '8997':

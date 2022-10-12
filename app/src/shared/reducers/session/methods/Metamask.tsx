@@ -8,7 +8,7 @@ const Metamask = {
     label: 'MetaMask',
     icon: <SignInMethod.Icon.Metamask />,
 
-    async connect() {
+    async connect(): Promise<string> {
         await validateWeb3({
             requireNetwork: false,
         })

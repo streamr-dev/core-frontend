@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 import type Transaction from '$shared/utils/Transaction'
 import type TransactionError from '$shared/errors/TransactionError'
 import type { ProductId } from '$mp/types/product-types'
@@ -9,14 +8,8 @@ export type Receipt = {
     transactionHash: Hash
     contractAddress?: Address
 }
-export type Abi = Array<{}>
-export type Web3Provider =
-    | Web3.providers.HTTPProvider
-    | Web3.providers.WebsocketProvider
-    | Web3.providers.IpcProvider
-    | {
-          isMetaMask: true
-      }
+export type Abi = Array<object>
+
 export type EthereumNetwork = {
     id: string | null | undefined
     name: string | null | undefined

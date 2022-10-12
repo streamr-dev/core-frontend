@@ -1,6 +1,6 @@
 import routes from '$routes'
 
-const getAddressLink = (chainId: number, address: string | null | undefined) => {
+const getAddressLink = (chainId: number, address: string | null | undefined): string => {
     switch (chainId) {
         case 100: {
             return routes.gnosisAddress({
@@ -20,7 +20,7 @@ const getAddressLink = (chainId: number, address: string | null | undefined) => 
     }
 }
 
-const getTransactionLink = (chainId: number, txHash: string | null | undefined) => {
+const getTransactionLink = (chainId: number, txHash: string | null | undefined): string => {
     switch (chainId) {
         case 100: {
             return routes.gnosisTransaction({

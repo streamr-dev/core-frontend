@@ -1,5 +1,5 @@
 import { getToken } from '$shared/utils/sessionToken'
-export default () => {
+export default (): {Authorization?: string} => {
     const token: string | null | undefined = getToken()
     return token
         ? {

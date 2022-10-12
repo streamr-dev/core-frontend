@@ -2,8 +2,17 @@
  * Basically 'ethereum-block-by-date' without moment
  * See: https://github.com/monosux/ethereum-block-by-date/blob/d9ea1733a8570c6dc39c06062f650a82b1d3db01/src/ethereum-block-by-date.js
  */
+// TODO add typing to whole class
 class EthDater {
-    constructor(web3) {
+    public web3: any
+    public checkedBlocks: any
+    public savedBlocks: any
+    public requests: number
+    public latestBlock: any
+    public firstBlock: any
+    public blockTime: number
+
+    constructor(web3: any) {
         this.web3 = web3
         this.checkedBlocks = {}
         this.savedBlocks = {}
@@ -18,7 +27,7 @@ class EthDater {
             (parseInt(this.latestBlock.number, 10) - 1)
     }
 
-    async getDate(date, after = true) {
+    async getDate(date: number, after = true) {
         if (
             typeof this.firstBlock === 'undefined' ||
             typeof this.latestBlock === 'undefined' ||
@@ -42,7 +51,7 @@ class EthDater {
         return this.returnWrapper(date, await this.findBetter(date, predictedBlock, after))
     }
 
-    async findBetter(date, predictedBlock, after, blockTime = this.blockTime) {
+    async findBetter(date: number, predictedBlock: any, after: any, blockTime = this.blockTime): Promise<number> {
         if (await this.isBetterBlock(date, predictedBlock, after)) {
             return predictedBlock.number
         }
@@ -62,7 +71,7 @@ class EthDater {
         return this.findBetter(date, nextPredictedBlock, after, newBlockTime)
     }
 
-    async isBetterBlock(date, predictedBlock, after) {
+    async isBetterBlock(date: number, predictedBlock: any, after: any): Promise<boolean> {
         const blockTime = predictedBlock.timestamp
 
         if (after) {
@@ -90,7 +99,7 @@ class EthDater {
         return false
     }
 
-    getNextBlock(date, currentBlock, skip) {
+    getNextBlock(date: number, currentBlock: any, skip: any):  Promise<any> {
         const nextBlock = currentBlock + skip
 
         if (this.checkedBlocks[date].includes(nextBlock)) {
@@ -101,7 +110,7 @@ class EthDater {
         return nextBlock
     }
 
-    returnWrapper(date, block) {
+    returnWrapper(date: number, block: any) {
         return {
             date,
             block,
@@ -109,7 +118,7 @@ class EthDater {
         }
     }
 
-    async getBlockWrapper(block) {
+    async getBlockWrapper(block: any) {
         let actualBlock = block === 'latest' ? await this.web3.eth.getBlockNumber() : block
 
         if (this.savedBlocks[actualBlock]) {
@@ -139,7 +148,8 @@ class EthDater {
     }
 }
 
-export const getBlockNumberForTimestamp = async (web3, timestampSecs) => {
+// TODO add typing
+export const getBlockNumberForTimestamp = async (web3: any, timestampSecs: any): Promise<any> => {
     const dater = new EthDater(web3)
     const result = await dater.getDate(timestampSecs)
     return result.block

@@ -3,7 +3,8 @@ import formatConfigUrl from '$utils/formatConfigUrl'
 import formatRpc from '$utils/formatRpc'
 import formatTrackers from '$utils/formatTrackers'
 import getConfig from '$app/src/getters/getConfig'
-export default function getClientConfig(mods = {}) {
+// TODO add typing
+export default function getClientConfig(mods: any = {}): any {
     const { client } = getConfig()
     const { dataUnion, ensCacheChainAddress, ...DEFAULTS } = STREAM_CLIENT_DEFAULTS
     return {

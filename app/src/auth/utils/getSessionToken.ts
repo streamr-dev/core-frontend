@@ -1,7 +1,8 @@
 import StreamrClient from 'streamr-client'
 import getClientConfig from '$app/src/getters/getClientConfig'
 
-const parseError = ({ body }) => {
+// TODO add typing
+const parseError = ({ body }: any) => {
     const message = ((defaultMessage) => {
         try {
             return JSON.parse(body).message || defaultMessage
@@ -13,7 +14,8 @@ const parseError = ({ body }) => {
     return new Error(message)
 }
 
-export default async (auth) => {
+// TODO add typing
+export default async (auth: any): Promise<string> => {
     try {
         return await new StreamrClient(
             getClientConfig({

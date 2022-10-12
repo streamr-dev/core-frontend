@@ -25,23 +25,23 @@ export default class Notification {
 
     static ID = 0
 
-    static push(params: Params) {
+    static push(params: Params): void {
         emitter.emit(Notification.events.PUSH, new Notification(params))
     }
 
-    static subscribe(handler: (arg0: Notification) => void) {
+    static subscribe(handler: (arg0: Notification) => void): void {
         emitter.on(Notification.events.PUSH, handler)
     }
 
-    static unsubscribe(handler: (arg0: Notification) => void) {
+    static unsubscribe(handler: (arg0: Notification) => void): void {
         emitter.removeListener(Notification.events.PUSH, handler)
     }
 
     static events = events
 
     constructor(params: Params) {
-        this.constructor.ID += 1
-        this.id = this.constructor.ID
+        Notification.ID += 1
+        this.id = Notification.ID
         this.createdAt = new Date()
         this.title = params.title || ''
         this.description = params.description || null
@@ -50,7 +50,7 @@ export default class Notification {
         this.autoDismissAfter = params.autoDismiss !== false ? 5 : 0
     }
 
-    isTx() {
+    isTx(): boolean {
         return !!this.txHash
     }
 }

@@ -2,11 +2,11 @@ import request from '$shared/utils/request'
 import type { Address } from '$shared/types/web3-types'
 const BASE_URL = 'https://api.coingecko.com/api/v3'
 // Got from: https://api.coingecko.com/api/v3/asset_platforms
-const chainIdToNetworkMapping = {
+const chainIdToNetworkMapping: {[key: string]: string} = {
     '100': 'xdai',
     '137': 'polygon-pos',
 }
-export const getUsdRate = async (tokenContractAddress: Address, chainId: number) => {
+export const getUsdRate = async (tokenContractAddress: Address, chainId: number): Promise<number> => {
     const vsCurrency = 'usd' // https://api.coingecko.com/api/v3/simple/supported_vs_currencies
 
     let contractAddress = tokenContractAddress

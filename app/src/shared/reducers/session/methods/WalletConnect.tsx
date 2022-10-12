@@ -5,7 +5,7 @@ const WalletConnect = {
     label: 'WalletConnect',
     icon: <SignInMethod.Icon.WalletConnect />,
 
-    async connect() {
+    async connect(): Promise<void> {
         throw new Error('Not implemented')
     },
 }
