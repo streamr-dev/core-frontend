@@ -321,6 +321,8 @@ const Item = ({ product, stats }: Props) => {
         if (product.state === productStates.DEPLOYED &&
             isEthereumAddress(product.beneficiaryAddress)) {
             return 'Published'
+        } else if (isEthereumAddress(product.beneficiaryAddress)) {
+            return 'Unpublished'
         }
         return 'Draft'
     }, [product])
