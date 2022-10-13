@@ -6,7 +6,7 @@ import { Context } from './index'
  * TODO: include state diff.
  */
 
-export default function useUndoBreadcrumbs(enabled) {
+export default function useUndoBreadcrumbs(enabled: boolean): void {
     const { pointer, action } = useContext(Context)
     const lastPointerRef = useRef(pointer)
     const isEnabled = !!enabled

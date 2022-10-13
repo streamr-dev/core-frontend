@@ -1,6 +1,7 @@
 import React from 'react'
 import { mount } from 'enzyme'
 import * as UndoContext from '$shared/contexts/Undo'
+import { UndoContextProps } from '$shared/contexts/Undo'
 describe('UndoContext', () => {
     describe('initialState', () => {
         it('does not need a value', () => {
@@ -17,7 +18,7 @@ describe('UndoContext', () => {
             )
         })
         it('can set initial state', async () => {
-            let props
+            let props: any
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
@@ -36,7 +37,7 @@ describe('UndoContext', () => {
             expect(props.initialState).toBe(initialState)
         })
         it('resets to new initial state', async () => {
-            let props
+            let props: UndoContextProps
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
@@ -60,7 +61,7 @@ describe('UndoContext', () => {
             expect(props.action).toBe(UndoContext.initialAction)
         })
         it('can add handler to reset', async () => {
-            let props
+            let props: UndoContextProps
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
@@ -78,7 +79,7 @@ describe('UndoContext', () => {
             const nextState = {
                 next: true,
             }
-            await props.push(action, () => nextState)
+            await props.push(action, () => nextState, undefined)
             expect(props.state).toBe(nextState)
             expect(props.initialState).toBe(undefined)
             const newInitialState = {
@@ -95,7 +96,7 @@ describe('UndoContext', () => {
         })
         describe('undo/redo with initial state', () => {
             it('will not undo past initial state, redo does nothing', async () => {
-                let props
+                let props: UndoContextProps
                 mount(
                     <UndoContext.Provider>
                         <UndoContext.Context.Consumer>
@@ -119,7 +120,7 @@ describe('UndoContext', () => {
             const nextState = {
                 next: true,
             }
-            let props
+            let props: UndoContextProps
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
@@ -147,7 +148,7 @@ describe('UndoContext', () => {
             const action = {
                 type: 'action',
             }
-            let props
+            let props: UndoContextProps
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
@@ -173,7 +174,7 @@ describe('UndoContext', () => {
             const nextState = {
                 next: true,
             }
-            let props
+            let props: UndoContextProps
             mount(
                 <UndoContext.Provider>
                     <UndoContext.Context.Consumer>
@@ -225,7 +226,7 @@ describe('UndoContext', () => {
         const replaceState = {
             replaced: true,
         }
-        let props
+        let props: UndoContextProps
         mount(
             <UndoContext.Provider>
                 <UndoContext.Context.Consumer>
@@ -246,7 +247,7 @@ describe('UndoContext', () => {
         const nextState = {
             next: true,
         }
-        let props
+        let props: UndoContextProps
         mount(
             <UndoContext.Provider>
                 <UndoContext.Context.Consumer>
@@ -277,7 +278,7 @@ describe('UndoContext', () => {
         const action = {
             type: 'action',
         }
-        let props
+        let props: UndoContextProps
         mount(
             <UndoContext.Provider>
                 <UndoContext.Context.Consumer>

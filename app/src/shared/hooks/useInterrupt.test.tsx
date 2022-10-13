@@ -3,15 +3,15 @@ import { render, cleanup, screen, fireEvent } from '@testing-library/react'
 import InterruptionError from '$shared/errors/InterruptionError'
 import useInterrupt from './useInterrupt'
 describe('useInterrupt', () => {
-    function getPromise() {
-        let resolve
-        const p = new Promise((res) => {
-            resolve = res
+    function getPromise(): [Promise<any>, () => Promise<any>] {
+        let resli: (value?: unknown) => void
+        const p = new Promise((resolve) => {
+            res = resolve
         })
         return [
             p,
             async () => {
-                resolve()
+                res()
                 return p
             },
         ]

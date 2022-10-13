@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unused-state */
-import type { Node, Context } from 'react'
+import type { Context, ReactNode } from 'react'
 import React, { Component } from 'react'
 import t from 'prop-types'
 import useUndoBreadcrumbs from './useUndoBreadcrumbs'
@@ -11,27 +11,27 @@ type HistoryItem = {
     action: Action
     state: Record<string, any>
 }
-type ContextProps = {
+export type UndoContextProps = {
     history: Array<HistoryItem>
     pointer: number
     undo: (...args: Array<any>) => any
     redo: (...args: Array<any>) => any
     push: (
-        action: Action,
+        action: Action | string,
         fn: (...args: Array<any>) => any,
-        done: ((...args: Array<any>) => any) | null | undefined,
+        done?: ((...args: Array<any>) => any) | null | undefined,
     ) => any
-    replace: (fn: (...args: Array<any>) => any, done: ((...args: Array<any>) => any) | null | undefined) => any
+    replace: (fn: (...args: Array<any>) => any, done?: ((...args: Array<any>) => any) | null | undefined) => any
     reset: (...args: Array<any>) => any
     action: Action
     state: Record<string, any> | null | undefined
     initialState?: any
-    setInitialState: (fn: (...args: Array<any>) => any, done: ((...args: Array<any>) => any) | null | undefined) => any
+    setInitialState: (fn: (...args: Array<any>) => any, done?: ((...args: Array<any>) => any) | null | undefined) => any
 }
 export const initialAction = {
     type: '__INIT',
 }
-const UndoContext: Context<ContextProps> = React.createContext({
+const UndoContext: Context<UndoContextProps> = React.createContext({
     action: initialAction,
     initialState: undefined,
     state: undefined,
@@ -51,10 +51,10 @@ const UndoContext: Context<ContextProps> = React.createContext({
  * Undo/redo does nothing but move pointer forward and backward.
  */
 type Props = {
-    children?: Node
+    children?: ReactNode
     enableBreadcrumbs?: boolean
 }
-type State = ContextProps
+type State = UndoContextProps
 
 class UndoContextProvider extends Component<Props, State> {
     static Context = UndoContext
@@ -63,7 +63,7 @@ class UndoContextProvider extends Component<Props, State> {
         children: t.node.isRequired,
     }
 
-    static getDerivedStateFromProps(props: Props, state: State) {
+    static getDerivedStateFromProps(props: Props, state: State): State {
         const nextState = { ...state }
 
         if (!state.history.length) {
@@ -84,7 +84,7 @@ class UndoContextProvider extends Component<Props, State> {
         })
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         this.unmounted = true
     }
 
@@ -93,7 +93,7 @@ class UndoContextProvider extends Component<Props, State> {
     /*
      * Move history pointer back.
      */
-    undo = (done: (...args: Array<any>) => any) => {
+    undo = (done: (...args: Array<any>) => any): Promise<any> => {
         const p: Promise<Record<string, any> | null> = new Promise((resolve) =>
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) {
@@ -109,7 +109,7 @@ class UndoContextProvider extends Component<Props, State> {
                 return {
                     pointer: nextPointer,
                 }
-            }, resolve),
+            }, resolve as () => void),
         )
         p.then(done)
         return p
@@ -118,7 +118,7 @@ class UndoContextProvider extends Component<Props, State> {
     /*
      * Move history pointer forward.
      */
-    redo = (done: (...args: Array<any>) => any) => {
+    redo = (done: (...args: Array<any>) => any): Promise<any> => {
         const p: Promise<Record<string, any> | null> = new Promise((resolve) =>
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) {
@@ -134,7 +134,7 @@ class UndoContextProvider extends Component<Props, State> {
                 return {
                     pointer: nextPointer,
                 }
-            }, resolve),
+            }, resolve as () => void),
         )
         p.then(done)
         return p
@@ -145,7 +145,7 @@ class UndoContextProvider extends Component<Props, State> {
      * previous to allow partial updates ala React.Component#setState.
      * Noops if next state is strict equal to prev or null.
      */
-    push = (actionValue: string | Action, fn: (...args: Array<any>) => any, done: (...args: Array<any>) => any) => {
+    push = (actionValue: string | Action, fn: (...args: Array<any>) => any, done: (...args: Array<any>) => any): Promise<any> => {
         // convert action string to action object
         const action =
             typeof actionValue !== 'string'
@@ -178,7 +178,7 @@ class UndoContextProvider extends Component<Props, State> {
                     history: nextHistory,
                     pointer: nextHistory.length - 1,
                 }
-            }, resolve),
+            }, resolve as () => void),
         )
         p.then(done)
         return p
@@ -189,7 +189,7 @@ class UndoContextProvider extends Component<Props, State> {
      * Noops if next state is strict equal to prev or null.
      * No merge, only replace ala React.Component#replaceState.
      */
-    replace = (fn: (...args: Array<any>) => any, done: (...args: Array<any>) => any) => {
+    replace = (fn: (...args: Array<any>) => any, done: (...args: Array<any>) => any): Promise<any> => {
         const p: Promise<Record<string, any> | null> = new Promise((resolve) =>
             this.setState(({ history, pointer }) => {
                 if (this.unmounted) {
@@ -210,7 +210,7 @@ class UndoContextProvider extends Component<Props, State> {
                 return {
                     history: nextHistory,
                 }
-            }, resolve),
+            }, resolve as () => void),
         )
         p.then(done)
         return p
@@ -219,14 +219,14 @@ class UndoContextProvider extends Component<Props, State> {
     /**
      * Set initialState which is used as the "reset" state value
      */
-    setInitialState = (fn: (...args: Array<any>) => any, done: (...args: Array<any>) => any) => {
+    setInitialState = (fn: (...args: Array<any>) => any, done?: (...args: Array<any>) => any): Promise<any> => {
         const p: Promise<void> = new Promise((resolve) =>
             this.setState(({ initialState }) => {
                 const nextInitialState = typeof fn === 'function' ? fn(initialState) : initialState
                 return {
                     initialState: nextInitialState,
                 }
-            }, resolve),
+            }, resolve as () => void),
         )
         p.then(done)
         return p
@@ -235,7 +235,7 @@ class UndoContextProvider extends Component<Props, State> {
     /**
      * Reset to initialState
      */
-    reset = (done: (...args: Array<any>) => any) => {
+    reset = (done: (...args: Array<any>) => any): Promise<any> => {
         const p: Promise<void> = new Promise((resolve) =>
             this.setState(
                 ({ initialState }) => ({
@@ -254,7 +254,7 @@ class UndoContextProvider extends Component<Props, State> {
         return p
     }
     // eslint-disable-next-line react/sort-comp
-    state = {
+    state: State = {
         history: [],
         pointer: 0,
         undo: this.undo,
@@ -268,7 +268,7 @@ class UndoContextProvider extends Component<Props, State> {
         setInitialState: this.setInitialState,
     }
 
-    render() {
+    render(): ReactNode {
         const { enableBreadcrumbs, children, ...props } = this.props
         return (
             <UndoContext.Provider {...props} value={this.state}>
@@ -279,7 +279,7 @@ class UndoContextProvider extends Component<Props, State> {
     }
 }
 
-function UndoBreadcrumbs({ enableBreadcrumbs }) {
+function UndoBreadcrumbs({ enableBreadcrumbs }: {enableBreadcrumbs: boolean}): null {
     useUndoBreadcrumbs(enableBreadcrumbs)
     return null
 }
