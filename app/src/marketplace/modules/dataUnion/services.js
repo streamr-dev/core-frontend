@@ -194,13 +194,19 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
     return tx
 }
 
+export const addMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
+    const dataUnion = await getDataUnionObject(id, chainId)
+    const receipt = await dataUnion.addMembers(memberAddresses)
+    return receipt
+}
+
 export const removeMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
     const dataUnion = await getDataUnionObject(id, chainId)
     const receipt = await dataUnion.removeMembers(memberAddresses)
     return receipt
 }
 
-export const getMemberStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
+export const getDataUnionStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const accuracy = 'HOUR' // HOUR or DAY
     let toTimestampFixed = toTimestamp || Date.now()
@@ -227,6 +233,8 @@ export const getMemberStatistics = async (id: DataUnionId, chainId: number, from
                         endDate,
                         memberCountAtStart,
                         memberCountChange,
+                        revenueAtStartWei,
+                        revenueChangeWei,
                     }
                 }
             `,

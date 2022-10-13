@@ -8,7 +8,6 @@ marketplaceChains = ['gnosis', 'polygon']
 dataunionChains = ['gnosis', 'polygon']
 streamChains = ['polygon']
 theGraphUrl = "https://api.thegraph.com"
-dataUnionJoinServerUrl = "https://join.dataunions.org"
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 1
