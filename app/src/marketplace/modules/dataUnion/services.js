@@ -216,7 +216,7 @@ export const getMemberStatistics = async (id: DataUnionId, chainId: number, from
                 query {
                     dataUnionStatsBuckets(
                         where: {
-                            dataUnionAddress: "${id.toLowerCase()}",
+                            dataUnion: "${id.toLowerCase()}",
                             type: "${accuracy}",
                             startDate_gte: ${Math.floor(fromTimestamp / 1000)},
                             endDate_lte: ${Math.ceil(toTimestampFixed / 1000)}
@@ -243,7 +243,7 @@ export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limi
         data: {
             query: `
                 query {
-                    dataUnions(where: { mainchainAddress: "${id.toLowerCase()}" }) {
+                    dataUnions(where: { id: "${id.toLowerCase()}" }) {
                         members(first: ${Math.floor(limit)}, orderBy: address, orderDirection: asc) {
                             address
                         }
@@ -266,10 +266,10 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
         data: {
             query: `
                 query {
-                    members(where: { addressString_contains: "${query}"}, first: ${Math.floor(limit)}) {
+                    members(where: { address_contains: "${query}"}, first: ${Math.floor(limit)}) {
                         address
-                        dataunion {
-                            mainchainAddress
+                        dataUnion {
+                            id
                         }
                     }
                 }
@@ -282,7 +282,7 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
         // we cannot do filtering on the query itself so we
         // have to manually pick results only for this dataunion.
         const members = result.data.members
-            .filter((m) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase())
+            .filter((m) => m.dataUnion.id.toLowerCase() === id.toLowerCase())
             .map((m) => m.address)
         return members
     }
