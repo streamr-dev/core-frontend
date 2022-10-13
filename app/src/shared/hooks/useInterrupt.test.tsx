@@ -4,7 +4,7 @@ import InterruptionError from '$shared/errors/InterruptionError'
 import useInterrupt from './useInterrupt'
 describe('useInterrupt', () => {
     function getPromise(): [Promise<any>, () => Promise<any>] {
-        let resli: (value?: unknown) => void
+        let res: (value?: unknown) => void
         const p = new Promise((resolve) => {
             res = resolve
         })
