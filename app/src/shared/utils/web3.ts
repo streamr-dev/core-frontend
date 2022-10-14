@@ -7,8 +7,12 @@ import getChainId from '$utils/web3/getChainId'
 type CheckNetworkParams = {
     network?: number
 }
+// TODO check if it works. I removed the default value as it was pointing to UNDEFINED in my opinion
+// export const checkEthereumNetworkIsCorrect = async ({
+//     network = networks.MAINNET,
+// }: CheckNetworkParams = {}): Promise<void> = {
 export const checkEthereumNetworkIsCorrect = async ({
-    network = networks.MAINNET,
+    network
 }: CheckNetworkParams = {}): Promise<void> => {
     const currentChainId = await getChainId()
 
@@ -39,5 +43,5 @@ export const averageBlockTime = async (blocksAgo = 500): Promise<number> => {
     const thenBlock = await web3.eth.getBlock(currentBlockNumber - numberOfBlocks)
     // Take the average of the then and now timestamps
     const divider = numberOfBlocks > 0 ? numberOfBlocks : 1
-    return (currentBlock.timestamp - thenBlock.timestamp) / divider
+    return (Number(currentBlock.timestamp) - Number(thenBlock.timestamp)) / divider
 }

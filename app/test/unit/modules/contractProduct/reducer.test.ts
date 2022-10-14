@@ -1,12 +1,14 @@
 import reducer, { initialState } from '$mp/modules/contractProduct/reducer'
-import * as constants from '$mp/modules/contractProduct/constants'
+import {contractProductConstants} from '$mp/modules/contractProduct/constants'
+import { ContractProductState } from '$mp/types/store-state'
+import { ErrorFromApi } from '$shared/types/common-types'
 describe('contractProduct - reducer', () => {
     it('has initial state', () => {
-        expect(reducer(undefined, {})).toStrictEqual(initialState)
+        expect(reducer(undefined, null)).toStrictEqual(initialState)
     })
     describe('GET_PRODUCT_FROM_CONTRACT', () => {
         it('handles request', () => {
-            const expectedState = {
+            const expectedState: ContractProductState = {
                 id: 'test',
                 fetchingContractProduct: true,
                 contractProductError: null,
@@ -14,7 +16,7 @@ describe('contractProduct - reducer', () => {
             }
             expect(
                 reducer(undefined, {
-                    type: constants.GET_PRODUCT_FROM_CONTRACT_REQUEST,
+                    type: contractProductConstants.GET_PRODUCT_FROM_CONTRACT_REQUEST,
                     payload: {
                         id: 'test',
                     },
@@ -22,7 +24,7 @@ describe('contractProduct - reducer', () => {
             ).toStrictEqual(expectedState)
         })
         it('handles success', () => {
-            const expectedState = {
+            const expectedState: ContractProductState = {
                 id: 'test',
                 fetchingContractProduct: false,
                 contractProductError: null,
@@ -30,7 +32,7 @@ describe('contractProduct - reducer', () => {
             }
             expect(
                 reducer(undefined, {
-                    type: constants.GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+                    type: contractProductConstants.GET_PRODUCT_FROM_CONTRACT_SUCCESS,
                     payload: {
                         id: 'test',
                     },
@@ -38,8 +40,8 @@ describe('contractProduct - reducer', () => {
             ).toStrictEqual(expectedState)
         })
         it('handles failure', () => {
-            const error = new Error('test error')
-            const expectedState = {
+            const error: ErrorFromApi = {message: 'test error'}
+            const expectedState: ContractProductState = {
                 id: null,
                 fetchingContractProduct: false,
                 contractProductError: error,
@@ -47,8 +49,9 @@ describe('contractProduct - reducer', () => {
             }
             expect(
                 reducer(undefined, {
-                    type: constants.GET_PRODUCT_FROM_CONTRACT_FAILURE,
+                    type: contractProductConstants.GET_PRODUCT_FROM_CONTRACT_FAILURE,
                     payload: {
+                        id: 'test',
                         error,
                     },
                 }),
@@ -56,13 +59,13 @@ describe('contractProduct - reducer', () => {
         })
     })
     it('handles CLEAR_CONTRACT_PRODUCT', () => {
-        const state = {
+        const state: ContractProductState = {
             id: 'test',
             fetchingContractProduct: true,
-            contractProductError: 'error',
+            contractProductError: {message: 'error'},
             whitelistedAddresses: [],
         }
-        const expectedState = {
+        const expectedState: ContractProductState = {
             id: null,
             fetchingContractProduct: false,
             contractProductError: null,
@@ -70,7 +73,8 @@ describe('contractProduct - reducer', () => {
         }
         expect(
             reducer(state, {
-                type: constants.CLEAR_CONTRACT_PRODUCT,
+                type: contractProductConstants.CLEAR_CONTRACT_PRODUCT,
+                payload: null
             }),
         ).toStrictEqual(expectedState)
     })

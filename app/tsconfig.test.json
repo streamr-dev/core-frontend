@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "module": "esnext",
+    "isolatedModules": false
   },
   "files": ["./test/test-utils/setupTests.ts"],
   "include": ["**/*.test.ts", "**/*.test.tsx", "**/*.d.ts"]

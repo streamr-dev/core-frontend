@@ -1,5 +1,7 @@
 import EventEmitter from 'events'
-import type { Web3, PromiEvent } from 'web3'
+import { PromiEvent, TransactionReceipt } from 'web3-core'
+import { Eth } from 'web3-eth'
+import { Contract } from 'web3-eth-contract'
 import { isHex } from 'web3-utils'
 import BN from 'bignumber.js'
 import { checkEthereumNetworkIsCorrect } from '$shared/utils/web3'
@@ -12,13 +14,16 @@ import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import Transaction from '$shared/utils/Transaction'
 import type { Product, SmartContractProduct } from '../types/product-types'
 import { arePricesEqual } from '../utils/price'
+
+// TODO add typing
 export type Callable = {
     call: () => SmartContractCall<any>
 }
+// TODO add typing
 export type Sendable = {
-    send: (arg0: { from: Address }) => PromiEvent
+    send: (arg0: { from: Address, gas: any, value: any, maxPriorityFeePerGas: any, maxFeePerGas: any }) => PromiEvent<any>
 }
-export const areAddressesEqual = (first: Address, second: Address) => (first || '').toLowerCase() === (second || '').toLowerCase()
+export const areAddressesEqual = (first: Address, second: Address): boolean => (first || '').toLowerCase() === (second || '').toLowerCase()
 export const hexEqualsZero = (hex: string): boolean => /^(0x)?0+$/.test(hex)
 export const getPrefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '0x')
 export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|^/, '')
@@ -28,8 +33,8 @@ export const getUnprefixedHexString = (hex: string): string => hex.replace(/^0x|
  * @param hex string to validate. Can have the 0x prefix or not
  * @returns {boolean}
  */
-export const isValidHexString = (hex: string): boolean => (typeof hex === 'string' || hex instanceof String) && isHex(hex)
-export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode = false, chainId?: number): Web3.eth.Contract => {
+export const isValidHexString = (hex: string): boolean => (typeof hex === 'string') && isHex(hex)
+export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode = false, chainId?: number): Contract => {
     if (usePublicNode && chainId == null) {
         throw new Error('ChainId must be provided!')
     }
@@ -37,7 +42,7 @@ export const getContract = ({ abi, address }: SmartContractConfig, usePublicNode
     const web3 = usePublicNode ? getPublicWeb3(chainId) : getWeb3()
     return new web3.eth.Contract(abi, address)
 }
-export const isContractProductUpdateRequired = (contractProduct: SmartContractProduct, editProduct: Product) => {
+export const isContractProductUpdateRequired = (contractProduct: SmartContractProduct, editProduct: Product): boolean => {
     const hasPriceChanged = !arePricesEqual(contractProduct.pricePerSecond, editProduct.pricePerSecond)
     const hasBeneficiaryChanged = !areAddressesEqual(contractProduct.beneficiaryAddress, editProduct.beneficiaryAddress)
     const hasPricingTokenChanged =
@@ -69,6 +74,7 @@ export const send = (
             network: options && options.network,
         }),
     ]).then(
+        // TODO check if this works as I had to make some changes in order to comply with the typing
         ([account]) =>
             method
                 .send({
@@ -78,18 +84,23 @@ export const send = (
                     maxPriorityFeePerGas: null,
                     maxFeePerGas: null,
                 })
-                .on('error', (error, receipt) => {
-                    if (receipt) {
-                        errorHandler(new TransactionError(error.message, receipt))
-                    } else {
+                .on('error', (error: Error | TransactionReceipt) => {
+                    if (error instanceof Error) {
                         errorHandler(error)
+
+                    } else {
+
+                        errorHandler(new TransactionError('smart contract error', error))
                     }
                 })
                 .on('transactionHash', (hash) => {
                     emitter.emit('transactionHash', hash)
                 })
-                .on('receipt', (receipt) => {
-                    if (parseInt(receipt.status, 16) === 0) {
+                .on('receipt', (receipt: TransactionReceipt) => {
+                    // TODO check if this is valid - before it was something that didn't make
+                    // any sense from typing point of view: if (parseInt(receipt.status, 16) === 0) {
+                    // receipt.status is a boolean !
+                    if (receipt.gasUsed === 0) {
                         errorHandler(new TransactionError('Transaction failed', receipt))
                     } else {
                         emitter.emit('receipt', receipt)

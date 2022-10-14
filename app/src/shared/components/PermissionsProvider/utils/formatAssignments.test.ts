@@ -6,9 +6,9 @@ describe('formatAssignments', () => {
             bar: EDIT,
             foo: EDIT + PUBLISH,
         })
-        const bar = assignments.find(({ user }) => user === 'bar')
+        const bar = assignments.find(({ user }: {user: string}) => user === 'bar')
         expect(bar.permissions).toEqual(['edit'])
-        const foo = assignments.find(({ user }) => user === 'foo')
+        const foo = assignments.find(({ user }: {user: string}) => user === 'foo')
         expect(foo.permissions.sort()).toEqual(['edit', 'publish'])
         expect(assignments.length).toEqual(2)
     })

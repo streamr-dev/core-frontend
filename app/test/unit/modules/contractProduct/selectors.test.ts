@@ -1,14 +1,16 @@
 import { normalize } from 'normalizr'
 import * as selectors from '$mp/modules/contractProduct/selectors'
 import { contractProductSchema } from '$shared/modules/entities/schema'
+import { ContractProductState } from '$mp/types/store-state'
 describe('contractProduct - selectors', () => {
-    const contractProduct = {
+    const contractProduct: ContractProductState = {
         id: 'test',
         fetchingContractProduct: true,
         contractProductError: new Error('test error'),
+        whitelistedAddresses: []
     }
     const normalized = normalize(contractProduct, contractProductSchema)
-    const state = {
+    const state: any = {
         test: true,
         contractProduct,
         otherData: 42,

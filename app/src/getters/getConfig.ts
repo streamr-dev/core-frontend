@@ -1,4 +1,5 @@
 import config from '$config'
-export default function getConfig() {
+// TODO add typing
+export default function getConfig(): any {
     return config
 }

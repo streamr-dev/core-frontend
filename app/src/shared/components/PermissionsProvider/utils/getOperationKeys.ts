@@ -1,10 +1,11 @@
 import * as operations from '../operations'
-export default function getOperationKeys(combination) {
+// TODO add typing
+export default function getOperationKeys(combination: any): any {
     return Object.keys(operations).reduce(
         (
             memo,
             operationKey, // eslint-disable-next-line no-bitwise
-        ) => (combination & operations[operationKey] ? [...memo, operationKey] : memo),
+        ) => (combination & (operations as {[key: string]: number})[operationKey] ? [...memo, operationKey] : memo),
         [],
     )
 }

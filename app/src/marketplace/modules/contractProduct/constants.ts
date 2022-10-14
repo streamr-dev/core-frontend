@@ -5,3 +5,13 @@ export const CLEAR_CONTRACT_PRODUCT = 'marketplace/contractProduct/CLEAR_CONTRAC
 export const SET_WHITELISTED_ADDRESSES = 'marketplace/contractProduct/SET_WHITELISTED_ADDRESSES'
 export const ADD_WHITELISTED_ADDRESS = 'marketplace/contractProduct/ADD_WHITELISTED_ADDRESS'
 export const REMOVE_WHITELISTED_ADDRESS = 'marketplace/contractProduct/REMOVE_WHITELISTED_ADDRESS'
+
+export const contractProductConstants: { [key: string]: string } = {
+    GET_PRODUCT_FROM_CONTRACT_REQUEST,
+    GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+    GET_PRODUCT_FROM_CONTRACT_FAILURE,
+    CLEAR_CONTRACT_PRODUCT,
+    SET_WHITELISTED_ADDRESSES,
+    ADD_WHITELISTED_ADDRESS,
+    REMOVE_WHITELISTED_ADDRESS
+}

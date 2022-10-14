@@ -12,11 +12,12 @@ import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 const contractMethods = (usePublicNode = false, networkChainId: number) => marketplaceContract(usePublicNode, networkChainId).methods
 
-const parseTimestamp = (timestamp) => parseInt(timestamp, 10) * 1000
+const parseTimestamp = (timestamp: string) => parseInt(timestamp, 10) * 1000
 
 const getMarketplaceContractCreationBlock = (chainId: number): number => {
     const map = getCoreConfig().marketplaceContractCreationBlocks
-    const blockItem = map.find((i) => i.chainId === chainId)
+    // TODO add typing
+    const blockItem = map.find((i: any) => i.chainId === chainId)
 
     if (blockItem == null || blockItem.blockNumber == null) {
         throw new Error('No marketplaceContractCreationBlocks defined in config for this chain!')
@@ -49,7 +50,12 @@ async function* getMarketplaceEvents(id: ProductId, eventName: string, fromBlock
     yield* getContractEvents(web3, abiAndAddress.abi, abiAndAddress.address, chainId, eventName, fromBlock, filter)
 }
 
-export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, usePublicNode = true, networkChainId: number) => {
+export const getSubscribedEvents = async (
+    id: ProductId,
+    fromTimestamp: number,
+    usePublicNode = true,
+    networkChainId: number
+): Promise<{ start: number, end: number }[]> => {
     const web3 = usePublicNode ? getPublicWeb3(networkChainId) : getWeb3()
     const fromBlock = await getBlockNumberForTimestamp(web3, Math.floor(fromTimestamp / 1000))
     const subscriptions = []
@@ -59,9 +65,9 @@ export const getSubscribedEvents = async (id: ProductId, fromTimestamp: number, 
         for (const subEvent of e) {
             const block = await web3.eth.getBlock(subEvent.blockHash)
 
-            if (block && block.timestamp && block.timestamp * 1000 >= fromTimestamp) {
+            if (block && block.timestamp && Number(block.timestamp) * 1000 >= fromTimestamp) {
                 subscriptions.push({
-                    start: block.timestamp * 1000,
+                    start: Number(block.timestamp) * 1000,
                     end: subEvent.returnValues && subEvent.returnValues.endTimestamp && parseTimestamp(subEvent.returnValues.endTimestamp),
                 })
             }
@@ -162,7 +168,8 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
         return []
     }
 
-    const subscriptionEvents = []
+    // TODO add typping
+    const subscriptionEvents: any[] = []
     const approvedItems = []
     const rejectedItems = []
     const fromBlock = getMarketplaceContractCreationBlock(networkChainId)
@@ -196,7 +203,8 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
         }
     }
 
-    const isActiveSubscription = (address) => {
+    // TODO add typing
+    const isActiveSubscription = (address: any) => {
         const activeSubs = subscriptionEvents.filter(
             (e) =>
                 e.returnValues &&
@@ -218,7 +226,7 @@ export const getWhitelistAddresses = async (id: ProductId, networkChainId: numbe
     }))
     return whitelist
 }
-export const isAddressWhitelisted = async (id: ProductId, address: Address, usePublicNode = true, networkChainId: number) => {
+export const isAddressWhitelisted = async (id: ProductId, address: Address, usePublicNode = true, networkChainId: number): Promise<boolean> => {
     const isWhitelistStatus = await call(contractMethods(usePublicNode, networkChainId).getWhitelistState(getValidId(id), address))
     return !!(isWhitelistStatus === 2)
 }

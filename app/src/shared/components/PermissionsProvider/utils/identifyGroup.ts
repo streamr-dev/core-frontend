@@ -1,6 +1,7 @@
 import groups, { DEFAULTS_KEYS } from '../groups'
 import countOperations from './countOperations'
-export default function identifyGroup(resourceType, combination) {
+// TODO add typing
+export default function identifyGroup(resourceType: any, combination: any): any {
     return Object.entries(groups[resourceType]).reduce(
         (
             memo,

@@ -1,3 +1,4 @@
+import { AbiItem } from 'web3-utils'
 import type Transaction from '$shared/utils/Transaction'
 import type TransactionError from '$shared/errors/TransactionError'
 import type { ProductId } from '$mp/types/product-types'
@@ -8,7 +9,7 @@ export type Receipt = {
     transactionHash: Hash
     contractAddress?: Address
 }
-export type Abi = Array<object>
+export type Abi = Array<AbiItem>
 
 export type EthereumNetwork = {
     id: string | null | undefined

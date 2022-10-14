@@ -10,13 +10,20 @@ import {
     REMOVE_WHITELISTED_ADDRESS,
 } from './constants'
 import type { ProductIdAction, ProductErrorAction, WhiteListedAddressAction, WhiteListedAddressesAction } from './types'
+
+type ContractProductActionsPayloads =
+    ProductIdAction['payload']
+    | ProductErrorAction['payload']
+    | WhiteListedAddressAction['payload']
+    | WhiteListedAddressesAction['payload'];
+
 export const initialState: ContractProductState = {
     id: null,
     fetchingContractProduct: false,
     contractProductError: null,
     whitelistedAddresses: [],
 }
-const reducer: (arg0: ContractProductState) => ContractProductState = handleActions(
+const reducer = handleActions<ContractProductState, ContractProductActionsPayloads>(
     {
         [GET_PRODUCT_FROM_CONTRACT_REQUEST]: (state: ContractProductState, action: ProductIdAction) => ({
             ...state,

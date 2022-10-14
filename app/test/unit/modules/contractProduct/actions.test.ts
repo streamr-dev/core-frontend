@@ -1,7 +1,7 @@
 import { normalize } from 'normalizr'
 import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$mp/modules/contractProduct/actions'
-import * as constants from '$mp/modules/contractProduct/constants'
+import {contractProductConstants} from '$mp/modules/contractProduct/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/contractProduct/services'
 import { contractProductSchema } from '$shared/modules/entities/schema'
@@ -26,7 +26,7 @@ describe('contractProduct - actions', () => {
             await store.dispatch(actions.getProductFromContract('test'))
             const expectedActions = [
                 {
-                    type: constants.GET_PRODUCT_FROM_CONTRACT_REQUEST,
+                    type: contractProductConstants.GET_PRODUCT_FROM_CONTRACT_REQUEST,
                     payload: {
                         id: result,
                     },
@@ -38,7 +38,7 @@ describe('contractProduct - actions', () => {
                     },
                 },
                 {
-                    type: constants.GET_PRODUCT_FROM_CONTRACT_SUCCESS,
+                    type: contractProductConstants.GET_PRODUCT_FROM_CONTRACT_SUCCESS,
                     payload: {
                         id: result,
                     },
@@ -58,13 +58,13 @@ describe('contractProduct - actions', () => {
             await store.dispatch(actions.getProductFromContract('test'))
             const expectedActions = [
                 {
-                    type: constants.GET_PRODUCT_FROM_CONTRACT_REQUEST,
+                    type: contractProductConstants.GET_PRODUCT_FROM_CONTRACT_REQUEST,
                     payload: {
                         id: result,
                     },
                 },
                 {
-                    type: constants.GET_PRODUCT_FROM_CONTRACT_FAILURE,
+                    type: contractProductConstants.GET_PRODUCT_FROM_CONTRACT_FAILURE,
                     payload: {
                         id: 'test',
                         error: {
@@ -82,7 +82,7 @@ describe('contractProduct - actions', () => {
             await store.dispatch(actions.clearContractProduct())
             const expectedActions = [
                 {
-                    type: constants.CLEAR_CONTRACT_PRODUCT,
+                    type: contractProductConstants.CLEAR_CONTRACT_PRODUCT,
                 },
             ]
             expect(store.getActions()).toStrictEqual(expectedActions)
