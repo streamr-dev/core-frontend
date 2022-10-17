@@ -21,8 +21,9 @@ export default function getClientConfig(mods: any = {}): any {
         dataUnionChainRPCs: formatRpc(client?.dataUnionChain?.rpc) || DEFAULTS.dataUnionChainRPCs,
         mainChainRPCs: formatRpc(client?.mainchain?.rpc) || DEFAULTS.mainChainRPCs,
         network: {
-            ...DEFAULTS.network,
-            trackers: formatTrackers(client?.network?.trackers) || DEFAULTS.network?.trackers,
+            // TODO check if its ok to remove those parts - they don't exist in the default config
+            // ...DEFAULTS.network,
+            trackers: formatTrackers(client?.network?.trackers) // || DEFAULTS.network?.trackers,
         },
         restUrl: formatConfigUrl(client?.restUrl) || DEFAULTS.restUrl,
         streamRegistryChainAddress: client?.streamRegistryChainAddress || DEFAULTS.streamRegistryChainAddress,

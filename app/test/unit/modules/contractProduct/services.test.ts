@@ -8,7 +8,7 @@ describe('Product services', () => {
         jest.restoreAllMocks()
     })
     describe('getProductFromContract', () => {
-        it('must throw error if owner is 0', async (done) => {
+        it('must throw error if owner is 0', async () => {
             const getProductStub = jest.fn(() => ({
                 call: () =>
                     Promise.resolve({
@@ -26,7 +26,6 @@ describe('Product services', () => {
                 await all.getProductFromContract('1234abcdef', false, 8995)
             } catch (e) {
                 expect(e.message).toMatch(/No product found/)
-                done()
             }
         })
     })

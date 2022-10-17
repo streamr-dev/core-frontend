@@ -9,8 +9,8 @@ import { fromDecimals, toDecimals } from './math'
  * @param value string Number as string
  * @return boolean
  */
-export const isPriceValid = (value: string) => {
-    const bn = BN(value)
+export const isPriceValid = (value: string): boolean => {
+    const bn = new BN(value)
     return !bn.isNaN() && bn.isGreaterThan(0)
 }
 export const priceForTimeUnits = (
@@ -18,19 +18,19 @@ export const priceForTimeUnits = (
     timeAmount: number | NumberString | BN,
     timeUnit: TimeUnit,
 ): BN => {
-    const seconds = toSeconds(timeAmount, timeUnit)
-    return BN(pricePerSecond).multipliedBy(seconds)
+    const seconds = toSeconds(timeAmount as string | BN, timeUnit)
+    return new BN(pricePerSecond).multipliedBy(seconds)
 }
-export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeUnit, decimals: BN): BN => {
+export const pricePerSecondFromTimeUnit = (pricePerTimeUnit: BN, timeUnit: TimeUnit, decimals: BN): string => {
     const pptInTokens = toDecimals(pricePerTimeUnit, decimals)
-    return BN(pptInTokens).dividedBy(toSeconds(1, timeUnit)).toFixed(0)
+    return new BN(pptInTokens).dividedBy(toSeconds('1', timeUnit)).toFixed(0)
 }
 
 /**
  * Make sure the amount is a non-negative number.
  * @param amount Number to sanitize.
  */
-export const sanitize = (amount: BN): BN => (BN(amount).isNaN() ? BN(0) : BN.max(BN(0), amount))
+export const sanitize = (amount: BN): BN => (new BN(amount).isNaN() ? new BN(0) : BN.max(new BN(0), amount))
 
 /**
  * Limit the number of fraction digits.
@@ -39,7 +39,7 @@ export const sanitize = (amount: BN): BN => (BN(amount).isNaN() ? BN(0) : BN.max
  */
 export const formatAmount = (value: BN, maxDigits: number | null | undefined): BN => {
     if (typeof maxDigits === 'number' && maxDigits >= 0) {
-        return BN(sanitize(value).decimalPlaces(maxDigits))
+        return new BN(sanitize(value).decimalPlaces(maxDigits))
     }
 
     return value
@@ -62,30 +62,30 @@ export const formatDecimals = (
     let result
 
     if (currency === paymentCurrencies.ETH) {
-        return BN(value).toFixed(4)
+        return new BN(value).toFixed(4)
     }
 
     if (currency === paymentCurrencies.DAI) {
-        return BN(value).toFixed(2)
+        return new BN(value).toFixed(2)
     }
 
     if (currency === paymentCurrencies.PRODUCT_DEFINED) {
-        return fromDecimals(value, decimals).toFixed(2)
+        return fromDecimals(value as string | BN, decimals).toFixed(2)
     }
 
-    if (Math.abs(value) < 10) {
-        result = currency === contractCurrencies.DATA ? BN(value).decimalPlaces(3) : BN(value).toFixed(2)
-    } else if (Math.abs(value) < 100) {
-        result = currency === contractCurrencies.DATA ? BN(value).decimalPlaces(2) : BN(value).toFixed(2)
-    } else if (Math.abs(value) < 1000) {
-        result = currency === contractCurrencies.DATA ? BN(value).decimalPlaces(1) : BN(value).toFixed(1)
+    if (Math.abs(value as number) < 10) {
+        result = currency === contractCurrencies.DATA ? new BN(value).decimalPlaces(3) : new BN(value).toFixed(2)
+    } else if (Math.abs(value as number) < 100) {
+        result = currency === contractCurrencies.DATA ? new BN(value).decimalPlaces(2) : new BN(value).toFixed(2)
+    } else if (Math.abs(value as number) < 1000) {
+        result = currency === contractCurrencies.DATA ? new BN(value).decimalPlaces(1) : new BN(value).toFixed(1)
     } else {
-        result = BN(value).decimalPlaces(0)
+        result = new BN(value).decimalPlaces(0)
     }
 
     return result.toString()
 }
-export const arePricesEqual = (first: NumberString, second: NumberString) => BN(first).isEqualTo(BN(second))
+export const arePricesEqual = (first: NumberString, second: NumberString): boolean => new BN(first).isEqualTo(new BN(second))
 
 /**
  * Gets most relevant time unit for given price per second.
@@ -95,7 +95,7 @@ export const getMostRelevantTimeUnit = (pricePerSecond: BN): TimeUnit => {
     // Go from smallest time unit to the largest and see when we get a value bigger than 1.
     // This should be the most relevant unit for the user.
     const guesses = Object.keys(timeUnits).filter((unit) =>
-        toSeconds(1, unit).multipliedBy(pricePerSecond).isGreaterThanOrEqualTo(1),
+        toSeconds('1', unit).multipliedBy(pricePerSecond).isGreaterThanOrEqualTo(1),
     )
     return guesses[0] || timeUnits.second
 }

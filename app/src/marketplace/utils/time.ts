@@ -3,7 +3,7 @@ import moment from 'moment'
 import BN from 'bignumber.js'
 import type { NumberString, TimeUnit } from '$shared/types/common-types'
 import { timeUnits } from '$shared/utils/constants'
-const momentDurationFormatsByTimeUnit = {
+const momentDurationFormatsByTimeUnit: {[key: string]: string} = {
     second: 's',
     minute: 'm',
     hour: 'H',
@@ -24,16 +24,16 @@ export const toSeconds = (quantity: NumberString | BN, timeUnit: TimeUnit): BN =
         throw new Error(`Invalid time unit: ${timeUnit}`)
     }
 
-    return BN(moment.duration(BN(quantity).toNumber(), format).asSeconds())
+    return new BN(moment.duration(new BN(quantity).toNumber(), format as any).asSeconds())
 }
-export const formatDateTime = (timestamp: number | null | undefined, timezone: string | null | undefined) =>
-    timestamp && moment.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
+export const formatDateTime = (timestamp: number | null | undefined, timezone: string | null | undefined): string =>
+    timestamp && (moment as any).tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')
 
 /**
  * Returns short form for given time unit.
  * @param timeUnit Time unit to abbreviate.
  */
-export const getAbbreviation = (timeUnit: TimeUnit) => {
+export const getAbbreviation = (timeUnit: TimeUnit): string => {
     switch (timeUnit) {
         case timeUnits.second:
             return 's'

@@ -1,4 +1,4 @@
-import type { Web3 } from 'web3'
+import Web3 from 'web3'
 export async function* getContractEvents(
     web3: Web3,
     contractAbi: any,

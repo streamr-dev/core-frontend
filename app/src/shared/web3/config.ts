@@ -1,4 +1,5 @@
 import { Chain, Chains } from '@streamr/config'
+import { AbiItem } from 'web3-utils'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
@@ -9,13 +10,17 @@ import dataUnionSidechainAbi from './abis/dataunionSidechain.json'
 type MainnetConfig = {
     chainId: string
     rpcUrl: string
-    dataUnionAbi: string
+    dataUnionAbi: AbiItem[]
     transactionConfirmationBlocks: number
+    dataToken: {
+        abi: AbiItem[],
+        address: string,
+    },
 }
 type DataUnionChainConfig = {
     chainId: string
     rpcUrl: string
-    dataUnionAbi: string
+    dataUnionAbi: AbiItem[]
 }
 
 type MetamaskNetworkConfig = {
@@ -93,15 +98,15 @@ const getConfig = (): Config => {
             rpcUrl: mainChainRPCs.rpcs[0].url,
             transactionConfirmationBlocks: web3TransactionConfirmationBlocks || 24,
             dataToken: {
-                abi: tokenAbi,
+                abi: tokenAbi as AbiItem[],
                 address: tokenAddress,
             },
-            dataUnionAbi: dataUnionAbi,
+            dataUnionAbi: dataUnionAbi as AbiItem[],
         },
         dataunionsChain: {
             chainId: dataUnionChainRPCs.chainId,
             rpcUrl: dataUnionChainRPCs.rpcs[0].url,
-            dataUnionAbi: dataUnionSidechainAbi,
+            dataUnionAbi: dataUnionSidechainAbi as AbiItem[],
         },
         metamask: {
             // local development values
@@ -110,6 +115,7 @@ const getConfig = (): Config => {
                 getParams: () => ({
                     chainName: 'Mainchain (dev)',
                     rpcUrls: [mainChainRPCs.rpcs[0].url],
+                    blockExplorerUrls: [],
                     nativeCurrency: {
                         name: 'ETH',
                         symbol: 'ETH',
@@ -121,6 +127,7 @@ const getConfig = (): Config => {
                 getParams: () => ({
                     chainName: 'Dataunions chain (dev)',
                     rpcUrls: [dataUnionChainRPCs.rpcs[0].url],
+                    blockExplorerUrls: [],
                     nativeCurrency: {
                         name: 'xDAI',
                         symbol: 'xDAI',
@@ -132,6 +139,7 @@ const getConfig = (): Config => {
                 getParams: () => ({
                     chainName: 'Streams chain (dev)',
                     rpcUrls: [streamRegistryChainRPCs.rpcs[0].url],
+                    blockExplorerUrls: [],
                     nativeCurrency: {
                         name: 'xDAI',
                         symbol: 'xDAI',

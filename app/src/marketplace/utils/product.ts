@@ -3,14 +3,15 @@ import * as yup from 'yup'
 import type { NumberString } from '$shared/types/common-types'
 import { contractCurrencies as currencies, productStates } from '$shared/utils/constants'
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
-import type { Product, ProductId, SmartContractProduct, ProductType } from '../types/product-types'
+import type { Product, ProductId, SmartContractProduct, ProductType, ContactDetails } from '../types/product-types'
+import { ProductState } from '../types/product-types'
 import { isEthereumAddress } from './validate'
 import { isPriceValid } from './price'
 import { productTypes } from './constants'
 import { toDecimals, fromDecimals } from './math'
 import { getPrefixedHexString, getUnprefixedHexString, isValidHexString } from './smartContract'
-export const isPaidProduct = (product: Product) => product.isFree === false || BN(product.pricePerSecond).isGreaterThan(0)
-export const isDataUnionProduct = (productOrProductType?: Product | ProductType) => {
+export const isPaidProduct = (product: Product): boolean => product.isFree === false || new BN(product.pricePerSecond).isGreaterThan(0)
+export const isDataUnionProduct = (productOrProductType?: Product | ProductType): boolean => {
     const { type } =
         typeof productOrProductType === 'string'
             ? {
@@ -19,20 +20,20 @@ export const isDataUnionProduct = (productOrProductType?: Product | ProductType)
             : productOrProductType || {}
     return type === productTypes.DATAUNION
 }
-export const validateProductPriceCurrency = (priceCurrency: string) => {
+export const validateProductPriceCurrency = (priceCurrency: string): void => {
     const currencyIndex = Object.keys(currencies).indexOf(priceCurrency)
 
     if (currencyIndex < 0) {
         throw new Error(`Invalid currency: ${priceCurrency}`)
     }
 }
-export const validateApiProductPricePerSecond = (pricePerSecond: NumberString | BN) => {
-    if (BN(pricePerSecond).isLessThan(0)) {
+export const validateApiProductPricePerSecond = (pricePerSecond: NumberString | BN): void => {
+    if (new BN(pricePerSecond).isLessThan(0)) {
         throw new Error('Product price must be equal to or greater than 0')
     }
 }
-export const validateContractProductPricePerSecond = (pricePerSecond: NumberString | BN) => {
-    if (BN(pricePerSecond).isLessThanOrEqualTo(0)) {
+export const validateContractProductPricePerSecond = (pricePerSecond: NumberString | BN): void => {
+    if (new BN(pricePerSecond).isLessThanOrEqualTo(0)) {
         throw new Error('Product price must be greater than 0 to publish')
     }
 }
@@ -48,13 +49,14 @@ export const mapProductFromContract = (id: ProductId, result: any, chainId: numb
         ownerAddress: result.owner,
         beneficiaryAddress: result.beneficiary,
         pricePerSecond: result.pricePerSecond,
-        priceCurrency: Object.keys(currencies)[result.currency],
+        // TODO Check if its ok to remove it
+        // priceCurrency: Object.keys(currencies)[result.currency],
         minimumSubscriptionInSeconds: Number.isNaN(minimumSubscriptionSeconds) ? 0 : minimumSubscriptionSeconds,
-        state: Object.keys(productStates)[result.state],
+        state: (Object.keys(productStates) as ProductState[])[result.state],
         requiresWhitelist: result.requiresWhitelist,
         chainId,
         pricingTokenAddress: result.pricingTokenAddress,
-        pricingTokenDecimals,
+        pricingTokenDecimals: pricingTokenDecimals.toNumber(),
     }
 }
 export const mapProductFromApi = (product: Product): Product => {
@@ -68,7 +70,7 @@ export const mapProductToPostApi = (product: Product): Product => {
     validateProductPriceCurrency(product.priceCurrency)
     return { ...product, pricePerSecond }
 }
-export const isPublishedProduct = (p: Product) => p.state === productStates.DEPLOYED
+export const isPublishedProduct = (p: Product): boolean => p.state === productStates.DEPLOYED
 export const mapProductToPutApi = (product: Product): Record<string, any> => {
     // For published paid products, the some fields can only be updated on the smart contract
     if (isPaidProduct(product) && isPublishedProduct(product)) {
@@ -89,9 +91,9 @@ export const getValidId = (id: string, prefix = true): string => {
 const urlValidator = yup.string().trim().url()
 const emailValidator = yup.string().trim().email()
 export const validate = (product: Product): Record<string, any> => {
-    const invalidFields = {}
+    const invalidFields: {[key: string]: any}= {}
     ;['name', 'description', 'category'].forEach((field) => {
-        invalidFields[field] = !product[field]
+        invalidFields[field] = !product[field as keyof Product]
     })
     invalidFields.imageUrl = !product.imageUrl && !product.newImageToUpload
     invalidFields.streams = !product.streams || product.streams.length <= 0
@@ -118,9 +120,9 @@ export const validate = (product: Product): Record<string, any> => {
     if (product.contact) {
         ['url', 'social1', 'social2', 'social3', 'social4'].forEach((field) => {
             // $FlowFixMe product.contact exists
-            if (product.contact[field] && product.contact[field].length > 0) {
+            if (product.contact[field as keyof ContactDetails] && product.contact[field as keyof ContactDetails].length > 0) {
                 // $FlowFixMe product.contact exists
-                invalidFields[`contact.${field}`] = !urlValidator.isValidSync(product.contact[field])
+                invalidFields[`contact.${field}`] = !urlValidator.isValidSync(product.contact[field as keyof ContactDetails])
             } else {
                 invalidFields[`contact.${field}`] = false
             }

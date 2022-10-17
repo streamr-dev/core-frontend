@@ -1,23 +1,26 @@
 import BN from 'bignumber.js'
 import Web3 from 'web3'
+import { AbiItem } from 'web3-utils'
+import { Contract } from 'web3-eth-contract'
 import NoBalanceError from '$mp/errors/NoBalanceError'
 import getWeb3 from '$utils/web3/getWeb3'
 import getPublicWeb3 from '$utils/web3/getPublicWeb3'
+import { SmartContractConfig } from '$shared/types/web3-types'
 import type { SmartContractCall, Address } from '$shared/types/web3-types'
 import { gasLimits, paymentCurrencies } from '$shared/utils/constants'
 import type { PaymentCurrency } from '$shared/types/common-types'
 import { getConfigForChain } from '$shared/web3/config'
 import getChainId from '$utils/web3/getChainId'
-import tokenAbi from '$shared/web3/abis/token'
-import marketplaceAbi from '$shared/web3/abis/marketplace'
-import uniswapAdaptorAbi from '$shared/web3/abis/uniswapAdaptor'
+import tokenAbi from '$shared/web3/abis/token.json'
+import marketplaceAbi from '$shared/web3/abis/marketplace.json'
+import uniswapAdaptorAbi from '$shared/web3/abis/uniswapAdaptor.json'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { getContract, call } from '../utils/smartContract'
 import { fromAtto, fromDecimals } from './math'
 declare let ethereum: Web3
 const UNISWAP_SAFETY_MARGIN = 1.05
 const ETH = '0x0000000000000000000000000000000000000000'
-export const getDaiAddress = (chainId: number) => {
+export const getDaiAddress = (chainId: number): Address => {
     // Not available in @streamr/config yet
     switch (chainId) {
         case 1:
@@ -39,7 +42,7 @@ export const getDaiAddress = (chainId: number) => {
             throw new Error(`No Dai address found for chainId ${chainId}`)
     }
 }
-export const getDataAddress = (chainId: number) => {
+export const getDataAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
     const dataTokenAddress = contracts.DATA
 
@@ -49,7 +52,7 @@ export const getDataAddress = (chainId: number) => {
 
     return dataTokenAddress
 }
-export const getMarketplaceAddress = (chainId: number) => {
+export const getMarketplaceAddress = (chainId: number): Address => {
     const { contracts } = getConfigForChain(chainId)
     const marketplaceAddress = contracts.MarketplaceV3 || contracts.Marketplace
 
@@ -59,37 +62,37 @@ export const getMarketplaceAddress = (chainId: number) => {
 
     return marketplaceAddress
 }
-export const getMarketplaceAbiAndAddress = (chainId: number) => ({
-    abi: marketplaceAbi,
+export const getMarketplaceAbiAndAddress = (chainId: number): SmartContractConfig => ({
+    abi: marketplaceAbi as AbiItem[],
     address: getMarketplaceAddress(chainId),
 })
-export const marketplaceContract = (usePublicNode = false, chainId: number) =>
+export const marketplaceContract = (usePublicNode = false, chainId: number): Contract =>
     getContract(getMarketplaceAbiAndAddress(chainId), usePublicNode, chainId)
-export const getDataTokenAbiAndAddress = (chainId: number) => ({
-    abi: tokenAbi,
+export const getDataTokenAbiAndAddress = (chainId: number): SmartContractConfig => ({
+    abi: tokenAbi as AbiItem[],
     address: getDataAddress(chainId),
 })
-export const dataTokenContractMethods = (usePublicNode = false, chainId: number) =>
+export const dataTokenContractMethods = (usePublicNode = false, chainId: number): any =>
     getContract(getDataTokenAbiAndAddress(chainId), usePublicNode, chainId).methods
-export const daiTokenContractMethods = (usePublicNode = false, chainId: number) => {
-    const instance = {
-        abi: tokenAbi,
+export const daiTokenContractMethods = (usePublicNode = false, chainId: number): any => {
+    const instance: SmartContractConfig = {
+        abi: tokenAbi as AbiItem[],
         address: getDaiAddress(chainId),
     }
     return getContract(instance, usePublicNode, chainId).methods
 }
-export const erc20TokenContractMethods = (address: Address, usePublicNode = false, chainId: number) => {
-    const instance = {
-        abi: tokenAbi,
+export const erc20TokenContractMethods = (address: Address, usePublicNode = false, chainId: number): any => {
+    const instance: SmartContractConfig = {
+        abi: tokenAbi as AbiItem[],
         address,
     }
     return getContract(instance, usePublicNode, chainId).methods
 }
-export const uniswapAdaptorContractMethods = (usePublicNode = false, chainId: number) => {
+export const uniswapAdaptorContractMethods = (usePublicNode = false, chainId: number): any => {
     const { contracts } = getConfigForChain(chainId)
     const uniswapAdapterAddress = contracts.UniswapAdapter
-    const instance = {
-        abi: uniswapAdaptorAbi,
+    const instance: SmartContractConfig = {
+        abi: uniswapAdaptorAbi as AbiItem[],
         address: uniswapAdapterAddress,
     }
     return getContract(instance, usePublicNode, chainId).methods
@@ -98,7 +101,7 @@ export const getNativeTokenBalance = (address: Address, usePublicNode = false): 
     const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
     return web3.eth
         .getBalance(address)
-        .then((balance) => BN(balance))
+        .then((balance) => new BN(balance))
         .then(fromAtto)
 }
 export const getDataTokenBalance = (
@@ -125,7 +128,7 @@ export const getCustomTokenBalance = async (
 }
 export const getCustomTokenDecimals = async (contractAddress: Address, chainId: number): SmartContractCall<BN> => {
     const decimals = await call(erc20TokenContractMethods(contractAddress, true, chainId).decimals())
-    return BN(decimals)
+    return new BN(decimals)
 }
 export const getMyNativeTokenBalance = (): Promise<BN> =>
     getDefaultWeb3Account().then((myAccount) => getNativeTokenBalance(myAccount))
@@ -144,7 +147,7 @@ export const getMyCustomTokenBalance = async (pricingTokenAddress: Address): Sma
     const chainId = await getChainId()
     return getCustomTokenBalance(pricingTokenAddress, myAccount, false, chainId)
 }
-const tokenInformationCache = {}
+const tokenInformationCache: any = {}
 export const getTokenInformation = async (
     address: Address,
     chainId?: number,
@@ -190,9 +193,9 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode = fal
     if (dataQuantity !== '0') {
         try {
             const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-            let productPriceDATA = web3.utils.toWei(dataQuantity)
-            productPriceDATA = BN(productPriceDATA).multipliedBy(UNISWAP_SAFETY_MARGIN)
-            productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
+            let productPriceDATA: any = web3.utils.toWei(dataQuantity)
+            productPriceDATA = new BN(productPriceDATA).multipliedBy(UNISWAP_SAFETY_MARGIN)
+            productPriceDATA = new BN(productPriceDATA).toFixed(0, 2)
             const chainId = await getChainId()
             let uniswapETH = await call(
                 uniswapAdaptorContractMethods(usePublicNode, chainId).getConversionRateOutput(
@@ -201,7 +204,7 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode = fal
                     productPriceDATA,
                 ),
             )
-            uniswapETH = BN(web3.utils.fromWei(uniswapETH.toString()))
+            uniswapETH = new BN(web3.utils.fromWei(uniswapETH.toString()))
             return uniswapETH
         } catch (e) {
             // Uniswap Adaptor contract has probably reverted the transaction.
@@ -209,19 +212,19 @@ export const uniswapDATAtoETH = async (dataQuantity: string, usePublicNode = fal
             // In this case an invalid price is returned, primarily to block
             // progression in the purchase flow.
             console.error(e)
-            return BN('infinity')
+            return new BN('infinity')
         }
     }
 
-    return BN('infinity')
+    return new BN('infinity')
 }
 export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode = false): Promise<BN> => {
     if (dataQuantity !== '0') {
         try {
             const web3 = usePublicNode ? getPublicWeb3() : getWeb3()
-            let productPriceDATA = web3.utils.toWei(dataQuantity)
-            productPriceDATA = BN(productPriceDATA).multipliedBy(UNISWAP_SAFETY_MARGIN)
-            productPriceDATA = BN(productPriceDATA).toFixed(0, 2)
+            let productPriceDATA: any = web3.utils.toWei(dataQuantity)
+            productPriceDATA = new BN(productPriceDATA).multipliedBy(UNISWAP_SAFETY_MARGIN)
+            productPriceDATA = new BN(productPriceDATA).toFixed(0, 2)
             const chainId = await getChainId()
             let uniswapDAI = await call(
                 uniswapAdaptorContractMethods(usePublicNode, chainId).getConversionRateOutput(
@@ -230,18 +233,18 @@ export const uniswapDATAtoDAI = async (dataQuantity: string, usePublicNode = fal
                     productPriceDATA,
                 ),
             )
-            uniswapDAI = BN(web3.utils.fromWei(uniswapDAI.toString()))
+            uniswapDAI = new BN(web3.utils.fromWei(uniswapDAI.toString()))
             return uniswapDAI
         } catch (e) {
             // Uniswap Adaptor contract has probably reverted the transaction.
             // This can happen when the order size exhausts the uniswap exchange.
             // In this case an invalid price is returned, primarily to block
             // progression in the purchase flow.
-            return BN('infinity')
+            return new BN('infinity')
         }
     }
 
-    return BN('infinity')
+    return new BN('infinity')
 }
 export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode = false): Promise<BN> => {
     if (ethQuantity !== '0') {
@@ -256,18 +259,18 @@ export const uniswapETHtoDATA = async (ethQuantity: string, usePublicNode = fals
                     ethWei,
                 ),
             )
-            uniswapDATA = BN(web3.utils.fromWei(uniswapDATA.toString()))
+            uniswapDATA =new BN(web3.utils.fromWei(uniswapDATA.toString()))
             return uniswapDATA
         } catch (e) {
             // Uniswap Adaptor contract has probably reverted the transaction.
             // This can happen when the order size exhausts the uniswap exchange.
             // In this case an invalid price is returned, primarily to block
             // progression in the purchase flow.
-            return BN('infinity')
+            return new BN('infinity')
         }
     }
 
-    return BN('infinity')
+    return new BN('infinity')
 }
 type ValidateBalance = {
     price: BN
@@ -284,16 +287,16 @@ export const validateBalanceForPurchase = async ({
     pricingTokenAddress,
     includeGasForSetAllowance = false,
     includeGasForResetAllowance = false,
-}: ValidateBalance) => {
+}: ValidateBalance): Promise<void> => {
     const nativeTokenBalance = await getMyNativeTokenBalance()
-    let requiredGas = fromAtto(gasLimits.BUY_PRODUCT)
+    let requiredGas = fromAtto(String(gasLimits.BUY_PRODUCT))
 
     if (includeGasForSetAllowance) {
-        requiredGas = requiredGas.plus(fromAtto(gasLimits.APPROVE))
+        requiredGas = requiredGas.plus(fromAtto(String(gasLimits.APPROVE)))
     }
 
     if (includeGasForResetAllowance) {
-        requiredGas = requiredGas.plus(fromAtto(gasLimits.APPROVE))
+        requiredGas = requiredGas.plus(fromAtto(String(gasLimits.APPROVE)))
     }
 
     switch (paymentCurrency) {
@@ -319,7 +322,7 @@ export const validateBalanceForPurchase = async ({
 
         case paymentCurrencies.ETH: {
             const ethPrice = await uniswapDATAtoETH(price.toString())
-            const requiredEth = BN(ethPrice).plus(requiredGas)
+            const requiredEth = new BN(ethPrice).plus(requiredGas)
 
             if (nativeTokenBalance.isLessThan(requiredEth)) {
                 throw new NoBalanceError({

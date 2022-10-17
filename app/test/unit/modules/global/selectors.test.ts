@@ -1,5 +1,5 @@
 import * as all from '$mp/modules/global/selectors'
-const state = {
+const state: {global: {networkId: string}} = {
     global: {
         networkId: undefined,
     },

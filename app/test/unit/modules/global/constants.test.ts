@@ -6,7 +6,7 @@ describe('global - constants', () => {
                 return // ignore __esModule: true
             }
 
-            expect(constants[key]).toEqual(expect.stringMatching(/^marketplace\/global\//))
+            expect((constants as {[key: string]: string})[key]).toEqual(expect.stringMatching(/^marketplace\/global\//))
         })
     })
 })

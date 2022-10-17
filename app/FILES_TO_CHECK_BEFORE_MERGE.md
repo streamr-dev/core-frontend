@@ -2,6 +2,8 @@
 
 - /app/src/marketplace/utils/smartContract.ts
 - /app/src/shared/utils/web3.ts
+- /app/src/getters/getClientConfig.ts
+- /app/src/marketplace/utils/product.ts
 
 
 ### [Delete this file before merging]

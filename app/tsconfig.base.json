@@ -15,19 +15,5 @@
     "isolatedModules": true,
     "noEmit": true,
     "baseUrl": "./",
-    "paths": {
-      "$app/*": ["*"],
-      "$auth/*": ["src/auth/*"],
-      "$docs/*": ["src/docs/*"],
-      "$mp/*": ["src/marketplace/*"],
-      "$userpages/*": ["src/userpages/*"],
-      "$routes/*": ["src/routes/*"],
-      "$routes": ["src/routes/index.ts"],
-      "$shared/*": ["src/shared/*"],
-      "$testUtils/*": ["src/test/test-utils/*"],
-      "$ui/*": ["src/shared/components/Ui/*"],
-      "$utils/*": ["src/utils/*"],
-      "$config": ["src/config/*.toml"]
-    },
   }
 }
