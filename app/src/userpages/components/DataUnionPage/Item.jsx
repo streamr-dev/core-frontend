@@ -17,6 +17,7 @@ import { getProductById, putProduct } from '$mp/modules/product/services'
 import { validate as validateProduct } from '$mp/utils/product'
 import { MEDIUM, SM, LG } from '$shared/utils/styled'
 import { getDataUnion } from '$mp/modules/dataUnion/services'
+import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto } from '$mp/utils/math'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { withPendingChanges } from '$mp/containers/EditProductPage/state'
@@ -295,6 +296,7 @@ const Item = ({ product, stats }: Props) => {
 
     const [isOpen, setIsOpen] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
+    const [contractProduct, setContractProduct] = useState(null)
     const { update: updateEntities } = useEntities()
     const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
     const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
@@ -313,9 +315,20 @@ const Item = ({ product, stats }: Props) => {
                     setDataUnion(du)
                 }
             }
+
+            if (productId) {
+                try {
+                    const prod = await getProductFromContract(productId, true, chainId)
+                    if (isMounted()) {
+                        setContractProduct(prod)
+                    }
+                } catch (e) {
+                    // Not published to Marketplace
+                }
+            }
         }
         wrapDataUnionLoad(() => load())
-    }, [dataUnionId, chainId, isMounted, wrapDataUnionLoad])
+    }, [dataUnionId, productId, chainId, isMounted, wrapDataUnionLoad])
 
     const productState = useMemo(() => {
         if (product.state === productStates.DEPLOYED &&
@@ -600,6 +613,7 @@ const Item = ({ product, stats }: Props) => {
                 <StyledManagement
                     product={product}
                     dataUnion={dataUnion}
+                    pricingTokenDecimals={(contractProduct && contractProduct.pricingTokenDecimals) || 18}
                     stats={stats}
                 />
             )}
