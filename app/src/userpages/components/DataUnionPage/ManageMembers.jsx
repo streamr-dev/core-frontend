@@ -214,7 +214,7 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
             memberAddress,
         ])
         try {
-            await removeMembers(dataUnionId, [memberAddress])
+            await removeMembers(dataUnionId, chainId, [memberAddress])
         } catch (e) {
             console.error('Could not remove member', e)
         } finally {
@@ -223,7 +223,7 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
                 loadDataUnionStats([dataUnionId])
             }
         }
-    }, [dataUnionId, removeMembers, isMounted, loadDataUnionStats])
+    }, [dataUnionId, chainId, removeMembers, isMounted, loadDataUnionStats])
 
     useEffect(() => {
         const doSearch = async () => {

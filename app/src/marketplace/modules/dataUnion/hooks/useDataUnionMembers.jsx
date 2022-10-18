@@ -2,7 +2,7 @@ import React, { useMemo, useCallback, useState, useContext, useRef, useEffect } 
 
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { useThrottled } from '$shared/hooks/wrapCallback'
-import { getMemberStatuses, removeMembers, searchDataUnionMembers, getSelectedMemberStatuses } from '../services'
+import { getMemberStatuses, addMembers, removeMembers, searchDataUnionMembers, getSelectedMemberStatuses } from '../services'
 
 const DataUnionMembersContext = React.createContext({})
 const VISIBLE_MEMBERS_LIMIT = 100
@@ -61,12 +61,28 @@ function useDataUnionMembers() {
         }
     }, [reset, isMounted, updateDataToState])
 
-    const remove = useCallback(async (dataUnionId, memberAddresses) => {
+    const remove = useCallback(async (dataUnionId, chainId, memberAddresses) => {
         try {
-            await removeMembers(dataUnionId, memberAddresses)
+            await removeMembers(dataUnionId, chainId, memberAddresses)
 
             if (isMounted()) {
                 setMembers((prev) => prev.filter((m) => !memberAddresses.includes(m.address)))
+            }
+        } catch (e) {
+            console.warn(e)
+            throw e
+        }
+    }, [isMounted])
+
+    const add = useCallback(async (dataUnionId, chainId, memberAddresses) => {
+        try {
+            await addMembers(dataUnionId, chainId, memberAddresses)
+
+            if (isMounted()) {
+                setMembers((prev) => ({
+                    ...prev,
+                    memberAddresses,
+                }))
             }
         } catch (e) {
             console.warn(e)
@@ -84,6 +100,7 @@ function useDataUnionMembers() {
         loading,
         load,
         members,
+        add,
         remove,
         reset,
         search,
@@ -91,6 +108,7 @@ function useDataUnionMembers() {
         loading,
         load,
         members,
+        add,
         remove,
         reset,
         search,

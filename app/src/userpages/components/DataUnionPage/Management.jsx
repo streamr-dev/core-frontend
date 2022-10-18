@@ -7,7 +7,7 @@ import DaysPopover from '$shared/components/DaysPopover'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import MembersGraph from '$mp/containers/ProductPage/MembersGraph'
-import SubscriberGraph from '$mp/containers/ProductPage/SubscriberGraph'
+import RevenueGraph from '$mp/containers/ProductPage/RevenueGraph'
 import ProductController, { useController } from '$mp/containers/ProductController'
 import { MEDIUM } from '$shared/utils/styled'
 
@@ -56,15 +56,23 @@ const StyledDaysPopover = styled(DaysPopover)`
 type Props = {
     product: any,
     dataUnion: any,
+    pricingTokenDecimals: number,
     stats: any,
     className?: string,
 }
 
-const Management = ({ product, dataUnion, stats, className }: Props) => {
-    const [days, setDays] = useState(7)
-    const [subsDays, setSubsDays] = useState(7)
+const Management = ({
+    product,
+    dataUnion,
+    pricingTokenDecimals,
+    stats,
+    className,
+}: Props) => {
+    const [memberDays, setMemberDays] = useState(7)
+    const [revenueDays, setRevenueDays] = useState(7)
     const { loadDataUnion } = useController()
     const memberCount = (stats && stats.memberCount) || 0
+    const currentRevenue = (stats && stats.totalEarnings) || 0
     const { beneficiaryAddress } = product
     const dataUnionId = beneficiaryAddress
     const chainId = getChainIdFromApiString(product.chain)
@@ -88,19 +96,21 @@ const Management = ({ product, dataUnion, stats, className }: Props) => {
                 <GraphHeader>
                     <TimeSeriesGraph.Header>
                         <Heading>
-                            Subscribers
+                            Revenue
                         </Heading>
                         <StyledDaysPopover
-                            onChange={setSubsDays}
-                            selectedItem={`${subsDays}`}
+                            onChange={setRevenueDays}
+                            selectedItem={`${revenueDays}`}
                         />
                     </TimeSeriesGraph.Header>
                 </GraphHeader>
                 {dataUnionId && (
-                    <SubscriberGraph
-                        productId={product.id}
-                        shownDays={subsDays}
+                    <RevenueGraph
+                        dataUnionAddress={dataUnionId}
+                        currentRevenue={currentRevenue}
+                        shownDays={revenueDays}
                         chainId={chainId}
+                        pricingTokenDecimals={pricingTokenDecimals}
                     />
                 )}
             </Box>
@@ -109,16 +119,16 @@ const Management = ({ product, dataUnion, stats, className }: Props) => {
                     <TimeSeriesGraph.Header>
                         <Heading>Members</Heading>
                         <StyledDaysPopover
-                            onChange={setDays}
-                            selectedItem={`${days}`}
+                            onChange={setMemberDays}
+                            selectedItem={`${memberDays}`}
                         />
                     </TimeSeriesGraph.Header>
                 </GraphHeader>
                 {dataUnionId && (
                     <MembersGraph
                         dataUnionAddress={dataUnionId}
-                        memberCount={(memberCount && memberCount.total) || 0}
-                        shownDays={days}
+                        currentMemberCount={(memberCount && memberCount.total) || 0}
+                        shownDays={memberDays}
                         chainId={chainId}
                     />
                 )}
