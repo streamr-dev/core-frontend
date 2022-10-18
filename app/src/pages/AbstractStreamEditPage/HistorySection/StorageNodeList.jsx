@@ -20,7 +20,7 @@ function UnstyledStorageNodeList({ className, disabled }) {
 
         async function fn() {
             try {
-                const addresses = await client.getStorageNodesOf(streamId)
+                const addresses = await client.getStorageNodes(streamId)
 
                 if (aborted) {
                     return
