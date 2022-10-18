@@ -4,7 +4,9 @@ import * as constants from '$mp/modules/transactions/constants'
 import { transactionTypes } from '$shared/utils/constants'
 import * as transactionUtils from '$shared/utils/transactions'
 import * as entitiesActions from '$shared/modules/entities/actions'
-import mockStore from '$testUtils/mockStoreProvider'
+import mockStore from '$app/test/test-utils/mockStoreProvider'
+import TransactionError from '$shared/errors/TransactionError'
+
 describe('transactions - actions', () => {
     beforeEach(() => {})
     afterEach(() => {
@@ -13,14 +15,14 @@ describe('transactions - actions', () => {
     })
     describe('addTransaction', () => {
         it('updates transaction succesfully', async () => {
-            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation((): any => ({
                 type: 'updateEntities',
             }))
             const addTransactionToSessionStorageSpy = jest.spyOn(transactionUtils, 'addTransactionToSessionStorage')
             const txHash = 'hash'
             const type = 'testType'
             const store = mockStore()
-            store.dispatch(actions.addTransaction(txHash, type))
+            actions.addTransaction(txHash, type)(store.dispatch)
             const expectedActions = [
                 {
                     type: 'updateEntities',
@@ -36,7 +38,6 @@ describe('transactions - actions', () => {
             expect(addTransactionToSessionStorageSpy).toBeCalledWith(txHash, type)
         })
         const allowedNotifications = [
-            transactionTypes.PURCHASE,
             transactionTypes.UNDEPLOY_PRODUCT,
             transactionTypes.REDEPLOY_PRODUCT,
             transactionTypes.CREATE_CONTRACT_PRODUCT,
@@ -44,7 +45,7 @@ describe('transactions - actions', () => {
         ]
         Object.values(transactionTypes).forEach((type) => {
             it(`adds transaction and handles notification correctly (${type})`, () => {
-                jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
+                jest.spyOn(entitiesActions, 'updateEntities').mockImplementation((): any => ({
                     type: 'updateEntities',
                 }))
                 const notificationStub = jest.fn()
@@ -52,7 +53,7 @@ describe('transactions - actions', () => {
                 const addTransactionToSessionStorageSpy = jest.spyOn(transactionUtils, 'addTransactionToSessionStorage')
                 const txHash = 'hash'
                 const store = mockStore()
-                store.dispatch(actions.addTransaction(txHash, type))
+                actions.addTransaction(txHash, type)(store.dispatch)
                 const expectedActions = [
                     {
                         type: 'updateEntities',
@@ -78,7 +79,7 @@ describe('transactions - actions', () => {
     })
     describe('completeTransaction', () => {
         it('completes the transaction', () => {
-            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation((): any => ({
                 type: 'updateEntities',
             }))
             const removeTransactionFromSessionStorageSpy = jest.spyOn(
@@ -88,7 +89,7 @@ describe('transactions - actions', () => {
             const txHash = 'hash'
             const receipt = 'receipt'
             const store = mockStore()
-            store.dispatch(actions.completeTransaction(txHash, receipt))
+            actions.completeTransaction(txHash, {transactionHash: receipt})(store.dispatch)
             const expectedActions = [
                 {
                     type: 'updateEntities',
@@ -106,7 +107,7 @@ describe('transactions - actions', () => {
     })
     describe('transactionError', () => {
         it('adds transaction error', () => {
-            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation(() => ({
+            jest.spyOn(entitiesActions, 'updateEntities').mockImplementation((): any => ({
                 type: 'updateEntities',
             }))
             const removeTransactionFromSessionStorageSpy = jest.spyOn(
@@ -116,7 +117,7 @@ describe('transactions - actions', () => {
             const txHash = 'hash'
             const error = 'error'
             const store = mockStore()
-            store.dispatch(actions.transactionError(txHash, error))
+            actions.transactionError(txHash, new TransactionError(error))(store.dispatch)
             const expectedActions = [
                 {
                     type: 'updateEntities',

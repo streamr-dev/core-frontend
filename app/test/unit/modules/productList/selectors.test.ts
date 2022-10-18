@@ -3,6 +3,7 @@ import * as all from '$mp/modules/productList/selectors'
 import { productsSchema } from '$shared/modules/entities/schema'
 import { initialState } from '$mp/modules/productList/reducer'
 import { productListPageSize } from '$mp/utils/constants'
+import { StoreState } from '$shared/types/store-state'
 const products = [
     {
         id: '123abc',
@@ -18,34 +19,33 @@ const products = [
     },
 ]
 const normalized = normalize(products, productsSchema)
-const state = {
-    test: true,
+const state: Partial<StoreState> = {
     productList: { ...initialState, ids: normalized.result },
     entities: normalized.entities,
 }
 describe('productList - selectors', () => {
     it('selects fetching product list status', () => {
-        expect(all.selectFetchingProductList(state)).toStrictEqual(false)
+        expect(all.selectFetchingProductList(state as StoreState)).toStrictEqual(false)
     })
     it('selects product list ids', () => {
-        expect(all.selectProductListIds(state)).toStrictEqual(state.productList.ids)
+        expect(all.selectProductListIds(state as StoreState)).toStrictEqual(state.productList.ids)
     })
     it('selects product list', () => {
-        expect(all.selectProductList(state)).toStrictEqual(products)
+        expect(all.selectProductList(state as StoreState)).toStrictEqual(products)
     })
     it('selects filter', () => {
-        expect(all.selectFilter(state)).toStrictEqual(state.productList.filter)
+        expect(all.selectFilter(state as StoreState)).toStrictEqual(state.productList.filter)
     })
     it('selects error', () => {
-        expect(all.selectProductListError(state)).toStrictEqual(undefined)
+        expect(all.selectProductListError(state as StoreState)).toStrictEqual(undefined)
     })
     it('selects page size', () => {
-        expect(all.selectPageSize(state)).toStrictEqual(productListPageSize)
+        expect(all.selectPageSize(state as StoreState)).toStrictEqual(productListPageSize)
     })
     it('selects offset', () => {
-        expect(all.selectOffset(state)).toStrictEqual(state.productList.offset)
+        expect(all.selectOffset(state as StoreState)).toStrictEqual(state.productList.offset)
     })
     it('selects has more results', () => {
-        expect(all.selectHasMoreSearchResults(state)).toStrictEqual(false)
+        expect(all.selectHasMoreSearchResults(state as StoreState)).toStrictEqual(false)
     })
 })

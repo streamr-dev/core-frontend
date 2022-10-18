@@ -1,8 +1,9 @@
 import reducer, { initialState } from '$mp/modules/productList/reducer'
 import * as constants from '$mp/modules/productList/constants'
+import { ProductListState } from '$mp/types/store-state'
 describe('productList - reducer', () => {
     it('has initial state', () => {
-        expect(reducer(undefined, {})).toStrictEqual(initialState)
+        expect(reducer(undefined, {type: '', payload: {}})).toStrictEqual(initialState)
     })
     it('handles request', () => {
         const expectedState = { ...initialState, fetching: true }
@@ -59,9 +60,10 @@ describe('productList - reducer', () => {
     })
     it('clears filter', () => {
         const expectedState = { ...initialState }
-        const mockState = { ...initialState, filter: 'foo' }
+        const mockState: ProductListState = { ...initialState, filter: {search: 'foo'} }
         const reducerState = reducer(mockState, {
             type: constants.CLEAR_FILTERS,
+            payload: {}
         })
         expect(reducerState).toStrictEqual(expectedState)
     })
@@ -73,15 +75,16 @@ describe('productList - reducer', () => {
             offset: 0,
             hasMoreSearchResults: undefined,
         }
-        const mockState = {
+        const mockState: ProductListState = {
             ...initialState,
-            error: {},
-            ids: [1, 2, 3],
+            error: null,
+            ids: ['1', '2', '3'],
             offset: 2,
             hasMoreSearchResults: true,
         }
         const reducerState = reducer(mockState, {
             type: constants.CLEAR_PRODUCT_LIST,
+            payload: {}
         })
         expect(reducerState).toStrictEqual(expectedState)
     })

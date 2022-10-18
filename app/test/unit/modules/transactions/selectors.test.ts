@@ -1,6 +1,7 @@
 import { normalize } from 'normalizr'
 import * as all from '$mp/modules/transactions/selectors'
 import { transactionsSchema } from '$shared/modules/entities/schema'
+import { StoreState } from '$shared/types/store-state'
 const transactions = [
     {
         id: '12345',
@@ -14,7 +15,7 @@ const transactions = [
     },
 ]
 const normalized = normalize(transactions, transactionsSchema)
-const state = {
+const state: Partial<StoreState> = {
     transactions: {
         pending: ['12345'],
         completed: ['abcdef'],
@@ -23,13 +24,13 @@ const state = {
 }
 describe('transactions - selectors', () => {
     it('selects pending transaction ids', () => {
-        expect(all.selectPendingTransactionIds(state)).toStrictEqual(state.transactions.pending)
+        expect(all.selectPendingTransactionIds(state as StoreState)).toStrictEqual(state.transactions.pending)
     })
     it('selects completed transaction ids', () => {
-        expect(all.selectCompletedTransactionIds(state)).toStrictEqual(state.transactions.completed)
+        expect(all.selectCompletedTransactionIds(state as StoreState)).toStrictEqual(state.transactions.completed)
     })
     it('selects the transaction entity', () => {
         const selector = all.makeSelectTransaction('12345')
-        expect(selector(state)).toStrictEqual(transactions[0])
+        expect(selector(state as StoreState)).toStrictEqual(transactions[0])
     })
 })

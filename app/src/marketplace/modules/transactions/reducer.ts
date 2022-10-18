@@ -6,7 +6,8 @@ export const initialState: TransactionsState = {
     pending: [],
     completed: [],
 }
-const reducer: (arg0: TransactionsState) => TransactionsState = handleActions(
+export type TransactionsActionPayloads = TransactionIdAction['payload'] | object
+const reducer = handleActions<TransactionsState, TransactionsActionPayloads>(
     {
         [ADD_TRANSACTION]: (state: TransactionsState, action: TransactionIdAction): TransactionsState => {
             const pending = new Set(state.pending)

@@ -19,7 +19,7 @@ export const completeTransactionRequest: TransactionIdActionCreator = createActi
         id,
     }),
 )
-export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: (...args: Array<any>) => any) => {
+export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: (...args: Array<any>) => any): void => {
     const { entities } = normalize(
         {
             id,
@@ -47,7 +47,7 @@ export const addTransaction = (id: Hash, type: TransactionType) => (dispatch: (.
         default:
     }
 }
-export const completeTransaction = (id: Hash, receipt: Receipt) => (dispatch: (...args: Array<any>) => any) => {
+export const completeTransaction = (id: Hash, receipt: Receipt) => (dispatch: (...args: Array<any>) => any): void => {
     const { entities } = normalize(
         {
             id,
@@ -61,7 +61,7 @@ export const completeTransaction = (id: Hash, receipt: Receipt) => (dispatch: (.
     dispatch(completeTransactionRequest(id))
     removeTransactionFromSessionStorage(id)
 }
-export const transactionError = (id: Hash, error: TransactionError) => (dispatch: (...args: Array<any>) => any) => {
+export const transactionError = (id: Hash, error: TransactionError) => (dispatch: (...args: Array<any>) => any): void => {
     const { entities } = normalize(
         {
             id,

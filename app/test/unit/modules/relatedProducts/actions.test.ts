@@ -4,7 +4,7 @@ import * as constants from '$mp/modules/relatedProducts/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/relatedProducts/services'
 import { productsSchema } from '$shared/modules/entities/schema'
-import mockStore from '$testUtils/mockStoreProvider'
+import mockStore from '$app/test/test-utils/mockStoreProvider'
 describe('relatedProducts - actions', () => {
     const productId = '123'
     const relatedProducts = [
@@ -23,9 +23,9 @@ describe('relatedProducts - actions', () => {
         jest.restoreAllMocks()
     })
     it('gets related products', async () => {
-        jest.spyOn(services, 'getRelatedProducts').mockImplementation(() => Promise.resolve(relatedProducts))
+        jest.spyOn(services, 'getRelatedProducts').mockImplementation((): any => Promise.resolve(relatedProducts))
         const store = mockStore()
-        await store.dispatch(actions.getRelatedProducts(productId))
+        await actions.getRelatedProducts(productId)(store.dispatch)
         const { result, entities } = normalize(relatedProducts, productsSchema)
         const expectedActions = [
             {
@@ -50,7 +50,7 @@ describe('relatedProducts - actions', () => {
         const error = new Error('Error')
         jest.spyOn(services, 'getRelatedProducts').mockImplementation(() => Promise.reject(error))
         const store = mockStore()
-        await store.dispatch(actions.getRelatedProducts(productId))
+        await actions.getRelatedProducts(productId)(store.dispatch)
         const expectedActions = [
             {
                 type: constants.GET_RELATED_PRODUCTS_REQUEST,

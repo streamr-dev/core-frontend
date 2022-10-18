@@ -1,5 +1,5 @@
 import moxios from 'moxios'
-import setTempEnv from '$testUtils/setTempEnv'
+import setTempEnv from '$app/test/test-utils/setTempEnv'
 import * as services from '$mp/modules/productList/services'
 import { productListPageSize } from '$mp/utils/constants'
 describe('productList - services', () => {
@@ -64,8 +64,8 @@ describe('productList - services', () => {
             })
             const expectedUrl = `http://localhost/api/v2\
 /products?categories&grantedAccess=false&max=${
-                productListPageSize + 1
-            }&maxPrice&offset=0&publicAccess=true&search=&sortBy`
+    productListPageSize + 1
+}&maxPrice&offset=0&publicAccess=true&search=&sortBy`
             expect(request.config.method).toBe('get')
             expect(request.config.url).toBe(`${expectedUrl}`)
         })

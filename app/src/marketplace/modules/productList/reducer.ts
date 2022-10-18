@@ -18,7 +18,8 @@ export const initialState: ProductListState = {
     offset: 0,
     hasMoreSearchResults: undefined,
 }
-const reducer: (arg0: ProductListState) => ProductListState = handleActions(
+export type ProductListActionPayloads = ProductsAction['payload'] | ProductsErrorAction['payload'] | FilterAction['payload'] | object
+const reducer = handleActions<ProductListState, ProductListActionPayloads>(
     {
         [GET_PRODUCTS_REQUEST]: (state: ProductListState): ProductListState => ({
             ...state,

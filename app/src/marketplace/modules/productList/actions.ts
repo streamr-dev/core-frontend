@@ -4,14 +4,14 @@ import debounce from 'lodash/debounce'
 import { productsSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
-import type { Product, Filter } from '../../types/product-types'
+import type { Filter, ProductIdList } from '../../types/product-types'
 import type { StoreState } from '../../types/store-state'
 import { selectFilter, selectPageSize, selectOffset } from './selectors'
 import { GET_PRODUCTS_REQUEST, GET_PRODUCTS_SUCCESS, GET_PRODUCTS_FAILURE, UPDATE_FILTER, CLEAR_FILTERS, CLEAR_PRODUCT_LIST } from './constants'
 import * as api from './services'
 import type { ProductsActionCreator, ProductsErrorActionCreator, FilterActionCreator } from './types'
 const getProductsRequest: ReduxActionCreator = createAction(GET_PRODUCTS_REQUEST)
-const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: Array<Product>, hasMore: boolean) => ({
+const getProductsSuccess: ProductsActionCreator = createAction(GET_PRODUCTS_SUCCESS, (products: ProductIdList, hasMore: boolean) => ({
     products,
     hasMore,
 }))
@@ -65,8 +65,11 @@ const doGetProductsDebounced = debounce(
 // Use a debounced fetch because this action is dispatched when the user is typing
 // (we cannot use here `getProductsDebounced = () => debounce(...)` because that would
 // return a new instance every time `getProductsDebounced` is called).
-export const getProductsDebounced = (options: GetProducts) => doGetProductsDebounced.bind(null, options)
-export const getProducts = (replace: boolean | null | undefined) => doGetProducts.bind(null, replace)
+// TODO add typing
+export const getProductsDebounced = (options: GetProducts): any => doGetProductsDebounced.bind(null, options)
+export const getProducts = (
+    replace: boolean | null | undefined
+): (dispatch: (...args: Array<any>) => any, getState: () => StoreState) => Promise<any> => doGetProducts.bind(null, replace)
 export const updateFilter: FilterActionCreator = createAction(UPDATE_FILTER, (filter: Filter) => ({
     filter,
 }))

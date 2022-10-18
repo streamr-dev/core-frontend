@@ -7,7 +7,8 @@ export const initialState: RelatedProductListState = {
     fetching: false,
     error: null,
 }
-export const reducer: (arg0: RelatedProductListState) => RelatedProductListState = handleActions(
+export type RelatedProductsActionPayloads = RelatedProductsAction['payload'] | RelatedProductsErrorAction['payload'] | object
+export const reducer = handleActions<RelatedProductListState, RelatedProductsActionPayloads>(
     {
         [GET_RELATED_PRODUCTS_REQUEST]: (state: RelatedProductListState): RelatedProductListState => ({
             ...state,

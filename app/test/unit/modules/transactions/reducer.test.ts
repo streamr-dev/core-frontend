@@ -2,7 +2,7 @@ import reducer, { initialState } from '$mp/modules/transactions/reducer'
 import * as constants from '$mp/modules/transactions/constants'
 describe('transactions - reducers', () => {
     it('has initial state', async () => {
-        expect(reducer(undefined, {})).toStrictEqual(initialState)
+        expect(reducer(undefined, {type: '', payload: {}})).toStrictEqual(initialState)
     })
     it('adds transaction', () => {
         const id = 'txHash'

@@ -6,6 +6,7 @@ import * as constants from '$mp/modules/productList/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
 import * as services from '$mp/modules/productList/services'
 import { productsSchema } from '$shared/modules/entities/schema'
+import { StoreState } from '$shared/types/store-state'
 const middlewares = [thunk]
 const mockStore = configureMockStore(middlewares)
 jest.mock('$mp/modules/productList/services')
@@ -27,7 +28,7 @@ describe('productList - actions', () => {
                 },
             ]
             const { result, entities } = normalize(products, productsSchema)
-            jest.spyOn(services, 'getProducts').mockImplementation(() =>
+            jest.spyOn(services, 'getProducts').mockImplementation((): any =>
                 Promise.resolve({
                     products,
                     hasMoreProducts: false,
@@ -38,7 +39,7 @@ describe('productList - actions', () => {
                     filter: '',
                 },
             })
-            await store.dispatch(actions.getProducts())
+            await actions.getProducts(false)(store.dispatch, store.getState as () => StoreState)
             const expectedActions = [
                 {
                     type: constants.GET_PRODUCTS_REQUEST,
