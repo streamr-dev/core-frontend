@@ -29,21 +29,10 @@ jest.mock('$app/src/getters/getConfig', () => {
                 mainchain: {
                     ...actualConfig.client.mainchain,
                     chainId: 9999,
-                    dataTokenAddress: 'tokenAddress',
                     rpc: {
                         ...actualConfig.client.mainchain.rpc,
                         rpcs: [{
                             url: 'http://mainchainrpc:8545',
-                        }],
-                    },
-                },
-                dataUnionChain: {
-                    ...actualConfig.client.dataUnionChain,
-                    rpc: {
-                        ...actualConfig.client.dataUnionChain.rpc,
-                        chainId: 8995,
-                        rpcs: [{
-                            url: 'https://dataunionschain',
                         }],
                     },
                 },
@@ -64,31 +53,6 @@ jest.mock('$app/src/getters/getConfig', () => {
 
 describe('config', () => {
     describe('building the config', () => {
-        it('gets the right mainnet config from env', () => {
-            const { mainnet } = getConfig()
-
-            expect(mainnet).toStrictEqual({
-                chainId: 9999,
-                rpcUrl: 'http://mainchainrpc:8545',
-                transactionConfirmationBlocks: 1337,
-                dataToken: {
-                    abi: ['t_test', 't_values', 't_only'],
-                    address: 'tokenAddress',
-                },
-                dataUnionAbi: ['d_test', 'd_values', 'd_only'],
-            })
-        })
-
-        it('gets the right dataunions chain config from env', () => {
-            const { dataunionsChain } = getConfig()
-
-            expect(dataunionsChain).toStrictEqual({
-                chainId: 8995,
-                rpcUrl: 'https://dataunionschain',
-                dataUnionAbi: ['ds_test', 'ds_values', 'ds_only'],
-            })
-        })
-
         it('gets metamask config', () => {
             const { metamask } = getConfig()
 

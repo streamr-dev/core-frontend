@@ -9,24 +9,6 @@ import tokenAbi from './abis/token'
 import dataUnionAbi from './abis/dataunion'
 import dataUnionSidechainAbi from './abis/dataunionSidechain'
 
-type MainnetConfig = {
-    chainId: string,
-    rpcUrl: string,
-    dataUnionAbi: string,
-    transactionConfirmationBlocks: number,
-}
-
-type DataUnionChainConfig = {
-    chainId: string,
-    rpcUrl: string,
-    dataUnionAbi: string,
-}
-
-type Config = {
-    mainnet: MainnetConfig,
-    dataunionsChain: DataUnionChainConfig,
-}
-
 const chainConfigs = Chains.load()
 
 export const getConfigForChain = (chainId: number) => {
@@ -74,8 +56,8 @@ export const getConfigForChainByName = (chainName: string) => {
     return getConfigForChain(config.id)
 }
 
-const getConfig = (): Config => {
-    const { tokenAddress, dataUnionChainRPCs, mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
+const getConfig = () => {
+    const { tokenAddress, mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
 
     // eslint-disable-next-line max-len
     const { web3TransactionConfirmationBlocks } = getCoreConfig()
@@ -83,21 +65,6 @@ const getConfig = (): Config => {
     const mainChainId = getMainChainId()
 
     return {
-        mainnet: {
-            chainId: mainChainId,
-            rpcUrl: mainChainRPCs.rpcs[0].url,
-            transactionConfirmationBlocks: web3TransactionConfirmationBlocks || 24,
-            dataToken: {
-                abi: tokenAbi,
-                address: tokenAddress,
-            },
-            dataUnionAbi,
-        },
-        dataunionsChain: {
-            chainId: dataUnionChainRPCs.chainId,
-            rpcUrl: dataUnionChainRPCs.rpcs[0].url,
-            dataUnionAbi: dataUnionSidechainAbi,
-        },
         metamask: {
             // local development values
             // Note: rpcUrls need to use HTTPS urls, otherwise adding the chain will fail
@@ -108,17 +75,6 @@ const getConfig = (): Config => {
                     nativeCurrency: {
                         name: 'ETH',
                         symbol: 'ETH',
-                        decimals: 18,
-                    },
-                }),
-            },
-            [dataUnionChainRPCs.chainId]: {
-                getParams: () => ({
-                    chainName: 'Dataunions chain (dev)',
-                    rpcUrls: [dataUnionChainRPCs.rpcs[0].url],
-                    nativeCurrency: {
-                        name: 'xDAI',
-                        symbol: 'xDAI',
                         decimals: 18,
                     },
                 }),

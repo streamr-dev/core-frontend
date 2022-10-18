@@ -8,6 +8,7 @@ export default function formatRpc(rpc) {
 
     const { client } = getConfig()
 
+    console.log(rpc)
     return {
         ...rpc,
         rpcs: rpc.rpcs.map((r) => ({

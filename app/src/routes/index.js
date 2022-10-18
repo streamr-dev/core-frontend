@@ -88,8 +88,9 @@ export const buildRoutes = (paths: Paths, getVariables: () => Variables): Routes
 
 const routes = buildRoutes(definitions, () => {
     const { streamrUrl: streamr, platformOriginUrl: platform, landingPageUrl: landingPage } = getCoreConfig()
+    const api = `${streamr}/api/v2`
 
-    const { restUrl: api } = getClientConfig()
+    console.log(api)
 
     return {
         api,
