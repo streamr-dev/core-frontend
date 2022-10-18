@@ -2,6 +2,7 @@ import { normalize } from 'normalizr'
 import merge from 'lodash/merge'
 import * as all from '$mp/modules/product/selectors'
 import { categoriesSchema, streamsSchema, productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
+import { StoreState } from '$shared/types/store-state'
 const categories = [
     {
         id: 'cat-1',
@@ -63,25 +64,22 @@ const subscriptions = [
     },
 ]
 const normalizedSubscriptions = normalize(subscriptions, subscriptionsSchema)
-const state = {
-    test: true,
+const state: Partial<StoreState> = {
     product: {
-        id: '1337',
-        fetchingProduct: true,
-        streams: normalizedStreams.result,
-        fetchingStreams: true,
-        streamsError: null,
         fetchingContractSubscription: true,
         contractSubscriptionError: null,
         contractSubscription: {
-            id: '1337',
+            productId: '1337',
+            endTimestamp: new Date().getTime()
         },
     },
     myPurchaseList: {
+        fetching: false,
+        error:null,
+        filter: null,
         products: ['1337', '1338'],
         subscriptions: ['1337', '1338'],
     },
-    otherData: 42,
     entities: merge(
         normalizedProducts.entities,
         normalizedCategories.entities,
@@ -89,12 +87,14 @@ const state = {
         normalizedSubscriptions.entities,
     ),
     web3: {
+        error: null,
+        ethereumNetworkId: '1234',
         accountId: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
         enabled: true,
     },
 }
 describe('product - selectors', () => {
     it('selects contract subscription', () => {
-        expect(all.selectContractSubscription(state)).toBe(state.product.contractSubscription)
+        expect(all.selectContractSubscription(state as StoreState)).toBe(state.product.contractSubscription)
     })
 })

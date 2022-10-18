@@ -2,6 +2,7 @@ import { normalize } from 'normalizr'
 import merge from 'lodash/merge'
 import * as all from '$mp/modules/myPurchaseList/selectors'
 import { productsSchema, subscriptionsSchema } from '$shared/modules/entities/schema'
+import { StoreState } from '$shared/types/store-state'
 const products = [
     {
         id: '123abc',
@@ -38,30 +39,30 @@ const subscriptions = [
     },
 ]
 const normalizedSubscriptions = normalize(subscriptions, subscriptionsSchema)
-const state = {
-    test: true,
+const state: Partial<StoreState> = {
     myPurchaseList: {
         fetching: false,
         error: null,
         products: normalizedProducts.result,
         subscriptions: normalizedProducts.result,
+        filter: null
     },
     entities: merge(normalizedProducts.entities, normalizedSubscriptions.entities),
 }
 describe('myPurchaseList - selectors', () => {
     it('selects fetching status for my purchases', () => {
-        expect(all.selectFetchingMyPurchaseList(state)).toStrictEqual(false)
+        expect(all.selectFetchingMyPurchaseList(state as StoreState)).toStrictEqual(false)
     })
     it('selects my purchase list ids', () => {
-        expect(all.selectMyPurchaseListIds(state)).toStrictEqual(state.myPurchaseList.products)
+        expect(all.selectMyPurchaseListIds(state as StoreState)).toStrictEqual(state.myPurchaseList.products)
     })
     it('selects purchase list', () => {
-        expect(all.selectMyPurchaseList(state)).toStrictEqual(products)
+        expect(all.selectMyPurchaseList(state as StoreState)).toStrictEqual(products)
     })
     it('selects error', () => {
-        expect(all.selectMyPurchaseListError(state)).toStrictEqual(null)
+        expect(all.selectMyPurchaseListError(state as StoreState)).toStrictEqual(null)
     })
     it('selects subscriptions', () => {
-        expect(all.selectSubscriptions(state)).toStrictEqual(subscriptions)
+        expect(all.selectSubscriptions(state as StoreState)).toStrictEqual(subscriptions)
     })
 })

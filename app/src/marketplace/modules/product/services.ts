@@ -27,6 +27,7 @@ export const getProductById = async (id: ProductId, useAuthorization = true): Ap
         }),
         useAuthorization,
     }).then(mapProductFromApi)
+
 export const getMyProductSubscription = (id: ProductId, chainId: number): SmartContractCall<Subscription> =>
     Promise.all([getProductFromContract(id, true, chainId), getDefaultWeb3Account()])
         .then(([, account]) => call(marketplaceContract(true, chainId).methods.getSubscription(getValidId(id), account)))
@@ -161,7 +162,7 @@ export const getMyDataAllowance = (chainId: number): SmartContractCall<BN> =>
         .then((myAddress) => call(dataTokenContractMethods(false, chainId).allowance(myAddress, marketplaceContract(false, chainId).options.address)))
         .then(fromAtto)
 export const setMyDataAllowance = (amount: string | BN, chainId: number): SmartContractTransaction => {
-    if (BN(amount).isLessThan(0)) {
+    if (new BN(amount).isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }
 
@@ -177,7 +178,7 @@ export const getMyDaiAllowance = (chainId: number): SmartContractCall<BN> => {
         .then(fromAtto)
 }
 export const setMyDaiAllowance = (amount: string | BN, chainId: number): SmartContractTransaction => {
-    if (BN(amount).isLessThan(0)) {
+    if (new BN(amount).isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }
 
@@ -192,16 +193,16 @@ export const getMyTokenAllowance = async (tokenAddress: Address, chainId: number
     const allowance = await call(
         erc20TokenContractMethods(tokenAddress, false, chainId).allowance(account, marketplaceContract(false, chainId).options.address),
     )
-    return BN(allowance)
+    return new BN(allowance)
 }
 export const setMyTokenAllowance = (amount: string | BN, tokenAddress: Address, chainId: number): SmartContractTransaction => {
-    if (BN(amount).isLessThan(0)) {
+    if (new BN(amount).isLessThan(0)) {
         throw new Error('Amount must be non-negative!')
     }
 
     const method = erc20TokenContractMethods(tokenAddress, false, chainId).approve(
         marketplaceContract(false, chainId).options.address,
-        BN(amount).toString(),
+        new BN(amount).toString(),
     )
     return send(method, {
         network: chainId,

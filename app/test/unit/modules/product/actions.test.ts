@@ -1,15 +1,15 @@
-import mockStore from '$testUtils/mockStoreProvider'
+import mockStore from '$app/test/test-utils/mockStoreProvider'
 import * as actions from '$mp/modules/product/actions'
 import * as constants from '$mp/modules/product/constants'
 import * as services from '$mp/modules/product/services'
 import { initialState } from '$mp/modules/product/reducer'
 jest.mock('$mp/modules/myPurchaseList/actions', () => ({
-    getMyPurchases: () => (dispatch) =>
+    getMyPurchases: () => (dispatch): any =>
         new Promise((resolve) => {
             dispatch({
                 type: 'TEST_GET_MY_PURCHASES',
             })
-            resolve()
+            resolve(null)
         }),
 }))
 describe('product - actions', () => {
@@ -31,7 +31,7 @@ describe('product - actions', () => {
             const store = mockStore({
                 product: initialState,
             })
-            await store.dispatch(actions.getProductSubscription(productId))
+            await actions.getProductSubscription(productId, 1)(store.dispatch)
             const expectedActions = [
                 {
                     type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
@@ -59,7 +59,7 @@ describe('product - actions', () => {
             const store = mockStore({
                 product: initialState,
             })
-            await store.dispatch(actions.getProductSubscription(productId))
+            await actions.getProductSubscription(productId, 1)(store.dispatch)
             const expectedActions = [
                 {
                     type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,

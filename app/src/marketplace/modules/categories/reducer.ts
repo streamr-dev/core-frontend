@@ -7,7 +7,8 @@ export const initialState: CategoryState = {
     fetching: false,
     error: null,
 }
-const reducer: (arg0: CategoryState) => CategoryState = handleActions(
+export type CategoriesActionsPayloads = CategoriesAction['payload'] | CategoriesErrorAction['payload'] | object
+const reducer = handleActions<CategoryState, CategoriesActionsPayloads>(
     {
         [GET_CATEGORIES_REQUEST]: (state: CategoryState): CategoryState => ({
             ...state,

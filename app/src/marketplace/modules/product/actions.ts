@@ -29,7 +29,7 @@ const getProductSubscriptionFromContractFailure: ProductErrorActionCreator = cre
         error,
     }),
 )
-export const getProductSubscription = (id: ProductId, chainId: number) => (dispatch: (...args: Array<any>) => any) => {
+export const getProductSubscription = (id: ProductId, chainId: number) => (dispatch: (...args: Array<any>) => any): Promise<void> => {
     dispatch(getProductSubscriptionFromContractRequest(id))
     return dispatch(getMyPurchases()).then(() =>
         services.getMyProductSubscription(id, chainId).then(

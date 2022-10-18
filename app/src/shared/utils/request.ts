@@ -18,7 +18,7 @@ export default function request({
     data = null,
     useAuthorization = true,
 }: RequestParams): ApiResult<any> {
-    const defaultOptions = {
+    const defaultOptions: {headers: {[key: string]: string}} = {
         headers: { ...(useAuthorization ? getAuthorizationHeader() : {}) },
     }
 

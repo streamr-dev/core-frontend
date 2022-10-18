@@ -1,5 +1,5 @@
 import moxios from 'moxios'
-import setTempEnv from '$testUtils/setTempEnv'
+import setTempEnv from '$app/test/test-utils/setTempEnv'
 import * as services from '$mp/modules/myPurchaseList/services'
 describe('myPurchaseList - services', () => {
     setTempEnv({

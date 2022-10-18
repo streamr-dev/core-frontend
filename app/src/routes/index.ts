@@ -1,9 +1,9 @@
 import pick from 'lodash/pick'
 import qs from 'query-string'
-import { parse, compile } from 'path-to-regexp'
+import { parse, compile, Key } from 'path-to-regexp'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import getClientConfig from '$app/src/getters/getClientConfig'
-import definitions from './definitions'
+import definitions from './definitions.json'
 type Routes = Record<string, any>
 type Paths = Record<string, string>
 type Variables = Record<string, string>
@@ -26,7 +26,7 @@ export const define =
 
             if (params) {
                 const tokenNames = parse(path)
-                    .map((t) => t.name)
+                    .map((t: string | Key) => (t as Key).name)
                     .filter(Boolean)
                 const queryKeys = Object.keys(params).filter((key) => !tokenNames.includes(key))
                 const { encode, validate, hash } = {
@@ -68,7 +68,7 @@ export const buildRoutes = (paths: Paths, getVariables: () => Variables): Routes
             [name]: typeof value === 'string' ? define(value, getVariables) : buildRoutes(value, getVariables),
         }
     }, {})
-const routes = buildRoutes(definitions, () => {
+const routes = buildRoutes(definitions as any, () => {
     const { streamrUrl: streamr, platformOriginUrl: platform, landingPageUrl: landingPage } = getCoreConfig()
     const { restUrl: api } = getClientConfig()
     return {

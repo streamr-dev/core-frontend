@@ -1,13 +1,19 @@
 import { handleActions } from 'redux-actions'
 import type { MyProductListState } from '../../types/store-state'
 import { GET_MY_PRODUCTS_REQUEST, GET_MY_PRODUCTS_SUCCESS, GET_MY_PRODUCTS_FAILURE } from './constants'
-import type { MyProductsAction, MyProductsErrorAction } from './types'
+import type { MyProductsAction, MyProductsErrorAction, MyProductIdAction, MyProductsFilterAction } from './types'
 export const initialState: MyProductListState = {
     ids: [],
     fetching: false,
     error: null,
 }
-const reducer: (arg0: MyProductListState) => MyProductListState = handleActions(
+export type MyProductsActionsPayloads =
+    MyProductsAction['payload']
+    | MyProductsErrorAction['payload']
+    | MyProductIdAction['payload']
+    | MyProductsFilterAction['payload']
+    | object
+const reducer = handleActions<MyProductListState, MyProductsActionsPayloads>(
     {
         [GET_MY_PRODUCTS_REQUEST]: (state: MyProductListState): MyProductListState => ({
             ...state,

@@ -1,5 +1,5 @@
 import moxios from 'moxios'
-import setTempEnv from '$testUtils/setTempEnv'
+import setTempEnv from '$app/test/test-utils/setTempEnv'
 import { getMyProducts } from '$mp/modules/myProductList/services'
 describe('myProductList - services', () => {
     setTempEnv({
@@ -55,7 +55,7 @@ describe('myProductList - services', () => {
             expect(request.config.method).toBe('get')
             expect(request.config.url).toBe('http://localhost/api/v2/users/me/products')
         })
-        const result = await getMyProducts()
+        const result = await getMyProducts(undefined)
         expect(result).toStrictEqual(expectedResult)
     })
 })

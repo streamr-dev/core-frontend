@@ -1,4 +1,8 @@
-export const existingProduct = {
+import BN from 'bignumber.js'
+import { Category } from '$mp/types/category-types'
+import { Product } from '$mp/types/product-types'
+
+export const existingProduct: Product = {
     id: '459828a2f9df2991e5a3d921dda23b4c09a84cd6bc7930dcf1ad829d5ee006ed',
     name: 'Weather on North Atlantic',
     description: 'Weather on North Atlantic. Weather on North Atlantic. Weather on North Atlantic. ',
@@ -16,6 +20,18 @@ export const existingProduct = {
     owner: 'Tester One',
     imageUrl: 'https://images.pexels.com/photos/744515/pexels-photo-744515.jpeg?h=400',
     thumbnailUrl: 'https://images.pexels.com/photos/744515/pexels-photo-744515.jpeg?h=210',
+    chain: '',
+    pricingTokenAddress: '',
+    pricingTokenDecimals: new BN(10),
+    contact: null,
+    termsOfUse: {
+        commercialUse: true,
+        redistribution: true,
+        reselling: true,
+        storage: true,
+        termsName: null,
+        termsUrl: null
+    },
 }
 export const existingStreams = [
     {
@@ -88,7 +104,7 @@ export const existingStreams = [
         lastUpdated: '2016-05-31T18:16:00Z',
     },
 ]
-export const existingCategory = {
+export const existingCategory: Category = {
     id: 'personal-id',
     name: 'Personal',
     imageUrl: null,

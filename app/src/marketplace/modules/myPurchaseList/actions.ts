@@ -10,6 +10,7 @@ import type { Filter } from '$userpages/types/common-types'
 import { getFilters } from '$userpages/utils/constants'
 import { isActive } from '$mp/utils/time'
 import type { ProductSubscription, ProductIdList, ProductSubscriptionIdList, ProductSubscriptionList } from '../../types/product-types'
+import { Product } from '../../types/product-types'
 import * as api from './services'
 import { GET_MY_PURCHASES_REQUEST, GET_MY_PURCHASES_SUCCESS, GET_MY_PURCHASES_FAILURE, UPDATE_FILTER, UPDATE_RESULTS } from './constants'
 import type { MyPurchasesActionCreator, MyPurchasesErrorActionCreator, MySubscriptionsActionCreator } from './types'
@@ -27,13 +28,13 @@ const updateFilterAction = createAction(UPDATE_FILTER, (filter: Filter) => ({
 const updateResults: MyPurchasesActionCreator = createAction(UPDATE_RESULTS, (products: ProductIdList) => ({
     products,
 }))
-export const getMyPurchases = () => (dispatch: (...args: Array<any>) => any) => {
+export const getMyPurchases = () => (dispatch: (...args: Array<any>) => any): Promise<void> => {
     dispatch(getMyPurchasesRequest())
     return api
         .getMyPurchases()
         .then((data) => {
             // Reduce subscriptions to remove duplicate products
-            const uniqueSubscriptions = data.reduce((result, subscription: ProductSubscription) => {
+            const uniqueSubscriptions = data.reduce((result: {[productId: string]: ProductSubscription}, subscription: ProductSubscription) => {
                 const { product } = subscription
 
                 if (!product || !product.id) {
@@ -65,14 +66,14 @@ export const getMyPurchases = () => (dispatch: (...args: Array<any>) => any) => 
         )
 }
 
-const isSubscriptionActive = (subscription): boolean => isActive((subscription && subscription.endsAt) || '')
+const isSubscriptionActive = (subscription: ProductSubscription): boolean => isActive((subscription && subscription.endsAt) || '')
 
 const filterPurchases = (data: ProductSubscriptionList, filter: Filter | null | undefined): ProductSubscriptionList => {
     if (!filter) {
         return data
     }
 
-    const filtered = data.filter((sub) => {
+    const filtered = data.filter((sub: ProductSubscription) => {
         let hasTextMatch = true
         let hasKeyValueMatch = true
 
@@ -98,7 +99,7 @@ const filterPurchases = (data: ProductSubscriptionList, filter: Filter | null | 
                 hasKeyValueMatch =
                     filter.key &&
                     Object.prototype.hasOwnProperty.call(sub, filter.key) &&
-                    (sub[filter.key] === filter.value || sub.product[filter.key] === filter.value)
+                    (sub[filter.key as keyof ProductSubscription] === filter.value || sub.product[filter.key as keyof Product] === filter.value)
             }
         }
 
@@ -116,7 +117,7 @@ const filterPurchases = (data: ProductSubscriptionList, filter: Filter | null | 
     return filtered
 }
 
-export const applyFilter = () => (dispatch: (...args: Array<any>) => any, getState: () => StoreState) => {
+export const applyFilter = () => (dispatch: (...args: Array<any>) => any, getState: () => StoreState): ProductSubscriptionList => {
     const filter = selectFilter(getState())
     const subscriptions = selectSubscriptions(getState())
     const filtered = filterPurchases(subscriptions, filter)
@@ -124,7 +125,7 @@ export const applyFilter = () => (dispatch: (...args: Array<any>) => any, getSta
     dispatch(updateResults(result))
     return result
 }
-export const updateFilter = (filter: Filter) => (dispatch: (...args: Array<any>) => any) => {
+export const updateFilter = (filter: Filter) => (dispatch: (...args: Array<any>) => any): void => {
     dispatch(updateFilterAction(filter))
     dispatch(applyFilter())
 }

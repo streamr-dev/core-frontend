@@ -6,6 +6,7 @@ import {
     selectMyProductListError,
 } from '$mp/modules/myProductList/selectors'
 import { productsSchema } from '$shared/modules/entities/schema'
+import { StoreState } from '$shared/types/store-state'
 const products = [
     {
         id: '1337',
@@ -28,23 +29,21 @@ const myProductList = {
     fetching: false,
     error: null,
 }
-const state = {
-    test: true,
+const state: Partial<StoreState> = {
     entities,
     myProductList,
-    otherData: 42,
 }
 describe('myProductList - selectors', () => {
     it('selects myProductList product ids', () => {
-        expect(selectMyProductListIds(state)).toStrictEqual(myProductList.ids)
+        expect(selectMyProductListIds(state as StoreState)).toStrictEqual(myProductList.ids)
     })
     it('selects all myProductList products', () => {
-        expect(selectMyProductList(state)).toStrictEqual(products)
+        expect(selectMyProductList(state as StoreState)).toStrictEqual(products)
     })
     it('selects fetching status for myProductList', () => {
-        expect(selectFetchingMyProductList(state)).toStrictEqual(myProductList.fetching)
+        expect(selectFetchingMyProductList(state as StoreState)).toStrictEqual(myProductList.fetching)
     })
     it('selects error', () => {
-        expect(selectMyProductListError(state)).toStrictEqual(myProductList.error)
+        expect(selectMyProductListError(state as StoreState)).toStrictEqual(myProductList.error)
     })
 })

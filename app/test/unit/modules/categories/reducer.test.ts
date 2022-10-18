@@ -2,7 +2,7 @@ import reducer, { initialState } from '$mp/modules/categories/reducer'
 import * as constants from '$mp/modules/categories/constants'
 describe('categories - reducer', () => {
     it('has initial state', () => {
-        expect(reducer(undefined, {})).toStrictEqual(initialState)
+        expect(reducer(undefined, {type: '', payload: {}})).toStrictEqual(initialState)
     })
     it('handles request', () => {
         const expectedState = {

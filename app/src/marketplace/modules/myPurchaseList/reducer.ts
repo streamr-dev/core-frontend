@@ -9,7 +9,13 @@ export const initialState: MyPurchaseListState = {
     error: null,
     filter: null,
 }
-const reducer: (arg0: MyPurchaseListState) => MyPurchaseListState = handleActions(
+export type MyPurchaseListActionsPayloads =
+    MySubscriptionsAction['payload']
+    | MyPurchasesErrorAction['payload']
+    | MyPurchasesFilterAction['payload']
+    | MyPurchasesAction['payload']
+    | object
+const reducer = handleActions<MyPurchaseListState, MyPurchaseListActionsPayloads>(
     {
         [GET_MY_PURCHASES_REQUEST]: (state: MyPurchaseListState): MyPurchaseListState => ({
             ...state,

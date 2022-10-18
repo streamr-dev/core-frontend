@@ -11,7 +11,8 @@ export const initialState: ProductState = {
     contractSubscriptionError: null,
     contractSubscription: null,
 }
-const reducer: (arg0: ProductState) => ProductState = handleActions(
+export type ProductStateActionPayloads = ProductSubscriptionAction['payload'] | ProductErrorAction['payload'] | object
+const reducer = handleActions<ProductState, ProductStateActionPayloads>(
     {
         [GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST]: (state: ProductState) => ({
             ...state,

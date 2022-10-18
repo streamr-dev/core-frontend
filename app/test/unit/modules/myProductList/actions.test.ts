@@ -31,13 +31,13 @@ describe('myProductList - actions', () => {
                 },
             ]
             const { result, entities } = normalize(products, productsSchema)
-            jest.spyOn(services, 'getMyProducts').mockImplementation(() => Promise.resolve(products))
+            jest.spyOn(services, 'getMyProducts').mockImplementation((): any => Promise.resolve(products))
             const store = mockStore({
                 myProductList: {
                     filter: null,
                 },
             })
-            await store.dispatch(getMyProducts())
+            await getMyProducts()(store.dispatch)
             const expectedActions = [
                 {
                     type: constants.GET_MY_PRODUCTS_REQUEST,

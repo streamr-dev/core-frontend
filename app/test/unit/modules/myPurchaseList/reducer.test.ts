@@ -2,7 +2,7 @@ import reducer, { initialState } from '$mp/modules/myPurchaseList/reducer'
 import * as constants from '$mp/modules/myPurchaseList/constants'
 describe('myPurchaseList - reducer', () => {
     it('has initial state', () => {
-        expect(reducer(undefined, {})).toStrictEqual(initialState)
+        expect(reducer(undefined, {type: '', payload: {}})).toStrictEqual(initialState)
     })
     it('handles request', () => {
         const expectedState = { ...initialState, fetching: true, error: null }

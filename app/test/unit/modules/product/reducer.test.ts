@@ -2,7 +2,7 @@ import reducer, { initialState } from '$mp/modules/product/reducer'
 import * as constants from '$mp/modules/product/constants'
 describe('product - reducer', () => {
     it('has initial state', () => {
-        expect(reducer(undefined, {})).toStrictEqual(initialState)
+        expect(reducer(undefined, {type: '', payload: {}})).toStrictEqual(initialState)
     })
     describe('getProductSubscriptionFromContract', () => {
         it('handles request', () => {
@@ -13,6 +13,7 @@ describe('product - reducer', () => {
             expect(
                 reducer(undefined, {
                     type: constants.GET_PRODUCT_SUBSCRIPTION_FROM_CONTRACT_REQUEST,
+                    payload: {}
                 }),
             ).toStrictEqual(expectedState)
         })

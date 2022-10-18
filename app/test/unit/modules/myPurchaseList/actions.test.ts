@@ -1,5 +1,5 @@
 import { normalize } from 'normalizr'
-import mockStore from '$testUtils/mockStoreProvider'
+import mockStore from '$app/test/test-utils/mockStoreProvider'
 import * as actions from '$mp/modules/myPurchaseList/actions'
 import * as constants from '$mp/modules/myPurchaseList/constants'
 import * as entityConstants from '$shared/modules/entities/constants'
@@ -27,7 +27,7 @@ describe('myPurchaseList - actions', () => {
                 },
             ]
             const { result, entities } = normalize(subscriptions, subscriptionsSchema)
-            jest.spyOn(services, 'getMyPurchases').mockImplementation(() => Promise.resolve(subscriptions))
+            jest.spyOn(services, 'getMyPurchases').mockImplementation((): any => Promise.resolve(subscriptions))
             const store = mockStore({
                 entities: {
                     products: {
@@ -35,7 +35,7 @@ describe('myPurchaseList - actions', () => {
                     },
                 },
             })
-            await store.dispatch(actions.getMyPurchases())
+            await actions.getMyPurchases()(store.dispatch)
             const expectedActions = [
                 {
                     type: constants.GET_MY_PURCHASES_REQUEST,

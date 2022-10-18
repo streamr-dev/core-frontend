@@ -3,23 +3,24 @@ import { normalize } from 'normalizr'
 import { categoriesSchema } from '$shared/modules/entities/schema'
 import { updateEntities } from '$shared/modules/entities/actions'
 import type { ErrorInUi, ReduxActionCreator } from '$shared/types/common-types'
-import type { CategoryList } from '../../types/category-types'
+import { EntitiesValue } from '$shared/modules/entities/types'
+import type { CategoryIdList } from '../../types/category-types'
 import * as api from './services'
 import { GET_CATEGORIES_REQUEST, GET_CATEGORIES_SUCCESS, GET_CATEGORIES_FAILURE } from './constants'
 import type { CategoriesActionCreator, CategoriesErrorActionCreator } from './types'
 const getCategoriesRequest: ReduxActionCreator = createAction(GET_CATEGORIES_REQUEST)
-const getCategoriesSuccess: CategoriesActionCreator = createAction(GET_CATEGORIES_SUCCESS, (categories: CategoryList) => ({
+const getCategoriesSuccess: CategoriesActionCreator = createAction(GET_CATEGORIES_SUCCESS, (categories: CategoryIdList) => ({
     categories,
 }))
 const getCategoriesFailure: CategoriesErrorActionCreator = createAction(GET_CATEGORIES_FAILURE, (error: ErrorInUi) => ({
     error,
 }))
-export const getCategories = (includeEmpty: boolean) => (dispatch: (...args: Array<any>) => any) => {
+export const getCategories = (includeEmpty: boolean) => (dispatch: (...args: Array<any>) => any): Promise<void> => {
     dispatch(getCategoriesRequest())
     return api
         .getCategories(includeEmpty)
         .then((data) => {
-            const { result, entities } = normalize(data, categoriesSchema)
+            const { result, entities }: {result: CategoryIdList, entities: EntitiesValue} = normalize(data, categoriesSchema)
             dispatch(updateEntities(entities))
             return result
         })

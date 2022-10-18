@@ -12,7 +12,7 @@ export type MyProductsActionCreator = (products: ProductIdList) => MyProductsAct
 export type MyProductsErrorAction = PayloadAction<{
     error: ErrorInUi
 }>
-export type MyProductsErrorActionCreator = (filter: Filter) => MyProductsErrorAction
+export type MyProductsErrorActionCreator = (error: ErrorInUi) => MyProductsErrorAction
 export type MyProductsFilterAction = PayloadAction<{
     filter: Filter
 }>
