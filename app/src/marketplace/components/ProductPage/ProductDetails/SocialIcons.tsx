@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
-import SvgIcon from '$shared/components/SvgIcon'
+import SvgIcon, { IconName, SvgIconProps } from '$shared/components/SvgIcon'
 import type { ContactDetails } from '$mp/types/product-types'
 import '$mp/types/product-types'
 const Container = styled.div`
@@ -18,7 +18,7 @@ const IconContainer = styled.div`
     grid-gap: 40px;
     grid-auto-flow: column;
 `
-const Icon = styled(SvgIcon)`
+const Icon = styled(SvgIcon)<SvgIconProps>`
     width: 24px;
     height: 24px;
     color: #979797;
@@ -70,7 +70,7 @@ const getIconForUrl = (socialUrl: string | null | undefined) => {
     return 'web'
 }
 
-const renderIcon = (name: string | null | undefined, url: string | null | undefined) =>
+const renderIcon = (name: IconName | null | undefined, url: string | null | undefined) =>
     name &&
     url && (
         <a href={url} rel="noopener noreferrer" target="_blank">
@@ -78,11 +78,11 @@ const renderIcon = (name: string | null | undefined, url: string | null | undefi
         </a>
     )
 
-const SocialIcons = ({ className, contactDetails }: Props) => {
-    const [social1, social2, social3, social4] = useMemo(
+const SocialIcons: FunctionComponent<Props> = ({ className, contactDetails }) => {
+    const [social1, social2, social3, social4] = useMemo<{iconName: IconName, url: string}[]>(
         () =>
             ['social1', 'social2', 'social3', 'social4'].map((name) => {
-                const url = contactDetails[name]
+                const url = contactDetails[name as keyof ContactDetails]
                 return {
                     iconName: getIconForUrl(url),
                     url,

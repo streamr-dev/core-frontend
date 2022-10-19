@@ -7,7 +7,7 @@ export const formatRemainingTime = (value: number): string => {
         return new Date(value * 1000).toISOString().substr(11, 8) // hh:mm:ss
     }
 
-    const days = parseInt(value / DAY_SECONDS, 10)
+    const days = parseInt(String(value / DAY_SECONDS), 10)
     return `${days} day${days > 1 ? 's' : ''}`
 }
 

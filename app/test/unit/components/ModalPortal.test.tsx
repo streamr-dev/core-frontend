@@ -55,7 +55,7 @@ describe(ModalPortalProvider, () => {
                 </React.Fragment>
             </ModalPortalProvider>,
         )
-        expect(el.instance().count).toEqual(2)
+        expect(el.find(ModalPortal).length).toEqual(2)
         expect(consume).toHaveBeenCalledTimes(2)
         expect(consume.mock.calls[0][0].isModalOpen).toBe(false)
         expect(consume.mock.calls[1][0].isModalOpen).toBe(true)
@@ -65,12 +65,12 @@ describe(ModalPortalProvider, () => {
         const el = mount(
             <ModalPortalProvider>
                 <React.Fragment>
-                    <ModalPortal />
+                    <ModalPortal><></></ModalPortal>
                     <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
                 </React.Fragment>
             </ModalPortalProvider>,
         )
-        expect(el.instance().count).toEqual(1)
+        expect(el.find(ModalPortal).length).toEqual(1)
         expect(consume).toHaveBeenCalledTimes(2)
         expect(consume.mock.calls[0][0].isModalOpen).toBe(false)
         expect(consume.mock.calls[1][0].isModalOpen).toBe(true)
@@ -81,7 +81,7 @@ describe(ModalPortalProvider, () => {
                 </React.Fragment>
             ),
         })
-        expect(el.instance().count).toEqual(0)
+        expect(el.find(ModalPortal).length).toEqual(0)
         expect(consume).toHaveBeenCalledTimes(4)
         // Before being unmounted…
         expect(consume.mock.calls[2][0].isModalOpen).toBe(true)

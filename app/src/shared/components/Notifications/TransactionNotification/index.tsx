@@ -15,9 +15,10 @@ type OwnProps = {
 type StateProps = {
     transaction: TransactionEntity | null | undefined
 }
-type DispatchProps = {}
+type DispatchProps = object
 type Props = OwnProps & StateProps & DispatchProps
 
+// TODO check if it's ok - I've removed `size=small` attribute on SvgIcon elements
 const renderPublishComponent = (state: TransactionState | null | undefined, isPublish: boolean) => {
     switch (state) {
         case transactionStates.PENDING:
@@ -31,7 +32,7 @@ const renderPublishComponent = (state: TransactionState | null | undefined, isPu
         case transactionStates.CONFIRMED:
             return (
                 <div className={styles.container}>
-                    <SvgIcon name="checkmark" size="small" className={styles.icon} />
+                    <SvgIcon name="checkmark" className={styles.icon} />
                     <span className={styles.title}>
                         Your product has been {isPublish ? 'published' : 'unpublished'}
                     </span>
@@ -66,7 +67,7 @@ const renderPurchaseComponent = (state: TransactionState | null | undefined) => 
         case transactionStates.CONFIRMED:
             return (
                 <div className={styles.container}>
-                    <SvgIcon name="checkmark" size="small" className={styles.icon} />
+                    <SvgIcon name="checkmark" className={styles.icon} />
                     <span className={styles.title}>Product subscription completed</span>
                 </div>
             )
@@ -97,7 +98,7 @@ const renderUpdateComponent = (state: TransactionState | null | undefined) => {
         case transactionStates.CONFIRMED:
             return (
                 <div className={styles.container}>
-                    <SvgIcon name="checkmark" size="small" className={styles.icon} />
+                    <SvgIcon name="checkmark" className={styles.icon} />
                     <span className={styles.title}>Your product has been updated</span>
                 </div>
             )
@@ -151,7 +152,7 @@ const TransactionNotification = ({ transaction }: Props) => {
     }
 }
 
-const makeMapStateToProps = (_, ownProps: OwnProps) => {
+const makeMapStateToProps = (_: any, ownProps: OwnProps) => {
     const selectTransaction = makeSelectTransaction(ownProps.txHash)
 
     const mapStateToProps = (state: StoreState) => ({

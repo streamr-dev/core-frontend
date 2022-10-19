@@ -1,14 +1,17 @@
 import type { ComponentType, FunctionComponent, ReactNode } from 'react'
-import React from 'react'
+import React, { HTMLProps } from 'react'
 import cx from 'classnames'
+import { LinkProps } from 'react-router-dom'
+import { Optional } from 'utility-types'
 import Spinner from '$shared/components/Spinner'
 import styles from './newButton.pcss'
 export type Size = 'mini' | 'normal' | 'big'
 export type Kind = 'primary' | 'secondary' | 'destructive' | 'link' | 'special'
 export type Variant = 'dark' | 'light'
-type ButtonProps = {
+// TODO - try to make it more generic without passing LinkProps directly
+type ButtonProps = HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optional<LinkProps> & {
     className?: string
-    tag: string | ComponentType<any>
+    tag?: string | ComponentType<any>
     size?: Size
     kind?: Kind
     variant?: Variant
@@ -25,13 +28,13 @@ const darkBgs = new Set(['primary', 'destructive'])
 
 const Button: FunctionComponent<ButtonProps> = ({
     className,
-    tag: Tag,
-    size,
-    kind,
+    tag: Tag = 'button',
+    size= 'normal',
+    kind = 'primary',
     variant,
-    outline,
-    disabled,
-    waiting,
+    outline = false,
+    disabled= false,
+    waiting= false,
     onClick,
     children,
     external,
@@ -69,12 +72,4 @@ const Button: FunctionComponent<ButtonProps> = ({
     </Tag>
 )
 
-Button.defaultProps = {
-    tag: 'button',
-    kind: 'primary',
-    size: 'normal',
-    outline: false,
-    disabled: false,
-    waiting: false,
-}
 export default Button

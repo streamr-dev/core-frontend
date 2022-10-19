@@ -889,13 +889,13 @@ const sources = {
     web: <SocialIcons.Web />,
 }
 export type IconName = $Keys<typeof sources>
-type Props = {
+export type SvgIconProps = {
     name: IconName,
     className?: string
 }
-const SvgIcon = React.forwardRef(({ name, ...props }: Props, ref) =>
+const SvgIcon = React.forwardRef(({ name, ...props }: SvgIconProps, ref) =>
     React.cloneElement(sources[name], { ...props, ref }),
-) as ComponentType<Props>
+) as ComponentType<SvgIconProps>
 // @ts-expect-error suppress flow complaining about property `names` is missing in  `React.AbstractComponentStatics`
 SvgIcon.names = Object.keys(sources).sort()
 SvgIcon.displayName = 'SvgIcon'

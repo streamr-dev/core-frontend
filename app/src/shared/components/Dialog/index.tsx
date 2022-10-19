@@ -1,5 +1,4 @@
-import type { Node } from 'react'
-import React, { Component } from 'react'
+import React, { Component, ReactNode } from 'react'
 import classNames from 'classnames'
 import type { Props as ButtonsProps, ButtonActions } from '$shared/components/Buttons'
 import Buttons from '$shared/components/Buttons'
@@ -12,10 +11,10 @@ import TitleBar from './TitleBar'
 import ContentArea from './ContentArea'
 import HelpToggle from './HelpToggle'
 import styles from './dialog.pcss'
-export type Props = {
-    title?: Node
-    children?: Node
-    helpText?: Node
+export type DialogProps = {
+    title?: ReactNode
+    children?: ReactNode
+    helpText?: ReactNode
     waiting?: boolean
     disabled?: boolean
     className?: string
@@ -30,15 +29,15 @@ export type Props = {
     // in milliseconds, use this to close the dialog after a custom timeout
     autoClose?: boolean
     // use this to close the dialog after default timeout
-    renderActions?: (arg0: ButtonActions) => Node
+    renderActions?: (arg0: ButtonActions) => ReactNode
 } & ButtonsProps &
     ModalDialogProps
 type State = {
     isHelpOpen: boolean
 }
 
-class Dialog extends Component<Props, State> {
-    static defaultProps = {
+class Dialog extends Component<DialogProps, State> {
+    static defaultProps: Partial<DialogProps> = {
         title: '',
         helpText: null,
         waiting: false,
@@ -66,7 +65,7 @@ class Dialog extends Component<Props, State> {
         }
     }
 
-    componentDidUpdate(prevProps: Props) {
+    componentDidUpdate(prevProps: DialogProps) {
         const { autoCloseAfter, autoClose, onClose } = this.props
         const timeout = autoCloseAfter || (autoClose && dialogAutoCloseTimeout) || null
 

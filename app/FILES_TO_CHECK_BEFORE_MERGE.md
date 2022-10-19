@@ -4,7 +4,8 @@
 - /app/src/shared/utils/web3.ts
 - /app/src/getters/getClientConfig.ts
 - /app/src/marketplace/utils/product.ts
-- /app/src/marketplace/components/ActionBar/FilterModal.tsx
+- /app/src/shared/components/Notifications/TransactionNotification/index.tsx
+- /app/src/shared/components/Notifications/BasicNotification/index.tsx
 
 
 ### [Delete this file before merging]

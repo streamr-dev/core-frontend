@@ -1,5 +1,5 @@
 import React from 'react'
-import { mount, shallow } from 'enzyme'
+import { mount, shallow, ShallowWrapper } from 'enzyme'
 import NotificationSystem from 'react-notification-system'
 import Notification from '$shared/utils/Notification'
 import Notifications from '$shared/components/Notifications'
@@ -13,7 +13,7 @@ describe(Notifications, () => {
     describe('mounting/unmounting', () => {
         it('starts listening for notifications on mount', () => {
             jest.spyOn(Notification, 'subscribe').mockImplementation()
-            const notifications = shallow(<Notifications />)
+            const notifications: ShallowWrapper<any, any, Notifications> = shallow(<Notifications />)
             expect(Notification.subscribe).toHaveBeenCalledTimes(1)
             expect(Notification.subscribe).toBeCalledWith(notifications.instance().addNotification)
         })

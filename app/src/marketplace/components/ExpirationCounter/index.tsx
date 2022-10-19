@@ -7,7 +7,7 @@ type Props = {
     className?: string
     unstyled?: boolean
 }
-const Wrapper = styled.span`
+const Wrapper = styled.span<{expiresSoon: boolean, expired: boolean}>`
     && {
         ${({ expiresSoon }) =>
         !!expiresSoon &&

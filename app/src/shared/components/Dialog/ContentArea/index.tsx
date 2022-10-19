@@ -1,9 +1,8 @@
-import type { Node } from 'react'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import classNames from 'classnames'
 import style from './contentArea.pcss'
 type Props = {
-    children?: Node
+    children?: ReactNode
     className?: string
 }
 export const ContentArea = ({ className, children }: Props) => (

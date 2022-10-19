@@ -1,5 +1,5 @@
 import { $Keys } from 'utility-types'
-import React from 'react'
+import React, { HTMLProps } from 'react'
 import BrowserNotSupportedPng from '$shared/assets/images/browser_not_supported.png'
 import BrowserNotSupportedPng2x from '$shared/assets/images/browser_not_supported@2x.png'
 import DiscardChangesPng from '$shared/assets/images/discard_changes.png'
@@ -31,7 +31,7 @@ const sources = {
     txFailed: <img src={WalletErrorPng} srcSet={`${WalletErrorPng2x} 2x`} alt="" />,
 }
 export type PngIconName = $Keys<typeof sources>
-type Props = {
+type Props = HTMLProps<HTMLImageElement> & {
     name: PngIconName
 }
 

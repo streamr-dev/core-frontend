@@ -1,5 +1,6 @@
 import React from 'react'
 import cx from 'classnames'
+import BN from 'bignumber.js'
 import Button from '$shared/components/Button'
 import { isPaidProduct } from '$mp/utils/product'
 import type { Product, Subscription } from '$mp/types/product-types'
@@ -64,7 +65,7 @@ const ProductDetails = ({
                                 &nbsp;
                                 <PaymentRate
                                     className={styles.price}
-                                    amount={product.pricePerSecond}
+                                    amount={new BN(product.pricePerSecond)}
                                     pricingTokenAddress={pricingTokenAddress}
                                     chainId={getChainIdFromApiString(product.chain)}
                                     timeUnit={timeUnits.hour}

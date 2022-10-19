@@ -1,6 +1,5 @@
-import React from 'react'
+import React, {ReactNode} from 'react'
 import styled, { css } from 'styled-components'
-import type { Node } from 'react'
 import ReactModal2 from 'react-modal2'
 import BodyClass, { NO_SCROLL } from '$shared/components/BodyClass'
 import './accessibility'
@@ -12,9 +11,9 @@ export type Props = {
     noScroll?: boolean
 }
 export type InternalProps = Props & {
-    children: Node
+    children: ReactNode
 }
-const Fullpage = styled.div`
+const Fullpage = styled.div<{noScroll: boolean}>`
     position: fixed;
     top: 0;
     left: 0;

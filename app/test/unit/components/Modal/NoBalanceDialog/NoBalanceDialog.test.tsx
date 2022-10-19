@@ -13,11 +13,11 @@ describe('NoBalanceDialog', () => {
             const wrapper = shallow(
                 <NoBalanceDialog
                     required={{
-                        gas: BN(0),
+                        gas: new BN(0),
                     }}
                     balances={{
-                        native: BN(0),
-                        data: BN(0),
+                        native: new BN(0),
+                        data: new BN(0),
                     }}
                     paymentCurrency="DATA"
                     onCancel={() => null}
@@ -29,10 +29,10 @@ describe('NoBalanceDialog', () => {
             const wrapper = shallow(
                 <NoBalanceDialog
                     required={{
-                        gas: BN(2),
+                        gas: new BN(2),
                     }}
                     balances={{
-                        native: BN(1),
+                        native: new BN(1),
                     }}
                     paymentCurrency="DATA"
                     onCancel={() => null}
@@ -44,12 +44,12 @@ describe('NoBalanceDialog', () => {
             const wrapper = shallow(
                 <NoBalanceDialog
                     required={{
-                        gas: BN(0),
-                        data: BN(1),
+                        gas: new BN(0),
+                        data: new BN(1),
                     }}
                     balances={{
-                        native: BN(1),
-                        data: BN(0),
+                        native: new BN(1),
+                        data: new BN(0),
                     }}
                     paymentCurrency="DATA"
                     onCancel={() => null}
@@ -61,12 +61,12 @@ describe('NoBalanceDialog', () => {
             const wrapper = shallow(
                 <NoBalanceDialog
                     required={{
-                        gas: BN(0),
-                        data: BN(3),
+                        gas: new BN(0),
+                        data: new BN(3),
                     }}
                     balances={{
-                        native: BN(1),
-                        data: BN(2),
+                        native: new BN(1),
+                        data: new BN(2),
                     }}
                     paymentCurrency="DATA"
                     onCancel={() => null}
@@ -79,12 +79,12 @@ describe('NoBalanceDialog', () => {
             const wrapper = shallow(
                 <NoBalanceDialog
                     required={{
-                        gas: BN(1),
-                        dai: BN(2),
+                        gas: new BN(1),
+                        dai: new BN(2),
                     }}
                     balances={{
-                        native: BN(2),
-                        dai: BN(0),
+                        native: new BN(2),
+                        dai: new BN(0),
                     }}
                     paymentCurrency="DAI"
                     onCancel={() => null}
@@ -97,12 +97,12 @@ describe('NoBalanceDialog', () => {
             const wrapper = shallow(
                 <NoBalanceDialog
                     required={{
-                        gas: BN(1),
-                        dai: BN(10),
+                        gas: new BN(1),
+                        dai: new BN(10),
                     }}
                     balances={{
-                        native: BN(2),
-                        dai: BN(5),
+                        native: new BN(2),
+                        dai: new BN(5),
                     }}
                     paymentCurrency="DAI"
                     onCancel={() => null}
@@ -114,11 +114,11 @@ describe('NoBalanceDialog', () => {
             const wrapper = shallow(
                 <NoBalanceDialog
                     required={{
-                        gas: BN(1),
-                        native: BN(5),
+                        gas: new BN(1),
+                        native: new BN(5),
                     }}
                     balances={{
-                        native: BN(2),
+                        native: new BN(2),
                     }}
                     paymentCurrency="ETH"
                     onCancel={() => null}

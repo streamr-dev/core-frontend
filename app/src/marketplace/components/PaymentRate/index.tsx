@@ -17,7 +17,7 @@ const PaymentRate = (props: Props) => {
     const { amount, pricingTokenAddress, chainId, timeUnit, className } = props
     const [currency, setCurrency] = useState(currencies.PRODUCT_DEFINED)
     const [symbol, setSymbol] = useState(currencies.DATA)
-    const [decimals, setDecimals] = useState(BN(18))
+    const [decimals, setDecimals] = useState(new BN(18))
     const isMounted = useIsMounted()
     useEffect(() => {
         const check = async () => {
