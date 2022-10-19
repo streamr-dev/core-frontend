@@ -9,17 +9,8 @@ jest.mock('$app/src/getters/getConfig', () => {
         __esModule: true,
         default: () => ({
             ...actualConfig,
-            client: {
-                ...actualConfig.client,
-                mainchain: {
-                    ...actualConfig.client.mainchain,
-                    rpc: {
-                        ...actualConfig.client.mainchain.rpc,
-                        rpcs: [{
-                            url: 'http://mainchainrpc:8545',
-                        }],
-                    },
-                },
+            core: {
+                mainnetInfuraUrl: 'http://mainchainrpc:8545',
             },
         }),
     }

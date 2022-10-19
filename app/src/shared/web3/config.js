@@ -3,11 +3,7 @@
 import { Chains } from '@streamr/config'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import formatConfigUrl from '$utils/formatConfigUrl'
-import tokenAbi from './abis/token'
-import dataUnionAbi from './abis/dataunion'
-import dataUnionSidechainAbi from './abis/dataunionSidechain'
 
 const chainConfigs = Chains.load()
 
@@ -57,10 +53,7 @@ export const getConfigForChainByName = (chainName: string) => {
 }
 
 const getConfig = () => {
-    const { tokenAddress, mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
-
-    // eslint-disable-next-line max-len
-    const { web3TransactionConfirmationBlocks } = getCoreConfig()
+    const { mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
 
     const mainChainId = getMainChainId()
 

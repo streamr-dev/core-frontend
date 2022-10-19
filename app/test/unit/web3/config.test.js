@@ -6,10 +6,6 @@ jest.mock('$shared/web3/abis/marketplace', () => (['m_test', 'm_values', 'm_only
 
 jest.mock('$shared/web3/abis/uniswapAdaptor', () => (['u_test', 'u_values', 'u_only']))
 
-jest.mock('$shared/web3/abis/dataunion', () => (['d_test', 'd_values', 'd_only']))
-
-jest.mock('$shared/web3/abis/dataunionSidechain', () => (['ds_test', 'ds_values', 'ds_only']))
-
 jest.mock('$app/src/getters/getConfig', () => {
     const { default: gc } = jest.requireActual('$app/src/getters/getConfig')
 
@@ -60,8 +56,10 @@ describe('config', () => {
 
             expect(chainIds.length > 0).toBe(true)
             expect(chainIds.includes('9999')).toBe(true)
-            expect(chainIds.includes('8995')).toBe(true)
             expect(chainIds.includes('8996')).toBe(true)
+            expect(chainIds.includes('1')).toBe(true)
+            expect(chainIds.includes('100')).toBe(true)
+            expect(chainIds.includes('137')).toBe(true)
 
             chainIds.forEach((chainId) => {
                 const { getParams } = metamask[chainId]
