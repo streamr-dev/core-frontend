@@ -9,6 +9,7 @@ import useStream from '$shared/hooks/useStream'
 import useStreamPermissionsInvalidator from '$shared/hooks/useStreamPermissionsInvalidator'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import useStreamActivityStatus from '$shared/hooks/useStreamActivityStatus'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import useEntryInteraction from './useEntryInteraction'
 export default function Entry({
     onClick: onClickProp,
@@ -76,14 +77,14 @@ export default function Entry({
                         right: true,
                     }}
                 >
-                    <Popover.Item onClick={onClick}>Edit stream</Popover.Item>
-                    <Popover.Item onClick={onCopyId}>Copy ID</Popover.Item>
-                    <Popover.Item onClick={onSnippetsClick}>Copy Snippet</Popover.Item>
-                    <Popover.Item disabled={!canGrant} onClick={onShareClick}>
+                    <PopoverItem onClick={onClick}>Edit stream</PopoverItem>
+                    <PopoverItem onClick={onCopyId}>Copy ID</PopoverItem>
+                    <PopoverItem onClick={onSnippetsClick}>Copy Snippet</PopoverItem>
+                    <PopoverItem disabled={!canGrant} onClick={onShareClick}>
                         Share
-                    </Popover.Item>
-                    <Popover.Item onClick={() => void refresh(Date.now())}>Refresh</Popover.Item>
-                    <Popover.Item onClick={onRemoveClick}>{canDelete ? 'Delete' : 'Remove'}</Popover.Item>
+                    </PopoverItem>
+                    <PopoverItem onClick={() => void refresh(Date.now())}>Refresh</PopoverItem>
+                    <PopoverItem onClick={onRemoveClick}>{canDelete ? 'Delete' : 'Remove'}</PopoverItem>
                 </Popover>
             </StreamList.Actions>
         </StreamList.Row>

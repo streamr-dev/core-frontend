@@ -12,6 +12,7 @@ import { truncate } from '$shared/utils/text'
 import type { LastErrorProps } from '$shared/hooks/useLastError'
 import { useLastError } from '$shared/hooks/useLastError'
 import type { Stream, StreamList, StreamIdList, StreamId } from '$shared/types/stream-types'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import routes from '$routes'
 import styles from './streamSelector.pcss'
 type Props = LastErrorProps & {
@@ -38,7 +39,7 @@ export const StreamSelector = (props: Props) => {
     const [sort, setSort] = useState(SORT_BY_NAME)
     const [search, setSearch] = useState('')
 
-    const onSearchChange = (event: React.SyntheticEvent<EventTarget>) => {
+    const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(event.target.value)
     }
 
@@ -137,9 +138,9 @@ export const StreamSelector = (props: Props) => {
                             }
                             disabled={!!isDisabled}
                         >
-                            <Popover.Item onClick={() => setSort(SORT_BY_NAME)}>Name</Popover.Item>
-                            <Popover.Item onClick={() => setSort(SORT_BY_CREATED)}>Created</Popover.Item>
-                            <Popover.Item onClick={() => setSort(SORT_BY_ADDED)}>Added</Popover.Item>
+                            <PopoverItem onClick={() => setSort(SORT_BY_NAME)}>Name</PopoverItem>
+                            <PopoverItem onClick={() => setSort(SORT_BY_CREATED)}>Created</PopoverItem>
+                            <PopoverItem onClick={() => setSort(SORT_BY_ADDED)}>Added</PopoverItem>
                         </Popover>
                     </div>
                     <div
@@ -187,6 +188,7 @@ export const StreamSelector = (props: Props) => {
                             selected
                         </div>
                         <Button
+                            tag={'button'}
                             kind="secondary"
                             onClick={() => {
                                 const toSelect = matchingStreams.map((s) => s.id)

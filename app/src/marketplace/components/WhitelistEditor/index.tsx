@@ -9,6 +9,7 @@ import type { WhitelistItem } from '$mp/modules/contractProduct/types'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import type { Address } from '$shared/types/web3-types'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 const MIN_ROWS = 5
 const Rows = styled.div`
     max-height: ${({ theme }) => (theme.rowCount + 1) * 56 - 1}px; /* +1 for header, -1 for bottom border */
@@ -195,9 +196,9 @@ const TableRowItem = ({ item, enabled, actionsEnabled, onRemove }: RowProps) => 
             </TableColumn>
             <TableColumn>
                 <Popover title="Select" type="meatball" caret={false} onMenuToggle={setMenuOpen}>
-                    <Popover.Item onClick={() => onCopy(item.address)}>Copy address</Popover.Item>
+                    <PopoverItem onClick={() => onCopy(item.address)}>Copy address</PopoverItem>
                     {item.status !== 'removed' && !!actionsEnabled && !disabled && (
-                        <Popover.Item onClick={() => onRemove(item.address)}>Remove</Popover.Item>
+                        <PopoverItem onClick={() => onRemove(item.address)}>Remove</PopoverItem>
                     )}
                 </Popover>
             </TableColumn>

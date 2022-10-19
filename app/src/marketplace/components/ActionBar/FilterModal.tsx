@@ -1,16 +1,15 @@
-import type { Node } from 'react'
-import React, { useCallback } from 'react'
+import React, { useCallback, ReactNode, FunctionComponent } from 'react'
 import styled from 'styled-components'
 import { Dropdown } from 'reactstrap'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import useModal from '$shared/hooks/useModal'
-import Popover from '$shared/components/Popover'
 import type { AnyFilter } from '$mp/types/product-types'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import type { Options } from './FilterSelector'
 import './FilterSelector'
 type Props = {
-    title: Node
+    title: ReactNode
     options: Options
     selected: string
     onChange: (value: AnyFilter | null | undefined) => void
@@ -78,9 +77,9 @@ const FilterModal = ({ title, options, onChange, onClose, selected }: Props) => 
                     <Body>
                         <Dropdown isOpen toggle={() => {}}>
                             {options.map(({ id, value, title: optionTitle }) => (
-                                <Popover.Item key={id} value={value} onClick={() => onClick(value)} active={selected === value} leftTick>
+                                <PopoverItem key={id} value={value} onClick={() => onClick(value)} active={selected === value} leftTick>
                                     {optionTitle}
-                                </Popover.Item>
+                                </PopoverItem>
                             ))}
                         </Dropdown>
                     </Body>
@@ -90,7 +89,7 @@ const FilterModal = ({ title, options, onChange, onClose, selected }: Props) => 
     )
 }
 
-export default () => {
+const FilterModalComponent: FunctionComponent = () => {
     const { api, isOpen, value } = useModal('marketplace.filter')
 
     if (!isOpen) {
@@ -100,3 +99,5 @@ export default () => {
     const { title, options, selected, onChange, onClear } = value || {}
     return <FilterModal title={title} onChange={onChange} onClear={onClear} onClose={() => api.close()} options={options} selected={selected} />
 }
+
+export default FilterModalComponent()

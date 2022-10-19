@@ -1,10 +1,10 @@
-import type { Node } from 'react'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styled from 'styled-components'
 import Popover from '$shared/components/Popover'
-export const MenuItem = Popover.Item
+import PopoverItem from '$shared/components/Popover/PopoverItem'
+export const MenuItem = PopoverItem
 type Props = {
-    children: Node
+    children: ReactNode
     onToggle?: (arg0: boolean) => any
 }
 

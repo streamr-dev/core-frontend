@@ -4,12 +4,12 @@ import styled from 'styled-components'
 import Text from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import WithInputActions from '$shared/components/WithInputActions'
-import Popover from '$shared/components/Popover'
 import useCopy from '$shared/hooks/useCopy'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import { truncate } from '$shared/utils/text'
 import useAccountAddress from '$shared/hooks/useAccountAddress'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import useValidation from '../ProductController/useValidation'
 import { Context as EditControllerContext } from './EditControllerProvider'
 import styles from './beneficiaryAddress.pcss'
@@ -75,7 +75,7 @@ const BeneficiaryAddress = ({ address: addressProp, onChange, disabled, classNam
             onChange(accountAddress)
         }
     }, [addressProp, onChange, accountAddress])
-    const onOwnAddressChange = useCallback((e: React.SyntheticEvent<EventTarget>) => {
+    const onOwnAddressChange = useCallback<(e: React.ChangeEvent<HTMLInputElement>) => void>((e: React.ChangeEvent<HTMLInputElement>) => {
         setOwnAddress(e.target.value)
     }, [])
     return (
@@ -84,12 +84,12 @@ const BeneficiaryAddress = ({ address: addressProp, onChange, disabled, classNam
                 <WithInputActions
                     disabled={disabled}
                     actions={[
-                        <Popover.Item key="useCurrent" onClick={useCurrentWalletAddress} disabled={!accountAddress}>
+                        <PopoverItem key="useCurrent" onClick={useCurrentWalletAddress} disabled={!accountAddress}>
                             <AddressItem name="wallet address" address={accountAddress || 'Wallet locked'} />
-                        </Popover.Item>,
-                        <Popover.Item key="copy" disabled={!addressProp} onClick={onCopy}>
+                        </PopoverItem>,
+                        <PopoverItem key="copy" disabled={!addressProp} onClick={onCopy}>
                             Copy
-                        </Popover.Item>,
+                        </PopoverItem>,
                     ]}
                 >
                     <Text

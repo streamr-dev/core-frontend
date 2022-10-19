@@ -15,5 +15,6 @@
     "isolatedModules": true,
     "noEmit": true,
     "baseUrl": "./",
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
   }
 }

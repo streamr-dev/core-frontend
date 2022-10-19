@@ -1,7 +1,7 @@
 import '$shared/styles/pcss'
 import { ThemeProvider } from 'styled-components'
 import { NavProvider } from '@streamr/streamr-layout'
-import React from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import cx from 'classnames'
 import useScrollToTop from '$shared/hooks/useScrollToTop'
 import useCurrentLocation from '$shared/hooks/useCurrentLocation'
@@ -17,7 +17,7 @@ type Props = {
 }
 const DefaultTheme = {}
 
-const Layout = ({
+const Layout: FunctionComponent<{theme: any, footer: boolean, nav: ReactNode, framedClassName: string, innerClassName: string}> = ({
     theme = DefaultTheme,
     footer = true,
     nav = <Nav />,

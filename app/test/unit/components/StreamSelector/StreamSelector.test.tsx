@@ -62,7 +62,7 @@ describe('StreamSelector', () => {
         it('renders the sort dropdown', () => {
             wrapper = shallow(<StreamSelector {...props} />)
             const sortElements = wrapper
-                .find('Item')
+                .find('PopoverItem')
                 .findWhere(
                     (node) =>
                         node.prop('children') === 'Name' ||
@@ -136,13 +136,13 @@ describe('StreamSelector', () => {
         it('sets the sort order', () => {
             wrapper = mount(<StreamSelector {...props} />)
             expect(wrapper.find(`.${styles.sortDropdownTitle}`).text()).toMatch(/sort by\s*name/i)
-            const sortByAdded = wrapper.find('Item').findWhere((node) => node.prop('children') === 'Added')
+            const sortByAdded = wrapper.find('PopoverItem').findWhere((node) => node.prop('children') === 'Added')
             act(() => {
                 sortByAdded.simulate('click')
             })
             wrapper.update()
             expect(wrapper.find(`.${styles.sortDropdownTitle}`).text()).toMatch(/sort by\s*added/i)
-            const sortByCreated = wrapper.find('Item').findWhere((node) => node.prop('children') === 'Created')
+            const sortByCreated = wrapper.find('PopoverItem').findWhere((node) => node.prop('children') === 'Created')
             act(() => {
                 sortByCreated.simulate('click')
             })

@@ -16,6 +16,7 @@ import Button from '$shared/components/Button'
 import Grid from '$shared/components/Tile/Grid'
 import { ProductTile } from '$shared/components/Tile'
 import { productTypes } from '$mp/utils/constants'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import routes from '$routes'
 import Search from '../Header/Search'
 import { getFilters } from '../../utils/constants'
@@ -96,9 +97,9 @@ const ProductsPage: FunctionComponent = () => {
                     }}
                 >
                     {sortOptions.map((s) => (
-                        <Popover.Item key={s.filter.id} value={s.filter.id}>
+                        <PopoverItem key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Popover.Item>
+                        </PopoverItem>
                     ))}
                 </Popover>
             }

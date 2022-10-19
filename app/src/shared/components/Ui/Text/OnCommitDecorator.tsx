@@ -3,7 +3,7 @@ import React, { useCallback, useRef, forwardRef } from 'react'
 import type { Ref } from '$shared/types/common-types'
 import '$shared/types/common-types'
 
-const sanitise = (value) => (value == null ? '' : value)
+const sanitise = (value: string): string => (value == null ? '' : value)
 
 const normalize = (value: any): string => (typeof value === 'string' ? value.trim() : String(sanitise(value)))
 
@@ -45,7 +45,7 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
             [onCommitProp, noEmptyCommit],
         )
         const onChange = useCallback(
-            (e: React.SyntheticEvent<EventTarget>) => {
+            (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
                 if (!smartCommit) {
                     onCommit(e.target.value)
                 }

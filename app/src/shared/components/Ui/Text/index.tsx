@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react'
+import React, { ComponentType, forwardRef, ForwardRefRenderFunction, FunctionComponent, HTMLProps } from 'react'
 import { compose } from 'redux'
 import type { Props as FlushHistoryProps } from './FlushHistoryDecorator'
 import FlushHistoryDecorator from './FlushHistoryDecorator'
@@ -14,18 +14,20 @@ type Props = FlushHistoryProps &
     OnCommitProps &
     RevertOnEscapeProps &
     SelectAllOnFocusProps & {
-        tag: 'input' | 'textarea'
+        tag?: 'input' | 'textarea'
         unstyled?: boolean
-    }
+        invalid?: boolean
+    } &
+    HTMLProps<HTMLInputElement | HTMLTextAreaElement>
 
-const Text = ({ tag: Tag = 'input', unstyled, ...props }: Props, ref: any) =>
+const Text: FunctionComponent<Props> = ({ tag: Tag = 'input', unstyled, ...props }: Props, ref: any) =>
     unstyled ? <Tag {...props} ref={ref} /> : <StyledInput {...props} as={Tag} ref={ref} />
 
-const EnhancedText = compose(
+const EnhancedText= compose<ComponentType<Props>>(
     FlushHistoryDecorator,
     OnCommitDecorator,
     SelectAllOnFocusDecorator,
     RevertOnEscapeDecorator,
-)(forwardRef(Text))
+)(forwardRef(Text as ForwardRefRenderFunction<Text>))
 EnhancedText.displayName = 'Text'
 export default EnhancedText

@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { StatusIcon as UnstyledStatusIcon } from '@streamr/streamr-layout'
-import Popover from '$shared/components/Popover'
 import { truncate } from '$shared/utils/text'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
@@ -10,6 +9,7 @@ import useCopy from '$shared/hooks/useCopy'
 import Label from '$ui/Label'
 import WithInputActions from '$shared/components/WithInputActions'
 import Text from '$ui/Text'
+import PopoverItem from '../Popover/PopoverItem'
 import type { LabelType } from './KeyFieldEditor'
 import KeyFieldEditor, { keyValues } from './KeyFieldEditor'
 const KeyFieldContainer = styled.div`
@@ -143,34 +143,34 @@ const UnstyledKeyField = ({
     }, [])
     const revealAction = useMemo(
         () => (
-            <Popover.Item key="reveal" onClick={toggleHidden}>
+            <PopoverItem key="reveal" onClick={toggleHidden}>
                 {hidden ? 'Reveal' : 'Conceal'}
-            </Popover.Item>
+            </PopoverItem>
         ),
         [toggleHidden, hidden],
     )
     const editAction = useMemo(
         () => (
-            <Popover.Item key="edit" onClick={onEdit}>
+            <PopoverItem key="edit" onClick={onEdit}>
                 Edit
-            </Popover.Item>
+            </PopoverItem>
         ),
         [onEdit],
     )
     const deleteAction = useMemo(
         () => (
-            <Popover.Item key="delete" onClick={onDelete} disabled={disableDelete}>
+            <PopoverItem key="delete" onClick={onDelete} disabled={disableDelete}>
                 Delete
-            </Popover.Item>
+            </PopoverItem>
         ),
         [onDelete, disableDelete],
     )
     const inputActions = useMemo(
         () => [
             ...includeIf(!!hideValue, [revealAction]),
-            <Popover.Item key="copy" onClick={onCopy}>
+            <PopoverItem key="copy" onClick={onCopy}>
                 Copy
-            </Popover.Item>,
+            </PopoverItem>,
             ...includeIf(!!allowEdit, [editAction]),
             ...includeIf(!!allowDelete, [deleteAction]),
         ],

@@ -60,7 +60,7 @@ module.exports = {
             },
         ],
         '@typescript-eslint/explicit-module-boundary-types': [
-            'error',
+            'warn', // TODO - change to 'error' in the future
             {
                 allowArgumentsExplicitlyTypedAsAny: true,
             },

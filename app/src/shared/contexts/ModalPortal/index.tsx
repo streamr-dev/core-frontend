@@ -1,18 +1,18 @@
-import type { Node, Context as ReactContext } from 'react'
+import type { Context as ReactContext, ReactNode } from 'react'
 import React from 'react'
-type Context = {
+export type ModalPortalContextModel = {
     isModalOpen: boolean
     registerModal: (() => void) | null | undefined
     unregisterModal: (() => void) | null | undefined
 }
-const defaultContext: Context = {
+const defaultContext: ModalPortalContextModel = {
     isModalOpen: false,
     registerModal: undefined,
     unregisterModal: undefined,
 }
-export const ModalPortalContext: ReactContext<Context> = React.createContext(defaultContext)
+export const ModalPortalContext: ReactContext<ModalPortalContextModel> = React.createContext(defaultContext)
 type Props = {
-    children: Node
+    children: ReactNode
 }
 type State = {
     isModalOpen: boolean
@@ -27,14 +27,14 @@ export class ModalPortalProvider extends React.Component<Props, State> {
     }
     count = 0
 
-    registerModal() {
+    registerModal(): void {
         this.count = this.count + 1
         this.setState({
             isModalOpen: true,
         })
     }
 
-    unregisterModal() {
+    unregisterModal(): void {
         this.count = this.count - 1
 
         if (this.count < 0) {
@@ -46,7 +46,7 @@ export class ModalPortalProvider extends React.Component<Props, State> {
         })
     }
 
-    render() {
+    render(): ReactNode {
         const { children } = this.props
         const { isModalOpen, registerModal, unregisterModal } = this.state
         return (

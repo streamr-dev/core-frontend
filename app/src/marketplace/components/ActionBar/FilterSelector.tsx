@@ -1,10 +1,10 @@
-import type { Node } from 'react'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, ReactNode } from 'react'
 import styled from 'styled-components'
 import type { AnyFilter } from '$mp/types/product-types'
 import UnstyledPopover from '$shared/components/Popover'
 import { LG } from '$shared/utils/styled'
 import useModal from '$shared/hooks/useModal'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 export type Options = Array<{
     id: string
     value: AnyFilter | null | undefined
@@ -12,7 +12,7 @@ export type Options = Array<{
 }>
 type Props = {
     title: string
-    selected: Node
+    selected: ReactNode
     options: Options
     onChange: (value: AnyFilter | null | undefined) => void
 }
@@ -66,9 +66,9 @@ const UnstyledFilterSelector = ({ title: popoverTitle, selected, options, onChan
         <div {...props}>
             <DesktopPopover title={popoverTitle} caret="svg" selectedItem={selected} activeTitle onChange={onChangeProp} leftTick>
                 {options.map(({ id, value, title }) => (
-                    <Popover.Item key={id} value={value}>
+                    <PopoverItem key={id} value={value}>
                         {title}
-                    </Popover.Item>
+                    </PopoverItem>
                 ))}
             </DesktopPopover>
             <MobileButton type="button" onClick={onClick}>

@@ -17,15 +17,11 @@ describe('ModalPortal', () => {
         body.removeChild(modalRoot)
     })
     it('mounts Modals inside #modal-root', () => {
-        const { rerender } = render(<ModalPortalProvider />)
-        expect(modalRoot.hasChildNodes()).toBe(false)
-        rerender(
+        render(
             <ModalPortalProvider>
                 <ModalPortal>Modal content</ModalPortal>
             </ModalPortalProvider>,
         )
         expect(modalRoot.hasChildNodes()).toBe(true)
-        rerender(<ModalPortalProvider />)
-        expect(modalRoot.hasChildNodes()).toBe(false)
     })
 })

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, FunctionComponent } from 'react'
 import cx from 'classnames'
 import { useTransition, animated } from 'react-spring'
 import { useDebounced } from '$shared/hooks/wrapCallback'
@@ -8,12 +8,12 @@ type Props = {
     className?: string | null | undefined
 }
 
-const LoadingIndicator = ({ loading: loadingProp, className }: Props) => {
+const LoadingIndicator: FunctionComponent<Props> = ({ loading: loadingProp, className }) => {
     const isLoading = !!loadingProp
-    const [loadingState, setLoadingState] = useState(isLoading)
+    const [loadingState, setLoadingState] = useState<boolean>(isLoading)
     // debounce loading flag changes to avoid flickering loading indicator
     const updateLoading = useDebounced(
-        useCallback((value) => {
+        useCallback((value: boolean) => {
             setLoadingState(value)
         }, []),
         1000,
@@ -37,18 +37,20 @@ const LoadingIndicator = ({ loading: loadingProp, className }: Props) => {
             opacity: 0,
         },
     })
-    return transitions.map(
-        ({ item, key, props }) =>
-            item && (
-                <animated.div
-                    key={key}
-                    style={props}
-                    className={cx(styles.loadingIndicator, className, {
-                        [styles.loading]: loadingState,
-                    })}
-                />
-            ),
-    )
+    return <>
+        {transitions.map(
+            ({ item, key, props }) =>
+                item && (
+                    <animated.div
+                        key={key}
+                        style={props}
+                        className={cx(styles.loadingIndicator, className, {
+                            [styles.loading]: loadingState,
+                        })}
+                    />
+                ),
+        )}
+    </>
 }
 
 export default LoadingIndicator

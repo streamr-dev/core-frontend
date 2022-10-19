@@ -1,4 +1,4 @@
-import type { Node } from 'react'
+import type { FunctionComponent, Node } from 'react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'
@@ -38,7 +38,7 @@ export const ErrorPageContent = ({ children }: Props) => (
     </Container>
 )
 
-const GenericErrorPage = () => (
+const GenericErrorPage: FunctionComponent = () => (
     <Layout className={styles.genericErrorPage}>
         <BodyClass className={PAGE_SECONDARY} />
         <ErrorPageContent>

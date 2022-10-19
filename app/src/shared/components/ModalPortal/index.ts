@@ -1,14 +1,14 @@
-import type { Node } from 'react'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { Context } from '$shared/contexts/ModalPortal'
+import { Context, ModalPortalContextModel } from '$shared/contexts/ModalPortal'
 import NoModalRootError from '$shared/errors/NoModalRootError'
 type Props = {
-    children: Node
+    children: ReactNode
 }
 
 class ModalPortal extends React.Component<Props> {
     static contextType = Context
+    public context: ModalPortalContextModel
 
     componentDidMount() {
         this.modalRoot = document.getElementById('modal-root')

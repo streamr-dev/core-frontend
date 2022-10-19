@@ -4,6 +4,7 @@
 - /app/src/shared/utils/web3.ts
 - /app/src/getters/getClientConfig.ts
 - /app/src/marketplace/utils/product.ts
+- /app/src/marketplace/components/ActionBar/FilterModal.tsx
 
 
 ### [Delete this file before merging]

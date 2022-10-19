@@ -1,17 +1,20 @@
 import * as Sentry from '@sentry/browser'
 import { RewriteFrames } from '@sentry/integrations'
 import LogRocket from 'logrocket'
+import { Severity } from '@sentry/browser'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 type ErrorServiceId = string
 type ErrorService = {
     id: ErrorServiceId
     init?: (...args: Array<any>) => any
     reportError?: (...args: Array<any>) => any
-    getMiddleware?: (...args: Array<any>) => any
+    getMiddleware?: (...args: Array<any>) => any,
+    reportWarning?: (...args: Array<any>) => any
 }
+// TODO add typing
 export class Analytics {
-    services = {}
-    register = ({ id, init, reportError, getMiddleware }: ErrorService) => {
+    services: {[key: string]: any} = {}
+    register({ id, init, reportError, getMiddleware }: ErrorService): void {
         if (!id) {
             throw new Error('Service has no id!')
         }
@@ -31,27 +34,28 @@ export class Analytics {
             this.services[id].init()
         }
     }
-    deregister = (id: ErrorServiceId) => {
+    deregister (id: ErrorServiceId): void {
         delete this.services[id]
     }
-    reportError = (error: Error, extra: Record<string, any> = {}) => {
+    reportError(error: Error, extra: Record<string, any> = {}): void {
         Object.keys(this.services).forEach(
             (id) => this.services[id].reportError && this.services[id].reportError(error, extra),
         )
     }
-    reportWarning = (error: Error, extra: Record<string, any> = {}) => {
+    reportWarning(error: Error, extra: Record<string, any> = {}): void {
         Object.keys(this.services).forEach(
             (id) => this.services[id].reportWarning && this.services[id].reportWarning(error, extra),
         )
     }
-    getMiddlewares = () =>
-        Object.keys(this.services).reduce(
+    getMiddlewares(): any {
+        return Object.keys(this.services).reduce(
             (result, id) => [
                 ...result,
                 ...(this.services[id].getMiddleware ? [this.services[id].getMiddleware()] : []),
             ],
             [],
         )
+    }
 }
 const analytics = new Analytics()
 const { streamrUrl, platformOriginUrl } = getCoreConfig()
@@ -64,6 +68,8 @@ if (process.env.SENTRY_DSN) {
                 dsn: process.env.SENTRY_DSN,
                 release: process.env.VERSION,
                 environment: process.env.SENTRY_ENVIRONMENT,
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
                 integrations: [new RewriteFrames()],
                 whitelistUrls: [
                     window.location.origin,
@@ -97,7 +103,7 @@ if (process.env.SENTRY_DSN) {
                     scope.setExtras(extra)
                 }
 
-                scope.setLevel('warning')
+                scope.setLevel(Severity.Warning)
                 Sentry.captureException(error)
             })
         },
@@ -113,7 +119,7 @@ if (process.env.LOGROCKET_SLUG) {
         init: () => {
             LogRocket.init(process.env.LOGROCKET_SLUG, {
                 network: {
-                    requestSanitizer: (request) => {
+                    requestSanitizer: (request: any) => {
                         const requestUrl = request.url.toLowerCase()
 
                         // if the url contains one of the blacklisted paths

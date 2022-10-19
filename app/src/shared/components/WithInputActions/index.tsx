@@ -2,6 +2,7 @@ import type { Node } from 'react'
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import Popover from '$shared/components/Popover'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import type { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
 const ActionContainer = styled.div`
@@ -18,7 +19,7 @@ const ActionContainer = styled.div`
         `}
 `
 type Props = {
-    actions?: Array<typeof Popover.Item>
+    actions?: Array<typeof PopoverItem>
     disabled?: boolean
     children?: Node
 }

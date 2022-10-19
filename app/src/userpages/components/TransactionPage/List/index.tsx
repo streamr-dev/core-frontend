@@ -31,6 +31,7 @@ import { MD, LG } from '$shared/utils/styled'
 import Search from '$userpages/components/Header/Search'
 import getChainId from '$utils/web3/getChainId'
 import { getTransactionLink } from '$shared/utils/blockexplorer'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import NoTransactionsView from './NoTransactions'
 
 const StyledListContainer = styled(ListContainer)`
@@ -186,8 +187,8 @@ const TransactionList: FunctionComponent = () => {
                                                 }}
                                                 caret={false}
                                             >
-                                                <Popover.Item onClick={() => openInBlockExplorer(hash)}>View on block explorer</Popover.Item>
-                                                <Popover.Item onClick={() => copyToClipboard(hash)}>Copy TX hash</Popover.Item>
+                                                <PopoverItem onClick={() => openInBlockExplorer(hash)}>View on block explorer</PopoverItem>
+                                                <PopoverItem onClick={() => copyToClipboard(hash)}>Copy TX hash</PopoverItem>
                                             </Popover>
                                         </TransactionListComponent.Actions>
                                     </TransactionListComponent.Row>

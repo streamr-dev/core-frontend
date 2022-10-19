@@ -1,8 +1,8 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import Popover from '$shared/components/Popover'
 import Text from '$ui/Text'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import WithInputActions from '.'
 const stories = storiesOf('Shared/WithInputActions', module).addDecorator(
     styles({
@@ -11,12 +11,12 @@ const stories = storiesOf('Shared/WithInputActions', module).addDecorator(
     }),
 )
 stories.add('basic', () => (
-    <WithInputActions actions={[<Popover.Item key="1">Some Action</Popover.Item>]}>
+    <WithInputActions actions={[<PopoverItem key="1">Some Action</PopoverItem>]}>
         <Text />
     </WithInputActions>
 ))
 stories.add('disabled', () => (
-    <WithInputActions actions={[<Popover.Item key="1">Some Action</Popover.Item>]} disabled>
+    <WithInputActions actions={[<PopoverItem key="1">Some Action</PopoverItem>]} disabled>
         <Text />
     </WithInputActions>
 ))

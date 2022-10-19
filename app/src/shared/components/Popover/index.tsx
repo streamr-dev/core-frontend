@@ -1,28 +1,27 @@
-import type { Node } from 'react'
+import type { FunctionComponent, ReactElement, ReactNode } from 'react'
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import { Dropdown as RsDropdown, DropdownToggle, DropdownMenu } from 'reactstrap'
+import { DropdownMenuProps } from 'reactstrap/lib/DropdownMenu'
+import { DropdownToggleProps } from 'reactstrap/lib/DropdownToggle'
 import cx from 'classnames'
 import styled from 'styled-components'
 import SvgIcon from '$shared/components/SvgIcon'
 import Meatball from '$shared/components/Meatball'
-import Item from './Item'
+
 type Props = {
-    title: Node
-    type: 'normal' | 'uppercase' | 'meatball' | 'grayMeatball' | 'whiteMeatball'
-    children?: Node
+    title: ReactNode
+    type?: 'normal' | 'uppercase' | 'meatball' | 'grayMeatball' | 'whiteMeatball'
+    children?: ReactNode
     className?: string
     caret?: false | 'arrow' | 'svg'
     activeTitle?: boolean
     selectedItem?: string | null | undefined
-    toggleProps: {
-        className?: string
-    }
-    menuProps: {
-        className?: string
+    toggleProps?: DropdownToggleProps
+    menuProps?: DropdownMenuProps & {
         modifiers?: Record<string, any>
     }
     onMenuToggle?: (arg0: boolean) => any
-    direction?: string
+    direction?: "up" | "down" | "left" | "right"
     disabled?: boolean
     onChange?: (arg0: string) => void
     leftTick?: boolean
@@ -35,7 +34,7 @@ const UppercaseTitle = styled.span`
     line-height: 24px;
     text-transform: uppercase;
 `
-export const StyledDropdown = styled(RsDropdown)`
+export const StyledDropdown = styled(RsDropdown)<RsDropdown['props']>`
     .dropdown-menu {
         border: none;
         border-radius: 4px;
@@ -147,24 +146,24 @@ export const Caret = ({ open, svg }: CaretProps) => {
     )
 }
 
-const Popover = ({
+const Popover: FunctionComponent<Props> = ({
     title,
-    type,
+    type = 'normal',
     onMenuToggle,
     children,
     className,
     caret = 'arrow',
     activeTitle,
     selectedItem,
-    toggleProps: { className: toggleClassName, ...toggleProps },
-    menuProps: { className: menuClassName, ...menuProps },
+    toggleProps: { className: toggleClassName, ...toggleProps } = {},
+    menuProps: { className: menuClassName, ...menuProps } = {},
     direction,
     disabled,
     onChange,
     leftTick,
-}: Props) => {
+}) => {
     const [open, setOpen] = useState(false)
-    const childrenArray = useMemo(() => React.Children.toArray(children), [children])
+    const childrenArray = useMemo<ReactElement[]>(() => React.Children.toArray(children) as ReactElement[], [children])
     const selectedIndex = useMemo(
         () => childrenArray.findIndex((child) => child.props.value === selectedItem),
         [childrenArray, selectedItem],
@@ -248,7 +247,7 @@ const Popover = ({
             {childrenArray.length > 0 && (
                 <StyledDropdownMenu {...menuProps} className={menuClassName}>
                     {React.Children.map(
-                        children,
+                        children as ReactElement[],
                         (child, index) =>
                             child &&
                             React.cloneElement(child, {
@@ -263,7 +262,6 @@ const Popover = ({
     )
 }
 
-Popover.Item = Item
 Popover.defaultProps = {
     toggleProps: {},
     menuProps: {},

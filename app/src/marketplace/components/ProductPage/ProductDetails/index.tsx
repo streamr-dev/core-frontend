@@ -88,6 +88,7 @@ const ProductDetails = ({
         <div className={styles.purchaseWrapper}>
             <div className={styles.buttonWrapper}>
                 <Button
+                    tag={'button'}
                     className={styles.button}
                     kind="primary"
                     size="big"

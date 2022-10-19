@@ -1,5 +1,5 @@
 export default function setTempEnv(variables = {}): any {
-    let env: any;
+    let env: any
     beforeEach(() => {
         env = { ...process.env }
         Object.assign(process.env, variables)

@@ -1,9 +1,8 @@
-import type { Node } from 'react'
-import React, { Fragment } from 'react'
+import React, { Fragment, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import { ERROR } from '$ui/StateColors'
 type Props = {
-    children?: Node
+    children?: ReactNode
     overlap?: boolean
     theme?: {
         color: string

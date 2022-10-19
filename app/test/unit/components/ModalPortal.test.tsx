@@ -20,7 +20,7 @@ describe(ModalPortalProvider, () => {
         jest.restoreAllMocks()
     })
     it('renders #app', () => {
-        expect(shallow(<ModalPortalProvider />).find('#app')).toHaveLength(1)
+        expect(shallow(<ModalPortalProvider><></></ModalPortalProvider>).find('#app')).toHaveLength(1)
     })
     it('renders children', () => {
         const el = mount(
@@ -49,8 +49,8 @@ describe(ModalPortalProvider, () => {
         const el = mount(
             <ModalPortalProvider>
                 <React.Fragment>
-                    <ModalPortal />
-                    <ModalPortal />
+                    <ModalPortal><p>Foo</p></ModalPortal>
+                    <ModalPortal><p>Foo</p></ModalPortal>
                     <ModalPortalContext.Consumer>{consume}</ModalPortalContext.Consumer>
                 </React.Fragment>
             </ModalPortalProvider>,

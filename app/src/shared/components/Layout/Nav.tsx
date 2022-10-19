@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, FunctionComponent } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
@@ -22,7 +22,7 @@ import SvgIcon from '$shared/components/SvgIcon'
 import ActivityList from '$shared/components/ActivityList'
 import { useSessionMethod } from '$shared/reducers/session'
 import routes from '$routes'
-import User from './User'
+import User, { Avatarless, Name, Username, UsernameCopy } from './User'
 import SiteSection from './SiteSection'
 import MetamaskIcon from './metamask.svg'
 import WalletconnectIcon from './walletConnect.svg'
@@ -63,7 +63,7 @@ const SignedInUserMenu = styled(NavDropdown)`
             margin-bottom: 10px;
         }
 
-        ${User.Avatarless} {
+        ${Avatarless} {
             text-align: center;
             background: #f8f8f8;
             border-radius: 4px;
@@ -72,8 +72,8 @@ const SignedInUserMenu = styled(NavDropdown)`
             user-select: none;
         }
 
-        ${User.Name},
-        ${User.Username} {
+        ${Name},
+        ${Username} {
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -91,7 +91,7 @@ const SignedInUserMenu = styled(NavDropdown)`
     }
 `
 
-const UnstyledNavDivider = (props) => (
+const UnstyledNavDivider: FunctionComponent = (props) => (
     <div {...props}>
         <div />
     </div>
@@ -223,7 +223,7 @@ const UnstyledDesktopNav = (props) => {
                             </ActivityList>
                         </Navbar.Item>
                         <Navbar.Item data-desktop-only>
-                            <User.UsernameCopy username={currentUser.username} />
+                            <UsernameCopy username={currentUser.username} />
                         </Navbar.Item>
                         <Navbar.Item
                             style={{
@@ -246,7 +246,7 @@ const UnstyledDesktopNav = (props) => {
                                 menu={
                                     <Menu>
                                         <Menu.Item>
-                                            <User.Avatarless source={currentUser} />
+                                            <Avatarless source={currentUser} />
                                         </Menu.Item>
                                         <Menu.Item as={Link} to={routes.profile()}>
                                             Settings
@@ -326,7 +326,7 @@ const methods = {
     walletConnect: 'WalletConnect',
 }
 
-const UnstyledMobileNav = ({ className }) => {
+const UnstyledMobileNav: FunctionComponent<{className: string}> = ({ className }) => {
     const currentUser = useSelector(selectUserData)
     const method = useSessionMethod()
     const { pathname } = useLocation()
@@ -418,22 +418,22 @@ const DesktopNav = styled(UnstyledDesktopNav)`
         box-shadow: 0 10px 10px rgba(0, 0, 0, 0.02);
     }
 
-    ${User.Avatarless} {
+    ${Avatarless} {
         line-height: 20px;
         padding: 4px 0 8px;
     }
 
-    ${User.Name} {
+    ${Name} {
         font-size: 14px;
         margin-bottom: 4px;
     }
 
-    ${User.Username} {
+    ${Username} {
         font-size: 12px;
     }
 `
 const MobileNav = styled(UnstyledMobileNav)`
-    ${User.UsernameCopy},
+    ${UsernameCopy},
     ${ConnectedWith} {
         margin-right: 16px;
     }
@@ -449,7 +449,7 @@ const MobileNav = styled(UnstyledMobileNav)`
     }
 `
 
-const UnstyledContainer = (props) => <div {...props} />
+const UnstyledContainer: FunctionComponent = (props) => <div {...props} />
 
 export const Container = styled(UnstyledContainer)`
     background-color: #ffffff;
@@ -502,7 +502,7 @@ export const Container = styled(UnstyledContainer)`
     }
 `
 
-const N = ({ children, shadow, ...props }) => (
+const N: FunctionComponent<{children: any, shadow: any}> = ({ children, shadow, ...props }) => (
     <Container {...props}>
         <DesktopNav data-shadow={!!shadow} />
         <MobileNav />

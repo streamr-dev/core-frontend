@@ -5,16 +5,16 @@ import { isEthereumAddress } from '$mp/utils/validate'
 import { truncate } from '$shared/utils/text'
 import { MEDIUM } from '$shared/utils/styled'
 import useCopy from '$shared/hooks/useCopy'
-const Name = styled.div`
+export const Name = styled.div`
     font-weight: ${MEDIUM};
     line-height: 1em;
 `
-const Username = styled.div`
+export const Username = styled.div`
     color: #a3a3a3;
     line-height: 1em;
 `
 const EmptyUser = {
-    imageUrlSmall: undefined,
+    imageUrlSmall: undefined as any,
     name: '',
     username: '',
 }
@@ -32,7 +32,7 @@ const UnstyledAvatarless = ({ source = EmptyUser, ...props }) => (
     </div>
 )
 
-const Avatarless = styled(UnstyledAvatarless)``
+export const Avatarless = styled(UnstyledAvatarless)``
 const UsernameButton = styled.button`
     background-color: #f8f8f8;
     height: 32px;
@@ -78,7 +78,7 @@ const UnstyledUsernameCopy = ({ children, username, ...props }) => {
     )
 }
 
-const UsernameCopy = styled(UnstyledUsernameCopy)``
+export const UsernameCopy = styled(UnstyledUsernameCopy)``
 
 const UnstyledUser = ({ source = EmptyUser, ...props }) => (
     <div {...props}>
@@ -90,10 +90,5 @@ const User = styled(UnstyledUser)`
     display: flex;
     justify-content: flex-end;
 `
-Object.assign(User, {
-    Avatarless,
-    Name,
-    Username,
-    UsernameCopy,
-})
+
 export default User

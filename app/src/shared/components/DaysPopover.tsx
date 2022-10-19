@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Popover, { StyledDropdownToggle } from '$shared/components/Popover'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 
 const UnstyledDaysPopover = (props) => (
     <Popover
@@ -11,9 +12,9 @@ const UnstyledDaysPopover = (props) => (
             right: true,
         }}
     >
-        <Popover.Item value="7">Last 7 days</Popover.Item>
-        <Popover.Item value="28">Last 28 days</Popover.Item>
-        <Popover.Item value="90">Last 90 days</Popover.Item>
+        <PopoverItem value="7">Last 7 days</PopoverItem>
+        <PopoverItem value="28">Last 28 days</PopoverItem>
+        <PopoverItem value="90">Last 90 days</PopoverItem>
     </Popover>
 )
 

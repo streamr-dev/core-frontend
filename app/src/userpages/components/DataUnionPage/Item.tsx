@@ -31,6 +31,7 @@ import useEntities from '$shared/hooks/useEntities'
 import { productSchema } from '$shared/modules/entities/schema'
 import { getChainIdFromApiString, formatChainName } from '$shared/utils/chains'
 import { getAddressLink } from '$shared/utils/blockexplorer'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import routes from '$routes'
 import Management from './Management'
 import ManageJoinRequests from './ManageJoinRequests'
@@ -495,24 +496,24 @@ const Item = ({ product, stats }: Props) => {
                         }}
                     >
                         {!dataUnion && (
-                            <Popover.Item
+                            <PopoverItem
                                 onClick={async () => {
                                     deploy(product.id)
                                 }}
                                 disabled={loading}
                             >
                                 Deploy
-                            </Popover.Item>
+                            </PopoverItem>
                         )}
                         {!!dataUnion && (
-                            <Popover.Item
+                            <PopoverItem
                                 onClick={async () => {
                                     publish(product.id)
                                 }}
                                 disabled={loading}
                             >
                                 {product.state === productStates.DEPLOYED ? 'Unpublish' : 'Publish'}
-                            </Popover.Item>
+                            </PopoverItem>
                         )}
                     </Popover>
                 </Buttons>

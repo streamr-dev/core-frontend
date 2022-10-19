@@ -1,5 +1,4 @@
-import type { Node } from 'react'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import NotificationSystem from 'react-notification-system'
 import { Context as ModalContext } from '$shared/contexts/ModalPortal'
 import type { Ref } from '$shared/types/common-types'
@@ -22,7 +21,7 @@ type State = {
     notifications: Array<Notification>
 }
 
-const getNotificationComponent = (notification: Notification): Node =>
+const getNotificationComponent = (notification: Notification): ReactNode =>
     notification.txHash ? (
         <TransactionNotification txHash={notification.txHash} />
     ) : (

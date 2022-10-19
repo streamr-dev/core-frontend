@@ -21,7 +21,7 @@ const Meatball = ({ alt, blue, gray, gray2, white, disabled }: Props) => (
         })}
         data-test-hook="meatball"
     >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 4" width="20" height="4" alt={alt}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 4" width="20" height="4" data-alt={alt}>
             <circle cx="2" cy="2" r="2" />
             <circle cx="10" cy="2" r="2" />
             <circle cx="18" cy="2" r="2" />

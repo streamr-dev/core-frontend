@@ -7,6 +7,7 @@ import Popover from '$shared/components/Popover'
 import { StreamrClientRepositories } from '$shared/utils/constants'
 import useCopy from '$shared/hooks/useCopy'
 import { StreamSnippet } from '$utils/streamSnippets'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import styles from './snippetDialog.pcss'
 
 const SnippetDialog: FunctionComponent<{ onClose: () => void; snippets: StreamSnippet }> = ({ snippets, onClose }) => {
@@ -29,9 +30,9 @@ const SnippetDialog: FunctionComponent<{ onClose: () => void; snippets: StreamSn
                             <div className={styles.language}>
                                 <Popover title={<span className={styles.languageTitle}>{titleize(selectedLanguage)}</span>}>
                                     {Object.keys(snippets).map((language) => (
-                                        <Popover.Item key={language} onClick={() => setSelectedLanguage(language)}>
+                                        <PopoverItem key={language} onClick={() => setSelectedLanguage(language)}>
                                             {titleize(language)}
-                                        </Popover.Item>
+                                        </PopoverItem>
                                     ))}
                                 </Popover>
                             </div>

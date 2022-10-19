@@ -15,6 +15,7 @@ import useFilterSort from '$userpages/hooks/useFilterSort'
 import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 import { PurchaseTile } from '$shared/components/Tile'
 import Grid from '$shared/components/Tile/Grid'
+import PopoverItem from '$shared/components/Popover/PopoverItem'
 import Search from '../Header/Search'
 import { getFilters } from '../../utils/constants'
 import Layout from '../Layout'
@@ -83,9 +84,9 @@ const PurchasesPage: FunctionComponent = () => {
                     }}
                 >
                     {sortOptions.map((s) => (
-                        <Popover.Item key={s.filter.id} value={s.filter.id}>
+                        <PopoverItem key={s.filter.id} value={s.filter.id}>
                             {s.displayName}
-                        </Popover.Item>
+                        </PopoverItem>
                     ))}
                 </Popover>
             }
