@@ -1,4 +1,3 @@
-import type { Node } from 'react'
 import React from 'react'
 import { Img as ReactImg } from 'react-image'
 import cx from 'classnames'
@@ -24,7 +23,7 @@ type Props = {
     src: string
     alt: string
     className?: string | null | undefined
-    placeholder?: Node
+    placeholder?: JSX.Element
 }
 
 const FallbackImage = ({ src, alt, className, placeholder }: Props) => (

@@ -18,7 +18,7 @@ export const putUser = (user: User): ApiResult<User> =>
         url: routes.api.currentUser.index(),
         data: user,
     })
-export const uploadProfileAvatar = (image: File): Promise<void> => {
+export const uploadProfileAvatar = (image: File): Promise<any> => {
     const options = {
         headers: {
             'Content-Type': 'multipart/form-data',

@@ -17,6 +17,11 @@ export type EntitiesState = {
     relatedProducts?: ProductEntities
     streams?: StreamEntities
     transactions?: TransactionEntities
+    dataUnions?: any // TODO add typing
+    dataUnionStats?: any // TODO add typing
+    dataUnionSecrets?: any // TODO add typing
+    joinRequests?: any // TODO add typing
+    whitelistedAddresses?: any // TODO add typing
 }
 // user
 export type UserState = {
@@ -25,7 +30,8 @@ export type UserState = {
     fetchingUserData: boolean
     userDataError: ErrorInUi | null | undefined
     deletingUserAccount: boolean
-    deleteUserAccountError: ErrorInUi | null | undefined
+    deleteUserAccountError: ErrorInUi | null | undefined,
+    saved: boolean
 }
 export type StoreState = MarketplaceStoreState &
     UserPagesStoreState & {

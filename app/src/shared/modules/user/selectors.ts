@@ -61,7 +61,7 @@ type AuthState = {
     isAuthenticated: boolean
     isLoggedOut: boolean
 }
-export const selectAuthState: (arg0: StoreState) => AuthState = createSelector(
+export const selectAuthState = createSelector(
     isAuthenticating,
     isAuthenticated,
     authenticationFailed,

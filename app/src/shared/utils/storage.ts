@@ -8,7 +8,7 @@ const storageAvailable = (type: string): boolean => {
     let storage
 
     try {
-        storage = window[type]
+        storage = window[type as keyof Window]
         const x = '__storage_test__'
         storage.setItem(x, x)
         storage.removeItem(x)

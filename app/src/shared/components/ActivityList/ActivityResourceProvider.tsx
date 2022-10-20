@@ -1,23 +1,24 @@
-import React, { useState, useCallback, useContext, createContext, useRef } from 'react'
+import React, { useState, useCallback, useContext, createContext, useRef, FunctionComponent, ReactNode } from 'react'
 import debounce from 'lodash/debounce'
 import { ResourceType } from '$shared/utils/resourceUrl'
 import { get } from '$shared/utils/api'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import routes from '$routes'
 import ActivityStreamHandler from './ActivityStreamHandler'
-const initialState = {}
+// TODO add typing
+const initialState: {[key: string]: any} = {}
 export const ResourcesContext = createContext(initialState)
-const FetcherContext = createContext(() => {})
+const FetcherContext = createContext<(type: string, id: string) => void>(() => {})
 export const useFetchResource = () => useContext(FetcherContext)
-export const useResource = (type, id) => useContext(ResourcesContext)[`${type}/${id}`]
+export const useResource = (type: string, id: string) => useContext(ResourcesContext)[`${type}/${id}`]
 
-const ActivityProvider = ({ children }) => {
+const ActivityProvider: FunctionComponent<{children?: ReactNode | string}> = ({ children }) => {
     const [resources, setResources] = useState(initialState)
     const isMounted = useIsMounted()
-    const debouncedGetRef = useRef({})
-    const fetch = useCallback(
+    const debouncedGetRef = useRef<any>({})
+    const fetch = useCallback<(type: string, id: string) => void>(
         (type, id) => {
-            let url
+            let url: string
 
             switch (type) {
                 case ResourceType.PRODUCT:
@@ -69,19 +70,20 @@ const ActivityProvider = ({ children }) => {
                     )
                 }, 250)
             debouncedGetRef.current[url](isMounted, setResources)
-        },
-        [isMounted],
+        }, [isMounted],
     )
-    return process.env.ACTIVITY_QUEUE ? (
-        <FetcherContext.Provider value={fetch}>
-            <ResourcesContext.Provider value={resources}>
-                {children}
-                <ActivityStreamHandler />
-            </ResourcesContext.Provider>
-        </FetcherContext.Provider>
-    ) : (
-        children
-    )
+    return <>
+        {process.env.ACTIVITY_QUEUE ? (
+            <FetcherContext.Provider value={fetch}>
+                <ResourcesContext.Provider value={resources}>
+                    {children}
+                    <ActivityStreamHandler />
+                </ResourcesContext.Provider>
+            </FetcherContext.Provider>
+        ) : (
+            children
+        )}
+    </>
 }
 
 export default ActivityProvider

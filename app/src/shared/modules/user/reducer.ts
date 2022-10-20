@@ -24,7 +24,8 @@ export const initialState: UserState = {
     deletingUserAccount: false,
     deleteUserAccountError: null,
 }
-const reducer: (arg0: UserState) => UserState = handleActions(
+export type UserStateActionPayloads = UserDataAction['payload'] | UserErrorAction['payload'] | SetBalanceAction['payload']
+const reducer = handleActions<UserState, UserStateActionPayloads>(
     {
         [USER_DATA_REQUEST]: (state: UserState) => ({
             ...state,

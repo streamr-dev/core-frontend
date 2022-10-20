@@ -18,7 +18,7 @@ describe('ActivityList', () => {
     })
     it('does NOT render its children if stored id is blank', () => {
         global.localStorage.removeItem('user.activityStreamId')
-        process.env.ACTIVITY_QUEUE = 1
+        process.env.ACTIVITY_QUEUE = '1'
         const el = mount(
             <ActivityList>
                 <div id="CHILD" />
@@ -28,7 +28,7 @@ describe('ActivityList', () => {
     })
     it('renders its children if both ACTIVITY_QUEUE env var and stream id are truthy', () => {
         global.localStorage.setItem('user.activityStreamId', 'STREAM_ID')
-        process.env.ACTIVITY_QUEUE = 1
+        process.env.ACTIVITY_QUEUE = '1'
         const el = mount(
             <ActivityList>
                 <div id="CHILD" />

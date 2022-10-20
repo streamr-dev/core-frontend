@@ -16,7 +16,7 @@ const Tabs = styled.div`
     padding: 16px 0 0 16px;
     border-bottom: 1px solid #f5f5f5;
 `
-const Tab = styled.div`
+const Tab = styled.div<{active: boolean}>`
     display: flex;
     font-size: 14px;
     font-weight: 500;

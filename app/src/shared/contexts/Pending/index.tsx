@@ -1,6 +1,13 @@
 import t from 'prop-types'
-import type { Node, Context } from 'react'
-import React, { useMemo, useCallback, useState, useContext, useEffect } from 'react'
+import React, {
+    useMemo,
+    useCallback,
+    useState,
+    useContext,
+    useEffect,
+    Context,
+    ReactNode
+} from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 type ContextProps = {
     name: string
@@ -9,7 +16,7 @@ type ContextProps = {
     checkPending: (arg0: string) => boolean
     updateChildren: (arg0: string, arg1: ContextProps) => any
 }
-const ROOT = {
+const ROOT: ContextProps = {
     name: '',
     isPending: false,
     setPending: () => {},
@@ -17,10 +24,10 @@ const ROOT = {
     updateChildren: () => {},
 }
 
-function useNamedCounters() {
+function useNamedCounters(): [{[key: string]: number}, (name: string, direction: number) => void] {
     const isMounted = useIsMounted()
-    const [counters, setCountersState] = useState({})
-    const updateCounter: (arg0: string, arg1: number) => Record<string, any> = useCallback(
+    const [counters, setCountersState] = useState<{[key: string]: number}>({})
+    const updateCounter: (name: string, direction: number) => void = useCallback(
         (name, direction) => {
             if (!isMounted()) {
                 return
@@ -50,23 +57,22 @@ function usePendingContext(name: string): ContextProps {
     const [pendingChildren, updatePendingChildren] = React.useState({})
     const updateParent = parentContext !== ROOT && parentContext.updateChildren
     const [selfPending, setPending] = useNamedCounters()
-    const updateChildren = useCallback(
+    const updateChildren = useCallback<(childName: string, value: any) => void>(
         (childName, value) => {
             if (!isMounted()) {
                 return
             }
 
             updatePendingChildren((c) => ({ ...c, [childName]: value }))
-        },
-        [updatePendingChildren, isMounted],
+        }, [updatePendingChildren, isMounted],
     )
     const isSelfPending = Object.values(selfPending).some((value) => !!value)
     const pendingChildrenValues = Object.values(pendingChildren)
     const isChildrenPending =
         !!pendingChildrenValues.length && pendingChildrenValues.some(({ isPending }: any) => isPending)
     const isPending = isSelfPending || isChildrenPending
-    const checkPending = useCallback((key) => !!selfPending[key], [selfPending])
-    const value = useMemo(
+    const checkPending = useCallback((key: any) => !!selfPending[key], [selfPending])
+    const value = useMemo<ContextProps>(
         () => ({
             name,
             path,
@@ -88,7 +94,7 @@ function usePendingContext(name: string): ContextProps {
 }
 
 type Props = {
-    children?: Node
+    children?: ReactNode
     name: string
 }
 

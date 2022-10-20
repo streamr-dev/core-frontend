@@ -13,6 +13,7 @@
         "eslint-fix": "eslint . --fix",
         "stylelint": "stylelint src/**/*.css src/**/*.[ps]css",
         "stylelint-fix": "stylelint src/**/*.css src/**/*.[ps]css --fix",
+        "lint-staged": "lint-staged",
         "storybook": "start-storybook -p 6006",
         "build-index": "node -r esm ./scripts/docsSearchIndexer/indexer.js",
         "build-storybook": "node --max_old_space_size=4096 ./node_modules/.bin/build-storybook",

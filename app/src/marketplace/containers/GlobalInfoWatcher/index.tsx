@@ -1,5 +1,4 @@
-import type { Node } from 'react'
-import React, { useCallback, useEffect, useRef, useState, Fragment } from 'react'
+import React, { useCallback, useEffect, useRef, useState, Fragment, ReactNode } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import type { Hash, Receipt } from '$shared/types/web3-types'
 import { getUserData, logout } from '$shared/modules/user/actions'
@@ -16,7 +15,7 @@ import useAccountAddress from '$shared/hooks/useAccountAddress'
 import { setupSession } from '$shared/reducers/session'
 import SwitchAccountModal from './SwitchAccountModal'
 type Props = {
-    children?: Node
+    children?: ReactNode
 }
 const LOGIN_POLL_INTERVAL = 1000 * 60 * 5 // 5min
 
@@ -28,7 +27,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     const dispatch = useDispatch()
     const address = useAccountAddress()
     // Poll login info
-    const loginPollTimeout = useRef()
+    const loginPollTimeout = useRef<any>()
     const loginPoll = useCallback(() => {
         clearTimeout(loginPollTimeout.current)
         dispatch(getUserData())
@@ -74,7 +73,7 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     }, [handleTransactionComplete, handleTransactionError])
     // Poll balances for username
     const { update: updateBalances } = useBalances()
-    const balanceTimeout = useRef()
+    const balanceTimeout = useRef<any>()
     const balancePoll = useCallback(() => {
         clearTimeout(balanceTimeout.current)
         updateBalances()
@@ -95,10 +94,10 @@ export const GlobalInfoWatcher = ({ children }: Props) => {
     }, [balancePoll, username])
     // Poll network
     useEffect(() => {
-        let currentNetworkId
+        let currentNetworkId: NumberString
 
         const onNetworkChange = (networkId: NumberString) => {
-            const nextNetworkId = !(networkId instanceof Error) ? networkId : undefined
+            const nextNetworkId = !((networkId as any) instanceof Error) ? networkId : undefined
 
             if (!currentNetworkId || currentNetworkId !== nextNetworkId) {
                 dispatch(setEthereumNetworkId(nextNetworkId))

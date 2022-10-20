@@ -59,7 +59,7 @@ const Title = styled.span`
 
 const FilterModal = ({ title, options, onChange, onClose, selected }: Props) => {
     const onClick = useCallback(
-        (value) => {
+        (value: any) => {
             onChange(value)
         },
         [onChange],
@@ -100,4 +100,4 @@ const FilterModalComponent: FunctionComponent = () => {
     return <FilterModal title={title} onChange={onChange} onClear={onClear} onClose={() => api.close()} options={options} selected={selected} />
 }
 
-export default FilterModalComponent()
+export default FilterModalComponent

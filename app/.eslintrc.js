@@ -30,6 +30,7 @@ module.exports = {
         'promise/always-return': 'off',
         'require-atomic-updates': 'off',
         'react/sort-comp': 0,
+        "react/no-unknown-property": ['error', { ignore: ['css'] }],
         'import/extensions': 'off',
         'import/order': [
             'error',

@@ -100,8 +100,8 @@ const actionVerbs = {
     UNPUBLISH: 'was unpublished',
     DEPLOY: 'was deployed',
 }
-
-const Item = ({ activity }) => {
+// TODO add typing
+const Item = ({ activity }: {activity: any}) => {
     const { resourceType, resourceId, timestamp } = activity
     const hasPendingTx = useIsPendingTransaction(activity.txHash)
     const href = resourcePath(resourceType, resourceId)

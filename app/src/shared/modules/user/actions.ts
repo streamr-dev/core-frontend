@@ -175,8 +175,8 @@ export const updateBalance =
     (account: Address) => async (dispatch: (...args: Array<any>) => any, getState: (...args: Array<any>) => any) => {
         const state = getState()
         const chainId = selectEthereumNetworkId(state)
-        let accountEthBalance = BN(0)
-        let accountDataBalance = BN(0)
+        let accountEthBalance = new BN(0)
+        let accountDataBalance = new BN(0)
 
         try {
             accountEthBalance = await services.getBalance({
@@ -202,8 +202,8 @@ export const updateBalance =
 
         dispatch(
             setBalance({
-                [BalanceType.ETH]: accountEthBalance,
-                [BalanceType.DATA]: accountDataBalance,
+                [BalanceType.ETH]: accountEthBalance.toString(),
+                [BalanceType.DATA]: accountDataBalance.toString(),
             }),
         )
     }
