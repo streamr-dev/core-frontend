@@ -1,5 +1,4 @@
-import type { Context, Node } from 'react'
-import React, { useState, useCallback, useMemo, useEffect } from 'react'
+import React, { useState, useCallback, useMemo, useEffect, Context, ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
 import useIsMounted from '$shared/hooks/useIsMounted'
 type ContextProps = {
@@ -14,7 +13,7 @@ const ModalContext: Context<ContextProps> = React.createContext({
 })
 
 function useModalContext(path: string): ContextProps {
-    const [modals, setModals] = useState({})
+    const [modals, setModals] = useState<Record<string, any>>({})
     const isMounted = useIsMounted()
     const openModal = useCallback(
         (modalId: string, value: any = true): Promise<any> => {
@@ -40,7 +39,7 @@ function useModalContext(path: string): ContextProps {
         [modals, isMounted],
     )
     const closeModal = useCallback(
-        (modalId: string, value = undefined): void => {
+        (modalId: string, value: any = undefined): void => {
             if (!isMounted()) {
                 return
             }
@@ -86,7 +85,7 @@ function useModalContext(path: string): ContextProps {
 }
 
 type Props = {
-    children?: Node
+    children?: ReactNode
 }
 
 const ModalContextProvider = ({ children }: Props) => {

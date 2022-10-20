@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ChangeEvent, ComponentType } from 'react'
 import React, { useState, forwardRef, useEffect, useCallback } from 'react'
 import type { UseStateTuple } from '$shared/types/common-types'
 import '$shared/types/common-types'
@@ -33,7 +33,7 @@ const RevertOnEscapeDecorator = (WrappedComponent: ComponentType<any>) => {
             [valueProp, onKeyDownProp],
         )
         const onChange = useCallback(
-            (e: React.SyntheticEvent<EventTarget>) => {
+            (e: ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
                 setValue(e.target.value)
 
                 if (onChangeProp) {
@@ -45,7 +45,7 @@ const RevertOnEscapeDecorator = (WrappedComponent: ComponentType<any>) => {
         return <WrappedComponent {...props} onChange={onChange} onKeyDown={onKeyDown} ref={ref} value={value} />
     }
 
-    const RevertOnEscapeDecoratorWrapperFR: ComponentType<Props> = forwardRef(RevertOnEscapeDecoratorWrapper)
+    const RevertOnEscapeDecoratorWrapperFR = forwardRef(RevertOnEscapeDecoratorWrapper)
 
     const OptInRevertOnEscapeDecoratorWrapper = ({ revertOnEscape, ...props }: Props, ref: any) =>
         revertOnEscape ? (

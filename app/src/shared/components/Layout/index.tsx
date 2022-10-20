@@ -17,7 +17,16 @@ type Props = {
 }
 const DefaultTheme = {}
 
-const Layout: FunctionComponent<{theme: any, footer: boolean, nav: ReactNode, framedClassName: string, innerClassName: string}> = ({
+type LayoutProps = {
+    theme?: any,
+    footer?: boolean,
+    nav?: ReactNode,
+    framedClassName?: string,
+    innerClassName?: string,
+    children?: ReactNode | ReactNode[],
+    className?: string
+}
+const Layout: FunctionComponent<LayoutProps> = ({
     theme = DefaultTheme,
     footer = true,
     nav = <Nav />,

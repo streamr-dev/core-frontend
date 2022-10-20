@@ -1,4 +1,4 @@
-import React, { useCallback, useContext } from 'react'
+import React, { FunctionComponent, useCallback, useContext } from 'react'
 import styled from 'styled-components'
 import emptyStateIcon from '$shared/assets/images/empty_state_icon.png'
 import emptyStateIcon2x from '$shared/assets/images/empty_state_icon@2x.png'
@@ -63,7 +63,7 @@ const EmptyState = styled.div`
     }
 `
 
-const Items = () => {
+const ActivityListItems: FunctionComponent = () => {
     const { activities, category } = useContext(StateContext)
     const dispatch = useContext(DispatchContext)
     const onActivitiesClick = useCallback(() => {
@@ -118,4 +118,4 @@ const Items = () => {
     )
 }
 
-export default Items
+export default ActivityListItems

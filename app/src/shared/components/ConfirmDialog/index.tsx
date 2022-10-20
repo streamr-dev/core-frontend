@@ -1,5 +1,4 @@
-import type { Node } from 'react'
-import React, { useState } from 'react'
+import React, { useState, ReactNode, ChangeEvent } from 'react'
 import cx from 'classnames'
 import { Label, FormGroup } from 'reactstrap'
 import type { Kind } from '$shared/components/Button'
@@ -18,7 +17,7 @@ type Button =
       }
 export type Properties = {
     title?: string
-    message: Node
+    message: ReactNode
     acceptButton?: Button
     cancelButton?: Button
     centerButtons?: boolean
@@ -63,7 +62,7 @@ const ConfirmDialog = (props: Props) => {
         },
         save: {
             title: 'OK',
-            onClick: (event) => onAccept(event, checked),
+            onClick: (event: any) => onAccept(event, checked),
             kind: 'primary',
             ...acceptButtonProps,
         },
@@ -73,7 +72,7 @@ const ConfirmDialog = (props: Props) => {
             <Dialog
                 title={title}
                 onClose={actions.cancel.onClick}
-                actions={actions}
+                actions={actions as any}
                 renderActions={() => (
                     <div
                         className={cx(styles.footer, {
@@ -90,7 +89,7 @@ const ConfirmDialog = (props: Props) => {
                                     <Label check className={styles.label}>
                                         <Checkbox
                                             value={checked}
-                                            onChange={(e) => {
+                                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                                 setChecked(e.target.checked)
                                             }}
                                         />
@@ -103,7 +102,7 @@ const ConfirmDialog = (props: Props) => {
                             className={cx({
                                 [styles.centerButtons]: !!centerButtons,
                             })}
-                            actions={actions}
+                            actions={actions as any}
                         />
                     </div>
                 )}

@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import styled, { css } from 'styled-components'
 import TOCNavContext from './TOCNavContext'
-export const Link = styled.a`
+export const Link = styled.a<{disabled: boolean, active: boolean}>`
     ${({ disabled }) =>
         !!disabled &&
         css`
@@ -12,7 +12,7 @@ export const Link = styled.a`
     color: ${({ active }) => (active ? '#0324ff' : '#323232')} !important;
 `
 
-function UnstyledTOCNav(props) {
+const UnstyledTOCNav: FunctionComponent = (props) => {
     return (
         <TOCNavContext.Provider value>
             <div {...props} />

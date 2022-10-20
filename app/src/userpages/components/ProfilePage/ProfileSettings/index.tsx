@@ -1,5 +1,5 @@
 import { $ElementType } from 'utility-types'
-import React, { FunctionComponent, useCallback } from 'react'
+import React, { ChangeEvent, FunctionComponent, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
 import Label from '$ui/Label'
@@ -68,17 +68,17 @@ const ProfileSettings: FunctionComponent = () => {
         (email: $ElementType<User, 'email'>) => dispatch(updateCurrentUserEmail(email)),
         [dispatch],
     )
-    const onNameChange = useCallback(
-        ({target,}: {
+    const onNameChange = useCallback<((event: ChangeEvent<HTMLInputElement>) => void) | null | undefined>(
+        ({target}: {
             target: {
                 value: $ElementType<User, 'name'>
             }
         }) => {
             doUpdateUserName(target.value)
         },
-        [doUpdateUserName],
+    [doUpdateUserName],
     )
-    const onEmailChange = useCallback(
+    const onEmailChange = useCallback<((event: ChangeEvent<HTMLInputElement>) => void) | null | undefined>(
         ({target,}: {
             target: {
                 value: $ElementType<User, 'email'>
@@ -86,7 +86,7 @@ const ProfileSettings: FunctionComponent = () => {
         }) => {
             doUpdateUserEmail(target.value)
         },
-        [doUpdateUserEmail],
+    [doUpdateUserEmail],
     )
     const originalImage = user.imageUrlLarge
     const uploadAvatar = useCallback(

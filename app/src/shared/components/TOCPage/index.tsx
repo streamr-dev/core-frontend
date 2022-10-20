@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import styled from 'styled-components'
 import { MD, LG, XL, REGULAR } from '$shared/utils/styled'
 import BusLine from '$shared/components/BusLine'
 import Display from '$shared/components/Display'
-import TOCSection from './TOCSection'
 import TOCNav from './TOCNav'
 const SectionWrapper = styled.div`
     > div {
@@ -15,7 +14,7 @@ const SectionWrapper = styled.div`
     }
 `
 
-const Wing = ({ children }) => (
+const Wing: FunctionComponent<{children?: ReactNode | ReactNode[]}> = ({ children }) => (
     <Display $mobile="none" $desktop>
         {children}
     </Display>
@@ -46,7 +45,8 @@ export const Title = styled.h1`
     }
 `
 
-function UnstyledTOCPage({ children, title, ...props }) {
+type UnstyledTOCPageProps = {children: ReactNode | ReactNode[], title: ReactNode}
+const UnstyledTOCPage: FunctionComponent<UnstyledTOCPageProps> = ({ children, title, ...props }) => {
     return (
         <div {...props} data-test-hook="TOCPage">
             <div>
@@ -98,11 +98,10 @@ const StyledTOCPage = styled(UnstyledTOCPage)`
     }
 `
 
-const TOCPage = (props) => (
+const TOCPage: FunctionComponent<UnstyledTOCPageProps> = (props) => (
     <BusLine dynamicScrollPosition>
         <StyledTOCPage {...props} />
     </BusLine>
 )
 
-TOCPage.Section = TOCSection
 export default TOCPage

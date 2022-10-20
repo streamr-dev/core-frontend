@@ -6,6 +6,8 @@
 - /app/src/marketplace/utils/product.ts
 - /app/src/shared/components/Notifications/TransactionNotification/index.tsx
 - /app/src/shared/components/Notifications/BasicNotification/index.tsx
+- /app/src/userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/AvatarUploadDialog/index.tsx
+- /app/src/userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/CropAvatarDialog/index.tsx
 
 
 ### [Delete this file before merging]

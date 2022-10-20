@@ -2,7 +2,7 @@
 // to `addEventListener` to improve performance of some event types. For more details visit:
 // https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#Improving_scrolling_performance_with_passive_listeners
 export default (() => {
-    let options = false
+    let options: boolean | {passive: boolean, capture: boolean} = false
 
     if (typeof window !== 'undefined') {
         try {

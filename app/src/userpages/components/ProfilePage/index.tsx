@@ -12,6 +12,7 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import CoreLayout from '$shared/components/Layout/Core'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
+import TOCSection from '$shared/components/TOCPage/TOCSection'
 import routes from '$routes'
 import ProfileSettings from './ProfileSettings'
 import DeleteAccount from './DeleteAccount'
@@ -74,12 +75,12 @@ export const ProfilePage: FunctionComponent = () => {
         >
             <CoreHelmet title="Profile" />
             <TOCPage title="Settings">
-                <TOCPage.Section id="profile" title="Profile">
+                <TOCSection id="profile" title="Profile">
                     <ProfileSettings />
-                </TOCPage.Section>
-                <TOCPage.Section id="delete-account" title="Delete Streamr Account" linkTitle="Delete account">
+                </TOCSection>
+                <TOCSection id="delete-account" title="Delete Streamr Account" linkTitle="Delete account">
                     <DeleteAccount />
-                </TOCPage.Section>
+                </TOCSection>
             </TOCPage>
         </CoreLayout>
     )

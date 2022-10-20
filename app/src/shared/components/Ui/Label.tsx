@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { FunctionComponent, HTMLProps, ReactNode } from 'react'
 import styled from 'styled-components'
 import * as Colors from '$ui/StateColors'
 import { MEDIUM } from '$shared/utils/styled'
 
-function UnstyledLabel({ className, children }) {
-    return <label className={className}>{children}&zwnj;</label>
-}
+const UnstyledLabel: FunctionComponent<
+    {className?: string, children?: ReactNode | ReactNode[]} & Partial<HTMLProps<HTMLLabelElement>>
+    > = ({ className, children }) =>{
+        return <label className={className}>{children}&zwnj;</label>
+    }
 
-const Label = styled(UnstyledLabel)`
-    color: ${({ state }) => Colors[state] || Colors.DEFAULT};
+const Label = styled(UnstyledLabel)<{state?: string}>`
+    color: ${({ state }) => (Colors as {[key: string]: string})[state] || Colors.DEFAULT};
     display: block;
     font-size: 12px;
     font-weight: ${MEDIUM};

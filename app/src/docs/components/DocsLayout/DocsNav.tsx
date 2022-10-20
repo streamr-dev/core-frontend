@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import GhostContentAPI from '@tryghost/content-api'
@@ -18,8 +18,9 @@ import {
 import docsLinks from '$shared/../docsLinks'
 import { MD as TABLET, LG as DESKTOP } from '$shared/utils/styled'
 import Link from '$shared/components/Link'
-import Nav from '$shared/components/Layout/Nav'
+import { NavContainer } from '$shared/components/Layout/Nav'
 import { selectUserData } from '$shared/modules/user/selectors'
+import SiteSection from '$shared/components/Layout/SiteSection'
 import routes from '$routes'
 const ghostContentApi = new GhostContentAPI({
     url: 'https://streamr.ghost.io',
@@ -107,7 +108,7 @@ const BlogPostItem = styled(Menu.SecondaryItem)`
     text-overflow: ellipsis;
 `
 
-const UnstyledDesktopNav = ({ className }) => {
+const UnstyledDesktopNav: FunctionComponent<{className?: string}> = ({ className }) => {
     const posts = useBlogPosts(ghostContentApi)
     const currentUser = useSelector(selectUserData)
     const { pathname } = useLocation()
@@ -120,7 +121,7 @@ const UnstyledDesktopNav = ({ className }) => {
                     </LogoLink>
                 </Navbar.Item>
                 <Navbar.Item data-mobile-only>
-                    <Nav.SiteSection>Docs</Nav.SiteSection>
+                    <SiteSection>Docs</SiteSection>
                 </Navbar.Item>
                 <Navbar.Item data-desktop-only>
                     <NavDropdown
@@ -206,7 +207,7 @@ const MenuColumn = styled.div`
     }
 `
 
-const UnstyledMobileNav = ({ className }) => {
+const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
     const currentUser = useSelector(selectUserData)
     const { pathname } = useLocation()
     return (
@@ -353,11 +354,11 @@ const DesktopNav = styled(UnstyledDesktopNav)`
 `
 const MobileNav = styled(UnstyledMobileNav)``
 
-const N = (props) => (
-    <Nav.Container {...props}>
+const N: FunctionComponent = (props) => (
+    <NavContainer {...props}>
         <DesktopNav />
         <MobileNav />
-    </Nav.Container>
+    </NavContainer>
 )
 
 export default N

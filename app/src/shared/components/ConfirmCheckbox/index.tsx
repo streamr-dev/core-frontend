@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, ChangeEvent } from 'react'
 import cx from 'classnames'
 import Checkbox from '$shared/components/Checkbox'
 import styles from './confirmCheckbox.pcss'
@@ -12,7 +12,7 @@ type Props = {
 export const ConfirmCheckbox = ({ title, subtitle, onToggle: onToggleProp, className, disabled }: Props) => {
     const [confirmed, setConfirmed] = useState(false)
     const onToggle = useCallback(
-        (e: React.SyntheticEvent<EventTarget>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             setConfirmed(e.target.checked)
             onToggleProp(e.target.checked)
         },

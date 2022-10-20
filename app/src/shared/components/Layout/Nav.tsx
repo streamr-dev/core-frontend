@@ -21,12 +21,13 @@ import { selectUserData } from '$shared/modules/user/selectors'
 import SvgIcon from '$shared/components/SvgIcon'
 import ActivityList from '$shared/components/ActivityList'
 import { useSessionMethod } from '$shared/reducers/session'
+import ActivityListItems from '$shared/components/ActivityList/ActivityListItems'
 import routes from '$routes'
 import User, { Avatarless, Name, Username, UsernameCopy } from './User'
 import SiteSection from './SiteSection'
 import MetamaskIcon from './metamask.svg'
 import WalletconnectIcon from './walletConnect.svg'
-const icons = {
+const icons: {[key: string]: any} = {
     metamask: MetamaskIcon,
     walletConnect: WalletconnectIcon,
 }
@@ -110,7 +111,7 @@ const NavDivider = styled(UnstyledNavDivider)`
     }
 `
 
-const UnstyledDesktopNav = (props) => {
+const UnstyledDesktopNav: FunctionComponent = (props) => {
     const { highlight: current } = NavProvider.useState()
     const { pathname } = useLocation()
     const currentUser = useSelector(selectUserData)
@@ -216,7 +217,7 @@ const UnstyledDesktopNav = (props) => {
                                                 padding: 0 !important;
                                             `}
                                         >
-                                            <ActivityList.Items />
+                                            <ActivityListItems />
                                         </Menu>
                                     }
                                 />
@@ -321,12 +322,12 @@ const ConnectedWith = styled.div`
         }
     }
 `
-const methods = {
+const methods: {[key: string]: any} = {
     metamask: 'MetaMask',
     walletConnect: 'WalletConnect',
 }
 
-const UnstyledMobileNav: FunctionComponent<{className: string}> = ({ className }) => {
+const UnstyledMobileNav: FunctionComponent<{className?: string}> = ({ className }) => {
     const currentUser = useSelector(selectUserData)
     const method = useSessionMethod()
     const { pathname } = useLocation()
@@ -451,7 +452,7 @@ const MobileNav = styled(UnstyledMobileNav)`
 
 const UnstyledContainer: FunctionComponent = (props) => <div {...props} />
 
-export const Container = styled(UnstyledContainer)`
+export const NavContainer = styled(UnstyledContainer)`
     background-color: #ffffff;
     color: #323232;
 
@@ -502,15 +503,15 @@ export const Container = styled(UnstyledContainer)`
     }
 `
 
-const N: FunctionComponent<{children: any, shadow: any}> = ({ children, shadow, ...props }) => (
-    <Container {...props}>
+const N: FunctionComponent<{children?: any, shadow?: any}> = ({ children, shadow, ...props }) => (
+    <NavContainer {...props}>
         <DesktopNav data-shadow={!!shadow} />
         <MobileNav />
-    </Container>
+    </NavContainer>
 )
 
 Object.assign(N, {
-    Container,
+    Container: NavContainer,
     SiteSection,
 })
 export default N

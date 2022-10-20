@@ -6,7 +6,7 @@ import Activity, { actionTypes } from '$shared/utils/Activity'
 import { isLocalStorageAvailable } from '$shared/utils/storage'
 import { Hash } from '$shared/types/web3-types'
 import { useFetchResource } from './ActivityResourceProvider'
-import Items from './Items'
+import ActivityListItems from './ActivityListItems'
 export const ACTIVITY_FROM = 30 * 24 * 60 * 60 * 1000 // 30 days
 
 const notificationFilter = ({ action }: {action: string}) => action === actionTypes.PAYMENT || action === actionTypes.SHARE
@@ -51,7 +51,7 @@ export const useIsPendingTransaction = (txHash: Hash) => {
     return txHash && pendingTransactions.some(({ hash, state }) => hash === txHash && state === 'pending')
 }
 
-const ActivityList = ({ children = <Items /> }) => {
+const ActivityList = ({ children = <ActivityListItems /> }) => {
     const itemsRef = useRef([])
     const [state, dispatch] = useReducer(reducer, initialState)
     const streamId = storage && process.env.ACTIVITY_QUEUE ? storage.getItem('user.activityStreamId') : undefined
@@ -96,7 +96,5 @@ const ActivityList = ({ children = <Items /> }) => {
     )
 }
 
-Object.assign(ActivityList, {
-    Items,
-})
+
 export default ActivityList

@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import { REGULAR, MD, LG } from '$shared/utils/styled'
 import { useBusLine } from '$shared/components/BusLine'
 import TOCBusStop from './TOCBusStop'
 import { Link } from './TOCNav'
 import { useIsWithinNav } from './TOCNavContext'
-const Section = styled.div`
+const Section = styled.div<{onlyDesktop: boolean}>`
     ${({ onlyDesktop }) =>
         !!onlyDesktop &&
         css`
@@ -36,7 +36,16 @@ const TitleWrapper = styled.div`
 `
 const TitleText = styled.span``
 const Status = styled.span``
-export function UnstyledTOCSection({ id, title, status, children, disabled, linkTitle, onlyDesktop, ...props }) {
+export type TOCSectionProps = {
+    id: string,
+    title: ReactNode,
+    status?: ReactNode,
+    children?: ReactNode | ReactNode[],
+    linkTitle?: string,
+    disabled?: boolean,
+    onlyDesktop?: boolean
+}
+export const UnstyledTOCSection: FunctionComponent<TOCSectionProps> = ({ id, title, status, children, disabled, linkTitle, onlyDesktop, ...props }) => {
     const isWithinNav = useIsWithinNav()
     const active = id === useBusLine().stop
 

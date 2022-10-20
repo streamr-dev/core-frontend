@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FunctionComponent, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import { TOOLBAR_SHADOW, MD } from '$shared/utils/styled'
 import useInt from '$shared/hooks/useInt'
-export const Root = styled.div`
+export const Root = styled.div<{elevated: boolean, offset: number}>`
     ${({ elevated, offset }) =>
         (offset === 0 || !!elevated) &&
         css`
@@ -20,9 +20,10 @@ export const Root = styled.div`
 `
 type Props = {
     offset?: number | string
+    children?: ReactNode | ReactNode[]
 }
 
-const UnstyledElevatedContainer = ({ offset: offsetProp = 0, ...props }: Props) => {
+const UnstyledElevatedContainer: FunctionComponent<Props> = ({ offset: offsetProp = 0, children, ...props }: Props) => {
     const [scrolled, setScrolled] = useState(false)
     const offset = useInt(offsetProp)
     useEffect(() => {
@@ -36,8 +37,8 @@ const UnstyledElevatedContainer = ({ offset: offsetProp = 0, ...props }: Props) 
             window.removeEventListener('scroll', onScroll)
         }
     }, [offset])
-    return <Root {...props} elevated={scrolled} offset={offset} />
+    return <Root {...props} elevated={scrolled} offset={offset}>{children}</Root>
 }
 
-const ElevatedContainer = styled(UnstyledElevatedContainer)``
+const ElevatedContainer = styled(UnstyledElevatedContainer)<Props>``
 export default ElevatedContainer

@@ -1,5 +1,4 @@
-import type { Node } from 'react'
-import React, { useCallback, useRef, useState, useEffect } from 'react'
+import React, { useCallback, useRef, useState, useEffect, ReactNode } from 'react'
 import type { Ref } from '$shared/types/common-types'
 import '$shared/types/common-types'
 type TextControlRef = Ref<HTMLTextAreaElement | HTMLInputElement>
@@ -38,7 +37,7 @@ const TextControl = ({
     tag,
     value: valueProp,
     ...props
-}: Props): Node => {
+}: Props): ReactNode => {
     const Tag = tag || TextControl.defaultProps.tag
     const el = useRef(null)
     const ref = innerRef || el

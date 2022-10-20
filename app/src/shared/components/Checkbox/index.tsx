@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react'
+import React, { ChangeEvent, FunctionComponent, HTMLProps } from 'react'
 import styled, { css } from 'styled-components'
 import ImageChecked from './checkbox-checked.svg'
 import ImageUnchecked from './checkbox.svg'
@@ -31,12 +31,12 @@ const Tick = styled.div<{checked: boolean}>`
 `
 
 const noop = () => {}
-
-const UnstyledCheckbox: FunctionComponent<{value: boolean, onChange?: () => void}> = ({ value, onChange = noop, ...props }) => (
+type CheckboxProps = {value: boolean, onChange?: (e: ChangeEvent<HTMLInputElement>) => void, disabled?: boolean}
+const UnstyledCheckbox: FunctionComponent<CheckboxProps> = ({ value, onChange = noop, ...props }) => (
     <Tick {...props} as="input" type="checkbox" checked={!!value} onChange={onChange} />
 )
 
-const Checkbox = styled(UnstyledCheckbox)`
+const Checkbox = styled(UnstyledCheckbox)<CheckboxProps>`
     appearance: none;
     border: 0;
     cursor: pointer;

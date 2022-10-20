@@ -1,17 +1,29 @@
 /* eslint-disable react/prop-types */
-import React, { createContext, useContext, useState, useCallback, useEffect, useRef, useMemo } from 'react'
+import React, {
+    createContext,
+    useContext,
+    useState,
+    useCallback,
+    useEffect,
+    useRef,
+    useMemo,
+    FunctionComponent, ReactNode
+} from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import passiveEventOptions from '$shared/utils/passiveEventOptions'
 import getScrollY from '$shared/utils/getScrollY'
 import scrollTo from '$shared/utils/scrollTo'
 import useIsMounted from '$shared/hooks/useIsMounted'
-const BusLineContext = createContext({
+// TODO add typing
+type BusLineContextProps = {link: any, stop: any, defaultStop: any, unlink: any}
+const BusLineContext = createContext<BusLineContextProps>({
     link: () => {},
     stop: undefined,
     unlink: () => {},
+    defaultStop: undefined
 })
 export const useBusLine = () => useContext(BusLineContext)
-export const BusStop = ({ name, ...props }) => {
+export const BusStop: FunctionComponent<{name: string}> = ({ name, ...props }) => {
     const { link, unlink } = useBusLine()
     const ref = useRef()
     useEffect(() => {
@@ -23,19 +35,19 @@ export const BusStop = ({ name, ...props }) => {
     return <div {...props} ref={ref} />
 }
 
-const getElementTop = (el) => {
-    const { width, top } = el ? el.getBoundingClientRect() : {}
+const getElementTop = (el: HTMLElement): number => {
+    const { width, top }: {width: number, top: number} = el ? el.getBoundingClientRect() as {width: number, top: number} : {} as any
     return width ? top : null
 }
 
-const BusLine = ({ children = null, dynamicScrollPosition }) => {
+const BusLine: FunctionComponent<{dynamicScrollPosition: any, children: ReactNode | ReactNode[]}> = ({ children = null, dynamicScrollPosition }) => {
     const [refs, setRefs] = useState([])
     const [positions, setPositions] = useState([])
     const defaultStop = useMemo(() => (positions.length ? positions[positions.length - 1] : [])[0], [positions])
-    const link = useCallback(([name, ref]) => {
+    const link = useCallback<(param: [string, any]) => void>(([name, ref]) => {
         setRefs((current) => [...current, [name, ref]])
     }, [])
-    const unlink = useCallback((name) => {
+    const unlink = useCallback<(name: string) => void>((name) => {
         setRefs((current) => current.filter(([n]) => n !== name))
     }, [])
     const [stop, setStop] = useState()
@@ -63,7 +75,7 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
                         const top = getElementTop(el)
                         return top != null ? [...memo, [name, top - bodyTop]] : memo
                     }, [])
-                    .sort(([, a], [, b]) => b - a)
+                    .sort(([, a]: [string, number], [, b]: [string, number]) => b - a)
             })
         }
 
@@ -78,7 +90,7 @@ const BusLine = ({ children = null, dynamicScrollPosition }) => {
             flags.current.wheel = true
         }
 
-        const onMouseDown = (e) => {
+        const onMouseDown = (e: MouseEvent) => {
             flags.current.mouseDown = true
             flags.current.wheel = false
             flags.current.scrollbar = e.target instanceof HTMLHtmlElement

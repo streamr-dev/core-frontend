@@ -2,13 +2,13 @@ import React, { Fragment, useEffect, useReducer, useRef } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import StatusLabel from '$shared/components/StatusLabel'
-import TOCPage from '$shared/components/TOCPage'
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import Label from '$ui/Label'
 import Numeric from '$ui/Numeric'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
+import TOCSection from '$shared/components/TOCPage/TOCSection'
 const PARTITIONS_MIN = 1
 const PARTITIONS_MAX = 99
 const Init = 'init'
@@ -132,7 +132,7 @@ export default function PartitionsSection({ disabled: disabledProp, ...props }) 
     const disabled = disabledProp || !canEdit
     const isWithinNav = useIsWithinNav()
     return (
-        <TOCPage.Section
+        <TOCSection
             id="stream-partitions"
             title="Stream partitions"
             linkTitle="Partitions"
@@ -140,6 +140,6 @@ export default function PartitionsSection({ disabled: disabledProp, ...props }) 
             disabled={disabled}
         >
             {!isWithinNav && <UnwrappedPartitionsSection {...props} canEdit={canEdit} disabled={disabled} />}
-        </TOCPage.Section>
+        </TOCSection>
     )
 }

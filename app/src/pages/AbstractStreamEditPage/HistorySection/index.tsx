@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
-import TOCPage from '$shared/components/TOCPage'
 import Label from '$ui/Label'
 import useStreamId from '$shared/hooks/useStreamId'
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
@@ -9,6 +8,7 @@ import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
+import TOCSection from '$shared/components/TOCPage/TOCSection'
 import StorageNodeList from './StorageNodeList'
 
 function UnwrappedHistorySection({ disabled, canEdit }) {
@@ -53,8 +53,8 @@ export default function HistorySection({ disabled: disabledProp, ...props }) {
     const disabled = disabledProp || !canEdit
     const isWithinNav = useIsWithinNav()
     return (
-        <TOCPage.Section disabled={disabled} id="historical-data" title="Data storage">
+        <TOCSection disabled={disabled} id="historical-data" title="Data storage">
             {!isWithinNav && <UnwrappedHistorySection {...props} disabled={disabled} canEdit={canEdit} />}
-        </TOCPage.Section>
+        </TOCSection>
     )
 }

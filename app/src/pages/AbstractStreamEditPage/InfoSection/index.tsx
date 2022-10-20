@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
-import TOCPage from '$shared/components/TOCPage'
 import Text from '$ui/Text'
 import useStreamId from '$shared/hooks/useStreamId'
 import { useTransientStream } from '$shared/contexts/TransientStreamContext'
@@ -10,6 +9,7 @@ import Label from '$ui/Label'
 import Surround from '$shared/components/Surround'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
+import TOCSection from '$shared/components/TOCPage/TOCSection'
 import { ENS_DOMAINS_URL, ReadonlyStreamId, EditableStreamId } from './StreamId'
 
 function UnwrappedInfoSection({ disabled, canEdit }) {
@@ -82,8 +82,8 @@ export default function InfoSection({ disabled: disabledProp, ...props }) {
     const disabled = disabledProp || !canEdit
     const isWithinNav = useIsWithinNav()
     return (
-        <TOCPage.Section id="details" title="Details">
+        <TOCSection id="details" title="Details">
             {!isWithinNav && <UnwrappedInfoSection {...props} canEdit={canEdit} disabled={disabled} />}
-        </TOCPage.Section>
+        </TOCSection>
     )
 }

@@ -7,7 +7,6 @@ import FieldItem from '$shared/components/FieldList/FieldItem'
 import Select from '$ui/Select'
 import Text from '$ui/Text'
 import SplitControl from '$userpages/components/SplitControl'
-import TOCPage from '$shared/components/TOCPage'
 import Notification from '$shared/utils/Notification'
 import { NotificationIcon } from '$shared/utils/constants'
 import Label from '$ui/Label'
@@ -20,6 +19,7 @@ import { useTransientStream } from '$shared/contexts/TransientStreamContext'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
 import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
+import TOCSection from '$shared/components/TOCPage/TOCSection'
 import NewFieldEditor, { types } from './NewFieldEditor'
 import reducer, {
     Init,
@@ -269,8 +269,8 @@ export default function ConfigSection({ disabled: disabledProp, ...props }) {
     const disabled = disabledProp || !canEdit
     const isWithinNav = useIsWithinNav()
     return (
-        <TOCPage.Section disabled={disabled} id="configure" title="Fields">
+        <TOCSection disabled={disabled} id="configure" title="Fields">
             {!isWithinNav && <UnwrappedConfigSection {...props} disabled={disabled} canEdit={canEdit} />}
-        </TOCPage.Section>
+        </TOCSection>
     )
 }

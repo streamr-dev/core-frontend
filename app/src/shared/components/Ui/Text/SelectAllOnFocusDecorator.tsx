@@ -30,7 +30,7 @@ const SelectAllOnFocusDecorator = (WrappedComponent: ComponentType<any>) => {
         return <WrappedComponent {...props} onFocus={onFocus} ref={ref} />
     }
 
-    const SelectAllOnFocusDecoratorWrapperFR: ComponentType<Props> = forwardRef(SelectAllOnFocusDecoratorWrapper)
+    const SelectAllOnFocusDecoratorWrapperFR = forwardRef(SelectAllOnFocusDecoratorWrapper)
 
     const OptInSelectAllOnFocusDecoratorWrapper = ({ selectAllOnFocus = false, ...props }: Props, ref: any) =>
         selectAllOnFocus ? (

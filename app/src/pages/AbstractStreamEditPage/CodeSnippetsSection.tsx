@@ -3,7 +3,6 @@ import { CodeSnippet, Tabs } from '@streamr/streamr-layout'
 import styled, { css } from 'styled-components'
 import Button from '$shared/components/Button'
 import useCopy from '$shared/hooks/useCopy'
-import TOCPage from '$shared/components/TOCPage'
 import useStreamId from '$shared/hooks/useStreamId'
 import {
     lightNodeSnippets,
@@ -13,6 +12,7 @@ import {
     StreamSnippetGetter
 } from '$utils/streamSnippets'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
+import TOCSection from '$shared/components/TOCPage/TOCSection'
 
 function getStreamSnippet(fn: StreamSnippetGetter, id: string): string {
     if (id) {
@@ -111,7 +111,7 @@ const FooterWrap = styled.div`
     justify-content: space-between;
     text-aling: left;
 `
-const ItemWrap = styled.div`
+const ItemWrap = styled.div<{$expand: boolean}>`
     ${({ $expand }) =>
         !$expand &&
         css`
@@ -122,9 +122,9 @@ const ItemWrap = styled.div`
 const CodeSnippetsSection: FunctionComponent<{disabled: boolean, className?: string}> = ({ disabled, className, ...props }) =>{
     const isWithinNav = useIsWithinNav()
     return (
-        <TOCPage.Section disabled={disabled} id="snippets" title="Code Snippets">
+        <TOCSection disabled={disabled} id="snippets" title="Code Snippets">
             {!isWithinNav && <UnwrappedCodeSnippetsSection {...props} disabled={disabled} className={className} />}
-        </TOCPage.Section>
+        </TOCSection>
     )
 }
 

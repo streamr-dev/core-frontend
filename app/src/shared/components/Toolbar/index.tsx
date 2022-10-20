@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import type { ButtonActions } from '$shared/components/Buttons'
 import Buttons from '$shared/components/Buttons'
@@ -30,8 +30,8 @@ const LoadingIndicator = styled(UnstyledLoadingIndicator)``
 type Props = {
     actions?: ButtonActions
     altMobileLayout?: boolean
-    left?: Node
-    middle?: Node
+    left?: ReactNode
+    middle?: ReactNode
     loading?: boolean
 }
 

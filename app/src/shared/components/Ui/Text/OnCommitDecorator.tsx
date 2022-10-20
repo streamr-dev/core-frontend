@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react'
+import type { ChangeEvent, ComponentType } from 'react'
 import React, { useCallback, useRef, forwardRef } from 'react'
 import type { Ref } from '$shared/types/common-types'
 import '$shared/types/common-types'
@@ -9,7 +9,7 @@ const normalize = (value: any): string => (typeof value === 'string' ? value.tri
 
 export type Props = {
     onBlur?: ((arg0: React.FocusEvent<EventTarget>) => void) | null | undefined
-    onChange?: ((arg0: React.SyntheticEvent<EventTarget>) => void) | null | undefined
+    onChange?: ((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void) | null | undefined
     onCommit?: ((arg0: string) => void) | null | undefined
     onFocus?: ((arg0: React.FocusEvent<EventTarget>) => void) | null | undefined
     onKeyDown?: ((arg0: React.KeyboardEvent<EventTarget>) => void) | null | undefined
@@ -108,7 +108,7 @@ const OnCommitDecorator = (WrappedComponent: ComponentType<any>) => {
         )
     }
 
-    const OnCommitDecoratorWrapperFR: ComponentType<Props> = forwardRef(OnCommitDecoratorWrapper)
+    const OnCommitDecoratorWrapperFR = forwardRef(OnCommitDecoratorWrapper)
 
     const OptInOnCommitDecorator = ({ onCommit, smartCommit, noEmptyCommit, ...props }: Props, ref: any) =>
         onCommit ? (

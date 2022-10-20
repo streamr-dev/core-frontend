@@ -3,13 +3,13 @@ import styled from 'styled-components'
 import { useClient } from 'streamr-client-react'
 import { Link } from 'react-router-dom'
 import docsLinks from '$shared/../docsLinks'
-import TOCPage from '$shared/components/TOCPage'
 import useStreamId from '$shared/hooks/useStreamId'
 import Button from '$shared/components/Button'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import useIsSessionTokenReady from '$shared/hooks/useIsSessionTokenReady'
 import useStreamData from '$shared/hooks/useStreamData'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
+import TOCSection from '$shared/components/TOCPage/TOCSection'
 import routes from '$routes'
 import PreviewTable from './PreviewTable'
 
@@ -99,10 +99,10 @@ const Description = styled.p`
 function UnstyledPreviewSection({ className, disabled, desc = <DefaultDescription /> }) {
     const isWithinNav = useIsWithinNav()
     return (
-        <TOCPage.Section id="preview" title="Preview" disabled={disabled}>
+        <TOCSection id="preview" title="Preview" disabled={disabled}>
             {desc}
             <div className={className}>{!isWithinNav && <UnwrappedPreviewSection />}</div>
-        </TOCPage.Section>
+        </TOCSection>
     )
 }
 

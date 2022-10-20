@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components'
 import { TABLET, DESKTOP } from '$shared/utils/styled'
 
-function displayCss(displayValue) {
-    return displayValue === true ? 'block' : displayValue
+function displayCss(displayValue: boolean | string): string {
+    return displayValue === true ? 'block' : displayValue as string
 }
 
-const Display = styled.div`
+const Display = styled.div<{$mobile?: boolean | string, $tablet?: boolean | string, $desktop?: boolean | string}>`
     ${({ $mobile = true }) =>
         $mobile !== true &&
         css`

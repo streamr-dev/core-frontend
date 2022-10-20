@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { StreamPermission } from 'streamr-client'
 import styled from 'styled-components'
 import { StatusIcon } from '@streamr/streamr-layout'
-import TOCPage from '$shared/components/TOCPage'
 import Label from '$ui/Label'
 import UnitizedQuantity from '$shared/components/UnitizedQuantity'
 import useStreamModifier from '$shared/hooks/useStreamModifier'
@@ -11,6 +10,7 @@ import useStreamPermissions from '$shared/hooks/useStreamPermissions'
 import { useIsWithinNav } from '$shared/components/TOCPage/TOCNavContext'
 import useStreamActivityStatus from '$shared/hooks/useStreamActivityStatus'
 import useStream from '$shared/hooks/useStream'
+import TOCSection from '$shared/components/TOCPage/TOCSection'
 
 function UnwrappedStatusSection({ disabled, canEdit, onStatusChange }) {
     const { stage } = useStreamModifier()
@@ -61,10 +61,10 @@ export default function StatusSection({ disabled: disabledProp, ...props }) {
     const isWithinNav = useIsWithinNav()
     const [status, setStatus] = useState(StatusIcon.INVACTIVE)
     return (
-        <TOCPage.Section disabled={disabled} id="status" status={<StatusIcon tooltip status={status} />} title="Status">
+        <TOCSection disabled={disabled} id="status" status={<StatusIcon tooltip status={status} />} title="Status">
             {!isWithinNav && (
                 <UnwrappedStatusSection {...props} canEdit={canEdit} disabled={disabled} onStatusChange={setStatus} />
             )}
-        </TOCPage.Section>
+        </TOCSection>
     )
 }

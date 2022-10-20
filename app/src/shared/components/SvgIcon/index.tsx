@@ -891,7 +891,8 @@ const sources = {
 export type IconName = $Keys<typeof sources>
 export type SvgIconProps = {
     name: IconName,
-    className?: string
+    className?: string,
+    css?: any
 }
 const SvgIcon = React.forwardRef(({ name, ...props }: SvgIconProps, ref) =>
     React.cloneElement(sources[name], { ...props, ref }),
