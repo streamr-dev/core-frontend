@@ -1,5 +1,6 @@
-import StreamrClient from 'streamr-client'
-import getClientConfig from '$app/src/getters/getClientConfig'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
+import getWeb3 from '$utils/web3/getWeb3'
+import { post } from '$shared/utils/api'
 
 const parseError = ({ body }) => {
     const message = ((defaultMessage) => {
@@ -13,11 +14,30 @@ const parseError = ({ body }) => {
     return new Error(message)
 }
 
-export default async (auth) => {
+export default async (address) => {
     try {
-        return await new StreamrClient(getClientConfig({
-            auth,
-        })).session.getSessionToken()
+        const { streamrUrl } = getCoreConfig()
+        const api = `${streamrUrl}/api/v2`
+
+        // Get challenge
+        const challenge = await post({
+            url: `${api}/login/challenge/${address}`,
+        })
+
+        // Sign challenge
+        const signature = await getWeb3().eth.personal.sign(challenge.challenge, address)
+
+        // Send response
+        const loginResponse = await post({
+            url: `${api}/login/response`,
+            data: {
+                challenge,
+                signature,
+                address,
+            },
+        })
+
+        return loginResponse.token
     } catch (e) {
         throw parseError(e)
     }
