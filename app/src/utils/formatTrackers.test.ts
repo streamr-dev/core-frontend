@@ -6,11 +6,11 @@ jest.mock('$app/src/getters/getConfig', () => ({
 }))
 describe('formatTrackers', () => {
     beforeEach(() => {
-        getConfig.mockImplementation(() => ({}))
+        (getConfig as any).mockImplementation(() => ({}))
     })
     it('forwards nullish values', () => {
         expect(f(null)).toBe(null)
-        expect(f()).toBe(undefined)
+        expect(f(undefined)).toBe(undefined)
         expect(f('')).toBe('')
     })
     it('formats a propper array of trackers', () => {

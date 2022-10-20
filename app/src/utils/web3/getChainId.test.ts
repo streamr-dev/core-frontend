@@ -7,8 +7,8 @@ jest.mock('$utils/web3/getWeb3', () => ({
 }))
 describe('getChainId', () => {
     it('returns the id', async () => {
-        const web3 = new Web3()
-        getWeb3.mockImplementation(() => web3)
+        const web3 = new Web3();
+        (getWeb3 as any).mockImplementation(() => web3)
         const getNetStub = jest.fn(() => Promise.resolve(6))
         jest.spyOn(web3.eth.net, 'getId').mockImplementation(getNetStub)
         const net = await getChainId()

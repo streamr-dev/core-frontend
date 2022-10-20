@@ -6,7 +6,7 @@ jest.mock('$app/src/getters/getConfig', () => ({
 }))
 describe('getMainChainId', () => {
     it('returns the main chain id (from configs)', () => {
-        getConfig.mockImplementation(() => ({
+        (getConfig as any).mockImplementation(() => ({
             client: {
                 mainchain: {
                     chainId: 1337,

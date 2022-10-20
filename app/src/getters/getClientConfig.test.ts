@@ -13,7 +13,7 @@ xit('is ensCacheChainAddress in STREAM_CLIENT_DEFAULTS?', () => {
 })
 describe('getClientConfig', () => {
     it("when empty, defaults to streamr-client's configuration", () => {
-        getConfig.mockImplementation(() => ({
+        (getConfig as any).mockImplementation(() => ({
             /* emptiness */
         }))
         const mods = {
@@ -22,7 +22,7 @@ describe('getClientConfig', () => {
         expect(g()).toMatchObject({ ...DEFAULTS, ...mods })
     })
     it('gets overwritten with config', () => {
-        getConfig.mockImplementation(() => ({
+        (getConfig as any).mockImplementation(() => ({
             client: {
                 dataUnion: {
                     factoryMainnetAddress: 'mainnet factory address',

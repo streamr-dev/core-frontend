@@ -1,5 +1,5 @@
 import getConfig from '$app/src/getters/getConfig'
-import setTempEnv from '$testUtils/setTempEnv'
+import setTempEnv from '$app/test/test-utils/setTempEnv'
 import g from './getCoreConfig'
 jest.mock('$app/src/getters/getConfig', () => ({
     __esModule: true,
@@ -7,7 +7,7 @@ jest.mock('$app/src/getters/getConfig', () => ({
 }))
 describe('getCoreConfig', () => {
     it('when empty, returns defaults', () => {
-        getConfig.mockImplementation(() => ({}))
+        (getConfig as any).mockImplementation(() => ({}))
         expect(g()).toMatchObject({
             landingPageUrl: 'https://streamr.network',
             platformOriginUrl: undefined,
@@ -15,7 +15,7 @@ describe('getCoreConfig', () => {
         })
     })
     it('forwards custom core config fields', () => {
-        getConfig.mockImplementation(() => ({
+        (getConfig as any).mockImplementation(() => ({
             core: {
                 custom: 'value',
             },
@@ -27,7 +27,7 @@ describe('getCoreConfig', () => {
             STREAMR_DOCKER_DEV_HOST: 'host',
         })
         it('formats selected URLs', () => {
-            getConfig.mockImplementation(() => ({
+            (getConfig as any).mockImplementation(() => ({
                 core: {
                     landingPageUrl: '/lp',
                     platformOriginUrl: '/pf',

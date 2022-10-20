@@ -78,6 +78,7 @@
         "@tryghost/content-api": "^1.4.13",
         "@types/enzyme": "^3.10.12",
         "@types/jest": "^29.1.2",
+        "@types/lunr": "^2.3.4",
         "@types/moxios": "^0.4.15",
         "@types/node": "^18.8.2",
         "@types/postcss-import": "^14.0.0",
