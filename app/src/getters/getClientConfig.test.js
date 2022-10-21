@@ -19,8 +19,7 @@ describe('getClientConfig', () => {
     it('when empty, defaults to streamr-client\'s configuration', () => {
         getConfig.mockImplementation(() => ({ /* emptiness */ }))
 
-        const mods = {
-        }
+        const mods = {}
 
         expect(g()).toMatchObject({
             ...DEFAULTS,
