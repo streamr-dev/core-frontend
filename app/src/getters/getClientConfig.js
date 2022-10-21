@@ -20,6 +20,7 @@ export default function getClientConfig(mods = {}) {
         streamRegistryChainRPCs: formatRpc(client?.streamRegistryChain?.rpc) || DEFAULTS.streamRegistryChainRPCs,
         streamStorageRegistryChainAddress: client?.streamStorageRegistryChainAddress || DEFAULTS.streamStorageRegistryChainAddress,
         theGraphUrl: formatConfigUrl(client?.graphUrl) || DEFAULTS.theGraphUrl,
+        metrics: false,
         ...mods,
     }
 }
