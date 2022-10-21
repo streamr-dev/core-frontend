@@ -4,7 +4,6 @@ import pick from 'lodash/pick'
 import qs from 'query-string'
 import { parse, compile } from 'path-to-regexp'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
-import getClientConfig from '$app/src/getters/getClientConfig'
 import definitions from './definitions'
 
 type Routes = {
@@ -88,8 +87,7 @@ export const buildRoutes = (paths: Paths, getVariables: () => Variables): Routes
 
 const routes = buildRoutes(definitions, () => {
     const { streamrUrl: streamr, platformOriginUrl: platform, landingPageUrl: landingPage } = getCoreConfig()
-
-    const { restUrl: api } = getClientConfig()
+    const api = `${streamr}/api/v2`
 
     return {
         api,

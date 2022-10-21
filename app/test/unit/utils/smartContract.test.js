@@ -159,9 +159,6 @@ describe('smartContract utils', () => {
                 mainnet: {
                     chainId: '1',
                 },
-                dataunionsChain: {
-                    chainId: '8995',
-                },
             }))
         })
 
