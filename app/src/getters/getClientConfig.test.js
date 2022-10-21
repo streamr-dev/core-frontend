@@ -24,6 +24,7 @@ describe('getClientConfig', () => {
         expect(g()).toMatchObject({
             ...DEFAULTS,
             ...mods,
+            metrics: false,
         })
     })
 
@@ -55,6 +56,7 @@ describe('getClientConfig', () => {
             streamRegistryChainRPCs: 'stream reg rpc',
             streamStorageRegistryChainAddress: 'stream storage reg address',
             theGraphUrl: 'graph url',
+            metrics: false,
         })
     })
 })
