@@ -4,7 +4,7 @@ import * as constants from '$shared/modules/entities/constants'
 import * as schemas from '$shared/modules/entities/schema'
 describe('entities - reducer', () => {
     it('has initial state', () => {
-        expect(reducer(undefined, {})).toStrictEqual(initialState)
+        expect(reducer(undefined, {type: '', payload: {}})).toStrictEqual(initialState)
     })
     it('handles entities', () => {
         const categories = [

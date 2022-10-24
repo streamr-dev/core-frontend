@@ -8,8 +8,8 @@ describe('useFilePreview', () => {
         URL.createObjectURL = jest.fn().mockImplementation((file) => file.name)
     })
     afterEach(() => {
-        URL.revokeObjectURL.mockReset()
-        URL.createObjectURL.mockReset()
+        (URL.revokeObjectURL as any)?.mockReset()
+        (URL.createObjectURL as any)?.mockReset()
     })
     it('returls empty preview by default', () => {
         let result

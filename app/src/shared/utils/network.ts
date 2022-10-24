@@ -16,7 +16,8 @@ export async function switchNetwork(nextChainId: number): Promise<void> {
     }
 
     try {
-        await web3.currentProvider.request({
+        // TODO fix typing
+        await (web3.currentProvider as any).request({
             method: 'wallet_switchEthereumChain',
             params: [
                 {
@@ -43,7 +44,8 @@ export async function addNetwork(nextChainId: number): Promise<void> {
         throw new MissingNetworkParamsError(nextChainId)
     }
 
-    await web3.currentProvider.request({
+    // TODO fix typing
+    await (web3.currentProvider as any).request({
         method: 'wallet_addEthereumChain',
         params: [
             {

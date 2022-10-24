@@ -6,7 +6,7 @@ describe('getDisplayName', () => {
             getDisplayName({
                 name: null,
                 displayName: null,
-            }),
+            } as any),
         ).toBe('Component')
     })
     it('gives name if available', () => {
@@ -14,7 +14,7 @@ describe('getDisplayName', () => {
             getDisplayName({
                 name: 'Name',
                 displayName: null,
-            }),
+            } as any),
         ).toBe('Name')
     })
     it('gives displayName if available', () => {
@@ -22,7 +22,7 @@ describe('getDisplayName', () => {
             getDisplayName({
                 name: null,
                 displayName: 'DisplayName',
-            }),
+            } as any),
         ).toBe('DisplayName')
     })
     it('gives expected value for real components', () => {

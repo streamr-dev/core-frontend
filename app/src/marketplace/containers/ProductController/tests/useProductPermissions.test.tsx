@@ -15,12 +15,12 @@ describe('PermissionContext', () => {
         jest.restoreAllMocks()
     })
     it('fetches permissions on mount', async () => {
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation(() => ({
             product: {
                 id: '1',
             },
         }))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
@@ -72,12 +72,12 @@ describe('PermissionContext', () => {
         expect(result.share).toBe(true)
     })
     it('does not fetch permissions on mount if flag is not set', async () => {
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation(() => ({
             product: {
                 id: '1',
             },
         }))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },

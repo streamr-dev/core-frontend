@@ -2,7 +2,8 @@ import { normalize } from 'normalizr'
 import * as actions from '$shared/modules/entities/actions'
 import * as constants from '$shared/modules/entities/constants'
 import * as schemas from '$shared/modules/entities/schema'
-import mockStore from '$testUtils/mockStoreProvider'
+import mockStore from '$app/test/test-utils/mockStoreProvider'
+
 describe('entities - actions', () => {
     describe('updateEntities', () => {
         it('updates entities succesfully', () => {

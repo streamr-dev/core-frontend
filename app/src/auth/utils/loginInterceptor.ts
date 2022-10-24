@@ -6,7 +6,9 @@ import ResourceNotFoundError, { ResourceType } from '$shared/errors/ResourceNotF
 import InvalidHexStringError from '$shared/errors/InvalidHexStringError'
 import routes from '$routes'
 
-function shouldRedirect(error) {
+// TODO add typing
+
+function shouldRedirect(error: any) {
     // ignore redirect to login logic for login route
     if (window.location.pathname === routes.auth.login()) {
         return false
@@ -54,7 +56,7 @@ function getRedirect() {
     }
 }
 
-function wait(delay) {
+function wait(delay: number) {
     return new Promise((resolve) => setTimeout(resolve, delay))
 }
 
@@ -78,7 +80,7 @@ async function loginRedirect() {
     await wait(3000) // stall a moment to let redirect happen
 }
 
-function isLoggedInError(err) {
+function isLoggedInError(err: any) {
     if (!err || !err.response || !err.response.data) {
         return false
     }
@@ -86,7 +88,7 @@ function isLoggedInError(err) {
     return err.response.data.user && err.response.data.user !== '<not authenticated>'
 }
 
-export function canHandleLoadError(err) {
+export function canHandleLoadError(err: any) {
     if (!err.response) {
         return false
     }
@@ -105,7 +107,7 @@ export function canHandleLoadError(err) {
 
     return false
 }
-export async function handleLoadError({ error, ignoreUnauthorized = false } = {}) {
+export async function handleLoadError({ error, ignoreUnauthorized = false }: {error?: any, ignoreUnauthorized?: boolean} = {}) {
     if (error instanceof InvalidHexStringError) {
         throw new ResourceNotFoundError(ResourceType.PRODUCT, error.id)
     }
@@ -127,14 +129,14 @@ export async function handleLoadError({ error, ignoreUnauthorized = false } = {}
 
     throw error
 }
-export function canHandleClientError(err) {
+export function canHandleClientError(err: any) {
     if (err.code === 'NOT_FOUND') {
         return true
     }
 
     return false
 }
-export async function handleClientError({ error, type, id } = {}) {
+export async function handleClientError({ error, type, id }: any = {}) {
     const { code } = error || {}
 
     if (code === 'NOT_FOUND') {

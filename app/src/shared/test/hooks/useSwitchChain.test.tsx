@@ -17,19 +17,19 @@ jest.mock('$utils/web3/validateWeb3', () => ({
 }))
 
 function mockGetWeb3(value) {
-    return getWeb3.mockImplementation(() => value)
+    return (getWeb3 as any).mockImplementation(() => value)
 }
 
 function mockValidateWeb3(value) {
-    return validateWeb3.mockImplementation(() => value)
+    return (validateWeb3 as any).mockImplementation(() => value)
 }
 
 describe('useSwitchChain', () => {
     afterEach(() => {
         jest.clearAllMocks()
-        jest.restoreAllMocks()
-        getWeb3.mockReset()
-        validateWeb3.mockReset()
+        jest.restoreAllMocks();
+        (getWeb3 as any)?.mockReset()
+        (validateWeb3 as any)?.mockReset()
     })
     it('prompts to switch chain', async () => {
         let result
@@ -40,7 +40,7 @@ describe('useSwitchChain', () => {
         }
 
         mount(<Test />)
-        jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+        jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {},
             },
@@ -76,7 +76,7 @@ describe('useSwitchChain', () => {
         }
 
         mount(<Test />)
-        jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+        jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {
                     getParams: () => ({
@@ -88,8 +88,8 @@ describe('useSwitchChain', () => {
         }))
         const requestStub = jest.fn(({ method }) => {
             if (method === 'wallet_switchEthereumChain') {
-                const error = new Error()
-                error.code = 4902
+                const error = new Error();
+                (error as any).code = 4902
                 throw error
             }
         })
@@ -140,7 +140,7 @@ describe('useSwitchChain', () => {
 
         mount(<Test />)
         mockGetWeb3({})
-        jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+        jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {},
             },
@@ -171,7 +171,7 @@ describe('useSwitchChain', () => {
                 toHex: (number) => number,
             },
         })
-        jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+        jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {},
             },
@@ -191,8 +191,8 @@ describe('useSwitchChain', () => {
 
         mount(<Test />)
         const requestStub = jest.fn(({ method }) => {
-            const error = new Error(method)
-            error.code = 4902
+            const error = new Error(method);
+            (error as any).code = 4902
             throw error
         })
         mockGetWeb3({
@@ -203,7 +203,7 @@ describe('useSwitchChain', () => {
                 toHex: (number) => number,
             },
         })
-        jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+        jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {
                     getParams: () => ({
@@ -227,7 +227,7 @@ describe('useSwitchChain', () => {
         }
 
         mount(<Test />)
-        jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+        jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {},
             },
@@ -265,7 +265,7 @@ describe('useSwitchChain', () => {
         }
 
         mount(<Test />)
-        jest.spyOn(getConfig, 'default').mockImplementation(() => ({
+        jest.spyOn(getConfig, 'default').mockImplementation((): any => ({
             metamask: {
                 '123': {},
             },

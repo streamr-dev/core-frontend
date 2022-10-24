@@ -3,24 +3,24 @@ import EventEmitter from 'events'
 import uuid from 'uuid'
 import type { Hash } from '$shared/types/web3-types'
 const emitter = new EventEmitter()
-export const actionTypes = {
-    CREATE: 'CREATE',
-    UPDATE: 'UPDATE',
-    SUBSCRIPTION: 'SUBSCRIPTION',
+export enum actionTypes {
+    CREATE= 'CREATE',
+    UPDATE= 'UPDATE',
+    SUBSCRIPTION= 'SUBSCRIPTION',
     // user subscribed
-    PAYMENT: 'PAYMENT',
+    PAYMENT= 'PAYMENT',
     // user received payment
-    ADD: 'ADD',
-    SHARE: 'SHARE',
-    DEPLOY: 'DEPLOY',
-    UNDEPLOY: 'UNDEPLOY',
-    PUBLISH: 'PUBLISH',
-    UNPUBLISH: 'UNPUBLISH',
+    ADD= 'ADD',
+    SHARE= 'SHARE',
+    DEPLOY= 'DEPLOY',
+    UNDEPLOY= 'UNDEPLOY',
+    PUBLISH= 'PUBLISH',
+    UNPUBLISH= 'UNPUBLISH',
 }
 type Action = $Keys<typeof actionTypes>
-export const resourceTypes = {
-    STREAM: 'STREAM',
-    PRODUCT: 'PRODUCT',
+export enum resourceTypes {
+    STREAM = 'STREAM',
+    PRODUCT = 'PRODUCT',
 }
 export type ResourceType = $Keys<typeof resourceTypes>
 type Params = {

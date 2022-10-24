@@ -1,9 +1,10 @@
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useMemo, useCallback, useState, FunctionComponent, ReactNode } from 'react'
 import get from 'lodash/get'
 import set from 'lodash/fp/set'
 import isPlainObject from 'lodash/isPlainObject'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { validate as validateProduct } from '$mp/utils/product'
+import { Product } from '$mp/types/product-types'
 import { isPublished, getPendingChanges, PENDING_CHANGE_FIELDS } from '../EditProductPage/state'
 import useController from '../ProductController/useController'
 export const INFO = 'info'
@@ -28,11 +29,12 @@ export const ERROR = 'error'
 //     isPendingChange: (string) => boolean,
 //     isAnyChangePending: () => boolean,
 // }
-const ValidationContext = React.createContext({})
+// TODO add typing
+const ValidationContext = React.createContext<{validate?: (param: any) => void}>({})
 
-const isEqual = (a, b) => JSON.stringify(a) === JSON.stringify(b)
+const isEqual = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b)
 
-const validationErrors = {
+const validationErrors: Record<string, string> = {
     name: 'Product name cannot be empty',
     description: 'Product description cannot be empty',
     chain: 'No chain selected',
@@ -52,23 +54,24 @@ const validationErrors = {
     'contact.email': 'Email address is required',
 }
 
+// TODO add typing
 function useValidationContext() {
-    const [status, setStatusState] = useState({})
+    const [status, setStatusState] = useState<any>({})
     const [pendingChanges, setPendingChanges] = useState({})
-    const [touched, setTouchedState] = useState({})
+    const [touched, setTouchedState] = useState<Record<string, boolean>>({})
     const { product: originalProduct } = useController()
     const setTouched = useCallback(
-        (name, value = true) => {
+        (name: string, value = true) => {
             setTouchedState((existing) => ({ ...existing, [name]: !!value }))
         },
         [setTouchedState],
     )
-    const isTouched = useCallback((name) => !!touched[name], [touched])
+    const isTouched = useCallback((name: string) => !!touched[name], [touched])
     const isAnyTouched = useCallback(() => Object.values(touched).some(Boolean), [touched])
     const resetTouched = useCallback(() => setTouchedState({}), [])
     const isMounted = useIsMounted()
     const setPendingChange = useCallback(
-        (name, isPending = true) => {
+        (name: string, isPending = true) => {
             if (!isMounted()) {
                 return
             }
@@ -81,13 +84,13 @@ function useValidationContext() {
         },
         [setPendingChanges, isMounted],
     )
-    const isPendingChange = useCallback((name) => !!get(pendingChanges, name), [pendingChanges])
+    const isPendingChange = useCallback((name: string) => !!get(pendingChanges, name), [pendingChanges])
     const isAnyChangePending = useCallback(
         () =>
             // flatten nested values
             Object.values(pendingChanges)
-                .reduce(
-                    (result, value) => [
+                .reduce<any[]>(
+                    (result: any[], value) => [
                         ...result, // $FlowFixMe value is in fact an object
                         ...(isPlainObject(value) ? Object.values(value) : [value]),
                     ],
@@ -97,7 +100,7 @@ function useValidationContext() {
         [pendingChanges],
     )
     const setStatus = useCallback(
-        (name, level, message) => {
+        (name: string, level: string, message: string) => {
             if (!isMounted()) {
                 return
             }
@@ -106,7 +109,7 @@ function useValidationContext() {
                 throw new Error('validation needs a name')
             }
 
-            setStatusState((state) => ({
+            setStatusState((state: any) => ({
                 ...state,
                 [name]: {
                     level,
@@ -117,7 +120,7 @@ function useValidationContext() {
         [setStatusState, isMounted],
     )
     const clearStatus = useCallback(
-        (name) => {
+        (name: string) => {
             if (!isMounted()) {
                 return
             }
@@ -130,9 +133,9 @@ function useValidationContext() {
         },
         [setStatusState, isMounted],
     )
-    const isValid = useCallback((name) => !status[name], [status])
+    const isValid = useCallback((name: string) => !status[name], [status])
     const validate = useCallback(
-        (product) => {
+        (product: Product) => {
             if (!isMounted() || !product) {
                 return
             }
@@ -193,7 +196,7 @@ function useValidationContext() {
     )
 }
 
-function ValidationContextProvider({ children }) {
+const ValidationContextProvider: FunctionComponent<{children?: ReactNode | ReactNode[] }> = ({ children }) =>{
     return <ValidationContext.Provider value={useValidationContext()}>{children || null}</ValidationContext.Provider>
 }
 

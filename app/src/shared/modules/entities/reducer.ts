@@ -22,7 +22,7 @@ export const initialState: EntitiesState = {
 // that special case. If customizer returns undefined, merging is handled by the default method instead
 const mergeCustomizer = (obj: any, src: any) => (Array.isArray(src) ? src : undefined)
 
-const reducer = handleActions<EntitiesState, UpdateEntitiesAction['payload']>(
+const reducer = handleActions<EntitiesState, UpdateEntitiesAction['payload'] | object>(
     {
         [UPDATE_ENTITIES]: (state: EntitiesState, action: UpdateEntitiesAction) =>
             mergeWith({}, state, action.payload.entities, mergeCustomizer),

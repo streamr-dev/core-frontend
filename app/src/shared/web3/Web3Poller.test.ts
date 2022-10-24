@@ -5,7 +5,7 @@ describe('Web3Poller', () => {
         jest.restoreAllMocks()
     })
     it('blocks `new` operator', () => {
-        expect(() => void new Web3Poller()).toThrow(/to interract with/)
+        expect(() => void new Web3Poller(null)).toThrow(/to interract with/)
     })
     describe('subscribe', () => {
         it('subscribes to poller events', async () => {

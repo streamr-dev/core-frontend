@@ -8,8 +8,8 @@ jest.mock('$utils/web3/getWeb3', () => ({
 }))
 describe('getDefaultWeb3Account', () => {
     it('resolves to present getAccounts()[0]', async () => {
-        const web3 = new Web3()
-        getWeb3.mockImplementation(() => web3)
+        const web3 = new Web3();
+        (getWeb3 as any).mockImplementation(() => web3)
         const getAccSpy = jest.fn(() => Promise.resolve(['testAccount']))
         jest.spyOn(web3.eth, 'getAccounts').mockImplementation(getAccSpy)
         const acc = await getDefaultWeb3Account()
@@ -17,13 +17,13 @@ describe('getDefaultWeb3Account', () => {
         expect(getAccSpy).toHaveBeenCalledTimes(1)
     })
     it('throws an error if getAccounts gives nullish value', async () => {
-        const web3 = new Web3(new FakeProvider())
-        getWeb3.mockImplementation(() => web3)
+        const web3 = new Web3(new FakeProvider());
+        (getWeb3 as any).mockImplementation(() => web3)
         await expect(getDefaultWeb3Account()).rejects.toThrow(/please unlock/i)
     })
     it('throws an error if getAccounts gives an empty list', async () => {
-        const web3 = new Web3()
-        getWeb3.mockImplementation(() => web3)
+        const web3 = new Web3();
+        (getWeb3 as any).mockImplementation(() => web3)
         jest.spyOn(web3.eth, 'getAccounts').mockImplementation(jest.fn(() => Promise.resolve([])))
         await expect(getDefaultWeb3Account()).rejects.toThrow(/please unlock/i)
     })

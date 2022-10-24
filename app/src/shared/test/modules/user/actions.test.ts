@@ -1,7 +1,7 @@
-import mockStore from '$testUtils/mockStoreProvider'
 import * as actions from '$shared/modules/user/actions'
 import * as constants from '$shared/modules/user/constants'
 import * as services from '$shared/modules/user/services'
+import mockStore from '$app/test/test-utils/mockStoreProvider'
 describe('user - actions', () => {
     beforeEach(() => {
         jest.spyOn(services, 'getBalance').mockImplementation(jest.fn())
@@ -16,9 +16,9 @@ describe('user - actions', () => {
                 name: 'Tester1',
                 username: 'tester1@streamr.com',
             }
-            const serviceStub = jest.spyOn(services, 'getUserData').mockImplementation(() => Promise.resolve(data))
+            const serviceStub = jest.spyOn(services, 'getUserData').mockImplementation((): any => Promise.resolve(data))
             const store = mockStore()
-            await store.dispatch(actions.getUserData())
+            await actions.getUserData()(store.dispatch)
             expect(serviceStub).toHaveBeenCalledTimes(1)
             const expectedActions = [
                 {
@@ -37,7 +37,7 @@ describe('user - actions', () => {
             const error = new Error('error')
             const serviceStub = jest.spyOn(services, 'getUserData').mockImplementation(() => Promise.reject(error))
             const store = mockStore()
-            await store.dispatch(actions.getUserData())
+            await actions.getUserData()(store.dispatch)
             expect(serviceStub).toHaveBeenCalledTimes(1)
             const expectedActions = [
                 {
@@ -63,7 +63,7 @@ describe('user - actions', () => {
                     },
                 },
             })
-            await store.dispatch(actions.updateCurrentUserName('test5'))
+            await actions.updateCurrentUserName('test5')(store.dispatch, store.getState)
             const expectedActions = [
                 {
                     type: constants.UPDATE_CURRENT_USER,
@@ -82,7 +82,7 @@ describe('user - actions', () => {
     describe('logout', () => {
         it('calls services.logout and handles error', async () => {
             const store = mockStore()
-            await store.dispatch(actions.logout())
+            await actions.logout()(store.dispatch)
             const expectedActions = [
                 {
                     type: constants.RESET_USER_DATA,
@@ -103,7 +103,7 @@ describe('user - actions', () => {
                     user,
                 },
             })
-            const serviceStub = jest.spyOn(services, 'putUser').mockImplementation(() => Promise.resolve(user))
+            const serviceStub = jest.spyOn(services, 'putUser').mockImplementation((): any => Promise.resolve(user))
             const expectedActions = [
                 {
                     type: constants.SAVE_CURRENT_USER_REQUEST,
@@ -115,7 +115,7 @@ describe('user - actions', () => {
                     },
                 },
             ]
-            await store.dispatch(actions.saveCurrentUser())
+            await actions.saveCurrentUser()(store.dispatch, store.getState)
             expect(serviceStub).toHaveBeenCalledTimes(1)
             expect(store.getActions()).toStrictEqual(expectedActions)
         })
@@ -144,7 +144,7 @@ describe('user - actions', () => {
             ]
 
             try {
-                await store.dispatch(actions.saveCurrentUser())
+                await actions.saveCurrentUser()(store.dispatch, store.getState)
             } catch (e) {
                 expect(serviceStub).toHaveBeenCalledTimes(1)
                 expect(store.getActions()).toStrictEqual(expectedActions)

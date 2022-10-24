@@ -173,10 +173,10 @@ describe('Action queue', () => {
                 },
             })
         // don't show error as console.error
-        jest.spyOn(console, 'error')
-        console.error.mockImplementation(() => {})
-        await queue.start()
-        console.error.mockRestore()
+        jest.spyOn(console, 'error');
+        (console.error as any).mockImplementation(() => {})
+        await queue.start();
+        (console.error as any).mockRestore()
         expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_FREE)
         expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_FREE, transactionStates.FAILED, error)
         expect(finishFn).toHaveBeenCalled()
@@ -209,10 +209,10 @@ describe('Action queue', () => {
                 },
             })
         // don't show error as console.error
-        jest.spyOn(console, 'error')
-        console.error.mockImplementation(() => {})
-        await queue.start()
-        console.error.mockRestore()
+        jest.spyOn(console, 'error');
+        (console.error as any).mockImplementation(() => {})
+        await queue.start();
+        (console.error as any).mockRestore()
         expect(readyFn).toHaveBeenCalledWith(actionsTypes.CREATE_CONTRACT_PRODUCT)
         expect(finishFn).toHaveBeenCalled()
     })

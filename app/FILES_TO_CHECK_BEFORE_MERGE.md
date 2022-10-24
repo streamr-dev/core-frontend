@@ -8,6 +8,7 @@
 - /app/src/shared/components/Notifications/BasicNotification/index.tsx
 - /app/src/userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/AvatarUploadDialog/index.tsx
 - /app/src/userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/CropAvatarDialog/index.tsx
+- /app/src/marketplace/containers/ProductController/useProductLoadCallback.ts
 
 
 ### [Delete this file before merging]

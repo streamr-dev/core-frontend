@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState, useReducer, useCallback } from 'react'
+import React, { useMemo, useEffect, useState, useReducer, useCallback, FunctionComponent, ReactNode } from 'react'
 import { useParams } from 'react-router-dom'
 import { Provider as PendingProvider } from '$shared/contexts/Pending'
 import { usePending } from '$shared/hooks/usePending'
@@ -19,13 +19,14 @@ import useResetDataUnionCallback from './useResetDataUnionCallback'
 import useController, { ProductControllerContext } from './useController'
 export { useController }
 
-function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthorization }) {
+type UseProductLoadEffectParams = {ignoreUnauthorized: boolean, requirePublished: boolean, useAuthorization: boolean};
+function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthorization }: UseProductLoadEffectParams) {
     const [loadedOnce, setLoadedOnce] = useState(false)
     const loadProduct = useProductLoadCallback()
     const loadContractProduct = useContractProductLoadCallback()
     const { isPending } = usePending('product.LOAD')
     const isMounted = useIsMounted()
-    const { id: urlId } = useParams()
+    const { id: urlId } = useParams<{id: string}>()
     const { product } = useController()
     const chainId = product && getChainIdFromApiString(product.chain)
     useEffect(() => {
@@ -47,7 +48,7 @@ function useProductLoadEffect({ ignoreUnauthorized, requirePublished, useAuthori
     }, [urlId, chainId, loadContractProduct])
 }
 
-function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization }) {
+function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization }: UseProductLoadEffectParams): null {
     useProductLoadEffect({
         ignoreUnauthorized,
         requirePublished,
@@ -57,7 +58,8 @@ function ProductEffects({ ignoreUnauthorized, requirePublished, useAuthorization
     return null
 }
 
-function reducer(state, action) {
+// TODO add typing
+function reducer(state: any, action: {type: string} & Record<string, any>) {
     switch (action.type) {
         case 'setProduct':
             return { ...state, product: action.product, hasLoaded: true }
@@ -85,8 +87,9 @@ function useProductController() {
         productStreams: [],
         allStreams: [],
     })
+    // TODO add typing
     const setProduct = useCallback(
-        (nextProduct) => {
+        (nextProduct: any) => {
             dispatch({
                 type: 'setProduct',
                 product: nextProduct,
@@ -94,8 +97,9 @@ function useProductController() {
         },
         [dispatch],
     )
+    // TODO add typing
     const setProductStreams = useCallback(
-        (nextStreams) => {
+        (nextStreams: any) => {
             dispatch({
                 type: 'setProductStreams',
                 streams: nextStreams,
@@ -103,8 +107,9 @@ function useProductController() {
         },
         [dispatch],
     )
+    // TODO add typing
     const setAllStreams = useCallback(
-        (nextStreams) => {
+        (nextStreams: any) => {
             dispatch({
                 type: 'setAllStreams',
                 streams: nextStreams,
@@ -165,13 +170,13 @@ function useProductController() {
     )
 }
 
-function ControllerProvider({ children }) {
+const ControllerProvider: FunctionComponent<{children?: ReactNode | ReactNode[]}> = ({ children }) =>{
     return (
         <ProductControllerContext.Provider value={useProductController()}>{children}</ProductControllerContext.Provider>
     )
 }
 
-const ProductController = ({
+const ProductController: FunctionComponent<{children?: ReactNode | ReactNode[]} & UseProductLoadEffectParams> = ({
     children,
     ignoreUnauthorized = false,
     requirePublished = false,

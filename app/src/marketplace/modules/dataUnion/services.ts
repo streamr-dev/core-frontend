@@ -18,7 +18,7 @@ import routes from '$routes'
 import type { Secret } from './types'
 
 const createClient = (chainId: number) => {
-    const provider = getWeb3().currentProvider
+    const provider: any = getWeb3().currentProvider
     const config = getConfigForChain(chainId)
     const { dataUnionJoinServerUrl } = getCoreConfig()
     const providerUrl = config.rpcEndpoints.find((rpc) => rpc.url.startsWith('http'))?.url
@@ -61,7 +61,7 @@ const createClient = (chainId: number) => {
 const getDataunionSubgraphUrlForChain = (chainId: number): string => {
     const { theGraphUrl } = getCoreConfig()
     const map = getCoreConfig().dataunionGraphNames
-    const item = map.find((i) => i.chainId === chainId)
+    const item = map.find((i: any) => i.chainId === chainId)
 
     if (item == null || item.name == null) {
         throw new Error(`No dataunionGraphNames defined in config for chain ${chainId}!`)
@@ -92,15 +92,15 @@ export const getAdminFee = async (address: DataUnionId, chainId: number) => {
 export const getDataUnionStats = async (address: DataUnionId, chainId: number): ApiResult<Record<string, any>> => {
     const dataUnion = await getDataUnionObject(address, chainId)
     const { activeMemberCount, inactiveMemberCount, totalEarnings } = await dataUnion.getStats()
-    const active = (activeMemberCount && BN(activeMemberCount.toString()).toNumber()) || 0
-    const inactive = (inactiveMemberCount && BN(inactiveMemberCount.toString()).toNumber()) || 0
+    const active = (activeMemberCount && new BN(activeMemberCount.toString()).toNumber()) || 0
+    const inactive = (inactiveMemberCount && new BN(inactiveMemberCount.toString()).toNumber()) || 0
     return {
         memberCount: {
             active,
             inactive,
             total: active + inactive,
         },
-        totalEarnings: totalEarnings && BN(totalEarnings.toString()).toNumber(),
+        totalEarnings: totalEarnings && new BN(totalEarnings.toString()).toNumber(),
     }
 }
 export const getDataUnion = async (id: DataUnionId, chainId: number): ApiResult<Record<string, any>> => {
@@ -172,7 +172,7 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
     ]).then(([dataUnion]) => {
         emitter.emit('transactionHash')
         dataUnion.setAdminFee(+adminFee).then((receipt) => {
-            if (parseInt(receipt.status, 16) === 0) {
+            if (parseInt(`${receipt.status}`, 16) === 0) {
                 errorHandler(new TransactionError('Transaction failed', receipt))
             } else {
                 emitter.emit('receipt', receipt)
@@ -197,7 +197,8 @@ export const getMemberStatistics = async (
 
     let toTimestampFixed = toTimestamp || Date.now()
     // Make sure we take buckets that extend into the future into account
-    const offset = accuracy === 'DAY' ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000
+    // const offset: number = (accuracy === 'DAY') ? 24 * 60 * 60 * 1000 : 60 * 60 * 1000
+    const offset: number = 60 * 60 * 1000
     toTimestampFixed = Date.now() + offset
     const result = await post({
         url: theGraphUrl,
@@ -244,7 +245,7 @@ export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limi
     })
 
     if (result.data.dataUnions.length > 0) {
-        return result.data.dataUnions[0].members.map((m) => m.address)
+        return result.data.dataUnions[0].members.map((m: any) => m.address)
     }
 
     return []
@@ -272,13 +273,13 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
         // With limitations in full text search in The Graph,
         // we cannot do filtering on the query itself so we
         // have to manually pick results only for this dataunion.
-        const members = result.data.members.filter((m) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase()).map((m) => m.address)
+        const members = result.data.members.filter((m: any) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase()).map((m: any) => m.address)
         return members
     }
 
     return []
 }
-export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<string>, chainId: number): any {
+export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<string>, chainId: number): Promise<any> {
     const statuses = []
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
@@ -342,6 +343,7 @@ type EditSecret = {
 export const editSecret = async ({ dataUnionId, id, name, chainId }: EditSecret): Promise<Secret> => {
     const client = createClient(chainId)
     const dataUnion = await client.getDataUnion(dataUnionId)
+    // @ts-ignore
     const result = await dataUnion.editSecret(id, name)
     return result
 }

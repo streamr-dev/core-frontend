@@ -44,7 +44,8 @@ export function getResizedBlob(originalCanvas: HTMLCanvasElement): Promise<Blob>
 }
 
 const CropImageModal = ({ imageUrl, onClose, onSave: onSaveProp }: Props) => {
-    const editorRef = useRef()
+    // TODO add typing
+    const editorRef = useRef<any>()
     const [sliderValue, setSliderValue] = useState(1)
     const onSave = useCallback(async () => {
         if (editorRef.current) {

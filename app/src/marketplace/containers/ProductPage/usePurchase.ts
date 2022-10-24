@@ -26,7 +26,7 @@ type Purchase = {
 export default function usePurchase() {
     const dispatch = useDispatch()
     return useCallback(
-        async ({ contractProduct, accessPeriod, gasIncrease }: Purchase = {}) => {
+        async ({ contractProduct, accessPeriod, gasIncrease }: Partial<Purchase> = {}) => {
             if (!contractProduct) {
                 throw new Error('no product')
             }
@@ -50,14 +50,14 @@ export default function usePurchase() {
             const isDaiPurchase = !!(paymentCurrency === paymentCurrencies.DAI)
             const isUniswapPurchase = isEthPurchase || isDaiPurchase
             const isTokenPurchase = !isEthPurchase
-            let purchasePrice
+            let purchasePrice: BN
 
             if (isUniswapPurchase) {
                 if (!price) {
                     throw new Error('no price')
                 }
 
-                purchasePrice = price
+                purchasePrice = new BN(price)
             } else {
                 const { pricePerSecond } = contractProduct
                 purchasePrice = priceForTimeUnits(pricePerSecond, time, timeUnit)
@@ -75,7 +75,7 @@ export default function usePurchase() {
                 allowance = await getMyTokenAllowance(contractProduct.pricingTokenAddress, chainId)
             }
 
-            allowance = BN(allowance || 0)
+            allowance = new BN(allowance || 0)
             const needsAllowance = !!(isTokenPurchase && allowance.isLessThan(purchasePrice))
             const needsAllowanceReset = !!(needsAllowance && allowance.isGreaterThan(0))
             const pricingTokenDecimals = await getCustomTokenDecimals(contractProduct.pricingTokenAddress, chainId)

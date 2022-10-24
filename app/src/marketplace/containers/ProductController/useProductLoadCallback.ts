@@ -1,8 +1,9 @@
+import BN from 'bignumber.js'
 import { useCallback } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import usePending from '$shared/hooks/usePending'
 import { canHandleLoadError, handleLoadError } from '$auth/utils/loginInterceptor'
-import type { ProductId } from '$mp/types/product-types'
+import type { Product, ProductId } from '$mp/types/product-types'
 import { getProductById } from '$mp/modules/product/services'
 import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { isPaidProduct, isDataUnionProduct } from '$mp/utils/product'
@@ -108,7 +109,7 @@ export default function useProductLoadCallback() {
                 }
 
                 // Load pricingToken decimal count
-                let pricingTokenDecimals = 18
+                let pricingTokenDecimals: number | BN = 18
 
                 if (pricingTokenAddress) {
                     pricingTokenDecimals = await getCustomTokenDecimals(pricingTokenAddress, chainId)
@@ -118,19 +119,22 @@ export default function useProductLoadCallback() {
                     return
                 }
 
-                const nextProduct = {
+                const nextProduct: Product = {
                     ...product,
                     isFree: !!product.isFree || !isPaidProduct(product),
                     timeUnit: timeUnits.hour,
                     priceCurrency: product.priceCurrency || DEFAULT_CURRENCY,
                     price:
                         product.price ||
-                        fromDecimals(priceForTimeUnits(pricePerSecond || product.pricePerSecond || '0', 1, timeUnits.hour), pricingTokenDecimals),
+                        fromDecimals(
+                            priceForTimeUnits(pricePerSecond || product.pricePerSecond || '0', 1, timeUnits.hour),
+                            String(pricingTokenDecimals)
+                        ).toString(),
                     adminFee: currentAdminFee,
                     dataUnionDeployed,
                     requiresWhitelist,
                     pricingTokenAddress,
-                    pricingTokenDecimals,
+                    pricingTokenDecimals: new BN(pricingTokenDecimals), // TODO check if it works - I've changed it to BN
                     pricePerSecond: pricePerSecond || product.pricePerSecond,
                 }
                 setProduct({ ...nextProduct, pendingChanges: null })

@@ -1,8 +1,9 @@
 import { $Values } from 'utility-types'
 import { useCallback } from 'react'
 import { useDispatch } from 'react-redux'
+import BN from 'bignumber.js'
 import { useClient } from 'streamr-client-react'
-import type { Product } from '$mp/types/product-types'
+import type { Product, SmartContractProduct } from '$mp/types/product-types'
 import { productStates, transactionStates, transactionTypes } from '$shared/utils/constants'
 import {
     getProductFromContract,
@@ -55,7 +56,7 @@ export default function usePublish() {
 
             const chainId = getChainIdFromApiString(product.chain)
             // load contract product
-            let contractProduct
+            let contractProduct: SmartContractProduct
 
             try {
                 contractProduct = await getProductFromContract(product.id || '', true, chainId)
@@ -88,7 +89,7 @@ export default function usePublish() {
             )
             const hasPendingChanges =
                 Object.keys(productDataChanges).length > 0 || hasAdminFeeChanged || hasContractProductChanged || hasRequireWhitelistChanged
-            let pricingTokenDecimals = 18
+            let pricingTokenDecimals: number | BN = 18
 
             if (pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)) {
                 const address = pricingTokenAddress || (contractProduct && contractProduct.pricingTokenAddress)
@@ -111,7 +112,7 @@ export default function usePublish() {
 
             // update product data if needed
             if (nextMode === publishModes.REPUBLISH || (nextMode === publishModes.PUBLISH && Object.keys(productDataChanges).length > 0)) {
-                const nextProduct = { ...product, ...productDataChanges, pendingChanges: undefined }
+                const nextProduct = { ...product, ...productDataChanges, pendingChanges: undefined as any }
                 delete nextProduct.state
                 queue.add({
                     id: actionsTypes.PUBLISH_PENDING_CHANGES,
@@ -229,7 +230,7 @@ export default function usePublish() {
                                         chainId,
                                         pricingTokenAddress: pricingTokenAddress || contractProduct.pricingTokenAddress,
                                         pricingTokenDecimals,
-                                    },
+                                    } as any,
                                     isRedeploy,
                                 )
                                     .onTransactionHash((hash) => {
@@ -290,8 +291,8 @@ export default function usePublish() {
                                     requiresWhitelist,
                                     chainId,
                                     pricingTokenAddress,
-                                    pricingTokenDecimals,
-                                })
+                                    pricingTokenDecimals: pricingTokenDecimals,
+                                } as any)
                                     .onTransactionHash((hash) => {
                                         update(transactionStates.PENDING)
                                         done()

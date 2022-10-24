@@ -44,7 +44,7 @@ describe('validation context', () => {
             return null
         }
 
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation((): any => ({
             product: {
                 id: '1',
             },
@@ -60,7 +60,7 @@ describe('validation context', () => {
     })
     describe('touched fields', () => {
         beforeEach(() => {
-            useController.mockImplementation(() => ({
+            (useController as any).mockImplementation(() => ({
                 product: {
                     id: '1',
                 },
@@ -153,7 +153,7 @@ describe('validation context', () => {
     })
     describe('status', () => {
         beforeEach(() => {
-            useController.mockImplementation(() => ({
+            (useController as any).mockImplementation(() => ({
                 product: {
                     id: '1',
                 },
@@ -317,7 +317,7 @@ describe('validation context', () => {
     })
     describe('validate', () => {
         beforeEach(() => {
-            useController.mockImplementation(() => ({
+            (useController as any).mockImplementation(() => ({
                 product: {
                     id: '1',
                 },
@@ -722,8 +722,8 @@ describe('validation context', () => {
                     description: 'New Description',
                     streams: ['2', '3', '4'],
                 },
-            }
-            useController.mockImplementation(() => ({
+            };
+            (useController as any).mockImplementation(() => ({
                 product,
             }))
             mount(
@@ -749,7 +749,7 @@ describe('validation context', () => {
                 return null
             }
 
-            useController.mockImplementation(() => ({
+            (useController as any).mockImplementation(() => ({
                 product: {
                     id: '1',
                     name: 'Name',
@@ -793,7 +793,7 @@ describe('validation context', () => {
                 return null
             }
 
-            useController.mockImplementation(() => ({
+            (useController as any).mockImplementation(() => ({
                 product: {
                     id: '1',
                     name: 'Name',
@@ -834,7 +834,7 @@ describe('validation context', () => {
                 return null
             }
 
-            useController.mockImplementation(() => ({
+            (useController as any).mockImplementation(() => ({
                 product: {
                     id: '1',
                     name: 'Name',
@@ -878,7 +878,7 @@ describe('validation context', () => {
                 return null
             }
 
-            useController.mockImplementation(() => ({
+            (useController as any).mockImplementation(() => ({
                 product: {
                     id: '1',
                     name: 'Name',

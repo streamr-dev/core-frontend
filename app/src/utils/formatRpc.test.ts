@@ -6,7 +6,7 @@ jest.mock('$app/src/getters/getConfig', () => ({
 }))
 describe('formatRpc', () => {
     beforeEach(() => {
-        getConfig.mockImplementation(() => ({
+        (getConfig as any).mockImplementation(() => ({
             client: {
                 chainTimeout: 42,
             },
@@ -14,7 +14,7 @@ describe('formatRpc', () => {
     })
     it('forwards nullish "RPCs"', () => {
         expect(f(null)).toBe(null)
-        expect(f()).toBe(undefined)
+        expect(f(undefined)).toBe(undefined)
         expect(f('')).toBe('')
     })
     it('formats empty RPC info', () => {

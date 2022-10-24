@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import { cleanup, screen, render, fireEvent, waitFor } from '@testing-library/react'
 jest.mock('$shared/components/ModalPortal', () => ({
     __esModule: true,
@@ -11,7 +11,8 @@ const mockGetImage = jest.fn(() => ({
 }))
 jest.doMock('react-avatar-editor', () => ({
     __esModule: true,
-    default: React.forwardRef((props, ref) => {
+    // eslint-disable-next-line react/display-name
+    default: forwardRef((props, ref: any) => {
         // eslint-disable-next-line no-param-reassign
         ref.current = {
             getImage: mockGetImage,
@@ -33,10 +34,11 @@ describe('CropImageModal', () => {
             const originalCanvas = {
                 width: 100,
                 height: 100,
+                // @ts-ignore
                 toBlob: (resolve) => resolve('image'),
-            }
+            } as Partial<HTMLCanvasElement>
             expect(originalCanvas.width).toBeLessThanOrEqual(MAX_WIDTH)
-            const result = await getResizedBlob(originalCanvas)
+            const result = await getResizedBlob(originalCanvas as HTMLCanvasElement)
             expect(result).toBe('image')
         })
         it('returns a resized canvas if smaller than max width', async () => {
@@ -49,13 +51,13 @@ describe('CropImageModal', () => {
                 }),
                 toBlob: (resolve) => resolve('nextImage'),
             }
-            jest.spyOn(document, 'createElement').mockImplementation(() => nextCanvas)
+            jest.spyOn(document, 'createElement').mockImplementation((): any => nextCanvas)
             const originalCanvas = {
                 width: 2000,
                 height: 2000,
-            }
+            } as Partial<HTMLCanvasElement>
             expect(originalCanvas.width).toBeGreaterThan(MAX_WIDTH)
-            const result = await getResizedBlob(originalCanvas)
+            const result = await getResizedBlob(originalCanvas as HTMLCanvasElement)
             expect(result).toBe('nextImage')
             expect(nextCanvas.width).toBe(MAX_WIDTH)
         })

@@ -22,7 +22,7 @@ export default function useLoadProductStreamsCallback({ setProductStreams }) {
                         }
                     }),
                 )
-                setProductStreams(streams.map(({ value }) => value).filter(Boolean))
+                setProductStreams(streams.map(({ value }: any) => value).filter(Boolean))
             }),
         [wrap, setProductStreams, client],
     )

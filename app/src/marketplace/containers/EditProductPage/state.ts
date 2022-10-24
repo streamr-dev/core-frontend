@@ -33,16 +33,16 @@ export function isPublished(product: Product) {
     const { state } = product || {}
     return !!(state === productStates.DEPLOYED || state === productStates.DEPLOYING)
 }
-export const getPendingObject = (product: Product | PendingChanges): Record<string, any> => {
+export const getPendingObject = (product: Product | PendingChanges): Partial<Product | PendingChanges> => {
     let pendingObj = pick(product, PENDING_CHANGE_FIELDS)
     pendingObj = pickBy(pendingObj, (value) => value !== undefined)
     return pendingObj
 }
 export const getChangeObject = (original: Product, next: Product): Record<string, any> =>
-    Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => !isEqual(value, original[key])))
+    Object.fromEntries(Object.entries(getPendingObject(next)).filter(([key, value]) => !isEqual(value, original[key as keyof Product])))
 
 // Returns smart contract field changes and other changes separated
-const getChanges = (product: Product) => {
+const getChanges = (product: Partial<Product>) => {
     const { adminFee, requiresWhitelist, pricingTokenAddress, ...otherChanges } = product
     // $FlowFixMe: Computing object literal [1] may lead to an exponentially large number of cases
     const smartContractFields = {

@@ -1,35 +1,35 @@
-import type { Context, Node } from 'react'
-import React, { useMemo, useCallback, useState, useEffect, useContext } from 'react'
+import React, { useMemo, useCallback, useState, useEffect, useContext, Context, ReactNode } from 'react'
 import usePending from '$shared/hooks/usePending'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { getPermissions } from '$mp/modules/product/services'
+import { ProductId } from '$mp/types/product-types'
 import { useController } from '.'
 type ContextProps = {
-    hasPermissions: boolean
-    share: boolean
-    get: boolean
-    edit: boolean
-    del: boolean
+    hasPermissions?: boolean
+    share?: boolean
+    get?: boolean
+    edit?: boolean
+    del?: boolean
 }
 const PermissionContext: Context<ContextProps> = React.createContext({})
 
 function usePermissionContextValue(autoLoadPermissions = true) {
-    const [permissions, setPermissions] = useState()
+    const [permissions, setPermissions] = useState<string[]>()
     const isMounted = useIsMounted()
     const { product } = useController()
     const { wrap, isPending } = usePending('product.PERMISSIONS')
     const [loadedOnce, setLoadedOnce] = useState(false)
     const productId = !!product && product.id
     const loadPermissions = useCallback(
-        async (id) =>
+        async (id: ProductId) =>
             wrap(async () => {
                 const result = await getPermissions(id, 'me')
 
                 if (!isMounted()) {
                     return
                 }
-
-                setPermissions(result.map(({ operation }) => operation))
+                // TODO add typing
+                setPermissions(result.map(({ operation }: {operation: any}) => operation))
             }),
         [wrap, isMounted],
     )
@@ -62,7 +62,7 @@ function usePermissionContextValue(autoLoadPermissions = true) {
 }
 
 type Props = {
-    children?: Node
+    children?: ReactNode | ReactNode[]
     autoLoadPermissions?: boolean
 }
 

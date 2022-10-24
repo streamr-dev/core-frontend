@@ -1,8 +1,10 @@
+import BN from 'bignumber.js'
 import moxios from 'moxios'
 import * as services from '$shared/modules/user/services'
 import * as utils from '$mp/utils/web3'
-import { BalanceType } from '$shared/types/user-types'
-import setTempEnv from '$testUtils/setTempEnv'
+import { BalanceType, User } from '$shared/types/user-types'
+import setTempEnv from '$app/test/test-utils/setTempEnv'
+
 describe('user - services', () => {
     let dateNowSpy
     const DATE_NOW = 1337
@@ -45,10 +47,13 @@ describe('user - services', () => {
     })
     describe('saveCurrentUser', () => {
         it('should PUT the user to the api', async () => {
-            const data = {
-                id: '1',
+            const data: User = {
+                id: 1,
                 name: 'tester',
                 email: 'test@tester.test',
+                username: 'testonator',
+                imageUrlSmall: '',
+                imageUrlLarge: 'string'
             }
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
@@ -79,16 +84,17 @@ describe('user - services', () => {
     })
     describe('updateCurrentUserImage', () => {
         it('should POST the image to the api and PUT the user to the API', async () => {
-            const data = {
-                id: '1',
+            const data: User = {
+                id: 1,
                 name: 'tester',
                 email: 'test@tester.test',
                 imageUrlSmall: 'testSmall.jpg',
                 imageUrlLarge: 'testLarge.jpg',
+                username: 'testonator'
             }
             const imageToUpload = new Blob(['0101'], {
                 type: 'image/png',
-            })
+            }) as File
             moxios.wait(() => {
                 const request = moxios.requests.mostRecent()
                 request.respondWith({
@@ -127,21 +133,21 @@ describe('user - services', () => {
     })
     describe('getBalance', () => {
         it('gets ETH balance', async () => {
-            jest.spyOn(utils, 'getNativeTokenBalance').mockImplementation(jest.fn(() => '123'))
+            jest.spyOn(utils, 'getNativeTokenBalance').mockImplementation(async () => new BN('123'))
             const balance = await services.getBalance({
                 address: 'testAccount',
                 type: BalanceType.ETH,
             })
-            expect(balance).toBe('123')
+            expect(balance).toEqual(new BN('123'))
         })
         it('gets token balance', async () => {
-            jest.spyOn(utils, 'getDataTokenBalance').mockImplementation(jest.fn(() => '123'))
+            jest.spyOn(utils, 'getDataTokenBalance').mockImplementation(async () => new BN('123'))
             const balance = await services.getBalance({
                 address: 'testAccount',
                 type: BalanceType.DATA,
                 chainId: 8995,
             })
-            expect(balance).toBe('123')
+            expect(balance).toEqual(new BN('123'))
         })
         it('throws an error if type is unknown', async () => {
             let balance
@@ -149,7 +155,7 @@ describe('user - services', () => {
 
             try {
                 balance = await services.getBalance({
-                    adress: 'testAccount',
+                    address: 'testAccount',
                     type: 'someToken',
                 })
             } catch (e) {

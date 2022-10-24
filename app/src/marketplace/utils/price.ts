@@ -9,7 +9,7 @@ import { fromDecimals, toDecimals } from './math'
  * @param value string Number as string
  * @return boolean
  */
-export const isPriceValid = (value: string): boolean => {
+export const isPriceValid = (value: string | BN): boolean => {
     const bn = new BN(value)
     return !bn.isNaN() && bn.isGreaterThan(0)
 }
@@ -57,7 +57,7 @@ export const formatAmount = (value: BN, maxDigits: number | null | undefined): B
 export const formatDecimals = (
     value: number | BN,
     currency: ContractCurrency | PaymentCurrency,
-    decimals: BN,
+    decimals?: BN,
 ): string => {
     let result
 

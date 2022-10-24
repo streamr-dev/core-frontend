@@ -1,4 +1,4 @@
-import setTempEnv from '$testUtils/setTempEnv'
+import setTempEnv from '$app/test/test-utils/setTempEnv'
 import getConfig from '$app/src/getters/getConfig'
 import f from './formatConfigUrl'
 jest.mock('$app/src/getters/getConfig', () => ({
@@ -12,7 +12,7 @@ const WS = {
 function testDockerHost({ envHost, expectedHost }) {
     return () => {
         beforeEach(() => {
-            getConfig.mockImplementation(() => ({
+            (getConfig as any).mockImplementation(() => ({
                 docker: {
                     host: 'testhost',
                 },
@@ -34,9 +34,9 @@ function testDockerHost({ envHost, expectedHost }) {
             expect(f('', WS)).toEqual(`ws://${expectedHost}`)
         })
         it('passes non-strings along, unchanged', () => {
-            expect(f()).toBe(undefined)
+            expect(f(undefined)).toBe(undefined)
             expect(f(null)).toBe(null)
-            expect(f(false)).toBe(false) // and so on.
+            expect(f('false')).toBe('false') // and so on.
         })
         it('passes non-empty strings that start with charaters other than ":" and "/" along', () => {
             expect(f('http://url')).toEqual('http://url')

@@ -1,8 +1,9 @@
 import reducer, { initialState } from '$shared/modules/user/reducer'
 import * as constants from '$shared/modules/user/constants'
+import { UserState } from '$shared/types/store-state'
 describe('user - reducer', () => {
     it('has initial state', () => {
-        expect(reducer(undefined, {})).toStrictEqual({ ...initialState, fetchingUserData: true })
+        expect(reducer(undefined, {type: '', payload: {}})).toStrictEqual({ ...initialState, fetchingUserData: true })
     })
     describe('USER_DATA', () => {
         it('handles request', () => {
@@ -69,40 +70,45 @@ describe('user - reducer', () => {
     })
     describe('UPDATE_CURRENT_USER', () => {
         it('should update the user on UPDATE_CURRENT_USER', () => {
+            const state: Partial<UserState> = {
+                user: {
+                    name: 'test',
+                    email: 'test2',
+                    imageUrlLarge: '',
+                    imageUrlSmall: '',
+                    username: 'test'
+                },
+            }
             expect(
                 reducer(
-                    {
-                        some: 'state',
-                        user: {
-                            name: 'test',
-                            email: 'test2',
-                        },
-                    },
-                    {
-                        type: constants.UPDATE_CURRENT_USER,
-                        payload: {
-                            user: {
-                                email: 'test3',
-                            },
-                        },
-                    },
+                     state as UserState ,
+                     {
+                         type: constants.UPDATE_CURRENT_USER,
+                         payload: {
+                             user: {
+                                 email: 'test3',
+                             },
+                         },
+                     },
                 ),
             ).toStrictEqual({
-                some: 'state',
                 saved: false,
                 user: {
                     name: 'test',
                     email: 'test3',
+                    imageUrlLarge: '',
+                    imageUrlSmall: '',
+                    username: 'test'
                 },
             })
         })
         it('should add the user if currentUser === null', () => {
+            const state: Partial<UserState> = {
+                user: null
+            }
             expect(
                 reducer(
-                    {
-                        some: 'state',
-                        user: null,
-                    },
+                    state as UserState,
                     {
                         type: constants.UPDATE_CURRENT_USER,
                         payload: {
@@ -114,7 +120,6 @@ describe('user - reducer', () => {
                     },
                 ),
             ).toStrictEqual({
-                some: 'state',
                 saved: false,
                 user: {
                     name: 'test',
@@ -125,26 +130,24 @@ describe('user - reducer', () => {
     })
     describe('SAVE_CURRENT_USER', () => {
         it('should set fetching = true on SAVE_CURRENT_USER_REQUEST', () => {
+            const state: Partial<UserState> = {}
             expect(
                 reducer(
-                    {
-                        some: 'state',
-                    },
+                    state as UserState,
                     {
                         type: constants.SAVE_CURRENT_USER_REQUEST,
+                        payload: undefined
                     },
                 ),
             ).toStrictEqual({
-                some: 'state',
                 fetchingUserData: true,
             })
         })
         it('should set the user as currentUser on SAVE_CURRENT_USER_SUCCESS', () => {
+            const state: Partial<UserState> = {}
             expect(
                 reducer(
-                    {
-                        some: 'state',
-                    },
+                    state as UserState,
                     {
                         type: constants.SAVE_CURRENT_USER_SUCCESS,
                         payload: {
@@ -155,7 +158,6 @@ describe('user - reducer', () => {
                     },
                 ),
             ).toStrictEqual({
-                some: 'state',
                 user: {
                     just: 'someField',
                 },
@@ -165,11 +167,10 @@ describe('user - reducer', () => {
             })
         })
         it('should handle the error on SAVE_CURRENT_USER_FAILURE', () => {
+            const state: Partial<UserState> = {}
             expect(
                 reducer(
-                    {
-                        some: 'field',
-                    },
+                    state as UserState,
                     {
                         type: constants.SAVE_CURRENT_USER_FAILURE,
                         payload: {
@@ -178,7 +179,6 @@ describe('user - reducer', () => {
                     },
                 ),
             ).toStrictEqual({
-                some: 'field',
                 fetchingUserData: false,
                 userDataError: new Error('test-error'),
             })

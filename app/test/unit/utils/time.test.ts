@@ -4,23 +4,23 @@ import * as all from '$mp/utils/time'
 describe('time utils', () => {
     describe('toSeconds', () => {
         it('converts to seconds', () => {
-            expect(all.toSeconds(1, 'second')).toStrictEqual(BN(1))
-            expect(all.toSeconds(1, 'minute')).toStrictEqual(BN(60))
-            expect(all.toSeconds(1, 'hour')).toStrictEqual(BN(3600))
-            expect(all.toSeconds(1, 'day')).toStrictEqual(BN(86400))
-            expect(all.toSeconds(1, 'week')).toStrictEqual(BN(604800))
-            expect(all.toSeconds(1, 'month')).toStrictEqual(BN(2592000))
+            expect(all.toSeconds('1', 'second')).toStrictEqual(new BN(1))
+            expect(all.toSeconds('1', 'minute')).toStrictEqual(new BN(60))
+            expect(all.toSeconds('1', 'hour')).toStrictEqual(new BN(3600))
+            expect(all.toSeconds('1', 'day')).toStrictEqual(new BN(86400))
+            expect(all.toSeconds('1', 'week')).toStrictEqual(new BN(604800))
+            expect(all.toSeconds('1', 'month')).toStrictEqual(new BN(2592000))
         })
         it('rejects invalid time units', () => {
-            expect(() => all.toSeconds(1, 'asdf')).toThrow()
-            expect(() => all.toSeconds(1, 'seconds')).toThrow()
+            expect(() => all.toSeconds('1', 'asdf')).toThrow()
+            expect(() => all.toSeconds('1', 'seconds')).toThrow()
         })
     })
     describe('formatDateTime', () => {
         it('formats datetime', () => {
             expect(all.formatDateTime(1, 'UTC')).toBe('1970-01-01 00:00:00')
             expect(all.formatDateTime(1, 'Europe/Helsinki')).toBe('1970-01-01 02:00:00')
-            expect(all.formatDateTime()).toBe(undefined)
+            expect(all.formatDateTime(undefined, undefined)).toBe(undefined)
         })
     })
     describe('getAbbreviation', () => {

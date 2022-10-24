@@ -1,83 +1,58 @@
-import BN from 'bignumber.js'
 import set from 'lodash/fp/set'
 import * as all from '$shared/modules/user/selectors'
 import { initialState } from '$shared/modules/user/reducer'
-const state = {
-    test: true,
+import { StoreState } from '$shared/types/store-state'
+const state: Partial<StoreState> = {
     user: {
         user: {
             name: 'Tester1',
             username: 'tester1@streamr.com',
+            imageUrlLarge: '',
+            imageUrlSmall: '',
+            email: ''
         },
         fetchingUserData: false,
         userDataError: null,
-        logoutError: null,
-        fetchingLogout: false,
-    },
-    otherData: 42,
-    product: {
-        id: 1,
-    },
-    web3: {
-        accountId: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
-        enabled: true,
-    },
-    entities: {
-        products: {
-            1: {
-                id: 1,
-                isFree: true,
-                pricePerSecond: BN(0),
-            },
-            2: {
-                id: 2,
-                isFree: false,
-                pricePerSecond: BN(200000000),
-                ownerAddress: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
-            },
-            3: {
-                id: 3,
-                isFree: false,
-                pricePerSecond: BN(200000000),
-                ownerAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-            },
-        },
+        deleteUserAccountError: null,
+        balances: null,
+        deletingUserAccount: false,
+        saved: true,
     },
 }
 describe('user - selectors', () => {
     it('selects user data error', () => {
-        expect(all.selectUserDataError(state)).toStrictEqual(null)
+        expect(all.selectUserDataError(state as StoreState)).toStrictEqual(null)
         const err = new Error()
         const errorState = set('user.userDataError', err, state)
-        expect(all.selectUserDataError(errorState)).toStrictEqual(err)
+        expect(all.selectUserDataError(errorState as StoreState)).toStrictEqual(err)
     })
     it('selects user data fetching status', () => {
-        expect(all.selectFetchingUserData(state)).toStrictEqual(false)
+        expect(all.selectFetchingUserData(state as StoreState)).toStrictEqual(false)
     })
     it('selects user data', () => {
-        expect(all.selectUserData(state)).toStrictEqual(state.user.user)
+        expect(all.selectUserData(state as StoreState)).toStrictEqual(state.user.user)
     })
     describe('isAuthenticating', () => {
         it('gives false on init', () => {
             expect(
                 all.isAuthenticating({
                     user: initialState,
-                }),
+                } as any),
             ).toEqual(false)
         })
         it('gives false on success', () => {
-            expect(all.isAuthenticating(state)).toEqual(false)
+            expect(all.isAuthenticating(state as StoreState)).toEqual(false)
         })
         it('gives false on failure', () => {
-            let errorState = set('user.user', null, state)
+            let errorState = set('user.user', null, state) as Partial<StoreState>
             errorState = set('user.userDataError', new Error(), errorState)
-            expect(all.isAuthenticating(errorState)).toEqual(false)
+            expect(all.isAuthenticating(errorState as StoreState)).toEqual(false)
         })
         it('gives true when user data and user data error are blank and fetching is in progress', () => {
-            let errorState = set('user.user', null, state)
-            errorState = set('user.userDataError', null, errorState)
+            let errorState = set('user.user', null, state) as Partial<StoreState>
+            errorState = set('user.userDataError', null, errorState) as Partial<StoreState>
             errorState = set('user.fetchingUserData', true, errorState)
-            expect(all.isAuthenticating(errorState)).toEqual(true)
+            expect(all.isAuthenticating(errorState as StoreState)).toEqual(true)
         })
     })
 })
