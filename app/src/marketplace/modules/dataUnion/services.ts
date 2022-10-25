@@ -181,17 +181,20 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
     }, errorHandler)
     return tx
 }
+
+export const addMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
+    const dataUnion = await getDataUnionObject(id, chainId)
+    const receipt = await dataUnion.addMembers(memberAddresses)
+    return receipt
+}
+
 export const removeMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
     const dataUnion = await getDataUnionObject(id, chainId)
     const receipt = await dataUnion.removeMembers(memberAddresses)
     return receipt
 }
-export const getMemberStatistics = async (
-    id: DataUnionId,
-    chainId: number,
-    fromTimestamp: number,
-    toTimestamp: number | null | undefined,
-): Promise<Array<any>> => {
+
+export const getDataUnionStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const accuracy = 'HOUR' // HOUR or DAY
 
@@ -207,7 +210,7 @@ export const getMemberStatistics = async (
                 query {
                     dataUnionStatsBuckets(
                         where: {
-                            dataUnionAddress: "${id.toLowerCase()}",
+                            dataUnion: "${id.toLowerCase()}",
                             type: "${accuracy}",
                             startDate_gte: ${Math.floor(fromTimestamp / 1000)},
                             endDate_lte: ${Math.ceil(toTimestampFixed / 1000)}
@@ -218,6 +221,8 @@ export const getMemberStatistics = async (
                         endDate,
                         memberCountAtStart,
                         memberCountChange,
+                        revenueAtStartWei,
+                        revenueChangeWei,
                     }
                 }
             `,
@@ -233,7 +238,7 @@ export const getDataUnionMembers = async (id: DataUnionId, chainId: number, limi
         data: {
             query: `
                 query {
-                    dataUnions(where: { mainchainAddress: "${id.toLowerCase()}" }) {
+                    dataUnions(where: { id: "${id.toLowerCase()}" }) {
                         members(first: ${Math.floor(limit)}, orderBy: address, orderDirection: asc) {
                             address
                         }
@@ -257,10 +262,10 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
         data: {
             query: `
                 query {
-                    members(where: { addressString_contains: "${query}"}, first: ${Math.floor(limit)}) {
+                    members(where: { address_contains: "${query}"}, first: ${Math.floor(limit)}) {
                         address
-                        dataunion {
-                            mainchainAddress
+                        dataUnion {
+                            id
                         }
                     }
                 }
@@ -273,7 +278,9 @@ export const searchDataUnionMembers = async (id: DataUnionId, query: string, cha
         // With limitations in full text search in The Graph,
         // we cannot do filtering on the query itself so we
         // have to manually pick results only for this dataunion.
-        const members = result.data.members.filter((m: any) => m.dataunion.mainchainAddress.toLowerCase() === id.toLowerCase()).map((m: any) => m.address)
+        const members = result.data.members
+            .filter((m) => m.dataUnion.id.toLowerCase() === id.toLowerCase())
+            .map((m) => m.address)
         return members
     }
 
@@ -291,7 +298,7 @@ export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<
     return statuses
 }
 
-async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>, chainId: number): any {
+async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>, chainId: number): Generator {
     const client = createClient(chainId)
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
@@ -303,11 +310,11 @@ async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<stri
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-export async function* getMemberStatusesFromTheGraph(id: DataUnionId, chainId: number): any {
+export async function* getMemberStatusesFromTheGraph(id: DataUnionId, chainId: number): Generator {
     const members = await getDataUnionMembers(id, chainId)
     yield* getMemberStatusesWithClient(id, members, chainId)
 }
-export async function* getMemberStatuses(id: DataUnionId, chainId: number): any {
+export async function* getMemberStatuses(id: DataUnionId, chainId: number): Generator {
     yield* getMemberStatusesFromTheGraph(id, chainId)
 }
 // ----------------------

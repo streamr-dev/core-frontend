@@ -2,26 +2,7 @@ import { Chain, Chains } from '@streamr/config'
 import { AbiItem } from 'web3-utils'
 import getMainChainId from '$app/src/getters/getMainChainId'
 import getClientConfig from '$app/src/getters/getClientConfig'
-import getCoreConfig from '$app/src/getters/getCoreConfig'
 import formatConfigUrl from '$utils/formatConfigUrl'
-import tokenAbi from './abis/token.json'
-import dataUnionAbi from './abis/dataunion.json'
-import dataUnionSidechainAbi from './abis/dataunionSidechain.json'
-type MainnetConfig = {
-    chainId: string
-    rpcUrl: string
-    dataUnionAbi: AbiItem[]
-    transactionConfirmationBlocks: number
-    dataToken: {
-        abi: AbiItem[],
-        address: string,
-    },
-}
-type DataUnionChainConfig = {
-    chainId: string
-    rpcUrl: string
-    dataUnionAbi: AbiItem[]
-}
 
 type MetamaskNetworkConfig = {
     chainName: string
@@ -35,8 +16,6 @@ type MetamaskNetworkConfig = {
 }
 
 type Config = {
-    mainnet: MainnetConfig
-    dataunionsChain: DataUnionChainConfig,
     metamask: {
         [key: number]: {
             getParams: () => MetamaskNetworkConfig
@@ -88,26 +67,10 @@ export const getConfigForChainByName = (chainName: string): Chain => {
 }
 
 const getConfig = (): Config => {
-    const { tokenAddress, dataUnionChainRPCs, mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
-    // eslint-disable-next-line max-len
-    const { web3TransactionConfirmationBlocks } = getCoreConfig()
+    const { mainChainRPCs, streamRegistryChainRPCs } = getClientConfig()
+
     const mainChainId = getMainChainId()
     return {
-        mainnet: {
-            chainId: mainChainId,
-            rpcUrl: mainChainRPCs.rpcs[0].url,
-            transactionConfirmationBlocks: web3TransactionConfirmationBlocks || 24,
-            dataToken: {
-                abi: tokenAbi as AbiItem[],
-                address: tokenAddress,
-            },
-            dataUnionAbi: dataUnionAbi as AbiItem[],
-        },
-        dataunionsChain: {
-            chainId: dataUnionChainRPCs.chainId,
-            rpcUrl: dataUnionChainRPCs.rpcs[0].url,
-            dataUnionAbi: dataUnionSidechainAbi as AbiItem[],
-        },
         metamask: {
             // local development values
             // Note: rpcUrls need to use HTTPS urls, otherwise adding the chain will fail
@@ -119,18 +82,6 @@ const getConfig = (): Config => {
                     nativeCurrency: {
                         name: 'ETH',
                         symbol: 'ETH',
-                        decimals: 18,
-                    },
-                }),
-            },
-            [dataUnionChainRPCs.chainId]: {
-                getParams: () => ({
-                    chainName: 'Dataunions chain (dev)',
-                    rpcUrls: [dataUnionChainRPCs.rpcs[0].url],
-                    blockExplorerUrls: [],
-                    nativeCurrency: {
-                        name: 'xDAI',
-                        symbol: 'xDAI',
                         decimals: 18,
                     },
                 }),

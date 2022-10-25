@@ -52,6 +52,7 @@ export const postEmptyProduct = (type: ProductType): ApiResult<Product> =>
         url: routes.api.products.index(),
         data: {
             type,
+            pricePerSecond: '277777777777778', // default to paid product by setting price to 1 data per hour
         },
     }).then(mapProductFromApi)
 export const postImage = (id: ProductId, image: File): ApiResult<Product> => {

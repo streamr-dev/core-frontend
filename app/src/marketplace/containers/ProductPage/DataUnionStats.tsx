@@ -78,7 +78,7 @@ const UnstyledDataUnionStats = ({ stats, memberCount, showDeploying, dataUnion, 
                             <TimeSeriesGraph.Body>
                                 {dataUnion && dataUnion.version && dataUnion.version === 2 && (
                                     <MembersGraph
-                                        memberCount={memberCount.active}
+                                        currentMemberCount={memberCount.active}
                                         shownDays={days}
                                         dataUnionAddress={dataUnion.id}
                                         chainId={chainId}

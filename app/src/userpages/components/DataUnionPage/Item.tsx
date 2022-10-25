@@ -15,6 +15,7 @@ import { getProductById, putProduct } from '$mp/modules/product/services'
 import { validate as validateProduct } from '$mp/utils/product'
 import { MEDIUM, SM, LG } from '$shared/utils/styled'
 import { getDataUnion } from '$mp/modules/dataUnion/services'
+import { getProductFromContract } from '$mp/modules/contractProduct/services'
 import { fromAtto } from '$mp/utils/math'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { withPendingChanges } from '$mp/containers/EditProductPage/state'
@@ -270,6 +271,7 @@ const Item = ({ product, stats }: Props) => {
     const chainId = product && getChainIdFromApiString(product.chain)
     const [isOpen, setIsOpen] = useState(false)
     const [dataUnion, setDataUnion] = useState(null)
+    const [contractProduct, setContractProduct] = useState(null)
     const { update: updateEntities } = useEntities()
     const { wrap: wrapDataUnionLoad, isPending: loadingDataUnion } = usePending(`dataunion.item.${productId || ''}.DATAUNION`)
     const { wrap: wrapPublish, isPending: isPublishPending } = usePending(`dataunion.item.${productId || ''}.PUBLISH`)
@@ -286,13 +288,26 @@ const Item = ({ product, stats }: Props) => {
                     setDataUnion(du)
                 }
             }
-        }
 
+            if (productId) {
+                try {
+                    const prod = await getProductFromContract(productId, true, chainId)
+                    if (isMounted()) {
+                        setContractProduct(prod)
+                    }
+                } catch (e) {
+                    // Not published to Marketplace
+                }
+            }
+        }
         wrapDataUnionLoad(() => load())
-    }, [dataUnionId, chainId, isMounted, wrapDataUnionLoad])
+    }, [dataUnionId, productId, chainId, isMounted, wrapDataUnionLoad])
+
     const productState = useMemo(() => {
         if (product.state === productStates.DEPLOYED && isEthereumAddress(product.beneficiaryAddress)) {
             return 'Published'
+        } else if (isEthereumAddress(product.beneficiaryAddress)) {
+            return 'Unpublished'
         }
 
         return 'Draft'
@@ -545,7 +560,14 @@ const Item = ({ product, stats }: Props) => {
                     <Value>{dataUnion ? `${((1 - dataUnion.adminFee) * 100).toFixed(0)}%` : '-'}</Value>
                 </Stat>
             </Stats>
-            {isOpen && <StyledManagement product={product} dataUnion={dataUnion} stats={stats} />}
+            {isOpen && (
+                <StyledManagement
+                    product={product}
+                    dataUnion={dataUnion}
+                    pricingTokenDecimals={(contractProduct && contractProduct.pricingTokenDecimals) || 18}
+                    stats={stats}
+                />
+            )}
         </Container>
     )
 }

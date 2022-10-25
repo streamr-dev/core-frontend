@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import TimeSeriesGraph from '$shared/components/TimeSeriesGraph'
-import { getMemberStatistics } from '$mp/modules/dataUnion/services'
+import { getDataUnionStatistics } from '$mp/modules/dataUnion/services'
+
 type Props = {
-    dataUnionAddress: string
-    chainId: number
-    memberCount: number
-    shownDays?: number
+    dataUnionAddress: string,
+    chainId: number,
+    currentMemberCount: number,
+    shownDays?: number,
 }
 const MILLISECONDS_IN_DAY = 24 * 60 * 60 * 1000
 
-const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }: Props) => {
+const MembersGraph = ({ dataUnionAddress, chainId, currentMemberCount, shownDays = 7 }: Props) => {
     const isMounted = useIsMounted()
     const [memberData, setMemberData] = useState([])
     const [graphData, setGraphData] = useState([])
@@ -22,8 +23,7 @@ const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }:
     useEffect(() => {
         const loadData = async () => {
             try {
-                const statistics = await getMemberStatistics(dataUnionAddress, chainId, startDate)
-
+                const statistics = await getDataUnionStatistics(dataUnionAddress, chainId, startDate)
                 if (isMounted()) {
                     setMemberData(statistics)
                 }
@@ -35,7 +35,8 @@ const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }:
         if (dataUnionAddress) {
             loadData()
         }
-    }, [dataUnionAddress, chainId, startDate, reset, isMounted, memberCount])
+    }, [dataUnionAddress, chainId, startDate, reset, isMounted, currentMemberCount])
+
     useEffect(() => {
         const data = []
 
@@ -56,7 +57,7 @@ const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }:
         if (data.length === 0) {
             data.push({
                 x: Date.now(),
-                y: memberCount,
+                y: currentMemberCount,
             })
         } else {
             const lastMemberCount = data[data.length - 1].y
@@ -76,8 +77,14 @@ const MembersGraph = ({ dataUnionAddress, chainId, memberCount, shownDays = 7 }:
         }
 
         setGraphData(data)
-    }, [memberData, memberCount, startDate])
-    return <TimeSeriesGraph graphData={graphData} shownDays={shownDays} />
+    }, [memberData, currentMemberCount, startDate])
+
+    return (
+        <TimeSeriesGraph
+            graphData={graphData}
+            shownDays={shownDays}
+        />
+    )
 }
 
 export default MembersGraph

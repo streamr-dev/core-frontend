@@ -177,9 +177,12 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
                 console.error('Could not load member list', e)
             }
         }
-
         load()
-    }, [loadMembers, dataUnionId, chainId])
+    // FIXME: Adding loadMembers as a dependency will cause an infinite update loop.
+    //        loadMembers somehow changes after loadMembers is called. This started to happen
+    //        after typescript conversion. Really weird.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dataUnionId, chainId])
     const debouncedSetSearch = useDebounced(setSearch, 250)
     const onSearchChange = useCallback(
         (e) => {
@@ -188,23 +191,23 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
         },
         [debouncedSetSearch],
     )
-    const removeMember = useCallback(
-        async (memberAddress: string) => {
-            setProcessingMembers((prev) => [...prev, memberAddress])
-
-            try {
-                await removeMembers(dataUnionId, [memberAddress])
-            } catch (e) {
-                console.error('Could not remove member', e)
-            } finally {
-                if (isMounted()) {
-                    setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
-                    loadDataUnionStats([dataUnionId])
-                }
+    const removeMember = useCallback(async (memberAddress: string) => {
+        setProcessingMembers((prev) => [
+            ...prev,
+            memberAddress,
+        ])
+        try {
+            await removeMembers(dataUnionId, chainId, [memberAddress])
+        } catch (e) {
+            console.error('Could not remove member', e)
+        } finally {
+            if (isMounted()) {
+                setProcessingMembers((prev) => prev.filter((member) => member !== memberAddress))
+                loadDataUnionStats([dataUnionId])
             }
-        },
-        [dataUnionId, removeMembers, isMounted, loadDataUnionStats],
-    )
+        }
+    }, [dataUnionId, chainId, removeMembers, isMounted, loadDataUnionStats])
+
     useEffect(() => {
         const doSearch = async () => {
             try {

@@ -16,65 +16,42 @@ describe('getClientConfig', () => {
         (getConfig as any).mockImplementation(() => ({
             /* emptiness */
         }))
-        const mods = {
-            verifySignatures: 'never',
-        }
-        expect(g()).toMatchObject({ ...DEFAULTS, ...mods })
+        const mods = {}
+
+        expect(g()).toMatchObject({
+            ...DEFAULTS,
+            ...mods,
+            metrics: false,
+        })
     })
     it('gets overwritten with config', () => {
         (getConfig as any).mockImplementation(() => ({
             client: {
-                dataUnion: {
-                    factoryMainnetAddress: 'mainnet factory address',
-                    templateMainnetAddress: 'mainnet template address',
-                    factorySidechainAddress: 'side chain factory address',
-                    templateSidechainAddress: 'side chain template address',
-                },
-                dataUnionChain: {
-                    rpc: 'du chain rpc',
-                },
                 network: {
                     trackers: ['tracker1', 'tracker2'],
                 },
-                restUrl: 'rest url',
                 streamRegistryChainAddress: 'stream reg address',
                 streamRegistryChain: {
                     rpc: 'stream reg rpc',
                 },
-                streamrNodeAddress: 'streamr node address',
                 streamStorageRegistryChainAddress: 'stream storage reg address',
                 graphUrl: 'graph url',
                 mainchain: {
-                    dataTokenAddress: 'mc token address',
                     rpc: 'mc chain rpc',
-                },
-                sidechain: {
-                    dataTokenAddress: 'sc token address',
                 },
             },
         }))
         expect(g()).toMatchObject({
             ...DEFAULTS,
-            dataUnion: {
-                factoryMainnetAddress: 'mainnet factory address',
-                templateMainnetAddress: 'mainnet template address',
-                factorySidechainAddress: 'side chain factory address',
-                templateSidechainAddress: 'side chain template address',
-            },
-            dataUnionChainRPCs: 'du chain rpc',
             mainChainRPCs: 'mc chain rpc',
             network: {
                 trackers: ['tracker1', 'tracker2'],
             },
-            restUrl: 'rest url',
             streamRegistryChainAddress: 'stream reg address',
             streamRegistryChainRPCs: 'stream reg rpc',
-            streamrNodeAddress: 'streamr node address',
             streamStorageRegistryChainAddress: 'stream storage reg address',
             theGraphUrl: 'graph url',
-            tokenAddress: 'mc token address',
-            tokenSidechainAddress: 'sc token address',
-            verifySignatures: 'never',
+            metrics: false,
         })
     })
 })

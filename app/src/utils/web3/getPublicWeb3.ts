@@ -1,5 +1,7 @@
 import Web3 from 'web3'
-import getConfig, { getConfigForChain } from '$shared/web3/config'
+import { getConfigForChain } from '$shared/web3/config'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
+
 export default function getPublicWeb3(chainId?: number): Web3 {
     const options = {
         timeout: 20000, // milliseconds
@@ -15,5 +17,6 @@ export default function getPublicWeb3(chainId?: number): Web3 {
         }
     }
 
-    return new Web3(new Web3.providers.HttpProvider(getConfig().mainnet.rpcUrl, options))
+    // Fall back to Ethereum Mainnet if chain specific provider was not available
+    return new Web3(new Web3.providers.HttpProvider(getCoreConfig().mainnetInfuraUrl, options))
 }

@@ -8,7 +8,7 @@ marketplaceChains = ['gnosis', 'polygon']
 dataunionChains = ['gnosis', 'polygon']
 streamChains = ['polygon']
 theGraphUrl = "https://api.thegraph.com"
-dataUnionJoinServerUrl = "https://join.dataunions.org"
+mainnetInfuraUrl = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"
 
 [[core.marketplaceContractCreationBlocks]]
 chainId = 1
@@ -34,13 +34,11 @@ name = "dataunions/data-unions-polygon"
 name = "Streamr Germany"
 address = "0x31546eEA76F2B2b3C5cC06B1c93601dc35c9D916"
 
-[client]
-restUrl = "https://streamr.network/api/v2"
-streamrNodeAddress = "0xf3E5A65851C3779f468c9EcB32E6f25D9D68601a"
-
 [client.mainchain]
-chainId = 1
 dataTokenAddress = "0x8f693ca8D21b157107184d29D398A8D082b38b76"
+
+[client.mainchain.rpc]
+chainId = 1
 
 [[client.mainchain.rpc.rpcs]]
 url = "https://mainnet.infura.io/v3/17c3985baecb4c4d94a1edc2c4d23206"

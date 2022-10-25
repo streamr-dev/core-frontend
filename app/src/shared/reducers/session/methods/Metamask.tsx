@@ -2,7 +2,8 @@ import React from 'react'
 import { SignInMethod } from '@streamr/streamr-layout'
 import validateWeb3 from '$utils/web3/validateWeb3'
 import getSessionToken from '$auth/utils/getSessionToken'
-import getWeb3 from '$utils/web3/getWeb3'
+import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
+
 const Metamask = {
     id: 'metamask',
     label: 'MetaMask',
@@ -12,9 +13,9 @@ const Metamask = {
         await validateWeb3({
             requireNetwork: false,
         })
-        const token = await getSessionToken({
-            ethereum: getWeb3().currentProvider,
-        })
+
+        const address = await getDefaultWeb3Account()
+        const token = await getSessionToken(address)
         return token
     },
 }
