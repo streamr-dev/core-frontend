@@ -63,7 +63,7 @@ export type Product = {
     contact: ContactDetails | null | undefined
     dataUnionDeployed?: boolean
     pricingTokenAddress: Address
-    pricingTokenDecimals: BN
+    pricingTokenDecimals: number
 }
 export type ProductSubscriptionId = string
 export type ProductSubscriptionIdList = Array<ProductSubscriptionId>

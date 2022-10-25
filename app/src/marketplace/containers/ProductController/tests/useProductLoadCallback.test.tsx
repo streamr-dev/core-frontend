@@ -8,7 +8,6 @@ import * as productServices from '$mp/modules/product/services'
 import * as dataUnionServices from '$mp/modules/dataUnion/services'
 import * as loginInterceptor from '$auth/utils/loginInterceptor'
 import * as entitiesUtils from '$shared/utils/entities'
-import * as ProductController from '../'
 import useProductLoadCallback from '../useProductLoadCallback'
 import useController from '../useController'
 jest.mock('../useController', () => ({
@@ -21,15 +20,15 @@ describe('useProductLoadCallback', () => {
         jest.restoreAllMocks()
     })
     it('loads a product', async () => {
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation(() => ({
             setProduct: () => {},
         }))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id): any => ({
             id,
             name: 'Product',
             chain: 'ETHEREUM',
@@ -61,10 +60,10 @@ describe('useProductLoadCallback', () => {
         })
     })
     it('throws an error', async () => {
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation(() => ({
             setProduct: () => {},
         }))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
@@ -101,16 +100,16 @@ describe('useProductLoadCallback', () => {
         expect(product).toBeFalsy()
     })
     it('loads the admin fee for data union products', async () => {
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation(() => ({
             setProduct: () => {},
         }))
         jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id): any => ({
             id,
             name: 'Product',
             type: 'DATAUNION',
@@ -148,18 +147,18 @@ describe('useProductLoadCallback', () => {
         })
     })
     it('sets dataUnionDeployed = false for data union products if admin fee call fails', async () => {
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation(() => ({
             setProduct: () => {},
         }))
         jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
             throw new Error('not found')
         })
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id): any => ({
             id,
             name: 'Product',
             type: 'DATAUNION',
@@ -198,15 +197,15 @@ describe('useProductLoadCallback', () => {
         })
     })
     it('loads a product and sets default values for data product', async () => {
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation(() => ({
             setProduct: () => {},
         }))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id): any => ({
             id,
             name: 'Product',
             type: 'NORMAL',
@@ -239,7 +238,7 @@ describe('useProductLoadCallback', () => {
             type: 'NORMAL',
             chain: 'ETHEREUM',
             isFree: true,
-            price: BN(0),
+            price: new BN(0).toString(),
             priceCurrency: 'DATA',
             timeUnit: 'hour',
             adminFee: undefined,
@@ -251,21 +250,21 @@ describe('useProductLoadCallback', () => {
         })
     })
     it('loads a product with existing values', async () => {
-        useController.mockImplementation(() => ({
+        (useController as any).mockImplementation(() => ({
             setProduct: () => {},
         }))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id): any => ({
             id,
             name: 'Product',
             type: 'NORMAL',
             chain: 'ETHEREUM',
             isFree: false,
-            pricePerSecond: BN(1),
+            pricePerSecond: new BN(1),
             priceCurrency: 'DATA',
         }))
         let loadProduct
@@ -290,33 +289,33 @@ describe('useProductLoadCallback', () => {
             })
         })
         expect(product).toMatchObject({
-            price: BN(3.6e-15),
-            pricePerSecond: BN(1),
+            price: new BN(3.6e-15).toString(),
+            pricePerSecond: new BN(1),
             priceCurrency: 'DATA',
             timeUnit: 'hour',
         })
     })
     it('sets the loaded product values to context without pending changes', async () => {
-        const entityHandler = jest.fn()
-        useController.mockImplementation(() => ({
+        const entityHandler = jest.fn();
+        (useController as any).mockImplementation(() => ({
             setProduct: entityHandler,
         }))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id): any => ({
             id,
             name: 'Product',
             type: 'NORMAL',
             chain: 'ETHEREUM',
             isFree: false,
-            pricePerSecond: BN(1),
+            pricePerSecond: new BN(1).toString(),
             priceCurrency: 'DATA',
             pendingChanges: {
                 name: 'New name',
-                pricePerSecond: BN(10),
+                pricePerSecond: new BN(10),
             },
         }))
         let loadProduct
@@ -346,8 +345,8 @@ describe('useProductLoadCallback', () => {
             type: 'NORMAL',
             chain: 'ETHEREUM',
             isFree: false,
-            pricePerSecond: BN(1),
-            price: BN(3.6e-15),
+            pricePerSecond: new BN(1).toString(),
+            price: new BN(3.6e-15).toString(),
             timeUnit: 'hour',
             priceCurrency: 'DATA',
             adminFee: undefined,
@@ -360,26 +359,26 @@ describe('useProductLoadCallback', () => {
     })
     it('sets the loaded product values with pending changes as the editable product data for published products', async () => {
         const entityHandler = jest.fn()
-        jest.spyOn(entitiesUtils, 'handleEntities').mockImplementation(() => entityHandler)
-        useController.mockImplementation(() => ({
+        jest.spyOn(entitiesUtils, 'handleEntities').mockImplementation(() => entityHandler);
+        (useController as any).mockImplementation(() => ({
             setProduct: () => {},
         }))
-        jest.spyOn(usePending, 'default').mockImplementation(() => ({
+        jest.spyOn(usePending, 'default').mockImplementation((): any => ({
             wrap: async (fn) => {
                 await fn()
             },
         }))
-        jest.spyOn(productServices, 'getProductById').mockImplementation((id) => ({
+        jest.spyOn(productServices, 'getProductById').mockImplementation((id): any => ({
             id,
             name: 'Product',
             type: 'NORMAL',
             chain: 'ETHEREUM',
             isFree: false,
-            pricePerSecond: BN(1),
+            pricePerSecond: new BN(1),
             priceCurrency: 'DATA',
             pendingChanges: {
                 name: 'New name',
-                pricePerSecond: BN(10),
+                pricePerSecond: new BN(10),
             },
             state: 'DEPLOYED',
         }))
@@ -406,7 +405,7 @@ describe('useProductLoadCallback', () => {
         })
         expect(product).toMatchObject({
             name: 'New name',
-            pricePerSecond: BN(10),
+            pricePerSecond: new BN(10),
         })
     })
 })

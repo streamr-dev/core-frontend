@@ -1,16 +1,15 @@
-import type { Node } from 'react'
-import React from 'react'
+import React, { FunctionComponent, ReactNode } from 'react'
 import classNames from 'classnames'
 import styles from './emptyState.pcss'
 type Props = {
-    image?: Node
-    children: Node
+    image?: ReactNode
+    children: ReactNode | ReactNode[]
     className?: string
-    link?: Node
+    link?: ReactNode
     linkOnMobile?: boolean
 }
 
-const EmptyState = ({ children, image, className, link, linkOnMobile }: Props) => (
+const EmptyState: FunctionComponent<Props> = ({ children, image, className, link, linkOnMobile }: Props) => (
     <div className={classNames(className, styles.emptyState)}>
         {image && <div className={styles.imageWrapper}>{image}</div>}
         {children}
