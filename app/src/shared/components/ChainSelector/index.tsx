@@ -1,11 +1,10 @@
-import type { Element } from 'react'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, ReactElement } from 'react'
 import styled from 'styled-components'
 import Select from '$ui/Select'
 type Chain = {
     id: number
     name: string
-    icon: Element<any> | null | undefined
+    icon: ReactElement | null | undefined
 }
 type Props = {
     chains: Chain[]

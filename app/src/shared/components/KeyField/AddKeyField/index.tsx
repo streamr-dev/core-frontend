@@ -1,16 +1,30 @@
-import React, { useReducer, useCallback } from 'react'
+import React, { useReducer, useCallback, FunctionComponent, MouseEventHandler } from 'react'
 import Button from '$shared/components/Button'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import KeyFieldEditor from '../KeyFieldEditor'
+import KeyFieldEditor, { LabelType } from '../KeyFieldEditor'
 
-const AddKeyField = ({ label, addKeyFieldAllowed, labelType, onSave: onSaveProp }) => {
-    const [{ editing, waiting, error }, updateState] = useReducer((state, nextState) => ({ ...state, ...nextState }), {
+type AddKeyFieldProps = {
+    label?: string,
+    addKeyFieldAllowed?: boolean,
+    labelType?: LabelType,
+    onSave?: (param?: any) => any
+}
+
+const AddKeyField: FunctionComponent<AddKeyFieldProps> = ({ label, addKeyFieldAllowed, labelType, onSave: onSaveProp }) => {
+    const [{
+        editing,
+        waiting,
+        error
+    }, updateState] = useReducer((
+        state: { editing: boolean, waiting: boolean, error: any },
+        nextState: Partial<{ editing: boolean, waiting: boolean, error: any }>
+    ) => ({...state, ...nextState}), {
         editing: false,
         waiting: false,
         error: undefined,
     })
     const isMounted = useIsMounted()
-    const onEdit = useCallback(
+    const onEdit = useCallback<MouseEventHandler>(
         (e) => {
             e.preventDefault()
             updateState({
@@ -26,7 +40,7 @@ const AddKeyField = ({ label, addKeyFieldAllowed, labelType, onSave: onSaveProp 
         })
     }, [updateState])
     const onSave = useCallback(
-        async (keyName) => {
+        async (keyName: string) => {
             updateState({
                 waiting: true,
                 error: null,

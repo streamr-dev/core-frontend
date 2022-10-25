@@ -1,5 +1,4 @@
-import type { Node, Context } from 'react'
-import React, { useState, useMemo, useCallback, useContext, useRef } from 'react'
+import React, { useState, useMemo, useCallback, useContext, useRef, Context, ReactNode } from 'react'
 import { useSelector } from 'react-redux'
 import qs from 'query-string'
 import { useLocation, useHistory } from 'react-router-dom'
@@ -24,17 +23,17 @@ import { useController } from '../ProductController'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
 type ContextProps = {
-    isPreview: boolean
-    setIsPreview: (arg0: boolean | ((...args: Array<any>) => any)) => void
-    validate: () => boolean
-    back: () => void | Promise<void>
-    save: () => void | Promise<void>
-    publish: () => void | Promise<void>
-    deployDataUnion: () => void | Promise<void>
-    lastSectionRef: any
-    publishAttempted: boolean
+    isPreview?: boolean
+    setIsPreview?: (arg0: boolean | ((...args: Array<any>) => any)) => void
+    validate?: () => boolean
+    back?: () => void | Promise<void>
+    save?: () => void | Promise<void>
+    publish?: () => void | Promise<void>
+    deployDataUnion?: () => void | Promise<void>
+    lastSectionRef?: any
+    publishAttempted?: boolean
 }
-const EditControllerContext: Context<ContextProps> = React.createContext({})
+const EditControllerContext: Context<ContextProps> = React.createContext<ContextProps>({})
 
 function useEditController(product: Product) {
     const location = useLocation()
@@ -125,7 +124,7 @@ function useEditController(product: Product) {
                 // save product (don't need to abort if unmounted)
                 // $FlowFixMe: object literal weirdness
                 await putProduct(
-                    State.update(originalProduct, () => ({ ...nextProduct })),
+                    State.update(originalProduct, () => ({ ...nextProduct })) as Product,
                     nextProduct.id || '',
                 )
                 resetTouched()
@@ -214,7 +213,7 @@ function useEditController(product: Product) {
                     State.update(productRef.current, () => ({
                         ...productRef.current,
                         beneficiaryAddress: address,
-                    })),
+                    })) as Product,
                     productRef.current.id || '',
                 )
             }
@@ -274,7 +273,7 @@ function useEditController(product: Product) {
 }
 
 type ControllerProps = {
-    children?: Node
+    children?: ReactNode | ReactNode[]
     product: Product
 }
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { ChangeEvent, useCallback, useMemo } from 'react'
 import cx from 'classnames'
 import BN from 'bignumber.js'
 import type { NumberString, TimeUnit } from '$shared/types/common-types'
@@ -34,7 +34,7 @@ const SetPrice = ({
     chainId,
 }: Props) => {
     const onPriceChange = useCallback(
-        (e: React.SyntheticEvent<EventTarget>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             onPriceChangeProp(e.target.value)
         },
         [onPriceChangeProp],
@@ -76,7 +76,7 @@ const SetPrice = ({
 }
 
 SetPrice.defaultProps = {
-    price: BN(0),
+    price: new BN(0),
     onPriceChange: () => {},
     timeUnit: timeUnits.hour,
     onTimeUnitChange: () => {},

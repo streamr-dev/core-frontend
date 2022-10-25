@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, ChangeEvent, FunctionComponent } from 'react'
 import styled from 'styled-components'
 import UnstyledButtons from '$shared/components/Buttons'
 import Label from '$ui/Label'
@@ -13,11 +13,11 @@ type Props = {
     value?: string
     createNew?: boolean
     showValue?: boolean
-    onCancel: () => void
-    onSave: (keyName: string) => void | Promise<void>
+    onCancel?: () => void
+    onSave?: (keyName: string | null | undefined, value: string | null | undefined) => void | Promise<void>
     waiting?: boolean
     error?: string | null | undefined
-    labelType: LabelType
+    labelType?: LabelType
 }
 export const keyValues = {
     apiKey: 'API key',
@@ -30,7 +30,7 @@ export const keyNames = {
     sharedSecret: 'Secret name',
 }
 
-const UnstyledKeyFieldEditor = ({
+const UnstyledKeyFieldEditor: FunctionComponent<Props> = ({
     onCancel,
     onSave,
     createNew,
@@ -43,7 +43,7 @@ const UnstyledKeyFieldEditor = ({
     ...props
 }: Props) => {
     const [keyName, setKeyName] = useState(keyNameProp || '')
-    const onKeyNameChange = useCallback((e: React.SyntheticEvent<EventTarget>) => {
+    const onKeyNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setKeyName(e.target.value)
     }, [])
     const filled = !!keyName && (createNew || !!value)
@@ -70,7 +70,8 @@ const UnstyledKeyFieldEditor = ({
                     save: {
                         title: createNew ? 'Add' : 'Save',
                         kind: 'secondary',
-                        onClick: () => onSave(keyName),
+                        // TODO - check if it's ok, I've added the value param to onSave
+                        onClick: () => onSave(keyName, value),
                         disabled: !filled || waiting,
                         spinner: waiting,
                     },

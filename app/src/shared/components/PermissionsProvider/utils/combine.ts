@@ -1,6 +1,6 @@
 import toOperationId from './toOperationId'
-export default function combine(rawPermissions) {
-    const result = {}
+export default function combine(rawPermissions: Record<string, string[]>): Record<string, number> {
+    const result: Record<string, number> = {}
     Object.entries(rawPermissions).forEach(([userId, permissions]) => {
         if (!permissions.length) {
             return

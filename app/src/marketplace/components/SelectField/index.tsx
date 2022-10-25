@@ -10,6 +10,7 @@ type SelectFieldProps = LastErrorProps &
     SelectProps & {
         disabled?: boolean
         errorsTheme?: any
+        className?: string
     }
 export const SelectField = ({ error, isProcessing, disabled, errorsTheme, ...inputProps }: SelectFieldProps) => {
     const { hasError, error: lastError } = useLastError({

@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react'
 import cx from 'classnames'
-import Text from '$ui/Text'
+import Text, { TextInputProps } from '$ui/Text'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
 import type { LastErrorProps } from '$shared/hooks/useLastError'
 import { useLastError } from '$shared/hooks/useLastError'
 import { getTokenInformation } from '$mp/utils/web3'
 import styles from './priceField.pcss'
-type Props = LastErrorProps & {
+type Props = LastErrorProps & Partial<TextInputProps> & {
     pricingTokenAddress: string
     className?: string
     value?: string | number
@@ -45,7 +45,7 @@ const PriceField = ({
         setValue(valueProp)
     }, [valueProp])
     const onChange = useCallback(
-        (e: React.SyntheticEvent<EventTarget>) => {
+        (e: ChangeEvent<HTMLInputElement>) => {
             setValue(e.target.value)
 
             if (onChangeProp) {

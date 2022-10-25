@@ -10,27 +10,25 @@ import useController from '../ProductController/useController'
 export const INFO = 'info'
 export const WARNING = 'warning'
 export const ERROR = 'error'
-// @FIXME: Rewrite in typescript.
-//
-// export type Level = 'info' | 'warning' | 'error'
-//
-// type ContextProps = {
-//     setStatus: (string, Level, string) => void,
-//     clearStatus: (string) => void,
-//     status: Object,
-//     isValid: (string) => boolean,
-//     validate: (Object) => void,
-//     touched: Object,
-//     setTouched: (string, ?boolean) => void,
-//     isTouched: (string) => boolean,
-//     isAnyTouched: () => boolean,
-//     resetTouched: () => void,
-//     pendingChanges: Object,
-//     isPendingChange: (string) => boolean,
-//     isAnyChangePending: () => boolean,
-// }
-// TODO add typing
-const ValidationContext = React.createContext<{validate?: (param: any) => void}>({})
+
+export type Level = 'info' | 'warning' | 'error'
+
+type ContextProps = {
+    setStatus: (param1: string, param2: Level, param3: string) => void,
+    clearStatus: (param: string) => void,
+    status: object,
+    isValid: (param: string) => boolean,
+    validate: (param: object) => void,
+    touched: object,
+    setTouched: (param1: string, param2?: boolean) => void,
+    isTouched: (param: string) => boolean,
+    isAnyTouched: () => boolean,
+    resetTouched: () => void,
+    pendingChanges: object,
+    isPendingChange: (param: string) => boolean,
+    isAnyChangePending: () => boolean,
+}
+const ValidationContext = React.createContext<ContextProps>({} as ContextProps)
 
 const isEqual = (a: object, b: object) => JSON.stringify(a) === JSON.stringify(b)
 
@@ -55,7 +53,7 @@ const validationErrors: Record<string, string> = {
 }
 
 // TODO add typing
-function useValidationContext() {
+function useValidationContext(): ContextProps {
     const [status, setStatusState] = useState<any>({})
     const [pendingChanges, setPendingChanges] = useState({})
     const [touched, setTouchedState] = useState<Record<string, boolean>>({})

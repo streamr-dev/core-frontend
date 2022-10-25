@@ -9,6 +9,7 @@
 - /app/src/userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/AvatarUploadDialog/index.tsx
 - /app/src/userpages/components/ProfilePage/ProfileSettings/EditAvatarDialog/CropAvatarDialog/index.tsx
 - /app/src/marketplace/containers/ProductController/useProductLoadCallback.ts
+- /app/src/shared/components/KeyField/KeyFieldEditor/index.tsx
 
 
 ### [Delete this file before merging]

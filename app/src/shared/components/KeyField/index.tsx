@@ -50,7 +50,7 @@ type Props = {
     hideValue?: boolean
     className?: string
     allowEdit?: boolean
-    onSave?: (arg0: string | null | undefined, arg1: string | null | undefined) => Promise<void>
+    onSave?: (key: string | null | undefined, value: string | null | undefined) => Promise<void>
     allowDelete?: boolean
     disableDelete?: boolean
     onDelete?: () => Promise<void>

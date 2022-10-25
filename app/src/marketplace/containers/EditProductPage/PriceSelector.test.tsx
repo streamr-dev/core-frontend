@@ -15,7 +15,7 @@ jest.mock('$utils/web3/getChainId', () => ({
 }))
 
 function mockChainId(chainId) {
-    return getChainId.mockImplementation(() => Promise.resolve(chainId))
+    return (getChainId as any).mockImplementation(() => Promise.resolve(chainId))
 }
 
 const mockState = {
@@ -78,7 +78,7 @@ describe('PriceSelector', () => {
             }),
             [preferredCurrency, setPreferredCurrency],
         )
-        return <EditControllerContext.Provider value={value}>{children}</EditControllerContext.Provider>
+        return <EditControllerContext.Provider value={value as any}>{children}</EditControllerContext.Provider>
     }
 
     const setup = async (product, transform) => {
