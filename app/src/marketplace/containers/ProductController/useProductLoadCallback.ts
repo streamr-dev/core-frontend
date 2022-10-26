@@ -134,7 +134,7 @@ export default function useProductLoadCallback() {
                     dataUnionDeployed,
                     requiresWhitelist,
                     pricingTokenAddress,
-                    pricingTokenDecimals: new BN(pricingTokenDecimals), // TODO check if it works - I've changed it to BN
+                    pricingTokenDecimals: new BN(pricingTokenDecimals).toNumber(),
                     pricePerSecond: pricePerSecond || product.pricePerSecond,
                 }
                 setProduct({ ...nextProduct, pendingChanges: null })

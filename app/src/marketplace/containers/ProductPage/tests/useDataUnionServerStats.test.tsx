@@ -5,12 +5,19 @@ import * as services from '$mp/modules/dataUnion/services'
 import useDataUnionServerStats from '../useDataUnionServerStats'
 jest.mock('$mp/modules/dataUnion/services')
 jest.useFakeTimers()
+const getDataUnionStatsMock = jest.fn().mockResolvedValue({
+    totalEarnings: 123,
+    memberCount: {
+        total: 10,
+        active: 5,
+    },
+})
 describe('useDataUnionServerStats', () => {
     beforeEach(() => {
         jest.spyOn(console, 'warn').mockImplementation(() => {})
     })
     afterEach(() => {
-        services.getDataUnionStats.mockRestore()
+        (services.getDataUnionStats as any).mockRestore()
         jest.clearAllTimers()
     })
     it('returns undefined earnings and member count by default', () => {
@@ -44,15 +51,8 @@ describe('useDataUnionServerStats', () => {
             return null
         }
 
-        mount(<Test />)
-        const getDataUnionStatsMock = jest.fn().mockResolvedValue({
-            totalEarnings: 123,
-            memberCount: {
-                total: 10,
-                active: 5,
-            },
-        })
-        services.getDataUnionStats.mockImplementation(getDataUnionStatsMock)
+        mount(<Test />);
+        (services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
         await act(async () => {
             await result.startPolling('0x123', 8995)
         })
@@ -74,8 +74,8 @@ describe('useDataUnionServerStats', () => {
         mount(<Test />)
         const getDataUnionStatsMock = jest.fn(async () => {
             throw new Error('something happened')
-        })
-        services.getDataUnionStats.mockImplementation(getDataUnionStatsMock)
+        });
+        (services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
         await act(async () => {
             try {
                 await result.startPolling('0x123', 8995)
@@ -95,11 +95,11 @@ describe('useDataUnionServerStats', () => {
 
         mount(<Test />)
         const getDataUnionStatsMock = jest.fn(async () => {
-            const responseError = new Error('something happened')
-            responseError.statusCode = 404
+            const responseError = new Error('something happened');
+            (responseError as any).statusCode = 404
             throw responseError
-        })
-        services.getDataUnionStats.mockImplementation(getDataUnionStatsMock)
+        });
+        (services.getDataUnionStats as any).mockImplementation(getDataUnionStatsMock)
         await act(async () => {
             await result.startPolling('0x123', 8995)
         })

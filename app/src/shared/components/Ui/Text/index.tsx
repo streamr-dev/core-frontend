@@ -10,7 +10,7 @@ import type { Props as SelectAllOnFocusProps } from './SelectAllOnFocusDecorator
 import SelectAllOnFocusDecorator from './SelectAllOnFocusDecorator'
 import StyledInput from './StyledInput'
 export { SpaciousTheme } from './StyledInput'
-type Props = FlushHistoryProps &
+export type TextInputProps = FlushHistoryProps &
     OnCommitProps &
     RevertOnEscapeProps &
     SelectAllOnFocusProps & {
@@ -20,10 +20,10 @@ type Props = FlushHistoryProps &
     } &
     HTMLProps<HTMLInputElement | HTMLTextAreaElement>
 
-const Text: FunctionComponent<Props> = ({ tag: Tag = 'input', unstyled, ...props }: Props, ref: any) =>
+const Text: FunctionComponent<TextInputProps> = ({ tag: Tag = 'input', unstyled, ...props }: TextInputProps, ref: any) =>
     unstyled ? <Tag {...props} ref={ref} /> : <StyledInput {...props} as={Tag} ref={ref} />
 
-const EnhancedText= compose<ComponentType<Props>>(
+const EnhancedText= compose<ComponentType<TextInputProps>>(
     FlushHistoryDecorator,
     OnCommitDecorator,
     SelectAllOnFocusDecorator,

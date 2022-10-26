@@ -1,13 +1,12 @@
-import type { Element } from 'react'
-import React from 'react'
+import React, { FunctionComponent, ReactElement, ReactNode } from 'react'
 import styled, { css } from 'styled-components'
 import ReactSelect, { components } from 'react-select'
 import cx from 'classnames'
-import SvgIcon from '$shared/components/SvgIcon'
+import SvgIcon, { SvgIconProps } from '$shared/components/SvgIcon'
 export type Option = {
     value: any
     label: string
-    icon?: Element<any>
+    icon?: ReactElement
 }
 export type Props = {
     placeholder?: string
@@ -20,8 +19,9 @@ export type Props = {
     disabled?: boolean
     controlClassName?: string
 }
+// TODO add typing
 const customStyles = {
-    control: (provided, state) => ({
+    control: (provided: any, state: any) => ({
         ...provided,
         padding: '0',
         '&:hover': {
@@ -44,20 +44,20 @@ const customStyles = {
         lineHeight: '2rem',
         width: '100%',
     }),
-    dropdownIndicator: (provided, state) => ({
+    dropdownIndicator: (provided: any, state: any) => ({
         ...provided,
         color: state.isDisabled ? '#32323280' : '#323232',
         marginRight: '8px',
     }),
     indicatorSeparator: () => ({}),
-    menu: (provided) => ({
+    menu: (provided: any) => ({
         ...provided,
         marginTop: '0.5rem',
         padding: '0',
         zIndex: '10',
     }),
-    menuList: (provided) => ({ ...provided, margin: '0.2rem 0', padding: '0' }),
-    option: (provided, state) => ({
+    menuList: (provided: any) => ({ ...provided, margin: '0.2rem 0', padding: '0' }),
+    option: (provided: any, state: any) => ({
         ...provided,
         display: 'flex',
         textAlign: 'left',
@@ -76,14 +76,14 @@ const customStyles = {
         color: '#CDCDCD',
         lineHeight: '1rem',
     }),
-    valueContainer: (provided) => ({
+    valueContainer: (provided: any) => ({
         ...provided,
         padding: '0 1rem',
         color: '#323232',
         lineHeight: '1rem',
         overflow: 'visible',
     }),
-    singleValue: (provided) => ({
+    singleValue: (provided: any) => ({
         ...provided,
         margin: 0,
         overflow: 'visible',
@@ -92,7 +92,7 @@ const customStyles = {
     }),
 }
 
-const Control = ({ className, children, ...props }) => {
+const Control: FunctionComponent<{className?: string, children?: ReactNode | ReactNode[], selectProps: any}> = ({ className, children, ...props }) => {
     const { controlClassName } = props.selectProps
     return (
         <components.Control {...props} className={cx(className, controlClassName)}>
@@ -116,7 +116,7 @@ const OptionIconWrapper = styled.div`
     margin-right: 0.5rem;
 `
 
-const IconOption = (props) => (
+const IconOption: FunctionComponent<{isSelected: boolean, data: {icon: ReactNode, label: string}}> = (props) => (
     <components.Option {...props}>
         {props.isSelected && <Tick />}
         {props.data.icon != null && <OptionIconWrapper>{props.data.icon}</OptionIconWrapper>}
@@ -124,13 +124,13 @@ const IconOption = (props) => (
     </components.Option>
 )
 
-const Caret = styled(SvgIcon)`
+const Caret = styled(SvgIcon)<SvgIconProps>`
     height: 8px;
     width: 10px;
     transition: transform 180ms ease-in-out;
 `
 
-const DropdownIndicator = (props) =>
+const DropdownIndicator = (props: any) =>
     components.DropdownIndicator && (
         <components.DropdownIndicator {...props}>
             <Caret

@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { ReactElement } from 'react'
 import { mount } from 'enzyme'
 import KeyField from '$shared/components/KeyField'
 import Text from '$ui/Text'
+import WithInputActions from '$shared/components/WithInputActions'
 describe('KeyField', () => {
     describe('basic', () => {
         it('renders the component', () => {
@@ -19,8 +20,8 @@ describe('KeyField', () => {
         it('has a copy action', () => {
             const el = mount(<KeyField keyName="myKey" value="testValue" />)
             const actions = el
-                .find('WithInputActions')
-                .prop('actions')
+                .find(WithInputActions)
+                .prop<ReactElement[]>('actions')
                 .map((action) => mount(action))
             expect(actions.length).toBe(1)
             expect(actions[0].text()).toBe('Copy')
@@ -34,27 +35,27 @@ describe('KeyField', () => {
         it('has a menu option to reveal the value', () => {
             const el = mount(<KeyField keyName="myKey" value="testValue" hideValue />)
             expect(el.find(Text).prop('type')).toBe('password')
-            const action = mount(el.find('WithInputActions').prop('actions')[0])
+            const action = mount(el.find(WithInputActions).prop('actions')[0])
             expect(action.text()).toBe('Reveal')
         })
     })
     describe('editing', () => {
         it('has a menu option to edit value', () => {
             const el = mount(<KeyField keyName="myKey" value="testValue" allowEdit />)
-            const action = mount(el.find('WithInputActions').prop('actions')[1])
+            const action = mount(el.find(WithInputActions).prop('actions')[1])
             expect(action.text()).toBe('Edit')
         })
     })
     describe('deleting', () => {
         it('has a menu option to remove value', () => {
             const el = mount(<KeyField keyName="myKey" value="testValue" allowDelete />)
-            const action = mount(el.find('WithInputActions').prop('actions')[1])
+            const action = mount(el.find(WithInputActions).prop('actions')[1])
             expect(action.text()).toBe('Delete')
             expect(action.prop('disabled')).toBeFalsy()
         })
         it('disables the delete option', () => {
             const el = mount(<KeyField keyName="myKey" value="testValue" allowDelete disableDelete />)
-            const action = mount(el.find('WithInputActions').prop('actions')[1])
+            const action = mount(el.find(WithInputActions).prop('actions')[1])
             expect(action.prop('disabled')).toBeTruthy()
         })
     })

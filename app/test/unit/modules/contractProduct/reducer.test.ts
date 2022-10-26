@@ -4,7 +4,7 @@ import { ContractProductState } from '$mp/types/store-state'
 import { ErrorFromApi } from '$shared/types/common-types'
 describe('contractProduct - reducer', () => {
     it('has initial state', () => {
-        expect(reducer(undefined, null)).toStrictEqual(initialState)
+        expect(reducer(undefined, {type: '', payload: null})).toStrictEqual(initialState)
     })
     describe('GET_PRODUCT_FROM_CONTRACT', () => {
         it('handles request', () => {

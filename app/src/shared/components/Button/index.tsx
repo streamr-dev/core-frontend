@@ -9,7 +9,7 @@ export type Size = 'mini' | 'normal' | 'big'
 export type Kind = 'primary' | 'secondary' | 'destructive' | 'link' | 'special'
 export type Variant = 'dark' | 'light'
 // TODO - try to make it more generic without passing LinkProps directly
-type ButtonProps = HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optional<LinkProps> & {
+type ButtonProps = Omit<HTMLProps<HTMLButtonElement | HTMLAnchorElement> & Optional<LinkProps>, 'size'> & {
     className?: string
     tag?: string | ComponentType<any>
     size?: Size

@@ -1,6 +1,7 @@
 import React from 'react'
 import { shallow } from 'enzyme'
 import AddKeyField from '$shared/components/KeyField/AddKeyField'
+import KeyFieldEditor from '$shared/components/KeyField/KeyFieldEditor'
 describe('AddKeyField', () => {
     describe('basic', () => {
         it('displays a button', () => {
@@ -15,7 +16,7 @@ describe('AddKeyField', () => {
                 preventDefault() {},
             })
             expect(el.find('Button').length).toBe(0)
-            expect(el.find('KeyFieldEditor').length).toBe(1)
+            expect(el.find(KeyFieldEditor).length).toBe(1)
         })
     })
     describe('cancel', () => {
@@ -26,10 +27,10 @@ describe('AddKeyField', () => {
                 preventDefault() {},
             })
             expect(el.find('Button').length).toBe(0)
-            expect(el.find('KeyFieldEditor').length).toBe(1)
-            el.find('KeyFieldEditor').prop('onCancel')()
+            expect(el.find(KeyFieldEditor).length).toBe(1)
+            el.find(KeyFieldEditor).prop('onCancel')()
             expect(el.find('Button').length).toBe(1)
-            expect(el.find('KeyFieldEditor').length).toBe(0)
+            expect(el.find(KeyFieldEditor).length).toBe(0)
         })
     })
     describe('saving', () => {
@@ -43,14 +44,14 @@ describe('AddKeyField', () => {
                 preventDefault() {},
             })
             expect(el.find('Button').length === 0)
-            expect(el.find('KeyFieldEditor').length === 1)
-            el.find('KeyFieldEditor').prop('onSave')()
+            expect(el.find(KeyFieldEditor).length === 1)
+            el.find(KeyFieldEditor).prop('onSave')()
             // We need to wait for 2nd setState to happen after onSave was called
             setTimeout(
                 () =>
                     onSave().then(() => {
                         expect(el.find('Button').length).toBe(1)
-                        expect(el.find('KeyFieldEditor').length).toBe(0)
+                        expect(el.find(KeyFieldEditor).length).toBe(0)
                         done()
                     }),
                 0,
@@ -68,10 +69,10 @@ describe('AddKeyField', () => {
                 preventDefault() {},
             })
             expect(el.find('Button').length).toBe(0)
-            expect(el.find('KeyFieldEditor').length).toBe(1)
+            expect(el.find(KeyFieldEditor).length).toBe(1)
 
             try {
-                el.find('KeyFieldEditor').prop('onSave')()
+                el.find(KeyFieldEditor).prop('onSave')()
             } catch (e) {
                 expect(e).toBe(error)
             }
@@ -80,8 +81,8 @@ describe('AddKeyField', () => {
             setTimeout(
                 () =>
                     onSave().catch(() => {
-                        expect(el.find('KeyFieldEditor').length).toBe(1)
-                        expect(el.find('KeyFieldEditor').prop('error')).toBe(errorMessage)
+                        expect(el.find(KeyFieldEditor).length).toBe(1)
+                        expect(el.find(KeyFieldEditor).prop('error')).toBe(errorMessage)
                         done()
                     }),
                 0,

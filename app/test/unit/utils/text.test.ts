@@ -2,8 +2,8 @@ import { numberToText, truncate } from '$shared/utils/text'
 describe('text utils', () => {
     describe('truncate', () => {
         it('does not truncate non-strings', () => {
-            expect(truncate()).toBe(undefined)
-            expect(truncate(123)).toBe(123)
+            expect(truncate(undefined)).toBe(undefined)
+            expect(truncate('123')).toBe('123')
         })
         it('does not truncate hashes that are too short', () => {
             expect(truncate('0x0123456789abcdef0123456789abcdef01234567')).toBe('0x012...34567')

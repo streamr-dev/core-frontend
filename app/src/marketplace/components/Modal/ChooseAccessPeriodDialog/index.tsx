@@ -59,7 +59,7 @@ export const ChooseAccessPeriodDialog = ({
     const [timeUnit, setTimeUnit] = useState(initialTimeUnit)
     const [paymentCurrency, setPaymentCurrency] = useState(initialPaymentCurrency)
     const [loading, setLoading] = useState(false)
-    const [currentPrice, setCurrentPrice] = useState('-')
+    const [currentPrice, setCurrentPrice] = useState<string|number | BN>('-')
     const [approxUsd, setApproxUsd] = useState('-')
     const [priceInUsd, setPriceInUsd] = useState(null)
     const availableCurrencies = useMemo(() => {
@@ -78,20 +78,20 @@ export const ChooseAccessPeriodDialog = ({
             const rate = await getUsdRate(pricingTokenAddress, chainId)
 
             if (rate !== 0 && currentPrice !== '-') {
-                setPriceInUsd(currentPrice * rate)
+                setPriceInUsd(currentPrice as number * rate)
             }
         }
 
         load()
     }, [currentPrice, pricingTokenAddress, chainId])
-    const isValidTime = useMemo(() => !BN(time).isNaN() && BN(time).isGreaterThan(0), [time])
+    const isValidTime = useMemo(() => !new BN(time).isNaN() && new BN(time).isGreaterThan(0), [time])
     const isValidPrice = useMemo(() => {
         if (paymentCurrency === paymentCurrencies.NATIVE) {
             if (Number(priceInUsd) < MIN_UNISWAP_AMOUNT_USD) {
                 return false
             }
 
-            return !(BN(currentPrice).isNaN() || !BN(currentPrice).isGreaterThan(0) || !BN(currentPrice).isFinite())
+            return !(new BN(currentPrice).isNaN() || !new BN(currentPrice).isGreaterThan(0) || !new BN(currentPrice).isFinite())
         }
 
         if (paymentCurrency === paymentCurrencies.DAI) {
@@ -99,31 +99,39 @@ export const ChooseAccessPeriodDialog = ({
                 return false
             }
 
-            return !(BN(currentPrice).isNaN() || !BN(currentPrice).isGreaterThan(0) || !BN(currentPrice).isFinite())
+            return !(new BN(currentPrice).isNaN() || !new BN(currentPrice).isGreaterThan(0) || !new BN(currentPrice).isFinite())
         }
 
         return true
     }, [paymentCurrency, priceInUsd, currentPrice])
-    const setExternalPrices = useDebouncedCallback(async ({ priceInToken: inToken, priceInUsd: inUsd, paymentCurrency: currency }) => {
-        setLoading(true)
-        let price
-        let usdEstimate
+    const setExternalPrices = useDebounced(
+        useCallback(
+            // TODO add typing
+            async ({ priceInToken: inToken, priceInUsd: inUsd, paymentCurrency: currency }) => {
+                setLoading(true)
+                let price
+                let usdEstimate
 
-        if (currency === paymentCurrencies.NATIVE) {
-            price = await uniswapDATAtoETH(inToken.toString(), true)
-            usdEstimate = await uniswapETHtoDATA(price.toString(), true)
-        } else if (currency === paymentCurrencies.DAI) {
-            price = await uniswapDATAtoDAI(inToken.toString(), true)
-            usdEstimate = price
-        } else {
-            price = inToken
-            usdEstimate = inUsd
-        }
+                if (currency === paymentCurrencies.NATIVE) {
+                    price = await uniswapDATAtoETH(inToken.toString(), true)
+                    usdEstimate = await uniswapETHtoDATA(price.toString(), true)
+                } else if (currency === paymentCurrencies.DAI) {
+                    price = await uniswapDATAtoDAI(inToken.toString(), true)
+                    usdEstimate = price
+                } else {
+                    price = inToken
+                    usdEstimate = inUsd
+                }
 
-        setCurrentPrice(fromDecimals(price, pricingTokenDecimals))
-        setApproxUsd(usdEstimate)
-        setLoading(false)
-    }, 250)
+                // TODO check if its ok - I had to use BN here to comply with the types
+                setCurrentPrice(fromDecimals(price, new BN(pricingTokenDecimals)))
+                setApproxUsd(usdEstimate)
+                setLoading(false)
+            },
+            [pricingTokenDecimals],
+        ),
+        250,
+    )
     const displayPrice = useMemo(() => (BN(currentPrice).isNaN() ? 'N/A' : BN(currentPrice).toFixed(2)), [currentPrice])
     const displayApproxUsd = useMemo(() => (BN(approxUsd).isNaN() ? 'N/A' : BN(approxUsd).toFixed(2)), [approxUsd])
     useEffect(() => {
@@ -134,11 +142,11 @@ export const ChooseAccessPeriodDialog = ({
         })
     }, [setExternalPrices, priceInToken, paymentCurrency, priceInUsd])
     const currentBalance = useMemo(
-        () => (balances && balances[paymentCurrency] ? BN(balances[paymentCurrency]).toFixed(2) : '-'),
+        () => (balances && balances[paymentCurrency] ? new BN(balances[paymentCurrency]).toFixed(2) : '-'),
         [balances, paymentCurrency],
     )
     const selectedValue = useMemo(() => options.find(({ value: optionValue }) => optionValue === timeUnit), [timeUnit])
-    const onTimeUnitChange = useCallback((t) => {
+    const onTimeUnitChange = useCallback((t: TimeUnit) => {
         setTimeUnit(t)
     }, [])
     const onPaymentCurrencyChange = useCallback(

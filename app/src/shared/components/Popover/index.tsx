@@ -11,7 +11,7 @@ import Meatball from '$shared/components/Meatball'
 type Props = {
     title: ReactNode
     type?: 'normal' | 'uppercase' | 'meatball' | 'grayMeatball' | 'whiteMeatball'
-    children?: ReactNode
+    children?: ReactNode | ReactNode[]
     className?: string
     caret?: false | 'arrow' | 'svg'
     activeTitle?: boolean
