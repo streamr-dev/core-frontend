@@ -14,8 +14,6 @@ updates:
     commit-message:
       prefix: ci
       include: scope
-    reviewers:
-      - kare
     assignees:
       - DaisyDomergue
     labels:
@@ -30,13 +28,9 @@ updates:
     commit-message:
       prefix: build
       include: scope
-    reviewers:
-      - kare
     assignees:
       - tumppi
       - mondoreale
-      - juhah
-      - kare
     labels:
       - build
   - package-ecosystem: npm
@@ -52,7 +46,6 @@ updates:
     assignees:
       - tumppi
       - mondoreale
-      - juhah
     labels:
       - build
 
