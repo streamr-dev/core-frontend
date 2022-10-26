@@ -340,7 +340,7 @@ describe('useEditableProductActions', () => {
                     isFree: true,
                     timeUnit: timeUnits.second,
                     priceCurrency: contractCurrencies.DATA,
-                    price: BN(0),
+                    price: new BN(0),
                 })
                 updater.updateIsFree(false, 18)
             })
@@ -348,7 +348,7 @@ describe('useEditableProductActions', () => {
                 priceCurrency: contractCurrencies.DATA,
                 timeUnit: timeUnits.second,
                 isFree: false,
-                price: new BN(1),
+                price: '1',
                 pricePerSecond: '1000000000000000000',
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
@@ -381,7 +381,7 @@ describe('useEditableProductActions', () => {
                     isFree: true,
                     timeUnit: timeUnits.second,
                     priceCurrency: contractCurrencies.DATA,
-                    price: BN(8),
+                    price: new BN(8),
                 })
                 updater.updateIsFree(false, 18)
             })
@@ -389,7 +389,7 @@ describe('useEditableProductActions', () => {
                 priceCurrency: contractCurrencies.DATA,
                 timeUnit: timeUnits.second,
                 isFree: false,
-                price: new BN(8),
+                price: '8',
                 pricePerSecond: '8000000000000000000',
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
@@ -422,7 +422,7 @@ describe('useEditableProductActions', () => {
                     isFree: false,
                     timeUnit: timeUnits.second,
                     priceCurrency: contractCurrencies.DATA,
-                    price: BN(10),
+                    price: new BN(10),
                 })
                 updater.updateIsFree(true)
             })
@@ -430,7 +430,7 @@ describe('useEditableProductActions', () => {
                 priceCurrency: contractCurrencies.DATA,
                 timeUnit: timeUnits.second,
                 isFree: true,
-                price: new BN(10),
+                price: '10',
                 pricePerSecond: new BN(0),
             })
             expect(validation.isTouched('pricePerSecond')).toBe(true)
@@ -465,7 +465,7 @@ describe('useEditableProductActions', () => {
                     isFree: false,
                     timeUnit: timeUnits.second,
                     priceCurrency: contractCurrencies.DATA,
-                    price: BN(0),
+                    price: new BN(0),
                 })
                 updater.updatePrice(new BN(8), contractCurrencies.DATA, timeUnits.second, 18)
             })
@@ -506,9 +506,9 @@ describe('useEditableProductActions', () => {
                     isFree: false,
                     timeUnit: timeUnits.second,
                     priceCurrency: contractCurrencies.DATA,
-                    price: BN(60),
+                    price: new BN(60),
                 })
-                updater.updatePrice(BN(60), contractCurrencies.DATA, timeUnits.minute, 18)
+                updater.updatePrice(new BN(60), contractCurrencies.DATA, timeUnits.minute, 18)
             })
             expect(product).toStrictEqual({
                 priceCurrency: contractCurrencies.DATA,
@@ -547,9 +547,9 @@ describe('useEditableProductActions', () => {
                     isFree: false,
                     timeUnit: timeUnits.second,
                     priceCurrency: contractCurrencies.DATA,
-                    price: BN(10),
+                    price: new BN(10),
                 })
-                updater.updatePrice(BN(10), contractCurrencies.USD, timeUnits.second, 18)
+                updater.updatePrice(new BN(10), contractCurrencies.USD, timeUnits.second, 18)
             })
             expect(product).toStrictEqual({
                 priceCurrency: contractCurrencies.USD,

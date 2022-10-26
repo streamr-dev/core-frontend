@@ -1,4 +1,4 @@
-import type { FunctionComponent, Node } from 'react'
+import type { FunctionComponent, ReactNode } from 'react'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container } from 'reactstrap'
@@ -11,7 +11,7 @@ import Button from '$shared/components/Button'
 import routes from '$routes'
 import styles from './genericErrorPage.pcss'
 type Props = {
-    children?: Node
+    children?: ReactNode
 }
 export const ErrorPageContent = ({ children }: Props) => (
     <Container>

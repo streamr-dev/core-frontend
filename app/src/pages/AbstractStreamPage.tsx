@@ -5,7 +5,13 @@ import StreamLoader from '$shared/components/StreamLoader'
 import StreamPermissionsProvider from '$shared/components/StreamPermissionsProvider'
 import useDecodedStreamId from '$shared/hooks/useDecodedStreamId'
 import StreamSetterContext from '$shared/contexts/StreamSetterContext'
-export default function AbstractStreamPage({ children, streamOperations }) {
+
+type Props = {
+    streamOperations?: Array<any>,
+    children?: React.ReactNode,
+}
+
+export default function AbstractStreamPage({ streamOperations, children }: Props) {
     const streamId = useDecodedStreamId()
     const [stream, setStream] = useState()
     return (

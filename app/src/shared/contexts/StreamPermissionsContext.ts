@@ -1,3 +1,8 @@
 import { createContext } from 'react'
-const StreamPermissionsContext = createContext({})
+
+type StreamPermissionsContextProps = {
+    [key: string]: boolean,
+}
+
+const StreamPermissionsContext = createContext<StreamPermissionsContextProps>({})
 export default StreamPermissionsContext

@@ -113,7 +113,7 @@ export function useEditableProductActions() {
             commit('Update is free', (p: Product) => {
                 // Switching product from free to paid also changes its price from 0 (only
                 // if it's 0) to 1. We're doing it to avoid premature validation errors.
-                const price = p.isFree && !isFree && new BN(p.price).isZero() ? new BN(1).toString() : p.price
+                const price = p.isFree && !isFree && new BN(p.price).isZero() ? new BN(1).toString() : new BN(p.price).toString()
                 return {
                     ...p,
                     isFree,

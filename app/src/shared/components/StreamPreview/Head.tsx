@@ -78,7 +78,16 @@ const Inner = styled.div`
     }
 `
 
-const UnstyledHead = ({ className, onCloseClick, streamId, skeletonize, titlePrefix, description }) => (
+type Props = {
+    className?: string,
+    onCloseClick: () => void,
+    streamId: string,
+    skeletonize?: boolean,
+    titlePrefix?: string,
+    description?: string,
+}
+
+const UnstyledHead = ({ className, onCloseClick, streamId, skeletonize, titlePrefix, description }: Props) => (
     <div className={className}>
         <CloseButton.Wrapper>
             <CloseButton onClick={onCloseClick} />

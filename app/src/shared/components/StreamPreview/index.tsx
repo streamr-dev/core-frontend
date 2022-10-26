@@ -9,7 +9,12 @@ import Feed from './Feed'
 import Foot from './Foot'
 import Head from './Head'
 import Selector from './Selector'
-const InspectorButton = styled(IconButton)`
+
+type InspectorButtonProps = {
+    active: boolean,
+}
+
+const InspectorButton = styled(IconButton)<InspectorButtonProps>`
     width: 32px;
     height: 32px;
     text-align: center;
@@ -35,6 +40,23 @@ const InspectorButton = styled(IconButton)`
         `}
 `
 
+type Props = {
+    activePartition?: number,
+    className?: string,
+    dataError?: string,
+    loading?: boolean,
+    streamId?: string,
+    navigableStreamIds?: Array<string>,
+    onChange?: () => void,
+    onClose?: () => void,
+    onPartitionChange?: (partition: number) => void,
+    onStreamSettings?: () => void,
+    stream?: any,
+    streamData?: any,
+    subscriptionError?: string,
+    titlePrefix?: string,
+}
+
 const UnstyledStreamPreview = ({
     activePartition = 0,
     className,
@@ -50,7 +72,7 @@ const UnstyledStreamPreview = ({
     streamData,
     subscriptionError,
     titlePrefix,
-}) => {
+}: Props) => {
     const [inspectorFocused, setInspectorFocused] = useState(false)
     const streamLoaded = !!(stream && stream.id === streamId)
     const { description, partitions } = stream || {}

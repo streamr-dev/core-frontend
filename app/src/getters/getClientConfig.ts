@@ -13,9 +13,8 @@ export default function getClientConfig(mods: any = {}): any {
         ...DEFAULTS,
         mainChainRPCs: formatRpc(client?.mainchain?.rpc) || DEFAULTS.mainChainRPCs,
         network: {
-            // TODO check if its ok to remove those parts - they don't exist in the default config
-            // ...DEFAULTS.network,
-            trackers: formatTrackers(client?.network?.trackers) // || DEFAULTS.network?.trackers,
+            ...DEFAULTS.network,
+            trackers: formatTrackers(client?.network?.trackers) || DEFAULTS.network?.trackers,
         },
         streamRegistryChainAddress: client?.streamRegistryChainAddress || DEFAULTS.streamRegistryChainAddress,
         streamRegistryChainRPCs: formatRpc(client?.streamRegistryChain?.rpc) || DEFAULTS.streamRegistryChainRPCs,

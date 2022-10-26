@@ -5,12 +5,12 @@ import Layout from './Layout'
 
 const UnstyledResizeHandle = (props) => {
     const ref = useRef(null)
-    const [x, drag] = useState()
+    const [x, drag] = useState<number>()
     const isMounted = useIsMounted()
 
-    const safeDrag = (...args) => {
+    const safeDrag = (amount: number) => {
         if (isMounted()) {
-            drag(...args)
+            drag(amount)
         }
     }
 

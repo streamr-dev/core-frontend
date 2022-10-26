@@ -87,7 +87,12 @@ const Lhs = styled(Side)`
         min-width: 0;
     }
 `
-const Rhs = styled(Side)`
+
+type RhsProps = {
+    focused: boolean,
+}
+
+const Rhs = styled(Side)<RhsProps>`
     background: #fafafa;
     border-left: 1px solid #efefef;
     left: 224px;
@@ -135,6 +140,15 @@ const TooltipTheme = Object.assign({}, Tooltip.BottomTheme, {
     transform: 'none',
 })
 
+type Props = {
+    className?: string,
+    errorComponent?: React.ReactNode,
+    inspectorFocused: boolean,
+    stream: any,
+    streamData: any,
+    streamLoaded: boolean,
+}
+
 const UnstyledFeed = ({
     className,
     errorComponent = null,
@@ -142,13 +156,13 @@ const UnstyledFeed = ({
     stream,
     streamData,
     streamLoaded,
-}) => {
+}: Props) => {
     const [datapoint, setDatapoint] = useState()
     const streamId = stream ? stream.id : undefined
     useEffect(() => {
         setDatapoint(undefined)
     }, [streamId])
-    const { metadata, data } = datapoint || {}
+    const { metadata, data } = datapoint || { metadata: null, data: null }
     const selectedMsgId = metadata && JSON.stringify(metadata.messageId)
     const selectedTimestamp = metadata && metadata.messageId.timestamp
     const selection = Object.entries(data || {})

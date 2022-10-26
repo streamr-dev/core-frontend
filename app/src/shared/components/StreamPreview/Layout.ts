@@ -1,6 +1,11 @@
 import styled, { css, createGlobalStyle } from 'styled-components'
 import { SM, MD, XL } from '$shared/utils/styled'
-const Layout = createGlobalStyle`
+
+type Props = {
+    inspectorWidth: number,
+}
+
+const Layout = createGlobalStyle<Props>`
     :root {
         --LiveDataInspectorMinWidth: 420px;
         --LiveDataMinLhsWidth: 248px;
@@ -53,12 +58,14 @@ const Layout = createGlobalStyle`
         }
     `}
 `
+
 const Pusher = styled.div`
     min-width: var(--LiveDataMinMargin);
     max-width: calc((100vw - 1108px - var(--LiveDataInspectorMinWidth) - 32px) * 0.5);
     width: calc((100vw - 1108px - var(--LiveDataInspectorWidth) - 32px) * 0.5);
 `
-Object.assign(Layout, {
+
+const FinalExport = Object.assign(Layout, {
     Pusher,
 })
-export default Layout
+export default FinalExport

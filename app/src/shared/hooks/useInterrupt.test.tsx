@@ -94,7 +94,7 @@ describe('useInterrupt', () => {
             const onSuccess = jest.fn()
             const onError = jest.fn()
 
-            function TestComponent({ cacheKey }) {
+            function TestComponent({ cacheKey = 'default' }) {
                 const itp = useInterrupt()
                 const onClick = useCallback(
                     async (id) => {

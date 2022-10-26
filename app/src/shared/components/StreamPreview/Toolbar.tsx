@@ -69,6 +69,17 @@ const IfEnoughRoom = styled.div`
     }
 `
 
+type Props = {
+    className?: string,
+    onPartitionChange: (partition: number) => void,
+    onSettingsButtonClick: (streamId: string) => void,
+    onStreamChange: () => void,
+    partition: number,
+    partitions: Array<any>,
+    streamId: string,
+    streamIds: Array<string>,
+}
+
 const UnstyledToolbar = ({
     className,
     onPartitionChange,
@@ -78,7 +89,7 @@ const UnstyledToolbar = ({
     partitions = [],
     streamId,
     streamIds = [streamId],
-}) => {
+}: Props) => {
     const { copy, isCopied } = useCopy()
     return (
         <div className={className}>

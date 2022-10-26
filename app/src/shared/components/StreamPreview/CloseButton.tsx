@@ -25,7 +25,7 @@ const Wrapper = styled.div`
         padding: 24px;
     }
 `
-Object.assign(CloseButton, {
+const FinalExport = Object.assign(CloseButton, {
     Wrapper,
 })
-export default CloseButton
+export default FinalExport

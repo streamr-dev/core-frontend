@@ -1,5 +1,8 @@
 import { createContext, useContext } from 'react'
-const StreamSetterContext = createContext(() => {})
+
+type StreamSetterContextProps = React.Dispatch<(prevState: any) => any>
+
+const StreamSetterContext = createContext<StreamSetterContextProps>(() => {})
 export function useStreamSetter() {
     return useContext(StreamSetterContext)
 }

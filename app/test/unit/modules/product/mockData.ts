@@ -22,7 +22,7 @@ export const existingProduct: Product = {
     thumbnailUrl: 'https://images.pexels.com/photos/744515/pexels-photo-744515.jpeg?h=210',
     chain: '',
     pricingTokenAddress: '',
-    pricingTokenDecimals: new BN(10),
+    pricingTokenDecimals: 10,
     contact: null,
     termsOfUse: {
         commercialUse: true,

@@ -1,5 +1,5 @@
 import EventEmitter from 'events'
-import DataUnionClient from '@dataunions/client'
+import DataUnionClient, { ContractReceipt } from '@dataunions/client'
 import BN from 'bignumber.js'
 import { hexToNumber } from 'web3-utils'
 import getClientConfig from '$app/src/getters/getClientConfig'
@@ -182,19 +182,19 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
     return tx
 }
 
-export const addMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
+export const addMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]): Promise<ContractReceipt> => {
     const dataUnion = await getDataUnionObject(id, chainId)
     const receipt = await dataUnion.addMembers(memberAddresses)
     return receipt
 }
 
-export const removeMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]) => {
+export const removeMembers = async (id: DataUnionId, chainId: number, memberAddresses: string[]): Promise<ContractReceipt> => {
     const dataUnion = await getDataUnionObject(id, chainId)
     const receipt = await dataUnion.removeMembers(memberAddresses)
     return receipt
 }
 
-export const getDataUnionStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp: ?number): Promise<Array<any>> => {
+export const getDataUnionStatistics = async (id: DataUnionId, chainId: number, fromTimestamp: number, toTimestamp?: number): Promise<Array<any>> => {
     const theGraphUrl = getDataunionSubgraphUrlForChain(chainId)
     const accuracy = 'HOUR' // HOUR or DAY
 
@@ -298,7 +298,7 @@ export async function getSelectedMemberStatuses(id: DataUnionId, members: Array<
     return statuses
 }
 
-async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>, chainId: number): Generator {
+async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<string>, chainId: number): AsyncGenerator {
     const client = createClient(chainId)
 
     /* eslint-disable no-restricted-syntax, no-await-in-loop */
@@ -310,11 +310,11 @@ async function* getMemberStatusesWithClient(id: DataUnionId, members: Array<stri
     /* eslint-enable no-restricted-syntax, no-await-in-loop */
 }
 
-export async function* getMemberStatusesFromTheGraph(id: DataUnionId, chainId: number): Generator {
+export async function* getMemberStatusesFromTheGraph(id: DataUnionId, chainId: number): AsyncGenerator {
     const members = await getDataUnionMembers(id, chainId)
     yield* getMemberStatusesWithClient(id, members, chainId)
 }
-export async function* getMemberStatuses(id: DataUnionId, chainId: number): Generator {
+export async function* getMemberStatuses(id: DataUnionId, chainId: number): AsyncGenerator {
     yield* getMemberStatusesFromTheGraph(id, chainId)
 }
 // ----------------------

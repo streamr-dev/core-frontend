@@ -1,10 +1,10 @@
-import type { Node } from 'react'
 import React from 'react'
 import styled, { keyframes, css } from 'styled-components'
+
 type Props = {
-    children?: Node
+    children?: React.ReactNode
     disabled?: boolean
-    width: any
+    width?: any
     block?: boolean
 }
 
@@ -20,6 +20,8 @@ const animation = keyframes`
         background-position: calc(200px + 100%) 0;
     }
 `
+
+// @ts-ignore: No idea what is wrong with this
 const Skeleton = styled(UnstyledSkeleton)`
     animation: ${animation} 1.2s ease-in-out infinite;
     background-color: #eeeeee;

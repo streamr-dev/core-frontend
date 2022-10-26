@@ -3,6 +3,13 @@ import { useSubscription } from 'streamr-client-react'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { Message } from '$shared/utils/SubscriptionEvents'
 
+type Params = {
+    partition?: number,
+    activeFn?: () => boolean,
+    onError?: () => void,
+    tail?: number,
+}
+
 function getEmptyData() {
     return []
 }
@@ -12,9 +19,14 @@ function areMessagesSame(a, b) {
 } // eslint-disable-next-line max-len
 
 export default function useStreamData(
-    streamId,
-    { partition = 0, activeFn: activeFnProp, onError: onErrorProp, tail = Number.POSITIVE_INFINITY } = {},
-) {
+    streamId: string,
+    {
+        partition = 0,
+        activeFn: activeFnProp,
+        onError: onErrorProp,
+        tail = Number.POSITIVE_INFINITY,
+    }: Params = {},
+): Array<any> {
     const isMounted = useIsMounted()
     const cacheRef = useRef(getEmptyData())
     const [data, setData] = useState(getEmptyData())
