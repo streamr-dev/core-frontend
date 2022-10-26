@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
+import { useDebouncedCallback } from 'use-debounce'
 import Button from '$shared/components/Button'
 import { MEDIUM } from '$shared/utils/styled'
 import { truncate } from '$shared/utils/text'
@@ -8,7 +9,6 @@ import Text from '$ui/Text'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledLoadingIndicator from '$shared/components/LoadingIndicator'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { useDebounced } from '$shared/hooks/wrapCallback'
 import useDataUnionMembers from '$mp/modules/dataUnion/hooks/useDataUnionMembers'
 import useAllDataUnionStats from '$mp/modules/dataUnion/hooks/useAllDataUnionStats'
 const Container = styled.div`
@@ -178,12 +178,8 @@ const ManageMembers = ({ dataUnion, dataUnionId, chainId, className }: Props) =>
             }
         }
         load()
-    // FIXME: Adding loadMembers as a dependency will cause an infinite update loop.
-    //        loadMembers somehow changes after loadMembers is called. This started to happen
-    //        after typescript conversion. Really weird.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dataUnionId, chainId])
-    const debouncedSetSearch = useDebounced(setSearch, 250)
+    }, [dataUnionId, chainId, loadMembers])
+    const debouncedSetSearch = useDebouncedCallback((value) => setSearch(value), 250)
     const onSearchChange = useCallback(
         (e) => {
             const search = e.target.value.trim()

@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useState, useContext, useRef, useEffect } from 'react'
+import { useThrottledCallback } from 'use-debounce'
 import useIsMounted from '$shared/hooks/useIsMounted'
-import { useThrottled } from '$shared/hooks/wrapCallback'
 import { getMemberStatuses, addMembers, removeMembers, searchDataUnionMembers, getSelectedMemberStatuses } from '../services'
 const DataUnionMembersContext = React.createContext({})
 const VISIBLE_MEMBERS_LIMIT = 100
@@ -11,12 +11,9 @@ function useDataUnionMembers() {
     const [members, setMembers] = useState([])
     const generator = useRef(null)
     const membersRef = useRef([])
-    const updateDataToState = useThrottled(
-        useCallback((data) => {
-            setMembers([...data.slice(0, VISIBLE_MEMBERS_LIMIT)])
-        }, []),
-        100,
-    )
+    const updateDataToState = useThrottledCallback((data) => {
+        setMembers([...data.slice(0, VISIBLE_MEMBERS_LIMIT)])
+    }, 100)
     const reset = useCallback(() => {
         setMembers([])
         membersRef.current = []

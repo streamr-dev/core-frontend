@@ -2,6 +2,7 @@ import { $Values, $ElementType } from 'utility-types'
 import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import BN from 'bignumber.js'
 import cx from 'classnames'
+import { useDebouncedCallback } from 'use-debounce'
 import Buttons from '$shared/components/Buttons'
 import Text from '$ui/Text'
 import LoadingIndicator from '$shared/components/LoadingIndicator'
@@ -14,7 +15,6 @@ import type { PaymentCurrency, NumberString, TimeUnit } from '$shared/types/comm
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import Errors, { MarketplaceTheme } from '$ui/Errors'
-import { useDebounced } from '$shared/hooks/wrapCallback'
 import { getUsdRate } from '$shared/utils/coingecko'
 import { fromDecimals } from '$mp/utils/math'
 import CurrencySelector from './CurrencySelector'
@@ -104,32 +104,26 @@ export const ChooseAccessPeriodDialog = ({
 
         return true
     }, [paymentCurrency, priceInUsd, currentPrice])
-    const setExternalPrices = useDebounced(
-        useCallback(
-            async ({ priceInToken: inToken, priceInUsd: inUsd, paymentCurrency: currency }) => {
-                setLoading(true)
-                let price
-                let usdEstimate
+    const setExternalPrices = useDebouncedCallback(async ({ priceInToken: inToken, priceInUsd: inUsd, paymentCurrency: currency }) => {
+        setLoading(true)
+        let price
+        let usdEstimate
 
-                if (currency === paymentCurrencies.NATIVE) {
-                    price = await uniswapDATAtoETH(inToken.toString(), true)
-                    usdEstimate = await uniswapETHtoDATA(price.toString(), true)
-                } else if (currency === paymentCurrencies.DAI) {
-                    price = await uniswapDATAtoDAI(inToken.toString(), true)
-                    usdEstimate = price
-                } else {
-                    price = inToken
-                    usdEstimate = inUsd
-                }
+        if (currency === paymentCurrencies.NATIVE) {
+            price = await uniswapDATAtoETH(inToken.toString(), true)
+            usdEstimate = await uniswapETHtoDATA(price.toString(), true)
+        } else if (currency === paymentCurrencies.DAI) {
+            price = await uniswapDATAtoDAI(inToken.toString(), true)
+            usdEstimate = price
+        } else {
+            price = inToken
+            usdEstimate = inUsd
+        }
 
-                setCurrentPrice(fromDecimals(price, pricingTokenDecimals))
-                setApproxUsd(usdEstimate)
-                setLoading(false)
-            },
-            [pricingTokenDecimals],
-        ),
-        250,
-    )
+        setCurrentPrice(fromDecimals(price, pricingTokenDecimals))
+        setApproxUsd(usdEstimate)
+        setLoading(false)
+    }, 250)
     const displayPrice = useMemo(() => (BN(currentPrice).isNaN() ? 'N/A' : BN(currentPrice).toFixed(2)), [currentPrice])
     const displayApproxUsd = useMemo(() => (BN(approxUsd).isNaN() ? 'N/A' : BN(approxUsd).toFixed(2)), [approxUsd])
     useEffect(() => {

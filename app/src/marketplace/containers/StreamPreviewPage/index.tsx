@@ -2,11 +2,11 @@ import React, { useEffect, useCallback, useMemo, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import { useClient, useSubscription } from 'streamr-client-react'
+import { useThrottledCallback } from 'use-debounce'
 import usePending from '$shared/hooks/usePending'
 import ModalPortal from '$shared/components/ModalPortal'
 import ModalDialog from '$shared/components/ModalDialog'
 import StreamPreview from '$shared/components/StreamPreview'
-import { useThrottled } from '$shared/hooks/wrapCallback'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import { Message } from '$shared/utils/SubscriptionEvents'
 import { selectUserData } from '$shared/modules/user/selectors'
@@ -36,12 +36,9 @@ const PreviewModalWithSubscription = ({ streamId, stream, ...previewProps }) => 
     const isMounted = useIsMounted()
     const [activePartition, setActivePartition] = useState(0)
     const [subscribed, setSubscribed] = useState(false)
-    const updateDataToState = useThrottled(
-        useCallback((data) => {
-            setVisibleData([...data])
-        }, []),
-        100,
-    )
+    const updateDataToState = useThrottledCallback((data) => {
+        setVisibleData([...data])
+    }, 100)
     const onError = useCallback(() => {
         if (isMounted()) {
             setDataError(true)

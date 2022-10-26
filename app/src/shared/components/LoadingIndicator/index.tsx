@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, FunctionComponent } from 'react'
 import cx from 'classnames'
 import { useTransition, animated } from 'react-spring'
-import { useDebounced } from '$shared/hooks/wrapCallback'
+import { useDebouncedCallback } from 'use-debounce'
 import styles from './loadingIndicator.pcss'
 type Props = {
     loading?: boolean
@@ -12,12 +12,7 @@ const LoadingIndicator: FunctionComponent<Props> = ({ loading: loadingProp, clas
     const isLoading = !!loadingProp
     const [loadingState, setLoadingState] = useState<boolean>(isLoading)
     // debounce loading flag changes to avoid flickering loading indicator
-    const updateLoading = useDebounced(
-        useCallback((value: boolean) => {
-            setLoadingState(value)
-        }, []),
-        1000,
-    )
+    const updateLoading = useDebouncedCallback((value) => setLoadingState(value), 1000)
     useEffect(() => {
         updateLoading(isLoading)
     }, [isLoading, setLoadingState, updateLoading])
