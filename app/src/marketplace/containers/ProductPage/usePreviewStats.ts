@@ -63,7 +63,18 @@ const handlers = {
 const reducer = (state, action) =>
     typeof handlers[action.type] === 'function' ? handlers[action.type](state, action) : state
 
-function usePreviewStats({ subscriberCount, adminFee, created, totalEarnings, memberCount } = {}) {
+type Props = {
+    subscriberCount?: number,
+    adminFee?: string,
+    created?: string,
+    totalEarnings?: string,
+    memberCount?: {
+        total: number,
+        active: number,
+    },
+}
+
+function usePreviewStats({ subscriberCount, adminFee, created, totalEarnings, memberCount }: Props = {}) {
     const [stats, updateStats] = useReducer(reducer, initialStats)
     const { total: totalMembers, active: activeMembers } = memberCount || {}
     const statsArray = useMemo(() => Object.keys(stats).map((key) => ({ ...stats[key], id: key })), [stats])

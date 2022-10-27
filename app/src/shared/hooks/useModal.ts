@@ -1,13 +1,24 @@
 import { useContext, useMemo } from 'react'
 import { Context as ModalContext } from '$shared/contexts/ModalApi'
-export default function useModal(modalId: string) {
+
+type ModalResult = {
+    modalId: string,
+    isOpen: boolean,
+    api: {
+        open: (value?: object) => Promise<any>,
+        close: (value) => void,
+    },
+    value: any,
+}
+
+export default function useModal(modalId: string): ModalResult {
     const { modals, openModal, closeModal } = useContext(ModalContext)
     const isOpen = !!modals[modalId]
     const value = isOpen && modals[modalId].value
     const api = useMemo(
         () => ({
-            open: openModal.bind(null, modalId),
-            close: closeModal.bind(null, modalId),
+            open: (values?: object) => openModal(modalId, values),
+            close: (values: object) => closeModal(modalId, values),
         }),
         [openModal, closeModal, modalId],
     )

@@ -29,7 +29,7 @@ export const PENDING_CHANGE_FIELDS = [
     'requiresWhitelist',
     'pricingTokenAddress',
 ]
-export function isPublished(product: Product) {
+export function isPublished(product: Product): boolean {
     const { state } = product || {}
     return !!(state === productStates.DEPLOYED || state === productStates.DEPLOYING)
 }

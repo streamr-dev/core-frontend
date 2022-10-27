@@ -87,20 +87,15 @@ export const send = (
                 .on('error', (error: Error | TransactionReceipt) => {
                     if (error instanceof Error) {
                         errorHandler(error)
-
                     } else {
-
-                        errorHandler(new TransactionError('smart contract error', error))
+                        errorHandler(new TransactionError('Transaction error', error))
                     }
                 })
                 .on('transactionHash', (hash) => {
                     emitter.emit('transactionHash', hash)
                 })
-                .on('receipt', (receipt: TransactionReceipt) => {
-                    // TODO check if this is valid - before it was something that didn't make
-                    // any sense from typing point of view: if (parseInt(receipt.status, 16) === 0) {
-                    // receipt.status is a boolean !
-                    if (receipt.gasUsed === 0) {
+                .once('receipt', (receipt: TransactionReceipt) => {
+                    if (!receipt.status) {
                         errorHandler(new TransactionError('Transaction failed', receipt))
                     } else {
                         emitter.emit('receipt', receipt)

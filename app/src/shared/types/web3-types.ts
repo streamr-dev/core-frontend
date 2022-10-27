@@ -1,14 +1,12 @@
 import { AbiItem } from 'web3-utils'
+import { TransactionReceipt } from 'web3-core'
 import type Transaction from '$shared/utils/Transaction'
 import type TransactionError from '$shared/errors/TransactionError'
 import type { ProductId } from '$mp/types/product-types'
 import type { NumberString, TransactionState, TransactionType } from './common-types'
 export type Hash = string
 export type Address = string
-export type Receipt = {
-    transactionHash: Hash
-    contractAddress?: Address
-}
+export type Receipt = TransactionReceipt
 export type Abi = Array<AbiItem>
 
 export type EthereumNetwork = {

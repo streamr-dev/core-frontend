@@ -17,7 +17,7 @@ type Web3Status = {
     requireWeb3: boolean
     requireNetwork?: number
 }
-export default function useWeb3Status({ requireWeb3 = true, requireNetwork }: Web3Status = {}): Result {
+export default function useWeb3Status({ requireWeb3 = true, requireNetwork }: Web3Status): Result {
     const [web3Error, setWeb3Error] = useState(null)
     const [checkingWeb3, setCheckingWeb3] = useState(false)
     const isMounted = useIsMounted()

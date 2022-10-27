@@ -1,11 +1,10 @@
-import type { Node } from 'react'
 import React from 'react'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
 import PngIcon from '$shared/components/PngIcon'
 export type Props = {
     title?: string
-    message?: Node
+    message?: React.ReactNode
     waiting?: boolean
     onClose: () => void
 }

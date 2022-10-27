@@ -11,8 +11,9 @@ jest.mock('$utils/web3/validateWeb3', () => ({
     default: jest.fn(),
 }))
 
-function mockValidateWeb3(value) {
-    return validateWeb3.mockImplementation(value)
+function mockValidateWeb3(value?: any) {
+    const validateWeb3Mock = validateWeb3 as jest.Mock
+    return validateWeb3Mock.mockImplementation(value)
 }
 
 jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
@@ -21,15 +22,17 @@ jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
 }))
 
 function mockDefaultAccount(defaultAccount) {
-    return getDefaultWeb3Account.mockImplementation(() => Promise.resolve(defaultAccount))
+    const getDefaultWeb3AccountMock = getDefaultWeb3Account as jest.Mock
+    return getDefaultWeb3AccountMock.mockImplementation(() => Promise.resolve(defaultAccount))
 }
 
 describe('useWeb3Status', () => {
     afterEach(() => {
         jest.clearAllMocks()
-        jest.restoreAllMocks()
-        getDefaultWeb3Account.mockReset()
-        validateWeb3.mockReset()
+        jest.restoreAllMocks();
+        (getDefaultWeb3Account as jest.Mock).mockReset()
+        const validateMock = validateWeb3 as jest.Mock
+        validateMock.mockReset()
     })
     it('does nothing if requireWeb3 parameter is false', () => {
         let result
@@ -51,7 +54,9 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
@@ -70,7 +75,9 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
@@ -93,11 +100,13 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
-        const stub = getDefaultWeb3Account.mockImplementation(() => Promise.reject(new Error('no account')))
+        const stub = (getDefaultWeb3Account as jest.Mock).mockImplementation(() => Promise.reject(new Error('no account')))
         const validateWeb3Stub = mockValidateWeb3(() => {})
         await act(async () => {
             mount(<Test />)
@@ -114,7 +123,9 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
@@ -134,7 +145,9 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
@@ -165,7 +178,9 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
@@ -203,7 +218,9 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
@@ -232,7 +249,7 @@ describe('useWeb3Status', () => {
     it('subscribes to listen to account error when an account is received', async () => {
         const account = '0x123'
         mockDefaultAccount(account)
-        mockValidateWeb3()
+        mockValidateWeb3(() => {})
         const handlers = {}
         const subscribeStub = jest.spyOn(Web3Poller, 'subscribe').mockImplementation((event, handler) => {
             handlers[event] = handler
@@ -240,7 +257,9 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
@@ -264,7 +283,9 @@ describe('useWeb3Status', () => {
         let result
 
         const Test = () => {
-            result = useWeb3Status()
+            result = useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 
@@ -293,7 +314,9 @@ describe('useWeb3Status', () => {
         })
 
         const Test = () => {
-            useWeb3Status()
+            useWeb3Status({
+                requireWeb3: true,
+            })
             return null
         }
 

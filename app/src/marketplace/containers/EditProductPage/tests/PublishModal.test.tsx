@@ -29,6 +29,8 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
+                requireWeb3: true,
+                isLocked: false,
             }))
             const error = new Error('product fetch failed')
             jest.spyOn(productServices, 'getProductById').mockImplementation(() => {
@@ -41,7 +43,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -55,12 +57,14 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'NOT_DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(1),
+                pricePerSecond: new BN(1),
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 chain: 'ETHEREUM',
@@ -88,7 +92,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -106,17 +110,19 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: true,
                 account: null,
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'NOT_DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(1),
+                pricePerSecond: '1',
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 chain: 'ETHEREUM',
             }
-            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product as any))
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
@@ -133,7 +139,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -148,17 +154,19 @@ describe('Publish modal', () => {
                 web3Error: error,
                 checkingWeb3: false,
                 account: null,
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'NOT_DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(1),
+                pricePerSecond: '1',
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 chain: 'ETHEREUM',
             }
-            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product as any))
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() => {
                 throw new Error('no contract product')
             })
@@ -175,7 +183,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -192,6 +200,8 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
@@ -221,7 +231,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -238,27 +248,29 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'NOT_DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(2),
+                pricePerSecond: '2',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
                 chain: 'ETHEREUM',
             }
-            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product as any))
             const contractProduct = {
                 id: '1',
-                pricePerSecond: BN(1),
+                pricePerSecond: new BN(1),
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
             }
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                Promise.resolve(contractProduct),
+                Promise.resolve(contractProduct as any),
             )
             jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
@@ -273,7 +285,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -286,27 +298,29 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'NOT_DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(2),
+                pricePerSecond: '2',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
                 chain: 'ETHEREUM',
             }
-            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product as any))
             const contractProduct = {
                 id: '1',
-                pricePerSecond: BN(1),
+                pricePerSecond: new BN(1),
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
             }
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                Promise.resolve(contractProduct),
+                Promise.resolve(contractProduct as any),
             )
             jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
@@ -321,7 +335,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -335,27 +349,29 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'NOT_DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(2),
+                pricePerSecond: '2',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
                 chain: 'ETHEREUM',
             }
-            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product as any))
             const contractProduct = {
                 id: '1',
-                pricePerSecond: BN(1),
+                pricePerSecond: new BN(1),
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                 priceCurrency: 'DATA',
                 minimumSubscriptionInSeconds: '0',
             }
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                Promise.resolve(contractProduct),
+                Promise.resolve(contractProduct as any),
             )
             jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
@@ -370,7 +386,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -386,6 +402,8 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: null,
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
@@ -415,7 +433,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -432,27 +450,29 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(2),
+                pricePerSecond: '2',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
                 chain: 'ETHEREUM',
             }
-            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product as any))
             const contractProduct = {
                 id: '1',
                 state: 'DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(2),
+                pricePerSecond: new BN(2),
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
             }
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                Promise.resolve(contractProduct),
+                Promise.resolve(contractProduct as any),
             )
             jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
@@ -467,7 +487,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -480,23 +500,25 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: undefined,
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(2),
+                pricePerSecond: '2',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
                 chain: 'ETHEREUM',
             }
-            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product as any))
             const contractProduct = {
                 id: '1',
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
             }
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                Promise.resolve(contractProduct),
+                Promise.resolve(contractProduct as any),
             )
             jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
@@ -511,7 +533,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )
@@ -525,23 +547,25 @@ describe('Publish modal', () => {
                 web3Error: undefined,
                 checkingWeb3: false,
                 account: '0x13581255eE2D20e780B0cD3D07fac018241B5E03',
+                requireWeb3: true,
+                isLocked: false,
             }))
             const product = {
                 id: '1',
                 state: 'DEPLOYED',
                 isFree: false,
-                pricePerSecond: BN(2),
+                pricePerSecond: '2',
                 beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                 priceCurrency: 'EUR',
                 chain: 'ETHEREUM',
             }
-            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product))
+            jest.spyOn(productServices, 'getProductById').mockImplementation(() => Promise.resolve(product as any))
             const contractProduct = {
                 id: '1',
                 ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
             }
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                Promise.resolve(contractProduct),
+                Promise.resolve(contractProduct as any),
             )
             jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => {
                 throw new Error('no admin fee')
@@ -556,7 +580,7 @@ describe('Publish modal', () => {
                         product={{
                             id: '1',
                             chain: 'ETHEREUM',
-                        }}
+                        } as any}
                         api={{}}
                     />,
                 )

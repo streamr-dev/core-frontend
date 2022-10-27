@@ -24,7 +24,7 @@ function Unmounter({ children, unmountAfter }) {
 }
 
 describe('usePending', () => {
-    it('is pending while waiting for wrapped function', async (done) => {
+    it('is pending while waiting for wrapped function', async () => {
         let currentPendingState
         const timeout = 50
         const fn = jest.fn()
@@ -58,9 +58,8 @@ describe('usePending', () => {
             expect(fn).toHaveBeenCalledTimes(1)
             result.unmount()
         })
-        done()
     })
-    it('can call wrapped function multiple times, will wait for all to complete', async (done) => {
+    it('can call wrapped function multiple times, will wait for all to complete', async () => {
         let currentPendingState
         const timeout = 100
         const started = jest.fn()
@@ -99,17 +98,16 @@ describe('usePending', () => {
             expect(ended).toHaveBeenCalledTimes(2)
             result.unmount()
         })
-        done()
     })
-    it('can detect any pending', async (done) => {
+    it('can detect any pending', async () => {
         let currentPendingContext
         const timeout = 100
 
-        function Test({ name }) {
+        function Test({ name, timeout }) {
             const { wrap } = usePending(name)
             useEffect(() => {
                 wrap(() => wait(timeout))
-            }, [wrap])
+            }, [wrap, timeout])
             return null
         }
 
@@ -135,9 +133,8 @@ describe('usePending', () => {
             expect(currentPendingContext.isPending).not.toBeTruthy()
             result.unmount()
         })
-        done()
     })
-    it('can handle pending item unmounting', async (done) => {
+    it('can handle pending item unmounting', async () => {
         let currentPendingContext
         const timeout = 100
         const unmountTime = timeout * 0.5
@@ -173,9 +170,8 @@ describe('usePending', () => {
             expect(currentPendingContext.isPending).not.toBeTruthy()
             result.unmount()
         })
-        done()
     })
-    it('works with nested contexts', async (done) => {
+    it('works with nested contexts', async () => {
         let currentPendingContext
         const maxTimeout = 100
 
@@ -211,6 +207,5 @@ describe('usePending', () => {
             expect(currentPendingContext.isPending).not.toBeTruthy()
             result.unmount()
         })
-        done()
     })
 })

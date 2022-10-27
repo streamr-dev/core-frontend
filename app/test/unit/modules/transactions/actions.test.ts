@@ -89,7 +89,7 @@ describe('transactions - actions', () => {
             const txHash = 'hash'
             const receipt = 'receipt'
             const store = mockStore()
-            actions.completeTransaction(txHash, {transactionHash: receipt})(store.dispatch)
+            actions.completeTransaction(txHash, {transactionHash: receipt} as any)(store.dispatch)
             const expectedActions = [
                 {
                     type: 'updateEntities',

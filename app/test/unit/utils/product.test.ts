@@ -7,14 +7,14 @@ describe('product utils', () => {
             const product = {
                 isFree: true,
                 pricePerSecond: 0,
-            }
+            } as any
             expect(all.isPaidProduct(product)).toBe(false)
         })
         it('detects a paid product', () => {
             const product = {
                 isFree: false,
                 pricePerSecond: 1000,
-            }
+            } as any
             expect(all.isPaidProduct(product)).toBe(true)
         })
     })
@@ -23,16 +23,16 @@ describe('product utils', () => {
             const product1 = {
                 id: 'text',
                 type: 'DATAUNION',
-            }
+            } as any
             expect(all.isDataUnionProduct(product1)).toBe(true)
             const product2 = {
                 id: 'text',
                 type: 'NORMAL',
-            }
+            } as any
             expect(all.isDataUnionProduct(product2)).toBe(false)
         })
         it('detects data union product from empty object', () => {
-            expect(all.isDataUnionProduct({})).toBe(false)
+            expect(all.isDataUnionProduct({} as any)).toBe(false)
         })
         it('detects data union product from value', () => {
             expect(all.isDataUnionProduct('DATAUNION')).toBe(true)
@@ -60,50 +60,50 @@ describe('product utils', () => {
             expect(() => all.validateApiProductPricePerSecond('0')).not.toThrow()
             expect(() => all.validateApiProductPricePerSecond('1')).not.toThrow()
             expect(() => all.validateApiProductPricePerSecond('0,00045')).not.toThrow()
-            expect(() => all.validateApiProductPricePerSecond(BN(0.000001231355))).not.toThrow()
+            expect(() => all.validateApiProductPricePerSecond(new BN(0.000001231355))).not.toThrow()
         })
         it('detects an invalid PPS', () => {
             expect(() => all.validateApiProductPricePerSecond('-1')).toThrow()
-            expect(() => all.validateApiProductPricePerSecond(BN(-0.000001231355))).toThrow()
+            expect(() => all.validateApiProductPricePerSecond(new BN(-0.000001231355))).toThrow()
         })
     })
     describe('validateContractProductPricePerSecond', () => {
         it('detects a valid PPS', () => {
             expect(() => all.validateContractProductPricePerSecond('1')).not.toThrow()
             expect(() => all.validateContractProductPricePerSecond('0,000125')).not.toThrow()
-            expect(() => all.validateContractProductPricePerSecond(BN(0.000001231355))).not.toThrow()
+            expect(() => all.validateContractProductPricePerSecond(new BN(0.000001231355))).not.toThrow()
         })
         it('detects an invalid PPS', () => {
             expect(() => all.validateContractProductPricePerSecond('0')).toThrow()
             expect(() => all.validateContractProductPricePerSecond('-0.0001')).toThrow()
-            expect(() => all.validateContractProductPricePerSecond(BN(-0.000001231355))).toThrow()
+            expect(() => all.validateContractProductPricePerSecond(new BN(-0.000001231355))).toThrow()
         })
     })
     describe('mapPriceFromContract', () => {
         it('converts the price', () => {
-            expect(all.mapPriceFromContract('0,0000013314', 18)).toBe('NaN')
-            expect(all.mapPriceFromContract('asdfasdf', 18)).toBe('NaN')
-            expect(all.mapPriceFromContract('0', 18)).toBe('0')
-            expect(all.mapPriceFromContract('1000000000000000000', 18)).toBe('1')
-            expect(all.mapPriceFromContract('1', 18)).toBe('1e-18')
-            expect(all.mapPriceFromContract('-1', 18)).toBe('-1e-18')
+            expect(all.mapPriceFromContract('0,0000013314', new BN(18))).toBe('NaN')
+            expect(all.mapPriceFromContract('asdfasdf', new BN(18))).toBe('NaN')
+            expect(all.mapPriceFromContract('0', new BN(18))).toBe('0')
+            expect(all.mapPriceFromContract('1000000000000000000', new BN(18))).toBe('1')
+            expect(all.mapPriceFromContract('1', new BN(18))).toBe('1e-18')
+            expect(all.mapPriceFromContract('-1', new BN(18))).toBe('-1e-18')
         })
     })
     describe('mapPriceToContract', () => {
         it('converts the price', () => {
-            expect(all.mapPriceToContract('0,0000013314', 18)).toBe('NaN')
-            expect(all.mapPriceToContract('asdfasdf', 18)).toBe('NaN')
-            expect(all.mapPriceToContract('0', 18)).toBe('0')
-            expect(all.mapPriceToContract('1', 18)).toBe('1000000000000000000')
-            expect(all.mapPriceToContract('1e-18', 18)).toBe('1')
-            expect(all.mapPriceToContract('-1e-18', 18)).toBe('-1')
-            expect(all.mapPriceToContract('0.0000000000000000001', 18)).toBe('0')
-            expect(all.mapPriceToContract('0.00000000000000000049', 18)).toBe('0')
-            expect(all.mapPriceToContract('0.00000000000000000051', 18)).toBe('1')
-            expect(all.mapPriceToContract('66666666666666.00000000000123456789', 18)).toBe(
+            expect(all.mapPriceToContract('0,0000013314', new BN(18))).toBe('NaN')
+            expect(all.mapPriceToContract('asdfasdf', new BN(18))).toBe('NaN')
+            expect(all.mapPriceToContract('0', new BN(18))).toBe('0')
+            expect(all.mapPriceToContract('1', new BN(18))).toBe('1000000000000000000')
+            expect(all.mapPriceToContract('1e-18', new BN(18))).toBe('1')
+            expect(all.mapPriceToContract('-1e-18', new BN(18))).toBe('-1')
+            expect(all.mapPriceToContract('0.0000000000000000001', new BN(18))).toBe('0')
+            expect(all.mapPriceToContract('0.00000000000000000049', new BN(18))).toBe('0')
+            expect(all.mapPriceToContract('0.00000000000000000051', new BN(18))).toBe('1')
+            expect(all.mapPriceToContract('66666666666666.00000000000123456789', new BN(18))).toBe(
                 '66666666666666000000000001234568',
             )
-            expect(all.mapPriceToContract('66666666666666.00000000000123456749', 18)).toBe(
+            expect(all.mapPriceToContract('66666666666666.00000000000123456749', new BN(18))).toBe(
                 '66666666666666000000000001234567',
             )
         })
@@ -113,11 +113,11 @@ describe('product utils', () => {
             const inProduct = {
                 name: 'test',
                 pricePerSecond: '1',
-            }
+            } as any
             const outProduct = {
                 name: 'test',
                 pricePerSecond: '1',
-            }
+            } as any
             expect(all.mapProductFromApi(inProduct)).toStrictEqual(outProduct)
         })
     })
@@ -127,12 +127,12 @@ describe('product utils', () => {
                 name: 'test',
                 pricePerSecond: '1',
                 priceCurrency: 'DATA',
-            }
+            } as any
             const outProduct = {
                 name: 'test',
                 pricePerSecond: '1',
                 priceCurrency: 'DATA',
-            }
+            } as any
             expect(all.mapProductToPostApi(inProduct)).toStrictEqual(outProduct)
         })
         it('rejects invalid objects', () => {
@@ -140,7 +140,7 @@ describe('product utils', () => {
                 name: 'test',
                 pricePerSecond: 1,
                 priceCurrency: 'EUR',
-            }
+            } as any
             expect(() => all.mapProductToPostApi(inProduct)).toThrow()
         })
     })
@@ -152,7 +152,7 @@ describe('product utils', () => {
                 description: 'My nice product',
                 pricePerSecond: '0',
                 state: productStates.DEPLOYED,
-            }
+            } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
                 name: 'My Product',
@@ -170,7 +170,7 @@ describe('product utils', () => {
                 beneficiaryAddress: '0x12334',
                 isFree: false,
                 state: productStates.NOT_DEPLOYED,
-            }
+            } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
                 name: 'My Product',
@@ -190,7 +190,7 @@ describe('product utils', () => {
                 pendingChanges: {
                     name: 'Better name',
                 },
-            }
+            } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
                 name: 'My Product',
@@ -212,7 +212,7 @@ describe('product utils', () => {
                 priceCurrency: 'USD',
                 minimumSubscriptionInSeconds: 0,
                 state: productStates.DEPLOYED,
-            }
+            } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
                 name: 'My Product',
@@ -234,7 +234,7 @@ describe('product utils', () => {
                 pendingChanges: {
                     name: 'Better name',
                 },
-            }
+            } as any
             expect(all.mapProductToPutApi(product)).toMatchObject({
                 id: '1',
                 name: 'My Product',
@@ -259,7 +259,7 @@ describe('product utils', () => {
                 state: 0,
                 requiresWhitelist: true,
                 pricingTokenAddress: '0x1337',
-            }
+            } as any
             const outProduct = {
                 id: 1,
                 name: 'test',
@@ -267,32 +267,32 @@ describe('product utils', () => {
                 pricePerSecond: '1',
                 ownerAddress: '0x123',
                 beneficiaryAddress: '0x1337',
-                priceCurrency: 'DATA',
                 state: 'NOT_DEPLOYED',
                 requiresWhitelist: true,
                 pricingTokenAddress: '0x1337',
+                pricingTokenDecimals: 18,
                 chainId: 1337,
             }
-            expect(all.mapProductFromContract(inProduct.id, inProduct, 1337)).toMatchObject(outProduct)
+            expect(all.mapProductFromContract(inProduct.id, inProduct, 1337, new BN(18))).toMatchObject(outProduct)
         })
     })
     describe('isPublishedProduct', () => {
         it('returns status', () => {
             const prod1 = {
                 state: 'NOT_DEPLOYED',
-            }
+            } as any
             expect(all.isPublishedProduct(prod1)).toBe(false)
             const prod2 = {
                 state: 'DEPLOYED',
-            }
+            } as any
             expect(all.isPublishedProduct(prod2)).toBe(true)
             const prod3 = {
                 state: 'DEPLOYING',
-            }
+            } as any
             expect(all.isPublishedProduct(prod3)).toBe(false)
             const prod4 = {
                 state: 'UNDEPLOYING',
-            }
+            } as any
             expect(all.isPublishedProduct(prod4)).toBe(false)
         })
     })
@@ -329,7 +329,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'NORMAL',
                     isFree: true,
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -349,7 +349,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'DATAUNION',
                     isFree: true,
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -370,8 +370,7 @@ describe('product utils', () => {
                     {
                         type: 'DATAUNION',
                         isFree: true,
-                    },
-                    true,
+                    } as any,
                 ),
             ).toStrictEqual({
                 name: true,
@@ -392,7 +391,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'NORMAL',
                     isFree: false,
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -412,7 +411,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'DATAUNION',
                     isFree: false,
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -434,7 +433,7 @@ describe('product utils', () => {
                     name: 'new name',
                     description: 'new description',
                     category: 'new category',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: false,
                 description: false,
@@ -454,7 +453,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'NORMAL',
                     imageUrl: 'http://...',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -472,7 +471,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'NORMAL',
                     newImageToUpload: 'blob',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -492,7 +491,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'NORMAL',
                     streams: ['1', '2'],
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -512,7 +511,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'DATAUNION',
                     adminFee: 0.3,
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -530,7 +529,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'DATAUNION',
                     adminFee: 0,
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -548,7 +547,7 @@ describe('product utils', () => {
                 all.validate({
                     type: 'DATAUNION',
                     adminFee: 1.1,
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -569,7 +568,7 @@ describe('product utils', () => {
                     type: 'NORMAL',
                     isFree: false,
                     beneficiaryAddress: 'invalidAddress',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -588,7 +587,7 @@ describe('product utils', () => {
                     type: 'NORMAL',
                     isFree: false,
                     beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -610,7 +609,7 @@ describe('product utils', () => {
                     isFree: false,
                     pricePerSecond: '-10',
                     pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -630,7 +629,7 @@ describe('product utils', () => {
                     isFree: false,
                     pricePerSecond: '123',
                     pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -652,7 +651,7 @@ describe('product utils', () => {
                     isFree: false,
                     pricePerSecond: '123',
                     pricingTokenAddress: '0x1233',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,
@@ -672,7 +671,7 @@ describe('product utils', () => {
                     isFree: false,
                     pricePerSecond: '123',
                     pricingTokenAddress: '0xbAA81A0179015bE47Ad439566374F2Bae098686F',
-                }),
+                } as any),
             ).toStrictEqual({
                 name: true,
                 description: true,

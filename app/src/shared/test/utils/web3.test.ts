@@ -7,7 +7,8 @@ jest.mock('$utils/web3/getPublicWeb3', () => ({
 }))
 
 function mockPublicWeb3(publicWeb3) {
-    return getPublicWeb3.mockImplementation(() => publicWeb3)
+    const getPublicWeb3Mock = getPublicWeb3 as jest.Mock
+    return getPublicWeb3Mock.mockImplementation(() => publicWeb3)
 }
 
 jest.mock('$utils/web3/getChainId', () => ({
@@ -16,7 +17,8 @@ jest.mock('$utils/web3/getChainId', () => ({
 }))
 
 function mockChainId(chainId) {
-    return getChainId.mockImplementation(() => Promise.resolve(chainId))
+    const getChainIdMock = getChainId as jest.Mock
+    return getChainIdMock.mockImplementation(() => Promise.resolve(chainId))
 }
 
 describe('web3 utils', () => {
@@ -31,16 +33,14 @@ describe('web3 utils', () => {
                 network: 1,
             })
         })
-        it('must fail if required network is not the same as the actual network', async (done) => {
+        it('must fail if required network is not the same as the actual network', async () => {
             mockChainId('1')
 
-            try {
-                await all.checkEthereumNetworkIsCorrect({
-                    network: 2,
-                })
-            } catch (e) {
-                done()
-            }
+            await expect(all.checkEthereumNetworkIsCorrect({
+                network: 2,
+            }))
+                .rejects
+                .toThrow()
         })
         it('must resolve if required sidechain is the same as the actual network', async () => {
             mockChainId('8995')
@@ -48,16 +48,14 @@ describe('web3 utils', () => {
                 network: 8995,
             })
         })
-        it('must fail if required sidechain is not the same as the actual network', async (done) => {
+        it('must fail if required sidechain is not the same as the actual network', async () => {
             mockChainId('1')
 
-            try {
-                await all.checkEthereumNetworkIsCorrect({
-                    network: 8995,
-                })
-            } catch (e) {
-                done()
-            }
+            await expect(all.checkEthereumNetworkIsCorrect({
+                network: 8995,
+            }))
+                .rejects
+                .toThrow()
         })
     })
     describe('hasTransactionCompleted', () => {

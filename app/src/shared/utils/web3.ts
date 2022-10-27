@@ -7,10 +7,7 @@ import getChainId from '$utils/web3/getChainId'
 type CheckNetworkParams = {
     network?: number
 }
-// TODO check if it works. I removed the default value as it was pointing to UNDEFINED in my opinion
-// export const checkEthereumNetworkIsCorrect = async ({
-//     network = networks.MAINNET,
-// }: CheckNetworkParams = {}): Promise<void> = {
+
 export const checkEthereumNetworkIsCorrect = async ({
     network
 }: CheckNetworkParams = {}): Promise<void> => {

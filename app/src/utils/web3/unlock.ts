@@ -9,12 +9,18 @@ export default async function unlock({ timeoutAfter = Number.POSITIVE_INFINITY }
         throw new Web3NotEnabledError()
     }
 
+    if (typeof currentProvider === 'string') {
+        throw new Web3NotEnabledError()
+    }
+
+    const provider = currentProvider as any
+
     const promise =
-        typeof currentProvider.request === 'function' // `request(…)` is available since MetaMask v8.
-            ? currentProvider.request({
+        typeof provider.request === 'function' // `request(…)` is available since MetaMask v8.
+            ? provider.request({
                 method: 'eth_requestAccounts',
             }) // Fallback to `enable()`.
-            : currentProvider.enable()
+            : provider.enable()
 
     try {
         await Promise.race([

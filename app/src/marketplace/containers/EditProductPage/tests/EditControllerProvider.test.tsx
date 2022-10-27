@@ -3,18 +3,28 @@ import { mount } from 'enzyme'
 import { act } from 'react-dom/test-utils'
 import { Router, useLocation } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
+import { mock } from 'jest-mock-extended'
+
+import getConfig from '$app/src/getters/getConfig'
+
+jest.mock('$app/src/getters/getConfig', () => ({
+    __esModule: true,
+    default: jest.fn((obj: object) => obj),
+}))
+
 import Notification from '$shared/utils/Notification'
 import * as UndoContext from '$shared/contexts/Undo'
 import * as useModal from '$shared/hooks/useModal'
 import * as usePending from '$shared/hooks/usePending'
 import * as productServices from '$mp/modules/product/services'
 import * as useEditableState from '$shared/contexts/Undo/useEditableState'
-import * as sharedConstants from '$shared/utils/constants'
+
 import {
     Provider as ValidationContextProvider,
     Context as ValidationContext,
 } from '../../ProductController/ValidationContextProvider'
 import { Provider as EditControllerProvider, Context as EditControllerContext } from '../EditControllerProvider'
+
 const mockState = {
     product: {
         id: '1',
@@ -54,6 +64,12 @@ jest.mock('../../ProductController', () => ({
     }),
 }))
 describe('EditControllerProvider', () => {
+    let useModalMock = null
+    let usePendingMock = null
+    beforeEach(() => {
+        useModalMock = mock(useModal)
+        usePendingMock = mock(usePending)
+    })
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
@@ -73,9 +89,6 @@ describe('EditControllerProvider', () => {
                 id: '1',
             }
             const notificationStub = jest.spyOn(Notification, 'push')
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
             const history = createMemoryHistory()
             mount(
                 <Router history={history}>
@@ -97,8 +110,11 @@ describe('EditControllerProvider', () => {
             expect(notificationStub).toHaveBeenCalledTimes(5)
         })
         it('notifies if product fields are missing', async () => {
-            const oldLimit = sharedConstants.dataUnionMemberLimit
-            sharedConstants.dataUnionMemberLimit = 10
+            (getConfig as any).mockImplementation(() => ({
+                core: {
+                    dataUnionPublishMemberLimit: 10,
+                },
+            }))
             let currentContext
             let validationContext
 
@@ -123,9 +139,6 @@ describe('EditControllerProvider', () => {
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
             const notificationStub = jest.spyOn(Notification, 'push')
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
             const history = createMemoryHistory()
             mount(
                 <Router history={history}>
@@ -149,7 +162,6 @@ describe('EditControllerProvider', () => {
                 title: 'The minimum community size for a Data Union is ten members.',
                 icon: 'error',
             })
-            sharedConstants.dataUnionMemberLimit = oldLimit
         })
     })
     describe('back', () => {
@@ -167,9 +179,6 @@ describe('EditControllerProvider', () => {
                 id: '1',
                 name: 'name',
             }
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -204,17 +213,13 @@ describe('EditControllerProvider', () => {
                 id: '1',
                 name: 'name',
             }
-            const openStub = jest.fn(() =>
+            const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
                     save: false,
                     redirect: false,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: openStub,
-                },
-            }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -252,17 +257,13 @@ describe('EditControllerProvider', () => {
                 id: '1',
                 name: 'name',
             }
-            const openStub = jest.fn(() =>
+            const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
                     save: false,
                     redirect: true,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: openStub,
-                },
-            }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -300,26 +301,20 @@ describe('EditControllerProvider', () => {
                 id: '1',
                 name: 'name',
             }
-            const openStub = jest.fn(() =>
+            const modalOpenStub = jest.fn(() =>
                 Promise.resolve({
                     save: true,
                     redirect: true,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: openStub,
-                },
-            }))
-            jest.spyOn(usePending, 'default').mockImplementation(() => ({
-                wrap: async (fn) => {
-                    const result = await fn()
-                    return result
-                },
-            }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
+            usePendingMock.wrap.mockReturnValue(async (fn) => {
+                const result = await fn()
+                return result
+            })
             const putProductStub = jest
                 .spyOn(productServices, 'putProduct')
-                .mockImplementation(() => Promise.resolve({ ...product }))
+                .mockImplementation(() => Promise.resolve({ ...product as any }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -358,18 +353,13 @@ describe('EditControllerProvider', () => {
                 id: '1',
                 name: 'name',
             }
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
-            jest.spyOn(usePending, 'default').mockImplementation(() => ({
-                wrap: async (fn) => {
-                    const result = await fn()
-                    return result
-                },
-            }))
+            usePendingMock.wrap.mockReturnValue(async (fn) => {
+                const result = await fn()
+                return result
+            })
             const putProductStub = jest
                 .spyOn(productServices, 'putProduct')
-                .mockImplementation(() => Promise.resolve({ ...product }))
+                .mockImplementation(() => Promise.resolve({ ...product as any }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -404,28 +394,23 @@ describe('EditControllerProvider', () => {
                 name: 'name',
                 newImageToUpload: new File([''], 'filename'),
             }
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
-            jest.spyOn(usePending, 'default').mockImplementation(() => ({
-                wrap: async (fn) => {
-                    const result = await fn()
-                    return result
-                },
-            }))
+            usePendingMock.wrap.mockReturnValue(async (fn) => {
+                const result = await fn()
+                return result
+            })
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
                 replaceState: (fn) => replaceStateStub(fn(product)),
-            }))
+            } as any))
             const postImageStub = jest.spyOn(productServices, 'postImage').mockImplementation(() =>
                 Promise.resolve({
                     imageUrl: 'imageUrl',
                     thumbnailUrl: 'thumbnailUrl',
-                }),
+                } as any),
             )
             const putProductStub = jest
                 .spyOn(productServices, 'putProduct')
-                .mockImplementation(() => Promise.resolve({ ...product }))
+                .mockImplementation(() => Promise.resolve({ ...product as any }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -456,7 +441,7 @@ describe('EditControllerProvider', () => {
             expect(putProductStub).toHaveBeenCalledTimes(1)
             expect(location.pathname).toBe('/core/products')
         })
-        it('does not redirect if options.redirect = false', async () => {
+        fit('does not redirect if options.redirect = false', async () => {
             let currentContext
             let location
 
@@ -470,18 +455,13 @@ describe('EditControllerProvider', () => {
                 id: '1',
                 name: 'name',
             }
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
-            jest.spyOn(usePending, 'default').mockImplementation(() => ({
-                wrap: async (fn) => {
-                    const result = await fn()
-                    return result
-                },
-            }))
+            usePendingMock.wrap.mockReturnValue(async (fn) => {
+                const result = await fn()
+                return result
+            })
             const putProductStub = jest
                 .spyOn(productServices, 'putProduct')
-                .mockImplementation(() => Promise.resolve({ ...product }))
+                .mockImplementation(() => Promise.resolve({ ...product } as any))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -518,9 +498,6 @@ describe('EditControllerProvider', () => {
             const product = {
                 id: '1',
             }
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit?publishAttempted=1'],
             })
@@ -552,9 +529,6 @@ describe('EditControllerProvider', () => {
                 id: '1',
             }
             const notificationStub = jest.spyOn(Notification, 'push')
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -609,12 +583,8 @@ describe('EditControllerProvider', () => {
                     succeeded: false,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
-            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product as any }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -674,16 +644,12 @@ describe('EditControllerProvider', () => {
                     isUnpublish: false,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
-            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product as any }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
                 replaceState: (fn) => replaceStateStub(fn(product)),
-            }))
+            } as any))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -748,16 +714,12 @@ describe('EditControllerProvider', () => {
                     isUnpublish: true,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
-            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product as any }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
                 replaceState: (fn) => replaceStateStub(fn(product)),
-            }))
+            } as any))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -822,16 +784,12 @@ describe('EditControllerProvider', () => {
                     isUnpublish: false,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
-            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product as any }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
                 replaceState: (fn) => replaceStateStub(fn(product)),
-            }))
+            } as any))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -897,16 +855,12 @@ describe('EditControllerProvider', () => {
                     showPublishedProduct: true,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
-            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product as any }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
                 replaceState: (fn) => replaceStateStub(fn(product)),
-            }))
+            } as any))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -971,16 +925,12 @@ describe('EditControllerProvider', () => {
                     isUnpublish: true,
                 }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
-            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
+            jest.spyOn(productServices, 'putProduct').mockImplementation(() => Promise.resolve({ ...product as any }))
             const replaceStateStub = jest.fn()
             jest.spyOn(useEditableState, 'default').mockImplementation(() => ({
                 replaceState: (fn) => replaceStateStub(fn(product)),
-            }))
+            } as any))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -1031,9 +981,6 @@ describe('EditControllerProvider', () => {
                 id: '1',
             }
             const notificationStub = jest.spyOn(Notification, 'push')
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {},
-            }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -1059,8 +1006,11 @@ describe('EditControllerProvider', () => {
             expect(location.pathname).toBe('/core/products/1/edit')
         })
         it('does not redirect if deploy fails', async () => {
-            const oldLimit = sharedConstants.dataUnionMemberLimit
-            sharedConstants.dataUnionMemberLimit = 0
+            (getConfig as any).mockImplementation(() => ({
+                core: {
+                    dataUnionPublishMemberLimit: 0,
+                },
+            }))
             let currentContext
             let validationContext
             let location
@@ -1086,14 +1036,10 @@ describe('EditControllerProvider', () => {
                 pricingTokenAddress: '0xa3d1F77ACfF0060F7213D7BF3c7fEC78df847De1',
             }
             const modalOpenStub = jest.fn(() => Promise.resolve(false))
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
             const putProductStub = jest
                 .spyOn(productServices, 'putProduct')
-                .mockImplementation(() => Promise.resolve({ ...product }))
+                .mockImplementation(() => Promise.resolve({ ...product as any }))
             const history = createMemoryHistory({
                 initialEntries: ['/core/products/1/edit'],
             })
@@ -1118,11 +1064,13 @@ describe('EditControllerProvider', () => {
             expect(modalOpenStub).toHaveBeenCalledTimes(1)
             expect(putProductStub).toHaveBeenCalledTimes(1)
             expect(location.pathname).toBe('/core/products/1/edit')
-            sharedConstants.dataUnionMemberLimit = oldLimit
         })
         it('updates and saves beneficiary address if deploy succeeds', async () => {
-            const oldLimit = sharedConstants.dataUnionMemberLimit
-            sharedConstants.dataUnionMemberLimit = 0
+            (getConfig as any).mockImplementation(() => ({
+                core: {
+                    dataUnionPublishMemberLimit: 0,
+                },
+            }))
             let currentContext
             let validationContext
             let location
@@ -1155,11 +1103,7 @@ describe('EditControllerProvider', () => {
                         resolve(true)
                     }),
             )
-            jest.spyOn(useModal, 'default').mockImplementation(() => ({
-                api: {
-                    open: modalOpenStub,
-                },
-            }))
+            useModalMock.api.open.mockReturnValue(modalOpenStub)
             const putProductStub = jest
                 .spyOn(productServices, 'putProduct')
                 .mockImplementation((p) => Promise.resolve({ ...p }))
@@ -1218,7 +1162,6 @@ describe('EditControllerProvider', () => {
             expect(putProductStub).toBeCalledWith(expectedProduct, product.id)
             expect(putProductStub).toBeCalledWith({ ...expectedProduct, beneficiaryAddress }, product.id)
             expect(location.pathname).toBe('/core/dataunions')
-            sharedConstants.dataUnionMemberLimit = oldLimit
         })
     })
 })

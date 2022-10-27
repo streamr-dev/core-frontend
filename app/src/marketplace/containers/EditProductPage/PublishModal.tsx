@@ -232,7 +232,8 @@ export const PublishOrUnpublishModal = ({ product, api }: Props) => {
 
     return <PublishError status={status} publishMode={mode} onClose={onClose} />
 }
-export default () => {
+
+const Modal = () => {
     const { isOpen, api, value } = useModal('publish')
 
     if (!isOpen) {
@@ -242,3 +243,5 @@ export default () => {
     const { product } = value || {}
     return <PublishOrUnpublishModal product={product} api={api} />
 }
+
+export default Modal

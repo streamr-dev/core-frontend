@@ -1,6 +1,6 @@
 import * as all from '$userpages/utils/filters'
 describe('getParamsForFilter', () => {
-    const f = (...args) => all.getParamsForFilter(...args)
+    const f = (filter, defaults?: object) => all.getParamsForFilter(filter, defaults)
 
     describe('order', () => {
         it('is `desc` by out of the box', () => {

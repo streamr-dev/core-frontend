@@ -2,7 +2,6 @@ import EventEmitter from 'events'
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { mount } from 'enzyme'
-import BN from 'bignumber.js'
 import { useClient } from 'streamr-client-react'
 import Transaction from '$shared/utils/Transaction'
 import * as contractProductServices from '$mp/modules/contractProduct/services'
@@ -30,7 +29,7 @@ function stubStreams(streams) {
             yield stream
         }
     })
-    const getAddressStub = jest.fn().mockImplementation(() => Promise.resolve())
+    const getAddressStub = jest.fn().mockImplementation(() => Promise.resolve({} as any))
     useClient.mockImplementation(() => ({
         searchStreams: searchStreamsStub,
         getAddress: getAddressStub,
@@ -39,17 +38,18 @@ function stubStreams(streams) {
 }
 
 describe('usePublish', () => {
+    let consoleMock = null
     beforeAll(() => {
         // don't show error as console.error
-        jest.spyOn(console, 'error')
-        console.error.mockImplementation((...args) => console.warn(...args))
+        consoleMock = jest.spyOn(console, 'error')
+        consoleMock.mockImplementation((...args) => console.warn(...args))
     })
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
     })
     afterAll(() => {
-        console.error.mockRestore()
+        consoleMock.mockRestore()
     })
     describe('publish mode', () => {
         it('throws an error if there is no product', async () => {
@@ -181,7 +181,7 @@ describe('usePublish', () => {
             jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
                 Promise.resolve({
                     id: '1',
-                }),
+                } as any),
             )
             jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() => {
                 throw new Error('no owner')
@@ -277,7 +277,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                jest.spyOn(productServices, 'postDeployFree').mockImplementation(() => Promise.resolve())
+                jest.spyOn(productServices, 'postDeployFree').mockImplementation(() => Promise.resolve({} as any))
                 await result.queue.start()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_FREE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.PUBLISH_FREE, transactionStates.CONFIRMED)
@@ -355,7 +355,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                jest.spyOn(productServices, 'postUndeployFree').mockImplementation(() => Promise.resolve())
+                jest.spyOn(productServices, 'postUndeployFree').mockImplementation(() => Promise.resolve({} as any))
                 await result.queue.start()
                 expect(startedFn).toHaveBeenCalledWith(actionsTypes.UNPUBLISH_FREE)
                 expect(statusFn).toHaveBeenCalledWith(actionsTypes.UNPUBLISH_FREE, transactionStates.CONFIRMED)
@@ -460,7 +460,7 @@ describe('usePublish', () => {
                     .subscribe('finish', finishFn)
                 const putProductStub = jest
                     .spyOn(productServices, 'putProduct')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 await result.queue.start()
                 expect(searchStreamsStub).toHaveBeenCalled()
                 expect(putProductStub).toBeCalledWith(
@@ -529,7 +529,7 @@ describe('usePublish', () => {
                     .subscribe('finish', finishFn)
                 const putProductStub = jest
                     .spyOn(productServices, 'putProduct')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 await result.queue.start()
                 expect(putProductStub).toBeCalledWith(
                     {
@@ -564,7 +564,7 @@ describe('usePublish', () => {
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -589,15 +589,15 @@ describe('usePublish', () => {
                     .mockImplementation(() => tx)
                 const postSetDeployingStub = jest
                     .spyOn(productServices, 'postSetDeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const putProductStub = jest
                     .spyOn(productServices, 'putProduct')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
                 const readyFn = jest.fn()
                 const finishFn = jest.fn()
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -617,7 +617,7 @@ describe('usePublish', () => {
                     id: '1',
                     name: 'Name',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     state: 'NOT_DEPLOYED',
@@ -645,7 +645,7 @@ describe('usePublish', () => {
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -674,15 +674,15 @@ describe('usePublish', () => {
                     .mockImplementation(() => tx)
                 const postSetDeployingStub = jest
                     .spyOn(productServices, 'postSetDeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const putProductStub = jest
                     .spyOn(productServices, 'putProduct')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
                 const readyFn = jest.fn()
                 const finishFn = jest.fn()
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -702,7 +702,7 @@ describe('usePublish', () => {
                     id: '1',
                     name: 'Name',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     state: 'NOT_DEPLOYED',
@@ -729,19 +729,19 @@ describe('usePublish', () => {
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
                     Promise.resolve({
                         id: '1',
-                        pricePerSecond: BN(1),
+                        pricePerSecond: '1',
                         ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         priceCurrency: 'DATA',
                         minimumSubscriptionInSeconds: '0',
-                    }),
+                    } as any),
                 )
                 const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'DEPLOYED',
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -764,7 +764,7 @@ describe('usePublish', () => {
                 jest.spyOn(contractProductServices, 'deleteProduct').mockImplementation(() => tx)
                 const postSetUndeployingStub = jest
                     .spyOn(productServices, 'postSetUndeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -775,7 +775,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -808,19 +808,19 @@ describe('usePublish', () => {
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
                     Promise.resolve({
                         id: '1',
-                        pricePerSecond: BN(1),
+                        pricePerSecond: '1',
                         ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         priceCurrency: 'DATA',
                         minimumSubscriptionInSeconds: '0',
-                    }),
+                    } as any),
                 )
                 const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -841,7 +841,7 @@ describe('usePublish', () => {
                 jest.spyOn(contractProductServices, 'redeployProduct').mockImplementation(() => tx)
                 const postSetDeployingStub = jest
                     .spyOn(productServices, 'postSetDeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
@@ -852,7 +852,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -888,7 +888,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                 }
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                    Promise.resolve(contractProduct),
+                    Promise.resolve(contractProduct as any),
                 )
                 const product = {
                     id: '1',
@@ -922,7 +922,7 @@ describe('usePublish', () => {
                 const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
                 const postSetDeployingStub = jest
                     .spyOn(productServices, 'postSetDeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
                 const readyFn = jest.fn()
@@ -932,7 +932,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter1.emit('transactionHash', hash1)
                     }, 200)
@@ -975,7 +975,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                 }
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                    Promise.resolve(contractProduct),
+                    Promise.resolve(contractProduct as any),
                 )
                 const product = {
                     id: '1',
@@ -1054,23 +1054,23 @@ describe('usePublish', () => {
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
                     Promise.resolve({
                         id: '1',
-                        pricePerSecond: BN(1),
+                        pricePerSecond: '1',
                         ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         priceCurrency: 'DATA',
                         minimumSubscriptionInSeconds: '0',
-                    }),
+                    } as any),
                 )
                 const putProductStub = jest
                     .spyOn(productServices, 'putProduct')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const result = await publish({
                     id: '1',
                     name: 'Name',
                     streams: ['1', '3'],
                     state: 'DEPLOYED',
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1104,7 +1104,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1123,7 +1123,7 @@ describe('usePublish', () => {
                     name: 'New name',
                     streams: ['2', '3', '4'],
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1158,18 +1158,18 @@ describe('usePublish', () => {
                 mount(<Test />)
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                    Promise.resolve(contractProduct),
+                    Promise.resolve(contractProduct as any),
                 )
                 const putProductStub = jest
                     .spyOn(productServices, 'putProduct')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const emitter = new EventEmitter()
                 const tx = new Transaction(emitter)
                 const hash = 'test'
@@ -1186,13 +1186,13 @@ describe('usePublish', () => {
                     streams: ['1', '3'],
                     state: 'DEPLOYED',
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                     pendingChanges: {
-                        pricePerSecond: BN(2),
+                        pricePerSecond: '2',
                         beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                         priceCurrency: 'EUR',
                         name: 'New name',
@@ -1218,7 +1218,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1248,7 +1248,7 @@ describe('usePublish', () => {
                     name: 'New name',
                     streams: ['2', '3', '4'],
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     // contract info will be updated by the backend watcher
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
@@ -1279,7 +1279,7 @@ describe('usePublish', () => {
                     name: 'Name',
                     state: 'NOT_DEPLOYED',
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1303,7 +1303,7 @@ describe('usePublish', () => {
                 jest.spyOn(contractProductServices, 'createContractProduct').mockImplementation(() => tx)
                 const postSetDeployingStub = jest
                     .spyOn(productServices, 'postSetDeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const startedFn = jest.fn()
                 const statusFn = jest.fn()
                 const readyFn = jest.fn()
@@ -1313,7 +1313,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1342,13 +1342,13 @@ describe('usePublish', () => {
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
                     Promise.resolve({
                         id: '1',
-                        pricePerSecond: BN(1),
+                        pricePerSecond: '1',
                         ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         priceCurrency: 'DATA',
                         minimumSubscriptionInSeconds: '0',
                         chainId: 1,
-                    }),
+                    } as any),
                 )
                 jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
                 jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() =>
@@ -1363,14 +1363,14 @@ describe('usePublish', () => {
                 jest.spyOn(contractProductServices, 'deleteProduct').mockImplementation(() => tx)
                 const postSetUndeployingStub = jest
                     .spyOn(productServices, 'postSetUndeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
                 const result = await publish({
                     id: '1',
                     name: 'Name',
                     state: 'DEPLOYED',
                     isFree: false,
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
@@ -1394,7 +1394,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1433,7 +1433,7 @@ describe('usePublish', () => {
                     minimumSubscriptionInSeconds: '0',
                 }
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                    Promise.resolve(contractProduct),
+                    Promise.resolve(contractProduct as any),
                 )
                 jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
                 jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() =>
@@ -1451,7 +1451,7 @@ describe('usePublish', () => {
                 const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
                 const postSetDeployingStub = jest
                     .spyOn(productServices, 'postSetDeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const product = {
                     id: '1',
                     name: 'Name',
@@ -1482,7 +1482,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter1.emit('transactionHash', hash1)
                     }, 200)
@@ -1525,7 +1525,7 @@ describe('usePublish', () => {
                     chainId: 1,
                 }
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                    Promise.resolve(contractProduct),
+                    Promise.resolve(contractProduct as any),
                 )
                 jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
                 jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() =>
@@ -1550,7 +1550,7 @@ describe('usePublish', () => {
                 const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
                 const postSetDeployingStub = jest
                     .spyOn(productServices, 'postSetDeploying')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const product = {
                     id: '1',
                     name: 'Name',
@@ -1585,7 +1585,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter1.emit('transactionHash', hash1)
                     }, 200)
@@ -1646,14 +1646,14 @@ describe('usePublish', () => {
                 mount(<Test />)
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                    Promise.resolve(contractProduct),
+                    Promise.resolve(contractProduct as any),
                 )
                 jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
                 jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() =>
@@ -1668,7 +1668,7 @@ describe('usePublish', () => {
                 const setAdminFeeStub = jest.spyOn(dataUnionServices, 'setAdminFee').mockImplementation(() => tx)
                 const putProductStub = jest
                     .spyOn(productServices, 'putProduct')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
                 const product = {
                     id: '1',
@@ -1679,7 +1679,7 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     type: 'DATAUNION',
                     pendingChanges: {
@@ -1707,7 +1707,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter.emit('transactionHash', hash)
                     }, 200)
@@ -1729,7 +1729,7 @@ describe('usePublish', () => {
                         ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         priceCurrency: 'DATA',
                         minimumSubscriptionInSeconds: '0',
-                        pricePerSecond: BN(1),
+                        pricePerSecond: '1',
                         beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                         type: 'DATAUNION',
                         pendingChanges: undefined,
@@ -1771,14 +1771,14 @@ describe('usePublish', () => {
                 mount(<Test />)
                 const contractProduct = {
                     id: '1',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
                 }
                 jest.spyOn(contractProductServices, 'getProductFromContract').mockImplementation(() =>
-                    Promise.resolve(contractProduct),
+                    Promise.resolve(contractProduct as any),
                 )
                 jest.spyOn(dataUnionServices, 'getAdminFee').mockImplementation(() => Promise.resolve('0.3'))
                 jest.spyOn(dataUnionServices, 'getDataUnionOwner').mockImplementation(() =>
@@ -1802,7 +1802,7 @@ describe('usePublish', () => {
                     .mockImplementation(() => tx2)
                 const putProductStub = jest
                     .spyOn(productServices, 'putProduct')
-                    .mockImplementation(() => Promise.resolve())
+                    .mockImplementation(() => Promise.resolve({} as any))
                 const addTransactionStub = jest.spyOn(transactionActions, 'addTransaction')
                 const product = {
                     id: '1',
@@ -1813,14 +1813,14 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     type: 'DATAUNION',
                     pendingChanges: {
                         name: 'New name',
                         adminFee: '0.5',
                         streams: ['2', '3', '4'],
-                        pricePerSecond: BN(2),
+                        pricePerSecond: '2',
                         beneficiaryAddress: '0x7Ce38183F7851EE6eEB9547B1E537fB362C79C10',
                         priceCurrency: 'EUR',
                     },
@@ -1845,7 +1845,7 @@ describe('usePublish', () => {
                     .subscribe('status', statusFn)
                     .subscribe('ready', readyFn)
                     .subscribe('finish', finishFn)
-                const txPromise = new Promise((resolve) => {
+                const txPromise = new Promise<void>((resolve) => {
                     setTimeout(() => {
                         emitter1.emit('transactionHash', hash1)
                     }, 200)
@@ -1873,7 +1873,7 @@ describe('usePublish', () => {
                     ownerAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     priceCurrency: 'DATA',
                     minimumSubscriptionInSeconds: '0',
-                    pricePerSecond: BN(1),
+                    pricePerSecond: '1',
                     beneficiaryAddress: '0x4178baBE9E5148c6D5fd431cD72884B07Ad855a0',
                     type: 'DATAUNION',
                     pendingChanges: undefined,

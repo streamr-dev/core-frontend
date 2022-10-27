@@ -3,13 +3,13 @@ import { useLocation } from 'react-router-dom'
 import useIsMounted from '$shared/hooks/useIsMounted'
 type ContextProps = {
     modals: Record<string, any>
-    openModal: (...args: Array<any>) => any
-    closeModal: (...args: Array<any>) => any
+    openModal: (modalId: string, values?: any) => Promise<any>
+    closeModal: (modalId: string, values?: any) => any
 }
 const ModalContext: Context<ContextProps> = React.createContext({
     closeModal: () => {},
     modals: {},
-    openModal: () => {},
+    openModal: () => new Promise(() => {}),
 })
 
 function useModalContext(path: string): ContextProps {

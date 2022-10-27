@@ -150,31 +150,24 @@ jest.mock('$docs/components/Pages/DataUnions/UXBestPractices', () => ({
     default: () => '/docs/data-unions/ux-best-practices',
 }))
 
-const sections = ({ dataUnions }) => {
-    const docsMap = generateMap({
-        dataUnions,
-    })
+const sections = () => {
+    const docsMap = generateMap()
     return Object.keys(docsMap)
 }
 
-const links = ({ section, dataUnions }) => {
-    const docsMap = generateMap({
-        dataUnions,
-    })
+const links = ({ section }) => {
+    const docsMap = generateMap()
     return Object.keys(docsMap[section]).map((doc) => docsMap[section][doc].path)
 }
 
 // TODO: Fix this test
 describe('Docs Routes', () => {
     describe.each(
-        sections({
-            dataUnions: true,
-        }),
+        sections(),
     )('Smoke test routes for %s', (section) => {
         it.each(
             links({
                 section,
-                dataUnions: true,
             }),
         )('shows route: %s', (url) => {
             const el = mount(

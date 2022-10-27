@@ -7,7 +7,7 @@ type ValidateParams = {
     unlockTimeout?: number | boolean
 }
 export default async function validateWeb3({
-    requireNetwork = networks.MAINNET,
+    requireNetwork = 1,
     unlockTimeout = false,
 }: ValidateParams): Promise<void> {
     await unlock({

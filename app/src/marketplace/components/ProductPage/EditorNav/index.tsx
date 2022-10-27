@@ -22,7 +22,7 @@ type Section = {
     heading: string
     onClick?: (...args: Array<any>) => any
     href?: string
-    status: $Values<typeof statuses>
+    status?: $Values<typeof statuses>
     seen?: boolean
     active?: boolean
 }

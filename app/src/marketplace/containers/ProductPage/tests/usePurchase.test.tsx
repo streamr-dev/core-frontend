@@ -6,19 +6,18 @@ import BN from 'bignumber.js'
 import Transaction from '$shared/utils/Transaction'
 import { transactionStates, paymentCurrencies, transactionTypes } from '$shared/utils/constants'
 import * as priceUtils from '$mp/utils/price'
-import { validateBalanceForPurchase, getDataAddress, getCustomTokenDecimals } from '$mp/utils/web3'
+import * as web3Utils from '$mp/utils/web3'
 import * as transactionActions from '$mp/modules/transactions/actions'
 import * as productServices from '$mp/modules/product/services'
 import * as productActions from '$mp/modules/product/actions'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import { fromDecimals } from '$mp/utils/math'
 import usePurchase, { actionsTypes } from '../usePurchase'
+
 jest.mock('$utils/web3/getDefaultWeb3Account', () => ({
     __esModule: true,
     default: jest.fn(() => Promise.reject(new Error('Not implemented'))),
 }))
-
-const web3Utils = {validateBalanceForPurchase, getDataAddress, getCustomTokenDecimals}
 
 function mockDefaultAccount(defaultAccount) {
     return (getDefaultWeb3Account as any).mockImplementation(() => Promise.resolve(defaultAccount))
@@ -34,10 +33,11 @@ jest.mock('$mp/utils/web3', () => ({
     getCustomTokenDecimals: jest.fn().mockImplementation(() => 18),
 }))
 describe('usePurchase', () => {
+    let consoleMock = null
     beforeAll(() => {
         // don't show error as console.error
-        jest.spyOn(console, 'error');
-        (console.error as any).mockImplementation((...args) => console.warn(...args))
+        consoleMock = jest.spyOn(console, 'error')
+        consoleMock.mockImplementation((...args) => console.warn(...args))
     })
     beforeEach(() => {
         mockDefaultAccount('0x0000000000000000000000000000000000000000')
@@ -48,7 +48,7 @@ describe('usePurchase', () => {
         (getDefaultWeb3Account as any).mockReset()
     })
     afterAll(() => {
-        (console.error as any).mockRestore()
+        consoleMock.mockRestore()
     })
     describe('input errors', () => {
         it('throws an error if contract product not found', async () => {
@@ -253,8 +253,7 @@ describe('usePurchase', () => {
                 }
             })
         })
-        // TODO fix
-        it.skip('throws an error if no balance available', async () => {
+        it('throws an error if no balance available', async () => {
             let purchase
 
             function Test() {
@@ -284,21 +283,16 @@ describe('usePurchase', () => {
                 throw new Error('no balance')
             })
             await act(async () => {
-                try {
-                    await purchase({
-                        contractProduct,
-                        accessPeriod,
-                    })
-                    expect(true).toBe(false) // shouldn't come here
-                } catch (e) {
-                    expect(e).toBeTruthy()
-                    expect(e.message).toBe('no balance')
-                }
+                await expect(purchase({
+                    contractProduct,
+                    accessPeriod,
+                }))
+                    .rejects
+                    .toThrow('no balance')
             })
         })
     })
-    // TODO fix
-    describe.skip('DATA Purchase actions', () => {
+    describe('DATA Purchase actions', () => {
         it('purchases the product, resets existing allowance & sets allowance', async () => {
             let purchase
 
@@ -623,7 +617,7 @@ describe('usePurchase', () => {
         })
     })
     // TODO fix
-    describe.skip('DAI Purchase actions', () => {
+    describe('DAI Purchase actions', () => {
         it('purchases the product, resets existing allowance & sets allowance', async () => {
             let purchase
 
@@ -925,8 +919,7 @@ describe('usePurchase', () => {
             expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
     })
-    // TODO fix
-    describe.skip('ETH Purchase actions', () => {
+    describe('ETH Purchase actions', () => {
         it('purchases the product', async () => {
             let purchase
 
@@ -995,8 +988,7 @@ describe('usePurchase', () => {
             expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
     })
-    // TODO fix
-    describe.skip('Custom token purchase actions', () => {
+    describe('Custom token purchase actions', () => {
         it('purchases the product, resets existing allowance & sets allowance', async () => {
             let purchase
 

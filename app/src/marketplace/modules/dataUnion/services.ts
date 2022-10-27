@@ -172,8 +172,8 @@ export const setAdminFee = (address: DataUnionId, chainId: number, adminFee: str
     ]).then(([dataUnion]) => {
         emitter.emit('transactionHash')
         dataUnion.setAdminFee(+adminFee).then((receipt) => {
-            if (parseInt(`${receipt.status}`, 16) === 0) {
-                errorHandler(new TransactionError('Transaction failed', receipt))
+            if (receipt.status === 0) {
+                errorHandler(new TransactionError('Transaction failed', receipt as any))
             } else {
                 emitter.emit('receipt', receipt)
             }

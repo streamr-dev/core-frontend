@@ -3,6 +3,7 @@ import * as getConfig from '$shared/web3/config'
 import * as all from '$mp/utils/smartContract'
 import Transaction from '$shared/utils/Transaction'
 import TransactionError from '$shared/errors/TransactionError'
+import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import getDefaultWeb3Account from '$utils/web3/getDefaultWeb3Account'
 import getChainId from '$utils/web3/getChainId'
 import getWeb3 from '$utils/web3/getWeb3'
@@ -16,7 +17,7 @@ jest.mock('$utils/web3/getChainId', () => ({
 }))
 
 function mockChainId(chainId) {
-    getChainId.mockImplementation(() => Promise.resolve(chainId))
+    (getChainId as jest.Mock).mockImplementation(() => Promise.resolve(chainId))
 }
 
 jest.mock('$utils/web3/getWeb3', () => ({
@@ -25,8 +26,8 @@ jest.mock('$utils/web3/getWeb3', () => ({
 }))
 
 const PromiEvent = () => {
-    const promiEvent = Promise.resolve()
-    const emitter = new EventEmitter()
+    const promiEvent = Promise.resolve() as any
+    const emitter = new EventEmitter() as any
     // eslint-disable-next-line no-underscore-dangle
     promiEvent._events = emitter._events
     promiEvent.emit = emitter.emit
@@ -44,8 +45,10 @@ describe('smartContract utils', () => {
     afterEach(() => {
         jest.clearAllMocks()
         jest.restoreAllMocks()
-        getDefaultWeb3Account.mockReset()
-        getChainId.mockReset()
+        const getDefaultWeb3AccountMock = getDefaultWeb3Account as jest.Mock
+        getDefaultWeb3AccountMock.mockReset()
+        const getChainIdMock = (getChainId as jest.Mock)
+        getChainIdMock.mockReset()
     })
     describe('hexEqualsZero', () => {
         it('must return true when 0 with 0x prefix', () => {
@@ -67,7 +70,7 @@ describe('smartContract utils', () => {
             expect(!all.hexEqualsZero('')).toBe(true)
             expect(!all.hexEqualsZero(undefined)).toBe(true)
             expect(!all.hexEqualsZero(null)).toBe(true)
-            expect(!all.hexEqualsZero(8)).toBe(true)
+            expect(!all.hexEqualsZero('8')).toBe(true)
         })
     })
     describe('getPrefixedHexString', () => {
@@ -96,7 +99,6 @@ describe('smartContract utils', () => {
         it('detects an invalid hex string', () => {
             expect(all.isValidHexString(undefined)).toBe(false)
             expect(all.isValidHexString(null)).toBe(false)
-            expect(all.isValidHexString(3)).toBe(false)
             expect(all.isValidHexString('öööö')).toBe(false)
             expect(all.isValidHexString('0xöööö')).toBe(false)
         })
@@ -109,11 +111,11 @@ describe('smartContract utils', () => {
     describe('getContract', () => {
         it('must return the correct contract', async () => {
             const contractAddress = '0x123456789'
-            const abi = [{}]
+            const abi = [{} as any]
 
             class Test {}
 
-            getWeb3.mockImplementation(() => ({
+            (getWeb3 as jest.Mock).mockImplementation(() => ({
                 eth: {
                     Contract: Test,
                 },
@@ -131,19 +133,19 @@ describe('smartContract utils', () => {
             const method = {
                 call: stub,
             }
-            const callResult = all.call(method)
+            const callResult = all.call(method as any)
             expect('test').toBe(callResult)
         })
     })
     describe('send', () => {
         beforeEach(() => {
-            getDefaultWeb3Account.mockImplementation(() => Promise.resolve('testAccount'))
+            (getDefaultWeb3Account as jest.Mock).mockImplementation(() => Promise.resolve('testAccount'))
             mockChainId('1')
             jest.spyOn(getConfig, 'default').mockImplementation(() => ({
                 mainnet: {
                     chainId: '1',
                 },
-            }))
+            } as any))
         })
         it('must return a Transaction', () => {
             const fakeEmitter = PromiEvent()
@@ -166,7 +168,7 @@ describe('smartContract utils', () => {
                         return fakeEmitter
                     },
                     estimateGas: () => Promise.resolve(0),
-                },
+                } as any,
                 {
                     network: 1,
                 },
@@ -182,13 +184,14 @@ describe('smartContract utils', () => {
                 {
                     send: () => fakeEmitter,
                     estimateGas: () => Promise.resolve(0),
-                },
+                } as any,
                 {
                     network: 1337,
                 },
             ).onError((e) => {
-                expect(e.requiredNetwork).toBe(1337)
-                expect(e.currentNetwork).toBe('2')
+                const err = (e as any as WrongNetworkSelectedError)
+                expect(err.requiredNetwork).toBe(1337)
+                expect(err.currentNetwork).toBe('2')
                 done()
             })
         })
@@ -202,18 +205,20 @@ describe('smartContract utils', () => {
                 {
                     send: () => fakeEmitter,
                     estimateGas: () => Promise.resolve(0),
-                },
+                } as any,
                 {
                     network: 1337,
                 },
             ).onError((e) => {
-                expect(e.requiredNetwork).toBe(1337)
-                expect(e.currentNetwork).toBe('2')
+                const err = (e as any as WrongNetworkSelectedError)
+                expect(err.requiredNetwork).toBe(1337)
+                expect(err.currentNetwork).toBe('2')
                 done()
             })
         })
         describe('error', () => {
             it('must bind errorHandler before receipt', (done) => {
+                const err = new Error('test')
                 const promiEvent = PromiEvent()
                 const method = {
                     send: () => promiEvent,
@@ -222,17 +227,16 @@ describe('smartContract utils', () => {
                 all.send(method, {
                     network: 1,
                 }).onError((e) => {
-                    expect(e).toBe('test')
+                    expect(e).toBe(err)
                     done()
                 })
                 setTimeout(() => {
-                    promiEvent.emit('error', 'test')
+                    promiEvent.emit('error', err)
                 })
             })
             it('must bind new errorHandler after receipt', (done) => {
                 const receipt = 'receipt'
                 const promiEvent = PromiEvent()
-                const error = new Error('test')
                 const hash = '0x000'
                 const method = {
                     send: () => promiEvent,
@@ -242,13 +246,13 @@ describe('smartContract utils', () => {
                     network: 1,
                 }).onError((e) => {
                     expect(e).toBeInstanceOf(TransactionError)
-                    expect(e.message).toBe('test')
+                    expect(e.message).toBe('Transaction error')
                     expect(e.getReceipt()).toBe(receipt)
                     done()
                 })
                 setTimeout(() => {
                     promiEvent.emit('transactionHash', hash)
-                    promiEvent.emit('error', error, receipt)
+                    promiEvent.emit('error', receipt)
                 })
             })
         })
@@ -284,17 +288,17 @@ describe('smartContract utils', () => {
                 all.send(method, {
                     network: 1,
                 }).onTransactionComplete((receipt2) => {
-                    expect(receipt2.test).toBe(receipt.test)
+                    expect((receipt2 as any).test).toBe(receipt.test)
                     done()
                 })
                 setTimeout(() => {
                     emitter.emit('receipt', receipt)
                 })
             })
-            it('must emit error if receipt.status === 0', (done) => {
+            it('must emit error if receipt.status === false', (done) => {
                 const emitter = PromiEvent()
                 const receipt = {
-                    status: '0x0',
+                    status: false,
                     test: 'test',
                 }
                 const method = {
@@ -340,7 +344,7 @@ describe('smartContract utils', () => {
                 pricePerSecond: 1000,
                 beneficiaryAddress: 'test1',
                 priceCurrency: 'DATA',
-            }
+            } as any
             const editProduct = {
                 id: 'product-1',
                 name: 'Product 1',
@@ -353,28 +357,28 @@ describe('smartContract utils', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     beneficiaryAddress: 'test2',
-                }
+                } as any
                 expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
             it('it must return true if product is paid and pricePerSecond has been changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     pricePerSecond: 2000,
-                }
+                } as any
                 expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
             it('it must return true if product is paid and pricingTokenAddress changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     pricingTokenAddress: '0x1337',
-                }
+                } as any
                 expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
             it('it must return true if product is paid and requiresWhitelist changed', () => {
                 const editProductUpdated = {
                     ...editProduct,
                     requiresWhitelist: true,
-                }
+                } as any
                 expect(all.isContractProductUpdateRequired(contractProduct, editProductUpdated)).toBe(true)
             })
         })

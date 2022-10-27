@@ -4,7 +4,7 @@ import { parse, compile, Key } from 'path-to-regexp'
 import getCoreConfig from '$app/src/getters/getCoreConfig'
 import definitions from './definitions.json'
 type Routes = Record<string, any>
-type Paths = Record<string, string>
+type Paths = Record<string, any>
 type Variables = Record<string, string>
 type DefineOptions = {
     hash?: string

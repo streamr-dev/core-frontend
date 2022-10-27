@@ -3,9 +3,10 @@ import cx from 'classnames'
 import styles from './icons.pcss'
 type Props = {
     name: string
+    className: string
 }
 
-const InnerIcon = ({ name }: Props) => {
+const InnerIcon = ({ name }: { name: string }) => {
     switch (name) {
         case 'default':
         case 'seen':
@@ -42,8 +43,8 @@ const InnerIcon = ({ name }: Props) => {
     }
 }
 
-const Icons = ({ name, ...props }: Props) => (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+const Icons = ({ name, className, ...props }: Props) => (
+    <svg className={className} {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
         <g
             fill="currentFill"
             fillRule="evenodd"

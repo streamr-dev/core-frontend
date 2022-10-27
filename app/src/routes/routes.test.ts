@@ -115,11 +115,11 @@ describe('route utils', () => {
         })
     })
     describe('define', () => {
-        const r = (pathstr, ...args) =>
+        const r = (pathstr, params?: object, options?: object) =>
             define(pathstr, () => ({
                 url: 'url',
                 urlWithPort: 'http://localhost:80',
-            }))(...args)
+            }))(params, options)
 
         it('renders urls correctly', () => {
             expect(r('https://www.streamr.network/')).toEqual('https://www.streamr.network/')

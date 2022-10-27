@@ -1,4 +1,3 @@
-import type { Node } from 'react'
 import React from 'react'
 import ModalPortal from '$shared/components/ModalPortal'
 import Dialog from '$shared/components/Dialog'
@@ -10,7 +9,7 @@ type Props = {
     title?: string
     onClose: () => void
     waiting?: boolean
-    children?: Node
+    children?: React.ReactNode
     icon?: PngIconName
     requiredAddress?: string
 }

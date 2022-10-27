@@ -7,26 +7,26 @@ describe('Product State', () => {
             expect(
                 State.isPublished({
                     state: productStates.DEPLOYED,
-                }),
+                } as any),
             ).toBe(true)
             expect(
                 State.isPublished({
                     state: productStates.DEPLOYING,
-                }),
+                } as any),
             ).toBe(true)
             expect(
                 State.isPublished({
                     state: productStates.NOT_DEPLOYED,
-                }),
+                } as any),
             ).toBe(false)
             expect(
                 State.isPublished({
                     state: productStates.UNDEPLOYING,
-                }),
+                } as any),
             ).toBe(false)
         })
         it('detects published state for empty product', () => {
-            expect(State.isPublished({})).toBe(false)
+            expect(State.isPublished({} as any)).toBe(false)
             expect(State.isPublished(undefined)).toBe(false)
         })
     })
@@ -46,7 +46,7 @@ describe('Product State', () => {
                     thumbnailUrl: undefined,
                     streams: [],
                     previewStream: '',
-                    updated: '2019-10-01 09:51:00',
+                    updated: new Date('2019-10-01 09:51:00'),
                     adminFee: '0.1',
                 }),
             ).toMatchObject({
@@ -67,12 +67,11 @@ describe('Product State', () => {
                     thumbnailUrl: undefined,
                     streams: [],
                     previewStream: '',
-                    updated: '2019-10-01 09:51:00',
+                    updated: new Date('2019-10-01 09:51:00'),
                     adminFee: '0.1',
                     contact: {
                         email: 'a@b.com',
                         social1: 'http://social1.com',
-                        invalid: 1337,
                     },
                 }),
             ).toMatchObject({
@@ -95,13 +94,13 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-            }
+            } as any
             expect(
                 State.getChangeObject(product, {
                     id: '2',
                     name: 'New Name',
                     state: 'DEPLOYED',
-                }),
+                } as any),
             ).toMatchObject({
                 name: 'New Name',
             })
@@ -113,14 +112,14 @@ describe('Product State', () => {
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
                 streams: ['1', '2'],
-            }
+            } as any
             expect(
                 State.getChangeObject(product, {
                     id: '2',
                     name: 'New Name',
                     state: 'DEPLOYED',
                     streams: ['1', '3'],
-                }),
+                } as any),
             ).toMatchObject({
                 name: 'New Name',
                 streams: ['1', '3'],
@@ -136,7 +135,7 @@ describe('Product State', () => {
                     email: 'tester1@streamr.com',
                     url: 'http://streamr.network',
                 },
-            }
+            } as any
             expect(
                 State.getChangeObject(product, {
                     id: '2',
@@ -146,7 +145,7 @@ describe('Product State', () => {
                         email: 'tester2@streamr.com',
                         url: 'http://streamr.network',
                     },
-                }),
+                } as any),
             ).toMatchObject({
                 name: 'New Name',
                 contact: {
@@ -165,7 +164,7 @@ describe('Product State', () => {
                     url: 'http://streamr.network',
                     email: 'tester1@streamr.com',
                 },
-            }
+            } as any
             expect(
                 State.getChangeObject(product, {
                     id: '2',
@@ -176,7 +175,7 @@ describe('Product State', () => {
                         url: 'http://streamr.network',
                         social1: 'facebook',
                     },
-                }),
+                } as any),
             ).toMatchObject({
                 name: 'New Name',
                 contact: {
@@ -193,13 +192,13 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-            }
+            } as any
             expect(
                 State.update(product, (p) => ({
                     ...p,
                     name: 'newName',
                     description: 'A better description',
-                })),
+                } as any)),
             ).toMatchObject({
                 id: '1',
                 name: 'newName',
@@ -212,7 +211,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 state: productStates.NOT_DEPLOYED,
-            }
+            } as any
             expect(
                 State.update(product, (p) => ({
                     ...p,
@@ -237,7 +236,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
                 type: productTypes.DATAUNION,
-            }
+            } as any
             expect(
                 State.update(product, (p) => ({
                     ...p,
@@ -261,7 +260,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.DEPLOYED,
-            }
+            } as any
             expect(
                 State.update(product, (p) => ({
                     ...p,
@@ -284,7 +283,7 @@ describe('Product State', () => {
                 id: '1',
                 name: 'My Product',
                 state: productStates.DEPLOYED,
-            }
+            } as any
             expect(
                 State.update(product, (p) => ({
                     ...p,
@@ -307,7 +306,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.DEPLOYING,
-            }
+            } as any
             expect(
                 State.update(product, (p) => ({
                     ...p,
@@ -333,7 +332,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-            }
+            } as any
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
         it('returns empty object for unpublished data union', () => {
@@ -343,7 +342,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
                 type: productTypes.DATAUNION,
-            }
+            } as any
             expect(State.getPendingChanges(product)).toMatchObject({})
         })
         it('returns pending admin fee for unpublished data union', () => {
@@ -353,7 +352,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
                 type: productTypes.DATAUNION,
-            }
+            } as any
             expect(
                 State.getPendingChanges({
                     ...product,
@@ -362,7 +361,7 @@ describe('Product State', () => {
                         description: 'A better description',
                         adminFee: '0.2',
                     },
-                }),
+                } as any),
             ).toMatchObject({
                 adminFee: '0.2',
             })
@@ -373,7 +372,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.DEPLOYED,
-            }
+            } as any
             expect(
                 State.getPendingChanges({
                     ...product,
@@ -393,7 +392,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.DEPLOYED,
-            }
+            } as any
             expect(
                 State.getPendingChanges({
                     ...product,
@@ -415,7 +414,7 @@ describe('Product State', () => {
                 adminFee: '0.2',
                 state: productStates.DEPLOYED,
                 type: productTypes.DATAUNION,
-            }
+            } as any
             expect(
                 State.getPendingChanges({
                     ...product,
@@ -439,7 +438,7 @@ describe('Product State', () => {
                 adminFee: '0.2',
                 state: productStates.NOT_DEPLOYED,
                 type: productTypes.DATAUNION,
-            }
+            } as any
             expect(
                 State.getPendingChanges(
                     State.update(product, (p) => ({
@@ -447,7 +446,7 @@ describe('Product State', () => {
                         name: 'Better Name',
                         description: 'A better description',
                         adminFee: '0.4',
-                    })),
+                    })) as any,
                 ),
             ).toMatchObject({
                 adminFee: '0.4',
@@ -461,7 +460,7 @@ describe('Product State', () => {
                 adminFee: '0.2',
                 state: productStates.NOT_DEPLOYED,
                 type: productTypes.DATAUNION,
-            }
+            } as any
             expect(
                 State.getPendingChanges(
                     State.update(product, (p) => ({
@@ -471,7 +470,7 @@ describe('Product State', () => {
                         adminFee: '0.4',
                         pricingTokenAddress: '0x123',
                         requiresWhitelist: true,
-                    })),
+                    })) as any,
                 ),
             ).toMatchObject({
                 adminFee: '0.4',
@@ -486,7 +485,7 @@ describe('Product State', () => {
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
                 type: productTypes.NORMAL,
-            }
+            } as any
             expect(
                 State.getPendingChanges(
                     State.update(product, (p) => ({
@@ -495,7 +494,7 @@ describe('Product State', () => {
                         description: 'A better description',
                         pricingTokenAddress: '0x123',
                         requiresWhitelist: true,
-                    })),
+                    })) as any,
                 ),
             ).toMatchObject({
                 pricingTokenAddress: '0x123',
@@ -513,7 +512,7 @@ describe('Product State', () => {
                         email: 'a@b.com',
                     },
                 },
-            }
+            } as any
             expect(State.getPendingChanges(product)).toMatchObject({
                 contact: {
                     email: 'a@b.com',
@@ -535,7 +534,7 @@ describe('Product State', () => {
                     name: 'Better Name',
                     description: 'A better description',
                 },
-            }
+            } as any
             expect(State.hasPendingChange(nextProduct, 'name')).toBe(false)
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(false)
         })
@@ -554,7 +553,7 @@ describe('Product State', () => {
                     description: 'A better description',
                     adminFee: '0.5',
                 },
-            }
+            } as any
             expect(State.hasPendingChange(nextProduct, 'name')).toBe(false)
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(false)
             expect(State.hasPendingChange(nextProduct, 'adminFee')).toBe(true)
@@ -572,7 +571,7 @@ describe('Product State', () => {
                     name: 'Better Name',
                     description: 'A better description',
                 },
-            }
+            } as any
             expect(State.hasPendingChange(nextProduct, 'name')).toBe(true)
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(true)
         })
@@ -591,7 +590,7 @@ describe('Product State', () => {
                     description: null,
                     otherField: undefined,
                 },
-            }
+            } as any
             expect(State.hasPendingChange(nextProduct, 'name')).toBe(true)
             expect(State.hasPendingChange(nextProduct, 'description')).toBe(true)
             // undefined value can't be detected
@@ -612,7 +611,7 @@ describe('Product State', () => {
                         email: 'a@b.com',
                     },
                 },
-            }
+            } as any
             expect(State.hasPendingChange(nextProduct, 'contact.email')).toBe(true)
         })
     })
@@ -623,7 +622,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.NOT_DEPLOYED,
-            }
+            } as any
             expect(
                 State.withPendingChanges({
                     ...product,
@@ -631,7 +630,7 @@ describe('Product State', () => {
                         name: 'Better Name',
                         description: 'A better description',
                     },
-                }),
+                }) as any,
             ).toMatchObject({
                 id: '1',
                 name: 'My Product',
@@ -647,7 +646,7 @@ describe('Product State', () => {
                 adminFee: '0.2',
                 state: productStates.NOT_DEPLOYED,
                 type: productTypes.DATAUNION,
-            }
+            } as any
             expect(
                 State.withPendingChanges({
                     ...product,
@@ -672,7 +671,7 @@ describe('Product State', () => {
                 name: 'My Product',
                 description: 'My nice product',
                 state: productStates.DEPLOYED,
-            }
+            } as any
             expect(
                 State.withPendingChanges({
                     ...product,

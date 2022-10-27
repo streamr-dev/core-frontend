@@ -33,7 +33,7 @@ describe('session token utility', () => {
         })
         it('gives null if stored token is an empty string', () => {
             global.localStorage.setItem(SESSION_TOKEN_KEY, '')
-            global.localStorage.setItem(SESSION_LOGIN_TIME, new Date())
+            global.localStorage.setItem(SESSION_LOGIN_TIME, new Date().toString())
             expect(getToken()).toBe(null)
         })
     })
@@ -95,13 +95,12 @@ describe('session token utility', () => {
             expect(getToken2()).toBe(null)
         })
         it('stores and expires a token', () => {
-            const currentDate = new Date('2020-03-26T14:00:00.000Z')
             const realDate = Date
             global.Date = class extends Date {
                 constructor() {
-                    return currentDate
+                    super('2020-03-26T14:00:00.000Z')
                 }
-            }
+            } as unknown as typeof Date
             setToken2('token')
             global.Date = realDate
             jest.spyOn(Date, 'now').mockImplementationOnce(() => new Date('2020-03-26T15:00:00.000Z').getTime())

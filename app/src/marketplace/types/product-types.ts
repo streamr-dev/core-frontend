@@ -23,12 +23,12 @@ export type TermsOfUse = {
     termsUrl: string | null | undefined
 }
 export type ContactDetails = {
-    url: string | null | undefined
-    email: string | null | undefined
-    social1: string | null | undefined
-    social2: string | null | undefined
-    social3: string | null | undefined
-    social4: string | null | undefined
+    url?: string | null | undefined
+    email?: string | null | undefined
+    social1?: string | null | undefined
+    social2?: string | null | undefined
+    social3?: string | null | undefined
+    social4?: string | null | undefined
 }
 export type Product = {
     adminFee?: string
