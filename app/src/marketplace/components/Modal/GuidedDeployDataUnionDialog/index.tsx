@@ -11,7 +11,7 @@ import { ProductTile, ImageTile } from '$shared/components/Tile'
 import type { Product } from '$mp/types/product-types'
 import '$mp/types/product-types'
 import { numberToText } from '$shared/utils/text'
-import { dataUnionMemberLimit } from '$shared/utils/constants'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import dataUnionStats from '$mp/assets/deploy-modal-stats.png'
 import styles from './guidedDeployDataUnionDialog.pcss'
 type ChildrenProps = {
@@ -62,6 +62,7 @@ const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueP
     const [skipHelp, setSkipHelp] = useState(!!dontShowAgain)
     const [step, setStep] = useState(0)
     const [waitingOnContinue, setWaitingOnContinue] = useState(false)
+    const { dataUnionPublishMemberLimit } = getCoreConfig()
     const isLastStep = step === 3
     const { name } = product
     // $FlowFixMe property `preview` is missing in  `File`.
@@ -112,8 +113,8 @@ const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueP
                             <ProductCard name={name} image={image} className={styles.highlightMembers} />
                         </PreviewContainer>
                         <TextContainer>
-                            A minimum of {dataUnionMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionMemberLimit)} members`} is needed to
-                            publish the product.
+                            A minimum of {dataUnionPublishMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionPublishMemberLimit)} members`}
+                            is needed to publish the product.
                             <br />
                             In Core, Data Union size is shown on the members badge.
                         </TextContainer>
@@ -133,7 +134,7 @@ const GuidedDeployDataUnionDialog = ({ product, onClose, onContinue: onContinueP
                 )}
             </div>
         ),
-        [step, name, image],
+        [step, name, image, dataUnionPublishMemberLimit],
     )
     return (
         <ModalPortal>

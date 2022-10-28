@@ -28,10 +28,18 @@ jest.mock('react-redux', () => ({
     useSelector: jest.fn().mockImplementation((selectorFn) => selectorFn(mockState)),
     useDispatch: jest.fn().mockImplementation(() => (action) => action),
 }))
-jest.mock('$mp/utils/web3', () => ({
-    ...jest.requireActual('$mp/utils/web3'),
-    getCustomTokenDecimals: jest.fn().mockImplementation(() => 18),
-}))
+
+jest.mock('$mp/utils/web3', () => {
+    const actual = jest.requireActual('$mp/utils/web3')
+
+    return {
+        ...actual,
+        getCustomTokenDecimals: jest.fn().mockImplementation(() => 18),
+        // This is really weird but it's needed to make it mockable per test
+        validateBalanceForPurchase: jest.fn().mockImplementation(actual.validateBalanceForPurchase),
+    }
+})
+
 describe('usePurchase', () => {
     let consoleMock = null
     beforeAll(() => {
@@ -279,9 +287,12 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.PRODUCT_DEFINED,
                 price: '1234',
             }
-            jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation( () => {
+
+            const web3UtilsMock = web3Utils as any
+            web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => {
                 throw new Error('no balance')
             })
+
             await act(async () => {
                 await expect(purchase({
                     contractProduct,
@@ -323,9 +334,8 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
             jest.spyOn(productServices, 'getMyTokenAllowance').mockImplementation(() => Promise.resolve(new BN(20)))
-            const validateStub = jest
-                .spyOn(web3Utils, 'validateBalanceForPurchase')
-                .mockImplementation(() => Promise.resolve())
+            const web3UtilsMock = web3Utils as any
+            const validateStub = web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => Promise.resolve())
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
@@ -458,9 +468,8 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
             jest.spyOn(productServices, 'getMyTokenAllowance').mockImplementation(() => Promise.resolve(new BN(0)))
-            const validateStub = jest
-                .spyOn(web3Utils, 'validateBalanceForPurchase')
-                .mockImplementation(() => Promise.resolve())
+            const web3UtilsMock = web3Utils as any
+            const validateStub = web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => Promise.resolve())
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
@@ -564,9 +573,8 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
             jest.spyOn(productServices, 'getMyTokenAllowance').mockImplementation(() => Promise.resolve(new BN(5000)))
-            const validateStub = jest
-                .spyOn(web3Utils, 'validateBalanceForPurchase')
-                .mockImplementation(() => Promise.resolve())
+            const web3UtilsMock = web3Utils as any
+            const validateStub = web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => Promise.resolve())
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
@@ -644,9 +652,8 @@ describe('usePurchase', () => {
                 price: '1234',
             }
             jest.spyOn(productServices, 'getMyDaiAllowance').mockImplementation(() => Promise.resolve(new BN(20)))
-            const validateStub = jest
-                .spyOn(web3Utils, 'validateBalanceForPurchase')
-                .mockImplementation(() => Promise.resolve())
+            const web3UtilsMock = web3Utils as any
+            const validateStub = web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => Promise.resolve())
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
@@ -741,7 +748,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: true,
                 pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', '1234', 123)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', new BN(1234), 123)
             expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
         it('purchases the product & sets allowance', async () => {
@@ -770,9 +777,8 @@ describe('usePurchase', () => {
                 price: '1234',
             }
             jest.spyOn(productServices, 'getMyDaiAllowance').mockImplementation(() => Promise.resolve(new BN(0)))
-            const validateStub = jest
-                .spyOn(web3Utils, 'validateBalanceForPurchase')
-                .mockImplementation(() => Promise.resolve())
+            const web3UtilsMock = web3Utils as any
+            const validateStub = web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => Promise.resolve())
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
@@ -838,7 +844,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: false,
                 pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', '1234', 123)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', new BN(1234), 123)
             expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
         it('purchases the product when there is enough allowance', async () => {
@@ -867,9 +873,8 @@ describe('usePurchase', () => {
                 price: '1234',
             }
             jest.spyOn(productServices, 'getMyDaiAllowance').mockImplementation(() => Promise.resolve(new BN(5000)))
-            const validateStub = jest
-                .spyOn(web3Utils, 'validateBalanceForPurchase')
-                .mockImplementation(() => Promise.resolve())
+            const web3UtilsMock = web3Utils as any
+            const validateStub = web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => Promise.resolve())
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
@@ -915,7 +920,7 @@ describe('usePurchase', () => {
                 includeGasForResetAllowance: false,
                 pricingTokenAddress: '0x8f693ca8D21b157107184d29D398A8D082b38b76',
             })
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', '1234', 123)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'DAI', new BN(1234), 123)
             expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
     })
@@ -945,7 +950,8 @@ describe('usePurchase', () => {
                 paymentCurrency: paymentCurrencies.ETH,
                 price: '1234',
             }
-            jest.spyOn(web3Utils, 'validateBalanceForPurchase').mockImplementation(() => Promise.resolve())
+            const web3UtilsMock = web3Utils as any
+            web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => Promise.resolve())
             const result = await purchase({
                 contractProduct,
                 accessPeriod,
@@ -984,7 +990,7 @@ describe('usePurchase', () => {
             expect(statusFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION, transactionStates.CONFIRMED)
             expect(readyFn).toHaveBeenCalledWith(actionsTypes.SUBSCRIPTION)
             expect(finishFn).toHaveBeenCalled()
-            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'ETH', '1234', 123)
+            expect(buyProductStub).toHaveBeenCalledWith('1', 1, '3600', 'ETH', new BN(1234), 123)
             expect(subscriptionStub).toHaveBeenCalledWith('1', 1)
         })
     })
@@ -1019,9 +1025,8 @@ describe('usePurchase', () => {
                 accessPeriod.timeUnit,
             )
             jest.spyOn(productServices, 'getMyTokenAllowance').mockImplementation(() => Promise.resolve(new BN(20)))
-            const validateStub = jest
-                .spyOn(web3Utils, 'validateBalanceForPurchase')
-                .mockImplementation(() => Promise.resolve())
+            const web3UtilsMock = web3Utils as any
+            const validateStub = web3UtilsMock.validateBalanceForPurchase.mockImplementation(() => Promise.resolve())
             const result = await purchase({
                 contractProduct,
                 accessPeriod,

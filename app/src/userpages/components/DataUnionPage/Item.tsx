@@ -3,10 +3,12 @@ import styled from 'styled-components'
 import get from 'lodash/get'
 import { useHistory } from 'react-router-dom'
 import { Tooltip } from '@streamr/streamr-layout'
+
 import type { Product } from '$mp/types/product-types'
 import '$mp/types/product-types'
 import { ago } from '$shared/utils/time'
-import { productStates, NotificationIcon, dataUnionMemberLimit } from '$shared/utils/constants'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
+import { productStates, NotificationIcon } from '$shared/utils/constants'
 import SvgIcon from '$shared/components/SvgIcon'
 import UnstyledFallbackImage from '$shared/components/FallbackImage'
 import UnstyledPopover from '$shared/components/Popover'
@@ -37,6 +39,7 @@ import routes from '$routes'
 import Management from './Management'
 import ManageJoinRequests from './ManageJoinRequests'
 import ManageMembers from './ManageMembers'
+
 const Container = styled.div`
     width: 100%;
     background: #ffffff;
@@ -279,6 +282,8 @@ const Item = ({ product, stats }: Props) => {
     const loading = loadingDataUnion || isPublishPending || isDeployPending
     const { api: publishDialog } = useModal('publish')
     const { api: deployDataUnionDialog } = useModal('dataUnion.DEPLOY')
+    const { dataUnionPublishMemberLimit } = getCoreConfig()
+
     useEffect(() => {
         const load = async () => {
             if (dataUnionId) {
@@ -351,10 +356,10 @@ const Item = ({ product, stats }: Props) => {
             if (!!valid && isEthereumAddress(product.beneficiaryAddress)) {
                 const { active: activeMembers } = (stats && stats.memberCount) || {}
 
-                if ((activeMembers || 0) < dataUnionMemberLimit) {
+                if ((activeMembers || 0) < dataUnionPublishMemberLimit) {
                     Notification.push({
                         title: `The minimum community size for a Data Union is ${
-                            dataUnionMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionMemberLimit)} members`
+                            dataUnionPublishMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionPublishMemberLimit)} members`
                         }.`,
                         icon: NotificationIcon.ERROR,
                     })
@@ -370,7 +375,7 @@ const Item = ({ product, stats }: Props) => {
                 redirect: !valid,
             }
         },
-        [stats],
+        [stats, dataUnionPublishMemberLimit],
     )
     const redirectToEditProduct = useCallback(
         (productId) => {

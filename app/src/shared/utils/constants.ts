@@ -104,4 +104,3 @@ export const StreamrClientRepositories = {
     [ProgrammingLanguages.JAVASCRIPT]: 'https://github.com/streamr-dev/network-monorepo',
     [ProgrammingLanguages.JAVA]: 'https://github.com/streamr-dev/streamr-client-java',
 }
-export const dataUnionMemberLimit = getCoreConfig().dataUnionPublishMemberLimit

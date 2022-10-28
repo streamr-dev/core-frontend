@@ -294,7 +294,6 @@ export const validateBalanceForPurchase = async ({
     includeGasForSetAllowance = false,
     includeGasForResetAllowance = false,
 }: ValidateBalance): Promise<void> => {
-    console.log('validateBalanceForPurchase')
     const nativeTokenBalance = await getMyNativeTokenBalance()
     let requiredGas = fromAtto(String(gasLimits.BUY_PRODUCT))
 

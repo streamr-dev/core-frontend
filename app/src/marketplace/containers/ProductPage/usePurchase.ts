@@ -79,7 +79,6 @@ export default function usePurchase() {
             const needsAllowance = !!(isTokenPurchase && allowance.isLessThan(purchasePrice))
             const needsAllowanceReset = !!(needsAllowance && allowance.isGreaterThan(0))
             const pricingTokenDecimals = await getCustomTokenDecimals(contractProduct.pricingTokenAddress, chainId)
-            console.log(validateBalanceForPurchase)
             await validateBalanceForPurchase({
                 price: fromDecimals(purchasePrice, pricingTokenDecimals),
                 paymentCurrency,

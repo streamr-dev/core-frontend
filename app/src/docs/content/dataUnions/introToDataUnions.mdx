@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Image from '$docs/components/Image'
 import docsLinks from '$shared/../docsLinks'
 import { numberToText } from '$shared/utils/text'
-import { dataUnionMemberLimit } from '$shared/utils/constants'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 
@@ -11,6 +11,8 @@ import RevenueAndData from './images/intro_to_data_unions_01_revenue_and_data.jp
 import RevenueAndData2x from './images/intro_to_data_unions_01_revenue_and_data@2x.jpg'
 import RevenueAndDataMobile from './images/intro_to_data_unions_01_revenue_and_data_mobile.jpg'
 import RevenueAndDataMobile2x from './images/intro_to_data_unions_01_revenue_and_data_mobile@2x.jpg'
+
+export const dataUnionPublishMemberLimit = getCoreConfig().dataUnionPublishMemberLimit
 
 # Introduction to Data Unions
 
@@ -61,7 +63,7 @@ Once the product has been published, you can view revenue and community metrics,
 -   Use the Core app to create a draft Data Union, and deploy the Data Union smart contract
 -   Integrate the Data Unions Framework into your your app using the <a href="https://github.com/streamr-dev/network-monorepo/tree/main/packages/client" target="_blank" rel="noopener noreferrer">Streamr client</a>
 -   Allow users to join the Data Union. You must have a minimum of <span dangerouslySetInnerHTML={{
-        __html: (dataUnionMemberLimit === 1) ? 'one user' : `${numberToText(dataUnionMemberLimit)} users`
+        __html: (dataUnionPublishMemberLimit === 1) ? 'one user' : `${numberToText(dataUnionPublishMemberLimit)} users`
     }} /> to publish, but the larger the number of members, the more valuable your product is likely to be
 -   Publish the Data Union to the Marketplace
 -   Manage users and view revenue via the Core app

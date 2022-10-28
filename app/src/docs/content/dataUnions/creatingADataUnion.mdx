@@ -4,13 +4,15 @@ import Image from '$docs/components/Image'
 import docsLinks from '$shared/../docsLinks'
 import docsStyles from '$docs/components/DocsLayout/docsLayout.pcss'
 import { numberToText } from '$shared/utils/text'
-import { dataUnionMemberLimit } from '$shared/utils/constants'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 
 import Build from './images/data_unions_in_core_01_build.jpg'
 import Build2x from './images/data_unions_in_core_01_build@2x.jpg'
 
 import Deploy from './videos/data_unions_in_core_02_deploy.mp4'
 import Managing from './videos/data_unions_in_core_03_managing.mp4'
+
+export const dataUnionPublishMemberLimit = getCoreConfig().dataUnionPublishMemberLimit
 
 # Creating a Data Union
 
@@ -39,7 +41,7 @@ Shared secrets allow new members to join the Data Union without explicit approva
 ### Publishing to the Marketplace
 
 A minimum of <span dangerouslySetInnerHTML={{
-    __html: (dataUnionMemberLimit === 1) ? 'one member' : `${numberToText(dataUnionMemberLimit)} members`
+    __html: (dataUnionPublishMemberLimit === 1) ? 'one member' : `${numberToText(dataUnionPublishMemberLimit)} members`
 }} /> is needed to publish the Data Union to the Marketplace. Once enough members have joined, you can publish the Data Union by clicking <span className={docsStyles.streamrHighlight}>Continue</span> from the action bar. Your Data Union will be published on the Marketplace once the Ethereum blockchain has confirmed your transaction.
 
 ### Managing the Data Union

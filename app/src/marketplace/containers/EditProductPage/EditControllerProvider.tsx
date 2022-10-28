@@ -9,7 +9,7 @@ import { putProduct, postImage } from '$mp/modules/product/services'
 import { selectDataUnionStats } from '$mp/modules/dataUnion/selectors'
 import useIsMounted from '$shared/hooks/useIsMounted'
 import Notification from '$shared/utils/Notification'
-import { NotificationIcon, productStates, dataUnionMemberLimit } from '$shared/utils/constants'
+import { NotificationIcon, productStates } from '$shared/utils/constants'
 import { numberToText } from '$shared/utils/text'
 import { isEthereumAddress } from '$mp/utils/validate'
 import { areAddressesEqual } from '$mp/utils/smartContract'
@@ -17,11 +17,13 @@ import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import usePreventNavigatingAway from '$shared/hooks/usePreventNavigatingAway'
 import useEditableState from '$shared/contexts/Undo/useEditableState'
 import useModal from '$shared/hooks/useModal'
+import getCoreConfig from '$app/src/getters/getCoreConfig'
 import routes from '$routes'
 import * as State from '../EditProductPage/state'
 import { useController } from '../ProductController'
 import useEditableProductActions from '../ProductController/useEditableProductActions'
 import { Context as ValidationContext, ERROR } from '../ProductController/ValidationContextProvider'
+
 type ContextProps = {
     isPreview?: boolean
     setIsPreview?: (arg0: boolean | ((...args: Array<any>) => any)) => void
@@ -51,6 +53,7 @@ function useEditController(product: Product) {
     const dataUnion = useSelector(selectDataUnionStats)
     const [publishAttempted, setPublishAttempted] = useState(!!(qs.parse(location.search).publishAttempted || ''))
     usePreventNavigatingAway('You have unsaved changes', isAnyTouched)
+    const { dataUnionPublishMemberLimit } = getCoreConfig()
     const productRef = useRef(product)
     productRef.current = product
     const errors = useMemo(
@@ -159,10 +162,10 @@ function useEditController(product: Product) {
         if (isDataUnionProduct(productRef.current) && isEthereumAddress(productRef.current.beneficiaryAddress)) {
             const { active: activeMembers } = (dataUnion && dataUnion.memberCount) || {}
 
-            if (!dataUnion || (activeMembers || 0) < dataUnionMemberLimit) {
+            if (!dataUnion || (activeMembers || 0) < dataUnionPublishMemberLimit) {
                 Notification.push({
                     title: `The minimum community size for a Data Union is ${
-                        dataUnionMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionMemberLimit)} members`
+                        dataUnionPublishMemberLimit === 1 ? 'one member' : `${numberToText(dataUnionPublishMemberLimit)} members`
                     }.`,
                     icon: NotificationIcon.ERROR,
                 })
@@ -171,7 +174,7 @@ function useEditController(product: Product) {
         }
 
         return true
-    }, [errors, dataUnion])
+    }, [errors, dataUnion, dataUnionPublishMemberLimit])
     const publish = useCallback(async () => {
         setPublishAttempted(true)
 
