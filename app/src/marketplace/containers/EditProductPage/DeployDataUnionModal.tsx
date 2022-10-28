@@ -19,11 +19,13 @@ import Activity, { actionTypes, resourceTypes } from '$shared/utils/Activity'
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import { getChainIdFromApiString } from '$shared/utils/chains'
+
 type DeployDialogProps = {
     product: Product
     api: Record<string, any>
     updateAddress: (arg0: Address | null | undefined) => void
 }
+
 const steps = {
     GUIDE: 'guide',
     CONFIRM: 'deploy',
@@ -46,6 +48,7 @@ function setSkipGuide(value) {
 
 // allow 5s for the API to start in data union server
 const API_READY_ESTIMATE = 5
+
 export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps) => {
     const dontShowAgain = skipGuide()
     const [step, setStep] = useState(dontShowAgain ? steps.CONFIRM : steps.GUIDE)
@@ -204,7 +207,8 @@ export const DeployDialog = ({ product, api, updateAddress }: DeployDialogProps)
             return null
     }
 }
-export default () => {
+
+const DeployDataUnionModal = () => {
     const { api, isOpen, value } = useModal('dataUnion.DEPLOY')
 
     if (!isOpen) {
@@ -214,3 +218,5 @@ export default () => {
     const { product, updateAddress } = value
     return <DeployDialog product={product} api={api} onClose={() => api.close(false)} updateAddress={updateAddress} />
 }
+
+export default DeployDataUnionModal

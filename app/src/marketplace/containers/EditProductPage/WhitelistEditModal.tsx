@@ -19,12 +19,14 @@ import WrongNetworkSelectedDialog from '$shared/components/WrongNetworkSelectedD
 import WrongNetworkSelectedError from '$shared/errors/WrongNetworkSelectedError'
 import useSwitchChain from '$shared/hooks/useSwitchChain'
 import useUpdateWhitelist, { actionsTypes } from './useUpdateWhitelist'
+
 type Props = {
     productId: ProductId
     chainId: number
     removedAddress: Address
     api: Record<string, any>
 }
+
 export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress, api }: Props) => {
     const updateWhitelist = useUpdateWhitelist()
     const isMounted = useIsMounted()
@@ -205,7 +207,8 @@ export const AddOrRemoveWhitelistAddress = ({ productId, chainId, removedAddress
 
     return <WhitelistEditErrorDialog status={status} onClose={onClose} />
 }
-export default () => {
+
+const WhitelistEditModal = () => {
     const { isOpen, api, value } = useModal('whitelistEdit')
 
     if (!isOpen) {
@@ -215,3 +218,5 @@ export default () => {
     const { productId, removedAddress, chainId } = value || {}
     return <AddOrRemoveWhitelistAddress productId={productId} removedAddress={removedAddress} chainId={chainId} api={api} />
 }
+
+export default WhitelistEditModal

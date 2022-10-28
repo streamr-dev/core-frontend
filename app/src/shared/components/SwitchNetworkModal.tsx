@@ -73,7 +73,7 @@ const SwitchNetworkModal = ({ api, requiredNetwork, initialNetwork }: Props) => 
     )
 }
 
-export default () => {
+const SwitchNetworkModalWrapped = () => {
     const { api, isOpen, value } = useModal('switchNetwork')
 
     if (!isOpen) {
@@ -83,3 +83,5 @@ export default () => {
     const { requiredNetwork, initialNetwork } = value
     return <SwitchNetworkModal api={api} requiredNetwork={requiredNetwork} initialNetwork={initialNetwork} />
 }
+
+export default SwitchNetworkModalWrap

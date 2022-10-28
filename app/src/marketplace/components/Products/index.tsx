@@ -11,8 +11,9 @@ import LoadMore from '../LoadMore'
 import Error from '../Error'
 import { getErrorView, getCols } from './settings'
 import styles from './products.pcss'
-export type Props = {}
+
 export type ProductTilePropType = 'products' | 'relatedProducts'
+
 export type OwnProps = {
     products: ProductList
     type: ProductTilePropType
@@ -22,6 +23,7 @@ export type OwnProps = {
     hasMoreSearchResults?: boolean
     header?: string
 }
+
 export const MarketplaceProductTile = styled(UnstyledMarketplaceProductTile)`
     margin-top: 16px;
 `

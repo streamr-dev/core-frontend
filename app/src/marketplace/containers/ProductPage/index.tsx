@@ -89,4 +89,4 @@ const ProductContainer = () => {
     )
 }
 
-export default () => <ProductContainer />
+export default ProductContainer

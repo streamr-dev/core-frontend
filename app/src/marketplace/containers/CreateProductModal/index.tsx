@@ -54,7 +54,7 @@ const CreateProductModal = ({ api }: Props) => {
     )
 }
 
-export default () => {
+const CreateProductModalWrap = () => {
     const { api, isOpen } = useModal('marketplace.createProduct')
 
     if (!isOpen) {
@@ -63,3 +63,5 @@ export default () => {
 
     return <CreateProductModal api={api} />
 }
+
+export default CreateProductModalWrap

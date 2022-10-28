@@ -3,16 +3,19 @@ import type { PublishMode } from '$mp/containers/EditProductPage/usePublish'
 import { publishModes } from '$mp/containers/EditProductPage/usePublish'
 import ReadyToPublish from './ReadyToPublish'
 import ReadyToUnpublish from './ReadyToUnpublish'
+
 export type BaseProps = {
     onCancel: () => void
     onContinue: () => void
     disabled?: boolean
 }
+
 export type Props = BaseProps & {
     publishMode: PublishMode
     nativeTokenName: string
 }
-export default ({ publishMode, onCancel, onContinue, disabled, nativeTokenName }: Props) => {
+
+const ReadyToPublishDialogWrap = ({ publishMode, onCancel, onContinue, disabled, nativeTokenName }: Props) => {
     if (publishMode === publishModes.UNPUBLISH) {
         return <ReadyToUnpublish onContinue={onContinue} onCancel={onCancel} disabled={disabled} />
     }
@@ -27,3 +30,5 @@ export default ({ publishMode, onCancel, onContinue, disabled, nativeTokenName }
         />
     )
 }
+
+export default ReadyToPublishDialogWrap

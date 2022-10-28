@@ -82,17 +82,6 @@ module.exports = {
                     '@mdx-js/loader',
                 ],
             },
-            /*{
-                test: /\.(ts|tsx)?$/,
-                include: [path.resolve(root, 'src'), path.resolve(root, 'scripts')],
-                enforce: 'pre',
-                use: [{
-                    loader: 'eslint-loader',
-                    options: {
-                        cache: !isProduction()
-                    },
-                }],
-            },*/
             {
                 test: /.jsx?$/,
                 loader: 'babel-loader',
@@ -180,10 +169,10 @@ module.exports = {
         ],
     },
     plugins: [
-        new ESLintPlugin({
-            extensions: ['*.tsx', '*.ts'],
-        }),
         // Common plugins between prod and dev
+        new ESLintPlugin({
+            extensions: ['tsx', 'ts'],
+        }),
         new HtmlWebpackPlugin({
             template: 'src/index.html',
             templateParameters: {

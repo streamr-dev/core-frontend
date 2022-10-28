@@ -1,7 +1,8 @@
 import React from 'react'
 import useModal from '$shared/hooks/useModal'
 import ConfirmSaveDialog from '$shared/components/ConfirmSaveDialog'
-export default () => {
+
+const ConfirmSaveModal = () => {
     const { api, isOpen } = useModal('confirmSave')
 
     if (!isOpen) {
@@ -37,3 +38,5 @@ export default () => {
         </ConfirmSaveDialog>
     )
 }
+
+export default ConfirmSaveModal

@@ -40,7 +40,8 @@ const SortableList = styled(UnstyledSortableList)`
     z-index: 0;
 `
 const Sortable = SortableContainer(SortableList)
-export default function ({ onSortStart: onSortStartProp, onSortEnd: onSortEndProp, ...props }: SortableContainerProps) {
+
+const SortableWrap = function ({ onSortStart: onSortStartProp, onSortEnd: onSortEndProp, ...props }: SortableContainerProps) {
     // wrap onSort{Start,End} with setSorting flag setter
     const [isSorting, setSorting] = useState(false)
     const onSortStart = useCallback(
@@ -79,3 +80,5 @@ export default function ({ onSortStart: onSortStartProp, onSortEnd: onSortEndPro
         </React.Fragment>
     )
 }
+
+export default SortableWrap

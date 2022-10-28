@@ -212,4 +212,4 @@ const ProductContainer = withRouter((props) => (
         </ProductController>
     </UndoContext.Provider>
 ))
-export default () => <ProductContainer />
+export default ProductContainer

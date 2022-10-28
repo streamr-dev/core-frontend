@@ -7,9 +7,8 @@ type Props = {
     onChange?: (checked: boolean) => void
     value?: boolean
 }
-type State = {}
 
-class ControlledToggle extends Component<Props, State> {
+class ControlledToggle extends Component<Props> {
     onChange = (e: React.SyntheticEvent<HTMLInputElement>) => {
         const value = e.target.checked
         const { onChange } = this.props

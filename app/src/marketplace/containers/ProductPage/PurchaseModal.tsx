@@ -28,10 +28,12 @@ import useSwitchChain from '$shared/hooks/useSwitchChain'
 import useNativeTokenName from '$shared/hooks/useNativeTokenName'
 import { getChainIdFromApiString } from '$shared/utils/chains'
 import usePurchase, { actionsTypes } from './usePurchase'
+
 type Props = {
     productId: ProductId
     api: Record<string, any>
 }
+
 export const PurchaseDialog = ({ productId, api }: Props) => {
     const dispatch = useDispatch()
     const { product, loadContractProduct } = useController()
@@ -323,7 +325,8 @@ export const PurchaseDialog = ({ productId, api }: Props) => {
 
     return null
 }
-export default () => {
+
+const PurchaseModal = () => {
     const { isOpen, api, value } = useModal('purchase')
 
     if (!isOpen) {
@@ -333,3 +336,5 @@ export default () => {
     const { productId } = value || {}
     return <PurchaseDialog productId={productId} api={api} />
 }
+
+export default PurchaseModal

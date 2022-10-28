@@ -35,7 +35,7 @@ const UnstyledSharedSecretEditor = ({ disabled, ...props }: Props) => {
         if (getProviderChainId() !== chainId) {
             await validateNetwork(true)
             // We need to wait a bit to make sure MetaMask has done it's thing
-            await new Promise((r) => setTimeout(r, 700))
+            await new Promise((resolve) => setTimeout(resolve, 700))
         }
     }, [validateNetwork, chainId])
     const loadSecrets = useCallback(

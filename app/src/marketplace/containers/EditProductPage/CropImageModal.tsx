@@ -2,6 +2,7 @@ import React, { useEffect, useCallback, useRef } from 'react'
 import useModal from '$shared/hooks/useModal'
 import useFilePreview from '$shared/hooks/useFilePreview'
 import CropImageModal from '$mp/components/Modal/CropImageModal'
+
 type Props = {
     image: File
     api: Record<string, any>
@@ -26,7 +27,7 @@ const PreviewAndCropModal = ({ image, api }: Props) => {
     return <CropImageModal imageUrl={preview || ''} onSave={onSave} onClose={onClose} />
 }
 
-export default () => {
+const CropImageModalWrap = () => {
     const { isOpen, api, value } = useModal('cropImage')
 
     if (!isOpen) {
@@ -36,3 +37,5 @@ export default () => {
     const { image } = value || {}
     return <PreviewAndCropModal image={image} api={api} />
 }
+
+export default CropImageModalWrap
