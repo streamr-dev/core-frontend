@@ -1,5 +1,5 @@
-const path = require('path')
 const fs = require('fs')
+const path = require('path')
 const dotenv = require('dotenv')
 const dotenvSafe = require('dotenv-safe')
 const isProduction = require('./isProduction')
@@ -15,8 +15,8 @@ const TEMPLATE_DOTENV_PATH = path.resolve(__dirname, '../.env.template')
 const loadLocalDotenv = () =>
     !isProduction()
         ? dotenv.config({
-              path: LOCAL_DOTENV_PATH,
-          }).parsed
+            path: LOCAL_DOTENV_PATH,
+        }).parsed
         : {}
 
 /**

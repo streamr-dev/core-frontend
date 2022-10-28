@@ -1,4 +1,4 @@
-const axios = require('axios')
+import axios from 'axios'
 
 /* eslint-disable no-console */
 const checkUrl = async (url) => {

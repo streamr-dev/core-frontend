@@ -27,6 +27,7 @@ function initSentry() {
 /**
  * Process the docs. Save the index & store as JSON files.
  */
+// eslint-disable-next-line @typescript-eslint/no-extra-semi
 ;(async function start() {
     console.log('Generating the Docs Search Index & Store...')
     initSentry()

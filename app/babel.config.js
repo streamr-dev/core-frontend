@@ -11,30 +11,30 @@ module.exports = function BabelConfig(api) {
                 '@babel/preset-env',
                 api.env('test')
                     ? {
-                          useBuiltIns: 'usage',
-                          corejs: 3,
-                          loose: true,
-                          targets: {
-                              node: 'current',
-                          },
-                      }
+                        useBuiltIns: 'usage',
+                        corejs: 3,
+                        loose: true,
+                        targets: {
+                            node: 'current',
+                        },
+                    }
                     : {
-                          useBuiltIns: 'usage',
-                          modules: false,
-                          corejs: 3,
-                          loose: true,
-                          exclude: ['transform-typeof-symbol'],
-                          targets: [
-                              '> 1.5%',
-                              'Opera >= 58',
-                              'Safari >= 12',
-                              'Edge >= 75',
-                              'Firefox ESR',
-                              'not dead',
-                              'not ie <= 11',
-                              'not ie_mob <= 11',
-                          ],
-                      },
+                        useBuiltIns: 'usage',
+                        modules: false,
+                        corejs: 3,
+                        loose: true,
+                        exclude: ['transform-typeof-symbol'],
+                        targets: [
+                            '> 1.5%',
+                            'Opera >= 58',
+                            'Safari >= 12',
+                            'Edge >= 75',
+                            'Firefox ESR',
+                            'not dead',
+                            'not ie <= 11',
+                            'not ie_mob <= 11',
+                        ],
+                    },
             ],
             [
                 '@babel/preset-react',
