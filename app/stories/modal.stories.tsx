@@ -533,7 +533,7 @@ story('Marketplace/PurchaseSummaryDialog')
             paymentCurrency="DATA"
             tokenSymbol="TEST"
             time={'24'}
-            timeUnit={transactionStates.STARTED}
+            timeUnit={'hour'}
             approxUsd="0.11"
             onBack={action('onBack')}
             onCancel={action('onCancel')}
@@ -803,7 +803,7 @@ story('Shared/UnlockWalletDialog')
         <UnlockWalletDialog
             title={'Dialog title'}
             onClose={action('onClose')}
-            icon={transactionStates.STARTED}
+            icon={'walletError'}
         >
             {'Please unlock your wallet'}
         </UnlockWalletDialog>

@@ -104,32 +104,29 @@ export const ChooseAccessPeriodDialog = ({
 
         return true
     }, [paymentCurrency, priceInUsd, currentPrice])
-    const setExternalPrices = useDebounced(
-        useCallback(
-            // TODO add typing
-            async ({ priceInToken: inToken, priceInUsd: inUsd, paymentCurrency: currency }) => {
-                setLoading(true)
-                let price
-                let usdEstimate
+    const setExternalPrices = useDebouncedCallback(
+        // TODO add typing
+        async ({ priceInToken: inToken, priceInUsd: inUsd, paymentCurrency: currency }) => {
+            setLoading(true)
+            let price
+            let usdEstimate
 
-                if (currency === paymentCurrencies.NATIVE) {
-                    price = await uniswapDATAtoETH(inToken.toString(), true)
-                    usdEstimate = await uniswapETHtoDATA(price.toString(), true)
-                } else if (currency === paymentCurrencies.DAI) {
-                    price = await uniswapDATAtoDAI(inToken.toString(), true)
-                    usdEstimate = price
-                } else {
-                    price = inToken
-                    usdEstimate = inUsd
-                }
+            if (currency === paymentCurrencies.NATIVE) {
+                price = await uniswapDATAtoETH(inToken.toString(), true)
+                usdEstimate = await uniswapETHtoDATA(price.toString(), true)
+            } else if (currency === paymentCurrencies.DAI) {
+                price = await uniswapDATAtoDAI(inToken.toString(), true)
+                usdEstimate = price
+            } else {
+                price = inToken
+                usdEstimate = inUsd
+            }
 
-                // TODO check if its ok - I had to use BN here to comply with the types
-                setCurrentPrice(fromDecimals(price, new BN(pricingTokenDecimals)))
-                setApproxUsd(usdEstimate)
-                setLoading(false)
-            },
-            [pricingTokenDecimals],
-        ),
+            // TODO check if its ok - I had to use BN here to comply with the types
+            setCurrentPrice(fromDecimals(price, new BN(pricingTokenDecimals)))
+            setApproxUsd(usdEstimate)
+            setLoading(false)
+        },
         250,
     )
     const displayPrice = useMemo(() => (BN(currentPrice).isNaN() ? 'N/A' : BN(currentPrice).toFixed(2)), [currentPrice])

@@ -19,7 +19,7 @@ story('StorageNodeItem').add('with knobs', () => (
         active={false}
         onClick={action('onClick')}
     >
-        {text('Location name', 'United States of America')}
+        {'United States of America'}
     </StorageNodeItem>
 ))
 story('StorageNodeItem').add('state line-up', () => (

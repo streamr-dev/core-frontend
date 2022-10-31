@@ -173,7 +173,7 @@ story('Dialog').add('basic', () => {
         <Dialog
             showCloseIcon={true}
             waiting={false}
-            title={text('title', 'Dialog Title')}
+            title={'Dialog Title'}
             actions={actions}
         >
             Content goes here...
@@ -264,7 +264,7 @@ story('ModalPortal')
         </React.Fragment>
     ))
 story('Notifications').add('basic', () => {
-    const title = text('Title', 'Lorem ipsum dolor sit. But hey, you always have emat!')
+    const title = 'Lorem ipsum dolor sit. But hey, you always have emat!'
     return (
         <React.Fragment>
             <div id="modal-root" />

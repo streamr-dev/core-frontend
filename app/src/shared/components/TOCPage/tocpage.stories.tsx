@@ -15,7 +15,7 @@ const stories = storiesOf('Shared/TOCPage', module)
 stories.add('basic', () => {
     const showLinkTitle = false
     return (
-        <TOCPage title={text('Page title', 'Page Title')}>
+        <TOCPage title={'Page Title'}>
             <TOCSection
                 id="first"
                 title={'First Section'}
