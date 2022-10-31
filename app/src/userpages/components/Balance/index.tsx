@@ -3,6 +3,7 @@ import React, { Fragment } from 'react'
 import cx from 'classnames'
 import type { NumberString } from '$shared/types/common-types'
 import styles from './balance.pcss'
+
 type AccountProps = {
     name: string
     value: NumberString

@@ -1,7 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@storybook/react'
 import styles from '@sambego/storybook-styles'
-import Balance from '../Balance'
+import Balance, { Account } from '../Balance'
 import Avatar from '.'
 const stories = storiesOf('Userpages/Avatar', module)
     .addDecorator(
@@ -39,8 +39,8 @@ stories.add('with image (mobile)', () => <Avatar user={emailUserWithImage}>{emai
 stories.add('eth address', () => (
     <Avatar user={ethUser}>
         <Balance>
-            <Balance.Account name="ETH" value="2.123" />
-            <Balance.Account name="DATA" value="3.456" />
+            <Account name="ETH" value="2.123" />
+            <Account name="DATA" value="3.456" />
         </Balance>
     </Avatar>
 ))
@@ -49,8 +49,8 @@ stories.add(
     () => (
         <Avatar user={ethUser}>
             <Balance>
-                <Balance.Account name="ETH" value="2.123" />
-                <Balance.Account name="DATA" value="3.456" />
+                <Account name="ETH" value="2.123" />
+                <Account name="DATA" value="3.456" />
             </Balance>
         </Avatar>
     ),
