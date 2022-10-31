@@ -159,7 +159,10 @@ jobs:
         env:
           NODE_ENV: production
           PORT: 12345
+          PLATFORM_PUBLIC_PATH: https://cdn.streamr.com
+          GOOGLE_ANALYTICS_ID: UA-55331565-5
           SENTRY_ENVIRONMENT: chromatic
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_API_TOKEN }}
           SENTRY_ORG: streamr
           SENTRY_PROJECT: marketplace
           SENTRY_DSN: https://e012761929d24baa96ca82772f60b395@o151964.ingest.sentry.io/1203154
