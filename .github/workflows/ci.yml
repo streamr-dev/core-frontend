@@ -144,7 +144,6 @@ jobs:
       matrix:
         node-version: [16.x]
     steps:
-      # common steps
       - uses: actions/checkout@v3
         with:
           # Chromatic needs full history
@@ -156,8 +155,14 @@ jobs:
       - name: Install Dependencies
         run: |
           npm ci
-      # job specific steps
       - name: Build Storybook
+      - env:
+          NODE_ENV: production
+          PORT: 12345
+          SENTRY_ENVIRONMENT: chromatic
+          SENTRY_ORG: streamr
+          SENTRY_PROJECT: marketplace
+          TEST_HOOKS: off
         run: npm run build-storybook --output-dir storybook-static
       - name: Publish storybook to Chromatic
         uses: chromaui/action@v1
@@ -168,4 +173,3 @@ jobs:
           workingDir: app
           # Use output folder from previous step
           storybookBuildDir: storybook-static
-
